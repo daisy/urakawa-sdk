@@ -8,7 +8,7 @@ using urakawa.xuk;
 namespace urakawa.property.channel
 {
     /// <summary>
-    /// A <see cref="Channel"/> is used to associate <see cref="media.IMedia"/> 
+    /// A <see cref="Channel"/> is used to associate <see cref="Media"/> 
     /// with <see cref="core.TreeNode"/>s via <see cref="ChannelsProperty"/>
     /// </summary>
     public class Channel : WithPresentation, IValueEquatable<Channel>
@@ -120,13 +120,13 @@ namespace urakawa.property.channel
         }
 
         /// <summary>
-        /// Checks of a given <see cref="IMedia"/> is accepted by the channel
+        /// Checks of a given <see cref="Media"/> is accepted by the channel
         /// </summary>
-        /// <param name="m">The <see cref="IMedia"/></param>
+        /// <param name="m">The <see cref="Media"/></param>
         /// <returns>
-        /// A <see cref="bool"/> indicating if the <see cref="IMedia"/> is accpetable
+        /// A <see cref="bool"/> indicating if the <see cref="Media"/> is accpetable
         /// </returns>
-        public virtual bool CanAccept(IMedia m)
+        public virtual bool CanAccept(Media m)
         {
             return true;
         }

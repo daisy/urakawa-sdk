@@ -1,24 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using urakawa.media;
 
 namespace urakawa.events.media
 {
     /// <summary>
-    /// Arguments for event occuring when the <c>src</c> of a <see cref="urakawa.media.ExternalMedia"/> has changed
+    /// Arguments for event occuring when the <c>src</c> of a <see cref="ILocated"/> <see cref="Media"/> has changed
     /// </summary>
     public class SrcChangedEventArgs : MediaEventArgs
     {
         /// <summary>
-        /// Constructor setting the source <see cref="urakawa.media.ExternalMedia"/> and previous+new <c>src</c> values
+        /// Constructor setting the source <see cref="ILocated"/> <see cref="Media"/> 
+        /// and previous+new <c>src</c> values
         /// </summary>
         /// <param name="source">The source</param>
         /// <param name="newSrcVal">The new src value</param>
         /// <param name="prevSrcVal">The previous src value</param>
-        public SrcChangedEventArgs(urakawa.media.ExternalMedia source, string newSrcVal, string prevSrcVal)
+        public SrcChangedEventArgs(Media source, string newSrcVal, string prevSrcVal)
             : base(source)
         {
-            SourceExternalMedia = source;
+            SourceExternalMedia = source as ILocated;
+            this.source = source;
             NewSrc = newSrcVal;
             PreviousSrc = prevSrcVal;
         }
@@ -26,7 +26,9 @@ namespace urakawa.events.media
         /// <summary>
         /// The source media
         /// </summary>
-        public readonly urakawa.media.ExternalMedia SourceExternalMedia;
+        public readonly ILocated SourceExternalMedia;
+
+        private readonly Media source;
 
         /// <summary>
         /// The new value of <c>src</c>

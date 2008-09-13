@@ -9,7 +9,7 @@ using urakawa.property.channel;
 namespace urakawa.examples
 {
     /// <summary>
-    /// <see cref="ITreeNodeVisitor"/> for detecting <see cref="IMedia"/> in a <see cref="Channel"/>
+    /// <see cref="ITreeNodeVisitor"/> for detecting <see cref="Media"/> in a <see cref="Channel"/>
     /// </summary>
     public class DetectMediaTreeNodeVisitor : ITreeNodeVisitor
     {
@@ -38,7 +38,7 @@ namespace urakawa.examples
         private Channel mChannel;
 
         /// <summary>
-        /// Gets the <see cref="Channel"/> in which <see cref="IMedia"/> is detected
+        /// Gets the <see cref="Channel"/> in which <see cref="Media"/> is detected
         /// </summary>
         /// <returns>The <see cref="Channel"/></returns>
         public Channel ChannelFromWhichMediaIsDetected
@@ -48,7 +48,7 @@ namespace urakawa.examples
 
         /// <summary>
         /// Constructor setting the <see cref="Channel"/> in which the <see cref="DetectMediaTreeNodeVisitor"/> 
-        /// detects <see cref="IMedia"/>
+        /// detects <see cref="Media"/>
         /// </summary>
         /// <param name="channelInWhichToDetect">The <see cref="Channel"/></param>
         public DetectMediaTreeNodeVisitor(Channel channelInWhichToDetect)
@@ -60,9 +60,9 @@ namespace urakawa.examples
 
         /// <summary>
         /// Called before visiting children in in depth first traversal.
-        /// If there is a <see cref="IMedia"/> associated with <paramref localName="node"/>
+        /// If there is a <see cref="Media"/> associated with <paramref localName="node"/>
         /// via a <see cref="ChannelsProperty"/>, the <see cref="DetectMediaTreeNodeVisitor"/>
-        /// is flagged as having found a <see cref="IMedia"/> in the given channel 
+        /// is flagged as having found a <see cref="Media"/> in the given channel 
         /// and the traversal is ended
         /// </summary>
         /// <param name="node">The <see cref="TreeNode"/> to visit</param>
@@ -76,7 +76,7 @@ namespace urakawa.examples
             if (prop != null)
             {
                 ChannelsProperty chProp = (ChannelsProperty) prop;
-                IMedia m = chProp.GetMedia(mChannel);
+                Media m = chProp.GetMedia(mChannel);
                 // If media is present in mChannel, flag that media is detected in mChannel 
                 // and retrun false to avoid searching the subtree of node
                 if (m != null)

@@ -1,143 +1,32 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.IO;
 using System.Xml;
+using urakawa.events.media;
 
 namespace urakawa.media
 {
     /// <summary>
-    /// An implementation of <see cref="ITextMedia"/> based on text storage in an external file/uri
+    /// An implementation of <see cref="AbstractTextMedia"/> based on text storage in an external file/uri
     /// </summary>
-    public class ExternalTextMedia : ExternalMedia, ITextMedia
+    public class ExternalTextMedia : AbstractTextMedia, ILocated
     {
-        #region Event related members
+        private string mSrc;
 
-        /// <summary>
-        /// Event fired after the text of the <see cref="ExternalTextMedia"/> has changed
-        /// </summary>
-        public event EventHandler<urakawa.events.media.TextChangedEventArgs> TextChanged;
-
-        /// <summary>
-        /// Fires the <see cref="TextChanged"/> event
-        /// </summary>
-        /// <param name="source">The source, that is the <see cref="ExternalTextMedia"/> whoose text was changed</param>
-        /// <param name="newText">The new text value</param>
-        /// <param name="prevText">Thye text value prior to the change</param>
-        protected void NotifyTextChanged(ExternalTextMedia source, string newText, string prevText)
+        private void Reset()
         {
-            EventHandler<urakawa.events.media.TextChangedEventArgs> d = TextChanged;
-            if (d != null) d(this, new urakawa.events.media.TextChangedEventArgs(source, newText, prevText));
-        }
-
-        private void this_textChanged(object sender, urakawa.events.media.TextChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Constructor setting the <see cref="IMediaFactory"/> that created the instance
-        /// </summary>
-        protected internal ExternalTextMedia()
-        {
-            this.TextChanged += new EventHandler<urakawa.events.media.TextChangedEventArgs>(this_textChanged);
-        }
-
-        #region IMedia Members
-
-        /// <summary>
-        /// Determines if <c>this</c> is a continuous media (wich it is not)
-        /// </summary>
-        /// <returns><c>false</c></returns>
-        public override bool IsContinuous
-        {
-            get { return false; }
+            mSrc = null;
         }
 
         /// <summary>
-        /// Determines if <c>this</c> is a descrete media (which it is)
+        /// Default constructor - for system use only, 
+        /// <see cref="ExternalTextMedia"/>s should only be created via. the <see cref="MediaFactory"/>
         /// </summary>
-        /// <returns><c>true</c></returns>
-        public override bool IsDiscrete
+        public ExternalTextMedia()
         {
-            get { return true; }
-        }
-
-        /// <summary>
-        /// Determines if <c>this</c>is a sequence media (which it is not)
-        /// </summary>
-        /// <returns><c>false</c></returns>
-        public override bool IsSequence
-        {
-            get { return false; }
-        }
-
-
-        /// <summary>
-        /// Creates a copy of <c>this</c>
-        /// </summary>
-        /// <returns>The copy</returns>
-        public new ExternalTextMedia Copy()
-        {
-            return CopyProtected() as ExternalTextMedia;
-        }
-
-
-        /// <summary>
-        /// Exports the external text media to a destination <see cref="Presentation"/>
-        /// </summary>
-        /// <param name="destPres">The destination presentation</param>
-        /// <returns>The exported external text media</returns>
-        protected override IMedia ExportProtected(Presentation destPres)
-        {
-            ExternalTextMedia exported = base.ExportProtected(destPres) as ExternalTextMedia;
-            if (exported == null)
-            {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The MediaFactory cannot create a ExternalTextMedia matching QName {1}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
-            }
-            return exported;
-        }
-
-        /// <summary>
-        /// Exports the external text media to a destination <see cref="Presentation"/>
-        /// </summary>
-        /// <param name="destPres">The destination presentation</param>
-        /// <returns>The exported external text media</returns>
-        public new ExternalTextMedia Export(Presentation destPres)
-        {
-            return ExportProtected(destPres) as ExternalTextMedia;
-        }
-
-        #endregion
-
-        #region ITextMedia Members
-
-        /// <summary>
-        /// Gets the text of the <c>this</c>
-        /// </summary>
-        /// <returns>The text - if the plaintext file could not be found, <see cref="String.Empty"/> is returned</returns>
-        /// <exception cref="exception.CannotReadFromExternalFileException">
-        /// Thrown if the file referenced by <see cref="ExternalMedia.Src"/> is not accessible
-        /// </exception>
-        public string Text
-        {
-            get
-            {
-                WebClient client = new WebClient();
-                client.UseDefaultCredentials = true;
-                return GetText(client);
-            }
-            set
-            {
-                WebClient client = new WebClient();
-                client.UseDefaultCredentials = true;
-                SetText(value, client);
-            }
+            Reset();
+            SrcChanged += this_SrcChanged;
         }
 
         /// <summary>
@@ -146,7 +35,7 @@ namespace urakawa.media
         /// <param name="credits">The given credentisals</param>
         /// <returns>The text - if the plaintext file could not be found, <see cref="String.Empty"/> is returned</returns>
         /// <exception cref="exception.CannotReadFromExternalFileException">
-        /// Thrown if the file referenced by <see cref="ExternalMedia.Src"/> is not accessible
+        /// Thrown if the file referenced by <see cref="Src"/> is not accessible
         /// </exception>
         public string GetText(ICredentials credits)
         {
@@ -179,8 +68,8 @@ namespace urakawa.media
         /// <param name="text">The new text</param>
         /// <param name="credits">The given credentisals</param>
         /// <exception cref="exception.CannotWriteToExternalFileException">
-        /// Thrown when the text could not be written to the <see cref="Uri"/> (as returned by <see cref="ExternalMedia.Src"/>)
-        /// using the <see cref="WebClient.UploadData(Uri, byte[])"/> method.
+        /// Thrown when the text could not be written to the <see cref="Uri"/> (as returned by <see cref="Src"/>)
+        /// using the <see cref="WebClient.UploadData(Uri,byte[])"/> method.
         /// </exception>
         public void SetText(string text, ICredentials credits)
         {
@@ -218,9 +107,234 @@ namespace urakawa.media
                     String.Format("Could not write the text to plaintext file {0}: {1}", Src, e.Message),
                     e);
             }
-            NotifyTextChanged(this, text, prevText);
+            NotifyTextChanged(text, prevText);
+        }
+
+        #region Media Members
+
+        /// <summary>
+        /// Determines if the <see cref="Media"/> is continuous
+        /// </summary>
+        /// <returns>A <see cref="bool"/> indicating if the <see cref="Media"/> is continuous</returns>
+        public override bool IsContinuous
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        /// Determines if <c>this</c> is a descrete media (which it is)
+        /// </summary>
+        /// <returns><c>true</c></returns>
+        public override bool IsDiscrete
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// Determines if <c>this</c>is a sequence media (which it is not)
+        /// </summary>
+        /// <returns><c>false</c></returns>
+        public override bool IsSequence
+        {
+            get { return false; }
+        }
+
+
+
+        /// <summary>
+        /// Exports the external text media to a destination <see cref="Presentation"/>
+        /// </summary>
+        /// <param name="destPres">The destination presentation</param>
+        /// <returns>The exported external text media</returns>
+        public new ExternalTextMedia Export(Presentation destPres)
+        {
+            return ExportProtected(destPres) as ExternalTextMedia;
+        }
+
+        /// <summary>
+        /// Exports the media to a destination <see cref="Presentation"/>
+        /// </summary>
+        /// <param name="destPres">The destination presentation</param>
+        /// <returns>The exported media</returns>
+        protected override Media ExportProtected(Presentation destPres)
+        {
+            ExternalTextMedia cpETM = (ExternalTextMedia) base.ExportProtected(destPres);
+            cpETM.Src = Src;
+            return cpETM;
+        }
+
+        /// <summary>
+        /// Gets a copy of the <see cref="Media"/>
+        /// </summary>
+        /// <returns></returns>
+        public new ExternalTextMedia Copy()
+        {
+            return CopyProtected() as ExternalTextMedia;
         }
 
         #endregion
+
+        #region AbstractTextMedia Members
+
+        /// <summary>
+        /// Gets the text of the <c>this</c>
+        /// </summary>
+        /// <returns>The text - if the plaintext file could not be found, <see cref="String.Empty"/> is returned</returns>
+        /// <exception cref="exception.CannotReadFromExternalFileException">
+        /// Thrown if the file referenced by <see cref="Src"/> is not accessible
+        /// </exception>
+        public override string Text
+        {
+            get
+            {
+                WebClient client = new WebClient();
+                client.UseDefaultCredentials = true;
+                return GetText(client);
+            }
+            set
+            {
+                WebClient client = new WebClient();
+                client.UseDefaultCredentials = true;
+                SetText(value, client);
+            }
+        }
+
+        #endregion
+
+        #region IXUKAble overrides
+
+        /// <summary>
+        /// Clears the <see cref="ExternalTextMedia"/>, resetting the src value
+        /// </summary>
+        protected override void Clear()
+        {
+            Reset();
+            base.Clear();
+        }
+
+        /// <summary>
+        /// Reads the attributes of a ExternalMedia xuk element.
+        /// </summary>
+        /// <param name="source">The source <see cref="XmlReader"/></param>
+        protected override void XukInAttributes(XmlReader source)
+        {
+            string val = source.GetAttribute("src");
+            if (val == null || val == "") val = ".";
+            Src = val;
+            base.XukInAttributes(source);
+        }
+
+        /// <summary>
+        /// Writes the attributes of a ExternalMedia element
+        /// </summary>
+        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
+        /// <param name="baseUri">
+        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+        /// if <c>null</c> absolute <see cref="Uri"/>s are written
+        /// </param>
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
+        {
+            if (Src != "")
+            {
+                Uri srcUri = new Uri(MediaFactory.Presentation.RootUri, Src);
+                if (baseUri == null)
+                {
+                    destination.WriteAttributeString("src", srcUri.AbsoluteUri);
+                }
+                else
+                {
+                    destination.WriteAttributeString("src", baseUri.MakeRelativeUri(srcUri).ToString());
+                }
+            }
+            base.XukOutAttributes(destination, baseUri);
+        }
+
+        #endregion
+
+        #region ILocated Members
+
+        /// <summary>
+        /// Event fired after <see cref="Src"/> of the <see cref="ILocated"/> has changed
+        /// </summary>
+        public event EventHandler<SrcChangedEventArgs> SrcChanged;
+
+        /// <summary>
+        /// Fires the <see cref="SrcChanged"/> event
+        /// </summary>
+        /// <param name="newSrc">The new <see cref="Src"/> value</param>
+        /// <param name="prevSrc">The <see cref="Src"/> value prior to the change</param>
+        protected void NotifySrcChanged(string newSrc, string prevSrc)
+        {
+            EventHandler<SrcChangedEventArgs> d = SrcChanged;
+            if (d != null) d(this, new SrcChangedEventArgs(this, newSrc, prevSrc));
+        }
+
+        private void this_SrcChanged(object sender, SrcChangedEventArgs e)
+        {
+            NotifyChanged(e);
+        }
+
+
+        /// <summary>
+        /// Gets the src value. The default value is "."
+        /// </summary>
+        /// <returns>The src value</returns>
+        public string Src
+        {
+            get { return mSrc; }
+            set
+            {
+                if (value == null) throw new exception.MethodParameterIsNullException("The src value can not be null");
+                if (value == "")
+                    throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
+                string prevSrc = mSrc;
+                mSrc = value;
+                if (mSrc != prevSrc) NotifySrcChanged(mSrc, prevSrc);
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="Uri"/> of the <see cref="ExternalTextMedia"/> 
+        /// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
+        /// </summary>
+        /// <returns>The <see cref="Uri"/></returns>
+        /// <exception cref="exception.InvalidUriException">
+        /// Thrown when the value <see cref="Src"/> is not a well-formed <see cref="Uri"/>
+        /// </exception>
+        public Uri Uri
+        {
+            get
+            {
+                if (!Uri.IsWellFormedUriString(Src, UriKind.RelativeOrAbsolute))
+                {
+                    throw new exception.InvalidUriException(String.Format(
+                                                                "The src value '{0}' is not a well-formed Uri", Src));
+                }
+                return new Uri(MediaFactory.Presentation.RootUri, Src);
+            }
+        }
+
+        #endregion
+
+        #region IValueEquatable<Media> Members
+
+
+        /// <summary>
+        /// Compares <c>this</c> with a given other <see cref="Media"/> for equality
+        /// </summary>
+        /// <param name="other">The other <see cref="Media"/></param>
+        /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+        public override bool ValueEquals(Media other)
+        {
+            if (!base.ValueEquals(other)) return false;
+            ExternalTextMedia otherText = (ExternalTextMedia)other;
+            if (otherText.Src != Src) return false;
+            return true;
+        }
+
+        #endregion
+
+
+        
     }
 }

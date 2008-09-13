@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using urakawa.command;
 using urakawa.progress;
@@ -14,7 +13,7 @@ namespace urakawa.undo
     /// <summary>
     /// The command manager.
     /// </summary>
-    public class UndoRedoManager : WithPresentation, IXukAble, IChangeNotifier
+    public class UndoRedoManager : WithPresentation, IChangeNotifier
     {
         #region Event related members
 

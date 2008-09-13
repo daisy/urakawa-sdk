@@ -15,17 +15,17 @@ namespace urakawa.media
 
         protected ExternalTextMedia mExternalTextMedia1
         {
-            get { return mExternalMedia1 as ExternalTextMedia; }
+            get { return mLocatedMedia1 as ExternalTextMedia; }
         }
 
         protected ExternalTextMedia mExternalTextMedia2
         {
-            get { return mExternalMedia2 as ExternalTextMedia; }
+            get { return mLocatedMedia2 as ExternalTextMedia; }
         }
 
         protected ExternalTextMedia mExternalTextMedia3
         {
-            get { return mExternalMedia3 as ExternalTextMedia; }
+            get { return mLocatedMedia3 as ExternalTextMedia; }
         }
 
         [Test, Description("Testing GetText with local relative src")]
@@ -133,7 +133,7 @@ namespace urakawa.media
 
         #endregion
 
-        #region IMedia tests
+        #region Media tests
 
         [Test]
         public override void Copy_ValueEqualsAndReferenceDiffers()

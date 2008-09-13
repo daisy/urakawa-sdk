@@ -231,12 +231,12 @@ namespace urakawa.media.data
         {
             if (data == null)
             {
-                throw new exception.MethodParameterIsNullException("Can not get the UID of a null MediaData");
+                throw new exception.MethodParameterIsNullException("Can not get the UID of a null AudioMediaData");
             }
             if (!mReverseLookupMediaDataDictionary.ContainsKey(data))
             {
                 throw new exception.IsNotManagerOfException(
-                    "The given MediaData is not managed by this MediaDataManager");
+                    "The given AudioMediaData is not managed by this MediaDataManager");
             }
             return mReverseLookupMediaDataDictionary[data];
         }
@@ -272,7 +272,7 @@ namespace urakawa.media.data
         {
             if (data == null)
             {
-                throw new exception.MethodParameterIsNullException("Can not add null MediaData to the manager");
+                throw new exception.MethodParameterIsNullException("Can not add null AudioMediaData to the manager");
             }
             mUidMutex.WaitOne();
             try
@@ -302,7 +302,7 @@ namespace urakawa.media.data
             if (mMediaDataDictionary.ContainsKey(uid))
             {
                 throw new exception.IsAlreadyManagerOfException(String.Format(
-                                                                    "There is already another MediaData with uid {0}",
+                                                                    "There is already another AudioMediaData with uid {0}",
                                                                     uid));
             }
             if (EnforceSinglePCMFormat)
@@ -408,12 +408,12 @@ namespace urakawa.media.data
         {
             if (data == null)
             {
-                throw new exception.MethodParameterIsNullException("Can not copy a null MediaData");
+                throw new exception.MethodParameterIsNullException("Can not copy a null AudioMediaData");
             }
             if (data.MediaDataManager != this)
             {
                 throw new exception.IsNotManagerOfException(
-                    "Can not copy a MediaData that is not managed by this");
+                    "Can not copy a AudioMediaData that is not managed by this");
             }
             return data.Copy();
         }

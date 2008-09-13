@@ -17,7 +17,7 @@ namespace urakawa.property.channel
         #region Event related members
 
         /// <summary>
-        /// Event fired after a <see cref="IMedia"/> is mapped to a <see cref="Channel"/>
+        /// Event fired after a <see cref="Media"/> is mapped to a <see cref="Channel"/>
         /// </summary>
         public event EventHandler<urakawa.events.property.channel.ChannelMediaMapEventArgs> ChannelMediaMapOccured;
 
@@ -26,10 +26,10 @@ namespace urakawa.property.channel
         /// </summary>
         /// <param name="src">The source, that is the <see cref="ChannelsProperty"/> at which the mapping occured</param>
         /// <param name="destChannel">The destination <see cref="Channel"/> of the mapping</param>
-        /// <param name="mappedMedia">The <see cref="IMedia"/> that is now mapped to the <see cref="Channel"/> - may be <c>null</c></param>
-        /// <param name="prevMedia">The <see cref="IMedia"/> was mapped to the <see cref="Channel"/> before - may be <c>null</c></param>
-        protected void NotifyChannelMediaMapOccured(ChannelsProperty src, Channel destChannel, IMedia mappedMedia,
-                                                    IMedia prevMedia)
+        /// <param name="mappedMedia">The <see cref="Media"/> that is now mapped to the <see cref="Channel"/> - may be <c>null</c></param>
+        /// <param name="prevMedia">The <see cref="Media"/> was mapped to the <see cref="Channel"/> before - may be <c>null</c></param>
+        protected void NotifyChannelMediaMapOccured(ChannelsProperty src, Channel destChannel, Media mappedMedia,
+                                                    Media prevMedia)
         {
             EventHandler<urakawa.events.property.channel.ChannelMediaMapEventArgs> d = ChannelMediaMapOccured;
             if (d != null)
@@ -55,7 +55,7 @@ namespace urakawa.property.channel
 
         #endregion
 
-        private Dictionary<Channel, IMedia> mMapChannelToMediaObject = new Dictionary<Channel, IMedia>();
+        private Dictionary<Channel, Media> mMapChannelToMediaObject = new Dictionary<Channel, Media>();
 
         /// <summary>
         /// Default constructor - for system use only, 
@@ -83,18 +83,18 @@ namespace urakawa.property.channel
         }
 
         /// <summary>
-        /// Retrieves the <see cref="IMedia"/> of a given <see cref="Channel"/>
+        /// Retrieves the <see cref="Media"/> of a given <see cref="Channel"/>
         /// </summary>
         /// <param name="channel">The given <see cref="Channel"/></param>
-        /// <returns>The <see cref="IMedia"/> associated with the given channel, 
-        /// <c>null</c> if no <see cref="IMedia"/> is associated</returns>
+        /// <returns>The <see cref="Media"/> associated with the given channel, 
+        /// <c>null</c> if no <see cref="Media"/> is associated</returns>
         /// <exception cref="exception.MethodParameterIsNullException">
         /// Thrown when <paramref localName="channel"/> is null
         /// </exception>
         /// <exception cref="exception.ChannelDoesNotExistException">
         /// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="ChannelsManager"/>
         /// </exception>
-        public IMedia GetMedia(Channel channel)
+        public Media GetMedia(Channel channel)
         {
             if (channel == null)
             {
@@ -107,15 +107,15 @@ namespace urakawa.property.channel
                     "The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
             }
             if (!mMapChannelToMediaObject.ContainsKey(channel)) return null;
-            return (IMedia) mMapChannelToMediaObject[channel];
+            return (Media) mMapChannelToMediaObject[channel];
         }
 
         /// <summary>
-        /// Associates a given <see cref="IMedia"/> with a given <see cref="Channel"/>
+        /// Associates a given <see cref="Media"/> with a given <see cref="Channel"/>
         /// </summary>
         /// <param name="channel">The given <see cref="Channel"/></param>
-        /// <param name="media">The given <see cref="IMedia"/>, 
-        /// pass <c>null</c> if you want to remove <see cref="IMedia"/>
+        /// <param name="media">The given <see cref="Media"/>, 
+        /// pass <c>null</c> if you want to remove <see cref="Media"/>
         /// from the given <see cref="Channel"/></param>
         /// <exception cref="exception.MethodParameterIsNullException">
         /// Thrown when parameters <paramref localName="channel"/> is null
@@ -124,10 +124,10 @@ namespace urakawa.property.channel
         /// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="ChannelsManager"/>
         /// </exception>
         /// <exception cref="exception.MediaNotAcceptable">
-        /// Thrown when <paramref localName="channel"/> does not accept the given <see cref="IMedia"/>,
+        /// Thrown when <paramref localName="channel"/> does not accept the given <see cref="Media"/>,
         /// see <see cref="Channel.CanAccept"/> for more information.
         /// </exception>
-        public void SetMedia(Channel channel, IMedia media)
+        public void SetMedia(Channel channel, Media media)
         {
             if (channel == null)
             {
@@ -147,7 +147,7 @@ namespace urakawa.property.channel
                         "The given media type is not supported by the given channel");
                 }
             }
-            IMedia prevMedia = null;
+            Media prevMedia = null;
             if (mMapChannelToMediaObject.ContainsKey(channel)) prevMedia = mMapChannelToMediaObject[channel];
             mMapChannelToMediaObject[channel] = media;
             NotifyChannelMediaMapOccured(this, channel, media, prevMedia);
@@ -175,7 +175,7 @@ namespace urakawa.property.channel
 
         /// <summary>
         /// Creates a "deep" copy of the <see cref="ChannelsProperty"/> instance 
-        /// - deep meaning that all associated <see cref="IMedia"/> are copies and not just referenced
+        /// - deep meaning that all associated <see cref="Media"/> are copies and not just referenced
         /// </summary>
         /// <returns>The deep copy</returns>
         /// <exception cref="exception.FactoryCannotCreateTypeException">
@@ -212,7 +212,7 @@ namespace urakawa.property.channel
 
         /// <summary>
         /// Exports the channels property to a given destination <see cref="Presentation"/>, 
-        /// including exports of any attachedx <see cref="IMedia"/>
+        /// including exports of any attachedx <see cref="Media"/>
         /// </summary>
         /// <param name="destPres">Thre destination presentation of the export</param>
         /// <returns>The exported channels property</returns>
@@ -223,7 +223,7 @@ namespace urakawa.property.channel
 
         /// <summary>
         /// Exports the channels property to a given destination <see cref="Presentation"/>, 
-        /// including exports of any attachedx <see cref="IMedia"/>
+        /// including exports of any attachedx <see cref="Media"/>
         /// </summary>
         /// <param name="destPres">Thre destination presentation of the export</param>
         /// <returns>The exported channels property</returns>
@@ -338,7 +338,7 @@ namespace urakawa.property.channel
             {
                 if (source.NodeType == XmlNodeType.Element)
                 {
-                    IMedia newMedia = Presentation.MediaFactory.CreateMedia(source.LocalName, source.NamespaceURI);
+                    Media newMedia = Presentation.MediaFactory.Create(source.LocalName, source.NamespaceURI);
                     if (newMedia != null)
                     {
                         Channel channel = Presentation.ChannelsManager.GetChannel(channelRef);
@@ -381,7 +381,7 @@ namespace urakawa.property.channel
             {
                 destination.WriteStartElement("mChannelMapping", XukAble.XUK_NS);
                 destination.WriteAttributeString("channel", channel.Uid);
-                IMedia media = GetMedia(channel);
+                Media media = GetMedia(channel);
                 if (media == null)
                 {
                     throw new exception.XukException(

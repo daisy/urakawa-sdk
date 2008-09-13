@@ -1,4 +1,5 @@
 using System;
+using urakawa.events.media;
 
 namespace urakawa.media
 {
@@ -8,13 +9,18 @@ namespace urakawa.media
     public interface ILocated
     {
         /// <summary>
+        /// Event fired after <see cref="Src"/> of the <see cref="ILocated"/> has changed
+        /// </summary>
+        event EventHandler<SrcChangedEventArgs> SrcChanged;
+
+        /// <summary>
         /// Get the src location of the external media
         /// </summary>
         /// <returns>The src location</returns>
         string Src { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="Uri"/> of the <see cref="ExternalMedia"/> 
+        /// Gets the <see cref="Uri"/> of the <see cref="ILocated"/> <see cref="Media"/>
         /// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
         /// </summary>
         /// <returns>The <see cref="Uri"/></returns>

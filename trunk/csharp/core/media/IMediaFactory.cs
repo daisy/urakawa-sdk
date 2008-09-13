@@ -9,36 +9,36 @@ namespace urakawa.media
     public interface IMediaFactory : IXukAble, IWithPresentation
     {
         /// <summary>
-        /// Creates a <see cref="IMedia"/> matching a given QName
+        /// Creates a <see cref="Media"/> matching a given QName
         /// </summary>
         /// <param name="localName">The local part of the QName</param>
         /// <param name="namespaceUri">The namespace uri part of the QName</param>
-        /// <returns>The created <see cref="IMedia"/> or <c>null</c> is the given QName is not supported</returns>
-        IMedia CreateMedia(string localName, string namespaceUri);
+        /// <returns>The created <see cref="Media"/> or <c>null</c> is the given QName is not supported</returns>
+        Media CreateMedia(string localName, string namespaceUri);
 
         /// <summary>
-        /// Creates an <see cref="IAudioMedia"/> of default type for the factory
+        /// Creates an <see cref="AudioMedia"/> of default type for the factory
         /// </summary>
         /// <returns>The created IAudioMeida</returns>
-        IAudioMedia CreateAudioMedia();
+        AudioMedia CreateAudioMedia();
 
         /// <summary>
-        /// Creates an <see cref="ITextMedia"/> of default type for the factory
+        /// Creates an <see cref="AbstractTextMedia"/> of default type for the factory
         /// </summary>
-        /// <returns>The created ITextMedia</returns>
-        ITextMedia CreateTextMedia();
+        /// <returns>The created AbstractTextMedia</returns>
+        AbstractTextMedia CreateTextMedia();
 
         /// <summary>
-        /// Creates an <see cref="IImageMedia"/> of default type for the factory
+        /// Creates an <see cref="ImageMedia"/> of default type for the factory
         /// </summary>
-        /// <returns>The created IImageMedia</returns>
-        IImageMedia CreateImageMedia();
+        /// <returns>The created ImageMedia</returns>
+        ImageMedia CreateImageMedia();
 
         /// <summary>
-        /// Creates an <see cref="IVideoMedia"/> of default type for the factory
+        /// Creates an <see cref="VideoMedia"/> of default type for the factory
         /// </summary>
-        /// <returns>The created IVideoMedia</returns>
-        IVideoMedia CreateVideoMedia();
+        /// <returns>The created VideoMedia</returns>
+        VideoMedia CreateVideoMedia();
 
         /// <summary>
         /// Creates an <see cref="SequenceMedia"/> of default type for the factory

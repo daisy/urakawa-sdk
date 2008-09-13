@@ -54,9 +54,9 @@ namespace urakawa.core
 
         private static ManagedAudioMedia CreateAudioMedia(Presentation pres, string waveFileName)
         {
-            ManagedAudioMedia res = pres.MediaFactory.CreateAudioMedia() as ManagedAudioMedia;
+            ManagedAudioMedia res = pres.MediaFactory.Create<ManagedAudioMedia>();
             Assert.IsNotNull(res, "Could not create a ManagedAudioMedia");
-            res.MediaData.AppendAudioDataFromRiffWave(Path.Combine(pres.RootUri.LocalPath, waveFileName));
+            res.AudioMediaData.AppendAudioDataFromRiffWave(Path.Combine(pres.RootUri.LocalPath, waveFileName));
             return res;
         }
 

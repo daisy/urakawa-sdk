@@ -107,11 +107,11 @@ namespace urakawa.publish
                         }
                         curWavUri = eam.Uri;
                         curAudioData = new MemoryStream();
-                        curPCMFormat = mam.MediaData.PCMFormat;
+                        curPCMFormat = mam.AudioMediaData.PCMFormat;
                     }
-                    Assert.IsTrue(curPCMFormat.ValueEquals(mam.MediaData.PCMFormat),
+                    Assert.IsTrue(curPCMFormat.ValueEquals(mam.AudioMediaData.PCMFormat),
                                   "Managed audio has incompatible pcm format");
-                    Stream manAudio = mam.MediaData.GetAudioData();
+                    Stream manAudio = mam.AudioMediaData.GetAudioData();
                     try
                     {
                         media.data.StreamUtils.CopyData(manAudio, curAudioData);

@@ -24,7 +24,7 @@ namespace urakawa
     /// <list type="bullet">
     /// <item><see cref="Property"/>s</item>
     /// <item><see cref="Channel"/>s</item>
-    /// <item><see cref="IMedia"/></item>
+    /// <item><see cref="Media"/></item>
     /// <item><see cref="MediaData"/></item>
     /// <item><see cref="IDataProvider"/>s</item>
     /// <item><see cref="Metadata"/></item>
@@ -194,7 +194,7 @@ namespace urakawa
         private PropertyFactory mPropertyFactory;
         private ChannelFactory mChannelFactory;
         private ChannelsManager mChannelsManager;
-        private IMediaFactory mMediaFactory;
+        private MediaFactory mMediaFactory;
         private MediaDataManager mMediaDataManager;
         private MediaDataFactory mMediaDataFactory;
         private DataProviderManager mDataProviderManager;
@@ -283,7 +283,7 @@ namespace urakawa
                 RootNode.AcceptDepthFirst(collectorVisitor);
             }
             List<MediaData> usedMediaData = UndoRedoManager.ListOfUsedMediaData;
-            foreach (IManagedMedia mm in collectorVisitor.ListOfCollectedMedia)
+            foreach (IManaged mm in collectorVisitor.ListOfCollectedMedia)
             {
                 if (!usedMediaData.Contains(mm.MediaData)) usedMediaData.Add(mm.MediaData);
             }
@@ -453,36 +453,22 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Gets the <see cref="IMediaFactory"/> of <c>this</c>
+        /// Gets the <see cref="MediaFactory"/> of <c>this</c>
         /// </summary>
-        /// <returns>The <see cref="IMediaFactory"/> of the <see cref="Presentation"/></returns>
+        /// <returns>The <see cref="MediaFactory"/> of the <see cref="Presentation"/></returns>
         /// <remark>
-        /// The <see cref="IMediaFactory"/> of a <see cref="urakawa.Project"/> is initialized lazily
+        /// The <see cref="MediaFactory"/> of a <see cref="urakawa.Project"/> is initialized lazily
         /// </remark>
-        public IMediaFactory MediaFactory
+        public MediaFactory MediaFactory
         {
             get
             {
                 if (mMediaFactory == null)
                 {
-                    MediaFactory = DataModelFactory.CreateMediaFactory();
+                    mMediaFactory = new MediaFactory();
+                    mMediaFactory.Presentation = this;
                 }
                 return mMediaFactory;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The IMediaFactory can not be null");
-                }
-                if (mMediaFactory != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a IMediaFactory");
-                }
-                mMediaFactory = value;
-                mMediaFactory.Presentation = this;
             }
         }
 
@@ -523,17 +509,17 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Gets a list of the <see cref="IMedia"/> used by a given <see cref="TreeNode"/>. 
+        /// Gets a list of the <see cref="Media"/> used by a given <see cref="TreeNode"/>. 
         /// </summary>
         /// <param name="node">The node</param>
         /// <returns>The list</returns>
         /// <remarks>
-        /// An <see cref="IMedia"/> is considered to be used by a <see cref="TreeNode"/> if the media
+        /// An <see cref="Media"/> is considered to be used by a <see cref="TreeNode"/> if the media
         /// is linked to the node via. a <see cref="ChannelsProperty"/>
         /// </remarks>
-        protected virtual List<IMedia> GetListOfMediaUsedByTreeNode(TreeNode node)
+        protected virtual List<Media> GetListOfMediaUsedByTreeNode(TreeNode node)
         {
-            List<IMedia> res = new List<IMedia>();
+            List<Media> res = new List<Media>();
             foreach (Property prop in node.GetListOfProperties())
             {
                 if (prop is ChannelsProperty)
@@ -549,15 +535,15 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Gets the list of <see cref="IMedia"/> used by the <see cref="TreeNode"/> tree of the presentation. 
+        /// Gets the list of <see cref="Media"/> used by the <see cref="TreeNode"/> tree of the presentation. 
         /// Remark that a 
         /// </summary>
         /// <returns>The list</returns>
-        public List<IMedia> ListOfUsedMedia
+        public List<Media> ListOfUsedMedia
         {
             get
             {
-                List<IMedia> res = new List<IMedia>();
+                List<Media> res = new List<Media>();
                 if (RootNode != null)
                 {
                     CollectUsedMedia(RootNode, res);
@@ -566,9 +552,9 @@ namespace urakawa
             }
         }
 
-        private void CollectUsedMedia(TreeNode node, List<IMedia> collectedMedia)
+        private void CollectUsedMedia(TreeNode node, List<Media> collectedMedia)
         {
-            foreach (IMedia m in GetListOfMediaUsedByTreeNode(node))
+            foreach (Media m in GetListOfMediaUsedByTreeNode(node))
             {
                 if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
             }
@@ -1102,11 +1088,8 @@ namespace urakawa
                             new SetDelegate<ChannelsManager>(delegate(ChannelsManager val) { ChannelsManager = val; }),
                             handler);
                         break;
-                    case "mMediaFactory":
-                        XukInXukAbleFromChild<IMediaFactory>(
-                            source, null,
-                            new CreatorDelegate<IMediaFactory>(DataModelFactory.CreateMediaFactory),
-                            new SetDelegate<IMediaFactory>(delegate(IMediaFactory val) { MediaFactory = val; }), handler);
+                    case "MediaFactory":
+                        MediaFactory.XukIn(source, handler);
                         break;
                     case "mMediaDataFactory":
                         XukInXukAbleFromChild<MediaDataFactory>(

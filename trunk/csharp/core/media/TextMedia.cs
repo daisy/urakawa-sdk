@@ -8,66 +8,40 @@ namespace urakawa.media
     /// <summary>
     /// TextMedia represents a text string
     /// </summary>
-    public class TextMedia : AbstractMedia, ITextMedia
+    public class TextMedia : AbstractTextMedia
     {
-        #region Event related members
-
-        /// <summary>
-        /// Event fired after the text of the <see cref="TextMedia"/> has changed
-        /// </summary>
-        public event EventHandler<urakawa.events.media.TextChangedEventArgs> TextChanged;
-
-        /// <summary>
-        /// Fires the <see cref="TextChanged"/> event
-        /// </summary>
-        /// <param name="source">The source, that is the <see cref="TextMedia"/> whoose text was changed</param>
-        /// <param name="newText">The new text value</param>
-        /// <param name="prevText">Thye text value prior to the change</param>
-        protected void NotifyTextChanged(TextMedia source, string newText, string prevText)
-        {
-            EventHandler<urakawa.events.media.TextChangedEventArgs> d = TextChanged;
-            if (d != null) d(this, new urakawa.events.media.TextChangedEventArgs(source, newText, prevText));
-        }
-
-        private void this_textChanged(object sender, urakawa.events.media.TextChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Constructor setting the associated <see cref="IMediaFactory"/>
-        /// </summary>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="fact"/> is <c>null</c>
-        /// </exception>
-        protected internal TextMedia()
-        {
-            mText = "";
-            this.TextChanged += new EventHandler<urakawa.events.media.TextChangedEventArgs>(this_textChanged);
-        }
-
-
         private string mText;
 
+        private void Reset()
+        {
+            mText = "";
+        }
+
+        /// <summary>
+        /// Default constructor - for system use only, 
+        /// <see cref="TextMedia"/>s should only be created via. the <see cref="MediaFactory"/>
+        /// </summary>
+        public TextMedia()
+        {
+            Reset();
+        }
 
         /// <summary>
         /// This override is useful while debugging
         /// </summary>
-        /// <returns>The textual content of the <see cref="ITextMedia"/></returns>
+        /// <returns>The textual content of the <see cref="AbstractTextMedia"/></returns>
         public override string ToString()
         {
             return mText;
         }
 
-        #region ITextMedia Members
+        #region AbstractTextMedia Members
 
         /// <summary>
         /// Return the text string
         /// </summary>
         /// <returns></returns>
-        public string Text
+        public override string Text
         {
             get { return mText; }
             set
@@ -78,13 +52,13 @@ namespace urakawa.media
                 }
                 string prevText = mText;
                 mText = value;
-                NotifyTextChanged(this, value, prevText);
+                NotifyTextChanged(value, prevText);
             }
         }
 
         #endregion
 
-        #region IMedia Members
+        #region Media Members
 
         /// <summary>
         /// This always returns false, because
@@ -127,15 +101,6 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Make a copy of this text object
-        /// </summary>
-        /// <returns>The copy</returns>
-        protected override IMedia CopyProtected()
-        {
-            return Export(MediaFactory.Presentation);
-        }
-
-        /// <summary>
         /// Exports the text media to a destination <see cref="Presentation"/>
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
@@ -150,16 +115,9 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external text media</returns>
-        protected override IMedia ExportProtected(Presentation destPres)
+        protected override Media ExportProtected(Presentation destPres)
         {
-            TextMedia exported = destPres.MediaFactory.CreateMedia(
-                                     XukLocalName, XukNamespaceUri) as TextMedia;
-            if (exported == null)
-            {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The MediaFactory cannot create a TextMedia matching QName {1}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
-            }
+            TextMedia exported = (TextMedia) base.ExportProtected(destPres);
             exported.Text = this.Text;
             return exported;
         }
@@ -173,7 +131,7 @@ namespace urakawa.media
         /// </summary>
         protected override void Clear()
         {
-            mText = "";
+            Reset();
             base.Clear();
         }
 
@@ -223,14 +181,14 @@ namespace urakawa.media
 
         #endregion
 
-        #region IValueEquatable<IMedia> Members
+        #region IValueEquatable<Media> Members
 
         /// <summary>
-        /// Compares <c>this</c> with a given other <see cref="IMedia"/> for equality
+        /// Compares <c>this</c> with a given other <see cref="Media"/> for equality
         /// </summary>
-        /// <param name="other">The other <see cref="IMedia"/></param>
+        /// <param name="other">The other <see cref="Media"/></param>
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(IMedia other)
+        public override bool ValueEquals(Media other)
         {
             if (!base.ValueEquals(other)) return false;
             if (Text != ((TextMedia) other).Text) return false;

@@ -146,26 +146,6 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Creates a <see cref="media.IMediaFactory"/> of default type (that is <see cref="media.MediaFactory"/>
-        /// </summary>
-        /// <returns>The created <see cref="media.MediaFactory"/></returns>
-        public virtual media.IMediaFactory CreateMediaFactory()
-        {
-            return Create<media.MediaFactory>();
-        }
-
-        /// <summary>
-        /// Creates a <see cref="media.IMediaFactory"/> of type matching a given Xuk QName
-        /// </summary>
-        /// <param name="localName">The local name part of the given Xuk QName</param>
-        /// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
-        /// <returns>The created <see cref="media.IMediaFactory"/></returns>
-        public virtual media.IMediaFactory CreateMediaFactory(string localName, string namespaceUri)
-        {
-            return Create<media.MediaFactory>(localName, namespaceUri);
-        }
-
-        /// <summary>
         /// Creates a <see cref="media.data.MediaDataFactory"/> of default type (that is <see cref="media.data.MediaDataFactory"/>
         /// </summary>
         /// <returns>The created <see cref="media.data.MediaDataFactory"/></returns>
