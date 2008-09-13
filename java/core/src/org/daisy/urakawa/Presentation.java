@@ -1671,38 +1671,30 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             // super.xukOutChildren(destination, baseUri);
             getTreeNodeFactory().xukOut(destination, baseUri, ph);
             getPropertyFactory().xukOut(destination, baseUri, ph);
-            destination.writeStartElement("ChannelFactory", IXukAble.XUK_NS);
+            getMediaFactory().xukOut(destination, baseUri, ph);
             getChannelFactory().xukOut(destination, baseUri, ph);
-            destination.writeEndElement();
+            getDataProviderFactory().xukOut(destination, baseUri, ph);
+            getMediaDataFactory().xukOut(destination, baseUri, ph);
+            getCommandFactory().xukOut(destination, baseUri, ph);
+            getMetadataFactory().xukOut(destination, baseUri, ph);
+            //
             destination.writeStartElement("mChannelsManager", IXukAble.XUK_NS);
             getChannelsManager().xukOut(destination, baseUri, ph);
             destination.writeEndElement();
-            destination.writeStartElement("MediaFactory", IXukAble.XUK_NS);
-            getMediaFactory().xukOut(destination, baseUri, ph);
-            destination.writeEndElement();
-            destination.writeStartElement("DataProviderFactory",
-                    IXukAble.XUK_NS);
-            getDataProviderFactory().xukOut(destination, baseUri, ph);
-            destination.writeEndElement();
+            //
             destination.writeStartElement("mDataProviderManager",
                     IXukAble.XUK_NS);
             getDataProviderManager().xukOut(destination, baseUri, ph);
             destination.writeEndElement();
-            destination.writeStartElement("MediaDataFactory", IXukAble.XUK_NS);
-            getMediaDataFactory().xukOut(destination, baseUri, ph);
-            destination.writeEndElement();
+            //
             destination.writeStartElement("mMediaDataManager", IXukAble.XUK_NS);
             getMediaDataManager().xukOut(destination, baseUri, ph);
             destination.writeEndElement();
-            destination.writeStartElement("CommandFactory", IXukAble.XUK_NS);
-            getCommandFactory().xukOut(destination, baseUri, ph);
-            destination.writeEndElement();
+            //
             destination.writeStartElement("mUndoRedoManager", IXukAble.XUK_NS);
             getUndoRedoManager().xukOut(destination, baseUri, ph);
             destination.writeEndElement();
-            destination.writeStartElement("MetadataFactory", IXukAble.XUK_NS);
-            getMetadataFactory().xukOut(destination, baseUri, ph);
-            destination.writeEndElement();
+            //
             destination.writeStartElement("mMetadata", IXukAble.XUK_NS);
             for (IMetadata md : mMetadata)
             {
