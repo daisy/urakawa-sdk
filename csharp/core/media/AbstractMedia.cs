@@ -6,9 +6,9 @@ using System.Xml;
 namespace urakawa.media
 {
     /// <summary>
-    /// Abstract implementation of <see cref="IMedia"/> - used as bvase of all <see cref="IMedia"/>
+    /// Abstract implementation of <see cref="Media"/> - used as bvase of all <see cref="Media"/>
     /// </summary>
-    public abstract class AbstractMedia : WithPresentation, IMedia
+    public abstract class AbstractMedia : Media
     {
         #region Event related members
 
@@ -55,7 +55,7 @@ namespace urakawa.media
         /// <summary>
         /// Default constructor
         /// </summary>
-        public AbstractMedia()
+        protected AbstractMedia()
         {
             mLanguage = null;
             this.LanguageChanged += new EventHandler<urakawa.events.LanguageChangedEventArgs>(this_languageChanged);
@@ -63,7 +63,7 @@ namespace urakawa.media
 
         private string mLanguage;
 
-        #region IMedia Members
+        #region Media Members
 
         /// <summary>
         /// Gets the <see cref="IMediaFactory"/> associated with the <see cref="AbstractMedia"/> (via. the owning <see cref="Presentation"/>
@@ -92,7 +92,7 @@ namespace urakawa.media
         /// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is a <see cref="SequenceMedia"/></returns>
         public abstract bool IsSequence { get; }
 
-        IMedia IMedia.Copy()
+        Media Media.Copy()
         {
             return CopyProtected();
         }
@@ -110,12 +110,12 @@ namespace urakawa.media
         /// Creates a copy of the <see cref="AbstractMedia"/>
         /// </summary>
         /// <returns>The copy</returns>
-        protected virtual IMedia CopyProtected()
+        protected virtual Media CopyProtected()
         {
             return ExportProtected(Presentation);
         }
 
-        IMedia IMedia.Export(Presentation destPres)
+        Media Media.Export(Presentation destPres)
         {
             return ExportProtected(destPres);
         }
@@ -135,7 +135,7 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination <see cref="Presentation"/></param>
         /// <returns>The exported <see cref="AbstractMedia"/></returns>
-        protected virtual IMedia ExportProtected(Presentation destPres)
+        protected virtual Media ExportProtected(Presentation destPres)
         {
             AbstractMedia expMedia = destPres.MediaFactory.CreateMedia(XukLocalName, XukNamespaceUri) as AbstractMedia;
             if (expMedia == null)
@@ -169,6 +169,8 @@ namespace urakawa.media
         }
 
         #endregion
+
+        #region XukAble overides
 
         /// <summary>
         /// Clears the data of the <see cref="AbstractMedia"/>
@@ -208,14 +210,16 @@ namespace urakawa.media
             base.XukOutAttributes(destination, baseUri);
         }
 
-        #region IValueEquatable<IMedia> Members
+        #endregion
+
+        #region IValueEquatable<Media> Members
 
         /// <summary>
-        /// Compares <c>this</c> with a given other <see cref="IMedia"/> for equality
+        /// Compares <c>this</c> with a given other <see cref="Media"/> for equality
         /// </summary>
-        /// <param name="other">The other <see cref="IMedia"/></param>
+        /// <param name="other">The other <see cref="Media"/></param>
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public virtual bool ValueEquals(IMedia other)
+        public virtual bool ValueEquals(Media other)
         {
             AbstractMedia amOther = other as AbstractMedia;
             if (amOther == null) return false;

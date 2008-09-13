@@ -41,18 +41,16 @@ namespace urakawa.oldTests
         [Test]
         public void ImportAudio()
         {
-            ManagedAudioMedia mam =
-                (ManagedAudioMedia)
-                mProject.GetPresentation(0).MediaFactory.CreateMedia("ManagedAudioMedia", XukAble.XUK_NS);
+            ManagedAudioMedia mam = mProject.GetPresentation(0).MediaFactory.Create<ManagedAudioMedia>();
             string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
-            mam.MediaData.AppendAudioDataFromRiffWave(path);
+            mam.AudioMediaData.AppendAudioDataFromRiffWave(path);
             Assert.AreEqual(
-                93312, mam.MediaData.GetPCMLength(),
+                93312, mam.AudioMediaData.GetPCMLength(),
                 "Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
             path = "../../XukWorks/MediaDataSample/Data/aud000001.wav";
-            mam.MediaData.AppendAudioDataFromRiffWave(path);
+            mam.AudioMediaData.AppendAudioDataFromRiffWave(path);
             Assert.AreEqual(
-                93312 + 231542, mam.MediaData.GetPCMLength(),
+                93312 + 231542, mam.AudioMediaData.GetPCMLength(),
                 "Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
         }
 
@@ -67,27 +65,24 @@ namespace urakawa.oldTests
         [Test]
         public void MergeAudio()
         {
-            ManagedAudioMedia mam0 =
-                (ManagedAudioMedia)
-                mProject.GetPresentation(0).MediaFactory.CreateMedia("ManagedAudioMedia", XukAble.XUK_NS);
+            ManagedAudioMedia mam0 = mProject.GetPresentation(0).MediaFactory.Create<ManagedAudioMedia>();
             string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
-            mam0.MediaData.AppendAudioDataFromRiffWave(path);
+            mam0.AudioMediaData.AppendAudioDataFromRiffWave(path);
             Assert.AreEqual(
-                93312, mam0.MediaData.GetPCMLength(),
+                93312, mam0.AudioMediaData.GetPCMLength(),
                 "Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
-            ManagedAudioMedia mam1 = (ManagedAudioMedia) mProject.GetPresentation(0).MediaFactory.CreateMedia(
-                                                             "ManagedAudioMedia", XukAble.XUK_NS);
+            ManagedAudioMedia mam1 = mProject.GetPresentation(0).MediaFactory.Create<ManagedAudioMedia>();
             path = "../../XukWorks/MediaDataSample/Data/aud000001.wav";
-            mam1.MediaData.AppendAudioDataFromRiffWave(path);
+            mam1.AudioMediaData.AppendAudioDataFromRiffWave(path);
             Assert.AreEqual(
-                231542, mam1.MediaData.GetPCMLength(),
+                231542, mam1.AudioMediaData.GetPCMLength(),
                 "Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
             mam0.MergeWith(mam1);
             Assert.AreEqual(
-                93312 + 231542, mam0.MediaData.GetPCMLength(),
+                93312 + 231542, mam0.AudioMediaData.GetPCMLength(),
                 "Expected the merged ManagedAudioMedia to contain 93312+231542 bytes of PCM data");
             Assert.AreEqual(
-                0, mam1.MediaData.GetPCMLength(),
+                0, mam1.AudioMediaData.GetPCMLength(),
                 "Expected the managerAudioMedia with which there was merged to have no PCM data");
         }
 
@@ -95,11 +90,9 @@ namespace urakawa.oldTests
         public void SplitAudio()
         {
             List<ManagedAudioMedia> mams = new List<ManagedAudioMedia>();
-            mams.Add(
-                (ManagedAudioMedia)
-                mProject.GetPresentation(0).MediaFactory.CreateMedia("ManagedAudioMedia", XukAble.XUK_NS));
+            mams.Add(mProject.GetPresentation(0).MediaFactory.Create<ManagedAudioMedia>());
             string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
-            mams[0].MediaData.AppendAudioDataFromRiffWave(path);
+            mams[0].AudioMediaData.AppendAudioDataFromRiffWave(path);
             double initMSecs = mams[0].Duration.TimeDeltaAsMillisecondFloat;
             double msecs, diff;
             for (int i = 0; i < 6; i++)

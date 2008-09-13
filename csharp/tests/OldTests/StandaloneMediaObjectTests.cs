@@ -13,7 +13,7 @@ namespace urakawa.oldTests
     public class StandaloneMediaObjectTests
     {
         private Presentation pres;
-        private IMediaFactory factory;
+        private MediaFactory factory;
 
         [SetUp]
         public void Init()
@@ -30,8 +30,7 @@ namespace urakawa.oldTests
         [Test]
         public void CheckAudioDuration_SimpleMS()
         {
-            ExternalAudioMedia audio = (ExternalAudioMedia) factory.CreateMedia(
-                                                                typeof (ExternalAudioMedia).Name, XukAble.XUK_NS);
+            ExternalAudioMedia audio = factory.Create<ExternalAudioMedia>();
 
             audio.ClipBegin = new Time(0);
             audio.ClipEnd = new Time(1000);
@@ -48,8 +47,7 @@ namespace urakawa.oldTests
         [Test]
         public void SplitAudioObjectCheckNewTimes_SimpleMS()
         {
-            ExternalAudioMedia obj = (ExternalAudioMedia) factory.CreateMedia(
-                                                              typeof (ExternalAudioMedia).Name, XukAble.XUK_NS);
+            ExternalAudioMedia obj = factory.Create<ExternalAudioMedia>();
 
             obj.ClipBegin = new Time(0);
             obj.ClipEnd = new Time(1000);
@@ -78,12 +76,12 @@ namespace urakawa.oldTests
         [Test]
         public void SplitVideoObjectCheckNewDuration_SimpleMS()
         {
-            IVideoMedia obj = factory.CreateVideoMedia();
+            ExternalVideoMedia obj = factory.Create<ExternalVideoMedia>();
 
             obj.ClipBegin = new Time(0);
             obj.ClipEnd = new Time(1000);
 
-            IVideoMedia new_obj = (IVideoMedia) obj.Split(new Time(600));
+            VideoMedia new_obj = (VideoMedia) obj.Split(new Time(600));
 
             TimeDelta td_1 = obj.Duration;
             TimeDelta td_2 = new_obj.Duration;
@@ -103,7 +101,7 @@ namespace urakawa.oldTests
             string src = "myfile.ext";
             string src2 = "myotherfile.ext";
 
-            IImageMedia obj = factory.CreateImageMedia();
+            ExternalImageMedia obj = factory.Create<ExternalImageMedia>();
 
             obj.Src = src;
 
@@ -118,9 +116,9 @@ namespace urakawa.oldTests
         [Test]
         public void checkTypeAfterCopy()
         {
-            IAudioMedia audio = (IAudioMedia) factory.CreateMedia("ExternalAudioMedia", XukAble.XUK_NS);
+            AudioMedia audio = factory.Create<ExternalAudioMedia>();
 
-            IAudioMedia audio_copy = (IAudioMedia) audio.Copy();
+            AudioMedia audio_copy = (AudioMedia) audio.Copy();
 
             Assert.AreEqual(audio_copy.GetType(), audio.GetType());
         }
@@ -128,12 +126,11 @@ namespace urakawa.oldTests
         [Test]
         public void checkAudioMediaCopy()
         {
-            ExternalAudioMedia audio = (ExternalAudioMedia) factory.CreateMedia(
-                                                                typeof (ExternalAudioMedia).Name, XukAble.XUK_NS);
+            ExternalAudioMedia audio = factory.Create<ExternalAudioMedia>();
             bool exceptionOccured = false;
             try
             {
-                IMedia audio_copy = ((IMedia) audio).Copy();
+                Media audio_copy = ((Media) audio).Copy();
             }
             catch (exception.OperationNotValidException)
             {
@@ -141,7 +138,7 @@ namespace urakawa.oldTests
             }
             Assert.IsFalse(
                 exceptionOccured,
-                "IMedia.copy() method was probably not overridden in AudioMedia subclass of ExternalMedia");
+                "Media.copy() method was probably not overridden in AudioMedia subclass of ExternalMedia");
         }
 
         /// <summary>
@@ -150,8 +147,7 @@ namespace urakawa.oldTests
         [Test]
         public void checkAudioMediaStaticProperties()
         {
-            ExternalAudioMedia obj = (ExternalAudioMedia) factory.CreateMedia(
-                                                              typeof (ExternalAudioMedia).Name, XukAble.XUK_NS);
+            ExternalAudioMedia obj = factory.Create<ExternalAudioMedia>();
             Assert.AreEqual(obj.IsContinuous, true);
             Assert.AreEqual(obj.IsDiscrete, false);
             Assert.AreEqual(obj.IsSequence, false);
@@ -183,8 +179,8 @@ namespace urakawa.oldTests
         {
             SequenceMedia obj = factory.CreateSequenceMedia();
 
-            IAudioMedia audio_obj = (IAudioMedia) factory.CreateMedia("ExternalAudioMedia", XukAble.XUK_NS);
-            ITextMedia text_obj = factory.CreateTextMedia();
+            AudioMedia audio_obj = factory.Create<ExternalAudioMedia>();
+            AbstractTextMedia text_obj = factory.CreateTextMedia();
 
             obj.InsertItem(obj.Count, audio_obj);
 
@@ -200,10 +196,10 @@ namespace urakawa.oldTests
         [Test]
         public void CopyTextMediaRenameAndCheckAgain()
         {
-            ITextMedia text_obj = (ITextMedia) factory.CreateMedia("TextMedia", XukAble.XUK_NS);
+            TextMedia text_obj = factory.Create<TextMedia>();
             text_obj.Text = "original media object";
 
-            ITextMedia copy_obj = (ITextMedia) text_obj.Copy();
+            AbstractTextMedia copy_obj = (AbstractTextMedia) text_obj.Copy();
 
             copy_obj.Text = "copied media object";
 

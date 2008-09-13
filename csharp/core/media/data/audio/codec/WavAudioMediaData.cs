@@ -314,7 +314,7 @@ namespace urakawa.media.data.audio.codec
             mWavClips.Add(newSingleClip);
         }
 
-        #region MediaData
+        #region AudioMediaData
 
         /// <summary>
         /// Creates a copy of <c>this</c>, including copies of all <see cref="IDataProvider"/>s used by <c>this</c>

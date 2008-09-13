@@ -220,7 +220,7 @@ namespace urakawa.publish
                 ManagedAudioMedia mam = chProp.GetMedia(SourceChannel) as ManagedAudioMedia;
                 if (mam != null)
                 {
-                    AudioMediaData amd = mam.MediaData;
+                    AudioMediaData amd = mam.AudioMediaData;
                     if (mCurrentAudioFilePCMFormat == null)
                     {
                         mCurrentAudioFilePCMFormat = amd.PCMFormat;
@@ -244,16 +244,7 @@ namespace urakawa.publish
                     {
                         rd.Close();
                     }
-                    ExternalAudioMedia eam = node.Presentation.MediaFactory.CreateMedia(
-                                                 typeof (ExternalAudioMedia).Name, XukAble.XUK_NS) as
-                                             ExternalAudioMedia;
-                    if (eam == null)
-                    {
-                        throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                                 "The media facotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
-                                                                                 typeof (ExternalAudioMedia).Name,
-                                                                                 XukAble.XUK_NS));
-                    }
+                    ExternalAudioMedia eam = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
                     eam.Language = mam.Language;
                     eam.Src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
                     eam.ClipBegin = clipBegin;

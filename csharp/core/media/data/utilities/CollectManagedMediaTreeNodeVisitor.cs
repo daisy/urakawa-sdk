@@ -12,10 +12,10 @@ namespace urakawa.media.data.utilities
     /// </summary>
     public class CollectManagedMediaTreeNodeVisitor : ITreeNodeVisitor
     {
-        private List<IManagedMedia> mCollectedMedia = new List<IManagedMedia>();
+        private List<IManaged> mCollectedMedia = new List<IManaged>();
 
         /// <summary>
-        /// Gets the list of collected <see cref="IManagedMedia"/>
+        /// Gets the list of collected <see cref="IManaged"/>
         /// </summary>
         /// <returns>The list</returns>
         /// <remarks>
@@ -23,7 +23,7 @@ namespace urakawa.media.data.utilities
         /// any changes made to the returned list will reflect in 
         /// the <see cref="CollectManagedMediaTreeNodeVisitor"/> instance
         /// </remarks>
-        public List<IManagedMedia> ListOfCollectedMedia
+        public List<IManaged> ListOfCollectedMedia
         {
             get { return mCollectedMedia; }
         }
@@ -31,7 +31,7 @@ namespace urakawa.media.data.utilities
         #region ITreeNodeVisitor Members
 
         /// <summary>
-        /// Any <see cref="IManagedMedia"/> used by the 
+        /// Any <see cref="IManaged"/> used by the 
         /// </summary>
         /// <param name="node">The node being visited</param>
         /// <returns><c>true</c></returns>
@@ -44,9 +44,9 @@ namespace urakawa.media.data.utilities
                     ChannelsProperty chProp = (ChannelsProperty) prop;
                     foreach (Channel ch in chProp.ListOfUsedChannels)
                     {
-                        if (chProp.GetMedia(ch) is IManagedMedia)
+                        if (chProp.GetMedia(ch) is IManaged)
                         {
-                            IManagedMedia mm = (IManagedMedia) chProp.GetMedia(ch);
+                            IManaged mm = (IManaged) chProp.GetMedia(ch);
                             if (!mCollectedMedia.Contains(mm)) mCollectedMedia.Add(mm);
                         }
                     }

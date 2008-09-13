@@ -11,15 +11,15 @@ namespace urakawa.events.media
     public class SizeChangedEventArgs : MediaEventArgs
     {
         /// <summary>
-        /// Constructor setting the source <see cref="IMedia"/> of the event
+        /// Constructor setting the source <see cref="Media"/> of the event
         /// and the new+previous hight+width
         /// </summary>
-        /// <param name="source">The source <see cref="IMedia"/> of the event</param>
+        /// <param name="source">The source <see cref="Media"/> of the event</param>
         /// <param name="newH">The new height</param>
         /// <param name="newW">The new width</param>
         /// <param name="prevH">The height prior to the change</param>
         /// <param name="prevW">The width prior to the change</param>
-        public SizeChangedEventArgs(IMedia source, int newH, int newW, int prevH, int prevW)
+        public SizeChangedEventArgs(Media source, int newH, int newW, int prevH, int prevW)
             : base(source)
         {
             NewHeight = newH;

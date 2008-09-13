@@ -74,11 +74,11 @@ namespace urakawa.media.data.audio
             AudioMediaData data2 =
                 mPresentation.MediaDataFactory.CreateMediaData("WavAudioMediaData", XukAble.XUK_NS) as
                 AudioMediaData;
-            mManagedAudioMedia1.MediaData = data1;
-            mManagedAudioMedia2.MediaData = data1;
+            mManagedAudioMedia1.AudioMediaData = data1;
+            mManagedAudioMedia2.AudioMediaData = data1;
             Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2),
                           "two medias with the same data should be equal");
-            mManagedAudioMedia2.MediaData = data2;
+            mManagedAudioMedia2.AudioMediaData = data2;
             Assert.IsTrue(data1.ValueEquals(data2), "[Pre-Condition] media datas should be equal");
             Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2),
                           "two medias with equal data should be equal");
@@ -88,7 +88,7 @@ namespace urakawa.media.data.audio
                            "two medias with different data shouldn't be equal");
         }
 
-        #region IMedia tests
+        #region Media tests
 
         [Test]
         public override void Language_Basics()

@@ -13,12 +13,12 @@ namespace urakawa.property.channel
     {
 
         /// <summary>
-        /// Determines if a given <see cref="IMedia"/> can be accepted by the channel,
+        /// Determines if a given <see cref="Media"/> can be accepted by the channel,
         /// which it can if it is a <see cref="ManagedAudioMedia"/>
         /// </summary>
         /// <param name="m">The given media</param>
         /// <returns>A <see cref="bool"/> indicating if the given media can be accepted</returns>
-        public override bool CanAccept(urakawa.media.IMedia m)
+        public override bool CanAccept(urakawa.media.Media m)
         {
             if (!base.CanAccept(m)) return false;
             if (!(m is ManagedAudioMedia)) return false;

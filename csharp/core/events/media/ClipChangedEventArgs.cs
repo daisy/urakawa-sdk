@@ -12,14 +12,14 @@ namespace urakawa.events.media
     public class ClipChangedEventArgs : MediaEventArgs
     {
         /// <summary>
-        /// Constructor setting the source <see cref="IMedia"/> of the event and the new+previous clip begin+end <see cref="Time"/>s
+        /// Constructor setting the source <see cref="Media"/> of the event and the new+previous clip begin+end <see cref="Time"/>s
         /// </summary>
-        /// <param name="source">The source <see cref="IMedia"/> of the event</param>
+        /// <param name="source">The source <see cref="Media"/> of the event</param>
         /// <param name="newCB">The new clip begin value</param>
         /// <param name="newCE">The new clip end value</param>
         /// <param name="prevCB">The clip begin value prior to the change</param>
         /// <param name="prevCE">The clip end value prior to the change</param>
-        public ClipChangedEventArgs(IMedia source, Time newCB, Time newCE, Time prevCB, Time prevCE)
+        public ClipChangedEventArgs(Media source, Time newCB, Time newCE, Time prevCB, Time prevCE)
             : base(source)
         {
             NewClipBegin = newCB;

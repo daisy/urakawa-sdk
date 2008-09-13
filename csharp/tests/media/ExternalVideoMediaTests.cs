@@ -17,17 +17,17 @@ namespace urakawa.media
 
         protected ExternalVideoMedia mExternalVideoMedia1
         {
-            get { return mExternalMedia1 as ExternalVideoMedia; }
+            get { return mLocatedMedia1 as ExternalVideoMedia; }
         }
 
         protected ExternalVideoMedia mExternalVideoMedia2
         {
-            get { return mExternalMedia2 as ExternalVideoMedia; }
+            get { return mLocatedMedia2 as ExternalVideoMedia; }
         }
 
         protected ExternalVideoMedia mExternalVideoMedia3
         {
-            get { return mExternalMedia3 as ExternalVideoMedia; }
+            get { return mLocatedMedia3 as ExternalVideoMedia; }
         }
 
         #region IContinuous tests
@@ -321,7 +321,7 @@ namespace urakawa.media
 
         #endregion
 
-        #region IMedia tests
+        #region Media tests
 
         [Test]
         public override void Copy_ValueEqualsAndReferenceDiffers()

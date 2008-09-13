@@ -6,18 +6,18 @@ using urakawa.media;
 namespace urakawa.events.media
 {
     /// <summary>
-    /// Arguments of the <see cref="ITextMedia.TextChanged"/> event
+    /// Arguments of the <see cref="AbstractTextMedia.TextChanged"/> event
     /// </summary>
     public class TextChangedEventArgs : MediaEventArgs
     {
         /// <summary>
-        /// Constructor setting the source <see cref="IMedia"/> of the event
+        /// Constructor setting the source <see cref="Media"/> of the event
         /// and the new+previous text values
         /// </summary>
-        /// <param name="src">The source <see cref="IMedia"/> of the event</param>
+        /// <param name="src">The source <see cref="Media"/> of the event</param>
         /// <param name="newTxt">The new text value</param>
         /// <param name="prevTxt">The text value prior to the change</param>
-        public TextChangedEventArgs(ITextMedia src, string newTxt, string prevTxt)
+        public TextChangedEventArgs(AbstractTextMedia src, string newTxt, string prevTxt)
             : base(src)
         {
             SourceTextMedia = src;
@@ -26,9 +26,9 @@ namespace urakawa.events.media
         }
 
         /// <summary>
-        /// The source <see cref="IMedia"/> of the event
+        /// The source <see cref="Media"/> of the event
         /// </summary>
-        public readonly ITextMedia SourceTextMedia;
+        public readonly AbstractTextMedia SourceTextMedia;
 
         /// <summary>
         /// The new text value

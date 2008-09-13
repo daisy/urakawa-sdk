@@ -33,7 +33,7 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Event fired after the name of the <see cref="IMedia"/> has changed
+        /// Event fired after the name of the <see cref="Media"/> has changed
         /// </summary>
         public event EventHandler<NameChangedEventArgs> NameChanged;
 
@@ -96,7 +96,7 @@ namespace urakawa.media.data
             {
                 if (value == null)
                 {
-                    throw new exception.MethodParameterIsNullException("The name of an MediaData can not be null");
+                    throw new exception.MethodParameterIsNullException("The name of an AudioMediaData can not be null");
                 }
                 string prevName = mName;
                 mName = value;
@@ -153,7 +153,7 @@ namespace urakawa.media.data
             return ProtectedExport(destPres);
         }
 
-        #region IValueEquatable<MediaData> Members
+        #region IValueEquatable<AudioMediaData> Members
 
         /// <summary>
         /// Determines of <c>this</c> has the same value as a given other instance

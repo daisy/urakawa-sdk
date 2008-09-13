@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using urakawa.events.media;
 using urakawa.media.timing;
 
 namespace urakawa.media
@@ -8,87 +9,35 @@ namespace urakawa.media
     /// VideoMedia is the video object.
     /// It is time-based, comes from an external source, and has a visual presence.
     /// </summary>
-    public class ExternalVideoMedia : ExternalMedia, IVideoMedia
+    public class ExternalVideoMedia : VideoMedia, IClipped, ILocated
     {
-        #region Event related members
 
-        /// <summary>
-        /// Event fired after the clip (clip begin or clip end) of the <see cref="ExternalAudioMedia"/> has changed
-        /// </summary>
-        public event EventHandler<events.media.ClipChangedEventArgs> ClipChanged;
-
-        /// <summary>
-        /// Fires the <see cref="ClipChanged"/> event
-        /// </summary>
-        /// <param name="source">The source, that is the <see cref="ExternalVideoMedia"/> whoose clip has changed</param>
-        /// <param name="newCB">The new clip begin value</param>
-        /// <param name="newCE">The new clip begin value</param>
-        /// <param name="prevCB">The clip begin value prior to the change</param>
-        /// <param name="prevCE">The clip end value prior to the change</param>
-        protected void NotifyClipChanged(ExternalVideoMedia source, Time newCB, Time newCE, Time prevCB, Time prevCE)
-        {
-            EventHandler<events.media.ClipChangedEventArgs> d = ClipChanged;
-            if (d != null) d(this, new urakawa.events.media.ClipChangedEventArgs(source, newCB, newCE, prevCB, prevCE));
-        }
-
-        private void this_clipChanged(object sender, urakawa.events.media.ClipChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
-
-        /// <summary>
-        /// Event fired after the size (height or width) of the <see cref="ExternalVideoMedia"/> has changed
-        /// </summary>
-        public event EventHandler<events.media.SizeChangedEventArgs> SizeChanged;
-
-        /// <summary>
-        /// Fires the <see cref="SizeChanged"/> event
-        /// </summary>
-        /// <param name="source">The source, that is the <see cref="ExternalVideoMedia"/> whoose size has changed</param>
-        /// <param name="newHeight">The new height of the <see cref="ExternalVideoMedia"/></param>
-        /// <param name="newWidth">The new width of the <see cref="ExternalVideoMedia"/></param>
-        /// <param name="prevHeight">The height of the <see cref="ExternalVideoMedia"/> prior to the change</param>
-        /// <param name="prevWidth">The width of the <see cref="ExternalVideoMedia"/> prior to the change</param>
-        protected void NotifySizeChanged(ExternalVideoMedia source, int newHeight, int newWidth, int prevHeight,
-                                         int prevWidth)
-        {
-            EventHandler<events.media.SizeChangedEventArgs> d = SizeChanged;
-            if (d != null)
-                d(this,
-                  new urakawa.events.media.SizeChangedEventArgs(source, newHeight, newWidth, prevHeight, prevWidth));
-        }
-
-        private void this_sizeChanged(object sender, urakawa.events.media.SizeChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
-
-        #endregion
-
-        private int mWidth = 0;
-        private int mHeight = 0;
+        private string mSrc;
+        private int mWidth;
+        private int mHeight;
         private Time mClipBegin;
         private Time mClipEnd;
 
-        private void ResetClipTimes()
+        private void Reset()
         {
+            mSrc = null;
+            mHeight = 0;
+            mWidth = 0;
             mClipBegin = Time.Zero;
             mClipEnd = Time.MaxValue;
-            this.ClipChanged += new EventHandler<urakawa.events.media.ClipChangedEventArgs>(this_clipChanged);
-            this.SizeChanged += new EventHandler<urakawa.events.media.SizeChangedEventArgs>(this_sizeChanged);
         }
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        protected internal ExternalVideoMedia() : base()
+        public ExternalVideoMedia()
         {
-            mWidth = 0;
-            mHeight = 0;
-            ResetClipTimes();
+            Reset();
+            this.ClipChanged += this_ClipChanged;
+            this.SrcChanged += this_SrcChanged;
         }
 
-        #region IMedia Members
+        #region Media Members
 
         /// <summary>
         /// This always returns true, because
@@ -124,7 +73,7 @@ namespace urakawa.media
         /// Copy function which returns an <see cref="ExternalVideoMedia"/> object
         /// </summary>
         /// <returns>a copy of this</returns>
-        protected override IMedia CopyProtected()
+        protected override Media CopyProtected()
         {
             return Export(MediaFactory.Presentation);
         }
@@ -143,15 +92,10 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external video media</returns>
-        protected override IMedia ExportProtected(Presentation destPres)
+        protected override Media ExportProtected(Presentation destPres)
         {
-            ExternalVideoMedia exported = base.ExportProtected(destPres) as ExternalVideoMedia;
-            if (exported == null)
-            {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The MediaFactory cannot create a ExternalVideoMedia matching QName {1}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
-            }
+            ExternalVideoMedia exported = (ExternalVideoMedia)base.ExportProtected(destPres);
+            exported.Src = Src;
             if (ClipBegin.IsNegativeTimeOffset)
             {
                 exported.ClipBegin = ClipBegin.Copy();
@@ -182,20 +126,20 @@ namespace urakawa.media
         #region ISized Members
 
         /// <summary>
-        /// Return the video width
+        /// Return the image width
         /// </summary>
         /// <returns>The width</returns>
-        public int Width
+        public override int Width
         {
             get { return mWidth; }
             set { SetSize(Height, value); }
         }
 
         /// <summary>
-        /// Return the video height
+        /// Return the image height
         /// </summary>
         /// <returns>The height</returns>
-        public int Height
+        public override int Height
         {
             get { return mHeight; }
             set { SetSize(value, Width); }
@@ -203,14 +147,14 @@ namespace urakawa.media
 
 
         /// <summary>
-        /// Sets the video size
+        /// Sets the image size
         /// </summary>
         /// <param name="height">The new height</param>
         /// <param name="width">The new width</param>
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when the new width or height is negative
         /// </exception>
-        public void SetSize(int height, int width)
+        public override void SetSize(int height, int width)
         {
             if (width < 0)
             {
@@ -228,13 +172,24 @@ namespace urakawa.media
             mHeight = height;
             if (mWidth != prevWidth || mHeight != prevHeight)
             {
-                NotifySizeChanged(this, mHeight, mWidth, prevHeight, prevWidth);
+                NotifySizeChanged(mHeight, mWidth, prevHeight, prevWidth);
             }
         }
 
+
+
         #endregion
 
-        #region IXUKAble members
+        #region IXUKAble overides
+
+        /// <summary>
+        /// Clears the data of the <see cref="ExternalVideoMedia"/>
+        /// </summary>
+        protected override void Clear()
+        {
+            Reset();
+            base.Clear();
+        }
 
         /// <summary>
         /// Reads the attributes of a VideoMedia xuk element.
@@ -245,7 +200,6 @@ namespace urakawa.media
             base.XukInAttributes(source);
             string cb = source.GetAttribute("clipBegin");
             string ce = source.GetAttribute("clipEnd");
-            ResetClipTimes();
             try
             {
                 Time ceTime = new Time(ce);
@@ -324,13 +278,73 @@ namespace urakawa.media
         /// Gets the duration of <c>this</c>
         /// </summary>
         /// <returns>The duration</returns>
-        public TimeDelta Duration
+        public override TimeDelta Duration
         {
             get { return ClipEnd.GetTimeDelta(ClipBegin); }
         }
 
-        #endregion
+        /// <summary>
+        /// Splits <c>this</c> at a given <see cref="Time"/>
+        /// </summary>
+        /// <param name="splitPoint">The <see cref="Time"/> at which to split - 
+        /// must be between clip begin and clip end <see cref="Time"/>s</param>
+        /// <returns>
+        /// A newly created <see cref="ExternalAudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
+        /// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
+        /// </returns>
+        /// <exception cref="exception.MethodParameterIsNullException">
+        /// Thrown when <paramref name="splitPoint"/> is <c>null</c>
+        /// </exception>
+        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+        /// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
+        /// </exception>
+        public new ExternalVideoMedia Split(Time splitPoint)
+        {
+            return SplitProtected(splitPoint) as ExternalVideoMedia;
+        }
 
+        /// <summary>
+        /// Splits <c>this</c> at a given <see cref="Time"/>
+        /// </summary>
+        /// <param name="splitPoint">The <see cref="Time"/> at which to split - 
+        /// must be between clip begin and clip end <see cref="Time"/>s</param>
+        /// <returns>
+        /// A newly created <see cref="AudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
+        /// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
+        /// </returns>
+        /// <exception cref="exception.MethodParameterIsNullException">
+        /// Thrown when <paramref name="splitPoint"/> is <c>null</c>
+        /// </exception>
+        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+        /// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
+        /// </exception>
+        protected override VideoMedia SplitProtected(Time splitPoint)
+        {
+
+            if (splitPoint == null)
+            {
+                throw new exception.MethodParameterIsNullException(
+                    "The time at which to split can not be null");
+            }
+            if (splitPoint.IsLessThan(ClipBegin))
+            {
+                throw new exception.MethodParameterIsOutOfBoundsException(
+                    "The split time can not be before ClipBegin");
+            }
+            if (splitPoint.IsGreaterThan(ClipEnd))
+            {
+                throw new exception.MethodParameterIsOutOfBoundsException(
+                    "The split time can not be after ClipEnd");
+            }
+            ExternalVideoMedia splitAM = Copy();
+            ClipEnd = splitPoint;
+            splitAM.ClipBegin = splitPoint;
+            return splitAM;
+        }
+
+
+        #endregion
+        
         #region IClipped Members
 
         /// <summary>
@@ -360,7 +374,7 @@ namespace urakawa.media
                 {
                     Time prevCB = ClipBegin;
                     mClipBegin = value.Copy();
-                    NotifyClipChanged(this, ClipBegin, ClipEnd, prevCB, ClipEnd);
+                    NotifyClipChanged(ClipBegin, ClipEnd, prevCB, ClipEnd);
                 }
             }
         }
@@ -387,57 +401,110 @@ namespace urakawa.media
                 {
                     Time prevCE = ClipEnd;
                     mClipEnd = value.Copy();
-                    NotifyClipChanged(this, ClipBegin, ClipEnd, ClipBegin, prevCE);
+                    NotifyClipChanged(ClipBegin, ClipEnd, ClipBegin, prevCE);
                 }
             }
         }
 
-
-        IContinuous IContinuous.Split(Time splitPoint)
-        {
-            return Split(splitPoint);
-        }
+        /// <summary>
+        /// Event fired after the clip (clip begin or clip end) of the <see cref="ExternalAudioMedia"/> has changed
+        /// </summary>
+        public event EventHandler<events.media.ClipChangedEventArgs> ClipChanged;
 
         /// <summary>
-        /// Splits <c>this</c> at a given split point in <see cref="Time"/>. 
-        /// The retains the clip between clip begin and the split point and a new <see cref="IVideoMedia"/>
-        /// is created consisting of the clip from the split point to clip end
+        /// Fires the <see cref="ClipChanged"/> event
         /// </summary>
-        /// <param name="splitPoint">The split point</param>
-        /// <returns>The new <see cref="IVideoMedia"/> containing the latter prt of the clip</returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="splitPoint"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
-        /// </exception>
-        public ExternalVideoMedia Split(Time splitPoint)
+        /// <param name="newCB">The new clip begin value</param>
+        /// <param name="newCE">The new clip begin value</param>
+        /// <param name="prevCB">The clip begin value prior to the change</param>
+        /// <param name="prevCE">The clip end value prior to the change</param>
+        protected void NotifyClipChanged(Time newCB, Time newCE, Time prevCB, Time prevCE)
         {
-            if (splitPoint == null)
-            {
-                throw new exception.MethodParameterIsNullException("The split point can not be null");
-            }
-            if (ClipBegin.IsGreaterThan(splitPoint) || splitPoint.IsGreaterThan(ClipEnd))
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    "The split point is not between clip begin and clip end");
-            }
-            ExternalVideoMedia secondPart = Copy();
-            secondPart.ClipBegin = splitPoint.Copy();
-            ClipEnd = splitPoint.Copy();
-            return secondPart;
+            EventHandler<events.media.ClipChangedEventArgs> d = ClipChanged;
+            if (d != null) d(this, new urakawa.events.media.ClipChangedEventArgs(this, newCB, newCE, prevCB, prevCE));
         }
+
+        private void this_ClipChanged(object sender, urakawa.events.media.ClipChangedEventArgs e)
+        {
+            NotifyChanged(e);
+        }
+
 
         #endregion
 
-        #region IValueEquatable<IMedia> Members
+        #region ILocated Members
 
         /// <summary>
-        /// Conpares <c>this</c> with a given other <see cref="IMedia"/> for equality
+        /// Event fired after <see cref="Src"/> of the <see cref="ILocated"/> has changed
         /// </summary>
-        /// <param name="other">The other <see cref="IMedia"/></param>
+        public event EventHandler<SrcChangedEventArgs> SrcChanged;
+
+        /// <summary>
+        /// Fires the <see cref="SrcChanged"/> event
+        /// </summary>
+        /// <param name="newSrc">The new <see cref="Src"/> value</param>
+        /// <param name="prevSrc">The <see cref="Src"/> value prior to the change</param>
+        protected void NotifySrcChanged(string newSrc, string prevSrc)
+        {
+            EventHandler<SrcChangedEventArgs> d = SrcChanged;
+            if (d != null) d(this, new SrcChangedEventArgs(this, newSrc, prevSrc));
+        }
+
+        private void this_SrcChanged(object sender, SrcChangedEventArgs e)
+        {
+            NotifyChanged(e);
+        }
+
+
+        /// <summary>
+        /// Gets the src value. The default value is "."
+        /// </summary>
+        /// <returns>The src value</returns>
+        public string Src
+        {
+            get { return mSrc; }
+            set
+            {
+                if (value == null) throw new exception.MethodParameterIsNullException("The src value can not be null");
+                if (value == "")
+                    throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
+                string prevSrc = mSrc;
+                mSrc = value;
+                if (mSrc != prevSrc) NotifySrcChanged(mSrc, prevSrc);
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="Uri"/> of the <see cref="ExternalVideoMedia"/> 
+        /// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
+        /// </summary>
+        /// <returns>The <see cref="Uri"/></returns>
+        /// <exception cref="exception.InvalidUriException">
+        /// Thrown when the value <see cref="Src"/> is not a well-formed <see cref="Uri"/>
+        /// </exception>
+        public Uri Uri
+        {
+            get
+            {
+                if (!Uri.IsWellFormedUriString(Src, UriKind.RelativeOrAbsolute))
+                {
+                    throw new exception.InvalidUriException(String.Format(
+                                                                "The src value '{0}' is not a well-formed Uri", Src));
+                }
+                return new Uri(MediaFactory.Presentation.RootUri, Src);
+            }
+        }
+
+                #endregion
+        
+        #region IValueEquatable<Media> Members
+
+        /// <summary>
+        /// Conpares <c>this</c> with a given other <see cref="Media"/> for equality
+        /// </summary>
+        /// <param name="other">The other <see cref="Media"/></param>
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(IMedia other)
+        public override bool ValueEquals(Media other)
         {
             if (!base.ValueEquals(other)) return false;
             ExternalVideoMedia otherVideo = (ExternalVideoMedia) other;
@@ -449,5 +516,7 @@ namespace urakawa.media
         }
 
         #endregion
+
+
     }
 }

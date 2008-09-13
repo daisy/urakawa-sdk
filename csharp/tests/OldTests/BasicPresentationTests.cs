@@ -30,7 +30,7 @@ namespace urakawa.oldTests
                 {
                     text_cp = (ChannelsProperty) root.GetProperty(typeof (ChannelsProperty));
                 }
-                urakawa.media.ITextMedia txt = mProject.GetPresentation(0).MediaFactory.CreateTextMedia();
+                urakawa.media.AbstractTextMedia txt = mProject.GetPresentation(0).MediaFactory.CreateTextMedia();
                 txt.Text = "hello I am the new text for the root node";
                 text_cp.SetMedia(textCh, txt);
 
@@ -38,8 +38,8 @@ namespace urakawa.oldTests
 
                 ChannelsProperty root_cp =
                     (ChannelsProperty) mProject.GetPresentation(0).RootNode.GetProperty(typeof (ChannelsProperty));
-                urakawa.media.ITextMedia txt2 =
-                    (urakawa.media.ITextMedia) root_cp.GetMedia(textCh);
+                urakawa.media.AbstractTextMedia txt2 =
+                    (urakawa.media.AbstractTextMedia) root_cp.GetMedia(textCh);
 
                 Assert.AreEqual(txt.Text, txt2.Text);
                 Assert.AreEqual(txt, txt2);

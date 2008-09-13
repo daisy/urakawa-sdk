@@ -6,12 +6,12 @@ using urakawa.events.media.data;
 namespace urakawa.media.data
 {
     /// <summary>
-    /// Common interface for <see cref="IMedia"/> that use <see cref="MediaData"/> to store their content
+    /// Interface for <see cref="Media"/> that use <see cref="MediaData"/> to store their content
     /// </summary>
-    public interface IManagedMedia : IMedia
+    public interface IManaged
     {
         /// <summary>
-        /// Event fired after the <see cref="MediaData"/> of the <see cref="IManagedMedia"/> has changed
+        /// Event fired after the <see cref="MediaData"/> of the <see cref="IManaged"/> has changed
         /// </summary>
         event EventHandler<MediaDataChangedEventArgs> MediaDataChanged;
 
@@ -23,7 +23,7 @@ namespace urakawa.media.data
 
         /// <summary>
         /// Gets the <see cref="MediaDataFactory"/> creating the <see cref="MediaData"/>
-        /// used by the <see cref="IManagedMedia"/>.
+        /// used by the <see cref="IManaged"/> <see cref="Media"/>.
         /// Convenience for <c>GetMediaData().getMediaDataManager().GetMediaDataFactory()</c>
         /// </summary>
         /// <returns>The media data factory</returns>

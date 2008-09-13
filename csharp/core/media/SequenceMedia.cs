@@ -10,7 +10,7 @@ namespace urakawa.media
     /// SequenceMedia is a collection of same-type media objects
     /// The first object in the collection determines the collection's type.
     /// </summary>
-    public class SequenceMedia : AbstractMedia
+    public class SequenceMedia : Media
     {
         #region Event related members
 
@@ -21,18 +21,18 @@ namespace urakawa.media
 
         #endregion
 
-        private List<IMedia> mSequence;
+        private List<Media> mSequence;
         private bool mAllowMultipleTypes;
 
         /// <summary>
-        /// Constructor setting the associated <see cref="IMediaFactory"/>
+        /// Constructor setting the associated <see cref="MediaFactory"/>
         /// </summary>
         /// <exception cref="exception.MethodParameterIsNullException">
         /// Thrown when <paramref localName="fact"/> is <c>null</c>
         /// </exception>
-        protected internal SequenceMedia() : base()
+        public SequenceMedia() : base()
         {
-            mSequence = new List<IMedia>();
+            mSequence = new List<Media>();
             mAllowMultipleTypes = false;
         }
 
@@ -40,15 +40,15 @@ namespace urakawa.media
         /// Get the item at the given index
         /// </summary>
         /// <param name="index">Index of the item to return</param>
-        /// <returns>The <see cref="IMedia"/> item at the given index</returns>
+        /// <returns>The <see cref="Media"/> item at the given index</returns>
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when the given index is out of bounds
         /// </exception>
-        public IMedia GetItem(int index)
+        public Media GetItem(int index)
         {
             if (0 <= index && index < Count)
             {
-                return (IMedia) mSequence[index];
+                return (Media) mSequence[index];
             }
             else
             {
@@ -60,12 +60,12 @@ namespace urakawa.media
 
 
         /// <summary>
-        /// Inserts a given <see cref="IMedia"/> item at a given index
+        /// Inserts a given <see cref="Media"/> item at a given index
         /// </summary>
         /// <param name="index">The given index</param>
-        /// <param name="newItem">The given <see cref="IMedia"/> item</param>
+        /// <param name="newItem">The given <see cref="Media"/> item</param>
         /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when the given <see cref="IMedia"/> to insert is <c>null</c>
+        /// Thrown when the given <see cref="Media"/> to insert is <c>null</c>
         /// </exception>
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when the given index is out of bounds
@@ -73,7 +73,7 @@ namespace urakawa.media
         /// <exception cref="exception.MediaNotAcceptable">
         ///	Thrown if the <see cref="SequenceMedia"/> can not accept the media
         /// </exception>
-        public void InsertItem(int index, IMedia newItem)
+        public void InsertItem(int index, Media newItem)
         {
             if (newItem == null)
             {
@@ -94,16 +94,16 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Appends a new <see cref="IMedia"/> item to the end of the sequence
+        /// Appends a new <see cref="Media"/> item to the end of the sequence
         /// </summary>
         /// <param name="newItem">The new item</param>
         /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when the given <see cref="IMedia"/> to insert is <c>null</c>
+        /// Thrown when the given <see cref="Media"/> to insert is <c>null</c>
         /// </exception>
         /// <exception cref="exception.MediaNotAcceptable">
         ///	Thrown if the <see cref="SequenceMedia"/> can not accept the media
         /// </exception>
-        public void AppendItem(IMedia newItem)
+        public void AppendItem(Media newItem)
         {
             InsertItem(Count, newItem);
         }
@@ -112,30 +112,30 @@ namespace urakawa.media
         /// Remove an item from the sequence.
         /// </summary>
         /// <param name="index">The index of the item to remove.</param>
-        /// <returns>The removed <see cref="IMedia"/> item</returns>
+        /// <returns>The removed <see cref="Media"/> item</returns>
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when the given index is out of bounds
         /// </exception>
-        public IMedia RemoveItem(int index)
+        public Media RemoveItem(int index)
         {
-            IMedia removedMedia = GetItem(index);
+            Media removedMedia = GetItem(index);
             RemoveItem(removedMedia);
             return removedMedia;
         }
 
         /// <summary>
-        /// Removes a given <see cref="IMedia"/> item from the sequence
+        /// Removes a given <see cref="Media"/> item from the sequence
         /// </summary>
         /// <param name="item">The item</param>
         /// <exception cref="exception.MediaNotInSequenceException">
         /// Thrown when the given item is not part of the sequence
         /// </exception>
-        public void RemoveItem(IMedia item)
+        public void RemoveItem(Media item)
         {
             if (!mSequence.Contains(item))
             {
                 throw new exception.MediaNotInSequenceException(
-                    "Cannot remove a IMedia item that is not part of the sequence");
+                    "Cannot remove a Media item that is not part of the sequence");
             }
             mSequence.Remove(item);
             item.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
@@ -151,16 +151,16 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Gets a list of the <see cref="IMedia"/> items in the sequence
+        /// Gets a list of the <see cref="Media"/> items in the sequence
         /// </summary>
         /// <returns>The list</returns>
-        public List<IMedia> ListOfItems
+        public List<Media> ListOfItems
         {
-            get { return new List<IMedia>(mSequence); }
+            get { return new List<Media>(mSequence); }
         }
 
         /// <summary>
-        /// Gets a <see cref="bool"/> indicating if multiple <see cref="IMedia"/> types are allowed in the sequence
+        /// Gets a <see cref="bool"/> indicating if multiple <see cref="Media"/> types are allowed in the sequence
         /// </summary>
         /// <returns>The <see cref="bool"/></returns>
         public bool AllowMultipleTypes
@@ -180,7 +180,7 @@ namespace urakawa.media
                             if (GetItem(i).GetType() != firstItemType)
                             {
                                 throw new exception.OperationNotValidException(
-                                    "Can not prohibit multiple IMedia types in the sequence, since the Type of the sequence items differ");
+                                    "Can not prohibit multiple Media types in the sequence, since the Type of the sequence items differ");
                             }
                         }
                     }
@@ -189,7 +189,7 @@ namespace urakawa.media
             }
         }
 
-        #region IMedia Members
+        #region Media Members
 
         /// <summary>
         /// Use the first item in the collection to determine if this sequence is continuous or not.
@@ -254,18 +254,10 @@ namespace urakawa.media
         /// Make a copy of this media sequence
         /// </summary>
         /// <returns>The copy</returns>
-        protected override IMedia CopyProtected()
+        protected override Media CopyProtected()
         {
-            IMedia newMedia = MediaFactory.CreateMedia(
-                XukLocalName, XukNamespaceUri);
-            if (!(newMedia is SequenceMedia))
-            {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The media factory can not create an SequenceMedia matching QName {0}:{1}",
-                                                                         XukLocalName, XukNamespaceUri));
-            }
-            SequenceMedia newSeqMedia = (SequenceMedia) newMedia;
-            foreach (IMedia item in ListOfItems)
+            SequenceMedia newSeqMedia = (SequenceMedia)base.CopyProtected();
+            foreach (Media item in ListOfItems)
             {
                 newSeqMedia.AppendItem(item.Copy());
             }
@@ -287,35 +279,28 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported sequence media</returns>
-        protected override IMedia ExportProtected(Presentation destPres)
+        protected override Media ExportProtected(Presentation destPres)
         {
-            SequenceMedia exported = destPres.MediaFactory.CreateMedia(
-                                         XukLocalName, XukNamespaceUri) as SequenceMedia;
-            if (exported == null)
+            SequenceMedia newSeqMedia = (SequenceMedia)base.ExportProtected(destPres);
+            foreach (Media item in ListOfItems)
             {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The MediaFacotry cannot create a SequenceMedia matching QName {1}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
+                newSeqMedia.AppendItem(item.Export(destPres));
             }
-            foreach (IMedia m in ListOfItems)
-            {
-                exported.AppendItem(m.Export(destPres));
-            }
-            return exported;
+            return newSeqMedia;
         }
 
         #endregion
 
         /// <summary>
         /// Test a new media object to see if it can belong to this collection 
-        /// (optionally a sequence can allow only a single <see cref="Type"/> of <see cref="IMedia"/>)
+        /// (optionally a sequence can allow only a single <see cref="Type"/> of <see cref="Media"/>)
         /// </summary>
         /// <param name="proposedAddition">The media to test</param>
         /// <returns></returns>
         /// <exception cref="exception.MethodParameterIsNullException">
         /// Thrown when the proposed addition is null
         /// </exception>
-        public virtual bool CanAcceptMedia(IMedia proposedAddition)
+        public virtual bool CanAcceptMedia(Media proposedAddition)
         {
             if (proposedAddition == null)
             {
@@ -337,7 +322,7 @@ namespace urakawa.media
         protected override void Clear()
         {
             mAllowMultipleTypes = false;
-            foreach (IMedia item in ListOfItems)
+            foreach (Media item in ListOfItems)
             {
                 RemoveItem(item);
             }
@@ -394,7 +379,7 @@ namespace urakawa.media
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        IMedia newMedia = MediaFactory.CreateMedia(source.LocalName, source.NamespaceURI);
+                        Media newMedia = MediaFactory.Create(source.LocalName, source.NamespaceURI);
                         if (newMedia != null)
                         {
                             newMedia.XukIn(source, handler);
@@ -459,14 +444,14 @@ namespace urakawa.media
 
         #endregion
 
-        #region IValueEquatable<IMedia> Members
+        #region IValueEquatable<Media> Members
 
         /// <summary>
-        /// Conpares <c>this</c> with a given other <see cref="IMedia"/> for equality
+        /// Conpares <c>this</c> with a given other <see cref="Media"/> for equality
         /// </summary>
-        /// <param name="other">The other <see cref="IMedia"/></param>
+        /// <param name="other">The other <see cref="Media"/></param>
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(IMedia other)
+        public override bool ValueEquals(Media other)
         {
             if (!base.ValueEquals(other)) return false;
             SequenceMedia otherSeq = (SequenceMedia) other;

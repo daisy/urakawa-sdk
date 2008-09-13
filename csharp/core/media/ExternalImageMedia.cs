@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using urakawa.events.media;
 using urakawa.progress;
 
 
@@ -9,51 +10,26 @@ namespace urakawa.media
     /// ImageMedia is the image object. 
     /// It has width, height, and an external source.
     /// </summary>
-    public class ExternalImageMedia : ExternalMedia, IImageMedia
+    public class ExternalImageMedia : ImageMedia, ILocated
     {
-        #region Event related members
-
-        /// <summary>
-        /// Event fired after the size (height or width) of the <see cref="ExternalImageMedia"/> has changed
-        /// </summary>
-        public event EventHandler<events.media.SizeChangedEventArgs> SizeChanged;
-
-        /// <summary>
-        /// Fires the <see cref="SizeChanged"/> event
-        /// </summary>
-        /// <param name="source">The source, that is the <see cref="ExternalImageMedia"/> whoose size has changed</param>
-        /// <param name="newHeight">The new height of the <see cref="ExternalImageMedia"/></param>
-        /// <param name="newWidth">The new width of the <see cref="ExternalImageMedia"/></param>
-        /// <param name="prevHeight">The height of the <see cref="ExternalImageMedia"/> prior to the change</param>
-        /// <param name="prevWidth">The width of the <see cref="ExternalImageMedia"/> prior to the change</param>
-        protected void NotifySizeChanged(ExternalImageMedia source, int newHeight, int newWidth, int prevHeight,
-                                         int prevWidth)
-        {
-            EventHandler<events.media.SizeChangedEventArgs> d = SizeChanged;
-            if (d != null)
-                d(this,
-                  new urakawa.events.media.SizeChangedEventArgs(source, newHeight, newWidth, prevHeight, prevWidth));
-        }
-
-        private void this_sizeChanged(object sender, urakawa.events.media.SizeChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
-
-        #endregion
-
+        private string mSrc;
         private int mWidth;
         private int mHeight;
 
-        /// <summary>
-        /// Constructor initializing the <see cref="ExternalImageMedia"/> with <see cref="ISized"/> <c>(0,0)</c>, 
-        /// an empty src <see cref="string"/> and a given <see cref="IMediaFactory"/>
-        /// </summary>
-        protected internal ExternalImageMedia() : base()
+        private void Reset()
         {
+            mSrc = null;
             mWidth = 0;
             mHeight = 0;
-            this.SizeChanged += new EventHandler<urakawa.events.media.SizeChangedEventArgs>(this_sizeChanged);
+        }
+
+        /// <summary>
+        /// Default constructor - for system use only, 
+        /// <see cref="ExternalImageMedia"/>s should only be created via. the <see cref="MediaFactory"/>
+        /// </summary>
+        public ExternalImageMedia()
+        {
+            Reset();
         }
 
         /// <summary>
@@ -65,7 +41,7 @@ namespace urakawa.media
             return String.Format("ImageMedia ({0}-{1:0}x{2:0})", Src, mWidth, mHeight);
         }
 
-        #region IMedia Members
+        #region Media Members
 
         /// <summary>
         /// This always returns <c>false</c>, because
@@ -122,15 +98,10 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external video media</returns>
-        protected override IMedia ExportProtected(Presentation destPres)
+        protected override Media ExportProtected(Presentation destPres)
         {
-            ExternalImageMedia exported = base.ExportProtected(destPres) as ExternalImageMedia;
-            if (exported == null)
-            {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The MediaFactory of the destination Presentation of the export cannot create a ExternalImageMedia matching QName {1}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
-            }
+            ExternalImageMedia exported = (ExternalImageMedia) base.ExportProtected(destPres);
+            exported.Src = this.Src;
             exported.Height = this.Height;
             exported.Width = this.Width;
             return exported;
@@ -144,7 +115,7 @@ namespace urakawa.media
         /// Return the image width
         /// </summary>
         /// <returns>The width</returns>
-        public int Width
+        public override int Width
         {
             get { return mWidth; }
             set { SetSize(Height, value); }
@@ -154,7 +125,7 @@ namespace urakawa.media
         /// Return the image height
         /// </summary>
         /// <returns>The height</returns>
-        public int Height
+        public override int Height
         {
             get { return mHeight; }
             set { SetSize(value, Width); }
@@ -169,7 +140,7 @@ namespace urakawa.media
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when the new width or height is negative
         /// </exception>
-        public void SetSize(int height, int width)
+        public override void SetSize(int height, int width)
         {
             if (width < 0)
             {
@@ -188,6 +159,73 @@ namespace urakawa.media
             if (mWidth != prevWidth || mHeight != prevHeight)
             {
                 NotifySizeChanged(this, mHeight, mWidth, prevHeight, prevWidth);
+            }
+        }
+
+
+
+        #endregion
+
+        #region ILocated Members
+
+        /// <summary>
+        /// Event fired after <see cref="Src"/> of the <see cref="ILocated"/> has changed
+        /// </summary>
+        public event EventHandler<SrcChangedEventArgs> SrcChanged;
+
+        /// <summary>
+        /// Fires the <see cref="SrcChanged"/> event
+        /// </summary>
+        /// <param name="newSrc">The new <see cref="Src"/> value</param>
+        /// <param name="prevSrc">The <see cref="Src"/> value prior to the change</param>
+        protected void NotifySrcChanged(string newSrc, string prevSrc)
+        {
+            EventHandler<SrcChangedEventArgs> d = SrcChanged;
+            if (d != null) d(this, new SrcChangedEventArgs(this, newSrc, prevSrc));
+        }
+
+        private void this_SrcChanged(object sender, SrcChangedEventArgs e)
+        {
+            NotifyChanged(e);
+        }
+
+
+        /// <summary>
+        /// Gets the src value. The default value is "."
+        /// </summary>
+        /// <returns>The src value</returns>
+        public string Src
+        {
+            get { return mSrc; }
+            set
+            {
+                if (value == null) throw new exception.MethodParameterIsNullException("The src value can not be null");
+                if (value == "")
+                    throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
+                string prevSrc = mSrc;
+                mSrc = value;
+                if (mSrc != prevSrc) NotifySrcChanged(mSrc, prevSrc);
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="Uri"/> of the <see cref="ExternalImageMedia"/> 
+        /// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
+        /// </summary>
+        /// <returns>The <see cref="Uri"/></returns>
+        /// <exception cref="exception.InvalidUriException">
+        /// Thrown when the value <see cref="Src"/> is not a well-formed <see cref="Uri"/>
+        /// </exception>
+        public Uri Uri
+        {
+            get
+            {
+                if (!Uri.IsWellFormedUriString(Src, UriKind.RelativeOrAbsolute))
+                {
+                    throw new exception.InvalidUriException(String.Format(
+                                                                "The src value '{0}' is not a well-formed Uri", Src));
+                }
+                return new Uri(MediaFactory.Presentation.RootUri, Src);
             }
         }
 
@@ -250,17 +288,17 @@ namespace urakawa.media
 
         #endregion
 
-        #region IValueEquatable<IMedia> Members
+        #region IValueEquatable<Media> Members
 
         /// <summary>
-        /// Conpares <c>this</c> with a given other <see cref="IMedia"/> for equality
+        /// Conpares <c>this</c> with a given other <see cref="Media"/> for equality
         /// </summary>
-        /// <param name="other">The other <see cref="IMedia"/></param>
+        /// <param name="other">The other <see cref="Media"/></param>
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(IMedia other)
+        public override bool ValueEquals(Media other)
         {
             if (!base.ValueEquals(other)) return false;
-            IImageMedia otherImage = (IImageMedia) other;
+            ImageMedia otherImage = (ImageMedia) other;
             if (Height != otherImage.Height) return false;
             if (Width != otherImage.Width) return false;
             return true;

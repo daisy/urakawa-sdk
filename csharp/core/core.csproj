@@ -153,6 +153,12 @@
     <Compile Include="exception\XukException.cs" />
     <Compile Include="exception\XukQNameNotUniqueWithinFactoryException.cs" />
     <Compile Include="GenericFactory.cs" />
+    <None Include="media\AbstractMedia.cs">
+      <SubType>Code</SubType>
+    </None>
+    <None Include="media\ExternalMedia.cs">
+      <SubType>Code</SubType>
+    </None>
     <Compile Include="progress\ProgressAction.cs" />
     <Compile Include="progress\ProgressHandler.cs" />
     <Compile Include="properties\AssemblyInfo.cs">
@@ -209,9 +215,7 @@
     <Compile Include="events\undo\TransactionStartedEventArgs.cs" />
     <Compile Include="events\undo\UndoRedoManagerEventArgs.cs" />
     <Compile Include="IWithPresentation.cs" />
-    <Compile Include="media\AbstractMedia.cs" />
     <Compile Include="media\data\utilities\CloseNotifyingStream.cs" />
-    <Compile Include="media\ExternalMedia.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />
     <Compile Include="property\channel\TextChannel.cs" />
@@ -270,16 +274,16 @@
     <Compile Include="core\visitor\IVisitableTreeNode.cs" />
     <Compile Include="exception\XmlAttributeDoesNotBelongException.cs" />
     <Compile Include="media\ExternalAudioMedia.cs" />
-    <Compile Include="media\IAudioMedia.cs" />
+    <Compile Include="media\AudioMedia.cs" />
     <Compile Include="media\IClipped.cs" />
     <Compile Include="media\ILocated.cs" />
-    <Compile Include="media\IImageMedia.cs" />
+    <Compile Include="media\ImageMedia.cs" />
     <Compile Include="media\ISized.cs" />
     <Compile Include="media\ExternalImageMedia.cs" />
-    <Compile Include="media\IMedia.cs" />
-    <Compile Include="media\IMediaFactory.cs" />
-    <Compile Include="media\ITextMedia.cs" />
-    <Compile Include="media\IVideoMedia.cs" />
+    <Compile Include="media\Media.cs" />
+    <None Include="media\IMediaFactory.cs" />
+    <Compile Include="media\AbstractTextMedia.cs" />
+    <Compile Include="media\VideoMedia.cs" />
     <Compile Include="media\MediaFactory.cs" />
     <Compile Include="media\SequenceMedia.cs" />
     <Compile Include="media\timing\Time.cs" />
@@ -298,7 +302,7 @@
     </Compile>
     <Compile Include="command\CommandFactory.cs" />
     <Compile Include="command\CompositeCommand.cs" />
-    <Compile Include="command\ICommand.cs" />
+    <Compile Include="command\Command.cs" />
     <Compile Include="undo\UndoRedoManager.cs" />
     <Compile Include="WithPresentation.cs" />
     <Compile Include="xuk\OpenXukAction.cs" />

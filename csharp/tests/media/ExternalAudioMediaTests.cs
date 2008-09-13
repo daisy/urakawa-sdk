@@ -17,17 +17,17 @@ namespace urakawa.media
 
         protected ExternalAudioMedia mExternalAudioMedia1
         {
-            get { return mExternalMedia1 as ExternalAudioMedia; }
+            get { return mLocatedMedia1 as ExternalAudioMedia; }
         }
 
         protected ExternalAudioMedia mExternalAudioMedia2
         {
-            get { return mExternalMedia2 as ExternalAudioMedia; }
+            get { return mLocatedMedia2 as ExternalAudioMedia; }
         }
 
         protected ExternalAudioMedia mExternalAudioMedia3
         {
-            get { return mExternalMedia3 as ExternalAudioMedia; }
+            get { return mLocatedMedia3 as ExternalAudioMedia; }
         }
 
 
@@ -272,7 +272,7 @@ namespace urakawa.media
 
         #endregion
 
-        #region IMedia tests
+        #region Media tests
 
         [Test]
         public override void Copy_ValueEqualsAndReferenceDiffers()
