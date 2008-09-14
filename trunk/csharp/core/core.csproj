@@ -153,12 +153,6 @@
     <Compile Include="exception\XukException.cs" />
     <Compile Include="exception\XukQNameNotUniqueWithinFactoryException.cs" />
     <Compile Include="GenericFactory.cs" />
-    <None Include="media\AbstractMedia.cs">
-      <SubType>Code</SubType>
-    </None>
-    <None Include="media\ExternalMedia.cs">
-      <SubType>Code</SubType>
-    </None>
     <Compile Include="progress\ProgressAction.cs" />
     <Compile Include="progress\ProgressHandler.cs" />
     <Compile Include="properties\AssemblyInfo.cs">
@@ -274,7 +268,7 @@
     <Compile Include="core\visitor\IVisitableTreeNode.cs" />
     <Compile Include="exception\XmlAttributeDoesNotBelongException.cs" />
     <Compile Include="media\ExternalAudioMedia.cs" />
-    <Compile Include="media\AudioMedia.cs" />
+    <Compile Include="media\AbstractAudioMedia.cs" />
     <Compile Include="media\IClipped.cs" />
     <Compile Include="media\ILocated.cs" />
     <Compile Include="media\ImageMedia.cs" />

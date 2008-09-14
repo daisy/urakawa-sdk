@@ -6,10 +6,9 @@ using urakawa.media.timing;
 namespace urakawa.media
 {
     /// <summary>
-    /// AudioMedia is the audio object.
-    /// It is time-based and comes from an external source.
+    /// Implementation of <see cref="AbstractAudioMedia"/> based on an external file and clip begin/end values
     /// </summary>
-    public class ExternalAudioMedia : AudioMedia, ILocated, IClipped
+    public class ExternalAudioMedia : AbstractAudioMedia, ILocated, IClipped
     {
 
         private string mSrc;
@@ -18,7 +17,7 @@ namespace urakawa.media
 
         private void Reset()
         {
-            mSrc = null;
+            mSrc = ".";
             mClipBegin = Time.Zero;
             mClipEnd = Time.MaxValue;
         }
@@ -67,7 +66,7 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Copy function which returns an <see cref="AudioMedia"/> object
+        /// Copy function which returns an <see cref="AbstractAudioMedia"/> object
         /// </summary>
         /// <returns>A copy of this</returns>
         /// <exception cref="exception.FactoryCannotCreateTypeException">
@@ -228,7 +227,7 @@ namespace urakawa.media
         /// <param name="splitPoint">The <see cref="Time"/> at which to split - 
         /// must be between clip begin and clip end <see cref="Time"/>s</param>
         /// <returns>
-        /// A newly created <see cref="AudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
+        /// A newly created <see cref="AbstractAudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
         /// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
         /// </returns>
         /// <exception cref="exception.MethodParameterIsNullException">
@@ -237,7 +236,7 @@ namespace urakawa.media
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
         /// </exception>
-        protected override AudioMedia SplitProtected(Time splitPoint)
+        protected override AbstractAudioMedia SplitProtected(Time splitPoint)
         {
 
             if (splitPoint == null)
@@ -376,17 +375,19 @@ namespace urakawa.media
 
 
         /// <summary>
-        /// Gets the src value. The default value is "."
+        /// Gets or sets the src value. The default value is "."
         /// </summary>
-        /// <returns>The src value</returns>
+        /// <exception cref="exception.MethodParameterIsEmptyStringException">
+        /// Thrown when trying to set the <see cref="Src"/> value to <c>null</c></exception>
         public string Src
         {
             get { return mSrc; }
             set
             {
-                if (value == null) throw new exception.MethodParameterIsNullException("The src value can not be null");
+                if (value == null)
+                    throw new exception.MethodParameterIsNullException("The src value cannot be null");
                 if (value == "")
-                    throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
+                    throw new exception.MethodParameterIsEmptyStringException("The src value cannot be an empty string");
                 string prevSrc = mSrc;
                 mSrc = value;
                 if (mSrc != prevSrc) NotifySrcChanged(mSrc, prevSrc);
@@ -397,7 +398,7 @@ namespace urakawa.media
         /// Gets the <see cref="Uri"/> of the <see cref="ExternalAudioMedia"/> 
         /// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
         /// </summary>
-        /// <returns>The <see cref="Uri"/></returns>
+        /// <returns>The <see cref="Uri"/> - <c>null</c> if <see cref="Src"/> is <c>null</c></returns>
         /// <exception cref="exception.InvalidUriException">
         /// Thrown when the value <see cref="Src"/> is not a well-formed <see cref="Uri"/>
         /// </exception>
@@ -405,6 +406,7 @@ namespace urakawa.media
         {
             get
             {
+                if (Src == null) return null;
                 if (!Uri.IsWellFormedUriString(Src, UriKind.RelativeOrAbsolute))
                 {
                     throw new exception.InvalidUriException(String.Format(

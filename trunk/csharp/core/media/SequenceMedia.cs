@@ -12,17 +12,22 @@ namespace urakawa.media
     /// </summary>
     public class SequenceMedia : Media
     {
-        #region Event related members
-
-        private void Item_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
+        private void Item_Changed(object sender, urakawa.events.DataModelChangedEventArgs e)
         {
             NotifyChanged(e);
         }
 
-        #endregion
-
-        private List<Media> mSequence;
+        private List<Media> mSequence = new List<Media>();
         private bool mAllowMultipleTypes;
+
+        private void Reset()
+        {
+            mAllowMultipleTypes = false;
+            foreach (Media item in ListOfItems)
+            {
+                RemoveItem(item);
+            }
+        }
 
         /// <summary>
         /// Constructor setting the associated <see cref="MediaFactory"/>
@@ -30,10 +35,9 @@ namespace urakawa.media
         /// <exception cref="exception.MethodParameterIsNullException">
         /// Thrown when <paramref localName="fact"/> is <c>null</c>
         /// </exception>
-        public SequenceMedia() : base()
+        public SequenceMedia()
         {
-            mSequence = new List<Media>();
-            mAllowMultipleTypes = false;
+            Reset();
         }
 
         /// <summary>
@@ -50,12 +54,8 @@ namespace urakawa.media
             {
                 return (Media) mSequence[index];
             }
-            else
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException("SequenceMedia.GetItem(" +
-                                                                          index.ToString() +
-                                                                          ") caused MethodParameterIsOutOfBoundsException");
-            }
+            throw new exception.MethodParameterIsOutOfBoundsException(
+                "There is no item in the SequenceMedia at the given index");
         }
 
 
@@ -90,7 +90,7 @@ namespace urakawa.media
                     "The new media to insert is of a type that is incompatible with the sequence media");
             }
             mSequence.Insert(index, newItem);
-            newItem.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
+            newItem.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_Changed);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace urakawa.media
                     "Cannot remove a Media item that is not part of the sequence");
             }
             mSequence.Remove(item);
-            item.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
+            item.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_Changed);
         }
 
         /// <summary>
@@ -321,11 +321,7 @@ namespace urakawa.media
         /// </summary>
         protected override void Clear()
         {
-            mAllowMultipleTypes = false;
-            foreach (Media item in ListOfItems)
-            {
-                RemoveItem(item);
-            }
+            Reset();
             base.Clear();
         }
 
@@ -455,6 +451,7 @@ namespace urakawa.media
         {
             if (!base.ValueEquals(other)) return false;
             SequenceMedia otherSeq = (SequenceMedia) other;
+            if (AllowMultipleTypes != otherSeq.AllowMultipleTypes) return false;
             if (Count != otherSeq.Count) return false;
             for (int i = 0; i < Count; i++)
             {

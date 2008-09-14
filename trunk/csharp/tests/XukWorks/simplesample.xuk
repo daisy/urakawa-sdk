@@ -3,108 +3,123 @@
 	xmlns="http://www.daisy.org/urakawa/xuk/2.0"
 	xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/2.0 ../../xukschema/xuk.xsd http://www.daisy.org/urakawa/example ../../xukschema/ex.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Project>
-    <mPresentations>
-      <Presentation>
-		  <TreeNodeFactory>
-			  <mRegisteredTypes>
-				  <Type XukLocalName="TreeNode" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.core.TreeNode"/>
-			  </mRegisteredTypes>
-		  </TreeNodeFactory>
-		  <PropertyFactory>
-			  <mRegisteredTypes>
-				  <Type XukLocalName="Property" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.Property"/>
-				  <Type XukLocalName="ChannelsProperty" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Property" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.ChannelsProperty"/>
-				  <Type XukLocalName="XmlProperty" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Property" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.xml.XmlProperty"/>
-			  </mRegisteredTypes>
-		  </PropertyFactory>
-		  <ChannelFactory>
-			  <mRegisteredTypes>
-				  <Type XukLocalName="Channel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.Channel"/>
-				  <Type XukLocalName="AudioChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.AudioChannel"/>
-				  <Type XukLocalName="TextChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.TextChannel"/>
-				  <Type XukLocalName="ManagedAudioChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.ManagedAudioChannel"/>
-			  </mRegisteredTypes>
-		  </ChannelFactory>
-		  <mChannelsManager>
-          <ChannelsManager>
-            <mChannels>
-              <mChannelItem uid="c1">
-                <Channel name="EnglishVoice"/>
-              </mChannelItem>
-              <mChannelItem uid="c2">
-                <Channel name="DanishVoice"/>
-              </mChannelItem>
-              <mChannelItem uid="c3">
-                <Channel name="DanishText"/>
-              </mChannelItem>
-              <mChannelItem uid="c4">
-                <Channel name="Custom channel"/>
-              </mChannelItem>
-              <mChannelItem uid="c5">
-                <Channel name="Video channel"/>
-              </mChannelItem>
-              <mChannelItem uid="c6">
-                <Channel name="Image channel"/>
-              </mChannelItem>
-            </mChannels>
-          </ChannelsManager>
-        </mChannelsManager>
-        <mDataProviderManager />
-        <mMediaDataManager />
-        <mMetadata>
-          <Metadata name="dc:Author" content="Laust Skat Nielsen" />
-          <Metadata name="dc:Author" content="Ole Holst Andersen" />
-          <Metadata name="dc:Title" content="Simple XUK sample" />
-          <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" />
-        </mMetadata>
-        <mRootNode>
-          <TreeNode>
-            <mProperties>
-              <XmlProperty localName="body" namespaceUri="http://www.daisy.org/urakawa/test">
-                <mXmlAttributes>
-                  <XmlAttribute localName="class">DAISY</XmlAttribute>
-                </mXmlAttributes>
-              </XmlProperty>
-              <ChannelsProperty>
-                <mChannelMappings>
-                  <mChannelMapping channel="c1">
-                    <SequenceMedia>
-                      <mSequence>
-                        <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:00:03" src="english.mp3" />
-                        <ExternalAudioMedia clipBegin="00:00:06" clipEnd="00:00:09" src="english.mp3" />
-                      </mSequence>
-                    </SequenceMedia>
-                  </mChannelMapping>
-                  <mChannelMapping channel="c2">
-                    <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:00:05" src="danish.mp3" />
-                  </mChannelMapping>
-                  <mChannelMapping channel="c3">
-                    <TextMedia>
-                      <mText>Hallå</mText>
-                    </TextMedia>
-                  </mChannelMapping>
-                  <mChannelMapping channel="c4">
-                    <CustomMedia xmlns="http://www.daisy.org/urakawa/example" data="Test"/>
-                  </mChannelMapping>
-                  <mChannelMapping channel="c5">
-                    <ExternalVideoMedia clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800"  src="snip.dvi" />
-                  </mChannelMapping>
-                  <mChannelMapping channel="c6">
-                    <ExternalImageMedia height="50" width="50" src="icon.svg" />
-                  </mChannelMapping>
-                </mChannelMappings>
-              </ChannelsProperty>
-            </mProperties>
-            <mChildren>
-              <TreeNode>
-                <mProperties/>
-                <mChildren/>
-              </TreeNode>
-            </mChildren>
-          </TreeNode>
-        </mRootNode>
-      </Presentation>
-    </mPresentations>
-  </Project>
+	<Project>
+		<mPresentations>
+			<Presentation>
+				<TreeNodeFactory>
+					<mRegisteredTypes>
+						<Type XukLocalName="TreeNode" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.core.TreeNode"/>
+					</mRegisteredTypes>
+				</TreeNodeFactory>
+				<PropertyFactory>
+					<mRegisteredTypes>
+						<Type XukLocalName="Property" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.Property"/>
+						<Type XukLocalName="ChannelsProperty" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Property" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.ChannelsProperty"/>
+						<Type XukLocalName="XmlProperty" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Property" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.xml.XmlProperty"/>
+					</mRegisteredTypes>
+				</PropertyFactory>
+				<ChannelFactory>
+					<mRegisteredTypes>
+						<Type XukLocalName="Channel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.Channel"/>
+						<Type XukLocalName="AudioChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.AudioChannel"/>
+						<Type XukLocalName="TextChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.TextChannel"/>
+						<Type XukLocalName="ManagedAudioChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.ManagedAudioChannel"/>
+					</mRegisteredTypes>
+				</ChannelFactory>
+				<mChannelsManager>
+					<ChannelsManager>
+						<mChannels>
+							<mChannelItem uid="c1">
+								<Channel name="EnglishVoice"/>
+							</mChannelItem>
+							<mChannelItem uid="c2">
+								<Channel name="DanishVoice"/>
+							</mChannelItem>
+							<mChannelItem uid="c3">
+								<Channel name="DanishText"/>
+							</mChannelItem>
+							<mChannelItem uid="c4">
+								<Channel name="Custom channel"/>
+							</mChannelItem>
+							<mChannelItem uid="c5">
+								<Channel name="Video channel"/>
+							</mChannelItem>
+							<mChannelItem uid="c6">
+								<Channel name="Image channel"/>
+							</mChannelItem>
+						</mChannels>
+					</ChannelsManager>
+				</mChannelsManager>
+				<MediaFactory>
+					<mRegisteredTypes>
+						<Type XukLocalName="TextMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.TextMedia"/>
+						<Type XukLocalName="ExternalTextMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.ExternalTextMedia"/>
+						<Type XukLocalName="ExternalAudioMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.ExternalAudioMedia"/>
+						<Type XukLocalName="ExternalImageMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.ExternalImageMedia"/>
+						<Type XukLocalName="ExternalVideoMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.ExternalVideoMedia"/>
+						<Type XukLocalName="ManagedAudioMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.data.ManagedAudioMedia"/>
+					</mRegisteredTypes>
+				</MediaFactory>
+				<mDataProviderManager />
+				<mMediaDataManager />
+				<CommandFactory>
+					<mRegisteredTypes>
+						<Type XukLocalName="CompositeCommand" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.command.CompositeCommand"/>
+					</mRegisteredTypes>
+				</CommandFactory>
+				<mMetadata>
+					<Metadata name="dc:Author" content="Laust Skat Nielsen" />
+					<Metadata name="dc:Author" content="Ole Holst Andersen" />
+					<Metadata name="dc:Title" content="Simple XUK sample" />
+					<Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" />
+				</mMetadata>
+				<mRootNode>
+					<TreeNode>
+						<mProperties>
+							<XmlProperty localName="body" namespaceUri="http://www.daisy.org/urakawa/test">
+								<mXmlAttributes>
+									<XmlAttribute localName="class">DAISY</XmlAttribute>
+								</mXmlAttributes>
+							</XmlProperty>
+							<ChannelsProperty>
+								<mChannelMappings>
+									<mChannelMapping channel="c1">
+										<SequenceMedia>
+											<mSequence>
+												<ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:00:03" src="english.mp3" />
+												<ExternalAudioMedia clipBegin="00:00:06" clipEnd="00:00:09" src="english.mp3" />
+											</mSequence>
+										</SequenceMedia>
+									</mChannelMapping>
+									<mChannelMapping channel="c2">
+										<ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:00:05" src="danish.mp3" />
+									</mChannelMapping>
+									<mChannelMapping channel="c3">
+										<TextMedia>
+											<mText>Hallå</mText>
+										</TextMedia>
+									</mChannelMapping>
+									<mChannelMapping channel="c4">
+										<CustomMedia xmlns="http://www.daisy.org/urakawa/example" data="Test"/>
+									</mChannelMapping>
+									<mChannelMapping channel="c5">
+										<ExternalVideoMedia clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800"  src="snip.dvi" />
+									</mChannelMapping>
+									<mChannelMapping channel="c6">
+										<ExternalImageMedia height="50" width="50" src="icon.svg" />
+									</mChannelMapping>
+								</mChannelMappings>
+							</ChannelsProperty>
+						</mProperties>
+						<mChildren>
+							<TreeNode>
+								<mProperties/>
+								<mChildren/>
+							</TreeNode>
+						</mChildren>
+					</TreeNode>
+				</mRootNode>
+			</Presentation>
+		</mPresentations>
+	</Project>
 </Xuk>

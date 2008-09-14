@@ -18,7 +18,7 @@ namespace urakawa.media
 
         private void Reset()
         {
-            mSrc = null;
+            mSrc = ".";
             mWidth = 0;
             mHeight = 0;
         }
@@ -30,6 +30,7 @@ namespace urakawa.media
         public ExternalImageMedia()
         {
             Reset();
+            SrcChanged += this_SrcChanged;
         }
 
         /// <summary>
@@ -191,17 +192,19 @@ namespace urakawa.media
 
 
         /// <summary>
-        /// Gets the src value. The default value is "."
+        /// Gets or sets the src value. The default value is "."
         /// </summary>
-        /// <returns>The src value</returns>
+        /// <exception cref="exception.MethodParameterIsEmptyStringException">
+        /// Thrown when trying to set the <see cref="Src"/> value to <c>null</c></exception>
         public string Src
         {
             get { return mSrc; }
             set
             {
-                if (value == null) throw new exception.MethodParameterIsNullException("The src value can not be null");
+                if (value == null)
+                    throw new exception.MethodParameterIsNullException("The src value cannot be null");
                 if (value == "")
-                    throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
+                    throw new exception.MethodParameterIsEmptyStringException("The src value cannot be an empty string");
                 string prevSrc = mSrc;
                 mSrc = value;
                 if (mSrc != prevSrc) NotifySrcChanged(mSrc, prevSrc);
@@ -209,10 +212,10 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Gets the <see cref="Uri"/> of the <see cref="ExternalImageMedia"/> 
+        /// Gets the <see cref="Uri"/> of the <see cref="ExternalAudioMedia"/> 
         /// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
         /// </summary>
-        /// <returns>The <see cref="Uri"/></returns>
+        /// <returns>The <see cref="Uri"/> - <c>null</c> if <see cref="Src"/> is <c>null</c></returns>
         /// <exception cref="exception.InvalidUriException">
         /// Thrown when the value <see cref="Src"/> is not a well-formed <see cref="Uri"/>
         /// </exception>
@@ -220,6 +223,7 @@ namespace urakawa.media
         {
             get
             {
+                if (Src == null) return null;
                 if (!Uri.IsWellFormedUriString(Src, UriKind.RelativeOrAbsolute))
                 {
                     throw new exception.InvalidUriException(String.Format(
@@ -234,17 +238,28 @@ namespace urakawa.media
         #region IXUKAble members
 
         /// <summary>
+        /// Clears the data of the <see cref="Media"/>
+        /// </summary>
+        protected override void Clear()
+        {
+            Reset();
+            base.Clear();
+        }
+
+        /// <summary>
         /// Reads the attributes of a ImageMedia xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            base.XukInAttributes(source);
+            string val = source.GetAttribute("src");
+            if (val == null || val == "") val = ".";
+            Src = val;
             string height = source.GetAttribute("height");
             string width = source.GetAttribute("width");
-            int h, w;
             if (height != null && height != "")
             {
+                int h;
                 if (!Int32.TryParse(height, out h))
                 {
                     throw new exception.XukException(
@@ -258,6 +273,7 @@ namespace urakawa.media
             }
             if (width != null && width != "")
             {
+                int w;
                 if (!Int32.TryParse(width, out w))
                 {
                     throw new exception.XukException(
@@ -269,6 +285,7 @@ namespace urakawa.media
             {
                 Width = 0;
             }
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -281,6 +298,18 @@ namespace urakawa.media
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            if (Src != "")
+            {
+                Uri srcUri = new Uri(MediaFactory.Presentation.RootUri, Src);
+                if (baseUri == null)
+                {
+                    destination.WriteAttributeString("src", srcUri.AbsoluteUri);
+                }
+                else
+                {
+                    destination.WriteAttributeString("src", baseUri.MakeRelativeUri(srcUri).ToString());
+                }
+            }
             destination.WriteAttributeString("height", this.mHeight.ToString());
             destination.WriteAttributeString("width", this.mWidth.ToString());
             base.XukOutAttributes(destination, baseUri);
@@ -298,7 +327,8 @@ namespace urakawa.media
         public override bool ValueEquals(Media other)
         {
             if (!base.ValueEquals(other)) return false;
-            ImageMedia otherImage = (ImageMedia) other;
+            ExternalImageMedia otherImage = (ExternalImageMedia)other;
+            if (Src != otherImage.Src) return false;
             if (Height != otherImage.Height) return false;
             if (Width != otherImage.Width) return false;
             return true;

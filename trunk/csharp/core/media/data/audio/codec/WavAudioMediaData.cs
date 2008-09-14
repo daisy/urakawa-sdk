@@ -550,15 +550,14 @@ namespace urakawa.media.data.audio.codec
                     mWavClips.Insert(clipIndex, newInsClip);
                     break;
                 }
-                else if (insPt.IsLessThan(elapsedTime.AddTimeDelta(curClip.Duration)))
+                if (insPt.IsLessThan(elapsedTime.AddTimeDelta(curClip.Duration)))
                 {
                     //If the insert point is between the beginning and end of the current clip, 
                     //Replace the current clip with three clips containing 
                     //the audio in the current clip before the insert point,
                     //the audio to be inserted and the audio in the current clip after the insert point respectively
                     Time insPtInCurClip = Time.Zero.AddTimeDelta(insPt.GetTimeDelta(elapsedTime));
-                    Stream audioDataStream;
-                    audioDataStream = curClip.GetAudioData(Time.Zero, insPtInCurClip);
+                    Stream audioDataStream = curClip.GetAudioData(Time.Zero, insPtInCurClip);
                     WavClip curClipBeforeIns, curClipAfterIns;
                     try
                     {
@@ -631,7 +630,7 @@ namespace urakawa.media.data.audio.codec
         {
             if (clipBegin == null || clipEnd == null)
             {
-                throw new exception.MethodParameterIsNullException("Clip begin and clip end can not be null");
+                throw new exception.MethodParameterIsNullException("Clip begin or clip end can not be null");
             }
             if (
                 clipBegin.IsLessThan(Time.Zero)
@@ -687,11 +686,6 @@ namespace urakawa.media.data.audio.codec
                     TimeDelta beyondPartDur = curEndTime.GetTimeDelta(clipEnd);
                     curClip.ClipBegin = curClip.ClipEnd.SubtractTimeDelta(beyondPartDur);
                     newClipList.Add(curClip);
-                }
-                else
-                {
-                    //All of the current clip is within the range to remove, 
-                    //so this clip is not added to the new list of WavClips
                 }
                 curBeginTime = curEndTime;
             }

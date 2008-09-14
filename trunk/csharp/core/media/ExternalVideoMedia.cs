@@ -20,7 +20,7 @@ namespace urakawa.media
 
         private void Reset()
         {
-            mSrc = null;
+            mSrc = ".";
             mHeight = 0;
             mWidth = 0;
             mClipBegin = Time.Zero;
@@ -33,8 +33,8 @@ namespace urakawa.media
         public ExternalVideoMedia()
         {
             Reset();
-            this.ClipChanged += this_ClipChanged;
-            this.SrcChanged += this_SrcChanged;
+            SrcChanged += this_SrcChanged;
+            ClipChanged += this_ClipChanged;
         }
 
         #region Media Members
@@ -73,18 +73,18 @@ namespace urakawa.media
         /// Copy function which returns an <see cref="ExternalVideoMedia"/> object
         /// </summary>
         /// <returns>a copy of this</returns>
-        protected override Media CopyProtected()
+        public new ExternalVideoMedia Copy()
         {
-            return Export(MediaFactory.Presentation);
+            return CopyProtected() as ExternalVideoMedia;
         }
 
         /// <summary>
         /// Copy function which returns an <see cref="ExternalVideoMedia"/> object
         /// </summary>
         /// <returns>a copy of this</returns>
-        public new ExternalVideoMedia Copy()
+        protected override Media CopyProtected()
         {
-            return CopyProtected() as ExternalVideoMedia;
+            return Export(MediaFactory.Presentation);
         }
 
         /// <summary>
@@ -156,6 +156,7 @@ namespace urakawa.media
         /// </exception>
         public override void SetSize(int height, int width)
         {
+
             if (width < 0)
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
@@ -197,7 +198,9 @@ namespace urakawa.media
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            base.XukInAttributes(source);
+            string val = source.GetAttribute("src");
+            if (val == null || val == "") val = ".";
+            Src = val;
             string cb = source.GetAttribute("clipBegin");
             string ce = source.GetAttribute("clipEnd");
             try
@@ -250,6 +253,7 @@ namespace urakawa.media
             {
                 Width = 0;
             }
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -263,6 +267,18 @@ namespace urakawa.media
         /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            if (Src != "")
+            {
+                Uri srcUri = new Uri(MediaFactory.Presentation.RootUri, Src);
+                if (baseUri == null)
+                {
+                    destination.WriteAttributeString("src", srcUri.AbsoluteUri);
+                }
+                else
+                {
+                    destination.WriteAttributeString("src", baseUri.MakeRelativeUri(srcUri).ToString());
+                }
+            }
             destination.WriteAttributeString("clipBegin", this.ClipBegin.ToString());
             destination.WriteAttributeString("clipEnd", this.ClipEnd.ToString());
             destination.WriteAttributeString("height", this.Height.ToString());
@@ -309,7 +325,7 @@ namespace urakawa.media
         /// <param name="splitPoint">The <see cref="Time"/> at which to split - 
         /// must be between clip begin and clip end <see cref="Time"/>s</param>
         /// <returns>
-        /// A newly created <see cref="AudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
+        /// A newly created <see cref="AbstractAudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
         /// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
         /// </returns>
         /// <exception cref="exception.MethodParameterIsNullException">
@@ -457,17 +473,19 @@ namespace urakawa.media
 
 
         /// <summary>
-        /// Gets the src value. The default value is "."
+        /// Gets or sets the src value. The default value is "."
         /// </summary>
-        /// <returns>The src value</returns>
+        /// <exception cref="exception.MethodParameterIsEmptyStringException">
+        /// Thrown when trying to set the <see cref="Src"/> value to <c>null</c></exception>
         public string Src
         {
             get { return mSrc; }
             set
             {
-                if (value == null) throw new exception.MethodParameterIsNullException("The src value can not be null");
+                if (value == null)
+                    throw new exception.MethodParameterIsNullException("The src value cannot be null");
                 if (value == "")
-                    throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
+                    throw new exception.MethodParameterIsEmptyStringException("The src value cannot be an empty string");
                 string prevSrc = mSrc;
                 mSrc = value;
                 if (mSrc != prevSrc) NotifySrcChanged(mSrc, prevSrc);
@@ -475,10 +493,10 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Gets the <see cref="Uri"/> of the <see cref="ExternalVideoMedia"/> 
+        /// Gets the <see cref="Uri"/> of the <see cref="ExternalAudioMedia"/> 
         /// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
         /// </summary>
-        /// <returns>The <see cref="Uri"/></returns>
+        /// <returns>The <see cref="Uri"/> - <c>null</c> if <see cref="Src"/> is <c>null</c></returns>
         /// <exception cref="exception.InvalidUriException">
         /// Thrown when the value <see cref="Src"/> is not a well-formed <see cref="Uri"/>
         /// </exception>
@@ -486,6 +504,7 @@ namespace urakawa.media
         {
             get
             {
+                if (Src == null) return null;
                 if (!Uri.IsWellFormedUriString(Src, UriKind.RelativeOrAbsolute))
                 {
                     throw new exception.InvalidUriException(String.Format(
@@ -495,7 +514,7 @@ namespace urakawa.media
             }
         }
 
-                #endregion
+        #endregion
         
         #region IValueEquatable<Media> Members
 
@@ -508,6 +527,7 @@ namespace urakawa.media
         {
             if (!base.ValueEquals(other)) return false;
             ExternalVideoMedia otherVideo = (ExternalVideoMedia) other;
+            if (Src != otherVideo.Src) return false;
             if (!ClipBegin.IsEqualTo(otherVideo.ClipBegin)) return false;
             if (!ClipEnd.IsEqualTo(otherVideo.ClipEnd)) return false;
             if (Width != otherVideo.Width) return false;

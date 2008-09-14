@@ -20,13 +20,11 @@ namespace urakawa.media
             get { return mProject.GetPresentation(0); }
         }
 
-        protected string mDefaultMediaXukLocalName;
-        protected string mDefaultMediaXukNamespaceUri;
+        protected Type mDefaultMediaType;
 
-        protected IMediaTests(string mediaXukLN, string mediaXukNS)
+        protected IMediaTests(Type defMediaTp)
         {
-            mDefaultMediaXukLocalName = mediaXukLN;
-            mDefaultMediaXukNamespaceUri = mediaXukNS;
+            mDefaultMediaType = defMediaTp;
         }
 
         [SetUp]
@@ -40,15 +38,12 @@ namespace urakawa.media
 
         public void SetUpMedia()
         {
-            mMedia1 = mPresentation.MediaFactory.Create(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
-            Assert.IsNotNull(mMedia1, "The MediaFactory could not create a {1}:{0}", typeof (ExternalAudioMedia).Name,
-                             XukAble.XUK_NS);
-            mMedia2 = mPresentation.MediaFactory.Create(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
-            Assert.IsNotNull(mMedia2, "The MediaFactory could not create a {1}:{0}", typeof (ExternalAudioMedia).Name,
-                             XukAble.XUK_NS);
-            mMedia3 = mPresentation.MediaFactory.Create(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
-            Assert.IsNotNull(mMedia3, "The MediaFactory could not create a {1}:{0}", typeof (ExternalAudioMedia).Name,
-                             XukAble.XUK_NS);
+            mMedia1 = mPresentation.MediaFactory.Create(mDefaultMediaType);
+            Assert.IsNotNull(mMedia1, "The MediaFactory could not create a {1}", mDefaultMediaType);
+            mMedia2 = mPresentation.MediaFactory.Create(mDefaultMediaType);
+            Assert.IsNotNull(mMedia2, "The MediaFactory could not create a {1}", mDefaultMediaType);
+            mMedia3 = mPresentation.MediaFactory.Create(mDefaultMediaType);
+            Assert.IsNotNull(mMedia3, "The MediaFactory could not create a {1}", mDefaultMediaType);
         }
 
         #region Media tests
