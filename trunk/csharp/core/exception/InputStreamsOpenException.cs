@@ -1,10 +1,11 @@
 using System;
+using urakawa.media.data;
 
 namespace urakawa.exception
 {
     /// <summary>
     /// Thrown when trying to open an output <see cref="System.IO.Stream"/>
-    /// from a <see cref="urakawa.media.data.IDataProvider"/> 
+    /// from a <see cref="DataProvider"/> 
     /// while one or more input <see cref="System.IO.Stream"/>s are open
     /// </summary>
     public class InputStreamsOpenException : CheckedException

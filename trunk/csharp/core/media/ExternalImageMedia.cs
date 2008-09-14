@@ -7,10 +7,9 @@ using urakawa.progress;
 namespace urakawa.media
 {
     /// <summary>
-    /// ImageMedia is the image object. 
-    /// It has width, height, and an external source.
+    /// Implementation of <see cref="AbstractImageMedia"/> based on an external image file
     /// </summary>
-    public class ExternalImageMedia : ImageMedia, ILocated
+    public class ExternalImageMedia : AbstractImageMedia, ILocated
     {
         private string mSrc;
         private int mWidth;
@@ -39,7 +38,7 @@ namespace urakawa.media
         /// <returns>A <see cref="string"/> representation of the <see cref="ExternalImageMedia"/></returns>
         public override string ToString()
         {
-            return String.Format("ImageMedia ({0}-{1:0}x{2:0})", Src, mWidth, mHeight);
+            return String.Format("{0} ({1}-{2:0}x{3:0})", GetType().FullName, Src, mWidth, mHeight);
         }
 
         #region Media Members
@@ -247,7 +246,7 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Reads the attributes of a ImageMedia xuk element.
+        /// Reads the attributes of a ExternalImageMedia xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
@@ -289,7 +288,7 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Writes the attributes of a ImageMedia element
+        /// Writes the attributes of a ExternalImageMedia element
         /// </summary>
         /// <param name="destination">The destination <see cref="XmlWriter"/></param>
         /// <param name="baseUri">

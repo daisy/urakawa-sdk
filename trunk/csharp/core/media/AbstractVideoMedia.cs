@@ -7,14 +7,14 @@ namespace urakawa.media
     /// <summary>
     /// Video media is both time-based and has a visual presence
     /// </summary>
-    public abstract class VideoMedia : Media, IContinuous, ISized
+    public abstract class AbstractVideoMedia : Media, IContinuous, ISized
     {
 
         /// <summary>
         /// Default constructor - for system use only, 
-        /// <see cref="VideoMedia"/>s should only be created via. the <see cref="MediaFactory"/>
+        /// <see cref="AbstractVideoMedia"/>s should only be created via. the <see cref="MediaFactory"/>
         /// </summary>
-        protected VideoMedia()
+        protected AbstractVideoMedia()
         {
             SizeChanged += this_SizeChanged;
         }
@@ -38,7 +38,7 @@ namespace urakawa.media
         /// </summary>
         /// <param name="splitPoint">The given split point - must be between <c>00:00:00.000</c> and <c>GetDuration()</c></param>
         /// <returns>The media with the part of the media after the split point</returns>
-        public VideoMedia Split(Time splitPoint)
+        public AbstractVideoMedia Split(Time splitPoint)
         {
             return SplitProtected(splitPoint);
         }
@@ -59,7 +59,7 @@ namespace urakawa.media
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
         /// </exception>
-        protected abstract VideoMedia SplitProtected(Time splitPoint);
+        protected abstract AbstractVideoMedia SplitProtected(Time splitPoint);
 
         #endregion
 

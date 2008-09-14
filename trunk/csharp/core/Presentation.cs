@@ -26,7 +26,7 @@ namespace urakawa
     /// <item><see cref="Channel"/>s</item>
     /// <item><see cref="Media"/></item>
     /// <item><see cref="MediaData"/></item>
-    /// <item><see cref="IDataProvider"/>s</item>
+    /// <item><see cref="DataProvider"/>s</item>
     /// <item><see cref="Metadata"/></item>
     /// </list>
     /// </summary>
@@ -273,7 +273,7 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Removes any <see cref="MediaData"/> and <see cref="IDataProvider"/>s that are not used by any <see cref="TreeNode"/> in the document tree
+        /// Removes any <see cref="MediaData"/> and <see cref="DataProvider"/>s that are not used by any <see cref="TreeNode"/> in the document tree
         /// or by any <see cref="Command"/> in the <see cref="undo.UndoRedoManager"/> stacks (undo/redo/transaction).
         /// </summary>
         public void Cleanup()
@@ -289,7 +289,7 @@ namespace urakawa
             {
                 if (!usedMediaData.Contains(mm.MediaData)) usedMediaData.Add(mm.MediaData);
             }
-            List<IDataProvider> usedDataProviders = new List<IDataProvider>();
+            List<DataProvider> usedDataProviders = new List<DataProvider>();
             foreach (MediaData md in MediaDataManager.ListOfMediaData)
             {
                 if (usedMediaData.Contains(md))
@@ -298,7 +298,7 @@ namespace urakawa
                     {
                         ((urakawa.media.data.audio.codec.WavAudioMediaData) md).ForceSingleDataProvider();
                     }
-                    foreach (IDataProvider dp in md.ListOfUsedDataProviders)
+                    foreach (DataProvider dp in md.ListOfUsedDataProviders)
                     {
                         if (!usedDataProviders.Contains(dp)) usedDataProviders.Add(dp);
                     }
@@ -308,7 +308,7 @@ namespace urakawa
                     md.Delete();
                 }
             }
-            foreach (IDataProvider dp in DataProviderManager.ListOfDataProviders)
+            foreach (DataProvider dp in DataProviderManager.ListOfDataProviders)
             {
                 if (!usedDataProviders.Contains(dp)) dp.Delete();
             }
@@ -998,7 +998,7 @@ namespace urakawa
 
         private delegate void SetDelegate<T>(T obj);
 
-        private void XukInXukAbleFromChild<T>(XmlReader source, T instanceVar, CreatorDelegate<T> creator,
+        private static void XukInXukAbleFromChild<T>(XmlReader source, T instanceVar, CreatorDelegate<T> creator,
                                               SetDelegate<T> setter, ProgressHandler handler) where T : IXukAble
         {
             if (!source.IsEmptyElement)

@@ -220,7 +220,7 @@
     <Compile Include="media\data\DataProviderFactory.cs" />
     <Compile Include="media\data\DataProviderManager.cs" />
     <Compile Include="media\data\FileDataProvider.cs" />
-    <Compile Include="media\data\IDataProvider.cs" />
+    <Compile Include="media\data\DataProvider.cs" />
     <Compile Include="media\data\IManagedMedia.cs" />
     <Compile Include="media\data\audio\ManagedAudioMedia.cs" />
     <Compile Include="media\data\MediaData.cs" />
@@ -271,13 +271,13 @@
     <Compile Include="media\AbstractAudioMedia.cs" />
     <Compile Include="media\IClipped.cs" />
     <Compile Include="media\ILocated.cs" />
-    <Compile Include="media\ImageMedia.cs" />
+    <Compile Include="media\AbstractImageMedia.cs" />
     <Compile Include="media\ISized.cs" />
     <Compile Include="media\ExternalImageMedia.cs" />
     <Compile Include="media\Media.cs" />
     <None Include="media\IMediaFactory.cs" />
     <Compile Include="media\AbstractTextMedia.cs" />
-    <Compile Include="media\VideoMedia.cs" />
+    <Compile Include="media\AbstractVideoMedia.cs" />
     <Compile Include="media\MediaFactory.cs" />
     <Compile Include="media\SequenceMedia.cs" />
     <Compile Include="media\timing\Time.cs" />

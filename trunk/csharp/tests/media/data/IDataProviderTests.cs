@@ -20,9 +20,9 @@ namespace urakawa.media.data
             get { return mProject.GetPresentation(0); }
         }
 
-        protected IDataProvider mDataProvider1;
-        protected IDataProvider mDataProvider2;
-        protected IDataProvider mDataProvider3;
+        protected DataProvider mDataProvider1;
+        protected DataProvider mDataProvider2;
+        protected DataProvider mDataProvider3;
 
         private string mDefProvXukLocalName;
         private string mDefProvXulnamespaceUri;
@@ -189,7 +189,7 @@ namespace urakawa.media.data
             mDataProvider1.Delete();
             Assert.IsFalse(
                 mPresentation.DataProviderManager.IsManagerOf(uid),
-                "delete should remove the IDataProvider from it's manager");
+                "delete should remove the DataProvider from it's manager");
         }
 
         public virtual void Delete_OpenInputStream()
@@ -220,7 +220,7 @@ namespace urakawa.media.data
 
         public virtual void Copy_Basics()
         {
-            IDataProvider cpy;
+            DataProvider cpy;
             cpy = mDataProvider1.Copy();
             Assert.AreNotEqual(cpy.Uid, mDataProvider1.Uid, "The copy cannot have the same uid as the original");
             Assert.IsTrue(mDataProvider1.ValueEquals(cpy), "The copy must have the same value as the original");
@@ -284,15 +284,15 @@ namespace urakawa.media.data
             Assert.IsFalse(
                 mDataProvider1.ValueEquals(mDataProvider2),
                 "IDataProviders containing different data cannot be value equal");
-            IValueEquatableBasicTestUtils.ValueEquals_BasicTests<IDataProvider>(mDataProvider1, mDataProvider2,
+            IValueEquatableBasicTestUtils.ValueEquals_BasicTests<DataProvider>(mDataProvider1, mDataProvider2,
                                                                                 mDataProvider3);
         }
 
         public virtual void ValueEquals_MimeType()
         {
-            IDataProvider p1 = mPresentation.DataProviderFactory.CreateDataProvider("wav", mDefProvXukLocalName,
+            DataProvider p1 = mPresentation.DataProviderFactory.CreateDataProvider("wav", mDefProvXukLocalName,
                                                                                     mDefProvXulnamespaceUri);
-            IDataProvider p2 = mPresentation.DataProviderFactory.CreateDataProvider("txt", mDefProvXukLocalName,
+            DataProvider p2 = mPresentation.DataProviderFactory.CreateDataProvider("txt", mDefProvXukLocalName,
                                                                                     mDefProvXulnamespaceUri);
             Assert.IsFalse(p1.ValueEquals(p2), "IDataProviders with different MIME types can not be value equal");
         }

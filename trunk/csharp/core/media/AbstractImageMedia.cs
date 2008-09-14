@@ -6,15 +6,15 @@ namespace urakawa.media
     /// <summary>
     /// Represents images which are external media and have a height and width
     /// </summary>
-    public abstract class ImageMedia : Media, ISized
+    public abstract class AbstractImageMedia : Media, ISized
     {
 
 
         /// <summary>
         /// Default constructor - for system use only, 
-        /// <see cref="ImageMedia"/>s should only be created via. the <see cref="MediaFactory"/>
+        /// <see cref="AbstractImageMedia"/>s should only be created via. the <see cref="MediaFactory"/>
         /// </summary>
-        protected ImageMedia()
+        protected AbstractImageMedia()
         {
             SizeChanged += this_SizeChanged;
         }

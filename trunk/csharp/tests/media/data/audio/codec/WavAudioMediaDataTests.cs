@@ -1149,8 +1149,8 @@ namespace urakawa.media.data.audio.codec
         {
             WavAudioMediaData copy = mData1.Copy();
             Assert.IsTrue(mData1.ValueEquals(copy));
-            //List<IDataProvider> provList = mData1.getListOfUsedDataProviders();
-            //List<IDataProvider> provListCopy = copy.getListOfUsedDataProviders();
+            //List<DataProvider> provList = mData1.getListOfUsedDataProviders();
+            //List<DataProvider> provListCopy = copy.getListOfUsedDataProviders();
             //Assert.IsTrue(provList.Count == provListCopy.Count,"the copy does not have the same number of data providers");
             //for (int i = 0; i < provList.Count; i++)
             //{
@@ -1164,8 +1164,8 @@ namespace urakawa.media.data.audio.codec
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             WavAudioMediaData copy = mData1.Copy();
             Assert.IsTrue(mData1.ValueEquals(copy));
-            //List<IDataProvider> provList = mData1.getListOfUsedDataProviders();
-            //List<IDataProvider> provListCopy = copy.getListOfUsedDataProviders();
+            //List<DataProvider> provList = mData1.getListOfUsedDataProviders();
+            //List<DataProvider> provListCopy = copy.getListOfUsedDataProviders();
             //Assert.IsTrue(provList.Count == provListCopy.Count, "the copy does not have the same number of data providers");
             //for (int i = 0; i < provList.Count; i++)
             //{
@@ -1180,8 +1180,8 @@ namespace urakawa.media.data.audio.codec
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             WavAudioMediaData copy = mData1.Copy();
             Assert.IsTrue(mData1.ValueEquals(copy));
-            //List<IDataProvider> provList = mData1.getListOfUsedDataProviders();
-            //List<IDataProvider> provListCopy = copy.getListOfUsedDataProviders();
+            //List<DataProvider> provList = mData1.getListOfUsedDataProviders();
+            //List<DataProvider> provListCopy = copy.getListOfUsedDataProviders();
             //Assert.IsTrue(provList.Count == provListCopy.Count, "the copy does not have the same number of data providers");
             //for (int i = 0; i < provList.Count; i++)
             //{

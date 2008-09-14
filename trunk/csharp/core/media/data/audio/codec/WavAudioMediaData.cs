@@ -22,24 +22,24 @@ namespace urakawa.media.data.audio.codec
         protected class WavClip : Clip, IValueEquatable<WavClip>
         {
             /// <summary>
-            /// Constructor setting the <see cref="IDataProvider"/>, 
+            /// Constructor setting the <see cref="data.DataProvider"/>, 
             /// clip begin and clip end will in this case be initialized to <c>null</c>,
             /// which means beginning/end if the RIFF WAVE PCM data
             /// </summary>
-            /// <param name="clipDataProvider">The <see cref="IDataProvider"/></param>
-            public WavClip(IDataProvider clipDataProvider) : this(clipDataProvider, new Time(), null)
+            /// <param name="clipDataProvider">The <see cref="data.DataProvider"/></param>
+            public WavClip(DataProvider clipDataProvider) : this(clipDataProvider, new Time(), null)
             {
             }
 
             /// <summary>
-            /// Constructor setting the <see cref="IDataProvider"/> and clip begin/end values
+            /// Constructor setting the <see cref="data.DataProvider"/> and clip begin/end values
             /// </summary>
-            /// <param name="clipDataProvider">The <see cref="IDataProvider"/> - can not be <c>null</c></param>
+            /// <param name="clipDataProvider">The <see cref="data.DataProvider"/> - can not be <c>null</c></param>
             /// <param name="clipBegin">The clip begin <see cref="Time"/> - can not be <c>null</c></param>
             /// <param name="clipEnd">
             /// The clip end <see cref="Time"/>
             /// - a <c>null</c> value ties clip end to the end of the underlying wave audio</param>
-            public WavClip(IDataProvider clipDataProvider, Time clipBegin, Time clipEnd)
+            public WavClip(DataProvider clipDataProvider, Time clipBegin, Time clipEnd)
             {
                 if (clipDataProvider == null)
                 {
@@ -96,13 +96,13 @@ namespace urakawa.media.data.audio.codec
                 return new WavClip(DataProvider.Export(destPres), ClipBegin.Copy(), clipEnd);
             }
 
-            private IDataProvider mDataProvider;
+            private DataProvider mDataProvider;
 
             /// <summary>
-            /// Gets the <see cref="IDataProvider"/> storing the RIFF WAVE PCM audio data of <c>this</c>
+            /// Gets the <see cref="data.DataProvider"/> storing the RIFF WAVE PCM audio data of <c>this</c>
             /// </summary>
-            /// <returns>The <see cref="IDataProvider"/></returns>
-            public IDataProvider DataProvider
+            /// <returns>The <see cref="data.DataProvider"/></returns>
+            public DataProvider DataProvider
             {
                 get { return mDataProvider; }
             }
@@ -266,7 +266,7 @@ namespace urakawa.media.data.audio.codec
         /// <returns>The <see cref="WavClip"/></returns>
         protected WavClip CreateWavClipFromRawPCMStream(Stream pcmData, TimeDelta duration)
         {
-            IDataProvider newSingleDataProvider = MediaDataManager.DataProviderFactory.CreateDataProvider(
+            DataProvider newSingleDataProvider = MediaDataManager.DataProviderFactory.CreateDataProvider(
                 DataProviderFactory.AUDIO_WAV_MIME_TYPE);
             PCMDataInfo pcmInfo = new PCMDataInfo(PCMFormat);
             if (duration == null)
@@ -292,11 +292,11 @@ namespace urakawa.media.data.audio.codec
         }
 
         /// <summary>
-        /// Forces the PCM data to be stored in a single <see cref="IDataProvider"/>.
+        /// Forces the PCM data to be stored in a single <see cref="DataProvider"/>.
         /// </summary>
         /// <remarks>
         /// This effectively copies the data, 
-        /// since the <see cref="IDataProvider"/>(s) previously used to store the PCM data are left untouched
+        /// since the <see cref="DataProvider"/>(s) previously used to store the PCM data are left untouched
         /// </remarks>
         public void ForceSingleDataProvider()
         {
@@ -317,7 +317,7 @@ namespace urakawa.media.data.audio.codec
         #region AudioMediaData
 
         /// <summary>
-        /// Creates a copy of <c>this</c>, including copies of all <see cref="IDataProvider"/>s used by <c>this</c>
+        /// Creates a copy of <c>this</c>, including copies of all <see cref="DataProvider"/>s used by <c>this</c>
         /// </summary>
         /// <returns>The copy</returns>
         protected override AudioMediaData AudioMediaDataCopy()
@@ -326,7 +326,7 @@ namespace urakawa.media.data.audio.codec
         }
 
         /// <summary>
-        /// Creates a copy of <c>this</c>, including copies of all <see cref="IDataProvider"/>s used by <c>this</c>
+        /// Creates a copy of <c>this</c>, including copies of all <see cref="DataProvider"/>s used by <c>this</c>
         /// </summary>
         /// <returns>The copy</returns>
         public new WavAudioMediaData Copy()
@@ -389,15 +389,15 @@ namespace urakawa.media.data.audio.codec
         }
 
         /// <summary>
-        /// Gets a <see cref="List{IDataProvider}"/> of the <see cref="IDataProvider"/>s
+        /// Gets a <see cref="List{IDataProvider}"/> of the <see cref="DataProvider"/>s
         /// used to store the Wav audio data
         /// </summary>
-        /// <returns>The <see cref="List{IDataProvider}"/></returns>
-        public override List<IDataProvider> ListOfUsedDataProviders
+        /// <returns>The <see cref="List{DataProvider}"/></returns>
+        public override List<DataProvider> ListOfUsedDataProviders
         {
             get
             {
-                List<IDataProvider> usedDP = new List<IDataProvider>(mWavClips.Count);
+                List<DataProvider> usedDP = new List<DataProvider>(mWavClips.Count);
                 foreach (WavClip clip in mWavClips)
                 {
                     if (!usedDP.Contains(clip.DataProvider)) usedDP.Add(clip.DataProvider);
@@ -822,7 +822,7 @@ namespace urakawa.media.data.audio.codec
             {
                 throw new exception.XukException("dataProvider attribute is missing from WavClip element");
             }
-            IDataProvider prov;
+            DataProvider prov;
             prov = MediaDataManager.Presentation.DataProviderManager.GetDataProvider(dataProviderUid);
             mWavClips.Add(new WavClip(prov, cb, ce));
             if (!source.IsEmptyElement)

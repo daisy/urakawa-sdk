@@ -6,10 +6,9 @@ using urakawa.media.timing;
 namespace urakawa.media
 {
     /// <summary>
-    /// VideoMedia is the video object.
-    /// It is time-based, comes from an external source, and has a visual presence.
+    /// Implementation of <see cref="AbstractVideoMedia"/> based on an external file
     /// </summary>
-    public class ExternalVideoMedia : VideoMedia, IClipped, ILocated
+    public class ExternalVideoMedia : AbstractVideoMedia, IClipped, ILocated
     {
 
         private string mSrc;
@@ -193,7 +192,7 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Reads the attributes of a VideoMedia xuk element.
+        /// Reads the attributes of a ExternalVideoMedia xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
@@ -257,7 +256,7 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Writes the attributes of a VideoMedia element
+        /// Writes the attributes of a ExternalVideoMedia element
         /// </summary>
         /// <param name="destination">The destination <see cref="XmlWriter"/></param>
         /// <param name="baseUri">
@@ -334,7 +333,7 @@ namespace urakawa.media
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
         /// </exception>
-        protected override VideoMedia SplitProtected(Time splitPoint)
+        protected override AbstractVideoMedia SplitProtected(Time splitPoint)
         {
 
             if (splitPoint == null)

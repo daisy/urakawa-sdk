@@ -265,7 +265,7 @@ namespace urakawa.media.data.audio
         /// <remarks>
         /// Make sure to close any audio <see cref="Stream"/> returned by this method when no longer needed.
         /// Failing to do so may cause <see cref="exception.InputStreamsOpenException"/> when trying to added data to or delete
-        /// the <see cref="IDataProvider"/>s used by the <see cref="AudioMediaData"/> instance
+        /// the <see cref="DataProvider"/>s used by the <see cref="AudioMediaData"/> instance
         /// </remarks>
         public Stream GetAudioData(Time clipBegin)
         {
@@ -282,7 +282,7 @@ namespace urakawa.media.data.audio
         /// <remarks>
         /// Make sure to close any audio <see cref="Stream"/> returned by this method when no longer needed.
         /// Failing to do so may cause <see cref="exception.InputStreamsOpenException"/> when trying to added data to or delete
-        /// the <see cref="IDataProvider"/>s used by the <see cref="AudioMediaData"/> instance
+        /// the <see cref="DataProvider"/>s used by the <see cref="AudioMediaData"/> instance
         /// </remarks>
         public abstract Stream GetAudioData(Time clipBegin, Time clipEnd);
 
