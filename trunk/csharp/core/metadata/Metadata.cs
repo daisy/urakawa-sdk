@@ -1,37 +1,40 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using urakawa.xuk;
+using urakawa.events;
+using urakawa.events.metadata;
 
 namespace urakawa.metadata
 {
     /// <summary>
-    /// Default implementation of 
+    /// Represents <see cref="Metadata"/> of a <see cref="Presentation"/>
     /// </summary>
-    public class Metadata : XukAble, urakawa.events.IChangeNotifier
+    public class Metadata : WithPresentation, IChangeNotifier
     {
-        #region Event related members
+        #region IChangeNotifier members
 
         /// <summary>
         /// Event fired after the <see cref="Metadata"/> has changed. 
         /// The event fire before any change specific event 
         /// </summary>
-        public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
+        public event EventHandler<DataModelChangedEventArgs> Changed;
 
         /// <summary>
         /// Fires the <see cref="Changed"/> event 
         /// </summary>
         /// <param name="args">The arguments of the event</param>
-        protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
+        protected void NotifyChanged(DataModelChangedEventArgs args)
         {
-            EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
+            EventHandler<DataModelChangedEventArgs> d = Changed;
             if (d != null) d(this, args);
         }
+
+        #endregion
 
         /// <summary>
         /// Event fired after the name of the <see cref="Metadata"/> has changed
         /// </summary>
-        public event EventHandler<urakawa.events.metadata.NameChangedEventArgs> NameChanged;
+        public event EventHandler<NameChangedEventArgs> NameChanged;
 
         /// <summary>
         /// Fires the <see cref="NameChanged"/> event
@@ -40,14 +43,14 @@ namespace urakawa.metadata
         /// <param name="prevName">The name prior to the change</param>
         protected void NotifyNameChanged(string newName, string prevName)
         {
-            EventHandler<urakawa.events.metadata.NameChangedEventArgs> d = NameChanged;
-            if (d != null) d(this, new urakawa.events.metadata.NameChangedEventArgs(this, newName, prevName));
+            EventHandler<NameChangedEventArgs> d = NameChanged;
+            if (d != null) d(this, new NameChangedEventArgs(this, newName, prevName));
         }
 
         /// <summary>
         /// Event fired after the content of the <see cref="Metadata"/> has changed
         /// </summary>
-        public event EventHandler<urakawa.events.metadata.ContentChangedEventArgs> ContentChanged;
+        public event EventHandler<ContentChangedEventArgs> ContentChanged;
 
         /// <summary>
         /// Fires the <see cref="ContentChanged"/> event
@@ -56,14 +59,14 @@ namespace urakawa.metadata
         /// <param name="prevContent">The content prior to the change</param>
         protected void NotifyContentChanged(string newContent, string prevContent)
         {
-            EventHandler<urakawa.events.metadata.ContentChangedEventArgs> d = ContentChanged;
-            if (d != null) d(this, new urakawa.events.metadata.ContentChangedEventArgs(this, newContent, prevContent));
+            EventHandler<ContentChangedEventArgs> d = ContentChanged;
+            if (d != null) d(this, new ContentChangedEventArgs(this, newContent, prevContent));
         }
 
         /// <summary>
         /// Event fired after the optional attribute of the <see cref="Metadata"/> has changed
         /// </summary>
-        public event EventHandler<urakawa.events.metadata.OptionalAttributeChangedEventArgs> OptionalAttributeChanged;
+        public event EventHandler<OptionalAttributeChangedEventArgs> OptionalAttributeChanged;
 
         /// <summary>
         /// Fires the <see cref="OptionalAttributeChanged"/> event
@@ -73,28 +76,42 @@ namespace urakawa.metadata
         /// <param name="prevValue">The value of the optional attribute prior to the change</param>
         protected void NotifyOptionalAttributeChanged(string name, string newVal, string prevValue)
         {
-            EventHandler<urakawa.events.metadata.OptionalAttributeChangedEventArgs> d = OptionalAttributeChanged;
-            if (d != null)
-                d(this, new urakawa.events.metadata.OptionalAttributeChangedEventArgs(this, name, newVal, prevValue));
+            EventHandler<OptionalAttributeChangedEventArgs> d = OptionalAttributeChanged;
+            if (d != null) d(this, new OptionalAttributeChangedEventArgs(this, name, newVal, prevValue));
         }
-
-        #endregion
 
         private string mName;
 
         private Dictionary<string, string> mAttributes;
 
         /// <summary>
-        /// Default constructor, Name, Content and Scheme are initialized to <see cref="String.Empty"/>
+        /// Default constructor - for system use only, 
+        /// <see cref="Metadata"/>s should only be created via. the <see cref="MetadataFactory"/>
         /// </summary>
-        internal Metadata()
+        public Metadata()
         {
             mName = "";
             mAttributes = new Dictionary<string, string>();
             mAttributes.Add("content", "");
+            NameChanged += this_NameChanged;
+            ContentChanged += this_ContentChanged;
+            OptionalAttributeChanged += this_OptionalAttributeChanged;
         }
 
-        #region Metadata Members
+        void this_OptionalAttributeChanged(object sender, OptionalAttributeChangedEventArgs e)
+        {
+            NotifyChanged(e);
+        }
+
+        void this_ContentChanged(object sender, ContentChangedEventArgs e)
+        {
+            NotifyChanged(e);
+        }
+
+        void this_NameChanged(object sender, NameChangedEventArgs e)
+        {
+            NotifyChanged(e);
+        }
 
         /// <summary>
         /// Gets the name
@@ -193,8 +210,6 @@ namespace urakawa.metadata
             }
         }
 
-        #endregion
-
         #region IXUKAble members
 
         /// <summary>
@@ -248,8 +263,7 @@ namespace urakawa.metadata
         /// <returns>The result as a <see cref="bool"/></returns>
         public bool ValueEquals(Metadata other)
         {
-            if (!(other is Metadata)) return false;
-            Metadata mOther = (Metadata) other;
+            if (other==null) return false;
             if (Name != other.Name) return false;
             List<string> names = ListOfOptionalAttributeNames;
             List<string> otherNames = ListOfOptionalAttributeNames;

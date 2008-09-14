@@ -4,9 +4,6 @@
  elementFormDefault="qualified"
  targetNamespace="http://www.daisy.org/urakawa/xuk/2.0"
  xmlns="http://www.daisy.org/urakawa/xuk/2.0">
-	<xs:element name="MetadataFactory">
-		<xs:complexType/>
-	</xs:element>
 	<xs:element name="Metadata">
 		<xs:complexType>
 			<xs:attribute name="name" use="required" type="xs:string"/>
