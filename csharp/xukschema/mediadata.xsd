@@ -86,9 +86,6 @@
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:element name="PCMDataInfo" type="PCMDataInfoType"/>
-	<xs:element name="DataProviderFactory">
-		<xs:complexType/>
-	</xs:element>
 	<xs:element name="DataProviderManager">
 		<xs:complexType>
 			<xs:sequence>

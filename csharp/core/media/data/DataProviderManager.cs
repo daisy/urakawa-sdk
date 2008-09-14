@@ -9,14 +9,14 @@ using urakawa.xuk;
 namespace urakawa.media.data
 {
     /// <summary>
-    /// Manager for <see cref="IDataProvider"/>s
+    /// Manager for <see cref="DataProvider"/>s
     /// </summary>
     public class DataProviderManager : WithPresentation
     {
-        private Dictionary<string, IDataProvider> mDataProvidersDictionary = new Dictionary<string, IDataProvider>();
+        private Dictionary<string, DataProvider> mDataProvidersDictionary = new Dictionary<string, DataProvider>();
 
-        private Dictionary<IDataProvider, string> mReverseLookupDataProvidersDictionary =
-            new Dictionary<IDataProvider, string>();
+        private Dictionary<DataProvider, string> mReverseLookupDataProvidersDictionary =
+            new Dictionary<DataProvider, string>();
 
         private List<string> mXukedInFilDataProviderPaths = new List<string>();
         private string mDataFileDirectory;
@@ -45,12 +45,12 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Appends data from a given input <see cref="Stream"/> to a given <see cref="IDataProvider"/>
+        /// Appends data from a given input <see cref="Stream"/> to a given <see cref="DataProvider"/>
         /// </summary>
         /// <param name="data">The given input stream</param>
         /// <param name="count">The number of bytes to append</param>
         /// <param name="provider">The given data provider</param>
-        public static void AppendDataToProvider(Stream data, int count, IDataProvider provider)
+        public static void AppendDataToProvider(Stream data, int count, DataProvider provider)
         {
             Stream provOutputStream = provider.GetOutputStream();
             try
@@ -85,7 +85,7 @@ namespace urakawa.media.data
         /// <param name="dp1">Data provider 1</param>
         /// <param name="dp2">Data provider 2</param>
         /// <returns>A <see cref="bool"/> indicating if the data content is identical</returns>
-        public static bool CompareDataProviderContent(IDataProvider dp1, IDataProvider dp2)
+        public static bool CompareDataProviderContent(DataProvider dp1, DataProvider dp2)
         {
             Stream s1 = null;
             Stream s2 = null;
@@ -283,10 +283,8 @@ namespace urakawa.media.data
                 res = Path.ChangeExtension(Path.GetRandomFileName(), extension);
                 foreach (FileDataProvider prov in ListOfManagedFileDataProviders)
                 {
-                    if (res.ToLower() == prov.DataFileRelativePath.ToLower())
-                    {
-                        continue;
-                    }
+                    if (!prov.IsDataFileInitialized) continue;
+                    if (res.ToLower() == prov.DataFileRelativePath.ToLower()) continue;
                 }
                 break;
             }
@@ -303,7 +301,7 @@ namespace urakawa.media.data
             get
             {
                 List<FileDataProvider> res = new List<FileDataProvider>();
-                foreach (IDataProvider prov in ListOfDataProviders)
+                foreach (DataProvider prov in ListOfDataProviders)
                 {
                     if (prov is FileDataProvider)
                     {
@@ -347,11 +345,11 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Detaches one of the <see cref="IDataProvider"/>s managed by the manager
+        /// Detaches one of the <see cref="DataProvider"/>s managed by the manager
         /// </summary>
-        /// <param name="provider">The <see cref="IDataProvider"/> to delete</param>
+        /// <param name="provider">The <see cref="DataProvider"/> to delete</param>
         /// <param name="delete">A <see cref="bool"/> indicating if the removed data provider should be deleted</param>
-        public void RemoveDataProvider(IDataProvider provider, bool delete)
+        public void RemoveDataProvider(DataProvider provider, bool delete)
         {
             if (provider == null)
             {
@@ -370,13 +368,13 @@ namespace urakawa.media.data
 
 
         /// <summary>
-        /// Detaches the <see cref="IDataProvider"/> with a given UID from the manager
+        /// Detaches the <see cref="DataProvider"/> with a given UID from the manager
         /// </summary>
         /// <param name="uid">The given UID</param>
         /// <param name="delete">A <see cref="bool"/> indicating if the removed data provider should be deleted</param>
         public void RemoveDataProvider(string uid, bool delete)
         {
-            IDataProvider provider = GetDataProvider(uid);
+            DataProvider provider = GetDataProvider(uid);
             if (delete)
             {
                 provider.Delete();
@@ -387,14 +385,14 @@ namespace urakawa.media.data
             }
         }
 
-        private void RemoveDataProvider(string uid, IDataProvider provider)
+        private void RemoveDataProvider(string uid, DataProvider provider)
         {
             mDataProvidersDictionary.Remove(uid);
             mReverseLookupDataProvidersDictionary.Remove(provider);
         }
 
         /// <summary>
-        /// Gets the UID of a given <see cref="IDataProvider"/>
+        /// Gets the UID of a given <see cref="DataProvider"/>
         /// </summary>
         /// <param name="provider">The given data provider</param>
         /// <returns>The UID of <paramref name="provider"/></returns>
@@ -404,7 +402,7 @@ namespace urakawa.media.data
         /// <exception cref="exception.IsNotManagerOfException">
         /// Thrown when data provider <paramref name="provider"/> is not managed by <c>this</c>
         /// </exception>
-        public string GetUidOfDataProvider(IDataProvider provider)
+        public string GetUidOfDataProvider(DataProvider provider)
         {
             if (provider == null)
             {
@@ -418,7 +416,7 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Gets the <see cref="IDataProvider"/> with a given UID
+        /// Gets the <see cref="DataProvider"/> with a given UID
         /// </summary>
         /// <param name="uid">The given UID</param>
         /// <returns>The data provider with the given UID</returns>
@@ -428,7 +426,7 @@ namespace urakawa.media.data
         /// <exception cref="exception.IsNotManagerOfException">
         /// When no data providers managed by <c>this</c> has the given UID
         /// </exception>
-        public IDataProvider GetDataProvider(string uid)
+        public DataProvider GetDataProvider(string uid)
         {
             if (uid == null)
             {
@@ -443,7 +441,7 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Adds a <see cref="IDataProvider"/> to the manager with a given uid
+        /// Adds a <see cref="DataProvider"/> to the manager with a given uid
         /// </summary>
         /// <param name="provider">The data provider to add</param>
         /// <param name="uid">The uid to assign to the added data provider</param>
@@ -455,7 +453,7 @@ namespace urakawa.media.data
         /// or if the manager already manages another data provider with the given uid
         /// </exception>
         /// <exception cref="exception.IsNotManagerOfException">Thrown if the data provides does not have <c>this</c> as manager</exception>
-        protected void AddDataProvider(IDataProvider provider, string uid)
+        protected void AddDataProvider(DataProvider provider, string uid)
         {
             if (provider == null)
             {
@@ -487,7 +485,7 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Adds a <see cref="IDataProvider"/> to be managed by the manager
+        /// Adds a <see cref="DataProvider"/> to be managed by the manager
         /// </summary>
         /// <param name="provider">The data provider</param>
         /// <exception cref="exception.MethodParameterIsNullException">
@@ -499,18 +497,18 @@ namespace urakawa.media.data
         /// <exception cref="exception.IsNotManagerOfException">
         /// Thrown when <paramref name="provider"/> does not return <c>this</c> as owning manager
         /// </exception>
-        /// <seealso cref="IDataProvider.DataProviderManager"/>
-        public void AddDataProvider(IDataProvider provider)
+        /// <seealso cref="DataProvider.DataProviderManager"/>
+        public void AddDataProvider(DataProvider provider)
         {
             AddDataProvider(provider, GetNextUid());
         }
 
         /// <summary>
-        /// Determines if the manager manages a <see cref="IDataProvider"/> with a given uid
+        /// Determines if the manager manages a <see cref="DataProvider"/> with a given uid
         /// </summary>
         /// <param name="uid">The given uid</param>
         /// <returns>
-        /// A <see cref="bool"/> indicating if the manager manages a <see cref="IDataProvider"/> with the given uid
+        /// A <see cref="bool"/> indicating if the manager manages a <see cref="DataProvider"/> with the given uid
         /// </returns>
         public bool IsManagerOf(string uid)
         {
@@ -518,11 +516,11 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Sets the uid of a given <see cref="IDataProvider"/> to a given value
+        /// Sets the uid of a given <see cref="DataProvider"/> to a given value
         /// </summary>
         /// <param name="provider">The given data provider</param>
         /// <param name="uid">The given uid</param>
-        public void SetDataProviderUid(IDataProvider provider, string uid)
+        public void SetDataProviderUid(DataProvider provider, string uid)
         {
             RemoveDataProvider(provider, false);
             AddDataProvider(provider, uid);
@@ -542,30 +540,30 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Gets a list of the <see cref="IDataProvider"/>s managed by the manager
+        /// Gets a list of the <see cref="DataProvider"/>s managed by the manager
         /// </summary>
         /// <returns>The list</returns>
-        public List<IDataProvider> ListOfDataProviders
+        public List<DataProvider> ListOfDataProviders
         {
-            get { return new List<IDataProvider>(mDataProvidersDictionary.Values); }
+            get { return new List<DataProvider>(mDataProvidersDictionary.Values); }
         }
 
         /// <summary>
-        /// Remove all <see cref="IDataProvider"/> that are managed by the manager, 
+        /// Remove all <see cref="DataProvider"/> that are managed by the manager, 
         /// but are not used by any <see cref="MediaData"/>
         /// </summary>
         /// <param name="delete">A <see cref="bool"/> indicating if the removed data providers should be deleted</param>
         public void RemoveUnusedDataProviders(bool delete)
         {
-            List<IDataProvider> usedDataProviders = new List<IDataProvider>();
+            List<DataProvider> usedDataProviders = new List<DataProvider>();
             foreach (MediaData md in Presentation.MediaDataManager.ListOfMediaData)
             {
-                foreach (IDataProvider prov in md.ListOfUsedDataProviders)
+                foreach (DataProvider prov in md.ListOfUsedDataProviders)
                 {
                     if (!usedDataProviders.Contains(prov)) usedDataProviders.Add(prov);
                 }
             }
-            foreach (IDataProvider prov in ListOfDataProviders)
+            foreach (DataProvider prov in ListOfDataProviders)
             {
                 if (!usedDataProviders.Contains(prov))
                 {
@@ -579,7 +577,7 @@ namespace urakawa.media.data
         #region IXukAble Members
 
         /// <summary>
-        /// Clears the <see cref="DataProviderManager"/>, clearing any links to <see cref="IDataProvider"/>s
+        /// Clears the <see cref="DataProviderManager"/>, clearing any links to <see cref="DataProvider"/>s
         /// </summary>
         protected override void Clear()
         {
@@ -669,7 +667,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        IDataProvider prov = DataProviderFactory.CreateDataProvider("", source.LocalName,
+                        DataProvider prov = DataProviderFactory.CreateDataProvider("", source.LocalName,
                                                                                     source.NamespaceURI);
                         if (prov != null)
                         {
@@ -750,7 +748,7 @@ namespace urakawa.media.data
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             destination.WriteStartElement("mDataProviders", XukAble.XUK_NS);
-            foreach (IDataProvider prov in ListOfDataProviders)
+            foreach (DataProvider prov in ListOfDataProviders)
             {
                 destination.WriteStartElement("mDataProviderItem", XukAble.XUK_NS);
                 destination.WriteAttributeString("uid", prov.Uid);
@@ -776,9 +774,9 @@ namespace urakawa.media.data
             if (other == null) return false;
             DataProviderManager o = (DataProviderManager) other;
             if (o.DataFileDirectory != DataFileDirectory) return false;
-            List<IDataProvider> oDP = ListOfDataProviders;
+            List<DataProvider> oDP = ListOfDataProviders;
             if (o.ListOfDataProviders.Count != oDP.Count) return false;
-            foreach (IDataProvider dp in oDP)
+            foreach (DataProvider dp in oDP)
             {
                 string uid = dp.Uid;
                 if (!o.IsManagerOf(uid)) return false;

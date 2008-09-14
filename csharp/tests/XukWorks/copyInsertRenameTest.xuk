@@ -48,6 +48,11 @@
 						<Type XukLocalName="ManagedAudioMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.data.ManagedAudioMedia"/>
 					</mRegisteredTypes>
 				</MediaFactory>
+				<DataProviderFactory>
+					<mRegisteredTypes>
+						<Type XukLocalName="FileDataProvider" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.data.FileDataProvider"/>
+					</mRegisteredTypes>
+				</DataProviderFactory>
 				<mDataProviderManager/>
 				<mMediaDataManager/>
 				<CommandFactory>

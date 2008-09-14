@@ -8,9 +8,9 @@ using urakawa.xuk;
 namespace urakawa.media.data
 {
     /// <summary>
-    /// factory for creating <see cref="IDataProvider"/>s
+    /// Factory for creating <see cref="DataProvider"/>s
     /// </summary>
-    public class DataProviderFactory : WithPresentation
+    public class DataProviderFactory : GenericFactory<DataProvider>
     {
         /// <summary>
         /// Default constructor
@@ -19,28 +19,18 @@ namespace urakawa.media.data
         {
         }
 
-        #region DataProviderFactory Members
-
         /// <summary>
-        /// Gets the <see cref="data.DataProviderManager"/> that owns the factory 
-        /// and manages the data providers created by the factory
+        /// Inistalizes an created instance by assigning it an owning <see cref="Presentation"/>
         /// </summary>
-        /// <returns>The manager</returns>
-        /// <exception cref="exception.IncompatibleManagerOrFactoryException">
-        /// Thrown when <c>getPresentation().getDataProviderManager()</c> is not a <see cref="data.DataProviderManager"/>
-        /// </exception>
-        public DataProviderManager DataProviderManager
+        /// <param name="instance">The instance to initialize</param>
+        /// <remarks>
+        /// In derived factories, this method can be overridden in order to do additional initialization.
+        /// In this case the developer must remember to call <c>base.InitializeInstance(instance)</c>
+        /// </remarks>
+        protected override void InitializeInstance(DataProvider instance)
         {
-            get
-            {
-                DataProviderManager mngr = Presentation.DataProviderManager as DataProviderManager;
-                if (mngr == null)
-                {
-                    throw new exception.IncompatibleManagerOrFactoryException(
-                        "The DataProviderManager of the Presentation owning a DataProviderFactory must be a DataProviderManager");
-                }
-                return mngr;
-            }
+            base.InitializeInstance(instance);
+            Presentation.DataProviderManager.AddDataProvider(instance);
         }
 
         /// <summary>
@@ -130,7 +120,7 @@ namespace urakawa.media.data
         /// </summary>
         /// <param name="mimeType">The given MIME type</param>
         /// <returns>The created data provider</returns>
-        public virtual IDataProvider CreateDataProvider(string mimeType)
+        public virtual DataProvider CreateDataProvider(string mimeType)
         {
             return CreateFileDataProvider(mimeType);
         }
@@ -147,11 +137,8 @@ namespace urakawa.media.data
                 throw new exception.MethodParameterIsNullException(
                     "Can not create a FileDataProvider for a null MIME type");
             }
-            FileDataProvider newProv;
-            newProv = new FileDataProvider(
-                DataProviderManager,
-                DataProviderManager.GetNewDataFileRelPath(GetExtensionFromMimeType(mimeType)),
-                mimeType);
+            FileDataProvider newProv = Create<FileDataProvider>();
+            newProv.MimeType = mimeType;
             return newProv;
         }
 
@@ -165,7 +152,7 @@ namespace urakawa.media.data
         /// <exception cref="exception.MethodParameterIsNullException">
         /// Thrown when <paramref name="xukLocalName"/> or <paramref name="xukNamespaceUri"/> is <c>null</c>
         /// </exception>
-        public virtual IDataProvider CreateDataProvider(string mimeType, string xukLocalName, string xukNamespaceUri)
+        public virtual DataProvider CreateDataProvider(string mimeType, string xukLocalName, string xukNamespaceUri)
         {
             if (xukLocalName == null || xukNamespaceUri == null)
             {
@@ -181,7 +168,5 @@ namespace urakawa.media.data
             }
             return null;
         }
-
-        #endregion
     }
 }

@@ -64,7 +64,7 @@
 				<xs:element name="ChannelFactory" />
 				<xs:element ref="mChannelsManager" minOccurs="0" />
 				<xs:element name="MediaFactory" type="GenericFactory" />
-				<xs:element ref="mDataProviderFactory" minOccurs="0" />
+				<xs:element name="DataProviderFactory" type="GenericFactory" />
 				<xs:element ref="mDataProviderManager" minOccurs="0" />
 				<xs:element ref="mMediaDataFactory" minOccurs="0" />
 				<xs:element ref="mMediaDataManager" minOccurs="0" />
@@ -132,17 +132,6 @@
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="1">
 				<xs:element ref="ChannelsManager"/>
-				<xs:any namespace="##other" processContents="lax" />
-			</xs:choice>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="mDataProviderFactory">
-		<xs:annotation>
-			<xs:documentation>Container for an element representing a DataPropertyFactory</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:choice minOccurs="0" maxOccurs="1">
-				<xs:element ref="DataProviderFactory"/>
 				<xs:any namespace="##other" processContents="lax" />
 			</xs:choice>
 		</xs:complexType>

@@ -81,7 +81,7 @@ namespace urakawa.oldTests
             obj.ClipBegin = new Time(0);
             obj.ClipEnd = new Time(1000);
 
-            VideoMedia new_obj = (VideoMedia) obj.Split(new Time(600));
+            AbstractVideoMedia new_obj = (AbstractVideoMedia) obj.Split(new Time(600));
 
             TimeDelta td_1 = obj.Duration;
             TimeDelta td_2 = new_obj.Duration;
