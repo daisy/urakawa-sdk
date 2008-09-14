@@ -205,6 +205,8 @@ namespace urakawa
         private bool mRootNodeInitialized;
         private Uri mRootUri;
         private string mLanguage;
+        private List<Metadata> mMetadata;
+        private MetadataFactory mMetadataFactory;
 
         /// <summary>
         /// Gets the <see cref="Project"/> of <c>this</c>
@@ -756,41 +758,20 @@ namespace urakawa
 
         #region Metadata
 
-        private List<Metadata> mMetadata;
-        private MetadataFactory mMetadataFactory;
-
 
         /// <summary>
         /// Gets the <see cref="MetadataFactory"/> of <c>this</c>
         /// </summary>
-        /// <returns>The factory</returns>
-        /// <exception cref="exception.IsNotInitializedException">
-        /// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="core.TreeNodeFactory"/>
-        /// </exception>
         public MetadataFactory MetadataFactory
         {
             get
             {
                 if (mMetadataFactory == null)
                 {
-                    MetadataFactory = DataModelFactory.CreateMetadataFactory();
+                    mMetadataFactory = new MetadataFactory();
+                    mMetadataFactory.Presentation = this;
                 }
                 return mMetadataFactory;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The MetadataFactory can not be null");
-                }
-                if (mMetadataFactory != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a MetadataFactory");
-                }
-                mMetadataFactory = value;
-                mMetadataFactory.Presentation = this;
             }
         }
 
@@ -954,7 +935,7 @@ namespace urakawa
             {
                 if (source.NodeType == XmlNodeType.Element)
                 {
-                    Metadata newMeta = MetadataFactory.CreateMetadata(source.LocalName, source.NamespaceURI);
+                    Metadata newMeta = MetadataFactory.Create(source.LocalName, source.NamespaceURI);
                     if (newMeta != null)
                     {
                         mMetadata.Add(newMeta);
@@ -1067,7 +1048,7 @@ namespace urakawa
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
@@ -1084,8 +1065,8 @@ namespace urakawa
                     case "mChannelsManager":
                         XukInXukAbleFromChild<ChannelsManager>(
                             source, null,
-                            new CreatorDelegate<ChannelsManager>(DataModelFactory.CreateChannelsManager),
-                            new SetDelegate<ChannelsManager>(delegate(ChannelsManager val) { ChannelsManager = val; }),
+                            DataModelFactory.CreateChannelsManager,
+                            delegate(ChannelsManager val) { ChannelsManager = val; },
                             handler);
                         break;
                     case "MediaFactory":
@@ -1094,30 +1075,28 @@ namespace urakawa
                     case "mMediaDataFactory":
                         XukInXukAbleFromChild<MediaDataFactory>(
                             source, null,
-                            new CreatorDelegate<MediaDataFactory>(DataModelFactory.CreateMediaDataFactory),
-                            new SetDelegate<MediaDataFactory>(delegate(MediaDataFactory val) { MediaDataFactory = val; }),
+                            DataModelFactory.CreateMediaDataFactory,
+                            delegate(MediaDataFactory val) { MediaDataFactory = val; },
                             handler);
                         break;
                     case "mMediaDataManager":
                         XukInXukAbleFromChild<MediaDataManager>(
                             source, null,
-                            new CreatorDelegate<MediaDataManager>(DataModelFactory.CreateMediaDataManager),
-                            new SetDelegate<MediaDataManager>(delegate(MediaDataManager val) { MediaDataManager = val; }),
+                            DataModelFactory.CreateMediaDataManager,
+                            delegate(MediaDataManager val) { MediaDataManager = val; },
                             handler);
                         break;
                     case "mDataProviderFactory":
                         XukInXukAbleFromChild<DataProviderFactory>(
                             source, null,
-                            new CreatorDelegate<DataProviderFactory>(DataModelFactory.CreateDataProviderFactory),
-                            new SetDelegate<DataProviderFactory>(
-                                delegate(DataProviderFactory val) { DataProviderFactory = val; }), handler);
+                            DataModelFactory.CreateDataProviderFactory,
+                            delegate(DataProviderFactory val) { DataProviderFactory = val; }, handler);
                         break;
                     case "mDataProviderManager":
                         XukInXukAbleFromChild<DataProviderManager>(
                             source, null,
-                            new CreatorDelegate<DataProviderManager>(DataModelFactory.CreateDataProviderManager),
-                            new SetDelegate<DataProviderManager>(
-                                delegate(DataProviderManager val) { DataProviderManager = val; }), handler);
+                            DataModelFactory.CreateDataProviderManager,
+                            delegate(DataProviderManager val) { DataProviderManager = val; }, handler);
                         break;
                     case "CommandFactory":
                         CommandFactory.XukIn(source, handler);
@@ -1125,16 +1104,12 @@ namespace urakawa
                     case "mUndoRedoManager":
                         XukInXukAbleFromChild<UndoRedoManager>(
                             source, null,
-                            new CreatorDelegate<UndoRedoManager>(DataModelFactory.CreateUndoRedoManager),
-                            new SetDelegate<UndoRedoManager>(delegate(UndoRedoManager val) { UndoRedoManager = val; }),
+                            DataModelFactory.CreateUndoRedoManager,
+                            delegate(UndoRedoManager val) { UndoRedoManager = val; },
                             handler);
                         break;
-                    case "mMetadataFactory":
-                        XukInXukAbleFromChild<metadata.MetadataFactory>(
-                            source, null,
-                            new CreatorDelegate<MetadataFactory>(DataModelFactory.CreateMetadataFactory),
-                            new SetDelegate<MetadataFactory>(delegate(MetadataFactory val) { MetadataFactory = val; }),
-                            handler);
+                    case "MetadataFactory":
+                        MetadataFactory.XukIn(source, handler);
                         break;
                     case "mMetadata":
                         XukInMetadata(source, handler);

@@ -89,6 +89,11 @@
 						<Type XukLocalName="CompositeCommand" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.command.CompositeCommand"/>
 					</mRegisteredTypes>
 				</CommandFactory>
+				<MetadataFactory>
+					<mRegisteredTypes>
+						<Type XukLocalName="Metadata" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.metadata.Metadata"/>
+					</mRegisteredTypes>
+				</MetadataFactory>
 				<mMetadata>
 					<Metadata name="dc:Author" content="Ole Holst Andersen" />
 					<Metadata name="dc:Title" content="Media Data XUK Sample" />
