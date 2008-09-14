@@ -11,7 +11,7 @@ namespace urakawa.media
     public class ExternalAudioMediaTests : ExternalMediaTests
     {
         public ExternalAudioMediaTests()
-            : base(typeof (ExternalAudioMedia).Name, XukAble.XUK_NS)
+            : base(typeof (ExternalAudioMedia))
         {
         }
 

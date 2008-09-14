@@ -16,7 +16,7 @@ namespace urakawa.media
 
         private void Reset()
         {
-            mSrc = null;
+            mSrc = ".";
         }
 
         /// <summary>
@@ -276,17 +276,19 @@ namespace urakawa.media
 
 
         /// <summary>
-        /// Gets the src value. The default value is "."
+        /// Gets or sets the src value. The default value is "."
         /// </summary>
-        /// <returns>The src value</returns>
+        /// <exception cref="exception.MethodParameterIsEmptyStringException">
+        /// Thrown when trying to set the <see cref="Src"/> value to <c>null</c></exception>
         public string Src
         {
             get { return mSrc; }
             set
             {
-                if (value == null) throw new exception.MethodParameterIsNullException("The src value can not be null");
+                if (value == null)
+                    throw new exception.MethodParameterIsNullException("The src value cannot be null");
                 if (value == "")
-                    throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
+                    throw new exception.MethodParameterIsEmptyStringException("The src value cannot be an empty string");
                 string prevSrc = mSrc;
                 mSrc = value;
                 if (mSrc != prevSrc) NotifySrcChanged(mSrc, prevSrc);
@@ -294,10 +296,10 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Gets the <see cref="Uri"/> of the <see cref="ExternalTextMedia"/> 
+        /// Gets the <see cref="Uri"/> of the <see cref="ExternalAudioMedia"/> 
         /// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
         /// </summary>
-        /// <returns>The <see cref="Uri"/></returns>
+        /// <returns>The <see cref="Uri"/> - <c>null</c> if <see cref="Src"/> is <c>null</c></returns>
         /// <exception cref="exception.InvalidUriException">
         /// Thrown when the value <see cref="Src"/> is not a well-formed <see cref="Uri"/>
         /// </exception>
@@ -305,6 +307,7 @@ namespace urakawa.media
         {
             get
             {
+                if (Src == null) return null;
                 if (!Uri.IsWellFormedUriString(Src, UriKind.RelativeOrAbsolute))
                 {
                     throw new exception.InvalidUriException(String.Format(

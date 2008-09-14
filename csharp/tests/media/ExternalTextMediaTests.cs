@@ -9,7 +9,8 @@ namespace urakawa.media
     [TestFixture, Description("Tests the ExternalTextMedia functionality")]
     public class ExternalTextMediaTests : ExternalMediaTests
     {
-        public ExternalTextMediaTests() : base(typeof (ExternalTextMedia).Name, XukAble.XUK_NS)
+        public ExternalTextMediaTests() 
+            : base(typeof (ExternalTextMedia))
         {
         }
 

@@ -11,9 +11,9 @@ using urakawa.events.media.data;
 namespace urakawa.media.data.audio
 {
     /// <summary>
-    /// Managed implementation of <see cref="AudioMedia"/>, that uses <see cref="audio.AudioMediaData"/> to store audio data
+    /// Managed implementation of <see cref="AbstractAudioMedia"/>, that uses <see cref="audio.AudioMediaData"/> to store audio data
     /// </summary>
-    public class ManagedAudioMedia : AudioMedia, IManaged
+    public class ManagedAudioMedia : AbstractAudioMedia, IManaged
     {
 
 
@@ -236,7 +236,7 @@ namespace urakawa.media.data.audio
         /// <param name="splitPoint">The <see cref="Time"/> at which to split - 
         /// must be between clip begin and clip end <see cref="Time"/>s</param>
         /// <returns>
-        /// A newly created <see cref="AudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
+        /// A newly created <see cref="AbstractAudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
         /// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
         /// </returns>
         /// <exception cref="exception.MethodParameterIsNullException">
@@ -245,7 +245,7 @@ namespace urakawa.media.data.audio
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
         /// </exception>
-        protected override AudioMedia SplitProtected(Time splitPoint)
+        protected override AbstractAudioMedia SplitProtected(Time splitPoint)
         {
             AudioMediaData secondPartData = AudioMediaData.Split(splitPoint);
             ManagedAudioMedia secondPartMAM = this.MediaFactory.Create<ManagedAudioMedia>();
@@ -337,7 +337,8 @@ namespace urakawa.media.data.audio
                 if (mAudioMediaData == value) return;
                 if (mAudioMediaData != null) mAudioMediaData.Changed -= AudioMediaData_Changed;
                 AudioMediaData prevData = mAudioMediaData;
-                mAudioMediaData.Changed += AudioMediaData_Changed;
+                mAudioMediaData = value;
+                if (mAudioMediaData !=null) mAudioMediaData.Changed += AudioMediaData_Changed;
                 NotifyMediaDataChanged(this, mAudioMediaData, prevData);
             }
         }

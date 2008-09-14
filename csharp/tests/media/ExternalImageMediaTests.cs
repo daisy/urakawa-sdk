@@ -10,7 +10,7 @@ namespace urakawa.media
     public class ExternalImageMediaTests : ExternalMediaTests
     {
         public ExternalImageMediaTests()
-            : base(typeof (ExternalImageMedia).Name, XukAble.XUK_NS)
+            : base(typeof (ExternalImageMedia))
         {
         }
 

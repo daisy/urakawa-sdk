@@ -116,9 +116,9 @@ namespace urakawa.oldTests
         [Test]
         public void checkTypeAfterCopy()
         {
-            AudioMedia audio = factory.Create<ExternalAudioMedia>();
+            AbstractAudioMedia audio = factory.Create<ExternalAudioMedia>();
 
-            AudioMedia audio_copy = (AudioMedia) audio.Copy();
+            AbstractAudioMedia audio_copy = (AbstractAudioMedia) audio.Copy();
 
             Assert.AreEqual(audio_copy.GetType(), audio.GetType());
         }
@@ -138,7 +138,7 @@ namespace urakawa.oldTests
             }
             Assert.IsFalse(
                 exceptionOccured,
-                "Media.copy() method was probably not overridden in AudioMedia subclass of ExternalMedia");
+                "Media.copy() method was probably not overridden in AbstractAudioMedia subclass of ExternalMedia");
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace urakawa.oldTests
         {
             SequenceMedia obj = factory.CreateSequenceMedia();
 
-            AudioMedia audio_obj = factory.Create<ExternalAudioMedia>();
+            AbstractAudioMedia audio_obj = factory.Create<ExternalAudioMedia>();
             AbstractTextMedia text_obj = factory.CreateTextMedia();
 
             obj.InsertItem(obj.Count, audio_obj);

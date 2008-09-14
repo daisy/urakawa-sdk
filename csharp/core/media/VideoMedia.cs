@@ -50,7 +50,7 @@ namespace urakawa.media
         /// <param name="splitPoint">The <see cref="Time"/> at which to split - 
         /// must be between clip begin and clip end <see cref="Time"/>s</param>
         /// <returns>
-        /// A newly created <see cref="AudioMedia"/> containing the video after <paramref localName="splitPoint"/>,
+        /// A newly created <see cref="AbstractAudioMedia"/> containing the video after <paramref localName="splitPoint"/>,
         /// <c>this</c> retains the video before <paramref localName="splitPoint"/>.
         /// </returns>
         /// <exception cref="exception.MethodParameterIsNullException">

@@ -5,15 +5,6 @@
  targetNamespace="http://www.daisy.org/urakawa/xuk/2.0"
  xmlns="http://www.daisy.org/urakawa/xuk/2.0">
 	<xs:include schemaLocation="xuk.xsd"/>
-	<xs:element name="ChannelFactory">
-		<xs:annotation>
-			<xs:documentation>
-				The ChannelFactory element represents a ChannelFactory
-				- since the ChannelFactory has no persistable data, the element is empty
-			</xs:documentation>
-		</xs:annotation>
-		<xs:complexType/>
-	</xs:element>
 	<xs:element name="ChannelsManager">
 		<xs:annotation>
 			<xs:documentation>

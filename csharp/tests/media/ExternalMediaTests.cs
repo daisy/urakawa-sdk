@@ -22,7 +22,8 @@ namespace urakawa.media
             get { return mMedia3 as ILocated; }
         }
 
-        protected ExternalMediaTests(string mediaXukLN, string mediaXukNS) : base(mediaXukLN, mediaXukNS)
+        protected ExternalMediaTests(Type extMediaTp)
+            : base(extMediaTp)
         {
         }
 

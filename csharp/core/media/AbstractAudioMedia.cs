@@ -6,7 +6,7 @@ namespace urakawa.media
     /// <summary>
     /// Interface for audio <see cref="Media"/> which is <see cref="IContinuous"/>
     /// </summary>
-    public abstract class AudioMedia : Media, IContinuous
+    public abstract class AbstractAudioMedia : Media, IContinuous
     {
 
         #region Implementation of IContinuous
@@ -28,7 +28,7 @@ namespace urakawa.media
         /// <param name="splitPoint">The <see cref="Time"/> at which to split - 
         /// must be between clip begin and clip end <see cref="Time"/>s</param>
         /// <returns>
-        /// A newly created <see cref="AudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
+        /// A newly created <see cref="AbstractAudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
         /// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
         /// </returns>
         /// <exception cref="exception.MethodParameterIsNullException">
@@ -37,7 +37,7 @@ namespace urakawa.media
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
         /// </exception>
-        public AudioMedia Split(Time splitPoint)
+        public AbstractAudioMedia Split(Time splitPoint)
         {
             return SplitProtected(splitPoint);
         }
@@ -48,7 +48,7 @@ namespace urakawa.media
         /// <param name="splitPoint">The <see cref="Time"/> at which to split - 
         /// must be between clip begin and clip end <see cref="Time"/>s</param>
         /// <returns>
-        /// A newly created <see cref="AudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
+        /// A newly created <see cref="AbstractAudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
         /// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
         /// </returns>
         /// <exception cref="exception.MethodParameterIsNullException">
@@ -57,7 +57,7 @@ namespace urakawa.media
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
         /// </exception>
-        protected abstract AudioMedia SplitProtected(Time splitPoint);
+        protected abstract AbstractAudioMedia SplitProtected(Time splitPoint);
 
         #endregion
     }

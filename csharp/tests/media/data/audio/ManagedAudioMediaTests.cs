@@ -15,8 +15,7 @@ namespace urakawa.media.data.audio
     [TestFixture, Description("Tests the ManagedAudioMedia functionality")]
     public class ManagedAudioMediaTests : IMediaTests
     {
-        public ManagedAudioMediaTests()
-            : base(typeof (ManagedAudioMedia).Name, XukAble.XUK_NS)
+        public ManagedAudioMediaTests() : base(typeof (ManagedAudioMedia))
         {
         }
 
