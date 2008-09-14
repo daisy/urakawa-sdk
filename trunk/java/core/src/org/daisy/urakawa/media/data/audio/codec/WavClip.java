@@ -155,7 +155,7 @@ public class WavClip extends Clip implements IValueEquatable<WavClip>
             clipEnd = getClipEnd().copy();
         try
         {
-            return new WavClip(getDataProvider().copy(), getClipBegin().copy(),
+            return new WavClip(getDataProvider(), getClipBegin().copy(),
                     clipEnd);
         }
         catch (MethodParameterIsNullException e)
