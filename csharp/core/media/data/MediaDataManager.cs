@@ -593,7 +593,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        data = MediaDataFactory.CreateMediaData(source.LocalName, source.NamespaceURI);
+                        data = MediaDataFactory.Create(source.LocalName, source.NamespaceURI);
                         if (data != null)
                         {
                             data.XukIn(source, handler);

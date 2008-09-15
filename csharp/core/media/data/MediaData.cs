@@ -59,7 +59,7 @@ namespace urakawa.media.data
         /// <summary>
         /// Default constructor
         /// </summary>
-        public MediaData()
+        protected MediaData()
         {
             this.NameChanged += new EventHandler<NameChangedEventArgs>(this_nameChanged);
         }

@@ -54,6 +54,11 @@
 					</mRegisteredTypes>
 				</DataProviderFactory>
 				<mDataProviderManager/>
+				<MediaDataFactory>
+					<mRegisteredTypes>
+						<Type XukLocalName="WavAudioMediaData" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.data.audio.codec.WavAudioMediaData"/>
+					</mRegisteredTypes>
+				</MediaDataFactory>
 				<mMediaDataManager/>
 				<CommandFactory>
 					<mRegisteredTypes>

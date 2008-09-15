@@ -58,7 +58,7 @@ namespace urakawa.media.data.audio
             Stream pcm = AudioMediaData.GetAudioData(clipBegin, clipEnd);
             try
             {
-                AudioMediaData data = MediaDataFactory.CreateMediaData(
+                AudioMediaData data = MediaDataFactory.Create(
                                           AudioMediaData.XukLocalName, AudioMediaData.XukNamespaceUri) as AudioMediaData;
                 data.PCMFormat = AudioMediaData.PCMFormat;
                 data.AppendAudioData(pcm, null);

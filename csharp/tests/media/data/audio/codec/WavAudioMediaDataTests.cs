@@ -1163,7 +1163,9 @@ namespace urakawa.media.data.audio.codec
         {
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             WavAudioMediaData copy = mData1.Copy();
-            Assert.IsTrue(mData1.ValueEquals(copy));
+            Assert.IsTrue(mData1.ValueEquals(copy), "Copy does not have the same value as the original");
+            
+            
             //List<DataProvider> provList = mData1.getListOfUsedDataProviders();
             //List<DataProvider> provListCopy = copy.getListOfUsedDataProviders();
             //Assert.IsTrue(provList.Count == provListCopy.Count, "the copy does not have the same number of data providers");
@@ -1171,6 +1173,63 @@ namespace urakawa.media.data.audio.codec
             //{
             //    Assert.IsTrue(provList[i].ValueEquals(provListCopy[i]), "a data provider of the copy was not equal to the data provider of the original data");
             //}
+        }
+
+        private void CheckOrigCopyCoExistance(WavAudioMediaData orig)
+        {
+            WavAudioMediaData copy = orig.Copy();
+            Stream origStream = orig.GetAudioData();
+            Stream copyStream = copy.GetAudioData();
+            byte[] dataOrig = new byte[1024];
+            byte[] dataCopy = new byte[1024];
+            for (int i = 0; i < origStream.Length; i += 1024)
+            {
+                int oC = origStream.Read(dataOrig, 0, 1024);
+                int cC = copyStream.Read(dataCopy, 0, 1024);
+                Assert.AreEqual(oC, cC, "The number of bytes read from the original and copy Streams do not match");
+                Assert.AreEqual(dataOrig, dataCopy, "The data read from the original and copy Streams do not match");
+            }
+            origStream.Close();
+            copyStream.Close();
+        }
+
+        [Test, Description("Checks that streams from both original and copy can co-exist (the original and copy share DataProviders")]
+        public void Copy_AudioStreamsOfOriginalAndCopyCanCoExist()
+        {
+            mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
+            CheckOrigCopyCoExistance(mData1);
+            mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
+            CheckOrigCopyCoExistance(mData1);
+            double ms = mData1.AudioDuration.TimeDeltaAsMillisecondFloat;
+            Time cb = new Time(ms/4f);
+            Time ce = new Time(3f*ms/4f);
+            mData1.RemoveAudioData(cb, ce);
+            CheckOrigCopyCoExistance(mData1);
+        }
+
+        private byte[] GetAudioData(AudioMediaData audioMediaData)
+        {
+            Stream ad = audioMediaData.GetAudioData();
+            byte[] res = new byte[ad.Length];
+            ad.Read(res, 0, res.Length);
+            ad.Close();
+            return res;
+        }
+
+        private void CheckAudioData(AudioMediaData audioMediaData, byte[] expectedData)
+        {
+            byte[] curData = GetAudioData(audioMediaData);
+            Assert.AreEqual(expectedData, curData, "The audio data is not as expected");
+        }
+
+        [Test, Description("Checks that the original and copy acts as independant objects")]
+        public void Copy_CheckCopyIndependance()
+        {
+            mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
+            WavAudioMediaData copy = mData1.Copy();
+            byte[] copyDataBefore = GetAudioData(copy);
+            //TODO: Change original
+            CheckAudioData(copy, copyDataBefore);
         }
 
         [Test, Description("Tests copying a multi-clips audio data")]
