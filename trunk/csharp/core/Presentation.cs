@@ -554,7 +554,7 @@ namespace urakawa
             }
         }
 
-        private void CollectUsedMedia(TreeNode node, List<Media> collectedMedia)
+        private void CollectUsedMedia(TreeNode node, ICollection<Media> collectedMedia)
         {
             foreach (Media m in GetListOfMediaUsedByTreeNode(node))
             {
@@ -667,24 +667,10 @@ namespace urakawa
             {
                 if (mMediaDataFactory == null)
                 {
-                    MediaDataFactory = DataModelFactory.CreateMediaDataFactory();
+                    mMediaDataFactory = new MediaDataFactory();
+                    mMediaDataFactory.Presentation = this;
                 }
                 return mMediaDataFactory;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The MediaDataFactory can not be null");
-                }
-                if (mMediaDataFactory != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a MediaDataFactory");
-                }
-                mMediaDataFactory = value;
-                mMediaDataFactory.Presentation = this;
             }
         }
 
@@ -735,24 +721,10 @@ namespace urakawa
             {
                 if (mDataProviderFactory == null)
                 {
-                    DataProviderFactory = DataModelFactory.CreateDataProviderFactory();
+                    mDataProviderFactory = new DataProviderFactory();
+                    mDataProviderFactory.Presentation = this;
                 }
                 return mDataProviderFactory;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The DataProviderFactory can not be null");
-                }
-                if (mDataProviderFactory != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a DataProviderFactory");
-                }
-                mDataProviderFactory = value;
-                mDataProviderFactory.Presentation = this;
             }
         }
 
@@ -1072,12 +1044,8 @@ namespace urakawa
                     case "MediaFactory":
                         MediaFactory.XukIn(source, handler);
                         break;
-                    case "mMediaDataFactory":
-                        XukInXukAbleFromChild<MediaDataFactory>(
-                            source, null,
-                            DataModelFactory.CreateMediaDataFactory,
-                            delegate(MediaDataFactory val) { MediaDataFactory = val; },
-                            handler);
+                    case "MediaDataFactory":
+                        MediaDataFactory.XukIn(source, handler);
                         break;
                     case "mMediaDataManager":
                         XukInXukAbleFromChild<MediaDataManager>(
@@ -1087,10 +1055,7 @@ namespace urakawa
                             handler);
                         break;
                     case "mDataProviderFactory":
-                        XukInXukAbleFromChild<DataProviderFactory>(
-                            source, null,
-                            DataModelFactory.CreateDataProviderFactory,
-                            delegate(DataProviderFactory val) { DataProviderFactory = val; }, handler);
+                        DataProviderFactory.XukIn(source, handler);
                         break;
                     case "mDataProviderManager":
                         XukInXukAbleFromChild<DataProviderManager>(
@@ -1167,45 +1132,33 @@ namespace urakawa
 
             PropertyFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mChannelFactory", XukAble.XUK_NS);
             ChannelFactory.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
 
             destination.WriteStartElement("mChannelsManager", XukAble.XUK_NS);
             ChannelsManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mMediaFactory", XukAble.XUK_NS);
             MediaFactory.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
 
-            destination.WriteStartElement("mDataProviderFactory", XukAble.XUK_NS);
             DataProviderFactory.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
 
             destination.WriteStartElement("mDataProviderManager", XukAble.XUK_NS);
             DataProviderManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mMediaDataFactory", XukAble.XUK_NS);
             MediaDataFactory.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
 
             destination.WriteStartElement("mMediaDataManager", XukAble.XUK_NS);
             MediaDataManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mCommandFactory", XukAble.XUK_NS);
             CommandFactory.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
 
             destination.WriteStartElement("mUndoRedoManager", XukAble.XUK_NS);
             UndoRedoManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mMetadataFactory", XukAble.XUK_NS);
             MetadataFactory.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
 
             destination.WriteStartElement("mMetadata", XukAble.XUK_NS);
             foreach (Metadata md in mMetadata)

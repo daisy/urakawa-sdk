@@ -25,9 +25,8 @@ namespace urakawa
             {
                 if (mPresentation == null)
                 {
-                    throw new exception.IsNotInitializedException(String.Format(
-                                                                      "The {0} has not been initialized with a Presentation",
-                                                                      GetType().Name));
+                    throw new exception.IsNotInitializedException(
+                        String.Format("The {0} has not been initialized with a Presentation", GetType().Name));
                 }
                 return mPresentation;
             }
@@ -35,9 +34,8 @@ namespace urakawa
             {
                 if (value == null)
                 {
-                    throw new exception.MethodParameterIsNullException(String.Format(
-                                                                           "The {0} can not have a null Presentation",
-                                                                           GetType().Name));
+                    throw new exception.MethodParameterIsNullException(
+                        String.Format("The {0} can not have a null Presentation", GetType().Name));
                 }
                 if (mPresentation != null)
                 {

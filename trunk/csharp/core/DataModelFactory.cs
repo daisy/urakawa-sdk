@@ -86,26 +86,6 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Creates a <see cref="metadata.MetadataFactory"/> of default type (that is <see cref="metadata.MetadataFactory"/>
-        /// </summary>
-        /// <returns>The created <see cref="metadata.MetadataFactory"/></returns>
-        public virtual metadata.MetadataFactory CreateMetadataFactory()
-        {
-            return Create<metadata.MetadataFactory>();
-        }
-
-        /// <summary>
-        /// Creates a <see cref="metadata.MetadataFactory"/> of type matching a given Xuk QName
-        /// </summary>
-        /// <param name="localName">The local name part of the given Xuk QName</param>
-        /// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
-        /// <returns>The created <see cref="metadata.MetadataFactory"/></returns>
-        public virtual metadata.MetadataFactory CreateMetadataFactory(string localName, string namespaceUri)
-        {
-            return Create<metadata.MetadataFactory>(localName, namespaceUri);
-        }
-
-        /// <summary>
         /// Creates a <see cref="undo.UndoRedoManager"/> of default type (that is <see cref="undo.UndoRedoManager"/>
         /// </summary>
         /// <returns>The created <see cref="undo.UndoRedoManager"/></returns>
@@ -146,26 +126,6 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Creates a <see cref="media.data.MediaDataFactory"/> of default type (that is <see cref="media.data.MediaDataFactory"/>
-        /// </summary>
-        /// <returns>The created <see cref="media.data.MediaDataFactory"/></returns>
-        public virtual media.data.MediaDataFactory CreateMediaDataFactory()
-        {
-            return Create<media.data.MediaDataFactory>();
-        }
-
-        /// <summary>
-        /// Creates a <see cref="media.data.MediaDataFactory"/> of type matching a given Xuk QName
-        /// </summary>
-        /// <param name="localName">The local name part of the given Xuk QName</param>
-        /// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
-        /// <returns>The created <see cref="media.data.MediaDataFactory"/></returns>
-        public virtual media.data.MediaDataFactory CreateMediaDataFactory(string localName, string namespaceUri)
-        {
-            return Create<media.data.MediaDataFactory>(localName, namespaceUri);
-        }
-
-        /// <summary>
         /// Creates a <see cref="media.data.MediaDataManager"/> of default type (that is <see cref="media.data.MediaDataManager"/>
         /// </summary>
         /// <returns>The created <see cref="media.data.MediaDataManager"/></returns>
@@ -183,26 +143,6 @@ namespace urakawa
         public virtual media.data.MediaDataManager CreateMediaDataManager(string localName, string namespaceUri)
         {
             return Create<media.data.MediaDataManager>(localName, namespaceUri);
-        }
-
-        /// <summary>
-        /// Creates a <see cref="media.data.DataProviderFactory"/>
-        /// </summary>
-        /// <returns>The created <see cref="media.data.DataProviderFactory"/></returns>
-        public virtual media.data.DataProviderFactory CreateDataProviderFactory()
-        {
-            return Create<media.data.DataProviderFactory>();
-        }
-
-        /// <summary>
-        /// Creates a <see cref="media.data.DataProviderFactory"/>
-        /// </summary>
-        /// <param name="localName">The local name part of the given Xuk QName</param>
-        /// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
-        /// <returns>The created <see cref="media.data.DataProviderFactory"/></returns>
-        public virtual media.data.DataProviderFactory CreateDataProviderFactory(string localName, string namespaceUri)
-        {
-            return Create<media.data.DataProviderFactory>(localName, namespaceUri);
         }
 
         /// <summary>

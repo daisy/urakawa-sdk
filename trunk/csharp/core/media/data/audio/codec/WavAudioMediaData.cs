@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Xml;
 using urakawa.media.data;
 using urakawa.media.timing;
 using urakawa.media.data.utilities;
 using urakawa.progress;
-using urakawa.xuk;
 
 namespace urakawa.media.data.audio.codec
 {
@@ -72,7 +70,6 @@ namespace urakawa.media.data.audio.codec
                 }
             }
 
-
             /// <summary>
             /// Creates a copy of the wav clip
             /// </summary>
@@ -81,7 +78,8 @@ namespace urakawa.media.data.audio.codec
             {
                 Time clipEnd = null;
                 if (!IsClipEndTiedToEOM) clipEnd = ClipEnd.Copy();
-                return new WavClip(DataProvider.Copy(), ClipBegin.Copy(), clipEnd);
+                //TODO: Check that sharing DataProvider with the copy is not a problem
+                return new WavClip(DataProvider, ClipBegin.Copy(), clipEnd);
             }
 
             /// <summary>
@@ -172,21 +170,20 @@ namespace urakawa.media.data.audio.codec
                     || ClipBegin.IsGreaterThan(ClipEnd)
                     || ClipEnd.IsGreaterThan(rawEndTime))
                 {
-                    throw new exception.InvalidDataFormatException(String.Format(
-                                                                       "WavClip [{0};{1}] is empty or not within the underlying wave data stream ([0;{2}])",
-                                                                       ClipBegin.ToString(), ClipEnd.ToString(),
-                                                                       rawEndTime.ToString()));
+                    string msg = String.Format(
+                        "WavClip [{0};{1}] is empty or not within the underlying wave data stream ([0;{2}])",
+                        ClipBegin, ClipEnd, rawEndTime);
+                    throw new exception.InvalidDataFormatException(msg);
                 }
                 Time rawClipBegin = ClipBegin.AddTime(subClipBegin);
                 Time rawClipEnd = ClipBegin.AddTime(subClipEnd);
-                long offset;
                 long beginPos = raw.Position + (long) ((rawClipBegin.TimeAsMillisecondFloat*pcmInfo.ByteRate)/1000);
-                offset = (beginPos - raw.Position)%pcmInfo.BlockAlign;
+                long offset = (beginPos - raw.Position)%pcmInfo.BlockAlign;
                 beginPos -= offset;
                 long endPos = raw.Position + (long) ((rawClipEnd.TimeAsMillisecondFloat*pcmInfo.ByteRate)/1000);
                 offset = (endPos - raw.Position)%pcmInfo.BlockAlign;
                 endPos -= offset;
-                utilities.SubStream res = new utilities.SubStream(
+                SubStream res = new SubStream(
                     raw,
                     beginPos,
                     endPos - beginPos);
@@ -217,14 +214,6 @@ namespace urakawa.media.data.audio.codec
         /// Stores the <see cref="WavClip"/>s of <c>this</c>
         /// </summary>
         private List<WavClip> mWavClips = new List<WavClip>();
-
-        /// <summary>
-        /// Constructor associating the newly constructed <see cref="WavAudioMediaData"/> 
-        /// with a given <see cref="MediaDataManager"/> 
-        /// </summary>
-        protected internal WavAudioMediaData()
-        {
-        }
 
         /// <summary>
         /// Determines if a PCM Format change is ok
@@ -317,12 +306,19 @@ namespace urakawa.media.data.audio.codec
         #region AudioMediaData
 
         /// <summary>
-        /// Creates a copy of <c>this</c>, including copies of all <see cref="DataProvider"/>s used by <c>this</c>
+        /// Part of technical solution to make copy method return correct type. 
+        /// In implementing classes this method should return a copy of the class instances
         /// </summary>
         /// <returns>The copy</returns>
-        protected override AudioMediaData AudioMediaDataCopy()
+        protected override MediaData ProtectedCopy()
         {
-            return Copy();
+            WavAudioMediaData copy = Presentation.MediaDataFactory.Create<WavAudioMediaData>();
+            copy.PCMFormat = PCMFormat;
+            foreach (WavClip clip in mWavClips)
+            {
+                copy.mWavClips.Add(clip.Copy());
+            }
+            return copy;
         }
 
         /// <summary>
@@ -331,18 +327,7 @@ namespace urakawa.media.data.audio.codec
         /// <returns>The copy</returns>
         public new WavAudioMediaData Copy()
         {
-            MediaData oCopy = GetMediaDataFactory().CreateMediaData(XukLocalName, XukNamespaceUri);
-            if (!(oCopy is WavAudioMediaData))
-            {
-                throw new exception.FactoryCannotCreateTypeException(
-                    "The MediaDataFactory can not create a WavAudioMediaData");
-            }
-            WavAudioMediaData copy = (WavAudioMediaData) oCopy;
-            foreach (WavClip clip in mWavClips)
-            {
-                copy.mWavClips.Add(clip.Copy());
-            }
-            return copy;
+            return ProtectedCopy() as WavAudioMediaData;
         }
 
         /// <summary>
@@ -352,7 +337,13 @@ namespace urakawa.media.data.audio.codec
         /// <returns>The exported wav audio media data</returns>
         protected override MediaData ProtectedExport(Presentation destPres)
         {
-            return Export(destPres);
+            WavAudioMediaData expWAMD = destPres.MediaDataFactory.Create<WavAudioMediaData>();
+            expWAMD.PCMFormat = PCMFormat;
+            foreach (WavClip clip in mWavClips)
+            {
+                expWAMD.mWavClips.Add(clip.Export(destPres));
+            }
+            return expWAMD;
         }
 
         /// <summary>
@@ -362,20 +353,7 @@ namespace urakawa.media.data.audio.codec
         /// <returns>The exported wav audio media data</returns>
         public new WavAudioMediaData Export(Presentation destPres)
         {
-            WavAudioMediaData expWAMD = destPres.MediaDataFactory.CreateMediaData(
-                                            XukLocalName, XukNamespaceUri) as WavAudioMediaData;
-            if (expWAMD == null)
-            {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The MediaDataFactory of the destination Presentation cannot create a WavAudioMediaData matching QName {0}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
-            }
-            expWAMD.PCMFormat = PCMFormat;
-            foreach (WavClip clip in mWavClips)
-            {
-                expWAMD.mWavClips.Add(clip.Export(destPres));
-            }
-            return expWAMD;
+            return ProtectedExport(destPres) as WavAudioMediaData;
         }
 
         /// <summary>
@@ -432,8 +410,6 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The clip end can not beyond the end of the audio content");
             }
-            Time timeBeforeStartIndexClip = new Time();
-            Time timeBeforeEndIndexClip = new Time();
             Time elapsedTime = new Time();
             int i = 0;
             List<Stream> resStreams = new List<Stream>();
@@ -712,7 +688,7 @@ namespace urakawa.media.data.audio.codec
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
@@ -739,7 +715,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == XukAble.XUK_NS)
+                        if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == XUK_NS)
                         {
                             PCMFormatInfo newInfo = new PCMFormatInfo();
                             newInfo.XukIn(source, handler);
@@ -767,7 +743,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "WavClip" && source.NamespaceURI == XukAble.XUK_NS)
+                        if (source.LocalName == "WavClip" && source.NamespaceURI == XUK_NS)
                         {
                             XukInWavClip(source);
                         }
@@ -822,8 +798,7 @@ namespace urakawa.media.data.audio.codec
             {
                 throw new exception.XukException("dataProvider attribute is missing from WavClip element");
             }
-            DataProvider prov;
-            prov = MediaDataManager.Presentation.DataProviderManager.GetDataProvider(dataProviderUid);
+            DataProvider prov = MediaDataManager.Presentation.DataProviderManager.GetDataProvider(dataProviderUid);
             mWavClips.Add(new WavClip(prov, cb, ce));
             if (!source.IsEmptyElement)
             {
@@ -846,10 +821,10 @@ namespace urakawa.media.data.audio.codec
             destination.WriteStartElement("mPCMFormat");
             PCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
-            destination.WriteStartElement("mWavClips", XukAble.XUK_NS);
+            destination.WriteStartElement("mWavClips", XUK_NS);
             foreach (WavClip clip in mWavClips)
             {
-                destination.WriteStartElement("WavClip", XukAble.XUK_NS);
+                destination.WriteStartElement("WavClip", XUK_NS);
                 destination.WriteAttributeString("dataProvider", clip.DataProvider.Uid);
                 destination.WriteAttributeString("clipBegin", clip.ClipBegin.ToString());
                 if (!clip.IsClipEndTiedToEOM) destination.WriteAttributeString("clipEnd", clip.ClipEnd.ToString());
@@ -921,13 +896,13 @@ namespace urakawa.media.data.audio.codec
             }
             if (splitPoint.IsGreaterThan(Time.Zero.AddTimeDelta(AudioDuration)))
             {
-                throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
-                                                                              "Split point {0} is beyond the WavAudioMediaData end - audio length is {1}",
-                                                                              splitPoint.ToString(),
-                                                                              AudioDuration.ToString()));
+                throw new exception.MethodParameterIsOutOfBoundsException(
+                    String.Format(
+                        "Split point {0} is beyond the WavAudioMediaData end - audio length is {1}",
+                        splitPoint, AudioDuration));
             }
             WavAudioMediaData oWAMD =
-                GetMediaDataFactory().CreateMediaData(XukLocalName, XukNamespaceUri) as WavAudioMediaData;
+                GetMediaDataFactory().Create(XukLocalName, XukNamespaceUri) as WavAudioMediaData;
             if (oWAMD == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -955,7 +930,7 @@ namespace urakawa.media.data.audio.codec
                     WavClip secondPartClip = new WavClip(
                         curClip.DataProvider,
                         curClip.ClipBegin,
-                        curClip.IsClipEndTiedToEOM ? null as Time : curClip.ClipEnd);
+                        curClip.IsClipEndTiedToEOM ? null : curClip.ClipEnd);
                     curClip.ClipEnd = curClip.ClipBegin.AddTime(splitPoint.SubtractTime(elapsed));
                     secondPartClip.ClipBegin = curClip.ClipEnd;
                     mWavClips.Add(curClip);

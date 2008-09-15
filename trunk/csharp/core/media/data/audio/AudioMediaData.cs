@@ -453,22 +453,19 @@ namespace urakawa.media.data.audio
         /// <param name="clipEnd">The givne clip end <see cref="Time"/></param>
         public abstract void RemoveAudioData(Time clipBegin, Time clipEnd);
 
-        /// <summary>
-        /// Part of technical solution to make copy method return correct type. 
-        /// In implementing classes this method should return a copy of the class instances
-        /// </summary>
-        /// <returns>The copy</returns>
-        protected abstract AudioMediaData AudioMediaDataCopy();
+        ///// <summary>
+        ///// Part of technical solution to make copy method return correct type. 
+        ///// In implementing classes this method should return a copy of the class instances
+        ///// </summary>
+        ///// <returns>The copy</returns>
+        //protected abstract AudioMediaData AudioMediaDataCopy();
 
         /// <summary>
         /// Part of technical solution to make copy method return correct type. 
         /// In implementing classes this method should return a copy of the class instances
         /// </summary>
         /// <returns>The copy</returns>
-        protected override MediaData ProtectedCopy()
-        {
-            return AudioMediaDataCopy();
-        }
+        protected abstract override MediaData ProtectedCopy();
 
         /// <summary>
         /// Gets a copy of <c>this</c>
@@ -476,7 +473,7 @@ namespace urakawa.media.data.audio
         /// <returns>The copy</returns>
         public new AudioMediaData Copy()
         {
-            return AudioMediaDataCopy();
+            return ProtectedCopy() as AudioMediaData;
         }
 
         /// <summary>
@@ -509,7 +506,7 @@ namespace urakawa.media.data.audio
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The split point can not be beyond the end of the AudioMediaData");
             }
-            MediaData md = GetMediaDataFactory().CreateMediaData(XukLocalName, XukNamespaceUri);
+            MediaData md = GetMediaDataFactory().Create(XukLocalName, XukNamespaceUri);
             if (!(md is AudioMediaData))
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(

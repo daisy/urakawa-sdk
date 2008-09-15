@@ -67,12 +67,8 @@ namespace urakawa.media.data.audio
         [Test, Description("Tests ValueEquals focusing on the media data")]
         public void ValueEquals_MediaData()
         {
-            AudioMediaData data1 =
-                mPresentation.MediaDataFactory.CreateMediaData("WavAudioMediaData", XukAble.XUK_NS) as
-                AudioMediaData;
-            AudioMediaData data2 =
-                mPresentation.MediaDataFactory.CreateMediaData("WavAudioMediaData", XukAble.XUK_NS) as
-                AudioMediaData;
+            AudioMediaData data1 = mPresentation.MediaDataFactory.Create<codec.WavAudioMediaData>();
+            AudioMediaData data2 = mPresentation.MediaDataFactory.Create<codec.WavAudioMediaData>();
             mManagedAudioMedia1.AudioMediaData = data1;
             mManagedAudioMedia2.AudioMediaData = data1;
             Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2),
