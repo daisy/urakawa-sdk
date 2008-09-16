@@ -124,7 +124,7 @@ namespace urakawa.media.data
         /// In implementing classes this method should return a copy of the class instances
         /// </summary>
         /// <returns>The copy</returns>
-        protected abstract MediaData ProtectedCopy();
+        protected abstract MediaData CopyProtected();
 
         /// <summary>
         /// Creates a copy of the media data
@@ -132,7 +132,7 @@ namespace urakawa.media.data
         /// <returns>The copy</returns>
         public MediaData Copy()
         {
-            return ProtectedCopy();
+            return CopyProtected();
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace urakawa.media.data
         /// </summary>
         /// <param name="destPres">The destination presentation of the export</param>
         /// <returns>The export</returns>
-        protected abstract MediaData ProtectedExport(Presentation destPres);
+        protected abstract MediaData ExportProtected(Presentation destPres);
 
         /// <summary>
         /// Exports the media data to a given destination <see cref="Presentation"/>
@@ -150,7 +150,7 @@ namespace urakawa.media.data
         /// <returns>The exported media data</returns>
         public MediaData Export(Presentation destPres)
         {
-            return ProtectedExport(destPres);
+            return ExportProtected(destPres);
         }
 
         #region IValueEquatable<AudioMediaData> Members

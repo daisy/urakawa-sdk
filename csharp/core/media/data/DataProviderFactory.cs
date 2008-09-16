@@ -1,24 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Xml;
-using urakawa.xuk;
+using urakawa.exception;
 
 namespace urakawa.media.data
 {
     /// <summary>
     /// Factory for creating <see cref="DataProvider"/>s
     /// </summary>
-    public class DataProviderFactory : GenericFactory<DataProvider>
+    public sealed class DataProviderFactory : GenericFactory<DataProvider>
     {
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        protected internal DataProviderFactory()
-        {
-        }
-
         /// <summary>
         /// Inistalizes an created instance by assigning it an owning <see cref="Presentation"/>
         /// </summary>
@@ -115,30 +104,99 @@ namespace urakawa.media.data
             return extension;
         }
 
+        private Type mDefaultDataProviderType = typeof (FileDataProvider);
+
         /// <summary>
-        /// Creates a <see cref="FileDataProvider"/> for the given MIME type
+        /// Gets or sets the default <see cref="DataProvider"/> <see cref="Type"/>
         /// </summary>
-        /// <param name="mimeType">The given MIME type</param>
-        /// <returns>The created data provider</returns>
-        public virtual DataProvider CreateDataProvider(string mimeType)
+        /// <exception cref="MethodParameterIsNullException">
+        /// Thrown when trying to set to <c>null</c>
+        /// </exception>
+        /// <exception cref="MethodParameterIsWrongTypeException">
+        /// Thrown when trying to set to a <see cref="Type"/> that:
+        /// <list type="ol">
+        /// <item>Does not implement <see cref="DataProvider"/></item>
+        /// <item>Is abstract</item>
+        /// <item>Does npot have a default constructor</item>
+        /// </list>
+        /// </exception>
+        public Type DefaultDataProviderType
         {
-            return CreateFileDataProvider(mimeType);
+            get { return mDefaultDataProviderType; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new MethodParameterIsNullException("The default DataProvider Type cannot be null");
+                }
+                if (!(typeof(DataProvider).IsAssignableFrom(value)))
+                {
+                    throw new MethodParameterIsWrongTypeException("The default DataProvider Type must be a subclass of AudioMediaData");
+                }
+                if (value.IsAbstract)
+                {
+                    throw new MethodParameterIsWrongTypeException("The default DataProvider Type cannot be an abstract class");
+                }
+                if (value.GetConstructor(Type.EmptyTypes) == null)
+                {
+                    throw new MethodParameterIsWrongTypeException("The default DataProvider Type must have a default constructor");
+                }
+                mDefaultDataProviderType = value;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new <typeparamref name="T"/>, assigning it a given MIME type
+        /// </summary>
+        /// <typeparam name="T">The subtype of <see cref="DataProvider"/> to create an instance of</typeparam>
+        /// <param name="mimeType">The MIME type to assign to the created <see cref="DataProvider"/> instance</param>
+        /// <returns>The created instance</returns>
+        public T Create<T>(string mimeType) where T : DataProvider, new()
+        {
+            T newProv = Create<T>();
+            newProv.MimeType = mimeType;
+            return newProv;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="FileDataProvider"/> of default <see cref="Type"/>
+        /// </summary>
+        /// <returns>The created data provider</returns>
+        public DataProvider Create()
+        {
+            return Create(DefaultDataProviderType);
         }
 
         /// <summary>
         /// Creates a <see cref="FileDataProvider"/> for the given MIME type
         /// </summary>
-        /// <param name="mimeType">The given MIME type</param>
+        /// <param name="mimeType">The MIME type to assign to the created <see cref="DataProvider"/> instance</param>
         /// <returns>The created data provider</returns>
-        public FileDataProvider CreateFileDataProvider(string mimeType)
+        public DataProvider Create(string mimeType)
         {
-            if (mimeType == null)
-            {
-                throw new exception.MethodParameterIsNullException(
-                    "Can not create a FileDataProvider for a null MIME type");
-            }
-            FileDataProvider newProv = Create<FileDataProvider>();
+            DataProvider newProv = Create(DefaultDataProviderType);
             newProv.MimeType = mimeType;
+            return newProv;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="DataProvider"/> instance of a given <see cref="Type"/>, 
+        /// assigning it a given MIME type
+        /// </summary>
+        /// <param name="t">
+        /// <param name="mimeType">The MIME type to assign to the created <see cref="DataProvider"/> instance</param>
+        /// The <see cref="Type"/> of the instance to create,
+        /// cannot be null and must implement <see cref="DataProvider"/> and
+        /// and have a public constructor with no arguments
+        /// </param>
+        /// <returns>
+        /// The created instance - <c>null</c> if <paramref name="t"/> is not a <see cref="DataProvider"/>
+        /// or if <paramref name="t"/> has no default public constructor 
+        /// </returns>
+        public DataProvider Create(Type t, string mimeType)
+        {
+            DataProvider newProv = Create(t);
+            if (newProv != null) newProv.MimeType = mimeType;
             return newProv;
         }
 
@@ -152,21 +210,11 @@ namespace urakawa.media.data
         /// <exception cref="exception.MethodParameterIsNullException">
         /// Thrown when <paramref name="xukLocalName"/> or <paramref name="xukNamespaceUri"/> is <c>null</c>
         /// </exception>
-        public virtual DataProvider CreateDataProvider(string mimeType, string xukLocalName, string xukNamespaceUri)
+        public DataProvider Create(string mimeType, string xukLocalName, string xukNamespaceUri)
         {
-            if (xukLocalName == null || xukNamespaceUri == null)
-            {
-                throw new exception.MethodParameterIsNullException("No part of the xuk QName can be null");
-            }
-            if (xukNamespaceUri == XukAble.XUK_NS)
-            {
-                switch (xukLocalName)
-                {
-                    case "FileDataProvider":
-                        return CreateFileDataProvider(mimeType);
-                }
-            }
-            return null;
+            DataProvider newProv = Create(xukLocalName, XukNamespaceUri);
+            if (newProv!=null) newProv.MimeType = mimeType;
+            return newProv;
         }
     }
 }

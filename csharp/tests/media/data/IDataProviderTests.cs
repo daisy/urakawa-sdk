@@ -24,15 +24,13 @@ namespace urakawa.media.data
         protected DataProvider mDataProvider2;
         protected DataProvider mDataProvider3;
 
-        private string mDefProvXukLocalName;
-        private string mDefProvXulnamespaceUri;
+        private Type mDefaultDataProviderType;
 
         private Uri mRootUri;
 
-        public IDataProviderTests(string provXukLN, string provXukNS)
+        protected IDataProviderTests(string provXukLN, string provXukNS)
         {
-            mDefProvXukLocalName = provXukLN;
-            mDefProvXulnamespaceUri = provXukNS;
+            mDefaultDataProviderType = typeof (FileDataProvider);
         }
 
         [SetUp]
@@ -43,24 +41,21 @@ namespace urakawa.media.data
             mRootUri = new Uri(Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + "\\");
             if (!Directory.Exists(mRootUri.LocalPath)) Directory.CreateDirectory(mRootUri.LocalPath);
             mPresentation.RootUri = mRootUri;
-            mDataProvider1 = mPresentation.DataProviderFactory.CreateDataProvider("", mDefProvXukLocalName,
-                                                                                  mDefProvXulnamespaceUri);
+            mDataProvider1 = mPresentation.DataProviderFactory.Create(mDefaultDataProviderType, "");
             Assert.IsNotNull(
                 mDataProvider1,
-                "DataProviderFactory cannot create a {0} matching QName {1}:{0}",
-                mDefProvXukLocalName, mDefProvXulnamespaceUri);
-            mDataProvider2 = mPresentation.DataProviderFactory.CreateDataProvider("", mDefProvXukLocalName,
-                                                                                  mDefProvXulnamespaceUri);
+                "DataProviderFactory cannot create a {0}",
+                mDefaultDataProviderType);
+            mDataProvider2 = mPresentation.DataProviderFactory.Create(mDefaultDataProviderType, "");
             Assert.IsNotNull(
                 mDataProvider2,
-                "DataProviderFactory cannot create a {0} matching QName {1}:{0}",
-                mDefProvXukLocalName, mDefProvXulnamespaceUri);
-            mDataProvider3 = mPresentation.DataProviderFactory.CreateDataProvider("", mDefProvXukLocalName,
-                                                                                  mDefProvXulnamespaceUri);
+                "DataProviderFactory cannot create a {0}",
+                mDefaultDataProviderType);
+            mDataProvider3 = mPresentation.DataProviderFactory.Create(mDefaultDataProviderType, "");
             Assert.IsNotNull(
                 mDataProvider3,
-                "DataProviderFactory cannot create a {0} matching QName {1}:{0}",
-                mDefProvXukLocalName, mDefProvXulnamespaceUri);
+                "DataProviderFactory cannot create a {0}",
+                mDefaultDataProviderType);
         }
 
         [TearDown]
@@ -290,10 +285,8 @@ namespace urakawa.media.data
 
         public virtual void ValueEquals_MimeType()
         {
-            DataProvider p1 = mPresentation.DataProviderFactory.CreateDataProvider("wav", mDefProvXukLocalName,
-                                                                                    mDefProvXulnamespaceUri);
-            DataProvider p2 = mPresentation.DataProviderFactory.CreateDataProvider("txt", mDefProvXukLocalName,
-                                                                                    mDefProvXulnamespaceUri);
+            DataProvider p1 = mPresentation.DataProviderFactory.Create(mDefaultDataProviderType, "wav");
+            DataProvider p2 = mPresentation.DataProviderFactory.Create(mDefaultDataProviderType, "txt");
             Assert.IsFalse(p1.ValueEquals(p2), "IDataProviders with different MIME types can not be value equal");
         }
 

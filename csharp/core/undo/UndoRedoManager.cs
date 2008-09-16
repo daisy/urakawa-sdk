@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Xml;
 using urakawa.command;
 using urakawa.progress;
-using urakawa.xuk;
 using urakawa.media.data;
 using urakawa.events;
 using urakawa.events.undo;
@@ -13,7 +12,7 @@ namespace urakawa.undo
     /// <summary>
     /// The command manager.
     /// </summary>
-    public class UndoRedoManager : WithPresentation, IChangeNotifier
+    public sealed class UndoRedoManager : WithPresentation, IChangeNotifier
     {
         #region Event related members
 
@@ -21,29 +20,29 @@ namespace urakawa.undo
         /// Event fired after the <see cref="UndoRedoManager"/> has changed. 
         /// The event fire before any change specific event 
         /// </summary>
-        public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
+        public event EventHandler<DataModelChangedEventArgs> Changed;
 
         /// <summary>
         /// Fires the <see cref="Changed"/> event 
         /// </summary>
         /// <param name="args">The arguments of the event</param>
-        protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
+        private void NotifyChanged(DataModelChangedEventArgs args)
         {
-            EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
+            EventHandler<DataModelChangedEventArgs> d = Changed;
             if (d != null) d(this, args);
         }
 
         /// <summary>
         /// Event fired after a transaction has started
         /// </summary>
-        public event EventHandler<urakawa.events.undo.TransactionStartedEventArgs> TransactionStarted;
+        public event EventHandler<TransactionStartedEventArgs> TransactionStarted;
 
         /// <summary>
         /// Fires the <see cref="TransactionStarted"/> event
         /// </summary>
-        protected void NotifyTransactionStarted()
+        private void NotifyTransactionStarted()
         {
-            EventHandler<urakawa.events.undo.TransactionStartedEventArgs> d = TransactionStarted;
+            EventHandler<TransactionStartedEventArgs> d = TransactionStarted;
             if (d != null) d(this, new TransactionStartedEventArgs(this));
         }
 
@@ -55,14 +54,14 @@ namespace urakawa.undo
         /// <summary>
         /// Event fired after a transaction has ended
         /// </summary>
-        public event EventHandler<urakawa.events.undo.TransactionEndedEventArgs> TransactionEnded;
+        public event EventHandler<TransactionEndedEventArgs> TransactionEnded;
 
         /// <summary>
         /// Fires the <see cref="TransactionEnded"/> event
         /// </summary>
-        protected void NotifyTransactionEnded()
+        private void NotifyTransactionEnded()
         {
-            EventHandler<urakawa.events.undo.TransactionEndedEventArgs> d = TransactionEnded;
+            EventHandler<TransactionEndedEventArgs> d = TransactionEnded;
             if (d != null) d(this, new TransactionEndedEventArgs(this));
         }
 
@@ -74,14 +73,14 @@ namespace urakawa.undo
         /// <summary>
         /// Event fired after a transaction has been cancelled
         /// </summary>
-        public event EventHandler<urakawa.events.undo.TransactionCancelledEventArgs> TransactionCancelled;
+        public event EventHandler<TransactionCancelledEventArgs> TransactionCancelled;
 
         /// <summary>
         /// Fires the <see cref="TransactionCancelled"/> event
         /// </summary>
-        protected void NotifyTransactionCancelled()
+        private void NotifyTransactionCancelled()
         {
-            EventHandler<urakawa.events.undo.TransactionCancelledEventArgs> d = TransactionCancelled;
+            EventHandler<TransactionCancelledEventArgs> d = TransactionCancelled;
             if (d != null) d(this, new TransactionCancelledEventArgs(this));
         }
 
@@ -93,15 +92,15 @@ namespace urakawa.undo
         /// <summary>
         /// Event fired after a command has been done/executed via the <see cref="UndoRedoManager"/>
         /// </summary>
-        public event EventHandler<urakawa.events.undo.DoneEventArgs> CommandDone;
+        public event EventHandler<DoneEventArgs> CommandDone;
 
         /// <summary>
         /// Fires the <see cref="CommandDone"/> event
         /// </summary>
         /// <param name="doneCmd">The <see cref="Command"/> that was done</param>
-        protected void NotifyCommandDone(Command doneCmd)
+        private void NotifyCommandDone(Command doneCmd)
         {
-            EventHandler<urakawa.events.undo.DoneEventArgs> d = CommandDone;
+            EventHandler<DoneEventArgs> d = CommandDone;
             if (d != null) d(this, new DoneEventArgs(this, doneCmd));
         }
 
@@ -113,15 +112,15 @@ namespace urakawa.undo
         /// <summary>
         /// Event fired after a command has been undone <see cref="UndoRedoManager"/>
         /// </summary>
-        public event EventHandler<urakawa.events.undo.UnDoneEventArgs> CommandUnDone;
+        public event EventHandler<UnDoneEventArgs> CommandUnDone;
 
         /// <summary>
         /// Fires the <see cref="CommandUnDone"/> event
         /// </summary>
         /// <param name="unDoneCmd">The <see cref="Command"/> that was un-done</param>
-        protected void NotifyCommandUnDone(Command unDoneCmd)
+        private void NotifyCommandUnDone(Command unDoneCmd)
         {
-            EventHandler<urakawa.events.undo.UnDoneEventArgs> d = CommandUnDone;
+            EventHandler<UnDoneEventArgs> d = CommandUnDone;
             if (d != null) d(this, new UnDoneEventArgs(this, unDoneCmd));
         }
 
@@ -133,15 +132,15 @@ namespace urakawa.undo
         /// <summary>
         /// Event fired after a command has been done/executed via the <see cref="UndoRedoManager"/>
         /// </summary>
-        public event EventHandler<urakawa.events.undo.ReDoneEventArgs> CommandReDone;
+        public event EventHandler<ReDoneEventArgs> CommandReDone;
 
         /// <summary>
         /// Fires the <see cref="CommandReDone"/> event
         /// </summary>
         /// <param name="reDoneCmd">The <see cref="Command"/> that was re-done</param>
-        protected void NotifyCommandReDone(Command reDoneCmd)
+        private void NotifyCommandReDone(Command reDoneCmd)
         {
-            EventHandler<urakawa.events.undo.ReDoneEventArgs> d = CommandReDone;
+            EventHandler<ReDoneEventArgs> d = CommandReDone;
             if (d != null) d(this, new ReDoneEventArgs(this, reDoneCmd));
         }
 
@@ -220,17 +219,17 @@ namespace urakawa.undo
         /// <summary>
         /// Create an empty command manager.
         /// </summary>
-        protected internal UndoRedoManager()
+        public UndoRedoManager()
         {
             mUndoStack = new Stack<Command>();
             mRedoStack = new Stack<Command>();
             mActiveTransactions = new Stack<CompositeCommand>();
-            TransactionStarted += new EventHandler<TransactionStartedEventArgs>(this_transactionStarted);
-            TransactionEnded += new EventHandler<TransactionEndedEventArgs>(this_transactionEnded);
-            TransactionCancelled += new EventHandler<TransactionCancelledEventArgs>(this_transactionCancelled);
-            CommandDone += new EventHandler<DoneEventArgs>(this_commandDone);
-            CommandUnDone += new EventHandler<UnDoneEventArgs>(this_commandUnDone);
-            CommandReDone += new EventHandler<ReDoneEventArgs>(this_commandReDone);
+            TransactionStarted += this_transactionStarted;
+            TransactionEnded += this_transactionEnded;
+            TransactionCancelled += this_transactionCancelled;
+            CommandDone += this_commandDone;
+            CommandUnDone += this_commandUnDone;
+            CommandReDone += this_commandReDone;
         }
 
         /// <summary>
@@ -250,7 +249,7 @@ namespace urakawa.undo
         /// Undo the last executed command.
         /// </summary>
         /// <exception cref="urakawa.exception.CannotUndoException">Thrown when there is no command to undo.</exception>
-        public virtual void Undo()
+        public void Undo()
         {
             if (IsTransactionActive)
             {
@@ -281,7 +280,7 @@ namespace urakawa.undo
         /// Redo the last unexecuted command.
         /// </summary>
         /// <exception cref="urakawa.exception.CannotRedoException">Thrown when there is no command to redo.</exception>
-        public virtual void Redo()
+        public void Redo()
         {
             if (mRedoStack.Count == 0) throw new exception.CannotRedoException("There is no command to redo.");
             mRedoStack.Peek().Execute();
@@ -296,7 +295,7 @@ namespace urakawa.undo
         /// <param name="command">The command to execute</param>
         /// <exception cref="exception.MethodParameterIsNullException">Thrown when a null command is given.</exception>
         /// <exception cref="exception.IrreversibleCommandDuringActiveUndoRedoTransactionException"></exception>
-        public virtual void Execute(Command command)
+        public void Execute(Command command)
         {
             if (command == null) throw new exception.MethodParameterIsNullException("Command cannot be null.");
             pushCommand(command);
@@ -312,7 +311,7 @@ namespace urakawa.undo
         /// <exception cref="exception.IrreversibleCommandDuringActiveUndoRedoTransactionException">
         /// When trying to push a irreversible <see cref="Command"/> during an active transaction
         /// </exception>
-        protected void pushCommand(Command command)
+        private void pushCommand(Command command)
         {
             if (IsTransactionActive)
             {
@@ -469,19 +468,19 @@ namespace urakawa.undo
         {
             bool readItem = false;
 
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
                 {
                     case "mUndoStack":
-                        XukInCommandStack<Command>(source, mUndoStack, handler);
+                        XukInCommandStack(source, mUndoStack, handler);
                         break;
                     case "mRedoStack":
-                        XukInCommandStack<Command>(source, mRedoStack, handler);
+                        XukInCommandStack(source, mRedoStack, handler);
                         break;
                     case "mActiveTransactions":
-                        XukInCommandStack<CompositeCommand>(source, mActiveTransactions, handler);
+                        XukInCommandStack(source, mActiveTransactions, handler);
                         break;
                     default:
                         readItem = false;
@@ -535,13 +534,13 @@ namespace urakawa.undo
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mUndoStack", XukAble.XUK_NS);
+            destination.WriteStartElement("mUndoStack", XUK_NS);
             foreach (Command cmd in mUndoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            destination.WriteStartElement("mRedoStack", XukAble.XUK_NS);
+            destination.WriteStartElement("mRedoStack", XUK_NS);
             foreach (Command cmd in mRedoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);

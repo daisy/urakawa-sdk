@@ -117,7 +117,7 @@ namespace urakawa.media.data.audio
         protected override Media CopyProtected()
         {
             ManagedAudioMedia cp = (ManagedAudioMedia)base.CopyProtected();
-            cp.MediaData = this.MediaData.Copy();
+
             return cp;
         }
 

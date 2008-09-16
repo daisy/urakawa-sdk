@@ -354,11 +354,12 @@ namespace urakawa.media.data.audio
         /// </summary>
         /// <param name="riffWaveStream">The RIFF Wave file</param>
         /// <param name="insertPoint">The insert point</param>
-        /// <param name="duration">The duration</param>
+        /// <param name="duration">The duration - if <c>null</c> the entire RIFF Wave file is inserted</param>
         public void InsertAudioDataFromRiffWave(Stream riffWaveStream, Time insertPoint, TimeDelta duration)
         {
             TimeDelta fileDuration;
             ParseRiffWaveStream(riffWaveStream, out fileDuration);
+            if (duration == null) duration = fileDuration;
             if (fileDuration.IsLessThan(duration))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
@@ -373,7 +374,7 @@ namespace urakawa.media.data.audio
         /// </summary>
         /// <param name="path">The path of the RIFF Wave file</param>
         /// <param name="insertPoint">The insert point</param>
-        /// <param name="duration">The duration</param>
+        /// <param name="duration">The duration - if <c>null</c> the entire RIFF Wave file is inserted</param>
         public void InsertAudioDataFromRiffWave(string path, Time insertPoint, TimeDelta duration)
         {
             Stream rwFS = OpenFileStream(path);
@@ -465,7 +466,7 @@ namespace urakawa.media.data.audio
         /// In implementing classes this method should return a copy of the class instances
         /// </summary>
         /// <returns>The copy</returns>
-        protected abstract override MediaData ProtectedCopy();
+        protected abstract override MediaData CopyProtected();
 
         /// <summary>
         /// Gets a copy of <c>this</c>
@@ -473,7 +474,7 @@ namespace urakawa.media.data.audio
         /// <returns>The copy</returns>
         public new AudioMediaData Copy()
         {
-            return ProtectedCopy() as AudioMediaData;
+            return CopyProtected() as AudioMediaData;
         }
 
         /// <summary>
@@ -545,6 +546,10 @@ namespace urakawa.media.data.audio
             if (other == null)
             {
                 throw new exception.MethodParameterIsNullException("Can not merge with a null AudioMediaData");
+            }
+            if (other == this)
+            {
+                throw new exception.OperationNotValidException("Can not merge a AudioMediaData with itself");
             }
             if (!PCMFormat.IsCompatibleWith(other.PCMFormat))
             {
