@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 
 namespace urakawa.media.data
@@ -8,20 +5,20 @@ namespace urakawa.media.data
     [TestFixture]
     public class DataProviderManagerTests
     {
-        protected DataProviderManager mManager = null;
+        protected DataProviderManager mManager;
 
-        protected urakawa.Presentation mPresentation
+        protected Presentation mPresentation
         {
             get { return mManager.Presentation; }
         }
 
-        protected urakawa.Project mProject
+        protected Project mProject
         {
             get { return mPresentation.Project; }
         }
         protected DataProviderManager mDataProviderManager
         {
-            get { return mManager as DataProviderManager; }
+            get { return mManager; }
         }
 
         [SetUp]
@@ -35,7 +32,7 @@ namespace urakawa.media.data
         [Test]
         public void Temp()
         {
-            FileDataProvider fdp = mDataProviderManager.DataProviderFactory.CreateFileDataProvider(
+            FileDataProvider fdp = mDataProviderManager.DataProviderFactory.Create<FileDataProvider>(
                 DataProviderFactory.AUDIO_WAV_MIME_TYPE);
             Assert.IsNotNull(fdp, "Could not create FileDataProvider");
         }

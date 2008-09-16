@@ -1,17 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Xml;
 using urakawa.progress;
-using urakawa.xuk;
 
 namespace urakawa.media.data
 {
     /// <summary>
     /// Manager for <see cref="DataProvider"/>s
     /// </summary>
-    public class DataProviderManager : WithPresentation
+    public sealed class DataProviderManager : WithPresentation
     {
         private Dictionary<string, DataProvider> mDataProvidersDictionary = new Dictionary<string, DataProvider>();
 
@@ -32,14 +30,14 @@ namespace urakawa.media.data
             {
                 base.Presentation = value;
                 value.RootUriChanged +=
-                    new EventHandler<urakawa.events.presentation.RootUriChangedEventArgs>(Presentation_rootUriChanged);
+                    Presentation_rootUriChanged;
             }
         }
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        protected internal DataProviderManager()
+        public DataProviderManager()
         {
             mDataFileDirectory = null;
         }
@@ -89,7 +87,7 @@ namespace urakawa.media.data
         {
             Stream s1 = null;
             Stream s2 = null;
-            bool allEq = true;
+            bool allEq;
             try
             {
                 s1 = dp1.GetInputStream();
@@ -197,7 +195,7 @@ namespace urakawa.media.data
             }
         }
 
-        private void CreateDirectory(string path)
+        private static void CreateDirectory(string path)
         {
             if (!Directory.Exists(path))
             {
@@ -314,7 +312,7 @@ namespace urakawa.media.data
 
         #region IDataProviderManager Members
 
-        private void Presentation_rootUriChanged(Object o, urakawa.events.presentation.RootUriChangedEventArgs e)
+        private void Presentation_rootUriChanged(Object o, events.presentation.RootUriChangedEventArgs e)
         {
             if (e.PreviousUri != null)
             {
@@ -334,13 +332,7 @@ namespace urakawa.media.data
         {
             get
             {
-                DataProviderFactory fact = Presentation.DataProviderFactory as DataProviderFactory;
-                if (fact == null)
-                {
-                    throw new exception.IncompatibleManagerOrFactoryException(
-                        "The DataProviderFactory of the Presentation owning a DataProviderManager must be a DataProviderFactory");
-                }
-                return fact;
+                return Presentation.DataProviderFactory;
             }
         }
 
@@ -453,7 +445,7 @@ namespace urakawa.media.data
         /// or if the manager already manages another data provider with the given uid
         /// </exception>
         /// <exception cref="exception.IsNotManagerOfException">Thrown if the data provides does not have <c>this</c> as manager</exception>
-        protected void AddDataProvider(DataProvider provider, string uid)
+        private void AddDataProvider(DataProvider provider, string uid)
         {
             if (provider == null)
             {
@@ -612,7 +604,7 @@ namespace urakawa.media.data
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
@@ -639,7 +631,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "mDataProviderItem" && source.NamespaceURI == XukAble.XUK_NS)
+                        if (source.LocalName == "mDataProviderItem" && source.NamespaceURI == XUK_NS)
                         {
                             XukInDataProviderItem(source, handler);
                         }
@@ -667,7 +659,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        DataProvider prov = DataProviderFactory.CreateDataProvider("", source.LocalName,
+                        DataProvider prov = DataProviderFactory.Create("", source.LocalName,
                                                                                     source.NamespaceURI);
                         if (prov != null)
                         {
@@ -747,10 +739,10 @@ namespace urakawa.media.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mDataProviders", XukAble.XUK_NS);
+            destination.WriteStartElement("mDataProviders", XUK_NS);
             foreach (DataProvider prov in ListOfDataProviders)
             {
-                destination.WriteStartElement("mDataProviderItem", XukAble.XUK_NS);
+                destination.WriteStartElement("mDataProviderItem", XUK_NS);
                 destination.WriteAttributeString("uid", prov.Uid);
                 prov.XukOut(destination, baseUri, handler);
                 destination.WriteEndElement();
@@ -772,7 +764,7 @@ namespace urakawa.media.data
         public bool ValueEquals(DataProviderManager other)
         {
             if (other == null) return false;
-            DataProviderManager o = (DataProviderManager) other;
+            DataProviderManager o = other;
             if (o.DataFileDirectory != DataFileDirectory) return false;
             List<DataProvider> oDP = ListOfDataProviders;
             if (o.ListOfDataProviders.Count != oDP.Count) return false;

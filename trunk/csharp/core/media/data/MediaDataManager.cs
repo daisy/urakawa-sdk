@@ -1,18 +1,15 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using urakawa.media.data.audio;
 using urakawa.progress;
-using urakawa.xuk;
 
 namespace urakawa.media.data
 {
     /// <summary>
     /// Default implementation of a <see cref="MediaDataManager"/>
     /// </summary>
-    public class MediaDataManager : WithPresentation, IXukAble, IValueEquatable<MediaDataManager>
+    public sealed class MediaDataManager : WithPresentation, IValueEquatable<MediaDataManager>
     {
         private const string DEFAULT_UID_PREFIX = "UID";
 
@@ -21,25 +18,25 @@ namespace urakawa.media.data
         private System.Threading.Mutex mUidMutex = new System.Threading.Mutex();
         private ulong mUidNo = 0;
         private string mUidPrefix = DEFAULT_UID_PREFIX;
-        private audio.PCMFormatInfo mDefaultPCMFormat;
+        private PCMFormatInfo mDefaultPCMFormat;
         private bool mEnforceSinglePCMFormat;
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        protected internal MediaDataManager()
+        public MediaDataManager()
         {
-            mDefaultPCMFormat = new audio.PCMFormatInfo();
+            mDefaultPCMFormat = new PCMFormatInfo();
             mEnforceSinglePCMFormat = false;
         }
 
-        private bool IsNewDefaultPCMFormatOk(audio.PCMFormatInfo newDefault)
+        private bool IsNewDefaultPCMFormatOk(PCMFormatInfo newDefault)
         {
             foreach (MediaData md in ListOfMediaData)
             {
-                if (md is audio.AudioMediaData)
+                if (md is AudioMediaData)
                 {
-                    audio.AudioMediaData amd = (audio.AudioMediaData) md;
+                    AudioMediaData amd = (AudioMediaData) md;
                     if (!amd.PCMFormat.ValueEquals(newDefault)) return false;
                 }
             }
@@ -111,7 +108,7 @@ namespace urakawa.media.data
         {
             set
             {
-                audio.PCMFormatInfo newFormat = DefaultPCMFormat;
+                PCMFormatInfo newFormat = DefaultPCMFormat;
                 newFormat.NumberOfChannels = value;
                 DefaultPCMFormat = newFormat;
             }
@@ -127,7 +124,7 @@ namespace urakawa.media.data
         {
             set
             {
-                audio.PCMFormatInfo newFormat = DefaultPCMFormat;
+                PCMFormatInfo newFormat = DefaultPCMFormat;
                 newFormat.SampleRate = value;
                 DefaultPCMFormat = newFormat;
             }
@@ -146,7 +143,7 @@ namespace urakawa.media.data
         {
             set
             {
-                audio.PCMFormatInfo newFormat = DefaultPCMFormat;
+                PCMFormatInfo newFormat = DefaultPCMFormat;
                 newFormat.BitDepth = value;
                 DefaultPCMFormat = newFormat;
             }
@@ -160,7 +157,7 @@ namespace urakawa.media.data
         /// <param name="bitDepth">The bit depth</param>
         public void SetDefaultPCMFormat(ushort numberOfChannels, uint sampleRate, ushort bitDepth)
         {
-            audio.PCMFormatInfo newDefault = new urakawa.media.data.audio.PCMFormatInfo();
+            PCMFormatInfo newDefault = new PCMFormatInfo();
             newDefault.NumberOfChannels = numberOfChannels;
             newDefault.SampleRate = sampleRate;
             newDefault.BitDepth = bitDepth;
@@ -210,10 +207,7 @@ namespace urakawa.media.data
             {
                 return mMediaDataDictionary[uid];
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         /// <summary>
@@ -297,7 +291,7 @@ namespace urakawa.media.data
         /// <exception cref="exception.IsAlreadyManagerOfException">
         /// Thrown when another <see cref="MediaData"/> has the same uid
         /// </exception>
-        protected void AddMediaData(MediaData data, string uid)
+        private void AddMediaData(MediaData data, string uid)
         {
             if (mMediaDataDictionary.ContainsKey(uid))
             {
@@ -307,9 +301,9 @@ namespace urakawa.media.data
             }
             if (EnforceSinglePCMFormat)
             {
-                if (data is audio.AudioMediaData)
+                if (data is AudioMediaData)
                 {
-                    audio.AudioMediaData amdata = (audio.AudioMediaData) data;
+                    AudioMediaData amdata = (AudioMediaData) data;
                     if (!amdata.PCMFormat.ValueEquals(DefaultPCMFormat))
                     {
                         throw new exception.InvalidDataFormatException(
@@ -503,13 +497,12 @@ namespace urakawa.media.data
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
                 {
                     case "mDefaultPCMFormat":
-                        ;
                         XukInDefaultPCMFormat(source, handler);
                         break;
                     case "mMediaData":
@@ -534,9 +527,9 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == XukAble.XUK_NS)
+                        if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == XUK_NS)
                         {
-                            audio.PCMFormatInfo newInfo = new urakawa.media.data.audio.PCMFormatInfo();
+                            PCMFormatInfo newInfo = new PCMFormatInfo();
                             newInfo.XukIn(source, handler);
                             bool enf = EnforceSinglePCMFormat;
                             if (enf) EnforceSinglePCMFormat = false;
@@ -565,7 +558,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "mMediaDataItem" && source.NamespaceURI == XukAble.XUK_NS)
+                        if (source.LocalName == "mMediaDataItem" && source.NamespaceURI == XUK_NS)
                         {
                             XukInMediaDataItem(source, handler);
                         }
@@ -643,13 +636,13 @@ namespace urakawa.media.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mDefaultPCMFormat", XukAble.XUK_NS);
+            destination.WriteStartElement("mDefaultPCMFormat", XUK_NS);
             DefaultPCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
-            destination.WriteStartElement("mMediaData", XukAble.XUK_NS);
+            destination.WriteStartElement("mMediaData", XUK_NS);
             foreach (string uid in mMediaDataDictionary.Keys)
             {
-                destination.WriteStartElement("mMediaDataItem", XukAble.XUK_NS);
+                destination.WriteStartElement("mMediaDataItem", XUK_NS);
                 destination.WriteAttributeString("uid", uid);
                 mMediaDataDictionary[uid].XukOut(destination, baseUri, handler);
                 destination.WriteEndElement();

@@ -1,7 +1,3 @@
-using System;
-using System.Xml;
-using urakawa.xuk;
-
 namespace urakawa.core
 {
     /// <summary>

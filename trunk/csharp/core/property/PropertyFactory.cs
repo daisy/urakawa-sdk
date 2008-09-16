@@ -1,8 +1,4 @@
-using System;
-using System.Xml;
-using urakawa.core;
 using urakawa.property.channel;
-using urakawa.xuk;
 
 namespace urakawa.property
 {
@@ -25,9 +21,9 @@ namespace urakawa.property
         /// Creates an <see cref="urakawa.property.xml.XmlProperty"/> instance
         /// </summary>
         /// <returns>The created instance</returns>
-        public urakawa.property.xml.XmlProperty CreateXmlProperty()
+        public xml.XmlProperty CreateXmlProperty()
         {
-            return Create<urakawa.property.xml.XmlProperty>();
+            return Create<xml.XmlProperty>();
         }
     }
 }

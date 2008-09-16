@@ -1,4 +1,5 @@
 using System;
+using urakawa.exception;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
 
@@ -12,15 +13,8 @@ namespace urakawa.media.data
     /// </list>
     /// </para>
     /// </summary>
-    public class MediaDataFactory : GenericFactory<MediaData>
+    public sealed class MediaDataFactory : GenericFactory<MediaData>
     {
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        protected internal MediaDataFactory()
-        {
-        }
-
         /// <summary>
         /// Inistalizes a created <see cref="MediaData"/> instance by assigning it an owning <see cref="Presentation"/>
         /// and adding it to the <see cref="MediaDataManager"/> of the <see cref="Presentation"/>
@@ -47,23 +41,58 @@ namespace urakawa.media.data
             get { return Presentation.MediaDataManager; }
         }
 
+        private Type mDefaultAudioMediaDataType = typeof(WavAudioMediaData);
 
         /// <summary>
-        /// Creates a <see cref="AudioMediaData"/> of default type (which is <see cref="WavAudioMediaData"/>)
+        /// Gets or sets the default <see cref="AudioMediaData"/> <see cref="Type"/>
         /// </summary>
-        /// <returns>The created <see cref="WavAudioMediaData"/></returns>
-        public virtual AudioMediaData CreateAudioMediaData()
+        /// <exception cref="MethodParameterIsNullException">
+        /// Thrown when trying to set to <c>null</c>
+        /// </exception>
+        /// <exception cref="MethodParameterIsWrongTypeException">
+        /// Thrown when trying to set to a <see cref="Type"/> that:
+        /// <list type="ol">
+        /// <item>Does not implement <see cref="AudioMediaData"/></item>
+        /// <item>Is abstract</item>
+        /// <item>Does npot have a default constructor</item>
+        /// </list>
+        /// </exception>
+        public Type DefaultAudioMediaDataType
         {
-            return CreateWavAudioMediaData();
+            get
+            {
+                return mDefaultAudioMediaDataType;
+            }
+
+            set
+            {
+                if (value == null)
+                {
+                    throw new MethodParameterIsNullException("The default AudioMediaData Type cannot be null");
+                }
+                if (!(typeof(AudioMediaData).IsAssignableFrom(value)))
+                {
+                    throw new MethodParameterIsWrongTypeException("The default AudioMediaData Type must be a subclass of AudioMediaData");
+                }
+                if (value.IsAbstract)
+                {
+                    throw new MethodParameterIsWrongTypeException("The default AudioMediaData Type cannot be an abstract class");
+                }
+                if (value.GetConstructor(Type.EmptyTypes)==null)
+                {
+                    throw new MethodParameterIsWrongTypeException("The default AudioMediaData Type must have a default constructor");
+                }
+                mDefaultAudioMediaDataType = value;
+            }
         }
 
         /// <summary>
-        /// Creates a <see cref="WavAudioMediaData"/>
+        /// Creates a <see cref="AudioMediaData"/> of <see cref="DefaultAudioMediaDataType"/>
         /// </summary>
-        /// <returns>The created <see cref="WavAudioMediaData"/></returns>
-        public WavAudioMediaData CreateWavAudioMediaData()
+        /// <returns>The created <see cref="AudioMediaData"/></returns>
+        public AudioMediaData CreateAudioMediaData()
         {
-            return Create<WavAudioMediaData>();
+            return Create(DefaultAudioMediaDataType) as AudioMediaData;
         }
     }
 }

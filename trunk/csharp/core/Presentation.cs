@@ -6,7 +6,6 @@ using urakawa.core;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
-using urakawa.property.xml;
 using urakawa.media;
 using urakawa.media.data;
 using urakawa.metadata;
@@ -46,7 +45,7 @@ namespace urakawa
         /// <param name="args">The arguments of the event</param>
         protected void notifyChanged(DataModelChangedEventArgs args)
         {
-            EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
+            EventHandler<DataModelChangedEventArgs> d = Changed;
             if (d != null) d(this, args);
         }
 
@@ -158,13 +157,13 @@ namespace urakawa
 
         private void this_metadataRemoved(object sender, MetadataDeletedEventArgs e)
         {
-            e.DeletedMetadata.Changed -= new EventHandler<DataModelChangedEventArgs>(Metadata_Changed);
+            e.DeletedMetadata.Changed -= Metadata_Changed;
             notifyChanged(e);
         }
 
         private void this_metadataAdded(object sender, MetadataAddedEventArgs e)
         {
-            e.AddedMetadata.Changed += new EventHandler<DataModelChangedEventArgs>(Metadata_Changed);
+            e.AddedMetadata.Changed += Metadata_Changed;
             notifyChanged(e);
         }
 
@@ -182,11 +181,11 @@ namespace urakawa
         {
             mMetadata = new List<Metadata>();
             mRootNodeInitialized = false;
-            this.LanguageChanged += new EventHandler<LanguageChangedEventArgs>(this_languageChanged);
-            this.RootUriChanged += new EventHandler<RootUriChangedEventArgs>(this_rootUriChanged);
-            this.RootNodeChanged += new EventHandler<RootNodeChangedEventArgs>(this_rootNodeChanged);
-            this.MetadataAdded += new EventHandler<MetadataAddedEventArgs>(this_metadataAdded);
-            this.MetadataDeleted += new EventHandler<MetadataDeletedEventArgs>(this_metadataRemoved);
+            LanguageChanged += this_languageChanged;
+            RootUriChanged += this_rootUriChanged;
+            RootNodeChanged += this_rootNodeChanged;
+            MetadataAdded += this_metadataAdded;
+            MetadataDeleted += this_metadataRemoved;
         }
 
         private Project mProject;
@@ -199,14 +198,14 @@ namespace urakawa
         private MediaDataFactory mMediaDataFactory;
         private DataProviderManager mDataProviderManager;
         private DataProviderFactory mDataProviderFactory;
-        private undo.UndoRedoManager mUndoRedoManager;
+        private UndoRedoManager mUndoRedoManager;
         private CommandFactory mCommandFactory;
+        private MetadataFactory mMetadataFactory;
         private TreeNode mRootNode;
         private bool mRootNodeInitialized;
         private Uri mRootUri;
         private string mLanguage;
         private List<Metadata> mMetadata;
-        private MetadataFactory mMetadataFactory;
 
         /// <summary>
         /// Gets the <see cref="Project"/> of <c>this</c>
@@ -278,8 +277,8 @@ namespace urakawa
         /// </summary>
         public void Cleanup()
         {
-            urakawa.media.data.utilities.CollectManagedMediaTreeNodeVisitor collectorVisitor
-                = new urakawa.media.data.utilities.CollectManagedMediaTreeNodeVisitor();
+            media.data.utilities.CollectManagedMediaTreeNodeVisitor collectorVisitor
+                = new media.data.utilities.CollectManagedMediaTreeNodeVisitor();
             if (RootNode != null)
             {
                 RootNode.AcceptDepthFirst(collectorVisitor);
@@ -294,9 +293,9 @@ namespace urakawa
             {
                 if (usedMediaData.Contains(md))
                 {
-                    if (md is urakawa.media.data.audio.codec.WavAudioMediaData)
+                    if (md is media.data.audio.codec.WavAudioMediaData)
                     {
-                        ((urakawa.media.data.audio.codec.WavAudioMediaData) md).ForceSingleDataProvider();
+                        ((media.data.audio.codec.WavAudioMediaData) md).ForceSingleDataProvider();
                     }
                     foreach (DataProvider dp in md.ListOfUsedDataProviders)
                     {
@@ -350,10 +349,10 @@ namespace urakawa
                 {
                     TreeNode prevRoot = mRootNode;
                     if (prevRoot != null)
-                        prevRoot.Changed -= new EventHandler<DataModelChangedEventArgs>(RootNode_Changed);
+                        prevRoot.Changed -= RootNode_Changed;
                     mRootNode = value;
                     if (mRootNode != null)
-                        mRootNode.Changed += new EventHandler<DataModelChangedEventArgs>(RootNode_Changed);
+                        mRootNode.Changed += RootNode_Changed;
                     notifyRootNodeChanged(this, mRootNode, prevRoot);
                 }
             }
@@ -874,7 +873,7 @@ namespace urakawa
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="xukAble">The instance to read</param>
         /// <param name="handler">The handler for progress</param>
-        protected void XukInXukAbleFromChild(XmlReader source, IXukAble xukAble, ProgressHandler handler)
+        protected static void XukInXukAbleFromChild(XmlReader source, IXukAble xukAble, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -970,8 +969,7 @@ namespace urakawa
 
         private delegate void SetDelegate<T>(T obj);
 
-        private static void XukInXukAbleFromChild<T>(XmlReader source, T instanceVar, CreatorDelegate<T> creator,
-                                              SetDelegate<T> setter, ProgressHandler handler) where T : IXukAble
+        private static void XukInXukAbleFromChild<T>(XmlReader source, CreatorDelegate<T> creator, SetDelegate<T> setter, ProgressHandler handler) where T : class, IXukAble
         {
             if (!source.IsEmptyElement)
             {
@@ -989,7 +987,7 @@ namespace urakawa
                         }
                         else
                         {
-                            instanceVar = creator(source.LocalName, source.NamespaceURI);
+                            T instanceVar = creator(source.LocalName, source.NamespaceURI);
                             if (instanceVar != null)
                             {
                                 setter(instanceVar);
@@ -1036,7 +1034,7 @@ namespace urakawa
                         break;
                     case "mChannelsManager":
                         XukInXukAbleFromChild<ChannelsManager>(
-                            source, null,
+                            source,
                             DataModelFactory.CreateChannelsManager,
                             delegate(ChannelsManager val) { ChannelsManager = val; },
                             handler);
@@ -1049,17 +1047,17 @@ namespace urakawa
                         break;
                     case "mMediaDataManager":
                         XukInXukAbleFromChild<MediaDataManager>(
-                            source, null,
+                            source,
                             DataModelFactory.CreateMediaDataManager,
                             delegate(MediaDataManager val) { MediaDataManager = val; },
                             handler);
                         break;
-                    case "mDataProviderFactory":
+                    case "DataProviderFactory":
                         DataProviderFactory.XukIn(source, handler);
                         break;
                     case "mDataProviderManager":
                         XukInXukAbleFromChild<DataProviderManager>(
-                            source, null,
+                            source,
                             DataModelFactory.CreateDataProviderManager,
                             delegate(DataProviderManager val) { DataProviderManager = val; }, handler);
                         break;
@@ -1068,7 +1066,7 @@ namespace urakawa
                         break;
                     case "mUndoRedoManager":
                         XukInXukAbleFromChild<UndoRedoManager>(
-                            source, null,
+                            source,
                             DataModelFactory.CreateUndoRedoManager,
                             delegate(UndoRedoManager val) { UndoRedoManager = val; },
                             handler);
@@ -1134,7 +1132,7 @@ namespace urakawa
 
             ChannelFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mChannelsManager", XukAble.XUK_NS);
+            destination.WriteStartElement("mChannelsManager", XUK_NS);
             ChannelsManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
@@ -1142,32 +1140,32 @@ namespace urakawa
 
             DataProviderFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mDataProviderManager", XukAble.XUK_NS);
+            destination.WriteStartElement("mDataProviderManager", XUK_NS);
             DataProviderManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
             MediaDataFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mMediaDataManager", XukAble.XUK_NS);
+            destination.WriteStartElement("mMediaDataManager", XUK_NS);
             MediaDataManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
             CommandFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mUndoRedoManager", XukAble.XUK_NS);
+            destination.WriteStartElement("mUndoRedoManager", XUK_NS);
             UndoRedoManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
             MetadataFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mMetadata", XukAble.XUK_NS);
+            destination.WriteStartElement("mMetadata", XUK_NS);
             foreach (Metadata md in mMetadata)
             {
                 md.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mRootNode", XukAble.XUK_NS);
+            destination.WriteStartElement("mRootNode", XUK_NS);
             RootNode.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
         }

@@ -1,15 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using NUnit.Framework;
 using urakawa;
-using urakawa.core;
-using urakawa.property.channel;
-using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
-using urakawa.media.data.utilities;
 using urakawa.media.timing;
 
 namespace urakawa.media.data.audio.codec
@@ -53,15 +48,15 @@ namespace urakawa.media.data.audio.codec
         [SetUp]
         public void SetUp()
         {
-            mData1 = mPresentation.MediaDataFactory.CreateWavAudioMediaData();
+            mData1 = mPresentation.MediaDataFactory.Create<WavAudioMediaData>();
             Assert.IsTrue(mData1.PCMFormat.BitDepth == 16, "default bit depth should be 16 bits");
             Assert.IsTrue(mData1.PCMFormat.NumberOfChannels == 1, "default number of channels should be 1");
             Assert.IsTrue(mData1.PCMFormat.SampleRate == 44100, "default sample rate should be 44100 Hz");
-            mData2 = mPresentation.MediaDataFactory.CreateWavAudioMediaData();
+            mData2 = mPresentation.MediaDataFactory.Create<WavAudioMediaData>();
             Assert.IsTrue(mData2.PCMFormat.BitDepth == 16, "default bit depth should be 16 bits");
             Assert.IsTrue(mData2.PCMFormat.NumberOfChannels == 1, "default number of channels should be 1");
             Assert.IsTrue(mData2.PCMFormat.SampleRate == 44100, "default sample rate should be 44100 Hz");
-            mData3 = mPresentation.MediaDataFactory.CreateWavAudioMediaData();
+            mData3 = mPresentation.MediaDataFactory.Create<WavAudioMediaData>();
             Assert.IsTrue(mData3.PCMFormat.BitDepth == 16, "default bit depth should be 16 bits");
             Assert.IsTrue(mData3.PCMFormat.NumberOfChannels == 1, "default number of channels should be 1");
             Assert.IsTrue(mData3.PCMFormat.SampleRate == 44100, "default sample rate should be 44100 Hz");
@@ -103,10 +98,9 @@ namespace urakawa.media.data.audio.codec
         [Test, Description("Tests the media samples used in this fixture")]
         public void TestMediaSamples()
         {
-            PCMDataInfo info;
             List<Stream> wavSeq1 = new List<Stream>();
             List<Stream> wavSeq2 = new List<Stream>();
-            info = GetInfo("audiotest1-mono-44100Hz-16bits.wav");
+            PCMDataInfo info = GetInfo("audiotest1-mono-44100Hz-16bits.wav");
             Assert.IsTrue(info.NumberOfChannels == 1);
             Assert.IsTrue(info.SampleRate == 44100);
             Assert.IsTrue(info.BitDepth == 16);
@@ -404,7 +398,7 @@ namespace urakawa.media.data.audio.codec
 
 
         [Test, Description("Get exception appending sterio audio to a mono audio media data")]
-        [ExpectedException(typeof (urakawa.exception.InvalidDataFormatException))]
+        [ExpectedException(typeof (exception.InvalidDataFormatException))]
         public void AppendAudioData_StereoFileToMonoAudioMediaData()
         {
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest-stereo-44100Hz-16bits.wav"));
@@ -1175,7 +1169,7 @@ namespace urakawa.media.data.audio.codec
             //}
         }
 
-        private void CheckOrigCopyCoExistance(WavAudioMediaData orig)
+        private static void CheckOrigCopyCoExistance(WavAudioMediaData orig)
         {
             WavAudioMediaData copy = orig.Copy();
             Stream origStream = orig.GetAudioData();
@@ -1207,7 +1201,7 @@ namespace urakawa.media.data.audio.codec
             CheckOrigCopyCoExistance(mData1);
         }
 
-        private byte[] GetAudioData(AudioMediaData audioMediaData)
+        private static byte[] GetAudioData(AudioMediaData audioMediaData)
         {
             Stream ad = audioMediaData.GetAudioData();
             byte[] res = new byte[ad.Length];
@@ -1216,19 +1210,34 @@ namespace urakawa.media.data.audio.codec
             return res;
         }
 
-        private void CheckAudioData(AudioMediaData audioMediaData, byte[] expectedData)
+        private static void CheckAudioData(AudioMediaData audioMediaData, byte[] expectedData)
         {
             byte[] curData = GetAudioData(audioMediaData);
             Assert.AreEqual(expectedData, curData, "The audio data is not as expected");
         }
 
-        [Test, Description("Checks that the original and copy acts as independant objects")]
+        [Test, Description("Checks that the original and copy acts as independant objects, that is that the copy does not change when the original does")]
         public void Copy_CheckCopyIndependance()
         {
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             WavAudioMediaData copy = mData1.Copy();
             byte[] copyDataBefore = GetAudioData(copy);
-            //TODO: Change original
+            double ms = mData1.AudioDuration.TimeDeltaAsMillisecondFloat;
+            Time cb = new Time(ms / 4f);
+            Time ce = new Time(3f * ms / 4f);
+            mData1.RemoveAudioData(cb, ce);
+            CheckAudioData(copy, copyDataBefore);
+            mData2.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
+            copy = mData2.Copy();
+            copyDataBefore = GetAudioData(copy);
+            ms = mData2.AudioDuration.TimeDeltaAsMillisecondFloat;
+            mData2.InsertAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"), new Time(ms), null);
+            CheckAudioData(copy, copyDataBefore);
+            mData3.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
+            copy = mData3.Copy();
+            copyDataBefore = GetAudioData(copy);
+            WavAudioMediaData copy2 = copy.Copy();
+            mData3.MergeWith(copy2);
             CheckAudioData(copy, copyDataBefore);
         }
 
@@ -1239,13 +1248,6 @@ namespace urakawa.media.data.audio.codec
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             WavAudioMediaData copy = mData1.Copy();
             Assert.IsTrue(mData1.ValueEquals(copy));
-            //List<DataProvider> provList = mData1.getListOfUsedDataProviders();
-            //List<DataProvider> provListCopy = copy.getListOfUsedDataProviders();
-            //Assert.IsTrue(provList.Count == provListCopy.Count, "the copy does not have the same number of data providers");
-            //for (int i = 0; i < provList.Count; i++)
-            //{
-            //    Assert.IsTrue(provList[i].ValueEquals(provListCopy[i]), "a data provider of the copy was not equal to the data provider of the original data");
-            //}
         }
     }
 }

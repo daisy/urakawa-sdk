@@ -1,22 +1,12 @@
-using System;
-using System.Xml;
 using urakawa.media.data.audio;
-using urakawa.xuk;
 
 namespace urakawa.media
 {
     /// <summary>
     /// The media factory will create any media object of MediaType.xxx
     /// </summary>
-    public class MediaFactory : GenericFactory<Media>
+    public sealed class MediaFactory : GenericFactory<Media>
     {
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        protected internal MediaFactory()
-        {
-        }
-
         #region IMediaFactory Members
 
         /// <summary>
@@ -41,7 +31,7 @@ namespace urakawa.media
         /// Creates a <see cref="ExternalImageMedia"/>
         /// </summary>
         /// <returns>The creation</returns>
-        public virtual ExternalImageMedia CreateExternalImageMedia()
+        public ExternalImageMedia CreateExternalImageMedia()
         {
             return Create<ExternalImageMedia>();
         }
@@ -50,7 +40,7 @@ namespace urakawa.media
         /// Creates a <see cref="ExternalVideoMedia"/>
         /// </summary>
         /// <returns>The creation</returns>
-        public virtual ExternalVideoMedia CreateExternalVideoMedia()
+        public ExternalVideoMedia CreateExternalVideoMedia()
         {
             return Create<ExternalVideoMedia>();
         }
@@ -59,7 +49,7 @@ namespace urakawa.media
         /// Creates a <see cref="SequenceMedia"/>
         /// </summary>
         /// <returns>The creation</returns>
-        public virtual SequenceMedia CreateSequenceMedia()
+        public SequenceMedia CreateSequenceMedia()
         {
             return Create<SequenceMedia>();
         }

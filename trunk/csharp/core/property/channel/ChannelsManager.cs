@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using urakawa.core;
-using urakawa.core.visitor;
 using urakawa.progress;
-using urakawa.xuk;
 
 namespace urakawa.property.channel
 {
@@ -13,7 +10,7 @@ namespace urakawa.property.channel
     /// Can only manage channels that inherit <see cref="Channel"/>
     /// TODO: Check XUKIn/XukOut implementation
     /// </summary>
-    public class ChannelsManager : WithPresentation, IXukAble, IValueEquatable<ChannelsManager>
+    public sealed class ChannelsManager : WithPresentation, IValueEquatable<ChannelsManager>
     {
         /// <summary>
         /// A dictionary of the <see cref="Channel"/>s managed by the manager, sorted by their uid
@@ -23,7 +20,7 @@ namespace urakawa.property.channel
         /// <summary>
         /// Default constructor
         /// </summary>
-        protected internal ChannelsManager()
+        public ChannelsManager()
         {
             mChannels = new Dictionary<string, Channel>();
         }
@@ -281,7 +278,7 @@ namespace urakawa.property.channel
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS && source.LocalName == "mChannels")
+            if (source.NamespaceURI == XUK_NS && source.LocalName == "mChannels")
             {
                 readItem = true;
                 if (!source.IsEmptyElement)
@@ -290,7 +287,7 @@ namespace urakawa.property.channel
                     {
                         if (source.NodeType == XmlNodeType.Element)
                         {
-                            if (source.LocalName == "mChannelItem" && source.NamespaceURI == XukAble.XUK_NS)
+                            if (source.LocalName == "mChannelItem" && source.NamespaceURI == XUK_NS)
                             {
                                 XukInChannelItem(source, handler);
                             }

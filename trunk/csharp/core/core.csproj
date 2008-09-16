@@ -221,7 +221,7 @@
     <Compile Include="media\data\DataProviderManager.cs" />
     <Compile Include="media\data\FileDataProvider.cs" />
     <Compile Include="media\data\DataProvider.cs" />
-    <Compile Include="media\data\IManagedMedia.cs" />
+    <Compile Include="media\data\IManaged.cs" />
     <Compile Include="media\data\audio\ManagedAudioMedia.cs" />
     <Compile Include="media\data\MediaData.cs" />
     <Compile Include="media\data\MediaDataFactory.cs" />

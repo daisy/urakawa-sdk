@@ -255,7 +255,7 @@ namespace urakawa.media.data.audio.codec
         /// <returns>The <see cref="WavClip"/></returns>
         protected WavClip CreateWavClipFromRawPCMStream(Stream pcmData, TimeDelta duration)
         {
-            DataProvider newSingleDataProvider = MediaDataManager.DataProviderFactory.CreateDataProvider(
+            DataProvider newSingleDataProvider = MediaDataManager.DataProviderFactory.Create(
                 DataProviderFactory.AUDIO_WAV_MIME_TYPE);
             PCMDataInfo pcmInfo = new PCMDataInfo(PCMFormat);
             if (duration == null)
@@ -310,7 +310,7 @@ namespace urakawa.media.data.audio.codec
         /// In implementing classes this method should return a copy of the class instances
         /// </summary>
         /// <returns>The copy</returns>
-        protected override MediaData ProtectedCopy()
+        protected override MediaData CopyProtected()
         {
             WavAudioMediaData copy = Presentation.MediaDataFactory.Create<WavAudioMediaData>();
             copy.PCMFormat = PCMFormat;
@@ -327,7 +327,7 @@ namespace urakawa.media.data.audio.codec
         /// <returns>The copy</returns>
         public new WavAudioMediaData Copy()
         {
-            return ProtectedCopy() as WavAudioMediaData;
+            return CopyProtected() as WavAudioMediaData;
         }
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace urakawa.media.data.audio.codec
         /// </summary>
         /// <param name="destPres">The given destination presentation</param>
         /// <returns>The exported wav audio media data</returns>
-        protected override MediaData ProtectedExport(Presentation destPres)
+        protected override MediaData ExportProtected(Presentation destPres)
         {
             WavAudioMediaData expWAMD = destPres.MediaDataFactory.Create<WavAudioMediaData>();
             expWAMD.PCMFormat = PCMFormat;
@@ -353,7 +353,7 @@ namespace urakawa.media.data.audio.codec
         /// <returns>The exported wav audio media data</returns>
         public new WavAudioMediaData Export(Presentation destPres)
         {
-            return ProtectedExport(destPres) as WavAudioMediaData;
+            return ExportProtected(destPres) as WavAudioMediaData;
         }
 
         /// <summary>
@@ -849,6 +849,10 @@ namespace urakawa.media.data.audio.codec
         /// </exception>
         public override void MergeWith(AudioMediaData other)
         {
+            if (other==this)
+            {
+                throw new exception.OperationNotValidException("Can not merge a AudioMediaData with itself");
+            }
             if (other is WavAudioMediaData)
             {
                 if (!PCMFormat.IsCompatibleWith(other.PCMFormat))

@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Xml;
-using urakawa.exception;
-using urakawa.xuk;
 
 namespace urakawa.media.data
 {
@@ -74,7 +71,7 @@ namespace urakawa.media.data
 
         #region DataProvider Members
 
-        private bool HasBeenInitialized = false;
+        private bool HasBeenInitialized;
 
         private void CheckDataFile()
         {
@@ -142,8 +139,8 @@ namespace urakawa.media.data
                     String.Format("Could not open file {0}", fp),
                     e);
             }
-            utilities.CloseNotifyingStream res = new urakawa.media.data.utilities.CloseNotifyingStream(inputFS);
-            res.StreamClosed += new EventHandler(InputStreamClosed_StreamClosed);
+            utilities.CloseNotifyingStream res = new utilities.CloseNotifyingStream(inputFS);
+            res.StreamClosed += InputStreamClosed_StreamClosed;
             mOpenInputStreams.Add(res);
             return res;
         }
@@ -154,7 +151,7 @@ namespace urakawa.media.data
             if (cnStm != null)
             {
                 if (mOpenInputStreams.Contains(cnStm)) mOpenInputStreams.Remove(cnStm);
-                cnStm.StreamClosed += new EventHandler(InputStreamClosed_StreamClosed);
+                cnStm.StreamClosed += InputStreamClosed_StreamClosed;
             }
         }
 
@@ -199,14 +196,14 @@ namespace urakawa.media.data
                     String.Format("Could not open file {0}", fp),
                     e);
             }
-            mOpenOutputStream = new urakawa.media.data.utilities.CloseNotifyingStream(outputFS);
-            mOpenOutputStream.StreamClosed += new EventHandler(OutputStream_StreamClosed);
+            mOpenOutputStream = new utilities.CloseNotifyingStream(outputFS);
+            mOpenOutputStream.StreamClosed += OutputStream_StreamClosed;
             return mOpenOutputStream;
         }
 
         private void OutputStream_StreamClosed(object sender, EventArgs e)
         {
-            if (Type.ReferenceEquals(sender, mOpenOutputStream)) mOpenOutputStream = null;
+            if (ReferenceEquals(sender, mOpenOutputStream)) mOpenOutputStream = null;
         }
 
         /// <summary>
@@ -257,14 +254,7 @@ namespace urakawa.media.data
         /// <returns>The copy</returns>
         public override DataProvider Copy()
         {
-            DataProvider c = DataProviderManager.DataProviderFactory.CreateDataProvider(
-                MimeType, XukLocalName, XukNamespaceUri);
-            if (c == null)
-            {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The data provider factory can not create a data provider matching QName {0}:{1}",
-                                                                         XukNamespaceUri, XukLocalName));
-            }
+            DataProvider c = Presentation.DataProviderFactory.Create<FileDataProvider>(MimeType);
             Stream thisData = GetInputStream();
             try
             {
@@ -275,6 +265,26 @@ namespace urakawa.media.data
                 thisData.Close();
             }
             return c;
+        }
+
+        /// <summary>
+        /// Exports <c>this</c> to a given destination <see cref="Presentation"/>
+        /// </summary>
+        /// <param name="destPres">The destination <see cref="Presentation"/></param>
+        /// <returns>The exported <see cref="FileDataProvider"/></returns>
+        public override DataProvider Export(Presentation destPres)
+        {
+            FileDataProvider expFDP = destPres.DataProviderFactory.Create<FileDataProvider>(MimeType);
+            Stream thisStm = GetInputStream();
+            try
+            {
+                DataProviderManager.AppendDataToProvider(thisStm, (int)thisStm.Length, expFDP);
+            }
+            finally
+            {
+                thisStm.Close();
+            }
+            return expFDP;
         }
 
         #endregion
@@ -329,37 +339,6 @@ namespace urakawa.media.data
             if (o.MimeType != MimeType) return false;
             if (!DataProviderManager.CompareDataProviderContent(this, o)) return false;
             return true;
-        }
-
-        #endregion
-
-        #region DataProvider Members
-
-        /// <summary>
-        /// Exports <c>this</c> to a given destination <see cref="Presentation"/>
-        /// </summary>
-        /// <param name="destPres">The destination <see cref="Presentation"/></param>
-        /// <returns>The exported <see cref="FileDataProvider"/></returns>
-        public override DataProvider Export(Presentation destPres)
-        {
-            FileDataProvider expFDP = destPres.DataProviderFactory.CreateDataProvider(
-                                          MimeType, XukLocalName, XukNamespaceUri) as FileDataProvider;
-            if (expFDP == null)
-            {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The DataProviderFactory of the destination Presentation can notcreate a DataProviderManager for XUK QName {1}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
-            }
-            Stream thisStm = GetInputStream();
-            try
-            {
-                DataProviderManager.AppendDataToProvider(thisStm, (int) thisStm.Length, expFDP);
-            }
-            finally
-            {
-                thisStm.Close();
-            }
-            return expFDP;
         }
 
         #endregion

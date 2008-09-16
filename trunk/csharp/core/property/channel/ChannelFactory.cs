@@ -1,8 +1,3 @@
-using System;
-using System.Xml;
-using urakawa.core;
-using urakawa.xuk;
-
 namespace urakawa.property.channel
 {
     /// <summary>
