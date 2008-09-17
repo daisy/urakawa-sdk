@@ -175,9 +175,10 @@ namespace urakawa
         #endregion
 
         /// <summary>
-        /// Default constructor
+        /// Default constructor - for system use only.
+        /// <see cref="Presentation"/>s should be created using the <see cref="PresentationFactory"/>
         /// </summary>
-        protected internal Presentation()
+        public Presentation()
         {
             mMetadata = new List<Metadata>();
             mRootNodeInitialized = false;
@@ -242,13 +243,13 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Gets the <see cref="DataModelFactory"/> associated with the <see cref="Presentation"/>
+        /// Gets the <see cref="PresentationFactory"/> associated with the <see cref="Presentation"/>
         /// via. it's owning <see cref="urakawa.Project"/>
         /// </summary>
-        /// <returns>The <see cref="DataModelFactory"/></returns>
-        public DataModelFactory DataModelFactory
+        /// <returns>The <see cref="PresentationFactory"/></returns>
+        public PresentationFactory PresentationFactory
         {
-            get { return Project.DataModelFactory; }
+            get { return Project.PresentationFactory; }
         }
 
         /// <summary>

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Xuk xmlns="http://www.daisy.org/urakawa/xuk/2.0" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/2.0 ../../xukschema/xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<Project>
+		<PresentationFactory>
+			<mRegisteredTypes>
+				<Type XukLocalName="Presentation" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.Presentation"/>
+			</mRegisteredTypes>
+		</PresentationFactory>
 		<mPresentations>
 			<Presentation>
 				<TreeNodeFactory>

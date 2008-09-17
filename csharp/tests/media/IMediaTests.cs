@@ -59,7 +59,7 @@ namespace urakawa.media
         public virtual void Export_ValueEqualsPresentationsOk()
         {
             mMedia1.Language = "en";
-            Presentation destPres = mProject.DataModelFactory.Create();
+            Presentation destPres = mProject.PresentationFactory.Create();
             mProject.AddPresentation(destPres);
             Presentation sourcePres = mMedia1.MediaFactory.Presentation;
             Media expM = mMedia1.Export(destPres);
