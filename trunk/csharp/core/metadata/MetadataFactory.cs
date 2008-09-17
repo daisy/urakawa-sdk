@@ -3,7 +3,7 @@ namespace urakawa.metadata
     /// <summary>
     /// Default <see cref="Metadata"/> factory - supports creation of <see cref="Metadata"/> instances
     /// </summary>
-    public sealed class MetadataFactory : GenericFactory<Metadata>
+    public sealed class MetadataFactory : GenericWithPresentationFactory<Metadata>
     {
         /// <summary>
         /// Creates an <see cref="Metadata"/> instance

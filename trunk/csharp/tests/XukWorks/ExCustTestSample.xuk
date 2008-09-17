@@ -25,18 +25,16 @@
 						<Type XukLocalName="ManagedAudioChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.ManagedAudioChannel"/>
 					</mRegisteredTypes>
 				</ChannelFactory>
-				<mChannelsManager>
-					<ChannelsManager>
-						<mChannels>
-							<mChannelItem uid="textChannel">
-								<Channel name="TEXT"/>
-							</mChannelItem>
-							<mChannelItem uid="audioChannel">
-								<Channel name="AUDIO"/>
-							</mChannelItem>
-						</mChannels>
-					</ChannelsManager>
-				</mChannelsManager>
+				<ChannelsManager>
+					<mChannels>
+						<mChannelItem uid="textChannel">
+							<Channel name="TEXT"/>
+						</mChannelItem>
+						<mChannelItem uid="audioChannel">
+							<Channel name="AUDIO"/>
+						</mChannelItem>
+					</mChannels>
+				</ChannelsManager>
 				<MediaFactory>
 					<mRegisteredTypes>
 						<Type XukLocalName="TextMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.TextMedia"/>
@@ -52,13 +50,11 @@
 						<Type XukLocalName="FileDataProvider" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.data.FileDataProvider"/>
 					</mRegisteredTypes>
 				</DataProviderFactory>
-				<mDataProviderManager/>
 				<MediaDataFactory>
 					<mRegisteredTypes>
 						<Type XukLocalName="WavAudioMediaData" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.data.audio.codec.WavAudioMediaData"/>
 					</mRegisteredTypes>
 				</MediaDataFactory>
-				<mMediaDataManager/>
 				<CommandFactory>
 					<mRegisteredTypes>
 						<Type XukLocalName="CompositeCommand" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.command.CompositeCommand"/>

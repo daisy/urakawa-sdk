@@ -249,12 +249,12 @@ namespace urakawa
 
         /// <summary>
         /// Adds a newly created <see cref="Presentation"/> to the <see cref="Project"/>, 
-        /// as returned by <c>this.DataModelFactory.CreatePresentation()</c>
+        /// as returned by <c>this.DataModelFactory.Create()</c>
         /// </summary>
         /// <returns>The newly created and added <see cref="Presentation"/></returns>
         public Presentation AddNewPresentation()
         {
-            Presentation newPres = DataModelFactory.CreatePresentation();
+            Presentation newPres = DataModelFactory.Create();
             AddPresentation(newPres);
             return newPres;
         }
@@ -338,7 +338,7 @@ namespace urakawa
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        Presentation pres = DataModelFactory.CreatePresentation(
+                        Presentation pres = DataModelFactory.Create(
                             source.LocalName, source.NamespaceURI);
                         if (pres != null)
                         {

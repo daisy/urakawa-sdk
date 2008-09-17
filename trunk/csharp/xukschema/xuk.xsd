@@ -62,14 +62,14 @@
 				<xs:element name="TreeNodeFactory" type="GenericFactory" />
 				<xs:element name="PropertyFactory" type="GenericFactory" />
 				<xs:element name="ChannelFactory" />
-				<xs:element ref="mChannelsManager" minOccurs="0" />
+				<xs:element ref="ChannelsManager" minOccurs="0" />
 				<xs:element name="MediaFactory" type="GenericFactory" />
 				<xs:element name="DataProviderFactory" type="GenericFactory" />
-				<xs:element ref="mDataProviderManager" minOccurs="0" />
+				<xs:element ref="DataProviderManager" minOccurs="0" />
 				<xs:element name="MediaDataFactory" type="GenericFactory" />
-				<xs:element ref="mMediaDataManager" minOccurs="0" />
+				<xs:element ref="MediaDataManager" minOccurs="0" />
 				<xs:element name="CommandFactory" type="GenericFactory" />
-				<xs:element ref="mUndoRedoManager" minOccurs="0" />
+				<xs:element ref="UndoRedoManager" minOccurs="0" />
 				<xs:element name="MetadataFactory" type="GenericFactory" />
 				<xs:element ref="mMetadata" minOccurs="0"/>
 				<xs:element ref="mRootNode"/>
@@ -81,21 +81,21 @@
 			<xs:annotation>
 				<xs:documentation>Key to identify channels</xs:documentation>
 			</xs:annotation>
-			<xs:selector xpath="xuk:mChannelsManager/*/xuk:mChannels/xuk:mChannelItem"/>
+			<xs:selector xpath="xuk:ChannelsManager/xuk:mChannels/xuk:mChannelItem"/>
 			<xs:field xpath="@uid"/>
 		</xs:key>
 		<xs:key name="dataProviderItemKey">
 			<xs:annotation>
 				<xs:documentation>Key to identify data providers</xs:documentation>
 			</xs:annotation>
-			<xs:selector xpath="xuk:mDataProviderManager/*/xuk:mDataProviders/xuk:mDataProviderItem"/>
+			<xs:selector xpath="xuk:DataProviderManager/xuk:mDataProviders/xuk:mDataProviderItem"/>
 			<xs:field xpath="@uid"/>
 		</xs:key>
 		<xs:key name="mediaDataItemKey">
 			<xs:annotation>
 				<xs:documentation>Key to identify media data</xs:documentation>
 			</xs:annotation>
-			<xs:selector xpath="xuk:mMediaDataManager/*/xuk:mMediaData/xuk:mMediaDataItem"/>
+			<xs:selector xpath="xuk:MediaDataManager/xuk:mMediaData/xuk:mMediaDataItem"/>
 			<xs:field xpath="@uid"/>
 		</xs:key>
 	</xs:element>

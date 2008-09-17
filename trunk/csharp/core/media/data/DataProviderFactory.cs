@@ -6,7 +6,7 @@ namespace urakawa.media.data
     /// <summary>
     /// Factory for creating <see cref="DataProvider"/>s
     /// </summary>
-    public sealed class DataProviderFactory : GenericFactory<DataProvider>
+    public sealed class DataProviderFactory : GenericWithPresentationFactory<DataProvider>
     {
         /// <summary>
         /// Inistalizes an created instance by assigning it an owning <see cref="Presentation"/>
