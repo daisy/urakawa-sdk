@@ -5,7 +5,7 @@ namespace urakawa.command
     /// <summary>
     /// Factory for creating <see cref="Command"/>s
     /// </summary>
-    public class CommandFactory : GenericFactory<Command>
+    public class CommandFactory : GenericWithPresentationFactory<Command>
     {
         /// <summary>
         /// Default constructor

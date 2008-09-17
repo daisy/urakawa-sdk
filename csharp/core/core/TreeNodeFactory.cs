@@ -9,7 +9,7 @@ namespace urakawa.core
     /// until it has been associated with a <see cref="Presentation"/> using the
     /// <see cref="WithPresentation.Presentation"/> method
     /// </remarks>
-    public sealed class TreeNodeFactory : GenericFactory<TreeNode>
+    public sealed class TreeNodeFactory : GenericWithPresentationFactory<TreeNode>
     {
         /// <summary>
         /// Creates a new <see cref="TreeNode"/>

@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.IO;
+using System.Reflection;
 using System.Xml;
 using urakawa.exception;
 using urakawa.xuk;
 
 namespace urakawa
 {
-    /// <summary>
-    /// Generic base class for creation of instances of types implementing <see cref="WithPresentation"/>
-    /// </summary>
-    /// <typeparam name="T">The base <see cref="Type"/> of instances created by the factory</typeparam>
-    public class GenericFactory<T> : WithPresentation where T : WithPresentation
+    ///<summary>
+    ///</summary>
+    ///<typeparam name="T"></typeparam>
+    public class GenericXukAbleFactory<T> : XukAble where T : XukAble
     {
         private class TypeAndQNames
         {
@@ -25,7 +24,7 @@ namespace urakawa
             public void ReadFromXmlReader(XmlReader rd)
             {
                 QName = new QualifiedName(rd.GetAttribute("XukLocalName"), rd.GetAttribute("XukNamespaceUri") ?? "");
-                if (rd.GetAttribute("BaseXukLocalName")!=null)
+                if (rd.GetAttribute("BaseXukLocalName") != null)
                 {
                     BaseQName = new QualifiedName(rd.GetAttribute("BaseXukLocalName"), rd.GetAttribute("BaseXukNamespaceUri") ?? "");
                 }
@@ -34,7 +33,7 @@ namespace urakawa
                     BaseQName = null;
                 }
                 AssemblyName = new AssemblyName(rd.GetAttribute("AssemblyName"));
-                if (rd.GetAttribute("AssemblyVersion")!=null)
+                if (rd.GetAttribute("AssemblyVersion") != null)
                 {
                     AssemblyName.Version = new Version(rd.GetAttribute("AssemblyVersion"));
                 }
@@ -89,7 +88,7 @@ namespace urakawa
         {
             mRegisteredTypeAndQNames.Add(tq);
             mRegisteredTypeAndQNamesByQualifiedName.Add(tq.QName.QName, tq);
-            if (tq.Type!=null) mRegisteredTypeAndQNamesByType.Add(tq.Type, tq);
+            if (tq.Type != null) mRegisteredTypeAndQNamesByType.Add(tq.Type, tq);
         }
 
         private TypeAndQNames RegisterType(Type t)
@@ -97,11 +96,11 @@ namespace urakawa
             if (!typeof(T).IsAssignableFrom(t))
             {
                 string msg = String.Format(
-                    "Only Types inheriting {0} can be registered with the factory", typeof (T).FullName);
+                    "Only Types inheriting {0} can be registered with the factory", typeof(T).FullName);
                 throw new MethodParameterIsWrongTypeException(msg);
             }
             TypeAndQNames tq = new TypeAndQNames();
-            tq.QName = XukAble.GetXukQualifiedName(t);
+            tq.QName = GetXukQualifiedName(t);
             tq.Type = t;
             tq.FullName = t.FullName;
             tq.AssemblyName = t.Assembly.GetName();
@@ -136,7 +135,7 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Inistalizes an created instance by assigning it an owning <see cref="Presentation"/>
+        /// Inistalizes an created instance  
         /// </summary>
         /// <param name="instance">The instance to initialize</param>
         /// <remarks>
@@ -145,7 +144,7 @@ namespace urakawa
         /// </remarks>
         protected virtual void InitializeInstance(T instance)
         {
-            instance.Presentation = Presentation;
+            
         }
 
         /// <summary>
@@ -158,7 +157,7 @@ namespace urakawa
         {
             U res = new U();
             InitializeInstance(res);
-            Type t = typeof (U);
+            Type t = typeof(U);
             if (!IsRegistered(t)) RegisterType(t);
             return res;
         }
@@ -168,7 +167,7 @@ namespace urakawa
         /// </summary>
         /// <param name="t">
         /// The <see cref="Type"/> of the instance to create,
-        /// cannot be null and must implement <paramref name="T"/> and
+        /// cannot be null and must implement <typeparamref name="T"/> and
         /// and have a public constructor with no arguments
         /// </param>
         /// <returns>
@@ -177,13 +176,13 @@ namespace urakawa
         /// </returns>
         public T Create(Type t)
         {
-            if (t==null) throw new MethodParameterIsNullException("Cannot create an instnce of a null Type");
-            ConstructorInfo ci = t.GetConstructor(new Type[] {});
-            if (ci!=null)
+            if (t == null) throw new MethodParameterIsNullException("Cannot create an instnce of a null Type");
+            ConstructorInfo ci = t.GetConstructor(new Type[] { });
+            if (ci != null)
             {
                 if (!ci.IsPublic) return null;
-                T res = ci.Invoke(new object[] {}) as T;
-                if (res!=null)
+                T res = ci.Invoke(new object[] { }) as T;
+                if (res != null)
                 {
                     InitializeInstance(res);
                     if (!IsRegistered(t)) RegisterType(t);
@@ -221,30 +220,30 @@ namespace urakawa
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukOutChildren(System.Xml.XmlWriter destination, Uri baseUri, urakawa.progress.ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, progress.ProgressHandler handler)
         {
-            destination.WriteStartElement("mRegisteredTypes", XukAble.XUK_NS);
+            destination.WriteStartElement("mRegisteredTypes", XUK_NS);
             foreach (TypeAndQNames tp in mRegisteredTypeAndQNames)
             {
-                destination.WriteStartElement("Type", XukAble.XUK_NS);
+                destination.WriteStartElement("Type", XUK_NS);
                 destination.WriteAttributeString("XukLocalName", tp.QName.LocalName);
                 destination.WriteAttributeString("XukNamespaceUri", tp.QName.NamespaceUri);
-                if (tp.BaseQName!=null)
+                if (tp.BaseQName != null)
                 {
                     destination.WriteAttributeString("BaseXukLocalName", tp.BaseQName.LocalName);
                     destination.WriteAttributeString("BaseXukNamespaceUri", tp.BaseQName.NamespaceUri);
                 }
-                if (tp.Type!=null)
+                if (tp.Type != null)
                 {
                     tp.AssemblyName = tp.Type.Assembly.GetName();
                     tp.FullName = tp.Type.FullName;
                 }
-                if (tp.AssemblyName!=null)
+                if (tp.AssemblyName != null)
                 {
                     destination.WriteAttributeString("AssemblyName", tp.AssemblyName.Name);
                     destination.WriteAttributeString("AssemblyVersion", tp.AssemblyName.Version.ToString());
                 }
-                if (tp.FullName!=null) destination.WriteAttributeString("FullName", tp.FullName);
+                if (tp.FullName != null) destination.WriteAttributeString("FullName", tp.FullName);
                 destination.WriteEndElement();
             }
             destination.WriteEndElement();
@@ -256,9 +255,9 @@ namespace urakawa
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler of progress</param>
-        protected override void XukInChild(System.Xml.XmlReader source, urakawa.progress.ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, progress.ProgressHandler handler)
         {
-            if (source.LocalName == "mRegisteredTypes" && source.NamespaceURI == XukAble.XUK_NS)
+            if (source.LocalName == "mRegisteredTypes" && source.NamespaceURI == XUK_NS)
             {
                 XukInRegisteredTypes(source);
                 return;
@@ -274,12 +273,12 @@ namespace urakawa
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "Type" && source.NamespaceURI == XukAble.XUK_NS)
+                        if (source.LocalName == "Type" && source.NamespaceURI == XUK_NS)
                         {
                             TypeAndQNames tq = new TypeAndQNames();
                             tq.ReadFromXmlReader(source);
                             RegisterType(tq);
-                        } 
+                        }
                         if (!source.IsEmptyElement)
                         {
                             source.ReadSubtree().Close();
@@ -289,10 +288,9 @@ namespace urakawa
                     {
                         break;
                     }
-                    if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                    if (source.EOF) throw new XukException("Unexpectedly reached EOF");
                 }
             }
         }
-        
     }
 }

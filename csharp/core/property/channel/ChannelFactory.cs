@@ -15,7 +15,7 @@ namespace urakawa.property.channel
     /// <seealso cref="Channel"/>
     /// <seealso cref="channel.ChannelsManager"/>
     /// </summary>
-    public sealed class ChannelFactory : GenericFactory<Channel>
+    public sealed class ChannelFactory : GenericWithPresentationFactory<Channel>
     {
 
         /// <summary>

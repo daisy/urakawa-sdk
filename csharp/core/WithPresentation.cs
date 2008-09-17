@@ -39,9 +39,10 @@ namespace urakawa
                 }
                 if (mPresentation != null)
                 {
-                    throw new exception.IsAlreadyInitializedException(String.Format(
-                                                                          "The {0} has already been initialized with a Presentation",
-                                                                          GetType().Name));
+                    throw new exception.IsAlreadyInitializedException(
+                        String.Format(
+                            "The {0} has already been initialized with a Presentation",
+                            GetType().Name));
                 }
                 mPresentation = value;
             }

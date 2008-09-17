@@ -5,7 +5,7 @@ namespace urakawa.property
     /// <summary>
     /// Factory for creating <see cref="Property"/>s and derived types
     /// </summary>
-    public sealed class PropertyFactory : GenericFactory<Property>
+    public sealed class PropertyFactory : GenericWithPresentationFactory<Property>
     {
 
         /// <summary>

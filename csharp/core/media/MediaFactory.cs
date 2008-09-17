@@ -5,7 +5,7 @@ namespace urakawa.media
     /// <summary>
     /// The media factory will create any media object of MediaType.xxx
     /// </summary>
-    public sealed class MediaFactory : GenericFactory<Media>
+    public sealed class MediaFactory : GenericWithPresentationFactory<Media>
     {
         #region IMediaFactory Members
 

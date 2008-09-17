@@ -401,7 +401,6 @@ namespace urakawa
         /// <summary>
         /// Gets the <see cref="UndoRedoManager"/> of <c>this</c>
         /// </summary>
-        /// <returns>The <see cref="UndoRedoManager"/> of the <see cref="Presentation"/></returns>
         /// <remark>
         /// The <see cref="UndoRedoManager"/> of a <see cref="urakawa.Project"/> is initialized lazily
         /// </remark>
@@ -411,25 +410,11 @@ namespace urakawa
             {
                 if (mUndoRedoManager == null)
                 {
-                    UndoRedoManager = DataModelFactory.CreateUndoRedoManager();
+                    mUndoRedoManager = new UndoRedoManager();
+                    mUndoRedoManager.Presentation = this;
+                    mUndoRedoManager.Changed += new EventHandler<DataModelChangedEventArgs>(UndoRedoManager_Changed);
                 }
                 return mUndoRedoManager;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The UndoRedoManager can not be null");
-                }
-                if (mUndoRedoManager != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a UndoRedoManager");
-                }
-                mUndoRedoManager = value;
-                mUndoRedoManager.Presentation = this;
-                mUndoRedoManager.Changed += new EventHandler<DataModelChangedEventArgs>(UndoRedoManager_Changed);
             }
         }
 
@@ -588,7 +573,6 @@ namespace urakawa
         /// <summary>
         /// Gets the <see cref="ChannelsManager"/> of <c>this</c>
         /// </summary>
-        /// <returns>The factory</returns>
         /// <exception cref="exception.IsNotInitializedException">
         /// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="core.TreeNodeFactory"/>
         /// </exception>
@@ -598,58 +582,27 @@ namespace urakawa
             {
                 if (mChannelsManager == null)
                 {
-                    ChannelsManager = DataModelFactory.CreateChannelsManager();
+                    mChannelsManager = new ChannelsManager();
+                    mChannelsManager.Presentation = this;
                 }
                 return mChannelsManager;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The ChannelsManager can not be null");
-                }
-                if (mChannelsManager != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a ChannelsManager");
-                }
-                mChannelsManager = value;
-                mChannelsManager.Presentation = this;
             }
         }
 
         /// <summary>
         /// Gets the <see cref="MediaDataManager"/> of <c>this</c>
         /// </summary>
-        /// <returns>The factory</returns>
-        /// <exception cref="exception.IsNotInitializedException">
-        /// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="core.TreeNodeFactory"/>
-        /// </exception>
         public MediaDataManager MediaDataManager
         {
             get
             {
                 if (mMediaDataManager == null)
                 {
-                    MediaDataManager = DataModelFactory.CreateMediaDataManager();
+                    mMediaDataManager = new MediaDataManager();
+                    mMediaDataManager.Presentation = this;
+                    
                 }
                 return mMediaDataManager;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The MediaDataManager can not be null");
-                }
-                if (mMediaDataManager != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a MediaDataManager");
-                }
-                mMediaDataManager = value;
-                mMediaDataManager.Presentation = this;
             }
         }
 
@@ -676,34 +629,16 @@ namespace urakawa
         /// <summary>
         /// Gets the <see cref="DataProviderManager"/> of <c>this</c>
         /// </summary>
-        /// <returns>The factory</returns>
-        /// <exception cref="exception.IsNotInitializedException">
-        /// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="core.TreeNodeFactory"/>
-        /// </exception>
         public DataProviderManager DataProviderManager
         {
             get
             {
                 if (mDataProviderManager == null)
                 {
-                    DataProviderManager = DataModelFactory.CreateDataProviderManager();
+                    mDataProviderManager = new DataProviderManager();
+                    mDataProviderManager.Presentation = this;
                 }
                 return mDataProviderManager;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The IDataProviderManager can not be null");
-                }
-                if (mDataProviderManager != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a IDataProviderManager");
-                }
-                mDataProviderManager = value;
-                mDataProviderManager.Presentation = this;
             }
         }
 
@@ -1032,12 +967,8 @@ namespace urakawa
                     case "ChannelFactory":
                         ChannelFactory.XukIn(source, handler);
                         break;
-                    case "mChannelsManager":
-                        XukInXukAbleFromChild<ChannelsManager>(
-                            source,
-                            DataModelFactory.CreateChannelsManager,
-                            delegate(ChannelsManager val) { ChannelsManager = val; },
-                            handler);
+                    case "ChannelsManager":
+                        ChannelsManager.XukIn(source,handler);
                         break;
                     case "MediaFactory":
                         MediaFactory.XukIn(source, handler);
@@ -1045,31 +976,20 @@ namespace urakawa
                     case "MediaDataFactory":
                         MediaDataFactory.XukIn(source, handler);
                         break;
-                    case "mMediaDataManager":
-                        XukInXukAbleFromChild<MediaDataManager>(
-                            source,
-                            DataModelFactory.CreateMediaDataManager,
-                            delegate(MediaDataManager val) { MediaDataManager = val; },
-                            handler);
+                    case "MediaDataManager":
+                        MediaDataManager.XukIn(source, handler);
                         break;
                     case "DataProviderFactory":
                         DataProviderFactory.XukIn(source, handler);
                         break;
-                    case "mDataProviderManager":
-                        XukInXukAbleFromChild<DataProviderManager>(
-                            source,
-                            DataModelFactory.CreateDataProviderManager,
-                            delegate(DataProviderManager val) { DataProviderManager = val; }, handler);
+                    case "DataProviderManager":
+                        DataProviderManager.XukIn(source, handler);
                         break;
                     case "CommandFactory":
                         CommandFactory.XukIn(source, handler);
                         break;
-                    case "mUndoRedoManager":
-                        XukInXukAbleFromChild<UndoRedoManager>(
-                            source,
-                            DataModelFactory.CreateUndoRedoManager,
-                            delegate(UndoRedoManager val) { UndoRedoManager = val; },
-                            handler);
+                    case "UndoRedoManager":
+                        UndoRedoManager.XukIn(source, handler);
                         break;
                     case "MetadataFactory":
                         MetadataFactory.XukIn(source, handler);

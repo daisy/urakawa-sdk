@@ -13,7 +13,7 @@ namespace urakawa.media.data
     /// </list>
     /// </para>
     /// </summary>
-    public sealed class MediaDataFactory : GenericFactory<MediaData>
+    public sealed class MediaDataFactory : GenericWithPresentationFactory<MediaData>
     {
         /// <summary>
         /// Inistalizes a created <see cref="MediaData"/> instance by assigning it an owning <see cref="Presentation"/>
