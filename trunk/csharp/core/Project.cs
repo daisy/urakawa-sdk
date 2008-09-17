@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.progress;
-using urakawa.property.channel;
-using urakawa.metadata;
 using urakawa.xuk;
 using urakawa.events;
 using urakawa.events.project;
@@ -29,7 +27,7 @@ namespace urakawa
         /// <param name="args">The arguments of the event</param>
         protected void NotifyChanged(DataModelChangedEventArgs args)
         {
-            EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
+            EventHandler<DataModelChangedEventArgs> d = Changed;
             if (d != null) d(this, args);
         }
 
@@ -54,7 +52,7 @@ namespace urakawa
         private void this_presentationAdded(object sender, PresentationAddedEventArgs e)
         {
             NotifyChanged(e);
-            e.AddedPresentation.Changed += new EventHandler<DataModelChangedEventArgs>(Presentation_changed);
+            e.AddedPresentation.Changed += Presentation_changed;
         }
 
         private void Presentation_changed(object sender, DataModelChangedEventArgs e)
@@ -82,7 +80,7 @@ namespace urakawa
 
         private void this_presentationRemoved(object sender, PresentationRemovedEventArgs e)
         {
-            e.RemovedPresentation.Changed -= new EventHandler<DataModelChangedEventArgs>(Presentation_changed);
+            e.RemovedPresentation.Changed -= Presentation_changed;
             NotifyChanged(e);
         }
 
@@ -97,42 +95,24 @@ namespace urakawa
         public Project()
         {
             mPresentations = new List<Presentation>();
-            this.PresentationAdded += new EventHandler<PresentationAddedEventArgs>(this_presentationAdded);
-            this.PresentationRemoved += new EventHandler<PresentationRemovedEventArgs>(this_presentationRemoved);
+            PresentationAdded += this_presentationAdded;
+            PresentationRemoved += this_presentationRemoved;
         }
 
-        private DataModelFactory mDataModelFactory;
+        private PresentationFactory mPresentationFactory;
 
         /// <summary>
-        /// Gets the <see cref="DataModelFactory"/> of the <see cref="Project"/>
+        /// Gets the <see cref="PresentationFactory"/> of the <see cref="Project"/>
         /// </summary>
-        /// <returns>The factory</returns>
         /// <remarks>
-        /// The <see cref="DataModelFactory"/> of a <see cref="Project"/> is initialized lazily,
-        /// in that if the <see cref="DataModelFactory"/> has not been explicitly initialized
-        /// using the <see cref="DataModelFactory"/>, then calling <see cref="DataModelFactory"/>
-        /// will initialize the <see cref="Project"/> with a newly created <see cref="DataModelFactory"/>.
+        /// The <see cref="PresentationFactory"/> of a <see cref="Project"/> is initialized lazily
         /// </remarks>
-        public DataModelFactory DataModelFactory
+        public PresentationFactory PresentationFactory
         {
             get
             {
-                if (mDataModelFactory == null) mDataModelFactory = new DataModelFactory();
-                return mDataModelFactory;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The DataModelFactory can not be null");
-                }
-                if (mDataModelFactory != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Project has already been initialized with a DataModelFactory");
-                }
-                mDataModelFactory = value;
+                if (mPresentationFactory == null) mPresentationFactory = new PresentationFactory();
+                return mPresentationFactory;
             }
         }
 
@@ -170,9 +150,10 @@ namespace urakawa
         {
             if (index < 0 || NumberOfPresentations <= index)
             {
-                throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
-                                                                              "There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
-                                                                              index, NumberOfPresentations - 1));
+                throw new exception.MethodParameterIsOutOfBoundsException(
+                    String.Format(
+                        "There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
+                        index, NumberOfPresentations - 1));
             }
             return mPresentations[index];
         }
@@ -249,12 +230,12 @@ namespace urakawa
 
         /// <summary>
         /// Adds a newly created <see cref="Presentation"/> to the <see cref="Project"/>, 
-        /// as returned by <c>this.DataModelFactory.Create()</c>
+        /// as returned by <c>this.PresentationFactory.Create()</c>
         /// </summary>
         /// <returns>The newly created and added <see cref="Presentation"/></returns>
         public Presentation AddNewPresentation()
         {
-            Presentation newPres = DataModelFactory.Create();
+            Presentation newPres = PresentationFactory.Create();
             AddPresentation(newPres);
             return newPres;
         }
@@ -317,10 +298,14 @@ namespace urakawa
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
                 switch (source.LocalName)
                 {
+                    case "PresentationFactory":
+                        PresentationFactory.XukIn(source, handler);
+                        readItem = true;
+                        break;
                     case "mPresentations":
                         XukInPresentations(source, handler);
                         readItem = true;
@@ -338,11 +323,11 @@ namespace urakawa
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        Presentation pres = DataModelFactory.Create(
+                        Presentation pres = PresentationFactory.Create(
                             source.LocalName, source.NamespaceURI);
                         if (pres != null)
                         {
-                            this.AddPresentation(pres);
+                            AddPresentation(pres);
                             pres.XukIn(source, handler);
                         }
                         else if (!source.IsEmptyElement)
@@ -371,7 +356,8 @@ namespace urakawa
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
-            destination.WriteStartElement("mPresentations", XukAble.XUK_NS);
+            PresentationFactory.XukOut(destination, baseUri, handler);
+            destination.WriteStartElement("mPresentations", XUK_NS);
             foreach (Presentation pres in ListOfPresentations)
             {
                 pres.XukOut(destination, baseUri, handler);

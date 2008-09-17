@@ -184,7 +184,7 @@
     <Compile Include="events\project\ProjectEventArgs.cs" />
     <Compile Include="events\core\PropertyAddedEventArgs.cs" />
     <Compile Include="events\core\ChildRemovedEventArgs.cs" />
-    <Compile Include="DataModelFactory.cs" />
+    <Compile Include="PresentationFactory.cs" />
     <Compile Include="events\DataModelChangedEventArgs.cs" />
     <Compile Include="events\core\ChildAddedEventArgs.cs" />
     <Compile Include="events\property\PropertyEventArgs.cs" />

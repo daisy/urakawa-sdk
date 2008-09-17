@@ -34,6 +34,7 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="PresentationFactory" type="GenericFactory" />
 				<xs:element ref="mPresentations"/>
 			</xs:sequence>
 		</xs:complexType>
