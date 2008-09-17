@@ -175,12 +175,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="publish\XukWorks\copyInsertRenameTest.xuk" />
-    <None Include="publish\XukWorks\ExCustTestSample.xuk" />
-    <None Include="publish\XukWorks\MediaDataSample\MediaDataSample.xuk" />
-    <None Include="publish\XukWorks\roundTripTestSample.xuk" />
-    <None Include="publish\XukWorks\SampleDTB2Ver1.xuk" />
-    <None Include="publish\XukWorks\simplesample.xuk" />
+    <None Include="XukWorks\copyInsertRenameTest.xuk" />
+    <None Include="XukWorks\ExCustTestSample.xuk" />
+    <None Include="XukWorks\MediaDataSample\MediaDataSample.xuk" />
+    <None Include="XukWorks\roundTripTestSample.xuk" />
+    <None Include="XukWorks\SampleDTB2Ver1.xuk" />
+    <None Include="XukWorks\simplesample.xuk" />
     <Compile Include="OldTests\TimingTests.cs" />
     <Compile Include="core\TreeNodeTests.cs" />
     <Compile Include="media\data\audio\codec\WavAudioMediaDataTests.cs" />
@@ -198,22 +198,22 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="publish\XukWorks\MediaDataSample\Data\aud000000.wav" />
-    <Content Include="publish\XukWorks\MediaDataSample\Data\aud000001.wav" />
-    <Content Include="publish\XukWorks\MediaTestsSample\audiotest1+2+3-mono-44100Hz-16bits.wav" />
-    <Content Include="publish\XukWorks\MediaTestsSample\audiotest1+2-mono-44100Hz-16bits.wav" />
-    <Content Include="publish\XukWorks\MediaTestsSample\audiotest1+3-mono-44100Hz-16bits.wav" />
-    <Content Include="publish\XukWorks\MediaTestsSample\audiotest1-mono-22050Hz-16bits.wav" />
-    <Content Include="publish\XukWorks\MediaTestsSample\audiotest1-mono-44100Hz-16bits.wav" />
-    <Content Include="publish\XukWorks\MediaTestsSample\audiotest2+1-mono-44100Hz-16bits.wav" />
-    <Content Include="publish\XukWorks\MediaTestsSample\audiotest2-mono-44100Hz-16bits.wav" />
-    <Content Include="publish\XukWorks\MediaTestsSample\audiotest3-mono-44100Hz-16bits.wav" />
-    <Content Include="publish\XukWorks\TreeNodeTestsSample\And.wav" />
-    <Content Include="publish\XukWorks\TreeNodeTestsSample\Emphasis.wav" />
-    <Content Include="publish\XukWorks\TreeNodeTestsSample\PageBreak.wav" />
-    <Content Include="publish\XukWorks\TreeNodeTestsSample\ParagraphWith.wav" />
-    <Content Include="publish\XukWorks\TreeNodeTestsSample\SamplePDTB2.wav" />
-    <Content Include="publish\XukWorks\TreeNodeTestsSample\Section1.wav" />
+    <Content Include="XukWorks\MediaDataSample\Data\aud000000.wav" />
+    <Content Include="XukWorks\MediaDataSample\Data\aud000001.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest1+2+3-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest1+2-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest1+3-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest1-mono-22050Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest1-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest2+1-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest2-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest3-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\And.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\Emphasis.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\PageBreak.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\ParagraphWith.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\SamplePDTB2.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\Section1.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
