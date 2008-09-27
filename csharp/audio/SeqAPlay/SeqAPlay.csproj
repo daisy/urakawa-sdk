@@ -34,10 +34,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="urakawa, Version=1.0.0.36864, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\UrakawaToolkit\bin\Debug\urakawa.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainForm.cs">
@@ -73,6 +69,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\core\core.csproj">
+      <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
+      <Name>core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AudioEngine.DirectX\AudioEngine.DirectX.csproj">
       <Project>{A3DC8700-D8BF-4376-A25F-3B158B22FC64}</Project>
       <Name>AudioEngine.DirectX</Name>

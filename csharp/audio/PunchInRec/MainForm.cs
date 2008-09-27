@@ -40,7 +40,10 @@ namespace PunchInRec
 			else if (source==mRecordDevice)
 			{
 				mCurFileTime = e.CurrentTimePosition.Add(mLatestRecordStartFileTime);
-				if (mCurFileTime > mPCMInfo.getDuration().getTimeDeltaAsTimeSpan()) mPCMInfo.setDataLength((uint)(mFile.Length - mDataStartPosition));
+                if (mCurFileTime > mPCMInfo.Duration.TimeDeltaAsTimeSpan)
+                {
+                    mPCMInfo.DataLength = (uint)(mFile.Length - mDataStartPosition);
+                }
 				UpdateTime(mCurFileTime);
 			}
 		}
@@ -100,7 +103,7 @@ namespace PunchInRec
 						}
 						try
 						{
-							pcmInfo = PCMDataInfo.parseRiffWaveHeader(newFile);
+							pcmInfo = PCMDataInfo.ParseRiffWaveHeader(newFile);
 						}
 						catch (Exception err)
 						{
@@ -125,11 +128,11 @@ namespace PunchInRec
 							return;
 						}
 						pcmInfo = new PCMDataInfo();
-						pcmInfo.writeRiffWaveHeader(newFile);
+						pcmInfo.WriteRiffWaveHeader(newFile);
 					}
 					if (mFile != null)
 					{
-						mPCMInfo.setDataLength((uint)(mFile.Length - mDataStartPosition));
+					    mPCMInfo.DataLength = (uint) (mFile.Length - mDataStartPosition);
 						FixWaveHeader();
 						mFile.Close();
 					}
@@ -149,9 +152,9 @@ namespace PunchInRec
 		{
 			BinaryWriter wr = new BinaryWriter(mFile);
 			wr.Seek(4, SeekOrigin.Begin);
-			wr.Write(mDataStartPosition + mPCMInfo.getDataLength() - 8);
+			wr.Write(mDataStartPosition + mPCMInfo.DataLength - 8);
 			wr.Seek((int)(mDataStartPosition - 4U), SeekOrigin.Begin);
-			wr.Write(mPCMInfo.getDataLength());
+			wr.Write(mPCMInfo.DataLength);
 			wr.Flush();
 		}
 
@@ -272,7 +275,7 @@ namespace PunchInRec
 			else
 			{
 				TimeSpan fileDur = TimeSpan.Zero;
-				if (mPCMInfo != null) fileDur = mPCMInfo.getDuration().getTimeDeltaAsTimeSpan();
+                if (mPCMInfo != null) fileDur = mPCMInfo.Duration.TimeDeltaAsTimeSpan;
 				mTimeLabel.Text = String.Format(
 					"{0}/{1}", FormatTimeSpan(time), FormatTimeSpan(fileDur));
 				if (time<=fileDur)
@@ -338,7 +341,7 @@ namespace PunchInRec
 		{
 			mFile.Seek(mDataStartPosition, SeekOrigin.Begin);
 			mLatestPlayStartFileTime = mCurFileTime;
-			mPlaybackDevice.play(mFile, mCurFileTime, mPCMInfo.getDuration().getTimeDeltaAsTimeSpan());
+			mPlaybackDevice.play(mFile, mCurFileTime, mPCMInfo.Duration.TimeDeltaAsTimeSpan);
 			mPlayButton.Focus();
 		}
 
@@ -388,8 +391,8 @@ namespace PunchInRec
 				}
 			}
 			mLatestRecordStartFileTime = mCurFileTime;
-			long curFileTimeOffset = mPCMInfo.getByteRate()*mCurFileTime.Ticks / TimeSpan.TicksPerSecond;
-			curFileTimeOffset -= (curFileTimeOffset % mPCMInfo.getBlockAlign());
+			long curFileTimeOffset = mPCMInfo.ByteRate*mCurFileTime.Ticks / TimeSpan.TicksPerSecond;
+			curFileTimeOffset -= (curFileTimeOffset % mPCMInfo.BlockAlign);
 			mFile.Seek(mDataStartPosition + curFileTimeOffset, SeekOrigin.Begin);
 			mRecordDevice.record(mFile);
 			mStopButton.Focus();

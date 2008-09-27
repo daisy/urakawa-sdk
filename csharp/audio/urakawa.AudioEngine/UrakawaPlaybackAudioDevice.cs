@@ -65,18 +65,18 @@ namespace urakawa.AudioEngine
 
 		protected void setDevicePCMFormat(PCMFormatInfo pcmFormat)
 		{
-			mPlaybackAudioDevice.setNumberOfChannels(pcmFormat.getNumberOfChannels());
-			mPlaybackAudioDevice.setSampleRate(pcmFormat.getSampleRate());
-			mPlaybackAudioDevice.setBitDepth(pcmFormat.getBitDepth());
+			mPlaybackAudioDevice.setNumberOfChannels(pcmFormat.NumberOfChannels);
+			mPlaybackAudioDevice.setSampleRate(pcmFormat.SampleRate);
+			mPlaybackAudioDevice.setBitDepth(pcmFormat.BitDepth);
 		}
 
 		public void play(AudioMediaData data)
 		{
-			setDevicePCMFormat(data.getPCMFormat());
+			setDevicePCMFormat(data.PCMFormat);
 			mPlaybackAudioDevice.PlayEnded += new EventHandler<global::AudioEngine.EndedEventArgs>(PlaybackAudioDevice_PlayEnded);
 			try
 			{
-				mPlaybackAudioDevice.play(data.getAudioData());
+				mPlaybackAudioDevice.play(data.GetAudioData());
 			}
 			catch (Exception e)
 			{
@@ -152,28 +152,28 @@ namespace urakawa.AudioEngine
 					return;
 				}
 				ManagedAudioMedia mam = null;
-				ChannelsProperty chProp = mCurrentTreeNode.getProperty(typeof(ChannelsProperty)) as ChannelsProperty;
-				if (chProp != null) mam = chProp.getMedia(mAudioChannel) as ManagedAudioMedia;
+				ChannelsProperty chProp = mCurrentTreeNode.GetProperty(typeof(ChannelsProperty)) as ChannelsProperty;
+				if (chProp != null) mam = chProp.GetMedia(mAudioChannel) as ManagedAudioMedia;
 				if (mam == null)
 				{
 					if (mContinueAfterTreeNode)
 					{
-						mCurrentTreeNode = mTreeNodeNavigator.getNext(mCurrentTreeNode);
+						mCurrentTreeNode = mTreeNodeNavigator.GetNext(mCurrentTreeNode);
 						play();
 					}
 				}
 				else
 				{
-					mPlaybacAudiokDevice.play(mam.getMediaData());
+					mPlaybacAudiokDevice.play(mam.AudioMediaData);
 				}
 			}
 
 			void PlaybacAudiokDevice_AudioMediaDataPlayEnded(object sender, EndedEventArgs e)
 			{
-				mElapsedTime.addTime(e.getEndTime());
+				mElapsedTime.AddTime(e.getEndTime());
 				if (mContinueAfterTreeNode)
 				{
-					mCurrentTreeNode = mTreeNodeNavigator.getNext(mCurrentTreeNode);
+					mCurrentTreeNode = mTreeNodeNavigator.GetNext(mCurrentTreeNode);
 					play();
 				}
 			}
@@ -214,7 +214,7 @@ namespace urakawa.AudioEngine
 	{
 		private Time mCurrentPosition;
 		private double[] mMaxDbSinceLatestTime;
-		public Time getCurrentPosition() { return mCurrentPosition.copy(); }
+		public Time getCurrentPosition() { return mCurrentPosition.Copy(); }
 		public double[] getMaxDbSinceLatestTime() { return mMaxDbSinceLatestTime.Clone() as double[]; }
 
 		public TimeEventArgs(Time curPos, double[] maxDbs)

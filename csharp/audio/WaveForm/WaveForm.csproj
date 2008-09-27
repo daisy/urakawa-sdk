@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C4466079-ED45-432E-A940-88DBF9A95EBA}</ProjectGuid>
+    <ProjectGuid>{90933208-50FF-4A9B-9916-0AB49C300E52}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>urakawa.AudioEngine</RootNamespace>
-    <AssemblyName>urakawa.AudioEngine</AssemblyName>
+    <RootNamespace>WaveForm</RootNamespace>
+    <AssemblyName>WaveForm</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,17 +33,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\IWaveFormData.cs" />
+    <Compile Include="Data\IWaveFormDataProvider.cs" />
+    <Compile Include="Data\UrakawaManagedWaveFormDataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UrakawaPlaybackAudioDevice.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\core.csproj">
       <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
       <Name>core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AudioEngine\AudioEngine.csproj">
-      <Project>{98012884-F06D-4B09-917E-EE92982912FB}</Project>
-      <Name>AudioEngine</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
