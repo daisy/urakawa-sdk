@@ -52,7 +52,7 @@ namespace urakawa.core
         {
         }
 
-        private static ManagedAudioMedia CreateAudioMedia(Presentation pres, string waveFileName)
+        public static ManagedAudioMedia CreateAudioMedia(Presentation pres, string waveFileName)
         {
             ManagedAudioMedia res = pres.MediaFactory.Create<ManagedAudioMedia>();
             Assert.IsNotNull(res, "Could not create a ManagedAudioMedia");
@@ -60,7 +60,7 @@ namespace urakawa.core
             return res;
         }
 
-        private static TextMedia CreateTextMedia(Presentation pres, string text)
+        public static TextMedia CreateTextMedia(Presentation pres, string text)
         {
             TextMedia res = pres.MediaFactory.CreateTextMedia() as TextMedia;
             Assert.IsNotNull(res, "Could not create TextMedia");
@@ -68,7 +68,7 @@ namespace urakawa.core
             return res;
         }
 
-        private static TreeNode CreateTreeNode(Presentation pres, string waveFileName, string text)
+        public static TreeNode CreateTreeNode(Presentation pres, string waveFileName, string text)
         {
             Channel audioChannel = pres.ChannelsManager.GetChannelsByName("channel.audio")[0];
             Channel textChannel = pres.ChannelsManager.GetChannelsByName("channel.text")[0];

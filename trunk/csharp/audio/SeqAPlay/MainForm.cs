@@ -226,10 +226,10 @@ namespace SeqAPlay
 			foreach (ListViewItem inputFileItem in mInputFilesListView.Items)
 			{
 				FileStream ifs = new FileStream(inputFileItem.SubItems[2].Text, FileMode.Open, FileAccess.Read);
-				PCMDataInfo pcmInfo = PCMDataInfo.parseRiffWaveHeader(ifs);
+				PCMDataInfo pcmInfo = PCMDataInfo.ParseRiffWaveHeader(ifs);
 				long startPos = ifs.Position;
 				ifs.Position = 0;
-				SubStream subIfs = new SubStream(ifs, startPos, pcmInfo.getDataLength());
+				SubStream subIfs = new SubStream(ifs, startPos, pcmInfo.DataLength);
 				ifStreams.Add(subIfs);
 			}
 			mPCMInputStream = new SequenceStream(ifStreams);
@@ -310,7 +310,7 @@ namespace SeqAPlay
 					PCMDataInfo pcmInfo;
 					try
 					{
-						pcmInfo = PCMDataInfo.parseRiffWaveHeader(fs);
+						pcmInfo = PCMDataInfo.ParseRiffWaveHeader(fs);
 					}
 					catch (Exception err)
 					{
@@ -333,19 +333,19 @@ namespace SeqAPlay
 					}
 					if (mInputFilesListView.Items.Count == 0)
 					{
-						mPlaybackDevice.setBitDepth(pcmInfo.getBitDepth());
-						mPlaybackDevice.setSampleRate(pcmInfo.getSampleRate());
-						mPlaybackDevice.setNumberOfChannels(pcmInfo.getNumberOfChannels());
-						mHorizontalPPMeter.NumberOfChannels = pcmInfo.getNumberOfChannels();
-						mVerticalPPMeter.NumberOfChannels = pcmInfo.getNumberOfChannels();
+						mPlaybackDevice.setBitDepth(pcmInfo.BitDepth);
+						mPlaybackDevice.setSampleRate(pcmInfo.SampleRate);
+						mPlaybackDevice.setNumberOfChannels(pcmInfo.NumberOfChannels);
+						mHorizontalPPMeter.NumberOfChannels = pcmInfo.NumberOfChannels;
+						mVerticalPPMeter.NumberOfChannels = pcmInfo.NumberOfChannels;
 						UpdatePlaybackSpeedControl();
 					}
 					else
 					{
 						if (
-							mPlaybackDevice.getBitDepth() != pcmInfo.getBitDepth()
-							|| mPlaybackDevice.getSampleRate() != pcmInfo.getSampleRate()
-							|| mPlaybackDevice.getNumberOfChannels() != pcmInfo.getNumberOfChannels())
+							mPlaybackDevice.getBitDepth() != pcmInfo.BitDepth
+							|| mPlaybackDevice.getSampleRate() != pcmInfo.SampleRate
+							|| mPlaybackDevice.getNumberOfChannels() != pcmInfo.NumberOfChannels)
 						{
 							string msg = String.Format(
 								"Wave file {0} is not compatible with the previously added files.\n"
@@ -364,7 +364,7 @@ namespace SeqAPlay
 							}
 						}
 					}
-					string[] itemArr = new string[] { Path.GetFileName(file), FormatTimeSpan(pcmInfo.getDuration().getTimeDeltaAsTimeSpan()), file };
+					string[] itemArr = new string[] { Path.GetFileName(file), FormatTimeSpan(pcmInfo.Duration.TimeDeltaAsTimeSpan), file };
 					addedItems.Add(new ListViewItem(itemArr));
 				}
 				mInputFilesListView.Items.AddRange(addedItems.ToArray());

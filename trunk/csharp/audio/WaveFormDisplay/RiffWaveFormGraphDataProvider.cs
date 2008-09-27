@@ -16,10 +16,10 @@ namespace WaveFormDisplay
 
 		#region IWaveFormGraphDataProvider Members
 
-		public WaveFormGraphData GetGraphData(TimeSpan clipBegin, TimeSpan clipEnd, int pixelWidth)
+		public WaveFormGraphData GetGraphData(TimeSpan clipBegin, TimeSpan clipEnd, int numberOfDataPoints)
 		{
-			if (pixelWidth < 0) pixelWidth = 0;
-			WaveFormGraphData res = new WaveFormGraphData(pixelWidth);
+			if (numberOfDataPoints < 0) numberOfDataPoints = 0;
+			WaveFormGraphData res = new WaveFormGraphData(numberOfDataPoints);
 			if (res.Width > 0)
 			{
 
