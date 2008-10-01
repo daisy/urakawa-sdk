@@ -203,7 +203,7 @@ namespace urakawa.core
         }
 
         /// <summary>
-        /// Tests the functionality of <see cref="TreeNode.getChildCount"/>
+        /// Tests the functionality of <see cref="TreeNode.ChildCount"/>
         /// </summary>
         [Test]
         public void ChildCount()
@@ -240,7 +240,7 @@ namespace urakawa.core
         }
 
         /// <summary>
-        /// Tests the basics of the <see cref="TreeNode.removeChild"/> method
+        /// Tests the basics of the <see cref="TreeNode.RemoveChild(TreeNode)"/> method
         /// </summary>
         [Test]
         [ExpectedException(typeof (exception.NodeDoesNotExistException))]
