@@ -78,7 +78,7 @@ namespace urakawa.media.data.audio.codec
 			{
 				Time clipEnd = null;
 				if (!isClipEndTiedToEOM()) clipEnd = getClipEnd().copy();
-				return new WavClip(getDataProvider().copy(), getClipBegin().copy(), clipEnd);
+				return new WavClip(getDataProvider(), getClipBegin().copy(), clipEnd);
 			}
 
 			/// <summary>
