@@ -7,49 +7,93 @@ using urakawa.progress;
 namespace urakawa.xuk
 {
     ///<summary>
-    ///  Action that opens a xuk file and loads it into a <see cref="Project"/>
+    ///  Action that serializes a xuk data stream from a <see cref="XukAble"/>
     ///</summary>
     public class SaveXukAction : ProgressAction
     {
-        /// <summary>
-        /// Constructor explicitly setting the source <see cref="XmlReader"/> and the destination <see cref="Project"/>
-        /// </summary>
-        /// <param name="destUri">The <see cref="Uri"/> of the source file</param>
-        /// <param name="sourceProj"></param>
-        /// <param name="destStream">The source <see cref="Stream"/></param>
-        public SaveXukAction(Uri destUri, Project sourceProj, Stream destStream)
-        {
-            if (destStream == null)
-                throw new exception.MethodParameterIsNullException(
-                    "The source Stream of the SaveXukAction cannot be null");
-            if (sourceProj == null)
-                throw new exception.MethodParameterIsNullException(
-                    "The destination Project of the SaveXukAction cannot be null");
-            mDestUri = destUri;
-            mSourceProject = sourceProj;
-            mDestStream = destStream;
-        }
+
+        private Uri mDestUri;
+        private Stream mDestStream;
+        private XmlWriter mXmlWriter;
+        private readonly IXukAble mSourceXukAble;
 
         private static Stream GetStreamFromUri(Uri src)
         {
-            if (src == null) throw new exception.MethodParameterIsNullException("The Uri source is null");
             FileStream fs = new FileStream(src.LocalPath, FileMode.Create, FileAccess.Write);
             return fs;
         }
 
-        /// <summary>
-        /// Constructor explicitly setting the source of the read and the destination <see cref="Project"/>
-        /// </summary>
-        /// <param name="destUri">The <see cref="Uri"/> of the source file</param>
-        /// <param name="sourceProj"></param>
-        public SaveXukAction(Uri destUri, Project sourceProj)
-            : this(destUri, sourceProj, GetStreamFromUri(destUri))
+        private void initializeXmlWriter(Stream stream)
         {
+                XmlWriterSettings settings = new XmlWriterSettings();
+                settings.Indent = true;
+                settings.IndentChars = " ";
+                mXmlWriter = XmlWriter.Create(stream, settings);
         }
 
-        private Uri mDestUri;
-        private Stream mDestStream;
-        private readonly Project mSourceProject;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="destUri">The <see cref="Uri"/> of the destination (can be null)</param>
+        /// <param name="xukAble">The source <see cref="IXukAble"/> (cannot be null)</param>
+        /// <param name="writer">The destination <see cref="XmlWriter"/> (cannot be null)</param>
+        public SaveXukAction(IXukAble xukAble, Uri destUri, XmlWriter writer)
+        {
+            if (writer == null)
+                throw new exception.MethodParameterIsNullException(
+                    "The destination Writer of the SaveXukAction cannot be null");
+            if (xukAble == null)
+                throw new exception.MethodParameterIsNullException(
+                    "The source XukAble of the SaveXukAction cannot be null");
+            mDestUri = destUri;
+            mSourceXukAble = xukAble;
+            mXmlWriter = writer;
+            XmlTextWriter txtWriter = writer as XmlTextWriter;
+            if (txtWriter != null)
+            {
+                mDestStream = txtWriter.BaseStream;
+            }
+        }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="destUri">The <see cref="Uri"/> of the destination (can be null)</param>
+        /// <param name="xukAble">The source <see cref="IXukAble"/> (cannot be null)</param>
+        /// <param name="destStream">The destination <see cref="Stream"/> (cannot be null)</param>
+        public SaveXukAction(IXukAble xukAble, Uri destUri, Stream destStream)
+        {
+            if (destStream == null)
+                throw new exception.MethodParameterIsNullException(
+                    "The destination Stream of the SaveXukAction cannot be null");
+            if (xukAble == null)
+                throw new exception.MethodParameterIsNullException(
+                    "The source XukAble of the SaveXukAction cannot be null");
+            mDestUri = destUri;
+            mSourceXukAble = xukAble;
+            mDestStream = destStream;
+            initializeXmlWriter(mDestStream);
+        }
+
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="destUri">The <see cref="Uri"/> of the destination (cannot be null)</param>
+        /// <param name="xukAble">The source <see cref="IXukAble"/>(cannot be null)</param>
+        public SaveXukAction(IXukAble xukAble, Uri destUri)
+        {
+            if (destUri == null)
+                throw new exception.MethodParameterIsNullException(
+                    "The destination URI of the SaveXukAction cannot be null");
+            if (xukAble == null)
+                throw new exception.MethodParameterIsNullException(
+                    "The source XukAble of the SaveXukAction cannot be null");
+
+            mDestUri = destUri;
+            mSourceXukAble = xukAble;
+            mDestStream = GetStreamFromUri(mDestUri);
+            initializeXmlWriter(mDestStream);
+        }
 
         #region Overrides of ProgressAction
 
@@ -78,7 +122,14 @@ namespace urakawa.xuk
         /// <returns>The <c>bool</c></returns>
         public override bool CanExecute
         {
-            get { return true; }
+            get { return mXmlWriter != null; }
+        }
+
+        private void closeOutput()
+        {
+            mXmlWriter.Close();
+            mXmlWriter = null;
+            mDestStream = null;
         }
 
         /// <summary>
@@ -86,7 +137,7 @@ namespace urakawa.xuk
         /// </summary>
         public override string LongDescription
         {
-            get { return "Saves a xuk project file"; }
+            get { return "Serializes a XUK fragment"; }
         }
 
         /// <summary>
@@ -99,28 +150,24 @@ namespace urakawa.xuk
             Progress += SaveXukAction_progress;
             try
             {
-                XmlWriterSettings settings = new XmlWriterSettings();
-                settings.Indent = true;
-                settings.IndentChars = " ";
-                XmlWriter writer = XmlWriter.Create(mDestStream, settings);
                 try
                 {
 // ReSharper disable PossibleNullReferenceException
-                    writer.WriteStartDocument();
+                    mXmlWriter.WriteStartDocument();
 // ReSharper restore PossibleNullReferenceException
-                    writer.WriteStartElement("Xuk", XukAble.XUK_NS);
+                    mXmlWriter.WriteStartElement("Xuk", XukAble.XUK_NS);
                     if (XukAble.XUK_XSD_PATH != String.Empty)
                     {
                         if (XukAble.XUK_NS == String.Empty)
                         {
-                            writer.WriteAttributeString(
+                            mXmlWriter.WriteAttributeString(
                                 "xsi", "noNamespaceSchemaLocation",
                                 "http://www.w3.org/2001/XMLSchema-instance",
                                 XukAble.XUK_XSD_PATH);
                         }
                         else
                         {
-                            writer.WriteAttributeString(
+                            mXmlWriter.WriteAttributeString(
                                 "xsi",
                                 "noNamespaceSchemaLocation",
                                 "http://www.w3.org/2001/XMLSchema-instance",
@@ -128,13 +175,13 @@ namespace urakawa.xuk
                                               XukAble.XUK_XSD_PATH));
                         }
                     }
-                    mSourceProject.XukOut(writer, mDestUri, this);
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
+                    mSourceXukAble.XukOut(mXmlWriter, mDestUri, this);
+                    mXmlWriter.WriteEndElement();
+                    mXmlWriter.WriteEndDocument();
                 }
                 finally
                 {
-                    writer.Close();
+                    closeOutput();
                 }
                 NotifyFinished();
             }
