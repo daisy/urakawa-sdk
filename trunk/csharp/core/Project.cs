@@ -120,20 +120,59 @@ namespace urakawa
         /// <summary>
         /// Opens an XUK file and loads the project from this
         /// </summary>
-        /// <param name="fileUri">The <see cref="Uri"/> of the source XUK file</param>
+        /// <param name="fileUri">The <see cref="Uri"/> of the source XUK file (cannot be null)</param>
         public void OpenXuk(Uri fileUri)
         {
-            OpenXukAction action = new OpenXukAction(fileUri, this);
+            if (fileUri == null)
+            {
+                throw new exception.MethodParameterIsNullException("The source URI cannot be null");
+            }
+            OpenXukAction action = new OpenXukAction(this, fileUri);
             action.Execute();
         }
 
+        /// <summary>
+        /// Opens an XUK file and loads the project from this.
+        /// DO NOT USE ! THE STREAM IS NULL. USE THE STREAM-BASED method instead !
+        /// TODO: make public once the Stream issue is fixed.
+        /// </summary>
+        /// <param name="fileUri">The <see cref="Uri"/> of the source XUK file (can be null)</param>
+        /// <param name="reader">The <see cref="XmlReader"/> of the source XUK file (cannot be null)</param>
+        private void OpenXuk(Uri fileUri, XmlReader reader)
+        {
+            if (reader == null)
+            {
+                throw new exception.MethodParameterIsNullException("The source XML reader cannot be null");
+            }
+            OpenXukAction action = new OpenXukAction(this, fileUri, reader);
+            action.Execute();
+        }
         /// <summary>
         /// Saves the <see cref="Project"/> to a XUK file
         /// </summary>
         /// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
         public void SaveXuk(Uri fileUri)
         {
-            SaveXukAction action = new SaveXukAction(fileUri, this);
+            if (fileUri == null)
+            {
+                throw new exception.MethodParameterIsNullException("The destination URI cannot be null");
+            }
+            SaveXukAction action = new SaveXukAction(this, fileUri);
+            action.Execute();
+        }
+        
+        /// <summary>
+        /// Saves the <see cref="Project"/> to a XUK file
+        /// </summary>
+        /// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
+        /// <param name="writer">The <see cref="XmlWriter"/> of the destination XUK file</param>
+        public void SaveXuk(Uri fileUri, XmlWriter writer)
+        {
+            if (writer == null)
+            {
+                throw new exception.MethodParameterIsNullException("The destination XML writer cannot be null");
+            }
+            SaveXukAction action = new SaveXukAction(this, fileUri, writer);
             action.Execute();
         }
 
