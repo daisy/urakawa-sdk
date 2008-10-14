@@ -73,4 +73,9 @@ public class XmlDataWriter implements IXmlDataWriter
          * To implement.
          */
     }
+
+    public IStream getBaseStream()
+    {
+        return null;
+    }
 }
