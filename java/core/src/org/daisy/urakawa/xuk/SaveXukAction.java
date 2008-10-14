@@ -2,7 +2,6 @@ package org.daisy.urakawa.xuk;
 
 import java.net.URI;
 
-import org.daisy.urakawa.Project;
 import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.events.CancellableEvent;
 import org.daisy.urakawa.events.Event;
@@ -28,46 +27,82 @@ public class SaveXukAction extends ProgressAction implements
 {
     protected IEventHandler<Event> mEventNotifier = new EventHandler();
     private URI mUri;
-    private Project mProject;
+    private IXukAble mXukAble;
     private IStream mStream;
+    private IXmlDataWriter mWriter;
+
+    private static IStream getStreamFromUri(URI uri)
+    {
+        return new FileStream(uri.getPath());
+    }
+
+    private void initializeXmlWriter(IStream stream)
+    {
+        mWriter = new XmlDataWriter(stream);
+    }
 
     /**
-     * @param proj
+     * @param xukAble
+     *        cannot be null
      * @param uri
-     * @param iStream
+     *        can be null
+     * @param writer
+     *        cannot be null
      * @throws MethodParameterIsNullException
-     * 
      */
-    public SaveXukAction(URI uri, Project proj, IStream iStream)
+    public SaveXukAction(IXukAble xukAble, URI uri, IXmlDataWriter writer)
             throws MethodParameterIsNullException
     {
-        if (mUri == null || mProject == null || iStream == null)
+        if (xukAble == null || writer == null)
         {
             throw new MethodParameterIsNullException();
         }
         mUri = uri;
-        mProject = proj;
-        mStream = iStream;
+        mXukAble = xukAble;
+        mWriter = writer;
+        mStream = mWriter.getBaseStream();
     }
 
     /**
-     * @param proj
+     * @param xukAble
+     *        cannot be null
      * @param uri
+     *        can be null
+     * @param stream
+     *        cannot be null
      * @throws MethodParameterIsNullException
-     * 
      */
-    public SaveXukAction(URI uri, Project proj)
+    public SaveXukAction(IXukAble xukAble,URI uri, IStream stream)
             throws MethodParameterIsNullException
     {
-        this(uri, proj, getStreamFromUri(uri));
+        if (xukAble == null || stream == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        mUri = uri;
+        mXukAble = xukAble;
+        mStream = stream;
+        initializeXmlWriter(mStream);
     }
 
-    private static IStream getStreamFromUri(URI uri)
+    /**
+     * @param xukAble
+     *        cannot be null
+     * @param uri
+     *        cannot be null
+     * @throws MethodParameterIsNullException
+     */
+    public SaveXukAction(IXukAble xukAble, URI uri)
             throws MethodParameterIsNullException
     {
-        if (uri == null)
+        if (uri == null || xukAble == null)
+        {
             throw new MethodParameterIsNullException();
-        return new FileStream(uri.getPath());
+        }
+        mUri = uri;
+        mXukAble = xukAble;
+        mStream = getStreamFromUri(uri);
+        initializeXmlWriter(mStream);
     }
 
     @Override
@@ -93,7 +128,14 @@ public class SaveXukAction extends ProgressAction implements
 
     public boolean canExecute()
     {
-        return true;
+        return mWriter != null;
+    }
+
+    private void closeOutput()
+    {
+        mWriter.close();
+        mWriter = null;
+        mStream = null;
     }
 
     /**
@@ -102,8 +144,6 @@ public class SaveXukAction extends ProgressAction implements
     public void execute() throws CommandCannotExecuteException
     {
         mCancelHasBeenRequested = false;
-        mStream = new FileStream(mUri.getPath());
-        IXmlDataWriter mWriter = new XmlDataWriter(mStream);
         mWriter.writeStartDocument();
         mWriter.writeStartElement("Xuk", IXukAble.XUK_NS);
         if (IXukAble.XUK_XSD_PATH != "")
@@ -134,8 +174,7 @@ public class SaveXukAction extends ProgressAction implements
         }
         try
         {
-            mProject.xukOut(mWriter, mUri, this);
-            notifyFinished();
+            mXukAble.xukOut(mWriter, mUri, this);
         }
         catch (MethodParameterIsNullException e)
         {
@@ -144,7 +183,7 @@ public class SaveXukAction extends ProgressAction implements
         }
         catch (XukSerializationFailedException e)
         {
-            mWriter.close();
+            closeOutput();
             throw new CommandCannotExecuteException(e);
         }
         catch (ProgressCancelledException e)
@@ -162,10 +201,11 @@ public class SaveXukAction extends ProgressAction implements
                 // Should never happen
                 throw new RuntimeException("WTF ?!", e);
             }
+            mWriter.writeEndElement();
+            mWriter.writeEndDocument();
+            closeOutput();
+            notifyFinished();
         }
-        mWriter.writeEndElement();
-        mWriter.writeEndDocument();
-        mWriter.close();
     }
 
     public String getLongDescription()

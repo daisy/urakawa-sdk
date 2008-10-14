@@ -302,7 +302,39 @@ public class Project extends AbstractXukAble implements IWithPresentations,
         {
             throw new MethodParameterIsNullException();
         }
-        OpenXukAction action = new OpenXukAction(uri, this);
+        OpenXukAction action = new OpenXukAction(this, uri);
+        try
+        {
+            action.execute();
+        }
+        catch (CommandCannotExecuteException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ?!", e);
+        }
+    }
+
+    /**
+     * <p>
+     * Reads a XUK-formatted XML file, and generates the equivalent object data
+     * that makes the Project.
+     * </p>
+     * 
+     * @param uri
+     *        can be null.
+     * @param reader
+     *        cannot be null
+     * @throws MethodParameterIsNullException
+     *         NULL method parameter is forbidden
+     */
+    public void openXUK(URI uri, IXmlDataReader reader)
+            throws MethodParameterIsNullException
+    {
+        if (reader == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        OpenXukAction action = new OpenXukAction(this, uri, reader);
         try
         {
             action.execute();
@@ -322,7 +354,7 @@ public class Project extends AbstractXukAble implements IWithPresentations,
      * @param uri
      *        cannot be null
      * @throws MethodParameterIsNullException
-     *         NULL method parameters are forbidden
+     *         NULL method parameter is forbidden
      */
     public void saveXUK(URI uri) throws MethodParameterIsNullException
     {
@@ -330,7 +362,38 @@ public class Project extends AbstractXukAble implements IWithPresentations,
         {
             throw new MethodParameterIsNullException();
         }
-        SaveXukAction action = new SaveXukAction(uri, this);
+        SaveXukAction action = new SaveXukAction(this, uri);
+        try
+        {
+            action.execute();
+        }
+        catch (CommandCannotExecuteException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ?!", e);
+        }
+    }
+
+    /**
+     * <p>
+     * Writes the object data of the Project into a XUK-formatted XML file.
+     * </p>
+     * 
+     * @param uri
+     *        can be null
+     * @param writer
+     *        cannot be null
+     * @throws MethodParameterIsNullException
+     *         NULL method parameter is forbidden
+     */
+    public void saveXUK(URI uri, IXmlDataWriter writer)
+            throws MethodParameterIsNullException
+    {
+        if (writer == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        SaveXukAction action = new SaveXukAction(this, uri, writer);
         try
         {
             action.execute();

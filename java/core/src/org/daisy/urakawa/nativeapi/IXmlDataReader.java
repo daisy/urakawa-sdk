@@ -113,4 +113,9 @@ public interface IXmlDataReader
      * @return text
      */
     public String readElementContentAsString();
+
+    /**
+     * @return underlying stream
+     */
+    public IStream getBaseStream();
 }

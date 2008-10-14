@@ -104,4 +104,9 @@ public class XmlDataReader implements IXmlDataReader
     {
         return null;
     }
+
+    public IStream getBaseStream()
+    {
+        return null;
+    }
 }

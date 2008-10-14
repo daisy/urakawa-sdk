@@ -2,7 +2,6 @@ package org.daisy.urakawa.xuk;
 
 import java.net.URI;
 
-import org.daisy.urakawa.Project;
 import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.events.CancellableEvent;
 import org.daisy.urakawa.events.Event;
@@ -27,52 +26,89 @@ public class OpenXukAction extends ProgressAction implements
         IEventListener<CancellableEvent>
 {
     protected IEventHandler<Event> mEventNotifier = new EventHandler();
+    @SuppressWarnings("unused")
     private URI mUri;
-    private Project mProject;
+    private IXukAble mXukAble;
+    private IXmlDataReader mReader;
     private IStream mStream;
 
+    private static IStream getStreamFromUri(URI uri)
+    {
+        return new FileStream(uri.getPath());
+    }
+
+    private void initializeXmlReader(IStream stream)
+    {
+        mReader = new XmlDataReader(stream);
+    }
+
     /**
-     * @param proj
+     * @param xukAble
+     *        cannot be null
      * @param uri
-     * @param iStream
+     *        can be null
+     * @param reader
+     *        cannot be null
      * @throws MethodParameterIsNullException
-     * 
      */
-    public OpenXukAction(URI uri, Project proj, IStream iStream)
+    public OpenXukAction(IXukAble xukAble, URI uri, IXmlDataReader reader)
             throws MethodParameterIsNullException
     {
-        if (mUri == null || mProject == null || iStream == null)
+        if (xukAble == null || reader == null)
         {
             throw new MethodParameterIsNullException();
         }
         mUri = uri;
-        mProject = proj;
-        mStream = iStream;
+        mXukAble = xukAble;
+        mReader = reader;
+        mStream = mReader.getBaseStream();
     }
 
     /**
-     * @param proj
+     * @param xukAble
+     *        cannot be null
      * @param uri
+     *        can be null
+     * @param stream
+     *        cannot be null
      * @throws MethodParameterIsNullException
-     * 
      */
-    public OpenXukAction(URI uri, Project proj)
+    public OpenXukAction(IXukAble xukAble, URI uri, IStream stream)
             throws MethodParameterIsNullException
     {
-        this(uri, proj, getStreamFromUri(uri));
+        if (xukAble == null || stream == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        mUri = uri;
+        mXukAble = xukAble;
+        mStream = stream;
+        initializeXmlReader(mStream);
     }
 
-    private static IStream getStreamFromUri(URI uri)
+    /**
+     * @param xukAble
+     *        cannot be null
+     * @param uri
+     *        cannot be null
+     * @throws MethodParameterIsNullException
+     */
+    public OpenXukAction(IXukAble xukAble, URI uri)
             throws MethodParameterIsNullException
     {
-        if (uri == null)
+        if (uri == null || xukAble == null)
+        {
             throw new MethodParameterIsNullException();
-        return new FileStream(uri.getPath());
+        }
+        mUri = uri;
+        mXukAble = xukAble;
+        mStream = getStreamFromUri(uri);
+        initializeXmlReader(mStream);
     }
 
     public boolean canExecute()
     {
-        return true;
+        return mReader != null;
     }
 
     @Override
@@ -96,13 +132,19 @@ public class OpenXukAction extends ProgressAction implements
         return pi;
     }
 
+    private void closeInput()
+    {
+        mReader.close();
+        mReader = null;
+        mStream = null;
+    }
+
     /**
      * @tagvalue Events "Cancelled-Finished"
      */
     public void execute() throws CommandCannotExecuteException
     {
         mCancelHasBeenRequested = false;
-        IXmlDataReader mReader = new XmlDataReader(mStream);
         if (!mReader.readToFollowing("Xuk", IXukAble.XUK_NS))
         {
             mReader.close();
@@ -116,8 +158,8 @@ public class OpenXukAction extends ProgressAction implements
             {
                 if (mReader.getNodeType() == IXmlDataReader.ELEMENT)
                 {
-                    if (mReader.getLocalName() == mProject.getXukLocalName()
-                            && mReader.getNamespaceURI() == mProject
+                    if (mReader.getLocalName() == mXukAble.getXukLocalName()
+                            && mReader.getNamespaceURI() == mXukAble
                                     .getXukNamespaceURI())
                     {
                         foundProject = true;
@@ -132,8 +174,8 @@ public class OpenXukAction extends ProgressAction implements
                         }
                         try
                         {
-                            mProject.xukIn(mReader, this);
-                            notifyFinished();
+                            mXukAble.xukIn(mReader, this);
+                            
                         }
                         catch (MethodParameterIsNullException e)
                         {
@@ -142,6 +184,7 @@ public class OpenXukAction extends ProgressAction implements
                         }
                         catch (XukDeserializationFailedException e)
                         {
+                            closeInput();
                             throw new CommandCannotExecuteException(e);
                         }
                         catch (ProgressCancelledException e)
@@ -159,6 +202,8 @@ public class OpenXukAction extends ProgressAction implements
                                 // Should never happen
                                 throw new RuntimeException("WTF ?!", e);
                             }
+                            closeInput();
+                            notifyFinished();
                         }
                     }
                     else
@@ -173,9 +218,9 @@ public class OpenXukAction extends ProgressAction implements
                     {
                         break;
                     }
-                if (mReader.isEOF())
+                if (mReader != null && mReader.isEOF())
                 {
-                    mReader.close();
+                    closeInput();
                     throw new CommandCannotExecuteException(
                             new XukDeserializationFailedException());
                 }
@@ -183,7 +228,7 @@ public class OpenXukAction extends ProgressAction implements
         }
         if (!foundProject)
         {
-            mReader.close();
+            if (mReader != null) closeInput();
             throw new CommandCannotExecuteException(
                     new XukDeserializationFailedException());
         }
