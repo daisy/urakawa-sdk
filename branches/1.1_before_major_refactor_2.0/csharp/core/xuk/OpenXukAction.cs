@@ -8,49 +8,99 @@ using urakawa.progress;
 namespace urakawa.xuk
 {
     ///<summary>
-    ///  Action that opens a xuk file and loads it into a <see cref="Project"/>
+    ///  Action that deserializes a xuk data stream into a <see cref="XukAble"/>
     ///</summary>
     public class OpenXukAction : ProgressAction
     {
+        private Uri mSourceUri;
+        private Stream mSourceStream;
+        private XmlReader mXmlReader;
+        private readonly IXukAble mDestXukAble;
+
+        private static Stream GetStreamFromUri(Uri src)
+        {
+            return new FileStream(src.LocalPath, FileMode.Open, FileAccess.Read);
+        }
+        private void initializeXmlReader(Stream stream)
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreWhitespace = false;
+            mXmlReader = XmlReader.Create(mSourceStream, settings, mSourceUri.ToString());
+        }
+
         /// <summary>
-        /// Constructor explicitly setting the source <see cref="XmlReader"/> and the destination <see cref="Project"/>
+        /// Constructor
         /// </summary>
-        /// <param name="sourceUri">The <see cref="Uri"/> of the source file</param>
-        /// <param name="destProj"></param>
-        /// <param name="sourceStream">The source <see cref="Stream"/></param>
-        public OpenXukAction(Uri sourceUri, Project destProj, Stream sourceStream)
+        /// <param name="sourceUri">The <see cref="Uri"/> of the source (can be null)</param>
+        /// <param name="xukAble">The destination <see cref="IXukAble"/> (cannot be null)</param>
+        /// <param name="sourceStream">The source <see cref="Stream"/> (cannot be null)</param>
+        public OpenXukAction(IXukAble xukAble, Uri sourceUri, Stream sourceStream)
         {
             if (sourceStream == null)
                 throw new exception.MethodParameterIsNullException(
                     "The source Stream of the OpenXukAction cannot be null");
-            if (destProj == null)
+            if (xukAble == null)
                 throw new exception.MethodParameterIsNullException(
-                    "The destination Project of the OpenXukAction cannot be null");
+                    "The destination IXukAble of the OpenXukAction cannot be null");
             mSourceUri = sourceUri;
-            mDestProject = destProj;
-            mDestStream = sourceStream;
-        }
-
-        private static Stream getStreamFromUri(Uri src)
-        {
-            if (src==null) throw new exception.MethodParameterIsNullException("The Uri source is null");
-            return new FileStream(src.LocalPath, FileMode.Open, FileAccess.Read);
+            mDestXukAble = xukAble;
+            mSourceStream = sourceStream;
+            initializeXmlReader(mSourceStream);
         }
 
         /// <summary>
-        /// Constructor explicitly setting the source of the read and the destination <see cref="Project"/>
+        /// Constructor (DO NOT USE ! THE STREAM IS NULL. USE THE STREAM-BASED CTOR instead)
         /// </summary>
-        /// <param name="sourceUri">The <see cref="Uri"/> of the source file</param>
-        /// <param name="destProj"></param>
-        public OpenXukAction(Uri sourceUri, Project destProj)
-            : this(sourceUri, destProj, getStreamFromUri(sourceUri))
+        /// <param name="sourceUri">The <see cref="Uri"/> of the source (can be null)</param>
+        /// <param name="xukAble">The destination <see cref="IXukAble"/> (cannot be null)</param>
+        /// <param name="reader">The source <see cref="XmlReader"/> (cannot be null)</param>
+        public OpenXukAction(IXukAble xukAble, Uri sourceUri, XmlReader reader)
         {
-            
+            if (reader == null)
+                throw new exception.MethodParameterIsNullException(
+                    "The source XmlReader of the OpenXukAction cannot be null");
+            if (xukAble == null)
+                throw new exception.MethodParameterIsNullException(
+                    "The destination IXukAble of the OpenXukAction cannot be null");
+            mSourceUri = sourceUri;
+            mDestXukAble = xukAble;
+            mXmlReader = reader;
+            XmlTextReader txtReader = reader as XmlTextReader;
+            if (txtReader != null)
+            {
+                //TODO: where can we get the underlying stream ??
+                //mSourceStream = txtReader.BaseStream;
+            }
         }
 
-        private Uri mSourceUri;
-        private Stream mDestStream;
-        private readonly Project mDestProject;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="sourceUri">The <see cref="Uri"/> of the source file (cannot be null)</param>
+        /// <param name="xukAble">The destination <see cref="IXukAble"/> (cannot be null)</param>
+        public OpenXukAction(IXukAble xukAble, Uri sourceUri)
+        {
+            if (sourceUri == null)
+                throw new exception.MethodParameterIsNullException(
+                    "The source URI of the OpenXukAction cannot be null");
+            if (xukAble == null)
+                throw new exception.MethodParameterIsNullException(
+                    "The destination IXukAble of the OpenXukAction cannot be null");
+
+            mSourceUri = sourceUri;
+            mDestXukAble = xukAble;
+            mSourceStream = GetStreamFromUri(mSourceUri);
+            initializeXmlReader(mSourceStream);
+        }
+
+        private void closeInput()
+        {
+            mXmlReader.Close();
+            mXmlReader = null;
+            mSourceStream.Close();
+            mSourceStream = null;
+        }
 
         #region Overrides of ProgressAction
 
@@ -61,10 +111,10 @@ namespace urakawa.xuk
         /// <param name="tot">A <see cref="long"/> in which the estimated total progress is returned</param>
         protected override void getCurrentProgress(out long cur, out long tot)
         {
-            if (mDestStream!=null)
+            if (mSourceStream!=null)
             {
-                cur = mDestStream.Position;
-                tot = mDestStream.Length;
+                cur = mSourceStream.Position;
+                tot = mSourceStream.Length;
             }
             else
             {
@@ -79,7 +129,7 @@ namespace urakawa.xuk
         /// <returns>The <c>bool</c></returns>
         public override bool canExecute()
         {
-            return true;
+            return mXmlReader != null;
         }
 
         /// <summary>
@@ -87,7 +137,7 @@ namespace urakawa.xuk
         /// </summary>
         public override string getLongDescription()
         {
-            return "Opens a xuk project file";
+            return "Deserializes a XUK fragment";
         }
 
         /// <summary>
@@ -98,62 +148,58 @@ namespace urakawa.xuk
         {
             mHasCancelBeenRequested = false;
             progress += OpenXukAction_progress;
+
+            bool canceled = false;
             try
             {
-                XmlReaderSettings settings = new XmlReaderSettings();
-                settings.IgnoreWhitespace = false;
-                XmlReader rd = XmlReader.Create(mDestStream, settings, mSourceUri.ToString());
-                try
-                {
-                    if (!rd.ReadToFollowing("Xuk", urakawa.ToolkitSettings.XUK_NS))
+                    if (!mXmlReader.ReadToFollowing("Xuk", urakawa.ToolkitSettings.XUK_NS))
                     {
-                        throw new exception.XukException("Could not find Xuk element in Project Xuk file");
+                        throw new exception.XukException("Could not find Xuk element in XukAble fragment");
                     }
-                    bool foundProject = false;
-                    if (!rd.IsEmptyElement)
+                    bool foundXukAble = false;
+                    if (!mXmlReader.IsEmptyElement)
                     {
-                        while (rd.Read())
+                        while (mXmlReader.Read())
                         {
-                            if (rd.NodeType == XmlNodeType.Element)
+                            if (mXmlReader.NodeType == XmlNodeType.Element)
                             {
                                 //If the element QName matches the Xuk QName equivalent of this, Xuk it in using this.xukIn
-                                if (rd.LocalName == mDestProject.getXukLocalName() &&
-                                    rd.NamespaceURI == mDestProject.getXukNamespaceUri())
+                                if (mXmlReader.LocalName == mDestXukAble.getXukLocalName() &&
+                                    mXmlReader.NamespaceURI == mDestXukAble.getXukNamespaceUri())
                                 {
-                                    foundProject = true;
-                                    mDestProject.xukIn(rd, this);
+                                    foundXukAble = true;
+                                    mDestXukAble.xukIn(mXmlReader, this);
                                 }
-                                else if (!rd.IsEmptyElement)
+                                else if (!mXmlReader.IsEmptyElement)
                                 {
-                                    rd.ReadSubtree().Close();
+                                    mXmlReader.ReadSubtree().Close();
                                 }
                             }
-                            else if (rd.NodeType == XmlNodeType.EndElement)
+                            else if (mXmlReader.NodeType == XmlNodeType.EndElement)
                             {
                                 break;
                             }
 
-                            if (rd.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                            if (mXmlReader.EOF) throw new exception.XukException("Unexpectedly reached EOF");
                         }
                     }
-                    if (!foundProject)
+                    if (!foundXukAble)
                     {
-                        throw new exception.XukException("Found no Project in Xuk file");
+                        throw new exception.XukException("Found no required XukAble in Xuk file");
                     }
-                }
-                finally
-                {
-                    rd.Close();
-                }
-                notifyFinished();
             }
             catch (exception.ProgressCancelledException)
             {
-                notifyCancelled();
+                canceled = true;
             }
             finally
             {
                 progress -= OpenXukAction_progress;
+
+                closeInput();
+
+                if (canceled) notifyCancelled();
+                else notifyFinished();
             }
 
         }
