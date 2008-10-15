@@ -1,5 +1,6 @@
 package org.daisy.urakawa.xuk;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.daisy.urakawa.command.CommandCannotExecuteException;
@@ -136,6 +137,14 @@ public class OpenXukAction extends ProgressAction implements
     {
         mReader.close();
         mReader = null;
+        try
+        {
+            mStream.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
         mStream = null;
     }
 
@@ -147,11 +156,11 @@ public class OpenXukAction extends ProgressAction implements
         mCancelHasBeenRequested = false;
         if (!mReader.readToFollowing("Xuk", IXukAble.XUK_NS))
         {
-            mReader.close();
+            closeInput();
             throw new CommandCannotExecuteException(
                     new XukDeserializationFailedException());
         }
-        boolean foundProject = false;
+        boolean foundXukAble = false;
         if (!mReader.isEmptyElement())
         {
             while (mReader.read())
@@ -162,7 +171,7 @@ public class OpenXukAction extends ProgressAction implements
                             && mReader.getNamespaceURI() == mXukAble
                                     .getXukNamespaceURI())
                     {
-                        foundProject = true;
+                        foundXukAble = true;
                         try
                         {
                             registerListener(this, CancellableEvent.class);
@@ -172,10 +181,10 @@ public class OpenXukAction extends ProgressAction implements
                             // Should never happen
                             throw new RuntimeException("WTF ?!", e1);
                         }
+                        boolean canceled = false;
                         try
                         {
                             mXukAble.xukIn(mReader, this);
-                            
                         }
                         catch (MethodParameterIsNullException e)
                         {
@@ -189,7 +198,7 @@ public class OpenXukAction extends ProgressAction implements
                         }
                         catch (ProgressCancelledException e)
                         {
-                            notifyCancelled();
+                            canceled = true;
                         }
                         finally
                         {
@@ -203,7 +212,10 @@ public class OpenXukAction extends ProgressAction implements
                                 throw new RuntimeException("WTF ?!", e);
                             }
                             closeInput();
-                            notifyFinished();
+                            if (canceled)
+                                notifyCancelled();
+                            else
+                                notifyFinished();
                         }
                     }
                     else
@@ -226,9 +238,10 @@ public class OpenXukAction extends ProgressAction implements
                 }
             }
         }
-        if (!foundProject)
+        if (!foundXukAble)
         {
-            if (mReader != null) closeInput();
+            if (mReader != null)
+                closeInput();
             throw new CommandCannotExecuteException(
                     new XukDeserializationFailedException());
         }

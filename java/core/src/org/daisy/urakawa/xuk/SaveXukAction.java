@@ -1,5 +1,6 @@
 package org.daisy.urakawa.xuk;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.daisy.urakawa.command.CommandCannotExecuteException;
@@ -72,7 +73,7 @@ public class SaveXukAction extends ProgressAction implements
      *        cannot be null
      * @throws MethodParameterIsNullException
      */
-    public SaveXukAction(IXukAble xukAble,URI uri, IStream stream)
+    public SaveXukAction(IXukAble xukAble, URI uri, IStream stream)
             throws MethodParameterIsNullException
     {
         if (xukAble == null || stream == null)
@@ -135,6 +136,14 @@ public class SaveXukAction extends ProgressAction implements
     {
         mWriter.close();
         mWriter = null;
+        try
+        {
+            mStream.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
         mStream = null;
     }
 
@@ -172,6 +181,7 @@ public class SaveXukAction extends ProgressAction implements
             // Should never happen
             throw new RuntimeException("WTF ?!", e1);
         }
+        boolean canceled = false;
         try
         {
             mXukAble.xukOut(mWriter, mUri, this);
@@ -188,7 +198,7 @@ public class SaveXukAction extends ProgressAction implements
         }
         catch (ProgressCancelledException e)
         {
-            notifyCancelled();
+            canceled = true;
         }
         finally
         {
@@ -204,7 +214,10 @@ public class SaveXukAction extends ProgressAction implements
             mWriter.writeEndElement();
             mWriter.writeEndDocument();
             closeOutput();
-            notifyFinished();
+            if (canceled)
+                notifyCancelled();
+            else
+                notifyFinished();
         }
     }
 
