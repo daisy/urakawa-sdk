@@ -141,27 +141,66 @@ namespace urakawa
 			mDataModelFactory = fact;
 		}
 
-
-
-		/// <summary>
-		/// Opens an XUK file and loads the project from this
-		/// </summary>
-		/// <param name="fileUri">The <see cref="Uri"/> of the source XUK file</param>
-		public void openXUK(Uri fileUri)
-		{
-            OpenXukAction action = new OpenXukAction(fileUri, this);
+        /// <summary>
+        /// Opens an XUK file and loads the project from this
+        /// </summary>
+        /// <param name="fileUri">The <see cref="Uri"/> of the source XUK file (cannot be null)</param>
+        public void openXUK(Uri fileUri)
+        {
+            if (fileUri == null)
+            {
+                throw new exception.MethodParameterIsNullException("The source URI cannot be null");
+            }
+            OpenXukAction action = new OpenXukAction(this, fileUri);
             action.execute();
-		}
+        }
 
-		/// <summary>
-		/// Saves the <see cref="Project"/> to a XUK file
-		/// </summary>
-		/// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
-		public void saveXUK(Uri fileUri)
-		{
-            SaveXukAction action = new SaveXukAction(fileUri, this);
+        /// <summary>
+        /// Opens an XUK file and loads the project from this.
+        /// DO NOT USE ! THE STREAM IS NULL. USE THE STREAM-BASED method instead !
+        /// TODO: make public once the Stream issue is fixed.
+        /// </summary>
+        /// <param name="fileUri">The <see cref="Uri"/> of the source XUK file (can be null)</param>
+        /// <param name="reader">The <see cref="XmlReader"/> of the source XUK file (cannot be null)</param>
+        private void openXUK(Uri fileUri, XmlReader reader)
+        {
+            if (reader == null)
+            {
+                throw new exception.MethodParameterIsNullException("The source XML reader cannot be null");
+            }
+            OpenXukAction action = new OpenXukAction(this, fileUri, reader);
             action.execute();
-		}
+        }
+        /// <summary>
+        /// Saves the <see cref="Project"/> to a XUK file
+        /// </summary>
+        /// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
+        public void saveXUK(Uri fileUri)
+        {
+            if (fileUri == null)
+            {
+                throw new exception.MethodParameterIsNullException("The destination URI cannot be null");
+            }
+            SaveXukAction action = new SaveXukAction(this, fileUri);
+            action.execute();
+        }
+
+        /// <summary>
+        /// Saves the <see cref="Project"/> to a XUK file
+        /// </summary>
+        /// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
+        /// <param name="writer">The <see cref="XmlWriter"/> of the destination XUK file</param>
+        public void saveXUK(Uri fileUri, XmlWriter writer)
+        {
+            if (writer == null)
+            {
+                throw new exception.MethodParameterIsNullException("The destination XML writer cannot be null");
+            }
+            SaveXukAction action = new SaveXukAction(this, fileUri, writer);
+            action.execute();
+        }
+
+
 
 
 
