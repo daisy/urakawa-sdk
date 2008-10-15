@@ -94,6 +94,15 @@ namespace urakawa.xuk
             initializeXmlReader(mSourceStream);
         }
 
+        private void closeInput()
+        {
+            mXmlReader.Close();
+            mXmlReader = null;
+            mSourceStream.Close();
+            mSourceStream.Dispose();
+            mSourceStream = null;
+        }
+
 
         #region Overrides of ProgressAction
 
@@ -141,15 +150,15 @@ namespace urakawa.xuk
         {
             mHasCancelBeenRequested = false;
             Progress += OpenXukAction_progress;
+
+            bool canceled = false;
             try
             {
-                try
-                {
                     if (!mXmlReader.ReadToFollowing("Xuk", XukAble.XUK_NS))
                     {
-                        throw new exception.XukException("Could not find Xuk element in Project Xuk file");
+                        throw new exception.XukException("Could not find Xuk element in XukAble fragment");
                     }
-                    bool foundProject = false;
+                    bool foundXukAble = false;
                     if (!mXmlReader.IsEmptyElement)
                     {
                         while (mXmlReader.Read())
@@ -160,7 +169,7 @@ namespace urakawa.xuk
                                 if (mXmlReader.LocalName == mDestXukAble.XukLocalName &&
                                     mXmlReader.NamespaceURI == mDestXukAble.XukNamespaceUri)
                                 {
-                                    foundProject = true;
+                                    foundXukAble = true;
                                     mDestXukAble.XukIn(mXmlReader, this);
                                 }
                                 else if (!mXmlReader.IsEmptyElement)
@@ -176,24 +185,23 @@ namespace urakawa.xuk
                             if (mXmlReader.EOF) throw new exception.XukException("Unexpectedly reached EOF");
                         }
                     }
-                    if (!foundProject)
+                    if (!foundXukAble)
                     {
-                        throw new exception.XukException("Found no Project in Xuk file");
+                        throw new exception.XukException("Found no required XukAble in Xuk file");
                     }
-                }
-                finally
-                {
-                    mXmlReader.Close();
-                }
-                NotifyFinished();
             }
             catch (exception.ProgressCancelledException)
             {
-                NotifyCancelled();
+                canceled = true;
             }
             finally
             {
                 Progress -= OpenXukAction_progress;
+
+                closeInput();
+
+                if (canceled) NotifyCancelled();
+                else NotifyFinished();
             }
         }
 
