@@ -95,6 +95,15 @@ namespace urakawa.xuk
             initializeXmlWriter(mDestStream);
         }
 
+        private void closeOutput()
+        {
+            mXmlWriter.Close();
+            mXmlWriter = null;
+            mDestStream.Close();
+            mDestStream.Dispose();
+            mDestStream = null;
+        }
+
         #region Overrides of ProgressAction
 
         /// <summary>
@@ -125,13 +134,6 @@ namespace urakawa.xuk
             get { return mXmlWriter != null; }
         }
 
-        private void closeOutput()
-        {
-            mXmlWriter.Close();
-            mXmlWriter = null;
-            mDestStream = null;
-        }
-
         /// <summary>
         /// Get a long uman-readable description of the command
         /// </summary>
@@ -148,10 +150,9 @@ namespace urakawa.xuk
         {
             mHasCancelBeenRequested = false;
             Progress += SaveXukAction_progress;
+            bool canceled = false;
             try
             {
-                try
-                {
 // ReSharper disable PossibleNullReferenceException
                     mXmlWriter.WriteStartDocument();
 // ReSharper restore PossibleNullReferenceException
@@ -178,20 +179,19 @@ namespace urakawa.xuk
                     mSourceXukAble.XukOut(mXmlWriter, mDestUri, this);
                     mXmlWriter.WriteEndElement();
                     mXmlWriter.WriteEndDocument();
-                }
-                finally
-                {
-                    closeOutput();
-                }
-                NotifyFinished();
             }
             catch (exception.ProgressCancelledException)
             {
-                NotifyCancelled();
+                canceled = true;
             }
             finally
             {
                 Progress -= SaveXukAction_progress;
+
+                closeOutput();
+
+                if (canceled) NotifyCancelled();
+                else NotifyFinished();
             }
         }
 
