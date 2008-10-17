@@ -25,7 +25,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * 
  *
  */
-public abstract class AbstractMedia extends AbstractXukAbleWithPresentation implements IMedia
+public abstract class AbstractMedia extends AbstractXukAbleWithPresentation
+        implements IMedia
 {
     protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>()
     {
@@ -103,16 +104,18 @@ public abstract class AbstractMedia extends AbstractXukAbleWithPresentation impl
 
     protected IMedia copyProtected()
     {
+        IMedia expMedia;
         try
         {
-            return exportProtected(getPresentation());
+            expMedia = getPresentation().getMediaFactory().create(
+                    getXukLocalName(), getXukNamespaceURI());
         }
-        catch (MethodParameterIsNullException e)
+        catch (MethodParameterIsEmptyStringException e)
         {
             // Should never happen
             throw new RuntimeException("WTF ??!", e);
         }
-        catch (FactoryCannotCreateTypeException e)
+        catch (MethodParameterIsNullException e)
         {
             // Should never happen
             throw new RuntimeException("WTF ??!", e);
@@ -122,6 +125,16 @@ public abstract class AbstractMedia extends AbstractXukAbleWithPresentation impl
             // Should never happen
             throw new RuntimeException("WTF ??!", e);
         }
+        try
+        {
+            expMedia.setLanguage(getLanguage());
+        }
+        catch (MethodParameterIsEmptyStringException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        return expMedia;
     }
 
     public IMedia export(Presentation destPres)

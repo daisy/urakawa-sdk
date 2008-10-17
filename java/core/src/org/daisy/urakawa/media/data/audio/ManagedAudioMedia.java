@@ -165,15 +165,6 @@ public class ManagedAudioMedia extends AbstractMedia implements
         IManagedAudioMedia copyMAM = (IManagedAudioMedia) super.copyProtected();
         try
         {
-            copyMAM.setLanguage(getLanguage());
-        }
-        catch (MethodParameterIsEmptyStringException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-        try
-        {
             copyMAM.setMediaData(getMediaData().copy());
         }
         catch (MethodParameterIsNullException e)
@@ -209,15 +200,6 @@ public class ManagedAudioMedia extends AbstractMedia implements
         if (exported == null)
         {
             throw new FactoryCannotCreateTypeException();
-        }
-        try
-        {
-            exported.setLanguage(getLanguage());
-        }
-        catch (MethodParameterIsEmptyStringException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
         }
         exported.setMediaData(getMediaData().export(destPres));
         return exported;
