@@ -68,7 +68,9 @@ public final class DataProviderManager extends AbstractXukAble implements
                 String prevDataDirFullPath;
                 try
                 {
-                    prevDataDirFullPath = DataProviderManager.this.getDataFileDirectoryFullPath(event.getPreviousUri());
+                    prevDataDirFullPath = DataProviderManager.this
+                            .getDataFileDirectoryFullPath(event
+                                    .getPreviousUri());
                 }
                 catch (URISyntaxException e)
                 {
@@ -79,7 +81,9 @@ public final class DataProviderManager extends AbstractXukAble implements
                 {
                     try
                     {
-                        DataProviderManager.this.copyDataFiles(prevDataDirFullPath, getDataFileDirectoryFullPath());
+                        DataProviderManager.this.copyDataFiles(
+                                prevDataDirFullPath,
+                                getDataFileDirectoryFullPath());
                     }
                     catch (MethodParameterIsEmptyStringException e)
                     {
@@ -102,7 +106,6 @@ public final class DataProviderManager extends AbstractXukAble implements
                         throw new RuntimeException("WTF ??!", e);
                     }
                 }
-
             }
         }
     };
@@ -120,8 +123,11 @@ public final class DataProviderManager extends AbstractXukAble implements
         }
         mPresentation = pres;
         mDataFileDirectory = null;
-        mPresentation.registerListener(mRootUriChangedEventListener,
-                RootUriChangedEvent.class);
+        // Automatic wiring of this event is "dangerous" because the file copy
+        // logic implemented here may not be compatible with that of the host
+        // application (i.e. copy of only the managed media in the folder).
+        // mPresentation.registerListener(mRootUriChangedEventListener,
+        // RootUriChangedEvent.class);
     }
 
     /**

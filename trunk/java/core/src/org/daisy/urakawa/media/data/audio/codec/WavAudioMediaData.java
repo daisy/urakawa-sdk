@@ -279,6 +279,20 @@ public class WavAudioMediaData extends AbstractAudioMediaData
             // Should never happen
             throw new RuntimeException("WTF ??!", e);
         }
+        try
+        {
+            copy.setPCMFormat(getPCMFormat());
+        }
+        catch (MethodParameterIsNullException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        catch (InvalidDataFormatException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
         for (WavClip clip : mWavClips)
         {
             copy.mWavClips.add(clip.copy());
