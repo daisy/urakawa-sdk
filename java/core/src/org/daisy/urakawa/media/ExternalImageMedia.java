@@ -1,6 +1,7 @@
 package org.daisy.urakawa.media;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
@@ -9,13 +10,14 @@ import org.daisy.urakawa.events.Event;
 import org.daisy.urakawa.events.EventHandler;
 import org.daisy.urakawa.events.IEventHandler;
 import org.daisy.urakawa.events.IEventListener;
-import org.daisy.urakawa.events.media.SizeChangedEvent;
+import org.daisy.urakawa.events.media.SrcChangedEvent;
+import org.daisy.urakawa.exception.IsNotInitializedException;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -25,28 +27,25 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ExternalImageMedia extends AbstractExternalMedia implements
-        IImageMedia
+public class ExternalImageMedia extends AbstractImageMedia implements ILocated
 {
-    int mWidth;
-    int mHeight;
+    // BEGIN ILocated common code (no multiple-inheritance, unfortunately)
+    private String mSrc;
 
-    /**
-	 * 
-	 */
-    public ExternalImageMedia()
+    @Override
+    protected void clear()
     {
-        mWidth = 0;
-        mHeight = 0;
+        mSrc = ".";
+        super.clear();
     }
 
     @Override
     public <K extends DataModelChangedEvent> void notifyListeners(K event)
             throws MethodParameterIsNullException
     {
-        if (SizeChangedEvent.class.isAssignableFrom(event.getClass()))
+        if (SrcChangedEvent.class.isAssignableFrom(event.getClass()))
         {
-            mSizeChangedEventNotifier.notifyListeners(event);
+            mSrcChangedEventNotifier.notifyListeners(event);
         }
         super.notifyListeners(event);
     }
@@ -56,9 +55,9 @@ public class ExternalImageMedia extends AbstractExternalMedia implements
             IEventListener<K> listener, Class<K> klass)
             throws MethodParameterIsNullException
     {
-        if (SizeChangedEvent.class.isAssignableFrom(klass))
+        if (SrcChangedEvent.class.isAssignableFrom(klass))
         {
-            mSizeChangedEventNotifier.registerListener(listener, klass);
+            mSrcChangedEventNotifier.registerListener(listener, klass);
         }
         else
         {
@@ -71,9 +70,9 @@ public class ExternalImageMedia extends AbstractExternalMedia implements
             IEventListener<K> listener, Class<K> klass)
             throws MethodParameterIsNullException
     {
-        if (SizeChangedEvent.class.isAssignableFrom(klass))
+        if (SrcChangedEvent.class.isAssignableFrom(klass))
         {
-            mSizeChangedEventNotifier.unregisterListener(listener, klass);
+            mSrcChangedEventNotifier.unregisterListener(listener, klass);
         }
         else
         {
@@ -81,32 +80,257 @@ public class ExternalImageMedia extends AbstractExternalMedia implements
         }
     }
 
-    protected IEventHandler<Event> mSizeChangedEventNotifier = new EventHandler();
+    protected IEventHandler<Event> mSrcChangedEventNotifier = new EventHandler();
 
+    /**
+     * 
+     */
+    public ExternalImageMedia()
+    {
+        super();
+        mSrc = ".";
+    }
+
+    public String getSrc()
+    {
+        return mSrc;
+    }
+
+    public void setSrc(String newSrc) throws MethodParameterIsNullException,
+            MethodParameterIsEmptyStringException
+    {
+        if (newSrc == null)
+            throw new MethodParameterIsNullException();
+        if (newSrc.length() == 0)
+            throw new MethodParameterIsEmptyStringException();
+        String prevSrc = mSrc;
+        mSrc = newSrc;
+        if (mSrc != prevSrc)
+            notifyListeners(new SrcChangedEvent(this, mSrc, prevSrc));
+    }
+
+    public URI getURI() throws URISyntaxException
+    {
+        URI uri = null;
+        try
+        {
+            uri = new URI(getSrc()).resolve(getPresentation().getRootURI());
+        }
+        catch (IsNotInitializedException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        return uri;
+    }
+
+    @Override
+    public boolean ValueEquals(IMedia other)
+            throws MethodParameterIsNullException
+    {
+        if (other == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        if (!super.ValueEquals(other))
+            return false;
+        if (!(other instanceof ILocated))
+        {
+            return false;
+        }
+        try
+        {
+            if (getURI() != ((ILocated) other).getURI())
+                return false;
+        }
+        catch (URISyntaxException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public IMedia copyProtected()
+    {
+        ExternalImageMedia copy = (ExternalImageMedia) super.copyProtected();
+        try
+        {
+            URI.create(getSrc()).resolve(getPresentation().getRootURI());
+            String destSrc = getPresentation().getRootURI()
+                    .relativize(getURI()).toString();
+            if (destSrc.length() == 0)
+                destSrc = ".";
+            try
+            {
+                copy.setSrc(destSrc);
+            }
+            catch (MethodParameterIsEmptyStringException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+            catch (MethodParameterIsNullException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+        }
+        catch (URISyntaxException e)
+        {
+            try
+            {
+                copy.setSrc(getSrc());
+            }
+            catch (MethodParameterIsEmptyStringException e1)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e1);
+            }
+            catch (MethodParameterIsNullException e2)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e2);
+            }
+        }
+        catch (IsNotInitializedException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        return copy;
+    }
+
+    @Override
+    protected IMedia exportProtected(Presentation destPres)
+            throws MethodParameterIsNullException,
+            FactoryCannotCreateTypeException
+    {
+        if (destPres == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        ExternalImageMedia expEM = (ExternalImageMedia) super
+                .exportProtected(destPres);
+        if (expEM == null)
+        {
+            throw new FactoryCannotCreateTypeException();
+        }
+        try
+        {
+            URI.create(getSrc()).resolve(getPresentation().getRootURI());
+            String destSrc = destPres.getRootURI().relativize(getURI())
+                    .toString();
+            if (destSrc.length() == 0)
+                destSrc = ".";
+            try
+            {
+                expEM.setSrc(destSrc);
+            }
+            catch (MethodParameterIsEmptyStringException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+        }
+        catch (URISyntaxException e)
+        {
+            try
+            {
+                expEM.setSrc(getSrc());
+            }
+            catch (MethodParameterIsEmptyStringException e1)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e1);
+            }
+        }
+        catch (IsNotInitializedException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        return expEM;
+    }
+
+    @Override
+    protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+            throws MethodParameterIsNullException,
+            XukDeserializationFailedException, ProgressCancelledException
+    {
+        if (source == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        // To avoid event notification overhead, we bypass this:
+        if (false && ph != null && ph.notifyProgress())
+        {
+            throw new ProgressCancelledException();
+        }
+        String val = source.getAttribute("src");
+        if (val == null || val.length() == 0)
+            val = ".";
+        try
+        {
+            setSrc(val);
+        }
+        catch (MethodParameterIsEmptyStringException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        super.xukInAttributes(source, ph);
+    }
+
+    @Override
+    /*
+     * @param baseUri can be null, in which case the raw getSrc() value is used
+     * without computing the relative value again the base URI
+     */
+    protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+            IProgressHandler ph) throws MethodParameterIsNullException,
+            XukSerializationFailedException, ProgressCancelledException
+    {
+        if (destination == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        if (ph != null && ph.notifyProgress())
+        {
+            throw new ProgressCancelledException();
+        }
+        if (getSrc() != "")
+        {
+            URI srcUri;
+            try
+            {
+                srcUri = new URI(getSrc());
+            }
+            catch (URISyntaxException e)
+            {
+                throw new XukSerializationFailedException();
+            }
+            if (baseUri == null)
+            {
+                destination.writeAttributeString("src", srcUri.toString());
+            }
+            else
+            {
+                destination.writeAttributeString("src", baseUri.relativize(
+                        srcUri).toString());
+            }
+        }
+        super.xukOutAttributes(destination, baseUri, ph);
+    }
+
+    // END ILocated common code (no multiple-inheritance, unfortunately)
     @SuppressWarnings("boxing")
     @Override
     public String toString()
     {
         return String.format("ExternalImageMedia ({0}-{1:0}x{2:0})", getSrc(),
-                mWidth, mHeight);
-    }
-
-    @Override
-    public boolean isContinuous()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isDiscrete()
-    {
-        return true;
-    }
-
-    @Override
-    public boolean isSequence()
-    {
-        return false;
+                getWidth(), getHeight());
     }
 
     @Override
@@ -125,212 +349,5 @@ public class ExternalImageMedia extends AbstractExternalMedia implements
             throw new MethodParameterIsNullException();
         }
         return (ExternalImageMedia) exportProtected(destPres);
-    }
-
-    @Override
-    protected IMedia exportProtected(Presentation destPres)
-            throws MethodParameterIsNullException,
-            FactoryCannotCreateTypeException
-    {
-        if (destPres == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        ExternalImageMedia exported = (ExternalImageMedia) super
-                .exportProtected(destPres);
-        if (exported == null)
-        {
-            throw new FactoryCannotCreateTypeException();
-        }
-        try
-        {
-            exported.setHeight(this.getHeight());
-            exported.setWidth(this.getWidth());
-        }
-        catch (MethodParameterIsOutOfBoundsException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-        return exported;
-    }
-
-    public int getWidth()
-    {
-        return mWidth;
-    }
-
-    public int getHeight()
-    {
-        return mHeight;
-    }
-
-    public void setWidth(int width)
-            throws MethodParameterIsOutOfBoundsException
-    {
-        setSize(getHeight(), width);
-    }
-
-    public void setHeight(int height)
-            throws MethodParameterIsOutOfBoundsException
-    {
-        setSize(height, getWidth());
-    }
-
-    public void setSize(int height, int width)
-            throws MethodParameterIsOutOfBoundsException
-    {
-        if (width < 0)
-        {
-            throw new MethodParameterIsOutOfBoundsException();
-        }
-        if (height < 0)
-        {
-            throw new MethodParameterIsOutOfBoundsException();
-        }
-        int prevWidth = mWidth;
-        mWidth = width;
-        int prevHeight = mHeight;
-        mHeight = height;
-        if (mWidth != prevWidth || mHeight != prevHeight)
-        {
-            try
-            {
-                notifyListeners(new SizeChangedEvent(this, mHeight, mWidth,
-                        prevHeight, prevWidth));
-            }
-            catch (MethodParameterIsNullException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WTF ??!", e);
-            }
-        }
-    }
-
-    @Override
-    protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
-            throws MethodParameterIsNullException,
-            XukDeserializationFailedException, ProgressCancelledException
-    {
-        if (source == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        // To avoid event notification overhead, we bypass this:
-        if (false && ph != null && ph.notifyProgress())
-        {
-            throw new ProgressCancelledException();
-        }
-        super.xukInAttributes(source, ph);
-        String height = source.getAttribute("height");
-        String width = source.getAttribute("width");
-        int h = 0, w = 0;
-        if (height != null && height != "")
-        {
-            try
-            {
-                Integer.parseInt(height);
-            }
-            catch (NumberFormatException e)
-            {
-                throw new XukDeserializationFailedException();
-            }
-            try
-            {
-                setHeight(h);
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WTF ??!", e);
-            }
-        }
-        else
-        {
-            try
-            {
-                setHeight(0);
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WTF ??!", e);
-            }
-        }
-        if (width != null && width != "")
-        {
-            try
-            {
-                Integer.parseInt(width);
-            }
-            catch (NumberFormatException e)
-            {
-                throw new XukDeserializationFailedException();
-            }
-            try
-            {
-                setWidth(w);
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WTF ??!", e);
-            }
-        }
-        else
-        {
-            try
-            {
-                setWidth(0);
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WTF ??!", e);
-            }
-        }
-    }
-
-    @Override
-    protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-            IProgressHandler ph) throws MethodParameterIsNullException,
-            XukSerializationFailedException, ProgressCancelledException
-    {
-        if (destination == null || baseUri == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        if (ph != null && ph.notifyProgress())
-        {
-            throw new ProgressCancelledException();
-        }
-        destination.writeAttributeString("height", Integer.toString(mHeight));
-        destination.writeAttributeString("width", Integer.toString(mWidth));
-        super.xukOutAttributes(destination, baseUri, ph);
-    }
-
-    @Override
-    public boolean ValueEquals(IMedia other)
-            throws MethodParameterIsNullException
-    {
-        if (!super.ValueEquals(other))
-            return false;
-        IImageMedia otherImage = (IImageMedia) other;
-        if (getHeight() != otherImage.getHeight())
-            return false;
-        if (getWidth() != otherImage.getWidth())
-            return false;
-        return true;
-    }
-
-    @SuppressWarnings("unused")
-    @Override
-    protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
-            IProgressHandler ph) throws XukSerializationFailedException,
-            MethodParameterIsNullException, ProgressCancelledException
-    {
-        /**
-         * Does nothing.
-         */
     }
 }

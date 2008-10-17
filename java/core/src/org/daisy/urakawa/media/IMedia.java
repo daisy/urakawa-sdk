@@ -11,9 +11,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.IXukAble;
 
 /**
- * This is the top-most generic interface for a media object. For example, an
- * {@link IVideoMedia} type derives this interface by composition of other
- * interfaces of the data model, like {@link IContinuous} and {@link ISized}.
+ * This is the top-most generic interface for a media object.
  * 
  * @depend - Clone - org.daisy.urakawa.media.IMedia
  */
