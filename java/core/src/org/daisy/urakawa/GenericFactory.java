@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
-import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
@@ -25,13 +24,37 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * demand) and manages a /cache registry of queried types for later
  * Xuk-serialization
  * 
- * @param <T> When extending this generic factory, the type of the generated
- *        object instances is specified using the T type parameter.
+ * @param <T>
+ *        When extending this generic factory, the type of the generated object
+ *        instances is specified using the T type parameter.
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> extends
-        AbstractXukAbleWithPresentation
+public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation>
+        extends AbstractXukAble
 {
+    private Presentation mPresentation;
+
+    /**
+     * @return the Presentation owner
+     */
+    public Presentation getPresentation()
+    {
+        return mPresentation;
+    }
+
+    /**
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public GenericFactory(Presentation pres)
+            throws MethodParameterIsNullException
+    {
+        if (pres == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+    }
+
     private class TypeAndQNames
     {
         public QualifiedName mQName;
@@ -119,6 +142,7 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
 
     /**
      * Clears the factory of all its registered types
+     * 
      * @hidden
      */
     @Override
@@ -168,7 +192,8 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
         // namespaces
         tq.mFullName = t.getCanonicalName();
         // tq.AssemblyName = t.Assembly.GetName();
-        if (AbstractXukAbleWithPresentation.class.isAssignableFrom(t.getSuperclass())
+        if (AbstractXukAbleWithPresentation.class.isAssignableFrom(t
+                .getSuperclass())
                 && !mRegisteredTypeAndQNamesByType.containsKey(t
                         .getSuperclass()))
         {
@@ -241,11 +266,6 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
             throw new RuntimeException("WTF ??!", e);
         }
         catch (IsAlreadyInitializedException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-        catch (IsNotInitializedException e)
         {
             // Should never happen
             throw new RuntimeException("WTF ??!", e);

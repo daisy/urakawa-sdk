@@ -1,6 +1,7 @@
 package org.daisy.urakawa.property.channel;
 
 import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -16,6 +17,16 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public final class ChannelFactory extends GenericFactory<Channel>
 {
+    /**
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public ChannelFactory(Presentation pres)
+            throws MethodParameterIsNullException
+    {
+        super(pres);
+    }
+
     /**
      * @return
      */

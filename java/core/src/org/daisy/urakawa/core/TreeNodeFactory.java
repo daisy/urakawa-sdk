@@ -1,6 +1,7 @@
 package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -13,6 +14,16 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public final class TreeNodeFactory extends GenericFactory<TreeNode>
 {
+    /**
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public TreeNodeFactory(Presentation pres)
+            throws MethodParameterIsNullException
+    {
+        super(pres);
+    }
+
     /**
      * @return
      */

@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.IValueEquatable;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -15,6 +15,7 @@ import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.IProgressHandler;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.xuk.AbstractXukAble;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -23,16 +24,33 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @depend - Composition 0..n org.daisy.urakawa.property.channel.Channel
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public final class ChannelsManager extends AbstractXukAbleWithPresentation
-        implements IValueEquatable<ChannelsManager>
+public final class ChannelsManager extends AbstractXukAble implements
+        IValueEquatable<ChannelsManager>
 {
+    private Presentation mPresentation;
+
+    /**
+     * @return the Presentation owner
+     */
+    public Presentation getPresentation()
+    {
+        return mPresentation;
+    }
+
     private Map<String, IChannel> mChannels;
 
     /**
-	 * 
-	 */
-    public ChannelsManager()
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public ChannelsManager(Presentation pres)
+            throws MethodParameterIsNullException
     {
+        if (pres == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        mPresentation = pres;
         mChannels = new HashMap<String, IChannel>();
     }
 
@@ -160,15 +178,7 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation
         IChannel iChannel = getChannel(uid);
         ClearChannelTreeNodeVisitor clChVisitor = new ClearChannelTreeNodeVisitor(
                 iChannel);
-        try
-        {
-            getPresentation().getRootNode().acceptDepthFirst(clChVisitor);
-        }
-        catch (IsNotInitializedException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
+        getPresentation().getRootNode().acceptDepthFirst(clChVisitor);
         mChannels.remove(uid);
     }
 
@@ -430,11 +440,7 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation
                         // Should never happen
                         throw new RuntimeException("WTF ??!", e1);
                     }
-                    catch (IsNotInitializedException e1)
-                    {
-                        // Should never happen
-                        throw new RuntimeException("WTF ??!", e1);
-                    }
+                    
                     if (newCh != null)
                     {
                         try

@@ -1,6 +1,7 @@
 package org.daisy.urakawa.command;
 
 import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -13,6 +14,16 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public final class CommandFactory extends GenericFactory<AbstractCommand>
 {
+    /**
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public CommandFactory(Presentation pres)
+            throws MethodParameterIsNullException
+    {
+        super(pres);
+    }
+
     /**
      * @return
      */
