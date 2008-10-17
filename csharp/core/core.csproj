@@ -209,7 +209,6 @@
     <Compile Include="events\undo\TransactionEndedEventArgs.cs" />
     <Compile Include="events\undo\TransactionStartedEventArgs.cs" />
     <Compile Include="events\undo\UndoRedoManagerEventArgs.cs" />
-    <Compile Include="IWithPresentation.cs" />
     <Compile Include="media\data\utilities\CloseNotifyingStream.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />
@@ -276,7 +275,6 @@
     <Compile Include="media\ISized.cs" />
     <Compile Include="media\ExternalImageMedia.cs" />
     <Compile Include="media\Media.cs" />
-    <None Include="media\IMediaFactory.cs" />
     <Compile Include="media\AbstractTextMedia.cs" />
     <Compile Include="media\AbstractVideoMedia.cs" />
     <Compile Include="media\MediaFactory.cs" />
