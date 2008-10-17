@@ -5,6 +5,10 @@ namespace urakawa.metadata
     /// </summary>
     public sealed class MetadataFactory : GenericWithPresentationFactory<Metadata>
     {
+        public MetadataFactory(Presentation pres) : base(pres)
+        {
+        }
+
         /// <summary>
         /// Creates an <see cref="Metadata"/> instance
         /// </summary>

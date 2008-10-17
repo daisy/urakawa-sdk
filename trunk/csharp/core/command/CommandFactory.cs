@@ -7,10 +7,7 @@ namespace urakawa.command
     /// </summary>
     public class CommandFactory : GenericWithPresentationFactory<Command>
     {
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        protected internal CommandFactory()
+        public CommandFactory(Presentation pres) : base(pres)
         {
         }
 

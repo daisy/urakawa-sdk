@@ -8,6 +8,10 @@ namespace urakawa.media.data
     /// </summary>
     public sealed class DataProviderFactory : GenericWithPresentationFactory<DataProvider>
     {
+        public DataProviderFactory(Presentation pres) : base(pres)
+        {
+        }
+
         /// <summary>
         /// Inistalizes an created instance by assigning it an owning <see cref="Presentation"/>
         /// </summary>

@@ -15,6 +15,10 @@ namespace urakawa.media.data
     /// </summary>
     public sealed class MediaDataFactory : GenericWithPresentationFactory<MediaData>
     {
+        public MediaDataFactory(Presentation pres) : base(pres)
+        {
+        }
+
         /// <summary>
         /// Inistalizes a created <see cref="MediaData"/> instance by assigning it an owning <see cref="Presentation"/>
         /// and adding it to the <see cref="MediaDataManager"/> of the <see cref="Presentation"/>

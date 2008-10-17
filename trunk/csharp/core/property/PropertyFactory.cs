@@ -7,6 +7,9 @@ namespace urakawa.property
     /// </summary>
     public sealed class PropertyFactory : GenericWithPresentationFactory<Property>
     {
+        public PropertyFactory(Presentation pres) : base(pres)
+        {
+        }
 
         /// <summary>
         /// Creates a <see cref="ChannelsProperty"/>

@@ -3,14 +3,38 @@ using System.Collections.Generic;
 using System.Xml;
 using urakawa.media.data.audio;
 using urakawa.progress;
+using urakawa.xuk;
 
 namespace urakawa.media.data
 {
     /// <summary>
     /// Default implementation of a <see cref="MediaDataManager"/>
     /// </summary>
-    public sealed class MediaDataManager : WithPresentation, IValueEquatable<MediaDataManager>
+    public sealed class MediaDataManager : XukAble, IValueEquatable<MediaDataManager>
     {
+        
+        private Presentation mPresentation;
+
+        /// <summary>
+        /// Gets the <see cref="Presentation"/> associated with <c>this</c>
+        /// </summary>
+        /// <returns>The owning <see cref="Presentation"/></returns>
+        public Presentation Presentation
+        {
+            get
+            {
+                return mPresentation;
+            }
+        }
+
+        public MediaDataManager(Presentation pres)
+        {
+            mPresentation = pres;
+
+            mDefaultPCMFormat = new PCMFormatInfo();
+            mEnforceSinglePCMFormat = false;
+        }
+
         private const string DEFAULT_UID_PREFIX = "UID";
 
         private Dictionary<string, MediaData> mMediaDataDictionary = new Dictionary<string, MediaData>();
@@ -20,15 +44,6 @@ namespace urakawa.media.data
         private string mUidPrefix = DEFAULT_UID_PREFIX;
         private PCMFormatInfo mDefaultPCMFormat;
         private bool mEnforceSinglePCMFormat;
-
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public MediaDataManager()
-        {
-            mDefaultPCMFormat = new PCMFormatInfo();
-            mEnforceSinglePCMFormat = false;
-        }
 
         private bool IsNewDefaultPCMFormatOk(PCMFormatInfo newDefault)
         {

@@ -7,7 +7,9 @@ namespace urakawa.media
     /// </summary>
     public sealed class MediaFactory : GenericWithPresentationFactory<Media>
     {
-        #region IMediaFactory Members
+        public MediaFactory(Presentation pres) : base(pres)
+        {
+        }
 
         /// <summary>
         /// Creates a <see cref="data.audio.ManagedAudioMedia"/>
@@ -53,7 +55,5 @@ namespace urakawa.media
         {
             return Create<SequenceMedia>();
         }
-
-        #endregion
     }
 }
