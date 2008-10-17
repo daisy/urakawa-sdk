@@ -27,7 +27,11 @@ namespace urakawa.media.data
 		public override void setPresentation(Presentation newPres)
 		{
 			base.setPresentation(newPres);
-			newPres.rootUriChanged += new EventHandler<urakawa.events.presentation.RootUriChangedEventArgs>(Presentation_rootUriChanged);
+
+
+            //Removed because too "dangerous": a host application may have a different file management logic than the one implemented here.
+            //(i.e. copying more than just the managed media data)
+			//newPres.rootUriChanged += new EventHandler<urakawa.events.presentation.RootUriChangedEventArgs>(Presentation_rootUriChanged);
 		}
 
 		/// <summary>
