@@ -132,7 +132,9 @@ namespace urakawa.media
         /// <returns>The copy</returns>
         protected virtual Media CopyProtected()
         {
-            return ExportProtected(this.Presentation);
+            Media exp = Presentation.MediaFactory.Create(GetType());
+            exp.Language = Language;
+            return exp;
         }
 
         /// <summary>
