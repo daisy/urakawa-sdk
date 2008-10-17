@@ -11,8 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.IValueEquatable;
+import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.events.IEventListener;
+import org.daisy.urakawa.events.presentation.RootUriChangedEvent;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -25,6 +27,7 @@ import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.IProgressHandler;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.xuk.AbstractXukAble;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -33,20 +36,92 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @depend - Composition 0..n org.daisy.urakawa.media.data.IDataProvider
  */
-public final class DataProviderManager extends AbstractXukAbleWithPresentation
-        implements IValueEquatable<DataProviderManager>
+public final class DataProviderManager extends AbstractXukAble implements
+        IValueEquatable<DataProviderManager>
 {
+    private Presentation mPresentation;
+
+    /**
+     * @return the Presentation owner
+     */
+    public Presentation getPresentation()
+    {
+        return mPresentation;
+    }
+
     private Map<String, IDataProvider> mDataProvidersDictionary = new HashMap<String, IDataProvider>();
     private Map<IDataProvider, String> mReverseLookupDataProvidersDictionary = new HashMap<IDataProvider, String>();
     private List<String> mXukedInFilDataProviderPaths = new LinkedList<String>();
     private String mDataFileDirectory;
+    protected IEventListener<RootUriChangedEvent> mRootUriChangedEventListener = new IEventListener<RootUriChangedEvent>()
+    {
+        public <K extends RootUriChangedEvent> void eventCallback(K event)
+                throws MethodParameterIsNullException
+        {
+            if (event == null)
+            {
+                throw new MethodParameterIsNullException();
+            }
+            if (event.getPreviousUri() != null)
+            {
+                // TODO: copy media data
+                String prevDataDirFullPath;
+                try
+                {
+                    prevDataDirFullPath = DataProviderManager.this.getDataFileDirectoryFullPath(event.getPreviousUri());
+                }
+                catch (URISyntaxException e)
+                {
+                    // Should never happen
+                    throw new RuntimeException("WTF ??!", e);
+                }
+                if (new File(prevDataDirFullPath).exists())
+                {
+                    try
+                    {
+                        DataProviderManager.this.copyDataFiles(prevDataDirFullPath, getDataFileDirectoryFullPath());
+                    }
+                    catch (MethodParameterIsEmptyStringException e)
+                    {
+                        // Should never happen
+                        throw new RuntimeException("WTF ??!", e);
+                    }
+                    catch (IOException e)
+                    {
+                        // Should never happen
+                        throw new RuntimeException("WTF ??!", e);
+                    }
+                    catch (DataIsMissingException e)
+                    {
+                        // Should never happen
+                        throw new RuntimeException("WTF ??!", e);
+                    }
+                    catch (URISyntaxException e)
+                    {
+                        // Should never happen
+                        throw new RuntimeException("WTF ??!", e);
+                    }
+                }
+
+            }
+        }
+    };
 
     /**
-	 * 
-	 */
-    public DataProviderManager()
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public DataProviderManager(Presentation pres)
+            throws MethodParameterIsNullException
     {
+        if (pres == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        mPresentation = pres;
         mDataFileDirectory = null;
+        mPresentation.registerListener(mRootUriChangedEventListener,
+                RootUriChangedEvent.class);
     }
 
     /**
@@ -235,11 +310,6 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation
             oldPath = getDataFileDirectoryFullPath();
             newPath = getDataFileDirectoryFullPath();
         }
-        catch (IsNotInitializedException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
         catch (URISyntaxException e)
         {
             // Should never happen
@@ -288,7 +358,7 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation
     /**
      * @hidden
      */
-    private void copyDataFiles(String source, String dest)
+    protected void copyDataFiles(String source, String dest)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException, IOException,
             DataIsMissingException
@@ -328,7 +398,7 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation
     /**
      * @hidden
      */
-    private String getDataFileDirectoryFullPath(URI baseUri)
+    protected String getDataFileDirectoryFullPath(URI baseUri)
             throws URISyntaxException
     {
         if (baseUri.getScheme() != "file")
@@ -346,11 +416,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation
      * Gets the full path of the data file directory
      * 
      * @return path
-     * @throws IsNotInitializedException
      * @throws URISyntaxException
      */
-    public String getDataFileDirectoryFullPath()
-            throws IsNotInitializedException, URISyntaxException
+    public String getDataFileDirectoryFullPath() throws URISyntaxException
     {
         return getDataFileDirectoryFullPath(getPresentation().getRootURI());
     }
@@ -766,22 +834,14 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation
     public void removeUnusedDataProviders(boolean delete)
     {
         List<IDataProvider> usedDataProviders = new LinkedList<IDataProvider>();
-        try
+        for (IMediaData md : getPresentation().getMediaDataManager()
+                .getListOfMediaData())
         {
-            for (IMediaData md : getPresentation().getMediaDataManager()
-                    .getListOfMediaData())
+            for (IDataProvider prov : md.getListOfUsedDataProviders())
             {
-                for (IDataProvider prov : md.getListOfUsedDataProviders())
-                {
-                    if (!usedDataProviders.contains(prov))
-                        usedDataProviders.add(prov);
-                }
+                if (!usedDataProviders.contains(prov))
+                    usedDataProviders.add(prov);
             }
-        }
-        catch (IsNotInitializedException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
         }
         for (IDataProvider prov : getListOfDataProviders())
         {
@@ -967,15 +1027,11 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation
                     try
                     {
                         prov = getPresentation().getDataProviderFactory()
-                                .createFileDataProvider("", source.getLocalName(),
+                                .createFileDataProvider("",
+                                        source.getLocalName(),
                                         source.getNamespaceURI());
                     }
                     catch (MethodParameterIsEmptyStringException e)
-                    {
-                        // Should never happen
-                        throw new RuntimeException("WTF ??!", e);
-                    }
-                    catch (IsNotInitializedException e)
                     {
                         // Should never happen
                         throw new RuntimeException("WTF ??!", e);
@@ -1066,15 +1122,7 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation
             throw new ProgressCancelledException();
         }
         URI presBaseUri;
-        try
-        {
-            presBaseUri = getPresentation().getRootURI();
-        }
-        catch (IsNotInitializedException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
+        presBaseUri = getPresentation().getRootURI();
         URI dfdUri;
         try
         {

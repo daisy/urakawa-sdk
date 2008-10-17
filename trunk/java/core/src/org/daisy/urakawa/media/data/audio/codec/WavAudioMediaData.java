@@ -179,7 +179,8 @@ public class WavAudioMediaData extends AbstractAudioMediaData
         }
         try
         {
-            new DataProviderManager().appendDataToProvider(pcmData, pcmInfo
+            // TODO: This should be a static method !!
+            new DataProviderManager(getPresentation()).appendDataToProvider(pcmData, pcmInfo
                     .getDataLength(), newSingleDataProvider);
         }
         catch (OutputStreamIsOpenException e)
@@ -203,6 +204,11 @@ public class WavAudioMediaData extends AbstractAudioMediaData
             throw new RuntimeException("WTF ??!", e);
         }
         catch (InputStreamIsTooShortException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        catch (IsNotInitializedException e)
         {
             // Should never happen
             throw new RuntimeException("WTF ??!", e);

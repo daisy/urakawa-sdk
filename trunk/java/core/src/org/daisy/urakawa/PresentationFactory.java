@@ -13,6 +13,17 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 public class PresentationFactory extends GenericFactory<Presentation>
 {
     /**
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public PresentationFactory(Presentation pres)
+            throws MethodParameterIsNullException
+    {
+        super(null);
+        // TODO XXXXX
+    }
+
+    /**
      * @return
      */
     public Presentation createPresentation()

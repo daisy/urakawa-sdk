@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-import org.daisy.urakawa.AbstractXukAbleWithPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.command.CommandCannotUnExecuteException;
 import org.daisy.urakawa.command.ICommand;
@@ -21,7 +21,6 @@ import org.daisy.urakawa.events.undo.CommandUnDoneEvent;
 import org.daisy.urakawa.events.undo.TransactionCancelledEvent;
 import org.daisy.urakawa.events.undo.TransactionEndedEvent;
 import org.daisy.urakawa.events.undo.TransactionStartedEvent;
-import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.IMediaData;
@@ -29,6 +28,7 @@ import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.IProgressHandler;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.xuk.AbstractXukAble;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -57,18 +57,34 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @depend - Composition 0..n org.daisy.urakawa.undo.Command
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public final class UndoRedoManager extends AbstractXukAbleWithPresentation
-        implements IEventHandler<DataModelChangedEvent>
+public final class UndoRedoManager extends AbstractXukAble implements
+        IEventHandler<DataModelChangedEvent>
 {
+    private Presentation mPresentation;
+
+    /**
+     * @return the Presentation owner
+     */
+    public Presentation getPresentation()
+    {
+        return mPresentation;
+    }
+
     private Stack<ICommand> mUndoStack;
     private Stack<ICommand> mRedoStack;
     private Stack<ICompositeCommand> mActiveTransactions;
 
     /**
-	 * 
-	 */
-    public UndoRedoManager()
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public UndoRedoManager(Presentation pres)
+            throws MethodParameterIsNullException
     {
+        if (pres == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
         mUndoStack = new Stack<ICommand>();
         mRedoStack = new Stack<ICommand>();
         mActiveTransactions = new Stack<ICompositeCommand>();
@@ -418,16 +434,8 @@ public final class UndoRedoManager extends AbstractXukAbleWithPresentation
             throw new MethodParameterIsEmptyStringException();
         }
         ICompositeCommand newTrans;
-        try
-        {
-            newTrans = getPresentation().getCommandFactory()
-                    .createCompositeCommand();
-        }
-        catch (IsNotInitializedException e1)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e1);
-        }
+        newTrans = getPresentation().getCommandFactory()
+                .createCompositeCommand();
         try
         {
             newTrans.setShortDescription(shortDesc);
@@ -655,11 +663,6 @@ public final class UndoRedoManager extends AbstractXukAbleWithPresentation
                         throw new RuntimeException("WTF ??!", e1);
                     }
                     catch (MethodParameterIsEmptyStringException e1)
-                    {
-                        // Should never happen
-                        throw new RuntimeException("WTF ??!", e1);
-                    }
-                    catch (IsNotInitializedException e1)
                     {
                         // Should never happen
                         throw new RuntimeException("WTF ??!", e1);

@@ -293,7 +293,8 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
         }
         try
         {
-            new DataProviderManager().appendDataToProvider(thisData, thisData
+            // TODO: This should be a static method !! 
+            new DataProviderManager(getPresentation()).appendDataToProvider(thisData, thisData
                     .getLength()
                     - thisData.getPosition(), c);
         }
@@ -323,6 +324,11 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
             throw new RuntimeException("WTF ??!", e);
         }
         catch (InputStreamIsTooShortException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        catch (IsNotInitializedException e)
         {
             // Should never happen
             throw new RuntimeException("WTF ??!", e);
@@ -446,7 +452,8 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
             return false;
         try
         {
-            if (!new DataProviderManager().compareDataProviderContent(this, o))
+            // TODO: This should be a static method !!
+            if (!new DataProviderManager(getPresentation()).compareDataProviderContent(this, o))
                 return false;
         }
         catch (DataIsMissingException e)
@@ -460,6 +467,11 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
             throw new RuntimeException("WTF ??!", e);
         }
         catch (IOException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        catch (IsNotInitializedException e)
         {
             // Should never happen
             throw new RuntimeException("WTF ??!", e);
@@ -509,7 +521,8 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                new DataProviderManager().appendDataToProvider(thisStm, thisStm
+                // TODO: This should be a static method !!
+                new DataProviderManager(getPresentation()).appendDataToProvider(thisStm, thisStm
                         .getLength(), expFDP);
             }
             catch (OutputStreamIsOpenException e)
@@ -533,6 +546,11 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
                 throw new RuntimeException("WTF ??!", e);
             }
             catch (InputStreamIsTooShortException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+            catch (IsNotInitializedException e)
             {
                 // Should never happen
                 throw new RuntimeException("WTF ??!", e);

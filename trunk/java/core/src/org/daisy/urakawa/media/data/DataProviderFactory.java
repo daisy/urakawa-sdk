@@ -1,7 +1,7 @@
 package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.GenericFactory;
-import org.daisy.urakawa.exception.IsNotInitializedException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -15,6 +15,15 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public final class DataProviderFactory extends GenericFactory<FileDataProvider>
 {
+    /**
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public DataProviderFactory(Presentation pres)
+            throws MethodParameterIsNullException
+    {
+        super(pres);
+    }
     /**
      * @hidden
      */
@@ -36,11 +45,6 @@ public final class DataProviderFactory extends GenericFactory<FileDataProvider>
             throw new RuntimeException("WTF ??!", e);
         }
         catch (MethodParameterIsEmptyStringException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-        catch (IsNotInitializedException e)
         {
             // Should never happen
             throw new RuntimeException("WTF ??!", e);

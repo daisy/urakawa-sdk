@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.IValueEquatable;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
@@ -21,6 +21,7 @@ import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.IProgressHandler;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.xuk.AbstractXukAble;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -30,9 +31,19 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @depend - Clone - org.daisy.urakawa.media.data.MediaData
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public final class MediaDataManager extends AbstractXukAbleWithPresentation
-        implements IValueEquatable<MediaDataManager>
+public final class MediaDataManager extends AbstractXukAble implements
+        IValueEquatable<MediaDataManager>
 {
+    private Presentation mPresentation;
+
+    /**
+     * @return the Presentation owner
+     */
+    public Presentation getPresentation()
+    {
+        return mPresentation;
+    }
+
     private static final String DEFAULT_UID_PREFIX = "UID";
     private Map<String, IMediaData> mMediaDataDictionary = new HashMap<String, IMediaData>();
     private Map<IMediaData, String> mReverseLookupMediaDataDictionary = new HashMap<IMediaData, String>();
@@ -42,10 +53,17 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation
     private boolean mEnforceSinglePCMFormat;
 
     /**
-	 * 
-	 */
-    public MediaDataManager()
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public MediaDataManager(Presentation pres)
+            throws MethodParameterIsNullException
     {
+        if (pres == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        mPresentation = pres;
         mDefaultPCMFormat = new PCMFormatInfo();
         mEnforceSinglePCMFormat = false;
     }
@@ -809,11 +827,6 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation
                                         source.getNamespaceURI());
                     }
                     catch (MethodParameterIsEmptyStringException e)
-                    {
-                        // Should never happen
-                        throw new RuntimeException("WTF ??!", e);
-                    }
-                    catch (IsNotInitializedException e)
                     {
                         // Should never happen
                         throw new RuntimeException("WTF ??!", e);

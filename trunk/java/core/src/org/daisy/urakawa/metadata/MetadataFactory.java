@@ -1,6 +1,7 @@
 package org.daisy.urakawa.metadata;
 
 import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -13,6 +14,15 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public final class MetadataFactory extends GenericFactory<Metadata>
 {
+    /**
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public MetadataFactory(Presentation pres)
+            throws MethodParameterIsNullException
+    {
+        super(pres);
+    }
     /**
      * @return
      */

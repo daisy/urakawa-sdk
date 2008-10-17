@@ -592,7 +592,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setTreeNodeFactory(new TreeNodeFactory());
+                setTreeNodeFactory(new TreeNodeFactory(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -624,7 +624,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mTreeNodeFactory = factory;
-        mTreeNodeFactory.setPresentation(this);
     }
 
     /**
@@ -636,7 +635,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setPropertyFactory(new PropertyFactory());
+                setPropertyFactory(new PropertyFactory(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -668,7 +667,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mPropertyFactory = factory;
-        mPropertyFactory.setPresentation(this);
     }
 
     /**
@@ -680,7 +678,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setUndoRedoManager(new UndoRedoManager());
+                setUndoRedoManager(new UndoRedoManager(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -712,7 +710,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mUndoRedoManager = man;
-        mUndoRedoManager.setPresentation(this);
         man.registerListener(mBubbleEventListener, DataModelChangedEvent.class);
     }
 
@@ -725,7 +722,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setCommandFactory(new CommandFactory());
+                setCommandFactory(new CommandFactory(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -757,7 +754,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mCommandFactory = factory;
-        mCommandFactory.setPresentation(this);
     }
 
     /**
@@ -769,7 +765,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setMediaFactory(new MediaFactory());
+                setMediaFactory(new MediaFactory(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -801,7 +797,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mMediaFactory = factory;
-        mMediaFactory.setPresentation(this);
     }
 
     /**
@@ -935,7 +930,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setChannelFactory(new ChannelFactory());
+                setChannelFactory(new ChannelFactory(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -967,7 +962,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mChannelFactory = factory;
-        mChannelFactory.setPresentation(this);
     }
 
     /**
@@ -979,7 +973,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setChannelsManager(new ChannelsManager());
+                setChannelsManager(new ChannelsManager(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -1011,7 +1005,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mChannelsManager = man;
-        mChannelsManager.setPresentation(this);
     }
 
     /**
@@ -1023,7 +1016,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setMediaDataManager(new MediaDataManager());
+                setMediaDataManager(new MediaDataManager(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -1055,7 +1048,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mMediaDataManager = man;
-        mMediaDataManager.setPresentation(this);
     }
 
     /**
@@ -1067,7 +1059,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setMediaDataFactory(new MediaDataFactory());
+                setMediaDataFactory(new MediaDataFactory(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -1099,7 +1091,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mMediaDataFactory = factory;
-        mMediaDataFactory.setPresentation(this);
     }
 
     /**
@@ -1111,7 +1102,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setDataProviderManager(new DataProviderManager());
+                setDataProviderManager(new DataProviderManager(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -1143,7 +1134,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mDataProviderManager = man;
-        mDataProviderManager.setPresentation(this);
     }
 
     /**
@@ -1155,7 +1145,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setDataProviderFactory(new DataProviderFactory());
+                setDataProviderFactory(new DataProviderFactory(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -1187,7 +1177,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mDataProviderFactory = factory;
-        mDataProviderFactory.setPresentation(this);
     }
 
     /**
@@ -1199,7 +1188,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setMetadataFactory(new MetadataFactory());
+                setMetadataFactory(new MetadataFactory(this));
             }
             catch (MethodParameterIsNullException e)
             {
@@ -1231,7 +1220,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
             throw new IsAlreadyInitializedException();
         }
         mMetadataFactory = factory;
-        mMetadataFactory.setPresentation(this);
     }
 
     /**

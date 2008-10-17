@@ -1,6 +1,7 @@
 package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
 
@@ -14,6 +15,15 @@ import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
  */
 public final class MediaDataFactory extends GenericFactory<WavAudioMediaData>
 {
+    /**
+     * @param pres
+     * @throws MethodParameterIsNullException
+     */
+    public MediaDataFactory(Presentation pres)
+            throws MethodParameterIsNullException
+    {
+        super(pres);
+    }
     /**
      * @return
      */
