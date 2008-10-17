@@ -11,6 +11,10 @@ namespace urakawa.core
     /// </remarks>
     public sealed class TreeNodeFactory : GenericWithPresentationFactory<TreeNode>
     {
+        public TreeNodeFactory(Presentation pres) : base(pres)
+        {
+        }
+
         /// <summary>
         /// Creates a new <see cref="TreeNode"/>
         /// </summary>

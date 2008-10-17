@@ -17,6 +17,9 @@ namespace urakawa.property.channel
     /// </summary>
     public sealed class ChannelFactory : GenericWithPresentationFactory<Channel>
     {
+        public ChannelFactory(Presentation pres) : base(pres)
+        {
+        }
 
         /// <summary>
         /// Gets the <see cref="ChannelsManager"/> assigned the <see cref="Channel"/>s created

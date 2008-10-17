@@ -3,14 +3,40 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using urakawa.progress;
+using urakawa.xuk;
 
 namespace urakawa.media.data
 {
     /// <summary>
     /// Manager for <see cref="DataProvider"/>s
     /// </summary>
-    public sealed class DataProviderManager : WithPresentation
+    public sealed class DataProviderManager : XukAble
     {
+        
+        private Presentation mPresentation;
+
+        /// <summary>
+        /// Gets the <see cref="Presentation"/> associated with <c>this</c>
+        /// </summary>
+        /// <returns>The owning <see cref="Presentation"/></returns>
+        public Presentation Presentation
+        {
+            get
+            {
+                return mPresentation;
+            }
+        }
+
+        public DataProviderManager(Presentation pres)
+        {
+            mPresentation = pres;
+
+            Presentation.RootUriChanged +=
+                Presentation_rootUriChanged;
+
+            mDataFileDirectory = null;
+        }
+
         private Dictionary<string, DataProvider> mDataProvidersDictionary = new Dictionary<string, DataProvider>();
 
         private Dictionary<DataProvider, string> mReverseLookupDataProvidersDictionary =
@@ -19,28 +45,6 @@ namespace urakawa.media.data
         private List<string> mXukedInFilDataProviderPaths = new List<string>();
         private string mDataFileDirectory;
 
-
-        /// <summary>
-        /// Initializes the manager with a <see cref="Presentation"/>, 
-        /// also wires up the <see cref="urakawa.Presentation.RootUriChanged"/> event
-        /// </summary>
-        public override Presentation Presentation
-        {
-            set
-            {
-                base.Presentation = value;
-                value.RootUriChanged +=
-                    Presentation_rootUriChanged;
-            }
-        }
-
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public DataProviderManager()
-        {
-            mDataFileDirectory = null;
-        }
 
         /// <summary>
         /// Appends data from a given input <see cref="Stream"/> to a given <see cref="DataProvider"/>

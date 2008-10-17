@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.progress;
+using urakawa.xuk;
 
 namespace urakawa.property.channel
 {
@@ -10,20 +11,36 @@ namespace urakawa.property.channel
     /// Can only manage channels that inherit <see cref="Channel"/>
     /// TODO: Check XUKIn/XukOut implementation
     /// </summary>
-    public sealed class ChannelsManager : WithPresentation, IValueEquatable<ChannelsManager>
+    public sealed class ChannelsManager : XukAble, IValueEquatable<ChannelsManager>
     {
+        
+        private Presentation mPresentation;
+
+        /// <summary>
+        /// Gets the <see cref="Presentation"/> associated with <c>this</c>
+        /// </summary>
+        /// <returns>The owning <see cref="Presentation"/></returns>
+        public Presentation Presentation
+        {
+            get
+            {
+                return mPresentation;
+            }
+        }
+
+        public ChannelsManager(Presentation pres)
+        {
+            mPresentation = pres;
+            
+            mChannels = new Dictionary<string, Channel>();
+        }
+
+
         /// <summary>
         /// A dictionary of the <see cref="Channel"/>s managed by the manager, sorted by their uid
         /// </summary>
         private IDictionary<string, Channel> mChannels;
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public ChannelsManager()
-        {
-            mChannels = new Dictionary<string, Channel>();
-        }
 
         #region ChannelsManager Members
 

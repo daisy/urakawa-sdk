@@ -372,8 +372,7 @@ namespace urakawa
             {
                 if (mTreeNodeFactory == null)
                 {
-                    mTreeNodeFactory = new TreeNodeFactory();
-                    mTreeNodeFactory.Presentation = this;
+                    mTreeNodeFactory = new TreeNodeFactory(this);
                 }
                 return mTreeNodeFactory;
             }
@@ -392,8 +391,7 @@ namespace urakawa
             {
                 if (mPropertyFactory == null)
                 {
-                    mPropertyFactory = new PropertyFactory();
-                    mPropertyFactory.Presentation = this;
+                    mPropertyFactory = new PropertyFactory(this);
                 }
                 return mPropertyFactory;
             }
@@ -411,8 +409,7 @@ namespace urakawa
             {
                 if (mUndoRedoManager == null)
                 {
-                    mUndoRedoManager = new UndoRedoManager();
-                    mUndoRedoManager.Presentation = this;
+                    mUndoRedoManager = new UndoRedoManager(this);
                     mUndoRedoManager.Changed += new EventHandler<DataModelChangedEventArgs>(UndoRedoManager_Changed);
                 }
                 return mUndoRedoManager;
@@ -432,8 +429,7 @@ namespace urakawa
             {
                 if (mCommandFactory == null)
                 {
-                    mCommandFactory = new CommandFactory();
-                    mCommandFactory.Presentation = this;
+                    mCommandFactory = new CommandFactory(this);
                 }
                 return mCommandFactory;
             }
@@ -452,8 +448,7 @@ namespace urakawa
             {
                 if (mMediaFactory == null)
                 {
-                    mMediaFactory = new MediaFactory();
-                    mMediaFactory.Presentation = this;
+                    mMediaFactory = new MediaFactory(this);
                 }
                 return mMediaFactory;
             }
@@ -564,8 +559,7 @@ namespace urakawa
             {
                 if (mChannelFactory == null)
                 {
-                    mChannelFactory = new ChannelFactory();
-                    mChannelFactory.Presentation = this;
+                    mChannelFactory = new ChannelFactory(this);
                 }
                 return mChannelFactory;
             }
@@ -583,8 +577,7 @@ namespace urakawa
             {
                 if (mChannelsManager == null)
                 {
-                    mChannelsManager = new ChannelsManager();
-                    mChannelsManager.Presentation = this;
+                    mChannelsManager = new ChannelsManager(this);
                 }
                 return mChannelsManager;
             }
@@ -599,9 +592,7 @@ namespace urakawa
             {
                 if (mMediaDataManager == null)
                 {
-                    mMediaDataManager = new MediaDataManager();
-                    mMediaDataManager.Presentation = this;
-                    
+                    mMediaDataManager = new MediaDataManager(this);
                 }
                 return mMediaDataManager;
             }
@@ -620,8 +611,7 @@ namespace urakawa
             {
                 if (mMediaDataFactory == null)
                 {
-                    mMediaDataFactory = new MediaDataFactory();
-                    mMediaDataFactory.Presentation = this;
+                    mMediaDataFactory = new MediaDataFactory(this);
                 }
                 return mMediaDataFactory;
             }
@@ -636,8 +626,7 @@ namespace urakawa
             {
                 if (mDataProviderManager == null)
                 {
-                    mDataProviderManager = new DataProviderManager();
-                    mDataProviderManager.Presentation = this;
+                    mDataProviderManager = new DataProviderManager(this);
                 }
                 return mDataProviderManager;
             }
@@ -656,8 +645,7 @@ namespace urakawa
             {
                 if (mDataProviderFactory == null)
                 {
-                    mDataProviderFactory = new DataProviderFactory();
-                    mDataProviderFactory.Presentation = this;
+                    mDataProviderFactory = new DataProviderFactory(this);
                 }
                 return mDataProviderFactory;
             }
@@ -675,8 +663,7 @@ namespace urakawa
             {
                 if (mMetadataFactory == null)
                 {
-                    mMetadataFactory = new MetadataFactory();
-                    mMetadataFactory.Presentation = this;
+                    mMetadataFactory = new MetadataFactory(this);
                 }
                 return mMetadataFactory;
             }

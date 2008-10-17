@@ -6,14 +6,43 @@ using urakawa.progress;
 using urakawa.media.data;
 using urakawa.events;
 using urakawa.events.undo;
+using urakawa.xuk;
 
 namespace urakawa.undo
 {
     /// <summary>
     /// The command manager.
     /// </summary>
-    public sealed class UndoRedoManager : WithPresentation, IChangeNotifier
+    public sealed class UndoRedoManager : XukAble, IChangeNotifier
     {
+        private Presentation mPresentation;
+
+        /// <summary>
+        /// Gets the <see cref="Presentation"/> associated with <c>this</c>
+        /// </summary>
+        /// <returns>The owning <see cref="Presentation"/></returns>
+        public Presentation Presentation
+        {
+            get
+            {
+                return mPresentation;
+            }
+        }
+
+        public UndoRedoManager(Presentation pres)
+        {
+            mPresentation = pres;
+
+            mUndoStack = new Stack<Command>();
+            mRedoStack = new Stack<Command>();
+            mActiveTransactions = new Stack<CompositeCommand>();
+            TransactionStarted += this_transactionStarted;
+            TransactionEnded += this_transactionEnded;
+            TransactionCancelled += this_transactionCancelled;
+            CommandDone += this_commandDone;
+            CommandUnDone += this_commandUnDone;
+            CommandReDone += this_commandReDone;
+        }
         #region Event related members
 
         /// <summary>
@@ -214,22 +243,6 @@ namespace urakawa.undo
                 }
                 return res;
             }
-        }
-
-        /// <summary>
-        /// Create an empty command manager.
-        /// </summary>
-        public UndoRedoManager()
-        {
-            mUndoStack = new Stack<Command>();
-            mRedoStack = new Stack<Command>();
-            mActiveTransactions = new Stack<CompositeCommand>();
-            TransactionStarted += this_transactionStarted;
-            TransactionEnded += this_transactionEnded;
-            TransactionCancelled += this_transactionCancelled;
-            CommandDone += this_commandDone;
-            CommandUnDone += this_commandUnDone;
-            CommandReDone += this_commandReDone;
         }
 
         /// <summary>
