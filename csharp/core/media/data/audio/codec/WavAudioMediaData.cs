@@ -334,6 +334,7 @@ namespace urakawa.media.data.audio.codec
 					"The MediaDataFactory can not create a WavAudioMediaData");
 			}
 			WavAudioMediaData copy = (WavAudioMediaData)oCopy;
+            copy.setPCMFormat(getPCMFormat());
 			foreach (WavClip clip in mWavClips)
 			{
 				copy.mWavClips.Add(clip.copy());

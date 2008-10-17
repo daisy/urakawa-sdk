@@ -14,7 +14,32 @@ namespace urakawa.media.data.audio
 	[TestFixture, Description("Tests the ManagedAudioMedia functionality")]
 	public class ManagedAudioMediaTests : IMediaTests
 	{
-		public ManagedAudioMediaTests()
+        private string getPath(String fileName)
+        {
+            return Path.Combine(mPresentation.getRootUri().LocalPath, fileName);
+        }
+
+        private Stream getRawStream(String fileName)
+        {
+            Stream s = new FileStream(getPath(fileName), FileMode.Open, FileAccess.Read, FileShare.Read);
+            s.Seek(44, SeekOrigin.Begin);
+            return s;
+        }
+
+        private PCMDataInfo getInfo(string name)
+        {
+            FileStream fs = new FileStream(getPath(name), FileMode.Open, FileAccess.Read, FileShare.Read);
+            try
+            {
+                return PCMDataInfo.parseRiffWaveHeader(fs);
+            }
+            finally
+            {
+                fs.Close();
+            }
+        }
+        
+        public ManagedAudioMediaTests()
 			: base(typeof(ManagedAudioMedia).Name, ToolkitSettings.XUK_NS)
 		{
 		}
@@ -24,16 +49,30 @@ namespace urakawa.media.data.audio
 		protected ManagedAudioMedia mManagedAudioMedia2 { get { return mMedia2 as ManagedAudioMedia; } }
 		protected ManagedAudioMedia mManagedAudioMedia3 { get { return mMedia3 as ManagedAudioMedia; } }
 
+        [TestFixtureSetUp]
+        public void setUpFixture()
+        {
+            Uri projectDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "MediaTestsSample/");
+            if (Directory.Exists(Path.Combine(projectDir.LocalPath, "Data")))
+            {
+                Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
+            }
+            mProject = new Project();
+            mProject.addNewPresentation().setRootUri(projectDir);
+        }
+
+        [TestFixtureTearDown]
+        public void tearDownFixture()
+        {
+            Uri projectDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "MediaTestsSample/");
+            if (Directory.Exists(Path.Combine(projectDir.LocalPath, "Data")))
+            {
+                Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
+            }
+        }
+
 		public override void setUp()
 		{
-			Uri projectDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "MediaTestsSample/");
-			if (Directory.Exists(Path.Combine(projectDir.LocalPath, "Data")))
-			{
-				Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
-			}
-			mProject = new Project();
-			mProject.addNewPresentation();
-			mPresentation.setRootUri(projectDir);
 			setUpMedia();
 		}
 
@@ -73,7 +112,7 @@ namespace urakawa.media.data.audio
 		{
 			base.language_Basics();
 		}
-		[Test]
+		[Test]  
 		[ExpectedException(typeof(exception.MethodParameterIsEmptyStringException))]
 		public override void setLanguage_EmptyString()
 		{
@@ -82,6 +121,17 @@ namespace urakawa.media.data.audio
 		[Test]
 		public override void copy_valueEqualsAndReferenceDiffers()
 		{
+		    PCMDataInfo info = getInfo("audiotest1-mono-22050Hz-16bits.wav");
+            mManagedAudioMedia1.getMediaData().setPCMFormat(info);
+		    Stream fs = getRawStream("audiotest1-mono-22050Hz-16bits.wav");
+		    try
+		    {
+                mManagedAudioMedia1.getMediaData().appendAudioData(fs, info.getDuration());
+		    }
+		    finally
+		    {
+		        fs.Close();
+		    }
 			base.copy_valueEqualsAndReferenceDiffers();
 		}
 		[Test]
