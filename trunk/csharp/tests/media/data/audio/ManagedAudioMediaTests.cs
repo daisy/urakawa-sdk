@@ -19,6 +19,53 @@ namespace urakawa.media.data.audio
         {
         }
 
+        [TestFixtureSetUp]
+        public void SetUpFixture()
+        {
+            Uri projectDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "MediaTestsSample/");
+            if (Directory.Exists(Path.Combine(projectDir.LocalPath, "Data")))
+            {
+                Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
+            }
+            mProject = new Project();
+            mProject.AddNewPresentation().RootUri = projectDir;
+        }
+
+        [TestFixtureTearDown]
+        public void TearDownFixture()
+        {
+            Uri projectDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "MediaTestsSample/");
+            if (Directory.Exists(Path.Combine(projectDir.LocalPath, "Data")))
+            {
+                Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
+            }
+        }
+
+        private string GetPath(String fileName)
+        {
+            return Path.Combine(mPresentation.RootUri.LocalPath, fileName);
+        }
+
+        private Stream GetRawStream(String fileName)
+        {
+            Stream s = new FileStream(GetPath(fileName), FileMode.Open, FileAccess.Read, FileShare.Read);
+            s.Seek(44, SeekOrigin.Begin);
+            return s;
+        }
+
+        private PCMDataInfo GetInfo(string name)
+        {
+            FileStream fs = new FileStream(GetPath(name), FileMode.Open, FileAccess.Read, FileShare.Read);
+            try
+            {
+                return PCMDataInfo.ParseRiffWaveHeader(fs);
+            }
+            finally
+            {
+                fs.Close();
+            }
+        }
+
 
         protected ManagedAudioMedia mManagedAudioMedia1
         {
@@ -37,14 +84,6 @@ namespace urakawa.media.data.audio
 
         public override void SetUp()
         {
-            Uri projectDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "MediaTestsSample/");
-            if (Directory.Exists(Path.Combine(projectDir.LocalPath, "Data")))
-            {
-                Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
-            }
-            mProject = new Project();
-            mProject.AddNewPresentation();
-            mPresentation.RootUri = projectDir;
             SetUpMedia();
         }
 
@@ -98,15 +137,32 @@ namespace urakawa.media.data.audio
             base.Language_EmptyString();
         }
 
+        private void AppendAudioData(string filename, ManagedAudioMedia amd)
+        {
+            PCMDataInfo info = GetInfo("audiotest1-mono-22050Hz-16bits.wav");
+            mManagedAudioMedia1.AudioMediaData.PCMFormat = info;
+            Stream fs = GetRawStream("audiotest1-mono-22050Hz-16bits.wav");
+            try
+            {
+                amd.AudioMediaData.AppendAudioData(fs, info.Duration);
+            }
+            finally
+            {
+                fs.Close();
+            }
+        }
+
         [Test]
         public override void Copy_ValueEqualsAndReferenceDiffers()
         {
+            AppendAudioData("audiotest1-mono-22050Hz-16bits.wav", mManagedAudioMedia1);
             base.Copy_ValueEqualsAndReferenceDiffers();
         }
 
         [Test]
         public override void Export_ValueEqualsPresentationsOk()
         {
+            AppendAudioData("audiotest1-mono-22050Hz-16bits.wav", mManagedAudioMedia1);
             base.Export_ValueEqualsPresentationsOk();
         }
 
