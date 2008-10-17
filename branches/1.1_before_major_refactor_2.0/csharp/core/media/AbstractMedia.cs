@@ -109,8 +109,16 @@ namespace urakawa.media
 		/// </summary>
 		/// <returns>The copy</returns>
 		protected virtual IMedia copyProtected()
-		{
-			return exportProtected(getPresentation());
+        {
+            IMedia expMedia = getPresentation().getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
+            if (expMedia == null)
+            {
+                throw new exception.FactoryCannotCreateTypeException(String.Format(
+                    "The factory of the destination Presentation cannot create a AbstractMedia matching Xuk QName {1}:{0}",
+                    getXukLocalName(), getXukNamespaceUri()));
+            }
+            expMedia.setLanguage(getLanguage());
+            return expMedia;
 		}
 
 		IMedia IMedia.export(Presentation destPres)
