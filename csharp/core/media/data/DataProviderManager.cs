@@ -31,8 +31,9 @@ namespace urakawa.media.data
         {
             mPresentation = pres;
 
-            Presentation.RootUriChanged +=
-                Presentation_rootUriChanged;
+            //Removed because too "dangerous": a host application may have a different file management logic than the one implemented here.
+            //(i.e. copying more than just the managed media data)
+            //Presentation.RootUriChanged += Presentation_rootUriChanged;
 
             mDataFileDirectory = null;
         }
