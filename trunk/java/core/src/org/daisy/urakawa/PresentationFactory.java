@@ -10,19 +10,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @depend - Create - org.daisy.urakawa.Presentation
  * @note Note that this factory does not know about its owner project
  */
-public class PresentationFactory extends GenericFactory<Presentation>
+public class PresentationFactory extends GenericXukAbleFactory<Presentation>
 {
-    /**
-     * @param pres
-     * @throws MethodParameterIsNullException
-     */
-    public PresentationFactory(Presentation pres)
-            throws MethodParameterIsNullException
-    {
-        super(null);
-        // TODO XXXXX
-    }
-
     /**
      * @return
      */

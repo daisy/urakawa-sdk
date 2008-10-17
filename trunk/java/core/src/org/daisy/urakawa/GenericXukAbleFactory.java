@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
@@ -27,32 +26,13 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @param <T>
  *        When extending this generic factory, the type of the generated object
  *        instances is specified using the T type parameter.
- * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation>
-        extends AbstractXukAble
+public abstract class GenericXukAbleFactory<T extends AbstractXukAble> extends
+        AbstractXukAble
 {
-    private Presentation mPresentation;
-
-    /**
-     * @return the Presentation owner
-     */
-    public Presentation getPresentation()
+    protected void initializeInstance(@SuppressWarnings("unused") T instance)
     {
-        return mPresentation;
-    }
-
-    /**
-     * @param pres
-     * @throws MethodParameterIsNullException
-     */
-    public GenericFactory(Presentation pres)
-            throws MethodParameterIsNullException
-    {
-        if (pres == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
+        // Nothing to do here.
     }
 
     private class TypeAndQNames
@@ -246,30 +226,6 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation>
         if (qname == null)
             return null;
         return lookupType(qname.toString());
-    }
-
-    /**
-     * Initializes a created instance by assigning it an Presentation owner. In
-     * derived classes of this factory, this method can be overridden in order
-     * to perform additional initialization, in which case
-     * super.InitializeInstance(instance) must be called.
-     */
-    protected void initializeInstance(T instance)
-    {
-        try
-        {
-            instance.setPresentation(getPresentation());
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-        catch (IsAlreadyInitializedException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
     }
 
     /**

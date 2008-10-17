@@ -55,6 +55,7 @@ import org.daisy.urakawa.property.channel.ChannelsManager;
 import org.daisy.urakawa.property.channel.IChannel;
 import org.daisy.urakawa.property.channel.IChannelsProperty;
 import org.daisy.urakawa.undo.UndoRedoManager;
+import org.daisy.urakawa.xuk.AbstractXukAble;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -76,7 +77,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @composed 1 - 1 org.daisy.urakawa.media.data.DataProviderManager
  * @composed 1 - 1 org.daisy.urakawa.undo.UndoRedoManager
  */
-public class Presentation extends AbstractXukAbleWithPresentation implements
+public class Presentation extends AbstractXukAble implements
         IWithRootURI, IWithTreeNode, IWithProject, IMediaPresentation,
         IWithManagersAndFactories, IWithMetadata, IWithLanguage,
         IEventHandler<DataModelChangedEvent>, IValueEquatable<Presentation>
