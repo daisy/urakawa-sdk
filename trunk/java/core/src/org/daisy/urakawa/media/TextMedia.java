@@ -77,10 +77,11 @@ public class TextMedia extends AbstractMedia implements ITextMedia
 	 */
     public TextMedia()
     {
+        super();
         mText = "";
     }
 
-    private String mText;
+    protected String mText;
 
     @Override
     public String toString()

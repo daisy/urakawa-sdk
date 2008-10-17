@@ -2,10 +2,11 @@ package org.daisy.urakawa.media.data.audio;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.media.IAudioMedia;
-import org.daisy.urakawa.media.data.InvalidDataFormatException;
+import org.daisy.urakawa.media.IContinuous;
+import org.daisy.urakawa.media.IMedia;
 import org.daisy.urakawa.media.data.IManagedMedia;
 import org.daisy.urakawa.media.data.IMediaData;
+import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.timing.ITime;
 
 /**
@@ -18,7 +19,7 @@ import org.daisy.urakawa.media.timing.ITime;
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.audio.IAudioMediaData
  * @depend - Clone - org.daisy.urakawa.media.data.audio.IManagedAudioMedia
  */
-public interface IManagedAudioMedia extends IAudioMedia, IManagedMedia
+public interface IManagedAudioMedia extends IMedia, IContinuous, IManagedMedia
 {
     /**
      * Extracts the audio data from the given audio media, and adds it to this

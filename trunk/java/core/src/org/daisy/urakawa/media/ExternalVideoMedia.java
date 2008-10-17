@@ -1,6 +1,7 @@
 package org.daisy.urakawa.media;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
@@ -11,6 +12,7 @@ import org.daisy.urakawa.events.IEventHandler;
 import org.daisy.urakawa.events.IEventListener;
 import org.daisy.urakawa.events.media.ClipChangedEvent;
 import org.daisy.urakawa.events.media.SizeChangedEvent;
+import org.daisy.urakawa.events.media.SrcChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -30,11 +32,55 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 /**
  *
  */
-public class ExternalVideoMedia extends AbstractExternalMedia implements
-        IVideoMedia
+public class ExternalVideoMedia extends AbstractVideoMedia implements IClipped,
+        ILocated
 {
-    int mWidth = 0;
-    int mHeight = 0;
+    // BEGIN ILocated common code (no multiple-inheritance, unfortunately)
+    private String mSrc;
+
+    @Override
+    protected void clear()
+    {
+        mSrc = ".";
+        super.clear();
+    }
+
+    protected IEventHandler<Event> mSrcChangedEventNotifier = new EventHandler();
+
+    public String getSrc()
+    {
+        return mSrc;
+    }
+
+    public void setSrc(String newSrc) throws MethodParameterIsNullException,
+            MethodParameterIsEmptyStringException
+    {
+        if (newSrc == null)
+            throw new MethodParameterIsNullException();
+        if (newSrc.length() == 0)
+            throw new MethodParameterIsEmptyStringException();
+        String prevSrc = mSrc;
+        mSrc = newSrc;
+        if (mSrc != prevSrc)
+            notifyListeners(new SrcChangedEvent(this, mSrc, prevSrc));
+    }
+
+    public URI getURI() throws URISyntaxException
+    {
+        URI uri = null;
+        try
+        {
+            uri = new URI(getSrc()).resolve(getPresentation().getRootURI());
+        }
+        catch (IsNotInitializedException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        return uri;
+    }
+
+    // END ILocated common code (no multiple-inheritance, unfortunately)
     ITime mClipBegin;
     ITime mClipEnd;
 
@@ -51,6 +97,11 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
             {
                 mSizeChangedEventNotifier.notifyListeners(event);
             }
+            else
+                if (SrcChangedEvent.class.isAssignableFrom(event.getClass()))
+                {
+                    mSrcChangedEventNotifier.notifyListeners(event);
+                }
         super.notifyListeners(event);
     }
 
@@ -69,9 +120,14 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
                 mSizeChangedEventNotifier.registerListener(listener, klass);
             }
             else
-            {
-                super.registerListener(listener, klass);
-            }
+                if (SrcChangedEvent.class.isAssignableFrom(klass))
+                {
+                    mSrcChangedEventNotifier.registerListener(listener, klass);
+                }
+                else
+                {
+                    super.registerListener(listener, klass);
+                }
     }
 
     @Override
@@ -84,17 +140,22 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
             mClipChangedEventNotifier.unregisterListener(listener, klass);
         }
         else
-            if (SizeChangedEvent.class.isAssignableFrom(klass))
+            if (SrcChangedEvent.class.isAssignableFrom(klass))
             {
-                mSizeChangedEventNotifier.unregisterListener(listener, klass);
+                mSrcChangedEventNotifier.unregisterListener(listener, klass);
             }
             else
-            {
-                super.unregisterListener(listener, klass);
-            }
+                if (SizeChangedEvent.class.isAssignableFrom(klass))
+                {
+                    mSizeChangedEventNotifier.unregisterListener(listener,
+                            klass);
+                }
+                else
+                {
+                    super.unregisterListener(listener, klass);
+                }
     }
 
-    protected IEventHandler<Event> mSizeChangedEventNotifier = new EventHandler();
     protected IEventHandler<Event> mClipChangedEventNotifier = new EventHandler();
 
     private void resetClipTimes()
@@ -108,57 +169,96 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
 	 */
     public ExternalVideoMedia()
     {
-        mWidth = 0;
-        mHeight = 0;
+        super();
+        mSrc = ".";
         resetClipTimes();
-    }
-
-    @Override
-    public boolean isContinuous()
-    {
-        return true;
-    }
-
-    @Override
-    public boolean isDiscrete()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isSequence()
-    {
-        return false;
     }
 
     @Override
     protected IMedia copyProtected()
     {
+        ExternalVideoMedia copy = (ExternalVideoMedia) super.copyProtected();
         try
         {
-            return export(getPresentation());
+            URI.create(getSrc()).resolve(getPresentation().getRootURI());
+            String destSrc = getPresentation().getRootURI()
+                    .relativize(getURI()).toString();
+            if (destSrc.length() == 0)
+                destSrc = ".";
+            try
+            {
+                copy.setSrc(destSrc);
+            }
+            catch (MethodParameterIsEmptyStringException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+            catch (MethodParameterIsNullException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
         }
-        catch (MethodParameterIsNullException e)
+        catch (URISyntaxException e)
         {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-        catch (FactoryCannotCreateTypeException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
+            try
+            {
+                copy.setSrc(getSrc());
+            }
+            catch (MethodParameterIsEmptyStringException e1)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e1);
+            }
+            catch (MethodParameterIsNullException e2)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e2);
+            }
         }
         catch (IsNotInitializedException e)
         {
             // Should never happen
             throw new RuntimeException("WTF ??!", e);
         }
-    }
-
-    @Override
-    public ExternalVideoMedia copy()
-    {
-        return (ExternalVideoMedia) copyProtected();
+        if (getClipBegin().isNegativeTimeOffset())
+        {
+            try
+            {
+                copy.setClipBegin(getClipBegin().copy());
+                copy.setClipEnd(getClipEnd().copy());
+            }
+            catch (TimeOffsetIsOutOfBoundsException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+            catch (MethodParameterIsNullException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+        }
+        else
+        {
+            try
+            {
+                copy.setClipEnd(getClipEnd().copy());
+                copy.setClipBegin(getClipBegin().copy());
+            }
+            catch (TimeOffsetIsOutOfBoundsException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+            catch (MethodParameterIsNullException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+        }
+        return copy;
     }
 
     @Override
@@ -175,6 +275,40 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
         if (exported == null)
         {
             throw new FactoryCannotCreateTypeException();
+        }
+        try
+        {
+            URI.create(getSrc()).resolve(getPresentation().getRootURI());
+            String destSrc = destPres.getRootURI().relativize(getURI())
+                    .toString();
+            if (destSrc.length() == 0)
+                destSrc = ".";
+            try
+            {
+                exported.setSrc(destSrc);
+            }
+            catch (MethodParameterIsEmptyStringException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+        }
+        catch (URISyntaxException e)
+        {
+            try
+            {
+                exported.setSrc(getSrc());
+            }
+            catch (MethodParameterIsEmptyStringException e1)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e1);
+            }
+        }
+        catch (IsNotInitializedException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
         }
         if (getClipBegin().isNegativeTimeOffset())
         {
@@ -202,17 +336,13 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
                 throw new RuntimeException("WTF ??!", e);
             }
         }
-        try
-        {
-            exported.setWidth(getWidth());
-            exported.setHeight(getHeight());
-        }
-        catch (MethodParameterIsOutOfBoundsException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
         return exported;
+    }
+
+    @Override
+    public ExternalVideoMedia copy()
+    {
+        return (ExternalVideoMedia) copyProtected();
     }
 
     @Override
@@ -227,59 +357,6 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
         return (ExternalVideoMedia) exportProtected(destPres);
     }
 
-    public int getWidth()
-    {
-        return mWidth;
-    }
-
-    public int getHeight()
-    {
-        return mHeight;
-    }
-
-    public void setWidth(int width)
-            throws MethodParameterIsOutOfBoundsException
-    {
-        setSize(getHeight(), width);
-    }
-
-    public void setHeight(int height)
-            throws MethodParameterIsOutOfBoundsException
-    {
-        setSize(height, getWidth());
-    }
-
-    public void setSize(int height, int width)
-            throws MethodParameterIsOutOfBoundsException
-    {
-        if (width < 0)
-        {
-            throw new MethodParameterIsOutOfBoundsException();
-        }
-        if (height < 0)
-        {
-            throw new MethodParameterIsOutOfBoundsException();
-        }
-        int prevWidth = mWidth;
-        mWidth = width;
-        int prevHeight = mHeight;
-        mHeight = height;
-        if (mWidth != prevWidth || mHeight != prevHeight)
-        {
-            try
-            {
-                notifyListeners(new SizeChangedEvent(this, mHeight, mWidth,
-                        prevHeight, prevWidth));
-            }
-            catch (MethodParameterIsNullException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WTF ??!", e);
-            }
-        }
-    }
-
-    @SuppressWarnings("boxing")
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -295,6 +372,18 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
             throw new ProgressCancelledException();
         }
         super.xukInAttributes(source, ph);
+        String val = source.getAttribute("src");
+        if (val == null || val.length() == 0)
+            val = ".";
+        try
+        {
+            setSrc(val);
+        }
+        catch (MethodParameterIsEmptyStringException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
         String cb = source.getAttribute("clipBegin");
         String ce = source.getAttribute("clipEnd");
         resetClipTimes();
@@ -325,73 +414,6 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
         {
             throw new XukDeserializationFailedException();
         }
-        String height = source.getAttribute("height");
-        String width = source.getAttribute("width");
-        int h, w;
-        if (height != null && height != "")
-        {
-            try
-            {
-                h = Integer.decode(height);
-            }
-            catch (NumberFormatException e)
-            {
-                throw new XukDeserializationFailedException();
-            }
-            try
-            {
-                setHeight(h);
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WTF ??!", e);
-            }
-        }
-        else
-        {
-            try
-            {
-                setHeight(0);
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WTF ??!", e);
-            }
-        }
-        if (width != null && width != "")
-        {
-            try
-            {
-                w = Integer.decode(width);
-            }
-            catch (NumberFormatException e)
-            {
-                throw new XukDeserializationFailedException();
-            }
-            try
-            {
-                setWidth(w);
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WTF ??!", e);
-            }
-        }
-        else
-        {
-            try
-            {
-                setWidth(0);
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WTF ??!", e);
-            }
-        }
     }
 
     @Override
@@ -407,17 +429,35 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
         {
             throw new ProgressCancelledException();
         }
+        if (getSrc() != "")
+        {
+            URI srcUri;
+            try
+            {
+                srcUri = new URI(getSrc());
+            }
+            catch (URISyntaxException e)
+            {
+                throw new XukSerializationFailedException();
+            }
+            if (baseUri.toString() == "")
+            {
+                destination.writeAttributeString("src", srcUri.toString());
+            }
+            else
+            {
+                destination.writeAttributeString("src", baseUri.relativize(
+                        srcUri).toString());
+            }
+        }
         destination.writeAttributeString("clipBegin", this.getClipBegin()
                 .toString());
         destination.writeAttributeString("clipEnd", this.getClipEnd()
                 .toString());
-        destination.writeAttributeString("height", Integer.toString(this
-                .getHeight()));
-        destination.writeAttributeString("width", Integer.toString(this
-                .getWidth()));
         super.xukOutAttributes(destination, baseUri, ph);
     }
 
+    @Override
     public ITimeDelta getDuration()
     {
         try
@@ -487,7 +527,8 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
         }
     }
 
-    public ExternalVideoMedia split(ITime splitPoint)
+    @Override
+    public ExternalVideoMedia splitProtected(ITime splitPoint)
             throws MethodParameterIsNullException,
             TimeOffsetIsOutOfBoundsException
     {
@@ -521,21 +562,20 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
             return false;
         if (!getClipEnd().isEqualTo(otherVideo.getClipEnd()))
             return false;
-        if (getWidth() != otherVideo.getWidth())
+        if (!(other instanceof ILocated))
+        {
             return false;
-        if (getHeight() != otherVideo.getHeight())
+        }
+        try
+        {
+            if (getURI() != ((ILocated) other).getURI())
+                return false;
+        }
+        catch (URISyntaxException e)
+        {
+            e.printStackTrace();
             return false;
+        }
         return true;
-    }
-
-    @SuppressWarnings("unused")
-    @Override
-    protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
-            IProgressHandler ph) throws XukSerializationFailedException,
-            MethodParameterIsNullException, ProgressCancelledException
-    {
-        /**
-         * Does nothing.
-         */
     }
 }

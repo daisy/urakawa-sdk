@@ -22,7 +22,9 @@ import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
- *
+ * TODO: delete this class. Unfortunately there is no multiple-inheritance,
+ * which would be useful in this case. So this code must be duplicated in every
+ * "ILocated" implementation.
  */
 public abstract class AbstractExternalMedia extends AbstractMedia implements
         ILocated

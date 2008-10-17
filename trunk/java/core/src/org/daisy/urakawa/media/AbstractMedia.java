@@ -86,6 +86,7 @@ public abstract class AbstractMedia extends AbstractXukAbleWithPresentation
 	 */
     public AbstractMedia()
     {
+        super();
         mLanguage = null;
     }
 

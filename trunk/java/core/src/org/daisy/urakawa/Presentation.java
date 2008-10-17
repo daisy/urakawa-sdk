@@ -711,7 +711,7 @@ public class Presentation extends AbstractXukAble implements
             throw new IsAlreadyInitializedException();
         }
         mUndoRedoManager = man;
-        man.registerListener(mBubbleEventListener, DataModelChangedEvent.class);
+        mUndoRedoManager.registerListener(mBubbleEventListener, DataModelChangedEvent.class);
     }
 
     /**
