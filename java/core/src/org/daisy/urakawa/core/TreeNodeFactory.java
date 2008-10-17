@@ -1,6 +1,6 @@
 package org.daisy.urakawa.core;
 
-import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.GenericWithPresentationFactory;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -12,7 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.core.TreeNode
  */
-public final class TreeNodeFactory extends GenericFactory<TreeNode>
+public final class TreeNodeFactory extends GenericWithPresentationFactory<TreeNode>
 {
     /**
      * @param pres

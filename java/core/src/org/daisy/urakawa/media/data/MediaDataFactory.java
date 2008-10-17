@@ -1,6 +1,6 @@
 package org.daisy.urakawa.media.data;
 
-import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.GenericWithPresentationFactory;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
@@ -13,7 +13,7 @@ import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
  * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData
  */
-public final class MediaDataFactory extends GenericFactory<WavAudioMediaData>
+public final class MediaDataFactory extends GenericWithPresentationFactory<WavAudioMediaData>
 {
     /**
      * @param pres

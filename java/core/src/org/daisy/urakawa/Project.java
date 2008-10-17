@@ -251,7 +251,7 @@ public class Project extends AbstractXukAble implements IWithPresentations,
         {
             try
             {
-                setPresentationFactory(new PresentationFactory(null));
+                setPresentationFactory(new PresentationFactory());
             }
             catch (MethodParameterIsNullException e)
             {

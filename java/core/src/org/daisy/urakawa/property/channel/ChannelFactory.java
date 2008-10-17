@@ -1,6 +1,6 @@
 package org.daisy.urakawa.property.channel;
 
-import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.GenericWithPresentationFactory;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -15,7 +15,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @depend - Create - org.daisy.urakawa.property.channel.ManagedAudioChannel
  * @depend - Create - org.daisy.urakawa.property.channel.TextChannel
  */
-public final class ChannelFactory extends GenericFactory<Channel>
+public final class ChannelFactory extends GenericWithPresentationFactory<Channel>
 {
     /**
      * @param pres

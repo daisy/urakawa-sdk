@@ -1,6 +1,6 @@
 package org.daisy.urakawa.property;
 
-import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.GenericWithPresentationFactory;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.property.channel.ChannelsProperty;
@@ -16,7 +16,7 @@ import org.daisy.urakawa.property.xml.XmlProperty;
  * @depend - Create - org.daisy.urakawa.property.xml.XmlProperty
  * @depend - Create - org.daisy.urakawa.property.channel.ChannelsProperty
  */
-public final class PropertyFactory extends GenericFactory<Property>
+public final class PropertyFactory extends GenericWithPresentationFactory<Property>
 {
     /**
      * @param pres

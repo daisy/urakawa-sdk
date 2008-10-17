@@ -1,6 +1,6 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.GenericWithPresentationFactory;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -12,7 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.media.ExternalAudioMedia
  */
-public final class MediaFactory extends GenericFactory<AbstractMedia>
+public final class MediaFactory extends GenericWithPresentationFactory<AbstractMedia>
 {
     /**
      * @param pres

@@ -1,6 +1,6 @@
 package org.daisy.urakawa.media.data;
 
-import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.GenericWithPresentationFactory;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -13,7 +13,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.media.data.FileDataProvider
  */
-public final class DataProviderFactory extends GenericFactory<FileDataProvider>
+public final class DataProviderFactory extends GenericWithPresentationFactory<FileDataProvider>
 {
     /**
      * @param pres

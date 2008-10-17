@@ -1,6 +1,6 @@
 package org.daisy.urakawa.command;
 
-import org.daisy.urakawa.GenericFactory;
+import org.daisy.urakawa.GenericWithPresentationFactory;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -12,7 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.command.CompositeCommand
  */
-public final class CommandFactory extends GenericFactory<AbstractCommand>
+public final class CommandFactory extends GenericWithPresentationFactory<AbstractCommand>
 {
     /**
      * @param pres
