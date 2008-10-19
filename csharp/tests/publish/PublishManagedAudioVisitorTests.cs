@@ -36,7 +36,7 @@ namespace urakawa.publish
             Channel destCh = pres.ChannelFactory.CreateChannel();
             destCh.Language = sourceCh.Language;
             destCh.Name = String.Format("{0}.published", sourceCh.Name);
-            pres.ChannelsManager.AddChannel(destCh);
+            
             Uri publishDestination = new Uri(pres.RootUri, "AudioPublishDestination/");
             if (Directory.Exists(publishDestination.LocalPath))
             {

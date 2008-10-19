@@ -37,13 +37,8 @@ namespace urakawa.examples
         /// <returns>The copy</returns>
         protected override Property CopyProtected()
         {
-            ExampleCustomProperty exProp = base.CopyProtected() as ExampleCustomProperty;
-            if (exProp == null)
-            {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The property factory can not create a ExampleCustomProperty matching QName {0}:{1}",
-                                                                         XukNamespaceUri, XukLocalName));
-            }
+            ExampleCustomProperty exProp = (ExampleCustomProperty) base.CopyProtected();
+
             exProp.CustomData = CustomData;
             return exProp;
         }

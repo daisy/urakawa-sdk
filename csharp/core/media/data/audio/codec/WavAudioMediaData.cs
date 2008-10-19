@@ -305,6 +305,16 @@ namespace urakawa.media.data.audio.codec
 
         #region AudioMediaData
 
+
+        /// <summary>
+        /// Creates a copy of <c>this</c>, including copies of all <see cref="DataProvider"/>s used by <c>this</c>
+        /// </summary>
+        /// <returns>The copy</returns>
+        public new WavAudioMediaData Copy()
+        {
+            return CopyProtected() as WavAudioMediaData;
+        }
+
         /// <summary>
         /// Part of technical solution to make copy method return correct type. 
         /// In implementing classes this method should return a copy of the class instances
@@ -319,15 +329,6 @@ namespace urakawa.media.data.audio.codec
                 copy.mWavClips.Add(clip.Copy());
             }
             return copy;
-        }
-
-        /// <summary>
-        /// Creates a copy of <c>this</c>, including copies of all <see cref="DataProvider"/>s used by <c>this</c>
-        /// </summary>
-        /// <returns>The copy</returns>
-        public new WavAudioMediaData Copy()
-        {
-            return CopyProtected() as WavAudioMediaData;
         }
 
         /// <summary>

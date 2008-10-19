@@ -82,6 +82,7 @@ namespace urakawa.media
             return CopyProtected() as ExternalImageMedia;
         }
 
+
         /// <summary>
         /// Exports <c>this</c> to a destination <see cref="Presentation"/>
         /// </summary>
@@ -92,6 +93,19 @@ namespace urakawa.media
             return ExportProtected(destPres) as ExternalImageMedia;
         }
 
+
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected override Media CopyProtected()
+        {
+            ExternalImageMedia copy = (ExternalImageMedia)base.CopyProtected();
+            copy.Src = Src;
+            copy.Height = this.Height;
+            copy.Width = this.Width;
+            return copy;
+        }
         /// <summary>
         /// Exports the external image media to a destination <see cref="Presentation"/>
         /// - part of a construct allowing the <see cref="Export"/> method to return <see cref="ExternalImageMedia"/>

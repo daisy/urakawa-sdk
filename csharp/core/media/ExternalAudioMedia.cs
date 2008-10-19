@@ -78,6 +78,7 @@ namespace urakawa.media
             return CopyProtected() as ExternalAudioMedia;
         }
 
+   
         /// <summary>
         /// Exports the external audio media to a destination <see cref="Presentation"/>
         /// </summary>
@@ -88,6 +89,18 @@ namespace urakawa.media
             return ExportProtected(destPres) as ExternalAudioMedia;
         }
 
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected override Media CopyProtected()
+        {
+            ExternalAudioMedia copy = (ExternalAudioMedia)base.CopyProtected();
+            copy.Src = Src;
+            copy.ClipBegin = ClipBegin.Copy();
+            copy.ClipEnd = ClipEnd.Copy();
+            return copy;
+        }
 
         /// <summary>
         /// Exports the external audio media to a destination <see cref="Presentation"/>

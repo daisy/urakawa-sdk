@@ -77,14 +77,29 @@ namespace urakawa.media
             return CopyProtected() as ExternalVideoMedia;
         }
 
-        /// <summary>
-        /// Copy function which returns an <see cref="ExternalVideoMedia"/> object
-        /// </summary>
-        /// <returns>a copy of this</returns>
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
         protected override Media CopyProtected()
         {
-            return Export(MediaFactory.Presentation);
+            ExternalVideoMedia copy = (ExternalVideoMedia)base.CopyProtected();
+            copy.Src = Src;
+            if (ClipBegin.IsNegativeTimeOffset)
+            {
+                copy.ClipBegin = ClipBegin.Copy();
+                copy.ClipEnd = ClipEnd.Copy();
+            }
+            else
+            {
+                copy.ClipEnd = ClipEnd.Copy();
+                copy.ClipBegin = ClipBegin.Copy();
+            }
+            copy.Width = Width;
+            copy.Height = Height;
+            return copy;
         }
+
 
         /// <summary>
         /// Exports the external video media to a destination <see cref="Presentation"/>

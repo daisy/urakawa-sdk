@@ -110,11 +110,9 @@ namespace urakawa.core
 
             Channel audioChannel = pres.ChannelFactory.CreateChannel();
             audioChannel.Name = "channel.audio";
-            pres.ChannelsManager.AddChannel(audioChannel);
 
             Channel textChannel = pres.ChannelFactory.CreateChannel();
             textChannel.Name = "channel.text";
-            pres.ChannelsManager.AddChannel(textChannel);
 
             TreeNode mRootNode = proj.GetPresentation(0).RootNode;
             Assert.IsNotNull(mRootNode, "The mRootNode node of the newly created Presentation is null");

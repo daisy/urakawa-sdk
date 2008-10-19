@@ -288,7 +288,14 @@ namespace urakawa.property.xml
         /// <returns>The copy</returns>
         protected override Property CopyProtected()
         {
-            return ExportProtected(Presentation);
+            XmlProperty xmlProp = (XmlProperty) base.CopyProtected();
+            
+            xmlProp.SetQName(LocalName, NamespaceUri);
+            foreach (XmlAttribute attr in ListOfAttributes)
+            {
+                xmlProp.SetAttribute(attr.Copy());
+            }
+            return xmlProp;
         }
 
         /// <summary>

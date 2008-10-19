@@ -82,6 +82,27 @@ namespace urakawa.property.channel
             exportedCh.Language = Language;
             return exportedCh;
         }
+        public Channel Copy()
+        {
+            return CopyProtected();
+        }
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected virtual Channel CopyProtected()
+        {
+            Channel copy = Presentation.ChannelFactory.Create(GetType());
+            if (copy == null)
+            {
+                throw new exception.FactoryCannotCreateTypeException(String.Format(
+                                                                         "The ChannelsFacotry of the destination Presentation can not create a Channel matching Xuk QName {0}:{0}",
+                                                                         XukLocalName, XukNamespaceUri));
+            }
+            copy.Name = Name;
+            copy.Language = Language;
+            return copy;
+        }
 
         /// <summary>
         /// Gets the human-readable name of the <see cref="Channel"/>

@@ -151,6 +151,17 @@ namespace urakawa.media
             return ExportProtected(destPres) as ExternalTextMedia;
         }
 
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected override Media CopyProtected()
+        {
+            ExternalTextMedia copy = (ExternalTextMedia)base.CopyProtected();
+            copy.Src = Src;
+            return copy;
+        }
+
         /// <summary>
         /// Exports the media to a destination <see cref="Presentation"/>
         /// </summary>
