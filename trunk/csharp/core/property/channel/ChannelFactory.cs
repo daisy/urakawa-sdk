@@ -20,7 +20,11 @@ namespace urakawa.property.channel
         public ChannelFactory(Presentation pres) : base(pres)
         {
         }
-
+protected override void InitializeInstance(Channel instance)
+        {
+            base.InitializeInstance(instance);
+            ChannelsManager.AddChannel(instance);
+        }
         /// <summary>
         /// Gets the <see cref="ChannelsManager"/> assigned the <see cref="Channel"/>s created
         /// by the <see cref="ChannelFactory"/>
