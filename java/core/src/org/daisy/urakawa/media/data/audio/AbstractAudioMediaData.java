@@ -600,8 +600,14 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
     /**
      * @return data
      */
-    public abstract IAudioMediaData audioMediaDataCopy();
+    public abstract AbstractAudioMediaData audioMediaDataCopy();
 
+    @Override
+    public AbstractAudioMediaData copy()
+    {
+        return (AbstractAudioMediaData) copyProtected();
+    }
+    
     @Override
     protected IMediaData copyProtected()
     {

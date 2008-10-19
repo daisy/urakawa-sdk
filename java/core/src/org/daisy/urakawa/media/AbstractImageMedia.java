@@ -133,6 +133,12 @@ public abstract class AbstractImageMedia extends AbstractMedia implements
     }
 
     @Override
+    public AbstractImageMedia copy()
+    {
+        return (AbstractImageMedia) copyProtected();
+    }
+
+    @Override
     public IMedia copyProtected()
     {
         AbstractImageMedia copy = (AbstractImageMedia) super.copyProtected();

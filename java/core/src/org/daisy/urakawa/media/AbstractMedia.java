@@ -98,9 +98,9 @@ public abstract class AbstractMedia extends AbstractXukAbleWithPresentation
 
     public abstract boolean isSequence();
 
-    public IMedia copy()
+    public AbstractMedia copy()
     {
-        return copyProtected();
+        return (AbstractMedia) copyProtected();
     }
 
     protected IMedia copyProtected()

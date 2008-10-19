@@ -250,7 +250,7 @@ public class WavAudioMediaData extends AbstractAudioMediaData
     }
 
     @Override
-    public IAudioMediaData audioMediaDataCopy()
+    public WavAudioMediaData audioMediaDataCopy()
     {
         return copy();
     }

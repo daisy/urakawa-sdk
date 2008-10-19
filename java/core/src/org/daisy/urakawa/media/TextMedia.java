@@ -10,13 +10,11 @@ import org.daisy.urakawa.events.EventHandler;
 import org.daisy.urakawa.events.IEventHandler;
 import org.daisy.urakawa.events.IEventListener;
 import org.daisy.urakawa.events.media.TextChangedEvent;
-import org.daisy.urakawa.exception.IsNotInitializedException;
-import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -124,33 +122,25 @@ public class TextMedia extends AbstractMedia implements ITextMedia
     }
 
     @Override
-    public ITextMedia copy()
+    public TextMedia copy()
     {
-        return (ITextMedia) copyProtected();
+        return (TextMedia) copyProtected();
     }
 
     @Override
     protected IMedia copyProtected()
     {
+        ITextMedia copy = (ITextMedia) super.copyProtected();
         try
         {
-            return export(getPresentation());
+            copy.setText(this.getText());
         }
         catch (MethodParameterIsNullException e)
         {
             // Should never happen
             throw new RuntimeException("WTF ??!", e);
         }
-        catch (FactoryCannotCreateTypeException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-        catch (IsNotInitializedException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
+        return copy;
     }
 
     @Override
@@ -174,17 +164,7 @@ public class TextMedia extends AbstractMedia implements ITextMedia
         {
             throw new MethodParameterIsNullException();
         }
-        ITextMedia exported;
-        try
-        {
-            exported = (ITextMedia) destPres.getMediaFactory().create(
-                    getXukLocalName(), getXukNamespaceURI());
-        }
-        catch (MethodParameterIsEmptyStringException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
+        ITextMedia exported = (ITextMedia) super.exportProtected(destPres);
         if (exported == null)
         {
             throw new FactoryCannotCreateTypeException();
