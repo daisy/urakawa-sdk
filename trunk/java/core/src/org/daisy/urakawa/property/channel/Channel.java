@@ -22,7 +22,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class Channel extends AbstractXukAbleWithPresentation implements IChannel
+public class Channel extends AbstractXukAbleWithPresentation implements
+        IChannel
 {
     private String mName = "";
     private String mLanguage = null;
@@ -49,6 +50,60 @@ public class Channel extends AbstractXukAbleWithPresentation implements IChannel
         if (this.getLanguage() != otherChannel.getLanguage())
             return false;
         return true;
+    }
+
+    /**
+     * @return
+     */
+    public IChannel copy()
+    {
+        return copyProtected();
+    }
+
+    protected IChannel copyProtected()
+    {
+        IChannel copy = null;
+        try
+        {
+            copy = getPresentation().getChannelFactory().create(
+                    getXukLocalName(), getXukNamespaceURI());
+        }
+        catch (MethodParameterIsEmptyStringException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        catch (MethodParameterIsNullException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        catch (IsNotInitializedException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        try
+        {
+            copy.setName(getName());
+            copy.setLanguage(getLanguage());
+        }
+        catch (MethodParameterIsEmptyStringException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        catch (MethodParameterIsNullException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        catch (IsNotInitializedException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        return copy;
     }
 
     public IChannel export(Presentation destPres)

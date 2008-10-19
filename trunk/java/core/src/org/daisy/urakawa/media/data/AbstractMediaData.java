@@ -156,9 +156,9 @@ public abstract class AbstractMediaData extends AbstractXukAbleWithPresentation 
 
     protected abstract IMediaData copyProtected();
 
-    public IMediaData copy()
+    public AbstractMediaData copy()
     {
-        return copyProtected();
+        return (AbstractMediaData) copyProtected();
     }
 
     protected abstract IMediaData protectedExport(Presentation destPres)

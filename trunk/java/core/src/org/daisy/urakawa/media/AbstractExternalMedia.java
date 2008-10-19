@@ -89,6 +89,57 @@ public abstract class AbstractExternalMedia extends AbstractMedia implements
     }
 
     @Override
+    protected IMedia copyProtected() {
+        AbstractExternalMedia copy = (AbstractExternalMedia) super
+        .copyProtected();
+        try
+        {
+            URI.create(getSrc()).resolve(getPresentation().getRootURI());
+            String destSrc = getPresentation().getRootURI().relativize(getURI())
+                    .toString();
+            if (destSrc.length() == 0)
+                destSrc = ".";
+            try
+            {
+                copy.setSrc(destSrc);
+            }
+            catch (MethodParameterIsEmptyStringException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+            catch (MethodParameterIsNullException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+        }
+        catch (URISyntaxException e)
+        {
+            try
+            {
+                copy.setSrc(getSrc());
+            }
+            catch (MethodParameterIsEmptyStringException e1)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e1);
+            }
+            catch (MethodParameterIsNullException e1)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e1);
+            }
+        }
+        catch (IsNotInitializedException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        return copy;
+    }
+
+    @Override
     public AbstractExternalMedia export(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException

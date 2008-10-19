@@ -224,36 +224,15 @@ public class SequenceMedia extends AbstractMedia implements ISequenceMedia
     }
 
     @Override
-    public ISequenceMedia copy()
+    public SequenceMedia copy()
     {
-        return (ISequenceMedia) copyProtected();
+        return (SequenceMedia) copyProtected();
     }
 
     @Override
     protected IMedia copyProtected()
     {
-        IMedia newMedia;
-        try
-        {
-            newMedia = getPresentation().getMediaFactory().create(
-                    getXukLocalName(), getXukNamespaceURI());
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WFT ??!", e);
-        }
-        catch (MethodParameterIsEmptyStringException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WFT ??!", e);
-        }
-        catch (IsNotInitializedException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WFT ??!", e);
-        }
-        ISequenceMedia newSeqMedia = (ISequenceMedia) newMedia;
+        ISequenceMedia newSeqMedia = (ISequenceMedia) super.copyProtected();
         for (IMedia item : getListOfItems())
         {
             try
@@ -295,17 +274,8 @@ public class SequenceMedia extends AbstractMedia implements ISequenceMedia
         {
             throw new MethodParameterIsNullException();
         }
-        ISequenceMedia exported;
-        try
-        {
-            exported = (ISequenceMedia) destPres.getMediaFactory().create(
-                    getXukLocalName(), getXukNamespaceURI());
-        }
-        catch (MethodParameterIsEmptyStringException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WFT ??!", e);
-        }
+        ISequenceMedia exported = (ISequenceMedia) super
+                .exportProtected(destPres);
         if (exported == null)
         {
             throw new FactoryCannotCreateTypeException();

@@ -154,9 +154,9 @@ public class ManagedAudioMedia extends AbstractMedia implements
     }
 
     @Override
-    public IManagedAudioMedia copy()
+    public ManagedAudioMedia copy()
     {
-        return (IManagedAudioMedia) copyProtected();
+        return (ManagedAudioMedia) copyProtected();
     }
 
     @Override

@@ -392,15 +392,47 @@ public class XmlProperty extends Property implements IXmlProperty
     protected IXmlProperty copyProtected()
             throws FactoryCannotCreateTypeException, IsNotInitializedException
     {
+        IXmlProperty xmlProp = (IXmlProperty) super.copyProtected();
+        if (xmlProp == null)
+        {
+            throw new FactoryCannotCreateTypeException();
+        }
         try
         {
-            return exportProtected(getPresentation());
+            xmlProp.setLocalName(getLocalName());
+        }
+        catch (MethodParameterIsEmptyStringException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
         }
         catch (MethodParameterIsNullException e)
         {
             // Should never happen
             throw new RuntimeException("WTF ??!", e);
         }
+        try
+        {
+            xmlProp.setNamespace(getNamespace());
+        }
+        catch (MethodParameterIsNullException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        for (IXmlAttribute attr : getListOfAttributes())
+        {
+            try
+            {
+                xmlProp.setAttribute(attr.copy());
+            }
+            catch (MethodParameterIsNullException e)
+            {
+                // Should never happen
+                throw new RuntimeException("WTF ??!", e);
+            }
+        }
+        return xmlProp;
     }
 
     @Override
