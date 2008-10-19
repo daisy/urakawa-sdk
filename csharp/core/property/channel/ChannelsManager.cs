@@ -224,6 +224,11 @@ namespace urakawa.property.channel
         /// </exception>
         public string GetUidOfChannel(Channel ch)
         {
+		if (ch == null)
+            {
+                throw new exception.MethodParameterIsNullException("channel parameter is null");
+            }
+	    
             foreach (string Id in mChannels.Keys)
             {
                 if (mChannels[Id] == ch)
@@ -233,6 +238,32 @@ namespace urakawa.property.channel
             }
             throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
         }
+	public void SetUidOfChannel(Channel ch, string uid)
+        {
+		if (ch == null)
+            {
+                throw new exception.MethodParameterIsNullException("channel parameter is null");
+            }
+            if (uid == null)
+            {
+                throw new exception.MethodParameterIsNullException("uid parameter is null");
+            }
+            if (uid == "")
+            {
+                throw new exception.MethodParameterIsEmptyStringException("uid parameter is empty string");
+            }
+        
+            foreach (string Id in mChannels.Keys)
+            {
+                if (mChannels[Id] == ch)
+                {
+                mChannels.Remove(Id);
+                mChannels.Add(uid, ch);
+                return;
+                }
+            }
+            throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
+    }
 
         /// <summary>
         /// Removes all <see cref="Channel"/>s from the manager
@@ -343,7 +374,7 @@ namespace urakawa.property.channel
                         {
                             try
                             {
-                                AddChannel(newCh, uid);
+                                SetUidOfChannel(newCh, uid);
                             }
                             catch (exception.CheckedException e)
                             {
