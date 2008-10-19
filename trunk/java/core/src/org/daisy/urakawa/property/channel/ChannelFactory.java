@@ -15,7 +15,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @depend - Create - org.daisy.urakawa.property.channel.ManagedAudioChannel
  * @depend - Create - org.daisy.urakawa.property.channel.TextChannel
  */
-public final class ChannelFactory extends GenericWithPresentationFactory<Channel>
+public final class ChannelFactory extends
+        GenericWithPresentationFactory<Channel>
 {
     /**
      * @param pres
@@ -25,6 +26,29 @@ public final class ChannelFactory extends GenericWithPresentationFactory<Channel
             throws MethodParameterIsNullException
     {
         super(pres);
+    }
+
+    /**
+     * @hidden
+     */
+    @Override
+    protected void initializeInstance(Channel instance)
+    {
+        super.initializeInstance(instance);
+        try
+        {
+            getPresentation().getChannelsManager().addChannel(instance);
+        }
+        catch (MethodParameterIsNullException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+        catch (ChannelAlreadyExistsException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
     }
 
     /**
