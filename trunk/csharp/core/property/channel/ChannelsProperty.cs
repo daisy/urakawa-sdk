@@ -249,7 +249,6 @@ namespace urakawa.property.channel
                 if (exportDestCh == null)
                 {
                     exportDestCh = ch.Export(destPres);
-                    destPres.ChannelsManager.AddChannel(exportDestCh);
                 }
                 chExport.SetMedia(exportDestCh, GetMedia(ch).Export(destPres));
             }

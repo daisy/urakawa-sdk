@@ -110,16 +110,6 @@ namespace urakawa.media.data.audio
             return CopyProtected() as ManagedAudioMedia;
         }
 
-        /// <summary>
-        /// Gets a copy of the <see cref="Media"/>
-        /// </summary>
-        /// <returns>The copy</returns>
-        protected override Media CopyProtected()
-        {
-            ManagedAudioMedia cp = (ManagedAudioMedia)base.CopyProtected();
-            cp.MediaData = MediaData.Copy();
-            return cp;
-        }
 
         /// <summary>
         /// Exports the external audio media to a destination <see cref="Presentation"/>
@@ -129,6 +119,17 @@ namespace urakawa.media.data.audio
         public new ManagedAudioMedia Export(Presentation destPres)
         {
             return Export(destPres) as ManagedAudioMedia;
+        }
+
+        /// <summary>
+        /// Gets a copy of the <see cref="Media"/>
+        /// </summary>
+        /// <returns>The copy</returns>
+        protected override Media CopyProtected()
+        {
+            ManagedAudioMedia cp = (ManagedAudioMedia)base.CopyProtected();
+            cp.MediaData = MediaData.Copy();
+            return cp;
         }
 
         /// <summary>

@@ -100,6 +100,17 @@ namespace urakawa.media
             return CopyProtected() as TextMedia;
         }
 
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected override Media CopyProtected()
+        {
+            TextMedia copy = (TextMedia)base.CopyProtected();
+            copy.Text = Text;
+            return copy;
+        }
+
         /// <summary>
         /// Exports the text media to a destination <see cref="Presentation"/>
         /// </summary>
@@ -118,7 +129,7 @@ namespace urakawa.media
         protected override Media ExportProtected(Presentation destPres)
         {
             TextMedia exported = (TextMedia) base.ExportProtected(destPres);
-            exported.Text = this.Text;
+            exported.Text = Text;
             return exported;
         }
 

@@ -661,32 +661,6 @@ namespace urakawa.core
             get { return new List<TreeNode>(mChildren); }
         }
 
-        /// <summary>
-        /// Make a copy of the node. The copy has the same presentation and no parent.
-        /// </summary>
-        /// <param name="deep">If true, then copy the node's entire subtree.  
-        /// Otherwise, just copy the node itself.</param>
-        /// <param name="inclProperties">If true, then copy the nodes property. 
-        /// Otherwise, the copy has no property</param>
-        /// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
-        protected virtual TreeNode CopyProtected(bool deep, bool inclProperties)
-        {
-            TreeNode theCopy = Presentation.TreeNodeFactory.Create(XukLocalName, XukNamespaceUri);
-
-            //copy the property
-            if (inclProperties)
-            {
-                CopyProperties(theCopy);
-            }
-
-            //copy the children
-            if (deep)
-            {
-                CopyChildren(theCopy);
-            }
-
-            return theCopy;
-        }
 
         /// <summary>
         /// Make a copy of the node. The copy will optionally be deep and will optionally include properties.
@@ -752,6 +726,32 @@ namespace urakawa.core
             return ExportProtected(destPres);
         }
 
+        /// <summary>
+        /// Make a copy of the node. The copy has the same presentation and no parent.
+        /// </summary>
+        /// <param name="deep">If true, then copy the node's entire subtree.  
+        /// Otherwise, just copy the node itself.</param>
+        /// <param name="inclProperties">If true, then copy the nodes property. 
+        /// Otherwise, the copy has no property</param>
+        /// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
+        protected virtual TreeNode CopyProtected(bool deep, bool inclProperties)
+        {
+            TreeNode theCopy = Presentation.TreeNodeFactory.Create(XukLocalName, XukNamespaceUri);
+
+            //copy the property
+            if (inclProperties)
+            {
+                CopyProperties(theCopy);
+            }
+
+            //copy the children
+            if (deep)
+            {
+                CopyChildren(theCopy);
+            }
+
+            return theCopy;
+        }
         /// <summary>
         /// Creates a new TreeNode with identical content (recursively) as this node,
         /// but compatible with the given Presentation (factories, managers,
