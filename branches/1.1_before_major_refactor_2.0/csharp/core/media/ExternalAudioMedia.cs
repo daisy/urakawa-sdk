@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using urakawa.media.data.audio;
 using urakawa.media.timing;
 
 namespace urakawa.media
@@ -97,6 +98,18 @@ namespace urakawa.media
 		{
 			return copyProtected() as ExternalAudioMedia;
 		}
+
+	    ///<summary>
+	    ///
+	    ///</summary>
+	    ///<returns></returns>
+	    protected override IMedia copyProtected()
+        {
+            ExternalAudioMedia copy = (ExternalAudioMedia) base.copyProtected();
+            copy.setClipBegin(getClipBegin().copy());
+            copy.setClipEnd(getClipEnd().copy());
+            return copy;
+        }
 
 		/// <summary>
 		/// Exports the external audio media to a destination <see cref="Presentation"/>

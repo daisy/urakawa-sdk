@@ -109,6 +109,18 @@ namespace urakawa.media
 			return exportProtected(destPres) as ExternalImageMedia;
 		}
 
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected override IMedia copyProtected()
+        {
+            ExternalImageMedia copy = (ExternalImageMedia)base.copyProtected();
+
+            copy.setHeight(getHeight());
+            copy.setWidth(getWidth());
+            return copy;
+        }
 		/// <summary>
 		/// Exports the external image media to a destination <see cref="Presentation"/>
 		/// - part of a construct allowing the <see cref="export"/> method to return <see cref="ExternalImageMedia"/>
@@ -124,8 +136,8 @@ namespace urakawa.media
 					"The MediaFactory of the destination Presentation of the export cannot create a ExternalImageMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			exported.setHeight(this.getHeight());
-			exported.setWidth(this.getWidth());
+			exported.setHeight(getHeight());
+			exported.setWidth(getWidth());
 			return exported;
 		}
 

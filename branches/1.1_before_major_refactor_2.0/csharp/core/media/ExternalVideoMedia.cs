@@ -116,19 +116,33 @@ namespace urakawa.media
 		/// Copy function which returns an <see cref="ExternalVideoMedia"/> object
 		/// </summary>
 		/// <returns>a copy of this</returns>
-		protected override IMedia copyProtected()
-		{
-			return export(getMediaFactory().getPresentation());
-		}
-
-		/// <summary>
-		/// Copy function which returns an <see cref="ExternalVideoMedia"/> object
-		/// </summary>
-		/// <returns>a copy of this</returns>
 		public new ExternalVideoMedia copy()
 		{
 			return copyProtected() as ExternalVideoMedia;
 		}
+
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected override IMedia copyProtected()
+        {
+            ExternalVideoMedia copy = (ExternalVideoMedia)base.copyProtected();
+
+            if (getClipBegin().isNegativeTimeOffset())
+            {
+                copy.setClipBegin(getClipBegin().copy());
+                copy.setClipEnd(getClipEnd().copy());
+            }
+            else
+            {
+                copy.setClipEnd(getClipEnd().copy());
+                copy.setClipBegin(getClipBegin().copy());
+            }
+            copy.setWidth(getWidth());
+            copy.setHeight(getHeight());
+            return copy;
+        }
 
 		/// <summary>
 		/// Exports the external video media to a destination <see cref="Presentation"/>

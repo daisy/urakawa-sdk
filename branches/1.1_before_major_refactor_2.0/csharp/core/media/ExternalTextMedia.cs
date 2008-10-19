@@ -4,6 +4,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Xml;
+using urakawa.exception;
 
 namespace urakawa.media
 {
@@ -85,6 +86,25 @@ namespace urakawa.media
 			return copyProtected() as ExternalTextMedia;
 		}
 
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected override IMedia copyProtected()
+        {
+            ExternalTextMedia copy = (ExternalTextMedia)base.copyProtected();
+            /*
+            try
+            {
+                copy.setText(getText());
+            }
+            catch (CannotReadFromExternalFileException e)
+            {
+                ; // ignore
+            }
+             */
+            return copy;
+        }
 		
 
 		/// <summary>
@@ -100,8 +120,17 @@ namespace urakawa.media
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaFactory cannot create a ExternalTextMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
-			}
-			return exported;
+            }/*
+            try
+            {
+                exported.setText(getText());
+            }
+            catch (CannotReadFromExternalFileException e)
+            {
+                ; // ignore
+            }
+             */
+            return exported;
 		}
 
 		/// <summary>
