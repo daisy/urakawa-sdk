@@ -256,6 +256,37 @@ public final class ChannelsManager extends AbstractXukAble implements
     }
 
     /**
+     * @param ch
+     * @param uid
+     * @throws MethodParameterIsNullException
+     * @throws ChannelDoesNotExistException
+     * @throws MethodParameterIsEmptyStringException
+     */
+    public void setUidOfChannel(IChannel ch, String uid)
+            throws MethodParameterIsNullException,
+            ChannelDoesNotExistException, MethodParameterIsEmptyStringException
+    {
+        if (ch == null || uid == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        if (uid.length() == 0)
+        {
+            throw new MethodParameterIsEmptyStringException();
+        }
+        for (String Id : mChannels.keySet())
+        {
+            if (mChannels.get(Id) == ch)
+            {
+                mChannels.remove(Id);
+                mChannels.put(uid, ch);
+                return;
+            }
+        }
+        throw new ChannelDoesNotExistException();
+    }
+
+    /**
      * 
      */
     public void clearChannels()
@@ -440,19 +471,18 @@ public final class ChannelsManager extends AbstractXukAble implements
                         // Should never happen
                         throw new RuntimeException("WTF ??!", e1);
                     }
-                    
                     if (newCh != null)
                     {
                         try
                         {
-                            addChannel(newCh, uid);
+                            setUidOfChannel(newCh, uid);
                         }
                         catch (MethodParameterIsEmptyStringException e)
                         {
                             // Should never happen
                             throw new RuntimeException("WTF ??!", e);
                         }
-                        catch (ChannelAlreadyExistsException e)
+                        catch (ChannelDoesNotExistException e)
                         {
                             // Should never happen
                             throw new RuntimeException("WTF ??!", e);
