@@ -2,6 +2,8 @@ package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.GenericWithPresentationFactory;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
+import org.daisy.urakawa.exception.IsNotManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -31,6 +33,31 @@ public final class DataProviderFactory extends GenericWithPresentationFactory<Fi
     protected void initializeInstance(FileDataProvider instance)
     {
         super.initializeInstance(instance);
+
+        try
+        {
+            getPresentation().getDataProviderManager().addDataProvider(instance);
+        }
+        catch (MethodParameterIsNullException e1)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e1);
+        }
+        catch (MethodParameterIsEmptyStringException e1)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e1);
+        }
+        catch (IsNotManagerOfException e1)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e1);
+        }
+        catch (IsAlreadyManagerOfException e1)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e1);
+        }
         try
         {
             instance.initialize(

@@ -13,7 +13,8 @@ import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
  * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData
  */
-public final class MediaDataFactory extends GenericWithPresentationFactory<WavAudioMediaData>
+public final class MediaDataFactory extends
+        GenericWithPresentationFactory<WavAudioMediaData>
 {
     /**
      * @param pres
@@ -24,6 +25,26 @@ public final class MediaDataFactory extends GenericWithPresentationFactory<WavAu
     {
         super(pres);
     }
+
+    /**
+     * @hidden
+     */
+    @Override
+    protected void initializeInstance(WavAudioMediaData instance)
+    {
+        super.initializeInstance(instance);
+        
+        try
+        {
+            getPresentation().getMediaDataManager().addMediaData(instance);
+        }
+        catch (MethodParameterIsNullException e)
+        {
+            // Should never happen
+            throw new RuntimeException("WTF ??!", e);
+        }
+    }
+
     /**
      * @return
      */
