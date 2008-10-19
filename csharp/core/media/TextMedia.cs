@@ -129,14 +129,16 @@ namespace urakawa.media
 			return copyProtected() as TextMedia;
 		}
 
-		/// <summary>
-		/// Make a copy of this text object
-		/// </summary>
-		/// <returns>The copy</returns>
-		protected override IMedia copyProtected()
-		{
-			return export(getMediaFactory().getPresentation());
-		}
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected override IMedia copyProtected()
+        {
+            TextMedia copy = (TextMedia)base.copyProtected();
+            copy.setText(getText());
+            return copy;
+        }
 
 		/// <summary>
 		/// Exports the text media to a destination <see cref="Presentation"/>
@@ -163,7 +165,7 @@ namespace urakawa.media
 					"The MediaFactory cannot create a TextMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			exported.setText(this.getText());
+			exported.setText(getText());
 			return exported;
 		}
 

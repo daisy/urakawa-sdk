@@ -66,6 +66,26 @@ namespace urakawa.media
 			return exportProtected(destPres) as ExternalMedia;
 		}
 
+
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected override IMedia copyProtected()
+        {
+            ExternalMedia copy = (ExternalMedia)base.copyProtected();
+            if (Uri.IsWellFormedUriString(getSrc(), UriKind.Relative))
+            {
+                string destSrc = getPresentation().getRootUri().MakeRelativeUri(getUri()).ToString();
+                if (destSrc == "") destSrc = ".";
+                copy.setSrc(destSrc);
+            }
+            else
+            {
+                copy.setSrc(getSrc());
+            }
+            return copy;
+        }
 		/// <summary>
 		/// Exports the <see cref="ExternalMedia"/> to a given destination <see cref="Presentation"/>
 		/// - part of a technical solution to have the <see cref="export"/> method return the correct <see cref="Type"/>

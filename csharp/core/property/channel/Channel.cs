@@ -60,6 +60,34 @@ namespace urakawa.property.channel
 			return exportProtected(destPres);
 		}
 
+	    ///<summary>
+	    ///
+	    ///</summary>
+	    ///<returns></returns>
+	    public Channel copy()
+        {
+            return copyProtected();
+        }
+
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected virtual Channel copyProtected()
+        {
+            Channel copy = getChannelsManager().getPresentation().getChannelFactory().createChannel(
+                getXukLocalName(), getXukNamespaceUri());
+            if (copy == null)
+            {
+                throw new exception.FactoryCannotCreateTypeException(String.Format(
+                    "The ChannelsFacotry of the destination Presentation can not create a Channel matching Xuk QName {0}:{0}",
+                    getXukLocalName(), getXukNamespaceUri()));
+            }
+            copy.setName(getName());
+            copy.setLanguage(getLanguage());
+            return copy;
+        }
+
 		/// <summary>
 		/// Exports the channel to a destination <see cref="Presentation"/>.
 		/// The exported channels has the same name.

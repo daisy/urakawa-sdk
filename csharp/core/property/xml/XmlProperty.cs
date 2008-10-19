@@ -265,15 +265,21 @@ namespace urakawa.property.xml
 			return copyProtected() as XmlProperty;
 		}
 
-		/// <summary>
-		/// Creates a copy of <c>this</c> including copies of any <see cref="XmlAttribute"/>s
-		/// </summary>
-		/// <returns>The copy</returns>
-		protected override Property copyProtected()
-		{
-			return exportProtected(getPresentation());
-		}
+        ///<summary>
+        ///
+        ///</summary>
+        ///<returns></returns>
+        protected override Property copyProtected()
+        {
+            XmlProperty xmlProp = (XmlProperty)base.copyProtected();
 
+            xmlProp.setQName(getLocalName(), getNamespaceUri());
+            foreach (XmlAttribute attr in getListOfAttributes())
+            {
+                xmlProp.setAttribute(attr.copy(xmlProp));
+            }
+            return xmlProp;
+        }
 		/// <summary>
 		/// Creates an export of <c>this</c> for a given destination <see cref="Presentation"/>
 		/// </summary>
