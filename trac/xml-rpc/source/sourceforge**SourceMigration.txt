@@ -1,0 +1,54 @@
+= Migration of urakawa-sdk subversion repository from !SourceForge to !CvsDude =
+
+The following is a procedure for migrating the urakawa-sdk relevant data from the urakawa subversion repository at !SourceForge to the urakawa-sdk subversion repository at !CvsDude.
+
+== Prerequisites ==
+ * The subversion command line utillities (svn, svnadmin and svndumpfile, all part of the standard subversion command line client)
+ * The rsync utillity (exists for most posix systems including cygwin for Windows)
+ * A text editor that preserves line breaks (i.e. performs no unix/dos style line break conversion)
+ * A subversion server on your local computer (on Windows you can use the VisualSVN server available for free at http://www.visualsvn.com).
+
+== Procedure steps ==
+ 1. Create a directory at a location of your choice for the migration process. Inside this directory, create a subdirectory for the full urakawa subversion repository at !SourceForge. Call this subdirectory urakawa.
+ 2. Get full urakawa repository from !SourceForge using rsync (this command must be called from the migration process directory created above):
+{{{ 
+rsync -av urakawa.svn.sourceforge.net::svn/urakawa/* urakawa 
+}}}
+ 3. Create a dumpfile of the full urakawa subversion repository:
+{{{
+svnadmin dump urakawa > urakawa.dump
+}}}
+ 4. Filter the svn dumpfile urakawa.dump using the svndumpfilter command (all in a single one-line command, create the svn dumpfile urakawa-sdk.dump):
+{{{
+svndumpfilter include --drop-empty-revs --renumber-revs 
+ branches/architecture branches/port-implementation-to-VS2005 branches/sdk-0-5 
+ branches/sdk-medialocation branches/toolkit-more-virtual-methods branches/urakawa/media-object-experiments 
+ tags/arch_before_copenhagen_061017 tags/before-xuk-revision tags/implementation-before-prop-refact 
+ tags/milestone-2-060331 tags/milestone-3-060509 tags/milestone-4-060626 tags/sdk-1.0-before-interface-removal 
+ trunk/urakawa/architecture trunk/urakawa/implementation < urakawa.dump branches/convenience-views > urakawa-sdk.dump
+}}}
+
+ 5. Using a text editor that preserves line break conversion (i.e. does no CR/CRLF auto conversion) do the following replace operations in order to rename the trunk/urakawa/implementation and trunk/urakawa/architecture directories to trunk/csharp and trunk/java respectively (here {{{ ^ }}} means anchor to beginning of line):
+    * {{{ ^Node-path: trunk/urakawa/implementation }}} replaced by {{{ Node-path: trunk/csharp }}}
+    * {{{ ^Node-copyfrom-path: trunk/urakawa/implementation }}} replaced by {{{ Node-copyfrom-path: trunk/csharp }}}
+    * {{{ ^Node-path: trunk/urakawa/architecture }}} replaced by {{{ Node-path: trunk/java }}}
+    * {{{ ^Node-copyfrom-path: trunk/urakawa/architecture }}} replaced by {{{ Node-copyfrom-path: trunk/java }}}
+ 6. Create a new local repository called urakawa-sdk (must include the branches, tags and trunk directories).
+ 7. Create the nessesary folders in the newly created urakawa-sdk repository (here http://localhost:8080/svn/ is the url of the local subversion server):
+{{{
+svn mkdir -m "Creating nessesary directories" 
+ http://localhost:8080/svn/urakawa-sdk/branches/urakawa 
+ http://localhost:8080/svn/urakawa-sdk/tags/milestone-1-060302
+}}}
+ 8. Load the subversion dumpfile urakawa-sdk.dump into the local urakawa-sdk repository (here {{{ C:\Repositories }}} is the directory used by the subversion server to store repositories):
+{{{
+svnadmin load C:\Repositories\urakawa-sdk < urakawa-sdk.dump
+}}}
+ 9. Create a subversion dump file of the local urakawa-sdk repository:
+{{{
+svnadmin dump C:\Repositories\urakawa-sdk > urakawa-sdk.final.dump
+}}}
+ 10. We can now ask !CvsDude to load the urakawa-sdk.final.dump, replacing the current urakawa-sdk repository.
+ 
+
+

@@ -1,0 +1,126 @@
+<html><body><p>
+# History of Design and Implementation Process
+</p>
+<p>
+## SDK 0.5: fundamentals
+=&gt; an authoring format that does not depend directly on the current versions of the Digital Talking Book standard (DAISY 2.02 and Z39.86). Instead, it provides a future-proof authoring model that can adapt to evolving distribution standards.
+</p>
+<p>
+- Generic tree-based Data Model for structure-oriented multimedia documents. Use of the Channel metaphor to semantically separate content (i.e. Audio vs Text streams). Synchronization between media objects (i.e. audio and text) is mostly ensured via direct the containment relationship, avoiding the use of SMIL and IDs / REFIDs (authoring model is less prone to errors).
+</p>
+<p>
+Reference UML diagrams:
+<a class="ext-link" href="http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/UML_CoreTree_Minimal.png"><span class="icon">http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/UML_CoreTree_Minimal.png</span></a>
+<a class="ext-link" href="http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/UML_ChannelsProperty_Minimal.png"><span class="icon">http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/UML_ChannelsProperty_Minimal.png</span></a>
+</p>
+<p>
+- API (Application Programming Interface) for manipulating the Data Model via authoring services: tree-centric navigation, XML round-trip serialization (native XUK format).
+</p>
+<p>
+Reference diagram:
+<a class="ext-link" href="http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/docs/UrakawaInputOutputOverview.png"><span class="icon">http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/docs/UrakawaInputOutputOverview.png</span></a>
+</p>
+<p>
+## SDK 1.0: robust authoring
+=&gt; tool-kit for easier and more reliable authoring (minimize time-to-market of application developers). Parallel development with Obi.
+</p>
+<p>
+- Built-in non-destructive authoring: Media Asset Manager handles the creation/deletion of physical files for audio content (i.e. recorded sound). An abstraction layer in the API means that programmers do not have to explicitly manage garbage collection
+</p>
+<p>
+Reference UML diagram:
+<a class="ext-link" href="http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/UML_MediaData_Minimal.png"><span class="icon">http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/UML_MediaData_Minimal.png</span></a>
+</p>
+<p>
+- Undo/Redo: capacity to backtrack changes made in the multimedia document, with full support for the entire Data Model (i.e. no risk of loosing data).
+</p>
+<p>
+Reference UML diagram:
+<a class="ext-link" href="http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/UML_UndoRedo_Minimal.png"><span class="icon">http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/UML_UndoRedo_Minimal.png</span></a>
+</p>
+<p>
+- Event notifications: ensures transparent synchronization between separate layers of an application (i.e. hooks between the core data model and edition views).
+</p>
+<p>
+Reference UML diagram:
+<a class="ext-link" href="http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/UML_Events_Minimal.png"><span class="icon">http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/UML_Events_Minimal.png</span></a>
+</p>
+<p>
+## SDK 2.0: "DAISY-awareness"
+=&gt; introduction of a DAISY-specific layer of functionality. Parallel development with Tobi.
+</p>
+<p>
+- <a class="missing wiki" href="http://daisy-trac.cvsdude.com/urakawa-sdk/wiki/NavMap" rel="nofollow">NavMap?</a>, <a class="missing wiki" href="http://daisy-trac.cvsdude.com/urakawa-sdk/wiki/NavList" rel="nofollow">NavList?</a> navigation metaphors
+</p>
+<p>
+- Skippability, Escapability
+</p>
+<p>
+- Provisions for DTBook validation, etc.
+</p>
+<p>
+- Multilinguality
+</p>
+<p>
+Reference diagrams:
+<a class="ext-link" href="http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/docs/UrakawaCoreModelOverview_1.png?revision=575"><span class="icon">http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/docs/UrakawaCoreModelOverview_1.png?revision=575</span></a>
+<a class="ext-link" href="http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/docs/UrakawaCoreModelOverview_2.png?revision=575"><span class="icon">http://urakawa.svn.sf.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/docs/UrakawaCoreModelOverview_2.png?revision=575</span></a>
+</p>
+<p>
+Additional (more complete) UML diagrams are available here:
+<a class="ext-link" href="http://urakawa.svn.sf.net/viewvc/urakawa/trunk/urakawa/architecture/"><span class="icon">http://urakawa.svn.sf.net/viewvc/urakawa/trunk/urakawa/architecture/</span></a>
+</p>
+<p>
+# Summary of Milestone Releases
+</p>
+<p>
+- August 2006
+0.5 release
+=&gt; Obi is using the basic SDK functionality, but implements its own edition services that will later be back-ported to the SDK.
+</p>
+<p>
+- December 2006
+The "Asset-Manager" of Obi is being back-ported to the Urakawa-SDK. This requires some major design changes in order to fit neatly within the existing generic development framework.
+</p>
+<p>
+- January 2007
+The XUK XML format for the Urakawa SDK's Data Model now has an export feature to DAISY 3 (DTBook, NISO/ANSI Z39.86), based on XSLT transformation. This is an external implementation, that can be re-used in other applications (not just Obi).
+</p>
+<p>
+- March 2007
+SDK 0.5 is branched for Obi 0.84 release. The SDK evolves in the main "trunk" branch of the project, while Obi testing identifies specific problems.
+</p>
+<p>
+November 2007
+The SDK now contains a functional "Media Asset Manager", which Obi uses instead of its home-grown implementation. In addition, the SDK provides an Undo-Redo framework that is compatible with Obi's own implementation. Obi migrates to the SDK undo-redo, as it is fully-integrated with the asset manager.
+</p>
+<p>
+December 2007
+The SDK provides an event notification framework that works across the data model, the undo/redo manager and other areas of the toolkit.
+</p>
+<p>
+- January 2008
+1.0-beta release
+=&gt; There are pending Quality Assurance issues, but the feature-set is frozen.
+</p>
+<p>
+Official release announcement:
+<a class="ext-link" href="http://urakawa.sourceforge.net/sdk/Release_1.0beta.html"><span class="icon">http://urakawa.sourceforge.net/sdk/Release_1.0beta.html</span></a>
+</p>
+<p>
+- May 2008
+1.0 release
+=&gt; Improved documentation, XUK-schemas and stability (unit-tests with NUnit).
+</p>
+<p>
+- June 2008 onwards
+2.0 branch
+=&gt; Refactoring of the SDK design to accommodate new DAISY features and Tobi's integration requirements.
+</p>
+<p>
+(maintenance of 1.0 will be provided for Obi, but 1.0 will be officially deprecated)
+</p>
+<p>
+-- THE END -- 
+</p>
+</body></html>

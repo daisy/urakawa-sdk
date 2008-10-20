@@ -1,0 +1,134 @@
+[[TOC]]
+
+{{{
+#!html
+<img src="http://daisy-trac.cvsdude.com/tobi/chrome/uploads/daniel-weck/logo-opensource.gif"
+ title="Open-Source logo" style="float:right;margin-right:1em;"/>
+}}}
+
+{{{
+#!html
+<img src="http://daisy-trac.cvsdude.com/tobi/chrome/uploads/daniel-weck/DaisyLogo.png"
+ title="DAISY logo" style="float:right;margin-right:1em;"/>
+}}}
+
+= Homepage =
+
+== Project Overview ==
+
+=== Description ===
+
+The Urakawa SDK (Software Development Kit) helps developers to build complex multimedia authoring applications, with a primary focus on the production of accessible rich-media. The goal of the toolkit is to minimize development costs, by enabling programmers to focus on the workflow and usability of their products rather than on the low-level document and media processing routines. Through its powerful API, the SDK exposes an extensible authoring data model that offers application designers the freedom to implement custom behaviors and document types, using object-oriented paradigms and proven design-patterns.
+
+=== Cost and License ===
+
+The Urakawa SDK is Free (as in beer) and [http://www.opensource.org/docs/definition.php Open-Source] software ([http://daisy-trac.cvsdude.com/tobi/wiki/LGPLvsBSD LGPL]). It is released under a business-friendly licensing scheme to allow commercial exploitation whilst protecting the original developers' work.
+
+=== Applications ===
+
+The Urakawa SDK is actively used by [http://urakawa.sourceforge.net/obi Obi], the structured audio authoring tool for DAISY DTBs (Digital Talking Books). In addition, the [http://daisy-trac.cvsdude.com/tobi/ Tobi] application will also be heavily based on the Urakawa SDK. Tobi is a full-audio full-text DAISY authoring tool for the production of next-generation accessible rich-media content, and is currently under development.
+
+== Roadmap ==
+
+=== Current Status ===
+
+Version 2.0 of the Urakawa SDK is under heavy development. Although it is currently in alpha stage (the API is not stable and the unit-test coverage is insufficient), it is recommended to consider this version for developing next-generation multimedia authoring applications. Version 2.0 addresses many of 1.0 shortcomings, and includes some architectural changes in order to accommodate the new improvements. As a result, v2.0 introduces a number of backward incompatibilities which explain the major increase in the numbering scheme.
+
+=== Planning Overview ===
+
+The development process of the Urakawa SDK 2.0 runs as a parallel track to the [http://daisy-trac.cvsdude.com/tobi Tobi] software project, collecting and implementing requirements along the way. We are a small team so in order to avoid management overhead, we are operating under a lightweight agile process with short iterative release cycles. At the moment there are frequent changes in the SVN repository, because we are conducting research and development as part of our exploration of full-text full-audio DAISY Digital Talking Book authoring. We will schedule the public release of the first Urakawa SDK 2.0 beta as soon as we are confident enough about freezing the version 2.0 feature-set. We estimate that to happen by the end of year 2008.
+
+=== Release Schedule ===
+
+ * 2.0 - not released yet (ongoing development) - tentatively: end-of-year 2008
+ * 1.1 - not released yet (near-complete) - tentatively: end-of-year 2008
+ * 1.0 - 16 May 2008 - (frozen, now superseded by 1.1) - [http://urakawa.sourceforge.net/sdk/Release_1.0.html public announcement]
+ * 1.0 beta - 25 January 2008 - [http://urakawa.sourceforge.net/sdk/Release_1.0beta.html public announcement]
+
+=== Progress Tracking ===
+
+This Trac-based website provides an integrated tracking system. Up to date progress reports can be accessed [http://daisy-trac.cvsdude.com/urakawa-sdk/roadmap here] for each active milestone. The general day-to-day project-wide activity can be viewed [http://daisy-trac.cvsdude.com/urakawa-sdk/timeline here] and can be tracked using this [http://daisy-trac.cvsdude.com/urakawa-sdk/timeline?changeset=on&wiki=on&ticket=on&ticket_details=on&milestone=on&max=50&daysback=90&format=rss RSS feed]. There is currently no public mailing-list. We intend to set one up by the end of the year.
+
+== Deliverables ==
+
+=== Organization ===
+
+The Urakawa SDK comes in 2 'flavours', Java and C#:
+
+ * The Java implementation is mostly a mean to specify the architecture of the toolkit: it defines the authoring data model and recommends a formal API using general object-oriented design conventions. It is worth noting that although the Java implementation can be compiled, it could not run successfully due to a few missing low-level modules. Furthermore, the existing Java code base makes extensive use of !CheckedExceptions for verifying pre-conditions on method parameters (design contracts), which has an negative impact on performance. Adapting the current Java implementation to a real-world application would therefore require porting and a good amount of unit-testing would be recommended. The advantage of the Java flavor is that it written in a language-neutral style compared to the C# implementation, which means that it is more useful as a generic communication or exploration tool. Software architects are expected to prefer the Java flavor, especially given that the UML Class Diagrams are generated directly from the Java code.
+ * The .NET C-Sharp implementation is a deliverable that is currently used by concrete applications (i.e. [http://daisy-trac.cvsdude.com/tobi Obi] and [http://daisy-trac.cvsdude.com/tobi Tobi]). It comes with unit-tests and some sample code. The C# API uses a code style and design conventions that are specific to the language. Despite some architectural disparities with the Java code, experienced developers should be comfortable with either flavor as the object models are consistent. Programmers are likely to use the C# source directly and ignore the Java code, for obvious productivity reasons.
+
+=== Binaries ===
+
+The [http://urakawa.sourceforge.net/sdk/csharpbin/ currently available binaries] are compiled from version 1.0 of the Urakawa SDK. To obtain DLL binaries for versions 1.1 and 2.0 of the toolkit, you must download and build the source code.
+
+=== Source Code ===
+
+''Requirements''
+
+In the SVN repository, the trunk, branches and tags each contain a "java" and a "csharp" directory.
+
+ * We use the [http://eclipse.org Eclipse] IDE to maintain the Java code, but the choice is down to personal preferences. Another great alternative is [http://www.netbeans.org NetBeans], but we do not provide a project file for this IDE. The Java implementation makes extensive use of generics and therefore requires at least a [http://java.sun.com Java 1.5] compiler (JDK). The [http://ant.apache.org Ant build system] is recommended for those who wish to generate the UML Class Diagrams, in which case the [http://www.graphviz.org Graphviz Dot] executable is required to generate graphics. Please remember that the Java source can be compiled but it won't run as there is missing code behind a few low-level interfaces (i.e. XML cursor-based parser and binary stream API).
+ * Also because of generics, the C# code requires at least .NET 2.0. We are using [http://www.microsoft.com/express/vcsharp Microsoft VisualStudio] IDE to edit the C-Sharp source. The Urakawa SDK has been compiled with [http://www.mono-project.com Mono.NET] in the past, but as we are only testing with [http://msdn.microsoft.com/en-us/netframework Microsoft's .NET framework] we do not guarantee the sanity of the software under Mono. Please note that parts of the project depend on DirectX (for audio processing) and !WinForms (for the graphical user interfaces of sample applications). These parts may not be compatible with Mono at all. Running the unit-tests require the free [http://www.nunit.org NUnit] library. We find the commercial [http://www.jetbrains.com/resharper ReSharper plugin] for !VisualStudio to be a great aid. We would also recommend free addons for !ReSharper such as [http://code.google.com/p/scoutplugin ScoutPlugin] and [http://code.google.com/p/agentsmithplugin AgentSmith]. For a totally 'free' development, programmers may use the [http://sharpdevelop.net/OpenSource/SD SharpDevelop] or [http://monodevelop.com/Main_Page MonoDevelop] IDEs instead of !VisualStudio. 
+
+''Online Browsing''
+
+ * 2.0 is being developed in the [http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk SVN trunk]
+ * 1.1 is being completed in this [http://daisy-trac.cvsdude.com/urakawa-sdk/browser/branches/1.1_before_major_refactor_2.0 SVN branch]
+ * 1.0 was released in this [http://daisy-trac.cvsdude.com/urakawa-sdk/browser/tags/release-1.0 SVN tag]
+
+There are alternative ways - albeit not as good as Trac - to view the source code directly in a web-browser:
+
+ * [http://daisy-svn.cvsdude.com/urakawa-sdk simple plain-text view]
+ * [https://daisy-browse.cvsdude.com/vvc/urakawa-sdk using the popular ViewVC]
+ * [https://daisy-browse.cvsdude.com/wsvn/wsvn/urakawa-sdk with the more advanced WebSVN]
+
+''Download''
+
+We do not provide pre-packaged compressed source code archives. You can use your favorite SVN client and anonymously checkout either of these URLs (remember to append a path based on what directory you actually want to download):
+
+ * http://daisy-svn.cvsdude.com/urakawa-sdk (non-encrypted, faster)
+ * https://daisy-svn.cvsdude.com/urakawa-sdk (secured, slower)
+
+Microsoft Windows users: the free [http://tortoisesvn.tigris.org Tortoise-SVN] application is recommended. We find that the commercial [http://www.visualsvn.com VisualSVN] tool is a useful commercial addon to !VisualStudio.
+
+=== Documentation ===
+
+''Architecture''
+
+The [http://urakawa.sourceforge.net/sdk/Urakawa_SDK_ReferenceGuide.html "Reference Guide"] walks through the main architectural concepts of the Urakawa SDK. It has not been updated for version 2.0 yet, so it may be inaccurate in places. It remains, however, a good starting point to understand the project's challenges and the solutions we have decided to implement.
+
+''API Docs''
+
+Although the above document is considered the best introduction to the Urakawa SDK, programmers are likely to prefer the hands-on approach. To that effect, we have put the API documentation (design contract) of both the Java and C# implementations online. The [http://urakawa.sourceforge.net/sdk/csharpdoc/ browsable C-Sharp API-doc] was generated using [http://www.codeplex.com/Sandcastle SandCastle], whereas the [http://urakawa.sourceforge.net/sdk/apidoc/ Java API-doc] was compiled using the standard [http://java.sun.com/j2se/javadoc JavaDoc] tool.
+
+''Extras''
+
+Some of our documentation is in 'transitional' stage. They have not been published in either of the above forms, and they need to be polished before release. Here they are, for reference only:
+
+ * The [ApiDoc 'missing' API doc]
+ * Slightly obsolete [wiki:Diagrams diagrams]
+
+== About ==
+
+=== The DAISY Consortium ===
+
+DAISY (Digital Accessible Information SYstem) is an open standard for accessible electronic multimedia. The [http://daisy.org DAISY Consortium] is a worldwide body of like-minded organizations collaborating to develop the standards and to implement strategies for the production, exchange and use of next-generation Digital Talking Books (DTB) aimed at people who are blind, visually-impaired, or otherwise print-disabled (e.g. dyslexic). The DAISY Consortium is a non-profit organization.
+
+=== The Urakawa Project ===
+
+''Overview''
+
+The Urakawa project is an incubator created and maintained by the DAISY Consortium, with key support from international partners such as the NRCD (Japan), the INRIA (France) and CWI (Netherlands). The software deliverables of the Urakawa project consist of a software suite including the SDK (Software Development Toolkit), [http://urakawa.sf.net/obi Obi] and [http://daisy-trac.cvsdude.com/tobi/ Tobi].
+
+The Urakawa project was originally hosted at [http://urakawa.sourceforge.net Sourceforge.net Sourceforge], but that site is now obsolete as we have moved our development resources to this new Trac-based collaborative environment. The original website is kept as a legacy placeholder, which is deprecated and won't be maintained.
+
+''History''
+
+{{{
+#!html
+<img src="http://daisy-trac.cvsdude.com/tobi/chrome/uploads/daniel-weck/UrakawaLogo.png"
+ title="Urakawa logo" style="float:left;margin-right:1em;"/>
+}}}
+
+The Urakawa project logo is a circle that contains a large symbolic sea wave, to commemorate the birth of the project in a town called "Urakawa", in Hokkaido (nothern Japan). Urakawa-town has been the setting of devastating tsunamis, and its population has gathered an experience that is now being shared through training and oral communication. The people of Urakawa-town are forward-thinkers who have become volunteers to take part in a large research and experimentation programme for the inclusion of ICT (Information Communication Technology) in evacuation training. Interactive multimedia is a key contributor to the success of disaster preparedness projects, as it meets the needs of a broad category of end-users that have unequal access to safety information. Training manuals produced in accessible DAISY Digital Talking Books are helping not only the print-disabled or visually-impaired, but also persons with various degrees of socio-cognitive disabilities such as the elderly and people with autism. In this era of information society, the DAISY Consortium is dedicated to provide free production and playback tools so that everyone can contribute regardless of their purchasing power.
