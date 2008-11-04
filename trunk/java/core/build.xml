@@ -26,10 +26,11 @@
 
 		<!-- SUCCESS /usr/local/graphviz-2.14/bin/dot === version 2.14.1 (Fri Nov  9 09:06:49 GMT 2007) -->
 		<!-- SUCCESS /usr/local/graphviz-devel/bin/dot === version 2.17.20071127.0540 (Tue Nov 27 23:50:14 GMT 2007) -->
+		<!-- FAILURE /usr/local/bin/dot === version 2.20.3 (Tue Oct 14 12:23:50 UTC 2008) (dyld: lazy symbol binding failed: Symbol not found: _pixman_image_create_bits /// Referenced from: /usr/local/lib/graphviz/libgvplugin_pango.5.dylib) -->
 		<!-- FAILURE /usr/local/graphviz-local/bin/dot === version 1.16 (Thu Mar 23 11:56:44 GMT 2006) -->
 		<!-- FAILURE /sw/bin/dot === version 1.16 (Thu Mar 23 11:56:44 GMT 2006) -->
 		<!-- FAILURE /Applications/_MULTIMEDIA/Graphviz_.app/Contents/MacOS/dot === 1.13 (v16) (Mon August 23, 2004) -->
-		<condition property="executable.dot" value="/usr/local/graphviz-2.14/bin/dot">
+		<condition property="executable.dot" value="/usr/local/graphviz-devel/bin/dot">
 			<os family="mac" />
 		</condition>
 		<condition property="executable.dot" value="${ProgramFiles}/Graphviz2.16/bin/dot.exe">
@@ -206,12 +207,9 @@
 	</target>
 
 	<target name="uml">
-		<antcall target="umlgraph" />
-		<antcall target="hackdotsSED" />
+		<antcall target="umlgraph"/>
+		<antcall target="hackdotsSED"/>
 		<antcall target="dot_png"/>
-		<!-- antcall target="dot_pdf" / -->
-		<!-- antcall target="dot_svg" / -->
-		<!-- antcall target="clean"/ -->
 	</target>
 
 	<target name="hackdotsSED" depends="init" description="Hacks the dot files for presentation purposes.">
