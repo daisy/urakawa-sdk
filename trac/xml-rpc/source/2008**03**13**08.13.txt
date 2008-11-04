@@ -1,8 +1,0 @@
-
-
-= Migration from Sourceforge.net nearly completed =
-The (Java and CSharp) source code is now [http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk in the SVN] repository, but we are still in the process of moving a selected set of documents to the Wiki (a few are translated into actual Wiki pages, most others are uploaded as attachments).
-
-The migration process is described [wiki:sourceforge here], and the [http://urakawa.svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/architecture/ SF.net repository] is now to be considered "frozen" (although technically devs can still commit changes...).
-
-[[AddComment]]
