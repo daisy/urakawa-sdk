@@ -346,7 +346,6 @@ public abstract class GenericXukAbleFactory<T extends AbstractXukAble> extends
     /**
      * @hidden
      */
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws MethodParameterIsNullException,
@@ -462,7 +461,6 @@ public abstract class GenericXukAbleFactory<T extends AbstractXukAble> extends
     /**
      * @hidden
      */
-    @SuppressWarnings("unused")
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -476,7 +474,6 @@ public abstract class GenericXukAbleFactory<T extends AbstractXukAble> extends
     /**
      * @hidden
      */
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

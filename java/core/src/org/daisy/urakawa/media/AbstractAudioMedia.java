@@ -25,5 +25,6 @@ public abstract class AbstractAudioMedia extends AbstractMedia implements
     }
 
     protected abstract AbstractAudioMedia splitProtected(ITime splitPoint)
-            throws TimeOffsetIsOutOfBoundsException, MethodParameterIsNullException;
+            throws TimeOffsetIsOutOfBoundsException,
+            MethodParameterIsNullException;
 }

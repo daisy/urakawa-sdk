@@ -1,9 +1,9 @@
 package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.IStream;
 import org.daisy.urakawa.xuk.IXukAble;

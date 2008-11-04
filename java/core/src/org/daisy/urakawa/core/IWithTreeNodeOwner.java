@@ -20,13 +20,14 @@ public interface IWithTreeNodeOwner
 {
     /**
      * @return the ITreeNode owner. Can be null.
-     * @throws IsNotInitializedException when the ITreeNode owner has not been
-     *         set yet.
+     * @throws IsNotInitializedException
+     *         when the ITreeNode owner has not been set yet.
      */
     public ITreeNode getTreeNodeOwner() throws IsNotInitializedException;
 
     /**
-     * @param node can be null
+     * @param node
+     *        can be null
      * @throws PropertyAlreadyHasOwnerException
      * @throws ObjectIsInDifferentPresentationException
      * @stereotype Initialize

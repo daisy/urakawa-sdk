@@ -36,11 +36,11 @@ public interface IWithQualifiedName
     /**
      * The namespace part of the fully qualified name ("QName")
      * 
-     * @param newNS cannot be null, but can be empty.
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @param newNS
+     *        cannot be null, but can be empty.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      * @stereotype Initialize
-     * 
      */
     public void setNamespace(String newNS)
             throws MethodParameterIsNullException;
@@ -48,13 +48,13 @@ public interface IWithQualifiedName
     /**
      * The local part of the fully qualified name ("QName")
      * 
-     * @param newName cannot be null, cannot be empty String
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws MethodParameterIsEmptyStringException Empty string '' method
-     *         parameters are forbidden
+     * @param newName
+     *        cannot be null, cannot be empty String
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameters are forbidden
      * @stereotype Initialize
-     * 
      */
     public void setLocalName(String newName)
             throws MethodParameterIsNullException,
@@ -63,15 +63,16 @@ public interface IWithQualifiedName
     /**
      * @see #setLocalName(String)
      * @see #setNamespace(String)
-     * @param localname cannot be null, cannot be empty String
-     * @param namespace cannot be null, but can be empty String
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws MethodParameterIsEmptyStringException Empty string '' method
-     *         parameter is forbidden for the local name
+     * @param localname
+     *        cannot be null, cannot be empty String
+     * @param namespace
+     *        cannot be null, but can be empty String
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameter is forbidden for the local name
      * @stereotype Initialize
      * @tagvalue Events "QNameChanged"
-     * 
      */
     public void setQName(String localname, String namespace)
             throws MethodParameterIsNullException,

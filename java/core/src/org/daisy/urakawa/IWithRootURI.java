@@ -11,8 +11,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 public interface IWithRootURI
 {
     /**
-     * Returns the default root URI for the Presentation or the one specified
-     * by setRootURI().
+     * Returns the default root URI for the Presentation or the one specified by
+     * setRootURI().
      * 
      * @return The root URI of the Presentation.
      */
@@ -21,11 +21,12 @@ public interface IWithRootURI
     /**
      * Sets the root URI of the Presentation
      * 
-     * @param newRootUri cannot be null
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws URISyntaxException when the given URI is not absolute
-     * 
+     * @param newRootUri
+     *        cannot be null
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws URISyntaxException
+     *         when the given URI is not absolute
      * @tagvalue Events "RootUriChanged"
      */
     public void setRootURI(URI newRootUri)

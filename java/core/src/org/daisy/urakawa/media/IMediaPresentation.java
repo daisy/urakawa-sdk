@@ -23,11 +23,11 @@ public interface IMediaPresentation
      * that is to say the IMedia objects that are associated to a ITreeNode via
      * a IChannelsProperty.
      * 
-     * @param node cannot be null
+     * @param node
+     *        cannot be null
      * @return a non-null list, which can be empty.
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * 
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public List<IMedia> getListOfMediaUsedByTreeNode(ITreeNode node)
             throws MethodParameterIsNullException;

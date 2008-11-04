@@ -12,7 +12,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.metadata.Metadata
  */
-public final class MetadataFactory extends GenericWithPresentationFactory<Metadata>
+public final class MetadataFactory extends
+        GenericWithPresentationFactory<Metadata>
 {
     /**
      * @param pres
@@ -23,6 +24,7 @@ public final class MetadataFactory extends GenericWithPresentationFactory<Metada
     {
         super(pres);
     }
+
     /**
      * @return
      */

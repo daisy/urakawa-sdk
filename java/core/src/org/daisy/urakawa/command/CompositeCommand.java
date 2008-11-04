@@ -188,7 +188,6 @@ public class CompositeCommand extends AbstractCommand implements
         return cmds;
     }
 
-    @SuppressWarnings("unused")
     @Override
     public void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws XukDeserializationFailedException,
@@ -299,7 +298,6 @@ public class CompositeCommand extends AbstractCommand implements
         }
     }
 
-    @SuppressWarnings("unused")
     @Override
     public void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

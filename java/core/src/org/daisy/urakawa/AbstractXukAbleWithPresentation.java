@@ -9,10 +9,11 @@ import org.daisy.urakawa.xuk.AbstractXukAble;
  * Objects that are XUK-able in the data model always maintain a reference to
  * their "owner" (or "parent") Presentation. This concrete class is a
  * convenience implementation that prevents repetitive boiler-plate code.
+ * 
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public abstract class AbstractXukAbleWithPresentation extends AbstractXukAble implements
-        IWithPresentation
+public abstract class AbstractXukAbleWithPresentation extends AbstractXukAble
+        implements IWithPresentation
 {
     private Presentation mPresentation;
 

@@ -136,14 +136,13 @@ public class SequenceStream implements IStream
         }
     }
 
-    public void seek(@SuppressWarnings("unused") int n)
+    public void seek(int n)
     {
         /**
          * To implement.
          */
     }
 
-    @SuppressWarnings("unused")
     public void write(byte[] buffer, int offset, int count) throws IOException
     {
         /**
@@ -156,7 +155,7 @@ public class SequenceStream implements IStream
         return 0;
     }
 
-    public byte[] readBytes(@SuppressWarnings("unused") int length)
+    public byte[] readBytes(int length)
     {
         return null;
     }

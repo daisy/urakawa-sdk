@@ -1,9 +1,9 @@
 package org.daisy.urakawa.property;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.core.ITreeNode;
 import org.daisy.urakawa.core.IWithTreeNodeOwner;
 import org.daisy.urakawa.events.DataModelChangedEvent;
@@ -39,7 +39,6 @@ public interface IProperty extends IWithPresentation, IWithTreeNodeOwner,
      * 
      * @param node
      * @return true or false
-     * 
      * @throws MethodParameterIsNullException
      */
     public boolean canBeAddedTo(ITreeNode node)
@@ -67,17 +66,18 @@ public interface IProperty extends IWithPresentation, IWithTreeNodeOwner,
      * factory with a given QName, fails), then the
      * FactoryCannotCreateTypeException is raised.
      * 
-     * @param destPres the destination Presentation to which this property (and
-     *        its content) should be exported.
+     * @param destPres
+     *        the destination Presentation to which this property (and its
+     *        content) should be exported.
      * @return a new property with identical content as this one, but compatible
      *         with the given Presentation (factories, managers, channels,
      *         etc.).
-     * @throws FactoryCannotCreateTypeException if one of the factories in the
-     *         given Presentation cannot create a type based on a QName.
+     * @throws FactoryCannotCreateTypeException
+     *         if one of the factories in the given Presentation cannot create a
+     *         type based on a QName.
      * @throws IsNotInitializedException
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public IProperty export(Presentation destPres)
             throws FactoryCannotCreateTypeException, IsNotInitializedException,

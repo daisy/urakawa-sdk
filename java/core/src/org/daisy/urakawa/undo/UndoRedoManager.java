@@ -925,7 +925,6 @@ public final class UndoRedoManager extends AbstractXukAble implements
     /**
      * @hidden
      */
-    @SuppressWarnings("unused")
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -939,7 +938,6 @@ public final class UndoRedoManager extends AbstractXukAble implements
     /**
      * @hidden
      */
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

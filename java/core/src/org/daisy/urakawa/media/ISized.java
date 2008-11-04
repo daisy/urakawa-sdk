@@ -26,22 +26,22 @@ public interface ISized
     /**
      * Sets the width in pixels
      * 
-     * @param w a value in [0..n] (non-negative). Implementors may want to use
+     * @param w
+     *        a value in [0..n] (non-negative). Implementors may want to use
      *        "uint"/"unsigned int" ;)
-     * @throws MethodParameterIsOutOfBoundsException if w is not an authorized
-     *         value
-     * 
+     * @throws MethodParameterIsOutOfBoundsException
+     *         if w is not an authorized value
      */
     public void setWidth(int w) throws MethodParameterIsOutOfBoundsException;
 
     /**
      * Sets the height in pixels
      * 
-     * @param h a value in [0..n] (non-negative). Implementors may want to use
+     * @param h
+     *        a value in [0..n] (non-negative). Implementors may want to use
      *        "uint"/"unsigned int" ;)
-     * @throws MethodParameterIsOutOfBoundsException if h is not an authorized
-     *         value
-     * 
+     * @throws MethodParameterIsOutOfBoundsException
+     *         if h is not an authorized value
      */
     public void setHeight(int h) throws MethodParameterIsOutOfBoundsException;
 

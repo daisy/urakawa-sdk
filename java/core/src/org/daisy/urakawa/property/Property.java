@@ -2,9 +2,9 @@ package org.daisy.urakawa.property;
 
 import java.net.URI;
 
+import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.core.ITreeNode;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.Event;
@@ -28,7 +28,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class Property extends AbstractXukAbleWithPresentation implements IProperty
+public class Property extends AbstractXukAbleWithPresentation implements
+        IProperty
 {
     protected IEventHandler<Event> mDataModelEventNotifier = new EventHandler();
     protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>()
@@ -193,7 +194,6 @@ public class Property extends AbstractXukAbleWithPresentation implements IProper
         return true;
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -212,7 +212,6 @@ public class Property extends AbstractXukAbleWithPresentation implements IProper
          */
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,
@@ -223,7 +222,6 @@ public class Property extends AbstractXukAbleWithPresentation implements IProper
          */
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

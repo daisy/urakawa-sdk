@@ -27,7 +27,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class Metadata extends AbstractXukAbleWithPresentation implements IMetadata
+public class Metadata extends AbstractXukAbleWithPresentation implements
+        IMetadata
 {
     private String mName;
     private Map<String, String> mAttributes;
@@ -181,7 +182,6 @@ public class Metadata extends AbstractXukAbleWithPresentation implements IMetada
         }
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,
@@ -214,7 +214,6 @@ public class Metadata extends AbstractXukAbleWithPresentation implements IMetada
         }
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

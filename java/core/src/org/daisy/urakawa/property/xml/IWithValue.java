@@ -31,13 +31,13 @@ public interface IWithValue
     /**
      * The value.
      * 
-     * @param newValue cannot be null, cannot be empty String
-     * @throws MethodParameterIsEmptyStringException Empty string '' method
-     *         parameters are forbidden
-     * 
+     * @param newValue
+     *        cannot be null, cannot be empty String
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameters are forbidden
      * @tagvalue Events "ValueChanged"
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void setValue(String newValue)
             throws MethodParameterIsNullException,

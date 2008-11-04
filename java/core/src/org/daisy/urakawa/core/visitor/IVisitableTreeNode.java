@@ -29,10 +29,10 @@ public interface IVisitableTreeNode
      * traversing children, respectively.
      * </p>
      * 
-     * @param visitor cannot be null.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @param visitor
+     *        cannot be null.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void acceptDepthFirst(ITreeNodeVisitor visitor)
             throws MethodParameterIsNullException;
@@ -45,10 +45,10 @@ public interface IVisitableTreeNode
      * more straight-forward depth-first traversal.
      * </p>
      * 
-     * @param visitor cannot be null.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @param visitor
+     *        cannot be null.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void acceptBreadthFirst(ITreeNodeVisitor visitor)
             throws MethodParameterIsNullException;

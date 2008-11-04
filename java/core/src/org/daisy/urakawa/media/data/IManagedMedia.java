@@ -20,10 +20,10 @@ public interface IManagedMedia extends IMedia
     public IMediaData getMediaData();
 
     /**
-     * @param data cannot be null
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * 
+     * @param data
+     *        cannot be null
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      * @tagvalue Events "MediaDataChanged"
      * @stereotype Initialize
      */

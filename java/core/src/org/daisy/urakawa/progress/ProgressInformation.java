@@ -14,8 +14,8 @@ public class ProgressInformation
     /**
      * @param current
      * @param total
-     * @throws MethodParameterIsOutOfBoundsException when (total < 0 || current
-     *         > total || current < 0)
+     * @throws MethodParameterIsOutOfBoundsException
+     *         when (total < 0 || current > total || current < 0)
      */
     public ProgressInformation(int total, int current)
             throws MethodParameterIsOutOfBoundsException

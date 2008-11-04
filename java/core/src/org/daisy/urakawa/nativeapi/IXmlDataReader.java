@@ -52,7 +52,8 @@ public interface IXmlDataReader
     public int getNodeType();
 
     /**
-     * @param name attribute name
+     * @param name
+     *        attribute name
      * @return value
      */
     public String getAttribute(String name);

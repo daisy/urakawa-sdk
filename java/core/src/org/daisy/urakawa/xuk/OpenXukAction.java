@@ -257,7 +257,6 @@ public class OpenXukAction extends ProgressAction implements
         return null;
     }
 
-    @SuppressWarnings("unused")
     public void setLongDescription(String str)
             throws MethodParameterIsNullException
     {
@@ -266,7 +265,6 @@ public class OpenXukAction extends ProgressAction implements
          */
     }
 
-    @SuppressWarnings("unused")
     public void setShortDescription(String str)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException

@@ -377,7 +377,6 @@ public class XmlAttribute extends AbstractXukAble implements IXmlAttribute
                 getValue().replace("'", "''"));
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

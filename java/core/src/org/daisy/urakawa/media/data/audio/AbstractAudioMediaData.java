@@ -607,7 +607,7 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
     {
         return (AbstractAudioMediaData) copyProtected();
     }
-    
+
     @Override
     protected IMediaData copyProtected()
     {

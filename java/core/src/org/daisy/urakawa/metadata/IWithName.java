@@ -20,10 +20,10 @@ public interface IWithName
     public String getName();
 
     /**
-     * @param name cannot be null but can be empty string
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * 
+     * @param name
+     *        cannot be null but can be empty string
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      * @tagvalue Events "Metadata"
      */
     public void setName(String name) throws MethodParameterIsNullException;

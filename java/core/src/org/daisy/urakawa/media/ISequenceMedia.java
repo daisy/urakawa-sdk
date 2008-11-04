@@ -30,20 +30,21 @@ public interface ISequenceMedia extends IMedia
     public boolean getAllowMultipleTypes();
 
     /**
-     * @param newValue true if multiple media types are allowed for objects in
-     *        this sequence
-     * @throws SequenceHasMultipleTypesException when newValue is true and the
-     *         sequence contains media objects of multiple types.
+     * @param newValue
+     *        true if multiple media types are allowed for objects in this
+     *        sequence
+     * @throws SequenceHasMultipleTypesException
+     *         when newValue is true and the sequence contains media objects of
+     *         multiple types.
      */
     public void setAllowMultipleTypes(boolean newValue)
             throws SequenceHasMultipleTypesException;
 
     /**
      * @param iMedia
-     * 
      * @return true if this sequence accepts the given IMedia object.
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      * @see org.daisy.urakawa.media.DoesNotAcceptMediaException
      */
     public boolean canAcceptMedia(IMedia iMedia)
@@ -52,13 +53,12 @@ public interface ISequenceMedia extends IMedia
     /**
      * Inserts the IMedia at index = {@link ISequenceMedia#getCount()}.
      * 
-     * @param newItem cannot be null, and should be a legal IMedia for this
-     *        sequence
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws DoesNotAcceptMediaException if the given IMedia is not accepted
-     *         for this sequence
+     * @param newItem
+     *        cannot be null, and should be a legal IMedia for this sequence
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws DoesNotAcceptMediaException
+     *         if the given IMedia is not accepted for this sequence
      */
     public void appendItem(IMedia newItem)
             throws MethodParameterIsNullException, DoesNotAcceptMediaException;
@@ -66,11 +66,11 @@ public interface ISequenceMedia extends IMedia
     /**
      * Gets a media item at a given index
      * 
-     * @param index must be in bounds: [0...{@link ISequenceMedia#getCount()}-1]
+     * @param index
+     *        must be in bounds: [0...{@link ISequenceMedia#getCount()}-1]
      * @return the IMedia object
-     * 
-     * @throws MethodParameterIsOutOfBoundsException if index is not an allowed
-     *         value
+     * @throws MethodParameterIsOutOfBoundsException
+     *         if index is not an allowed value
      */
     public IMedia getItem(int index)
             throws MethodParameterIsOutOfBoundsException;
@@ -80,17 +80,17 @@ public interface ISequenceMedia extends IMedia
      * on the right. If index == {@link ISequenceMedia#getCount()}, then the
      * item is appended at the end of the sequence.
      * 
-     * @param index must be in bounds: [0...{@link ISequenceMedia#getCount()}]
-     * @param newItem cannot be null, and should be a legal IMedia for this
-     *        sequence
-     * 
-     *           "MethodParameterIsNull-MethodParameterIsOutOfBounds-DoesNotAcceptMedia"
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws MethodParameterIsOutOfBoundsException if index is not an
-     *         authorized value
-     * @throws DoesNotAcceptMediaException if the given IMedia is not accepted
-     *         for this sequence
+     * @param index
+     *        must be in bounds: [0...{@link ISequenceMedia#getCount()}]
+     * @param newItem
+     *        cannot be null, and should be a legal IMedia for this sequence
+     *        "MethodParameterIsNull-MethodParameterIsOutOfBounds-DoesNotAcceptMedia"
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsOutOfBoundsException
+     *         if index is not an authorized value
+     * @throws DoesNotAcceptMediaException
+     *         if the given IMedia is not accepted for this sequence
      */
     public void insertItem(int index, IMedia newItem)
             throws MethodParameterIsNullException,
@@ -99,11 +99,11 @@ public interface ISequenceMedia extends IMedia
     /**
      * Removes the IMedia at a given index, and returns it.
      * 
-     * @param index must be in bounds: [0...{@link ISequenceMedia#getCount()}-1]
+     * @param index
+     *        must be in bounds: [0...{@link ISequenceMedia#getCount()}-1]
      * @return the removed IMedia.
-     * 
-     * @throws MethodParameterIsOutOfBoundsException if index is not an allowed
-     *         value
+     * @throws MethodParameterIsOutOfBoundsException
+     *         if index is not an allowed value
      */
     public IMedia removeItem(int index)
             throws MethodParameterIsOutOfBoundsException;
@@ -113,11 +113,10 @@ public interface ISequenceMedia extends IMedia
      * exception.
      * 
      * @param item
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * 
-     * @throws MediaIsNotInSequenceException if the given media does not exist
-     *         in the the sequence
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MediaIsNotInSequenceException
+     *         if the given media does not exist in the the sequence
      */
     public void removeItem(IMedia item) throws MethodParameterIsNullException,
             MediaIsNotInSequenceException;

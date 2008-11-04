@@ -34,8 +34,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ExternalTextMedia extends TextMedia implements
-        ILocated
+public class ExternalTextMedia extends TextMedia implements ILocated
 {
     // BEGIN ILocated common code (no multiple-inheritance, unfortunately)
     private String mSrc;
@@ -333,17 +332,15 @@ public class ExternalTextMedia extends TextMedia implements
     }
 
     // END ILocated common code (no multiple-inheritance, unfortunately)
-    /////
-    /////
-    ////
-    ////
-
+    // ///
+    // ///
+    // //
+    // //
     @Override
     public ExternalTextMedia copy()
     {
         return (ExternalTextMedia) copyProtected();
     }
-
 
     @Override
     public ExternalTextMedia export(Presentation destPres)
@@ -418,10 +415,10 @@ public class ExternalTextMedia extends TextMedia implements
         return str;
     }
 
-
     /**
-     * @throws CannotWriteToExternalFileException if the URI scheme is not
-     *         "file" or "ftp" (HTTP put protocol is not supported)
+     * @throws CannotWriteToExternalFileException
+     *         if the URI scheme is not "file" or "ftp" (HTTP put protocol is
+     *         not supported)
      */
     @Override
     public void setText(String text) throws MethodParameterIsNullException
@@ -477,7 +474,6 @@ public class ExternalTextMedia extends TextMedia implements
         notifyListeners(new TextChangedEvent(this, mText, prevTxt));
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

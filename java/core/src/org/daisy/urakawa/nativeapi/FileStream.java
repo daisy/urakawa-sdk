@@ -14,14 +14,13 @@ public class FileStream implements IStream
     /**
      * @param path
      */
-    public FileStream(@SuppressWarnings("unused") String path)
+    public FileStream(String path)
     {
         /**
          * To implement.
          */
     }
 
-    @SuppressWarnings("unused")
     public void close() throws IOException
     {
         /**
@@ -39,27 +38,25 @@ public class FileStream implements IStream
         return 0;
     }
 
-    @SuppressWarnings("unused")
     public int read(byte[] buffer, int offset, int count) throws IOException
     {
         return 0;
     }
 
-    public void setPosition(@SuppressWarnings("unused") int pos)
+    public void setPosition(int pos)
     {
         /**
          * To implement.
          */
     }
 
-    public void seek(@SuppressWarnings("unused") int n)
+    public void seek(int n)
     {
         /**
          * To implement.
          */
     }
 
-    @SuppressWarnings("unused")
     public void write(byte[] buffer, int offset, int count) throws IOException
     {
         /**
@@ -72,7 +69,7 @@ public class FileStream implements IStream
         return 0;
     }
 
-    public byte[] readBytes(@SuppressWarnings("unused") int length)
+    public byte[] readBytes(int length)
     {
         return null;
     }

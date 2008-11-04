@@ -3,9 +3,9 @@ package org.daisy.urakawa.media.data;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.IEventHandler;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -62,9 +62,8 @@ public interface IMediaData extends IWithName, IWithPresentation, IXukAble,
      * @param destPres
      * @return can return null in case of failure.
      * @throws FactoryCannotCreateTypeException
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public IMediaData export(Presentation destPres)
             throws FactoryCannotCreateTypeException,

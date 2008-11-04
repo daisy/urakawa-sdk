@@ -7,9 +7,9 @@ import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
@@ -258,8 +258,9 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
         IFileDataProvider c;
         try
         {
-            c = getPresentation().getDataProviderFactory().createFileDataProvider(
-                    getMimeType(), getXukLocalName(), getXukNamespaceURI());
+            c = getPresentation().getDataProviderFactory()
+                    .createFileDataProvider(getMimeType(), getXukLocalName(),
+                            getXukNamespaceURI());
         }
         catch (MethodParameterIsNullException e2)
         {
@@ -293,10 +294,9 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
         }
         try
         {
-            // TODO: This should be a static method !! 
-            new DataProviderManager(getPresentation()).appendDataToProvider(thisData, thisData
-                    .getLength()
-                    - thisData.getPosition(), c);
+            // TODO: This should be a static method !!
+            new DataProviderManager(getPresentation()).appendDataToProvider(
+                    thisData, thisData.getLength() - thisData.getPosition(), c);
         }
         catch (MethodParameterIsNullException e)
         {
@@ -428,7 +428,6 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
     }
 
     @Override
-    @SuppressWarnings("unused")
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws ProgressCancelledException
     {
@@ -453,7 +452,8 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
         try
         {
             // TODO: This should be a static method !!
-            if (!new DataProviderManager(getPresentation()).compareDataProviderContent(this, o))
+            if (!new DataProviderManager(getPresentation())
+                    .compareDataProviderContent(this, o))
                 return false;
         }
         catch (DataIsMissingException e)
@@ -490,8 +490,8 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
         IFileDataProvider expFDP;
         try
         {
-            expFDP = destPres.getDataProviderFactory().createFileDataProvider(getMimeType(),
-                    getXukLocalName(), getXukNamespaceURI());
+            expFDP = destPres.getDataProviderFactory().createFileDataProvider(
+                    getMimeType(), getXukLocalName(), getXukNamespaceURI());
         }
         catch (MethodParameterIsEmptyStringException e1)
         {
@@ -522,8 +522,9 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
             try
             {
                 // TODO: This should be a static method !!
-                new DataProviderManager(getPresentation()).appendDataToProvider(thisStm, thisStm
-                        .getLength(), expFDP);
+                new DataProviderManager(getPresentation())
+                        .appendDataToProvider(thisStm, thisStm.getLength(),
+                                expFDP);
             }
             catch (OutputStreamIsOpenException e)
             {

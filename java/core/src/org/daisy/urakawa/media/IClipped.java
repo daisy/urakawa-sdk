@@ -15,13 +15,13 @@ public interface IClipped extends IContinuous
     /**
      * Sets the clipBegin, a time offset from the beginning of the media stream.
      * 
-     * @param newClipBegin cannot be null, must be within bounds [0..
+     * @param newClipBegin
+     *        cannot be null, must be within bounds [0..
      *        {@link IClipped#getClipEnd()}]
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws TimeOffsetIsOutOfBoundsException if newClipBegin is not an
-     *         authorized value
-     * 
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws TimeOffsetIsOutOfBoundsException
+     *         if newClipBegin is not an authorized value
      * @tagvalue Events "ClipChanged"
      * @see IClipped#getClipEnd()
      */
@@ -32,14 +32,14 @@ public interface IClipped extends IContinuous
     /**
      * Sets the clipEnd, a time offset from the beginning of the media stream.
      * 
-     * @param newClipEnd cannot be null, must be within bounds [
+     * @param newClipEnd
+     *        cannot be null, must be within bounds [
      *        {@link IClipped#getClipBegin()}..{@link IContinuous#getDuration()}
      *        ]
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws TimeOffsetIsOutOfBoundsException if newClipEnd is not an
-     *         authorized value
-     * 
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws TimeOffsetIsOutOfBoundsException
+     *         if newClipEnd is not an authorized value
      * @tagvalue Events "ClipChanged"
      * @see IClipped#getClipBegin()
      */

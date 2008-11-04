@@ -11,9 +11,8 @@ public interface IAction extends IWithShortLongDescription
      * </p>
      * 
      * @tagvalue Events "CommandExecuted"
-     * 
-     * @throws CommandCannotExecuteException when the ICommand cannot be
-     *         executed
+     * @throws CommandCannotExecuteException
+     *         when the ICommand cannot be executed
      */
     public void execute() throws CommandCannotExecuteException;
 

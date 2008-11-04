@@ -59,7 +59,6 @@ public class CloseNotifyingStream implements IStream
         mBaseStream.seek(n);
     }
 
-    @SuppressWarnings("unused")
     public void write(byte[] buffer, int offset, int count) throws IOException
     {
         /**
@@ -72,7 +71,7 @@ public class CloseNotifyingStream implements IStream
         return 0;
     }
 
-    public byte[] readBytes(@SuppressWarnings("unused") int length)
+    public byte[] readBytes(int length)
     {
         return null;
     }

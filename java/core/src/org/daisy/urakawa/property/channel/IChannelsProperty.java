@@ -13,7 +13,8 @@ import org.daisy.urakawa.property.IProperty;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - "Aggregation\n(map key)" 0..n org.daisy.urakawa.property.channel.IChannel
+ * @depend - "Aggregation\n(map key)" 0..n
+ *         org.daisy.urakawa.property.channel.IChannel
  * @depend - "Aggregation\n(map value)" 0..n org.daisy.urakawa.media.IMedia
  * @depend - Clone - org.daisy.urakawa.property.channel.IChannelsProperty
  */

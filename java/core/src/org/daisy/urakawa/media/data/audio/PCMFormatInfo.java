@@ -8,8 +8,8 @@ import org.daisy.urakawa.media.timing.ITimeDelta;
 import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.AbstractXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -286,7 +286,6 @@ public class PCMFormatInfo extends AbstractXukAble implements IPCMFormatInfo
         }
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws MethodParameterIsNullException,
@@ -347,7 +346,6 @@ public class PCMFormatInfo extends AbstractXukAble implements IPCMFormatInfo
         }
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

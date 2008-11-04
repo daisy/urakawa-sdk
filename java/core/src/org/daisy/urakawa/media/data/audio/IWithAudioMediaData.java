@@ -26,10 +26,10 @@ public interface IWithAudioMediaData
     public IAudioMediaData getAudioMediaData();
 
     /**
-     * @param data cannot be null
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * 
+     * @param data
+     *        cannot be null
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      * @stereotype Initialize
      */
     public void setAudioMediaData(IAudioMediaData data)

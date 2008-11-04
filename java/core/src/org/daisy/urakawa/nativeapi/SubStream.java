@@ -129,7 +129,6 @@ public class SubStream implements IStream
         return 0;
     }
 
-    @SuppressWarnings("unused")
     public void write(byte[] buffer, int offset, int count) throws IOException
     {
         /**
@@ -137,7 +136,7 @@ public class SubStream implements IStream
          */
     }
 
-    public byte[] readBytes(@SuppressWarnings("unused") int length)
+    public byte[] readBytes(int length)
     {
         return null;
     }

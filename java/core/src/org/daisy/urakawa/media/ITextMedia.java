@@ -18,10 +18,10 @@ public interface ITextMedia extends IMedia
     public String getText();
 
     /**
-     * @param text Cannot be NULL
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * 
+     * @param text
+     *        Cannot be NULL
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      * @tagvalue Events "TextChanged"
      */
     public void setText(String text) throws MethodParameterIsNullException;

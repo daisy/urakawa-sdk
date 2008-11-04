@@ -14,10 +14,9 @@ public class SrcChangedEvent extends MediaEvent
      * @param newSrcVal
      * @param prevSrcVal
      */
-    public SrcChangedEvent(ILocated source, String newSrcVal,
-            String prevSrcVal)
+    public SrcChangedEvent(ILocated source, String newSrcVal, String prevSrcVal)
     {
-        super((IMedia)source);
+        super((IMedia) source);
         mSourceExternalMedia = source;
         mNewSrc = newSrcVal;
         mPreviousSrc = prevSrcVal;

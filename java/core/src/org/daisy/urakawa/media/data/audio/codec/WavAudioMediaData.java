@@ -14,32 +14,32 @@ import org.daisy.urakawa.exception.IsNotManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.DataIsMissingException;
-import org.daisy.urakawa.media.data.IDataProvider;
 import org.daisy.urakawa.media.data.DataProviderFactory;
 import org.daisy.urakawa.media.data.DataProviderManager;
+import org.daisy.urakawa.media.data.IDataProvider;
+import org.daisy.urakawa.media.data.IMediaData;
 import org.daisy.urakawa.media.data.InputStreamIsOpenException;
 import org.daisy.urakawa.media.data.InputStreamIsTooShortException;
 import org.daisy.urakawa.media.data.InvalidDataFormatException;
-import org.daisy.urakawa.media.data.IMediaData;
 import org.daisy.urakawa.media.data.OutputStreamIsOpenException;
-import org.daisy.urakawa.media.data.audio.IAudioMediaData;
 import org.daisy.urakawa.media.data.audio.AbstractAudioMediaData;
+import org.daisy.urakawa.media.data.audio.IAudioMediaData;
 import org.daisy.urakawa.media.data.audio.IPCMDataInfo;
-import org.daisy.urakawa.media.data.audio.PCMDataInfo;
 import org.daisy.urakawa.media.data.audio.IPCMFormatInfo;
+import org.daisy.urakawa.media.data.audio.PCMDataInfo;
 import org.daisy.urakawa.media.data.audio.PCMFormatInfo;
 import org.daisy.urakawa.media.timing.ITime;
 import org.daisy.urakawa.media.timing.ITimeDelta;
-import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.Time;
+import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeOffsetIsNegativeException;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
-import org.daisy.urakawa.nativeapi.SequenceStream;
 import org.daisy.urakawa.nativeapi.IStream;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.nativeapi.SequenceStream;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -91,8 +91,9 @@ public class WavAudioMediaData extends AbstractAudioMediaData
 
     /**
      * @param pcmData
-     * @param duration can be null, in which case the current pcmData position
-     *        will be used
+     * @param duration
+     *        can be null, in which case the current pcmData position will be
+     *        used
      * @return
      * @throws MethodParameterIsNullException
      */
@@ -107,7 +108,8 @@ public class WavAudioMediaData extends AbstractAudioMediaData
         try
         {
             newSingleDataProvider = getPresentation().getDataProviderFactory()
-                    .createFileDataProvider(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                    .createFileDataProvider(
+                            DataProviderFactory.AUDIO_WAV_MIME_TYPE);
         }
         catch (MethodParameterIsEmptyStringException e2)
         {
@@ -180,8 +182,8 @@ public class WavAudioMediaData extends AbstractAudioMediaData
         try
         {
             // TODO: This should be a static method !!
-            new DataProviderManager(getPresentation()).appendDataToProvider(pcmData, pcmInfo
-                    .getDataLength(), newSingleDataProvider);
+            new DataProviderManager(getPresentation()).appendDataToProvider(
+                    pcmData, pcmInfo.getDataLength(), newSingleDataProvider);
         }
         catch (OutputStreamIsOpenException e)
         {
@@ -1164,7 +1166,6 @@ public class WavAudioMediaData extends AbstractAudioMediaData
         return oWAMD;
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -1175,7 +1176,6 @@ public class WavAudioMediaData extends AbstractAudioMediaData
          */
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

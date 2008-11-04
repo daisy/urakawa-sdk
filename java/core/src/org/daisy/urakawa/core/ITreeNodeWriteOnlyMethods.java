@@ -30,8 +30,9 @@ public interface ITreeNodeWriteOnlyMethods
      * the tree upwards.
      * </p>
      * 
-     * @param node the new parent for this node. can be NULL (this node is a
-     *        tree root).
+     * @param node
+     *        the new parent for this node. can be NULL (this node is a tree
+     *        root).
      */
     public void setParent(ITreeNode node);
 
@@ -47,20 +48,23 @@ public interface ITreeNodeWriteOnlyMethods
      * children list.
      * </p>
      * 
-     * @param node cannot be null. see other conditions given by the exceptions.
-     * @param insertIndex must be in bounds [0..children.size].
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws MethodParameterIsOutOfBoundsException if insertIndex is not in
-     *         bounds [0..children.size].
-     * @throws ObjectIsInDifferentPresentationException if the given node
-     *         Presentation is not the same as this Presentation.
-     * @throws TreeNodeHasParentException if the given node as a parent already
-     *         (already part of a tree).
-     * @throws TreeNodeIsAncestorException if the given node is the root of this
-     *         node's tree.
-     * @throws TreeNodeIsSelfException if the given node is this node.
+     * @param node
+     *        cannot be null. see other conditions given by the exceptions.
+     * @param insertIndex
+     *        must be in bounds [0..children.size].
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsOutOfBoundsException
+     *         if insertIndex is not in bounds [0..children.size].
+     * @throws ObjectIsInDifferentPresentationException
+     *         if the given node Presentation is not the same as this
+     *         Presentation.
+     * @throws TreeNodeHasParentException
+     *         if the given node as a parent already (already part of a tree).
+     * @throws TreeNodeIsAncestorException
+     *         if the given node is the root of this node's tree.
+     * @throws TreeNodeIsSelfException
+     *         if the given node is this node.
      * @tagvalue Events "ChildAdded"
      */
     public void insert(ITreeNode node, int insertIndex)
@@ -76,21 +80,23 @@ public interface ITreeNodeWriteOnlyMethods
      * ITreeNode.
      * <p>
      * 
-     * @param node cannot be null. see other conditions given by the exceptions.
-     * @param anchorNode cannot be null. see other conditions given by the
-     *        exceptions.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws TreeNodeDoesNotExistException if anchorNode is not actually if
-     *         this node's tree.
-     * @throws ObjectIsInDifferentPresentationException if the given node
-     *         Presentation is not the same as this Presentation.
-     * @throws TreeNodeHasParentException if the given node as a parent already
-     *         (already part of a tree).
-     * @throws TreeNodeIsAncestorException if the given node is the root of this
-     *         node's tree.
-     * @throws TreeNodeIsSelfException if the given node is this node.
+     * @param node
+     *        cannot be null. see other conditions given by the exceptions.
+     * @param anchorNode
+     *        cannot be null. see other conditions given by the exceptions.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws TreeNodeDoesNotExistException
+     *         if anchorNode is not actually if this node's tree.
+     * @throws ObjectIsInDifferentPresentationException
+     *         if the given node Presentation is not the same as this
+     *         Presentation.
+     * @throws TreeNodeHasParentException
+     *         if the given node as a parent already (already part of a tree).
+     * @throws TreeNodeIsAncestorException
+     *         if the given node is the root of this node's tree.
+     * @throws TreeNodeIsSelfException
+     *         if the given node is this node.
      */
     public void insertBefore(ITreeNode node, ITreeNode anchorNode)
             throws MethodParameterIsNullException,
@@ -105,21 +111,23 @@ public interface ITreeNodeWriteOnlyMethods
      * ITreeNode.
      * </p>
      * 
-     * @param node cannot be null. see other conditions given by the exceptions.
-     * @param anchorNode cannot be null. see other conditions given by the
-     *        exceptions.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws TreeNodeDoesNotExistException if anchorNode is not actually if
-     *         this node's tree.
-     * @throws ObjectIsInDifferentPresentationException if the given node
-     *         Presentation is not the same as this Presentation.
-     * @throws TreeNodeHasParentException if the given node as a parent already
-     *         (already part of a tree).
-     * @throws TreeNodeIsAncestorException if the given node is the root of this
-     *         node's tree.
-     * @throws TreeNodeIsSelfException if the given node is this node.
+     * @param node
+     *        cannot be null. see other conditions given by the exceptions.
+     * @param anchorNode
+     *        cannot be null. see other conditions given by the exceptions.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws TreeNodeDoesNotExistException
+     *         if anchorNode is not actually if this node's tree.
+     * @throws ObjectIsInDifferentPresentationException
+     *         if the given node Presentation is not the same as this
+     *         Presentation.
+     * @throws TreeNodeHasParentException
+     *         if the given node as a parent already (already part of a tree).
+     * @throws TreeNodeIsAncestorException
+     *         if the given node is the root of this node's tree.
+     * @throws TreeNodeIsSelfException
+     *         if the given node is this node.
      */
     public void insertAfter(ITreeNode node, ITreeNode anchorNode)
             throws TreeNodeDoesNotExistException,
@@ -133,17 +141,19 @@ public interface ITreeNodeWriteOnlyMethods
      * Appends a new child ITreeNode to the end of the list of children.
      * </p>
      * 
-     * @param node cannot be null. see other conditions given by the exceptions.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws ObjectIsInDifferentPresentationException if the given node
-     *         Presentation is not the same as this Presentation.
-     * @throws TreeNodeHasParentException if the given node as a parent already
-     *         (already part of a tree).
-     * @throws TreeNodeIsAncestorException if the given node is the root of this
-     *         node's tree.
-     * @throws TreeNodeIsSelfException if the given node is this node.
+     * @param node
+     *        cannot be null. see other conditions given by the exceptions.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws ObjectIsInDifferentPresentationException
+     *         if the given node Presentation is not the same as this
+     *         Presentation.
+     * @throws TreeNodeHasParentException
+     *         if the given node as a parent already (already part of a tree).
+     * @throws TreeNodeIsAncestorException
+     *         if the given node is the root of this node's tree.
+     * @throws TreeNodeIsSelfException
+     *         if the given node is this node.
      */
     public void appendChild(ITreeNode node)
             throws MethodParameterIsNullException,
@@ -157,22 +167,24 @@ public interface ITreeNodeWriteOnlyMethods
      * node's parent is then set to NULL.
      * </p>
      * 
-     * @param node cannot be null. see other conditions given by the exceptions.
-     * @param oldNode cannot be null. see other conditions given by the
-     *        exceptions.
+     * @param node
+     *        cannot be null. see other conditions given by the exceptions.
+     * @param oldNode
+     *        cannot be null. see other conditions given by the exceptions.
      * @return the replaced node
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws TreeNodeDoesNotExistException if oldNode is not actually if this
-     *         node's tree.
-     * @throws ObjectIsInDifferentPresentationException if the given node
-     *         Presentation is not the same as this Presentation.
-     * @throws TreeNodeHasParentException if the given node as a parent already
-     *         (already part of a tree).
-     * @throws TreeNodeIsAncestorException if the given node is the root of this
-     *         node's tree.
-     * @throws TreeNodeIsSelfException if the given node is this node.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws TreeNodeDoesNotExistException
+     *         if oldNode is not actually if this node's tree.
+     * @throws ObjectIsInDifferentPresentationException
+     *         if the given node Presentation is not the same as this
+     *         Presentation.
+     * @throws TreeNodeHasParentException
+     *         if the given node as a parent already (already part of a tree).
+     * @throws TreeNodeIsAncestorException
+     *         if the given node is the root of this node's tree.
+     * @throws TreeNodeIsSelfException
+     *         if the given node is this node.
      */
     public ITreeNode replaceChild(ITreeNode node, ITreeNode oldNode)
             throws TreeNodeDoesNotExistException,
@@ -184,21 +196,24 @@ public interface ITreeNodeWriteOnlyMethods
     /**
      * Replaces the child ITreeNode at a given index with a new given ITreeNode.
      * 
-     * @param node cannot be null. see other conditions given by the exceptions.
-     * @param index must be in bounds: [0..children.size-1]
+     * @param node
+     *        cannot be null. see other conditions given by the exceptions.
+     * @param index
+     *        must be in bounds: [0..children.size-1]
      * @return the Node that was replaced, which parent is NULL.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws MethodParameterIsOutOfBoundsException if the given index is not
-     *         in bounds: [0..children.size-1]
-     * @throws ObjectIsInDifferentPresentationException if the given node
-     *         Presentation is not the same as this Presentation.
-     * @throws TreeNodeHasParentException if the given node as a parent already
-     *         (already part of a tree).
-     * @throws TreeNodeIsAncestorException if the given node is the root of this
-     *         node's tree.
-     * @throws TreeNodeIsSelfException if the given node is this node.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsOutOfBoundsException
+     *         if the given index is not in bounds: [0..children.size-1]
+     * @throws ObjectIsInDifferentPresentationException
+     *         if the given node Presentation is not the same as this
+     *         Presentation.
+     * @throws TreeNodeHasParentException
+     *         if the given node as a parent already (already part of a tree).
+     * @throws TreeNodeIsAncestorException
+     *         if the given node is the root of this node's tree.
+     * @throws TreeNodeIsSelfException
+     *         if the given node is this node.
      */
     public ITreeNode replaceChild(ITreeNode node, int index)
             throws MethodParameterIsOutOfBoundsException,
@@ -214,16 +229,18 @@ public interface ITreeNodeWriteOnlyMethods
      * nodes.
      * </p>
      * 
-     * @param node cannot be null. see other conditions given by the exceptions.
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * 
-     *           "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeIsAncestor-NodeIsSelf"
-     * @throws ObjectIsInDifferentPresentationException if the given node
-     *         Presentation is not the same as this Presentation.
-     * @throws TreeNodeIsAncestorException if the given node is the root of this
-     *         node's tree.
-     * @throws TreeNodeIsSelfException if the given node is this node.
+     * @param node
+     *        cannot be null. see other conditions given by the exceptions.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     *         "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeIsAncestor-NodeIsSelf"
+     * @throws ObjectIsInDifferentPresentationException
+     *         if the given node Presentation is not the same as this
+     *         Presentation.
+     * @throws TreeNodeIsAncestorException
+     *         if the given node is the root of this node's tree.
+     * @throws TreeNodeIsSelfException
+     *         if the given node is this node.
      */
     public void appendChildrenOf(ITreeNode node)
             throws MethodParameterIsNullException,
@@ -235,19 +252,21 @@ public interface ITreeNodeWriteOnlyMethods
      * Replace this node with the given node, and vice-versa.
      * </p>
      * 
-     * @param node cannot be null. see other conditions given by the exceptions.
-     * 
-     * @throws ObjectIsInDifferentPresentationException if the given node
-     *         Presentation is not the same as this Presentation.
-     * @throws TreeNodeIsAncestorException if the given node is the root of this
-     *         node's tree.
-     * @throws TreeNodeIsSelfException if the given node is this node.
-     * @throws TreeNodeHasNoParentException if the given node as a parent
-     *         already (already part of a tree).
-     * @throws TreeNodeIsDescendantException if the given node is a descendant
-     *         of this node.
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @param node
+     *        cannot be null. see other conditions given by the exceptions.
+     * @throws ObjectIsInDifferentPresentationException
+     *         if the given node Presentation is not the same as this
+     *         Presentation.
+     * @throws TreeNodeIsAncestorException
+     *         if the given node is the root of this node's tree.
+     * @throws TreeNodeIsSelfException
+     *         if the given node is this node.
+     * @throws TreeNodeHasNoParentException
+     *         if the given node as a parent already (already part of a tree).
+     * @throws TreeNodeIsDescendantException
+     *         if the given node is a descendant of this node.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void swapWith(ITreeNode node) throws MethodParameterIsNullException,
             ObjectIsInDifferentPresentationException,
@@ -270,11 +289,11 @@ public interface ITreeNodeWriteOnlyMethods
      * "deep" tree operation).
      * </p>
      * 
-     * @param index must be in bounds [0..children.size-1].
+     * @param index
+     *        must be in bounds [0..children.size-1].
      * @return the removed node, which parent is then NULL.
-     * 
-     * @throws MethodParameterIsOutOfBoundsException if the given index is not
-     *         in bounds [0..children.size-1].
+     * @throws MethodParameterIsOutOfBoundsException
+     *         if the given index is not in bounds [0..children.size-1].
      * @tagvalue Events "ChildRemoved"
      */
     public ITreeNode removeChild(int index)
@@ -286,13 +305,13 @@ public interface ITreeNodeWriteOnlyMethods
      * operation), of which parent is then NULL.
      * </p>
      * 
-     * @param node node must exist as a child, cannot be null
+     * @param node
+     *        node must exist as a child, cannot be null
      * @return the removed ITreeNode
-     * 
-     * @throws TreeNodeDoesNotExistException if the given node is not a child of
-     *         this node.
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws TreeNodeDoesNotExistException
+     *         if the given node is not a child of this node.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public ITreeNode removeChild(ITreeNode node)
             throws TreeNodeDoesNotExistException,
@@ -332,13 +351,13 @@ public interface ITreeNodeWriteOnlyMethods
      * [index-1]).
      * </p>
      * 
-     * @param index must be in bounds [0..getChildCount()-1]
+     * @param index
+     *        must be in bounds [0..getChildCount()-1]
      * @param copyProperties
      * @return a shallow copy of [this] node, optionally with an entire copy of
      *         its properties (see the "copyProperties" method parameter)
-     * 
-     * @throws MethodParameterIsOutOfBoundsException if the given index is not
-     *         in bounds [0..getChildCount()-1]
+     * @throws MethodParameterIsOutOfBoundsException
+     *         if the given index is not in bounds [0..getChildCount()-1]
      */
     public ITreeNode splitChildren(int index, boolean copyProperties)
             throws MethodParameterIsOutOfBoundsException;

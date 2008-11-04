@@ -31,14 +31,15 @@ public interface ICompositeCommand extends ICommand
      * is appended at the end of the existing list.
      * </p>
      * 
-     * @param iCommand cannot be null.
-     * @param index must be in bounds [0..children.size].
+     * @param iCommand
+     *        cannot be null.
+     * @param index
+     *        must be in bounds [0..children.size].
      * @tagvalue Events "CommandAdded"
-     * 
-     * @throws MethodParameterIsOutOfBoundsException if the given index is not
-     *         in bounds [0..children.size].
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsOutOfBoundsException
+     *         if the given index is not in bounds [0..children.size].
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void insert(ICommand iCommand, int index)
             throws MethodParameterIsNullException,
@@ -49,11 +50,11 @@ public interface ICompositeCommand extends ICommand
      * Inserts the given ICommand at the end of the existing list.
      * </p>
      * 
-     * @param iCommand cannot be null.
+     * @param iCommand
+     *        cannot be null.
      * @tagvalue Events "CommandAdded"
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void append(ICommand iCommand) throws MethodParameterIsNullException;
 

@@ -8,8 +8,8 @@ import org.daisy.urakawa.core.visitor.ITreeNodeVisitor;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.IManagedMedia;
 import org.daisy.urakawa.property.IProperty;
-import org.daisy.urakawa.property.channel.IChannel;
 import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
+import org.daisy.urakawa.property.channel.IChannel;
 import org.daisy.urakawa.property.channel.IChannelsProperty;
 
 /**
@@ -62,7 +62,7 @@ public class CollectManagedMediaTreeNodeVisitor implements ITreeNodeVisitor
         return true;
     }
 
-    public void postVisit(@SuppressWarnings("unused") ITreeNode node)
+    public void postVisit(ITreeNode node)
     {
         return;
     }

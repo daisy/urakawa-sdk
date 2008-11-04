@@ -40,9 +40,8 @@ public interface ITime
     /**
      * @param otherTime
      * @return true or false
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public boolean isLessThanOrEqualTo(ITime otherTime)
             throws MethodParameterIsNullException;
@@ -50,9 +49,8 @@ public interface ITime
     /**
      * @param otherTime
      * @return true or false
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public boolean isGreaterThanOrEqualTo(ITime otherTime)
             throws MethodParameterIsNullException;
@@ -60,9 +58,8 @@ public interface ITime
     /**
      * @param other
      * @return time
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public ITime subtractTime(ITime other)
             throws MethodParameterIsNullException;
@@ -70,9 +67,8 @@ public interface ITime
     /**
      * @param other
      * @return time
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public ITime subtractTimeDelta(ITimeDelta other)
             throws MethodParameterIsNullException;
@@ -85,9 +81,8 @@ public interface ITime
     /**
      * @param stringRepresentation
      * @return time
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      * @throws MethodParameterIsEmptyStringException
      * @throws TimeStringRepresentationIsInvalidException
      */
@@ -117,36 +112,32 @@ public interface ITime
     /**
      * @param t
      * @return time
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     ITimeDelta getTimeDelta(ITime t) throws MethodParameterIsNullException;
 
     /**
      * @param other
      * @return time
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     ITime addTime(ITime other) throws MethodParameterIsNullException;
 
     /**
      * @param other
      * @return time
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     ITime addTimeDelta(ITimeDelta other) throws MethodParameterIsNullException;
 
     /**
      * @param otherTime
      * @return true or false
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     boolean isGreaterThan(ITime otherTime)
             throws MethodParameterIsNullException;
@@ -154,18 +145,16 @@ public interface ITime
     /**
      * @param otherTime
      * @return true or false
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     boolean isLessThan(ITime otherTime) throws MethodParameterIsNullException;
 
     /**
      * @param otherTime
      * @return true or false
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     boolean isEqualTo(ITime otherTime) throws MethodParameterIsNullException;
 }

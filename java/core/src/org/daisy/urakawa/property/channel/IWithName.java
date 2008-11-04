@@ -19,12 +19,12 @@ public interface IWithName
     /**
      * The human-readable / display name
      * 
-     * @param name cannot be null, cannot be empty String
-     * 
-     * @throws MethodParameterIsEmptyStringException Empty string '' method
-     *         parameters are forbidden
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @param name
+     *        cannot be null, cannot be empty String
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameters are forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void setName(String name) throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException;
