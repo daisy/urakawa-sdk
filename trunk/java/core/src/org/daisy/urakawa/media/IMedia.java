@@ -1,10 +1,10 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithLanguage;
 import org.daisy.urakawa.IWithPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.IEventHandler;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -25,10 +25,8 @@ public interface IMedia extends IWithPresentation, IWithLanguage, IXukAble,
      * 
      * @return true if this IMedia is continuous, false if it is discrete.
      * @see IMedia#isDiscrete()
-     * @see 
-     *      "http://www.w3.org/TR/SMIL/extended-media-object.html#media-Definitions"
-     * @see 
-     *      "http://www.w3.org/TR/SMIL/smil-timing.html#Timing-DiscreteContinuousMedia"
+     * @see "http://www.w3.org/TR/SMIL/extended-media-object.html#media-Definitions"
+     * @see "http://www.w3.org/TR/SMIL/smil-timing.html#Timing-DiscreteContinuousMedia"
      */
     public boolean isContinuous();
 
@@ -39,10 +37,8 @@ public interface IMedia extends IWithPresentation, IWithLanguage, IXukAble,
      * 
      * @return true if this IMedia is discrete, false if continuous.
      * @see IMedia#isContinuous()
-     * @see 
-     *      "http://www.w3.org/TR/SMIL/extended-media-object.html#media-Definitions"
-     * @see 
-     *      "http://www.w3.org/TR/SMIL/smil-timing.html#Timing-DiscreteContinuousMedia"
+     * @see "http://www.w3.org/TR/SMIL/extended-media-object.html#media-Definitions"
+     * @see "http://www.w3.org/TR/SMIL/smil-timing.html#Timing-DiscreteContinuousMedia"
      */
     public boolean isDiscrete();
 
@@ -67,9 +63,8 @@ public interface IMedia extends IWithPresentation, IWithLanguage, IXukAble,
      * @param destPres
      * @return can return null in case of failure.
      * @throws FactoryCannotCreateTypeException
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public IMedia export(Presentation destPres)
             throws FactoryCannotCreateTypeException,

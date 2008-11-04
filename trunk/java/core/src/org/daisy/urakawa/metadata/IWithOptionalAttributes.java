@@ -18,7 +18,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 public interface IWithOptionalAttributes
 {
     /**
-     * @param key cannot be null or empty string
+     * @param key
+     *        cannot be null or empty string
      * @return cannot be null but can be empty string
      * @throws MethodParameterIsNullException
      * @throws MethodParameterIsEmptyStringException
@@ -28,13 +29,14 @@ public interface IWithOptionalAttributes
             MethodParameterIsEmptyStringException;
 
     /**
-     * @param key cannot be null or empty string
-     * @param value cannot be null but can be empty string
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws MethodParameterIsEmptyStringException Empty string '' method
-     *         parameter is forbidden for key
-     * 
+     * @param key
+     *        cannot be null or empty string
+     * @param value
+     *        cannot be null but can be empty string
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameter is forbidden for key
      * @tagvalue Events "Metadata"
      */
     public void setOptionalAttributeValue(String key, String value)

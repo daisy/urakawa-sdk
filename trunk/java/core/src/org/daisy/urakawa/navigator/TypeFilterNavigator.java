@@ -21,7 +21,8 @@ public class TypeFilterNavigator<T extends ITreeNode> extends
     /**
      * Constructor
      * 
-     * @param klass The type to match by the filter function
+     * @param klass
+     *        The type to match by the filter function
      */
     public TypeFilterNavigator(Class<T> klass)
     {

@@ -31,13 +31,15 @@ public interface IWithTreeNode
      * Sets the root ITreeNode of this Presentation
      * 
      * @tagvalue Events "RootNodeChanged"
-     * @param newRoot can be null
-     * @throws TreeNodeHasParentException when the given ITreeNode has a parent
-     *         (is not a root)
-     * @throws ObjectIsInDifferentPresentationException when the given ITreeNode
-     *         is already part of another Presentation
-     * @throws IsNotInitializedException when the given ITreeNode is not
-     *         initialized with its Presentation reference
+     * @param newRoot
+     *        can be null
+     * @throws TreeNodeHasParentException
+     *         when the given ITreeNode has a parent (is not a root)
+     * @throws ObjectIsInDifferentPresentationException
+     *         when the given ITreeNode is already part of another Presentation
+     * @throws IsNotInitializedException
+     *         when the given ITreeNode is not initialized with its Presentation
+     *         reference
      */
     public void setRootNode(ITreeNode newRoot)
             throws TreeNodeHasParentException,

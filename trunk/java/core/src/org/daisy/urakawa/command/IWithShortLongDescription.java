@@ -34,22 +34,22 @@ public interface IWithShortLongDescription
     public String getLongDescription();
 
     /**
-     * @param str cannot be null, cannot be empty string.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws MethodParameterIsEmptyStringException Empty string '' method
-     *         parameter is forbidden: <b>str</b>
+     * @param str
+     *        cannot be null, cannot be empty string.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameter is forbidden: <b>str</b>
      */
     public void setShortDescription(String str)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException;
 
     /**
-     * @param str cannot be null, but can be empty string.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @param str
+     *        cannot be null, but can be empty string.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void setLongDescription(String str)
             throws MethodParameterIsNullException;

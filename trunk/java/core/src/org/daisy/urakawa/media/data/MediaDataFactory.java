@@ -33,7 +33,6 @@ public final class MediaDataFactory extends
     protected void initializeInstance(WavAudioMediaData instance)
     {
         super.initializeInstance(instance);
-        
         try
         {
             getPresentation().getMediaDataManager().addMediaData(instance);

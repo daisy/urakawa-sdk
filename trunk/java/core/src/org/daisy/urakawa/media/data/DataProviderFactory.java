@@ -15,7 +15,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.media.data.FileDataProvider
  */
-public final class DataProviderFactory extends GenericWithPresentationFactory<FileDataProvider>
+public final class DataProviderFactory extends
+        GenericWithPresentationFactory<FileDataProvider>
 {
     /**
      * @param pres
@@ -26,6 +27,7 @@ public final class DataProviderFactory extends GenericWithPresentationFactory<Fi
     {
         super(pres);
     }
+
     /**
      * @hidden
      */
@@ -33,10 +35,10 @@ public final class DataProviderFactory extends GenericWithPresentationFactory<Fi
     protected void initializeInstance(FileDataProvider instance)
     {
         super.initializeInstance(instance);
-
         try
         {
-            getPresentation().getDataProviderManager().addDataProvider(instance);
+            getPresentation().getDataProviderManager()
+                    .addDataProvider(instance);
         }
         catch (MethodParameterIsNullException e1)
         {
@@ -121,8 +123,9 @@ public final class DataProviderFactory extends GenericWithPresentationFactory<Fi
      * @throws MethodParameterIsNullException
      * @throws MethodParameterIsEmptyStringException
      */
-    public FileDataProvider createFileDataProvider(String mimeType, String xukLocalName,
-            String xukNamespaceURI) throws MethodParameterIsNullException,
+    public FileDataProvider createFileDataProvider(String mimeType,
+            String xukLocalName, String xukNamespaceURI)
+            throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
     {
         mMimeType = mimeType;

@@ -15,7 +15,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * mainly used for unit-testing the SDK.
  * </p>
  * 
- * @param <T> The object type on which to apply the equality operator.
+ * @param <T>
+ *        The object type on which to apply the equality operator.
  */
 public interface IValueEquatable<T>
 {
@@ -24,13 +25,12 @@ public interface IValueEquatable<T>
      * Compares the values of this and the given parameter.
      * </p>
      * 
-     * @param other Object instance to compare value equality with. Cannot be
-     *        null.
+     * @param other
+     *        Object instance to compare value equality with. Cannot be null.
      * @return True if this has the same value as the given parameter. Otherwise
      *         false.
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * 
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public boolean ValueEquals(T other) throws MethodParameterIsNullException;
 }

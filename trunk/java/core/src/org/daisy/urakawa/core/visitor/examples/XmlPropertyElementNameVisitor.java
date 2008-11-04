@@ -67,7 +67,6 @@ public class XmlPropertyElementNameVisitor implements ITreeNodeVisitor
                 localName));
     }
 
-    @SuppressWarnings("unused")
     public void postVisit(ITreeNode node) throws MethodParameterIsNullException
     {
         /**

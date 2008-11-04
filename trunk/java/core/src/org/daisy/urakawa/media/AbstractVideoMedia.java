@@ -179,7 +179,8 @@ public abstract class AbstractVideoMedia extends AbstractMedia implements
     }
 
     protected abstract AbstractVideoMedia splitProtected(ITime splitPoint)
-            throws TimeOffsetIsOutOfBoundsException, MethodParameterIsNullException;
+            throws TimeOffsetIsOutOfBoundsException,
+            MethodParameterIsNullException;
 
     int mWidth = 0;
     int mHeight = 0;
@@ -308,7 +309,6 @@ public abstract class AbstractVideoMedia extends AbstractMedia implements
         super.xukOutAttributes(destination, baseUri, ph);
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

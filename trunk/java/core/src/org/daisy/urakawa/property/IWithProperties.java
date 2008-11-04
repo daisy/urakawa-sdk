@@ -38,10 +38,10 @@ public interface IWithProperties
      * @param <T>
      * @return a list of properties attached to this node, of the given type
      *         (non-null, can be empty)
-     * @param type cannot be null.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @param type
+     *        cannot be null.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public <T extends IProperty> List<T> getListOfProperties(Class<T> type)
             throws MethodParameterIsNullException;
@@ -52,11 +52,11 @@ public interface IWithProperties
      * subsequent calls to this method return the same result.
      * 
      * @param <T>
-     * @param type cannot be null.
+     * @param type
+     *        cannot be null.
      * @return the IProperty for the given type
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public <T extends IProperty> T getProperty(Class<T> type)
             throws MethodParameterIsNullException;
@@ -65,11 +65,11 @@ public interface IWithProperties
      * Tests whether the ITreeNode has Properties of the given type.
      * 
      * @param <T>
-     * @param type cannot be null.
+     * @param type
+     *        cannot be null.
      * @return if the ITreeNode has at least one IProperty of the given type.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public <T extends IProperty> boolean hasProperties(Class<T> type)
             throws MethodParameterIsNullException;
@@ -77,11 +77,11 @@ public interface IWithProperties
     /**
      * Tests whether the ITreeNode has the given IProperty.
      * 
-     * @param prop cannot be null.
+     * @param prop
+     *        cannot be null.
      * @return true if the ITreeNode has the given IProperty.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public boolean hasProperty(IProperty prop)
             throws MethodParameterIsNullException;
@@ -98,11 +98,11 @@ public interface IWithProperties
      * removed IProperty. If the given IProperty is not currently attached to
      * the ITreeNode, this method does nothing.
      * 
-     * @param prop cannot be null.
-     * 
+     * @param prop
+     *        cannot be null.
      * @tagvalue Events "PropertyRemoved"
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void removeProperty(IProperty prop)
             throws MethodParameterIsNullException;
@@ -114,10 +114,10 @@ public interface IWithProperties
      * 
      * @param <T>
      * @return list of removed properties (non-null, can be empty)
-     * @param type cannot be null.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @param type
+     *        cannot be null.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public <T extends IProperty> List<T> removeProperties(Class<T> type)
             throws MethodParameterIsNullException;
@@ -130,15 +130,16 @@ public interface IWithProperties
 
     /**
      * @param <T>
-     * @param prop cannot be null.
-     * 
-     *           "MethodParameterIsNull-PropertyCannotBeAddedToTreeNode-PropertyAlreadyHasOwner"
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws PropertyCannotBeAddedToTreeNodeException the method
-     *         {@link IProperty#canBeAddedTo(ITreeNode)} returned false
-     * @throws PropertyAlreadyHasOwnerException the given IProperty already has
-     *         a ITreeNode owner.
+     * @param prop
+     *        cannot be null.
+     *        "MethodParameterIsNull-PropertyCannotBeAddedToTreeNode-PropertyAlreadyHasOwner"
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws PropertyCannotBeAddedToTreeNodeException
+     *         the method {@link IProperty#canBeAddedTo(ITreeNode)} returned
+     *         false
+     * @throws PropertyAlreadyHasOwnerException
+     *         the given IProperty already has a ITreeNode owner.
      * @see IProperty#canBeAddedTo(ITreeNode)
      * @tagvalue Events "PropertyAdded"
      */
@@ -149,15 +150,16 @@ public interface IWithProperties
 
     /**
      * @param <T>
-     * @param list cannot be null.
-     * 
-     *           "MethodParameterIsNull-PropertyCannotBeAddedToTreeNode-PropertyAlreadyHasOwner"
-     * @throws PropertyCannotBeAddedToTreeNodeException the method
-     *         {@link IProperty#canBeAddedTo(ITreeNode)} returned false
-     * @throws PropertyAlreadyHasOwnerException one of the given Properties
-     *         already has a ITreeNode owner.
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @param list
+     *        cannot be null.
+     *        "MethodParameterIsNull-PropertyCannotBeAddedToTreeNode-PropertyAlreadyHasOwner"
+     * @throws PropertyCannotBeAddedToTreeNodeException
+     *         the method {@link IProperty#canBeAddedTo(ITreeNode)} returned
+     *         false
+     * @throws PropertyAlreadyHasOwnerException
+     *         one of the given Properties already has a ITreeNode owner.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      * @see IProperty#canBeAddedTo(ITreeNode)
      */
     public <T extends IProperty> void addProperties(List<T> list)

@@ -12,7 +12,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.core.TreeNode
  */
-public final class TreeNodeFactory extends GenericWithPresentationFactory<TreeNode>
+public final class TreeNodeFactory extends
+        GenericWithPresentationFactory<TreeNode>
 {
     /**
      * @param pres

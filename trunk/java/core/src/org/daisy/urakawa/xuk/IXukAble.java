@@ -5,8 +5,8 @@ import java.net.URI;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 
 /**
  * <p>
@@ -65,13 +65,16 @@ public interface IXukAble
      * mechanism), effectively resulting in recursive reading of the XUK file.
      * </p>
      * 
-     * @param source cursor XML parser where the XUK data is read from.
-     * @param ph the handler for Progress events
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws XukDeserializationFailedException when the parsing fails
-     * @throws ProgressCancelledException when the operation has been canceled
-     * 
+     * @param source
+     *        cursor XML parser where the XUK data is read from.
+     * @param ph
+     *        the handler for Progress events
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws XukDeserializationFailedException
+     *         when the parsing fails
+     * @throws ProgressCancelledException
+     *         when the operation has been canceled
      * @tagvalue Events "Progress"
      */
     public void xukIn(IXmlDataReader source, IProgressHandler ph)
@@ -102,16 +105,19 @@ public interface IXukAble
      * XUK file.
      * </p>
      * 
-     * @param destination the XML writer where the XML data is written to.
-     * @param baseURI the base absolute URI which is used to make other URIs
-     *        relative in the written XUK file. If NULL, absolute URIs are
-     *        written-out.
-     * @param ph the handler for Progress events
-     * @throws MethodParameterIsNullException NULL method parameter baseURI is
-     *         forbidden
-     * @throws XukSerializationFailedException when the serialization fails
-     * @throws ProgressCancelledException when the operation has been canceled
-     * 
+     * @param destination
+     *        the XML writer where the XML data is written to.
+     * @param baseURI
+     *        the base absolute URI which is used to make other URIs relative in
+     *        the written XUK file. If NULL, absolute URIs are written-out.
+     * @param ph
+     *        the handler for Progress events
+     * @throws MethodParameterIsNullException
+     *         NULL method parameter baseURI is forbidden
+     * @throws XukSerializationFailedException
+     *         when the serialization fails
+     * @throws ProgressCancelledException
+     *         when the operation has been canceled
      * @tagvalue Events "Progress"
      */
     public void xukOut(IXmlDataWriter destination, URI baseURI,

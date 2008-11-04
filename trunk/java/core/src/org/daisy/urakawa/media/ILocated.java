@@ -18,12 +18,11 @@ public interface ILocated
 
     /**
      * @param newSrc
-     * 
      * @tagvalue Events "SrcChanged"
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws MethodParameterIsEmptyStringException Empty string '' method
-     *         parameters are forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameters are forbidden
      */
     void setSrc(String newSrc) throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException;
@@ -32,8 +31,8 @@ public interface ILocated
      * Gets the URI of this location based on getPresentation().getRootURI()
      * 
      * @return a URI
-     * @throws URISyntaxException when the value returned by getSrc() is not a
-     *         well-formed URI
+     * @throws URISyntaxException
+     *         when the value returned by getSrc() is not a well-formed URI
      */
     public URI getURI() throws URISyntaxException;
 }

@@ -25,7 +25,8 @@ public abstract class AbstractFilterNavigator implements INavigator
      * instance.Concrete classes must implement this method to determine the
      * behaviour of the filter navigator
      * 
-     * @param node the node to check
+     * @param node
+     *        the node to check
      * @return true if the node is included in the resulting virtual tree, based
      *         on the filtering/selection criteria implemented by this method.
      * @throws MethodParameterIsNullException

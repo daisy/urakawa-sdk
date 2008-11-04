@@ -22,10 +22,10 @@ public interface IWithContent
     /**
      * Sets the data for the content of the metadata
      * 
-     * @param data cannot be null but can be empty string
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * 
+     * @param data
+     *        cannot be null but can be empty string
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      * @tagvalue Events "Metadata"
      */
     public void setContent(String data) throws MethodParameterIsNullException;

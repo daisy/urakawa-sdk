@@ -1,10 +1,10 @@
 package org.daisy.urakawa.property.channel;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithLanguage;
 import org.daisy.urakawa.IWithPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.IMedia;
@@ -42,12 +42,11 @@ public interface IChannel extends IWithPresentation, IWithName, IWithLanguage,
 
     /**
      * @param destPres
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      * @return can return null in case of failure.
      * @throws FactoryCannotCreateTypeException
      * @throws IsNotInitializedException
-     * 
      */
     public IChannel export(Presentation destPres)
             throws FactoryCannotCreateTypeException, IsNotInitializedException,

@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.core.visitor.ITreeNodeVisitor;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.Event;
@@ -25,8 +25,8 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.property.IProperty;
 import org.daisy.urakawa.property.PropertyAlreadyHasOwnerException;
 import org.daisy.urakawa.property.PropertyCannotBeAddedToTreeNodeException;
@@ -40,7 +40,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class TreeNode extends AbstractXukAbleWithPresentation implements ITreeNode
+public class TreeNode extends AbstractXukAbleWithPresentation implements
+        ITreeNode
 {
     private List<IProperty> mProperties;
     private List<ITreeNode> mChildren;
@@ -1707,7 +1708,6 @@ public class TreeNode extends AbstractXukAbleWithPresentation implements ITreeNo
         mParent = node;
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -1718,7 +1718,6 @@ public class TreeNode extends AbstractXukAbleWithPresentation implements ITreeNo
          */
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

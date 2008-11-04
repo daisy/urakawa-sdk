@@ -2,9 +2,9 @@ package org.daisy.urakawa.property.channel;
 
 import java.net.URI;
 
+import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -149,7 +149,6 @@ public class Channel extends AbstractXukAbleWithPresentation implements
         return exportedCh;
     }
 
-    @SuppressWarnings("unused")
     public boolean canAccept(IMedia iMedia)
             throws MethodParameterIsNullException
     {
@@ -217,7 +216,6 @@ public class Channel extends AbstractXukAbleWithPresentation implements
         }
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -285,7 +283,6 @@ public class Channel extends AbstractXukAbleWithPresentation implements
         }
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws MethodParameterIsNullException,
@@ -337,7 +334,6 @@ public class Channel extends AbstractXukAbleWithPresentation implements
          */
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

@@ -77,8 +77,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @composed 1 - 1 org.daisy.urakawa.media.data.DataProviderManager
  * @composed 1 - 1 org.daisy.urakawa.undo.UndoRedoManager
  */
-public class Presentation extends AbstractXukAble implements
-        IWithRootURI, IWithTreeNode, IWithProject, IMediaPresentation,
+public class Presentation extends AbstractXukAble implements IWithRootURI,
+        IWithTreeNode, IWithProject, IMediaPresentation,
         IWithManagersAndFactories, IWithMetadata, IWithLanguage,
         IEventHandler<DataModelChangedEvent>, IValueEquatable<Presentation>
 {
@@ -711,7 +711,8 @@ public class Presentation extends AbstractXukAble implements
             throw new IsAlreadyInitializedException();
         }
         mUndoRedoManager = man;
-        mUndoRedoManager.registerListener(mBubbleEventListener, DataModelChangedEvent.class);
+        mUndoRedoManager.registerListener(mBubbleEventListener,
+                DataModelChangedEvent.class);
     }
 
     /**
@@ -1704,7 +1705,6 @@ public class Presentation extends AbstractXukAble implements
     /**
      * @hidden
      */
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,
@@ -1842,7 +1842,6 @@ public class Presentation extends AbstractXukAble implements
                         {
                             xukInXukAbleFromChild(source, new IXukAbleCreator()
                             {
-                                @SuppressWarnings("unused")
                                 public IXukAble createXukAble(String localName,
                                         String namespace)
                                 {
@@ -1850,7 +1849,6 @@ public class Presentation extends AbstractXukAble implements
                                 }
                             }, new IXukAbleSetter()
                             {
-                                @SuppressWarnings("unused")
                                 public void setXukAble(IXukAble xuk)
                                 {
                                     /**
@@ -1870,7 +1868,6 @@ public class Presentation extends AbstractXukAble implements
                                     xukInXukAbleFromChild(source,
                                             new IXukAbleCreator()
                                             {
-                                                @SuppressWarnings("unused")
                                                 public IXukAble createXukAble(
                                                         String localName,
                                                         String namespace)
@@ -1879,7 +1876,6 @@ public class Presentation extends AbstractXukAble implements
                                                 }
                                             }, new IXukAbleSetter()
                                             {
-                                                @SuppressWarnings("unused")
                                                 public void setXukAble(
                                                         IXukAble xuk)
                                                 {
@@ -1900,7 +1896,6 @@ public class Presentation extends AbstractXukAble implements
                                             xukInXukAbleFromChild(source,
                                                     new IXukAbleCreator()
                                                     {
-                                                        @SuppressWarnings("unused")
                                                         public IXukAble createXukAble(
                                                                 String localName,
                                                                 String namespace)
@@ -1909,7 +1904,6 @@ public class Presentation extends AbstractXukAble implements
                                                         }
                                                     }, new IXukAbleSetter()
                                                     {
-                                                        @SuppressWarnings("unused")
                                                         public void setXukAble(
                                                                 IXukAble xuk)
                                                         {
@@ -1932,7 +1926,6 @@ public class Presentation extends AbstractXukAble implements
                                                             source,
                                                             new IXukAbleCreator()
                                                             {
-                                                                @SuppressWarnings("unused")
                                                                 public IXukAble createXukAble(
                                                                         String localName,
                                                                         String namespace)
@@ -1942,7 +1935,6 @@ public class Presentation extends AbstractXukAble implements
                                                             },
                                                             new IXukAbleSetter()
                                                             {
-                                                                @SuppressWarnings("unused")
                                                                 public void setXukAble(
                                                                         IXukAble xuk)
                                                                 {

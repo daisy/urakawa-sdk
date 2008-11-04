@@ -31,11 +31,11 @@ public interface ITreeNodeVisitor
      * to be taken for each traversed node.
      * </p>
      * 
-     * @param node cannot be null.
+     * @param node
+     *        cannot be null.
      * @return if true, the children will be visited
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public boolean preVisit(ITreeNode node)
             throws MethodParameterIsNullException;
@@ -47,10 +47,10 @@ public interface ITreeNodeVisitor
      * to be taken for each traversed node.
      * </p>
      * 
-     * @param node cannot be null.
-     * 
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @param node
+     *        cannot be null.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void postVisit(ITreeNode node) throws MethodParameterIsNullException;
 }

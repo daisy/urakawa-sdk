@@ -2,9 +2,9 @@ package org.daisy.urakawa.media;
 
 import java.net.URI;
 
+import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.Event;
 import org.daisy.urakawa.events.EventHandler;
@@ -218,7 +218,6 @@ public abstract class AbstractMedia extends AbstractXukAbleWithPresentation
         // super.clear();
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -254,7 +253,6 @@ public abstract class AbstractMedia extends AbstractXukAbleWithPresentation
         // super.xukInAttributes(source, ph);
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws MethodParameterIsNullException,

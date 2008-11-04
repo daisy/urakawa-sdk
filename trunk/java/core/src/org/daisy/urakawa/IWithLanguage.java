@@ -6,18 +6,17 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
  * <p>
  * Getting and Setting a language.
  * </p>
- * 
  */
 public interface IWithLanguage
 {
     /**
      * The language (e.g. "en-US")
      * 
-     * @param lang can be null, but cannot be empty String
-     * 
+     * @param lang
+     *        can be null, but cannot be empty String
      * @tagvalue Events "LanguageChanged"
-     * @throws MethodParameterIsEmptyStringException Empty string '' method
-     *         parameters are forbidden
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameters are forbidden
      */
     public void setLanguage(String lang)
             throws MethodParameterIsEmptyStringException;

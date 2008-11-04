@@ -442,7 +442,7 @@ public abstract class AbstractPublishManagedAudioVisitor implements
         return true;
     }
 
-    public void postVisit(@SuppressWarnings("unused") ITreeNode node)
+    public void postVisit(ITreeNode node)
     {
         // Nothing is done in postVisit visit
     }

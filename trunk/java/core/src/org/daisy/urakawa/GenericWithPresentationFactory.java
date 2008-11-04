@@ -4,7 +4,7 @@ import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * @param <T> 
+ * @param <T>
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
 public abstract class GenericWithPresentationFactory<T extends AbstractXukAbleWithPresentation>

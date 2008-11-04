@@ -326,7 +326,6 @@ public abstract class AbstractImageMedia extends AbstractMedia implements
         super.xukOutAttributes(destination, baseUri, ph);
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

@@ -24,7 +24,8 @@ public interface IWithXmlProperty
     public IXmlProperty getParent();
 
     /**
-     * @param prop can be null
+     * @param prop
+     *        can be null
      * @stereotype Initialize
      */
     public void setParent(IXmlProperty prop);

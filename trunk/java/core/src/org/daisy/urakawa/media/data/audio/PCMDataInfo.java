@@ -14,8 +14,8 @@ import org.daisy.urakawa.media.timing.ITimeDelta;
 import org.daisy.urakawa.nativeapi.IStream;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -84,8 +84,7 @@ public class PCMDataInfo extends PCMFormatInfo implements IPCMDataInfo
         OutputStream os = new OutputStream()
         {
             @Override
-            public void write(@SuppressWarnings("unused") int b)
-                    throws IOException
+            public void write(int b) throws IOException
             {
                 // TODO replace with real IStream object (see method parameter)
                 throw new IOException();

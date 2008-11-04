@@ -30,11 +30,11 @@ public interface IManagedAudioMedia extends IMedia, IContinuous, IManagedMedia
      * is a convenience method that delegates the actual work to the
      * {@link IMediaData} method.
      * 
-     * @param media cannot be null
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
+     * @param media
+     *        cannot be null
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      * @throws InvalidDataFormatException
-     * 
      */
     public void mergeWith(IManagedAudioMedia media)
             throws MethodParameterIsNullException, InvalidDataFormatException;
@@ -44,14 +44,14 @@ public interface IManagedAudioMedia extends IMedia, IContinuous, IManagedMedia
      * Cloning method, with time clipping
      * </p>
      * 
-     * @param clipBegin cannot be null. must be within [0..media-duration]
+     * @param clipBegin
+     *        cannot be null. must be within [0..media-duration]
      * @return a clipped copy, including media data from the specified time
      *         offset, and onwards. cannot be null.
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws MethodParameterIsOutOfBoundsException when clipBegin is not
-     *         within [0..media-duration]
-     * 
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsOutOfBoundsException
+     *         when clipBegin is not within [0..media-duration]
      */
     public IManagedAudioMedia copy(ITime clipBegin)
             throws MethodParameterIsNullException,
@@ -62,17 +62,18 @@ public interface IManagedAudioMedia extends IMedia, IContinuous, IManagedMedia
      * Cloning method, with time clipping
      * </p>
      * 
-     * @param clipBegin cannot be null. must be within [0..clipEnd]
-     * @param clipEnd cannot be null. must be within [clipBegin..media-duration]
+     * @param clipBegin
+     *        cannot be null. must be within [0..clipEnd]
+     * @param clipEnd
+     *        cannot be null. must be within [clipBegin..media-duration]
      * @return a clipped copy, , including media data in between the specified
      *         time offsets. cannot be null.
-     * @throws MethodParameterIsNullException NULL method parameters are
-     *         forbidden
-     * @throws MethodParameterIsOutOfBoundsException when clipBegin is not
-     *         within [0..clipEnd]
-     * @throws MethodParameterIsOutOfBoundsException when clipEnd is not within
-     *         [clipBegin..media-duration]
-     * 
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsOutOfBoundsException
+     *         when clipBegin is not within [0..clipEnd]
+     * @throws MethodParameterIsOutOfBoundsException
+     *         when clipEnd is not within [clipBegin..media-duration]
      */
     public IManagedAudioMedia copy(ITime clipBegin, ITime clipEnd)
             throws MethodParameterIsNullException,

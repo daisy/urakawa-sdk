@@ -215,7 +215,6 @@ public class TextMedia extends AbstractMedia implements ITextMedia
         super.xukInChild(source, ph);
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws MethodParameterIsNullException,

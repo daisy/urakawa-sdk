@@ -36,9 +36,8 @@ public interface ICommand extends IAction, IXukAble, IWithPresentation,
      * </p>
      * 
      * @tagvalue Events "CommandUnExecuted"
-     * 
-     * @throws CommandCannotUnExecuteException when the ICommand cannot be
-     *         un-executed
+     * @throws CommandCannotUnExecuteException
+     *         when the ICommand cannot be un-executed
      */
     public void unExecute() throws CommandCannotUnExecuteException;
 

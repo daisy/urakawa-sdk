@@ -422,7 +422,8 @@ public class ManagedAudioMedia extends AbstractMedia implements
         {
             try
             {
-                setMediaData(getPresentation().getMediaDataFactory().createWavAudioMediaData());
+                setMediaData(getPresentation().getMediaDataFactory()
+                        .createWavAudioMediaData());
             }
             catch (MethodParameterIsNullException e)
             {
@@ -466,7 +467,6 @@ public class ManagedAudioMedia extends AbstractMedia implements
         getMediaData().mergeWith(other.getMediaData());
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

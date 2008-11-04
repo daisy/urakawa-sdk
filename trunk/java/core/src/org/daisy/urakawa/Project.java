@@ -686,7 +686,6 @@ public class Project extends AbstractXukAble implements IWithPresentations,
     /**
      * @hidden
      */
-    @SuppressWarnings("unused")
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -746,7 +745,6 @@ public class Project extends AbstractXukAble implements IWithPresentations,
     /**
      * @hidden
      */
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

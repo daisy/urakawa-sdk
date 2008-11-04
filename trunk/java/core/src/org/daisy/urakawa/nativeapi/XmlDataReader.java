@@ -9,7 +9,7 @@ public class XmlDataReader implements IXmlDataReader
     /**
      * @param iStream
      */
-    public XmlDataReader(@SuppressWarnings("unused") IStream iStream)
+    public XmlDataReader(IStream iStream)
     {
         // Needs implementing !
     }
@@ -56,14 +56,12 @@ public class XmlDataReader implements IXmlDataReader
         return null;
     }
 
-    public boolean readToFollowing(
-            @SuppressWarnings("unused") String localName,
-            @SuppressWarnings("unused") String namespace)
+    public boolean readToFollowing(String localName, String namespace)
     {
         return false;
     }
 
-    public String getAttribute(@SuppressWarnings("unused") String name)
+    public String getAttribute(String name)
     {
         return null;
     }

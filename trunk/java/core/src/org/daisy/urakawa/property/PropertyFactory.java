@@ -16,7 +16,8 @@ import org.daisy.urakawa.property.xml.XmlProperty;
  * @depend - Create - org.daisy.urakawa.property.xml.XmlProperty
  * @depend - Create - org.daisy.urakawa.property.channel.ChannelsProperty
  */
-public final class PropertyFactory extends GenericWithPresentationFactory<Property>
+public final class PropertyFactory extends
+        GenericWithPresentationFactory<Property>
 {
     /**
      * @param pres
@@ -27,6 +28,7 @@ public final class PropertyFactory extends GenericWithPresentationFactory<Proper
     {
         super(pres);
     }
+
     /**
      * @return
      */

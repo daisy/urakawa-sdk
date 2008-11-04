@@ -866,7 +866,6 @@ public final class MediaDataManager extends AbstractXukAble implements
     /**
      * @hidden
      */
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws MethodParameterIsNullException,

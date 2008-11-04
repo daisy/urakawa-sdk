@@ -2,9 +2,9 @@ package org.daisy.urakawa.media.data;
 
 import java.util.List;
 
+import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.Event;
 import org.daisy.urakawa.events.EventHandler;
@@ -22,8 +22,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype Abstract
  */
-public abstract class AbstractMediaData extends AbstractXukAbleWithPresentation implements
-        IMediaData
+public abstract class AbstractMediaData extends AbstractXukAbleWithPresentation
+        implements IMediaData
 {
     private String mName = "";
     protected IEventHandler<Event> mDataModelEventNotifier = new EventHandler();

@@ -16,8 +16,8 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -89,14 +89,15 @@ public abstract class AbstractExternalMedia extends AbstractMedia implements
     }
 
     @Override
-    protected IMedia copyProtected() {
+    protected IMedia copyProtected()
+    {
         AbstractExternalMedia copy = (AbstractExternalMedia) super
-        .copyProtected();
+                .copyProtected();
         try
         {
             URI.create(getSrc()).resolve(getPresentation().getRootURI());
-            String destSrc = getPresentation().getRootURI().relativize(getURI())
-                    .toString();
+            String destSrc = getPresentation().getRootURI()
+                    .relativize(getURI()).toString();
             if (destSrc.length() == 0)
                 destSrc = ".";
             try

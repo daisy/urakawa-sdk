@@ -22,8 +22,8 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.media.timing.TimeStringRepresentationIsInvalidException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -545,7 +545,6 @@ public class ExternalAudioMedia extends AbstractAudioMedia implements ILocated,
         return true;
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws XukSerializationFailedException,

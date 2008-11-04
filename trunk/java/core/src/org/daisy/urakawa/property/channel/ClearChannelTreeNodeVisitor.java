@@ -70,7 +70,6 @@ public class ClearChannelTreeNodeVisitor implements ITreeNodeVisitor
         }
     }
 
-    @SuppressWarnings("unused")
     public boolean preVisit(ITreeNode node)
             throws MethodParameterIsNullException
     {
