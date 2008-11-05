@@ -13,6 +13,11 @@ namespace urakawa
     /// </summary>
     public class Project : XukAble, IValueEquatable<Project>, IChangeNotifier
     {
+      static void Main()
+      {
+         System.Console.WriteLine("Hello, world from Urakawa SDK project !");
+      }
+
         #region Event related members
 
         /// <summary>
