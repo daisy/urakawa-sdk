@@ -4,7 +4,7 @@ import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.metadata.IMetadata;
 
 /**
- *
+ * 
  */
 public class MetadataAddedEvent extends PresentationEvent
 {

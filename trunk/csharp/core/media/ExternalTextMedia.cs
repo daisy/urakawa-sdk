@@ -199,7 +199,12 @@ namespace urakawa.media
             get
             {
                 WebClient client = new WebClient();
+				try {
                 client.UseDefaultCredentials = true;
+				} catch (System.NotImplementedException e) {
+					// Ignore (otherwise Mono does not pass the unit-tests)
+					Console.Write("WebClient.UseDefaultCredentials not implemented (using Mono ?)");
+				}
                 return GetText(client);
             }
             set
