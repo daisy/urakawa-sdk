@@ -1,0 +1,83 @@
+= Importing documents from Sourceforge =
+
+== SVN paths ==
+
+http://daisy-trac.cvsdude.com/urakawa-sdk/browser/java/src/org/daisy/urakawa/xuk/XukAble.java
+
+http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/core|main|impl|model|datamodel|lib/src/XukAble.cs
+http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/tests/src/XukAble.cs
+
+http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk/java/main/src/org/daisy/urakawa/xuk/XukAble.java
+http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk/java/tests/src/org/daisy/urakawa/xuk/XukAbleFixture.java
+
+/trunk/java/impl/
+/trunk/java/tests/
+
+/trunk/csharp/urakawa/
+/trunk/csharp/tests/
+/trunk/csharp/audio/
+/trunk/csharp/xuk/
+
+== URL conventions ==
+
+'''Release pages, distinction between major versions and programming language'''
+
+ * http://daisy-trac.cvsdude.com/urakawa-sdk/wiki/releases/1.0-beta/CSharp
+ * http://daisy-trac.cvsdude.com/urakawa-sdk/wiki/releases/1.0-beta2/CSharp
+ * http://daisy-trac.cvsdude.com/urakawa-sdk/wiki/releases/1.3-beta/CSharp
+ * http://daisy-trac.cvsdude.com/urakawa-sdk/wiki/releases/2.0/Java
+
+'''API docs (not hosted on CVS-Dude)'''
+
+Following this namespace convention: http://www.daisy.org/urakawa/xuk/1.0
+
+ * http://daisy.org/urakawa/sdk/1.0/apidoc_java
+ * http://daisy.org/urakawa/sdk/1.0/apidoc_csharp
+
+'''Direct download links (Wiki page attachments)'''
+
+ * http://daisy-trac.cvsdude.com/tobi/attachment/wiki/releases/1.0/Java/Urakawa-SDK_1.0_Java-src.zip?format=raw
+ * http://daisy-trac.cvsdude.com/tobi/attachment/wiki/releases/1.0/Java/Urakawa-SDK_1.0_Java-UML.zip?format=raw
+
+ * http://daisy-trac.cvsdude.com/tobi/attachment/wiki/releases/2.0/CSharp/Urakawa-SDK_2.0_CSharp-bin.zip?format=raw
+ * http://daisy-trac.cvsdude.com/tobi/attachment/wiki/releases/2.0/CSharp/Urakawa-SDK_2.0_CSharp-apidoc.zip?format=raw
+ * http://daisy-trac.cvsdude.com/tobi/attachment/wiki/releases/2.0/CSharp/Urakawa-SDK_2.0_CSharp-src.zip?format=raw
+
+== trunk/urakawa/architecture ==
+
+ * Image files for UML Class Diagrams (UML_*.png): this should move to the Wiki, as attachments. Because the dimensions of the images are quite large, it is not recommended to display them inline.
+
+== trunk/urakawa/architecture/docs ==
+
+ * '''MIGRATE''' Urakawa_SDK_ReferenceGuide.txt
+ * '''MIGRATE''' (Tickets) Urakawa_SDK-ReviewNotes.txt
+ * '''MIGRATE''' UrakawaCoreModelOverview_1|2.png + UrakawaCoreModelOverview.pdf|graffle
+ * '''MIGRATE''' UrakawaInputOutputOverview.png
+ * '''ARCHIVE''' UrakawaEvents.html
+ * '''ARCHIVE''' Urakawa_SDK_Meeting_Nancy_November_2007.html
+ * '''ARCHIVE''' Skype_ConfCall_.*.txt
+ * '''ARCHIVE''' Urakawa_SDK-ReviewNotes_ResolvedItems.txt
+ * '''OBSOLETE''' Urakawa_SDK_Events.mm
+ * '''OBSOLETE''' Arch-Impl_PlanningNotes2007-2008.txt
+ * '''OBSOLETE''' Optional_Design_Interfaces.txt
+
+== trunk/urakawa/architecture/sandbox ==
+
+ * '''OBSOLETE''' *.*
+
+== trunk/urakawa/common ==
+
+ * '''OBSOLETE''' *.*
+
+== trunk/urakawa/website ==
+
+ * '''OBSOLETE''' *.*
+
+== trunk/urakawa/implementation ==
+
+ * Sequence Diagrams
+
+== Other notable documents ==
+
+ * http://urakawa.sourceforge.net/sdk/Release_1.0.html
+ * http://urakawa.sourceforge.net/sdk/Release_1.0beta.html

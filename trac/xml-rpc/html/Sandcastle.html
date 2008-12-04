@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head><title></title></head><body><p>
+The following is a description of how to build the documentation for the Urakawa SDK:
+</p><h2 id="Prerequisites">Prerequisites</h2><ul><li>Install Microsoft Sandcastle version 2.0.2459.30850 (December 2006 I think...)
+</li><li>Add the html Presentation to sandcastle:
+<ul><li>Unzip the file <a xmlns="" class="source" href="http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/doc/PresentationHtml.zip">trunk/csharp/doc/PresentationHtml.zip</a> to the sandcastle progran directory (normally ("%ProgramFiles%\Sandcastle")
+</li></ul></li><li>Checkout the csharp implementation from the subversion repository
+</li></ul><h2 id="Buildprocess">Build process</h2><p>
+(If you want to build documentation for the release configuration, replace debug with release in the following):
+</p><ul><li>Build the debug(choose one or the other) configuration of the <a xmlns="" class="source" href="http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/coreAndTests.sln">trunk/csharp/coreAndTests.sln</a> solution
+</li><li>Open a command window and navigate to the local <a xmlns="" class="source" href="http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/doc">trunk/csharp/doc</a> directory
+</li><li>Run <tt>CopyDllsEct.bat debug</tt>
+</li><li>Run <tt>sandcastleBuild.bat urakawa html &gt; sandcastleBuild.log</tt>
+</li></ul><p>
+This will create the documentation in directory <a xmlns="" class="source" href="http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/doc">trunk/csharp/doc</a>/Output (open <a xmlns="" class="source" href="http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/doc">trunk/csharp/doc</a>/Output/index.htm). A zipped version will be in file <a xmlns="" class="source" href="http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/doc/doc.zip">trunk/csharp/doc/doc.zip</a> and corresponding dlls will be in file <a xmlns="" class="source" href="http://daisy-trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/doc/dll.zip">trunk/csharp/doc/dll.zip</a>.
+</p><h2 id="Remark">Remark</h2><p>
+The above procedure for generating csharp sdk documentation is known to work with revision <a xmlns="" class="changeset" href="http://daisy-trac.cvsdude.com/urakawa-sdk/changeset/1175" title="* Added annotation to some of the xuk W3C XML Schemas * Generated  ...">[1175]</a> from the subversion repository
+</p></body></html>

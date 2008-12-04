@@ -1,0 +1,41 @@
+<html><body><h1 id="Migrationofurakawa-sdksubversionrepositoryfromSourceForgetoCvsDude">Migration of urakawa-sdk subversion repository from SourceForge to CvsDude</h1>
+<p>
+The following is a procedure for migrating the urakawa-sdk relevant data from the urakawa subversion repository at SourceForge to the urakawa-sdk subversion repository at CvsDude.
+</p>
+<h2 id="Prerequisites">Prerequisites</h2>
+<ul><li>The subversion command line utillities (svn, svnadmin and svndumpfile, all part of the standard subversion command line client)
+</li><li>The rsync utillity (exists for most posix systems including cygwin for Windows)
+</li><li>A text editor that preserves line breaks (i.e. performs no unix/dos style line break conversion)
+</li><li>A subversion server on your local computer (on Windows you can use the VisualSVN server available for free at <a class="ext-link" href="http://www.visualsvn.com"><span class="icon">http://www.visualsvn.com</span></a>).
+</li></ul><h2 id="Proceduresteps">Procedure steps</h2>
+<ol><li>Create a directory at a location of your choice for the migration process. Inside this directory, create a subdirectory for the full urakawa subversion repository at SourceForge. Call this subdirectory urakawa.
+</li><li>Get full urakawa repository from SourceForge using rsync (this command must be called from the migration process directory created above):
+<pre class="wiki">rsync -av urakawa.svn.sourceforge.net::svn/urakawa/* urakawa 
+</pre></li><li>Create a dumpfile of the full urakawa subversion repository:
+<pre class="wiki">svnadmin dump urakawa &gt; urakawa.dump
+</pre></li><li>Filter the svn dumpfile urakawa.dump using the svndumpfilter command (all in a single one-line command, create the svn dumpfile urakawa-sdk.dump):
+<pre class="wiki">svndumpfilter include --drop-empty-revs --renumber-revs 
+ branches/architecture branches/port-implementation-to-VS2005 branches/sdk-0-5 
+ branches/sdk-medialocation branches/toolkit-more-virtual-methods branches/urakawa/media-object-experiments 
+ tags/arch_before_copenhagen_061017 tags/before-xuk-revision tags/implementation-before-prop-refact 
+ tags/milestone-2-060331 tags/milestone-3-060509 tags/milestone-4-060626 tags/sdk-1.0-before-interface-removal 
+ trunk/urakawa/architecture trunk/urakawa/implementation &lt; urakawa.dump branches/convenience-views &gt; urakawa-sdk.dump
+</pre></li></ol><ol start="5"><li>Using a text editor that preserves line break conversion (i.e. does no CR/CRLF auto conversion) do the following replace operations in order to rename the trunk/urakawa/implementation and trunk/urakawa/architecture directories to trunk/csharp and trunk/java respectively (here <tt> ^ </tt> means anchor to beginning of line):
+<ul><li><tt> ^Node-path: trunk/urakawa/implementation </tt> replaced by <tt> Node-path: trunk/csharp </tt>
+</li><li><tt> ^Node-copyfrom-path: trunk/urakawa/implementation </tt> replaced by <tt> Node-copyfrom-path: trunk/csharp </tt>
+</li><li><tt> ^Node-path: trunk/urakawa/architecture </tt> replaced by <tt> Node-path: trunk/java </tt>
+</li><li><tt> ^Node-copyfrom-path: trunk/urakawa/architecture </tt> replaced by <tt> Node-copyfrom-path: trunk/java </tt>
+</li></ul></li><li>Create a new local repository called urakawa-sdk (must include the branches, tags and trunk directories).
+</li><li>Create the nessesary folders in the newly created urakawa-sdk repository (here <a class="ext-link" href="http://localhost:8080/svn/"><span class="icon">http://localhost:8080/svn/</span></a> is the url of the local subversion server):
+<pre class="wiki">svn mkdir -m "Creating nessesary directories" 
+ http://localhost:8080/svn/urakawa-sdk/branches/urakawa 
+ http://localhost:8080/svn/urakawa-sdk/tags/milestone-1-060302
+</pre></li><li>Load the subversion dumpfile urakawa-sdk.dump into the local urakawa-sdk repository (here <tt> C:\Repositories </tt> is the directory used by the subversion server to store repositories):
+<pre class="wiki">svnadmin load C:\Repositories\urakawa-sdk &lt; urakawa-sdk.dump
+</pre></li><li>Create a subversion dump file of the local urakawa-sdk repository:
+<pre class="wiki">svnadmin dump C:\Repositories\urakawa-sdk &gt; urakawa-sdk.final.dump
+</pre></li><li>We can now ask CvsDude to load the urakawa-sdk.final.dump, replacing the current urakawa-sdk repository.
+</li></ol><p>
+ 
+</p>
+</body></html>

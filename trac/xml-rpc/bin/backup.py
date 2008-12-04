@@ -5,9 +5,12 @@
 # Adapted by Daniel Weck on 2008-10-20
 # Copyright (c) 2008 DAISY Consortium. All rights reserved.
 # 
-# Required lib:
+# Required lib: LXML
 # http://codespeak.net/lxml/installation.html
 # http://lsimons.wordpress.com/2008/08/31/how-to-install-lxml-python-module-on-mac-os-105-leopard/
+# Easier way: download the precompiled binaries from inside Inkscape :)
+# To check the version number of LXML:
+# python -c "exec 'from lxml import etree\nprint etree.LXML_VERSION'"
 
 import sys
 import os
@@ -20,7 +23,7 @@ from optparse import OptionParser
 from lxml import etree
 from glob import glob
 
-FILENAME_SLASH_REPLACE = '**'
+FILENAME_SLASH_REPLACE = '!!'
 FILENAME_SPACE_REPLACE = '%20'
 
 socket.setdefaulttimeout(30)
