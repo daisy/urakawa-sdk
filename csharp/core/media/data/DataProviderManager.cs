@@ -30,12 +30,19 @@ namespace urakawa.media.data
         public DataProviderManager(Presentation pres)
         {
             mPresentation = pres;
-
-            //Removed because too "dangerous": a host application may have a different file management logic than the one implemented here.
-            //(i.e. copying more than just the managed media data)
-            //Presentation.RootUriChanged += Presentation_rootUriChanged;
-
             mDataFileDirectory = null;
+        }
+
+        public void AllowCopyDataOnUriChanged(bool enable)
+        {
+            if (enable)
+            {
+                Presentation.RootUriChanged += Presentation_rootUriChanged;
+            }
+            else
+            {
+                Presentation.RootUriChanged -= Presentation_rootUriChanged;
+            }
         }
 
         private Dictionary<string, DataProvider> mDataProvidersDictionary = new Dictionary<string, DataProvider>();
