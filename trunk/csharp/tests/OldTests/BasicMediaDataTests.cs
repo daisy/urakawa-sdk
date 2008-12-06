@@ -29,6 +29,9 @@ namespace urakawa.oldTests
             Project copyProj = new Project();
             Uri copyDir = new Uri(mProject.GetPresentation(0).RootUri, "../MediaDataSampleCopy/");
             copyProj.OpenXuk(new Uri(mProject.GetPresentation(0).RootUri, "MediaDataSample.xuk"));
+
+            copyProj.GetPresentation(0).DataProviderManager.AllowCopyDataOnUriChanged(true);
+
             copyProj.GetPresentation(0).RootUri = copyDir;
             bool dataProvMngrsEqual = copyProj.GetPresentation(0).DataProviderManager.ValueEquals(
                 mProject.GetPresentation(0).DataProviderManager);
