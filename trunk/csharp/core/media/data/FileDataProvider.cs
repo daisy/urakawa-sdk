@@ -151,7 +151,8 @@ namespace urakawa.media.data
             if (cnStm != null)
             {
                 if (mOpenInputStreams.Contains(cnStm)) mOpenInputStreams.Remove(cnStm);
-                cnStm.StreamClosed += InputStreamClosed_StreamClosed;
+                cnStm.StreamClosed -= InputStreamClosed_StreamClosed;
+                cnStm = null; 
             }
         }
 
@@ -203,7 +204,11 @@ namespace urakawa.media.data
 
         private void OutputStream_StreamClosed(object sender, EventArgs e)
         {
-            if (ReferenceEquals(sender, mOpenOutputStream)) mOpenOutputStream = null;
+            if (ReferenceEquals(sender, mOpenOutputStream))
+            {
+                mOpenOutputStream.StreamClosed -= new EventHandler(OutputStream_StreamClosed); 
+                mOpenOutputStream = null;
+            }
         }
 
         /// <summary>
