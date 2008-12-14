@@ -15,7 +15,6 @@ namespace urakawa.media.data.audio.codec
 	/// </summary>
 	public class WavAudioMediaData : AudioMediaData
 	{
-
 		/// <summary>
 		/// Represents a RIFF WAVE PCM audio data clip
 		/// </summary>
@@ -296,6 +295,8 @@ namespace urakawa.media.data.audio.codec
 		/// </remarks>
 		public void forceSingleDataProvider()
 		{
+            if (mWavClips.Count == 1) return;
+
 			Stream audioData = getAudioData();
 			WavClip newSingleClip;
 			try
@@ -822,7 +823,15 @@ namespace urakawa.media.data.audio.codec
 			}
 			IDataProvider prov;
 			prov = getMediaDataManager().getPresentation().getDataProviderManager().getDataProvider(dataProviderUid);
-			mWavClips.Add(new WavClip(prov, cb, ce));
+            try
+            {
+                mWavClips.Add(new WavClip(prov, cb, ce));
+            }
+            catch (exception.DataMissingException ex)
+            {
+                // TODO: this is a temporary fix ! Instead of ignoring the fact that the underlying audio resource is missing, we should have a system to let the consumer of the SDK (i.e. the host application) know about the error and decide about the processing (i.e. abandon parsing or carry-on by ignoring the resource). This relates to the global issue of configurable error recovery, not only for the data attached to the XUK instance, but also for corrupted XUK markup or values.
+                getPresentation().getProject().notifyDataIsMissing(this, ex);
+            }
 			if (!source.IsEmptyElement)
 			{
 				source.ReadSubtree().Close();

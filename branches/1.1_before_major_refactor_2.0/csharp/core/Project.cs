@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using urakawa.media.data;
 using urakawa.progress;
 using urakawa.property.channel;
 using urakawa.metadata;
@@ -17,6 +18,13 @@ namespace urakawa
 	{
 		
 		#region Event related members
+
+        public event EventHandler<urakawa.events.media.data.DataIsMissingEventArgs> dataIsMissing;
+        public void notifyDataIsMissing(MediaData md, urakawa.exception.DataMissingException ex)
+        {
+            EventHandler<urakawa.events.media.data.DataIsMissingEventArgs> d = dataIsMissing;
+            if (d != null) d(this, new urakawa.events.media.data.DataIsMissingEventArgs(md, ex));
+        }
 
 		/// <summary>
 		/// Event fired after the <see cref="Project"/> has changed. 
