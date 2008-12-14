@@ -419,6 +419,13 @@ namespace urakawa.media.data
 			{
 				throw new exception.XukException("dataFileRelativePath is missing from FileDataProvider element");
 			}
+            /*
+            if (!File.Exists(getDataFileFullPath()))
+            {
+                throw new exception.DataMissingException(
+    String.Format("The data file {0} does not exist", getDataFileFullPath()));
+            }
+             */
 			hasBeenInitialized = true;//Assume that the data file exists
 			mMimeType = source.GetAttribute("mimeType");
             base.xukInAttributes(source);
