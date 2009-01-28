@@ -13,6 +13,18 @@ namespace urakawa.media.data
 	public class FileDataProviderManager : WithPresentation, IDataProviderManager
 	{
 
+        public void allowCopyDataOnUriChanged(bool enable)
+        {
+            if (enable)
+            {
+                getPresentation().rootUriChanged += Presentation_rootUriChanged;
+            }
+            else
+            {
+                getPresentation().rootUriChanged -= Presentation_rootUriChanged;
+            }
+        }
+
 		private Dictionary<string, IDataProvider> mDataProvidersDictionary = new Dictionary<string, IDataProvider>();
 		private Dictionary<IDataProvider, string> mReverseLookupDataProvidersDictionary = new Dictionary<IDataProvider, string>();
 		private List<string> mXukedInFilDataProviderPaths = new List<string>();
@@ -21,7 +33,6 @@ namespace urakawa.media.data
 
 		/// <summary>
 		/// Initializes the manager with a <see cref="Presentation"/>, 
-		/// also wires up the <see cref="Presentation.rootUriChanged"/> event
 		/// </summary>
 		/// <param name="newPres">The new presentation</param>
 		public override void setPresentation(Presentation newPres)
