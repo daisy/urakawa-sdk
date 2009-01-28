@@ -31,6 +31,11 @@ namespace urakawa.unitTests.mediaDataTests
 			Project copyProj = new Project();
 			Uri copyDir = new Uri(mProject.getPresentation(0).getRootUri(), "../MediaDataSampleCopy/");
 			copyProj.openXUK(new Uri(mProject.getPresentation(0).getRootUri(), "MediaDataSample.xuk"));
+
+
+            ((FileDataProviderManager)copyProj.getPresentation(0).getDataProviderManager()).allowCopyDataOnUriChanged(true);
+
+
 			copyProj.getPresentation(0).setRootUri(copyDir);
 			bool dataProvMngrsEqual = copyProj.getPresentation(0).getDataProviderManager().valueEquals(
 				mProject.getPresentation(0).getDataProviderManager());
