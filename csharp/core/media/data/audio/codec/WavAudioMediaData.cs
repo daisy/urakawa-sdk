@@ -289,6 +289,8 @@ namespace urakawa.media.data.audio.codec
         /// </remarks>
         public void ForceSingleDataProvider()
         {
+            if (mWavClips.Count == 1) return;
+
             Stream audioData = GetAudioData();
             WavClip newSingleClip;
             try

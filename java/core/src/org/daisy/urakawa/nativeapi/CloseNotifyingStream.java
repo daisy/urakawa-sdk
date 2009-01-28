@@ -31,7 +31,7 @@ public class CloseNotifyingStream implements IStream
 
     public void close() throws IOException
     {
-        mBaseStream.close(); // Here there should be notification
+        mBaseStream.close(); // TODO: trigger StreamClosedEvent
     }
 
     public int getLength()

@@ -185,6 +185,7 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
             throw new RuntimeException("WTF ??!", e);
         }
         mOpenInputStreams.add(res);
+        //TODO: register listener for StreamClosedEvent, which then updates the local mOpenInputStreams cache, and unregisters the listener.
         return res;
     }
 
@@ -212,6 +213,7 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
             // Should never happen
             throw new RuntimeException("WTF ??!", e);
         }
+        //TODO: register listener for StreamClosedEvent, which then updates the local mOpenOutputStream to NULL, and unregisters the listener.
         return mOpenOutputStream;
     }
 
