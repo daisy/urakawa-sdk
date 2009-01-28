@@ -39,6 +39,7 @@ namespace urakawa.publish
         private int mCurrentAudioFileNumber;
         private PCMFormatInfo mCurrentAudioFilePCMFormat = null;
         private Stream mCurrentAudioFileStream = null;
+        private uint mCurrentAudioFileStreamRiffWaveHeaderLength = 0;
 
         /// <summary>
         /// Gets the source <see cref="Channel"/> from which the <see cref="ManagedAudioMedia"/> to publish is retrieved
@@ -163,6 +164,15 @@ namespace urakawa.publish
         {
             if (mCurrentAudioFileStream != null && mCurrentAudioFilePCMFormat != null)
             {
+                PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
+                pcmData.DataLength = (uint)mCurrentAudioFileStream.Length - mCurrentAudioFileStreamRiffWaveHeaderLength;
+
+                mCurrentAudioFileStream.Position = 0;
+                pcmData.WriteRiffWaveHeader(mCurrentAudioFileStream);
+
+                mCurrentAudioFileStream.Close();
+
+                /*
                 Uri file = GetCurrentAudioFileUri();
                 FileStream fs = new FileStream(
                     file.LocalPath,
@@ -184,6 +194,7 @@ namespace urakawa.publish
                 {
                     fs.Close();
                 }
+                 */
             }
         }
 
@@ -197,8 +208,17 @@ namespace urakawa.publish
         private void CreateNextAudioFile()
         {
             WriteCurrentAudioFile();
+
             mCurrentAudioFileNumber++;
-            mCurrentAudioFileStream = new MemoryStream();
+            mCurrentAudioFileStream = null;
+            mCurrentAudioFilePCMFormat = null;
+            mCurrentAudioFileStreamRiffWaveHeaderLength = 0;
+            //mCurrentAudioFileStream = new MemoryStream();
+
+            Uri file = GetCurrentAudioFileUri();
+            mCurrentAudioFileStream = new FileStream(
+                file.LocalPath,
+                FileMode.Create, FileAccess.Write, FileShare.Read);
         }
 
         #region ITreeNodeVisitor Members

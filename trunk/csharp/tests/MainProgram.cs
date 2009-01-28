@@ -27,17 +27,17 @@ namespace urakawa
         [STAThread]
         static void Main(string[] args)
         {
-            //string[] argz = new string[1] { "../../UrakawaTests.nunit" };
+            string[] argz = new string[1] { "../../UrakawaTests.nunit" };
             //NUnit.ConsoleRunner.Runner.Main(new string[] { Assembly.GetExecutingAssembly().Location });
             DialogResult dialogResult = MessageBox.Show("Use GUI ?", "NUnit tests", MessageBoxButtons.YesNo,
                                                MessageBoxIcon.Question);
             if (dialogResult.Equals(DialogResult.Yes))
             {
-                NUnit.Gui.AppEntry.Main(args);
+                NUnit.Gui.AppEntry.Main(argz);
             }
             else
             {
-                NUnit.ConsoleRunner.Runner.Main(args);
+                NUnit.ConsoleRunner.Runner.Main(argz);
             }
 
             /*
