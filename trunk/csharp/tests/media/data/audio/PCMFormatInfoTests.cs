@@ -10,7 +10,7 @@ namespace urakawa.media.data.audio
     [TestFixture]
     public class PCMFormatInfoTests
     {
-        [Test, Description("Ensure that PCMFormatInfo.GetDataLength(PCMFormatInfo.GetDuration(i))==i for all i:uint")]
+        [Test]
         public void Duration_DataLength_RoundTrip()
         {
             PCMFormatInfo pcmInfo = new PCMFormatInfo();
@@ -44,7 +44,7 @@ namespace urakawa.media.data.audio
             }
         }
 
-        [Test, Description("Ensure that PCMFormatInfo is xuk round-trip secure")]
+        [Test]
         public void XukIn_XukOut_RoundTrim()
         {
             PCMFormatInfo pcmInfo;

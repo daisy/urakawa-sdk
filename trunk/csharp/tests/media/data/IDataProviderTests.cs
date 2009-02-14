@@ -38,20 +38,23 @@ namespace urakawa.media.data
         {
             mmProject = new Project();
             mProject.AddNewPresentation();
-            mRootUri = new Uri(Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + "\\");
+			string str = "file://" + Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + Path.PathSeparator;
+
+            mRootUri = new Uri(str);
             if (!Directory.Exists(mRootUri.LocalPath)) Directory.CreateDirectory(mRootUri.LocalPath);
+           
             mPresentation.RootUri = mRootUri;
-            mDataProvider1 = mPresentation.DataProviderFactory.Create(mDefaultDataProviderType, "");
+            mDataProvider1 = mPresentation.DataProviderFactory.Create(mDefaultDataProviderType, "text/plain");
             Assert.IsNotNull(
                 mDataProvider1,
                 "DataProviderFactory cannot create a {0}",
                 mDefaultDataProviderType);
-            mDataProvider2 = mPresentation.DataProviderFactory.Create(mDefaultDataProviderType, "");
+            mDataProvider2 = mPresentation.DataProviderFactory.Create(mDefaultDataProviderType, "text/plain");
             Assert.IsNotNull(
                 mDataProvider2,
                 "DataProviderFactory cannot create a {0}",
                 mDefaultDataProviderType);
-            mDataProvider3 = mPresentation.DataProviderFactory.Create(mDefaultDataProviderType, "");
+            mDataProvider3 = mPresentation.DataProviderFactory.Create(mDefaultDataProviderType, "text/plain");
             Assert.IsNotNull(
                 mDataProvider3,
                 "DataProviderFactory cannot create a {0}",

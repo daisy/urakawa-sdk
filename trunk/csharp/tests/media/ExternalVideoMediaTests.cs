@@ -7,7 +7,7 @@ using urakawa.xuk;
 
 namespace urakawa.media
 {
-    [TestFixture, Description("Tests for ExternalVideoMedia functionality")]
+    [TestFixture]
     public class ExternalVideoMediaTests : ExternalMediaTests
     {
         public ExternalVideoMediaTests()

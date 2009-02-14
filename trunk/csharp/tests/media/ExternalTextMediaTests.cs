@@ -6,7 +6,7 @@ using urakawa.xuk;
 
 namespace urakawa.media
 {
-    [TestFixture, Description("Tests the ExternalTextMedia functionality")]
+    [TestFixture]
     public class ExternalTextMediaTests : ExternalMediaTests
     {
         public ExternalTextMediaTests() 
@@ -29,13 +29,13 @@ namespace urakawa.media
             get { return mLocatedMedia3 as ExternalTextMedia; }
         }
 
-        [Test, Description("Testing GetText with local relative src")]
+        [Test]
         public void Text_getWithLocalSrc()
         {
             mExternalTextMedia1.Src = "temp.txt";
             Uri file = new Uri(mPresentation.RootUri, mExternalTextMedia1.Src);
             System.IO.StreamWriter wr = new System.IO.StreamWriter(file.LocalPath, false);
-            string text = "GetText: Test line æøåÆØÅ@£$€\nSecond test line\tincluding a tab";
+            string text = "GetText: Test line ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½$ï¿½\nSecond test line\tincluding a tab";
             try
             {
                 wr.Write(text);
@@ -52,8 +52,6 @@ namespace urakawa.media
         }
 
         [Test]
-        [Description("Tests GetText with an external http src")]
-        [Explicit("Requires being online and takes a bit of time especially on slow connections")]
         public void Text_GetWithHttpSrc()
         {
             mExternalTextMedia1.Src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
@@ -65,9 +63,6 @@ namespace urakawa.media
         }
 
         [Test]
-        [Description(
-            "Tests that GetText throws an exception.DataMissingException "
-            + "when the references text file does not exist")]
         [ExpectedException(typeof (exception.CannotReadFromExternalFileException))]
         public void Text_GetWithInvalidSrc()
         {
@@ -75,11 +70,11 @@ namespace urakawa.media
             string tmp = mExternalTextMedia1.Text;
         }
 
-        [Test, Description("Testing SetText with local relative src")]
+        [Test]
         public void Text_SetWithLocalSrc()
         {
             mExternalTextMedia1.Src = "temp.txt";
-            string text = "SetText: Test line æøåÆØÅ@£$€\nSecond test line\tincluding a tab";
+            string text = "SetText: Test line ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½$ï¿½\nSecond test line\tincluding a tab";
             mExternalTextMedia1.Text = text;
             Assert.AreEqual(text, mExternalTextMedia1.Text, "The ExternalTextMedia did not return the expected text");
             Uri file = new Uri(mPresentation.RootUri, mExternalTextMedia1.Src);
@@ -88,7 +83,7 @@ namespace urakawa.media
             System.IO.File.Delete(file.LocalPath);
         }
 
-        [Test, Description("Testing SetText with external http src - expected to throw an exception")]
+        [Test]
         [ExpectedException(typeof (exception.CannotWriteToExternalFileException))]
         public void Text_SetWithHttpSrc()
         {

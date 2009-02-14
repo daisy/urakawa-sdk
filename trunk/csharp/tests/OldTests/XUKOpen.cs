@@ -16,7 +16,7 @@ namespace urakawa.oldTests
     [TestFixture]
     public class XUKOpen
     {
-        protected string mDefaultFile = @"..\XUKWorks\simplesample.xuk";
+        protected string mDefaultFile = ".." + Path.PathSeparator + "XUKWorks" + Path.PathSeparator + "simplesample.xuk";
 
         /// <summary>
         /// Tests opening of XUK files
