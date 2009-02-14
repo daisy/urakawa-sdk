@@ -12,7 +12,7 @@ using urakawa.xuk;
 
 namespace urakawa.media.data.audio
 {
-    [TestFixture, Description("Tests the ManagedAudioMedia functionality")]
+    [TestFixture]
     public class ManagedAudioMediaTests : IMediaTests
     {
         public ManagedAudioMediaTests() : base(typeof (ManagedAudioMedia))
@@ -87,7 +87,7 @@ namespace urakawa.media.data.audio
             SetUpMedia();
         }
 
-        [Test, Description("Tests ValueEquals focusing on the language property")]
+		[Test]
         public void ValueEquals_LangEquality()
         {
             mManagedAudioMedia1.Language = null;
@@ -103,7 +103,7 @@ namespace urakawa.media.data.audio
                            "medias with different lang shouldn't be equal");
         }
 
-        [Test, Description("Tests ValueEquals focusing on the media data")]
+		[Test]
         public void ValueEquals_MediaData()
         {
             AudioMediaData data1 = mPresentation.MediaDataFactory.Create<codec.WavAudioMediaData>();

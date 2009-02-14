@@ -102,7 +102,7 @@ namespace urakawa.media.data
                 "The data file directory of the FileDataManager does not exist");
             Assert.AreEqual(
                 0, Directory.GetFiles(path).Length,
-                "The data file directory of the FileDataManager is not empty");
+                "The data file directory of the FileDataManager is not empty: " + path);
         }
 
         [Test]
