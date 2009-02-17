@@ -291,6 +291,7 @@ namespace urakawa.publish
 					eam.setClipBegin(clipBegin);
 					eam.setClipEnd(clipEnd);
 					chProp.setMedia(mDestinationChannel, eam);
+                    System.GC.Collect();
 				}
 			}
 			return true;
