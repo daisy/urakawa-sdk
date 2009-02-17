@@ -165,15 +165,21 @@ namespace urakawa.publish
 		/// </summary>
 		public void writeCurrentAudioFile()
 		{
-			if (mCurrentAudioFileStream!=null && mCurrentAudioFilePCMFormat!=null)
+			if (mCurrentAudioFileStream != null && mCurrentAudioFilePCMFormat != null)
 			{
                 PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
                 pcmData.setDataLength((uint)mCurrentAudioFileStream.Length - mCurrentAudioFileStreamRiffWaveHeaderLength);
 
                 mCurrentAudioFileStream.Position = 0;
+                mCurrentAudioFileStream.Seek(0, SeekOrigin.Begin);
+
                 pcmData.writeRiffWaveHeader(mCurrentAudioFileStream);
 
                 mCurrentAudioFileStream.Close();
+
+                mCurrentAudioFileStream = null;
+                mCurrentAudioFilePCMFormat = null;
+                mCurrentAudioFileStreamRiffWaveHeaderLength = 0;
 
                 /*
 
@@ -214,9 +220,6 @@ namespace urakawa.publish
 			writeCurrentAudioFile();
 
             mCurrentAudioFileNumber++;
-			mCurrentAudioFileStream = null;
-			mCurrentAudioFilePCMFormat = null;
-		    mCurrentAudioFileStreamRiffWaveHeaderLength = 0;
 			//mCurrentAudioFileStream = new MemoryStream();
             
             Uri file = getCurrentAudioFileUri();
@@ -245,15 +248,16 @@ namespace urakawa.publish
 				if (mam != null)
 				{
 					AudioMediaData amd = mam.getMediaData();
-					if (mCurrentAudioFilePCMFormat == null)
-					{
-						mCurrentAudioFilePCMFormat = amd.getPCMFormat();
+                    if (mCurrentAudioFileStream != null && mCurrentAudioFilePCMFormat == null)
+                    {
+                        mCurrentAudioFilePCMFormat = amd.getPCMFormat();
                         PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
                         //pcmData.setDataLength((uint)mCurrentAudioFileStream.Length);
-					    pcmData.setDataLength(0);
-                        mCurrentAudioFileStreamRiffWaveHeaderLength = (uint) pcmData.writeRiffWaveHeader(mCurrentAudioFileStream);
-					}					
-					if (mCurrentAudioFileStream == null || !mCurrentAudioFilePCMFormat.valueEquals(amd.getPCMFormat()))
+                        pcmData.setDataLength(0);
+                        mCurrentAudioFileStreamRiffWaveHeaderLength =
+                            (uint) pcmData.writeRiffWaveHeader(mCurrentAudioFileStream);
+                    }
+				    if (mCurrentAudioFileStream == null || !mCurrentAudioFilePCMFormat.valueEquals(amd.getPCMFormat()))
 					{
 						createNextAudioFile();
 						mCurrentAudioFilePCMFormat = amd.getPCMFormat();
@@ -263,7 +267,7 @@ namespace urakawa.publish
                         mCurrentAudioFileStreamRiffWaveHeaderLength = (uint) pcmData.writeRiffWaveHeader(mCurrentAudioFileStream);
 					}
 					BinaryReader rd = new BinaryReader(amd.getAudioData());
-					Time clipBegin = Time.Zero.addTimeDelta(mCurrentAudioFilePCMFormat.getDuration((uint)mCurrentAudioFileStream.Position));
+                    Time clipBegin = Time.Zero.addTimeDelta(mCurrentAudioFilePCMFormat.getDuration((uint)mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength));
 					Time clipEnd = clipBegin.addTimeDelta(amd.getAudioDuration());
 					try
 					{
