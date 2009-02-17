@@ -17,6 +17,7 @@ namespace urakawa.media.data
     /// </summary>
     public class FileDataProvider : DataProvider
     {
+        private object m_lock = new object();
 
         /// <summary>
         /// Default constructor - for system use only, 
@@ -121,6 +122,13 @@ namespace urakawa.media.data
         /// </exception>
         public override Stream GetInputStream()
         {
+            lock (m_lock)
+            {
+                return GetInputStream_NoLock();
+            }
+        }
+        private Stream GetInputStream_NoLock()  
+        {
             if (mOpenOutputStream != null)
             {
                 throw new exception.OutputStreamOpenException(
@@ -150,9 +158,11 @@ namespace urakawa.media.data
             utilities.CloseNotifyingStream cnStm = sender as utilities.CloseNotifyingStream;
             if (cnStm != null)
             {
-                if (mOpenInputStreams.Contains(cnStm)) mOpenInputStreams.Remove(cnStm);
-                cnStm.StreamClosed -= InputStreamClosed_StreamClosed;
-                cnStm = null; 
+                lock (m_lock)
+                {
+                    cnStm.StreamClosed -= InputStreamClosed_StreamClosed;
+                    if (mOpenInputStreams.Contains(cnStm)) mOpenInputStreams.Remove(cnStm);
+                } 
             }
         }
 
@@ -175,39 +185,45 @@ namespace urakawa.media.data
         public override Stream GetOutputStream()
         {
             FileStream outputFS;
-            if (mOpenOutputStream != null)
+            lock (m_lock)
             {
-                throw new exception.OutputStreamOpenException(
-                    "Cannot open an output Stream while another output Stream is already open");
+                if (mOpenOutputStream != null)
+                {
+                    throw new exception.OutputStreamOpenException(
+                        "Cannot open an output Stream while another output Stream is already open");
+                }
+                if (mOpenInputStreams.Count > 0)
+                {
+                    throw new exception.InputStreamsOpenException(
+                        "Cannot open an output Stream while one or more input Streams are open");
+                }
+                CheckDataFile();
+                string fp = DataFileFullPath;
+                try
+                {
+                    outputFS = new FileStream(fp, FileMode.Open, FileAccess.Write, FileShare.Read);
+                }
+                catch (Exception e)
+                {
+                    throw new exception.OperationNotValidException(
+                        String.Format("Could not open file {0}", fp),
+                        e);
+                }
+                mOpenOutputStream = new utilities.CloseNotifyingStream(outputFS);
+                mOpenOutputStream.StreamClosed += OutputStream_StreamClosed;
+                return mOpenOutputStream;
             }
-            if (mOpenInputStreams.Count > 0)
-            {
-                throw new exception.InputStreamsOpenException(
-                    "Cannot open an output Stream while one or more input Streams are open");
-            }
-            CheckDataFile();
-            string fp = DataFileFullPath;
-            try
-            {
-                outputFS = new FileStream(fp, FileMode.Open, FileAccess.Write, FileShare.Read);
-            }
-            catch (Exception e)
-            {
-                throw new exception.OperationNotValidException(
-                    String.Format("Could not open file {0}", fp),
-                    e);
-            }
-            mOpenOutputStream = new utilities.CloseNotifyingStream(outputFS);
-            mOpenOutputStream.StreamClosed += OutputStream_StreamClosed;
-            return mOpenOutputStream;
         }
 
         private void OutputStream_StreamClosed(object sender, EventArgs e)
         {
             if (ReferenceEquals(sender, mOpenOutputStream))
             {
-                mOpenOutputStream.StreamClosed -= new EventHandler(OutputStream_StreamClosed); 
-                mOpenOutputStream = null;
+                lock (m_lock)
+                {
+                    mOpenOutputStream.StreamClosed -= new EventHandler(OutputStream_StreamClosed); 
+                    mOpenOutputStream = null;
+                }
             }
         }
 
@@ -227,30 +243,33 @@ namespace urakawa.media.data
         /// </exception>
         public override void Delete()
         {
-            if (mOpenOutputStream != null)
+            lock (m_lock)
             {
-                throw new exception.OutputStreamOpenException(
-                    "Cannot delete the FileDataProvider while an output Stream is still open");
-            }
-            if (mOpenInputStreams.Count > 0)
-            {
-                throw new exception.InputStreamsOpenException(
-                    "Cannot delete the FileDataProvider while one or more input Streams are still open");
-            }
-            if (File.Exists(DataFileFullPath))
-            {
-                try
+                if (mOpenOutputStream != null)
                 {
-                    File.Delete(DataFileFullPath);
+                    throw new exception.OutputStreamOpenException(
+                        "Cannot delete the FileDataProvider while an output Stream is still open");
                 }
-                catch (Exception e)
+                if (mOpenInputStreams.Count > 0)
                 {
-                    throw new exception.OperationNotValidException(String.Format(
-                                                                       "Could not delete data file {0}: {1}",
-                                                                       DataFileFullPath, e.Message), e);
+                    throw new exception.InputStreamsOpenException(
+                        "Cannot delete the FileDataProvider while one or more input Streams are still open");
                 }
+                if (File.Exists(DataFileFullPath))
+                {
+                    try
+                    {
+                        File.Delete(DataFileFullPath);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new exception.OperationNotValidException(String.Format(
+                                                                           "Could not delete data file {0}: {1}",
+                                                                           DataFileFullPath, e.Message), e);
+                    }
+                }
+                DataProviderManager.RemoveDataProvider(this, false);
             }
-            DataProviderManager.RemoveDataProvider(this, false);
         }
 
         /// <summary>
@@ -259,17 +278,20 @@ namespace urakawa.media.data
         /// <returns>The copy</returns>
         public override DataProvider Copy()
         {
-            DataProvider c = Presentation.DataProviderFactory.Create<FileDataProvider>(MimeType);
-            Stream thisData = GetInputStream();
-            try
+            lock (m_lock)
             {
-                data.DataProviderManager.AppendDataToProvider(thisData, (int) (thisData.Length - thisData.Position), c);
+                DataProvider c = Presentation.DataProviderFactory.Create<FileDataProvider>(MimeType);
+                Stream thisData = GetInputStream_NoLock();
+                try
+                {
+                    data.DataProviderManager.AppendDataToProvider(thisData, (int) (thisData.Length - thisData.Position), c);
+                }
+                finally
+                {
+                    thisData.Close();
+                }
+                return c;
             }
-            finally
-            {
-                thisData.Close();
-            }
-            return c;
         }
 
         /// <summary>
@@ -279,17 +301,20 @@ namespace urakawa.media.data
         /// <returns>The exported <see cref="FileDataProvider"/></returns>
         public override DataProvider Export(Presentation destPres)
         {
-            FileDataProvider expFDP = destPres.DataProviderFactory.Create<FileDataProvider>(MimeType);
-            Stream thisStm = GetInputStream();
-            try
+            lock (m_lock)
             {
-                DataProviderManager.AppendDataToProvider(thisStm, (int)thisStm.Length, expFDP);
+                FileDataProvider expFDP = destPres.DataProviderFactory.Create<FileDataProvider>(MimeType);
+                Stream thisStm = GetInputStream_NoLock();
+                try
+                {
+                    DataProviderManager.AppendDataToProvider(thisStm, (int)thisStm.Length, expFDP);
+                }
+                finally
+                {
+                    thisStm.Close();
+                }
+                return expFDP;
             }
-            finally
-            {
-                thisStm.Close();
-            }
-            return expFDP;
         }
 
         #endregion
@@ -308,6 +333,15 @@ namespace urakawa.media.data
                 throw new exception.XukException("dataFileRelativePath is missing from FileDataProvider element");
             }
             mDataFileRelativePath = val;
+            
+            /*
+            if (!File.Exists(getDataFileFullPath()))
+            {
+                throw new exception.DataMissingException(
+                    String.Format("The data file {0} does not exist", DataFileFullPath));
+            }
+            */
+
             HasBeenInitialized = true; //Assume that the data file exists
             base.XukInAttributes(source);
         }

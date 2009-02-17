@@ -168,10 +168,16 @@ namespace urakawa.publish
                 pcmData.DataLength = (uint)mCurrentAudioFileStream.Length - mCurrentAudioFileStreamRiffWaveHeaderLength;
 
                 mCurrentAudioFileStream.Position = 0;
+                mCurrentAudioFileStream.Seek(0, SeekOrigin.Begin); 
+
                 pcmData.WriteRiffWaveHeader(mCurrentAudioFileStream);
 
                 mCurrentAudioFileStream.Close();
 
+                mCurrentAudioFileStream = null;
+                mCurrentAudioFilePCMFormat = null;
+                mCurrentAudioFileStreamRiffWaveHeaderLength = 0;
+    
                 /*
                 Uri file = GetCurrentAudioFileUri();
                 FileStream fs = new FileStream(
@@ -210,9 +216,6 @@ namespace urakawa.publish
             WriteCurrentAudioFile();
 
             mCurrentAudioFileNumber++;
-            mCurrentAudioFileStream = null;
-            mCurrentAudioFilePCMFormat = null;
-            mCurrentAudioFileStreamRiffWaveHeaderLength = 0;
             //mCurrentAudioFileStream = new MemoryStream();
 
             Uri file = GetCurrentAudioFileUri();
@@ -241,7 +244,7 @@ namespace urakawa.publish
                 if (mam != null)
                 {
                     AudioMediaData amd = mam.AudioMediaData;
-                    if (mCurrentAudioFilePCMFormat == null)
+                    if (mCurrentAudioFileStream != null && mCurrentAudioFilePCMFormat == null)
                     {
                         mCurrentAudioFilePCMFormat = amd.PCMFormat;
                     }
@@ -251,9 +254,7 @@ namespace urakawa.publish
                         mCurrentAudioFilePCMFormat = amd.PCMFormat;
                     }
                     BinaryReader rd = new BinaryReader(amd.GetAudioData());
-                    Time clipBegin =
-                        Time.Zero.AddTimeDelta(
-                            mCurrentAudioFilePCMFormat.GetDuration((uint) mCurrentAudioFileStream.Position));
+                    Time clipBegin = Time.Zero.AddTimeDelta(mCurrentAudioFilePCMFormat.GetDuration((uint)mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength)); 
                     Time clipEnd = clipBegin.AddTimeDelta(amd.AudioDuration);
                     try
                     {

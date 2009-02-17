@@ -97,6 +97,7 @@
     <Content Include="App.ico" />
     <Content Include="events\EventsClassDiagram.png" />
     <Compile Include="command\IAction.cs" />
+    <Compile Include="events\media\data\DataIsMissingEventArgs.cs" />
     <Compile Include="events\progress\CancellableEventArgs.cs" />
     <Compile Include="events\progress\CancelledEventArgs.cs" />
     <Compile Include="events\progress\FinishedEventArgs.cs" />

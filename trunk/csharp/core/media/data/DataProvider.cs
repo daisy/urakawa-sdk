@@ -15,7 +15,6 @@ namespace urakawa.media.data
     /// </summary>
     public abstract class DataProvider : WithPresentation, IValueEquatable<DataProvider>
     {
-
         private string mMimeType;
 
         private void Reset()
