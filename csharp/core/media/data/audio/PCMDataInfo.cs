@@ -64,12 +64,13 @@ namespace urakawa.media.data.audio
         /// Writes a RIFF Wave PCM header to a given destination output <see cref="Stream"/>
         /// </summary>
         /// <param name="output">The destination output <see cref="Stream"/></param>
-        public void WriteRiffWaveHeader(Stream output)
+        public ulong WriteRiffWaveHeader(Stream output)
         {
+            long initPos = output.Position;
             BinaryWriter wr = new BinaryWriter(output);
             wr.Write(Encoding.ASCII.GetBytes("RIFF")); //Chunk Uid
             uint chunkSize = 4 + 8 + 16 + 8 + DataLength;
-            wr.Write(DataLength + 4 + 8 + 16 + 8); //Chunk Size
+            wr.Write(chunkSize); //Chunk Size
             wr.Write(Encoding.ASCII.GetBytes("WAVE")); //Format field
             wr.Write(Encoding.ASCII.GetBytes("fmt ")); //Format sub-chunk
             uint formatChunkSize = 16;
@@ -83,6 +84,9 @@ namespace urakawa.media.data.audio
             wr.Write(BitDepth);
             wr.Write(Encoding.ASCII.GetBytes("data"));
             wr.Write(DataLength);
+
+            long endPos = output.Position;
+            return (ulong) (endPos - initPos);
         }
 
         /// <summary>

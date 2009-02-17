@@ -802,7 +802,17 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.XukException("dataProvider attribute is missing from WavClip element");
             }
             DataProvider prov = MediaDataManager.Presentation.DataProviderManager.GetDataProvider(dataProviderUid);
-            mWavClips.Add(new WavClip(prov, cb, ce));
+
+            try 
+            { 
+                mWavClips.Add(new WavClip(prov, cb, ce)); 
+            } 
+            catch (exception.DataMissingException ex) 
+            { 
+                // TODO: this is a temporary fix ! Instead of ignoring the fact that the underlying audio resource is missing, we should have a system to let the consumer of the SDK (i.e. the host application) know about the error and decide about the processing (i.e. abandon parsing or carry-on by ignoring the resource). This relates to the global issue of configurable error recovery, not only for the data attached to the XUK instance, but also for corrupted XUK markup or values. 
+                Presentation.Project.notifyDataIsMissing(this, ex); 
+            }
+
             if (!source.IsEmptyElement)
             {
                 source.ReadSubtree().Close();
