@@ -358,7 +358,10 @@ namespace urakawa.media.data
                 Stream thisData = getInputStream_NoLock();
                 try
                 {
-                    FileDataProviderManager.appendDataToProvider(thisData, (int)(thisData.Length - thisData.Position), c);
+                    if (thisData.Length > 0)
+                    {
+                        FileDataProviderManager.appendDataToProvider(thisData, (int) thisData.Length, c);
+                    }
                 }
                 finally
                 {
@@ -521,7 +524,10 @@ namespace urakawa.media.data
                 Stream thisStm = getInputStream_NoLock();
                 try
                 {
-                    FileDataProviderManager.appendDataToProvider(thisStm, (int)thisStm.Length, expFDP);
+                    if (thisStm.Length > 0)
+                    {
+                        FileDataProviderManager.appendDataToProvider(thisStm, (int) thisStm.Length, expFDP);
+                    }
                 }
                 finally
                 {
