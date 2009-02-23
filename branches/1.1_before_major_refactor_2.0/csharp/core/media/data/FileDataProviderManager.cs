@@ -78,7 +78,7 @@ namespace urakawa.media.data
 			{
 				provOutputStream.Seek(0, SeekOrigin.End);
 
-                const int BUFFER_SIZE = 1024 * 100; // 100 KB MAX BUFFER 
+                const int BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER 
                 if (count <= BUFFER_SIZE) 
                 {
                     byte[] buffer = new byte[count];

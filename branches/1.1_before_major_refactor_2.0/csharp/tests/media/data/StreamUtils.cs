@@ -90,7 +90,7 @@ namespace urakawa.media.data
 		}
 
 		public static MemoryStream getRandomMemoryStream(int length)
-		{
+        {
 			MemoryStream memStm = new MemoryStream();
 			System.Security.Cryptography.RandomNumberGenerator rndGen = System.Security.Cryptography.RandomNumberGenerator.Create();
             byte[] buf = new byte[BYTE_BUFFER_LENGTH];

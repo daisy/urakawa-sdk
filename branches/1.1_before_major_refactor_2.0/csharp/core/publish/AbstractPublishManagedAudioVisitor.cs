@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.property.channel;
 using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
+using TreeNode=urakawa.core.TreeNode;
 
 namespace urakawa.publish
 {
@@ -16,9 +14,9 @@ namespace urakawa.publish
 	/// from a source <see cref="Channel"/> to a destination <see cref="Channel"/> as <see cref="ExternalAudioMedia"/>.
 	/// In concrete implementations of the abstract visitor, 
 	/// methods <see cref="treeNodeTriggersNewAudioFile"/> and <see cref="treeNodeMustBeSkipped"/> 
-	/// must be implemented to control which <see cref="TreeNode"/>s trigger the generation of a new audio file
-	/// and which <see cref="TreeNode"/>s are skipped.
-	/// After visitation the <see cref="writeCurrentAudioFile"/> method must be called to ensure that
+	/// must be implemented to control which <see cref="core.TreeNode"/>s trigger the generation of a new audio file
+	/// and which <see cref="core.TreeNode"/>s are skipped.
+	/// After visitation the <see cref="writeAndCloseCurrentAudioFile"/> method must be called to ensure that
 	/// the current audio file is written to disk.
 	/// </summary>
 	public abstract class AbstractPublishManagedAudioVisitor : ITreeNodeVisitor
@@ -145,8 +143,8 @@ namespace urakawa.publish
 
 		/// <summary>
 		/// Controls when new audio files are created. In concrete implementations,
-		/// if this method returns <c>true</c> for a given <see cref="TreeNode"/>, 
-		/// this <see cref="TreeNode"/> triggers the creation of a new audio file
+		/// if this method returns <c>true</c> for a given <see cref="core.TreeNode"/>, 
+		/// this <see cref="core.TreeNode"/> triggers the creation of a new audio file
 		/// </summary>
 		/// <param name="node">The given node</param>
 		/// <returns>A <see cref="bool"/> indicating if the given node triggers a new audio file</returns>
@@ -163,48 +161,52 @@ namespace urakawa.publish
 		/// <summary>
 		/// Writes the curently active audio file to disk.
 		/// </summary>
-		public void writeCurrentAudioFile()
+		public void writeAndCloseCurrentAudioFile()
 		{
-			if (mCurrentAudioFileStream != null && mCurrentAudioFilePCMFormat != null)
+			if (mCurrentAudioFileStream != null)
 			{
-                PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
-                pcmData.setDataLength((uint)mCurrentAudioFileStream.Length - mCurrentAudioFileStreamRiffWaveHeaderLength);
+                if (mCurrentAudioFilePCMFormat != null)
+                {
+                    PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
+                    pcmData.setDataLength((uint) mCurrentAudioFileStream.Length -
+                                          mCurrentAudioFileStreamRiffWaveHeaderLength);
 
-                mCurrentAudioFileStream.Position = 0;
-                mCurrentAudioFileStream.Seek(0, SeekOrigin.Begin);
+                    mCurrentAudioFileStream.Position = 0;
+                    mCurrentAudioFileStream.Seek(0, SeekOrigin.Begin);
 
-                pcmData.writeRiffWaveHeader(mCurrentAudioFileStream);
+                    pcmData.writeRiffWaveHeader(mCurrentAudioFileStream);
+
+                    /*
+
+                    Uri file = getCurrentAudioFileUri();
+                    FileStream fs = new FileStream(
+                        file.LocalPath,
+                        FileMode.Create, FileAccess.Write, FileShare.Read);
+                    try
+                    {
+                        PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
+                        pcmData.setDataLength((uint)mCurrentAudioFileStream.Length);
+                        pcmData.writeRiffWaveHeader(fs);
+                        mCurrentAudioFileStream.Position = 0;
+                        BinaryReader rd = new BinaryReader(mCurrentAudioFileStream);
+                        byte[] data = rd.ReadBytes((int)mCurrentAudioFileStream.Length);
+                        rd.Close();
+                        fs.Write(data, 0, data.Length);
+                        mCurrentAudioFileStream = null;
+                        mCurrentAudioFilePCMFormat = null;
+                    }
+                    finally
+                    {
+                        fs.Close();
+                    }
+                    */
+                }
 
                 mCurrentAudioFileStream.Close();
 
                 mCurrentAudioFileStream = null;
                 mCurrentAudioFilePCMFormat = null;
                 mCurrentAudioFileStreamRiffWaveHeaderLength = 0;
-
-                /*
-
-				Uri file = getCurrentAudioFileUri();
-				FileStream fs = new FileStream(
-					file.LocalPath,
-					FileMode.Create, FileAccess.Write, FileShare.Read);
-				try
-				{
-					PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
-					pcmData.setDataLength((uint)mCurrentAudioFileStream.Length);
-					pcmData.writeRiffWaveHeader(fs);
-					mCurrentAudioFileStream.Position = 0;
-					BinaryReader rd = new BinaryReader(mCurrentAudioFileStream);
-					byte[] data = rd.ReadBytes((int)mCurrentAudioFileStream.Length);
-					rd.Close();
-					fs.Write(data, 0, data.Length);
-					mCurrentAudioFileStream = null;
-					mCurrentAudioFilePCMFormat = null;
-				}
-				finally
-				{
-					fs.Close();
-				}
-                */
 			}
 		}
 
@@ -217,7 +219,7 @@ namespace urakawa.publish
 
 		private void createNextAudioFile()
 		{
-			writeCurrentAudioFile();
+			writeAndCloseCurrentAudioFile();
 
             mCurrentAudioFileNumber++;
 			//mCurrentAudioFileStream = new MemoryStream();
@@ -228,7 +230,20 @@ namespace urakawa.publish
                 FileMode.Create, FileAccess.Write, FileShare.Read);
 		}
 
-		#region ITreeNodeVisitor Members
+        private void writeInitialHeader(PCMFormatInfo pcmfi)
+        {
+            if (pcmfi == null) throw new Exception("PCMFormatInfo is null !!!");
+            if (mCurrentAudioFileStream == null) throw new Exception("mCurrentAudioFileStream is null !!!");
+
+            mCurrentAudioFilePCMFormat = pcmfi;
+            PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
+            //pcmData.setDataLength((uint)mCurrentAudioFileStream.Length);
+            pcmData.setDataLength(0);
+            mCurrentAudioFileStreamRiffWaveHeaderLength =
+                (uint)pcmData.writeRiffWaveHeader(mCurrentAudioFileStream);
+        }
+
+	    #region ITreeNodeVisitor Members
 
 		/// <summary>
 		/// The pre-visit method does the business logic of publishing the managed audio 
@@ -248,45 +263,59 @@ namespace urakawa.publish
 				if (mam != null)
 				{
 					AudioMediaData amd = mam.getMediaData();
+
+                    if (mCurrentAudioFileStream == null ||
+                        (mCurrentAudioFilePCMFormat != null &&
+                        !mCurrentAudioFilePCMFormat.valueEquals(amd.getPCMFormat())))
+                    {
+                        createNextAudioFile();
+                    }
                     if (mCurrentAudioFileStream != null && mCurrentAudioFilePCMFormat == null)
                     {
-                        mCurrentAudioFilePCMFormat = amd.getPCMFormat();
-                        PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
-                        //pcmData.setDataLength((uint)mCurrentAudioFileStream.Length);
-                        pcmData.setDataLength(0);
-                        mCurrentAudioFileStreamRiffWaveHeaderLength =
-                            (uint) pcmData.writeRiffWaveHeader(mCurrentAudioFileStream);
+                        writeInitialHeader(amd.getPCMFormat());
                     }
-				    if (mCurrentAudioFileStream == null || !mCurrentAudioFilePCMFormat.valueEquals(amd.getPCMFormat()))
-					{
-						createNextAudioFile();
-						mCurrentAudioFilePCMFormat = amd.getPCMFormat();
-                        PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
-                        //pcmData.setDataLength((uint)mCurrentAudioFileStream.Length);
-                        pcmData.setDataLength(0);
-                        mCurrentAudioFileStreamRiffWaveHeaderLength = (uint) pcmData.writeRiffWaveHeader(mCurrentAudioFileStream);
-					}
-					BinaryReader rd = new BinaryReader(amd.getAudioData());
-                    Time clipBegin = Time.Zero.addTimeDelta(mCurrentAudioFilePCMFormat.getDuration((uint)mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength));
+                    Time clipBegin = Time.Zero.addTimeDelta(mCurrentAudioFilePCMFormat.getDuration(
+                        (uint)(mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength)));
 					Time clipEnd = clipBegin.addTimeDelta(amd.getAudioDuration());
-                    
+
+				    Stream stream = amd.getAudioData();
+                    BinaryReader rd = new BinaryReader(stream);
 					try
 					{
                         const int BUFFER_SIZE = 5 * 1024 * 1024; // 5 MB
 
-                        if (amd.getPCMLength() <= BUFFER_SIZE)
+					    //int pcmLength = amd.getPCMLength();
+
+					    TimeDelta durationFromRiffHeader = amd.getAudioDuration();
+
+                        uint pcmLength = amd.getPCMFormat().getDataLength(durationFromRiffHeader);
+					    
+                        long pcmDataLength = stream.Length;
+
+                        TimeDelta durationFromReverseArithmetics = amd.getPCMFormat().getDuration(pcmLength);
+
+                        if (pcmLength <= BUFFER_SIZE)
                         {
-                            byte[] buffer = rd.ReadBytes(amd.getPCMLength());
+                            byte[] buffer = rd.ReadBytes((int)pcmLength);
                             mCurrentAudioFileStream.Write(buffer, 0, buffer.Length);
                         }
                         else
                         {
-                            int bytesRead = 0;
                             byte[] buffer = new byte[BUFFER_SIZE];
 
-                            while ((bytesRead = rd.Read(buffer, 0, BUFFER_SIZE)) > 0)
+                            while (true)
                             {
-                                mCurrentAudioFileStream.Write(buffer, 0, bytesRead);
+                                int bytesRead = rd.Read(buffer, 0, BUFFER_SIZE);
+                                if (bytesRead > 0)
+                                {
+                                    //MessageBox.Show("bytesRead:" + bytesRead);
+                                    //Console.Out.WriteLine(bytesRead);
+                                    mCurrentAudioFileStream.Write(buffer, 0, bytesRead);
+                                }
+                                else
+                                {
+                                    break;
+                                }
                             }
                         }
 					}
