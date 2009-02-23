@@ -159,7 +159,8 @@ namespace urakawa.media.data.audio.codec
 					throw new exception.MethodParameterIsOutOfBoundsException(
 						"The interval [subClipBegin;subClipEnd] must be non-empty and contained in [0;getDuration()]");
 				}
-				Stream raw = getDataProvider().getInputStream();
+                
+			    Stream raw = getDataProvider().getInputStream();
 				PCMDataInfo pcmInfo = PCMDataInfo.parseRiffWaveHeader(raw);
 				Time rawEndTime = Time.Zero.addTimeDelta(pcmInfo.getDuration());
 				if (
@@ -171,6 +172,11 @@ namespace urakawa.media.data.audio.codec
 						"WavClip [{0};{1}] is empty or not within the underlying wave data stream ([0;{2}])",
 						getClipBegin().ToString(), getClipEnd().ToString(), rawEndTime.ToString()));
 				}
+                TimeDelta clipDuration = getDuration();
+                if (subClipBegin.isEqualTo(Time.Zero) && subClipEnd.isEqualTo(Time.Zero.addTimeDelta(clipDuration)))
+                {
+                    return raw; // note: Stream.Position is at the end of the RIFF header
+                }
 				Time rawClipBegin = getClipBegin().addTime(subClipBegin);
 				Time rawClipEnd = getClipBegin().addTime(subClipEnd);
 				long offset;
@@ -428,7 +434,18 @@ namespace urakawa.media.data.audio.codec
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The clip end can not beyond the end of the audio content");
 			}
-			Time timeBeforeStartIndexClip = new Time();
+            if (mWavClips.Count == 0)
+            {
+                return new MemoryStream(0);
+            }
+		    if (mWavClips.Count == 1)
+            {
+                return mWavClips[0].getAudioData(
+                    clipBegin,
+                    clipEnd);
+            }
+
+		    Time timeBeforeStartIndexClip = new Time();
 			Time timeBeforeEndIndexClip = new Time();
 			Time elapsedTime = new Time();
 			int i = 0;
