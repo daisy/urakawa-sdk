@@ -61,12 +61,53 @@ namespace urakawa.media.data
 		/// <param name="provider">The given data provider</param>
 		public static void appendDataToProvider(Stream data, int count, IDataProvider provider)
 		{
-			Stream provOutputStream = provider.getOutputStream();
+            if (count <= 0)
+            {
+                return;
+            }
+
+            if (count > data.Length)
+            {
+                throw new exception.InputStreamIsTooShortException(
+                            String.Format("The given data Stream is shorter than the requested {0:0} bytes",
+                            count));
+            }
+
+		    Stream provOutputStream = provider.getOutputStream();
 			try
 			{
 				provOutputStream.Seek(0, SeekOrigin.End);
-				int bytesAppended = 0;
-				byte[] buf = new byte[1024];
+
+                const int BUFFER_SIZE = 1024 * 100; // 100 KB MAX BUFFER 
+                if (count <= BUFFER_SIZE) 
+                {
+                    byte[] buffer = new byte[count];
+                    int bytesRead = data.Read(buffer, 0, count);
+                    if (bytesRead > 0)
+                    {
+                        provOutputStream.Write(buffer, 0, bytesRead);
+                    }
+                    else
+                    {
+                        throw new exception.InputStreamIsTooShortException(
+                            String.Format("Can not read {0:0} bytes from the given data Stream",
+                            count));
+                    }
+                }
+                else
+                {
+                    int bytesRead = 0;
+                    byte[] buffer = new byte[BUFFER_SIZE];
+
+                    while ((bytesRead = data.Read(buffer, 0, BUFFER_SIZE)) > 0)
+                    {
+                        provOutputStream.Write(buffer, 0, bytesRead);
+                    }
+                }
+
+                /*
+			    int bytesAppended = 0;
+                byte[] buf = new byte[1024 * 10]; // 10 KB
 				while (bytesAppended < count)
 				{
 					if (bytesAppended + buf.Length >= count)
@@ -81,6 +122,7 @@ namespace urakawa.media.data
 					provOutputStream.Write(buf, 0, buf.Length);
 					bytesAppended += buf.Length;
 				}
+                */
 			}
 			finally
 			{

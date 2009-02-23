@@ -269,10 +269,26 @@ namespace urakawa.publish
 					BinaryReader rd = new BinaryReader(amd.getAudioData());
                     Time clipBegin = Time.Zero.addTimeDelta(mCurrentAudioFilePCMFormat.getDuration((uint)mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength));
 					Time clipEnd = clipBegin.addTimeDelta(amd.getAudioDuration());
+                    
 					try
 					{
-						byte[] data = rd.ReadBytes(amd.getPCMLength());
-						mCurrentAudioFileStream.Write(data, 0, data.Length);
+                        const int BUFFER_SIZE = 5 * 1024 * 1024; // 5 MB
+
+                        if (amd.getPCMLength() <= BUFFER_SIZE)
+                        {
+                            byte[] buffer = rd.ReadBytes(amd.getPCMLength());
+                            mCurrentAudioFileStream.Write(buffer, 0, buffer.Length);
+                        }
+                        else
+                        {
+                            int bytesRead = 0;
+                            byte[] buffer = new byte[BUFFER_SIZE];
+
+                            while ((bytesRead = rd.Read(buffer, 0, BUFFER_SIZE)) > 0)
+                            {
+                                mCurrentAudioFileStream.Write(buffer, 0, bytesRead);
+                            }
+                        }
 					}
 					finally
 					{
