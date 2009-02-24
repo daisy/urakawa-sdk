@@ -75,7 +75,6 @@ namespace urakawa.media.data.audio.codec
                 }
                 else
                 {
-
                     return cachedDuration;
                 }
 			}

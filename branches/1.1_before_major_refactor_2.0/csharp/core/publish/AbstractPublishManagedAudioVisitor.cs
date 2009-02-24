@@ -282,10 +282,10 @@ namespace urakawa.publish
                     Time clipEnd = clipBegin.addTimeDelta(durationFromRiffHeader);
 
 				    Stream stream = amd.getAudioData();
-                    BinaryReader rd = new BinaryReader(stream);
+                    //BinaryReader rd = new BinaryReader(stream);
 					try
 					{
-                        const int BUFFER_SIZE = 5 * 1024 * 1024; // 5 MB
+                        const int BUFFER_SIZE = 6 * 1024 * 1024; // 10 MB
 
 					    //int pcmLength = amd.getPCMLength();
                         //long pcmDataLength = stream.Length - stream.Position;
@@ -295,9 +295,11 @@ namespace urakawa.publish
 					    
                         if (pcmLength <= BUFFER_SIZE)
                         {
-                            byte[] buffer = rd.ReadBytes((int)pcmLength);
-                            long prePos = mCurrentAudioFileStream.Position;
-                            mCurrentAudioFileStream.Write(buffer, 0, buffer.Length);
+                            //byte[] buffer = rd.ReadBytes((int)pcmLength);
+                            byte[] buffer = new byte[pcmLength];
+                            int read = stream.Read(buffer, 0, (int)pcmLength);
+                            //long prePos = mCurrentAudioFileStream.Position;
+                            mCurrentAudioFileStream.Write(buffer, 0, read);
                             //long writtenLength = mCurrentAudioFileStream.Position - prePos;
                         }
                         else
@@ -306,7 +308,7 @@ namespace urakawa.publish
 
                             while (true)
                             {
-                                int bytesRead = rd.Read(buffer, 0, BUFFER_SIZE);
+                                int bytesRead = stream.Read(buffer, 0, BUFFER_SIZE);
                                 if (bytesRead > 0)
                                 {
                                     //MessageBox.Show("bytesRead:" + bytesRead);
@@ -322,7 +324,7 @@ namespace urakawa.publish
 					}
 					finally
 					{
-						rd.Close();
+						stream.Close();
 					}
 					ExternalAudioMedia eam = node.getPresentation().getMediaFactory().createMedia(
 						typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS) as ExternalAudioMedia;
@@ -337,7 +339,6 @@ namespace urakawa.publish
 					eam.setClipBegin(clipBegin);
 					eam.setClipEnd(clipEnd);
 					chProp.setMedia(mDestinationChannel, eam);
-                    System.GC.Collect();
 				}
 			}
 			return true;
