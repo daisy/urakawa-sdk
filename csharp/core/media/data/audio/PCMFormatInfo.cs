@@ -191,6 +191,11 @@ namespace urakawa.media.data.audio
 			return res;
 		}
 
+        public long getByteForTime(Time time)
+        {
+            return (long)(Math.Round(time.getTimeAsTimeSpan().Ticks / ((double)TimeSpan.TicksPerSecond / getSampleRate())) * getBlockAlign());
+        }
+
 		
 		#region IXUKAble members
 

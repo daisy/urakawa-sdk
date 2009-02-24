@@ -172,13 +172,29 @@ namespace urakawa.media.data.audio.codec
 						"WavClip [{0};{1}] is empty or not within the underlying wave data stream ([0;{2}])",
 						getClipBegin().ToString(), getClipEnd().ToString(), rawEndTime.ToString()));
 				}
+
+                /*
                 TimeDelta clipDuration = getDuration();
                 if (subClipBegin.isEqualTo(Time.Zero) && subClipEnd.isEqualTo(Time.Zero.addTimeDelta(clipDuration)))
                 {
-                    return raw; // note: Stream.Position is at the end of the RIFF header
+                    // Stream.Position is at the end of the RIFF header, we need to bring it back to the begining
+                    return new SubStream(
+                    raw,
+                    raw.Position, raw.Length - raw.Position); 
                 }
+                 */
+
 				Time rawClipBegin = getClipBegin().addTime(subClipBegin);
 				Time rawClipEnd = getClipBegin().addTime(subClipEnd);
+
+                long beginPos = raw.Position + pcmInfo.getByteForTime(rawClipBegin);
+                long endPos = raw.Position + pcmInfo.getByteForTime(rawClipEnd);
+                return new SubStream(
+                    raw,
+                    beginPos,
+                    endPos - beginPos);
+
+                /*
 				long offset;
 				long beginPos = raw.Position + (long)((rawClipBegin.getTimeAsMillisecondFloat() * pcmInfo.getByteRate()) / 1000);
 				offset = (beginPos - raw.Position) % pcmInfo.getBlockAlign();
@@ -186,12 +202,14 @@ namespace urakawa.media.data.audio.codec
 				long endPos = raw.Position + (long)((rawClipEnd.getTimeAsMillisecondFloat() * pcmInfo.getByteRate()) / 1000);
 				offset = (endPos - raw.Position) % pcmInfo.getBlockAlign();
 				endPos -= offset;
+
 				utilities.SubStream res = new utilities.SubStream(
 					raw,
 					beginPos, 
 					endPos-beginPos);
 				return res;
-			}
+                */
+            }
 
 			#region IValueEquatable<WavClip> Members
 

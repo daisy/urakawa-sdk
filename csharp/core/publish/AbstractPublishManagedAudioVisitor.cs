@@ -290,14 +290,16 @@ namespace urakawa.publish
 
                         uint pcmLength = amd.getPCMFormat().getDataLength(durationFromRiffHeader);
 					    
-                        long pcmDataLength = stream.Length;
+                        long pcmDataLength = stream.Length - stream.Position;
 
                         TimeDelta durationFromReverseArithmetics = amd.getPCMFormat().getDuration(pcmLength);
 
                         if (pcmLength <= BUFFER_SIZE)
                         {
                             byte[] buffer = rd.ReadBytes((int)pcmLength);
+                            long prePos = mCurrentAudioFileStream.Position;
                             mCurrentAudioFileStream.Write(buffer, 0, buffer.Length);
+                            long writtenLength = mCurrentAudioFileStream.Position - prePos;
                         }
                         else
                         {

@@ -58,7 +58,7 @@ namespace urakawa.publish
 			publishVisitor.setDestinationChannel(destCh);
 			publishVisitor.setDestinationDirectory(publishDestination);
 			pres.getRootNode().acceptDepthFirst(publishVisitor);
-			publishVisitor.writeCurrentAudioFile();
+			publishVisitor.writeAndCloseCurrentAudioFile();
 			Uri xukFile = new Uri(proj.getPresentation(0).getRootUri(), "TreeNodeTestsSample.xuk");
 			if (File.Exists(xukFile.LocalPath)) File.Delete(xukFile.LocalPath);
 			proj.saveXUK(xukFile);
