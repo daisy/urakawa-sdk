@@ -246,8 +246,6 @@ namespace urakawa.media.data
         /// </exception>
         public Stream getOutputStream()
         {
-            FileStream outputFS;
-
             lock (m_lock)
             {
                 if (mOpenOutputStream != null)
@@ -263,6 +261,8 @@ namespace urakawa.media.data
    
                 checkDataFile();
                 string fp = getDataFileFullPath();
+
+                FileStream outputFS;
                 try
                 {
                     outputFS = new FileStream(fp, FileMode.Open, FileAccess.Write, FileShare.Read);

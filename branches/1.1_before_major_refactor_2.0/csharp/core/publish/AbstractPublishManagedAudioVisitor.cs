@@ -274,9 +274,12 @@ namespace urakawa.publish
                     {
                         writeInitialHeader(amd.getPCMFormat());
                     }
+                    
+                    TimeDelta durationFromRiffHeader = amd.getAudioDuration();
+
                     Time clipBegin = Time.Zero.addTimeDelta(mCurrentAudioFilePCMFormat.getDuration(
                         (uint)(mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength)));
-					Time clipEnd = clipBegin.addTimeDelta(amd.getAudioDuration());
+                    Time clipEnd = clipBegin.addTimeDelta(durationFromRiffHeader);
 
 				    Stream stream = amd.getAudioData();
                     BinaryReader rd = new BinaryReader(stream);
@@ -285,21 +288,17 @@ namespace urakawa.publish
                         const int BUFFER_SIZE = 5 * 1024 * 1024; // 5 MB
 
 					    //int pcmLength = amd.getPCMLength();
-
-					    TimeDelta durationFromRiffHeader = amd.getAudioDuration();
+                        //long pcmDataLength = stream.Length - stream.Position;
+                        //TimeDelta durationFromReverseArithmetics = amd.getPCMFormat().getDuration(pcmLength);
 
                         uint pcmLength = amd.getPCMFormat().getDataLength(durationFromRiffHeader);
 					    
-                        long pcmDataLength = stream.Length - stream.Position;
-
-                        TimeDelta durationFromReverseArithmetics = amd.getPCMFormat().getDuration(pcmLength);
-
                         if (pcmLength <= BUFFER_SIZE)
                         {
                             byte[] buffer = rd.ReadBytes((int)pcmLength);
                             long prePos = mCurrentAudioFileStream.Position;
                             mCurrentAudioFileStream.Write(buffer, 0, buffer.Length);
-                            long writtenLength = mCurrentAudioFileStream.Position - prePos;
+                            //long writtenLength = mCurrentAudioFileStream.Position - prePos;
                         }
                         else
                         {

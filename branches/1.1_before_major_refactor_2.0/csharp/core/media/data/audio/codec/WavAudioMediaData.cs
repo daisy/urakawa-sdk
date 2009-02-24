@@ -49,23 +49,35 @@ namespace urakawa.media.data.audio.codec
 				setClipEnd(clipEnd);
 			}
 
+		    private TimeDelta cachedDuration = null;
+
 			/// <summary>
 			/// Gets the duration of the underlying RIFF wav file 
 			/// </summary>
 			/// <returns>The duration</returns>
 			public override TimeDelta getMediaDuration()
 			{
-				Stream raw = getDataProvider().getInputStream();
-				PCMDataInfo pcmInfo;
-				try
-				{
-					pcmInfo = PCMDataInfo.parseRiffWaveHeader(raw);
-				}
-				finally
-				{
-					raw.Close();
-				}
-				return new TimeDelta(pcmInfo.getDuration());
+                if (cachedDuration == null)
+                {
+                    Stream raw = getDataProvider().getInputStream();
+                    PCMDataInfo pcmInfo;
+                    try
+                    {
+                        pcmInfo = PCMDataInfo.parseRiffWaveHeader(raw);
+                    }
+                    finally
+                    {
+                        raw.Close();
+                    }
+                    cachedDuration = new TimeDelta(pcmInfo.getDuration());
+
+                    return cachedDuration;
+                }
+                else
+                {
+
+                    return cachedDuration;
+                }
 			}
 
 
