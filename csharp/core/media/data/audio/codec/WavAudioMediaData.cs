@@ -47,6 +47,8 @@ namespace urakawa.media.data.audio.codec
                 ClipBegin = clipBegin;
                 ClipEnd = clipEnd;
             }
+            
+            private TimeDelta cachedDuration = null; 
 
             /// <summary>
             /// Gets the duration of the underlying RIFF wav file 
@@ -56,17 +58,21 @@ namespace urakawa.media.data.audio.codec
             {
                 get
                 {
-                    Stream raw = DataProvider.GetInputStream();
-                    PCMDataInfo pcmInfo;
-                    try
+                    if (cachedDuration == null)
                     {
-                        pcmInfo = PCMDataInfo.ParseRiffWaveHeader(raw);
+                        Stream raw = DataProvider.GetInputStream();
+                        PCMDataInfo pcmInfo;
+                        try
+                        {
+                            pcmInfo = PCMDataInfo.ParseRiffWaveHeader(raw);
+                        }
+                        finally
+                        {
+                            raw.Close();
+                        }
+                        cachedDuration = new TimeDelta(pcmInfo.Duration);
                     }
-                    finally
-                    {
-                        raw.Close();
-                    }
-                    return new TimeDelta(pcmInfo.Duration);
+                    return cachedDuration;
                 }
             }
 
@@ -175,8 +181,27 @@ namespace urakawa.media.data.audio.codec
                         ClipBegin, ClipEnd, rawEndTime);
                     throw new exception.InvalidDataFormatException(msg);
                 }
+                /*
+                TimeDelta clipDuration = Duration;
+                if (subClipBegin.IsEqualTo(Time.Zero) && subClipEnd.IsEqualTo(Time.Zero.AddTimeDelta(clipDuration)))
+                {
+                    // Stream.Position is at the end of the RIFF header, we need to bring it back to the begining
+                    return new SubStream(
+                    raw,
+                    raw.Position, raw.Length - raw.Position); 
+                }
+                */
                 Time rawClipBegin = ClipBegin.AddTime(subClipBegin);
                 Time rawClipEnd = ClipBegin.AddTime(subClipEnd);
+
+                long beginPos = raw.Position + pcmInfo.GetByteForTime(rawClipBegin);
+                long endPos = raw.Position + pcmInfo.GetByteForTime(rawClipEnd);
+                return new SubStream(
+                    raw,
+                    beginPos,
+                    endPos - beginPos);
+
+                /*
                 long beginPos = raw.Position + (long) ((rawClipBegin.TimeAsMillisecondFloat*pcmInfo.ByteRate)/1000);
                 long offset = (beginPos - raw.Position)%pcmInfo.BlockAlign;
                 beginPos -= offset;
@@ -188,6 +213,7 @@ namespace urakawa.media.data.audio.codec
                     beginPos,
                     endPos - beginPos);
                 return res;
+                */
             }
 
             #region IValueEquatable<WavClip> Members
@@ -413,6 +439,17 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The clip end can not beyond the end of the audio content");
             }
+            if (mWavClips.Count == 0)
+            {
+                return new MemoryStream(0);
+            }
+            if (mWavClips.Count == 1)
+            {
+                return mWavClips[0].GetAudioData(
+                    clipBegin,
+                    clipEnd);
+            }
+
             Time elapsedTime = new Time();
             int i = 0;
             List<Stream> resStreams = new List<Stream>();

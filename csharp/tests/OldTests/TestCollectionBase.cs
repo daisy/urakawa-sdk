@@ -16,7 +16,7 @@ namespace urakawa.oldTests
         {
             mProject = new Project();
 
-            string filepath = System.IO.Directory.GetCurrentDirectory() + System.IO.Path.PathSeparator;
+            string filepath = System.IO.Directory.GetCurrentDirectory() + System.IO.Path.DirectorySeparatorChar;
 
             Uri fileUri = new Uri(filepath);
 

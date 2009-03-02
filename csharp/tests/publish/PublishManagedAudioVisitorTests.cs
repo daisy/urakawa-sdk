@@ -60,7 +60,7 @@ namespace urakawa.publish
             publishVisitor.DestinationChannel = destCh;
             publishVisitor.DestinationDirectory = publishDestination;
             pres.RootNode.AcceptDepthFirst(publishVisitor);
-            publishVisitor.WriteCurrentAudioFile();
+            publishVisitor.WriteAndCloseCurrentAudioFile();
             Uri xukFile = new Uri(proj.GetPresentation(0).RootUri, "TreeNodeTestsSample.xuk");
             if (File.Exists(xukFile.LocalPath)) File.Delete(xukFile.LocalPath);
             proj.SaveXuk(xukFile);
