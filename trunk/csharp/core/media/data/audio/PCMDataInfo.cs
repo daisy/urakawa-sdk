@@ -249,7 +249,10 @@ namespace urakawa.media.data.audio
             if (s2.Read(d2, 0, length) != length) return false;
             for (int i = 0; i < length; i++)
             {
-                if (d1[i] != d2[i]) return false;
+                if (d1[i] != d2[i])
+                {
+                    return false;
+                }
             }
             return true;
         }

@@ -71,6 +71,11 @@ namespace urakawa.media.data.audio
             }
         }
 
+        public long GetByteForTime(Time time)
+        {
+            return (long)(Math.Round(time.TimeAsTimeSpan.Ticks / ((double)TimeSpan.TicksPerSecond / SampleRate)) * BlockAlign);
+        } 
+
         private uint mSampleRate = 44100;
 
         /// <summary>

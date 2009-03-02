@@ -184,7 +184,6 @@ namespace urakawa.media.data
         /// </exception>
         public override Stream GetOutputStream()
         {
-            FileStream outputFS;
             lock (m_lock)
             {
                 if (mOpenOutputStream != null)
@@ -199,6 +198,8 @@ namespace urakawa.media.data
                 }
                 CheckDataFile();
                 string fp = DataFileFullPath;
+
+                FileStream outputFS;
                 try
                 {
                     outputFS = new FileStream(fp, FileMode.Open, FileAccess.Write, FileShare.Read);
@@ -284,7 +285,10 @@ namespace urakawa.media.data
                 Stream thisData = GetInputStream_NoLock();
                 try
                 {
-                    data.DataProviderManager.AppendDataToProvider(thisData, (int) (thisData.Length - thisData.Position), c);
+                    if (thisData.Length > 0)
+                    {
+                        data.DataProviderManager.AppendDataToProvider(thisData, (int) thisData.Length, c);
+                    }
                 }
                 finally
                 {
@@ -307,7 +311,10 @@ namespace urakawa.media.data
                 Stream thisStm = GetInputStream_NoLock();
                 try
                 {
-                    DataProviderManager.AppendDataToProvider(thisStm, (int)thisStm.Length, expFDP);
+                    if (thisStm.Length > 0)
+                    {
+                        DataProviderManager.AppendDataToProvider(thisStm, (int) thisStm.Length, expFDP);
+                    }
                 }
                 finally
                 {

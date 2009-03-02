@@ -38,7 +38,7 @@ namespace urakawa.media.data
         {
             mmProject = new Project();
             mProject.AddNewPresentation();
-			string str = "file://" + Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + Path.PathSeparator;
+            string str = "file://" + Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + Path.DirectorySeparatorChar;
 
             mRootUri = new Uri(str);
             if (!Directory.Exists(mRootUri.LocalPath)) Directory.CreateDirectory(mRootUri.LocalPath);

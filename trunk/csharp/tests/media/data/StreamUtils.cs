@@ -72,13 +72,18 @@ namespace urakawa.media.data
             }
         }
 
+        public const int BYTE_BUFFER_LENGTH = 1024 * 10; // 10 KB 
+
         public static void CopyData(Stream source, Stream dest)
         {
-            byte[] buf = new byte[1024];
+            byte[] buf = new byte[BYTE_BUFFER_LENGTH];
             while (source.Position < source.Length)
             {
                 int byteCount = source.Read(buf, 0, buf.Length);
-                dest.Write(buf, 0, byteCount);
+                if (byteCount > 0)
+                {
+                    dest.Write(buf, 0, byteCount);
+                }
             }
         }
 
@@ -87,7 +92,7 @@ namespace urakawa.media.data
             MemoryStream memStm = new MemoryStream();
             System.Security.Cryptography.RandomNumberGenerator rndGen =
                 System.Security.Cryptography.RandomNumberGenerator.Create();
-            byte[] buf = new byte[1024];
+            byte[] buf = new byte[BYTE_BUFFER_LENGTH];
             int count = 0;
             while (count < length)
             {
