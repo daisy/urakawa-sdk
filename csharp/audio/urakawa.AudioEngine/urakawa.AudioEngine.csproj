@@ -37,9 +37,9 @@
     <Compile Include="UrakawaPlaybackAudioDevice.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\core.csproj">
+    <ProjectReference Include="..\..\core\core_VS8-2005.csproj">
       <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
-      <Name>core</Name>
+      <Name>core_VS8-2005</Name>
     </ProjectReference>
     <ProjectReference Include="..\AudioEngine\AudioEngine.csproj">
       <Project>{98012884-F06D-4B09-917E-EE92982912FB}</Project>

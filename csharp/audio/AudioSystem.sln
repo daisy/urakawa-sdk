@@ -61,7 +61,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaveForm", "WaveForm\WaveFo
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "..\core\core.csproj", "{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core_VS8-2005", "..\core\core_VS8-2005.csproj", "{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
