@@ -161,79 +161,110 @@ namespace urakawa.media.data.audio
 							"AudioFormat is not PCM (AudioFormat is {0:0})",
 							audioFormat));
 					}
-					if (formatSubChunkSize != 16)
-					{
-						throw new exception.InvalidDataFormatException(String.Format(
-							"Invalid format sub-chink size {0:0} for PCM - must be 16 bytes",audioFormat));
-					}
-					ushort numChannels = rd.ReadUInt16();
-					if (numChannels == 0)
-					{
-						throw new exception.InvalidDataFormatException("0 channels of audio is not supported");
-					}
-					uint sampleRate = rd.ReadUInt32();
-					uint byteRate = rd.ReadUInt32();
-					ushort blockAlign = rd.ReadUInt16();
-					ushort bitDepth = rd.ReadUInt16();
-					if ((bitDepth % 8) != 0)
-					{
-						throw new exception.InvalidDataFormatException(String.Format(
-							"Invalid number of bits per sample {0:0} - must be a mulitpla of 8",
-							bitDepth));
-					}
-					if (blockAlign != (numChannels * bitDepth / 8))
-					{
-						throw new exception.InvalidDataFormatException(String.Format(
-							"Invalid block align {0:0} - expected {1:0}",
-							blockAlign, numChannels * bitDepth / 8));
-					}
-					if (byteRate != sampleRate * blockAlign)
-					{
-						throw new exception.InvalidDataFormatException(String.Format(
-							"Invalid byte rate {0:0} - expected {1:0}",
-							byteRate, sampleRate * blockAlign));
-					}
-					pcmInfo.setBitDepth(bitDepth);
-					pcmInfo.setNumberOfChannels(numChannels);
-					pcmInfo.setSampleRate(sampleRate);
-					break;
-				}
-				else
-				{
-					input.Seek(formatSubChunkSize, SeekOrigin.Current);
-				}
-			}
-			if (!foundFormatSubChunk)
-			{
-				throw new exception.InvalidDataFormatException("Found no format sub-chunk");
-			}
-			bool foundDataSubChunk = false;
-			while (input.Position + 8 <= chunkEndPos)
-			{
-				string dataSubChunkId = Encoding.ASCII.GetString(rd.ReadBytes(4));
-				uint dataSubChunkSize = rd.ReadUInt32();
-				if (input.Position + dataSubChunkSize > chunkEndPos)
-				{
-					throw new exception.InvalidDataFormatException(String.Format(
-						"ChunkId {0} does not fit in RIFF chunk",
-						dataSubChunkId));
-				}
-				if (dataSubChunkId == "data")
-				{
-					foundDataSubChunk = true;
-					pcmInfo.setDataLength(dataSubChunkSize);
-					break;
-				}
-				else
-				{
-					input.Seek(dataSubChunkSize, SeekOrigin.Current);
-				}
-			}
-			if (!foundDataSubChunk)
-			{
-				throw new exception.InvalidDataFormatException("Found no data sub-chunk");
-			}
-			return pcmInfo;
+
+                    //http://www.sonicspot.com/guide/wavefiles.html
+                    if (formatSubChunkSize != 16)
+                    {
+                        uint bytediff = formatSubChunkSize - 16;
+                        if (bytediff != 2)
+                        {
+                            throw new exception.InvalidDataFormatException(String.Format(
+                                                                           "Invalid format sub-chink size {0:0} for PCM - must be 16 bytes",
+                                                                           audioFormat));
+                        }
+                        //rd.ReadBytes(2);
+
+                        //uint compressionCode = rd.ReadUInt16();
+                        //Console.Out.Write(compressionCode);
+                    }
+                    ushort numChannels = rd.ReadUInt16();
+                    if (numChannels == 0)
+                    {
+                        throw new exception.InvalidDataFormatException("0 channels of audio is not supported");
+                    }
+                    uint sampleRate = rd.ReadUInt32();
+                    uint byteRate = rd.ReadUInt32();
+                    ushort blockAlign = rd.ReadUInt16();
+                    ushort bitDepth = rd.ReadUInt16();
+                    if ((bitDepth % 8) != 0)
+                    {
+                        throw new exception.InvalidDataFormatException(String.Format(
+                                                                           "Invalid number of bits per sample {0:0} - must be a mulitpla of 8",
+                                                                           bitDepth));
+                    }
+                    if (blockAlign != (numChannels * bitDepth / 8))
+                    {
+                        throw new exception.InvalidDataFormatException(String.Format(
+                                                                           "Invalid block align {0:0} - expected {1:0}",
+                                                                           blockAlign, numChannels * bitDepth / 8));
+                    }
+                    if (byteRate != sampleRate * blockAlign)
+                    {
+                        throw new exception.InvalidDataFormatException(String.Format(
+                                                                           "Invalid byte rate {0:0} - expected {1:0}",
+                                                                           byteRate, sampleRate * blockAlign));
+                    }
+                    pcmInfo.setBitDepth(bitDepth);
+                    pcmInfo.setNumberOfChannels(numChannels);
+                    pcmInfo.setSampleRate(sampleRate);
+                    break;
+                }
+                else
+                {
+                    input.Seek(formatSubChunkSize, SeekOrigin.Current);
+                }
+            }
+            if (!foundFormatSubChunk)
+            {
+                throw new exception.InvalidDataFormatException("Found no format sub-chunk");
+            }
+            bool foundDataSubChunk = false;
+
+            long stopValue = Math.Min(100, chunkEndPos);
+
+            while (input.Position + 8 <= stopValue)
+            {
+                string c1 = Encoding.ASCII.GetString(rd.ReadBytes(1));
+
+                if (c1 == "d")
+                {
+                    string c2 = Encoding.ASCII.GetString(rd.ReadBytes(1));
+
+                    if (c2 == "a")
+                    {
+                        string c3 = Encoding.ASCII.GetString(rd.ReadBytes(1));
+
+                        if (c3 == "t")
+                        {
+
+                            string c4 = Encoding.ASCII.GetString(rd.ReadBytes(1));
+
+                            if (c4 == "a")
+                            {
+                                uint dataSubChunkSize = rd.ReadUInt32();
+                                if (input.Position + dataSubChunkSize > chunkEndPos)
+                                {
+                                    throw new exception.InvalidDataFormatException(String.Format(
+                                                                                       "ChunkId {0} does not fit in RIFF chunk",
+                                                                                       "data"));
+                                }
+                                foundDataSubChunk = true;
+                                pcmInfo.setDataLength(dataSubChunkSize);
+                                break;
+                            }
+                            else continue;
+                        }
+                        else continue;
+                    }
+                    else continue;
+                }
+                else continue;
+            }
+            if (!foundDataSubChunk)
+            {
+                throw new exception.InvalidDataFormatException("Found no data sub-chunk");
+            }
+            return pcmInfo;
 		}
 
 

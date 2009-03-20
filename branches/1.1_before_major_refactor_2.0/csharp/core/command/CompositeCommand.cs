@@ -129,7 +129,6 @@ namespace urakawa.command
         /// but increments (+1) the indices of the all children which index >= insertIndex. If insertIndex == children.size
         /// (no following children), then the given node is appended at the end of the existing children list.
         /// </summary>
-        /// <param name="command">Cannot be null.</param>
         /// <param name="index">Must be within bounds [0 .. children.size]</param>
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">Thrown when the index is out of bounds.</exception>
         /// <exception cref="exception.MethodParameterIsNullException">Thrown when a null command is given.</exception>
