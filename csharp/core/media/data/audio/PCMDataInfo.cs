@@ -157,11 +157,20 @@ namespace urakawa.media.data.audio
                                                                            "AudioFormat is not PCM (AudioFormat is {0:0})",
                                                                            audioFormat));
                     }
+                    //http://www.sonicspot.com/guide/wavefiles.html
                     if (formatSubChunkSize != 16)
                     {
-                        throw new exception.InvalidDataFormatException(String.Format(
+                        uint bytediff = formatSubChunkSize - 16;
+                        if (bytediff != 2)
+                        {
+                            throw new exception.InvalidDataFormatException(String.Format(
                                                                            "Invalid format sub-chink size {0:0} for PCM - must be 16 bytes",
                                                                            audioFormat));
+                        }
+                        //rd.ReadBytes(2);
+
+                        //uint compressionCode = rd.ReadUInt16();
+                        //Console.Out.Write(compressionCode);
                     }
                     ushort numChannels = rd.ReadUInt16();
                     if (numChannels == 0)
@@ -205,26 +214,46 @@ namespace urakawa.media.data.audio
                 throw new exception.InvalidDataFormatException("Found no format sub-chunk");
             }
             bool foundDataSubChunk = false;
-            while (input.Position + 8 <= chunkEndPos)
+
+            long stopValue = Math.Min(100, chunkEndPos);
+
+            while (input.Position + 8 <= stopValue)
             {
-                string dataSubChunkId = Encoding.ASCII.GetString(rd.ReadBytes(4));
-                uint dataSubChunkSize = rd.ReadUInt32();
-                if (input.Position + dataSubChunkSize > chunkEndPos)
+                string c1 = Encoding.ASCII.GetString(rd.ReadBytes(1));
+
+                if (c1 == "d")
                 {
-                    throw new exception.InvalidDataFormatException(String.Format(
-                                                                       "ChunkId {0} does not fit in RIFF chunk",
-                                                                       dataSubChunkId));
+                    string c2 = Encoding.ASCII.GetString(rd.ReadBytes(1));
+
+                    if (c2 == "a")
+                    {
+                        string c3 = Encoding.ASCII.GetString(rd.ReadBytes(1));
+
+                        if (c3 == "t")
+                        {
+
+                            string c4 = Encoding.ASCII.GetString(rd.ReadBytes(1));
+
+                            if (c4 == "a")
+                            {
+                                uint dataSubChunkSize = rd.ReadUInt32();
+                                if (input.Position + dataSubChunkSize > chunkEndPos)
+                                {
+                                    throw new exception.InvalidDataFormatException(String.Format(
+                                                                                       "ChunkId {0} does not fit in RIFF chunk",
+                                                                                       "data"));
+                                }
+                                foundDataSubChunk = true;
+                                pcmInfo.DataLength = dataSubChunkSize;
+                                break;
+                            }
+                            else continue;
+                        }
+                        else continue;
+                    }
+                    else continue;
                 }
-                if (dataSubChunkId == "data")
-                {
-                    foundDataSubChunk = true;
-                    pcmInfo.DataLength = dataSubChunkSize;
-                    break;
-                }
-                else
-                {
-                    input.Seek(dataSubChunkSize, SeekOrigin.Current);
-                }
+                else continue;
             }
             if (!foundDataSubChunk)
             {
