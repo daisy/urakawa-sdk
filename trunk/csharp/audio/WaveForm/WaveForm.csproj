@@ -39,9 +39,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\core.csproj">
+    <ProjectReference Include="..\..\core\core_VS8-2005.csproj">
       <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
-      <Name>core</Name>
+      <Name>core_VS8-2005</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
