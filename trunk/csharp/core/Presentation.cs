@@ -982,10 +982,10 @@ namespace urakawa
                     case "MetadataFactory":
                         MetadataFactory.XukIn(source, handler);
                         break;
-                    case "mMetadata":
+                    case "Metadata":
                         XukInMetadata(source, handler);
                         break;
-                    case "mRootNode":
+                    case "RootNode":
                         XukInRootNode(source, handler);
                         break;
                     default:
@@ -1040,40 +1040,32 @@ namespace urakawa
 
             ChannelFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mChannelsManager", XUK_NS);
             ChannelsManager.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
 
             MediaFactory.XukOut(destination, baseUri, handler);
 
             DataProviderFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mDataProviderManager", XUK_NS);
             DataProviderManager.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
 
             MediaDataFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mMediaDataManager", XUK_NS);
             MediaDataManager.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
 
             CommandFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mUndoRedoManager", XUK_NS);
             UndoRedoManager.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
 
             MetadataFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mMetadata", XUK_NS);
+            destination.WriteStartElement("Metadata", XUK_NS);
             foreach (Metadata md in mMetadata)
             {
                 md.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mRootNode", XUK_NS);
+            destination.WriteStartElement("RootNode", XUK_NS);
             RootNode.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
         }
@@ -1093,7 +1085,6 @@ namespace urakawa
             if (!ChannelsManager.ValueEquals(other.ChannelsManager)) return false;
             if (!DataProviderManager.ValueEquals(other.DataProviderManager)) return false;
             if (!MediaDataManager.ValueEquals(other.MediaDataManager)) return false;
-            if (!RootNode.ValueEquals(other.RootNode)) return false;
             List<Metadata> thisMetadata = ListOfMetadata;
             List<Metadata> otherMetadata = other.ListOfMetadata;
             if (thisMetadata.Count != otherMetadata.Count) return false;
@@ -1107,6 +1098,7 @@ namespace urakawa
                 if (!found) return false;
             }
             if (Language != other.Language) return false;
+            if (!RootNode.ValueEquals(other.RootNode)) return false;
             return true;
         }
 

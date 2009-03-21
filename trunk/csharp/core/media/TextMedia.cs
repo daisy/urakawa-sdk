@@ -153,7 +153,7 @@ namespace urakawa.media
         /// <param name="handler">The handler for progress</param>
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
-            if (source.LocalName == "mText" && source.NamespaceURI == XukAble.XUK_NS)
+            if (source.LocalName == "Text" && source.NamespaceURI == XukAble.XUK_NS)
             {
                 if (!source.IsEmptyElement)
                 {
@@ -184,7 +184,7 @@ namespace urakawa.media
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mText", XukAble.XUK_NS);
+            destination.WriteStartElement("Text", XukAble.XUK_NS);
             destination.WriteString(Text);
             destination.WriteEndElement();
             base.XukOutChildren(destination, baseUri, handler);
@@ -202,7 +202,19 @@ namespace urakawa.media
         public override bool ValueEquals(Media other)
         {
             if (!base.ValueEquals(other)) return false;
-            if (Text != ((TextMedia) other).Text) return false;
+
+            //TODO: is there a more reliable way to handle DOS versus UNIX line breaks at the end of the strings ??
+            
+            string str1 = Text;
+            string str2 = ((TextMedia) other).Text;
+
+            str1 = str1.Replace("\r\n", "\n");
+            str2 = str2.Replace("\r\n", "\n");
+
+            if (!str1.Equals(str2))
+            {
+                return false;
+            }
             return true;
         }
 

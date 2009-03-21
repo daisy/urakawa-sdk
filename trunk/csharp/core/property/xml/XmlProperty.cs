@@ -375,7 +375,7 @@ namespace urakawa.property.xml
                 readItem = true;
                 switch (source.LocalName)
                 {
-                    case "mXmlAttributes":
+                    case "XmlAttributes":
                         XukInXmlAttributes(source, handler);
                         break;
                     default:
@@ -400,6 +400,7 @@ namespace urakawa.property.xml
             {
                 XmlAttribute attr = new XmlAttribute();
                 attr.XukIn(source, handler);
+                SetAttribute(attr);
             }
             else if (!source.IsEmptyElement)
             {
@@ -455,7 +456,7 @@ namespace urakawa.property.xml
             List<XmlAttribute> attrs = ListOfAttributes;
             if (attrs.Count > 0)
             {
-                destination.WriteStartElement("mXmlAttributes", XukAble.XUK_NS);
+                destination.WriteStartElement("XmlAttributes", XukAble.XUK_NS);
                 foreach (XmlAttribute a in attrs)
                 {
                     a.XukOut(destination, baseUri, handler);

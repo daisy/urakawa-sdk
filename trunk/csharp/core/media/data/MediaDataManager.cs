@@ -517,10 +517,10 @@ namespace urakawa.media.data
                 readItem = true;
                 switch (source.LocalName)
                 {
-                    case "mDefaultPCMFormat":
+                    case "DefaultPCMFormat":
                         XukInDefaultPCMFormat(source, handler);
                         break;
-                    case "mMediaData":
+                    case "MediaData":
                         XukInMediaData(source, handler);
                         break;
                     default:
@@ -573,7 +573,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "mMediaDataItem" && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == "MediaDataItem" && source.NamespaceURI == XUK_NS)
                         {
                             XukInMediaDataItem(source, handler);
                         }
@@ -651,13 +651,13 @@ namespace urakawa.media.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mDefaultPCMFormat", XUK_NS);
+            destination.WriteStartElement("DefaultPCMFormat", XUK_NS);
             DefaultPCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
-            destination.WriteStartElement("mMediaData", XUK_NS);
+            destination.WriteStartElement("MediaData", XUK_NS);
             foreach (string uid in mMediaDataDictionary.Keys)
             {
-                destination.WriteStartElement("mMediaDataItem", XUK_NS);
+                destination.WriteStartElement("MediaDataItem", XUK_NS);
                 destination.WriteAttributeString("uid", uid);
                 mMediaDataDictionary[uid].XukOut(destination, baseUri, handler);
                 destination.WriteEndElement();

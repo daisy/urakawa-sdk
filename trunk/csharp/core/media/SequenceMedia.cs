@@ -356,7 +356,7 @@ namespace urakawa.media
                 readItem = true;
                 switch (source.LocalName)
                 {
-                    case "mSequence":
+                    case "Sequence":
                         XukInSequence(source, handler);
                         break;
                     default:
@@ -428,7 +428,7 @@ namespace urakawa.media
         {
             if (Count > 0)
             {
-                destination.WriteStartElement("mSequence", XukAble.XUK_NS);
+                destination.WriteStartElement("Sequence", XukAble.XUK_NS);
                 for (int i = 0; i < Count; i++)
                 {
                     GetItem(i).XukOut(destination, baseUri, handler);

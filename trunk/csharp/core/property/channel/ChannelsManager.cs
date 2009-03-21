@@ -326,7 +326,7 @@ namespace urakawa.property.channel
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XUK_NS && source.LocalName == "mChannels")
+            if (source.NamespaceURI == XUK_NS && source.LocalName == "Channels")
             {
                 readItem = true;
                 if (!source.IsEmptyElement)
@@ -335,7 +335,7 @@ namespace urakawa.property.channel
                     {
                         if (source.NodeType == XmlNodeType.Element)
                         {
-                            if (source.LocalName == "mChannelItem" && source.NamespaceURI == XUK_NS)
+                            if (source.LocalName == "ChannelItem" && source.NamespaceURI == XUK_NS)
                             {
                                 XukInChannelItem(source, handler);
                             }
@@ -417,10 +417,10 @@ namespace urakawa.property.channel
             List<string> uids = ListOfUids;
             if (uids.Count > 0)
             {
-                destination.WriteStartElement("mChannels");
+                destination.WriteStartElement("Channels");
                 foreach (string uid in uids)
                 {
-                    destination.WriteStartElement("mChannelItem");
+                    destination.WriteStartElement("ChannelItem");
                     destination.WriteAttributeString("uid", uid);
                     GetChannel(uid).XukOut(destination, baseUri, handler);
                     destination.WriteEndElement();

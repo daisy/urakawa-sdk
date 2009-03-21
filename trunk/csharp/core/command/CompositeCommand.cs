@@ -299,7 +299,7 @@ namespace urakawa.command
             {
                 switch (source.LocalName)
                 {
-                    case "mCommands":
+                    case "Commands":
                         XukInCommands(source, handler);
                         readItem = true;
                         break;
@@ -369,7 +369,7 @@ namespace urakawa.command
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mCommands", XukAble.XUK_NS);
+            destination.WriteStartElement("Commands", XukAble.XUK_NS);
             foreach (Command cmd in ListOfCommands)
             {
                 cmd.XukOut(destination, baseUri, handler);

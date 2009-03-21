@@ -358,7 +358,7 @@ namespace urakawa
                         PresentationFactory.XukIn(source, handler);
                         readItem = true;
                         break;
-                    case "mPresentations":
+                    case "Presentations":
                         XukInPresentations(source, handler);
                         readItem = true;
                         break;
@@ -409,7 +409,7 @@ namespace urakawa
         {
             base.XukOutChildren(destination, baseUri, handler);
             PresentationFactory.XukOut(destination, baseUri, handler);
-            destination.WriteStartElement("mPresentations", XUK_NS);
+            destination.WriteStartElement("Presentations", XUK_NS);
             foreach (Presentation pres in ListOfPresentations)
             {
                 pres.XukOut(destination, baseUri, handler);

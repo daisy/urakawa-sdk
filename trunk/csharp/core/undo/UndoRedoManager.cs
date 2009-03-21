@@ -486,13 +486,13 @@ namespace urakawa.undo
                 readItem = true;
                 switch (source.LocalName)
                 {
-                    case "mUndoStack":
+                    case "UndoStack":
                         XukInCommandStack(source, mUndoStack, handler);
                         break;
-                    case "mRedoStack":
+                    case "RedoStack":
                         XukInCommandStack(source, mRedoStack, handler);
                         break;
-                    case "mActiveTransactions":
+                    case XukStrings.ActiveTransactions: 
                         XukInCommandStack(source, mActiveTransactions, handler);
                         break;
                     default:
@@ -547,19 +547,19 @@ namespace urakawa.undo
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mUndoStack", XUK_NS);
+            destination.WriteStartElement("UndoStack", XUK_NS);
             foreach (Command cmd in mUndoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            destination.WriteStartElement("mRedoStack", XUK_NS);
+            destination.WriteStartElement("RedoStack", XUK_NS);
             foreach (Command cmd in mRedoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            destination.WriteStartElement("mActiveTransactions");
+            destination.WriteStartElement(XukStrings.ActiveTransactions);
             foreach (CompositeCommand cmd in mActiveTransactions)
             {
                 cmd.XukOut(destination, baseUri, handler);
