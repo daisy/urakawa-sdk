@@ -157,17 +157,17 @@ namespace AudioLib
 		{
 			boolPlayer = true ;
 			ob_AudioPlayer = sender as AudioPlayer;
-			m_FrameSize = ob_AudioPlayer.CurrentAudioPCMFormat.getBlockAlign ()  ;
-            mChannels = ob_AudioPlayer.CurrentAudioPCMFormat.getNumberOfChannels();
-            m_SamplingRate = (int)ob_AudioPlayer.CurrentAudioPCMFormat.getSampleRate();
+			m_FrameSize = ob_AudioPlayer.CurrentAudioPCMFormat.BlockAlign  ;
+            mChannels = ob_AudioPlayer.CurrentAudioPCMFormat.NumberOfChannels;
+            m_SamplingRate = (int)ob_AudioPlayer.CurrentAudioPCMFormat.SampleRate;
 			m_UpdateVMArrayLength = ob_AudioPlayer.arUpdateVM.Length  ;
 			m_arUpdatedVM  = new byte[m_UpdateVMArrayLength ] ;
 
 			Array.Copy ( ob_AudioPlayer.arUpdateVM  , m_arUpdatedVM , m_UpdateVMArrayLength) ;
 
-            if (m_BufferReadInterval != ((double)(m_arUpdatedVM.Length * 1000) / (ob_AudioPlayer.CurrentAudioPCMFormat.getSampleRate() * m_FrameSize)))
+            if (m_BufferReadInterval != ((double)(m_arUpdatedVM.Length * 1000) / (ob_AudioPlayer.CurrentAudioPCMFormat.SampleRate * m_FrameSize)))
             {
-                m_BufferReadInterval = ((double)(m_arUpdatedVM.Length * 1000) / (ob_AudioPlayer.CurrentAudioPCMFormat.getSampleRate() * m_FrameSize));
+                m_BufferReadInterval = ((double)(m_arUpdatedVM.Length * 1000) / (ob_AudioPlayer.CurrentAudioPCMFormat.SampleRate * m_FrameSize));
                 SetSampleCount(m_SampleTimeLength);
             }
 
@@ -184,9 +184,9 @@ namespace AudioLib
 		{
 			AudioRecorder Recorder = sender as AudioRecorder ;
 			ob_AudioRecorder = Recorder ;
-            mChannels = Recorder.RecordingPCMFormat.getNumberOfChannels();
-            m_FrameSize = Recorder.RecordingPCMFormat.getBlockAlign();
-            m_SamplingRate = (int) Recorder.RecordingPCMFormat.getSampleRate();
+            mChannels = Recorder.RecordingPCMFormat.NumberOfChannels;
+            m_FrameSize = Recorder.RecordingPCMFormat.BlockAlign;
+            m_SamplingRate = (int) Recorder.RecordingPCMFormat.SampleRate;
             m_UpdateVMArrayLength =  Recorder.m_UpdateVMArrayLength / 2 ;
                         m_UpdateVMArrayLength = (int) CalculationFunctions.AdaptToFrame(m_UpdateVMArrayLength, m_FrameSize);
 
@@ -197,9 +197,9 @@ namespace AudioLib
 			Array.Copy ( m_RecorderArray , m_arUpdatedVM , m_UpdateVMArrayLength) ;
 
             //m_BufferReadInterval = ( m_arUpdatedVM.Length * 1000 ) / ( Recorder.SampleRate * m_FrameSize )  ;
-            if (Recorder != null && m_BufferReadInterval != ((double)(m_arUpdatedVM.Length * 1000) / (Recorder.RecordingPCMFormat.getSampleRate() * m_FrameSize)))
+            if (Recorder != null && m_BufferReadInterval != ((double)(m_arUpdatedVM.Length * 1000) / (Recorder.RecordingPCMFormat.SampleRate * m_FrameSize)))
             {
-                m_BufferReadInterval = ((double)(m_arUpdatedVM.Length * 1000) / (Recorder.RecordingPCMFormat.getSampleRate() * m_FrameSize));
+                m_BufferReadInterval = ((double)(m_arUpdatedVM.Length * 1000) / (Recorder.RecordingPCMFormat.SampleRate * m_FrameSize));
                 SetSampleCount(m_SampleTimeLength);
             }
 
@@ -566,7 +566,7 @@ namespace AudioLib
                     {
                         e = new AudioLib.Events.VuMeter.PeakOverloadEventArgs(1, 0);
                     }
-                    PeakOverload(this, e);
+                    if (PeakOverload != null) PeakOverload(this, e);
             }
             else
             {
