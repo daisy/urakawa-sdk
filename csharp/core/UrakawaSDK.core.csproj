@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -305,6 +305,7 @@
     <Compile Include="xuk\SaveXukAction.cs" />
     <Compile Include="xuk\XukAble.cs" />
     <Compile Include="xuk\IXUKable.cs" />
+    <Compile Include="xuk\XukStrings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="events\EventsClassDiagram.cd" />

@@ -733,10 +733,10 @@ namespace urakawa.media.data.audio.codec
                 readItem = true;
                 switch (source.LocalName)
                 {
-                    case "mWavClips":
+                    case "WavClips":
                         XukInWavClips(source);
                         break;
-                    case "mPCMFormat":
+                    case "PCMFormat":
                         XukInPCMFormat(source, handler);
                         break;
                     default:
@@ -868,10 +868,10 @@ namespace urakawa.media.data.audio.codec
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
-            destination.WriteStartElement("mPCMFormat");
+            destination.WriteStartElement("PCMFormat");
             PCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
-            destination.WriteStartElement("mWavClips", XUK_NS);
+            destination.WriteStartElement("WavClips", XUK_NS);
             foreach (WavClip clip in mWavClips)
             {
                 destination.WriteStartElement("WavClip", XUK_NS);

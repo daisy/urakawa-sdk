@@ -280,7 +280,7 @@ namespace urakawa.property.channel
                 readItem = true;
                 switch (source.LocalName)
                 {
-                    case "mChannelMappings":
+                    case "ChannelMappings":
                         XukInChannelMappings(source, handler);
                         break;
                     default:
@@ -307,7 +307,7 @@ namespace urakawa.property.channel
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "mChannelMapping" && source.NamespaceURI == XukAble.XUK_NS)
+                        if (source.LocalName == "ChannelMapping" && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             XukInChannelMapping(source, handler);
                         }
@@ -374,11 +374,11 @@ namespace urakawa.property.channel
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mChannelMappings", XukAble.XUK_NS);
+            destination.WriteStartElement("ChannelMappings", XukAble.XUK_NS);
             List<Channel> channelsList = ListOfUsedChannels;
             foreach (Channel channel in channelsList)
             {
-                destination.WriteStartElement("mChannelMapping", XukAble.XUK_NS);
+                destination.WriteStartElement("ChannelMapping", XukAble.XUK_NS);
                 destination.WriteAttributeString("channel", channel.Uid);
                 Media media = GetMedia(channel);
                 if (media == null)
@@ -422,7 +422,10 @@ namespace urakawa.property.channel
                     }
                 }
                 if (otherCh == null) return false;
-                if (!GetMedia(ch).ValueEquals(otherChProp.GetMedia(otherCh))) return false;
+                if (!GetMedia(ch).ValueEquals(otherChProp.GetMedia(otherCh)))
+                {
+                    return false;
+                }
             }
             return true;
         }

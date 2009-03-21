@@ -205,6 +205,7 @@ namespace urakawa.property.xml
             {
                 throw new exception.XukException("LocalName attribute of XmlAttribute element is missing");
             }
+            Value = value;
             string ns = source.GetAttribute("namespaceUri");
             if (ns == null) ns = "";
             SetQName(name, ns);

@@ -667,7 +667,7 @@ namespace urakawa.media.data
                 readItem = true;
                 switch (source.LocalName)
                 {
-                    case "mDataProviders":
+                    case "DataProviders":
                         XukInDataProviders(source, handler);
                         break;
                     default:
@@ -689,7 +689,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "mDataProviderItem" && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == "DataProviderItem" && source.NamespaceURI == XUK_NS)
                         {
                             XukInDataProviderItem(source, handler);
                         }
@@ -797,10 +797,10 @@ namespace urakawa.media.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mDataProviders", XUK_NS);
+            destination.WriteStartElement("DataProviders", XUK_NS);
             foreach (DataProvider prov in ListOfDataProviders)
             {
-                destination.WriteStartElement("mDataProviderItem", XUK_NS);
+                destination.WriteStartElement("DataProviderItem", XUK_NS);
                 destination.WriteAttributeString("uid", prov.Uid);
                 prov.XukOut(destination, baseUri, handler);
                 destination.WriteEndElement();

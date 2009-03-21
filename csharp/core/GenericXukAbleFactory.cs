@@ -222,7 +222,7 @@ namespace urakawa
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, progress.ProgressHandler handler)
         {
-            destination.WriteStartElement("mRegisteredTypes", XUK_NS);
+            destination.WriteStartElement("RegisteredTypes", XUK_NS);
             foreach (TypeAndQNames tp in mRegisteredTypeAndQNames)
             {
                 destination.WriteStartElement("Type", XUK_NS);
@@ -257,7 +257,7 @@ namespace urakawa
         /// <param name="handler">The handler of progress</param>
         protected override void XukInChild(XmlReader source, progress.ProgressHandler handler)
         {
-            if (source.LocalName == "mRegisteredTypes" && source.NamespaceURI == XUK_NS)
+            if (source.LocalName == "RegisteredTypes" && source.NamespaceURI == XUK_NS)
             {
                 XukInRegisteredTypes(source);
                 return;

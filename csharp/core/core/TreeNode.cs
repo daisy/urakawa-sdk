@@ -549,10 +549,10 @@ namespace urakawa.core
                 readItem = true;
                 switch (source.LocalName)
                 {
-                    case "mProperties":
+                    case "Properties":
                         XukInProperties(source, handler);
                         break;
-                    case "mChildren":
+                    case "Children":
                         XukInChildren(source, handler);
                         break;
                     default:
@@ -574,13 +574,13 @@ namespace urakawa.core
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mProperties", XukAble.XUK_NS);
+            destination.WriteStartElement("Properties", XukAble.XUK_NS);
             foreach (Property prop in GetListOfProperties())
             {
                 prop.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            destination.WriteStartElement("mChildren", XukAble.XUK_NS);
+            destination.WriteStartElement("Children", XukAble.XUK_NS);
             for (int i = 0; i < this.ChildCount; i++)
             {
                 GetChild(i).XukOut(destination, baseUri, handler);
