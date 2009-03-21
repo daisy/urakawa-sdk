@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using urakawa.exception;
 using urakawa.media.timing;
 
 namespace urakawa.media.data.audio
@@ -103,161 +104,221 @@ namespace urakawa.media.data.audio
         /// </exception>
         public static PCMDataInfo ParseRiffWaveHeader(Stream input)
         {
+            System.Diagnostics.Debug.Assert(input.Position == 0);
+
             BinaryReader rd = new BinaryReader(input);
-            if (input.Length - input.Position < 12)
+
+            //http://www.sonicspot.com/guide/wavefiles.html
+
+            // Ensures 3x4=12 bytes available to read (RIFF Type Chunk)
             {
-                throw new exception.InvalidDataFormatException(
-                    "The RIFF chunk descriptor does not fit in the input stream");
+                long availableBytes = input.Length - input.Position;
+                if (availableBytes < 12)
+                {
+                    throw new InvalidDataFormatException(
+                        "The RIFF chunk descriptor does not fit in the input stream");
+                }
             }
-            string chunkId = Encoding.ASCII.GetString(rd.ReadBytes(4));
-            if (chunkId != "RIFF")
+
+            //Chunk ID (4 bytes)
             {
-                throw new exception.InvalidDataFormatException("ChunkId is not RIFF");
+                string chunkId = Encoding.ASCII.GetString(rd.ReadBytes(4));
+                if (chunkId != "RIFF")
+                {
+                    throw new InvalidDataFormatException("ChunkId is not RIFF");
+                }
             }
-            uint chunkSize = rd.ReadUInt32();
-            long chunkEndPos = input.Position + chunkSize;
-            if (chunkEndPos > input.Length)
+            //Chunk Data Size (the wavEndPos variable is used further below as the upper limit position in the stream)
+            long wavEndPos = 0;
             {
-                throw new exception.InvalidDataFormatException(String.Format(
-                                                                   "The WAVE PCM chunk does not fit in the input Stream (expected chunk end position is {0:0}, Stream count is {1:0})",
-                                                                   chunkEndPos, input.Length));
+                // 4 bytes
+                uint chunkSize = rd.ReadUInt32();
+
+                // Ensures the given size fits within the actual stream
+                wavEndPos = input.Position + chunkSize;
+                if (wavEndPos > input.Length)
+                {
+                    throw new InvalidDataFormatException(String.Format(
+                                                             "The WAVE PCM chunk does not fit in the input Stream (expected chunk end position is {0:0}, Stream count is {1:0})",
+                                                             wavEndPos, input.Length));
+                }
             }
-            string format = Encoding.ASCII.GetString(rd.ReadBytes(4));
-            if (format != "WAVE")
+            //RIFF Type (4 bytes)
             {
-                throw new exception.InvalidDataFormatException(String.Format(
-                                                                   "RIFF format {0} is not supported. The only supported RIFF format is WAVE",
-                                                                   format));
-            }
-            bool foundFormatSubChunk = false;
-            PCMDataInfo pcmInfo = new PCMDataInfo();
-            // Search for format subchunk
-            while (input.Position + 8 <= chunkEndPos)
-            {
-                string formatSubChunkId = Encoding.ASCII.GetString(rd.ReadBytes(4));
-                uint formatSubChunkSize = rd.ReadUInt32();
-                if (input.Position + formatSubChunkSize > chunkEndPos)
+                string format = Encoding.ASCII.GetString(rd.ReadBytes(4));
+                if (format != "WAVE")
                 {
                     throw new exception.InvalidDataFormatException(String.Format(
+                                                                       "RIFF format {0} is not supported. The only supported RIFF format is WAVE",
+                                                                       format));
+                }
+            }
+
+            PCMDataInfo pcmInfo = new PCMDataInfo();
+
+            // We need at least the 'data' and the 'fmt ' chunks
+            bool foundWavDataChunk = false;
+            bool foundWavFormatChunk = false;
+
+            // We memorize the position of the actual PCM data in the stream,
+            // so we can seek back, if needed (normally, this never happens as the 'data' chunk
+            // is always the last one. However the WAV format does not mandate the order of chunks so...)
+            long wavDataChunkPosition = -1;
+
+            //loop when there's at least 2x4=8 bytes to read (Chunk ID & Chunk Data Size)
+            while (input.Position + 8 <= wavEndPos)
+            {
+                // 4 bytes
+                string chunkId = Encoding.ASCII.GetString(rd.ReadBytes(4));
+
+                // 4 bytes
+                uint chunkSize = rd.ReadUInt32();
+
+                // Ensures the given size fits within the actual stream
+                if (input.Position + chunkSize > wavEndPos)
+                {
+                    throw new InvalidDataFormatException(String.Format(
                                                                        "ChunkId {0} does not fit in RIFF chunk",
-                                                                       formatSubChunkId));
+                                                                       chunkId));
                 }
-                if (formatSubChunkId == "fmt ")
+
+                switch(chunkId)
                 {
-                    foundFormatSubChunk = true;
-                    if (formatSubChunkSize < 2)
-                    {
-                        throw new exception.InvalidDataFormatException(
-                            "No room for AudioFormat field in format sub-chunk");
-                    }
-                    ushort audioFormat = rd.ReadUInt16();
-                    if (audioFormat != 1)
-                    {
-                        throw new exception.InvalidDataFormatException(String.Format(
-                                                                           "AudioFormat is not PCM (AudioFormat is {0:0})",
-                                                                           audioFormat));
-                    }
-                    //http://www.sonicspot.com/guide/wavefiles.html
-                    if (formatSubChunkSize != 16)
-                    {
-                        uint bytediff = formatSubChunkSize - 16;
-                        if (bytediff != 2)
+                    case "fmt ":
                         {
-                            throw new exception.InvalidDataFormatException(String.Format(
-                                                                           "Invalid format sub-chink size {0:0} for PCM - must be 16 bytes",
-                                                                           audioFormat));
-                        }
-                        //rd.ReadBytes(2);
+                            // The default information fields fit within 16 bytes
+                            int extraFormatBytes = (int)chunkSize - 16;
+                            
+                            // Compression code (2 bytes)
+                            ushort compressionCode = rd.ReadUInt16();
 
-                        //uint compressionCode = rd.ReadUInt16();
-                        //Console.Out.Write(compressionCode);
-                    }
-                    ushort numChannels = rd.ReadUInt16();
-                    if (numChannels == 0)
-                    {
-                        throw new exception.InvalidDataFormatException("0 channels of audio is not supported");
-                    }
-                    uint sampleRate = rd.ReadUInt32();
-                    uint byteRate = rd.ReadUInt32();
-                    ushort blockAlign = rd.ReadUInt16();
-                    ushort bitDepth = rd.ReadUInt16();
-                    if ((bitDepth%8) != 0)
-                    {
-                        throw new exception.InvalidDataFormatException(String.Format(
-                                                                           "Invalid number of bits per sample {0:0} - must be a mulitpla of 8",
-                                                                           bitDepth));
-                    }
-                    if (blockAlign != (numChannels*bitDepth/8))
-                    {
-                        throw new exception.InvalidDataFormatException(String.Format(
-                                                                           "Invalid block align {0:0} - expected {1:0}",
-                                                                           blockAlign, numChannels*bitDepth/8));
-                    }
-                    if (byteRate != sampleRate*blockAlign)
-                    {
-                        throw new exception.InvalidDataFormatException(String.Format(
-                                                                           "Invalid byte rate {0:0} - expected {1:0}",
-                                                                           byteRate, sampleRate*blockAlign));
-                    }
-                    pcmInfo.BitDepth = bitDepth;
-                    pcmInfo.NumberOfChannels = numChannels;
-                    pcmInfo.SampleRate = sampleRate;
-                    break;
-                }
-                else
-                {
-                    input.Seek(formatSubChunkSize, SeekOrigin.Current);
-                }
-            }
-            if (!foundFormatSubChunk)
-            {
-                throw new exception.InvalidDataFormatException("Found no format sub-chunk");
-            }
-            bool foundDataSubChunk = false;
-
-            long stopValue = Math.Min(100, chunkEndPos);
-
-            while (input.Position + 8 <= stopValue)
-            {
-                string c1 = Encoding.ASCII.GetString(rd.ReadBytes(1));
-
-                if (c1 == "d")
-                {
-                    string c2 = Encoding.ASCII.GetString(rd.ReadBytes(1));
-
-                    if (c2 == "a")
-                    {
-                        string c3 = Encoding.ASCII.GetString(rd.ReadBytes(1));
-
-                        if (c3 == "t")
-                        {
-
-                            string c4 = Encoding.ASCII.GetString(rd.ReadBytes(1));
-
-                            if (c4 == "a")
+                            // Number of channels (2 bytes)
+                            ushort numChannels = rd.ReadUInt16();
+                            if (numChannels == 0)
                             {
-                                uint dataSubChunkSize = rd.ReadUInt32();
-                                if (input.Position + dataSubChunkSize > chunkEndPos)
-                                {
-                                    throw new exception.InvalidDataFormatException(String.Format(
-                                                                                       "ChunkId {0} does not fit in RIFF chunk",
-                                                                                       "data"));
-                                }
-                                foundDataSubChunk = true;
-                                pcmInfo.DataLength = dataSubChunkSize;
-                                break;
+                                throw new InvalidDataFormatException("0 channels of audio is not supported");
                             }
-                            else continue;
+
+                            // Sample rate (4 bytes)
+                            uint sampleRate = rd.ReadUInt32();
+
+                            // Average bytes per second, aka byte-rate (4 bytes)
+                            uint byteRate = rd.ReadUInt32();
+
+                            // Block align (2 bytes)
+                            ushort blockAlign = rd.ReadUInt16();
+
+                            // Significant bits per sample, aka bit-depth (2 bytes)
+                            ushort bitDepth = rd.ReadUInt16();
+
+                            if (compressionCode != 0 && extraFormatBytes > 0)
+                            {
+                                // 	Extra format bytes (2 bytes)
+                                uint extraBytes = rd.ReadUInt16();
+                                if (extraBytes > 0)
+                                {
+                                    System.Diagnostics.Debug.Assert(extraFormatBytes == extraBytes);
+
+                                    // Skip (we ignore the extra information in this chunk field)
+                                    rd.ReadBytes((int) extraBytes);
+
+                                    // check word-alignment
+                                    if ((extraBytes % 2) != 0)
+                                    {
+                                        rd.ReadByte();
+                                    }
+                                }
+                            }
+
+                            if ((bitDepth % 8) != 0)
+                            {
+                                throw new InvalidDataFormatException(String.Format(
+                                                                                   "Invalid number of bits per sample {0:0} - must be a mulitple of 8",
+                                                                                   bitDepth));
+                            }
+                            if (blockAlign != (numChannels * bitDepth / 8))
+                            {
+                                throw new InvalidDataFormatException(String.Format(
+                                                                                   "Invalid block align {0:0} - expected {1:0}",
+                                                                                   blockAlign, numChannels * bitDepth / 8));
+                            }
+                            if (byteRate != sampleRate * blockAlign)
+                            {
+                                throw new InvalidDataFormatException(String.Format(
+                                                                                   "Invalid byte rate {0:0} - expected {1:0}",
+                                                                                   byteRate, sampleRate * blockAlign));
+                            }
+                            pcmInfo.BitDepth = bitDepth;
+                            pcmInfo.NumberOfChannels = numChannels;
+                            pcmInfo.SampleRate = sampleRate;
+
+                            foundWavFormatChunk = true;
+                            break;
                         }
-                        else continue;
-                    }
-                    else continue;
+                    case "data":
+                        {
+                            if (input.Position + chunkSize > wavEndPos)
+                            {
+                                throw new InvalidDataFormatException(String.Format(
+                                                                                   "ChunkId {0} does not fit in RIFF chunk",
+                                                                                   "data"));
+                            }
+                            pcmInfo.DataLength = chunkSize;
+                            foundWavDataChunk = true;
+                            wavDataChunkPosition = input.Position;
+
+                            // ensure we go past the PCM data, in case there are following chunks.
+                            // (it's an unlikely scenario, but it's allowed by the WAV spec.)
+                            input.Seek(chunkSize, SeekOrigin.Current);
+                            break;
+                        }
+                    case "fact":
+                        {
+                            if (chunkSize == 4)
+                            {
+                                // 4 bytes
+                                uint totalNumberOfSamples = rd.ReadUInt32();
+                                // This value is unused, we are just reading it for debugging as we noticed that
+                                // the WAV files generated by the Microsoft Audio Recorder
+                                // contain the 'fact' chunk with this information. Most other recordings
+                                // only contain the 'data' and 'fmt ' chunks.
+                            }
+                            else
+                            {
+                                rd.ReadBytes((int)chunkSize);
+                            }
+                            break;
+                        }
+                    case "wavl":
+                    case "slnt":
+                    case "cue ":
+                    case "plst":
+                    case "list":
+                    case "labl":
+                    case "note":
+                    case "ltxt":
+                    case "smpl":
+                    case "inst":
+                    default:
+                        {
+                            // Unsupported FOURCC codes, we skip.
+                            rd.ReadBytes((int)chunkSize);
+                            break;
+                        }
                 }
-                else continue;
             }
-            if (!foundDataSubChunk)
+
+            if (!foundWavDataChunk)
             {
-                throw new exception.InvalidDataFormatException("Found no data sub-chunk");
+                throw new InvalidDataFormatException("WAV 'data' chunk was not found !");
+            }
+            if (!foundWavFormatChunk)
+            {
+                throw new InvalidDataFormatException("WAV 'fmt ' chunk was not found !");
+            }
+            if (input.Position != wavDataChunkPosition)
+            {
+                input.Seek(wavDataChunkPosition, SeekOrigin.Begin);
             }
             return pcmInfo;
         }
