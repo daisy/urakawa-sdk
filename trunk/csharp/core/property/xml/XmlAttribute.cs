@@ -200,6 +200,11 @@ namespace urakawa.property.xml
             {
                 throw new exception.XukException("LocalName attribute of XmlAttribute element is missing");
             }
+            string value = source.GetAttribute("value");
+            if (value == null || value == "")
+            {
+                throw new exception.XukException("LocalName attribute of XmlAttribute element is missing");
+            }
             string ns = source.GetAttribute("namespaceUri");
             if (ns == null) ns = "";
             SetQName(name, ns);
@@ -222,6 +227,7 @@ namespace urakawa.property.xml
                 throw new exception.XukException("The XmlAttribute has no name");
             }
             destination.WriteAttributeString("localName", mLocalName);
+            destination.WriteAttributeString("value", mValue);
             if (mNamespaceUri != "") destination.WriteAttributeString("namespaceUri", mNamespaceUri);
             base.XukOutAttributes(destination, baseUri);
         }
