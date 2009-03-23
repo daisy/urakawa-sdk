@@ -16,6 +16,10 @@ namespace urakawa.command
     /// </summary>
     public class CompositeCommand : Command
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.CompositeCommand;
+        }
         #region Event related members
 
         /// <summary>
@@ -282,8 +286,8 @@ namespace urakawa.command
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            mShortDescription = source.GetAttribute("shortDescription");
-            mLongDescription = source.GetAttribute("longDescription");
+            mShortDescription = source.GetAttribute(XukStrings.ShortDescription);
+            mLongDescription = source.GetAttribute(XukStrings.LongDescription);
             base.XukInAttributes(source);
         }
 
@@ -295,14 +299,12 @@ namespace urakawa.command
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
-                switch (source.LocalName)
+                if (source.LocalName == XukStrings.Commands)
                 {
-                    case "Commands":
                         XukInCommands(source, handler);
                         readItem = true;
-                        break;
                 }
             }
 
@@ -317,8 +319,7 @@ namespace urakawa.command
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        Command cmd = Presentation.CommandFactory.Create(
-                            source.LocalName, source.NamespaceURI);
+                        Command cmd = Presentation.CommandFactory.Create(source.LocalName, source.NamespaceURI);
                         if (cmd == null)
                         {
                             throw new exception.XukException(String.Format(
@@ -349,11 +350,11 @@ namespace urakawa.command
         {
             if (mShortDescription != null)
             {
-                destination.WriteAttributeString("shortDescription", mShortDescription);
+                destination.WriteAttributeString(XukStrings.ShortDescription, mShortDescription);
             }
             if (mLongDescription != null)
             {
-                destination.WriteAttributeString("longDescription", mLongDescription);
+                destination.WriteAttributeString(XukStrings.LongDescription, mLongDescription);
             }
             base.XukOutAttributes(destination, baseUri);
         }
@@ -369,7 +370,7 @@ namespace urakawa.command
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("Commands", XukAble.XUK_NS);
+            destination.WriteStartElement(XukStrings.Commands, XUK_NS);
             foreach (Command cmd in ListOfCommands)
             {
                 cmd.XukOut(destination, baseUri, handler);

@@ -7,6 +7,10 @@ namespace urakawa.command
     /// </summary>
     public class CommandFactory : GenericWithPresentationFactory<Command>
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.CommandFactory;
+        }
         public CommandFactory(Presentation pres) : base(pres)
         {
         }

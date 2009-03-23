@@ -12,7 +12,11 @@ namespace urakawa.media.data
     /// </summary>
     public sealed class MediaDataManager : XukAble, IValueEquatable<MediaDataManager>
     {
-        
+
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.MediaDataManager;
+        }
         private Presentation mPresentation;
 
         /// <summary>
@@ -491,7 +495,7 @@ namespace urakawa.media.data
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string attr = source.GetAttribute("enforceSinglePCMFormat");
+            string attr = source.GetAttribute(XukStrings.enforceSinglePCMFormat);
             if (attr == "true" || attr == "1")
             {
                 EnforceSinglePCMFormat = true;
@@ -515,17 +519,17 @@ namespace urakawa.media.data
             if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
-                switch (source.LocalName)
+                if (source.LocalName == XukStrings.DefaultPCMFormat)
                 {
-                    case "DefaultPCMFormat":
-                        XukInDefaultPCMFormat(source, handler);
-                        break;
-                    case "MediaData":
-                        XukInMediaData(source, handler);
-                        break;
-                    default:
-                        readItem = false;
-                        break;
+                    XukInDefaultPCMFormat(source, handler);
+                }
+                else if (source.LocalName == XukStrings.MediaData)
+                {
+                    XukInMediaData(source, handler);
+                }
+                else
+                {
+                    readItem = false;
                 }
             }
             if (!(readItem || source.IsEmptyElement))
@@ -542,7 +546,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.PCMFormatInfo && source.NamespaceURI == XUK_NS)
                         {
                             PCMFormatInfo newInfo = new PCMFormatInfo();
                             newInfo.XukIn(source, handler);
@@ -573,7 +577,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "MediaDataItem" && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.MediaDataItem && source.NamespaceURI == XUK_NS)
                         {
                             XukInMediaDataItem(source, handler);
                         }
@@ -593,7 +597,7 @@ namespace urakawa.media.data
 
         private void XukInMediaDataItem(XmlReader source, ProgressHandler handler)
         {
-            string uid = source.GetAttribute("uid");
+            string uid = source.GetAttribute(XukStrings.Uid);
             MediaData data = null;
             if (!source.IsEmptyElement)
             {
@@ -635,7 +639,7 @@ namespace urakawa.media.data
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString("enforceSinglePCMFormat", EnforceSinglePCMFormat ? "true" : "false");
+            destination.WriteAttributeString(XukStrings.enforceSinglePCMFormat, EnforceSinglePCMFormat ? "true" : "false");
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -651,14 +655,14 @@ namespace urakawa.media.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("DefaultPCMFormat", XUK_NS);
+            destination.WriteStartElement(XukStrings.DefaultPCMFormat, XUK_NS);
             DefaultPCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
-            destination.WriteStartElement("MediaData", XUK_NS);
+            destination.WriteStartElement(XukStrings.MediaDatas, XUK_NS);
             foreach (string uid in mMediaDataDictionary.Keys)
             {
-                destination.WriteStartElement("MediaDataItem", XUK_NS);
-                destination.WriteAttributeString("uid", uid);
+                destination.WriteStartElement(XukStrings.MediaDataItem, XUK_NS);
+                destination.WriteAttributeString(XukStrings.Uid, uid);
                 mMediaDataDictionary[uid].XukOut(destination, baseUri, handler);
                 destination.WriteEndElement();
             }
@@ -677,12 +681,24 @@ namespace urakawa.media.data
         /// <returns>A <see cref="bool"/> indicating the result</returns>
         public bool ValueEquals(MediaDataManager other)
         {
-            if (other == null) return false;
+            if (other == null)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             List<MediaData> otherMediaData = other.ListOfMediaData;
-            if (mMediaDataDictionary.Count != otherMediaData.Count) return false;
+            if (mMediaDataDictionary.Count != otherMediaData.Count)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             foreach (MediaData oMD in otherMediaData)
             {
-                if (!oMD.ValueEquals(GetMediaData(other.GetUidOfMediaData(oMD)))) return false;
+                if (!oMD.ValueEquals(GetMediaData(other.GetUidOfMediaData(oMD))))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
             }
             return true;
         }

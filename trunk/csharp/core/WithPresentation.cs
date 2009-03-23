@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using urakawa.xuk;
 
 namespace urakawa
 {
@@ -8,8 +7,18 @@ namespace urakawa
     /// Base class for classes that are associated with a <see cref="Presentation"/>,
     /// extends <see cref="xuk.XukAble"/> and is therefore also <see cref="xuk.IXukAble"/>
     /// </summary>
-    public class WithPresentation : xuk.XukAble
+    public abstract class WithPresentation : XukAble
     {
+        public override bool IsPrettyFormat()
+        {
+            return Presentation.IsPrettyFormat();
+        }
+
+        public override void SetPrettyFormat(bool pretty)
+        {
+            Presentation.SetPrettyFormat(pretty);
+        }
+
         private Presentation mPresentation;
 
         /// <summary>
@@ -41,8 +50,7 @@ namespace urakawa
                 {
                     throw new exception.IsAlreadyInitializedException(
                         String.Format(
-                            "The {0} has already been initialized with a Presentation",
-                            GetType().Name));
+                            "The {0} has already been initialized with a Presentation", GetType().Name));
                 }
                 mPresentation = value;
             }

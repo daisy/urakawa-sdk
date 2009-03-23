@@ -1,3 +1,5 @@
+using urakawa.xuk;
+
 namespace urakawa.core
 {
     /// <summary>
@@ -11,6 +13,10 @@ namespace urakawa.core
     /// </remarks>
     public sealed class TreeNodeFactory : GenericWithPresentationFactory<TreeNode>
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.TreeNodeFactory;
+        }
         public TreeNodeFactory(Presentation pres) : base(pres)
         {
         }

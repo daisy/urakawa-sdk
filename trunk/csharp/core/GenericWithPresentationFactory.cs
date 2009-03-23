@@ -12,8 +12,19 @@ namespace urakawa
     /// Generic base class for creation of instances of types implementing <see cref="WithPresentation"/>
     /// </summary>
     /// <typeparam name="T">The base <see cref="Type"/> of instances created by the factory</typeparam>
-    public class GenericWithPresentationFactory<T> : GenericXukAbleFactory<T> where T : WithPresentation
+    public abstract class GenericWithPresentationFactory<T> : GenericXukAbleFactory<T> where T : WithPresentation
     {
+
+        public override bool IsPrettyFormat()
+        {
+            return Presentation.IsPrettyFormat();
+        }
+
+        public override void SetPrettyFormat(bool pretty)
+        {
+            Presentation.SetPrettyFormat(pretty);
+        }
+
         private Presentation mPresentation;
 
         /// <summary>

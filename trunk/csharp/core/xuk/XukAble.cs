@@ -9,8 +9,22 @@ namespace urakawa.xuk
     /// <summary>
     /// Common base class for classes that implement <see cref="IXukAble"/>
     /// </summary>
-    public class XukAble : IXukAble
+    public abstract class XukAble : IXukAble
     {
+        /*
+        public abstract bool IsPrettyFormat();
+        public abstract void SetPrettyFormat(bool pretty);
+        */
+
+        public virtual bool IsPrettyFormat()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void SetPrettyFormat(bool pretty)
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// The xuk namespace uri for all built-in <see cref="XukAble"/> <see cref="Type"/>s
         /// </summary>
@@ -68,6 +82,11 @@ namespace urakawa.xuk
                         {
                             XukInChild(source, handler);
                         }
+                        else if (source.NodeType == XmlNodeType.Text)
+                        {
+                            XukInChild(source, handler);
+                            break;
+                        }
                         else if (source.NodeType == XmlNodeType.EndElement)
                         {
                             break;
@@ -107,7 +126,7 @@ namespace urakawa.xuk
         /// <param name="handler">The handler of progress</param>
         protected virtual void XukInChild(XmlReader source, ProgressHandler handler)
         {
-            if (!source.IsEmptyElement) source.ReadSubtree().Close(); //Read past unknown child 
+            if ((source.NodeType == XmlNodeType.Element || source.NodeType == XmlNodeType.EndElement) && !source.IsEmptyElement) source.ReadSubtree().Close(); //Read past unknown child 
         }
 
         /// <summary>
@@ -189,7 +208,37 @@ namespace urakawa.xuk
         /// <returns>The local name part</returns>
         public string XukLocalName
         {
-            get { return GetType().Name;}
+            get
+            {
+                return GetTypeNameFormatted();
+                return GetTypeNameFormatted(GetType());
+                //return GetType().Name;
+            }
+        }
+
+        public abstract string GetTypeNameFormatted();
+
+        private string GetTypeNameFormatted(Type t)
+        {
+            if (!typeof(XukAble).IsAssignableFrom(t))
+            {
+                string msg = String.Format(
+                    "Only Types deriving {0} can be given here !", typeof(XukAble).FullName);
+                throw new MethodParameterIsWrongTypeException(msg);
+            }
+
+            string name = t.Name;
+
+            PropertyInfo info = typeof(XukStrings).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
+            if (info != null)
+            {
+                if (info.PropertyType == typeof(string))
+                {
+                    return (info.GetValue(null, null) as string) ?? name;
+                }
+            }
+            System.Diagnostics.Debug.Fail("Type name not found ??");
+            return name;
         }
 
         /// <summary>
@@ -226,7 +275,7 @@ namespace urakawa.xuk
             FieldInfo fi = t.GetField("XUK_NS", BindingFlags.Static | BindingFlags.Public);
             if (fi != null)
             {
-                if (fi.FieldType==typeof(string)) return (fi.GetValue(null) as string) ?? "";
+                if (fi.FieldType == typeof(string)) return (fi.GetValue(null) as string) ?? "";
             }
             return GetXukNamespaceUri(t.BaseType);
         }
@@ -238,13 +287,19 @@ namespace urakawa.xuk
         /// <param name="t">The <see cref="Type"/>, must inherit <see cref="XukAble"/></param>
         /// <returns>The qname</returns>
         /// <exception cref="MethodParameterIsNullException">Thrown when <paramref name="t"/> is <c>null</c></exception>
-        public static QualifiedName GetXukQualifiedName(Type t)
+        public QualifiedName GetXukQualifiedName(Type t)
         {
-            if (t==null)
+            if (!typeof(XukAble).IsAssignableFrom(t))
+            {
+                string msg = String.Format(
+                    "Only Types deriving {0} can be given here !", typeof(XukAble).FullName);
+                throw new MethodParameterIsWrongTypeException(msg);
+            }
+            if (t == null)
             {
                 throw new MethodParameterIsNullException("Cannot get the Xuk QualifiedName of a null Type");
             }
-            return new QualifiedName(t.Name, GetXukNamespaceUri(t));
+            return new QualifiedName(GetTypeNameFormatted(t), GetXukNamespaceUri(t));
         }
 
         #endregion

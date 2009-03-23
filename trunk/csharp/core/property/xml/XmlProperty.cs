@@ -13,6 +13,10 @@ namespace urakawa.property.xml
     public class XmlProperty : Property
     {
 
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.XmlProperty;
+        }
         #region Event related members
 
         /// <summary>
@@ -352,12 +356,12 @@ namespace urakawa.property.xml
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string ln = source.GetAttribute("localName");
+            string ln = source.GetAttribute(XukStrings.LocalName);
             if (ln == null || ln == "")
             {
                 throw new exception.XukException("LocalName attribute is missing from XmlProperty element");
             }
-            string ns = source.GetAttribute("namespaceUri");
+            string ns = source.GetAttribute(XukStrings.NamespaceUri);
             if (ns == null) ns = "";
             SetQName(ln, ns);
         }
@@ -370,17 +374,20 @@ namespace urakawa.property.xml
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
-                switch (source.LocalName)
+                if (IsPrettyFormat() && source.LocalName == XukStrings.XmlAttributes)
                 {
-                    case "XmlAttributes":
-                        XukInXmlAttributes(source, handler);
-                        break;
-                    default:
-                        readItem = false;
-                        break;
+                    XukInXmlAttributes(source, handler);
+                }
+                else if (!IsPrettyFormat() && source.LocalName == XukStrings.XmlAttribute)
+                {
+                    XukInXmlAttribute(source, handler);
+                }
+                else
+                {
+                    readItem = false;
                 }
             }
             if (!(readItem || source.IsEmptyElement))
@@ -396,7 +403,7 @@ namespace urakawa.property.xml
         /// <param name="handler">The handler for progress</param>
         protected virtual void XukInXmlAttribute(XmlReader source, ProgressHandler handler)
         {
-            if (source.LocalName == typeof(XmlAttribute).Name && source.NamespaceURI == XukAble.XUK_NS)
+            if (source.LocalName == XukStrings.XmlAttribute && source.NamespaceURI == XUK_NS)
             {
                 XmlAttribute attr = new XmlAttribute();
                 attr.XukIn(source, handler);
@@ -437,8 +444,8 @@ namespace urakawa.property.xml
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString("localName", LocalName);
-            destination.WriteAttributeString("namespaceUri", NamespaceUri);
+            destination.WriteAttributeString(XukStrings.LocalName, LocalName);
+            destination.WriteAttributeString(XukStrings.NamespaceUri, NamespaceUri);
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -453,17 +460,24 @@ namespace urakawa.property.xml
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
+            base.XukOutChildren(destination, baseUri, handler);
+
             List<XmlAttribute> attrs = ListOfAttributes;
             if (attrs.Count > 0)
             {
-                destination.WriteStartElement("XmlAttributes", XukAble.XUK_NS);
+                if (IsPrettyFormat())
+                {
+                    destination.WriteStartElement(XukStrings.XmlAttributes, XUK_NS);
+                }
                 foreach (XmlAttribute a in attrs)
                 {
                     a.XukOut(destination, baseUri, handler);
                 }
-                destination.WriteEndElement();
+                if (IsPrettyFormat())
+                {
+                    destination.WriteEndElement();
+                }
             }
-            base.XukOutChildren(destination, baseUri, handler);
         }
 
         #endregion
@@ -477,18 +491,42 @@ namespace urakawa.property.xml
         /// <returns><c>true</c> if the <see cref="Property"/>s are equal, otherwise <c>false</c></returns>
         public override bool ValueEquals(Property other)
         {
-            if (!base.ValueEquals(other)) return false;
+            if (!base.ValueEquals(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             XmlProperty xmlProp = (XmlProperty) other;
-            if (LocalName != xmlProp.LocalName) return false;
-            if (NamespaceUri != xmlProp.NamespaceUri) return false;
+            if (LocalName != xmlProp.LocalName)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (NamespaceUri != xmlProp.NamespaceUri)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             List<XmlAttribute> thisAttrs = ListOfAttributes;
             List<XmlAttribute> otherAttrs = xmlProp.ListOfAttributes;
-            if (thisAttrs.Count != otherAttrs.Count) return false;
+            if (thisAttrs.Count != otherAttrs.Count)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             foreach (XmlAttribute thisAttr in thisAttrs)
             {
                 XmlAttribute otherAttr = xmlProp.GetAttribute(thisAttr.LocalName, thisAttr.NamespaceUri);
-                if (otherAttr == null) return false;
-                if (otherAttr.Value != thisAttr.Value) return false;
+                if (otherAttr == null)
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
+                if (otherAttr.Value != thisAttr.Value)
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
             }
             return true;
         }

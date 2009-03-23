@@ -1,4 +1,5 @@
 using urakawa.property.channel;
+using urakawa.xuk;
 
 namespace urakawa.property
 {
@@ -7,6 +8,10 @@ namespace urakawa.property
     /// </summary>
     public sealed class PropertyFactory : GenericWithPresentationFactory<Property>
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.PropertyFactory;
+        }
         public PropertyFactory(Presentation pres) : base(pres)
         {
         }

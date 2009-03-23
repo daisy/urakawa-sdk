@@ -11,41 +11,41 @@ namespace urakawa
     ///<summary>
     ///</summary>
     ///<typeparam name="T"></typeparam>
-    public class GenericXukAbleFactory<T> : XukAble where T : XukAble
+    public abstract class GenericXukAbleFactory<T> : XukAble where T : XukAble
     {
         private class TypeAndQNames
         {
             public QualifiedName QName;
             public QualifiedName BaseQName;
             public AssemblyName AssemblyName;
-            public string FullName;
+            public string ClassName;
             public Type Type;
 
             public void ReadFromXmlReader(XmlReader rd)
             {
-                QName = new QualifiedName(rd.GetAttribute("XukLocalName"), rd.GetAttribute("XukNamespaceUri") ?? "");
-                if (rd.GetAttribute("BaseXukLocalName") != null)
+                QName = new QualifiedName(rd.GetAttribute(XukStrings.XukLocalName), rd.GetAttribute(XukStrings.XukNamespaceUri) ?? "");
+                if (rd.GetAttribute(XukStrings.BaseXukLocalName) != null)
                 {
-                    BaseQName = new QualifiedName(rd.GetAttribute("BaseXukLocalName"), rd.GetAttribute("BaseXukNamespaceUri") ?? "");
+                    BaseQName = new QualifiedName(rd.GetAttribute(XukStrings.BaseXukLocalName), rd.GetAttribute(XukStrings.BaseXukNamespaceUri) ?? "");
                 }
                 else
                 {
                     BaseQName = null;
                 }
-                AssemblyName = new AssemblyName(rd.GetAttribute("AssemblyName"));
-                if (rd.GetAttribute("AssemblyVersion") != null)
+                AssemblyName = new AssemblyName(rd.GetAttribute(XukStrings.AssemblyName));
+                if (rd.GetAttribute(XukStrings.AssemblyVersion) != null)
                 {
-                    AssemblyName.Version = new Version(rd.GetAttribute("AssemblyVersion"));
+                    AssemblyName.Version = new Version(rd.GetAttribute(XukStrings.AssemblyVersion));
                 }
-                FullName = rd.GetAttribute("FullName");
-                if (AssemblyName != null && FullName != null)
+                ClassName = rd.GetAttribute(XukStrings.FullName);
+                if (AssemblyName != null && ClassName != null)
                 {
                     try
                     {
                         Assembly a = Assembly.Load(AssemblyName);
                         try
                         {
-                            Type = a.GetType(FullName);
+                            Type = a.GetType(ClassName);
                         }
                         catch (ArgumentException)
                         {
@@ -84,10 +84,64 @@ namespace urakawa
         private Dictionary<string, TypeAndQNames> mRegisteredTypeAndQNamesByQualifiedName = new Dictionary<string, TypeAndQNames>();
         private Dictionary<Type, TypeAndQNames> mRegisteredTypeAndQNamesByType = new Dictionary<Type, TypeAndQNames>();
 
+        public void RefreshQNames()
+        {
+            foreach (TypeAndQNames tq in mRegisteredTypeAndQNames)
+            {
+                tq.QName = GetXukQualifiedName(tq.Type);
+
+                if (tq.BaseQName != null)
+                {
+                    tq.BaseQName = GetXukQualifiedName(tq.Type.BaseType);
+                }
+            }
+            {
+                Dictionary<string, TypeAndQNames> newDict = new Dictionary<string, TypeAndQNames>();
+                Dictionary<string, TypeAndQNames>.Enumerator enu = mRegisteredTypeAndQNamesByQualifiedName.GetEnumerator();
+                while (enu.MoveNext())
+                {
+                    KeyValuePair<string, TypeAndQNames> pair = enu.Current;
+                    TypeAndQNames tq = new TypeAndQNames();
+                    tq.QName = GetXukQualifiedName(pair.Value.Type);
+                    tq.Type = pair.Value.Type;
+                    tq.ClassName = pair.Value.Type.FullName;
+                    tq.AssemblyName = pair.Value.Type.Assembly.GetName();
+                    if (pair.Value.BaseQName != null)
+                    {
+                        tq.BaseQName = GetXukQualifiedName(pair.Value.Type.BaseType);
+                    }
+                    newDict.Add(GetXukQualifiedName(pair.Value.Type).FullyQualifiedName, tq);
+                }
+                mRegisteredTypeAndQNamesByQualifiedName.Clear();
+                mRegisteredTypeAndQNamesByQualifiedName = newDict;
+            }
+
+            {
+                Dictionary<Type, TypeAndQNames> newDict = new Dictionary<Type, TypeAndQNames>();
+                Dictionary<Type, TypeAndQNames>.Enumerator enu = mRegisteredTypeAndQNamesByType.GetEnumerator();
+                while (enu.MoveNext())
+                {
+                    KeyValuePair<Type, TypeAndQNames> pair = enu.Current;
+                    TypeAndQNames tq = new TypeAndQNames();
+                    tq.QName = GetXukQualifiedName(pair.Value.Type);
+                    tq.Type = pair.Value.Type;
+                    tq.ClassName = pair.Value.Type.FullName;
+                    tq.AssemblyName = pair.Value.Type.Assembly.GetName();
+                    if (pair.Value.BaseQName != null)
+                    {
+                        tq.BaseQName = GetXukQualifiedName(pair.Value.Type.BaseType);
+                    }
+                    newDict.Add(pair.Value.Type, tq);
+                }
+                mRegisteredTypeAndQNamesByType.Clear();
+                mRegisteredTypeAndQNamesByType = newDict;
+            }
+        }
+
         private void RegisterType(TypeAndQNames tq)
         {
             mRegisteredTypeAndQNames.Add(tq);
-            mRegisteredTypeAndQNamesByQualifiedName.Add(tq.QName.QName, tq);
+            mRegisteredTypeAndQNamesByQualifiedName.Add(tq.QName.FullyQualifiedName, tq);
             if (tq.Type != null) mRegisteredTypeAndQNamesByType.Add(tq.Type, tq);
         }
 
@@ -99,12 +153,18 @@ namespace urakawa
                     "Only Types inheriting {0} can be registered with the factory", typeof(T).FullName);
                 throw new MethodParameterIsWrongTypeException(msg);
             }
+            if (t.IsAbstract)
+            {
+                string msg = String.Format(
+                    "The abstract Type {0} cannot be registered with the factory", t.FullName);
+                throw new MethodParameterIsWrongTypeException(msg);
+            }
             TypeAndQNames tq = new TypeAndQNames();
             tq.QName = GetXukQualifiedName(t);
             tq.Type = t;
-            tq.FullName = t.FullName;
+            tq.ClassName = t.FullName;
             tq.AssemblyName = t.Assembly.GetName();
-            if (typeof(T).IsAssignableFrom(t.BaseType) && !mRegisteredTypeAndQNamesByType.ContainsKey(t.BaseType))
+            if (typeof(T).IsAssignableFrom(t.BaseType) && !mRegisteredTypeAndQNamesByType.ContainsKey(t.BaseType) && !t.BaseType.IsAbstract)
             {
                 tq.BaseQName = RegisterType(t.BaseType).QName;
             }
@@ -131,7 +191,7 @@ namespace urakawa
         private Type LookupType(QualifiedName qname)
         {
             if (qname == null) return null;
-            return LookupType(qname.QName);
+            return LookupType(qname.FullyQualifiedName);
         }
 
         /// <summary>
@@ -144,7 +204,7 @@ namespace urakawa
         /// </remarks>
         protected virtual void InitializeInstance(T instance)
         {
-            
+
         }
 
         /// <summary>
@@ -222,28 +282,28 @@ namespace urakawa
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, progress.ProgressHandler handler)
         {
-            destination.WriteStartElement("RegisteredTypes", XUK_NS);
+            destination.WriteStartElement(XukStrings.RegisteredTypes, XUK_NS);
             foreach (TypeAndQNames tp in mRegisteredTypeAndQNames)
             {
-                destination.WriteStartElement("Type", XUK_NS);
-                destination.WriteAttributeString("XukLocalName", tp.QName.LocalName);
-                destination.WriteAttributeString("XukNamespaceUri", tp.QName.NamespaceUri);
+                destination.WriteStartElement(XukStrings.Type, XUK_NS);
+                destination.WriteAttributeString(XukStrings.XukLocalName, tp.QName.LocalName);
+                destination.WriteAttributeString(XukStrings.XukNamespaceUri, tp.QName.NamespaceUri);
                 if (tp.BaseQName != null)
                 {
-                    destination.WriteAttributeString("BaseXukLocalName", tp.BaseQName.LocalName);
-                    destination.WriteAttributeString("BaseXukNamespaceUri", tp.BaseQName.NamespaceUri);
+                    destination.WriteAttributeString(XukStrings.BaseXukLocalName, tp.BaseQName.LocalName);
+                    destination.WriteAttributeString(XukStrings.BaseXukNamespaceUri, tp.BaseQName.NamespaceUri);
                 }
                 if (tp.Type != null)
                 {
                     tp.AssemblyName = tp.Type.Assembly.GetName();
-                    tp.FullName = tp.Type.FullName;
+                    tp.ClassName = tp.Type.FullName;
                 }
                 if (tp.AssemblyName != null)
                 {
-                    destination.WriteAttributeString("AssemblyName", tp.AssemblyName.Name);
-                    destination.WriteAttributeString("AssemblyVersion", tp.AssemblyName.Version.ToString());
+                    destination.WriteAttributeString(XukStrings.AssemblyName, tp.AssemblyName.Name);
+                    destination.WriteAttributeString(XukStrings.AssemblyVersion, tp.AssemblyName.Version.ToString());
                 }
-                if (tp.FullName != null) destination.WriteAttributeString("FullName", tp.FullName);
+                if (tp.ClassName != null) destination.WriteAttributeString(XukStrings.FullName, tp.ClassName);
                 destination.WriteEndElement();
             }
             destination.WriteEndElement();
@@ -257,7 +317,7 @@ namespace urakawa
         /// <param name="handler">The handler of progress</param>
         protected override void XukInChild(XmlReader source, progress.ProgressHandler handler)
         {
-            if (source.LocalName == "RegisteredTypes" && source.NamespaceURI == XUK_NS)
+            if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XUK_NS)
             {
                 XukInRegisteredTypes(source);
                 return;
@@ -273,7 +333,7 @@ namespace urakawa
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "Type" && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.Type && source.NamespaceURI == XUK_NS)
                         {
                             TypeAndQNames tq = new TypeAndQNames();
                             tq.ReadFromXmlReader(source);

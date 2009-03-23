@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 using urakawa.events.media;
 using urakawa.progress;
+using urakawa.xuk;
 
 
 namespace urakawa.media
@@ -11,6 +12,10 @@ namespace urakawa.media
     /// </summary>
     public class ExternalImageMedia : AbstractImageMedia, ILocated
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.ExternalImageMedia;
+        }
         private string mSrc;
         private int mWidth;
         private int mHeight;
@@ -271,11 +276,11 @@ namespace urakawa.media
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string val = source.GetAttribute("src");
+            string val = source.GetAttribute(XukStrings.Src);
             if (val == null || val == "") val = ".";
             Src = val;
-            string height = source.GetAttribute("height");
-            string width = source.GetAttribute("width");
+            string height = source.GetAttribute(XukStrings.Height);
+            string width = source.GetAttribute(XukStrings.Width);
             if (height != null && height != "")
             {
                 int h;
@@ -322,15 +327,15 @@ namespace urakawa.media
                 Uri srcUri = new Uri(MediaFactory.Presentation.RootUri, Src);
                 if (baseUri == null)
                 {
-                    destination.WriteAttributeString("src", srcUri.AbsoluteUri);
+                    destination.WriteAttributeString(XukStrings.Src, srcUri.AbsoluteUri);
                 }
                 else
                 {
-                    destination.WriteAttributeString("src", baseUri.MakeRelativeUri(srcUri).ToString());
+                    destination.WriteAttributeString(XukStrings.Src, baseUri.MakeRelativeUri(srcUri).ToString());
                 }
             }
-            destination.WriteAttributeString("height", this.mHeight.ToString());
-            destination.WriteAttributeString("width", this.mWidth.ToString());
+            destination.WriteAttributeString(XukStrings.Height, this.mHeight.ToString());
+            destination.WriteAttributeString(XukStrings.Width, this.mWidth.ToString());
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -345,11 +350,27 @@ namespace urakawa.media
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
         public override bool ValueEquals(Media other)
         {
-            if (!base.ValueEquals(other)) return false;
+            if (!base.ValueEquals(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             ExternalImageMedia otherImage = (ExternalImageMedia)other;
-            if (Src != otherImage.Src) return false;
-            if (Height != otherImage.Height) return false;
-            if (Width != otherImage.Width) return false;
+            if (Src != otherImage.Src)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (Height != otherImage.Height)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (Width != otherImage.Width)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             return true;
         }
 

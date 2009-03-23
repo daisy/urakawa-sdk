@@ -14,6 +14,10 @@ namespace urakawa.property.channel
     /// </summary>
     public class ChannelsProperty : Property
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.ChannelsProperty;
+        }
         #region Event related members
 
         /// <summary>
@@ -275,17 +279,20 @@ namespace urakawa.property.channel
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
-                switch (source.LocalName)
+                if (IsPrettyFormat() && source.LocalName == XukStrings.ChannelMappings)
                 {
-                    case "ChannelMappings":
-                        XukInChannelMappings(source, handler);
-                        break;
-                    default:
-                        readItem = false;
-                        break;
+                    XukInChannelMappings(source, handler);
+                }
+                else if (!IsPrettyFormat())
+                {
+                    XukInChannelMapping(source, handler);
+                }
+                else
+                {
+                    readItem = false;
                 }
             }
             if (!(readItem || source.IsEmptyElement))
@@ -307,7 +314,7 @@ namespace urakawa.property.channel
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "ChannelMapping" && source.NamespaceURI == XukAble.XUK_NS)
+                        if (source.LocalName == XukStrings.ChannelMapping && source.NamespaceURI == XUK_NS)
                         {
                             XukInChannelMapping(source, handler);
                         }
@@ -332,7 +339,7 @@ namespace urakawa.property.channel
         /// <param name="handler">The handler for progress</param>
         private void XukInChannelMapping(XmlReader source, ProgressHandler handler)
         {
-            string channelRef = source.GetAttribute("channel");
+            string channelRef = source.GetAttribute(XukStrings.Channel);
             while (source.Read())
             {
                 if (source.NodeType == XmlNodeType.Element)
@@ -374,12 +381,17 @@ namespace urakawa.property.channel
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("ChannelMappings", XukAble.XUK_NS);
+            base.XukOutChildren(destination, baseUri, handler);
+
+            if (IsPrettyFormat())
+            {
+                destination.WriteStartElement(XukStrings.ChannelMappings, XUK_NS);
+            }
             List<Channel> channelsList = ListOfUsedChannels;
             foreach (Channel channel in channelsList)
             {
-                destination.WriteStartElement("ChannelMapping", XukAble.XUK_NS);
-                destination.WriteAttributeString("channel", channel.Uid);
+                destination.WriteStartElement(XukStrings.ChannelMapping, XUK_NS);
+                destination.WriteAttributeString(XukStrings.Channel, channel.Uid);
                 Media media = GetMedia(channel);
                 if (media == null)
                 {
@@ -390,8 +402,10 @@ namespace urakawa.property.channel
 
                 destination.WriteEndElement();
             }
-            destination.WriteEndElement();
-            base.XukOutChildren(destination, baseUri, handler);
+            if (IsPrettyFormat())
+            {
+                destination.WriteEndElement();
+            }
         }
 
         #endregion
@@ -405,11 +419,19 @@ namespace urakawa.property.channel
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
         public override bool ValueEquals(Property other)
         {
-            if (!base.ValueEquals(other)) return false;
+            if (!base.ValueEquals(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             ChannelsProperty otherChProp = (ChannelsProperty) other;
             List<Channel> chs = ListOfUsedChannels;
             List<Channel> otherChs = otherChProp.ListOfUsedChannels;
-            if (chs.Count != otherChs.Count) return false;
+            if (chs.Count != otherChs.Count)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             foreach (Channel ch in chs)
             {
                 Channel otherCh = null;
@@ -421,9 +443,14 @@ namespace urakawa.property.channel
                         break;
                     }
                 }
-                if (otherCh == null) return false;
+                if (otherCh == null)
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
                 if (!GetMedia(ch).ValueEquals(otherChProp.GetMedia(otherCh)))
                 {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !");
                     return false;
                 }
             }

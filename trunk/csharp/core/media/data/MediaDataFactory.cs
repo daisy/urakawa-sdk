@@ -2,6 +2,7 @@ using System;
 using urakawa.exception;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
+using urakawa.xuk;
 
 namespace urakawa.media.data
 {
@@ -15,6 +16,10 @@ namespace urakawa.media.data
     /// </summary>
     public sealed class MediaDataFactory : GenericWithPresentationFactory<MediaData>
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.MediaDataFactory;
+        }
         public MediaDataFactory(Presentation pres) : base(pres)
         {
         }

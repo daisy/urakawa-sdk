@@ -33,7 +33,7 @@ namespace urakawa.publish
         {
             Project proj = pres.Project;
             Channel sourceCh = pres.ChannelsManager.GetChannelsByName("channel.audio")[0];
-            Channel destCh = pres.ChannelFactory.CreateChannel();
+            Channel destCh = pres.ChannelFactory.Create();
             destCh.Language = sourceCh.Language;
             destCh.Name = String.Format("{0}.published", sourceCh.Name);
             

@@ -23,7 +23,7 @@ namespace urakawa.xuk
         /// <summary>
         /// The qualified name in the form <c>[<see cref="NamespaceUri"/>:]<see cref="LocalName"/></c>
         /// </summary>
-        public string QName
+        public string FullyQualifiedName
         {
             get
             {
@@ -93,10 +93,10 @@ namespace urakawa.xuk
         /// <summary>
         /// Gets the textual representation of the <see cref="QualifiedName"/>
         /// </summary>
-        /// <returns>The value of property <see cref="QName"/></returns>
+        /// <returns>The value of property <see cref="FullyQualifiedName"/></returns>
         public override string ToString()
         {
-            return QName;
+            return FullyQualifiedName;
         }
     }
 }

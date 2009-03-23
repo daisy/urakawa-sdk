@@ -7,6 +7,7 @@ using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
 using urakawa.events.media.data;
+using urakawa.xuk;
 
 namespace urakawa.media.data.audio
 {
@@ -16,6 +17,10 @@ namespace urakawa.media.data.audio
     public class ManagedAudioMedia : AbstractAudioMedia, IManaged
     {
 
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.ManagedAudioMedia;
+        }
 
         private AudioMediaData mAudioMediaData;
 
@@ -53,13 +58,11 @@ namespace urakawa.media.data.audio
         /// <returns>The copy</returns>
         public ManagedAudioMedia Copy(Time clipBegin, Time clipEnd)
         {
-
             ManagedAudioMedia copyMAM = MediaFactory.Create<ManagedAudioMedia>();
             Stream pcm = AudioMediaData.GetAudioData(clipBegin, clipEnd);
             try
             {
-                AudioMediaData data = MediaDataFactory.Create(
-                                          AudioMediaData.XukLocalName, AudioMediaData.XukNamespaceUri) as AudioMediaData;
+                AudioMediaData data = MediaDataFactory.Create(typeof(AudioMediaData)) as AudioMediaData;
                 data.PCMFormat = AudioMediaData.PCMFormat;
                 data.AppendAudioData(pcm, null);
                 copyMAM.AudioMediaData = data;
@@ -164,7 +167,7 @@ namespace urakawa.media.data.audio
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string uid = source.GetAttribute("audioMediaDataUid");
+            string uid = source.GetAttribute(XukStrings.AudioMediaDataUid);
             if (uid == null || uid == "")
             {
                 throw new exception.XukException("audioMediaDataUid attribute is missing from AudioMediaData");
@@ -196,7 +199,7 @@ namespace urakawa.media.data.audio
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString("audioMediaDataUid", AudioMediaData.Uid);
+            destination.WriteAttributeString(XukStrings.AudioMediaDataUid, AudioMediaData.Uid);
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -380,9 +383,17 @@ namespace urakawa.media.data.audio
         /// <returns>A <see cref="bool"/> indicating the result</returns>		
         public override bool ValueEquals(Media other)
         {
-            if (!base.ValueEquals(other)) return false;
+            if (!base.ValueEquals(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             ManagedAudioMedia otherMAM = (ManagedAudioMedia) other;
-            if (!AudioMediaData.ValueEquals(otherMAM.AudioMediaData)) return false;
+            if (!AudioMediaData.ValueEquals(otherMAM.AudioMediaData))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             return true;
         }
 

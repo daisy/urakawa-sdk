@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using urakawa.events;
 using urakawa.events.metadata;
+using urakawa.xuk;
 
 namespace urakawa.metadata
 {
@@ -11,6 +12,10 @@ namespace urakawa.metadata
     /// </summary>
     public class Metadata : WithPresentation, IChangeNotifier
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.Metadata;
+        }
         #region IChangeNotifier members
 
         /// <summary>

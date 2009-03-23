@@ -1,5 +1,6 @@
 using System;
 using urakawa.exception;
+using urakawa.xuk;
 
 namespace urakawa.media.data
 {
@@ -8,6 +9,10 @@ namespace urakawa.media.data
     /// </summary>
     public sealed class DataProviderFactory : GenericWithPresentationFactory<DataProvider>
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.DataProviderFactory;
+        }
         public DataProviderFactory(Presentation pres) : base(pres)
         {
         }
@@ -160,15 +165,6 @@ namespace urakawa.media.data
             T newProv = Create<T>();
             newProv.MimeType = mimeType;
             return newProv;
-        }
-
-        /// <summary>
-        /// Creates a <see cref="FileDataProvider"/> of default <see cref="Type"/>
-        /// </summary>
-        /// <returns>The created data provider</returns>
-        public DataProvider Create()
-        {
-            return Create(DefaultDataProviderType);
         }
 
         /// <summary>

@@ -162,9 +162,21 @@ namespace urakawa.media.data
         /// <returns>A <see cref="bool"/> indicating the result</returns>
         public virtual bool ValueEquals(MediaData other)
         {
-            if (other == null) return false;
-            if (GetType() != other.GetType()) return false;
-            if (Name != other.Name) return false;
+            if (other == null)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (GetType() != other.GetType())
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (Name != other.Name)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             return true;
         }
 

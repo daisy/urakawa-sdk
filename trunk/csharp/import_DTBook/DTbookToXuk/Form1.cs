@@ -6,8 +6,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using urakawa.media;
+using urakawa.media.data;
 using urakawa.metadata;
+using urakawa.xuk;
 using core = urakawa.core;
 using System.Xml;
 using urakawa;
@@ -65,7 +68,45 @@ namespace DTbookToXuk
         {
             m_Project = new Project();
 
+            m_Project.SetPrettyFormat(false);
+
+            //m_Project.PresentationFactory.Create();
             Presentation presentation = m_Project.AddNewPresentation();
+
+            // BEGIN OF TEST
+            // => creating all kinds of objects in order to initialize the factories
+            // and cache the mapping between XUK names (pretty or compressed) and actual types.
+            Channel ch = presentation.ChannelFactory.Create();
+            presentation.ChannelsManager.RemoveChannel(ch);
+            ch = presentation.ChannelFactory.CreateAudioChannel();
+            presentation.ChannelsManager.RemoveChannel(ch);
+            ch = presentation.ChannelFactory.CreateTextChannel();
+            presentation.ChannelsManager.RemoveChannel(ch);
+            //
+            DataProvider dp = presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+            presentation.DataProviderManager.RemoveDataProvider(dp, true);
+            //
+            MediaData md = presentation.MediaDataFactory.CreateAudioMediaData();
+            presentation.MediaDataManager.RemoveMediaData(md);
+            //
+            presentation.CommandFactory.CreateCompositeCommand();
+            //
+            presentation.MediaFactory.CreateExternalImageMedia();
+            presentation.MediaFactory.CreateExternalVideoMedia();
+            presentation.MediaFactory.CreateExternalTextMedia();
+            presentation.MediaFactory.CreateExternalAudioMedia();
+            presentation.MediaFactory.CreateManagedAudioMedia();
+            presentation.MediaFactory.CreateSequenceMedia();
+            presentation.MediaFactory.CreateTextMedia();
+            //
+            presentation.MetadataFactory.CreateMetadata();
+            //
+            presentation.PropertyFactory.CreateChannelsProperty();
+            presentation.PropertyFactory.CreateXmlProperty();
+            //
+            presentation.TreeNodeFactory.Create();
+            //
+            // END OF TEST
 
             Metadata mdAuthor = presentation.MetadataFactory.CreateMetadata();
             mdAuthor.Name = "dc:author";
@@ -103,8 +144,8 @@ namespace DTbookToXuk
             audioChannel.Name = "AudioChannel";
             */
 
-            m_textChannel = presentation.ChannelFactory.CreateChannel();
-            m_textChannel.Name = "The Text Channel";
+            m_textChannel = presentation.ChannelFactory.CreateTextChannel();
+            m_textChannel.Name = "Our Text Channel";
 
             // No very pretty !
             //presentation.ChannelsManager.RemoveChannel(m_textChannel);
@@ -112,17 +153,62 @@ namespace DTbookToXuk
 
             parseXmlDocAndPopulateDataModel(m_DTBookXmlDoc, null);
 
-            Uri uri = new Uri(m_DTBook_FilePath + ".xuk");
-            m_Project.SaveXuk(uri);
+            Uri uriComp = new Uri(m_DTBook_FilePath + ".COMPRESSED.xuk");
 
+            {
+                SaveXukAction actionSave = new SaveXukAction(m_Project, uriComp);
+                bool saveWasCancelled;
+                Progress.ExecuteProgressAction(actionSave, out saveWasCancelled);
+                if (saveWasCancelled)
+                {
+                    return;
+                }
+            }
 
-            Project project = new Project();
-            project.OpenXuk(uri);
+            Uri uriPretty = new Uri(m_DTBook_FilePath + ".PRETTY.xuk");
 
-            Uri uri2 = new Uri(uri.LocalPath + ".xuk");
-            project.SaveXuk(uri2);
+            m_Project.SetPrettyFormat(true);
 
-            System.Diagnostics.Debug.Assert(m_Project.ValueEquals(project));
+            {
+                SaveXukAction actionSave = new SaveXukAction(m_Project, uriPretty);
+                bool saveWasCancelled;
+                Progress.ExecuteProgressAction(actionSave, out saveWasCancelled);
+                if (saveWasCancelled)
+                {
+                    return;
+                }
+            }
+
+            Project projectComp = new Project();
+
+            //not needed, automatically detected
+            //project.PrettyFormat = false;
+
+            {
+                OpenXukAction actionOpen = new OpenXukAction(projectComp, uriComp);
+                bool openWasCancelled;
+                Progress.ExecuteProgressAction(actionOpen, out openWasCancelled);
+                if (openWasCancelled)
+                {
+                    return;
+                }
+            }
+
+            System.Diagnostics.Debug.Assert(m_Project.ValueEquals(projectComp));
+
+            Project projectPretty = new Project();
+
+            {
+                OpenXukAction actionOpen = new OpenXukAction(projectPretty, uriPretty);
+                bool openWasCancelled;
+                Progress.ExecuteProgressAction(actionOpen, out openWasCancelled);
+                if (openWasCancelled)
+                {
+                    return;
+                }
+            }
+            System.Diagnostics.Debug.Assert(projectComp.ValueEquals(projectPretty));
+            System.Diagnostics.Debug.Assert(m_Project.ValueEquals(projectPretty));
         }
 
         private void parseXmlDocAndPopulateDataModel(XmlNode xmlNode, core.TreeNode parentTreeNode)

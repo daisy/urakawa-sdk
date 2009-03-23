@@ -12,6 +12,10 @@ namespace urakawa.media
     /// </summary>
     public class SequenceMedia : Media
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.SequenceMedia;
+        }
         private void Item_Changed(object sender, urakawa.events.DataModelChangedEventArgs e)
         {
             NotifyChanged(e);
@@ -331,7 +335,7 @@ namespace urakawa.media
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string val = source.GetAttribute("allowMultipleMediaTypes");
+            string val = source.GetAttribute(XukStrings.AllowMultipleMediaTypes);
             if (val == "true" || val == "1")
             {
                 AllowMultipleTypes = true;
@@ -351,17 +355,16 @@ namespace urakawa.media
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
-                switch (source.LocalName)
+                if (source.LocalName == XukStrings.Sequence)
                 {
-                    case "Sequence":
-                        XukInSequence(source, handler);
-                        break;
-                    default:
-                        readItem = false;
-                        break;
+                    XukInSequence(source, handler);
+                }
+                else
+                {
+                    readItem = false;
                 }
             }
             if (!readItem) base.XukIn(source, handler);
@@ -411,7 +414,7 @@ namespace urakawa.media
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString("allowMultipleMediaTypes", AllowMultipleTypes ? "true" : "false");
+            destination.WriteAttributeString(XukStrings.AllowMultipleMediaTypes, AllowMultipleTypes ? "true" : "false");
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -428,7 +431,7 @@ namespace urakawa.media
         {
             if (Count > 0)
             {
-                destination.WriteStartElement("Sequence", XukAble.XUK_NS);
+                destination.WriteStartElement(XukStrings.Sequence, XUK_NS);
                 for (int i = 0; i < Count; i++)
                 {
                     GetItem(i).XukOut(destination, baseUri, handler);
@@ -449,13 +452,29 @@ namespace urakawa.media
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
         public override bool ValueEquals(Media other)
         {
-            if (!base.ValueEquals(other)) return false;
+            if (!base.ValueEquals(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             SequenceMedia otherSeq = (SequenceMedia) other;
-            if (AllowMultipleTypes != otherSeq.AllowMultipleTypes) return false;
-            if (Count != otherSeq.Count) return false;
+            if (AllowMultipleTypes != otherSeq.AllowMultipleTypes)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (Count != otherSeq.Count)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             for (int i = 0; i < Count; i++)
             {
-                if (!GetItem(i).ValueEquals(otherSeq.GetItem(i))) return false;
+                if (!GetItem(i).ValueEquals(otherSeq.GetItem(i)))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
             }
             return true;
         }

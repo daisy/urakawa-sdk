@@ -6,6 +6,7 @@ using urakawa.media.data;
 using urakawa.media.timing;
 using urakawa.media.data.utilities;
 using urakawa.progress;
+using urakawa.xuk;
 
 namespace urakawa.media.data.audio.codec
 {
@@ -14,6 +15,10 @@ namespace urakawa.media.data.audio.codec
     /// </summary>
     public class WavAudioMediaData : AudioMediaData
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.WavAudioMediaData;
+        }
         /// <summary>
         /// Represents a RIFF WAVE PCM audio data clip
         /// </summary>
@@ -225,11 +230,31 @@ namespace urakawa.media.data.audio.codec
             /// <returns>A <see cref="bool"/> indicating the result</returns>
             public bool ValueEquals(WavClip other)
             {
-                if (other == null) return false;
-                if (!ClipBegin.IsEqualTo(other.ClipBegin)) return false;
-                if (IsClipEndTiedToEOM != other.IsClipEndTiedToEOM) return false;
-                if (!ClipEnd.IsEqualTo(other.ClipEnd)) return false;
-                if (!DataProvider.ValueEquals(other.DataProvider)) return false;
+                if (other == null)
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
+                if (!ClipBegin.IsEqualTo(other.ClipBegin))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
+                if (IsClipEndTiedToEOM != other.IsClipEndTiedToEOM)
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
+                if (!ClipEnd.IsEqualTo(other.ClipEnd))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
+                if (!DataProvider.ValueEquals(other.DataProvider))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
                 return true;
             }
 
@@ -281,8 +306,7 @@ namespace urakawa.media.data.audio.codec
         /// <returns>The <see cref="WavClip"/></returns>
         protected WavClip CreateWavClipFromRawPCMStream(Stream pcmData, TimeDelta duration)
         {
-            DataProvider newSingleDataProvider = MediaDataManager.DataProviderFactory.Create(
-                DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+            DataProvider newSingleDataProvider = MediaDataManager.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
             PCMDataInfo pcmInfo = new PCMDataInfo(PCMFormat);
             if (duration == null)
             {
@@ -731,17 +755,17 @@ namespace urakawa.media.data.audio.codec
             if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
-                switch (source.LocalName)
+                if (source.LocalName == XukStrings.WavClips)
                 {
-                    case "WavClips":
-                        XukInWavClips(source);
-                        break;
-                    case "PCMFormat":
-                        XukInPCMFormat(source, handler);
-                        break;
-                    default:
-                        readItem = false;
-                        break;
+                    XukInWavClips(source);
+                }
+                else if (source.LocalName == XukStrings.PCMFormat)
+                {
+                    XukInPCMFormat(source, handler);
+                }
+                else
+                {
+                    readItem = false;
                 }
             }
             if (!readItem) base.XukInChild(source, handler);
@@ -755,7 +779,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.PCMFormatInfo && source.NamespaceURI == XUK_NS)
                         {
                             PCMFormatInfo newInfo = new PCMFormatInfo();
                             newInfo.XukIn(source, handler);
@@ -783,7 +807,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "WavClip" && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.WavClip && source.NamespaceURI == XUK_NS)
                         {
                             XukInWavClip(source);
                         }
@@ -803,7 +827,7 @@ namespace urakawa.media.data.audio.codec
 
         private void XukInWavClip(XmlReader source)
         {
-            string clipBeginAttr = source.GetAttribute("clipBegin");
+            string clipBeginAttr = source.GetAttribute(XukStrings.ClipBegin);
             Time cb = Time.Zero;
             if (clipBeginAttr != null)
             {
@@ -818,7 +842,7 @@ namespace urakawa.media.data.audio.codec
                         e);
                 }
             }
-            string clipEndAttr = source.GetAttribute("clipEnd");
+            string clipEndAttr = source.GetAttribute(XukStrings.ClipEnd);
             Time ce = null;
             if (clipEndAttr != null)
             {
@@ -833,7 +857,7 @@ namespace urakawa.media.data.audio.codec
                         e);
                 }
             }
-            string dataProviderUid = source.GetAttribute("dataProvider");
+            string dataProviderUid = source.GetAttribute(XukStrings.DataProvider);
             if (dataProviderUid == null)
             {
                 throw new exception.XukException("dataProvider attribute is missing from WavClip element");
@@ -868,16 +892,16 @@ namespace urakawa.media.data.audio.codec
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
-            destination.WriteStartElement("PCMFormat");
+            destination.WriteStartElement(XukStrings.PCMFormat);
             PCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
-            destination.WriteStartElement("WavClips", XUK_NS);
+            destination.WriteStartElement(XukStrings.WavClips, XUK_NS);
             foreach (WavClip clip in mWavClips)
             {
-                destination.WriteStartElement("WavClip", XUK_NS);
-                destination.WriteAttributeString("dataProvider", clip.DataProvider.Uid);
-                destination.WriteAttributeString("clipBegin", clip.ClipBegin.ToString());
-                if (!clip.IsClipEndTiedToEOM) destination.WriteAttributeString("clipEnd", clip.ClipEnd.ToString());
+                destination.WriteStartElement(XukStrings.WavClip, XUK_NS);
+                destination.WriteAttributeString(XukStrings.DataProvider, clip.DataProvider.Uid);
+                destination.WriteAttributeString(XukStrings.ClipBegin, clip.ClipBegin.ToString());
+                if (!clip.IsClipEndTiedToEOM) destination.WriteAttributeString(XukStrings.ClipEnd, clip.ClipEnd.ToString());
                 destination.WriteEndElement();
             }
             destination.WriteEndElement();
@@ -956,7 +980,7 @@ namespace urakawa.media.data.audio.codec
                         splitPoint, AudioDuration));
             }
             WavAudioMediaData oWAMD =
-                GetMediaDataFactory().Create(XukLocalName, XukNamespaceUri) as WavAudioMediaData;
+                GetMediaDataFactory().Create(GetType()) as WavAudioMediaData;
             if (oWAMD == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(

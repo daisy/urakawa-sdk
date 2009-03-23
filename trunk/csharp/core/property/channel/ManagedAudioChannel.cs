@@ -11,7 +11,6 @@ namespace urakawa.property.channel
     /// </summary>
     public class ManagedAudioChannel : AudioChannel
     {
-
         /// <summary>
         /// Determines if a given <see cref="Media"/> can be accepted by the channel,
         /// which it can if it is a <see cref="ManagedAudioMedia"/>

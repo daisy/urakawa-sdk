@@ -16,6 +16,11 @@ namespace urakawa.core
     public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,
                             IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
     {
+
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.TreeNode;
+        }
         #region Event related members
 
         /// <summary>
@@ -505,7 +510,20 @@ namespace urakawa.core
                 }
             }
         }
-
+        private void XukInChildNode(XmlReader source, ProgressHandler handler)
+        {
+            TreeNode newChild = Presentation.TreeNodeFactory.Create(source.LocalName, source.NamespaceURI);
+            if (newChild != null)
+            {
+                AppendChild(newChild);
+                newChild.XukIn(source, handler);
+            }
+            else if (!source.IsEmptyElement)
+            {
+                //Read past unidentified element
+                source.ReadSubtree().Close();
+            }
+        }
         private void XukInChildren(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
@@ -514,18 +532,7 @@ namespace urakawa.core
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        TreeNode newChild = Presentation.TreeNodeFactory.Create(source.LocalName,
-                                                                                    source.NamespaceURI);
-                        if (newChild != null)
-                        {
-                            AppendChild(newChild);
-                            newChild.XukIn(source, handler);
-                        }
-                        else if (!source.IsEmptyElement)
-                        {
-                            //Read past unidentified element
-                            source.ReadSubtree().Close();
-                        }
+                        XukInChildNode(source, handler);
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {
@@ -544,20 +551,24 @@ namespace urakawa.core
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
-                switch (source.LocalName)
+                if (source.LocalName == XukStrings.Properties)
                 {
-                    case "Properties":
-                        XukInProperties(source, handler);
-                        break;
-                    case "Children":
-                        XukInChildren(source, handler);
-                        break;
-                    default:
-                        readItem = false;
-                        break;
+                    XukInProperties(source, handler);
+                }
+                else if (IsPrettyFormat() && source.LocalName == XukStrings.Children)
+                {
+                    XukInChildren(source, handler);
+                }
+                else if (!IsPrettyFormat())
+                {
+                    XukInChildNode(source, handler);
+                }
+                else
+                {
+                    readItem = false;
                 }
             }
             if (!readItem) base.XukInChild(source, handler);
@@ -574,19 +585,27 @@ namespace urakawa.core
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("Properties", XukAble.XUK_NS);
+            base.XukOutChildren(destination, baseUri, handler);
+
+            destination.WriteStartElement(XukStrings.Properties, XUK_NS);
             foreach (Property prop in GetListOfProperties())
             {
                 prop.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            destination.WriteStartElement("Children", XukAble.XUK_NS);
+
+            if (IsPrettyFormat())
+            {
+                destination.WriteStartElement(XukStrings.Children, XUK_NS);
+            }
             for (int i = 0; i < this.ChildCount; i++)
             {
                 GetChild(i).XukOut(destination, baseUri, handler);
             }
-            destination.WriteEndElement();
-            base.XukOutChildren(destination, baseUri, handler);
+            if (IsPrettyFormat())
+            {
+                destination.WriteEndElement();
+            }
         }
 
         #endregion
@@ -736,7 +755,7 @@ namespace urakawa.core
         /// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
         protected virtual TreeNode CopyProtected(bool deep, bool inclProperties)
         {
-            TreeNode theCopy = Presentation.TreeNodeFactory.Create(XukLocalName, XukNamespaceUri);
+            TreeNode theCopy = Presentation.TreeNodeFactory.Create(GetType());
 
             //copy the property
             if (inclProperties)
@@ -1274,25 +1293,53 @@ namespace urakawa.core
         /// <returns><c>true</c> if the <see cref="TreeNode"/>s are equal, otherwise <c>false</c></returns>
         public virtual bool ValueEquals(TreeNode other)
         {
-            if (other == null) return false;
-            if (other.GetType() != this.GetType()) return false;
+            if (other == null)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
+            if (other.GetType() != this.GetType())
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             List<Type> thisProps = ListOfUsedPropertyTypes;
             List<Type> otherProps = other.ListOfUsedPropertyTypes;
-            if (thisProps.Count != otherProps.Count) return false;
+            if (thisProps.Count != otherProps.Count)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             foreach (Type pt in thisProps)
             {
                 List<Property> thisPs = GetListOfProperties(pt);
                 List<Property> otherPs = other.GetListOfProperties(pt);
-                if (thisPs.Count != otherPs.Count) return false;
+                if (thisPs.Count != otherPs.Count)
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
                 for (int i = 0; i < thisPs.Count; i++)
                 {
-                    if (!thisPs[i].ValueEquals(otherPs[i])) return false;
+                    if (!thisPs[i].ValueEquals(otherPs[i]))
+                    {
+                        //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                        return false;
+                    }
                 }
             }
-            if (ChildCount != other.ChildCount) return false;
+            if (ChildCount != other.ChildCount)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             for (int i = 0; i < ChildCount; i++)
             {
-                if (!GetChild(i).ValueEquals(other.GetChild(i))) return false;
+                if (!GetChild(i).ValueEquals(other.GetChild(i)))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
             }
             return true;
         }

@@ -24,7 +24,24 @@ namespace urakawa.xuk
         private void initializeXmlReader(Stream stream)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
+
             settings.IgnoreWhitespace = false;
+            settings.ProhibitDtd = false;
+            settings.XmlResolver = null;
+
+            settings.IgnoreComments = true;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreWhitespace = true;
+
+            if (!mDestXukAble.IsPrettyFormat())
+            {
+                //
+            }
+            else
+            {
+                //
+            }
+
             mXmlReader = XmlReader.Create(mSourceStream, settings, mSourceUri.ToString());
         }
 
@@ -154,41 +171,66 @@ namespace urakawa.xuk
             bool canceled = false;
             try
             {
-                    if (!mXmlReader.ReadToFollowing("Xuk", XukAble.XUK_NS))
+                bool foundRoot = false;
+                while (mXmlReader.Read())
+                {
+                    if (mXmlReader.NodeType == XmlNodeType.Element)
                     {
-                        throw new exception.XukException("Could not find Xuk element in XukAble fragment");
-                    }
-                    bool foundXukAble = false;
-                    if (!mXmlReader.IsEmptyElement)
-                    {
-                        while (mXmlReader.Read())
+                        if (mXmlReader.LocalName == XukStrings.XukPretty)
                         {
-                            if (mXmlReader.NodeType == XmlNodeType.Element)
-                            {
-                                //If the element QName matches the Xuk QName equivalent of this, Xuk it in using this.XukIn
-                                if (mXmlReader.LocalName == mDestXukAble.XukLocalName &&
-                                    mXmlReader.NamespaceURI == mDestXukAble.XukNamespaceUri)
-                                {
-                                    foundXukAble = true;
-                                    mDestXukAble.XukIn(mXmlReader, this);
-                                }
-                                else if (!mXmlReader.IsEmptyElement)
-                                {
-                                    mXmlReader.ReadSubtree().Close();
-                                }
-                            }
-                            else if (mXmlReader.NodeType == XmlNodeType.EndElement)
-                            {
-                                break;
-                            }
-
-                            if (mXmlReader.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                            mDestXukAble.SetPrettyFormat(true);
+                            foundRoot = true;
+                            break;
+                        }
+                        else if (mXmlReader.LocalName == XukStrings.XukCompressed)
+                        {
+                            mDestXukAble.SetPrettyFormat(false);
+                            foundRoot = true;
+                            break;
                         }
                     }
-                    if (!foundXukAble)
+                    else if (mXmlReader.NodeType == XmlNodeType.EndElement)
                     {
-                        throw new exception.XukException("Found no required XukAble in Xuk file");
+                        break;
                     }
+                    if (mXmlReader.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                }
+                if (!foundRoot)
+                {
+                    throw new exception.XukException("Could not find Xuk element in XukAble fragment");
+                }
+
+                bool foundXukAble = false;
+                if (!mXmlReader.IsEmptyElement)
+                {
+                    while (mXmlReader.Read())
+                    {
+                        if (mXmlReader.NodeType == XmlNodeType.Element)
+                        {
+                            //If the element QName matches the Xuk QName equivalent of this, Xuk it in using this.XukIn
+                            if (mXmlReader.LocalName == mDestXukAble.XukLocalName &&
+                                mXmlReader.NamespaceURI == mDestXukAble.XukNamespaceUri)
+                            {
+                                foundXukAble = true;
+                                mDestXukAble.XukIn(mXmlReader, this);
+                            }
+                            else if (!mXmlReader.IsEmptyElement)
+                            {
+                                mXmlReader.ReadSubtree().Close();
+                            }
+                        }
+                        else if (mXmlReader.NodeType == XmlNodeType.EndElement)
+                        {
+                            break;
+                        }
+
+                        if (mXmlReader.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                    }
+                }
+                if (!foundXukAble)
+                {
+                    throw new exception.XukException("Found no required XukAble in Xuk file");
+                }
             }
             catch (exception.ProgressCancelledException)
             {

@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 using urakawa.events.media;
 using urakawa.media.timing;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
@@ -11,6 +12,10 @@ namespace urakawa.media
     public class ExternalVideoMedia : AbstractVideoMedia, IClipped, ILocated
     {
 
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.ExternalVideoMedia;
+        }
         private string mSrc;
         private int mWidth;
         private int mHeight;
@@ -212,11 +217,11 @@ namespace urakawa.media
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string val = source.GetAttribute("src");
+            string val = source.GetAttribute(XukStrings.Src);
             if (val == null || val == "") val = ".";
             Src = val;
-            string cb = source.GetAttribute("clipBegin");
-            string ce = source.GetAttribute("clipEnd");
+            string cb = source.GetAttribute(XukStrings.ClipBegin);
+            string ce = source.GetAttribute(XukStrings.ClipEnd);
             try
             {
                 Time ceTime = new Time(ce);
@@ -240,8 +245,8 @@ namespace urakawa.media
             {
                 throw new exception.XukException("Out of bounds time encountered", e);
             }
-            string height = source.GetAttribute("height");
-            string width = source.GetAttribute("width");
+            string height = source.GetAttribute(XukStrings.Height);
+            string width = source.GetAttribute(XukStrings.Width);
             int h, w;
             if (height != null && height != "")
             {
@@ -286,17 +291,17 @@ namespace urakawa.media
                 Uri srcUri = new Uri(MediaFactory.Presentation.RootUri, Src);
                 if (baseUri == null)
                 {
-                    destination.WriteAttributeString("src", srcUri.AbsoluteUri);
+                    destination.WriteAttributeString(XukStrings.Src, srcUri.AbsoluteUri);
                 }
                 else
                 {
-                    destination.WriteAttributeString("src", baseUri.MakeRelativeUri(srcUri).ToString());
+                    destination.WriteAttributeString(XukStrings.Src, baseUri.MakeRelativeUri(srcUri).ToString());
                 }
             }
-            destination.WriteAttributeString("clipBegin", this.ClipBegin.ToString());
-            destination.WriteAttributeString("clipEnd", this.ClipEnd.ToString());
-            destination.WriteAttributeString("height", this.Height.ToString());
-            destination.WriteAttributeString("width", this.Width.ToString());
+            destination.WriteAttributeString(XukStrings.ClipBegin, this.ClipBegin.ToString());
+            destination.WriteAttributeString(XukStrings.ClipEnd, this.ClipEnd.ToString());
+            destination.WriteAttributeString(XukStrings.Height, this.Height.ToString());
+            destination.WriteAttributeString(XukStrings.Width, this.Width.ToString());
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -539,13 +544,37 @@ namespace urakawa.media
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
         public override bool ValueEquals(Media other)
         {
-            if (!base.ValueEquals(other)) return false;
+            if (!base.ValueEquals(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             ExternalVideoMedia otherVideo = (ExternalVideoMedia) other;
-            if (Src != otherVideo.Src) return false;
-            if (!ClipBegin.IsEqualTo(otherVideo.ClipBegin)) return false;
-            if (!ClipEnd.IsEqualTo(otherVideo.ClipEnd)) return false;
-            if (Width != otherVideo.Width) return false;
-            if (Height != otherVideo.Height) return false;
+            if (Src != otherVideo.Src)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (!ClipBegin.IsEqualTo(otherVideo.ClipBegin))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (!ClipEnd.IsEqualTo(otherVideo.ClipEnd))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (Width != otherVideo.Width)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (Height != otherVideo.Height)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
             return true;
         }
 

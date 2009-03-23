@@ -15,7 +15,7 @@ namespace urakawa.oldTests
             TreeNode root = mProject.GetPresentation(0).RootNode;
             if (mProject.GetPresentation(0).ChannelsManager.ListOfChannels.Count == 0)
             {
-                    mProject.GetPresentation(0).ChannelFactory.CreateChannel();
+                    mProject.GetPresentation(0).ChannelFactory.Create();
             }
             Channel textCh = mProject.GetPresentation(0).ChannelsManager.ListOfChannels[0];
             if (textCh != null)

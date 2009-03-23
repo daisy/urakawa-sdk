@@ -1,3 +1,6 @@
+using System;
+using urakawa.xuk;
+
 namespace urakawa
 {
     /// <summary>
@@ -5,7 +8,10 @@ namespace urakawa
     /// </summary>
     public class PresentationFactory : GenericXukAbleFactory<Presentation>
     {
-
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.PresentationFactory;
+        }
         /// <summary>
         /// Creates a <see cref="Presentation"/> of default type (that is <see cref="Presentation"/>
         /// </summary>

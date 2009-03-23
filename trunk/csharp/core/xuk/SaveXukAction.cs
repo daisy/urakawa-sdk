@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Xml;
 using urakawa.command;
 using urakawa.progress;
@@ -11,7 +12,6 @@ namespace urakawa.xuk
     ///</summary>
     public class SaveXukAction : ProgressAction
     {
-
         private Uri mDestUri;
         private Stream mDestStream;
         private XmlWriter mXmlWriter;
@@ -25,10 +25,25 @@ namespace urakawa.xuk
 
         private void initializeXmlWriter(Stream stream)
         {
-                XmlWriterSettings settings = new XmlWriterSettings();
+            XmlWriterSettings settings = new XmlWriterSettings();
+
+            settings.Encoding = Encoding.UTF8;
+
+            settings.NewLineHandling = NewLineHandling.Replace;
+            settings.NewLineChars = "\n";
+
+            if (!mSourceXukAble.IsPrettyFormat())
+            {
+                settings.Indent = false;
+                settings.NewLineOnAttributes = false;
+            }
+            else
+            {
                 settings.Indent = true;
-                settings.IndentChars = " ";
-                mXmlWriter = XmlWriter.Create(stream, settings);
+                settings.IndentChars = "\t";
+                settings.NewLineOnAttributes = true;
+            }
+            mXmlWriter = XmlWriter.Create(stream, settings);
         }
 
         /// <summary>
@@ -115,6 +130,8 @@ namespace urakawa.xuk
         {
             if (mDestStream != null)
             {
+                // TODO: these progress values are always equal, as the stream is being created !!
+                //mSourceXukAble.NumberOfElements ??
                 cur = mDestStream.Position;
                 tot = mDestStream.Length;
             }
@@ -153,32 +170,30 @@ namespace urakawa.xuk
             bool canceled = false;
             try
             {
-// ReSharper disable PossibleNullReferenceException
-                    mXmlWriter.WriteStartDocument();
-// ReSharper restore PossibleNullReferenceException
-                    mXmlWriter.WriteStartElement("Xuk", XukAble.XUK_NS);
-                    if (XukAble.XUK_XSD_PATH != String.Empty)
+                mXmlWriter.WriteStartDocument();
+                mXmlWriter.WriteStartElement(XukStrings.Xuk, XukAble.XUK_NS);
+                if (XukAble.XUK_XSD_PATH != String.Empty)
+                {
+                    if (XukAble.XUK_NS == String.Empty)
                     {
-                        if (XukAble.XUK_NS == String.Empty)
-                        {
-                            mXmlWriter.WriteAttributeString(
-                                "xsi", "noNamespaceSchemaLocation",
-                                "http://www.w3.org/2001/XMLSchema-instance",
-                                XukAble.XUK_XSD_PATH);
-                        }
-                        else
-                        {
-                            mXmlWriter.WriteAttributeString(
-                                "xsi",
-                                "noNamespaceSchemaLocation",
-                                "http://www.w3.org/2001/XMLSchema-instance",
-                                String.Format("{0} {1}", XukAble.XUK_NS,
-                                              XukAble.XUK_XSD_PATH));
-                        }
+                        mXmlWriter.WriteAttributeString(
+                            "xsi", "noNamespaceSchemaLocation",
+                            "http://www.w3.org/2001/XMLSchema-instance",
+                            XukAble.XUK_XSD_PATH);
                     }
-                    mSourceXukAble.XukOut(mXmlWriter, mDestUri, this);
-                    mXmlWriter.WriteEndElement();
-                    mXmlWriter.WriteEndDocument();
+                    else
+                    {
+                        mXmlWriter.WriteAttributeString(
+                            "xsi",
+                            "noNamespaceSchemaLocation",
+                            "http://www.w3.org/2001/XMLSchema-instance",
+                            String.Format("{0} {1}", XukAble.XUK_NS,
+                                          XukAble.XUK_XSD_PATH));
+                    }
+                }
+                mSourceXukAble.XukOut(mXmlWriter, mDestUri, this);
+                mXmlWriter.WriteEndElement();
+                mXmlWriter.WriteEndDocument();
             }
             catch (exception.ProgressCancelledException)
             {
