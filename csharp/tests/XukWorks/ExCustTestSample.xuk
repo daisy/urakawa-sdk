@@ -2,211 +2,211 @@
 <Xuk xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/2.0 ../../xukschema/xuk.xsd http://www.daisy.org/urakawa/example ../../xukschema/ex.xsd" xmlns="http://www.daisy.org/urakawa/xuk/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xcp="http://www.daisy.org/urakawa/example" >
 	<Project>
 		<PresentationFactory>
-			<mRegisteredTypes>
+			<RegisteredTypes>
 				<Type XukLocalName="Presentation" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.Presentation"/>
-			</mRegisteredTypes>
+			</RegisteredTypes>
 		</PresentationFactory>
-		<mPresentations>
+		<Presentations>
 			<Presentation>
 				<TreeNodeFactory>
-					<mRegisteredTypes>
+					<RegisteredTypes>
 						<Type XukLocalName="TreeNode" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.core.TreeNode"/>
 						<Type XukLocalName="ExampleCustomTreeNode" XukNamespaceUri="http://www.daisy.org/urakawa/example" BaseXukLocalName="TreeNode" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa.examples" AssemblyVersion="2.0" FullName="urakawa.examples.ExampleCustomTreeNode"/>
-					</mRegisteredTypes>
+					</RegisteredTypes>
 				</TreeNodeFactory>
 				<PropertyFactory>
-					<mRegisteredTypes>
+					<RegisteredTypes>
 						<Type XukLocalName="Property" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.Property"/>
 						<Type XukLocalName="ChannelsProperty" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Property" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.ChannelsProperty"/>
 						<Type XukLocalName="XmlProperty" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Property" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.xml.XmlProperty"/>
 						<Type XukLocalName="ExampleCustomProperty" XukNamespaceUri="http://www.daisy.org/urakawa/example" BaseXukLocalName="Property" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa.examples" AssemblyVersion="2.0" FullName="urakawa.examples.ExampleCustomProperty"/>
-					</mRegisteredTypes>
+					</RegisteredTypes>
 				</PropertyFactory>
 				<ChannelFactory>
-					<mRegisteredTypes>
+					<RegisteredTypes>
 						<Type XukLocalName="Channel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.Channel"/>
 						<Type XukLocalName="AudioChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.AudioChannel"/>
 						<Type XukLocalName="TextChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.TextChannel"/>
 						<Type XukLocalName="ManagedAudioChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.ManagedAudioChannel"/>
-					</mRegisteredTypes>
+					</RegisteredTypes>
 				</ChannelFactory>
 				<ChannelsManager>
-					<mChannels>
-						<mChannelItem uid="textChannel">
-							<Channel name="TEXT"/>
-						</mChannelItem>
-						<mChannelItem uid="audioChannel">
-							<Channel name="AUDIO"/>
-						</mChannelItem>
-					</mChannels>
+					<Channels>
+						<ChannelItem Uid="textChannel">
+							<Channel Name="TEXT"/>
+						</ChannelItem>
+						<ChannelItem Uid="audioChannel">
+							<Channel Name="AUDIO"/>
+						</ChannelItem>
+					</Channels>
 				</ChannelsManager>
 				<MediaFactory>
-					<mRegisteredTypes>
+					<RegisteredTypes>
 						<Type XukLocalName="TextMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.TextMedia"/>
 						<Type XukLocalName="ExternalTextMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.ExternalTextMedia"/>
 						<Type XukLocalName="ExternalAudioMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.ExternalAudioMedia"/>
 						<Type XukLocalName="ExternalImageMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.ExternalImageMedia"/>
 						<Type XukLocalName="ExternalVideoMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.ExternalVideoMedia"/>
 						<Type XukLocalName="ManagedAudioMedia" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.data.ManagedAudioMedia"/>
-					</mRegisteredTypes>
+					</RegisteredTypes>
 				</MediaFactory>
 				<DataProviderFactory>
-					<mRegisteredTypes>
+					<RegisteredTypes>
 						<Type XukLocalName="FileDataProvider" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.data.FileDataProvider"/>
-					</mRegisteredTypes>
+					</RegisteredTypes>
 				</DataProviderFactory>
 				<MediaDataFactory>
-					<mRegisteredTypes>
+					<RegisteredTypes>
 						<Type XukLocalName="WavAudioMediaData" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.media.data.audio.codec.WavAudioMediaData"/>
-					</mRegisteredTypes>
+					</RegisteredTypes>
 				</MediaDataFactory>
 				<CommandFactory>
-					<mRegisteredTypes>
+					<RegisteredTypes>
 						<Type XukLocalName="CompositeCommand" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.command.CompositeCommand"/>
-					</mRegisteredTypes>
+					</RegisteredTypes>
 				</CommandFactory>
 				<MetadataFactory>
-					<mRegisteredTypes>
+					<RegisteredTypes>
 						<Type XukLocalName="Metadata" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.metadata.Metadata"/>
-					</mRegisteredTypes>
+					</RegisteredTypes>
 				</MetadataFactory>
-				<mMetadata/>
-				<mRootNode>
+				<Metadata/>
+				<RootNode>
 					<TreeNode>
-						<mProperties>
-							<XmlProperty localName="dtbook" />
-							<xcp:ExampleCustomProperty customData="Test Data" localName="p"/>
-						</mProperties>
-						<mChildren>
+						<Properties>
+							<XmlProperty LocalName="dtbook" />
+							<xcp:ExampleCustomProperty customData="Test Data" LocalName="p"/>
+						</Properties>
+						<Children>
 							<xcp:ExampleCustomTreeNode customTreeNodeData="Test Ex Cust Tree Node Data" label="1">
-								<mProperties>
-									<xcp:ExampleCustomProperty customData="Test Data 2" localName="p"/>
-								</mProperties>
-								<mChildren>
+								<Properties>
+									<xcp:ExampleCustomProperty customData="Test Data 2" LocalName="p"/>
+								</Properties>
+								<Children>
 									<TreeNode>
-										<mProperties>
-											<xcp:ExampleCustomProperty customData="Test Data 3" localName="p"/>
-										</mProperties>
-										<mChildren>
+										<Properties>
+											<xcp:ExampleCustomProperty customData="Test Data 3" LocalName="p"/>
+										</Properties>
+										<Children>
 											<xcp:ExampleCustomTreeNode label="1.1">
-												<mProperties/>
-												<mChildren/>
+												<Properties/>
+												<Children/>
 											</xcp:ExampleCustomTreeNode>
 											<TreeNode>
-												<mProperties/>
-												<mChildren/>
+												<Properties/>
+												<Children/>
 											</TreeNode>
 											<xcp:ExampleCustomTreeNode label="1.2">
-												<mProperties/>
-												<mChildren>
+												<Properties/>
+												<Children>
 													<xcp:ExampleCustomTreeNode label="1.2.1">
-														<mProperties/>
-														<mChildren/>
+														<Properties/>
+														<Children/>
 													</xcp:ExampleCustomTreeNode>
 													<xcp:ExampleCustomTreeNode label="1.2.2">
-														<mProperties/>
-														<mChildren/>
+														<Properties/>
+														<Children/>
 													</xcp:ExampleCustomTreeNode>
-												</mChildren>
+												</Children>
 											</xcp:ExampleCustomTreeNode>
-										</mChildren>
+										</Children>
 									</TreeNode>
-								</mChildren>
+								</Children>
 							</xcp:ExampleCustomTreeNode>
 							<xcp:ExampleCustomTreeNode label="2">
-								<mProperties/>
-								<mChildren/>
+								<Properties/>
+								<Children/>
 							</xcp:ExampleCustomTreeNode>
 							<TreeNode>
-								<mProperties/>
-								<mChildren>
+								<Properties/>
+								<Children>
 									<xcp:ExampleCustomTreeNode label="3">
-										<mProperties/>
-										<mChildren>
+										<Properties/>
+										<Children>
 											<TreeNode>
-												<mProperties/>
-												<mChildren>
+												<Properties/>
+												<Children>
 													<TreeNode>
-														<mProperties/>
-														<mChildren>
+														<Properties/>
+														<Children>
 															<xcp:ExampleCustomTreeNode label="3.1">
-																<mProperties/>
-																<mChildren/>
+																<Properties/>
+																<Children/>
 															</xcp:ExampleCustomTreeNode>
 															<TreeNode>
-																<mProperties/>
-																<mChildren>
+																<Properties/>
+																<Children>
 																	<TreeNode>
-																		<mProperties/>
-																		<mChildren>
+																		<Properties/>
+																		<Children>
 																			<xcp:ExampleCustomTreeNode label="3.2">
-																				<mProperties/>
-																				<mChildren/>
+																				<Properties/>
+																				<Children/>
 																			</xcp:ExampleCustomTreeNode>
-																		</mChildren>
+																		</Children>
 																	</TreeNode>
-																</mChildren>
+																</Children>
 															</TreeNode>
 															<TreeNode>
-																<mProperties/>
-																<mChildren>
+																<Properties/>
+																<Children>
 																	<TreeNode>
-																		<mProperties/>
-																		<mChildren/>
+																		<Properties/>
+																		<Children/>
 																	</TreeNode>
-																</mChildren>
+																</Children>
 															</TreeNode>
 															<TreeNode>
-																<mProperties/>
-																<mChildren>
+																<Properties/>
+																<Children>
 																	<TreeNode>
-																		<mProperties/>
-																		<mChildren>
+																		<Properties/>
+																		<Children>
 																			<TreeNode>
-																				<mProperties/>
-																				<mChildren/>
+																				<Properties/>
+																				<Children/>
 																			</TreeNode>
 																			<TreeNode>
-																				<mProperties/>
-																				<mChildren/>
+																				<Properties/>
+																				<Children/>
 																			</TreeNode>
 																			<xcp:ExampleCustomTreeNode label="3.3">
-																				<mProperties/>
-																				<mChildren/>
+																				<Properties/>
+																				<Children/>
 																			</xcp:ExampleCustomTreeNode>
 																			<TreeNode>
-																				<mProperties/>
-																				<mChildren/>
+																				<Properties/>
+																				<Children/>
 																			</TreeNode>
-																		</mChildren>
+																		</Children>
 																	</TreeNode>
-																</mChildren>
+																</Children>
 															</TreeNode>
-														</mChildren>
+														</Children>
 													</TreeNode>
-												</mChildren>
+												</Children>
 											</TreeNode>
-										</mChildren>
+										</Children>
 									</xcp:ExampleCustomTreeNode>
 									<xcp:ExampleCustomTreeNode label="4">
-										<mProperties/>
-										<mChildren>
+										<Properties/>
+										<Children>
 											<xcp:ExampleCustomTreeNode label="4.1">
-												<mProperties/>
-												<mChildren/>
+												<Properties/>
+												<Children/>
 											</xcp:ExampleCustomTreeNode>
 											<xcp:ExampleCustomTreeNode label="4.2">
-												<mProperties/>
-												<mChildren/>
+												<Properties/>
+												<Children/>
 											</xcp:ExampleCustomTreeNode>
-										</mChildren>
+										</Children>
 									</xcp:ExampleCustomTreeNode>
-								</mChildren>
+								</Children>
 							</TreeNode>
-						</mChildren>
+						</Children>
 					</TreeNode>
-				</mRootNode>
+				</RootNode>
 			</Presentation>
-		</mPresentations>
+		</Presentations>
 	</Project>
 </Xuk>

@@ -178,7 +178,7 @@ namespace urakawa.media
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string lang = source.GetAttribute("language");
+            string lang = source.GetAttribute(XukStrings.Language);
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
@@ -195,7 +195,7 @@ namespace urakawa.media
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            if (Language != null) destination.WriteAttributeString("language", Language);
+            if (Language != null) destination.WriteAttributeString(XukStrings.Language, Language);
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -211,9 +211,21 @@ namespace urakawa.media
         /// <returns>A <see cref="bool"/> indicating the result</returns>
         public virtual bool ValueEquals(Media other)
         {
-            if (other == null) return false;
-            if (other.GetType() != GetType()) return false;
-            if (other.Language != Language) return false;
+            if (other == null)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (other.GetType() != GetType())
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (other.Language != Language)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             return true;
         }
 

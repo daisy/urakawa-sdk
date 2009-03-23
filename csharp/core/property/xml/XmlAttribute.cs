@@ -195,18 +195,18 @@ namespace urakawa.property.xml
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string name = source.GetAttribute("localName");
+            string name = source.GetAttribute(XukStrings.LocalName);
             if (name == null || name == "")
             {
                 throw new exception.XukException("LocalName attribute of XmlAttribute element is missing");
             }
-            string value = source.GetAttribute("value");
+            string value = source.GetAttribute(XukStrings.Value);
             if (value == null || value == "")
             {
-                throw new exception.XukException("LocalName attribute of XmlAttribute element is missing");
+                throw new exception.XukException("Value attribute of XmlAttribute element is missing");
             }
             Value = value;
-            string ns = source.GetAttribute("namespaceUri");
+            string ns = source.GetAttribute(XukStrings.NamespaceUri);
             if (ns == null) ns = "";
             SetQName(name, ns);
         }
@@ -227,10 +227,15 @@ namespace urakawa.property.xml
             {
                 throw new exception.XukException("The XmlAttribute has no name");
             }
-            destination.WriteAttributeString("localName", mLocalName);
-            destination.WriteAttributeString("value", mValue);
-            if (mNamespaceUri != "") destination.WriteAttributeString("namespaceUri", mNamespaceUri);
+            destination.WriteAttributeString(XukStrings.LocalName, mLocalName);
+            destination.WriteAttributeString(XukStrings.Value, mValue);
+            if (mNamespaceUri != "") destination.WriteAttributeString(XukStrings.NamespaceUri, mNamespaceUri);
             base.XukOutAttributes(destination, baseUri);
+        }
+
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.XmlAttribute;
         }
 
         #endregion

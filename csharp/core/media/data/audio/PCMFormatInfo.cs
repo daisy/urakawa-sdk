@@ -12,6 +12,10 @@ namespace urakawa.media.data.audio
     /// </summary>
     public class PCMFormatInfo : XukAble, IValueEquatable<PCMFormatInfo>
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.PCMFormatInfo;
+        }
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -190,7 +194,7 @@ namespace urakawa.media.data.audio
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string attr = source.GetAttribute("numberOfChannels");
+            string attr = source.GetAttribute(XukStrings.NumberOfChannels);
             if (attr == null)
             {
                 throw new exception.XukException("Attribute NumberOfChannels is missing");
@@ -204,7 +208,7 @@ namespace urakawa.media.data.audio
             }
             NumberOfChannels = noc;
             uint sr;
-            attr = source.GetAttribute("sampleRate");
+            attr = source.GetAttribute(XukStrings.SampleRate);
             if (attr == null)
             {
                 throw new exception.XukException("Attribute SampleRate is missing");
@@ -217,7 +221,7 @@ namespace urakawa.media.data.audio
             }
             SampleRate = sr;
             ushort bd;
-            attr = source.GetAttribute("bitDepth");
+            attr = source.GetAttribute(XukStrings.BitDepth);
             if (attr == null)
             {
                 throw new exception.XukException("Attribute BitDepth is missing");
@@ -242,9 +246,9 @@ namespace urakawa.media.data.audio
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString("numberOfChannels", NumberOfChannels.ToString());
-            destination.WriteAttributeString("sampleRate", SampleRate.ToString());
-            destination.WriteAttributeString("bitDepth", BitDepth.ToString());
+            destination.WriteAttributeString(XukStrings.NumberOfChannels, NumberOfChannels.ToString());
+            destination.WriteAttributeString(XukStrings.SampleRate, SampleRate.ToString());
+            destination.WriteAttributeString(XukStrings.BitDepth, BitDepth.ToString());
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -259,9 +263,21 @@ namespace urakawa.media.data.audio
         /// <returns>A <see cref="bool"/> indicating value equality</returns>
         public bool ValueEquals(PCMFormatInfo other)
         {
-            if (other == null) return false;
-            if (other.GetType() != GetType()) return false;
-            if (!IsCompatibleWith(other)) return false;
+            if (other == null)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (other.GetType() != GetType())
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (!IsCompatibleWith(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             return true;
         }
 

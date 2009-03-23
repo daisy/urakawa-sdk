@@ -31,6 +31,35 @@ namespace urakawa
     /// </summary>
     public class Presentation : XukAble, IValueEquatable<Presentation>, IChangeNotifier
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.Presentation;
+        }
+
+
+        public override bool IsPrettyFormat()
+        {
+            return Project.IsPrettyFormat();
+        }
+
+        public override void SetPrettyFormat(bool pretty)
+        {
+            Project.SetPrettyFormat(pretty);
+        }
+       
+        public void RefreshFactoryQNames()
+        {
+            Project.PresentationFactory.RefreshQNames();
+            ChannelFactory.RefreshQNames();
+            DataProviderFactory.RefreshQNames();
+            MediaDataFactory.RefreshQNames();
+            CommandFactory.RefreshQNames();
+            MediaFactory.RefreshQNames();
+            MetadataFactory.RefreshQNames();
+            PropertyFactory.RefreshQNames();
+            TreeNodeFactory.RefreshQNames();
+        }
+
         #region Event related members
 
         /// <summary>
@@ -190,18 +219,21 @@ namespace urakawa
         }
 
         private Project mProject;
+        //
         private TreeNodeFactory mTreeNodeFactory;
         private PropertyFactory mPropertyFactory;
         private ChannelFactory mChannelFactory;
-        private ChannelsManager mChannelsManager;
         private MediaFactory mMediaFactory;
-        private MediaDataManager mMediaDataManager;
         private MediaDataFactory mMediaDataFactory;
-        private DataProviderManager mDataProviderManager;
         private DataProviderFactory mDataProviderFactory;
-        private UndoRedoManager mUndoRedoManager;
         private CommandFactory mCommandFactory;
         private MetadataFactory mMetadataFactory;
+        //
+        private UndoRedoManager mUndoRedoManager;
+        private DataProviderManager mDataProviderManager;
+        private MediaDataManager mMediaDataManager;
+        private ChannelsManager mChannelsManager;
+        //
         private TreeNode mRootNode;
         private bool mRootNodeInitialized;
         private Uri mRootUri;
@@ -240,16 +272,6 @@ namespace urakawa
                 }
                 mProject = value;
             }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="PresentationFactory"/> associated with the <see cref="Presentation"/>
-        /// via. it's owning <see cref="urakawa.Project"/>
-        /// </summary>
-        /// <returns>The <see cref="PresentationFactory"/></returns>
-        public PresentationFactory PresentationFactory
-        {
-            get { return Project.PresentationFactory; }
         }
 
         /// <summary>
@@ -771,7 +793,7 @@ namespace urakawa
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string rootUri = source.GetAttribute("rootUri");
+            string rootUri = source.GetAttribute(XukStrings.RootUri);
             Uri baseUri = new Uri(System.IO.Directory.GetCurrentDirectory());
             if (source.BaseURI != "") baseUri = new Uri(baseUri, source.BaseURI);
             if (rootUri == null)
@@ -782,7 +804,7 @@ namespace urakawa
             {
                 RootUri = new Uri(baseUri, rootUri);
             }
-            string lang = source.GetAttribute("language");
+            string lang = source.GetAttribute(XukStrings.Language);
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
@@ -944,53 +966,65 @@ namespace urakawa
             if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
-                switch (source.LocalName)
+                if (source.LocalName == XukStrings.TreeNodeFactory)
                 {
-                    case "TreeNodeFactory":
-                        TreeNodeFactory.XukIn(source, handler);
-                        break;
-                    case "PropertyFactory":
-                        PropertyFactory.XukIn(source, handler);
-                        break;
-                    case "ChannelFactory":
-                        ChannelFactory.XukIn(source, handler);
-                        break;
-                    case "ChannelsManager":
+                    TreeNodeFactory.XukIn(source, handler);
+                }
+                else if (source.LocalName == XukStrings.PropertyFactory)
+                {
+                    PropertyFactory.XukIn(source, handler);
+                }
+                else if (source.LocalName == XukStrings.ChannelFactory)
+                {
+                    ChannelFactory.XukIn(source, handler);
+                }
+                else if (source.LocalName == XukStrings.ChannelsManager)
+                {
                         ChannelsManager.XukIn(source,handler);
-                        break;
-                    case "MediaFactory":
+                }
+                else if (source.LocalName == XukStrings.MediaFactory)
+                {
                         MediaFactory.XukIn(source, handler);
-                        break;
-                    case "MediaDataFactory":
+                }
+                else if (source.LocalName == XukStrings.MediaDataFactory)
+                {
                         MediaDataFactory.XukIn(source, handler);
-                        break;
-                    case "MediaDataManager":
+                }
+                else if (source.LocalName == XukStrings.MediaDataManager)
+                {
                         MediaDataManager.XukIn(source, handler);
-                        break;
-                    case "DataProviderFactory":
+                }
+                else if (source.LocalName == XukStrings.DataProviderFactory)
+                {
                         DataProviderFactory.XukIn(source, handler);
-                        break;
-                    case "DataProviderManager":
+                }
+                else if (source.LocalName == XukStrings.DataProviderManager)
+                {
                         DataProviderManager.XukIn(source, handler);
-                        break;
-                    case "CommandFactory":
+                }
+                else if (source.LocalName == XukStrings.CommandFactory)
+                {
                         CommandFactory.XukIn(source, handler);
-                        break;
-                    case "UndoRedoManager":
+                  }
+                else if (source.LocalName == XukStrings.UndoRedoManager)
+                {
                         UndoRedoManager.XukIn(source, handler);
-                        break;
-                    case "MetadataFactory":
+                   }
+                else if (source.LocalName == XukStrings.MetadataFactory)
+                {
                         MetadataFactory.XukIn(source, handler);
-                        break;
-                    case "Metadata":
+                 }
+                else if (source.LocalName == XukStrings.Metadatas)
+                {
                         XukInMetadata(source, handler);
-                        break;
-                    case "RootNode":
+                 }
+                else if (source.LocalName == XukStrings.RootNode)
+                {
                         XukInRootNode(source, handler);
-                        break;
-                    default:
+                }
+                else
+                {
                         readItem = false;
-                        break;
                 }
             }
             if (!readItem) base.XukInChild(source, handler);
@@ -1009,15 +1043,15 @@ namespace urakawa
             base.XukOutAttributes(destination, baseUri);
             if (baseUri == null)
             {
-                destination.WriteAttributeString("rootUri", RootUri.AbsoluteUri);
+                destination.WriteAttributeString(XukStrings.RootUri, RootUri.AbsoluteUri);
             }
             else
             {
-                destination.WriteAttributeString("rootUri", baseUri.MakeRelativeUri(RootUri).ToString());
+                destination.WriteAttributeString(XukStrings.RootUri, baseUri.MakeRelativeUri(RootUri).ToString());
             }
             if (Language != null)
             {
-                destination.WriteAttributeString("language", Language);
+                destination.WriteAttributeString(XukStrings.Language, Language);
             }
         }
 
@@ -1034,38 +1068,42 @@ namespace urakawa
         {
             base.XukOutChildren(destination, baseUri, handler);
 
+
             TreeNodeFactory.XukOut(destination, baseUri, handler);
 
             PropertyFactory.XukOut(destination, baseUri, handler);
 
             ChannelFactory.XukOut(destination, baseUri, handler);
 
-            ChannelsManager.XukOut(destination, baseUri, handler);
-
             MediaFactory.XukOut(destination, baseUri, handler);
 
             DataProviderFactory.XukOut(destination, baseUri, handler);
 
-            DataProviderManager.XukOut(destination, baseUri, handler);
-
             MediaDataFactory.XukOut(destination, baseUri, handler);
-
-            MediaDataManager.XukOut(destination, baseUri, handler);
 
             CommandFactory.XukOut(destination, baseUri, handler);
 
-            UndoRedoManager.XukOut(destination, baseUri, handler);
-
             MetadataFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("Metadata", XUK_NS);
+
+
+            ChannelsManager.XukOut(destination, baseUri, handler);
+
+            DataProviderManager.XukOut(destination, baseUri, handler);
+
+            MediaDataManager.XukOut(destination, baseUri, handler);
+
+            UndoRedoManager.XukOut(destination, baseUri, handler);
+
+
+            destination.WriteStartElement(XukStrings.Metadatas, XUK_NS);
             foreach (Metadata md in mMetadata)
             {
                 md.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
 
-            destination.WriteStartElement("RootNode", XUK_NS);
+            destination.WriteStartElement(XukStrings.RootNode, XUK_NS);
             RootNode.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
         }
@@ -1081,13 +1119,33 @@ namespace urakawa
         /// <returns>A <see cref="bool"/> indicating the result</returns>
         public bool ValueEquals(Presentation other)
         {
-            if (other == null) return false;
-            if (!ChannelsManager.ValueEquals(other.ChannelsManager)) return false;
-            if (!DataProviderManager.ValueEquals(other.DataProviderManager)) return false;
-            if (!MediaDataManager.ValueEquals(other.MediaDataManager)) return false;
+            if (other == null)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
+            if (!ChannelsManager.ValueEquals(other.ChannelsManager))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
+            if (!DataProviderManager.ValueEquals(other.DataProviderManager))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
+            if (!MediaDataManager.ValueEquals(other.MediaDataManager))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
             List<Metadata> thisMetadata = ListOfMetadata;
             List<Metadata> otherMetadata = other.ListOfMetadata;
-            if (thisMetadata.Count != otherMetadata.Count) return false;
+            if (thisMetadata.Count != otherMetadata.Count)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
             foreach (Metadata m in thisMetadata)
             {
                 bool found = false;
@@ -1095,10 +1153,22 @@ namespace urakawa
                 {
                     if (m.ValueEquals(om)) found = true;
                 }
-                if (!found) return false;
+                if (!found)
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                    return false;
+                }
             }
-            if (Language != other.Language) return false;
-            if (!RootNode.ValueEquals(other.RootNode)) return false;
+            if (Language != other.Language)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
+            if (!RootNode.ValueEquals(other.RootNode))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
             return true;
         }
 

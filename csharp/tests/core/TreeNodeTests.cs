@@ -108,10 +108,10 @@ namespace urakawa.core
 
             pres.MediaDataManager.DefaultPCMFormat = new PCMFormatInfo(1, 22050, 16);
 
-            Channel audioChannel = pres.ChannelFactory.CreateChannel();
+            Channel audioChannel = pres.ChannelFactory.Create();
             audioChannel.Name = "channel.audio";
 
-            Channel textChannel = pres.ChannelFactory.CreateChannel();
+            Channel textChannel = pres.ChannelFactory.Create();
             textChannel.Name = "channel.text";
 
             TreeNode mRootNode = proj.GetPresentation(0).RootNode;

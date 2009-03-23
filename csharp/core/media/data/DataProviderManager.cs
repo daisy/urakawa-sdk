@@ -12,7 +12,11 @@ namespace urakawa.media.data
     /// </summary>
     public sealed class DataProviderManager : XukAble
     {
-        
+
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.DataProviderManager;
+        }
         private Presentation mPresentation;
 
         /// <summary>
@@ -645,7 +649,7 @@ namespace urakawa.media.data
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string dataFileDirectoryPath = source.GetAttribute("dataFileDirectoryPath");
+            string dataFileDirectoryPath = source.GetAttribute(XukStrings.DataFileDirectoryPath);
             if (dataFileDirectoryPath == null || dataFileDirectoryPath == "")
             {
                 throw new exception.XukException(
@@ -665,14 +669,13 @@ namespace urakawa.media.data
             if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
-                switch (source.LocalName)
+                if (source.LocalName == XukStrings.DataProviders)
                 {
-                    case "DataProviders":
-                        XukInDataProviders(source, handler);
-                        break;
-                    default:
-                        readItem = false;
-                        break;
+                    XukInDataProviders(source, handler);
+                }
+                else
+                {
+                    readItem = false;
                 }
             }
             if (!(readItem || source.IsEmptyElement))
@@ -689,7 +692,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "DataProviderItem" && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.DataProviderItem && source.NamespaceURI == XUK_NS)
                         {
                             XukInDataProviderItem(source, handler);
                         }
@@ -709,7 +712,7 @@ namespace urakawa.media.data
 
         private void XukInDataProviderItem(XmlReader source, ProgressHandler handler)
         {
-            string uid = source.GetAttribute("uid");
+            string uid = source.GetAttribute(XukStrings.Uid);
             if (!source.IsEmptyElement)
             {
                 bool addedProvider = false;
@@ -717,8 +720,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        DataProvider prov = DataProviderFactory.Create("", source.LocalName,
-                                                                                    source.NamespaceURI);
+                        DataProvider prov = DataProviderFactory.Create("", source.LocalName, source.NamespaceURI);
                         if (prov != null)
                         {
                             if (addedProvider)
@@ -782,7 +784,7 @@ namespace urakawa.media.data
         {
             Uri presBaseUri = Presentation.RootUri;
             Uri dfdUri = new Uri(presBaseUri, DataFileDirectory);
-            destination.WriteAttributeString("dataFileDirectoryPath", presBaseUri.MakeRelativeUri(dfdUri).ToString());
+            destination.WriteAttributeString(XukStrings.DataFileDirectoryPath, presBaseUri.MakeRelativeUri(dfdUri).ToString());
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -797,11 +799,11 @@ namespace urakawa.media.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("DataProviders", XUK_NS);
+            destination.WriteStartElement(XukStrings.DataProviders, XUK_NS);
             foreach (DataProvider prov in ListOfDataProviders)
             {
-                destination.WriteStartElement("DataProviderItem", XUK_NS);
-                destination.WriteAttributeString("uid", prov.Uid);
+                destination.WriteStartElement(XukStrings.DataProviderItem, XUK_NS);
+                destination.WriteAttributeString(XukStrings.Uid, prov.Uid);
                 prov.XukOut(destination, baseUri, handler);
                 destination.WriteEndElement();
             }

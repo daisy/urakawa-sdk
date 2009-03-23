@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 using urakawa.events.media;
 using urakawa.media.timing;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
@@ -11,6 +12,10 @@ namespace urakawa.media
     public class ExternalAudioMedia : AbstractAudioMedia, ILocated, IClipped
     {
 
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.ExternalAudioMedia;
+        }
         private string mSrc;
         private Time mClipBegin;
         private Time mClipEnd;
@@ -136,13 +141,13 @@ namespace urakawa.media
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string val = source.GetAttribute("src");
+            string val = source.GetAttribute(XukStrings.Src);
             if (val == null || val == "") val = ".";
             Src = val;
             Time cbTime, ceTime;
             try
             {
-                cbTime = new Time(source.GetAttribute("clipBegin"));
+                cbTime = new Time(source.GetAttribute(XukStrings.ClipBegin));
             }
             catch (exception.CheckedException e)
             {
@@ -152,7 +157,7 @@ namespace urakawa.media
             }
             try
             {
-                ceTime = new Time(source.GetAttribute("clipEnd"));
+                ceTime = new Time(source.GetAttribute(XukStrings.ClipEnd));
             }
             catch (exception.CheckedException e)
             {
@@ -188,15 +193,15 @@ namespace urakawa.media
                 Uri srcUri = new Uri(MediaFactory.Presentation.RootUri, Src);
                 if (baseUri == null)
                 {
-                    destination.WriteAttributeString("src", srcUri.AbsoluteUri);
+                    destination.WriteAttributeString(XukStrings.Src, srcUri.AbsoluteUri);
                 }
                 else
                 {
-                    destination.WriteAttributeString("src", baseUri.MakeRelativeUri(srcUri).ToString());
+                    destination.WriteAttributeString(XukStrings.Src, baseUri.MakeRelativeUri(srcUri).ToString());
                 }
             }
-            destination.WriteAttributeString("clipBegin", this.ClipBegin.ToString());
-            destination.WriteAttributeString("clipEnd", this.ClipEnd.ToString());
+            destination.WriteAttributeString(XukStrings.ClipBegin, this.ClipBegin.ToString());
+            destination.WriteAttributeString(XukStrings.ClipEnd, this.ClipEnd.ToString());
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -440,11 +445,27 @@ namespace urakawa.media
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
         public override bool ValueEquals(Media other)
         {
-            if (!base.ValueEquals(other)) return false;
+            if (!base.ValueEquals(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             ExternalAudioMedia otherAudio = (ExternalAudioMedia) other;
-            if (Src != otherAudio.Src) return false;
-            if (!ClipBegin.IsEqualTo(otherAudio.ClipBegin)) return false;
-            if (!ClipEnd.IsEqualTo(otherAudio.ClipEnd)) return false;
+            if (Src != otherAudio.Src)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (!ClipBegin.IsEqualTo(otherAudio.ClipBegin))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (!ClipEnd.IsEqualTo(otherAudio.ClipEnd))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             return true;
         }
 

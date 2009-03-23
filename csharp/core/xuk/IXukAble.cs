@@ -41,5 +41,12 @@ namespace urakawa.xuk
         /// </summary>
         /// <returns>The namespace uri</returns>
         string XukNamespaceUri { get; }
+
+        ///<summary>
+        /// Determines whether the XUK output is ugly/compressed or pretty/expanded.
+        ///</summary>
+        bool IsPrettyFormat();
+
+        void SetPrettyFormat(bool pretty);
     }
 }

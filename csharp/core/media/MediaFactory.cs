@@ -1,4 +1,5 @@
 using urakawa.media.data.audio;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
@@ -7,6 +8,10 @@ namespace urakawa.media
     /// </summary>
     public sealed class MediaFactory : GenericWithPresentationFactory<Media>
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.MediaFactory;
+        }
         public MediaFactory(Presentation pres) : base(pres)
         {
         }
@@ -45,6 +50,14 @@ namespace urakawa.media
         public ExternalVideoMedia CreateExternalVideoMedia()
         {
             return Create<ExternalVideoMedia>();
+        }
+        public ExternalAudioMedia CreateExternalAudioMedia()
+        {
+            return Create<ExternalAudioMedia>();
+        }
+        public ExternalTextMedia CreateExternalTextMedia()
+        {
+            return Create<ExternalTextMedia>();
         }
 
         /// <summary>

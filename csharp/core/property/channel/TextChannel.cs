@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using urakawa.media;
+using urakawa.xuk;
 
 namespace urakawa.property.channel
 {
@@ -10,6 +11,10 @@ namespace urakawa.property.channel
     /// </summary>
     public class TextChannel : Channel
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.TextChannel;
+        }
 
         /// <summary>
         /// Determines if a given <see cref="Media"/> can be accepted by the channel,

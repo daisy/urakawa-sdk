@@ -507,7 +507,7 @@ namespace urakawa.media.data.audio
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The split point can not be beyond the end of the AudioMediaData");
             }
-            MediaData md = GetMediaDataFactory().Create(XukLocalName, XukNamespaceUri);
+            MediaData md = GetMediaDataFactory().Create(GetType());
             if (!(md is AudioMediaData))
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -575,17 +575,33 @@ namespace urakawa.media.data.audio
         /// <returns>A <see cref="bool"/> indicating the result</returns>		
         public override bool ValueEquals(MediaData other)
         {
-            if (!base.ValueEquals(other)) return false;
+            if (!base.ValueEquals(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             AudioMediaData amdOther = (AudioMediaData) other;
-            if (!PCMFormat.ValueEquals(amdOther.PCMFormat)) return false;
-            if (GetPCMLength() != amdOther.GetPCMLength()) return false;
+            if (!PCMFormat.ValueEquals(amdOther.PCMFormat))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (GetPCMLength() != amdOther.GetPCMLength())
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             Stream thisData = GetAudioData();
             try
             {
                 Stream otherdata = amdOther.GetAudioData();
                 try
                 {
-                    if (!PCMDataInfo.CompareStreamData(thisData, otherdata, (int) thisData.Length)) return false;
+                    if (!PCMDataInfo.CompareStreamData(thisData, otherdata, (int) thisData.Length))
+                    {
+                        //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                        return false;
+                    }
                 }
                 finally
                 {

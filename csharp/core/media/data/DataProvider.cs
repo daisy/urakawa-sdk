@@ -148,7 +148,7 @@ namespace urakawa.media.data
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            MimeType = source.GetAttribute("mimeType") ?? "";
+            MimeType = source.GetAttribute(XukStrings.MimeType) ?? "";
             base.XukInAttributes(source);
         }
 
@@ -162,7 +162,7 @@ namespace urakawa.media.data
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString("mimeType", MimeType);
+            destination.WriteAttributeString(XukStrings.MimeType, MimeType);
             base.XukOutAttributes(destination, baseUri);
         }
 

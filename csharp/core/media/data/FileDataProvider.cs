@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using urakawa.xuk;
 
 namespace urakawa.media.data
 {
@@ -17,6 +18,10 @@ namespace urakawa.media.data
     /// </summary>
     public class FileDataProvider : DataProvider
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.FileDataProvider;
+        }
         private object m_lock = new object();
 
         /// <summary>
@@ -334,7 +339,7 @@ namespace urakawa.media.data
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string val = source.GetAttribute("dataFileRelativePath");
+            string val = source.GetAttribute(XukStrings.DataFileRelativePath);
             if (val == null || val == "")
             {
                 throw new exception.XukException("dataFileRelativePath is missing from FileDataProvider element");
@@ -364,7 +369,7 @@ namespace urakawa.media.data
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             CheckDataFile(); //Ensure that data file exist even if no data has yet been written to it.
-            destination.WriteAttributeString("dataFileRelativePath", DataFileRelativePath);
+            destination.WriteAttributeString(XukStrings.DataFileRelativePath, DataFileRelativePath);
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -379,11 +384,27 @@ namespace urakawa.media.data
         /// <returns></returns>
         public override bool ValueEquals(DataProvider other)
         {
-            if (other == null) return false;
-            if (GetType() != other.GetType()) return false;
+            if (other == null)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (GetType() != other.GetType())
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             FileDataProvider o = (FileDataProvider) other;
-            if (o.MimeType != MimeType) return false;
-            if (!DataProviderManager.CompareDataProviderContent(this, o)) return false;
+            if (o.MimeType != MimeType)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (!DataProviderManager.CompareDataProviderContent(this, o))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             return true;
         }
 

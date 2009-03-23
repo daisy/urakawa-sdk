@@ -13,7 +13,10 @@ namespace urakawa.property.channel
     /// </summary>
     public sealed class ChannelsManager : XukAble, IValueEquatable<ChannelsManager>
     {
-        
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.ChannelsManager;
+        }
         private Presentation mPresentation;
 
         /// <summary>
@@ -326,7 +329,7 @@ namespace urakawa.property.channel
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XUK_NS && source.LocalName == "Channels")
+            if (source.LocalName == XukStrings.Channels && source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
                 if (!source.IsEmptyElement)
@@ -335,7 +338,7 @@ namespace urakawa.property.channel
                     {
                         if (source.NodeType == XmlNodeType.Element)
                         {
-                            if (source.LocalName == "ChannelItem" && source.NamespaceURI == XUK_NS)
+                            if (source.LocalName == XukStrings.ChannelItem && source.NamespaceURI == XUK_NS)
                             {
                                 XukInChannelItem(source, handler);
                             }
@@ -357,7 +360,7 @@ namespace urakawa.property.channel
 
         private void XukInChannelItem(XmlReader source, ProgressHandler handler)
         {
-            string uid = source.GetAttribute("uid");
+            string uid = source.GetAttribute(XukStrings.Uid);
             if (uid == "" || uid == null)
             {
                 throw new exception.XukException("mChannelItem element has no uid attribute");
@@ -417,11 +420,11 @@ namespace urakawa.property.channel
             List<string> uids = ListOfUids;
             if (uids.Count > 0)
             {
-                destination.WriteStartElement("Channels");
+                destination.WriteStartElement(XukStrings.Channels);
                 foreach (string uid in uids)
                 {
-                    destination.WriteStartElement("ChannelItem");
-                    destination.WriteAttributeString("uid", uid);
+                    destination.WriteStartElement(XukStrings.ChannelItem);
+                    destination.WriteAttributeString(XukStrings.Uid, uid);
                     GetChannel(uid).XukOut(destination, baseUri, handler);
                     destination.WriteEndElement();
                 }
@@ -443,11 +446,23 @@ namespace urakawa.property.channel
         {
             List<string> thisUids = ListOfUids;
             List<string> otherUids = other.ListOfUids;
-            if (thisUids.Count != otherUids.Count) return false;
+            if (thisUids.Count != otherUids.Count)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
             foreach (string uid in thisUids)
             {
-                if (!otherUids.Contains(uid)) return false;
-                if (!GetChannel(uid).ValueEquals(other.GetChannel(uid))) return false;
+                if (!otherUids.Contains(uid))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
+                if (!GetChannel(uid).ValueEquals(other.GetChannel(uid)))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
             }
             return true;
         }

@@ -14,16 +14,41 @@ namespace urakawa
     /// </summary>
     public class Project : XukAble, IValueEquatable<Project>, IChangeNotifier
     {
-      static void Main()
-      {
-         System.Console.WriteLine("Hello World, from Urakawa SDK project !");
-      }
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.Project;
+        }
+
+        private bool m_PrettyFormat = true;
+
+        public override bool IsPrettyFormat()
+        {
+            return m_PrettyFormat;
+        }
+
+        public override void SetPrettyFormat(bool pretty)
+        {
+            if (m_PrettyFormat != pretty)
+            {
+                m_PrettyFormat = pretty;
+                //PresentationFactory.RefreshQNames();
+                for (int i = 0; i < NumberOfPresentations; i++)
+                {
+                    GetPresentation(i).RefreshFactoryQNames();
+                }
+            }
+        }
+
+        static void Main()
+        {
+            System.Console.WriteLine("Hello World, from Urakawa SDK project !");
+        }
 
         #region Event related members
 
         public event EventHandler<urakawa.events.media.data.DataIsMissingEventArgs> dataIsMissing;
         public void notifyDataIsMissing(MediaData md, urakawa.exception.DataMissingException ex)
-        { 
+        {
             EventHandler<urakawa.events.media.data.DataIsMissingEventArgs> d = dataIsMissing;
             if (d != null) d(this, new urakawa.events.media.data.DataIsMissingEventArgs(md, ex));
         }
@@ -101,15 +126,23 @@ namespace urakawa
 
         private List<Presentation> mPresentations;
 
-
         /// <summary>
         /// Default constructor
         /// </summary>
         public Project()
         {
+            mXukStrings = new XukStrings(this);
             mPresentations = new List<Presentation>();
             PresentationAdded += this_presentationAdded;
             PresentationRemoved += this_presentationRemoved;
+        }
+
+        private XukStrings mXukStrings;
+
+        public XukStrings XukStrings
+        {
+            get { return mXukStrings; }
+            set { mXukStrings = value; }
         }
 
         private PresentationFactory mPresentationFactory;
@@ -173,7 +206,7 @@ namespace urakawa
             SaveXukAction action = new SaveXukAction(this, fileUri);
             action.Execute();
         }
-        
+
         /// <summary>
         /// Saves the <see cref="Project"/> to a XUK file
         /// </summary>
@@ -352,16 +385,15 @@ namespace urakawa
             bool readItem = false;
             if (source.NamespaceURI == XUK_NS)
             {
-                switch (source.LocalName)
+                if (source.LocalName == XukStrings.PresentationFactory)
                 {
-                    case "PresentationFactory":
-                        PresentationFactory.XukIn(source, handler);
-                        readItem = true;
-                        break;
-                    case "Presentations":
-                        XukInPresentations(source, handler);
-                        readItem = true;
-                        break;
+                    PresentationFactory.XukIn(source, handler);
+                    readItem = true;
+                }
+                else if (source.LocalName == XukStrings.Presentations)
+                {
+                    XukInPresentations(source, handler);
+                    readItem = true;
                 }
             }
             if (!readItem) base.XukInChild(source, handler);
@@ -375,8 +407,7 @@ namespace urakawa
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        Presentation pres = PresentationFactory.Create(
-                            source.LocalName, source.NamespaceURI);
+                        Presentation pres = PresentationFactory.Create(source.LocalName, source.NamespaceURI);
                         if (pres != null)
                         {
                             AddPresentation(pres);
@@ -409,7 +440,7 @@ namespace urakawa
         {
             base.XukOutChildren(destination, baseUri, handler);
             PresentationFactory.XukOut(destination, baseUri, handler);
-            destination.WriteStartElement("Presentations", XUK_NS);
+            destination.WriteStartElement(XukStrings.Presentations, XUK_NS);
             foreach (Presentation pres in ListOfPresentations)
             {
                 pres.XukOut(destination, baseUri, handler);
@@ -428,12 +459,28 @@ namespace urakawa
         /// <returns>A <see cref="bool"/> indicating the result</returns>
         public bool ValueEquals(Project other)
         {
-            if (other == null) return false;
-            if (GetType() != other.GetType()) return false;
-            if (NumberOfPresentations != other.NumberOfPresentations) return false;
+            if (other == null)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
+            if (GetType() != other.GetType())
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
+            if (NumberOfPresentations != other.NumberOfPresentations)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
             for (int index = 0; index < NumberOfPresentations; index++)
             {
-                if (!GetPresentation(index).ValueEquals(other.GetPresentation(index))) return false;
+                if (!GetPresentation(index).ValueEquals(other.GetPresentation(index)))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                    return false;
+                }
             }
             return true;
         }

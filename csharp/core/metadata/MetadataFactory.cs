@@ -1,3 +1,5 @@
+using urakawa.xuk;
+
 namespace urakawa.metadata
 {
     /// <summary>
@@ -5,6 +7,10 @@ namespace urakawa.metadata
     /// </summary>
     public sealed class MetadataFactory : GenericWithPresentationFactory<Metadata>
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.MetadataFactory;
+        }
         public MetadataFactory(Presentation pres) : base(pres)
         {
         }

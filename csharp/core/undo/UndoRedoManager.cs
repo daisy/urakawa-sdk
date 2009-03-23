@@ -15,6 +15,10 @@ namespace urakawa.undo
     /// </summary>
     public sealed class UndoRedoManager : XukAble, IChangeNotifier
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.UndoRedoManager;
+        }
         private Presentation mPresentation;
 
         /// <summary>
@@ -484,20 +488,21 @@ namespace urakawa.undo
             if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
-                switch (source.LocalName)
+                if (source.LocalName == XukStrings.UndoStack)
                 {
-                    case "UndoStack":
-                        XukInCommandStack(source, mUndoStack, handler);
-                        break;
-                    case "RedoStack":
+                    XukInCommandStack(source, mUndoStack, handler);
+                }
+                else if (source.LocalName == XukStrings.RedoStack)
+                {
                         XukInCommandStack(source, mRedoStack, handler);
-                        break;
-                    case XukStrings.ActiveTransactions: 
-                        XukInCommandStack(source, mActiveTransactions, handler);
-                        break;
-                    default:
-                        readItem = false;
-                        break;
+                 }
+                else if (source.LocalName == XukStrings.ActiveTransactions)
+                {
+                    XukInCommandStack(source, mActiveTransactions, handler);
+                }
+                else
+                {
+                    readItem = false;
                 }
             }
 
@@ -516,8 +521,7 @@ namespace urakawa.undo
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        Command cmd = Presentation.CommandFactory.Create(
-                            source.LocalName, source.NamespaceURI);
+                        Command cmd = Presentation.CommandFactory.Create(source.LocalName, source.NamespaceURI);
                         if (!(cmd is T))
                         {
                             throw new exception.XukException(
@@ -547,13 +551,13 @@ namespace urakawa.undo
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("UndoStack", XUK_NS);
+            destination.WriteStartElement(XukStrings.UndoStack, XUK_NS);
             foreach (Command cmd in mUndoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            destination.WriteStartElement("RedoStack", XUK_NS);
+            destination.WriteStartElement(XukStrings.RedoStack, XUK_NS);
             foreach (Command cmd in mRedoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);

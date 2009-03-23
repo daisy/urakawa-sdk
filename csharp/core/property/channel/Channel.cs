@@ -13,6 +13,10 @@ namespace urakawa.property.channel
     /// </summary>
     public class Channel : WithPresentation, IValueEquatable<Channel>
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.Channel;
+        }
         private string mName = "";
         private string mLanguage = null;
 
@@ -217,10 +221,10 @@ namespace urakawa.property.channel
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string name = source.GetAttribute("name");
+            string name = source.GetAttribute(XukStrings.Name);
             if (name == null) name = "";
             Name = name;
-            string lang = source.GetAttribute("language");
+            string lang = source.GetAttribute(XukStrings.Language);
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
@@ -274,8 +278,11 @@ namespace urakawa.property.channel
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString("name", Name);
-            destination.WriteAttributeString("language", Language);
+            destination.WriteAttributeString(XukStrings.Name, Name);
+            if (!String.IsNullOrEmpty(Language))
+            {
+                destination.WriteAttributeString(XukStrings.Language, Language);
+            }
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -290,10 +297,26 @@ namespace urakawa.property.channel
         /// <returns>A <see cref="bool"/> indicating the result</returns>
         public virtual bool ValueEquals(Channel other)
         {
-            if (other == null) return false;
-            if (GetType() != other.GetType()) return false;
-            if (Name != other.Name) return false;
-            if (Language != other.Language) return false;
+            if (other == null)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (GetType() != other.GetType())
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (Name != other.Name)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (Language != other.Language)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             return true;
         }
 

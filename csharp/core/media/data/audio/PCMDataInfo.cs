@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using urakawa.exception;
 using urakawa.media.timing;
+using urakawa.xuk;
 
 namespace urakawa.media.data.audio
 {
@@ -356,7 +357,7 @@ namespace urakawa.media.data.audio
         protected override void XukInAttributes(System.Xml.XmlReader source)
         {
             base.XukInAttributes(source);
-            string attr = source.GetAttribute("dataLength");
+            string attr = source.GetAttribute(XukStrings.DataLength);
             if (attr == null)
             {
                 throw new exception.XukException("Attribute DataLength is missing");
@@ -381,7 +382,7 @@ namespace urakawa.media.data.audio
         /// </param>
         protected override void XukOutAttributes(System.Xml.XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString("dataLength", DataLength.ToString());
+            destination.WriteAttributeString(XukStrings.DataLength, DataLength.ToString());
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -396,8 +397,16 @@ namespace urakawa.media.data.audio
         /// <returns>A <see cref="bool"/> indicating value equality</returns>
         public bool ValueEquals(PCMDataInfo other)
         {
-            if (!base.ValueEquals(other)) return false;
-            if (DataLength != other.DataLength) return false;
+            if (!base.ValueEquals(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (DataLength != other.DataLength)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             return true;
         }
 

@@ -11,8 +11,12 @@ namespace urakawa.property
     /// Implementation of <see cref="Property"/> that in it self does nothing. 
     /// This class is intended as a base class for built-in or custom implementations of <see cref="Property"/>
     /// </summary>
-    public class Property : WithPresentation, IXukAble, IValueEquatable<Property>, urakawa.events.IChangeNotifier
+    public abstract class Property : WithPresentation, IXukAble, IValueEquatable<Property>, urakawa.events.IChangeNotifier
     {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.Property;
+        }
         #region IChangeNotifier Members
 
         /// <summary>
@@ -180,7 +184,11 @@ namespace urakawa.property
         /// <returns>A <see cref="bool"/> indicating the value equality</returns>
         public virtual bool ValueEquals(Property other)
         {
-            if (!this.GetType().IsInstanceOfType(other)) return false;
+            if (!this.GetType().IsInstanceOfType(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
             return true;
         }
 

@@ -10,6 +10,12 @@ namespace urakawa.media
     /// </summary>
     public class TextMedia : AbstractTextMedia
     {
+
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.TextMedia;
+        }
+
         private string mText;
 
         private void Reset()
@@ -153,22 +159,29 @@ namespace urakawa.media
         /// <param name="handler">The handler for progress</param>
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
-            if (source.LocalName == "Text" && source.NamespaceURI == XukAble.XUK_NS)
+            if (IsPrettyFormat())
             {
-                if (!source.IsEmptyElement)
+                if (source.LocalName == XukStrings.Text && source.NamespaceURI == XUK_NS)
                 {
-                    XmlReader subtreeReader = source.ReadSubtree();
-                    subtreeReader.Read();
-                    try
+                    if (!source.IsEmptyElement)
                     {
-                        Text = subtreeReader.ReadElementContentAsString();
+                        XmlReader subtreeReader = source.ReadSubtree();
+                        subtreeReader.Read();
+                        try
+                        {
+                            Text = subtreeReader.ReadElementContentAsString();
+                        }
+                        finally
+                        {
+                            subtreeReader.Close();
+                        }
                     }
-                    finally
-                    {
-                        subtreeReader.Close();
-                    }
+                    return;
                 }
-                return;
+            }
+            else
+            {
+                Text = source.ReadString();
             }
             base.XukInChild(source, handler);
         }
@@ -184,9 +197,15 @@ namespace urakawa.media
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("Text", XukAble.XUK_NS);
+            if (IsPrettyFormat())
+            {
+                destination.WriteStartElement(XukStrings.Text, XUK_NS);
+            }
             destination.WriteString(Text);
-            destination.WriteEndElement();
+            if (IsPrettyFormat())
+            {
+                destination.WriteEndElement();
+            }
             base.XukOutChildren(destination, baseUri, handler);
         }
 
@@ -201,7 +220,11 @@ namespace urakawa.media
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
         public override bool ValueEquals(Media other)
         {
-            if (!base.ValueEquals(other)) return false;
+            if (!base.ValueEquals(other))
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
 
             //TODO: is there a more reliable way to handle DOS versus UNIX line breaks at the end of the strings ??
             
@@ -213,6 +236,7 @@ namespace urakawa.media
 
             if (!str1.Equals(str2))
             {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
                 return false;
             }
             return true;
