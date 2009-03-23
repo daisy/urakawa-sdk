@@ -25,6 +25,8 @@ namespace urakawa.xuk
         {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = false;
+            settings.ProhibitDtd = true;
+            settings.XmlResolver = null;
             mXmlReader = XmlReader.Create(mSourceStream, settings, mSourceUri.ToString());
         }
 
