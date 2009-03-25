@@ -167,6 +167,12 @@ namespace DTbookToXuk
 
                 presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
+                string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
+                if (Directory.Exists(dataPath))
+                {
+                    Directory.Delete(dataPath, true);
+                }
+
                 foreach (string smilPath in spineListOfSmilFiles)
                 {
                     string fullSmilPath = Path.Combine(dirPath, smilPath);
@@ -178,12 +184,6 @@ namespace DTbookToXuk
         private void parseSmil(string fullSmilPath)
         {
             Presentation presentation = m_Project.GetPresentation(0);
-
-            string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
-            if (Directory.Exists(dataPath))
-            {
-                Directory.Delete(dataPath, true);
-            }
 
             string dirPath = Path.GetDirectoryName(m_DTBook_FilePath);
             //presentation.DataProviderManager.DataFileDirectoryFullPath
@@ -243,14 +243,6 @@ namespace DTbookToXuk
                                                         Media media = null;
                                                         if (attrAudioSrc.Value.EndsWith("wav"))
                                                         {
-                                                            presentation.MediaDataFactory.DefaultAudioMediaDataType =
-                                                                typeof(WavAudioMediaData);
-                                                            WavAudioMediaData mediaData =
-                                                                (WavAudioMediaData)
-                                                                presentation.MediaDataFactory.CreateAudioMediaData();
-
-                                                            media = presentation.MediaFactory.CreateManagedAudioMedia();
-                                                            ((ManagedAudioMedia)media).AudioMediaData = mediaData;
 
                                                             string fullWavPath = Path.Combine(dirPath,
                                                                                               attrAudioSrc.Value);
@@ -262,7 +254,7 @@ namespace DTbookToXuk
                                                                 wavStream = File.Open(fullWavPath, FileMode.Open,
                                                                                       FileAccess.Read, FileShare.Read);
                                                                 pcmInfo = PCMDataInfo.ParseRiffWaveHeader(wavStream);
-                                                                presentation.MediaDataManager.DefaultPCMFormat = pcmInfo;
+                                                                presentation.MediaDataManager.DefaultPCMFormat = pcmInfo.Copy();
                                                                 TimeDelta duration = new TimeDelta(pcmInfo.Duration);
 
                                                                 Time clipB = Time.Zero;
@@ -278,12 +270,12 @@ namespace DTbookToXuk
                                                                 {
                                                                     clipE = new Time(TimeSpan.Parse(attrClipEnd.Value));
                                                                 }
-                                                                if (clipB != Time.Zero || clipE != Time.MaxValue)
+                                                                if (!clipB.IsEqualTo(Time.Zero) || !clipE.IsEqualTo(Time.MaxValue))
                                                                 {
                                                                     duration = clipE.GetTimeDelta(clipB);
                                                                 }
                                                                 long byteOffset = 0;
-                                                                if (clipB != Time.Zero)
+                                                                if (!clipB.IsEqualTo(Time.Zero))
                                                                 {
                                                                     byteOffset = pcmInfo.GetByteForTime(clipB);
                                                                 }
@@ -291,12 +283,17 @@ namespace DTbookToXuk
                                                                 {
                                                                     wavStream.Seek(byteOffset, SeekOrigin.Current);
                                                                 }
+
+                                                                presentation.MediaDataFactory.DefaultAudioMediaDataType =
+                                                                    typeof(WavAudioMediaData);
+
+                                                                WavAudioMediaData mediaData =
+                                                                    (WavAudioMediaData)
+                                                                    presentation.MediaDataFactory.CreateAudioMediaData();
                                                                 mediaData.InsertAudioData(wavStream, Time.Zero, duration);
-                                                                /*
-                                                                wavStream.Position = 0;
-                                                                wavStream.Seek(0, SeekOrigin.Begin);
-                                                                mediaData.AppendAudioDataFromRiffWave(wavStream);
-                                                                */
+
+                                                                media = presentation.MediaFactory.CreateManagedAudioMedia();
+                                                                ((ManagedAudioMedia)media).AudioMediaData = mediaData;
                                                             }
                                                             finally
                                                             {

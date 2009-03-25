@@ -283,6 +283,11 @@ namespace urakawa.property.channel
             {
                 destination.WriteAttributeString(XukStrings.Language, Language);
             }
+            if (!Presentation.Project.IsPrettyFormat())
+            {
+                string uid = Presentation.ChannelsManager.GetUidOfChannel(this);
+                destination.WriteAttributeString(XukStrings.Uid, uid);
+            }
             base.XukOutAttributes(destination, baseUri);
         }
 

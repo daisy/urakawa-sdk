@@ -97,7 +97,7 @@ namespace urakawa.media.data.audio
                 new EventHandler<urakawa.events.media.data.audio.AudioDataRemovedEventArgs>(this_audioDataRemoved);
         }
 
-        private PCMFormatInfo mPCMFormat;
+        private PCMFormatInfo mPCMFormat = null;
 
         /// <summary>
         /// Determines if a PCM Format change is ok

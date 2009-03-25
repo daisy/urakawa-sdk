@@ -35,6 +35,7 @@ namespace urakawa.media.data
         {
             mPresentation = pres;
             mDataFileDirectory = null;
+            m_CompareByteStreamsDuringValueEqual = true;
         }
 
         public void AllowCopyDataOnUriChanged(bool enable)
@@ -78,39 +79,39 @@ namespace urakawa.media.data
                             count));
             }
 
-            Stream provOutputStream = provider.GetOutputStream(); 
+            Stream provOutputStream = provider.GetOutputStream();
 
             try
             {
                 provOutputStream.Seek(0, SeekOrigin.End);
- 
+
                 const int BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER  
-                if (count <= BUFFER_SIZE)  
-                { 
-                    byte[] buffer = new byte[count]; 
-                    int bytesRead = data.Read(buffer, 0, count); 
-                    if (bytesRead > 0) 
-                    { 
-                        provOutputStream.Write(buffer, 0, bytesRead); 
-                    } 
-                    else 
-                    { 
-                        throw new exception.InputStreamIsTooShortException( 
-                            String.Format("Can not read {0:0} bytes from the given data Stream", 
-                            count)); 
-                    } 
-                } 
-                else 
-                { 
-                    int bytesRead = 0; 
-                    byte[] buffer = new byte[BUFFER_SIZE]; 
- 
-                    while ((bytesRead = data.Read(buffer, 0, BUFFER_SIZE)) > 0) 
-                    { 
-                        provOutputStream.Write(buffer, 0, bytesRead); 
-                    } 
-                } 
- 
+                if (count <= BUFFER_SIZE)
+                {
+                    byte[] buffer = new byte[count];
+                    int bytesRead = data.Read(buffer, 0, count);
+                    if (bytesRead > 0)
+                    {
+                        provOutputStream.Write(buffer, 0, bytesRead);
+                    }
+                    else
+                    {
+                        throw new exception.InputStreamIsTooShortException(
+                            String.Format("Can not read {0:0} bytes from the given data Stream",
+                            count));
+                    }
+                }
+                else
+                {
+                    int bytesRead = 0;
+                    byte[] buffer = new byte[BUFFER_SIZE];
+
+                    while ((bytesRead = data.Read(buffer, 0, BUFFER_SIZE)) > 0)
+                    {
+                        provOutputStream.Write(buffer, 0, bytesRead);
+                    }
+                }
+
                 /* 
                 int bytesAppended = 0; 
                 byte[] buf = new byte[1024 * 10]; // 10 KB ;
@@ -372,7 +373,7 @@ namespace urakawa.media.data
                 {
                     if (prov is FileDataProvider)
                     {
-                        res.Add((FileDataProvider) prov);
+                        res.Add((FileDataProvider)prov);
                     }
                 }
                 return res;
@@ -609,6 +610,14 @@ namespace urakawa.media.data
             get { return new List<DataProvider>(mDataProvidersDictionary.Values); }
         }
 
+        private bool m_CompareByteStreamsDuringValueEqual = true;
+
+        public bool CompareByteStreamsDuringValueEqual
+        {
+            get { return m_CompareByteStreamsDuringValueEqual; }
+            set { m_CompareByteStreamsDuringValueEqual = value; }
+        }
+
         /// <summary>
         /// Remove all <see cref="DataProvider"/> that are managed by the manager, 
         /// but are not used by any <see cref="MediaData"/>
@@ -680,6 +689,13 @@ namespace urakawa.media.data
                 {
                     XukInDataProviders(source, handler);
                 }
+                else if (!Presentation.Project.IsPrettyFormat()
+                    //&& source.LocalName == XukStrings.DataProviderItem
+                    )
+                {
+                    //XukInDataProviderItem(source, handler);
+                    XukInDataProvider(source, handler);
+                }
                 else
                 {
                     readItem = false;
@@ -717,6 +733,51 @@ namespace urakawa.media.data
             }
         }
 
+        private void XukInDataProvider(XmlReader source, ProgressHandler handler)
+        {
+            if (source.NodeType == XmlNodeType.Element)
+            {
+                DataProvider prov = DataProviderFactory.Create("", source.LocalName, source.NamespaceURI);
+                if (prov != null)
+                {
+                    string uid = source.GetAttribute(XukStrings.Uid);
+                    if (string.IsNullOrEmpty(uid))
+                    {
+                        throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
+                    }
+                    prov.XukIn(source, handler);
+                    if (prov is FileDataProvider)
+                    {
+                        FileDataProvider fdProv = (FileDataProvider)prov;
+                        if (mXukedInFilDataProviderPaths.Contains(fdProv.DataFileRelativePath.ToLower()))
+                        {
+                            throw new exception.XukException(String.Format(
+                                                                 "Another FileDataProvider using data file {0} has already been Xukked in",
+                                                                 fdProv.DataFileRelativePath.ToLower()));
+                        }
+                        mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
+                    }
+                    
+                    if (IsManagerOf(uid))
+                    {
+                        if (GetDataProvider(uid) != prov)
+                        {
+                            throw new exception.XukException(
+                                String.Format("Another DataProvider exists in the manager with uid {0}", uid));
+                        }
+                    }
+                    else
+                    {
+                        SetDataProviderUid(prov, uid);
+                    }
+                }
+                else if (!source.IsEmptyElement)
+                {
+                    source.ReadSubtree().Close();
+                }
+            }
+        }
+
         private void XukInDataProviderItem(XmlReader source, ProgressHandler handler)
         {
             string uid = source.GetAttribute(XukStrings.Uid);
@@ -738,7 +799,7 @@ namespace urakawa.media.data
                             prov.XukIn(source, handler);
                             if (prov is FileDataProvider)
                             {
-                                FileDataProvider fdProv = (FileDataProvider) prov;
+                                FileDataProvider fdProv = (FileDataProvider)prov;
                                 if (mXukedInFilDataProviderPaths.Contains(fdProv.DataFileRelativePath.ToLower()))
                                 {
                                     throw new exception.XukException(String.Format(
@@ -806,15 +867,29 @@ namespace urakawa.media.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement(XukStrings.DataProviders, XUK_NS);
+            if (Presentation.Project.IsPrettyFormat())
+            {
+                destination.WriteStartElement(XukStrings.DataProviders, XUK_NS);
+            }
             foreach (DataProvider prov in ListOfDataProviders)
             {
-                destination.WriteStartElement(XukStrings.DataProviderItem, XUK_NS);
-                destination.WriteAttributeString(XukStrings.Uid, prov.Uid);
+                if (Presentation.Project.IsPrettyFormat())
+                {
+                    destination.WriteStartElement(XukStrings.DataProviderItem, XUK_NS);
+                    destination.WriteAttributeString(XukStrings.Uid, prov.Uid);
+                }
+
                 prov.XukOut(destination, baseUri, handler);
+
+                if (Presentation.Project.IsPrettyFormat())
+                {
+                    destination.WriteEndElement();
+                }
+            }
+            if (Presentation.Project.IsPrettyFormat())
+            {
                 destination.WriteEndElement();
             }
-            destination.WriteEndElement();
             base.XukOutChildren(destination, baseUri, handler);
         }
 

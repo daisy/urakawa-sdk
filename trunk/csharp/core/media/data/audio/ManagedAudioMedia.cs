@@ -172,13 +172,13 @@ namespace urakawa.media.data.audio
             {
                 throw new exception.XukException("audioMediaDataUid attribute is missing from AudioMediaData");
             }
-            if (!MediaDataFactory.MediaDataManager.IsManagerOf(uid))
+            if (!Presentation.MediaDataManager.IsManagerOf(uid))
             {
                 throw new exception.XukException(String.Format(
                                                      "The MediaDataManager does not mamage a AudioMediaData with uid {0}",
                                                      uid));
             }
-            MediaData md = MediaDataFactory.MediaDataManager.GetMediaData(uid);
+            MediaData md = Presentation.MediaDataManager.GetMediaData(uid);
             if (!(md is AudioMediaData))
             {
                 throw new exception.XukException(String.Format(
