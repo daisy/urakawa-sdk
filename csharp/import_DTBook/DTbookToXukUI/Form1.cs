@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using DTbookToXuk;
+using urakawa;
+using urakawa.xuk;
 
 namespace DTbookToXukUI
 {
@@ -32,7 +28,66 @@ namespace DTbookToXukUI
                 //uriDTBook = new Uri(m_DTBook_FilePath);
                 txtBookName.Text = open.FileName;
                 var uriDTBook = new Uri(txtBookName.Text);
-                new DTBooktoXukConversion(uriDTBook);
+                DTBooktoXukConversion converter = new DTBooktoXukConversion(uriDTBook);
+
+
+
+                Uri uriComp = new Uri(txtBookName.Text + ".COMPRESSED.xuk");
+
+                {
+                    SaveXukAction actionSave = new SaveXukAction(converter.Project, uriComp);
+                    bool saveWasCancelled;
+                    Progress.ExecuteProgressAction(actionSave, out saveWasCancelled);
+                    if (saveWasCancelled)
+                    {
+                        return;
+                    }
+                }
+
+                Uri uriPretty = new Uri(txtBookName.Text + ".PRETTY.xuk");
+
+                converter.Project.SetPrettyFormat(true);
+
+                {
+                    SaveXukAction actionSave = new SaveXukAction(converter.Project, uriPretty);
+                    bool saveWasCancelled;
+                    Progress.ExecuteProgressAction(actionSave, out saveWasCancelled);
+                    if (saveWasCancelled)
+                    {
+                        return;
+                    }
+                }
+
+                Project projectComp = new Project();
+
+                //not needed, automatically detected
+                //project.PrettyFormat = false;
+
+                {
+                    OpenXukAction actionOpen = new OpenXukAction(projectComp, uriComp);
+                    bool openWasCancelled;
+                    Progress.ExecuteProgressAction(actionOpen, out openWasCancelled);
+                    if (openWasCancelled)
+                    {
+                        return;
+                    }
+                }
+
+                System.Diagnostics.Debug.Assert(converter.Project.ValueEquals(projectComp));
+
+                Project projectPretty = new Project();
+
+                {
+                    OpenXukAction actionOpen = new OpenXukAction(projectPretty, uriPretty);
+                    bool openWasCancelled;
+                    Progress.ExecuteProgressAction(actionOpen, out openWasCancelled);
+                    if (openWasCancelled)
+                    {
+                        return;
+                    }
+                }
+                System.Diagnostics.Debug.Assert(projectComp.ValueEquals(projectPretty));
+                System.Diagnostics.Debug.Assert(converter.Project.ValueEquals(projectPretty));
             }
 
         }

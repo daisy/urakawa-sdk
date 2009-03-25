@@ -3,7 +3,7 @@ using System.Threading;
 using System.Windows.Forms;
 using urakawa.progress;
 
-namespace DTbookToXuk
+namespace DTbookToXukUI
 {
     public partial class Progress : Form
     {
