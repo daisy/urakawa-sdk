@@ -36,7 +36,7 @@ namespace urakawa.media.data
             mPresentation = pres;
 
             mDefaultPCMFormat = new PCMFormatInfo();
-            mEnforceSinglePCMFormat = false;
+            mEnforceSinglePCMFormat = true;
         }
 
         private const string DEFAULT_UID_PREFIX = "UID";
@@ -49,7 +49,7 @@ namespace urakawa.media.data
         private PCMFormatInfo mDefaultPCMFormat;
         private bool mEnforceSinglePCMFormat;
 
-        private bool IsNewDefaultPCMFormatOk(PCMFormatInfo newDefault)
+        private bool isNewDefaultPCMFormatOk(PCMFormatInfo newDefault)
         {
             foreach (MediaData md in ListOfMediaData)
             {
@@ -102,7 +102,7 @@ namespace urakawa.media.data
                 {
                     if (EnforceSinglePCMFormat)
                     {
-                        if (!IsNewDefaultPCMFormatOk(value))
+                        if (!isNewDefaultPCMFormatOk(value))
                         {
                             throw new exception.InvalidDataFormatException(
                                 "Cannot change the default PCMFormat, since single PCM format is enforced by the DataProviderManager "
@@ -195,7 +195,7 @@ namespace urakawa.media.data
             {
                 if (value)
                 {
-                    if (!IsNewDefaultPCMFormatOk(DefaultPCMFormat))
+                    if (!isNewDefaultPCMFormatOk(DefaultPCMFormat))
                     {
                         throw new exception.InvalidDataFormatException(
                             "Cannot enforce single PCM format, since at least one of the managed AudioMediaData "

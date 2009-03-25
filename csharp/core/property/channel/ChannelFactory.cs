@@ -1,3 +1,4 @@
+using System;
 using urakawa.xuk;
 
 namespace urakawa.property.channel
@@ -19,6 +20,7 @@ namespace urakawa.property.channel
     /// </summary>
     public sealed class ChannelFactory : GenericWithPresentationFactory<Channel>
     {
+
         public override string GetTypeNameFormatted()
         {
             return XukStrings.ChannelFactory;
@@ -30,6 +32,7 @@ namespace urakawa.property.channel
         protected override void InitializeInstance(Channel instance)
         {
             base.InitializeInstance(instance);
+
             ChannelsManager.AddChannel(instance);
         }
         /// <summary>
@@ -50,11 +53,12 @@ namespace urakawa.property.channel
         {
             return Create<Channel>();
         }
-        public Channel CreateAudioChannel()
+
+        public AudioChannel CreateAudioChannel()
         {
             return Create<AudioChannel>();
         }
-        public Channel CreateTextChannel()
+        public TextChannel CreateTextChannel()
         {
             return Create<TextChannel>();
         }

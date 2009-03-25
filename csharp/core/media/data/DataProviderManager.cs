@@ -209,6 +209,11 @@ namespace urakawa.media.data
                                                                 "DataFileDirectory must be a relative Uri, '{0}' is not",
                                                                 value));
                 }
+
+                if (!Directory.Exists(value))
+                {
+                    Directory.CreateDirectory(value);
+                }
                 mDataFileDirectory = value;
             }
         }
@@ -270,7 +275,7 @@ namespace urakawa.media.data
         private void CopyDataFiles(string source, string dest)
         {
             CreateDirectory(dest);
-            foreach (FileDataProvider fdp in ListOfManagedFileDataProviders)
+            foreach (FileDataProvider fdp in ListOfFileDataProviders)
             {
                 if (!File.Exists(Path.Combine(source, fdp.DataFileRelativePath)))
                 {
@@ -304,6 +309,7 @@ namespace urakawa.media.data
             get { return getDataFileDirectoryFullPath(Presentation.RootUri); }
         }
 
+        /*
         /// <summary>
         /// Initializer that sets the path of the data file directory
         /// used by <see cref="FileDataProvider"/>s managed by <c>this</c>
@@ -329,6 +335,7 @@ namespace urakawa.media.data
                 mDataFileDirectory = value;
             }
         }
+         */
 
         /// <summary>
         /// Gets a new data file path relative to the path of the data file directory of the manager
@@ -341,7 +348,7 @@ namespace urakawa.media.data
             while (true)
             {
                 res = Path.ChangeExtension(Path.GetRandomFileName(), extension);
-                foreach (FileDataProvider prov in ListOfManagedFileDataProviders)
+                foreach (FileDataProvider prov in ListOfFileDataProviders)
                 {
                     if (!prov.IsDataFileInitialized) continue;
                     if (res.ToLower() == prov.DataFileRelativePath.ToLower()) continue;
@@ -356,7 +363,7 @@ namespace urakawa.media.data
         /// Gets a list of the <see cref="FileDataProvider"/>s managed by the manager
         /// </summary>
         /// <returns>The list of file data providers</returns>
-        public List<FileDataProvider> ListOfManagedFileDataProviders
+        public List<FileDataProvider> ListOfFileDataProviders
         {
             get
             {
@@ -655,7 +662,7 @@ namespace urakawa.media.data
                 throw new exception.XukException(
                     "dataFileDirectoryPath attribute is missing from DataProviderManager element");
             }
-            DataFileDirectoryPath = dataFileDirectoryPath;
+            DataFileDirectory = dataFileDirectoryPath;
         }
 
         /// <summary>

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using urakawa.media;
+using urakawa.xuk;
 
 namespace urakawa.core
 {
@@ -9,6 +11,11 @@ namespace urakawa.core
     /// </summary>
     public interface ITreeNodeReadOnlyMethods
     {
+        QualifiedName GetXmlElementQName();
+        string GetXmlElementId();
+        AbstractTextMedia GetTextMedia();
+        AbstractAudioMedia GetAudioMedia();
+
         /// <summary>
         /// Gets the child <see cref="TreeNode"/> at a given index
         /// </summary>
