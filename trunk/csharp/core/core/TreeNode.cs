@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.core.visitor;
+using urakawa.media;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
+using XmlAttribute=urakawa.property.xml.XmlAttribute;
 
 namespace urakawa.core
 {
@@ -16,6 +18,94 @@ namespace urakawa.core
     public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,
                             IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
     {
+        ///<summary>
+        /// returns the QName of the attached XmlProperty, if any
+        ///</summary>
+        ///<returns></returns>
+        public QualifiedName GetXmlElementQName()
+        {
+            XmlProperty xmlProp = GetProperty<XmlProperty>();
+            if (xmlProp != null)
+            {
+                return new QualifiedName(xmlProp.LocalName, xmlProp.NamespaceUri);
+            }
+            return null;
+        }
+        ///<summary>
+        /// returns the ID attribute value of the attached XmlProperty, if any
+        ///</summary>
+        ///<returns>null of there is no ID attribute</returns>
+        public string GetXmlElementId()
+        {
+            XmlProperty xmlProp = GetProperty<XmlProperty>();
+            if (xmlProp != null)
+            {
+                XmlAttribute idAttr = xmlProp.GetAttribute("id", "");
+                if (idAttr != null)
+                {
+                    return (idAttr.Value == "" ? null : idAttr.Value);
+                }
+            }
+            return null;
+        }
+
+        ///<summary>
+        /// returns the audio media, if any, that is part of the default AudioChannel, if any (the default TextChannel is the first created by ChannelsFactory.CreateTextChannel()).
+        ///</summary>
+        ///<returns>null if there is no registered TextChannel or if this TreeNode's ChannelsProperty does not map an Text Media for the TextChannel</returns>
+        public AbstractTextMedia GetTextMedia()
+        {
+            ChannelsProperty chProp = GetProperty<ChannelsProperty>();
+            if (chProp != null)
+            {
+                Channel channel = null;
+                List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
+                foreach (Channel ch in listCh)
+                {
+                    if (ch is TextChannel)
+                    {
+                        channel = ch;
+                        break;
+                    }
+                }
+                if (channel != null)
+                {
+                    Media med = chProp.GetMedia(channel);
+                    return med as AbstractTextMedia;
+                }
+            }
+            return null;
+        }
+
+        ///<summary>
+        /// returns the audio media, if any, that is part of the default AudioChannel, if any (the default AudioChannel is the first created by ChannelsFactory.CreateAudioChannel()).
+        ///</summary>
+        ///<returns>null if there is no registered AudioChannel or if this TreeNode's ChannelsProperty does not map an Audio Media for the AudioChannel</returns>
+        public AbstractAudioMedia GetAudioMedia()
+        {
+            ChannelsProperty chProp = GetProperty<ChannelsProperty>();
+            if (chProp != null)
+            {
+                Channel channel = null;
+                List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
+                foreach (Channel ch in listCh)
+                {
+                    if (ch is  AudioChannel)
+                    {
+                        channel = ch;
+                        break;
+                    }
+                }
+                if (channel != null)
+                {
+                    Media med = chProp.GetMedia(channel);
+                    return med as AbstractAudioMedia;
+                }
+            }
+            return null;
+        }
+
+
 
         public override string GetTypeNameFormatted()
         {

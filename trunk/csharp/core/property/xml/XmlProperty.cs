@@ -445,7 +445,7 @@ namespace urakawa.property.xml
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             destination.WriteAttributeString(XukStrings.LocalName, LocalName);
-            destination.WriteAttributeString(XukStrings.NamespaceUri, NamespaceUri);
+            if (!String.IsNullOrEmpty(NamespaceUri)) destination.WriteAttributeString(XukStrings.NamespaceUri, NamespaceUri);
             base.XukOutAttributes(destination, baseUri);
         }
 

@@ -351,7 +351,7 @@ namespace urakawa.xuk
 
         public static string LocalName
         {
-            get { return (mProject.IsPrettyFormat() ? "LocalName" : "name"); }
+            get { return (mProject.IsPrettyFormat() ? "LocalName" : "n"); }
         }
 
         public static string NamespaceUri
@@ -377,7 +377,7 @@ namespace urakawa.xuk
 
         public static string Src
         {
-            get { return (mProject.IsPrettyFormat() ? "Src" : "src"); }
+            get { return (mProject.IsPrettyFormat() ? "Src" : "s"); }
         }
 
 
@@ -508,21 +508,21 @@ namespace urakawa.xuk
 
         public static string ExternalImageMedia
         {
-            get { return (mProject.IsPrettyFormat() ? "ExternalImageMedia" : "extImgMedia"); }
+            get { return (mProject.IsPrettyFormat() ? "ExternalImageMedia" : "exImgMed"); }
         }
 
         public static string ExternalVideoMedia
         {
-            get { return (mProject.IsPrettyFormat() ? "ExternalVideoMedia" : "extVidMedia"); }
+            get { return (mProject.IsPrettyFormat() ? "ExternalVideoMedia" : "exVidMed"); }
         }
 
         public static string ExternalAudioMedia
         {
-            get { return (mProject.IsPrettyFormat() ? "ExternalAudioMedia" : "extAudMedia"); }
+            get { return (mProject.IsPrettyFormat() ? "ExternalAudioMedia" : "exAuMed"); }
         }
         public static string ExternalTextMedia
         {
-            get { return (mProject.IsPrettyFormat() ? "ExternalTextMedia" : "extTxtMedia"); }
+            get { return (mProject.IsPrettyFormat() ? "ExternalTextMedia" : "exTxtMed"); }
         }
 
         public static string Property
@@ -531,7 +531,7 @@ namespace urakawa.xuk
         }
         public static string XmlProperty
         {
-            get { return (mProject.IsPrettyFormat() ? "XmlProperty" : "xPrp"); }
+            get { return (mProject.IsPrettyFormat() ? "XmlProperty" : "xP"); }
         }
         public static string ChannelsProperty
         {
@@ -539,7 +539,7 @@ namespace urakawa.xuk
         }
         public static string ManagedAudioMedia
         {
-            get { return (mProject.IsPrettyFormat() ? "ManagedAudioMedia" : "manAu"); }
+            get { return (mProject.IsPrettyFormat() ? "ManagedAudioMedia" : "mAu"); }
         }
         public static string TreeNode
         {
@@ -548,7 +548,7 @@ namespace urakawa.xuk
 
         public static string FileDataProvider
         {
-            get { return (mProject.IsPrettyFormat() ? "FileDataProvider" : "fi"); }
+            get { return (mProject.IsPrettyFormat() ? "FileDataProvider" : "fdp"); }
         }
         public static string Presentation
         {
@@ -571,6 +571,10 @@ namespace urakawa.xuk
             get { return (mProject.IsPrettyFormat() ? "CompositeCommand" : "cmpCmd"); }
         }
 
+        public static string DefaultXmlNamespaceUri
+        {
+            get { return (mProject.IsPrettyFormat() ? "DefaultXmlNamespaceUri" : "xmlNS"); }
+        }
 
         #endregion
 
