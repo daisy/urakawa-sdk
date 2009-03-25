@@ -461,11 +461,6 @@ namespace urakawa.xuk
             get { return (mProject.IsPrettyFormat() ? "Text" : "txt"); }
         }
 
-        public static string MediaData
-        {
-            get { return (mProject.IsPrettyFormat() ? "MediaData" : "medDt"); }
-        }
-
         public static string MediaDataItem
         {
             get { return (mProject.IsPrettyFormat() ? "MediaDataItem" : "medDtItm"); }

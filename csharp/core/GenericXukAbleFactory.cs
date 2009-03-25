@@ -270,19 +270,8 @@ namespace urakawa
             return Create(t);
         }
 
-
-        /// <summary>
-        /// Write the child elements of a XukAble element.
-        /// </summary>
-        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-        /// <param name="baseUri">
-        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-        /// if <c>null</c> absolute <see cref="Uri"/>s are written
-        /// </param>
-        /// <param name="handler">The handler for progress</param>
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, progress.ProgressHandler handler)
+        protected void XukOutRegisteredTypes(XmlWriter destination, Uri baseUri, progress.ProgressHandler handler)
         {
-            destination.WriteStartElement(XukStrings.RegisteredTypes, XUK_NS);
             foreach (TypeAndQNames tp in mRegisteredTypeAndQNames)
             {
                 destination.WriteStartElement(XukStrings.Type, XUK_NS);
@@ -306,7 +295,25 @@ namespace urakawa
                 if (tp.ClassName != null) destination.WriteAttributeString(XukStrings.FullName, tp.ClassName);
                 destination.WriteEndElement();
             }
+        }
+
+        /// <summary>
+        /// Write the child elements of a XukAble element.
+        /// </summary>
+        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
+        /// <param name="baseUri">
+        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+        /// if <c>null</c> absolute <see cref="Uri"/>s are written
+        /// </param>
+        /// <param name="handler">The handler for progress</param>
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, progress.ProgressHandler handler)
+        {
+            destination.WriteStartElement(XukStrings.RegisteredTypes, XUK_NS);
+
+            XukOutRegisteredTypes(destination, baseUri, handler);
+
             destination.WriteEndElement();
+
             base.XukOutChildren(destination, baseUri, handler);
         }
 
@@ -319,13 +326,27 @@ namespace urakawa
         {
             if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XUK_NS)
             {
-                XukInRegisteredTypes(source);
+                XukInRegisteredTypes(source, handler);
                 return;
             }
             base.XukInChild(source, handler);
         }
 
-        private void XukInRegisteredTypes(XmlReader source)
+        protected void XukInRegisteredType(XmlReader source)
+        {
+            if (source.LocalName == XukStrings.Type && source.NamespaceURI == XUK_NS)
+            {
+                TypeAndQNames tq = new TypeAndQNames();
+                tq.ReadFromXmlReader(source);
+                RegisterType(tq);
+            }
+            if (!source.IsEmptyElement)
+            {
+                source.ReadSubtree().Close();
+            }
+        }
+
+        protected void XukInRegisteredTypes(XmlReader source, progress.ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -333,16 +354,7 @@ namespace urakawa
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.Type && source.NamespaceURI == XUK_NS)
-                        {
-                            TypeAndQNames tq = new TypeAndQNames();
-                            tq.ReadFromXmlReader(source);
-                            RegisterType(tq);
-                        }
-                        if (!source.IsEmptyElement)
-                        {
-                            source.ReadSubtree().Close();
-                        }
+                        XukInRegisteredType(source);
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {

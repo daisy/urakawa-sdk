@@ -370,6 +370,13 @@ namespace urakawa.media.data
         {
             CheckDataFile(); //Ensure that data file exist even if no data has yet been written to it.
             destination.WriteAttributeString(XukStrings.DataFileRelativePath, DataFileRelativePath);
+
+            if (!Presentation.Project.IsPrettyFormat())
+            {
+                string uid = Presentation.DataProviderManager.GetUidOfDataProvider(this);
+                destination.WriteAttributeString(XukStrings.Uid, uid);
+            }
+
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -400,10 +407,14 @@ namespace urakawa.media.data
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (!DataProviderManager.CompareDataProviderContent(this, o))
+            if (Presentation.DataProviderManager.CompareByteStreamsDuringValueEqual
+                && other.Presentation.DataProviderManager.CompareByteStreamsDuringValueEqual)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
+                if (!DataProviderManager.CompareDataProviderContent(this, o))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
             }
             return true;
         }

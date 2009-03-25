@@ -55,8 +55,11 @@ namespace urakawa.media.data
             {
                 if (md is AudioMediaData)
                 {
-                    AudioMediaData amd = (AudioMediaData) md;
-                    if (!amd.PCMFormat.ValueEquals(newDefault)) return false;
+                    AudioMediaData amd = (AudioMediaData)md;
+                    if (!amd.PCMFormat.ValueEquals(newDefault))
+                    {
+                        return false;
+                    }
                 }
             }
             return true;
@@ -322,7 +325,7 @@ namespace urakawa.media.data
             {
                 if (data is AudioMediaData)
                 {
-                    AudioMediaData amdata = (AudioMediaData) data;
+                    AudioMediaData amdata = (AudioMediaData)data;
                     if (!amdata.PCMFormat.ValueEquals(DefaultPCMFormat))
                     {
                         throw new exception.InvalidDataFormatException(
@@ -523,8 +526,15 @@ namespace urakawa.media.data
                 {
                     XukInDefaultPCMFormat(source, handler);
                 }
-                else if (source.LocalName == XukStrings.MediaData)
+                else if (source.LocalName == XukStrings.MediaDatas)
                 {
+                    XukInMediaDatas(source, handler);
+                }
+                else if (!Presentation.Project.IsPrettyFormat()
+                    // && source.LocalName == XukStrings.MediaDataItem
+                    )
+                {
+                    //XukInMediaDataItem(source, handler);
                     XukInMediaData(source, handler);
                 }
                 else
@@ -546,7 +556,8 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.PCMFormatInfo && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.PCMFormatInfo
+                            && source.NamespaceURI == XUK_NS)
                         {
                             PCMFormatInfo newInfo = new PCMFormatInfo();
                             newInfo.XukIn(source, handler);
@@ -569,7 +580,7 @@ namespace urakawa.media.data
             }
         }
 
-        private void XukInMediaData(XmlReader source, ProgressHandler handler)
+        private void XukInMediaDatas(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -591,6 +602,34 @@ namespace urakawa.media.data
                         break;
                     }
                     if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                }
+            }
+        }
+
+
+        private void XukInMediaData(XmlReader source, ProgressHandler handler)
+        {
+            if (source.NodeType == XmlNodeType.Element)
+            {
+                MediaData data = null;
+                data = MediaDataFactory.Create(source.LocalName, source.NamespaceURI);
+                if (data != null)
+                {
+                    string uid = source.GetAttribute(XukStrings.Uid);
+
+                    if (string.IsNullOrEmpty(uid))
+                    {
+                        throw new exception.XukException(
+                            "uid attribute is missing from mMediaDataItem attribute");
+                    }
+
+                    data.XukIn(source, handler);
+
+                    SetDataMediaDataUid(data, uid);
+                }
+                else if (!source.IsEmptyElement)
+                {
+                    source.ReadSubtree().Close();
                 }
             }
         }
@@ -620,7 +659,7 @@ namespace urakawa.media.data
             }
             if (data != null)
             {
-                if (uid == null || uid == "")
+                if (string.IsNullOrEmpty(uid))
                 {
                     throw new exception.XukException(
                         "uid attribute is missing from mMediaDataItem attribute");
@@ -658,15 +697,31 @@ namespace urakawa.media.data
             destination.WriteStartElement(XukStrings.DefaultPCMFormat, XUK_NS);
             DefaultPCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
-            destination.WriteStartElement(XukStrings.MediaDatas, XUK_NS);
+
+            if (Presentation.Project.IsPrettyFormat())
+            {
+                destination.WriteStartElement(XukStrings.MediaDatas, XUK_NS);
+            }
             foreach (string uid in mMediaDataDictionary.Keys)
             {
-                destination.WriteStartElement(XukStrings.MediaDataItem, XUK_NS);
-                destination.WriteAttributeString(XukStrings.Uid, uid);
+                if (Presentation.Project.IsPrettyFormat())
+                {
+                    destination.WriteStartElement(XukStrings.MediaDataItem, XUK_NS);
+                    destination.WriteAttributeString(XukStrings.Uid, uid);
+                }
+
                 mMediaDataDictionary[uid].XukOut(destination, baseUri, handler);
+
+                if (Presentation.Project.IsPrettyFormat())
+                {
+                    destination.WriteEndElement();
+                }
+            }
+            if (Presentation.Project.IsPrettyFormat())
+            {
                 destination.WriteEndElement();
             }
-            destination.WriteEndElement();
+
             base.XukOutChildren(destination, baseUri, handler);
         }
 

@@ -30,7 +30,7 @@ namespace DTbookToXukUI
                 var uriDTBook = new Uri(txtBookName.Text);
                 DTBooktoXukConversion converter = new DTBooktoXukConversion(uriDTBook);
 
-
+                ////
 
                 Uri uriComp = new Uri(txtBookName.Text + ".COMPRESSED.xuk");
 
@@ -43,6 +43,8 @@ namespace DTbookToXukUI
                         return;
                     }
                 }
+
+                /////
 
                 Uri uriPretty = new Uri(txtBookName.Text + ".PRETTY.xuk");
 
@@ -58,25 +60,11 @@ namespace DTbookToXukUI
                     }
                 }
 
-                Project projectComp = new Project();
-
-                //not needed, automatically detected
-                //project.PrettyFormat = false;
-
-                {
-                    OpenXukAction actionOpen = new OpenXukAction(projectComp, uriComp);
-                    bool openWasCancelled;
-                    Progress.ExecuteProgressAction(actionOpen, out openWasCancelled);
-                    if (openWasCancelled)
-                    {
-                        return;
-                    }
-                }
-
-                System.Diagnostics.Debug.Assert(converter.Project.ValueEquals(projectComp));
-
+                /////
+                //// Make sure we don't create concurrent access to WAV files while opening the same XUK file in several projects.
+                converter.Project.GetPresentation(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
+                /////
                 Project projectPretty = new Project();
-
                 {
                     OpenXukAction actionOpen = new OpenXukAction(projectPretty, uriPretty);
                     bool openWasCancelled;
@@ -86,10 +74,26 @@ namespace DTbookToXukUI
                         return;
                     }
                 }
-                System.Diagnostics.Debug.Assert(projectComp.ValueEquals(projectPretty));
+                projectPretty.GetPresentation(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
                 System.Diagnostics.Debug.Assert(converter.Project.ValueEquals(projectPretty));
+                /////
+                /////
+                Project projectComp = new Project();
+                {
+                    OpenXukAction actionOpen = new OpenXukAction(projectComp, uriComp);
+                    bool openWasCancelled;
+                    Progress.ExecuteProgressAction(actionOpen, out openWasCancelled);
+                    if (openWasCancelled)
+                    {
+                        return;
+                    }
+                }
+                projectComp.GetPresentation(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
+                System.Diagnostics.Debug.Assert(converter.Project.ValueEquals(projectComp));
+                /////
+                /// //// Make sure we don't create concurrent access to WAV files while opening the same XUK file in several projects.
+                System.Diagnostics.Debug.Assert(projectComp.ValueEquals(projectPretty));
             }
-
         }
 
         private void btnClear_Click(object sender, EventArgs e)

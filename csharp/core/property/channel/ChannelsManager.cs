@@ -34,7 +34,7 @@ namespace urakawa.property.channel
         public ChannelsManager(Presentation pres)
         {
             mPresentation = pres;
-            
+
             mChannels = new Dictionary<string, Channel>();
         }
 
@@ -227,11 +227,11 @@ namespace urakawa.property.channel
         /// </exception>
         public string GetUidOfChannel(Channel ch)
         {
-		if (ch == null)
+            if (ch == null)
             {
                 throw new exception.MethodParameterIsNullException("channel parameter is null");
             }
-	    
+
             foreach (string Id in mChannels.Keys)
             {
                 if (mChannels[Id] == ch)
@@ -241,9 +241,9 @@ namespace urakawa.property.channel
             }
             throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
         }
-	public void SetUidOfChannel(Channel ch, string uid)
+        public void SetUidOfChannel(Channel ch, string uid)
         {
-		if (ch == null)
+            if (ch == null)
             {
                 throw new exception.MethodParameterIsNullException("channel parameter is null");
             }
@@ -255,18 +255,18 @@ namespace urakawa.property.channel
             {
                 throw new exception.MethodParameterIsEmptyStringException("uid parameter is empty string");
             }
-        
+
             foreach (string Id in mChannels.Keys)
             {
                 if (mChannels[Id] == ch)
                 {
-                mChannels.Remove(Id);
-                mChannels.Add(uid, ch);
-                return;
+                    mChannels.Remove(Id);
+                    mChannels.Add(uid, ch);
+                    return;
                 }
             }
             throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
-    }
+        }
 
         /// <summary>
         /// Removes all <see cref="Channel"/>s from the manager
@@ -329,39 +329,84 @@ namespace urakawa.property.channel
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.LocalName == XukStrings.Channels && source.NamespaceURI == XUK_NS)
+            if (source.NamespaceURI == XUK_NS)
             {
                 readItem = true;
-                if (!source.IsEmptyElement)
+                if (source.LocalName == XukStrings.Channels)
                 {
-                    while (source.Read())
-                    {
-                        if (source.NodeType == XmlNodeType.Element)
-                        {
-                            if (source.LocalName == XukStrings.ChannelItem && source.NamespaceURI == XUK_NS)
-                            {
-                                XukInChannelItem(source, handler);
-                            }
-                            else if (!source.IsEmptyElement)
-                            {
-                                source.ReadSubtree().Close();
-                            }
-                        }
-                        else if (source.NodeType == XmlNodeType.EndElement)
-                        {
-                            break;
-                        }
-                        if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-                    }
+                    XukInChannels(source, handler);
+                }
+                else if (!Presentation.Project.IsPrettyFormat()
+                    // && source.LocalName == XukStrings.ChannelItem
+                    )
+                {
+                    //XukInChannelItem(source, handler);
+                    XukInChannel(source, handler);
+                }
+                else
+                {
+                    readItem = false;
                 }
             }
-            if (!readItem) base.XukInChild(source, handler);
+            if (!(readItem || source.IsEmptyElement))
+            {
+                source.ReadSubtree().Close();
+            }
+        }
+
+        private void XukInChannels(XmlReader source, ProgressHandler handler)
+        {
+            if (!source.IsEmptyElement)
+            {
+                while (source.Read())
+                {
+                    if (source.NodeType == XmlNodeType.Element)
+                    {
+                        if (source.LocalName == XukStrings.ChannelItem && source.NamespaceURI == XUK_NS)
+                        {
+                            XukInChannelItem(source, handler);
+                        }
+                        else if (!source.IsEmptyElement)
+                        {
+                            source.ReadSubtree().Close();
+                        }
+                    }
+                    else if (source.NodeType == XmlNodeType.EndElement)
+                    {
+                        break;
+                    }
+                    if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                }
+            }
+        }
+
+        private void XukInChannel(XmlReader source, ProgressHandler handler)
+        {
+            if (source.NodeType == XmlNodeType.Element)
+            {
+                string uid = source.GetAttribute(XukStrings.Uid);
+                if (string.IsNullOrEmpty(uid))
+                {
+                    throw new exception.XukException("mChannelItem element has no uid attribute");
+                }
+                Channel newCh = ChannelFactory.Create(source.LocalName, source.NamespaceURI);
+                if (newCh != null)
+                {
+                    newCh.XukIn(source, handler);
+
+                    SetUidOfChannel(newCh, uid);
+                }
+                else if (!source.IsEmptyElement)
+                {
+                    source.ReadSubtree().Close();
+                }
+            }
         }
 
         private void XukInChannelItem(XmlReader source, ProgressHandler handler)
         {
             string uid = source.GetAttribute(XukStrings.Uid);
-            if (uid == "" || uid == null)
+            if (string.IsNullOrEmpty(uid))
             {
                 throw new exception.XukException("mChannelItem element has no uid attribute");
             }
@@ -420,15 +465,29 @@ namespace urakawa.property.channel
             List<string> uids = ListOfUids;
             if (uids.Count > 0)
             {
-                destination.WriteStartElement(XukStrings.Channels);
+                if (Presentation.Project.IsPrettyFormat())
+                {
+                    destination.WriteStartElement(XukStrings.Channels);
+                }
                 foreach (string uid in uids)
                 {
-                    destination.WriteStartElement(XukStrings.ChannelItem);
-                    destination.WriteAttributeString(XukStrings.Uid, uid);
+                    if (Presentation.Project.IsPrettyFormat())
+                    {
+                        destination.WriteStartElement(XukStrings.ChannelItem);
+                        destination.WriteAttributeString(XukStrings.Uid, uid);
+                    }
+
                     GetChannel(uid).XukOut(destination, baseUri, handler);
+
+                    if (Presentation.Project.IsPrettyFormat())
+                    {
+                        destination.WriteEndElement();
+                    }
+                }
+                if (Presentation.Project.IsPrettyFormat())
+                {
                     destination.WriteEndElement();
                 }
-                destination.WriteEndElement();
             }
             base.XukOutChildren(destination, baseUri, handler);
         }

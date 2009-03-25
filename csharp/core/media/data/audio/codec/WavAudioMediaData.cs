@@ -30,7 +30,8 @@ namespace urakawa.media.data.audio.codec
             /// which means beginning/end if the RIFF WAVE PCM data
             /// </summary>
             /// <param name="clipDataProvider">The <see cref="data.DataProvider"/></param>
-            public WavClip(DataProvider clipDataProvider) : this(clipDataProvider, new Time(), null)
+            public WavClip(DataProvider clipDataProvider)
+                : this(clipDataProvider, new Time(), null)
             {
             }
 
@@ -52,8 +53,8 @@ namespace urakawa.media.data.audio.codec
                 ClipBegin = clipBegin;
                 ClipEnd = clipEnd;
             }
-            
-            private TimeDelta cachedDuration = null; 
+
+            private TimeDelta cachedDuration = null;
 
             /// <summary>
             /// Gets the duration of the underlying RIFF wav file 
@@ -310,7 +311,7 @@ namespace urakawa.media.data.audio.codec
             PCMDataInfo pcmInfo = new PCMDataInfo(PCMFormat);
             if (duration == null)
             {
-                pcmInfo.DataLength = (uint) (pcmData.Length - pcmData.Position);
+                pcmInfo.DataLength = (uint)(pcmData.Length - pcmData.Position);
             }
             else
             {
@@ -325,7 +326,7 @@ namespace urakawa.media.data.audio.codec
             {
                 nsdps.Close();
             }
-            DataProviderManager.AppendDataToProvider(pcmData, (int) pcmInfo.DataLength, newSingleDataProvider);
+            DataProviderManager.AppendDataToProvider(pcmData, (int)pcmInfo.DataLength, newSingleDataProvider);
             WavClip newSingleWavClip = new WavClip(newSingleDataProvider);
             return newSingleWavClip;
         }
@@ -617,7 +618,7 @@ namespace urakawa.media.data.audio.codec
                         audioDataStream.Close();
                     }
                     mWavClips.RemoveAt(clipIndex);
-                    mWavClips.InsertRange(clipIndex, new WavClip[] {curClipBeforeIns, newInsClip, curClipAfterIns});
+                    mWavClips.InsertRange(clipIndex, new WavClip[] { curClipBeforeIns, newInsClip, curClipAfterIns });
                     break;
                 }
                 elapsedTime = elapsedTime.AddTimeDelta(curClip.Duration);
@@ -759,6 +760,10 @@ namespace urakawa.media.data.audio.codec
                 {
                     XukInWavClips(source);
                 }
+                else if (!Presentation.Project.IsPrettyFormat() && source.LocalName == XukStrings.WavClip)
+                {
+                    XukInWavClip(source);
+                }
                 else if (source.LocalName == XukStrings.PCMFormat)
                 {
                     XukInPCMFormat(source, handler);
@@ -864,14 +869,14 @@ namespace urakawa.media.data.audio.codec
             }
             DataProvider prov = MediaDataManager.Presentation.DataProviderManager.GetDataProvider(dataProviderUid);
 
-            try 
-            { 
-                mWavClips.Add(new WavClip(prov, cb, ce)); 
-            } 
-            catch (exception.DataMissingException ex) 
-            { 
+            try
+            {
+                mWavClips.Add(new WavClip(prov, cb, ce));
+            }
+            catch (exception.DataMissingException ex)
+            {
                 // TODO: this is a temporary fix ! Instead of ignoring the fact that the underlying audio resource is missing, we should have a system to let the consumer of the SDK (i.e. the host application) know about the error and decide about the processing (i.e. abandon parsing or carry-on by ignoring the resource). This relates to the global issue of configurable error recovery, not only for the data attached to the XUK instance, but also for corrupted XUK markup or values. 
-                Presentation.Project.notifyDataIsMissing(this, ex); 
+                Presentation.Project.notifyDataIsMissing(this, ex);
             }
 
             if (!source.IsEmptyElement)
@@ -879,7 +884,16 @@ namespace urakawa.media.data.audio.codec
                 source.ReadSubtree().Close();
             }
         }
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
+        {
+            base.XukOutAttributes(destination, baseUri);
 
+            if (!Presentation.Project.IsPrettyFormat())
+            {
+                string uid = Presentation.MediaDataManager.GetUidOfMediaData(this);
+                destination.WriteAttributeString(XukStrings.Uid, uid);
+            }
+        }
         /// <summary>
         /// Write the child elements of a WavAudioMediaData element.
         /// </summary>
@@ -892,19 +906,35 @@ namespace urakawa.media.data.audio.codec
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
-            destination.WriteStartElement(XukStrings.PCMFormat);
-            PCMFormat.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
-            destination.WriteStartElement(XukStrings.WavClips, XUK_NS);
+
+            if (!PCMFormat.ValueEquals(Presentation.MediaDataManager.DefaultPCMFormat))
+            {
+                destination.WriteStartElement(XukStrings.PCMFormat);
+                PCMFormat.XukOut(destination, baseUri, handler);
+                destination.WriteEndElement();
+            }
+            if (Presentation.Project.IsPrettyFormat())
+            {
+                destination.WriteStartElement(XukStrings.WavClips, XUK_NS);
+            }
             foreach (WavClip clip in mWavClips)
             {
                 destination.WriteStartElement(XukStrings.WavClip, XUK_NS);
                 destination.WriteAttributeString(XukStrings.DataProvider, clip.DataProvider.Uid);
-                destination.WriteAttributeString(XukStrings.ClipBegin, clip.ClipBegin.ToString());
-                if (!clip.IsClipEndTiedToEOM) destination.WriteAttributeString(XukStrings.ClipEnd, clip.ClipEnd.ToString());
+                if (! clip.ClipBegin.IsEqualTo(Time.Zero))
+                {
+                    destination.WriteAttributeString(XukStrings.ClipBegin, clip.ClipBegin.ToString());
+                }
+                if (!clip.IsClipEndTiedToEOM)
+                {
+                    destination.WriteAttributeString(XukStrings.ClipEnd, clip.ClipEnd.ToString());
+                }
                 destination.WriteEndElement();
             }
-            destination.WriteEndElement();
+            if (Presentation.Project.IsPrettyFormat())
+            {
+                destination.WriteEndElement();
+            }
         }
 
         #endregion
@@ -923,7 +953,7 @@ namespace urakawa.media.data.audio.codec
         /// </exception>
         public override void MergeWith(AudioMediaData other)
         {
-            if (other==this)
+            if (other == this)
             {
                 throw new exception.OperationNotValidException("Can not merge a AudioMediaData with itself");
             }
@@ -935,7 +965,7 @@ namespace urakawa.media.data.audio.codec
                         "Can not merge this with a WavAudioMediaData with incompatible audio data");
                 }
                 Time thisInsertPoint = Time.Zero.AddTimeDelta(AudioDuration);
-                WavAudioMediaData otherWav = (WavAudioMediaData) other;
+                WavAudioMediaData otherWav = (WavAudioMediaData)other;
                 mWavClips.AddRange(otherWav.mWavClips);
                 TimeDelta dur = otherWav.AudioDuration;
                 NotifyAudioDataInserted(this, thisInsertPoint, dur);
