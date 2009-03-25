@@ -126,7 +126,7 @@ namespace urakawa.xuk
         /// <param name="handler">The handler of progress</param>
         protected virtual void XukInChild(XmlReader source, ProgressHandler handler)
         {
-            if ((source.NodeType == XmlNodeType.Element || source.NodeType == XmlNodeType.EndElement) && !source.IsEmptyElement) source.ReadSubtree().Close(); //Read past unknown child 
+            if (source.NodeType == XmlNodeType.Element && !source.IsEmptyElement) source.ReadSubtree().Close(); //Read past unknown child 
         }
 
         /// <summary>
