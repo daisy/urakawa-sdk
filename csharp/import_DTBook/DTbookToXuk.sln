@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTbookToXuk", "DTbookToXuk\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaSDK.core", "..\core\UrakawaSDK.core.csproj", "{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTbookToXukUI", "DTbookToXukUI\DTbookToXukUI.csproj", "{C0D0D3F4-1855-4B58-81CF-C99CC0127AC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,12 @@ Global
 		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
 		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0D0D3F4-1855-4B58-81CF-C99CC0127AC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0D0D3F4-1855-4B58-81CF-C99CC0127AC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0D0D3F4-1855-4B58-81CF-C99CC0127AC0}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0D0D3F4-1855-4B58-81CF-C99CC0127AC0}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0D0D3F4-1855-4B58-81CF-C99CC0127AC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0D0D3F4-1855-4B58-81CF-C99CC0127AC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
