@@ -1,43 +1,50 @@
 ﻿using System;
-using urakawa.media;
-using urakawa.media.data;
-using urakawa.metadata;
-using urakawa.xuk;
-using core = urakawa.core;
+using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 using urakawa;
+using urakawa.core;
+using urakawa.media;
+using urakawa.media.data;
+using urakawa.media.data.audio;
+using urakawa.media.data.audio.codec;
+using urakawa.media.timing;
+using urakawa.metadata;
 using urakawa.property.channel;
 using urakawa.property.xml;
+using urakawa.xuk;
+using core = urakawa.core;
 
 namespace DTbookToXuk
 {
     public class DTBooktoXukConversion
     {
+        private string m_DTBook_FilePath;
         private XmlDocument m_DTBookXmlDoc;
         private Project m_Project;
-        private Channel m_textChannel;
-        private readonly string m_DTBookpath;
+        private TextChannel m_textChannel;
+        private AudioChannel m_audioChannel;
 
-        public DTBooktoXukConversion(Uri book)
+        public DTBooktoXukConversion(Uri uri)
         {
-            m_DTBookpath = book.LocalPath;
-            transformDTBook(m_DTBookpath);
-            //throw new NotImplementedException();
+            m_DTBook_FilePath = uri.LocalPath;
+            transformDTBook();
         }
+
+        public Project Project
+        {
+            get { return m_Project; }
+        }
+
         static void Main()
         {
             Console.WriteLine("Hello World, from DTBooktoXukConversion project !");
 
         }
 
-        public void transformDTBook(string bookContent)
+        private void transformDTBook()
         {
-            XmlTextReader fileReader = new XmlTextReader(bookContent);
-            fileReader.XmlResolver = null;
-            m_DTBookXmlDoc = new XmlDocument();
-            m_DTBookXmlDoc.XmlResolver = null;
-            if (m_DTBookXmlDoc != null) m_DTBookXmlDoc.Load(fileReader);
-            fileReader.Close();
+            m_DTBookXmlDoc = readXmlDocument(m_DTBook_FilePath);
 
             initializeDataModel();
         }
@@ -46,9 +53,17 @@ namespace DTbookToXuk
         {
             m_Project = new Project();
 
-            m_Project.SetPrettyFormat(false);
             //m_Project.PresentationFactory.Create();
             Presentation presentation = m_Project.AddNewPresentation();
+
+            string dirPath = Path.GetDirectoryName(m_DTBook_FilePath);
+            if (!dirPath.EndsWith("" + Path.DirectorySeparatorChar))
+            {
+                dirPath = dirPath + Path.DirectorySeparatorChar;
+            }
+            presentation.RootUri = new Uri(dirPath);
+
+            m_Project.SetPrettyFormat(false);
 
             // BEGIN OF TEST
             // => creating all kinds of objects in order to initialize the factories
@@ -85,6 +100,7 @@ namespace DTbookToXuk
             //
             // END OF TEST
 
+            /*
             Metadata mdAuthor = presentation.MetadataFactory.CreateMetadata();
             mdAuthor.Name = "dc:author";
             mdAuthor.Content = "Daniel + Chhavi + Rachana";
@@ -96,74 +112,493 @@ namespace DTbookToXuk
             mdDate.Content = System.DateTime.Now.ToString();
 
             presentation.AddMetadata(mdDate);
+            */
 
             m_textChannel = presentation.ChannelFactory.CreateTextChannel();
             m_textChannel.Name = "Our Text Channel";
 
-            // No very pretty !
 
-            //presentation.ChannelsManager.RemoveChannel(m_textChannel);
-            //presentation.ChannelsManager.AddChannel(m_textChannel, "channel.text");
-
+            // Recursive parsing
             parseXmlDocAndPopulateDataModel(m_DTBookXmlDoc, null);
+            //
+            // Experimentation with audio stuff, added metadata from OPF, etc.
+            parseOtherDaisyFilesAndPopulateDataModel();
+            //
+        }
 
-            Uri uriComp = new Uri(m_DTBookpath + ".COMPRESSED.xuk");
-
+        private void parseOtherDaisyFilesAndPopulateDataModel()
+        {
+            string dirPath = Path.GetDirectoryName(m_DTBook_FilePath);
+            DirectoryInfo dirInfo = new DirectoryInfo(dirPath);
+            FileInfo[] fileInfos = dirInfo.GetFiles("*.opf");
+            string opfFilePath = null;
+            foreach (FileInfo fi in fileInfos)
             {
-                SaveXukAction actionSave = new SaveXukAction(m_Project, uriComp);
-                bool saveWasCancelled;
-                Progress.ExecuteProgressAction(actionSave, out saveWasCancelled);
-                if (saveWasCancelled)
+                opfFilePath = fi.FullName;
+                break;
+            }
+            if (opfFilePath == null)
+            {
+                return;
+            }
+
+
+            XmlDocument opfXmlDoc = readXmlDocument(opfFilePath);
+
+            parseOpfDcMetaData(opfXmlDoc);
+            parseOpfMetaData(opfXmlDoc);
+
+            List<string> spineListOfSmilFiles;
+            string ncxPath;
+            parseOpfManifestAndSpine(opfXmlDoc, out spineListOfSmilFiles, out ncxPath);
+
+            if (ncxPath != null)
+            {
+                string fullNcxPath = Path.Combine(dirPath, ncxPath);
+                parseNcx(fullNcxPath);
+            }
+
+            if (spineListOfSmilFiles != null)
+            {
+                Presentation presentation = m_Project.GetPresentation(0);
+
+                m_audioChannel = presentation.ChannelFactory.CreateAudioChannel();
+                m_audioChannel.Name = "Our Audio Channel";
+
+                presentation.MediaDataManager.EnforceSinglePCMFormat = true;
+
+                foreach (string smilPath in spineListOfSmilFiles)
                 {
-                    return;
+                    string fullSmilPath = Path.Combine(dirPath, smilPath);
+                    parseSmil(fullSmilPath);
+                }
+            }
+        }
+
+        private void parseSmil(string fullSmilPath)
+        {
+            Presentation presentation = m_Project.GetPresentation(0);
+
+            string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
+            if (Directory.Exists(dataPath))
+            {
+                Directory.Delete(dataPath, true);
+            }
+
+            string dirPath = Path.GetDirectoryName(m_DTBook_FilePath);
+            //presentation.DataProviderManager.DataFileDirectoryFullPath
+
+            XmlDocument smilXmlDoc = readXmlDocument(fullSmilPath);
+
+            XmlNodeList listOfAudioNodes = smilXmlDoc.GetElementsByTagName("audio");
+            if (listOfAudioNodes != null)
+            {
+                foreach (XmlNode audioNode in listOfAudioNodes)
+                {
+                    XmlAttributeCollection attributeCol = audioNode.Attributes;
+
+                    if (attributeCol != null)
+                    {
+                        XmlNode attrAudioSrc = attributeCol.GetNamedItem("src");
+                        if (attrAudioSrc != null && !String.IsNullOrEmpty(attrAudioSrc.Value))
+                        {
+                            XmlNode parent = audioNode.ParentNode;
+                            if (parent != null && parent.Name == "a")
+                            {
+                                parent = parent.ParentNode;
+                            }
+
+                            if (parent != null)
+                            {
+                                XmlNodeList listOfAudioPeers = parent.ChildNodes;
+                                foreach (XmlNode peerNode in listOfAudioPeers)
+                                {
+                                    if (peerNode.NodeType == XmlNodeType.Element && peerNode.Name == "text")
+                                    {
+                                        XmlAttributeCollection peerAttrs = peerNode.Attributes;
+
+                                        if (peerAttrs != null)
+                                        {
+                                            XmlNode attrTextSrc = peerAttrs.GetNamedItem("src");
+                                            if (attrTextSrc != null && !String.IsNullOrEmpty(attrTextSrc.Value))
+                                            {
+                                                int index = attrTextSrc.Value.LastIndexOf('#');
+                                                if (index < (attrTextSrc.Value.Length - 1))
+                                                {
+                                                    string dtbookFragmentId = attrTextSrc.Value.Substring(index + 1);
+
+                                                    TreeNode tNode = getTreeNodeWithXmlElementId(dtbookFragmentId);
+                                                    if (tNode != null)
+                                                    {
+                                                        AbstractAudioMedia existingAudioMedia = tNode.GetAudioMedia();
+                                                        if (existingAudioMedia != null)
+                                                        {
+                                                            //Ignore.
+                                                            //System.Diagnostics.Debug.Fail("TreeNode already has media ??");
+                                                        }
+
+                                                        XmlNode attrClipBegin = attributeCol.GetNamedItem("clipBegin");
+                                                        XmlNode attrClipEnd = attributeCol.GetNamedItem("clipEnd");
+
+                                                        Media media = null;
+                                                        if (attrAudioSrc.Value.EndsWith("wav"))
+                                                        {
+                                                            presentation.MediaDataFactory.DefaultAudioMediaDataType =
+                                                                typeof(WavAudioMediaData);
+                                                            WavAudioMediaData mediaData =
+                                                                (WavAudioMediaData)
+                                                                presentation.MediaDataFactory.CreateAudioMediaData();
+
+                                                            media = presentation.MediaFactory.CreateManagedAudioMedia();
+                                                            ((ManagedAudioMedia)media).AudioMediaData = mediaData;
+
+                                                            string fullWavPath = Path.Combine(dirPath,
+                                                                                              attrAudioSrc.Value);
+
+                                                            PCMDataInfo pcmInfo = null;
+                                                            Stream wavStream = null;
+                                                            try
+                                                            {
+                                                                wavStream = File.Open(fullWavPath, FileMode.Open,
+                                                                                      FileAccess.Read, FileShare.Read);
+                                                                pcmInfo = PCMDataInfo.ParseRiffWaveHeader(wavStream);
+                                                                presentation.MediaDataManager.DefaultPCMFormat = pcmInfo;
+                                                                TimeDelta duration = new TimeDelta(pcmInfo.Duration);
+
+                                                                Time clipB = Time.Zero;
+                                                                Time clipE = Time.MaxValue;
+
+                                                                if (attrClipBegin != null &&
+                                                                    !string.IsNullOrEmpty(attrClipBegin.Value))
+                                                                {
+                                                                    clipB = new Time(TimeSpan.Parse(attrClipBegin.Value));
+                                                                }
+                                                                if (attrClipEnd != null &&
+                                                                    !string.IsNullOrEmpty(attrClipEnd.Value))
+                                                                {
+                                                                    clipE = new Time(TimeSpan.Parse(attrClipEnd.Value));
+                                                                }
+                                                                if (clipB != Time.Zero || clipE != Time.MaxValue)
+                                                                {
+                                                                    duration = clipE.GetTimeDelta(clipB);
+                                                                }
+                                                                long byteOffset = 0;
+                                                                if (clipB != Time.Zero)
+                                                                {
+                                                                    byteOffset = pcmInfo.GetByteForTime(clipB);
+                                                                }
+                                                                if (byteOffset > 0)
+                                                                {
+                                                                    wavStream.Seek(byteOffset, SeekOrigin.Current);
+                                                                }
+                                                                mediaData.InsertAudioData(wavStream, Time.Zero, duration);
+                                                                /*
+                                                                wavStream.Position = 0;
+                                                                wavStream.Seek(0, SeekOrigin.Begin);
+                                                                mediaData.AppendAudioDataFromRiffWave(wavStream);
+                                                                */
+                                                            }
+                                                            finally
+                                                            {
+                                                                if (wavStream != null) wavStream.Close();
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            media = presentation.MediaFactory.CreateExternalAudioMedia();
+                                                            ((ExternalAudioMedia)media).Src = attrAudioSrc.Value;
+                                                            if (attrClipBegin != null &&
+                                                                !string.IsNullOrEmpty(attrClipBegin.Value))
+                                                            {
+                                                                ((ExternalAudioMedia)media).ClipBegin =
+                                                                    new Time(TimeSpan.Parse(attrClipBegin.Value));
+                                                            }
+                                                            if (attrClipEnd != null &&
+                                                                !string.IsNullOrEmpty(attrClipEnd.Value))
+                                                            {
+                                                                ((ExternalAudioMedia)media).ClipEnd =
+                                                                    new Time(TimeSpan.Parse(attrClipEnd.Value));
+                                                            }
+                                                        }
+
+                                                        ChannelsProperty chProp = tNode.GetProperty<ChannelsProperty>();
+                                                        if (chProp == null)
+                                                        {
+                                                            chProp =
+                                                                presentation.PropertyFactory.CreateChannelsProperty();
+                                                            tNode.AddProperty(chProp);
+                                                        }
+                                                        chProp.SetMedia(m_audioChannel, media);
+                                                        break; // scan peers to audio node
+                                                    }
+                                                    else
+                                                    {
+                                                        System.Diagnostics.Debug.Fail("XmlProperty with ID not found ??");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private XmlDocument readXmlDocument(string path)
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+
+            settings.IgnoreWhitespace = false;
+            settings.ProhibitDtd = false;
+            settings.XmlResolver = null;
+
+            settings.IgnoreComments = true;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreWhitespace = true;
+
+            XmlReader xmlReader = XmlReader.Create(path, settings);
+
+            XmlDocument xmldoc = new XmlDocument();
+            xmldoc.XmlResolver = null;
+            try
+            {
+                xmldoc.Load(xmlReader);
+            }
+            finally
+            {
+                xmlReader.Close();
+            }
+
+            return xmldoc;
+        }
+
+        private TreeNode getTreeNodeWithXmlElementId(string id)
+        {
+            Presentation pres = m_Project.GetPresentation(0);
+            return getTreeNodeWithXmlElementId(pres.RootNode, id);
+        }
+
+        private TreeNode getTreeNodeWithXmlElementId(TreeNode node, string id)
+        {
+            if (node.GetXmlElementId() == id) return node;
+
+            for (int i = 0; i < node.ChildCount; i++)
+            {
+                TreeNode child = getTreeNodeWithXmlElementId(node.GetChild(i), id);
+                if (child != null)
+                {
+                    return child;
+                }
+            }
+            return null;
+        }
+
+        private void parseNcx(string ncxPath)
+        {
+            Presentation presentation = m_Project.GetPresentation(0);
+
+            XmlDocument ncxXmlDoc = readXmlDocument(ncxPath);
+
+            XmlNodeList listOfHeadRootNodes = ncxXmlDoc.GetElementsByTagName("head");
+            if (listOfHeadRootNodes != null)
+            {
+                foreach (XmlNode headNodeRoot in listOfHeadRootNodes)
+                {
+                    XmlNodeList listOfMetaNodes = headNodeRoot.ChildNodes;
+                    if (listOfMetaNodes != null)
+                    {
+                        foreach (XmlNode metaNode in listOfMetaNodes)
+                        {
+                            if (metaNode.NodeType == XmlNodeType.Element
+                                && metaNode.Name == "meta")
+                            {
+                                XmlAttributeCollection attributeCol = metaNode.Attributes;
+
+                                if (attributeCol != null)
+                                {
+                                    XmlNode attrName = attributeCol.GetNamedItem("name");
+                                    XmlNode attrContent = attributeCol.GetNamedItem("content");
+                                    if (attrName != null && attrContent != null && !String.IsNullOrEmpty(attrName.Value)
+                                            && !String.IsNullOrEmpty(attrContent.Value))
+                                    {
+                                        Metadata md = presentation.MetadataFactory.CreateMetadata();
+                                        md.Name = attrName.Value;
+                                        md.Content = attrContent.Value;
+                                        presentation.AddMetadata(md);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void parseOpfManifestAndSpine(XmlDocument opfXmlDoc, out List<string> spineListOfSmilFiles, out string ncxPath)
+        {
+            spineListOfSmilFiles = new List<string>();
+
+            ncxPath = null;
+
+            XmlNodeList listOfSpineRootNodes = opfXmlDoc.GetElementsByTagName("spine");
+            if (listOfSpineRootNodes != null)
+            {
+                foreach (XmlNode spineNodeRoot in listOfSpineRootNodes)
+                {
+                    XmlNodeList listOfSpineItemNodes = spineNodeRoot.ChildNodes;
+                    if (listOfSpineItemNodes != null)
+                    {
+                        foreach (XmlNode spineItemNode in listOfSpineItemNodes)
+                        {
+                            if (spineItemNode.NodeType == XmlNodeType.Element
+                                && spineItemNode.Name == "itemref")
+                            {
+                                XmlAttributeCollection spineItemAttributes = spineItemNode.Attributes;
+
+                                if (spineItemAttributes != null)
+                                {
+                                    XmlNode attrIdRef = spineItemAttributes.GetNamedItem("idref");
+                                    if (attrIdRef != null)
+                                    {
+                                        spineListOfSmilFiles.Add(attrIdRef.Value);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
-            Uri uriPretty = new Uri(m_DTBookpath + ".PRETTY.xuk");
 
-            m_Project.SetPrettyFormat(true);
 
+
+
+
+
+
+
+
+            XmlNodeList listOfManifestRootNodes = opfXmlDoc.GetElementsByTagName("manifest");
+            if (listOfManifestRootNodes != null)
             {
-                SaveXukAction actionSave = new SaveXukAction(m_Project, uriPretty);
-                bool saveWasCancelled;
-                Progress.ExecuteProgressAction(actionSave, out saveWasCancelled);
-                if (saveWasCancelled)
+                foreach (XmlNode manifNodeRoot in listOfManifestRootNodes)
                 {
-                    return;
+                    XmlNodeList listOfManifestItemNodes = manifNodeRoot.ChildNodes;
+                    if (listOfManifestItemNodes != null)
+                    {
+                        foreach (XmlNode manifItemNode in listOfManifestItemNodes)
+                        {
+                            if (manifItemNode.NodeType == XmlNodeType.Element
+                                && manifItemNode.Name == "item")
+                            {
+                                XmlAttributeCollection manifItemAttributes = manifItemNode.Attributes;
+
+                                if (manifItemAttributes != null)
+                                {
+                                    XmlNode attrHref = manifItemAttributes.GetNamedItem("href");
+                                    XmlNode attrMediaType = manifItemAttributes.GetNamedItem("media-type");
+                                    if (attrHref != null && attrMediaType != null)
+                                    {
+                                        if (attrMediaType.Value == "application/smil")
+                                        {
+                                            XmlNode attrID = manifItemAttributes.GetNamedItem("id");
+                                            if (attrID != null)
+                                            {
+                                                int i = spineListOfSmilFiles.IndexOf(attrID.Value);
+                                                if (i >= 0)
+                                                {
+                                                    spineListOfSmilFiles[i] = attrHref.Value;
+                                                }
+                                            }
+                                        }
+                                        else if (attrMediaType.Value == "application/x-dtbncx+xml")
+                                        {
+                                            ncxPath = attrHref.Value;
+                                        }
+                                        else if (attrMediaType.Value == "application/x-dtbook+xml")
+                                        {
+                                            // Ignore (DTBook)
+                                        }
+                                        else if (attrMediaType.Value == "text/xml")
+                                        {
+                                            // Ignore (OPF)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
+        }
 
-            Project projectComp = new Project();
+        private void parseOpfDcMetaData(XmlDocument opfXmlDoc)
+        {
+            Presentation presentation = m_Project.GetPresentation(0);
 
-            //not needed, automatically detected
-            //project.PrettyFormat = false;
-
+            XmlNodeList listOfMetaDataRootNodes = opfXmlDoc.GetElementsByTagName("dc-metadata");
+            if (listOfMetaDataRootNodes != null)
             {
-                OpenXukAction actionOpen = new OpenXukAction(projectComp, uriComp);
-                bool openWasCancelled;
-                Progress.ExecuteProgressAction(actionOpen, out openWasCancelled);
-                if (openWasCancelled)
+                foreach (XmlNode mdNodeRoot in listOfMetaDataRootNodes)
                 {
-                    return;
+                    XmlNodeList listOfMetaDataNodes = mdNodeRoot.ChildNodes;
+                    if (listOfMetaDataNodes != null)
+                    {
+                        foreach (XmlNode mdNode in listOfMetaDataNodes)
+                        {
+                            if (mdNode.NodeType == XmlNodeType.Element)
+                            {
+                                Metadata md = presentation.MetadataFactory.CreateMetadata();
+                                md.Name = mdNode.Name;
+                                md.Content = mdNode.InnerText;
+                                presentation.AddMetadata(md);
+                            }
+                        }
+                    }
                 }
             }
+        }
 
-            System.Diagnostics.Debug.Assert(m_Project.ValueEquals(projectComp));
+        private void parseOpfMetaData(XmlDocument opfXmlDoc)
+        {
+            Presentation presentation = m_Project.GetPresentation(0);
 
-            Project projectPretty = new Project();
-
+            XmlNodeList listOfMetaDataRootNodes = opfXmlDoc.GetElementsByTagName("x-metadata");
+            if (listOfMetaDataRootNodes != null)
             {
-                OpenXukAction actionOpen = new OpenXukAction(projectPretty, uriPretty);
-                bool openWasCancelled;
-                Progress.ExecuteProgressAction(actionOpen, out openWasCancelled);
-                if (openWasCancelled)
+                foreach (XmlNode mdNodeRoot in listOfMetaDataRootNodes)
                 {
-                    return;
+                    XmlNodeList listOfMetaDataNodes = mdNodeRoot.ChildNodes;
+                    if (listOfMetaDataNodes != null)
+                    {
+                        foreach (XmlNode mdNode in listOfMetaDataNodes)
+                        {
+                            if (mdNode.NodeType == XmlNodeType.Element && mdNode.Name == "meta")
+                            {
+                                XmlAttributeCollection mdAttributes = mdNode.Attributes;
+
+                                if (mdAttributes != null)
+                                {
+                                    XmlNode attrName = mdAttributes.GetNamedItem("name");
+                                    XmlNode attrContent = mdAttributes.GetNamedItem("content");
+
+                                    if (attrName != null && attrContent != null && !String.IsNullOrEmpty(attrName.Value)
+                                        && !String.IsNullOrEmpty(attrContent.Value))
+                                    {
+                                        Metadata md = presentation.MetadataFactory.CreateMetadata();
+                                        md.Name = attrName.Value;
+                                        md.Content = attrContent.Value;
+                                        presentation.AddMetadata(md);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
-            System.Diagnostics.Debug.Assert(projectComp.ValueEquals(projectPretty));
-            System.Diagnostics.Debug.Assert(m_Project.ValueEquals(projectPretty));
-
         }
 
         private void parseXmlDocAndPopulateDataModel(XmlNode xmlNode, core.TreeNode parentTreeNode)
@@ -201,7 +636,16 @@ namespace DTbookToXuk
                         XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
                         treeNode.AddProperty(xmlProp);
                         xmlProp.LocalName = xmlNode.Name;
-                        xmlProp.NamespaceUri = xmlNode.NamespaceURI;
+                        if (xmlNode.ParentNode != null && xmlNode.ParentNode.NodeType == XmlNodeType.Document)
+                        {
+                            presentation.PropertyFactory.DefaultXmlNamespaceUri = xmlNode.NamespaceURI;
+                        }
+
+                        if (xmlNode.NamespaceURI != presentation.PropertyFactory.DefaultXmlNamespaceUri)
+                        {
+                            xmlProp.NamespaceUri = xmlNode.NamespaceURI;
+                        }
+
                         XmlAttributeCollection attributeCol = xmlNode.Attributes;
 
                         if (attributeCol != null)
@@ -211,7 +655,23 @@ namespace DTbookToXuk
                                 XmlNode attr = attributeCol.Item(i);
                                 xmlProp.SetAttribute(attr.Name, "", attr.Value);
                             }
+
+
+                            if (xmlNode.Name == "meta")
+                            {
+                                XmlNode attrName = attributeCol.GetNamedItem("name");
+                                XmlNode attrContent = attributeCol.GetNamedItem("content");
+                                if (attrName != null && attrContent != null && !String.IsNullOrEmpty(attrName.Value)
+                                        && !String.IsNullOrEmpty(attrContent.Value))
+                                {
+                                    Metadata md = presentation.MetadataFactory.CreateMetadata();
+                                    md.Name = attrName.Value;
+                                    md.Content = attrContent.Value;
+                                    presentation.AddMetadata(md);
+                                }
+                            }
                         }
+
 
                         foreach (XmlNode childXmlNode in xmlNode.ChildNodes)
                         {
@@ -258,6 +718,5 @@ namespace DTbookToXuk
                     }
             }
         }
-
     }
 }
