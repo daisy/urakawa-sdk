@@ -963,7 +963,7 @@ namespace urakawa
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XUK_NS)
+            if (source.NamespaceURI == XukNamespaceUri)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.TreeNodeFactory)
@@ -1096,14 +1096,14 @@ namespace urakawa
             UndoRedoManager.XukOut(destination, baseUri, handler);
 
 
-            destination.WriteStartElement(XukStrings.Metadatas, XUK_NS);
+            destination.WriteStartElement(XukStrings.Metadatas, XukNamespaceUri);
             foreach (Metadata md in mMetadata)
             {
                 md.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
 
-            destination.WriteStartElement(XukStrings.RootNode, XUK_NS);
+            destination.WriteStartElement(XukStrings.RootNode, XukNamespaceUri);
             RootNode.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
         }

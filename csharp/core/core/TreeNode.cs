@@ -641,7 +641,7 @@ namespace urakawa.core
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XUK_NS)
+            if (source.NamespaceURI == XukNamespaceUri)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.Properties)
@@ -677,7 +677,7 @@ namespace urakawa.core
         {
             base.XukOutChildren(destination, baseUri, handler);
 
-            destination.WriteStartElement(XukStrings.Properties, XUK_NS);
+            destination.WriteStartElement(XukStrings.Properties, XukNamespaceUri);
             foreach (Property prop in GetListOfProperties())
             {
                 prop.XukOut(destination, baseUri, handler);
@@ -686,7 +686,7 @@ namespace urakawa.core
 
             if (IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.Children, XUK_NS);
+                destination.WriteStartElement(XukStrings.Children, XukNamespaceUri);
             }
             for (int i = 0; i < this.ChildCount; i++)
             {

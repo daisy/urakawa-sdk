@@ -161,7 +161,7 @@ namespace urakawa.media
         {
             if (IsPrettyFormat())
             {
-                if (source.LocalName == XukStrings.Text && source.NamespaceURI == XUK_NS)
+                if (source.LocalName == XukStrings.Text && source.NamespaceURI == XukNamespaceUri)
                 {
                     if (!source.IsEmptyElement)
                     {
@@ -199,7 +199,7 @@ namespace urakawa.media
         {
             if (IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.Text, XUK_NS);
+                destination.WriteStartElement(XukStrings.Text, XukNamespaceUri);
             }
             destination.WriteString(Text);
             if (IsPrettyFormat())

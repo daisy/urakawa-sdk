@@ -25,10 +25,9 @@ namespace urakawa.xuk
         {
             throw new NotImplementedException();
         }
-        /// <summary>
-        /// The xuk namespace uri for all built-in <see cref="XukAble"/> <see cref="Type"/>s
-        /// </summary>
+
         public const string XUK_NS = "http://www.daisy.org/urakawa/xuk/2.0";
+
 
         /// <summary>
         /// The path of the W3C XmlSchema defining the XUK namespace
@@ -211,35 +210,12 @@ namespace urakawa.xuk
             get
             {
                 return GetTypeNameFormatted();
-                return GetTypeNameFormatted(GetType());
+                //return GetTypeNameFormatted(GetType());
                 //return GetType().Name;
             }
         }
 
         public abstract string GetTypeNameFormatted();
-
-        private string GetTypeNameFormatted(Type t)
-        {
-            if (!typeof(XukAble).IsAssignableFrom(t))
-            {
-                string msg = String.Format(
-                    "Only Types deriving {0} can be given here !", typeof(XukAble).FullName);
-                throw new MethodParameterIsWrongTypeException(msg);
-            }
-
-            string name = t.Name;
-
-            PropertyInfo info = typeof(XukStrings).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
-            if (info != null)
-            {
-                if (info.PropertyType == typeof(string))
-                {
-                    return (info.GetValue(null, null) as string) ?? name;
-                }
-            }
-            System.Diagnostics.Debug.Fail("Type name not found ??");
-            return name;
-        }
 
         /// <summary>
         /// Gets the namespace uri part of the QName representing a <see cref="XukAble"/> in Xuk
@@ -247,7 +223,11 @@ namespace urakawa.xuk
         /// <returns>The namespace uri part</returns>
         public string XukNamespaceUri
         {
-            get { return GetXukNamespaceUri(GetType()); }
+            get
+            {
+                return XUK_NS;
+                //return GetXukNamespaceUri(GetType());
+            }
         }
 
         /// <summary>
@@ -255,29 +235,12 @@ namespace urakawa.xuk
         /// </summary>
         public QualifiedName XukQualifiedName
         {
-            get { return GetXukQualifiedName(GetType()); }
-        }
-
-        /// <summary>
-        /// Gets the Xuk namespace uri of a <see cref="XukAble"/> <see cref="Type"/>,
-        /// by searching up the class heirarchy for a <see cref="Type"/> 
-        /// with a <c>public static</c> field names <c>XUK_NS</c>
-        /// </summary>
-        /// <param name="t">The <see cref="Type"/>, must inherit <see cref="XukAble"/></param>
-        /// <returns>The xuk namespace uri</returns>
-        public static string GetXukNamespaceUri(Type t)
-        {
-            if (!typeof(XukAble).IsAssignableFrom(t))
+            get
             {
-                throw new exception.MethodParameterIsWrongTypeException(
-                    "Cannot get the XukNamespaceUri of a type that does not inherit XukAble");
+                return new QualifiedName(GetTypeNameFormatted(), XukNamespaceUri);
+                //GetXukNamespaceUri(GetType())
+                //return GetXukQualifiedName(GetType());
             }
-            FieldInfo fi = t.GetField("XUK_NS", BindingFlags.Static | BindingFlags.Public);
-            if (fi != null)
-            {
-                if (fi.FieldType == typeof(string)) return (fi.GetValue(null) as string) ?? "";
-            }
-            return GetXukNamespaceUri(t.BaseType);
         }
 
         /// <summary>
@@ -287,7 +250,7 @@ namespace urakawa.xuk
         /// <param name="t">The <see cref="Type"/>, must inherit <see cref="XukAble"/></param>
         /// <returns>The qname</returns>
         /// <exception cref="MethodParameterIsNullException">Thrown when <paramref name="t"/> is <c>null</c></exception>
-        public QualifiedName GetXukQualifiedName(Type t)
+        public static QualifiedName GetXukQualifiedName(Type t)
         {
             if (!typeof(XukAble).IsAssignableFrom(t))
             {
@@ -301,6 +264,52 @@ namespace urakawa.xuk
             }
             return new QualifiedName(GetTypeNameFormatted(t), GetXukNamespaceUri(t));
         }
+
+        private static string GetTypeNameFormatted(Type t)
+        {
+            string name = t.Name;
+
+            PropertyInfo info = typeof(XukStrings).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
+            if (info == null)
+            {
+                info = t.GetProperty("XukString", BindingFlags.Static | BindingFlags.Public);
+            }
+            if (info != null)
+            {
+                if (info.PropertyType == typeof(string))
+                {
+                    return (info.GetValue(null, null) as string) ?? name;
+                }
+            }
+            System.Diagnostics.Debug.Fail("Type name not found ??");
+            return name;
+        }
+
+        /// <summary>
+        /// Gets the Xuk namespace uri of a <see cref="XukAble"/> <see cref="Type"/>,
+        /// by searching up the class heirarchy for a <see cref="Type"/> 
+        /// with a <c>public static</c> field names <c>XUK_NS</c>
+        /// </summary>
+        /// <param name="t">The <see cref="Type"/>, must inherit <see cref="XukAble"/></param>
+        /// <returns>The xuk namespace uri</returns>
+        private static string GetXukNamespaceUri(Type t)
+        {
+            if (!typeof(XukAble).IsAssignableFrom(t))
+            {
+                throw new exception.MethodParameterIsWrongTypeException(
+                    "Cannot get the XukNamespaceUri of a type that does not inherit XukAble");
+            }
+            FieldInfo fi = t.GetField("XUK_NS", BindingFlags.Static | BindingFlags.Public);
+            if (fi != null)
+            {
+                if (fi.FieldType == typeof(string))
+                {
+                    return (fi.GetValue(null) as string) ?? "";
+                }
+            }
+            return GetXukNamespaceUri(t.BaseType);
+        }
+
 
         #endregion
     }

@@ -16,6 +16,7 @@ namespace urakawa.xuk
         private Stream mDestStream;
         private XmlWriter mXmlWriter;
         private readonly IXukAble mSourceXukAble;
+        private Project m_Project;
 
         private static Stream GetStreamFromUri(Uri src)
         {
@@ -52,8 +53,9 @@ namespace urakawa.xuk
         /// <param name="destUri">The <see cref="Uri"/> of the destination (can be null)</param>
         /// <param name="xukAble">The source <see cref="IXukAble"/> (cannot be null)</param>
         /// <param name="writer">The destination <see cref="XmlWriter"/> (cannot be null)</param>
-        public SaveXukAction(IXukAble xukAble, Uri destUri, XmlWriter writer)
+        public SaveXukAction(Project proj, IXukAble xukAble, Uri destUri, XmlWriter writer)
         {
+            m_Project = proj;
             if (writer == null)
                 throw new exception.MethodParameterIsNullException(
                     "The destination Writer of the SaveXukAction cannot be null");
@@ -75,8 +77,9 @@ namespace urakawa.xuk
         /// <param name="destUri">The <see cref="Uri"/> of the destination (can be null)</param>
         /// <param name="xukAble">The source <see cref="IXukAble"/> (cannot be null)</param>
         /// <param name="destStream">The destination <see cref="Stream"/> (cannot be null)</param>
-        public SaveXukAction(IXukAble xukAble, Uri destUri, Stream destStream)
+        public SaveXukAction(Project proj, IXukAble xukAble, Uri destUri, Stream destStream)
         {
+            m_Project = proj;
             if (destStream == null)
                 throw new exception.MethodParameterIsNullException(
                     "The destination Stream of the SaveXukAction cannot be null");
@@ -95,8 +98,9 @@ namespace urakawa.xuk
         /// </summary>
         /// <param name="destUri">The <see cref="Uri"/> of the destination (cannot be null)</param>
         /// <param name="xukAble">The source <see cref="IXukAble"/>(cannot be null)</param>
-        public SaveXukAction(IXukAble xukAble, Uri destUri)
+        public SaveXukAction(Project proj, IXukAble xukAble, Uri destUri)
         {
+            m_Project = proj;
             if (destUri == null)
                 throw new exception.MethodParameterIsNullException(
                     "The destination URI of the SaveXukAction cannot be null");
@@ -171,10 +175,10 @@ namespace urakawa.xuk
             try
             {
                 mXmlWriter.WriteStartDocument();
-                mXmlWriter.WriteStartElement(XukStrings.Xuk, XukAble.XUK_NS);
+                mXmlWriter.WriteStartElement(XukStrings.Xuk, m_Project.XukNamespaceUri);
                 if (XukAble.XUK_XSD_PATH != String.Empty)
                 {
-                    if (XukAble.XUK_NS == String.Empty)
+                    if (m_Project.XukNamespaceUri == String.Empty)
                     {
                         mXmlWriter.WriteAttributeString(
                             "xsi", "noNamespaceSchemaLocation",
@@ -187,7 +191,7 @@ namespace urakawa.xuk
                             "xsi",
                             "noNamespaceSchemaLocation",
                             "http://www.w3.org/2001/XMLSchema-instance",
-                            String.Format("{0} {1}", XukAble.XUK_NS,
+                            String.Format("{0} {1}", m_Project.XukNamespaceUri,
                                           XukAble.XUK_XSD_PATH));
                     }
                 }

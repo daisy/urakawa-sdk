@@ -274,12 +274,12 @@ namespace urakawa.xuk
 
         public static string ShortDescription
         {
-            get { return (mProject.IsPrettyFormat() ? "shortDescription" : "shrtDsc"); }
+            get { return (mProject.IsPrettyFormat() ? "ShortDescription" : "shrtDsc"); }
         }
 
         public static string LongDescription
         {
-            get { return (mProject.IsPrettyFormat() ? "longDescription" : "lngDsc"); }
+            get { return (mProject.IsPrettyFormat() ? "LongDescription" : "lngDsc"); }
         }
 
         public static string Commands

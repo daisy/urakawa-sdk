@@ -682,7 +682,7 @@ namespace urakawa.media.data
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XUK_NS)
+            if (source.NamespaceURI == XukNamespaceUri)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.DataProviders)
@@ -715,7 +715,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.DataProviderItem && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.DataProviderItem && source.NamespaceURI == XukNamespaceUri)
                         {
                             XukInDataProviderItem(source, handler);
                         }
@@ -869,13 +869,13 @@ namespace urakawa.media.data
         {
             if (Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.DataProviders, XUK_NS);
+                destination.WriteStartElement(XukStrings.DataProviders, XukNamespaceUri);
             }
             foreach (DataProvider prov in ListOfDataProviders)
             {
                 if (Presentation.Project.IsPrettyFormat())
                 {
-                    destination.WriteStartElement(XukStrings.DataProviderItem, XUK_NS);
+                    destination.WriteStartElement(XukStrings.DataProviderItem, XukNamespaceUri);
                     destination.WriteAttributeString(XukStrings.Uid, prov.Uid);
                 }
 

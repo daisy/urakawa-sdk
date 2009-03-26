@@ -43,8 +43,6 @@ namespace urakawa.command
         #endregion
 
         private List<Command> mCommands;
-        private string mLongDescription = null;
-        private string mShortDescription = null;
 
         /// <summary>
         /// Format string for the short description of the composite command. 
@@ -58,9 +56,9 @@ namespace urakawa.command
         /// Format string for the short description of the composite command. 
         /// Format parameter {0:0} is replaced by the number of commands, 
         /// and format parameter {1} is replaced by the long descriptions of the sub-commands in the composite command.
-        /// Only used when the short description has not been explicitly set using <see cref="LongDescription"/>.
+        /// Only used when the long description has not been explicitly set using <see cref="LongDescription"/>.
         /// </summary>
-        public static string LongDescriptionFormatString = "{0:0} commands:\n{1}";
+        public static string LongDescriptionFormatString = "{0:0} commands: {1}";
 
         /// <summary>
         /// Create an empty composite command.
@@ -71,29 +69,23 @@ namespace urakawa.command
         }
 
         /// <summary>
-        /// Sets the long humanly-readable description of the composite command
-        /// </summary>
-        /// <param name="desc">The new long description - if set to null the default long description is used</param>
-        public void SetLongDescription(string desc)
-        {
-            mLongDescription = desc;
-        }
-
-        /// <summary>
         /// Gets the long humanly-readable description of the composite command
         /// </summary>
         public override string LongDescription
         {
+            set
+            {
+                base.LongDescription = value;
+            }
             get
             {
                 if (mLongDescription != null) return mLongDescription;
-                string cmds = "-";
+                string cmds = "";
                 if (mCommands.Count > 0)
                 {
-                    cmds = mCommands[0].LongDescription;
-                    for (int i = 1; i < mCommands.Count; i++)
+                    for (int i = 0; i < mCommands.Count; i++)
                     {
-                        cmds += "\n" + LongDescription;
+                        cmds += "//" + mCommands[0].LongDescription;
                     }
                 }
                 return String.Format(LongDescriptionFormatString, mCommands.Count, cmds);
@@ -101,29 +93,23 @@ namespace urakawa.command
         }
 
         /// <summary>
-        /// Sets the short humanly-readable description of the composite command
-        /// </summary>
-        /// <param name="desc">The new short description - if set to null the default short description is used</param>
-        public void SetShortDescription(string desc)
-        {
-            mShortDescription = desc;
-        }
-
-        /// <summary>
         /// Gets the long humanly-readable description of the composite command
         /// </summary>
         public override string ShortDescription
         {
+            set
+            {
+                base.ShortDescription = value;
+            }
             get
             {
                 if (mShortDescription != null) return mShortDescription;
-                string cmds = "-";
+                string cmds = "";
                 if (mCommands.Count > 0)
                 {
-                    cmds = mCommands[0].ShortDescription;
-                    if (mCommands.Count > 1)
+                    for (int i = 0; i < mCommands.Count; i++)
                     {
-                        cmds += "..." + mCommands[mCommands.Count - 1];
+                        cmds += "//" + mCommands[0].ShortDescription;
                     }
                 }
                 return String.Format(ShortDescriptionFormatString, mCommands.Count, cmds);
@@ -281,17 +267,6 @@ namespace urakawa.command
         }
 
         /// <summary>
-        /// Reads the attributes of a CompositeCommand xuk element.
-        /// </summary>
-        /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void XukInAttributes(XmlReader source)
-        {
-            mShortDescription = source.GetAttribute(XukStrings.ShortDescription);
-            mLongDescription = source.GetAttribute(XukStrings.LongDescription);
-            base.XukInAttributes(source);
-        }
-
-        /// <summary>
         /// Reads a child of a CompositeCommand xuk element. 
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
@@ -299,7 +274,7 @@ namespace urakawa.command
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XUK_NS)
+            if (source.NamespaceURI == XukNamespaceUri)
             {
                 if (source.LocalName == XukStrings.Commands)
                 {
@@ -338,26 +313,6 @@ namespace urakawa.command
             }
         }
 
-        /// <summary>
-        /// Writes the attributes of a CompositeCommand element
-        /// </summary>
-        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-        /// <param name="baseUri">
-        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-        /// if <c>null</c> absolute <see cref="Uri"/>s are written
-        /// </param>
-        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
-        {
-            if (mShortDescription != null)
-            {
-                destination.WriteAttributeString(XukStrings.ShortDescription, mShortDescription);
-            }
-            if (mLongDescription != null)
-            {
-                destination.WriteAttributeString(XukStrings.LongDescription, mLongDescription);
-            }
-            base.XukOutAttributes(destination, baseUri);
-        }
 
         /// <summary>
         /// Write the child elements of a CompositeCommand element.
@@ -370,7 +325,7 @@ namespace urakawa.command
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement(XukStrings.Commands, XUK_NS);
+            destination.WriteStartElement(XukStrings.Commands, XukNamespaceUri);
             foreach (Command cmd in ListOfCommands)
             {
                 cmd.XukOut(destination, baseUri, handler);

@@ -324,7 +324,7 @@ namespace urakawa.publish
                     {
                         throw new exception.FactoryCannotCreateTypeException(String.Format(
                                 "The media facotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
-                                typeof(ExternalAudioMedia).Name, XukAble.XUK_NS));
+                                typeof(ExternalAudioMedia).Name, node.Presentation.Project.XukNamespaceUri));
                     }
 
                     eam.Language = mam.Language;

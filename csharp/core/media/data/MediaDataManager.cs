@@ -519,7 +519,7 @@ namespace urakawa.media.data
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XUK_NS)
+            if (source.NamespaceURI == XukNamespaceUri)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.DefaultPCMFormat)
@@ -557,7 +557,7 @@ namespace urakawa.media.data
                     if (source.NodeType == XmlNodeType.Element)
                     {
                         if (source.LocalName == XukStrings.PCMFormatInfo
-                            && source.NamespaceURI == XUK_NS)
+                            && source.NamespaceURI == XukNamespaceUri)
                         {
                             PCMFormatInfo newInfo = new PCMFormatInfo();
                             newInfo.XukIn(source, handler);
@@ -588,7 +588,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.MediaDataItem && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.MediaDataItem && source.NamespaceURI == XukNamespaceUri)
                         {
                             XukInMediaDataItem(source, handler);
                         }
@@ -694,19 +694,19 @@ namespace urakawa.media.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement(XukStrings.DefaultPCMFormat, XUK_NS);
+            destination.WriteStartElement(XukStrings.DefaultPCMFormat, XukNamespaceUri);
             DefaultPCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
             if (Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.MediaDatas, XUK_NS);
+                destination.WriteStartElement(XukStrings.MediaDatas, XukNamespaceUri);
             }
             foreach (string uid in mMediaDataDictionary.Keys)
             {
                 if (Presentation.Project.IsPrettyFormat())
                 {
-                    destination.WriteStartElement(XukStrings.MediaDataItem, XUK_NS);
+                    destination.WriteStartElement(XukStrings.MediaDataItem, XukNamespaceUri);
                     destination.WriteAttributeString(XukStrings.Uid, uid);
                 }
 
