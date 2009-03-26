@@ -399,8 +399,8 @@ namespace urakawa.undo
         public void StartTransaction(string shortDesc, string longDesc)
         {
             CompositeCommand newTrans = Presentation.CommandFactory.CreateCompositeCommand();
-            newTrans.SetShortDescription(shortDesc);
-            newTrans.SetLongDescription(longDesc);
+            newTrans.ShortDescription = shortDesc;
+            newTrans.LongDescription = longDesc;
             mActiveTransactions.Push(newTrans);
             NotifyTransactionStarted();
         }
@@ -485,7 +485,7 @@ namespace urakawa.undo
         {
             bool readItem = false;
 
-            if (source.NamespaceURI == XUK_NS)
+            if (source.NamespaceURI == XukNamespaceUri)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.UndoStack)
@@ -551,13 +551,13 @@ namespace urakawa.undo
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement(XukStrings.UndoStack, XUK_NS);
+            destination.WriteStartElement(XukStrings.UndoStack, XukNamespaceUri);
             foreach (Command cmd in mUndoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            destination.WriteStartElement(XukStrings.RedoStack, XUK_NS);
+            destination.WriteStartElement(XukStrings.RedoStack, XukNamespaceUri);
             foreach (Command cmd in mRedoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);

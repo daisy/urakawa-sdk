@@ -203,7 +203,7 @@ namespace urakawa
             {
                 throw new exception.MethodParameterIsNullException("The destination URI cannot be null");
             }
-            SaveXukAction action = new SaveXukAction(this, fileUri);
+            SaveXukAction action = new SaveXukAction(this, this, fileUri);
             action.Execute();
         }
 
@@ -218,7 +218,7 @@ namespace urakawa
             {
                 throw new exception.MethodParameterIsNullException("The destination XML writer cannot be null");
             }
-            SaveXukAction action = new SaveXukAction(this, fileUri, writer);
+            SaveXukAction action = new SaveXukAction(this, this, fileUri, writer);
             action.Execute();
         }
 
@@ -383,7 +383,7 @@ namespace urakawa
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XUK_NS)
+            if (source.NamespaceURI == XukNamespaceUri)
             {
                 if (source.LocalName == XukStrings.PresentationFactory)
                 {
@@ -440,7 +440,7 @@ namespace urakawa
         {
             base.XukOutChildren(destination, baseUri, handler);
             PresentationFactory.XukOut(destination, baseUri, handler);
-            destination.WriteStartElement(XukStrings.Presentations, XUK_NS);
+            destination.WriteStartElement(XukStrings.Presentations, XukNamespaceUri);
             foreach (Presentation pres in ListOfPresentations)
             {
                 pres.XukOut(destination, baseUri, handler);

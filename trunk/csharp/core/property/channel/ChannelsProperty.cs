@@ -279,7 +279,7 @@ namespace urakawa.property.channel
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XUK_NS)
+            if (source.NamespaceURI == XukNamespaceUri)
             {
                 readItem = true;
                 if (IsPrettyFormat() && source.LocalName == XukStrings.ChannelMappings)
@@ -314,7 +314,7 @@ namespace urakawa.property.channel
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.ChannelMapping && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.ChannelMapping && source.NamespaceURI == XukNamespaceUri)
                         {
                             XukInChannelMapping(source, handler);
                         }
@@ -385,12 +385,12 @@ namespace urakawa.property.channel
 
             if (IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.ChannelMappings, XUK_NS);
+                destination.WriteStartElement(XukStrings.ChannelMappings, XukNamespaceUri);
             }
             List<Channel> channelsList = ListOfUsedChannels;
             foreach (Channel channel in channelsList)
             {
-                destination.WriteStartElement(XukStrings.ChannelMapping, XUK_NS);
+                destination.WriteStartElement(XukStrings.ChannelMapping, XukNamespaceUri);
                 destination.WriteAttributeString(XukStrings.Channel, channel.Uid);
                 Media media = GetMedia(channel);
                 if (media == null)

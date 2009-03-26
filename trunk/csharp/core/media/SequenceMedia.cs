@@ -355,7 +355,7 @@ namespace urakawa.media
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XUK_NS)
+            if (source.NamespaceURI == XukNamespaceUri)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.Sequence)
@@ -431,7 +431,7 @@ namespace urakawa.media
         {
             if (Count > 0)
             {
-                destination.WriteStartElement(XukStrings.Sequence, XUK_NS);
+                destination.WriteStartElement(XukStrings.Sequence, XukNamespaceUri);
                 for (int i = 0; i < Count; i++)
                 {
                     GetItem(i).XukOut(destination, baseUri, handler);

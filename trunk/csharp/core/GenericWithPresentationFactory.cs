@@ -16,7 +16,7 @@ namespace urakawa
     {
         protected override void XukInChild(XmlReader source, progress.ProgressHandler handler)
         {
-            if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XUK_NS)
+            if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XukNamespaceUri)
             {
                 XukInRegisteredTypes(source, handler);
             }
@@ -32,7 +32,7 @@ namespace urakawa
         {
             if (Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.RegisteredTypes, XUK_NS);
+                destination.WriteStartElement(XukStrings.RegisteredTypes, XukNamespaceUri);
             }
 
             XukOutRegisteredTypes(destination, baseUri, handler);

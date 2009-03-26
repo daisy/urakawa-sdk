@@ -753,7 +753,7 @@ namespace urakawa.media.data.audio.codec
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XUK_NS)
+            if (source.NamespaceURI == XukNamespaceUri)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.WavClips)
@@ -784,7 +784,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.PCMFormatInfo && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.PCMFormatInfo && source.NamespaceURI == XukNamespaceUri)
                         {
                             PCMFormatInfo newInfo = new PCMFormatInfo();
                             newInfo.XukIn(source, handler);
@@ -812,7 +812,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.WavClip && source.NamespaceURI == XUK_NS)
+                        if (source.LocalName == XukStrings.WavClip && source.NamespaceURI == XukNamespaceUri)
                         {
                             XukInWavClip(source);
                         }
@@ -915,11 +915,11 @@ namespace urakawa.media.data.audio.codec
             }
             if (Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.WavClips, XUK_NS);
+                destination.WriteStartElement(XukStrings.WavClips, XukNamespaceUri);
             }
             foreach (WavClip clip in mWavClips)
             {
-                destination.WriteStartElement(XukStrings.WavClip, XUK_NS);
+                destination.WriteStartElement(XukStrings.WavClip, XukNamespaceUri);
                 destination.WriteAttributeString(XukStrings.DataProvider, clip.DataProvider.Uid);
                 if (! clip.ClipBegin.IsEqualTo(Time.Zero))
                 {

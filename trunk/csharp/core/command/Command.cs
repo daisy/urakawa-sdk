@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 using urakawa.media.data;
+using urakawa.progress;
 using urakawa.xuk;
 using urakawa.events;
 using urakawa.events.undo;
@@ -17,6 +19,43 @@ namespace urakawa.command
     /// </summary>
     public abstract class Command : WithPresentation, IChangeNotifier, IAction
     {
+
+
+        protected override void XukInAttributes(XmlReader source)
+        {
+            mLongDescription = source.GetAttribute(XukStrings.LongDescription);
+            mShortDescription = source.GetAttribute(XukStrings.ShortDescription);
+
+            base.XukInAttributes(source);
+        }
+
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
+        {
+            //nothing new here
+            base.XukInChild(source, handler);
+        }
+
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
+        {
+            if (LongDescription != null)
+            {
+                destination.WriteAttributeString(XukStrings.LongDescription, LongDescription);
+            }
+            if (ShortDescription != null)
+            {
+                destination.WriteAttributeString(XukStrings.ShortDescription, ShortDescription);
+            }
+            base.XukOutAttributes(destination, baseUri);
+        }
+
+
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        {
+            //nothing new here
+            base.XukOutChildren(destination, baseUri, handler);
+        }
+
+
         #region Event related
 
         /// <summary>
@@ -93,18 +132,42 @@ namespace urakawa.command
         /// Gets a list of the <see cref="media.data.MediaData"/> used by the Command
         /// </summary>
         /// <returns></returns>
-        public abstract List<MediaData> ListOfUsedMediaData { get; }
+        public virtual List<MediaData> ListOfUsedMediaData
+        {
+            get { return new List<MediaData>(); }
+        }
 
+        protected string mLongDescription;
+        protected string mShortDescription;
 
         /// <summary>
         /// Get a long uman-readable description of the command
         /// </summary>
-        public abstract string LongDescription { get; }
+        public virtual string LongDescription
+        {
+            get
+            {
+                return mLongDescription;
+            }
+            set
+            {
+                mLongDescription = value;
+            }
+        }
 
         /// <summary>
         /// Gets a short humanly readable description of the command
         /// </summary>
-        public abstract string ShortDescription { get; }
-
+        public virtual string ShortDescription
+        {
+            get
+            {
+                return mShortDescription;
+            }
+            set
+            {
+                mShortDescription = value;
+            }
+        }
     }
 }

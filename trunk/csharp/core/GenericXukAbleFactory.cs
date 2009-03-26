@@ -274,7 +274,7 @@ namespace urakawa
         {
             foreach (TypeAndQNames tp in mRegisteredTypeAndQNames)
             {
-                destination.WriteStartElement(XukStrings.Type, XUK_NS);
+                destination.WriteStartElement(XukStrings.Type, XukNamespaceUri);
                 destination.WriteAttributeString(XukStrings.XukLocalName, tp.QName.LocalName);
                 destination.WriteAttributeString(XukStrings.XukNamespaceUri, tp.QName.NamespaceUri);
                 if (tp.BaseQName != null)
@@ -308,7 +308,7 @@ namespace urakawa
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, progress.ProgressHandler handler)
         {
-            destination.WriteStartElement(XukStrings.RegisteredTypes, XUK_NS);
+            destination.WriteStartElement(XukStrings.RegisteredTypes, XukNamespaceUri);
 
             XukOutRegisteredTypes(destination, baseUri, handler);
 
@@ -324,7 +324,7 @@ namespace urakawa
         /// <param name="handler">The handler of progress</param>
         protected override void XukInChild(XmlReader source, progress.ProgressHandler handler)
         {
-            if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XUK_NS)
+            if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XukNamespaceUri)
             {
                 XukInRegisteredTypes(source, handler);
                 return;
@@ -334,7 +334,7 @@ namespace urakawa
 
         protected void XukInRegisteredType(XmlReader source)
         {
-            if (source.LocalName == XukStrings.Type && source.NamespaceURI == XUK_NS)
+            if (source.LocalName == XukStrings.Type && source.NamespaceURI == XukNamespaceUri)
             {
                 TypeAndQNames tq = new TypeAndQNames();
                 tq.ReadFromXmlReader(source);
