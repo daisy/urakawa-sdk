@@ -276,6 +276,10 @@ namespace urakawa.property.xml
             }
             return null;
         }
+        public XmlAttribute GetAttribute(string localName)
+        {
+            return GetAttribute(localName, "");
+        }
 
         /// <summary>
         /// Gets a copy of <c>this</c>
