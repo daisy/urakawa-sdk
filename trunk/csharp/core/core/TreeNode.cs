@@ -18,6 +18,30 @@ namespace urakawa.core
     public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,
                             IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
     {
+        public string GetTextMediaFlattened()
+        {
+            string str = "";
+            AbstractTextMedia textMedia = GetTextMedia();
+            if (textMedia != null)
+            {
+                str += textMedia.Text;
+            }
+            for (int index = 0; index < ChildCount; index ++ )
+            {
+                TreeNode node = GetChild(index);
+                str += node.GetTextMediaFlattened();
+            }
+            return str;
+        }
+
+        public override string ToString()
+        {
+            QualifiedName qname = GetXmlElementQName();
+            String str = (qname != null ? qname.LocalName : "");
+            str += "///";
+            str += GetTextMediaFlattened();
+            return str;
+        } 
         ///<summary>
         /// returns the QName of the attached XmlProperty, if any
         ///</summary>

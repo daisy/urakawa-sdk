@@ -196,12 +196,12 @@ namespace urakawa.property.xml
         protected override void XukInAttributes(XmlReader source)
         {
             string name = source.GetAttribute(XukStrings.LocalName);
-            if (name == null || name == "")
+            if (string.IsNullOrEmpty(name))
             {
                 throw new exception.XukException("LocalName attribute of XmlAttribute element is missing");
             }
             string value = source.GetAttribute(XukStrings.Value);
-            if (value == null || value == "")
+            if (value == null)
             {
                 throw new exception.XukException("Value attribute of XmlAttribute element is missing");
             }
@@ -223,11 +223,15 @@ namespace urakawa.property.xml
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             //localName is required
-            if (mLocalName == "")
+            if (String.IsNullOrEmpty(mLocalName))
             {
                 throw new exception.XukException("The XmlAttribute has no name");
             }
             destination.WriteAttributeString(XukStrings.LocalName, mLocalName);
+            if (mValue == null)
+            {
+                throw new exception.XukException("The XmlAttribute has no value");
+            }
             destination.WriteAttributeString(XukStrings.Value, mValue);
             if (mNamespaceUri != "") destination.WriteAttributeString(XukStrings.NamespaceUri, mNamespaceUri);
             base.XukOutAttributes(destination, baseUri);

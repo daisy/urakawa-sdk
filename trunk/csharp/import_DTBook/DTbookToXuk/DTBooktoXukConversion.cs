@@ -348,10 +348,8 @@ namespace DTbookToXuk
         {
             XmlReaderSettings settings = new XmlReaderSettings();
 
-            settings.IgnoreWhitespace = false;
             settings.ProhibitDtd = false;
             settings.XmlResolver = null;
-
             settings.IgnoreComments = true;
             settings.IgnoreProcessingInstructions = true;
             settings.IgnoreWhitespace = true;
@@ -650,7 +648,10 @@ namespace DTbookToXuk
                             for (int i = 0; i < attributeCol.Count; i++)
                             {
                                 XmlNode attr = attributeCol.Item(i);
-                                xmlProp.SetAttribute(attr.Name, "", attr.Value);
+                                if (attr.Name != "smilref")
+                                {
+                                    xmlProp.SetAttribute(attr.Name, "", attr.Value);
+                                }
                             }
 
 

@@ -482,16 +482,16 @@ namespace urakawa.navigation
             {
                 throw new exception.MethodParameterIsNullException("The context core node can not be null");
             }
-            TreeNode prev = context.NextSibling;
-            if (prev == null)
+            TreeNode next = context.NextSibling;
+            if (next == null)
             {
                 TreeNode contextParent = context.Parent;
                 if (contextParent != null)
                 {
-                    prev = GetUnfilteredNext(contextParent);
+                    next = GetUnfilteredNext(contextParent);
                 }
             }
-            return prev;
+            return next;
         }
 
         /// <summary>
@@ -502,7 +502,7 @@ namespace urakawa.navigation
         public IEnumerator<TreeNode> GetSubForestIterator(TreeNode startNode)
         {
             List<TreeNode> subtree = new List<TreeNode>();
-            GenerateSubtree(startNode, subtree);
+            GenerateSubtree(startNode, ref subtree);
             return (IEnumerator<TreeNode>) subtree.ToArray().GetEnumerator();
         }
 
@@ -512,12 +512,12 @@ namespace urakawa.navigation
         /// </summary>
         /// <param name="context">The given context <see cref="TreeNode"/></param>
         /// <param name="subtree">The given <see cref="List{TreeNode}"/></param>
-        private void GenerateSubtree(TreeNode context, List<TreeNode> subtree)
+        private void GenerateSubtree(TreeNode context, ref List<TreeNode> subtree)
         {
             if (IsIncluded(context)) subtree.Add(context);
             for (int i = 0; i < context.ChildCount; i++)
             {
-                GenerateSubtree(context.GetChild(i), subtree);
+                GenerateSubtree(context.GetChild(i), ref subtree);
             }
         }
 
