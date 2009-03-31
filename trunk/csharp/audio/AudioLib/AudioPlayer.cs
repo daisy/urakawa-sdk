@@ -308,8 +308,24 @@ namespace AudioLib
         {
             get
             {
-                return mCurrentAudioStream == null ? 0 :
-                    CalculationFunctions.ConvertByteToTime(GetCurrentBytePosition(), (int)mCurrentAudioPCMFormat.SampleRate, mCurrentAudioPCMFormat.BlockAlign);
+                if(mCurrentAudioStream == null)
+                {
+                    if (State == AudioPlayerState.Paused)
+                    {
+                        return
+                    CalculationFunctions.ConvertByteToTime(mPausePosition,
+                                                           (int) mCurrentAudioPCMFormat.SampleRate,
+                                                           mCurrentAudioPCMFormat.BlockAlign);
+                    }
+                    
+                    return 0;
+                }
+                else
+                {
+                    return CalculationFunctions.ConvertByteToTime(GetCurrentBytePosition(),
+                                                           (int) mCurrentAudioPCMFormat.SampleRate,
+                                                           mCurrentAudioPCMFormat.BlockAlign);
+                }
             }
             set
             {
