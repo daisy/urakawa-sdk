@@ -22,20 +22,20 @@ namespace AudioLib
     /// </summary>
     public enum AudioPlayerState { NotReady, Stopped, Playing, Paused };
 
-	public class AudioPlayer
-	{
+    public class AudioPlayer
+    {
         #region private members
 
         // member variables initialised once
         private OutputDevice mDevice;
         private System.Windows.Forms.Timer MoniteringTimer; // monitoring timer to trigger events independent of refresh thread
-                System.Windows.Forms.Timer mPreviewTimer ; // timer for playing chunks at interval during Forward/Rewind
+        System.Windows.Forms.Timer mPreviewTimer; // timer for playing chunks at interval during Forward/Rewind
 
 
 
         // Member variables to be re initialised only at time of starting  playback of an asset
 
-	    public delegate Stream StreamProviderDelegate();
+        public delegate Stream StreamProviderDelegate();
 
         private StreamProviderDelegate mCurrentAudioStreamProvider;
         private Stream mCurrentAudioStream;
@@ -43,11 +43,11 @@ namespace AudioLib
         private TimeDelta mCurrentAudioDuration;
 
         private SecondaryBuffer mSoundBuffer;  // DX playback buffer
-                private int m_SizeBuffer; // Size of buffer created for playing
-                        private int m_RefreshLength;         // length of buffer to be refreshed during playing which is half of buffer size
-                                private long m_lPlayEnd;         // Total length of audio asset being played
-                                private Thread RefreshThread; // thread for refreshing buffer while playing 
-                                
+        private int m_SizeBuffer; // Size of buffer created for playing
+        private int m_RefreshLength;         // length of buffer to be refreshed during playing which is half of buffer size
+        private long m_lPlayEnd;         // Total length of audio asset being played
+        private Thread RefreshThread; // thread for refreshing buffer while playing 
+
         //private int mFrameSize;                       
         //private int mSampleRate;
 
@@ -66,7 +66,7 @@ namespace AudioLib
         private long m_lChunkStartPosition = 0; // position for starting chunk play in forward/Rewind
 
         // Member variables changed by user 
-                                        private int m_VolumeLevel;
+        private int m_VolumeLevel;
         private int mFwdRwdRate; // holds skip time multiplier for forward / rewind mode , value is 0 for normal playback,  positive  for FastForward and negetive  for Rewind
         private float m_fFastPlayFactor; /// fholds fast play multiplier
         private bool m_IsPreviewing; // Is true when playback is used for previewing a  selection or marking.
@@ -92,15 +92,15 @@ namespace AudioLib
         public AudioPlayer()
         {
             mState = AudioPlayerState.NotReady;
-                        MoniteringTimer = new System.Windows.Forms.Timer();
+            MoniteringTimer = new System.Windows.Forms.Timer();
             MoniteringTimer.Tick += new System.EventHandler(this.MoniteringTimer_Tick);
             MoniteringTimer.Interval = 200;
 
-            mPreviewTimer = new System.Windows.Forms.Timer(); 
+            mPreviewTimer = new System.Windows.Forms.Timer();
             mPreviewTimer.Tick += new System.EventHandler(this.PreviewTimer_Tick);
             mPreviewTimer.Interval = 100;
             //mPlaybackMode = PlaybackMode.Normal;
-            mFwdRwdRate = 0 ;
+            mFwdRwdRate = 0;
             m_fFastPlayFactor = 1;
             mIsFwdRwd = false;
             mEventsEnabled = true;
@@ -129,14 +129,14 @@ namespace AudioLib
             get
             {
                 if (mIsFwdRwd) return AudioPlayerState.Playing;
-                else 
+                else
                     return mState;
             }
         }
 
         // The player sometimes reports a bogus position before the current position while playing,
         // so remember where we were last to avoid going backward randomly.
-        long  mPrevBytePosition;
+        long mPrevBytePosition;
 
         // Get the current playback position in bytes.
         private long GetCurrentBytePosition()
@@ -192,28 +192,28 @@ namespace AudioLib
         /// <summary>
         /// Set a new playback mode i.e. one of Normal, FastForward, Rewind 
         /// </summary>
-            private void SetPlaybackMode( int rate )
+        private void SetPlaybackMode(int rate)
+        {
+            if (rate != mFwdRwdRate)
             {
-            if (rate != mFwdRwdRate )
-            {
-                                                    if (State == AudioPlayerState.Playing)
+                if (State == AudioPlayerState.Playing)
                 {
-                                        long restartPos = GetCurrentBytePosition();
+                    long restartPos = GetCurrentBytePosition();
                     StopPlayback();
                     mState = AudioPlayerState.Paused;
-                    mFwdRwdRate = rate ;
-                    
+                    mFwdRwdRate = rate;
+
                     InitPlay(restartPos, 0);
                 }
                 else if (mState == AudioPlayerState.Paused || mState == AudioPlayerState.Stopped)
                 {
-                    mFwdRwdRate = rate  ;
+                    mFwdRwdRate = rate;
                 }
             }
         }
 
 
-/// <summary>
+        /// <summary>
         /// Stop the playback and revert to normal playback mode.
         /// </summary>
         private void StopPlayback()
@@ -235,10 +235,10 @@ namespace AudioLib
         /// <summary>
         /// Convenience method for sending a state change event only if events are enabled and there is a listener.
         /// </summary>
-		private void TriggerStateChangedEvent(Events.Player.StateChangedEventArgs e)
-		{
-			if (mEventsEnabled && StateChanged != null) StateChanged(this, e);
-		}
+        private void TriggerStateChangedEvent(Events.Player.StateChangedEventArgs e)
+        {
+            if (mEventsEnabled && StateChanged != null) StateChanged(this, e);
+        }
 
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace AudioLib
             }
             set
             {
-                                SetPlayFrequency(value);
+                SetPlayFrequency(value);
             }
         }
 
@@ -328,7 +328,7 @@ namespace AudioLib
         }
 
 
-		
+
         private List<OutputDevice> mOutputDevicesList = null;
 
         public List<OutputDevice> OutputDevices
@@ -347,9 +347,9 @@ namespace AudioLib
                 return mOutputDevicesList;
             }
         }
-        
-               
-        
+
+
+
         /// <summary>
         /// Set the device to be used by the player.
         /// </summary>
@@ -365,12 +365,12 @@ namespace AudioLib
             TriggerStateChangedEvent(e);
         }
 
-		/// <summary>
-		/// Set the device that matches this name; if it could not be found, default to the first one.
+        /// <summary>
+        /// Set the device that matches this name; if it could not be found, default to the first one.
         /// Throw an exception if no devices were found.
-		/// </summary>
-		public void SetDevice(Control FormHandle, string name)
-		{
+        /// </summary>
+        public void SetDevice(Control FormHandle, string name)
+        {
             List<OutputDevice> devices = OutputDevices;
             OutputDevice found = devices.Find(delegate(OutputDevice d) { return d.Name == name; });
             if (found != null)
@@ -402,7 +402,7 @@ namespace AudioLib
         void SetPlayFrequency(float l_frequency)
         {
             if (mSoundBuffer != null
-                && mFwdRwdRate == 0 )
+                && mFwdRwdRate == 0)
             {
                 try
                 {
@@ -465,13 +465,13 @@ namespace AudioLib
                 long startPosition = 0;
                 if (from > 0)
                 {
-                    startPosition = CalculationFunctions.ConvertTimeToByte(from, (int) pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                    startPosition = CalculationFunctions.ConvertTimeToByte(from, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
                     startPosition = CalculationFunctions.AdaptToFrame(startPosition, pcmInfo.BlockAlign);
                 }
                 long endPosition = 0;
                 if (to > 0)
                 {
-                    endPosition = CalculationFunctions.ConvertTimeToByte(to, (int) pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                    endPosition = CalculationFunctions.ConvertTimeToByte(to, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
                     endPosition = CalculationFunctions.AdaptToFrame(endPosition, pcmInfo.BlockAlign);
                 }
                 if (startPosition >= 0 &&
@@ -488,7 +488,7 @@ namespace AudioLib
 
         }
 
-       
+
         // Get a byte position from a time in ms. for the given PCM format info.
         private long BytePositionFromTime(double time, PCMFormatInfo info)
         {
@@ -621,8 +621,8 @@ namespace AudioLib
             // end of function
         }
 
-        private AudioPlayerState  m_StateBeforePreview ;
-        private long m_PreviewStartPosition ;
+        private AudioPlayerState m_StateBeforePreview;
+        private long m_PreviewStartPosition;
 
         /// <summary>
         ///  Called to start playback when player is already initialised with an asset
@@ -638,7 +638,7 @@ namespace AudioLib
                 // Adjust the start and end position according to frame size
                 lStartPosition = CalculationFunctions.AdaptToFrame(lStartPosition, mCurrentAudioPCMFormat.BlockAlign);
                 lEndPosition = CalculationFunctions.AdaptToFrame(lEndPosition, mCurrentAudioPCMFormat.BlockAlign);
-                
+
                 // lEndPosition = 0 means that file is played to end
                 if (lEndPosition != 0)
                 {
@@ -660,7 +660,7 @@ namespace AudioLib
                 mCurrentAudioStream = mCurrentAudioStreamProvider();
 
                 mCurrentAudioStream.Position = lStartPosition;
-                
+
                 mSoundBuffer.Write(0, mCurrentAudioStream, m_SizeBuffer, 0);
 
                 // Adds the length (count) of file played into a variable
@@ -674,15 +674,15 @@ namespace AudioLib
                 MoniteringTimer.Enabled = true;
                 // starts playing
                 try
-                    {
-                    mSoundBuffer.Play ( 0, BufferPlayFlags.Looping );
-                    }
+                {
+                    mSoundBuffer.Play(0, BufferPlayFlags.Looping);
+                }
                 catch (System.Exception ex)
-                    {
-                    EmergencyStopForSoundBufferProblem ();
+                {
+                    EmergencyStopForSoundBufferProblem();
                     //TODO System.Windows.Forms.MessageBox.Show ( string.Format( Localizer.Message ( "Player_TryAgain" ) , "\n\n" , ex.ToString ()) ) ;
                     return;
-                    }
+                }
                 m_BufferCheck = 1;
 
                 //initialise and start thread for refreshing buffer
@@ -721,7 +721,7 @@ namespace AudioLib
                     if (ReadPosition < ((m_SizeBuffer) - m_UpdateVMArrayLength))
                     {
                         Array.Copy(mSoundBuffer.Read(ReadPosition, typeof(byte), LockFlag.None, m_UpdateVMArrayLength), arUpdateVM, m_UpdateVMArrayLength);
-                        if (mEventsEnabled == true)
+                        if (mEventsEnabled == true && UpdateVuMeter != null)
                             UpdateVuMeter(this, new Events.Player.UpdateVuMeterEventArgs());  // JQ // temp for debugging tk
                     }
                 }
@@ -805,27 +805,27 @@ namespace AudioLib
             PreviewPlaybackStop();
             // RefreshBuffer ends
         }
-        private bool m_IsEventEnabledDelayedTillTimer= true ;
+        private bool m_IsEventEnabledDelayedTillTimer = true;
 
         private void PreviewPlaybackStop()
         {
-                        if (m_IsPreviewing)
+            if (m_IsPreviewing)
             {
                 m_IsPreviewing = false;
                 m_IsEndOfAsset = false;
                 mEventsEnabled = true;
-                
+
                 if (m_StateBeforePreview == AudioPlayerState.Paused)
                 {
-                    Events.Player.StateChangedEventArgs e = new AudioLib.Events.Player.StateChangedEventArgs( AudioPlayerState.Playing );
+                    Events.Player.StateChangedEventArgs e = new AudioLib.Events.Player.StateChangedEventArgs(AudioPlayerState.Playing);
                     mState = AudioPlayerState.Paused;
                     mPausePosition = m_PreviewStartPosition;
                     TriggerStateChangedEvent(e);
-                                    }
-                else if (m_StateBeforePreview == AudioPlayerState.Stopped )
+                }
+                else if (m_StateBeforePreview == AudioPlayerState.Stopped)
                 {
                     Events.Player.StateChangedEventArgs e = new AudioLib.Events.Player.StateChangedEventArgs(AudioPlayerState.Playing);
-                                                            TriggerStateChangedEvent(e);
+                    TriggerStateChangedEvent(e);
                 }
             }
         }
@@ -837,10 +837,10 @@ namespace AudioLib
         ///
         public void PlaySimulateEmpty()
         {
-            Events.Player.StateChangedEventArgs  e = new Events.Player.StateChangedEventArgs(mState);
+            Events.Player.StateChangedEventArgs e = new Events.Player.StateChangedEventArgs(mState);
             mState = AudioPlayerState.Playing;
             TriggerStateChangedEvent(e);
-            
+
 
             Thread.Sleep(50);
 
@@ -849,9 +849,9 @@ namespace AudioLib
             TriggerStateChangedEvent(e);
 
             // trigger end of asset event
-            if (mEventsEnabled == true)
+            if (mEventsEnabled == true && EndOfAudioAsset != null)
                 EndOfAudioAsset(this, new Events.Player.EndOfAudioAssetEventArgs());
-//            System.Media.SystemSounds.Asterisk.Play();
+            //            System.Media.SystemSounds.Asterisk.Play();
         }
 
         /// <summary>
@@ -874,109 +874,109 @@ namespace AudioLib
         /// Resumes from paused position with resume command or starts from begining/specified start position with play command.
         /// /<see cref=""/>
         /// </summary>
-		public void Pause()
-		{
+        public void Pause()
+        {
             // API state is used
-			if ( State.Equals(AudioPlayerState .Playing)  )
-			{
+            if (State.Equals(AudioPlayerState.Playing))
+            {
                 if (m_IsPreviewing)
                     m_IsPreviewing = false;
 
-                    mPausePosition = GetCurrentBytePosition();
-                    if (!mIsFwdRwd)
-                        m_lResumeToPosition = m_lPlayEnd;
-                    else
-                        m_lResumeToPosition = 0;
+                mPausePosition = GetCurrentBytePosition();
+                if (!mIsFwdRwd)
+                    m_lResumeToPosition = m_lPlayEnd;
+                else
+                    m_lResumeToPosition = 0;
 
                 StopPlayback();
 
-				// Change the state and trigger event
-				Events.Player.StateChangedEventArgs e = new Events.Player.StateChangedEventArgs(mState) ;
+                // Change the state and trigger event
+                Events.Player.StateChangedEventArgs e = new Events.Player.StateChangedEventArgs(mState);
                 mState = AudioPlayerState.Paused;
-				TriggerStateChangedEvent(e);
-                
-			}
-		}
+                TriggerStateChangedEvent(e);
+
+            }
+        }
 
         /// <summary>
         ///  Resumes from paused position if player is in paused state
         /// </summary>
-		public void Resume()
-		{
+        public void Resume()
+        {
             // API state will be used for public functions
-            			if ( State.Equals(AudioPlayerState.Paused))
-			{
-                
-                long lPosition = CalculationFunctions.AdaptToFrame( mPausePosition , mCurrentAudioPCMFormat.BlockAlign  );
-                long lEndPosition = CalculationFunctions.AdaptToFrame( m_lResumeToPosition , mCurrentAudioPCMFormat.BlockAlign);
+            if (State.Equals(AudioPlayerState.Paused))
+            {
+
+                long lPosition = CalculationFunctions.AdaptToFrame(mPausePosition, mCurrentAudioPCMFormat.BlockAlign);
+                long lEndPosition = CalculationFunctions.AdaptToFrame(m_lResumeToPosition, mCurrentAudioPCMFormat.BlockAlign);
 
                 if (lPosition >= 0 && lPosition < mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration))
                 {
                     mStartPosition = lPosition;
-                                        InitPlay(lPosition, lEndPosition );
+                    InitPlay(lPosition, lEndPosition);
                 }
                 else
                     throw new Exception("Start Position is out of bounds of Audio Asset");
-			}			
-		}
+            }
+        }
 
-		public void Stop()
-		{
+        public void Stop()
+        {
             // API state is used
-			if ( State != AudioPlayerState.Stopped )			
-			{
+            if (State != AudioPlayerState.Stopped)
+            {
                 if (m_IsPreviewing)
                     m_IsPreviewing = false;
 
-				                StopPlayback();
+                StopPlayback();
 
-                                mCurrentAudioPCMFormat = null;
-                                mCurrentAudioDuration = null;
-                                mCurrentAudioStreamProvider = null;
-			}
-            
-        mPausePosition = 0;
-			Events.Player.StateChangedEventArgs e = new Events.Player.StateChangedEventArgs(mState);
-            mState = AudioPlayerState.Stopped;
-			TriggerStateChangedEvent(e);
-		}
-
-
-        private void EmergencyStopForSoundBufferProblem ()
-            {
-            if (m_IsPreviewing)
-                    m_IsPreviewing = false;
-            ////
-                StopForwardRewind ();
-                mSoundBuffer.Stop ();
-                if (RefreshThread != null && RefreshThread.IsAlive) RefreshThread.Abort ();
-                mBufferStopPosition = -1;
-                if (ResetVuMeter != null)
-                    ResetVuMeter ( this, new AudioLib.Events.Player.UpdateVuMeterEventArgs () );
-
-                mCurrentAudioStream.Close ();
-
-                mCurrentAudioStream = null;
                 mCurrentAudioPCMFormat = null;
                 mCurrentAudioDuration = null;
                 mCurrentAudioStreamProvider = null;
-        ////
-			
-        mPausePosition = 0;
-			Events.Player.StateChangedEventArgs e = new Events.Player.StateChangedEventArgs(mState);
-            mState = AudioPlayerState.Stopped;
-			TriggerStateChangedEvent(e);
-	
             }
 
+            mPausePosition = 0;
+            Events.Player.StateChangedEventArgs e = new Events.Player.StateChangedEventArgs(mState);
+            mState = AudioPlayerState.Stopped;
+            TriggerStateChangedEvent(e);
+        }
 
 
-		long mStartPosition;
+        private void EmergencyStopForSoundBufferProblem()
+        {
+            if (m_IsPreviewing)
+                m_IsPreviewing = false;
+            ////
+            StopForwardRewind();
+            mSoundBuffer.Stop();
+            if (RefreshThread != null && RefreshThread.IsAlive) RefreshThread.Abort();
+            mBufferStopPosition = -1;
+            if (ResetVuMeter != null)
+                ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
+
+            mCurrentAudioStream.Close();
+
+            mCurrentAudioStream = null;
+            mCurrentAudioPCMFormat = null;
+            mCurrentAudioDuration = null;
+            mCurrentAudioStreamProvider = null;
+            ////
+
+            mPausePosition = 0;
+            Events.Player.StateChangedEventArgs e = new Events.Player.StateChangedEventArgs(mState);
+            mState = AudioPlayerState.Stopped;
+            TriggerStateChangedEvent(e);
+
+        }
+
+
+
+        long mStartPosition;
 
 
         // Set the current time position in milliseconds
-		private void SetCurrentTimePosition(double position) 
-		{
+        private void SetCurrentTimePosition(double position)
+        {
             if (mState != AudioPlayerState.Stopped || mCurrentAudioStream != null)
             {
                 if (position < 0) position = 0;
@@ -986,7 +986,7 @@ namespace AudioLib
                 {
                     position = duration;
                 }
-                mEventsEnabled = false;
+                //mEventsEnabled = false;
                 if (State == AudioPlayerState.Playing)
                 {
 
@@ -997,18 +997,19 @@ namespace AudioLib
                     Stop();
                     Thread.Sleep(30);
 
-                    mStartPosition = CalculationFunctions.ConvertTimeToByte(position, (int) fmt.SampleRate, fmt.BlockAlign);
+                    mCurrentAudioStream = spd();
+                    mStartPosition = CalculationFunctions.ConvertTimeToByte(position, (int)fmt.SampleRate, fmt.BlockAlign);
                     //InitPlay (position, 0 );
                     Play(spd, dur, fmt, position);
                 }
                 else if (mState.Equals(AudioPlayerState.Paused))
                 {
-                    mStartPosition = CalculationFunctions.ConvertTimeToByte(position, (int) mCurrentAudioPCMFormat.SampleRate, mCurrentAudioPCMFormat.BlockAlign);
+                    mStartPosition = CalculationFunctions.ConvertTimeToByte(position, (int)mCurrentAudioPCMFormat.SampleRate, mCurrentAudioPCMFormat.BlockAlign);
                     mPausePosition = mStartPosition;
                 }
-                mEventsEnabled = true;
+                //mEventsEnabled = true;
             }
-		}
+        }
 
 
         //  FastForward , Rewind playback modes
@@ -1016,31 +1017,31 @@ namespace AudioLib
         ///  Starts playing small chunks of audio while jumping backward in audio assets
         /// </summary>
         /// <param name="lStartPosition"></param>
-        private  void Rewind( long lStartPosition  )
+        private void Rewind(long lStartPosition)
         {
-                                    // let's play backward!
-            if ( mFwdRwdRate !=  0 )
+            // let's play backward!
+            if (mFwdRwdRate != 0)
             {
-                                m_lChunkStartPosition = lStartPosition ;
-                                                mEventsEnabled = false;
-                                mIsFwdRwd = true;
-                                mPreviewTimer.Interval = 50;
+                m_lChunkStartPosition = lStartPosition;
+                mEventsEnabled = false;
+                mIsFwdRwd = true;
+                mPreviewTimer.Interval = 50;
                 mPreviewTimer.Start();
-                
-                            }
+
+            }
         }
-        
+
 
         /// <summary>
         ///  Starts playing small chunks while jumping forward in audio asset
         /// <see cref=""/>
         /// </summary>
         /// <param name="lStartPosition"></param>
-        private void FastForward(long lStartPosition   )
+        private void FastForward(long lStartPosition)
         {
 
             // let's play forward!
-            if (mFwdRwdRate !=  0  )
+            if (mFwdRwdRate != 0)
             {
                 m_lChunkStartPosition = lStartPosition;
                 mEventsEnabled = false;
@@ -1050,7 +1051,7 @@ namespace AudioLib
             }
         }
 
-        
+
 
         ///Preview timer tick function
         private void PreviewTimer_Tick(object sender, EventArgs e)
@@ -1085,7 +1086,7 @@ namespace AudioLib
                 else
                 { //3
                     Stop();
-                    if (mEventsEnabled)
+                    if (mEventsEnabled && EndOfAudioAsset != null)
                         EndOfAudioAsset(this, new Events.Player.EndOfAudioAssetEventArgs());
                 } //-3
             } //-2
@@ -1109,7 +1110,7 @@ namespace AudioLib
                 else
                 {
                     Stop();
-                    if (mEventsEnabled)
+                    if (mEventsEnabled && EndOfAudioAsset != null)
                         EndOfAudioAsset(this, new Events.Player.EndOfAudioAssetEventArgs());
                 }
             } //-2
@@ -1135,7 +1136,7 @@ namespace AudioLib
 
         private void MoniteringTimer_Tick(object sender, EventArgs e)
         {
-            if ( m_IsEndOfAsset == true)
+            if (m_IsEndOfAsset == true)
             {
                 m_IsEndOfAsset = false;
                 MoniteringTimer.Enabled = false;
@@ -1144,12 +1145,12 @@ namespace AudioLib
                 {
                     if (EndOfAudioAsset != null)
                         EndOfAudioAsset(this, new Events.Player.EndOfAudioAssetEventArgs());
-                                            
-                                    }
-            if (mEventsEnabled == true)
-                m_IsEventEnabledDelayedTillTimer= true;
-            else
-                m_IsEventEnabledDelayedTillTimer= false;
+
+                }
+                if (mEventsEnabled == true)
+                    m_IsEventEnabledDelayedTillTimer = true;
+                else
+                    m_IsEventEnabledDelayedTillTimer = false;
             }
 
         }

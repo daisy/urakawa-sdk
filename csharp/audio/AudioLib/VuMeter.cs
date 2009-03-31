@@ -587,7 +587,7 @@ namespace AudioLib
                 {
                     e = new AudioLib.Events.VuMeter.PeakOverloadEventArgs(2, 0);
                 }
-                PeakOverload(this, e);
+                if (PeakOverload != null) PeakOverload(this, e);
             }
             else
             {
