@@ -137,7 +137,10 @@ namespace urakawa.media.data.audio
         /// </summary>
         public ushort BlockAlign
         {
-            get { return (ushort) (NumberOfChannels*(BitDepth/8)); }
+            get
+            {
+                return (ushort) (NumberOfChannels * BitDepth / 8);
+            }
         }
 
         /// <summary>
