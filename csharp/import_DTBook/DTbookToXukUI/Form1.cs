@@ -30,7 +30,7 @@ namespace DTbookToXukUI
 
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
-            //nothing new here
+            //nothing new here 
             base.XukInChild(source, handler);
         }
 
@@ -129,20 +129,14 @@ namespace DTbookToXukUI
             txtBookName.Clear();
             var open = new OpenFileDialog();
             //open.InitialDirectory = @"C:\";
-            open.Filter = "XML Files (*.xml)|*.xml|All files(*.*)|*.*";
+            open.Filter = "XML Files (*.xml)|*.xml|(*.opf)|*.opf|All files(*.*)|*.*";
             open.FilterIndex = 1;
             open.RestoreDirectory = true;
             if (open.ShowDialog(this) == DialogResult.OK)
             {
-                //m_DTBook_FilePath = open.FileName;
-                // txtBookName.Text = m_DTBook_FilePath;
-                //uriDTBook = new Uri(m_DTBook_FilePath);
                 txtBookName.Text = open.FileName;
-                var uriDTBook = new Uri(txtBookName.Text);
-                DTBooktoXukConversion converter = new DTBooktoXukConversion(uriDTBook);
-
-
-
+                string pathDTBook = txtBookName.Text;
+                DTBooktoXukConversion converter = new DTBooktoXukConversion(pathDTBook);
                 Channel channelText = null;
                 Channel channelAudio = null;
                 List<Channel> listCh = converter.Project.GetPresentation(0).ChannelsManager.ListOfChannels;
