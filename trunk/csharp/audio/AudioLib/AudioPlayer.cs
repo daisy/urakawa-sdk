@@ -464,7 +464,7 @@ namespace AudioLib
             {
                 throw new ArgumentNullException("Stream cannot be null !");
             }
-            if (duration.TimeDeltaAsMillisecondFloat <= 0)
+            if (duration.TimeDeltaAsMillisecondDouble <= 0)
             {
                 throw new ArgumentOutOfRangeException("Duration cannot be <= 0 !");
             }
@@ -997,7 +997,7 @@ namespace AudioLib
             {
                 if (position < 0) position = 0;
 
-                double duration = mCurrentAudioDuration.TimeDeltaAsMillisecondFloat;
+                double duration = mCurrentAudioDuration.TimeDeltaAsMillisecondDouble;
                 if (position > duration)
                 {
                     position = duration;

@@ -293,7 +293,7 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration of the audio to add</param>
         public virtual void AppendAudioData(Stream pcmData, TimeDelta duration)
         {
-            InsertAudioData(pcmData, new Time(AudioDuration.TimeDeltaAsMillisecondFloat), duration);
+            InsertAudioData(pcmData, new Time(AudioDuration.TimeDeltaAsMillisecondDouble), duration);
         }
 
         private void ParseRiffWaveStream(Stream riffWaveStream, out TimeDelta duration)
