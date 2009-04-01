@@ -76,7 +76,7 @@ namespace urakawa.media.timing
         /// </exception>
         public TimeDelta(double val)
         {
-            TimeDeltaAsMillisecondFloat = val;
+            TimeDeltaAsMillisecondDouble = val;
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace urakawa.media.timing
         /// Gets <c>this</c> as a millisecond floating point value
         /// /// </summary>
         /// <returns>The millisecond value</returns>
-        public double TimeDeltaAsMillisecondFloat
+        public double TimeDeltaAsMillisecondDouble
         {
             get { return ((double) mTimeDelta.Ticks)/((double) TimeSpan.TicksPerMillisecond); }
             set { TimeDeltaAsTimeSpan = TimeSpan.FromTicks((long) (value*(double) TimeSpan.TicksPerMillisecond)); }
