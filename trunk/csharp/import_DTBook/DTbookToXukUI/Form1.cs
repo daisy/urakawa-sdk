@@ -127,6 +127,7 @@ namespace DTbookToXukUI
         private void btnLoad_Click_1(object sender, EventArgs e)
         {
             txtBookName.Clear();
+
             var open = new OpenFileDialog();
             //open.InitialDirectory = @"C:\";
             open.Filter = "XML Files (*.xml)|*.xml|OPF Files (*.opf)|*.opf|All files(*.*)|*.*";
