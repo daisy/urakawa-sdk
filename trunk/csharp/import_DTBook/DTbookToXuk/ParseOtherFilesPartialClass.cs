@@ -20,33 +20,32 @@ namespace DTbookToXuk
 {
     public partial class DTBooktoXukConversion
     {
-        public static DTBooktoXukConversion ob_DTBookClass;
-        public static AudioChannel m_audioChannel;
-        public string m_fullNcxPath;
-        public string m_DirectoryPath; 
+        private AudioChannel m_audioChannel;
 
-
-        public void parseOtherDaisyFilesAndPopulateDataModel()
+        public void parseOPFAndPopulateDataModel()
         {
-            string dirPath = Path.GetDirectoryName(m_DTBook_FilePath);
-            XmlDocument opfXmlDoc = DTBooktoXukConversion.readXmlDocument(m_DTBook_FilePath);
+            string dirPath = Path.GetDirectoryName(m_Book_FilePath);
+            XmlDocument opfXmlDoc = readXmlDocument(m_Book_FilePath);
             parseOpfDcMetaData(opfXmlDoc);
             parseOpfMetaData(opfXmlDoc);
 
             List<string> spineListOfSmilFiles;
             string ncxPath;
+            string m_DirectoryPath;
+
             parseOpfManifestAndSpine(opfXmlDoc, out spineListOfSmilFiles, out ncxPath);
 
             if (ncxPath != null)
             {
-                m_DirectoryPath = Directory.GetParent(m_DTBook_FilePath).FullName;
-                m_fullNcxPath = Path.Combine(m_DirectoryPath, ncxPath);
+                m_DirectoryPath = Directory.GetParent(m_Book_FilePath).FullName;
+                string m_fullNcxPath = Path.Combine(m_DirectoryPath, ncxPath);
                 parseNcx(m_fullNcxPath);
             }
 
             if (spineListOfSmilFiles != null)
             {
-                Presentation presentation = DTBooktoXukConversion.m_Project.GetPresentation(0);
+                //Presentation presentation = DTBooktoXukConversion.m_Project.GetPresentation(0);
+                Presentation presentation = m_Project.GetPresentation(0);
 
                 m_audioChannel = presentation.ChannelFactory.CreateAudioChannel();
                 m_audioChannel.Name = "Our Audio Channel";
@@ -58,10 +57,10 @@ namespace DTbookToXuk
                 {
                     Directory.Delete(dataPath, true);
                 }
-               
+
                 foreach (string smilPath in spineListOfSmilFiles)
                 {
-                    m_DirectoryPath = Directory.GetParent(m_DTBook_FilePath).FullName;
+                    m_DirectoryPath = Directory.GetParent(m_Book_FilePath).FullName;
                     string fullSmilPath = Path.Combine(m_DirectoryPath, smilPath);
                     parseSmil(fullSmilPath);
                 }
@@ -72,8 +71,8 @@ namespace DTbookToXuk
         {
             Presentation presentation = m_Project.GetPresentation(0);
 
-            string dirPath = Path.GetDirectoryName(m_DTBook_FilePath);
-          
+            string dirPath = Path.GetDirectoryName(m_Book_FilePath);
+
             XmlDocument smilXmlDoc = readXmlDocument(fullSmilPath);
 
             XmlNodeList listOfAudioNodes = smilXmlDoc.GetElementsByTagName("audio");
@@ -230,9 +229,11 @@ namespace DTbookToXuk
         }
         private void parseNcx(string ncxPath)
         {
-            Presentation presentation = DTBooktoXukConversion.m_Project.GetPresentation(0);
+            //Presentation presentation = DTBooktoXukConversion.m_Project.GetPresentation(0);
+            Presentation presentation = m_Project.GetPresentation(0);
+            //XmlDocument ncxXmlDoc = DTBooktoXukConversion.readXmlDocument(ncxPath);
+            XmlDocument ncxXmlDoc = readXmlDocument(ncxPath);
 
-            XmlDocument ncxXmlDoc = DTBooktoXukConversion.readXmlDocument(ncxPath);
 
             XmlNodeList listOfHeadRootNodes = ncxXmlDoc.GetElementsByTagName("head");
             if (listOfHeadRootNodes != null)
@@ -359,7 +360,8 @@ namespace DTbookToXuk
 
         private void parseOpfDcMetaData(XmlDocument opfXmlDoc)
         {
-            Presentation presentation = DTBooktoXukConversion.m_Project.GetPresentation(0);
+            //Presentation presentation = DTBooktoXukConversion.m_Project.GetPresentation(0);
+            Presentation presentation = m_Project.GetPresentation(0);
 
             XmlNodeList listOfMetaDataRootNodes = opfXmlDoc.GetElementsByTagName("dc-metadata");
             if (listOfMetaDataRootNodes != null)
@@ -386,7 +388,8 @@ namespace DTbookToXuk
 
         private void parseOpfMetaData(XmlDocument opfXmlDoc)
         {
-            Presentation presentation = DTBooktoXukConversion.m_Project.GetPresentation(0);
+            //Presentation presentation = DTBooktoXukConversion.m_Project.GetPresentation(0);
+            Presentation presentation = m_Project.GetPresentation(0);
 
             XmlNodeList listOfMetaDataRootNodes = opfXmlDoc.GetElementsByTagName("x-metadata");
             if (listOfMetaDataRootNodes != null)

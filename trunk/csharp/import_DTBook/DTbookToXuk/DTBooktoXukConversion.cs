@@ -20,20 +20,22 @@ namespace DTbookToXuk
 {
     public partial class DTBooktoXukConversion
     {
-        public string m_DTBook_FilePath;
-        public static XmlDocument m_DTBookXmlDoc;
-        public static Project m_Project;
-        public static TextChannel m_textChannel;
+        private readonly string m_Book_FilePath;
+        private XmlDocument m_BookXmlDoc;
+        private Project m_Project;
+        private TextChannel m_textChannel;
 
-       public DTBooktoXukConversion(string bookfile)
-       {    m_DTBook_FilePath = bookfile;        
-            Uri uri = new Uri(m_DTBook_FilePath);
+        public DTBooktoXukConversion(string bookfile)
+        {
+            m_Book_FilePath = bookfile;
+            Uri uri = new Uri(m_Book_FilePath);
             transformDTBook();
 
         }
-        public void transformDTBook()
+
+        private void transformDTBook()
         {
-            m_DTBookXmlDoc = readXmlDocument(m_DTBook_FilePath);
+            m_BookXmlDoc = readXmlDocument(m_Book_FilePath);
             initializeDataModel();
         }
         public Project Project
@@ -47,14 +49,14 @@ namespace DTbookToXuk
 
         }
 
-        public void initializeDataModel()
+        private void initializeDataModel()
         {
             m_Project = new Project();
 
             //m_Project.PresentationFactory.Create();
             Presentation presentation = m_Project.AddNewPresentation();
 
-            string dirPath = Path.GetDirectoryName(m_DTBook_FilePath);
+            string dirPath = Path.GetDirectoryName(m_Book_FilePath);
             if (!dirPath.EndsWith("" + Path.DirectorySeparatorChar))
             {
                 dirPath = dirPath + Path.DirectorySeparatorChar;
@@ -116,22 +118,23 @@ namespace DTbookToXuk
             m_textChannel.Name = "Our Text Channel";
 
 
-           
+
             // Experimentation with audio stuff, added metadata from OPF, etc.
-                      
-            FileInfo DTBFilePathInfo = new FileInfo(m_DTBook_FilePath);
+
+            FileInfo DTBFilePathInfo = new FileInfo(m_Book_FilePath);
             switch (DTBFilePathInfo.Extension)
             {
                 case ".opf":
-                    parseOtherDaisyFilesAndPopulateDataModel();
+                    parseOPFAndPopulateDataModel();
                     break;
                 case ".xml":
-                    parseXmlDocAndPopulateDataModel(m_DTBookXmlDoc, null);
+                    parseDTBookXmlDocAndPopulateDataModel(m_BookXmlDoc, null);
                     break;
                 default: return;
             }
         }
-        public static XmlDocument readXmlDocument(string path)
+
+        private XmlDocument readXmlDocument(string path)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
 
@@ -141,7 +144,7 @@ namespace DTbookToXuk
             settings.IgnoreComments = true;
             settings.IgnoreProcessingInstructions = true;
             settings.IgnoreWhitespace = true;
-           
+
             XmlReader xmlReader = XmlReader.Create(path, settings);
 
             XmlDocument xmldoc = new XmlDocument();
@@ -158,13 +161,13 @@ namespace DTbookToXuk
             return xmldoc;
         }
 
-        public static core.TreeNode getTreeNodeWithXmlElementId(string id)
+        private core.TreeNode getTreeNodeWithXmlElementId(string id)
         {
             Presentation pres = m_Project.GetPresentation(0);
             return getTreeNodeWithXmlElementId(pres.RootNode, id);
         }
 
-        public static core.TreeNode getTreeNodeWithXmlElementId(core.TreeNode node, string id)
+        private core.TreeNode getTreeNodeWithXmlElementId(core.TreeNode node, string id)
         {
             if (node.GetXmlElementId() == id) return node;
 
@@ -179,7 +182,7 @@ namespace DTbookToXuk
             return null;
         }
 
-        private void parseXmlDocAndPopulateDataModel(XmlNode xmlNode, core.TreeNode parentTreeNode)
+        private void parseDTBookXmlDocAndPopulateDataModel(XmlNode xmlNode, core.TreeNode parentTreeNode)
         {
 
             XmlNodeType xmlType = xmlNode.NodeType;
@@ -192,7 +195,7 @@ namespace DTbookToXuk
                     }
                 case XmlNodeType.Document:
                     {
-                        parseXmlDocAndPopulateDataModel(((XmlDocument)xmlNode).DocumentElement, parentTreeNode);
+                        parseDTBookXmlDocAndPopulateDataModel(((XmlDocument)xmlNode).DocumentElement, parentTreeNode);
                         break;
                     }
                 case XmlNodeType.Element:
@@ -256,7 +259,7 @@ namespace DTbookToXuk
 
                         foreach (XmlNode childXmlNode in xmlNode.ChildNodes)
                         {
-                            parseXmlDocAndPopulateDataModel(childXmlNode, treeNode);
+                            parseDTBookXmlDocAndPopulateDataModel(childXmlNode, treeNode);
                         }
                         break;
                     }
@@ -300,4 +303,4 @@ namespace DTbookToXuk
             }
         }
     }//class
-  }//namespace
+}//namespace

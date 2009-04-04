@@ -129,7 +129,7 @@ namespace DTbookToXukUI
             txtBookName.Clear();
             var open = new OpenFileDialog();
             //open.InitialDirectory = @"C:\";
-            open.Filter = "XML Files (*.xml)|*.xml|(*.opf)|*.opf|All files(*.*)|*.*";
+            open.Filter = "XML Files (*.xml)|*.xml|OPF Files (*.opf)|*.opf|All files(*.*)|*.*";
             open.FilterIndex = 1;
             open.RestoreDirectory = true;
             if (open.ShowDialog(this) == DialogResult.OK)
@@ -268,15 +268,9 @@ namespace DTbookToXukUI
                 }
                 projectComp.GetPresentation(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
                 System.Diagnostics.Debug.Assert(converter.Project.ValueEquals(projectComp));
-                /////
-                /// //// Make sure we don't create concurrent access to WAV files while opening the same XUK file in several projects.
+
+                //// Make sure we don't create concurrent access to WAV files while opening the same XUK file in several projects.
                 System.Diagnostics.Debug.Assert(projectComp.ValueEquals(projectPretty));
-
-
-
-
-
-                /////
 
                 converter.Project.GetPresentation(0).UndoRedoManager.Redo();
 
@@ -302,7 +296,7 @@ namespace DTbookToXukUI
         {
             txtBookName.Clear();
         }
-       
+
         private void btnExit_Click(object sender, EventArgs e)
         {
             Close();
