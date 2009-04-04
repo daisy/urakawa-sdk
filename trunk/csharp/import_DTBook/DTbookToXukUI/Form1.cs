@@ -207,7 +207,7 @@ namespace DTbookToXukUI
                 converter.Project.GetPresentation(0).UndoRedoManager.Undo();
 
                 ////
-
+                ////
                 Uri uriComp = new Uri(txtBookName.Text + ".COMPRESSED.xuk");
 
                 converter.Project.SetPrettyFormat(false);
