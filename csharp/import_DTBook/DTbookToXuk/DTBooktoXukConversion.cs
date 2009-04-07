@@ -1,56 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using urakawa;
-using urakawa.core;
 using urakawa.media;
 using urakawa.media.data;
-using urakawa.media.data.audio;
-using urakawa.media.data.audio.codec;
-using urakawa.media.timing;
 using urakawa.metadata;
 using urakawa.property.channel;
 using urakawa.property.xml;
-using urakawa.xuk;
 using core = urakawa.core;
-using System.Windows.Forms;
 
 namespace DTbookToXuk
 {
     public partial class DTBooktoXukConversion
     {
         private readonly string m_Book_FilePath;
-        private XmlDocument m_BookXmlDoc;
         private Project m_Project;
         private TextChannel m_textChannel;
 
         public DTBooktoXukConversion(string bookfile)
         {
             m_Book_FilePath = bookfile;
-            Uri uri = new Uri(m_Book_FilePath);
             transformDTBook();
-
         }
 
         private void transformDTBook()
         {
-            m_BookXmlDoc = readXmlDocument(m_Book_FilePath);
-            initializeDataModel();
-        }
-        public Project Project
-        {
-            get { return m_Project; }
-        }
-
-        static void Main()
-        {
-            Console.WriteLine("Hello World, from DTBooktoXukConversion project !");
-
-        }
-
-        private void initializeDataModel()
-        {
+            XmlDocument bookXmlDoc = readXmlDocument(m_Book_FilePath);
             m_Project = new Project();
 
             //m_Project.PresentationFactory.Create();
@@ -125,13 +100,22 @@ namespace DTbookToXuk
             switch (DTBFilePathInfo.Extension)
             {
                 case ".opf":
-                    parseOPFAndPopulateDataModel();
-                    break;
+                    {
+                        parseOPFAndPopulateDataModel();
+                        break;
+                    }
                 case ".xml":
-                    parseDTBookXmlDocAndPopulateDataModel(m_BookXmlDoc, null);
+                    {
+                        parseDTBookXmlDocAndPopulateDataModel(bookXmlDoc, null);
+                        break;
+                    }
+                default:
                     break;
-                default: return;
             }
+        }
+        public Project Project
+        {
+            get { return m_Project; }
         }
 
         private XmlDocument readXmlDocument(string path)
@@ -167,7 +151,7 @@ namespace DTbookToXuk
             return getTreeNodeWithXmlElementId(pres.RootNode, id);
         }
 
-        private core.TreeNode getTreeNodeWithXmlElementId(core.TreeNode node, string id)
+        private static core.TreeNode getTreeNodeWithXmlElementId(core.TreeNode node, string id)
         {
             if (node.GetXmlElementId() == id) return node;
 
@@ -184,7 +168,6 @@ namespace DTbookToXuk
 
         private void parseDTBookXmlDocAndPopulateDataModel(XmlNode xmlNode, core.TreeNode parentTreeNode)
         {
-
             XmlNodeType xmlType = xmlNode.NodeType;
             switch (xmlType)
             {
