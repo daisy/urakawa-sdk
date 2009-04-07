@@ -92,12 +92,17 @@ namespace DTbookToXuk
             m_textChannel = presentation.ChannelFactory.CreateTextChannel();
             m_textChannel.Name = "Our Text Channel";
 
+            //FileInfo DTBFilePathInfo = new FileInfo(m_Book_FilePath);
+            //switch (DTBFilePathInfo.Extension)
 
+            int indexOfDot = m_Book_FilePath.LastIndexOf('.');
+            if (indexOfDot < 0 || indexOfDot == m_Book_FilePath.Length - 1)
+            {
+                return;
+            }
 
-            // Experimentation with audio stuff, added metadata from OPF, etc.
-
-            FileInfo DTBFilePathInfo = new FileInfo(m_Book_FilePath);
-            switch (DTBFilePathInfo.Extension)
+            string fileExt = m_Book_FilePath.Substring(indexOfDot);
+            switch (fileExt)
             {
                 case ".opf":
                     {
