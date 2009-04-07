@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using urakawa;
-using urakawa.core;
 using urakawa.media;
-using urakawa.media.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
 using urakawa.media.timing;
 using urakawa.metadata;
 using urakawa.property.channel;
-using urakawa.property.xml;
-using urakawa.xuk;
 using core = urakawa.core;
-using System.Windows.Forms;
 
 namespace DTbookToXuk
 {
@@ -22,24 +17,25 @@ namespace DTbookToXuk
     {
         private AudioChannel m_audioChannel;
 
-        public void parseOPFAndPopulateDataModel()
+        private void parseOPFAndPopulateDataModel()
         {
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);
+            //dirPath = Directory.GetParent(m_Book_FilePath).FullName;
+
             XmlDocument opfXmlDoc = readXmlDocument(m_Book_FilePath);
+
             parseOpfDcMetaData(opfXmlDoc);
             parseOpfMetaData(opfXmlDoc);
 
             List<string> spineListOfSmilFiles;
             string ncxPath;
-            string m_DirectoryPath;
 
             parseOpfManifestAndSpine(opfXmlDoc, out spineListOfSmilFiles, out ncxPath);
 
             if (ncxPath != null)
             {
-                m_DirectoryPath = Directory.GetParent(m_Book_FilePath).FullName;
-                string m_fullNcxPath = Path.Combine(m_DirectoryPath, ncxPath);
-                parseNcx(m_fullNcxPath);
+                string fullNcxPath = Path.Combine(dirPath, ncxPath);
+                parseNcx(fullNcxPath);
             }
 
             if (spineListOfSmilFiles != null)
@@ -60,8 +56,7 @@ namespace DTbookToXuk
 
                 foreach (string smilPath in spineListOfSmilFiles)
                 {
-                    m_DirectoryPath = Directory.GetParent(m_Book_FilePath).FullName;
-                    string fullSmilPath = Path.Combine(m_DirectoryPath, smilPath);
+                    string fullSmilPath = Path.Combine(dirPath, smilPath);
                     parseSmil(fullSmilPath);
                 }
             }
@@ -227,6 +222,7 @@ namespace DTbookToXuk
                 }
             }
         }
+
         private void parseNcx(string ncxPath)
         {
             //Presentation presentation = DTBooktoXukConversion.m_Project.GetPresentation(0);
@@ -269,6 +265,7 @@ namespace DTbookToXuk
                 }
             }
         }
+
         private void parseOpfManifestAndSpine(XmlDocument opfXmlDoc, out List<string> spineListOfSmilFiles, out string ncxPath)
         {
             spineListOfSmilFiles = new List<string>();
