@@ -320,13 +320,13 @@ namespace urakawa.media.data.audio.codec
             Stream nsdps = newSingleDataProvider.GetOutputStream();
             try
             {
-                pcmInfo.WriteRiffWaveHeader(nsdps);
+                ulong pos = pcmInfo.WriteRiffWaveHeader(nsdps);
             }
             finally
             {
                 nsdps.Close();
             }
-            DataProviderManager.AppendDataToProvider(pcmData, (int)pcmInfo.DataLength, newSingleDataProvider);
+            DataProviderManager.AppendDataToProvider(pcmData, pcmInfo.DataLength, newSingleDataProvider);
             WavClip newSingleWavClip = new WavClip(newSingleDataProvider);
             return newSingleWavClip;
         }
@@ -578,6 +578,7 @@ namespace urakawa.media.data.audio.codec
             if (insertPoint.IsEqualTo(endTime))
             {
                 mWavClips.Add(newInsClip);
+                NotifyAudioDataInserted(this, insertPoint, duration);
                 return;
             }
             Time elapsedTime = Time.Zero;

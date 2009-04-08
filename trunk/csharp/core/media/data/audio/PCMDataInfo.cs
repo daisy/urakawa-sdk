@@ -69,6 +69,7 @@ namespace urakawa.media.data.audio
         public ulong WriteRiffWaveHeader(Stream output)
         {
             long initPos = output.Position;
+
             BinaryWriter wr = new BinaryWriter(output);
             wr.Write(Encoding.ASCII.GetBytes("RIFF")); //Chunk Uid
             uint chunkSize = 4 + 8 + 16 + 8 + DataLength;
