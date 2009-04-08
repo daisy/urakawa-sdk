@@ -2,9 +2,9 @@
 <xs:schema
  xmlns:xs="http://www.w3.org/2001/XMLSchema"
  elementFormDefault="qualified"
- targetNamespace="http://www.daisy.org/urakawa/xuk/2.0"
- xmlns="http://www.daisy.org/urakawa/xuk/2.0"
- xmlns:xuk="http://www.daisy.org/urakawa/xuk/2.0">
+ targetNamespace="http://www.daisy.org/urakawa/xuk/1.0"
+ xmlns="http://www.daisy.org/urakawa/xuk/1.0"
+ xmlns:xuk="http://www.daisy.org/urakawa/xuk/1.0">
 	<xs:include schemaLocation="channels.xsd"/>
 	<xs:include schemaLocation="xml.xsd"/>
 	<xs:include schemaLocation="media.xsd"/>
@@ -34,7 +34,6 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="PresentationFactory" type="GenericFactory" />
 				<xs:element ref="mPresentations"/>
 			</xs:sequence>
 		</xs:complexType>
@@ -60,18 +59,18 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="TreeNodeFactory" type="GenericFactory" />
-				<xs:element name="PropertyFactory" type="GenericFactory" />
-				<xs:element name="ChannelFactory" />
-				<xs:element ref="ChannelsManager" minOccurs="0" />
-				<xs:element name="MediaFactory" type="GenericFactory" />
-				<xs:element name="DataProviderFactory" type="GenericFactory" />
-				<xs:element ref="DataProviderManager" minOccurs="0" />
-				<xs:element name="MediaDataFactory" type="GenericFactory" />
-				<xs:element ref="MediaDataManager" minOccurs="0" />
-				<xs:element name="CommandFactory" type="GenericFactory" />
-				<xs:element ref="UndoRedoManager" minOccurs="0" />
-				<xs:element name="MetadataFactory" type="GenericFactory" />
+				<xs:element ref="mTreeNodeFactory" minOccurs="0" />
+				<xs:element ref="mPropertyFactory" minOccurs="0" />
+				<xs:element ref="mChannelFactory" minOccurs="0" />
+				<xs:element ref="mChannelsManager" minOccurs="0" />
+				<xs:element ref="mMediaFactory" minOccurs="0" />
+				<xs:element ref="mDataProviderFactory" minOccurs="0" />
+				<xs:element ref="mDataProviderManager" minOccurs="0" />
+				<xs:element ref="mMediaDataFactory" minOccurs="0" />
+				<xs:element ref="mMediaDataManager" minOccurs="0" />
+				<xs:element ref="mCommandFactory" minOccurs="0" />
+				<xs:element ref="mUndoRedoManager" minOccurs="0" />
+				<xs:element ref="mMetadataFactory" minOccurs="0" />
 				<xs:element ref="mMetadata" minOccurs="0"/>
 				<xs:element ref="mRootNode"/>
 			</xs:sequence>
@@ -82,48 +81,61 @@
 			<xs:annotation>
 				<xs:documentation>Key to identify channels</xs:documentation>
 			</xs:annotation>
-			<xs:selector xpath="xuk:ChannelsManager/xuk:mChannels/xuk:mChannelItem"/>
+			<xs:selector xpath="xuk:mChannelsManager/*/xuk:mChannels/xuk:mChannelItem"/>
 			<xs:field xpath="@uid"/>
 		</xs:key>
 		<xs:key name="dataProviderItemKey">
 			<xs:annotation>
 				<xs:documentation>Key to identify data providers</xs:documentation>
 			</xs:annotation>
-			<xs:selector xpath="xuk:DataProviderManager/xuk:mDataProviders/xuk:mDataProviderItem"/>
+			<xs:selector xpath="xuk:mDataProviderManager/*/xuk:mDataProviders/xuk:mDataProviderItem"/>
 			<xs:field xpath="@uid"/>
 		</xs:key>
 		<xs:key name="mediaDataItemKey">
 			<xs:annotation>
 				<xs:documentation>Key to identify media data</xs:documentation>
 			</xs:annotation>
-			<xs:selector xpath="xuk:MediaDataManager/xuk:mMediaData/xuk:mMediaDataItem"/>
+			<xs:selector xpath="xuk:mMediaDataManager/*/xuk:mMediaData/xuk:mMediaDataItem"/>
 			<xs:field xpath="@uid"/>
 		</xs:key>
 	</xs:element>
-	<xs:complexType name="GenericFactory">
+	<xs:element name="mTreeNodeFactory">
 		<xs:annotation>
-			<xs:documentation>Common type for factories</xs:documentation>
+			<xs:documentation>Container for an element representing a TreeNodeFactory</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element ref="mRegisteredTypes" minOccurs="1" maxOccurs="1"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:element name="mRegisteredTypes">
 		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="Type" minOccurs="1" maxOccurs="unbounded"/>
-			</xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element ref="TreeNodeFactory"/>
+				<xs:any namespace="##other" processContents="lax" />
+			</xs:choice>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="Type">
+	<xs:element name="TreeNodeFactory">
+		<xs:complexType/>
+	</xs:element>
+	<xs:element name="mPropertyFactory">
+		<xs:annotation>
+			<xs:documentation>Container for an element representing a PropertyFactory</xs:documentation>
+		</xs:annotation>
 		<xs:complexType>
-			<xs:attribute name="XukLocalName" type="xs:string" use="required"/>
-			<xs:attribute name="XukNamespaceUri" type="xs:string" use="required"/>
-			<xs:attribute name="BaseXukLocalName" type="xs:string" use="optional"/>
-			<xs:attribute name="BaseXukNamespaceUri" type="xs:string" use="optional"/>
-			<xs:attribute name="AssemblyName" type="xs:string" use="required"/>
-			<xs:attribute name="AssemblyVersion" type="xs:string" use="required"/>
-			<xs:attribute name="FullName" type="xs:string" use="required"/>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element ref="PropertyFactory"/>
+				<xs:any namespace="##other" processContents="lax" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="PropertyFactory">
+		<xs:complexType/>
+	</xs:element>
+	<xs:element name="mChannelFactory">
+		<xs:annotation>
+			<xs:documentation>Container for an element representing a ChannelFactory</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element ref="ChannelFactory"/>
+				<xs:any namespace="##other" processContents="lax" />
+			</xs:choice>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="mChannelsManager">
@@ -137,14 +149,47 @@
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
+	<xs:element name="mMediaFactory">
+		<xs:annotation>
+			<xs:documentation>Container for an element representing a MediaFactory</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element ref="MediaFactory"/>
+				<xs:any namespace="##other" processContents="lax" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mDataProviderFactory">
+		<xs:annotation>
+			<xs:documentation>Container for an element representing a DataPropertyFactory</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element ref="DataProviderFactory"/>
+				<xs:any namespace="##other" processContents="lax" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
 	<xs:element name="mDataProviderManager">
 		<xs:annotation>
 			<xs:documentation>Container for an element representing a FileDataProviderManager</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="1">
-				<xs:element ref="DataProviderManager"/>
+				<xs:element ref="FileDataProviderManager"/>
 				<xs:any namespace="##other" processContents="lax"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mMediaDataFactory">
+		<xs:annotation>
+			<xs:documentation>Container for an element representing a MediaDataFactory</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element ref="MediaDataFactory"/>
+				<xs:any namespace="##other" processContents="lax" />
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
@@ -159,6 +204,17 @@
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
+	<xs:element name="mCommandFactory">
+		<xs:annotation>
+			<xs:documentation>Container for an element representing a CommandFactory</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element ref="CommandFactory"/>
+				<xs:any namespace="##other" processContents="lax" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
 	<xs:element name="mUndoRedoManager">
 		<xs:annotation>
 			<xs:documentation>Container for an element representing a UndoRedoManager</xs:documentation>
@@ -166,6 +222,17 @@
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="1">
 				<xs:element ref="UndoRedoManager"/>
+				<xs:any namespace="##other" processContents="lax" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mMetadataFactory">
+		<xs:annotation>
+			<xs:documentation>Container for an element representing a MetadataFactory</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element ref="MetadataFactory"/>
 				<xs:any namespace="##other" processContents="lax" />
 			</xs:choice>
 		</xs:complexType>

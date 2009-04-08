@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -38,8 +37,6 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -49,18 +46,21 @@
   <ItemGroup>
     <Compile Include="CollectMediaFromChannelTreeNodeVisitor.cs" />
     <Compile Include="DetectMediaTreeNodeVisitor.cs" />
+    <Compile Include="ExampleCustomDataModelFactory.cs" />
     <Compile Include="ExampleCustomTreeNode.cs" />
+    <Compile Include="ExampleCustomTreeNodeFactory.cs" />
     <Compile Include="ExampleCustomProperty.cs" />
+    <Compile Include="ExampleCustomPropertyFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\core\UrakawaSDK.core.csproj">
+    <ProjectReference Include="..\core\core.csproj">
       <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
-      <Name>UrakawaSDK.core</Name>
+      <Name>core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="export/" />
+    <Folder Include="export\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

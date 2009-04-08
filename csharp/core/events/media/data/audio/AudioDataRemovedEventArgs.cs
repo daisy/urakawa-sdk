@@ -7,10 +7,10 @@ using urakawa.media.data.audio;
 namespace urakawa.events.media.data.audio
 {
     /// <summary>
-    /// Arguments of the <see cref="AudioMediaData.AudioDataRemoved"/> event
+    /// Arguments of the <see cref="AudioMediaData.audioDataRemoved"/> event
     /// </summary>
-    public class AudioDataRemovedEventArgs : AudioMediaDataEventArgs
-    {
+	public class AudioDataRemovedEventArgs : AudioMediaDataEventArgs
+	{
         /// <summary>
         /// Constructor setting the source <see cref="AudioMediaData"/> of the event,
         /// the point from which the audio data was removed and the duration of the audio data that was removed
@@ -18,20 +18,18 @@ namespace urakawa.events.media.data.audio
         /// <param name="source">The source <see cref="AudioMediaData"/> of the event</param>
         /// <param name="fromPoint">The point from which the audio data was removed</param>
         /// <param name="dur">The duration of the audio data that was removed</param>
-        public AudioDataRemovedEventArgs(AudioMediaData source, Time fromPoint, TimeDelta dur) : base(source)
-        {
-            RemovedFromPoint = fromPoint.Copy();
-            Duration = dur.Copy();
-        }
-
+		public AudioDataRemovedEventArgs(AudioMediaData source, Time fromPoint, TimeDelta dur) : base(source)
+		{
+			RemovedFromPoint = fromPoint.copy();
+			Duration = dur.copy();
+		}
         /// <summary>
         /// The point from which the audio data was removed
         /// </summary>
-        public readonly Time RemovedFromPoint;
-
+		public readonly Time RemovedFromPoint;
         /// <summary>
         /// The duration of the audio data that was removed
         /// </summary>
-        public readonly TimeDelta Duration;
-    }
+		public readonly TimeDelta Duration;
+	}
 }

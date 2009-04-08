@@ -3,109 +3,114 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using urakawa.exception;
-using urakawa.media.timing;
-using urakawa.xuk;
 
 namespace urakawa.media.data.audio
 {
-    /// <summary>
-    /// Represents information describing raw PCM data
-    /// </summary>
-    public class PCMDataInfo : PCMFormatInfo, IValueEquatable<PCMDataInfo>
-    {
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public PCMDataInfo()
-            : base()
-        {
-            DataLength = 0;
-        }
+	/// <summary>
+	/// Represents information describing raw PCM data
+	/// </summary>
+	public class PCMDataInfo : PCMFormatInfo, IValueEquatable<PCMDataInfo>
+	{
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public PCMDataInfo()
+			: base()
+		{
+			setDataLength(0);
+		}
 
-        /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="other">The PCMDataInfo to copy</param>
-        public PCMDataInfo(PCMDataInfo other)
-            : base(other)
-        {
-            DataLength = other.DataLength;
-        }
+		/// <summary>
+		/// Copy constructor
+		/// </summary>
+		/// <param name="other">The PCMDataInfo to copy</param>
+		public PCMDataInfo(PCMDataInfo other)
+			: base(other)
+		{
+			setDataLength(other.getDataLength());
+		}
 
-        /// <summary>
-        /// Copy constructor copying from a <see cref="PCMFormatInfo"/>, using the default value for data length
-        /// </summary>
-        /// <param name="other">The PCMFormatInfo to copy from</param>
-        public PCMDataInfo(PCMFormatInfo other)
-            : base(other)
-        {
-            DataLength = 0;
-        }
+		/// <summary>
+		/// Copy constructor copying from a <see cref="PCMFormatInfo"/>, using the default value for data length
+		/// </summary>
+		/// <param name="other">The PCMFormatInfo to copy from</param>
+		public PCMDataInfo(PCMFormatInfo other)
+			: base(other)
+		{
+			setDataLength(0);
+		}
 
-        private uint mDataLength = 0;
+		private uint mDataLength = 0;
+		/// <summary>
+		/// Gets the count in bytes of the raw PCM data
+		/// </summary>
+		public uint getDataLength()
+		{
+			return mDataLength;
+		}
 
-        /// <summary>
-        /// Gets the count in bytes of the raw PCM data
-        /// </summary>
-        public uint DataLength
-        {
-            get { return mDataLength; }
-            set { mDataLength = value; }
-        }
+		/// <summary>
+		/// Sets the count in bytes of the raw PCM data
+		/// </summary>
+		public void setDataLength(uint newValue)
+		{
+			mDataLength = newValue;
+		}
 
-        /// <summary>
-        /// Gets the duration of the RAW PCM data
-        /// </summary>
-        /// <returns>The duration as a <see cref="TimeSpan"/></returns>
-        public TimeDelta Duration
-        {
-            get { return GetDuration(DataLength); }
-        }
+		/// <summary>
+		/// Gets the duration of the RAW PCM data
+		/// </summary>
+		/// <returns>The duration as a <see cref="TimeSpan"/></returns>
+		public media.timing.TimeDelta getDuration()
+		{
+			return getDuration(getDataLength());
+		}
 
-        /// <summary>
-        /// Writes a RIFF Wave PCM header to a given destination output <see cref="Stream"/>
-        /// </summary>
-        /// <param name="output">The destination output <see cref="Stream"/></param>
-        public ulong WriteRiffWaveHeader(Stream output)
-        {
-            long initPos = output.Position;
-
-            BinaryWriter wr = new BinaryWriter(output);
-            wr.Write(Encoding.ASCII.GetBytes("RIFF")); //Chunk Uid
-            uint chunkSize = 4 + 8 + 16 + 8 + DataLength;
-            wr.Write(chunkSize); //Chunk Size
-            wr.Write(Encoding.ASCII.GetBytes("WAVE")); //Format field
-            wr.Write(Encoding.ASCII.GetBytes("fmt ")); //Format sub-chunk
-            uint formatChunkSize = 16;
-            wr.Write(formatChunkSize);
-            ushort audioFormat = 1; //PCM format
-            wr.Write(audioFormat);
-            wr.Write(NumberOfChannels);
-            wr.Write(SampleRate);
-            wr.Write(ByteRate);
-            wr.Write(BlockAlign);
-            wr.Write(BitDepth);
-            wr.Write(Encoding.ASCII.GetBytes("data"));
-            wr.Write(DataLength);
+		/// <summary>
+		/// Writes a RIFF Wave PCM header to a given destination output <see cref="Stream"/>
+		/// </summary>
+		/// <param name="output">The destination output <see cref="Stream"/></param>
+		public ulong writeRiffWaveHeader(Stream output)
+		{
+		    long initPos = output.Position;
+			BinaryWriter wr = new BinaryWriter(output);
+			wr.Write(Encoding.ASCII.GetBytes("RIFF"));//Chunk Uid
+			uint chunkSize = 4 + 8 + 16 + 8 + getDataLength();
+            wr.Write(chunkSize);//Chunk Size
+			wr.Write(Encoding.ASCII.GetBytes("WAVE"));//Format field
+			wr.Write(Encoding.ASCII.GetBytes("fmt "));//Format sub-chunk
+			uint formatChunkSize = 16;
+			wr.Write(formatChunkSize);
+			ushort audioFormat = 1;//PCM format
+			wr.Write(audioFormat);
+			wr.Write(getNumberOfChannels());
+			wr.Write(getSampleRate());
+			wr.Write(getByteRate());
+			wr.Write(getBlockAlign());
+			wr.Write(getBitDepth());
+			wr.Write(Encoding.ASCII.GetBytes("data"));
+			wr.Write(getDataLength());
 
             long endPos = output.Position;
-            return (ulong) (endPos - initPos);
-        }
 
-        /// <summary>
-        /// Parses a RIFF WAVE PCM header of a given input <see cref="Stream"/>
-        /// </summary>
-        /// <remarks>
-        /// Upon succesful parsing the <paramref name="input"/> <see cref="Stream"/> is positioned at the beginning of the actual PCM data,
-        /// that is at the beginning of the data field of the data sub-chunk
-        /// </remarks>
-        /// <param name="input">The input <see cref="Stream"/> - must be positioned at the start of the RIFF chunk</param>
-        /// <returns>A <see cref="PCMDataInfo"/> containing the parsed data</returns>
-        /// <exception cref="exception.InvalidDataFormatException">
-        /// Thrown when RIFF WAVE header is invalid or is not PCM data
-        /// </exception>
-        public static PCMDataInfo ParseRiffWaveHeader(Stream input)
-        {
+		    return (ulong) (endPos - initPos);
+		}
+
+		/// <summary>
+		/// Parses a RIFF WAVE PCM header of a given input <see cref="Stream"/>
+		/// </summary>
+		/// <remarks>
+		/// Upon succesful parsing the <paramref name="input"/> <see cref="Stream"/> is positioned at the beginning of the actual PCM data,
+		/// that is at the beginning of the data field of the data sub-chunk
+		/// </remarks>
+		/// <param name="input">The input <see cref="Stream"/> - must be positioned at the start of the RIFF chunk</param>
+		/// <returns>A <see cref="PCMDataInfo"/> containing the parsed data</returns>
+		/// <exception cref="exception.InvalidDataFormatException">
+		/// Thrown when RIFF WAVE header is invalid or is not PCM data
+		/// </exception>
+		public static PCMDataInfo parseRiffWaveHeader(Stream input)
+		{
+
             System.Diagnostics.Debug.Assert(input.Position == 0);
 
             BinaryReader rd = new BinaryReader(input);
@@ -184,13 +189,13 @@ namespace urakawa.media.data.audio
                                                                        chunkId));
                 }
 
-                switch(chunkId)
+                switch (chunkId)
                 {
                     case "fmt ":
                         {
                             // The default information fields fit within 16 bytes
                             int extraFormatBytes = (int)chunkSize - 16;
-                            
+
                             // Compression code (2 bytes)
                             ushort compressionCode = rd.ReadUInt16();
 
@@ -222,7 +227,7 @@ namespace urakawa.media.data.audio
                                     System.Diagnostics.Debug.Assert(extraFormatBytes == extraBytes);
 
                                     // Skip (we ignore the extra information in this chunk field)
-                                    rd.ReadBytes((int) extraBytes);
+                                    rd.ReadBytes((int)extraBytes);
 
                                     // check word-alignment
                                     if ((extraBytes % 2) != 0)
@@ -250,9 +255,9 @@ namespace urakawa.media.data.audio
                                                                                    "Invalid byte rate {0:0} - expected {1:0}",
                                                                                    byteRate, sampleRate * blockAlign));
                             }
-                            pcmInfo.BitDepth = bitDepth;
-                            pcmInfo.NumberOfChannels = numChannels;
-                            pcmInfo.SampleRate = sampleRate;
+                            pcmInfo.setBitDepth(bitDepth);
+                            pcmInfo.setNumberOfChannels(numChannels);
+                            pcmInfo.setSampleRate(sampleRate);
 
                             foundWavFormatChunk = true;
                             break;
@@ -265,7 +270,7 @@ namespace urakawa.media.data.audio
                                                                                    "ChunkId {0} does not fit in RIFF chunk",
                                                                                    "data"));
                             }
-                            pcmInfo.DataLength = chunkSize;
+                            pcmInfo.setDataLength(chunkSize);
                             foundWavDataChunk = true;
                             wavDataChunkPosition = input.Position;
 
@@ -323,94 +328,86 @@ namespace urakawa.media.data.audio
                 input.Seek(wavDataChunkPosition, SeekOrigin.Begin);
             }
             return pcmInfo;
-        }
+		}
 
 
-        /// <summary>
-        /// Compares the data in two data streams for equality
-        /// </summary>
-        /// <param name="s1">The first </param>
-        /// <param name="s2"></param>
-        /// <param name="length">The length of the data to compare</param>
-        /// <returns>A <see cref="bool"/> indicating data equality</returns>
-        public static bool CompareStreamData(Stream s1, Stream s2, int length)
-        {
-            byte[] d1 = new byte[length];
-            byte[] d2 = new byte[length];
-            if (s1.Read(d1, 0, length) != length) return false;
-            if (s2.Read(d2, 0, length) != length) return false;
-            for (int i = 0; i < length; i++)
-            {
-                if (d1[i] != d2[i])
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+		/// <summary>
+		/// Compares the data in two data streams for equality
+		/// </summary>
+		/// <param name="s1">The first </param>
+		/// <param name="s2"></param>
+		/// <param name="length">The length of the data to compare</param>
+		/// <returns>A <see cref="bool"/> indicating data equality</returns>
+		public static bool compareStreamData(Stream s1, Stream s2, int length)
+		{
+			byte[] d1 = new byte[length];
+			byte[] d2 = new byte[length];
+			if (s1.Read(d1, 0, length) != length) return false;
+			if (s2.Read(d2, 0, length) != length) return false;
+			for (int i = 0; i < length; i++)
+			{
+				if (d1[i] != d2[i])
+				{
+				    return false;
+				}
+			}
+			return true;
+		}
 
-        #region IXukAble Members
 
-        /// <summary>
-        /// Reads the attributes of a PCMDataInfo xuk element.
-        /// </summary>
-        /// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
-        protected override void XukInAttributes(System.Xml.XmlReader source)
-        {
-            base.XukInAttributes(source);
-            string attr = source.GetAttribute(XukStrings.DataLength);
-            if (attr == null)
-            {
-                throw new exception.XukException("Attribute DataLength is missing");
-            }
-            uint dl;
-            if (!UInt32.TryParse(attr, out dl))
-            {
-                throw new exception.XukException(String.Format(
-                                                     "Attribute DataLength value {0} is not an unsigned integer",
-                                                     attr));
-            }
-            DataLength = dl;
-        }
+		#region IXukAble Members
 
-        /// <summary>
-        /// Writes the attributes of a PCMDataInfo element
-        /// </summary>
-        /// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-        /// <param name="baseUri">
-        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-        /// if <c>null</c> absolute <see cref="Uri"/>s are written
-        /// </param>
-        protected override void XukOutAttributes(System.Xml.XmlWriter destination, Uri baseUri)
-        {
-            destination.WriteAttributeString(XukStrings.DataLength, DataLength.ToString());
-            base.XukOutAttributes(destination, baseUri);
-        }
+		/// <summary>
+		/// Reads the attributes of a PCMDataInfo xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
+		protected override void xukInAttributes(System.Xml.XmlReader source)
+		{
+			base.xukInAttributes(source);
+			string attr = source.GetAttribute("dataLength");
+			if (attr == null)
+			{
+				throw new exception.XukException("Attribute DataLength is missing");
+			}
+			uint dl;
+			if (!UInt32.TryParse(attr, out dl))
+			{
+				throw new exception.XukException(String.Format(
+					"Attribute DataLength value {0} is not an unsigned integer",
+					attr));
+			}
+			setDataLength(dl);
+		}
 
-        #endregion
+		/// <summary>
+		/// Writes the attributes of a PCMDataInfo element
+		/// </summary>
+		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected override void xukOutAttributes(System.Xml.XmlWriter destination, Uri baseUri)
+		{
+			destination.WriteAttributeString("dataLength", getDataLength().ToString());
+			base.xukOutAttributes(destination, baseUri);
+		}
+		#endregion
 
-        #region IValueEquatable<PCMDataInfo> Members
+		#region IValueEquatable<PCMDataInfo> Members
 
-        /// <summary>
-        /// Determines if <c>this</c> has the same value as a given other <see cref="PCMDataInfo"/>
-        /// </summary>
-        /// <param name="other">The given other PCMDataInfo with which to compare</param>
-        /// <returns>A <see cref="bool"/> indicating value equality</returns>
-        public bool ValueEquals(PCMDataInfo other)
-        {
-            if (!base.ValueEquals(other))
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            if (DataLength != other.DataLength)
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            return true;
-        }
+		/// <summary>
+		/// Determines if <c>this</c> has the same value as a given other <see cref="PCMDataInfo"/>
+		/// </summary>
+		/// <param name="other">The given other PCMDataInfo with which to compare</param>
+		/// <returns>A <see cref="bool"/> indicating value equality</returns>
+		public bool valueEquals(PCMDataInfo other)
+		{
+			if (!base.valueEquals(other)) return false;
+			if (getDataLength() != other.getDataLength()) return false;
+			return true;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

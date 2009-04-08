@@ -8,19 +8,49 @@ using urakawa.core;
 using urakawa.property.channel;
 using urakawa.media;
 using urakawa.media.data.audio;
-using urakawa.xuk;
 
 namespace urakawa.media.data.audio
 {
-    [TestFixture]
-    public class ManagedAudioMediaTests : IMediaTests
-    {
-        public ManagedAudioMediaTests() : base(typeof (ManagedAudioMedia))
+	[TestFixture, Description("Tests the ManagedAudioMedia functionality")]
+	public class ManagedAudioMediaTests : IMediaTests
+	{
+        private string getPath(String fileName)
         {
+            return Path.Combine(mPresentation.getRootUri().LocalPath, fileName);
         }
 
+        private Stream getRawStream(String fileName)
+        {
+            Stream s = new FileStream(getPath(fileName), FileMode.Open, FileAccess.Read, FileShare.Read);
+            s.Seek(44, SeekOrigin.Begin);
+            return s;
+        }
+
+        private PCMDataInfo getInfo(string name)
+        {
+            FileStream fs = new FileStream(getPath(name), FileMode.Open, FileAccess.Read, FileShare.Read);
+            try
+            {
+                return PCMDataInfo.parseRiffWaveHeader(fs);
+            }
+            finally
+            {
+                fs.Close();
+            }
+        }
+        
+        public ManagedAudioMediaTests()
+			: base(typeof(ManagedAudioMedia).Name, ToolkitSettings.XUK_NS)
+		{
+		}
+
+
+		protected ManagedAudioMedia mManagedAudioMedia1 { get { return mMedia1 as ManagedAudioMedia; } }
+		protected ManagedAudioMedia mManagedAudioMedia2 { get { return mMedia2 as ManagedAudioMedia; } }
+		protected ManagedAudioMedia mManagedAudioMedia3 { get { return mMedia3 as ManagedAudioMedia; } }
+
         [TestFixtureSetUp]
-        public void SetUpFixture()
+        public void setUpFixture()
         {
             Uri projectDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "MediaTestsSample/");
             if (Directory.Exists(Path.Combine(projectDir.LocalPath, "Data")))
@@ -28,11 +58,11 @@ namespace urakawa.media.data.audio
                 Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
             }
             mProject = new Project();
-            mProject.AddNewPresentation().RootUri = projectDir;
+            mProject.addNewPresentation().setRootUri(projectDir);
         }
 
         [TestFixtureTearDown]
-        public void TearDownFixture()
+        public void tearDownFixture()
         {
             Uri projectDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "MediaTestsSample/");
             if (Directory.Exists(Path.Combine(projectDir.LocalPath, "Data")))
@@ -41,163 +71,100 @@ namespace urakawa.media.data.audio
             }
         }
 
-        private string GetPath(String fileName)
-        {
-            return Path.Combine(mPresentation.RootUri.LocalPath, fileName);
-        }
+		public override void setUp()
+		{
+			setUpMedia();
+		}
 
-        private Stream GetRawStream(String fileName)
-        {
-            Stream s = new FileStream(GetPath(fileName), FileMode.Open, FileAccess.Read, FileShare.Read);
-            s.Seek(44, SeekOrigin.Begin);
-            return s;
-        }
+		[Test, Description("Tests valueEquals focusing on the language property")]
+		public void valueEquals_LangEquality()
+		{
+			mManagedAudioMedia1.setLanguage(null);
+			mManagedAudioMedia2.setLanguage(null);
+			Assert.IsTrue(mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "medias with same (null) lang should be equal");
+			mManagedAudioMedia1.setLanguage("en");
+			mManagedAudioMedia2.setLanguage("en");
+			Assert.IsTrue(mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "medias with same (\"en\") lang should be equal");
+			mManagedAudioMedia2.setLanguage("fr");
+			Assert.IsFalse(mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "medias with different lang shouldn't be equal");
 
-        private PCMDataInfo GetInfo(string name)
-        {
-            FileStream fs = new FileStream(GetPath(name), FileMode.Open, FileAccess.Read, FileShare.Read);
-            try
-            {
-                return PCMDataInfo.ParseRiffWaveHeader(fs);
-            }
-            finally
-            {
-                fs.Close();
-            }
-        }
+		}
 
+		[Test, Description("Tests valueEquals focusing on the media data")]
+		public void valueEquals_MediaData()
+		{
+			MediaData data1 = mPresentation.getMediaDataFactory().createMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS);
+			MediaData data2 = mPresentation.getMediaDataFactory().createMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS);
+			mManagedAudioMedia1.setMediaData(data1);
+			mManagedAudioMedia2.setMediaData(data1);
+			Assert.IsTrue(mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "two medias with the same data should be equal");
+			mManagedAudioMedia2.setMediaData(data2);
+			Assert.IsTrue(data1.valueEquals(data2), "[Pre-Condition] media datas should be equal");
+			Assert.IsTrue(mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "two medias with equal data should be equal");
+			data2.setName("foo");
+			Assert.IsFalse(data1.valueEquals(data2), "[Pre-Condition] media datas shouldn't be equal");
+			Assert.IsFalse(data1.valueEquals(data2) && !mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "two medias with different data shouldn't be equal");
+		}
 
-        protected ManagedAudioMedia mManagedAudioMedia1
-        {
-            get { return mMedia1 as ManagedAudioMedia; }
-        }
-
-        protected ManagedAudioMedia mManagedAudioMedia2
-        {
-            get { return mMedia2 as ManagedAudioMedia; }
-        }
-
-        protected ManagedAudioMedia mManagedAudioMedia3
-        {
-            get { return mMedia3 as ManagedAudioMedia; }
-        }
-
-        public override void SetUp()
-        {
-            SetUpMedia();
-        }
-
+		#region IMedia tests
 		[Test]
-        public void ValueEquals_LangEquality()
-        {
-            mManagedAudioMedia1.Language = null;
-            mManagedAudioMedia2.Language = null;
-            Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2),
-                          "medias with same (null) lang should be equal");
-            mManagedAudioMedia1.Language = "en";
-            mManagedAudioMedia2.Language = "en";
-            Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2),
-                          "medias with same (\"en\") lang should be equal");
-            mManagedAudioMedia2.Language = "fr";
-            Assert.IsFalse(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2),
-                           "medias with different lang shouldn't be equal");
-        }
-
+		public override void language_Basics()
+		{
+			base.language_Basics();
+		}
+		[Test]  
+		[ExpectedException(typeof(exception.MethodParameterIsEmptyStringException))]
+		public override void setLanguage_EmptyString()
+		{
+			base.setLanguage_EmptyString();
+		}
 		[Test]
-        public void ValueEquals_MediaData()
-        {
-            AudioMediaData data1 = mPresentation.MediaDataFactory.Create<codec.WavAudioMediaData>();
-            AudioMediaData data2 = mPresentation.MediaDataFactory.Create<codec.WavAudioMediaData>();
-            mManagedAudioMedia1.AudioMediaData = data1;
-            mManagedAudioMedia2.AudioMediaData = data1;
-            Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2),
-                          "two medias with the same data should be equal");
-            mManagedAudioMedia2.AudioMediaData = data2;
-            Assert.IsTrue(data1.ValueEquals(data2), "[Pre-Condition] media datas should be equal");
-            Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2),
-                          "two medias with equal data should be equal");
-            data2.Name = "foo";
-            Assert.IsFalse(data1.ValueEquals(data2), "[Pre-Condition] media datas shouldn't be equal");
-            Assert.IsFalse(data1.ValueEquals(data2) && !mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2),
-                           "two medias with different data shouldn't be equal");
-        }
+		public override void copy_valueEqualsAndReferenceDiffers()
+		{
+		    PCMDataInfo info = getInfo("audiotest1-mono-22050Hz-16bits.wav");
+            mManagedAudioMedia1.getMediaData().setPCMFormat(info);
+		    Stream fs = getRawStream("audiotest1-mono-22050Hz-16bits.wav");
+		    try
+		    {
+                mManagedAudioMedia1.getMediaData().appendAudioData(fs, info.getDuration());
+		    }
+		    finally
+		    {
+		        fs.Close();
+		    }
+			base.copy_valueEqualsAndReferenceDiffers();
+		}
+		[Test]
+		public override void export_valueEqualsPresentationsOk()
+		{
+			base.export_valueEqualsPresentationsOk();
+		}
+		#endregion
 
-        #region Media tests
+		#region IXukAble tests
+		[Test]
+		public override void Xuk_RoundTrip()
+		{
+			base.Xuk_RoundTrip();
+		}
+		#endregion
 
-        [Test]
-        public override void Language_Basics()
-        {
-            base.Language_Basics();
-        }
-
-        [Test]
-        [ExpectedException(typeof (exception.MethodParameterIsEmptyStringException))]
-        public override void Language_EmptyString()
-        {
-            base.Language_EmptyString();
-        }
-
-        private void AppendAudioData(string filename, ManagedAudioMedia amd)
-        {
-            PCMDataInfo info = GetInfo("audiotest1-mono-22050Hz-16bits.wav");
-            mManagedAudioMedia1.AudioMediaData.PCMFormat = info;
-            Stream fs = GetRawStream("audiotest1-mono-22050Hz-16bits.wav");
-            try
-            {
-                amd.AudioMediaData.AppendAudioData(fs, info.Duration);
-            }
-            finally
-            {
-                fs.Close();
-            }
-        }
-
-        [Test]
-        public override void Copy_ValueEqualsAndReferenceDiffers()
-        {
-            AppendAudioData("audiotest1-mono-22050Hz-16bits.wav", mManagedAudioMedia1);
-            base.Copy_ValueEqualsAndReferenceDiffers();
-        }
-
-        [Test]
-        public override void Export_ValueEqualsPresentationsOk()
-        {
-            AppendAudioData("audiotest1-mono-22050Hz-16bits.wav", mManagedAudioMedia1);
-            base.Export_ValueEqualsPresentationsOk();
-        }
-
-        #endregion
-
-        #region IXukAble tests
-
-        [Test]
-        public override void Xuk_RoundTrip()
-        {
-            base.Xuk_RoundTrip();
-        }
-
-        #endregion
-
-        #region IValueEquatable tests
-
-        [Test]
-        public override void ValueEquals_Basics()
-        {
-            base.ValueEquals_Basics();
-        }
-
-        [Test]
-        public override void ValueEquals_Language()
-        {
-            base.ValueEquals_Language();
-        }
-
-        [Test]
-        public override void ValueEquals_NewCreatedEquals()
-        {
-            base.ValueEquals_NewCreatedEquals();
-        }
-
-        #endregion
-    }
+		#region IValueEquatable tests
+		[Test]
+		public override void valueEquals_Basics()
+		{
+			base.valueEquals_Basics();
+		}
+		[Test]
+		public override void valueEquals_Language()
+		{
+			base.valueEquals_Language();
+		}
+		[Test]
+		public override void valueEquals_NewCreatedEquals()
+		{
+			base.valueEquals_NewCreatedEquals();
+		}
+		#endregion
+	}
 }

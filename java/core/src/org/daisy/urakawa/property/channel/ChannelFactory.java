@@ -1,117 +1,75 @@
 package org.daisy.urakawa.property.channel;
 
-import org.daisy.urakawa.GenericWithPresentationFactory;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.exception.IsNotInitializedException;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * Extension of the generic factory to handle one or more specific types derived
- * from the base specified class, in order to provide convenience create()
- * methods.
+ * <p>
+ * This is the factory that creates
+ * {@link org.daisy.urakawa.property.channel.Channel} instances.
+ * </p>
  * 
- * @xhas - - 1 org.daisy.urakawa.Presentation
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  * @depend - Create - org.daisy.urakawa.property.channel.Channel
- * @depend - Create - org.daisy.urakawa.property.channel.AudioChannel
- * @depend - Create - org.daisy.urakawa.property.channel.ManagedAudioChannel
- * @depend - Create - org.daisy.urakawa.property.channel.TextChannel
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public final class ChannelFactory extends
-        GenericWithPresentationFactory<Channel>
-{
-    /**
-     * @param pres
-     * @throws MethodParameterIsNullException
-     */
-    public ChannelFactory(Presentation pres)
-            throws MethodParameterIsNullException
-    {
-        super(pres);
-    }
+public interface ChannelFactory extends XukAble, WithPresentation {
+	/**
+	 * Convenience method that delegates to the Presentation
+	 * 
+	 * @see Presentation#getChannelsManager()
+	 * @return the ChannelsManager
+	 * @throws IsNotInitializedException 
+	 */
+	public ChannelsManager getChannelsManager()
+			throws IsNotInitializedException;
 
-    /**
-     * @hidden
-     */
-    @Override
-    protected void initializeInstance(Channel instance)
-    {
-        super.initializeInstance(instance);
-        try
-        {
-            getPresentation().getChannelsManager().addChannel(instance);
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-        catch (ChannelAlreadyExistsException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-    }
+	/**
+	 * <p>
+	 * Creates a default channel.
+	 * </p>
+	 * <p>
+	 * The returned object is managed by its associated manager.
+	 * </p>
+	 * 
+	 * @return cannot return null
+	 */
+	public Channel createChannel();
 
-    /**
-     * @return
-     */
-    public Channel createChannel()
-    {
-        try
-        {
-            return create(Channel.class);
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-    }
-
-    /**
-     * @return
-     */
-    public AudioChannel createAudioChannel()
-    {
-        try
-        {
-            return create(AudioChannel.class);
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-    }
-
-    /**
-     * @return
-     */
-    public ManagedAudioChannel createManagedAudioChannel()
-    {
-        try
-        {
-            return create(ManagedAudioChannel.class);
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-    }
-
-    /**
-     * @return
-     */
-    public TextChannel createTextChannel()
-    {
-        try
-        {
-            return create(TextChannel.class);
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-    }
+	/**
+	 * <p>
+	 * Creates a channel.
+	 * </p>
+	 * <p>
+	 * The returned object is managed by its associated manager.
+	 * </p>
+	 * <p>
+	 * This factory method takes arguments to specify the exact type of object
+	 * to create, given by the unique QName (XML Qualified Name) used in the XUK
+	 * serialization format. This method can be used to generate instances of
+	 * subclasses of the base object type.
+	 * </p>
+	 * 
+	 * @param xukLocalName
+	 *            cannot be null, cannot be empty string.
+	 * @param xukNamespaceURI
+	 *            cannot be null, but can be empty string.
+	 * @return can return null (in case the QName specification does not match
+	 *         any supported type).
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameter is forbidden:
+	 *             <b>xukLocalName</b>
+	 */
+	public Channel createChannel(String xukLocalName, String xukNamespaceURI)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 }

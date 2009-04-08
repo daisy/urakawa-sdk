@@ -3,4 +3,7 @@
   <Config name="Debug" configfile="app.config" binpathtype="Auto">
     <assembly path="bin/Debug/urakawa.tests.exe" />
   </Config>
+  <Config name="Release" binpathtype="Auto">
+    <assembly path="bin/Release/urakawa.tests.exe" />
+  </Config>
 </NUnitProject>

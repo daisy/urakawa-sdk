@@ -4,8 +4,8 @@
  elementFormDefault="qualified"
  targetNamespace="http://www.daisy.org/urakawa/example"
  xmlns="http://www.daisy.org/urakawa/example"
- xmlns:xuk="http://www.daisy.org/urakawa/xuk/2.0">
-	<xs:import namespace="http://www.daisy.org/urakawa/xuk/2.0" schemaLocation="xuk.xsd"/>
+ xmlns:xuk="http://www.daisy.org/urakawa/xuk/1.0">
+	<xs:import namespace="http://www.daisy.org/urakawa/xuk/1.0" schemaLocation="xuk.xsd"/>
 	<xs:element name="ExampleCustomProperty">
 		<xs:complexType>
 			<xs:complexContent>
@@ -29,6 +29,9 @@
 		<xs:complexType>
 			<xs:attribute name="data" type="xs:string"/>
 		</xs:complexType>
+	</xs:element>
+	<xs:element name="ExampleCustomTreeNodeFactory">
+		<xs:complexType/>
 	</xs:element>
 	<xs:element name="ExampleCustomPropertyFactory">
 		<xs:complexType/>

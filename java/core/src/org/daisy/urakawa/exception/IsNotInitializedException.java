@@ -6,10 +6,9 @@ package org.daisy.urakawa.exception;
  * initialized yet.
  * </p>
  */
-public class IsNotInitializedException extends CheckedException
-{
-    /**
+public class IsNotInitializedException extends CheckedException {
+	/**
 	 * 
 	 */
-    private static final long serialVersionUID = 6537810281942532709L;
+	private static final long serialVersionUID = 6537810281942532709L;
 }

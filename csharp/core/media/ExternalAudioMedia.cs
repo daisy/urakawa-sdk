@@ -1,475 +1,378 @@
 using System;
 using System.Xml;
-using urakawa.events.media;
+using urakawa.media.data.audio;
 using urakawa.media.timing;
-using urakawa.xuk;
 
 namespace urakawa.media
 {
-    /// <summary>
-    /// Implementation of <see cref="AbstractAudioMedia"/> based on an external file and clip begin/end values
-    /// </summary>
-    public class ExternalAudioMedia : AbstractAudioMedia, ILocated, IClipped
-    {
+	/// <summary>
+	/// AudioMedia is the audio object.
+	/// It is time-based and comes from an external source.
+	/// </summary>
+	public class ExternalAudioMedia : ExternalMedia, IAudioMedia, IClipped
+	{
+		#region Event related members
+		/// <summary>
+		/// Event fired after the clip (clip begin or clip end) of the <see cref="ExternalAudioMedia"/> has changed
+		/// </summary>
+		public event EventHandler<events.media.ClipChangedEventArgs> clipChanged;
+		/// <summary>
+		/// Fires the <see cref="clipChanged"/> event
+		/// </summary>
+		/// <param name="source">The source, that is the <see cref="ExternalAudioMedia"/> whoose clip has changed</param>
+		/// <param name="newCB">The new clip begin value</param>
+		/// <param name="newCE">The new clip begin value</param>
+		/// <param name="prevCB">The clip begin value prior to the change</param>
+		/// <param name="prevCE">The clip end value prior to the change</param>
+		protected void notifyClipChanged(ExternalAudioMedia source, Time newCB, Time newCE, Time prevCB, Time prevCE)
+		{
+			EventHandler<events.media.ClipChangedEventArgs> d = clipChanged;
+			if (d != null) d(this, new urakawa.events.media.ClipChangedEventArgs(source, newCB, newCE, prevCB, prevCE));
+		}
 
-        public override string GetTypeNameFormatted()
+		void this_clipChanged(object sender, urakawa.events.media.ClipChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
+
+		#endregion
+
+		private Time mClipBegin;
+		private Time mClipEnd;
+
+		private void resetClipTimes()
+		{
+			mClipBegin = Time.Zero;
+			mClipEnd = Time.MaxValue;
+			this.clipChanged += new EventHandler<urakawa.events.media.ClipChangedEventArgs>(this_clipChanged);
+		}
+
+		/// <summary>
+		/// Constructor setting the associated <see cref="IMediaFactory"/>
+		/// </summary>
+		protected internal ExternalAudioMedia() : base()
+		{
+			resetClipTimes();
+		}
+		
+		#region IMedia members
+		/// <summary>
+		/// This always returns true, because
+		/// audio media is always considered continuous
+		/// </summary>
+		/// <returns></returns>
+		public override bool isContinuous()
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// This always returns false, because
+		/// audio media is never considered discrete
+		/// </summary>
+		/// <returns></returns>
+		public override bool isDiscrete()
+		{
+			return false;
+		}
+
+		/// <summary>
+		/// This always returns false, because
+		/// a single media object is never considered to be a sequence
+		/// </summary>
+		/// <returns></returns>
+		public override bool isSequence()
+		{
+			return false;
+		}
+
+		/// <summary>
+		/// Copy function which returns an <see cref="IAudioMedia"/> object
+		/// </summary>
+		/// <returns>A copy of this</returns>
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
+		/// Thrown when the <see cref="IMediaFactory"/> associated with this 
+		/// can not create an <see cref="ExternalAudioMedia"/> matching the QName of <see cref="ExternalAudioMedia"/>
+		/// </exception>
+		public new ExternalAudioMedia copy()
+		{
+			return copyProtected() as ExternalAudioMedia;
+		}
+
+	    ///<summary>
+	    ///
+	    ///</summary>
+	    ///<returns></returns>
+	    protected override IMedia copyProtected()
         {
-            return XukStrings.ExternalAudioMedia;
-        }
-        private string mSrc;
-        private Time mClipBegin;
-        private Time mClipEnd;
-
-        private void Reset()
-        {
-            mSrc = ".";
-            mClipBegin = Time.Zero;
-            mClipEnd = Time.MaxValue;
-        }
-
-        /// <summary>
-        /// Default constructor - for system use only, 
-        /// <see cref="ExternalAudioMedia"/>s should only be created via. the <see cref="MediaFactory"/>
-        /// </summary>
-        public ExternalAudioMedia()
-        {
-            Reset();
-            SrcChanged += this_SrcChanged;
-            ClipChanged += this_ClipChanged;
-        }
-
-        #region Media members
-
-        /// <summary>
-        /// This always returns true, because
-        /// audio media is always considered continuous
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsContinuous
-        {
-            get { return true; }
-        }
-
-        /// <summary>
-        /// This always returns false, because
-        /// audio media is never considered discrete
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsDiscrete
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// This always returns false, because
-        /// a single media object is never considered to be a sequence
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsSequence
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// Copy function which returns an <see cref="AbstractAudioMedia"/> object
-        /// </summary>
-        /// <returns>A copy of this</returns>
-        /// <exception cref="exception.FactoryCannotCreateTypeException">
-        /// Thrown when the <see cref="MediaFactory"/> associated with this 
-        /// can not create an <see cref="ExternalAudioMedia"/> matching the QName of <see cref="ExternalAudioMedia"/>
-        /// </exception>
-        public new ExternalAudioMedia Copy()
-        {
-            return CopyProtected() as ExternalAudioMedia;
-        }
-
-   
-        /// <summary>
-        /// Exports the external audio media to a destination <see cref="Presentation"/>
-        /// </summary>
-        /// <param name="destPres">The destination presentation</param>
-        /// <returns>The exported external audio media</returns>
-        public new ExternalAudioMedia Export(Presentation destPres)
-        {
-            return ExportProtected(destPres) as ExternalAudioMedia;
-        }
-
-        ///<summary>
-        ///
-        ///</summary>
-        ///<returns></returns>
-        protected override Media CopyProtected()
-        {
-            ExternalAudioMedia copy = (ExternalAudioMedia)base.CopyProtected();
-            copy.Src = Src;
-            copy.ClipBegin = ClipBegin.Copy();
-            copy.ClipEnd = ClipEnd.Copy();
+            ExternalAudioMedia copy = (ExternalAudioMedia) base.copyProtected();
+            copy.setClipBegin(getClipBegin().copy());
+            copy.setClipEnd(getClipEnd().copy());
             return copy;
         }
 
-        /// <summary>
-        /// Exports the external audio media to a destination <see cref="Presentation"/>
-        /// - part of technical construct to have <see cref="Export"/> return <see cref="ExternalAudioMedia"/>
-        /// </summary>
-        /// <param name="destPres">The destination presentation</param>
-        /// <returns>The exported external audio media</returns>
-        protected override Media ExportProtected(Presentation destPres)
-        {
-            ExternalAudioMedia exported = (ExternalAudioMedia)base.ExportProtected(destPres);
-            exported.Src = Src;
-            exported.ClipBegin = ClipBegin.Copy();
-            exported.ClipEnd = ClipEnd.Copy();
-            return exported;
-        }
+		/// <summary>
+		/// Exports the external audio media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported external audio media</returns>
+		public new ExternalAudioMedia export(Presentation destPres)
+		{
+			return exportProtected(destPres) as ExternalAudioMedia;
+		}
 
-        #endregion
+		/// <summary>
+		/// Exports the external audio media to a destination <see cref="Presentation"/>
+		/// - part of technical construct to have <see cref="export"/> return <see cref="ExternalAudioMedia"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported external audio media</returns>
+		protected override IMedia exportProtected(Presentation destPres)
+		{
+			ExternalAudioMedia exported = base.exportProtected(destPres) as ExternalAudioMedia;
+			if (exported==null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The MediaFactory cannot create a ExternalAudioMedia matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			exported.setClipBegin(getClipBegin().copy());
+			exported.setClipEnd(getClipEnd().copy());
+			return exported;
+		}
 
-        #region IXUKAble members
-
-        /// <summary>
-        /// Clears the data of the <see cref="ExternalAudioMedia"/>
-        /// </summary>
-        protected override void Clear()
-        {
-            Reset();
-            base.Clear();
-        }
-
-        /// <summary>
-        /// Reads the attributes of a ExternalAudioMedia xuk element.
-        /// </summary>
-        /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void XukInAttributes(XmlReader source)
-        {
-            string val = source.GetAttribute(XukStrings.Src);
-            if (val == null || val == "") val = ".";
-            Src = val;
-            Time cbTime, ceTime;
-            try
-            {
-                cbTime = new Time(source.GetAttribute(XukStrings.ClipBegin));
-            }
-            catch (exception.CheckedException e)
-            {
-                throw new exception.XukException(
-                    String.Format("clipBegin attribute is missing or has invalid value: {0}", e.Message),
-                    e);
-            }
-            try
-            {
-                ceTime = new Time(source.GetAttribute(XukStrings.ClipEnd));
-            }
-            catch (exception.CheckedException e)
-            {
-                throw new exception.XukException(
-                    String.Format("clipEnd attribute is missing or has invalid value: {0}", e.Message),
-                    e);
-            }
-            if (cbTime.IsNegativeTimeOffset)
-            {
-                ClipBegin = cbTime;
-                ClipEnd = ceTime;
-            }
-            else
-            {
-                ClipEnd = ceTime;
-                ClipBegin = cbTime;
-            }
-            base.XukInAttributes(source);
-        }
-
-        /// <summary>
-        /// Writes the attributes of a ExternalAudioMedia element
-        /// </summary>
-        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-        /// <param name="baseUri">
-        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-        /// if <c>null</c> absolute <see cref="Uri"/>s are written
-        /// </param>
-        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
-        {
-            if (Src != "")
-            {
-                Uri srcUri = new Uri(MediaFactory.Presentation.RootUri, Src);
-                if (baseUri == null)
-                {
-                    destination.WriteAttributeString(XukStrings.Src, srcUri.AbsoluteUri);
-                }
-                else
-                {
-                    destination.WriteAttributeString(XukStrings.Src, baseUri.MakeRelativeUri(srcUri).ToString());
-                }
-            }
-            destination.WriteAttributeString(XukStrings.ClipBegin, this.ClipBegin.ToString());
-            destination.WriteAttributeString(XukStrings.ClipEnd, this.ClipEnd.ToString());
-            base.XukOutAttributes(destination, baseUri);
-        }
+		#endregion
 
 
-        #endregion
 
-        #region IContinuous Members
+		#region IXUKAble members
 
-        /// <summary>
-        /// Gets the duration of <c>this</c>
-        /// </summary>
-        /// <returns>A <see cref="TimeDelta"/> representing the duration</returns>
-        public override TimeDelta Duration
-        {
-            get { return ClipEnd.GetTimeDelta(ClipBegin); }
-        }
+		/// <summary>
+		/// Reads the attributes of a ExternalAudioMedia xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		protected override void xukInAttributes(XmlReader source)
+		{
+			base.xukInAttributes(source);
+			resetClipTimes();
+			Time cbTime, ceTime;
+			try
+			{
+				cbTime = new Time(source.GetAttribute("clipBegin"));
+			}
+			catch (exception.CheckedException e)
+			{
+				throw new exception.XukException(
+					String.Format("clipBegin attribute is missing or has invalid value: {0}", e.Message),
+					e);
+			}
+			try
+			{
+				ceTime = new Time(source.GetAttribute("clipEnd"));
+			}
+			catch (exception.CheckedException e)
+			{
+				throw new exception.XukException(
+					String.Format("clipEnd attribute is missing or has invalid value: {0}", e.Message),
+					e);
+			}
+			if (cbTime.isNegativeTimeOffset())
+			{
+				setClipBegin(cbTime);
+				setClipEnd(ceTime);
+			}
+			else
+			{
+				setClipEnd(ceTime);
+				setClipBegin(cbTime);
+			}
+		}
 
-        /// <summary>
-        /// Splits <c>this</c> at a given <see cref="Time"/>
-        /// </summary>
-        /// <param name="splitPoint">The <see cref="Time"/> at which to split - 
-        /// must be between clip begin and clip end <see cref="Time"/>s</param>
-        /// <returns>
-        /// A newly created <see cref="ExternalAudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
-        /// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
-        /// </returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="splitPoint"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
-        /// </exception>
-        public new ExternalAudioMedia Split(Time splitPoint)
-        {
-            return SplitProtected(splitPoint) as ExternalAudioMedia;
-        }
+		/// <summary>
+		/// Writes the attributes of a ExternalAudioMedia element
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+		{
+			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
+			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
+			base.xukOutAttributes(destination, baseUri);
+		}
 
-        /// <summary>
-        /// Splits <c>this</c> at a given <see cref="Time"/>
-        /// </summary>
-        /// <param name="splitPoint">The <see cref="Time"/> at which to split - 
-        /// must be between clip begin and clip end <see cref="Time"/>s</param>
-        /// <returns>
-        /// A newly created <see cref="AbstractAudioMedia"/> containing the audio after <paramref localName="splitPoint"/>,
-        /// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
-        /// </returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="splitPoint"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
-        /// </exception>
-        protected override AbstractAudioMedia SplitProtected(Time splitPoint)
-        {
+		/// <summary>
+		/// Write the child elements of a ExternalAudioMedia element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		protected virtual void xukOutChildren(XmlWriter destination)
+		{
 
-            if (splitPoint == null)
-            {
-                throw new exception.MethodParameterIsNullException(
-                    "The time at which to split can not be null");
-            }
-            if (splitPoint.IsLessThan(ClipBegin))
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    "The split time can not be before ClipBegin");
-            }
-            if (splitPoint.IsGreaterThan(ClipEnd))
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    "The split time can not be after ClipEnd");
-            }
-            ExternalAudioMedia splitAM = Copy();
-            ClipEnd = splitPoint;
-            splitAM.ClipBegin = splitPoint;
-            return splitAM;
-        }
+		}
 
-        #endregion
+		#endregion
 
-        #region IClipped Members
+		#region IContinuous Members
 
-        /// <summary>
-        /// Gets the clip begin <see cref="Time"/> of <c>this</c>
-        /// </summary>
-        /// <returns>Clip begin</returns>
-        public Time ClipBegin
-        {
-            get { return mClipBegin; }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException("ClipBegin can not be null");
-                }
-                if (value.IsLessThan(Time.Zero))
-                {
-                    throw new exception.MethodParameterIsOutOfBoundsException(
-                        "ClipBegin is a negative time offset");
-                }
-                if (value.IsGreaterThan(ClipEnd))
-                {
-                    throw new exception.MethodParameterIsOutOfBoundsException(
-                        "ClipBegin can not be after ClipEnd");
-                }
-                if (!mClipBegin.IsEqualTo(value))
-                {
-                    Time prevCB = ClipBegin;
-                    mClipBegin = value.Copy();
-                    NotifyClipChanged(this, ClipBegin, ClipEnd, prevCB, ClipEnd);
-                }
-            }
-        }
+		/// <summary>
+		/// Gets the duration of <c>this</c>
+		/// </summary>
+		/// <returns>A <see cref="TimeDelta"/> representing the duration</returns>
+		public TimeDelta getDuration()
+		{
+			return getClipEnd().getTimeDelta(getClipBegin());
+		}
 
-        /// <summary>
-        /// Gets the clip end <see cref="Time"/> of <c>this</c>
-        /// </summary>
-        /// <returns>Clip end</returns>
-        public Time ClipEnd
-        {
-            get { return mClipEnd; }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException("ClipEnd can not be null");
-                }
-                if (value.IsLessThan(ClipBegin))
-                {
-                    throw new exception.MethodParameterIsOutOfBoundsException(
-                        "ClipEnd can not be before ClipBegin");
-                }
-                if (!mClipEnd.IsEqualTo(value))
-                {
-                    Time prevCE = ClipEnd;
-                    mClipEnd = value.Copy();
-                    NotifyClipChanged(this, ClipBegin, ClipEnd, ClipBegin, prevCE);
-                }
-            }
-        }
+		#endregion
 
-        /// <summary>
-        /// Event fired after the clip (clip begin or clip end) of the <see cref="ExternalAudioMedia"/> has changed
-        /// </summary>
-        public event EventHandler<events.media.ClipChangedEventArgs> ClipChanged;
+		#region IClipped Members
 
-        /// <summary>
-        /// Fires the <see cref="ClipChanged"/> event
-        /// </summary>
-        /// <param name="source">The source, that is the <see cref="ExternalAudioMedia"/> whoose clip has changed</param>
-        /// <param name="newCB">The new clip begin value</param>
-        /// <param name="newCE">The new clip begin value</param>
-        /// <param name="prevCB">The clip begin value prior to the change</param>
-        /// <param name="prevCE">The clip end value prior to the change</param>
-        protected void NotifyClipChanged(ExternalAudioMedia source, Time newCB, Time newCE, Time prevCB, Time prevCE)
-        {
-            EventHandler<events.media.ClipChangedEventArgs> d = ClipChanged;
-            if (d != null) d(this, new urakawa.events.media.ClipChangedEventArgs(source, newCB, newCE, prevCB, prevCE));
-        }
+		/// <summary>
+		/// Gets the clip begin <see cref="Time"/> of <c>this</c>
+		/// </summary>
+		/// <returns>Clip begin</returns>
+		public Time getClipBegin()
+		{
+			return mClipBegin;
+		}
 
-        private void this_ClipChanged(object sender, urakawa.events.media.ClipChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
+		/// <summary>
+		/// Gets the clip end <see cref="Time"/> of <c>this</c>
+		/// </summary>
+		/// <returns>Clip end</returns>
+		public Time getClipEnd()
+		{
+			return mClipEnd;
+		}
 
+		/// <summary>
+		/// Sets the clip begin <see cref="Time"/>
+		/// </summary>
+		/// <param name="beginPoint">The new clip begin <see cref="Time"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref localName="beginPoint"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref localName="beginPoint"/> is beyond clip end of <c>this</c>
+		/// </exception>
+		public void setClipBegin(Time beginPoint)
+		{
+			if (beginPoint==null)
+			{
+				throw new exception.MethodParameterIsNullException("ClipBegin can not be null");
+			}
+			if (beginPoint.isLessThan(Time.Zero))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"ClipBegin is a negative time offset");
+			}
+			if (beginPoint.isGreaterThan(getClipEnd()))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"ClipBegin can not be after ClipEnd"); 
+			}
+			if (!mClipBegin.isEqualTo(beginPoint))
+			{
+				Time prevCB = getClipBegin();
+				mClipBegin = beginPoint.copy();
+				notifyClipChanged(this, getClipBegin(), getClipEnd(), prevCB, getClipEnd());
+			}
+		}
 
-        #endregion
+		/// <summary>
+		/// Sets the clip end <see cref="Time"/>
+		/// </summary>
+		/// <param name="endPoint">The new clip end <see cref="Time"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref localName="endPoint"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref localName="endPoint"/> is before clip begin of <c>this</c>
+		/// </exception>
+		public void setClipEnd(Time endPoint)
+		{
+			if (endPoint == null)
+			{
+				throw new exception.MethodParameterIsNullException("ClipEnd can not be null");
+			}
+			if (endPoint.isLessThan(getClipBegin()))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"ClipEnd can not be before ClipBegin");
+			}
+			if (!mClipEnd.isEqualTo(endPoint))
+			{
+				Time prevCE = getClipEnd();
+				mClipEnd = endPoint.copy();
+				notifyClipChanged(this, getClipBegin(), getClipEnd(), getClipBegin(), prevCE);
+			}
+		}
 
-        #region ILocated Members
+		IContinuous IContinuous.split(Time splitPoint)
+		{
+			return split(splitPoint);
+		}
 
-        /// <summary>
-        /// Event fired after <see cref="Src"/> of the <see cref="ILocated"/> has changed
-        /// </summary>
-        public event EventHandler<SrcChangedEventArgs> SrcChanged;
+		/// <summary>
+		/// Splits <c>this</c> at a given <see cref="Time"/>
+		/// </summary>
+		/// <param name="splitPoint">The <see cref="Time"/> at which to split - 
+		/// must be between clip begin and clip end <see cref="Time"/>s</param>
+		/// <returns>
+		/// A newly created <see cref="IAudioMedia"/> containing the audio after,
+		/// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
+		/// </returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="splitPoint"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
+		/// </exception>
+		public ExternalAudioMedia split(Time splitPoint)
+		{
+			if (splitPoint==null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The time at which to split can not be null");
+			}
+			if (splitPoint.isLessThan(getClipBegin()))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The split time can not be before ClipBegin");
+			}
+			if (splitPoint.isGreaterThan(getClipEnd()))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The split time can not be after ClipEnd");
+			}
+			ExternalAudioMedia splitAM = (ExternalAudioMedia)copy();
+			setClipEnd(splitPoint);
+			splitAM.setClipBegin(splitPoint);
+			return splitAM;
 
-        /// <summary>
-        /// Fires the <see cref="SrcChanged"/> event
-        /// </summary>
-        /// <param name="newSrc">The new <see cref="Src"/> value</param>
-        /// <param name="prevSrc">The <see cref="Src"/> value prior to the change</param>
-        protected void NotifySrcChanged(string newSrc, string prevSrc)
-        {
-            EventHandler<SrcChangedEventArgs> d = SrcChanged;
-            if (d != null) d(this, new SrcChangedEventArgs(this, newSrc, prevSrc));
-        }
+		}
 
-        private void this_SrcChanged(object sender, SrcChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
+		#endregion
 
+		#region IValueEquatable<IMedia> Members
 
-        /// <summary>
-        /// Gets or sets the src value. The default value is "."
-        /// </summary>
-        /// <exception cref="exception.MethodParameterIsEmptyStringException">
-        /// Thrown when trying to set the <see cref="Src"/> value to <c>null</c></exception>
-        public string Src
-        {
-            get { return mSrc; }
-            set
-            {
-                if (value == null)
-                    throw new exception.MethodParameterIsNullException("The src value cannot be null");
-                if (value == "")
-                    throw new exception.MethodParameterIsEmptyStringException("The src value cannot be an empty string");
-                string prevSrc = mSrc;
-                mSrc = value;
-                if (mSrc != prevSrc) NotifySrcChanged(mSrc, prevSrc);
-            }
-        }
+		/// <summary>
+		/// Conpares <c>this</c> with a given other <see cref="IMedia"/> for equality
+		/// </summary>
+		/// <param name="other">The other <see cref="IMedia"/></param>
+		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+		public override bool valueEquals(IMedia other)
+		{
+			if (!base.valueEquals(other)) return false;
+			ExternalAudioMedia otherAudio = (ExternalAudioMedia)other;
+			if (!getClipBegin().isEqualTo(otherAudio.getClipBegin())) return false;
+			if (!getClipEnd().isEqualTo(otherAudio.getClipEnd())) return false;
+			return true;
+		}
 
-        /// <summary>
-        /// Gets the <see cref="Uri"/> of the <see cref="ExternalAudioMedia"/> 
-        /// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
-        /// </summary>
-        /// <returns>The <see cref="Uri"/> - <c>null</c> if <see cref="Src"/> is <c>null</c></returns>
-        /// <exception cref="exception.InvalidUriException">
-        /// Thrown when the value <see cref="Src"/> is not a well-formed <see cref="Uri"/>
-        /// </exception>
-        public Uri Uri
-        {
-            get
-            {
-                if (Src == null) return null;
-                if (!Uri.IsWellFormedUriString(Src, UriKind.RelativeOrAbsolute))
-                {
-                    throw new exception.InvalidUriException(String.Format(
-                                                                "The src value '{0}' is not a well-formed Uri", Src));
-                }
-                return new Uri(MediaFactory.Presentation.RootUri, Src);
-            }
-        }
+		#endregion
 
-        #endregion
-
-        #region IValueEquatable<Media> Members
-
-        /// <summary>
-        /// Conpares <c>this</c> with a given other <see cref="Media"/> for equality
-        /// </summary>
-        /// <param name="other">The other <see cref="Media"/></param>
-        /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(Media other)
-        {
-            if (!base.ValueEquals(other))
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            ExternalAudioMedia otherAudio = (ExternalAudioMedia) other;
-            if (Src != otherAudio.Src)
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            if (!ClipBegin.IsEqualTo(otherAudio.ClipBegin))
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            if (!ClipEnd.IsEqualTo(otherAudio.ClipEnd))
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            return true;
-        }
-
-        #endregion
-
-    }
+	}
 }

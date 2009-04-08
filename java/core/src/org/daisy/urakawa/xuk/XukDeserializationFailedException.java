@@ -8,10 +8,9 @@ import org.daisy.urakawa.exception.CheckedException;
  * object model fails.
  * </p>
  */
-public class XukDeserializationFailedException extends CheckedException
-{
-    /**
+public class XukDeserializationFailedException extends CheckedException {
+	/**
 	 * 
 	 */
-    private static final long serialVersionUID = 7985113391530603155L;
+	private static final long serialVersionUID = 7985113391530603155L;
 }

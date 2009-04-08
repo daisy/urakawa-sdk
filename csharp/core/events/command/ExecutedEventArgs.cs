@@ -7,16 +7,14 @@ using urakawa.events.command;
 namespace urakawa.events.command
 {
     /// <summary>
-    /// Arguments for the <see cref="Command.Executed"/> event
+    /// Arguments for the <see cref="ICommand.executed"/> event
     /// </summary>
     public class ExecutedEventArgs : CommandEventArgs
     {
         /// <summary>
-        /// Constructor setting the source <see cref="Command"/> of the event
+        /// Constructor setting the source <see cref="ICommand"/> of the event
         /// </summary>
-        /// <param name="source">The source <see cref="Command"/> of the event</param>
-        public ExecutedEventArgs(Command source) : base(source)
-        {
-        }
+        /// <param name="source">The source <see cref="ICommand"/> of the event</param>
+        public ExecutedEventArgs(ICommand source) : base(source) { }
     }
 }

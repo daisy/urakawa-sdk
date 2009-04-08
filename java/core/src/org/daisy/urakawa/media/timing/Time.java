@@ -4,218 +4,165 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * Reference implementation of the interface.
+ * Time offset (could be in milliseconds, SMPTE, etc.). This really is an
+ * interface "lollypop" that should be extended. Typically, methods like
+ * getTimeMilliseconds(), getTimeSMPTE(), etc. should be available to the
+ * end-user of the API. Can be a negative/0/positive offset relative to the
+ * local timebase in the current context.
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
+ * @depend - Clone - org.daisy.urakawa.media.timing.Time
  */
-public class Time implements ITime
-{
-    private long mTime;
-
-    /**
-	 * 
+public interface Time {
+	/**
+	 * @return the "zero" time
 	 */
-    public Time()
-    {
-        mTime = 0;
-    }
+	public Time getZero();
 
-    /**
-     * @param value
-     */
-    public Time(long value)
-    {
-        mTime = value;
-    }
+	/**
+	 * @return the maximum time value
+	 */
+	public Time getMaxValue();
 
-    /**
-     * @param val
-     * @throws MethodParameterIsNullException
-     * @throws MethodParameterIsEmptyStringException
-     * @throws TimeStringRepresentationIsInvalidException
-     */
-    public Time(String val) throws MethodParameterIsNullException,
-            MethodParameterIsEmptyStringException,
-            TimeStringRepresentationIsInvalidException
-    {
-        if (val == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        if (val.length() == 0)
-        {
-            throw new MethodParameterIsEmptyStringException();
-        }
-        setTime(new Time().parse(val).getTimeAsMilliseconds());
-    }
+	/**
+	 * @return the minimum time value
+	 */
+	public Time getMinValue();
 
-    public ITime getZero()
-    {
-        return new Time();
-    }
+	/**
+	 * @return time
+	 */
+	public long getTimeAsMilliseconds();
 
-    public ITime getMaxValue()
-    {
-        return new Time(Long.MAX_VALUE);
-    }
+	/**
+	 * @param otherTime
+	 * @return true or false
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	public boolean isLessThanOrEqualTo(Time otherTime)
+			throws MethodParameterIsNullException;
 
-    public ITime getMinValue()
-    {
-        return new Time(Long.MIN_VALUE);
-    }
+	/**
+	 * @param otherTime
+	 * @return true or false
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	public boolean isGreaterThanOrEqualTo(Time otherTime)
+			throws MethodParameterIsNullException;
 
-    public boolean isLessThanOrEqualTo(ITime otherTime)
-            throws MethodParameterIsNullException
-    {
-        if (otherTime == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        return otherTime.isGreaterThanOrEqualTo(this);
-    }
+	/**
+	 * @param other
+	 * @return time
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	public Time subtractTime(Time other) throws MethodParameterIsNullException;
 
-    public boolean isGreaterThanOrEqualTo(ITime otherTime)
-            throws MethodParameterIsNullException
-    {
-        if (otherTime == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        return !isLessThan(otherTime);
-    }
+	/**
+	 * @param other
+	 * @return time
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	public Time subtractTimeDelta(TimeDelta other)
+			throws MethodParameterIsNullException;
 
-    public boolean isLessThan(ITime otherTime)
-            throws MethodParameterIsNullException
-    {
-        if (otherTime == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        return otherTime.isGreaterThan(this);
-    }
+	/**
+	 * @param newTime
+	 */
+	public void setTime(long newTime);
 
-    public boolean isEqualTo(ITime otherTime)
-            throws MethodParameterIsNullException
-    {
-        if (otherTime == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        if (isGreaterThan(otherTime))
-            return false;
-        if (otherTime.isGreaterThan(this))
-            return false;
-        return true;
-    }
+	/**
+	 * @param stringRepresentation
+	 * @return time
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 * @throws TimeStringRepresentationIsInvalidException 
+	 */
+	public Time parse(String stringRepresentation)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException,
+			TimeStringRepresentationIsInvalidException;
 
-    public boolean isGreaterThan(ITime otherTime)
-            throws MethodParameterIsNullException
-    {
-        if (otherTime == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        return (getTimeAsMilliseconds() > otherTime.getTimeAsMilliseconds());
-    }
+	/**
+	 * a helper method to help determine
+	 * {@link org.daisy.urakawa.media.timing.TimeOffsetIsNegativeException}
+	 * 
+	 * @return true if the associated time value is a negative offset (<0 "less
+	 *         than zero")
+	 */
+	public boolean isNegativeTimeOffset();
 
-    public ITime addTimeDelta(ITimeDelta other)
-            throws MethodParameterIsNullException
-    {
-        if (other == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        return new Time(getTimeAsMilliseconds()
-                + other.getTimeDeltaAsMilliseconds());
-    }
+	/**
+	 * <p>
+	 * Cloning method
+	 * </p>
+	 * 
+	 * @return a copy.
+	 */
+	Time copy();
 
-    public ITime subtractTime(ITime other)
-            throws MethodParameterIsNullException
-    {
-        if (other == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        return new Time(getTimeAsMilliseconds() - other.getTimeAsMilliseconds());
-    }
+	/**
+	 * @param t
+	 * @return time
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	TimeDelta getTimeDelta(Time t) throws MethodParameterIsNullException;
 
-    public ITime subtractTimeDelta(ITimeDelta other)
-            throws MethodParameterIsNullException
-    {
-        if (other == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        return new Time(mTime - other.getTimeDeltaAsMilliseconds());
-    }
+	/**
+	 * @param other
+	 * @return time
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	Time addTime(Time other) throws MethodParameterIsNullException;
 
-    public void setTime(long newTime)
-    {
-        mTime = newTime;
-    }
+	/**
+	 * @param other
+	 * @return time
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	Time addTimeDelta(TimeDelta other) throws MethodParameterIsNullException;
 
-    public ITime addTime(ITime other)
-    {
-        return new Time(getTimeAsMilliseconds() + other.getTimeAsMilliseconds());
-    }
+	/**
+	 * @param otherTime
+	 * @return true or false
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	boolean isGreaterThan(Time otherTime) throws MethodParameterIsNullException;
 
-    public long getTimeAsMilliseconds()
-    {
-        return mTime;
-    }
+	/**
+	 * @param otherTime
+	 * @return true or false
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	boolean isLessThan(Time otherTime) throws MethodParameterIsNullException;
 
-    public ITimeDelta getTimeDelta(ITime t)
-            throws MethodParameterIsNullException
-    {
-        if (t == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        long value = getTimeAsMilliseconds() - t.getTimeAsMilliseconds();
-        if (value < 0)
-        {
-            value = -value;
-        }
-        return new TimeDelta(value);
-    }
-
-    public boolean isNegativeTimeOffset()
-    {
-        return (mTime < 0);
-    }
-
-    public ITime copy()
-    {
-        return new Time(mTime);
-    }
-
-    public ITime parse(String stringRepresentation)
-            throws MethodParameterIsNullException,
-            MethodParameterIsEmptyStringException,
-            TimeStringRepresentationIsInvalidException
-    {
-        if (stringRepresentation == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        if (stringRepresentation.length() == 0)
-        {
-            throw new MethodParameterIsEmptyStringException();
-        }
-        try
-        {
-            return new Time(Long.parseLong(stringRepresentation));
-        }
-        catch (Exception e)
-        {
-            throw new TimeStringRepresentationIsInvalidException();
-        }
-    }
-
-    @Override
-    public String toString()
-    {
-        return Long.toString(mTime);
-    }
+	/**
+	 * @param otherTime
+	 * @return true or false
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	boolean isEqualTo(Time otherTime) throws MethodParameterIsNullException;
 }

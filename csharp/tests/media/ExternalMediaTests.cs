@@ -5,123 +5,106 @@ using NUnit.Framework;
 
 namespace urakawa.media
 {
-    public abstract class ExternalMediaTests : IMediaTests
-    {
-        protected ILocated mLocatedMedia1
-        {
-            get { return mMedia1 as ILocated; }
-        }
+	public abstract class ExternalMediaTests : IMediaTests
+	{
 
-        protected ILocated mLocatedMedia2
-        {
-            get { return mMedia2 as ILocated; }
-        }
+		protected ExternalMedia mExternalMedia1 { get { return mMedia1 as ExternalMedia; } }
+		protected ExternalMedia mExternalMedia2 { get { return mMedia2 as ExternalMedia; } }
+		protected ExternalMedia mExternalMedia3 { get { return mMedia3 as ExternalMedia; } }
 
-        protected ILocated mLocatedMedia3
-        {
-            get { return mMedia3 as ILocated; }
-        }
+		protected ExternalMediaTests(string mediaXukLN, string mediaXukNS) : base(mediaXukLN, mediaXukNS)
+		{
+		}
 
-        protected ExternalMediaTests(Type extMediaTp)
-            : base(extMediaTp)
-        {
-        }
+		#region ExternalMedia tests
 
-        #region ExternalMedia tests
+		public virtual void src_Basics()
+		{
+			string src = ".";
+			Assert.AreEqual(src, mExternalMedia1.getSrc(), "The default src value is not '.'");
+			src = "temp.txt";
+			mExternalMedia1.setSrc(src);
+			Assert.AreEqual(src, mExternalMedia1.getSrc(), "Unexpected src value");
+			src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
+			mExternalMedia1.setSrc(src);
+			Assert.AreEqual(src, mExternalMedia1.getSrc(), "Unexpected src value");
+		}
 
-        public virtual void Src_Basics()
-        {
-            string src = ".";
-            Assert.AreEqual(src, mLocatedMedia1.Src, "The default src value is not '.'");
-            src = "temp.txt";
-            mLocatedMedia1.Src = src;
-            Assert.AreEqual(src, mLocatedMedia1.Src, "Unexpected src value");
-            src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
-            mLocatedMedia1.Src = src;
-            Assert.AreEqual(src, mLocatedMedia1.Src, "Unexpected src value");
-        }
+		public virtual void setSrc_NullValue()
+		{
+			mExternalMedia1.setSrc(null);
+		}
 
-        public virtual void Src_NullValue()
-        {
-            mLocatedMedia1.Src = null;
-        }
+		public virtual void setSrc_EmptyStringValue()
+		{
+			mExternalMedia1.setSrc("");
+		}
 
-        public virtual void Src_EmptyStringValue()
-        {
-            mLocatedMedia1.Src = "";
-        }
+		public virtual void getUri_Basics()
+		{
+			string src = mExternalMedia1.getSrc();
+			mExternalMedia1.setSrc(src);
+			Assert.AreEqual(new Uri(mPresentation.getRootUri(), src), mExternalMedia1.getUri(), "Unexpected getUri return value");
+			src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
+			mExternalMedia1.setSrc(src);
+			Assert.AreEqual(new Uri(mPresentation.getRootUri(), src), mExternalMedia1.getUri(), "Unexpected getUri return value");
+			src = "temp.txt";
+			mExternalMedia1.setSrc(src);
+			Assert.AreEqual(new Uri(mPresentation.getRootUri(), src), mExternalMedia1.getUri(), "Unexpected getUri return value");
+		}
 
-        public virtual void Uri_Basics()
-        {
-            string src = mLocatedMedia1.Src;
-            mLocatedMedia1.Src = src;
-            Assert.AreEqual(new Uri(mPresentation.RootUri, src), mLocatedMedia1.Uri, "Unexpected getUri return value");
-            src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
-            mLocatedMedia1.Src = src;
-            Assert.AreEqual(new Uri(mPresentation.RootUri, src), mLocatedMedia1.Uri, "Unexpected getUri return value");
-            src = "temp.txt";
-            mLocatedMedia1.Src = src;
-            Assert.AreEqual(new Uri(mPresentation.RootUri, src), mLocatedMedia1.Uri, "Unexpected getUri return value");
-        }
+		public virtual void getUri_SrcMalformedUri()
+		{
+			mExternalMedia1.setSrc("1 2 3 4 5.txt~");
+			mExternalMedia1.getUri();
+		}
 
-        public virtual void Uri_SrcMalformedUri()
-        {
-            mLocatedMedia1.Src = "1 2 3 4 5.txt~";
-            Uri tmp = mLocatedMedia1.Uri;
-        }
+		#endregion
 
-        #endregion
+		#region IMedia tests
+		public override void copy_valueEqualsAndReferenceDiffers()
+		{
+			mExternalMedia1.setSrc("tempCopy.txt");
+			base.copy_valueEqualsAndReferenceDiffers();
+		}
 
-        #region Media tests
+		public override void export_valueEqualsPresentationsOk()
+		{
+			mExternalMedia1.setSrc("tempExport.txt");
+			base.export_valueEqualsPresentationsOk();
+		}
+		#endregion
 
-        public override void Copy_ValueEqualsAndReferenceDiffers()
-        {
-            mLocatedMedia1.Src = "tempCopy.txt";
-            base.Copy_ValueEqualsAndReferenceDiffers();
-        }
+		#region IValueEquatable tests
+		public virtual void valueEquals_Src()
+		{
+			mExternalMedia1.setSrc("temp.txt");
+			mExternalMedia2.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
+			Assert.IsFalse(mExternalMedia1.valueEquals(mExternalMedia2), "ExternalTextMedia with different src must not be value equal");
+			mExternalMedia2.setSrc(mExternalMedia1.getSrc());
+			Assert.IsTrue(mExternalMedia1.valueEquals(mExternalMedia2), "Expected ExternalMedia to be equal");
+		}
 
-        public override void Export_ValueEqualsPresentationsOk()
-        {
-            mLocatedMedia1.Src = "tempExport.txt";
-            base.Export_ValueEqualsPresentationsOk();
-        }
+		#endregion
 
-        #endregion
+		#region IXukAble tests
+		public override void Xuk_RoundTrip()
+		{
+			mExternalMedia1.setSrc("temp.txt");
+			base.Xuk_RoundTrip();
+		}
+		#endregion
 
-        #region IValueEquatable tests
+		#region IValueEquatable tests
 
-        public virtual void ValueEquals_Src()
-        {
-            mLocatedMedia1.Src = "temp.txt";
-            mLocatedMedia2.Src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
-            Assert.IsFalse(mMedia1.ValueEquals(mMedia2),
-                           "ExternalTextMedia with different src must not be value equal");
-            mLocatedMedia2.Src = mLocatedMedia1.Src;
-            Assert.IsTrue(mMedia1.ValueEquals(mMedia2), "Expected ExternalMedia to be equal");
-        }
+		public override void valueEquals_Basics()
+		{
+			mExternalMedia1.setSrc("temp.txt");
+			mExternalMedia2.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
+			mExternalMedia3.setSrc(mExternalMedia1.getSrc());
+			base.valueEquals_Basics();
+		}
 
-        #endregion
-
-        #region IXukAble tests
-
-        public override void Xuk_RoundTrip()
-        {
-            mLocatedMedia1.Src = "temp.txt";
-            base.Xuk_RoundTrip();
-        }
-
-        #endregion
-
-        #region IValueEquatable tests
-
-        public override void ValueEquals_Basics()
-        {
-            mLocatedMedia1.Src = "temp.txt";
-            mLocatedMedia2.Src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
-            mLocatedMedia3.Src = mLocatedMedia1.Src;
-            base.ValueEquals_Basics();
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

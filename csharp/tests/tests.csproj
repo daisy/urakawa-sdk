@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.50727</ProductVersion>
@@ -21,13 +20,12 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>urakawa</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <StartupObject>urakawa.MainProgram</StartupObject>
+    <StartupObject>
+    </StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetZone>LocalIntranet</TargetZone>
-    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -52,9 +50,6 @@
     <DebugType>full</DebugType>
     <ErrorReport>prompt</ErrorReport>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <EnvironmentVariables>
-      <EnvironmentVariables />
-    </EnvironmentVariables>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -66,6 +61,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
@@ -86,8 +82,6 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit-console-runner, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
@@ -102,18 +96,28 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files\NUnit\bin\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <ProjectReference Include="..\core\core.csproj">
+      <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
+      <Name>core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\examples\examples.csproj">
       <Project>{B11190FE-650E-4863-9376-A3ACC4DBDD99}</Project>
       <Name>examples</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\core\UrakawaSDK.core.csproj">
-      <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
-      <Name>UrakawaSDK.core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -121,8 +125,9 @@
     <Compile Include="IXukAbleBasicTestUtils.cs" />
     <Compile Include="MainProgram.cs" />
     <Compile Include="media\data\audio\PCMFormatInfoTests.cs" />
-    <Compile Include="media\data\DataProviderManagerTests.cs" />
+    <Compile Include="media\data\FileDataProviderManagerTests.cs" />
     <Compile Include="media\data\FileDataProviderTests.cs" />
+    <Compile Include="media\data\IDataProviderManagerTests.cs" />
     <Compile Include="media\data\IDataProviderTests.cs" />
     <Compile Include="media\data\StreamUtils.cs" />
     <Compile Include="media\ExternalAudioMediaTests.cs" />
@@ -131,7 +136,6 @@
     <Compile Include="media\ExternalTextMediaTests.cs" />
     <Compile Include="media\ExternalVideoMediaTests.cs" />
     <Compile Include="media\IMediaTests.cs" />
-    <Compile Include="OldTests\SimpleSampleChannelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -142,9 +146,9 @@
     <Compile Include="OldTests\ChannelTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="OldTests\ExampleCustomPresentationTests.cs" />
+    <Compile Include="OldTests\CustomPresentationTests.cs" />
     <Compile Include="OldTests\emptyMediaDataPresentationTests.cs" />
-    <Compile Include="OldTests\ExampleCustomTests.cs">
+    <Compile Include="OldTests\ExampleCustomPropertyTests.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OldTests\ForAnEmptyPresentation.cs">
@@ -155,6 +159,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="OldTests\RoundTrip.cs">
@@ -163,7 +169,7 @@
     <Compile Include="OldTests\SampleDTBVisitXmlProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="OldTests\SimpleSampleBasicPresentationTests.cs">
+    <Compile Include="OldTests\SimpleSample.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OldTests\CopyInsertTest.cs" />
@@ -174,9 +180,9 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="app.config" />
-    <BaseApplicationManifest Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="XukWorks\copyInsertRenameTest.xuk" />
     <None Include="XukWorks\ExCustTestSample.xuk" />

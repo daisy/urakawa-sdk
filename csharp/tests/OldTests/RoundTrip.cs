@@ -6,13 +6,13 @@ using NUnit.Framework;
 using urakawa.metadata;
 using urakawa.core;
 
-namespace urakawa.oldTests
+namespace urakawa.unitTests.testbase
 {
-    /// <summary>
-    /// Tests for checking if the XUK format is "round-trip" proof,
-    /// </summary>
-    public class RoundTrip : TestCollectionBase
-    {
+	/// <summary>
+	/// Tests for checking if the XUK format is "round-trip" proof,
+	/// </summary>
+	public class RoundTrip : TestCollectionBase
+	{
         //[Test]
         //public void AreRootNodesEqualAfterSaveAndReload()
         //{
@@ -21,21 +21,21 @@ namespace urakawa.oldTests
         //    XmlWriterSettings wrSet = new XmlWriterSettings();
         //    wrSet.Indent = true;
         //    XmlWriter wr = XmlWriter.Create(subWr, wrSet);
-        //    mProject.SaveXuk(wr, mProject.getPresentation(0).getRootUri());
+        //    mProject.saveXUK(wr, mProject.getPresentation(0).getRootUri());
         //    wr.Flush();
         //    Project reloadedProject = new Project();
         //    wr = null;
         //    StringReader srd = new StringReader(swr.ToString());
         //    XmlTextReader rd = new XmlTextReader(mProject.getPresentation(0).getRootUri().ToString(), srd);
-        //    reloadedProject.OpenXuk(rd);
+        //    reloadedProject.openXUK(rd);
         //    rd.Close();
-        //    bool rootsEqual = mProject.getPresentation(0).getRootNode().ValueEquals(
+        //    bool rootsEqual = mProject.getPresentation(0).getRootNode().valueEquals(
         //        reloadedProject.getPresentation(0).getRootNode());
         //    Assert.IsTrue(
         //      rootsEqual,
         //      "Root nodes of original and reloaded presentations are not equal");
-        //    System.Collections.Generic.IList<Metadata> origMetadata = mProject.getPresentation(0).GetMetadata();
-        //    System.Collections.Generic.IList<Metadata> reloadedMetadata = mProject.getPresentation(0).GetMetadata();
+        //    System.Collections.Generic.IList<Metadata> origMetadata = mProject.getPresentation(0).getListOfMetadata();
+        //    System.Collections.Generic.IList<Metadata> reloadedMetadata = mProject.getPresentation(0).getListOfMetadata();
         //    Assert.AreEqual(origMetadata.Count, reloadedMetadata.Count, "Different number of metadata items in reloaded project");
         //    foreach (Metadata oIMeta in origMetadata)
         //    {
@@ -52,5 +52,5 @@ namespace urakawa.oldTests
         //        }
         //    }
         //}
-    }
+	}
 }

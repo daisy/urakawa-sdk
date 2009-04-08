@@ -1,203 +1,74 @@
 package org.daisy.urakawa.media.data;
 
-import org.daisy.urakawa.GenericWithPresentationFactory;
-import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
-import org.daisy.urakawa.exception.IsNotManagerOfException;
+import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * Extension of the generic factory to handle one or more specific types derived
- * from the base specified class, in order to provide convenience create()
- * methods.
+ * <p>
+ * This is the factory that creates
+ * {@link org.daisy.urakawa.media.data.DataProvider} instances.
+ * </p>
+ * <p>
+ * The returned object is managed by its associated manager.
+ * </p>
  * 
- * @xhas - - 1 org.daisy.urakawa.Presentation
- * @depend - Create - org.daisy.urakawa.media.data.FileDataProvider
+ * @depend - Create - org.daisy.urakawa.media.data.DataProvider
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public final class DataProviderFactory extends
-        GenericWithPresentationFactory<FileDataProvider>
-{
-    /**
-     * @param pres
-     * @throws MethodParameterIsNullException
-     */
-    public DataProviderFactory(Presentation pres)
-            throws MethodParameterIsNullException
-    {
-        super(pres);
-    }
+public interface DataProviderFactory extends XukAble, WithPresentation {
+	/**
+	 * @return Gets the DataProviderManager associated with the
+	 *         DataProviderFactory
+	 * @throws IsNotInitializedException 
+	 */
+	DataProviderManager getDataProviderManager() throws IsNotInitializedException;
 
-    /**
-     * @hidden
-     */
-    @Override
-    protected void initializeInstance(FileDataProvider instance)
-    {
-        super.initializeInstance(instance);
-        try
-        {
-            getPresentation().getDataProviderManager()
-                    .addDataProvider(instance);
-        }
-        catch (MethodParameterIsNullException e1)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e1);
-        }
-        catch (MethodParameterIsEmptyStringException e1)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e1);
-        }
-        catch (IsNotManagerOfException e1)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e1);
-        }
-        catch (IsAlreadyManagerOfException e1)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e1);
-        }
-        try
-        {
-            instance.initialize(
-                    getPresentation().getDataProviderManager()
-                            .getNewDataFileRelPath(
-                                    getExtensionFromMimeType(mMimeType)),
-                    mMimeType);
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-        catch (MethodParameterIsEmptyStringException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-    }
+	/**
+	 * <p>
+	 * Creates a DataProvider instance of default type for a given MIME type.
+	 * </p>
+	 * <p>
+	 * This factory method takes a single argument to specify the exact type of
+	 * object to create.
+	 * </p>
+	 * 
+	 * @param mimeType
+	 * @return can return null (in case the given argument does not match any
+	 *         supported type).
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
+	 */
+	DataProvider createDataProvider(String mimeType)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
-    // TODO: this can easily be broken during concurrent access !! (must fix)
-    private String mMimeType = null;
-
-    /**
-     * @param mimeType
-     * @return
-     * @throws MethodParameterIsNullException
-     * @throws MethodParameterIsEmptyStringException
-     */
-    public FileDataProvider createFileDataProvider(String mimeType)
-            throws MethodParameterIsNullException,
-            MethodParameterIsEmptyStringException
-    {
-        if (mimeType == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        if (mimeType.length() == 0)
-        {
-            throw new MethodParameterIsEmptyStringException();
-        }
-        mMimeType = mimeType;
-        FileDataProvider fdp;
-        try
-        {
-            fdp = create(FileDataProvider.class);
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-        return fdp;
-    }
-
-    /**
-     * @param mimeType
-     * @param xukLocalName
-     * @param xukNamespaceURI
-     * @return
-     * @throws MethodParameterIsNullException
-     * @throws MethodParameterIsEmptyStringException
-     */
-    public FileDataProvider createFileDataProvider(String mimeType,
-            String xukLocalName, String xukNamespaceURI)
-            throws MethodParameterIsNullException,
-            MethodParameterIsEmptyStringException
-    {
-        mMimeType = mimeType;
-        return create(xukLocalName, xukNamespaceURI);
-    }
-
-    /**
+	/**
+	 * <p>
+	 * Creates a DataProvider instance of type matching a given XUK QName for a
+	 * given MIME type.
+	 * </p>
 	 * 
+	 * @param mimeType
+	 * @param xukLocalName
+	 *            cannot be null, cannot be empty string.
+	 * @param xukNamespaceURI
+	 *            cannot be null, but can be empty string.
+	 * @return can return null (in case the given argument and QName
+	 *         specification does not match any supported type).
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden:
+	 *             <b>xukLocalName, mimeType</b>
 	 */
-    public static String AUDIO_MP4_MIME_TYPE = "audio/mpeg-generic";
-    /**
-	 * 
-	 */
-    public static String AUDIO_MP3_MIME_TYPE = "audio/mpeg";
-    /**
-	 * 
-	 */
-    public static String AUDIO_WAV_MIME_TYPE = "audio/x-wav";
-    /**
-	 * 
-	 */
-    public static String IMAGE_JPG_MIME_TYPE = "image/jpeg";
-    /**
-	 * 
-	 */
-    public static String IMAGE_PNG_MIME_TYPE = "image/png";
-    /**
-	 * 
-	 */
-    public static String IMAGE_SVG_MIME_TYPE = "image/svg+xml";
-    /**
-	 * 
-	 */
-    public static String STYLE_CSS_MIME_TYPE = "text/css";
-    /**
-	 * 
-	 */
-    public static String TEXT_PLAIN_MIME_TYPE = "text/plain";
-
-    /**
-     * @param mimeType
-     * @return
-     * @hidden
-     */
-    public String getExtensionFromMimeType(String mimeType)
-    {
-        String extension;
-        if (mimeType == AUDIO_MP4_MIME_TYPE)
-            extension = ".mp4";
-        else
-            if (mimeType == AUDIO_MP3_MIME_TYPE)
-                extension = ".mp3";
-            else
-                if (mimeType == AUDIO_WAV_MIME_TYPE)
-                    extension = ".wav";
-                else
-                    if (mimeType == IMAGE_JPG_MIME_TYPE)
-                        extension = ".jpg";
-                    else
-                        if (mimeType == IMAGE_PNG_MIME_TYPE)
-                            extension = ".png";
-                        else
-                            if (mimeType == IMAGE_SVG_MIME_TYPE)
-                                extension = ".svg";
-                            else
-                                if (mimeType == STYLE_CSS_MIME_TYPE)
-                                    extension = ".css";
-                                else
-                                    if (mimeType == TEXT_PLAIN_MIME_TYPE)
-                                        extension = ".txt";
-                                    else
-                                        extension = ".bin";
-        return extension;
-    }
+	DataProvider createDataProvider(String mimeType, String xukLocalName,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 }

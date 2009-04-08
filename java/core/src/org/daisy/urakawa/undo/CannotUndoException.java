@@ -8,10 +8,9 @@ import org.daisy.urakawa.exception.CheckedException;
  * fails.
  * </p>
  */
-public class CannotUndoException extends CheckedException
-{
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 99292103792953401L;
+public class CannotUndoException extends CheckedException {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 99292103792953401L;
 }

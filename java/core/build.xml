@@ -26,11 +26,10 @@
 
 		<!-- SUCCESS /usr/local/graphviz-2.14/bin/dot === version 2.14.1 (Fri Nov  9 09:06:49 GMT 2007) -->
 		<!-- SUCCESS /usr/local/graphviz-devel/bin/dot === version 2.17.20071127.0540 (Tue Nov 27 23:50:14 GMT 2007) -->
-		<!-- FAILURE /usr/local/bin/dot === version 2.20.3 (Tue Oct 14 12:23:50 UTC 2008) (dyld: lazy symbol binding failed: Symbol not found: _pixman_image_create_bits /// Referenced from: /usr/local/lib/graphviz/libgvplugin_pango.5.dylib) -->
 		<!-- FAILURE /usr/local/graphviz-local/bin/dot === version 1.16 (Thu Mar 23 11:56:44 GMT 2006) -->
 		<!-- FAILURE /sw/bin/dot === version 1.16 (Thu Mar 23 11:56:44 GMT 2006) -->
 		<!-- FAILURE /Applications/_MULTIMEDIA/Graphviz_.app/Contents/MacOS/dot === 1.13 (v16) (Mon August 23, 2004) -->
-		<condition property="executable.dot" value="/usr/local/graphviz-devel/bin/dot">
+		<condition property="executable.dot" value="/usr/local/graphviz-2.14/bin/dot">
 			<os family="mac" />
 		</condition>
 		<condition property="executable.dot" value="${ProgramFiles}/Graphviz2.16/bin/dot.exe">
@@ -69,7 +68,7 @@
 
 	<target name="umlgraph" depends="init">
 		<mkdir dir="${dest.dotuml.dir}" />
-		<javadoc sourcepath="${src.uml.dir}" access="private">
+		<javadoc sourcepath="${src.uml.dir}" private="true">
 			<package name="org.daisy.urakawa.*" />
 			<doclet name="gr.spinellis.umlgraph.doclet.UmlGraph" path="${umlgraph.path}">
 				<param name="-verbose" />
@@ -102,6 +101,7 @@
 				<param name="-views" />
 				<param name="-types" />
 				<param name="-visibility" />
+
 
 				<param name="-inferrel" />
 				<param name="-inferdep" />
@@ -185,7 +185,7 @@
 		</apply>
 	</target>
 
-	<target name="dot_png_A4" depends="init" description="Generates the diagram images from dot files.">
+	<target name="dot_A4" depends="init" description="Generates the diagram images from dot files.">
 		<apply executable="${executable.dot}" dest="${dest.dotuml.dir}">
 			<arg value="-Tpng" />
 			<arg value="-Gsize=14.6,21.4!" />
@@ -206,10 +206,18 @@
 		</delete>
 	</target>
 
+	<target name="pngs">
+		<antcall target="dot_png" />
+		<!-- antcall target="dot_A4" / -->
+	</target>
+
 	<target name="uml">
-		<antcall target="umlgraph"/>
-		<antcall target="hackdotsSED"/>
-		<antcall target="dot_png"/>
+		<antcall target="umlgraph" />
+		<antcall target="hackdotsSED" />
+		<!-- antcall target="dot_png" / -->
+		<!-- antcall target="dot_pdf" / -->
+		<antcall target="dot_svg" />
+		<!-- antcall target="clean"/ -->
 	</target>
 
 	<target name="hackdotsSED" depends="init" description="Hacks the dot files for presentation purposes.">

@@ -9,10 +9,9 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  * </p>
  */
 public class TimeOffsetIsOutOfBoundsException extends
-        MethodParameterIsOutOfBoundsException
-{
-    /**
+		MethodParameterIsOutOfBoundsException {
+	/**
 	 * 
 	 */
-    private static final long serialVersionUID = 1281303228882167153L;
+	private static final long serialVersionUID = 1281303228882167153L;
 }

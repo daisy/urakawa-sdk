@@ -18,10 +18,7 @@ namespace urakawa.progress
         ///<summary>
         /// Gets a <see cref="bool"/> indicating if a request has been made to cancel the action
         ///</summary>
-        public bool HasCancelBeenRequested
-        {
-            get { return mHasCancelBeenRequested; }
-        }
+        public bool HasCancelBeenRequested { get { return mHasCancelBeenRequested; } }
 
         /// <summary>
         /// Request that the action be cancelled
@@ -36,26 +33,26 @@ namespace urakawa.progress
         /// <summary>
         /// Event fired to indicate progress
         /// </summary>
-        public event EventHandler<ProgressEventArgs> Progress;
+        public event EventHandler<ProgressEventArgs> progress;
 
         /// <summary>
         /// Gets the current and estimated total progress values
         /// </summary>
         /// <param name="cur">A <see cref="long"/> in which the current progress is returned</param>
         /// <param name="tot">A <see cref="long"/> in which the estimated total progress is returned</param>
-        protected abstract void GetCurrentProgress(out long cur, out long tot);
+        protected abstract void getCurrentProgress(out long cur, out long tot);
 
         /// <summary>
         /// Notifies the handler of progress
         /// </summary>
         /// <returns>A <see cref="bool"/> indicating if the progress was cancelled</returns>
-        public virtual bool NotifyProgress()
+        public virtual bool notifyProgress()
         {
-            EventHandler<ProgressEventArgs> d = Progress;
+            EventHandler<ProgressEventArgs> d = progress;
             if (d != null)
             {
                 long c, t;
-                GetCurrentProgress(out c, out t);
+                getCurrentProgress(out c, out t);
                 ProgressEventArgs e = new ProgressEventArgs(c, t);
                 d(this, e);
                 if (e.IsCancelled) return true;
@@ -66,28 +63,28 @@ namespace urakawa.progress
         /// <summary>
         /// Event fired to indicate that the progress has finished
         /// </summary>
-        public event EventHandler<FinishedEventArgs> Finished;
+        public event EventHandler<FinishedEventArgs> finished;
 
         /// <summary>
         /// Notifies the handler that the progress is finished
         /// </summary>
-        public void NotifyFinished()
+        public void notifyFinished()
         {
-            EventHandler<FinishedEventArgs> d = Finished;
+            EventHandler<FinishedEventArgs> d = finished;
             if (d != null) d(this, new FinishedEventArgs());
         }
 
         /// <summary>
         /// Event fired to indicate that the progress has been cancelled
         /// </summary>
-        public event EventHandler<CancelledEventArgs> Cancelled;
+        public event EventHandler<CancelledEventArgs> cancelled;
 
         ///<summary>
         /// Notofies the handler that the progress has been cancelled
         ///</summary>
-        public void NotifyCancelled()
+        public void notifyCancelled()
         {
-            EventHandler<CancelledEventArgs> d = Cancelled;
+            EventHandler<CancelledEventArgs> d = cancelled;
             if (d != null) d(this, new CancelledEventArgs());
         }
 
@@ -99,23 +96,23 @@ namespace urakawa.progress
         /// Gets a <c>bool</c> indicating if the <see cref="IAction"/> can execute
         /// </summary>
         /// <returns>The <c>bool</c></returns>
-        public abstract bool CanExecute { get; }
+        public abstract bool canExecute();
 
         /// <summary>
         /// Get a long uman-readable description of the command
         /// </summary>
-        public abstract string LongDescription { get; }
+        public abstract string getLongDescription();
 
         /// <summary>
         /// Execute the command.
         /// </summary>
         /// <exception cref="urakawa.exception.CannotExecuteException">Thrown when the command cannot be reversed.</exception>
-        public abstract void Execute();
+        public abstract void execute();
 
         /// <summary>
         /// Gets a short humanly readable description of the command
         /// </summary>
-        public abstract string ShortDescription { get; }
+        public abstract string getShortDescription();
 
         #endregion
     }

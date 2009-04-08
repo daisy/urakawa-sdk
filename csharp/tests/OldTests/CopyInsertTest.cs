@@ -5,56 +5,61 @@ using urakawa.core;
 using urakawa.property.channel;
 
 
-namespace urakawa.oldTests
+namespace urakawa.unitTests
 {
-    //Added by Marisa
-    //20060811
-    [TestFixture]
-    public class CopyInsertTest : oldTests.TestCollectionBase
-    {
-        [TestFixtureSetUp]
-        public void InitFixture()
-        {
-            mDefaultFile = "../../XukWorks/copyInsertRenameTest.xuk";
-        }
 
-        [Test]
-        public void CopyInsertRenameAndSeeIfOnlyTheCopyWasRenamed()
-        {
-            //get the first child of the root node and paste it under the second
-            //child of the root node
+	//Added by Marisa
+	//20060811
+	[TestFixture]
+	public class CopyInsertTest : testbase.TestCollectionBase
+	{
+		[TestFixtureSetUp]
+		public void InitFixture()
+		{
+			mDefaultFile = "../../XukWorks/copyInsertRenameTest.xuk";
+		}
 
-            TreeNode node_a = mProject.GetPresentation(0).RootNode.GetChild(0);
-            TreeNode node_a_copy = node_a.Copy(true);
-            TreeNode node_b = mProject.GetPresentation(0).RootNode.GetChild(1);
+		[Test]
+		public void CopyInsertRenameAndSeeIfOnlyTheCopyWasRenamed()
+		{
+			//get the first child of the root node and paste it under the second
+			//child of the root node
 
-            node_b.Insert(node_a_copy, 0);
+			TreeNode node_a = mProject.getPresentation(0).getRootNode().getChild(0);
+			TreeNode node_a_copy = node_a.copy(true);
+			TreeNode node_b = mProject.getPresentation(0).getRootNode().getChild(1);
 
-            GetTextMedia(node_a_copy).Text = "a-pasted";
+			node_b.insert(node_a_copy, 0);
 
-            string renamed_label_of_pasted_node = GetTextMedia(node_a_copy).Text;
-            string label_of_source_node = GetTextMedia(node_a).Text;
+			GetTextMedia(node_a_copy).setText("a-pasted");
 
-            Assert.AreNotEqual(renamed_label_of_pasted_node, label_of_source_node);
-        }
+			string renamed_label_of_pasted_node = GetTextMedia(node_a_copy).getText();
+			string label_of_source_node = GetTextMedia(node_a).getText();
 
-        //copied from Obi.Project
-        //in this case, it will work because the file used for this test was created by Obi
-        public urakawa.media.TextMedia GetTextMedia(TreeNode node)
-        {
-            ChannelsProperty channelsProp = (ChannelsProperty) node.GetProperty(typeof (ChannelsProperty));
-            Channel textChannel;
-            IList<Channel> channelsList = channelsProp.ListOfUsedChannels;
-            for (int i = 0; i < channelsList.Count; i++)
-            {
-                string channelName = ((Channel) channelsList[i]).Name;
-                if (channelName == "obi.text") //Project.TextChannel)
-                {
-                    textChannel = (Channel) channelsList[i];
-                    return (urakawa.media.TextMedia) channelsProp.GetMedia(textChannel);
-                }
-            }
-            return null;
-        }
-    }
+			Assert.AreNotEqual(renamed_label_of_pasted_node, label_of_source_node);
+
+
+		}
+
+		//copied from Obi.Project
+		//in this case, it will work because the file used for this test was created by Obi
+		public urakawa.media.TextMedia GetTextMedia(TreeNode node)
+		{
+			ChannelsProperty channelsProp = (ChannelsProperty)node.getProperty(typeof(ChannelsProperty));
+			Channel textChannel;
+			IList<Channel> channelsList = channelsProp.getListOfUsedChannels();
+			for (int i = 0; i < channelsList.Count; i++)
+			{
+				string channelName = ((Channel)channelsList[i]).getName();
+				if (channelName == "obi.text")//Project.TextChannel)
+				{
+					textChannel = (Channel)channelsList[i];
+					return (urakawa.media.TextMedia)channelsProp.getMedia(textChannel);
+				}
+			}
+			return null;
+		}
+
+	}
+
 }

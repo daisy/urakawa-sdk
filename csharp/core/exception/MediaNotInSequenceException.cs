@@ -1,10 +1,9 @@
 using System;
-using urakawa.media;
 
 namespace urakawa.exception
 {
     /// <summary>
-    /// Thrown when an <see cref="Media"/> is not part of an <see cref="urakawa.media.SequenceMedia"/>
+    /// Thrown when an <see cref="urakawa.media.IMedia"/> is not part of an <see cref="urakawa.media.SequenceMedia"/>
     /// </summary>
     public class MediaNotInSequenceException : CheckedException
     {

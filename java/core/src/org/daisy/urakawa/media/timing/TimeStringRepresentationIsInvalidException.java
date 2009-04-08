@@ -9,10 +9,9 @@ import org.daisy.urakawa.exception.CheckedException;
  * </p>
  */
 public class TimeStringRepresentationIsInvalidException extends
-        CheckedException
-{
-    /**
+		CheckedException {
+	/**
 	 * 
 	 */
-    private static final long serialVersionUID = 3158237188345320202L;
+	private static final long serialVersionUID = 3158237188345320202L;
 }

@@ -24,24 +24,9 @@ namespace urakawa.xuk
         private void initializeXmlReader(Stream stream)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-
             settings.IgnoreWhitespace = false;
-            settings.ProhibitDtd = false;
+            settings.ProhibitDtd = true;
             settings.XmlResolver = null;
-
-            settings.IgnoreComments = true;
-            settings.IgnoreProcessingInstructions = true;
-            settings.IgnoreWhitespace = true;
-
-            if (!mDestXukAble.IsPrettyFormat())
-            {
-                //
-            }
-            else
-            {
-                //
-            }
-
             mXmlReader = XmlReader.Create(mSourceStream, settings, mSourceUri.ToString());
         }
 
@@ -116,10 +101,8 @@ namespace urakawa.xuk
             mXmlReader.Close();
             mXmlReader = null;
             mSourceStream.Close();
-            mSourceStream.Dispose();
             mSourceStream = null;
         }
-
 
         #region Overrides of ProgressAction
 
@@ -128,9 +111,9 @@ namespace urakawa.xuk
         /// </summary>
         /// <param name="cur">A <see cref="long"/> in which the current progress is returned</param>
         /// <param name="tot">A <see cref="long"/> in which the estimated total progress is returned</param>
-        protected override void GetCurrentProgress(out long cur, out long tot)
+        protected override void getCurrentProgress(out long cur, out long tot)
         {
-            if (mSourceStream != null)
+            if (mSourceStream!=null)
             {
                 cur = mSourceStream.Position;
                 tot = mSourceStream.Length;
@@ -146,91 +129,66 @@ namespace urakawa.xuk
         /// Gets a <c>bool</c> indicating if the <see cref="IAction"/> can execute
         /// </summary>
         /// <returns>The <c>bool</c></returns>
-        public override bool CanExecute
+        public override bool canExecute()
         {
-            get { return mXmlReader != null; }
+            return mXmlReader != null;
         }
 
         /// <summary>
         /// Get a long uman-readable description of the command
         /// </summary>
-        public override string LongDescription
+        public override string getLongDescription()
         {
-            get { return "Deserializes a XUK fragment"; }
+            return "Deserializes a XUK fragment";
         }
 
         /// <summary>
         /// Execute the command.
         /// </summary>
         /// <exception cref="urakawa.exception.CannotExecuteException">Thrown when the command cannot be reversed.</exception>
-        public override void Execute()
+        public override void execute()
         {
             mHasCancelBeenRequested = false;
-            Progress += OpenXukAction_progress;
+            progress += OpenXukAction_progress;
 
             bool canceled = false;
             try
             {
-                bool foundRoot = false;
-                while (mXmlReader.Read())
-                {
-                    if (mXmlReader.NodeType == XmlNodeType.Element)
+                    if (!mXmlReader.ReadToFollowing("Xuk", urakawa.ToolkitSettings.XUK_NS))
                     {
-                        if (mXmlReader.LocalName == XukStrings.XukPretty)
-                        {
-                            mDestXukAble.SetPrettyFormat(true);
-                            foundRoot = true;
-                            break;
-                        }
-                        else if (mXmlReader.LocalName == XukStrings.XukCompressed)
-                        {
-                            mDestXukAble.SetPrettyFormat(false);
-                            foundRoot = true;
-                            break;
-                        }
+                        throw new exception.XukException("Could not find Xuk element in XukAble fragment");
                     }
-                    else if (mXmlReader.NodeType == XmlNodeType.EndElement)
+                    bool foundXukAble = false;
+                    if (!mXmlReader.IsEmptyElement)
                     {
-                        break;
-                    }
-                    if (mXmlReader.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-                }
-                if (!foundRoot)
-                {
-                    throw new exception.XukException("Could not find Xuk element in XukAble fragment");
-                }
-
-                bool foundXukAble = false;
-                if (!mXmlReader.IsEmptyElement)
-                {
-                    while (mXmlReader.Read())
-                    {
-                        if (mXmlReader.NodeType == XmlNodeType.Element)
+                        while (mXmlReader.Read())
                         {
-                            //If the element QName matches the Xuk QName equivalent of this, Xuk it in using this.XukIn
-                            if (mXmlReader.LocalName == mDestXukAble.XukLocalName &&
-                                mXmlReader.NamespaceURI == mDestXukAble.XukNamespaceUri)
+                            if (mXmlReader.NodeType == XmlNodeType.Element)
                             {
-                                foundXukAble = true;
-                                mDestXukAble.XukIn(mXmlReader, this);
+                                //If the element QName matches the Xuk QName equivalent of this, Xuk it in using this.xukIn
+                                if (mXmlReader.LocalName == mDestXukAble.getXukLocalName() &&
+                                    mXmlReader.NamespaceURI == mDestXukAble.getXukNamespaceUri())
+                                {
+                                    foundXukAble = true;
+                                    mDestXukAble.xukIn(mXmlReader, this);
+                                }
+                                else if (!mXmlReader.IsEmptyElement)
+                                {
+                                    mXmlReader.ReadSubtree().Close();
+                                }
                             }
-                            else if (!mXmlReader.IsEmptyElement)
+                            else if (mXmlReader.NodeType == XmlNodeType.EndElement)
                             {
-                                mXmlReader.ReadSubtree().Close();
+                                break;
                             }
-                        }
-                        else if (mXmlReader.NodeType == XmlNodeType.EndElement)
-                        {
-                            break;
-                        }
 
-                        if (mXmlReader.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                            if (mXmlReader.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                        }
                     }
-                }
-                if (!foundXukAble)
-                {
-                    throw new exception.XukException("Found no required XukAble in Xuk file");
-                }
+                    if (!foundXukAble)
+                    {
+                        throw new exception.XukException("Found no required XukAble in Xuk file");
+                    }
             }
             catch (exception.ProgressCancelledException)
             {
@@ -238,13 +196,14 @@ namespace urakawa.xuk
             }
             finally
             {
-                Progress -= OpenXukAction_progress;
+                progress -= OpenXukAction_progress;
 
                 closeInput();
 
-                if (canceled) NotifyCancelled();
-                else NotifyFinished();
+                if (canceled) notifyCancelled();
+                else notifyFinished();
             }
+
         }
 
         private void OpenXukAction_progress(object sender, urakawa.events.progress.ProgressEventArgs e)
@@ -255,9 +214,9 @@ namespace urakawa.xuk
         /// <summary>
         /// Gets a short humanly readable description of the command
         /// </summary>
-        public override string ShortDescription
+        public override string getShortDescription()
         {
-            get { return "Open Xuk"; }
+            return "Open Xuk";
         }
 
         #endregion

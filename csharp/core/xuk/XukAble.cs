@@ -1,316 +1,200 @@
 using System;
-using System.Reflection;
 using System.Xml;
-using urakawa.exception;
 using urakawa.progress;
 
 namespace urakawa.xuk
 {
-    /// <summary>
-    /// Common base class for classes that implement <see cref="IXukAble"/>
-    /// </summary>
-    public abstract class XukAble : IXukAble
-    {
-        /*
-        public abstract bool IsPrettyFormat();
-        public abstract void SetPrettyFormat(bool pretty);
-        */
+	/// <summary>
+	/// Common base class for classes that implement <see cref="IXukAble"/>
+	/// </summary>
+	public class XukAble : IXukAble
+	{
+		
+		#region IXUKAble members
 
-        public virtual bool IsPrettyFormat()
-        {
-            throw new NotImplementedException();
-        }
+		/// <summary>
+		/// Clears the <see cref="XukAble"/> of any data - called at the beginning of <see cref="xukIn"/>
+		/// </summary>
+		protected virtual void clear()
+		{
+		}
 
-        public virtual void SetPrettyFormat(bool pretty)
-        {
-            throw new NotImplementedException();
-        }
-
-        public const string XUK_NS = "http://www.daisy.org/urakawa/xuk/2.0";
-
-
-        /// <summary>
-        /// The path of the W3C XmlSchema defining the XUK namespace
-        /// </summary>
-        public static string XUK_XSD_PATH = "xuk.xsd";
-
-        #region IXUKAble members
-
-        /// <summary>
-        /// Clears the <see cref="XukAble"/> of any data - called at the beginning of <see cref="XukIn"/>
-        /// </summary>
-        protected virtual void Clear()
-        {
-        }
-
-        /// <summary>
-        /// The implementation of XUKIn is expected to read and remove all tags
-        /// up to and including the closing tag matching the element the reader was at when passed to it.
-        /// The call is expected to be forwarded to any owned element, in effect making it a recursive read of the XUK file
-        /// </summary>
-        /// <param name="source">The XmlReader to read from</param>
-        /// <param name="handler">The handler for progress</param>
-        public void XukIn(XmlReader source, ProgressHandler handler)
-        {
-            if (source == null)
+	    /// <summary>
+	    /// The implementation of XUKIn is expected to read and remove all tags
+	    /// up to and including the closing tag matching the element the reader was at when passed to it.
+	    /// The call is expected to be forwarded to any owned element, in effect making it a recursive read of the XUK file
+	    /// </summary>
+	    /// <param name="source">The XmlReader to read from</param>
+	    /// <param name="handler">The handler for progress</param>
+	    public void xukIn(XmlReader source, ProgressHandler handler)
+		{
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+			}
+			if (source.NodeType != XmlNodeType.Element)
+			{
+				throw new exception.XukException("Can not read XukAble from a non-element node");
+			}
+            if (handler!=null)
             {
-                throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
-            }
-            if (source.NodeType != XmlNodeType.Element)
-            {
-                throw new exception.XukException("Can not read XukAble from a non-element node");
-            }
-            if (handler != null)
-            {
-                if (handler.NotifyProgress())
+                if (handler.notifyProgress())
                 {
-                    string msg = String.Format("XukIn cancelled at element {0}:{1}", XukLocalName,
-                                               XukNamespaceUri);
+                    string msg = String.Format("XukIn cancelled at element {0}:{1}", getXukLocalName(),
+                                               getXukNamespaceUri());
                     throw new exception.ProgressCancelledException(msg);
                 }
             }
-            try
-            {
-                Clear();
-                XukInAttributes(source);
-                if (!source.IsEmptyElement)
+			try
+			{
+				clear();
+				xukInAttributes(source);
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							xukInChild(source, handler);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
+
+			}
+                catch (exception.ProgressCancelledException)
                 {
-                    while (source.Read())
-                    {
-                        if (source.NodeType == XmlNodeType.Element)
-                        {
-                            XukInChild(source, handler);
-                        }
-                        else if (source.NodeType == XmlNodeType.Text)
-                        {
-                            XukInChild(source, handler);
-                            break;
-                        }
-                        else if (source.NodeType == XmlNodeType.EndElement)
-                        {
-                            break;
-                        }
-                        if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-                    }
+                    throw;
                 }
-            }
-            catch (exception.ProgressCancelledException)
-            {
-                throw;
-            }
-            catch (exception.XukException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new exception.XukException(
-                    String.Format("An exception occured during XukIn of XukAble: {0}", e.Message),
-                    e);
-            }
-        }
+			catch (exception.XukException)
+			{
+				throw;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of XukAble: {0}", e.Message),
+					e);
+			}
+		}
 
-        /// <summary>
-        /// Reads the attributes of a XukAble xuk element.
-        /// </summary>
-        /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected virtual void XukInAttributes(XmlReader source)
-        {
-        }
+		/// <summary>
+		/// Reads the attributes of a XukAble xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		protected virtual void xukInAttributes(XmlReader source)
+		{
+		}
 
-        /// <summary>
-        /// Reads a child of a XukAble xuk element. 
-        /// </summary>
-        /// <param name="source">The source <see cref="XmlReader"/></param>
-        /// <param name="handler">The handler of progress</param>
-        protected virtual void XukInChild(XmlReader source, ProgressHandler handler)
-        {
-            if (source.NodeType == XmlNodeType.Element && !source.IsEmptyElement) source.ReadSubtree().Close(); //Read past unknown child 
-        }
+		/// <summary>
+		/// Reads a child of a XukAble xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <param name="handler">The handler of progress</param>
+		protected virtual void xukInChild(XmlReader source, ProgressHandler handler)
+		{
+    		if (!source.IsEmptyElement) source.ReadSubtree().Close();//Read past unknown child 
+		}
 
-        /// <summary>
-        /// Write a XukAble element to a XUK file representing the <see cref="XukAble"/> instance
-        /// </summary>
-        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-        /// <param name="baseUri">
-        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-        /// if <c>null</c> absolute <see cref="Uri"/>s are written
-        /// </param>
+		/// <summary>
+		/// Write a XukAble element to a XUK file representing the <see cref="XukAble"/> instance
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
         /// <param name="handler">The handler for progress</param>
-        public void XukOut(XmlWriter destination, Uri baseUri, ProgressHandler handler)
-        {
-            if (destination == null)
+        public void xukOut(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+		{
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
+			}
+            if (handler!=null)
             {
-                throw new exception.MethodParameterIsNullException(
-                    "Can not XukOut to a null XmlWriter");
-            }
-            if (handler != null)
-            {
-                if (handler.NotifyProgress())
+                if (handler.notifyProgress()) 
                 {
                     string msg = String.Format("XukOut cancelled at {0}", ToString());
                     throw new exception.ProgressCancelledException(msg);
                 }
+
             }
-            try
-            {
-                destination.WriteStartElement(XukLocalName, XukNamespaceUri);
-                XukOutAttributes(destination, baseUri);
-                XukOutChildren(destination, baseUri, handler);
-                destination.WriteEndElement();
-            }
-            catch (exception.ProgressCancelledException)
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				xukOutAttributes(destination, baseUri);
+				xukOutChildren(destination, baseUri, handler);
+				destination.WriteEndElement();
+
+			}
+            catch(exception.ProgressCancelledException)
             {
                 throw;
             }
-            catch (exception.XukException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new exception.XukException(
-                    String.Format("An exception occured during XukOut of XukAble: {0}", e.Message),
-                    e);
-            }
-        }
+			catch (exception.XukException)
+			{
+				throw;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of XukAble: {0}", e.Message),
+					e);
+			}
+		}
 
-        /// <summary>
-        /// Writes the attributes of a XukAble element
-        /// </summary>
-        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-        /// <param name="baseUri">
-        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-        /// if <c>null</c> absolute <see cref="Uri"/>s are written
-        /// </param>
-        protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
-        {
-        }
+		/// <summary>
+		/// Writes the attributes of a XukAble element
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
+		{
 
-        /// <summary>
-        /// Write the child elements of a XukAble element.
-        /// </summary>
-        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-        /// <param name="baseUri">
-        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-        /// if <c>null</c> absolute <see cref="Uri"/>s are written
-        /// </param>
+		}
+
+		/// <summary>
+		/// Write the child elements of a XukAble element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
         /// <param name="handler">The handler for progress</param>
-        protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
-        {
-        }
+        protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+		{
 
-        /// <summary>
-        /// Gets the local name part of the QName representing a <see cref="XukAble"/> in Xuk. 
-        /// This will always be the name of the <see cref="Type"/> of <c>this</c>
-        /// </summary>
-        /// <returns>The local name part</returns>
-        public string XukLocalName
-        {
-            get
-            {
-                return GetTypeNameFormatted();
-                //return GetTypeNameFormatted(GetType());
-                //return GetType().Name;
-            }
-        }
+		}
 
-        public abstract string GetTypeNameFormatted();
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="XukAble"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public virtual string getXukLocalName()
+		{
+			return GetType().Name;
+		}
 
-        /// <summary>
-        /// Gets the namespace uri part of the QName representing a <see cref="XukAble"/> in Xuk
-        /// </summary>
-        /// <returns>The namespace uri part</returns>
-        public string XukNamespaceUri
-        {
-            get
-            {
-                return XUK_NS;
-                //return GetXukNamespaceUri(GetType());
-            }
-        }
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="XukAble"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
+		public virtual string getXukNamespaceUri()
+		{
+			return ToolkitSettings.XUK_NS;
+		}
 
-        /// <summary>
-        /// Gets the Xuk <see cref="QualifiedName"/> of the instance (conveneince for <c>GetXukQualifiedName(GetType());</c>)
-        /// </summary>
-        public QualifiedName XukQualifiedName
-        {
-            get
-            {
-                return new QualifiedName(GetTypeNameFormatted(), XukNamespaceUri);
-                //GetXukNamespaceUri(GetType())
-                //return GetXukQualifiedName(GetType());
-            }
-        }
+		#endregion
 
-        /// <summary>
-        /// Gets the Xuk QName of a <see cref="XukAble"/> <see cref="Type"/> in the form <c>[NS_URI:]LOCALNAME</c>,
-        /// calls method <see cref="GetXukNamespaceUri"/> to get the xuk namespace uri
-        /// </summary>
-        /// <param name="t">The <see cref="Type"/>, must inherit <see cref="XukAble"/></param>
-        /// <returns>The qname</returns>
-        /// <exception cref="MethodParameterIsNullException">Thrown when <paramref name="t"/> is <c>null</c></exception>
-        public static QualifiedName GetXukQualifiedName(Type t)
-        {
-            if (!typeof(XukAble).IsAssignableFrom(t))
-            {
-                string msg = String.Format(
-                    "Only Types deriving {0} can be given here !", typeof(XukAble).FullName);
-                throw new MethodParameterIsWrongTypeException(msg);
-            }
-            if (t == null)
-            {
-                throw new MethodParameterIsNullException("Cannot get the Xuk QualifiedName of a null Type");
-            }
-            return new QualifiedName(GetTypeNameFormatted(t), GetXukNamespaceUri(t));
-        }
-
-        private static string GetTypeNameFormatted(Type t)
-        {
-            string name = t.Name;
-
-            PropertyInfo info = typeof(XukStrings).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
-            if (info == null)
-            {
-                info = t.GetProperty("XukString", BindingFlags.Static | BindingFlags.Public);
-            }
-            if (info != null)
-            {
-                if (info.PropertyType == typeof(string))
-                {
-                    return (info.GetValue(null, null) as string) ?? name;
-                }
-            }
-            System.Diagnostics.Debug.Fail("Type name not found ??");
-            return name;
-        }
-
-        /// <summary>
-        /// Gets the Xuk namespace uri of a <see cref="XukAble"/> <see cref="Type"/>,
-        /// by searching up the class heirarchy for a <see cref="Type"/> 
-        /// with a <c>public static</c> field names <c>XUK_NS</c>
-        /// </summary>
-        /// <param name="t">The <see cref="Type"/>, must inherit <see cref="XukAble"/></param>
-        /// <returns>The xuk namespace uri</returns>
-        private static string GetXukNamespaceUri(Type t)
-        {
-            if (!typeof(XukAble).IsAssignableFrom(t))
-            {
-                throw new exception.MethodParameterIsWrongTypeException(
-                    "Cannot get the XukNamespaceUri of a type that does not inherit XukAble");
-            }
-            FieldInfo fi = t.GetField("XUK_NS", BindingFlags.Static | BindingFlags.Public);
-            if (fi != null)
-            {
-                if (fi.FieldType == typeof(string))
-                {
-                    return (fi.GetValue(null) as string) ?? "";
-                }
-            }
-            return GetXukNamespaceUri(t.BaseType);
-        }
-
-
-        #endregion
-    }
+	}
 }

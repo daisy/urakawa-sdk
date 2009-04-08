@@ -14,5 +14,3 @@ For unit testing from within VS 2003, install TestDriven plug-in, from <http://w
 You cannot run the main project of the solution, but you can run the tests in UnitTests with the "Run Tests" command in the contextual menu (if you installed the TestDriven plug-in). 
 
 You can also inspect the tests by firing up the NUnit application and opening urakawa\tests\bin\Debug\urakawa.tests.dll.
-
-Just testing my TortoiseSVN

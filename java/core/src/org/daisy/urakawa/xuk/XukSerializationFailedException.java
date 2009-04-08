@@ -8,10 +8,9 @@ import org.daisy.urakawa.exception.CheckedException;
  * the XUK format fails.
  * </p>
  */
-public class XukSerializationFailedException extends CheckedException
-{
-    /**
+public class XukSerializationFailedException extends CheckedException {
+	/**
 	 * 
 	 */
-    private static final long serialVersionUID = 1482461742466983879L;
+	private static final long serialVersionUID = 1482461742466983879L;
 }

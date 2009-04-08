@@ -3,10 +3,9 @@ package org.daisy.urakawa.navigator;
 /**
  *
  */
-public class IntWrapper
-{
-    /**
+public class IntWrapper {
+	/**
 	 * 
 	 */
-    public int value = 0;
+	public int value = 0;
 }

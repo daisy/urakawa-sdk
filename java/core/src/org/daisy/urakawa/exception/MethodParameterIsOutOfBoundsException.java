@@ -7,10 +7,9 @@ package org.daisy.urakawa.exception;
  * </p>
  */
 public class MethodParameterIsOutOfBoundsException extends
-        MethodParameterIsInvalidException
-{
-    /**
+		MethodParameterIsInvalidException {
+	/**
 	 * 
 	 */
-    private static final long serialVersionUID = 640619176834326315L;
+	private static final long serialVersionUID = 640619176834326315L;
 }

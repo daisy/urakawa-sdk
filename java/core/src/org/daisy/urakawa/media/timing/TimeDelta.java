@@ -3,109 +3,72 @@ package org.daisy.urakawa.media.timing;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * Reference implementation of the interface.
+ * Time duration (could be in milliseconds, SMPTE, etc.). This really is an
+ * interface "lollypop" that should be extended. Typically, methods like
+ * getTimeMilliseconds(), getTimeSMPTE(), etc. should be available to the
+ * end-user of the API. Can be a 0/positive value in the current local timebase.
+ * (cannot be negative)
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  */
-public class TimeDelta implements ITimeDelta
-{
-    public ITimeDelta getZero()
-    {
-        return new TimeDelta();
-    }
-
-    public ITimeDelta getMaxValue()
-    {
-        return new TimeDelta(Long.MAX_VALUE);
-    }
-
-    private long mTimeDelta;
-
-    /**
-	 * 
+public interface TimeDelta {
+	/**
+	 * @return time
 	 */
-    public TimeDelta()
-    {
-        mTimeDelta = 0;
-    }
+	public TimeDelta getZero();
 
-    /**
-     * @param other
-     * @throws MethodParameterIsNullException
-     */
-    public TimeDelta(ITimeDelta other) throws MethodParameterIsNullException
-    {
-        if (other == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        addTimeDelta(other);
-    }
+	/**
+	 * @return time
+	 */
+	public TimeDelta getMaxValue();
 
-    /**
-     * @param val
-     */
-    public TimeDelta(long val)
-    {
-        setTimeDelta(val);
-    }
+	/**
+	 * @return time
+	 */
+	public TimeDelta copy();
 
-    public ITimeDelta copy()
-    {
-        try
-        {
-            return new TimeDelta(this);
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-    }
+	/**
+	 * @return time
+	 */
+	public long getTimeDeltaAsMilliseconds();
 
-    public long getTimeDeltaAsMilliseconds()
-    {
-        return mTimeDelta;
-    }
+	/**
+	 * @param val
+	 * @throws TimeOffsetIsNegativeException
+	 */
+	public void setTimeDelta(long val) throws TimeOffsetIsNegativeException;
 
-    public void setTimeDelta(long val)
-    {
-        mTimeDelta = val;
-    }
+	/**
+	 * @param other
+	 * @return time
+	 * @throws MethodParameterIsNullException
+	 */
+	public TimeDelta addTimeDelta(TimeDelta other)
+			throws MethodParameterIsNullException;
 
-    public ITimeDelta addTimeDelta(ITimeDelta other)
-    {
-        return new TimeDelta(mTimeDelta += other.getTimeDeltaAsMilliseconds());
-    }
+	/**
+	 * @param other
+	 * @return true or false
+	 * @throws MethodParameterIsNullException
+	 */
+	public boolean isLessThan(TimeDelta other)
+			throws MethodParameterIsNullException;
 
-    public boolean isLessThan(ITimeDelta other)
-            throws MethodParameterIsNullException
-    {
-        if (other == null)
-            throw new MethodParameterIsNullException();
-        return (mTimeDelta < other.getTimeDeltaAsMilliseconds());
-    }
+	/**
+	 * @param other
+	 * @return true or false
+	 * @throws MethodParameterIsNullException
+	 */
+	public boolean isGreaterThan(TimeDelta other)
+			throws MethodParameterIsNullException;
 
-    public boolean isGreaterThan(ITimeDelta other)
-            throws MethodParameterIsNullException
-    {
-        if (other == null)
-            throw new MethodParameterIsNullException();
-        return other.isLessThan(this);
-    }
-
-    public boolean isEqualTo(ITimeDelta other)
-            throws MethodParameterIsNullException
-    {
-        if (other == null)
-            throw new MethodParameterIsNullException();
-        return (!isLessThan(other)) && (!isGreaterThan(other));
-    }
-
-    @Override
-    public String toString()
-    {
-        return Long.toString(mTimeDelta);
-    }
+	/**
+	 * @param other
+	 * @return true or false
+	 * @throws MethodParameterIsNullException
+	 */
+	public boolean isEqualTo(TimeDelta other)
+			throws MethodParameterIsNullException;
 }

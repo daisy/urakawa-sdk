@@ -1,569 +1,140 @@
 package org.daisy.urakawa.media;
 
-import java.net.URI;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.events.DataModelChangedEvent;
-import org.daisy.urakawa.exception.IsNotInitializedException;
-import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.IProgressHandler;
-import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.xuk.IXukAble;
-import org.daisy.urakawa.xuk.XukDeserializationFailedException;
-import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
- * Reference implementation of the interface.
+ * This sequence only accepts Media of the same type, or nested sequences
+ * containing media of the same type (recursively). The key method that
+ * determines whether or not a Media is accepted is
+ * {@link #canAcceptMedia(Media)}. The default implementation always returns
+ * true. This class can be extended and this method overridden. This actually
+ * allows filter selection based on criteria more complex than just the type.
+ * For example, the canAccept() method can test the contents of the Media
+ * object. {@link Media#isContinuous()} should returns true if all the contained
+ * Media objects are Continuous.
  * 
+ * @depend - Composition 1..n org.daisy.urakawa.media.Media
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  */
-public class SequenceMedia extends AbstractMedia implements ISequenceMedia
-{
-    private List<IMedia> mSequence;
-    private boolean mAllowMultipleTypes;
-
-    /**
-	 * 
+public interface SequenceMedia extends Media {
+	/**
+	 * @return true if multiple media types are allowed for objects in this
+	 *         sequence
 	 */
-    public SequenceMedia()
-    {
-        mSequence = new LinkedList<IMedia>();
-        mAllowMultipleTypes = false;
-    }
+	public boolean getAllowMultipleTypes();
 
-    public IMedia getItem(int index)
-            throws MethodParameterIsOutOfBoundsException
-    {
-        if (0 <= index && index < getCount())
-        {
-            return mSequence.get(index);
-        }
-        throw new MethodParameterIsOutOfBoundsException();
-    }
+	/**
+	 * @param newValue
+	 *            true if multiple media types are allowed for objects in this
+	 *            sequence
+	 * @throws SequenceHasMultipleTypesException
+	 *             when newValue is true and the sequence contains media objects
+	 *             of multiple types.
+	 */
+	public void setAllowMultipleTypes(boolean newValue)
+			throws SequenceHasMultipleTypesException;
 
-    public void insertItem(int index, IMedia newItem)
-            throws MethodParameterIsNullException,
-            MethodParameterIsOutOfBoundsException, DoesNotAcceptMediaException
-    {
-        if (newItem == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        if (index < 0 || getCount() < index)
-        {
-            throw new MethodParameterIsOutOfBoundsException();
-        }
-        if (!canAcceptMedia(newItem))
-        {
-            throw new DoesNotAcceptMediaException();
-        }
-        mSequence.add(index, newItem);
-        newItem.registerListener(mBubbleEventListener,
-                DataModelChangedEvent.class);
-    }
+	/**
+	 * @param media
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @return true if this sequence accepts the given Media object.
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @see org.daisy.urakawa.media.DoesNotAcceptMediaException
+	 */
+	public boolean canAcceptMedia(Media media)
+			throws MethodParameterIsNullException;
 
-    public void appendItem(IMedia newItem)
-            throws MethodParameterIsNullException, DoesNotAcceptMediaException
-    {
-        if (newItem == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        try
-        {
-            insertItem(getCount(), newItem);
-        }
-        catch (MethodParameterIsOutOfBoundsException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WFT ??!", e);
-        }
-    }
+	/**
+	 * Inserts the Media at index = {@link SequenceMedia#getCount()}.
+	 * 
+	 * @param newItem
+	 *            cannot be null, and should be a legal Media for this sequence
+	 * @tagvalue Exceptions "MethodParameterIsNull-DoesNotAcceptMedia"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws DoesNotAcceptMediaException
+	 *             if the given Media is not accepted for this sequence
+	 */
+	public void appendItem(Media newItem)
+			throws MethodParameterIsNullException, DoesNotAcceptMediaException;
 
-    public IMedia removeItem(int index)
-            throws MethodParameterIsOutOfBoundsException
-    {
-        IMedia removedMedia = getItem(index);
-        try
-        {
-            removeItem(removedMedia);
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WFT ??!", e);
-        }
-        catch (MediaIsNotInSequenceException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WFT ??!", e);
-        }
-        return removedMedia;
-    }
+	/**
+	 * Gets a media item at a given index
+	 * 
+	 * @param index
+	 *            must be in bounds: [0...{@link SequenceMedia#getCount()}-1]
+	 * @return the Media object
+	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
+	 * @throws MethodParameterIsOutOfBoundsException
+	 *             if index is not an allowed value
+	 */
+	public Media getItem(int index)
+			throws MethodParameterIsOutOfBoundsException;
 
-    public void removeItem(IMedia item) throws MethodParameterIsNullException,
-            MediaIsNotInSequenceException
-    {
-        if (item == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        if (!mSequence.contains(item))
-        {
-            throw new MediaIsNotInSequenceException();
-        }
-        mSequence.remove(item);
-        item.unregisterListener(mBubbleEventListener,
-                DataModelChangedEvent.class);
-    }
+	/**
+	 * Inserts the Media at a given index. Increments (+1) all indexes of items
+	 * on the right. If index == {@link SequenceMedia#getCount()}, then the
+	 * item is appended at the end of the sequence.
+	 * 
+	 * @param index
+	 *            must be in bounds: [0...{@link SequenceMedia#getCount()}]
+	 * @param newItem
+	 *            cannot be null, and should be a legal Media for this sequence
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsOutOfBounds-DoesNotAcceptMedia"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsOutOfBoundsException
+	 *             if index is not an authorized value
+	 * @throws DoesNotAcceptMediaException
+	 *             if the given Media is not accepted for this sequence
+	 */
+	public void insertItem(int index, Media newItem)
+			throws MethodParameterIsNullException,
+			MethodParameterIsOutOfBoundsException, DoesNotAcceptMediaException;
 
-    public int getCount()
-    {
-        return mSequence.size();
-    }
+	/**
+	 * Removes the Media at a given index, and returns it.
+	 * 
+	 * @param index
+	 *            must be in bounds: [0...{@link SequenceMedia#getCount()}-1]
+	 * @return the removed Media.
+	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
+	 * @throws MethodParameterIsOutOfBoundsException
+	 *             if index is not an allowed value
+	 */
+	public Media removeItem(int index)
+			throws MethodParameterIsOutOfBoundsException;
 
-    public List<IMedia> getListOfItems()
-    {
-        return new LinkedList<IMedia>(mSequence);
-    }
+	/**
+	 * Removed the given media from the list, if it exists. Otherwise throws an
+	 * exception.
+	 * 
+	 * @param item
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull-MediaIsNotInSequence"
+	 * @throws MediaIsNotInSequenceException
+	 *             if the given media does not exist in the the sequence
+	 */
+	public void removeItem(Media item) throws MethodParameterIsNullException,
+			MediaIsNotInSequenceException;
 
-    public boolean getAllowMultipleTypes()
-    {
-        return mAllowMultipleTypes;
-    }
+	/**
+	 * Gets the sequence length
+	 * 
+	 * @return the number of Media items in the sequence (>=0)
+	 */
+	public int getCount();
 
-    @SuppressWarnings("unchecked")
-    public void setAllowMultipleTypes(boolean newValue)
-            throws SequenceHasMultipleTypesException
-    {
-        if (!newValue)
-        {
-            int count = getCount();
-            if (count > 0)
-            {
-                Class<IMedia> firstItemType;
-                try
-                {
-                    firstItemType = (Class<IMedia>) getItem(0).getClass();
-                }
-                catch (MethodParameterIsOutOfBoundsException e)
-                {
-                    // Should never happen
-                    throw new RuntimeException("WFT ??!", e);
-                }
-                int i = 1;
-                while (i < count)
-                {
-                    try
-                    {
-                        if (getItem(i).getClass() != firstItemType)
-                        {
-                            throw new SequenceHasMultipleTypesException();
-                        }
-                    }
-                    catch (MethodParameterIsOutOfBoundsException e)
-                    {
-                        // Should never happen
-                        throw new RuntimeException("WFT ??!", e);
-                    }
-                }
-            }
-        }
-        mAllowMultipleTypes = newValue;
-    }
-
-    @Override
-    public boolean isContinuous()
-    {
-        if (getCount() > 0)
-        {
-            try
-            {
-                return getItem(0).isContinuous();
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WFT ??!", e);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isDiscrete()
-    {
-        // use the first item in the collection to determine the value
-        if (getCount() > 0)
-        {
-            try
-            {
-                return getItem(0).isDiscrete();
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WFT ??!", e);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isSequence()
-    {
-        return true;
-    }
-
-    @Override
-    public SequenceMedia copy()
-    {
-        return (SequenceMedia) copyProtected();
-    }
-
-    @Override
-    protected IMedia copyProtected()
-    {
-        ISequenceMedia newSeqMedia = (ISequenceMedia) super.copyProtected();
-        for (IMedia item : getListOfItems())
-        {
-            try
-            {
-                newSeqMedia.appendItem(item.copy());
-            }
-            catch (MethodParameterIsNullException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WFT ??!", e);
-            }
-            catch (DoesNotAcceptMediaException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WFT ??!", e);
-            }
-        }
-        return newSeqMedia;
-    }
-
-    @Override
-    public ISequenceMedia export(Presentation destPres)
-            throws FactoryCannotCreateTypeException,
-            MethodParameterIsNullException
-    {
-        if (destPres == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        return (ISequenceMedia) exportProtected(destPres);
-    }
-
-    @Override
-    protected IMedia exportProtected(Presentation destPres)
-            throws FactoryCannotCreateTypeException,
-            MethodParameterIsNullException
-    {
-        if (destPres == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        ISequenceMedia exported = (ISequenceMedia) super
-                .exportProtected(destPres);
-        if (exported == null)
-        {
-            throw new FactoryCannotCreateTypeException();
-        }
-        for (IMedia m : getListOfItems())
-        {
-            try
-            {
-                exported.appendItem(m.export(destPres));
-            }
-            catch (DoesNotAcceptMediaException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WFT ??!", e);
-            }
-        }
-        return exported;
-    }
-
-    public boolean canAcceptMedia(IMedia proposedAddition)
-            throws MethodParameterIsNullException
-    {
-        if (proposedAddition == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        if (getCount() > 0 && !getAllowMultipleTypes())
-        {
-            try
-            {
-                if (getItem(0).getClass() != proposedAddition.getClass())
-                    return false;
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WFT ??!", e);
-            }
-        }
-        return true;
-    }
-
-    @Override
-    protected void clear()
-    {
-        mAllowMultipleTypes = false;
-        for (IMedia item : getListOfItems())
-        {
-            try
-            {
-                removeItem(item);
-            }
-            catch (MethodParameterIsNullException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WFT ??!", e);
-            }
-            catch (MediaIsNotInSequenceException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WFT ??!", e);
-            }
-        }
-        super.clear();
-    }
-
-    @Override
-    protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
-            throws MethodParameterIsNullException,
-            XukDeserializationFailedException, ProgressCancelledException
-    {
-        if (source == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        // To avoid event notification overhead, we bypass this:
-        if (false && ph != null && ph.notifyProgress())
-        {
-            throw new ProgressCancelledException();
-        }
-        String val = source.getAttribute("allowMultipleMediaTypes");
-        if (val == "true" || val == "1")
-        {
-            try
-            {
-                setAllowMultipleTypes(true);
-            }
-            catch (SequenceHasMultipleTypesException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WFT ??!", e);
-            }
-        }
-        else
-        {
-            try
-            {
-                setAllowMultipleTypes(false);
-            }
-            catch (SequenceHasMultipleTypesException e)
-            {
-                throw new XukDeserializationFailedException();
-            }
-        }
-        super.xukInAttributes(source, ph);
-    }
-
-    @Override
-    protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
-            throws MethodParameterIsNullException,
-            XukDeserializationFailedException, ProgressCancelledException
-    {
-        if (source == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        // To avoid event notification overhead, we bypass this:
-        if (false && ph != null && ph.notifyProgress())
-        {
-            throw new ProgressCancelledException();
-        }
-        boolean readItem = false;
-        if (source.getNamespaceURI() == IXukAble.XUK_NS)
-        {
-            readItem = true;
-            if (source.getLocalName() == "mSequence")
-            {
-                xukInSequence(source, ph);
-            }
-            else
-            {
-                readItem = false;
-            }
-        }
-        if (!readItem)
-        {
-            super.xukInChild(source, ph);
-        }
-    }
-
-    private void xukInSequence(IXmlDataReader source, IProgressHandler ph)
-            throws MethodParameterIsNullException,
-            XukDeserializationFailedException, ProgressCancelledException
-    {
-        if (source == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        if (ph != null && ph.notifyProgress())
-        {
-            throw new ProgressCancelledException();
-        }
-        if (!source.isEmptyElement())
-        {
-            while (source.read())
-            {
-                if (source.getNodeType() == IXmlDataReader.ELEMENT)
-                {
-                    IMedia newMedia;
-                    try
-                    {
-                        newMedia = getPresentation().getMediaFactory()
-                                .create(source.getLocalName(),
-                                        source.getNamespaceURI());
-                    }
-                    catch (MethodParameterIsEmptyStringException e)
-                    {
-                        // Should never happen
-                        throw new RuntimeException("WFT ??!", e);
-                    }
-                    catch (IsNotInitializedException e)
-                    {
-                        // Should never happen
-                        throw new RuntimeException("WFT ??!", e);
-                    }
-                    if (newMedia != null)
-                    {
-                        newMedia.xukIn(source, ph);
-                        if (!canAcceptMedia(newMedia))
-                        {
-                            throw new XukDeserializationFailedException();
-                        }
-                        try
-                        {
-                            insertItem(getCount(), newMedia);
-                        }
-                        catch (MethodParameterIsOutOfBoundsException e)
-                        {
-                            // Should never happen
-                            throw new RuntimeException("WFT ??!", e);
-                        }
-                        catch (DoesNotAcceptMediaException e)
-                        {
-                            // Should never happen
-                            throw new RuntimeException("WFT ??!", e);
-                        }
-                    }
-                    else
-                    {
-                        super.xukInChild(source, ph);
-                    }
-                }
-                else
-                    if (source.getNodeType() == IXmlDataReader.END_ELEMENT)
-                    {
-                        break;
-                    }
-                if (source.isEOF())
-                    throw new XukDeserializationFailedException();
-            }
-        }
-    }
-
-    @Override
-    protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-            IProgressHandler ph) throws MethodParameterIsNullException,
-            XukSerializationFailedException, ProgressCancelledException
-    {
-        if (destination == null || baseUri == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        // To avoid event notification overhead, we bypass this:
-        if (false && ph != null && ph.notifyProgress())
-        {
-            throw new ProgressCancelledException();
-        }
-        destination.writeAttributeString("allowMultipleMediaTypes",
-                getAllowMultipleTypes() ? "true" : "false");
-        super.xukOutAttributes(destination, baseUri, ph);
-    }
-
-    @Override
-    protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
-            IProgressHandler ph) throws MethodParameterIsNullException,
-            XukSerializationFailedException, ProgressCancelledException
-    {
-        if (destination == null || baseUri == null)
-        {
-            throw new MethodParameterIsNullException();
-        }
-        // To avoid event notification overhead, we bypass this:
-        if (false && ph != null && ph.notifyProgress())
-        {
-            throw new ProgressCancelledException();
-        }
-        if (getCount() > 0)
-        {
-            destination.writeStartElement("mSequence", IXukAble.XUK_NS);
-            for (int i = 0; i < getCount(); i++)
-            {
-                try
-                {
-                    getItem(i).xukOut(destination, baseUri, ph);
-                }
-                catch (MethodParameterIsOutOfBoundsException e)
-                {
-                    // Should never happen
-                    throw new RuntimeException("WFT ??!", e);
-                }
-            }
-            destination.writeEndElement();
-        }
-        // super.xukOutChildren(destination, baseUri, ph);
-    }
-
-    @Override
-    public boolean ValueEquals(IMedia other)
-            throws MethodParameterIsNullException
-    {
-        if (!super.ValueEquals(other))
-            return false;
-        ISequenceMedia otherSeq = (ISequenceMedia) other;
-        if (getCount() != otherSeq.getCount())
-            return false;
-        for (int i = 0; i < getCount(); i++)
-        {
-            try
-            {
-                if (!getItem(i).ValueEquals(otherSeq.getItem(i)))
-                    return false;
-            }
-            catch (MethodParameterIsOutOfBoundsException e)
-            {
-                // Should never happen
-                throw new RuntimeException("WFT ??!", e);
-            }
-        }
-        return true;
-    }
+	/**
+	 * @return a new non-null but potentially empty list of Media items in this
+	 *         sequence.
+	 */
+	List<Media> getListOfItems();
 }

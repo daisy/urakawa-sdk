@@ -3,48 +3,21 @@ using System.Collections.Generic;
 using System.Xml;
 using urakawa.media.data;
 using urakawa.progress;
+using urakawa.property.channel;
+using urakawa.metadata;
 using urakawa.xuk;
 using urakawa.events;
 using urakawa.events.project;
 
 namespace urakawa
 {
-    /// <summary>
-    /// Represents a projects - part of the facade API, provides methods for opening and saving XUK files
-    /// </summary>
-    public class Project : XukAble, IValueEquatable<Project>, IChangeNotifier
-    {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.Project;
-        }
-
-        private bool m_PrettyFormat = true;
-
-        public override bool IsPrettyFormat()
-        {
-            return m_PrettyFormat;
-        }
-
-        public override void SetPrettyFormat(bool pretty)
-        {
-            if (m_PrettyFormat != pretty)
-            {
-                m_PrettyFormat = pretty;
-                //PresentationFactory.RefreshQNames();
-                for (int i = 0; i < NumberOfPresentations; i++)
-                {
-                    GetPresentation(i).RefreshFactoryQNames();
-                }
-            }
-        }
-
-        static void Main()
-        {
-            System.Console.WriteLine("Hello World, from Urakawa SDK project !");
-        }
-
-        #region Event related members
+	/// <summary>
+	/// Represents a projects - part of the facade API, provides methods for opening and saving XUK files
+	/// </summary>
+	public class Project : XukAble, IValueEquatable<Project>, IChangeNotifier
+	{
+		
+		#region Event related members
 
         public event EventHandler<urakawa.events.media.data.DataIsMissingEventArgs> dataIsMissing;
         public void notifyDataIsMissing(MediaData md, urakawa.exception.DataMissingException ex)
@@ -53,128 +26,141 @@ namespace urakawa
             if (d != null) d(this, new urakawa.events.media.data.DataIsMissingEventArgs(md, ex));
         }
 
-        /// <summary>
-        /// Event fired after the <see cref="Project"/> has changed. 
-        /// The event fire before any change specific event 
-        /// </summary>
-        public event EventHandler<DataModelChangedEventArgs> Changed;
+		/// <summary>
+		/// Event fired after the <see cref="Project"/> has changed. 
+		/// The event fire before any change specific event 
+		/// </summary>
+		public event EventHandler<DataModelChangedEventArgs> changed;
+		/// <summary>
+		/// Fires the <see cref="changed"/> event 
+		/// </summary>
+		/// <param name="args">The arguments of the event</param>
+		protected void notifyChanged(DataModelChangedEventArgs args)
+		{
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
+			if (d != null) d(this, args);
+		}
+		/// <summary>
+		/// Event fired after a <see cref="Presentation"/> has been added to the <see cref="Project"/>
+		/// </summary>
+		public event EventHandler<PresentationAddedEventArgs> presentationAdded;
+		/// <summary>
+		/// Fires the <see cref="presentationAdded"/> event
+		/// </summary>
+		/// <param name="source">
+		/// The source, that is the <see cref="Project"/> to which a <see cref="Presentation"/> was added
+		/// </param>
+		/// <param name="addedPres">The <see cref="Presentation"/> that was added</param>
+		protected void notifyPresentationAdded(Project source, Presentation addedPres)
+		{
+			EventHandler<PresentationAddedEventArgs> d = presentationAdded;
+			if (d != null) d(this, new PresentationAddedEventArgs(source, addedPres));
+		}
 
-        /// <summary>
-        /// Fires the <see cref="Changed"/> event 
-        /// </summary>
-        /// <param name="args">The arguments of the event</param>
-        protected void NotifyChanged(DataModelChangedEventArgs args)
-        {
-            EventHandler<DataModelChangedEventArgs> d = Changed;
-            if (d != null) d(this, args);
-        }
+		void this_presentationAdded(object sender, PresentationAddedEventArgs e)
+		{
+			notifyChanged(e);
+			e.AddedPresentation.changed += new EventHandler<DataModelChangedEventArgs>(Presentation_changed);
+		}
 
-        /// <summary>
-        /// Event fired after a <see cref="Presentation"/> has been added to the <see cref="Project"/>
-        /// </summary>
-        public event EventHandler<PresentationAddedEventArgs> PresentationAdded;
+		void Presentation_changed(object sender, DataModelChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
 
-        /// <summary>
-        /// Fires the <see cref="PresentationAdded"/> event
-        /// </summary>
-        /// <param name="source">
-        /// The source, that is the <see cref="Project"/> to which a <see cref="Presentation"/> was added
-        /// </param>
-        /// <param name="addedPres">The <see cref="Presentation"/> that was added</param>
-        protected void NotifyPresentationAdded(Project source, Presentation addedPres)
-        {
-            EventHandler<PresentationAddedEventArgs> d = PresentationAdded;
-            if (d != null) d(this, new PresentationAddedEventArgs(source, addedPres));
-        }
+		/// <summary>
+		/// Event fired after a <see cref="Presentation"/> has been added to the <see cref="Project"/>
+		/// </summary>
+		public event EventHandler<PresentationRemovedEventArgs> presentationRemoved;
+		/// <summary>
+		/// Fires the <see cref="presentationRemoved"/> event
+		/// </summary>
+		/// <param name="source">
+		/// The source, that is the <see cref="Project"/> to which a <see cref="Presentation"/> was added
+		/// </param>
+		/// <param name="removedPres">The <see cref="Presentation"/> that was added</param>
+		protected void notifyPresentationRemoved(Project source, Presentation removedPres)
+		{
+			EventHandler<PresentationRemovedEventArgs> d = presentationRemoved;
+			if (d != null) d(this, new PresentationRemovedEventArgs(source, removedPres));
+		}
 
-        private void this_presentationAdded(object sender, PresentationAddedEventArgs e)
-        {
-            NotifyChanged(e);
-            e.AddedPresentation.Changed += Presentation_changed;
-        }
+		void this_presentationRemoved(object sender, PresentationRemovedEventArgs e)
+		{
+			e.RemovedPresentation.changed -= new EventHandler<DataModelChangedEventArgs>(Presentation_changed);
+			notifyChanged(e);
+		}
+		#endregion
 
-        private void Presentation_changed(object sender, DataModelChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
 
-        /// <summary>
-        /// Event fired after a <see cref="Presentation"/> has been added to the <see cref="Project"/>
-        /// </summary>
-        public event EventHandler<PresentationRemovedEventArgs> PresentationRemoved;
+		private List<Presentation> mPresentations;
 
-        /// <summary>
-        /// Fires the <see cref="PresentationRemoved"/> event
-        /// </summary>
-        /// <param name="source">
-        /// The source, that is the <see cref="Project"/> to which a <see cref="Presentation"/> was added
-        /// </param>
-        /// <param name="removedPres">The <see cref="Presentation"/> that was added</param>
-        protected void NotifyPresentationRemoved(Project source, Presentation removedPres)
-        {
-            EventHandler<PresentationRemovedEventArgs> d = PresentationRemoved;
-            if (d != null) d(this, new PresentationRemovedEventArgs(source, removedPres));
-        }
 
-        private void this_presentationRemoved(object sender, PresentationRemovedEventArgs e)
-        {
-            e.RemovedPresentation.Changed -= Presentation_changed;
-            NotifyChanged(e);
-        }
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public Project()
+		{
+			mPresentations = new List<Presentation>();
+			this.presentationAdded += new EventHandler<PresentationAddedEventArgs>(this_presentationAdded);
+			this.presentationRemoved += new EventHandler<PresentationRemovedEventArgs>(this_presentationRemoved);
+		}
 
-        #endregion
+		private DataModelFactory mDataModelFactory;
 
-        private List<Presentation> mPresentations;
+		/// <summary>
+		/// Gets the <see cref="DataModelFactory"/> of the <see cref="Project"/>
+		/// </summary>
+		/// <returns>The factory</returns>
+		/// <remarks>
+		/// The <see cref="DataModelFactory"/> of a <see cref="Project"/> is initialized lazily,
+		/// in that if the <see cref="DataModelFactory"/> has not been explicitly initialized
+		/// using the <see cref="setDataModelFactory"/>, then calling <see cref="getDataModelFactory"/>
+		/// will initialize the <see cref="Project"/> with a newly created <see cref="DataModelFactory"/>.
+		/// </remarks>
+		public DataModelFactory getDataModelFactory()
+		{
+			if (mDataModelFactory == null) mDataModelFactory = new DataModelFactory();
+			return mDataModelFactory;
+		}
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public Project()
-        {
-            mXukStrings = new XukStrings(this);
-            mPresentations = new List<Presentation>();
-            PresentationAdded += this_presentationAdded;
-            PresentationRemoved += this_presentationRemoved;
-        }
-
-        private XukStrings mXukStrings;
-
-        public XukStrings XukStrings
-        {
-            get { return mXukStrings; }
-            set { mXukStrings = value; }
-        }
-
-        private PresentationFactory mPresentationFactory;
-
-        /// <summary>
-        /// Gets the <see cref="PresentationFactory"/> of the <see cref="Project"/>
-        /// </summary>
-        /// <remarks>
-        /// The <see cref="PresentationFactory"/> of a <see cref="Project"/> is initialized lazily
-        /// </remarks>
-        public PresentationFactory PresentationFactory
-        {
-            get
-            {
-                if (mPresentationFactory == null) mPresentationFactory = new PresentationFactory();
-                return mPresentationFactory;
-            }
-        }
-
+		/// <summary>
+		/// Initializes the <see cref="Project"/> with a <see cref="DataModelFactory"/>
+		/// </summary>
+		/// <param name="fact">The factory with which to initialize - must not be <c>null</c></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="fact"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Project"/> has already been initialized with a <see cref="DataModelFactory"/>
+		/// </exception>
+		public void setDataModelFactory(DataModelFactory fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The DataModelFactory can not be null");
+			}
+			if (mDataModelFactory != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Project has already been initialized with a DataModelFactory");
+			}
+			mDataModelFactory = fact;
+		}
 
         /// <summary>
         /// Opens an XUK file and loads the project from this
         /// </summary>
         /// <param name="fileUri">The <see cref="Uri"/> of the source XUK file (cannot be null)</param>
-        public void OpenXuk(Uri fileUri)
+        public void openXUK(Uri fileUri)
         {
             if (fileUri == null)
             {
                 throw new exception.MethodParameterIsNullException("The source URI cannot be null");
             }
             OpenXukAction action = new OpenXukAction(this, fileUri);
-            action.Execute();
+            action.execute();
         }
 
         /// <summary>
@@ -184,27 +170,27 @@ namespace urakawa
         /// </summary>
         /// <param name="fileUri">The <see cref="Uri"/> of the source XUK file (can be null)</param>
         /// <param name="reader">The <see cref="XmlReader"/> of the source XUK file (cannot be null)</param>
-        private void OpenXuk(Uri fileUri, XmlReader reader)
+        private void openXUK(Uri fileUri, XmlReader reader)
         {
             if (reader == null)
             {
                 throw new exception.MethodParameterIsNullException("The source XML reader cannot be null");
             }
             OpenXukAction action = new OpenXukAction(this, fileUri, reader);
-            action.Execute();
+            action.execute();
         }
         /// <summary>
         /// Saves the <see cref="Project"/> to a XUK file
         /// </summary>
         /// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
-        public void SaveXuk(Uri fileUri)
+        public void saveXUK(Uri fileUri)
         {
             if (fileUri == null)
             {
                 throw new exception.MethodParameterIsNullException("The destination URI cannot be null");
             }
-            SaveXukAction action = new SaveXukAction(this, this, fileUri);
-            action.Execute();
+            SaveXukAction action = new SaveXukAction(this, fileUri);
+            action.execute();
         }
 
         /// <summary>
@@ -212,279 +198,265 @@ namespace urakawa
         /// </summary>
         /// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
         /// <param name="writer">The <see cref="XmlWriter"/> of the destination XUK file</param>
-        public void SaveXuk(Uri fileUri, XmlWriter writer)
+        public void saveXUK(Uri fileUri, XmlWriter writer)
         {
             if (writer == null)
             {
                 throw new exception.MethodParameterIsNullException("The destination XML writer cannot be null");
             }
-            SaveXukAction action = new SaveXukAction(this, this, fileUri, writer);
-            action.Execute();
+            SaveXukAction action = new SaveXukAction(this, fileUri, writer);
+            action.execute();
         }
 
 
-        /// <summary>
-        /// Gets the <see cref="urakawa.Presentation"/> of the <see cref="Project"/> at a given index
-        /// </summary>
-        /// <param name="index">The index of the <see cref="Presentation"/> to get</param>
-        /// <returns>The presentation at the given index</returns>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()-1]</c>
-        /// </exception>
-        public Presentation GetPresentation(int index)
-        {
-            if (index < 0 || NumberOfPresentations <= index)
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    String.Format(
-                        "There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
-                        index, NumberOfPresentations - 1));
-            }
-            return mPresentations[index];
-        }
 
-        /// <summary>
-        /// Gets a list of the <see cref="Presentation"/>s in the <see cref="Project"/>
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<Presentation> ListOfPresentations
-        {
-            get { return new List<Presentation>(mPresentations); }
-        }
 
-        /// <summary>
-        /// Sets the <see cref="Presentation"/> at a given index
-        /// </summary>
-        /// <param name="newPres">The <see cref="Presentation"/> to set</param>
-        /// <param name="index">The given index</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="newPres"/> is <c>null</c></exception>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()]</c>
-        /// </exception>
-        /// <exception cref="exception.IsAlreadyManagerOfException">
-        /// Thrown when <paramref name="newPres"/> already exists in <c>this</c> with another <paramref name="index"/>
-        /// </exception>
-        public void SetPresentation(Presentation newPres, int index)
-        {
-            if (newPres == null)
-            {
-                throw new exception.MethodParameterIsNullException("The new Presentation can not be null");
-            }
-            if (index < 0 || NumberOfPresentations < index)
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
-                                                                              "There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
-                                                                              index, NumberOfPresentations));
-            }
-            if (mPresentations.Contains(newPres))
-            {
-                if (mPresentations.IndexOf(newPres) != index)
-                {
-                    throw new exception.IsAlreadyManagerOfException(String.Format(
-                                                                        "The new Presentation already exists in the Project at index {0:0}",
-                                                                        mPresentations.IndexOf(newPres)));
-                }
-            }
-            if (index < NumberOfPresentations)
-            {
-                RemovePresentation(index);
-                mPresentations.Insert(index, newPres);
-            }
-            else
-            {
-                mPresentations.Add(newPres);
-            }
-            newPres.Project = this;
-            NotifyPresentationAdded(this, newPres);
-        }
 
-        /// <summary>
-        /// Adds a <see cref="Presentation"/> to the <see cref="Project"/>
-        /// </summary>
-        /// <param name="newPres">The <see cref="Presentation"/> to add</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="newPres"/> is <c>null</c></exception>
-        /// <exception cref="exception.IsAlreadyManagerOfException">
-        /// Thrown when <paramref name="newPres"/> already exists in <c>this</c>
-        /// </exception>
-        public void AddPresentation(Presentation newPres)
-        {
-            SetPresentation(newPres, NumberOfPresentations);
-        }
+		/// <summary>
+		/// Gets the <see cref="urakawa.Presentation"/> of the <see cref="Project"/> at a given index
+		/// </summary>
+		/// <param name="index">The index of the <see cref="Presentation"/> to get</param>
+		/// <returns>The presentation at the given index</returns>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()-1]</c>
+		/// </exception>
+		public Presentation getPresentation(int index)
+		{
+			if (index<0 || getNumberOfPresentations()<=index)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+					"There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
+					index, getNumberOfPresentations()-1));
+			}
+			return mPresentations[index];
+		}
 
-        /// <summary>
-        /// Adds a newly created <see cref="Presentation"/> to the <see cref="Project"/>, 
-        /// as returned by <c>this.PresentationFactory.Create()</c>
-        /// </summary>
-        /// <returns>The newly created and added <see cref="Presentation"/></returns>
-        public Presentation AddNewPresentation()
-        {
-            Presentation newPres = PresentationFactory.Create();
-            AddPresentation(newPres);
-            return newPres;
-        }
+		/// <summary>
+		/// Gets a list of the <see cref="Presentation"/>s in the <see cref="Project"/>
+		/// </summary>
+		/// <returns>The list</returns>
+		public List<Presentation> getListOfPresentations()
+		{
+			return new List<Presentation>(mPresentations);
+		}
 
-        /// <summary>
-        /// Gets the number of <see cref="Presentation"/>s in the <see cref="Project"/>
-        /// </summary>
-        /// <returns>The number of <see cref="Presentation"/>s</returns>
-        public int NumberOfPresentations
-        {
-            get { return mPresentations.Count; }
-        }
+		/// <summary>
+		/// Sets the <see cref="Presentation"/> at a given index
+		/// </summary>
+		/// <param name="newPres">The <see cref="Presentation"/> to set</param>
+		/// <param name="index">The given index</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newPres"/> is <c>null</c></exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()]</c>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyManagerOfException">
+		/// Thrown when <paramref name="newPres"/> already exists in <c>this</c> with another <paramref name="index"/>
+		/// </exception>
+		public void setPresentation(Presentation newPres, int index)
+		{
+			if (newPres == null)
+			{
+				throw new exception.MethodParameterIsNullException("The new Presentation can not be null");
+			}
+			if (index < 0 || getNumberOfPresentations() < index)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+					"There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
+					index, getNumberOfPresentations()));
+			}
+			if (mPresentations.Contains(newPres))
+			{
+				if (mPresentations.IndexOf(newPres) != index)
+				{
+					throw new exception.IsAlreadyManagerOfException(String.Format(
+						"The new Presentation already exists in the Project at index {0:0}",
+						mPresentations.IndexOf(newPres)));
+				}
+			}
+			if (index < getNumberOfPresentations())
+			{
+				removePresentation(index);
+				mPresentations.Insert(index, newPres);
+			}
+			else
+			{
+				mPresentations.Add(newPres);
+			}
+			newPres.setProject(this);
+			notifyPresentationAdded(this, newPres);
+		}
 
-        /// <summary>
-        /// Removes the <see cref="Presentation"/> at a given index
-        /// </summary>
-        /// <param name="index">The given index</param>
-        /// <returns>The removed <see cref="Presentation"/></returns>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()-1]</c>
-        /// </exception>
-        public Presentation RemovePresentation(int index)
-        {
-            if (index < 0 || NumberOfPresentations <= index)
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
-                                                                              "There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
-                                                                              index, NumberOfPresentations - 1));
-            }
-            Presentation pres = GetPresentation(index);
-            mPresentations.RemoveAt(index);
-            NotifyPresentationRemoved(this, pres);
-            return pres;
-        }
+		/// <summary>
+		/// Adds a <see cref="Presentation"/> to the <see cref="Project"/>
+		/// </summary>
+		/// <param name="newPres">The <see cref="Presentation"/> to add</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newPres"/> is <c>null</c></exception>
+		/// <exception cref="exception.IsAlreadyManagerOfException">
+		/// Thrown when <paramref name="newPres"/> already exists in <c>this</c>
+		/// </exception>
+		public void addPresentation(Presentation newPres)
+		{
+			setPresentation(newPres, getNumberOfPresentations());
+		}
 
-        /// <summary>
-        /// Removes all <see cref="Presentation"/>s from the <see cref="Project"/>
-        /// </summary>
-        public void RemoveAllPresentations()
-        {
-            mPresentations.Clear();
-        }
+		/// <summary>
+		/// Adds a newly created <see cref="Presentation"/> to the <see cref="Project"/>,
+		/// as returned by <c><see cref="getDataModelFactory"/>().<see cref="DataModelFactory.createPresentation()"/>()</c>
+		/// </summary>
+		/// <returns>The newly created and added <see cref="Presentation"/></returns>
+		public Presentation addNewPresentation()
+		{
+			Presentation newPres = getDataModelFactory().createPresentation();
+			addPresentation(newPres);
+			return newPres;
+		}
 
-        #region IXUKAble members
+		/// <summary>
+		/// Gets the number of <see cref="Presentation"/>s in the <see cref="Project"/>
+		/// </summary>
+		/// <returns>The number of <see cref="Presentation"/>s</returns>
+		public int getNumberOfPresentations()
+		{
+			return mPresentations.Count;
+		}
 
-        /// <summary>
-        /// Clears the <see cref="Project"/>, removing all <see cref="Presentation"/>s
-        /// </summary>
-        protected override void Clear()
-        {
-            RemoveAllPresentations();
-            base.Clear();
-        }
+		/// <summary>
+		/// Removes the <see cref="Presentation"/> at a given index
+		/// </summary>
+		/// <param name="index">The given index</param>
+		/// <returns>The removed <see cref="Presentation"/></returns>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()-1]</c>
+		/// </exception>
+		public Presentation removePresentation(int index)
+		{
+			if (index < 0 || getNumberOfPresentations() <= index)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+					"There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
+					index, getNumberOfPresentations() - 1));
+			}
+			Presentation pres = getPresentation(index);
+			mPresentations.RemoveAt(index);
+			notifyPresentationRemoved(this, pres);
+			return pres;
+		}
 
-        /// <summary>
-        /// Reads a child of a Project xuk element. 
-        /// </summary>
-        /// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <summary>
+		/// Removes all <see cref="Presentation"/>s from the <see cref="Project"/>
+		/// </summary>
+		public void removeAllPresentations()
+		{
+			mPresentations.Clear();
+		}
+
+		
+		#region IXUKAble members
+
+		/// <summary>
+		/// Clears the <see cref="Project"/>, removing all <see cref="Presentation"/>s
+		/// </summary>
+		protected override void clear()
+		{
+			removeAllPresentations();
+			base.clear();
+		}
+
+		/// <summary>
+		/// Reads a child of a Project xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukInChild(XmlReader source, ProgressHandler handler)
-        {
-            bool readItem = false;
-            if (source.NamespaceURI == XukNamespaceUri)
-            {
-                if (source.LocalName == XukStrings.PresentationFactory)
-                {
-                    PresentationFactory.XukIn(source, handler);
-                    readItem = true;
-                }
-                else if (source.LocalName == XukStrings.Presentations)
-                {
-                    XukInPresentations(source, handler);
-                    readItem = true;
-                }
-            }
-            if (!readItem) base.XukInChild(source, handler);
-        }
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+		{
+			bool readItem = false;
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+			{
+				switch (source.LocalName)
+				{
+					case "mPresentations":
+						xukInPresentations(source, handler);
+						readItem = true;
+						break;
+				}
+			}
+			if (!readItem) base.xukInChild(source, handler);
+		}
 
-        private void XukInPresentations(XmlReader source, ProgressHandler handler)
-        {
-            if (!source.IsEmptyElement)
-            {
-                while (source.Read())
-                {
-                    if (source.NodeType == XmlNodeType.Element)
-                    {
-                        Presentation pres = PresentationFactory.Create(source.LocalName, source.NamespaceURI);
-                        if (pres != null)
-                        {
-                            AddPresentation(pres);
-                            pres.XukIn(source, handler);
-                        }
-                        else if (!source.IsEmptyElement)
-                        {
-                            source.ReadSubtree().Close();
-                        }
-                    }
-                    else if (source.NodeType == XmlNodeType.EndElement)
-                    {
-                        break;
-                    }
-                    if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-                }
-            }
-        }
+		private void xukInPresentations(XmlReader source, ProgressHandler handler)
+		{
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						Presentation pres = getDataModelFactory().createPresentation(
+							source.LocalName, source.NamespaceURI);
+						if (pres != null)
+						{
+							this.addPresentation(pres);
+							pres.xukIn(source, handler);
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+				}
+			}
+		}
 
-        /// <summary>
-        /// Write the child elements of a Project element.
-        /// </summary>
-        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-        /// <param name="baseUri">
-        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-        /// if <c>null</c> absolute <see cref="Uri"/>s are written
-        /// </param>
+		/// <summary>
+		/// Write the child elements of a Project element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
-        {
-            base.XukOutChildren(destination, baseUri, handler);
-            PresentationFactory.XukOut(destination, baseUri, handler);
-            destination.WriteStartElement(XukStrings.Presentations, XukNamespaceUri);
-            foreach (Presentation pres in ListOfPresentations)
-            {
-                pres.XukOut(destination, baseUri, handler);
-            }
-            destination.WriteEndElement();
-        }
+        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+		{
+			base.xukOutChildren(destination, baseUri, handler);
+			destination.WriteStartElement("mPresentations", ToolkitSettings.XUK_NS);
+			foreach (Presentation pres in getListOfPresentations())
+			{
+				pres.xukOut(destination, baseUri, handler);
+			}
+			destination.WriteEndElement();
+		}
 
-        #endregion
+		#endregion
 
-        #region IValueEquatable<Project> Members
 
-        /// <summary>
-        /// Determines of <c>this</c> has the same value as a given other instance
-        /// </summary>
-        /// <param name="other">The other instance</param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        public bool ValueEquals(Project other)
-        {
-            if (other == null)
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !");
-                return false;
-            }
-            if (GetType() != other.GetType())
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !");
-                return false;
-            }
-            if (NumberOfPresentations != other.NumberOfPresentations)
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !");
-                return false;
-            }
-            for (int index = 0; index < NumberOfPresentations; index++)
-            {
-                if (!GetPresentation(index).ValueEquals(other.GetPresentation(index)))
-                {
-                    //System.Diagnostics.Debug.Fail("! ValueEquals !");
-                    return false;
-                }
-            }
-            return true;
-        }
 
-        #endregion
-    }
+		#region IValueEquatable<Project> Members
+
+		/// <summary>
+		/// Determines of <c>this</c> has the same value as a given other instance
+		/// </summary>
+		/// <param name="other">The other instance</param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
+		public bool valueEquals(Project other)
+		{
+			if (other==null) return false;
+			if (GetType()!=other.GetType()) return false;
+			if (getNumberOfPresentations()!=other.getNumberOfPresentations()) return false;
+			for (int index=0; index<getNumberOfPresentations(); index++)
+			{
+				if (!getPresentation(index).valueEquals(other.getPresentation(index))) return false;
+			}
+			return true;
+		}
+
+		#endregion
+	}
 }

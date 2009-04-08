@@ -1,46 +1,37 @@
 package org.daisy.urakawa.progress;
 
-import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-
 /**
- * A simple container for a tuple: current, total. total is >=0 and current is
- * >=0 and <=total.
+ *
  */
-public class ProgressInformation
-{
-    private int mCurrent;
-    private int mTotal;
+public class ProgressInformation {
+	private int mCurrent;
+	private int mTotal;
 
-    /**
-     * @param current
-     * @param total
-     * @throws MethodParameterIsOutOfBoundsException
-     *         when (total < 0 || current > total || current < 0)
-     */
-    public ProgressInformation(int total, int current)
-            throws MethodParameterIsOutOfBoundsException
-    {
-        if (total < 0 || current > total || current < 0)
-        {
-            throw new MethodParameterIsOutOfBoundsException();
-        }
-        mTotal = total;
-        mCurrent = current;
-    }
+	/**
+	 * @param current
+	 */
+	public void setCurrent(int current) {
+		mCurrent = current;
+	}
 
-    /**
-     * @return int
-     */
-    public int getCurrent()
-    {
-        return mCurrent;
-    }
+	/**
+	 * @param total
+	 */
+	public void setTotal(int total) {
+		mTotal = total;
+	}
 
-    /**
-     * @return int
-     */
-    public int getTotal()
-    {
-        return mTotal;
-    }
+	/**
+	 * @return int
+	 */
+	public int getCurrent() {
+		return mCurrent;
+	}
+
+	/**
+	 * @return int
+	 */
+	public int getTotal() {
+		return mTotal;
+	}
 }

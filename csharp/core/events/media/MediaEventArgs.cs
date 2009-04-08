@@ -6,23 +6,22 @@ using urakawa.media;
 namespace urakawa.events.media
 {
     /// <summary>
-    /// Base class for arguments for <see cref="Media"/> related events
+    /// Base class for arguments for <see cref="IMedia"/> related events
     /// </summary>
-    public class MediaEventArgs : DataModelChangedEventArgs
-    {
+	public class MediaEventArgs : DataModelChangedEventArgs
+	{
         /// <summary>
-        /// Constructor setting the source <see cref="Media"/>
+        /// Constructor setting the source <see cref="IMedia"/>
         /// </summary>
         /// <param name="src">The source</param>
-        public MediaEventArgs(Media src)
-            : base(src)
-        {
-            SourceMedia = src;
-        }
-
+		public MediaEventArgs(IMedia src)
+			: base(src)
+		{
+			SourceMedia = src;
+		}
         /// <summary>
-        /// The source <see cref="Media"/>
+        /// The source <see cref="IMedia"/>
         /// </summary>
-        public readonly Media SourceMedia;
-    }
+		public readonly IMedia SourceMedia;
+	}
 }

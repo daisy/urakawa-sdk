@@ -1,43 +1,62 @@
 package org.daisy.urakawa.metadata;
 
-import org.daisy.urakawa.GenericWithPresentationFactory;
-import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.WithPresentation;
+  
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * Extension of the generic factory to handle one or more specific types derived
- * from the base specified class, in order to provide convenience create()
- * methods.
+ * <p>
+ * This is the factory that creates {@link org.daisy.urakawa.metadata.Metadata}
+ * instances.
+ * </p>
  * 
- * @xhas - - 1 org.daisy.urakawa.Presentation
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.metadata.Metadata
  */
-public final class MetadataFactory extends
-        GenericWithPresentationFactory<Metadata>
-{
-    /**
-     * @param pres
-     * @throws MethodParameterIsNullException
-     */
-    public MetadataFactory(Presentation pres)
-            throws MethodParameterIsNullException
-    {
-        super(pres);
-    }
+public interface MetadataFactory extends XukAble, WithPresentation {
+	/**
+	 * <p>
+	 * Creates a new metadata instance.
+	 * </p>
+	 * <p>
+	 * This factory method does not take any argument and creates an object of
+	 * the default type.
+	 * </p>
+	 * 
+	 * @return cannot return null.
+	 */
+	public Metadata createMetadata();
 
-    /**
-     * @return
-     */
-    public Metadata createMetadata()
-    {
-        try
-        {
-            return create(Metadata.class);
-        }
-        catch (MethodParameterIsNullException e)
-        {
-            // Should never happen
-            throw new RuntimeException("WTF ??!", e);
-        }
-    }
+	/**
+	 * <p>
+	 * Creates a new metadata instance.
+	 * </p>
+	 * 
+	 * <p>
+	 * This factory method takes arguments to specify the exact type of object
+	 * to create, given by the unique QName (XML Qualified Name) used in the XUK
+	 * serialization format. This method can be used to generate instances of
+	 * subclasses of the base object type.
+	 * </p>
+	 * @param xukLocalName
+	 *            cannot be null, cannot be empty string.
+	 * @param xukNamespaceURI
+	 *            cannot be null, but can be empty string.
+	 * @return can return null (in case the QName specification does not match
+	 *         any supported type).
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameter is forbidden:
+	 *             <b>xukLocalName</b>
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 */
+	public Metadata createMetadata(String xukLocalName, String xukNamespaceURI)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 }

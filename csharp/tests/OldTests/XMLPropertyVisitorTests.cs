@@ -3,28 +3,28 @@ using NUnit.Framework;
 using urakawa.core;
 using urakawa.property.xml;
 
-namespace urakawa.oldTests
+namespace urakawa.unitTests.testbase
 {
-    /// <summary>
-    /// Summary description for VisitorTests.
-    /// </summary>
-    public class XmlPropertyVisitorTests : TestCollectionBase
-    {
-        [Test]
-        public void VisitXmlPropertyName()
-        {
-            XmlPropertyElementNameVisitor vis = new XmlPropertyElementNameVisitor();
+	/// <summary>
+	/// Summary description for VisitorTests.
+	/// </summary>
+	public class XmlPropertyVisitorTests : TestCollectionBase
+	{
+		[Test] public void VisitXmlPropertyName()
+		{
+			XmlPropertyElementNameVisitor vis = new XmlPropertyElementNameVisitor();
 
-            vis.AddElementName("level", "");
+			vis.addElementName("level", "");
 
-            mProject.GetPresentation(0).RootNode.AcceptDepthFirst(vis);
+			mProject.getPresentation(0).getRootNode().acceptDepthFirst(vis);
 
-            System.Collections.Generic.IList<TreeNode> list = vis.Results;
+			System.Collections.Generic.IList<TreeNode> list = vis.getResults();
 
-            Assert.IsNotNull(list);
+			Assert.IsNotNull(list);
 
-            //this particular file (SampleDTB2Ver1.xuk) has one level node
-            Assert.AreEqual(1, list.Count);
-        }
-    }
+			//this particular file (SampleDTB2Ver1.xuk) has one level node
+			Assert.AreEqual(1, list.Count);
+		}
+
+	}
 }

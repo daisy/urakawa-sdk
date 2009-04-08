@@ -1,78 +1,71 @@
 package org.daisy.urakawa.nativeapi;
 
 /**
- * Place-holder for a real implementation in Java. It should be replaced with
- * StAX, really.
+ * <p>
+ * This interface does not have to be implemented "as-is". It is basically a
+ * place-holder for a XML pull-parser, such as "System.Xml.XmlReader" in C#, or
+ * StAX Java implementations. For more information, see
+ * http://www.xmlpull.org/impls.shtml and http://stax.codehaus.org/
+ * </p>
+ * <p>
+ * Note: the methods in this interface are directly inspired from the the C#
+ * "System.Xml.XmlReader" implementation, but any XML pull-parser API should
+ * provide a similar, if not an identical interface.
+ * </p>
+ * 
+ * @stereotype Language-Dependent
  */
-public class XmlDataWriter implements IXmlDataWriter
-{
-    /**
-     * @param fs
-     */
-    public XmlDataWriter(IStream fs)
-    {
-        // Needs implementing !
-    }
+public interface XmlDataWriter {
+	/**
+	 * @param localName
+	 * @param namespace
+	 */
+	public void writeStartElement(String localName, String namespace);
 
-    public void close()
-    {
-        /**
-         * To implement.
-         */
-    }
+	/**
+	 * 
+	 */
+	public void close();
 
-    public void writeEndDocument()
-    {
-        /**
-         * To implement.
-         */
-    }
+	/**
+	 * 
+	 */
+	public void writeStartDocument();
 
-    public void writeEndElement()
-    {
-        /**
-         * To implement.
-         */
-    }
+	/**
+	 * 
+	 */
+	public void writeEndDocument();
 
-    public void writeStartDocument()
-    {
-        /**
-         * To implement.
-         */
-    }
+	/**
+	 * 
+	 */
+	public void writeEndElement();
 
-    public void writeStartElement(String localName, String namespace)
-    {
-        /**
-         * To implement.
-         */
-    }
+	/**
+	 * @param str1
+	 *            a string
+	 * @param str2
+	 *            a string
+	 */
+	public void writeAttributeString(String str1, String str2);
 
-    public void writeAttributeString(String str1, String str2)
-    {
-        /**
-         * To implement.
-         */
-    }
+	/**
+	 * @param str1
+	 *            a string
+	 * @param str2
+	 *            a string
+	 * @param str3
+	 *            a string
+	 * @param str4
+	 *            a string
+	 */
+	public void writeAttributeString(String str1, String str2, String str3,
+			String str4);
 
-    public void writeString(String str)
-    {
-        /**
-         * To implement.
-         */
-    }
-
-    public void writeAttributeString(String str1, String str2, String str3,
-            String str4)
-    {
-        /**
-         * To implement.
-         */
-    }
-
-    public IStream getBaseStream()
-    {
-        return null;
-    }
+	/**
+	 * @param str
+	 *            text
+	 */
+	public void writeString(String str);
 }

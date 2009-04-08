@@ -6,15 +6,11 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-
 [assembly: AssemblyTitle("Urakawa SDK Core Library")]
-[assembly:
-    AssemblyDescription(
-        "The core library of the Urakawa SDK for .Net Framework 2.0. For more information see http://daisy-trac.cvsdude.com/urakawa-sdk/"
-        )]
+[assembly: AssemblyDescription("The core class library of the Urakawa Toolkit for .Net Framework 2.0. For more information see http://urakawa.sourceforge.net/")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Urakawa Project, DAISY Consortium")]
-[assembly: AssemblyProduct("Urakawa Software Development Toolkit for Accessible Multimedia Authoring")]
+[assembly: AssemblyCompany("Urakawa Project")]
+[assembly: AssemblyProduct("Urakawa Toolkit")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -31,7 +27,7 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("2.0.0.*")]
+[assembly: AssemblyVersion("1.1.0.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
@@ -58,7 +54,6 @@ using System.Runtime.CompilerServices;
 //   (*) Delay Signing is an advanced option - see the Microsoft .NET Framework
 //       documentation for more information on this.
 //
-
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]

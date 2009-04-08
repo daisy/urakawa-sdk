@@ -1,286 +1,277 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using urakawa.events;
-using urakawa.events.metadata;
 using urakawa.xuk;
 
 namespace urakawa.metadata
 {
-    /// <summary>
-    /// Represents <see cref="Metadata"/> of a <see cref="Presentation"/>
-    /// </summary>
-    public class Metadata : WithPresentation, IChangeNotifier
-    {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.Metadata;
-        }
-        #region IChangeNotifier members
+	/// <summary>
+	/// Default implementation of 
+	/// </summary>
+	public class Metadata : XukAble, urakawa.events.IChangeNotifier
+	{
+		
+		#region Event related members
 
-        /// <summary>
-        /// Event fired after the <see cref="Metadata"/> has changed. 
-        /// The event fire before any change specific event 
-        /// </summary>
-        public event EventHandler<DataModelChangedEventArgs> Changed;
+		/// <summary>
+		/// Event fired after the <see cref="Metadata"/> has changed. 
+		/// The event fire before any change specific event 
+		/// </summary>
+		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
+		/// <summary>
+		/// Fires the <see cref="changed"/> event 
+		/// </summary>
+		/// <param name="args">The arguments of the event</param>
+		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
+		{
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
+			if (d != null) d(this, args);
+		}
+		/// <summary>
+		/// Event fired after the name of the <see cref="Metadata"/> has changed
+		/// </summary>
+		public event EventHandler<urakawa.events.metadata.NameChangedEventArgs> nameChanged;
+		/// <summary>
+		/// Fires the <see cref="nameChanged"/> event
+		/// </summary>
+		/// <param name="newName">The new name</param>
+		/// <param name="prevName">The name prior to the change</param>
+		protected void notifyNameChanged(string newName, string prevName)
+		{
+			EventHandler<urakawa.events.metadata.NameChangedEventArgs> d = nameChanged;
+			if (d != null) d(this, new urakawa.events.metadata.NameChangedEventArgs(this, newName, prevName));
+		}
+		/// <summary>
+		/// Event fired after the content of the <see cref="Metadata"/> has changed
+		/// </summary>
+		public event EventHandler<urakawa.events.metadata.ContentChangedEventArgs> contentChanged;
+		/// <summary>
+		/// Fires the <see cref="contentChanged"/> event
+		/// </summary>
+		/// <param name="newContent">The new content</param>
+		/// <param name="prevContent">The content prior to the change</param>
+		protected void notifyContentChanged(string newContent, string prevContent)
+		{
+			EventHandler<urakawa.events.metadata.ContentChangedEventArgs> d = contentChanged;
+			if (d != null) d(this, new urakawa.events.metadata.ContentChangedEventArgs(this, newContent, prevContent));
+		}
+		/// <summary>
+		/// Event fired after the optional attribute of the <see cref="Metadata"/> has changed
+		/// </summary>
+		public event EventHandler<urakawa.events.metadata.OptionalAttributeChangedEventArgs> optionalAttributeChanged;
+		/// <summary>
+		/// Fires the <see cref="optionalAttributeChanged"/> event
+		/// </summary>
+		/// <param name="name">The name of the optional attribute</param>
+		/// <param name="newVal">The new value of the optional attribute</param>
+		/// <param name="prevValue">The value of the optional attribute prior to the change</param>
+		protected void notifyOptionalAttributeChanged(string name, string newVal, string prevValue)
+		{
+			EventHandler<urakawa.events.metadata.OptionalAttributeChangedEventArgs> d = optionalAttributeChanged;
+			if (d != null) d(this, new urakawa.events.metadata.OptionalAttributeChangedEventArgs(this, name, newVal, prevValue));
+		}
 
-        /// <summary>
-        /// Fires the <see cref="Changed"/> event 
-        /// </summary>
-        /// <param name="args">The arguments of the event</param>
-        protected void NotifyChanged(DataModelChangedEventArgs args)
-        {
-            EventHandler<DataModelChangedEventArgs> d = Changed;
-            if (d != null) d(this, args);
-        }
+		#endregion
 
-        #endregion
 
-        /// <summary>
-        /// Event fired after the name of the <see cref="Metadata"/> has changed
-        /// </summary>
-        public event EventHandler<NameChangedEventArgs> NameChanged;
+		private string mName;
 
-        /// <summary>
-        /// Fires the <see cref="NameChanged"/> event
-        /// </summary>
-        /// <param name="newName">The new name</param>
-        /// <param name="prevName">The name prior to the change</param>
-        protected void NotifyNameChanged(string newName, string prevName)
-        {
-            EventHandler<NameChangedEventArgs> d = NameChanged;
-            if (d != null) d(this, new NameChangedEventArgs(this, newName, prevName));
-        }
+		private Dictionary<string, string> mAttributes;
 
-        /// <summary>
-        /// Event fired after the content of the <see cref="Metadata"/> has changed
-        /// </summary>
-        public event EventHandler<ContentChangedEventArgs> ContentChanged;
+		/// <summary>
+		/// Default constructor, Name, Content and Scheme are initialized to <see cref="String.Empty"/>
+		/// </summary>
+		internal Metadata()
+		{
+			mName = "";
+			mAttributes = new Dictionary<string, string>();
+			mAttributes.Add("content", "");
+		}
+		
+		#region Metadata Members
 
-        /// <summary>
-        /// Fires the <see cref="ContentChanged"/> event
-        /// </summary>
-        /// <param name="newContent">The new content</param>
-        /// <param name="prevContent">The content prior to the change</param>
-        protected void NotifyContentChanged(string newContent, string prevContent)
-        {
-            EventHandler<ContentChangedEventArgs> d = ContentChanged;
-            if (d != null) d(this, new ContentChangedEventArgs(this, newContent, prevContent));
-        }
+		/// <summary>
+		/// Gets the name
+		/// </summary>
+		/// <returns>The name</returns>
+		public string getName()
+		{
+			return mName;
+		}
 
-        /// <summary>
-        /// Event fired after the optional attribute of the <see cref="Metadata"/> has changed
-        /// </summary>
-        public event EventHandler<OptionalAttributeChangedEventArgs> OptionalAttributeChanged;
+		/// <summary>
+		/// Sets the name
+		/// </summary>
+		/// <param name="newName">The new name value</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newLocalName"/> is null
+		/// </exception>
+		public void setName(string newName)
+		{
+			if (newName == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+				  "The name can no t be null");
+			}
+			string prevName = mName;
+			mName = newName;
+			if (prevName!=mName) notifyNameChanged(newName, prevName);
+		}
 
-        /// <summary>
-        /// Fires the <see cref="OptionalAttributeChanged"/> event
-        /// </summary>
-        /// <param name="name">The name of the optional attribute</param>
-        /// <param name="newVal">The new value of the optional attribute</param>
-        /// <param name="prevValue">The value of the optional attribute prior to the change</param>
-        protected void NotifyOptionalAttributeChanged(string name, string newVal, string prevValue)
-        {
-            EventHandler<OptionalAttributeChangedEventArgs> d = OptionalAttributeChanged;
-            if (d != null) d(this, new OptionalAttributeChangedEventArgs(this, name, newVal, prevValue));
-        }
+		/// <summary>
+		/// Gets the content
+		/// </summary>
+		/// <returns>The content, or null if none has been set yet.</returns>
+		public string getContent()
+		{
+            return mAttributes.ContainsKey("content") ? mAttributes["content"] : null;
+		}
 
-        private string mName;
+		/// <summary>
+		/// Sets the content
+		/// </summary>
+		/// <param name="newContent">The  new content value</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newContent"/> is null
+		/// </exception>
+		public void setContent(string newContent)
+		{
+			if (newContent == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Content can not be null");
+			}
+			string prevContent = getContent();
+			mAttributes["content"] = newContent;
+			if (newContent != prevContent) notifyContentChanged(newContent, prevContent);
+		}
 
-        private Dictionary<string, string> mAttributes;
+		/// <summary>
+		/// Gets the value of a named attribute
+		/// </summary>
+		/// <param name="name">The name of the attribute</param>
+		/// <returns>The value of the attribute - <see cref="String.Empty"/> if the attribute does not exist</returns>
+		public string getOptionalAttributeValue(string name)
+		{
+			if (mAttributes.ContainsKey(name))
+			{
+				return mAttributes[name];
+			}
+			return "";
+		}
 
-        /// <summary>
-        /// Default constructor - for system use only, 
-        /// <see cref="Metadata"/>s should only be created via. the <see cref="MetadataFactory"/>
-        /// </summary>
-        public Metadata()
-        {
-            mName = "";
-            mAttributes = new Dictionary<string, string>();
-            mAttributes.Add("content", "");
-            NameChanged += this_NameChanged;
-            ContentChanged += this_ContentChanged;
-            OptionalAttributeChanged += this_OptionalAttributeChanged;
-        }
+		/// <summary>
+		/// Sets the value of a named attribute
+		/// </summary>
+		/// <param name="name">The name of the attribute</param>
+		/// <param name="value">The new value for the attribute</param>
+		public void setOptionalAttributeValue(string name, string value)
+		{
+			if (value == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"A metadata attribute can not have null value");
+			}
+			if (name == "name") setName(value);
+			if (name == "content") setContent(name);
+			string prevValue = getOptionalAttributeValue(name);
+			if (mAttributes.ContainsKey(name))
+			{
+				mAttributes[name] = value;
+			}
+			else
+			{
+				mAttributes.Add(name, value);
+			}
+			if (prevValue != name) notifyOptionalAttributeChanged(name, value, prevValue);
+		}
 
-        void this_OptionalAttributeChanged(object sender, OptionalAttributeChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
+		/// <summary>
+		/// Gets the names of all attributes with non-empty names
+		/// </summary>
+		/// <returns>A <see cref="List{String}"/> containing the attribute names</returns>
+		public List<string> getOptionalAttributeNames()
+		{
+			List<string> names = new List<string>(mAttributes.Keys);
+			foreach (string name in new List<string>(names))
+			{
+				if (mAttributes[name] == "") names.Remove(name);
+			}
+			return names;
+		}
 
-        void this_ContentChanged(object sender, ContentChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
+		#endregion
 
-        void this_NameChanged(object sender, NameChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
 
-        /// <summary>
-        /// Gets the name
-        /// </summary>
-        /// <returns>The name</returns>
-        public string Name
-        {
-            get { return mName; }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The name can no t be null");
-                }
-                string prevName = mName;
-                mName = value;
-                if (prevName != mName) NotifyNameChanged(value, prevName);
-            }
-        }
+		#region IXUKAble members
 
-        /// <summary>
-        /// Gets the content
-        /// </summary>
-        /// <returns>The content, or null if none has been set yet.</returns>
-        public string Content
-        {
-            get { return mAttributes.ContainsKey("content") ? mAttributes["content"] : null; }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "Content can not be null");
-                }
-                string prevContent = Content;
-                mAttributes["content"] = value;
-                if (value != prevContent) NotifyContentChanged(value, prevContent);
-            }
-        }
 
-        /// <summary>
-        /// Gets the value of a named attribute
-        /// </summary>
-        /// <param name="name">The name of the attribute</param>
-        /// <returns>The value of the attribute - <see cref="String.Empty"/> if the attribute does not exist</returns>
-        public string GetOptionalAttributeValue(string name)
-        {
-            if (mAttributes.ContainsKey(name))
-            {
-                return mAttributes[name];
-            }
-            return "";
-        }
+		/// <summary>
+		/// Reads the attributes of a Metadata xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		protected override void xukInAttributes(XmlReader source)
+		{
+			if (source.MoveToFirstAttribute())
+			{
+				bool moreAttrs = true;
+				while (moreAttrs)
+				{
+					setOptionalAttributeValue(source.Name, source.Value);
+					moreAttrs = source.MoveToNextAttribute();
+				}
+				source.MoveToElement();
+			}
+            base.xukInAttributes(source);
+		}
 
-        /// <summary>
-        /// Sets the value of a named attribute
-        /// </summary>
-        /// <param name="name">The name of the attribute</param>
-        /// <param name="value">The new value for the attribute</param>
-        public void SetOptionalAttributeValue(string name, string value)
-        {
-            if (value == null)
-            {
-                throw new exception.MethodParameterIsNullException(
-                    "A metadata attribute can not have null value");
-            }
-            if (name == "name") Name = value;
-            if (name == "content") Content = name;
-            string prevValue = GetOptionalAttributeValue(name);
-            if (mAttributes.ContainsKey(name))
-            {
-                mAttributes[name] = value;
-            }
-            else
-            {
-                mAttributes.Add(name, value);
-            }
-            if (prevValue != name) NotifyOptionalAttributeChanged(name, value, prevValue);
-        }
+		/// <summary>
+		/// Writes the attributes of a Metadata element
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+		{
+			destination.WriteAttributeString("name", getName());
+			foreach (string a in getOptionalAttributeNames())
+			{
+				if (a != "name")
+				{
+					destination.WriteAttributeString(a, getOptionalAttributeValue(a));
+				}
+			}
+            base.xukOutAttributes(destination, baseUri);
+		}
 
-        /// <summary>
-        /// Gets the names of all attributes with non-empty names
-        /// </summary>
-        /// <returns>A <see cref="List{String}"/> containing the attribute names</returns>
-        public List<string> ListOfOptionalAttributeNames
-        {
-            get
-            {
-                List<string> names = new List<string>(mAttributes.Keys);
-                foreach (string name in new List<string>(names))
-                {
-                    if (mAttributes[name] == "") names.Remove(name);
-                }
-                return names;
-            }
-        }
+		#endregion
 
-        #region IXUKAble members
 
-        /// <summary>
-        /// Reads the attributes of a Metadata xuk element.
-        /// </summary>
-        /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void XukInAttributes(XmlReader source)
-        {
-            if (source.MoveToFirstAttribute())
-            {
-                bool moreAttrs = true;
-                while (moreAttrs)
-                {
-                    SetOptionalAttributeValue(source.Name, source.Value);
-                    moreAttrs = source.MoveToNextAttribute();
-                }
-                source.MoveToElement();
-            }
-            base.XukInAttributes(source);
-        }
+		#region IValueEquatable<Metadata> Members
 
-        /// <summary>
-        /// Writes the attributes of a Metadata element
-        /// </summary>
-        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-        /// <param name="baseUri">
-        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-        /// if <c>null</c> absolute <see cref="Uri"/>s are written
-        /// </param>
-        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
-        {
-            destination.WriteAttributeString("name", Name);
-            foreach (string a in ListOfOptionalAttributeNames)
-            {
-                if (a != "name")
-                {
-                    destination.WriteAttributeString(a, GetOptionalAttributeValue(a));
-                }
-            }
-            base.XukOutAttributes(destination, baseUri);
-        }
+		/// <summary>
+		/// Determines if <c>this</c> is value equal to another given <see cref="Metadata"/>
+		/// </summary>
+		/// <param name="other">The other <see cref="Metadata"/></param>
+		/// <returns>The result as a <see cref="bool"/></returns>
+		public bool ValueEquals(Metadata other)
+		{
+			if (!(other is Metadata)) return false;
+			Metadata mOther = (Metadata)other;
+			if (getName() != other.getName()) return false;
+			List<string> names = getOptionalAttributeNames();
+			List<string> otherNames = getOptionalAttributeNames();
+			if (names.Count != otherNames.Count) return false;
+			foreach (string name in names)
+			{
+				if (!otherNames.Contains(name)) return false;
+				if (getOptionalAttributeValue(name) != other.getOptionalAttributeValue(name)) return false;
+			}
+			return true;
+		}
 
-        #endregion
-
-        #region IValueEquatable<Metadata> Members
-
-        /// <summary>
-        /// Determines if <c>this</c> is value equal to another given <see cref="Metadata"/>
-        /// </summary>
-        /// <param name="other">The other <see cref="Metadata"/></param>
-        /// <returns>The result as a <see cref="bool"/></returns>
-        public bool ValueEquals(Metadata other)
-        {
-            if (other==null) return false;
-            if (Name != other.Name) return false;
-            List<string> names = ListOfOptionalAttributeNames;
-            List<string> otherNames = ListOfOptionalAttributeNames;
-            if (names.Count != otherNames.Count) return false;
-            foreach (string name in names)
-            {
-                if (!otherNames.Contains(name)) return false;
-                if (GetOptionalAttributeValue(name) != other.GetOptionalAttributeValue(name)) return false;
-            }
-            return true;
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

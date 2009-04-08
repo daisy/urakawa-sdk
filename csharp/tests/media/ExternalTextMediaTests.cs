@@ -2,197 +2,184 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using urakawa.xuk;
 
 namespace urakawa.media
 {
-    [TestFixture]
-    public class ExternalTextMediaTests : ExternalMediaTests
-    {
-        public ExternalTextMediaTests() 
-            : base(typeof (ExternalTextMedia))
-        {
-        }
+	[TestFixture, Description("Tests the ExternalTextMedia functionality")]
+	public class ExternalTextMediaTests : ExternalMediaTests
+	{
+		public ExternalTextMediaTests() : base(typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS)
+		{
+		}
+		protected ExternalTextMedia mExternalTextMedia1 { get { return mExternalMedia1 as ExternalTextMedia; } }
+		protected ExternalTextMedia mExternalTextMedia2 { get { return mExternalMedia2 as ExternalTextMedia; } }
+		protected ExternalTextMedia mExternalTextMedia3 { get { return mExternalMedia3 as ExternalTextMedia; } }
 
-        protected ExternalTextMedia mExternalTextMedia1
-        {
-            get { return mLocatedMedia1 as ExternalTextMedia; }
-        }
+		[Test, Description("Testing getText with local relative src")]
+		public void getText_localSrc()
+		{
+			mExternalTextMedia1.setSrc("temp.txt");
+			Uri file = new Uri(mPresentation.getRootUri(), mExternalTextMedia1.getSrc());
+			System.IO.StreamWriter wr = new System.IO.StreamWriter(file.LocalPath, false);
+			string text = "getText: Test line Ê¯Â∆ÿ≈@£$Ä\nSecond test line\tincluding a tab";
+			try
+			{
+				wr.Write(text);
+			}
+			finally
+			{
+				wr.Close();
+			}
+			Assert.IsTrue(
+				mExternalTextMedia1.getText().StartsWith(text),
+				"xuk.xsd does not as expected start with:\n{0}",
+				text);
+			if (System.IO.File.Exists(file.LocalPath)) System.IO.File.Delete(file.LocalPath);
+		}
 
-        protected ExternalTextMedia mExternalTextMedia2
-        {
-            get { return mLocatedMedia2 as ExternalTextMedia; }
-        }
+		[Test]
+		[Description("Tests getText with an external http src")]
+		[Explicit("Requires being online and takes a bit of time especially on slow connections")]
+		public void getText_httpSrc()
+		{
+			mExternalTextMedia1.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
+			string expectedStart = "<!-- NCX 2005-1 DTD  2005-06-26";
+			Assert.IsTrue(
+				mExternalTextMedia1.getText().StartsWith(expectedStart), 
+				"xuk.xsd does not as expected start with:\n{0}", 
+				expectedStart);
+		}
 
-        protected ExternalTextMedia mExternalTextMedia3
-        {
-            get { return mLocatedMedia3 as ExternalTextMedia; }
-        }
+		[Test]
+		[Description(
+			"Tests that getText throws an exception.DataMissingException "
+			+"when the references text file does not exist")]
+		[ExpectedException(typeof(exception.CannotReadFromExternalFileException))]
+		public void getText_invalidSrc()
+		{
+			mExternalTextMedia1.setSrc("filedoesnotexist.txt");
+			mExternalTextMedia1.getText();
+		}
 
-        [Test]
-        public void Text_getWithLocalSrc()
-        {
-            mExternalTextMedia1.Src = "temp.txt";
-            Uri file = new Uri(mPresentation.RootUri, mExternalTextMedia1.Src);
-            System.IO.StreamWriter wr = new System.IO.StreamWriter(file.LocalPath, false);
-            string text = "GetText: Test line ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ@ÔøΩ$ÔøΩ\nSecond test line\tincluding a tab";
-            try
-            {
-                wr.Write(text);
-            }
-            finally
-            {
-                wr.Close();
-            }
-            Assert.IsTrue(
-                mExternalTextMedia1.Text.StartsWith(text),
-                "xuk.xsd does not as expected start with:\n{0}",
-                text);
-            if (System.IO.File.Exists(file.LocalPath)) System.IO.File.Delete(file.LocalPath);
-        }
+		[Test, Description("Testing setText with local relative src")]
+		public void setText_localSrc()
+		{
+			mExternalTextMedia1.setSrc("temp.txt");
+			string text = "setText: Test line Ê¯Â∆ÿ≈@£$Ä\nSecond test line\tincluding a tab";
+			mExternalTextMedia1.setText(text);
+			Assert.AreEqual(text, mExternalTextMedia1.getText(), "The ExternalTextMedia did not return the expected text");
+			Uri file = new Uri(mPresentation.getRootUri(), mExternalTextMedia1.getSrc());
+			Assert.IsTrue(System.IO.File.Exists(file.LocalPath), "The file '{0}' containing the data does not exist", file.LocalPath);
+			System.IO.File.Delete(file.LocalPath);
+		}
 
-        [Test]
-        public void Text_GetWithHttpSrc()
-        {
-            mExternalTextMedia1.Src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
-            string expectedStart = "<!-- NCX 2005-1 DTD  2005-06-26";
-            Assert.IsTrue(
-                mExternalTextMedia1.Text.StartsWith(expectedStart),
-                "xuk.xsd does not as expected start with:\n{0}",
-                expectedStart);
-        }
+		[Test, Description("Testing setText with external http src - expected to throw an exception")]
+		[ExpectedException(typeof(exception.CannotWriteToExternalFileException))]
+		public void setText_httpSrc()
+		{
+			mExternalTextMedia1.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
+			mExternalTextMedia1.setText("Text to replace ncx version 2005-1 DTD");
+		}
 
-        [Test]
-        [ExpectedException(typeof (exception.CannotReadFromExternalFileException))]
-        public void Text_GetWithInvalidSrc()
-        {
-            mExternalTextMedia1.Src = "filedoesnotexist.txt";
-            string tmp = mExternalTextMedia1.Text;
-        }
+		#region IValueEquatable tests
+		[Test]
+		public override void valueEquals_Basics()
+		{
+			base.valueEquals_Basics();
+		}
 
-        [Test]
-        public void Text_SetWithLocalSrc()
-        {
-            mExternalTextMedia1.Src = "temp.txt";
-            string text = "SetText: Test line ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ@ÔøΩ$ÔøΩ\nSecond test line\tincluding a tab";
-            mExternalTextMedia1.Text = text;
-            Assert.AreEqual(text, mExternalTextMedia1.Text, "The ExternalTextMedia did not return the expected text");
-            Uri file = new Uri(mPresentation.RootUri, mExternalTextMedia1.Src);
-            Assert.IsTrue(System.IO.File.Exists(file.LocalPath), "The file '{0}' containing the data does not exist",
-                          file.LocalPath);
-            System.IO.File.Delete(file.LocalPath);
-        }
+		[Test]
+		public override void valueEquals_NewCreatedEquals()
+		{
+			base.valueEquals_NewCreatedEquals();
+		}
 
-        [Test]
-        [ExpectedException(typeof (exception.CannotWriteToExternalFileException))]
-        public void Text_SetWithHttpSrc()
-        {
-            mExternalTextMedia1.Src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
-            mExternalTextMedia1.Text = "Text to replace ncx version 2005-1 DTD";
-        }
+		[Test]
+		public override void valueEquals_Language()
+		{
+			base.valueEquals_Language();
+		}
 
-        #region IValueEquatable tests
+		[Test]
+		public override void valueEquals_Src()
+		{
+			base.valueEquals_Src();
+		}
 
-        [Test]
-        public override void ValueEquals_Basics()
-        {
-            base.ValueEquals_Basics();
-        }
+		#endregion
 
-        [Test]
-        public override void ValueEquals_NewCreatedEquals()
-        {
-            base.ValueEquals_NewCreatedEquals();
-        }
+		#region IXukAble tests
+		[Test]
+		public override void Xuk_RoundTrip()
+		{
+			base.Xuk_RoundTrip();
+		}
+		#endregion
 
-        [Test]
-        public override void ValueEquals_Language()
-        {
-            base.ValueEquals_Language();
-        }
+		#region IMedia tests
 
-        [Test]
-        public override void ValueEquals_Src()
-        {
-            base.ValueEquals_Src();
-        }
+		[Test]
+		public override void copy_valueEqualsAndReferenceDiffers()
+		{
+			base.copy_valueEqualsAndReferenceDiffers();
+		}
 
-        #endregion
+		[Test]
+		public override void export_valueEqualsPresentationsOk()
+		{
+			base.export_valueEqualsPresentationsOk();
+		}
 
-        #region IXukAble tests
+		[Test]
+		public override void language_Basics()
+		{
+			base.language_Basics();
+		}
 
-        [Test]
-        public override void Xuk_RoundTrip()
-        {
-            base.Xuk_RoundTrip();
-        }
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsEmptyStringException))]
+		public override void setLanguage_EmptyString()
+		{
+			base.setLanguage_EmptyString();
+		}
 
-        #endregion
+		#endregion
 
-        #region Media tests
+		#region ExternalMedia tests
 
-        [Test]
-        public override void Copy_ValueEqualsAndReferenceDiffers()
-        {
-            base.Copy_ValueEqualsAndReferenceDiffers();
-        }
+		[Test]
+		public override void src_Basics()
+		{
+			base.src_Basics();
+		}
 
-        [Test]
-        public override void Export_ValueEqualsPresentationsOk()
-        {
-            base.Export_ValueEqualsPresentationsOk();
-        }
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
+		public override void setSrc_NullValue()
+		{
+			base.setSrc_NullValue();
+		}
 
-        [Test]
-        public override void Language_Basics()
-        {
-            base.Language_Basics();
-        }
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsEmptyStringException))]
+		public override void setSrc_EmptyStringValue()
+		{
+			base.setSrc_EmptyStringValue();
+		}
 
-        [Test]
-        [ExpectedException(typeof (exception.MethodParameterIsEmptyStringException))]
-        public override void Language_EmptyString()
-        {
-            base.Language_EmptyString();
-        }
+		[Test]
+		public override void getUri_Basics()
+		{
+			base.getUri_Basics();
+		}
 
-        #endregion
+		[Test]
+		[ExpectedException(typeof(exception.InvalidUriException))]
+		public override void getUri_SrcMalformedUri()
+		{
+			base.getUri_SrcMalformedUri();
+		}
 
-        #region ExternalMedia tests
-
-        [Test]
-        public override void Src_Basics()
-        {
-            base.Src_Basics();
-        }
-
-        [Test]
-        [ExpectedException(typeof (exception.MethodParameterIsNullException))]
-        public override void Src_NullValue()
-        {
-            base.Src_NullValue();
-        }
-
-        [Test]
-        [ExpectedException(typeof (exception.MethodParameterIsEmptyStringException))]
-        public override void Src_EmptyStringValue()
-        {
-            base.Src_EmptyStringValue();
-        }
-
-        [Test]
-        public override void Uri_Basics()
-        {
-            base.Uri_Basics();
-        }
-
-        [Test]
-        [ExpectedException(typeof (exception.InvalidUriException))]
-        public override void Uri_SrcMalformedUri()
-        {
-            base.Uri_SrcMalformedUri();
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -1,110 +1,116 @@
 package org.daisy.urakawa.nativeapi;
 
 /**
- * Place-holder for a real implementation in Java. It should be replaced with
- * StAX, really.
+ * <p>
+ * This interface does not have to be implemented "as-is". It is basically a
+ * place-holder for a XML pull-parser, such as "System.Xml.XmlReader" in C#, or
+ * StAX Java implementations. For more information, see
+ * http://www.xmlpull.org/impls.shtml and http://stax.codehaus.org/
+ * </p>
+ * <p>
+ * Note: the methods in this interface are directly inspired from the the C#
+ * "System.Xml.XmlReader" implementation, but any XML pull-parser API should
+ * provide a similar, if not an identical interface.
+ * </p>
+ * 
+ * @stereotype Language-Dependent
  */
-public class XmlDataReader implements IXmlDataReader
-{
-    /**
-     * @param iStream
-     */
-    public XmlDataReader(IStream iStream)
-    {
-        // Needs implementing !
-    }
+public interface XmlDataReader {
+	/**
+	 * See {@link XmlDataReader#getNodeType()}
+	 */
+	public static int ELEMENT = 0;
+	/**
+	 * See {@link XmlDataReader#getNodeType()}
+	 */
+	public static int END_ELEMENT = 1;
 
-    public void close()
-    {
-        /**
-         * To implement.
-         */
-    }
+	/**
+	 * @return true or false
+	 */
+	public boolean isEmptyElement();
 
-    public String getLocalName()
-    {
-        return null;
-    }
+	/**
+	 * @return true or false.
+	 */
+	public boolean isEOF();
 
-    public String getNamespaceURI()
-    {
-        return null;
-    }
+	/**
+	 * @return a new XmlDataReader
+	 */
+	public XmlDataReader readSubtree();
 
-    public int getNodeType()
-    {
-        return 0;
-    }
+	/**
+	 * 
+	 */
+	public void close();
 
-    public boolean isEOF()
-    {
-        return false;
-    }
+	/**
+	 * @return the node type
+	 */
+	public int getNodeType();
 
-    public boolean isEmptyElement()
-    {
-        return false;
-    }
+	/**
+	 * @param name
+	 *            attribute name
+	 * @return value
+	 */
+	public String getAttribute(String name);
 
-    public boolean read()
-    {
-        return false;
-    }
+	/**
+	 * @return true or false.
+	 */
+	public boolean read();
 
-    public IXmlDataReader readSubtree()
-    {
-        return null;
-    }
+	/**
+	 * @param localName
+	 * @param namespace
+	 * @return true or false.
+	 */
+	public boolean readToFollowing(String localName, String namespace);
 
-    public boolean readToFollowing(String localName, String namespace)
-    {
-        return false;
-    }
+	/**
+	 * @return a string
+	 */
+	public String getLocalName();
 
-    public String getAttribute(String name)
-    {
-        return null;
-    }
+	/**
+	 * @return a string
+	 */
+	public String getNamespaceURI();
 
-    public String getBaseURI()
-    {
-        return null;
-    }
+	/**
+	 * @return a URI
+	 */
+	public String getBaseURI();
 
-    public String getName()
-    {
-        return null;
-    }
+	/**
+	 * @return true or false
+	 */
+	public boolean moveToFirstAttribute();
 
-    public String getValue()
-    {
-        return null;
-    }
+	/**
+	 * @return true or false
+	 */
+	public boolean moveToNextAttribute();
 
-    public void moveToElement()
-    {
-        /**
-         * To implement.
-         */
-    }
+	/**
+	 * 
+	 */
+	public void moveToElement();
 
-    public boolean moveToFirstAttribute()
-    {
-        return false;
-    }
+	/**
+	 * @return attribute name
+	 */
+	public String getName();
 
-    public boolean moveToNextAttribute()
-    {
-        return false;
-    }
+	/**
+	 * @return attribute value
+	 */
+	public String getValue();
 
-    public String readElementContentAsString()
-    {
-        return null;
-    }
-
-    public IStream getBaseStream()
-    {
-        return null;
-    }
+	/**
+	 * @return text
+	 */
+	public String readElementContentAsString();
 }
