@@ -93,17 +93,17 @@ namespace urakawa.oldTests
             mams.Add(mProject.GetPresentation(0).MediaFactory.Create<ManagedAudioMedia>());
             string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
             mams[0].AudioMediaData.AppendAudioDataFromRiffWave(path);
-            double initMSecs = mams[0].Duration.TimeDeltaAsMillisecondFloat;
+            double initMSecs = mams[0].Duration.TimeDeltaAsMillisecondDouble;
             double msecs, diff;
             for (int i = 0; i < 6; i++)
             {
-                msecs = mams[i].Duration.TimeDeltaAsMillisecondFloat;
+                msecs = mams[i].Duration.TimeDeltaAsMillisecondDouble;
                 mams.Add(mams[i].Split(new Time(msecs/2)));
-                diff = Math.Abs((msecs/2) - mams[i].Duration.TimeDeltaAsMillisecondFloat);
+                diff = Math.Abs((msecs/2) - mams[i].Duration.TimeDeltaAsMillisecondDouble);
                 Assert.Less(
                     diff, 0.1,
                     "The difference the split ManagedAudioMedia actual and expec duration is more than 0.1ms");
-                diff = Math.Abs((msecs/2) - mams[i + 1].Duration.TimeDeltaAsMillisecondFloat);
+                diff = Math.Abs((msecs/2) - mams[i + 1].Duration.TimeDeltaAsMillisecondDouble);
                 Assert.Less(
                     diff, 0.1,
                     "The difference the split ManagedAudioMedia actual and expec duration is more than 0.1ms");
@@ -112,7 +112,7 @@ namespace urakawa.oldTests
 
             foreach (ManagedAudioMedia m in mams)
             {
-                double s = m.Duration.TimeDeltaAsMillisecondFloat;
+                double s = m.Duration.TimeDeltaAsMillisecondDouble;
                 msecs += s;
             }
             diff = Math.Abs(msecs - initMSecs);
