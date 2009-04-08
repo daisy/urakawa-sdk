@@ -19,7 +19,8 @@ namespace urakawa.media.data.audio
         /// <summary>
         /// Default constructor
         /// </summary>
-        public PCMFormatInfo() : this(1, 44100, 16)
+        public PCMFormatInfo()
+            : this(1, 44100, 16)
         {
         }
 
@@ -27,7 +28,8 @@ namespace urakawa.media.data.audio
         /// Copy constructor
         /// </summary>
         /// <param name="other">The PCMFormatInfo to copy</param>
-        public PCMFormatInfo(PCMFormatInfo other) : this(other.NumberOfChannels, other.SampleRate, other.BitDepth)
+        public PCMFormatInfo(PCMFormatInfo other)
+            : this(other.NumberOfChannels, other.SampleRate, other.BitDepth)
         {
         }
 
@@ -78,7 +80,7 @@ namespace urakawa.media.data.audio
         public long GetByteForTime(Time time)
         {
             return (long)(Math.Round(time.TimeAsTimeSpan.Ticks / ((double)TimeSpan.TicksPerSecond / SampleRate)) * BlockAlign);
-        } 
+        }
 
         private uint mSampleRate = 44100;
 
@@ -109,7 +111,7 @@ namespace urakawa.media.data.audio
             get { return mBitDepth; }
             set
             {
-                if ((value%8) != 0)
+                if ((value % 8) != 0)
                 {
                     throw new exception.MethodParameterIsOutOfBoundsException(
                         "Bit depth must be a multiple of 8");
@@ -129,7 +131,7 @@ namespace urakawa.media.data.audio
         /// </summary>
         public uint ByteRate
         {
-            get { return NumberOfChannels*SampleRate*BitDepth/8U; }
+            get { return NumberOfChannels * SampleRate * BitDepth / 8U; }
         }
 
         /// <summary>
@@ -139,7 +141,7 @@ namespace urakawa.media.data.audio
         {
             get
             {
-                return (ushort) (NumberOfChannels * BitDepth / 8);
+                return (ushort)(NumberOfChannels * BitDepth / 8);
             }
         }
 
@@ -169,13 +171,13 @@ namespace urakawa.media.data.audio
                 throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
             }
 
-            double blockCount = dataLen/BlockAlign;
-            return new TimeDelta(TimeSpan.FromTicks((long) (Math.Round(GetTicksPerBlock()*blockCount))));
+            double blockCount = dataLen / BlockAlign;
+            return new TimeDelta(TimeSpan.FromTicks((long)(Math.Round(GetTicksPerBlock() * blockCount))));
         }
 
         private double GetTicksPerBlock()
         {
-            return ((double) TimeSpan.TicksPerSecond)/SampleRate;
+            return ((double)TimeSpan.TicksPerSecond) / SampleRate;
         }
 
         /// <summary>
@@ -185,8 +187,8 @@ namespace urakawa.media.data.audio
         /// <returns>The PCM data length</returns>
         public uint GetDataLength(TimeDelta duration)
         {
-            uint blockCount = (uint) Math.Round(((double) duration.TimeDeltaAsTimeSpan.Ticks)/GetTicksPerBlock());
-            uint res = blockCount*BlockAlign;
+            uint blockCount = (uint)Math.Round(((double)duration.TimeDeltaAsTimeSpan.Ticks) / GetTicksPerBlock());
+            uint res = blockCount * BlockAlign;
             return res;
         }
 

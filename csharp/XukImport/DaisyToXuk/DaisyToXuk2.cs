@@ -142,7 +142,9 @@ namespace XukImport
                                                                                       FileAccess.Read, FileShare.Read);
                                                                 pcmInfo = PCMDataInfo.ParseRiffWaveHeader(wavStream);
                                                                 presentation.MediaDataManager.DefaultPCMFormat = pcmInfo.Copy();
-                                                                TimeDelta duration = new TimeDelta(pcmInfo.Duration);
+                                                                TimeDelta totalDuration = new TimeDelta(pcmInfo.Duration);
+
+                                                                TimeDelta clipDuration = new TimeDelta(totalDuration);
 
                                                                 Time clipB = Time.Zero;
                                                                 Time clipE = Time.MaxValue;
@@ -159,7 +161,11 @@ namespace XukImport
                                                                 }
                                                                 if (!clipB.IsEqualTo(Time.Zero) || !clipE.IsEqualTo(Time.MaxValue))
                                                                 {
-                                                                    duration = clipE.GetTimeDelta(clipB);
+                                                                    clipDuration = clipE.GetTimeDelta(clipB);
+                                                                }
+                                                                else
+                                                                {
+                                                                    System.Diagnostics.Debug.Fail("Audio clip with full duration ??");
                                                                 }
                                                                 long byteOffset = 0;
                                                                 if (!clipB.IsEqualTo(Time.Zero))
@@ -177,7 +183,7 @@ namespace XukImport
                                                                 WavAudioMediaData mediaData =
                                                                     (WavAudioMediaData)
                                                                     presentation.MediaDataFactory.CreateAudioMediaData();
-                                                                mediaData.InsertAudioData(wavStream, Time.Zero, duration);
+                                                                mediaData.InsertAudioData(wavStream, Time.Zero, clipDuration);
 
                                                                 media = presentation.MediaFactory.CreateManagedAudioMedia();
                                                                 ((ManagedAudioMedia)media).AudioMediaData = mediaData;

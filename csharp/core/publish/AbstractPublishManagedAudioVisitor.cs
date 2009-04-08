@@ -284,7 +284,7 @@ namespace urakawa.publish
                         //long pcmDataLength = stream.Length - stream.Position; 
                         //TimeDelta durationFromReverseArithmetics = amd.PCMFormat.GetDuration(pcmLength); 
 
-                        uint pcmLength = amd.PCMFormat.GetDataLength(durationFromRiffHeader);
+                        long pcmLength = amd.PCMFormat.GetDataLength(durationFromRiffHeader);
 
                         if (pcmLength <= BUFFER_SIZE)
                         {

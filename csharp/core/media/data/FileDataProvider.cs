@@ -292,7 +292,7 @@ namespace urakawa.media.data
                 {
                     if (thisData.Length > 0)
                     {
-                        data.DataProviderManager.AppendDataToProvider(thisData, (int) thisData.Length, c);
+                        data.DataProviderManager.AppendDataToProvider(thisData, thisData.Length, c);
                     }
                 }
                 finally
@@ -318,7 +318,7 @@ namespace urakawa.media.data
                 {
                     if (thisStm.Length > 0)
                     {
-                        DataProviderManager.AppendDataToProvider(thisStm, (int) thisStm.Length, expFDP);
+                        DataProviderManager.AppendDataToProvider(thisStm, thisStm.Length, expFDP);
                     }
                 }
                 finally

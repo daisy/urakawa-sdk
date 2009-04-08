@@ -65,14 +65,14 @@ namespace urakawa.media.data
         /// <param name="data">The given input stream</param>
         /// <param name="count">The number of bytes to append</param>
         /// <param name="provider">The given data provider</param>
-        public static void AppendDataToProvider(Stream data, int count, DataProvider provider)
+        public static void AppendDataToProvider(Stream data, long count, DataProvider provider)
         {
             if (count <= 0)
             {
                 return;
             }
 
-            if (count > data.Length)
+            if (count > (data.Length - data.Position))
             {
                 throw new exception.InputStreamIsTooShortException(
                             String.Format("The given data Stream is shorter than the requested {0:0} bytes",
@@ -89,7 +89,7 @@ namespace urakawa.media.data
                 if (count <= BUFFER_SIZE)
                 {
                     byte[] buffer = new byte[count];
-                    int bytesRead = data.Read(buffer, 0, count);
+                    int bytesRead = data.Read(buffer, 0, (int)count);
                     if (bytesRead > 0)
                     {
                         provOutputStream.Write(buffer, 0, bytesRead);
@@ -104,35 +104,24 @@ namespace urakawa.media.data
                 else
                 {
                     int bytesRead = 0;
+                    int totalBytesWritten = 0;
                     byte[] buffer = new byte[BUFFER_SIZE];
 
                     while ((bytesRead = data.Read(buffer, 0, BUFFER_SIZE)) > 0)
                     {
-                        provOutputStream.Write(buffer, 0, bytesRead);
+                        if ((totalBytesWritten + bytesRead) > count)
+                        {
+                            int bytesToWrite = (int)(count - totalBytesWritten);
+                            provOutputStream.Write(buffer, 0, bytesToWrite);
+                            totalBytesWritten += bytesToWrite;
+                        }
+                        else
+                        {
+                            provOutputStream.Write(buffer, 0, bytesRead);
+                            totalBytesWritten += bytesRead;
+                        }
                     }
                 }
-
-                /* 
-                int bytesAppended = 0; 
-                byte[] buf = new byte[1024 * 10]; // 10 KB ;
-
-
-
-                while (bytesAppended < count)
-                {
-                    if (bytesAppended + buf.Length >= count)
-                    {
-                        buf = new byte[count - bytesAppended];
-                    }
-                    if (data.Read(buf, 0, buf.Length) != buf.Length)
-                    {
-                        throw new exception.InputStreamIsTooShortException(
-                            String.Format("Can not add {0:0} bytes from the given data Stream", count));
-                    }
-                    provOutputStream.Write(buf, 0, buf.Length);
-                    bytesAppended += buf.Length;
-                }
-                */
             }
             finally
             {
