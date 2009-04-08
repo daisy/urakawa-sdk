@@ -304,6 +304,7 @@
     <Compile Include="xuk\SaveXukAction.cs" />
     <Compile Include="xuk\XukAble.cs" />
     <Compile Include="xuk\IXUKable.cs" />
+    <Compile Include="xuk\XukStrings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="events\EventsClassDiagram.cd" />

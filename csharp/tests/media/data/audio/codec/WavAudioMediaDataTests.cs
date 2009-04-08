@@ -1139,7 +1139,7 @@ namespace urakawa.media.data.audio.codec
             CheckOrigCopyCoExistance(mData1);
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             CheckOrigCopyCoExistance(mData1);
-            double ms = mData1.AudioDuration.TimeDeltaAsMillisecondFloat;
+            double ms = mData1.AudioDuration.TimeDeltaAsMillisecondDouble;
             Time cb = new Time(ms/4f);
             Time ce = new Time(3f*ms/4f);
             mData1.RemoveAudioData(cb, ce);
@@ -1167,7 +1167,7 @@ namespace urakawa.media.data.audio.codec
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             WavAudioMediaData copy = mData1.Copy();
             byte[] copyDataBefore = GetAudioData(copy);
-            double ms = mData1.AudioDuration.TimeDeltaAsMillisecondFloat;
+            double ms = mData1.AudioDuration.TimeDeltaAsMillisecondDouble;
             Time cb = new Time(ms / 4f);
             Time ce = new Time(3f * ms / 4f);
             mData1.RemoveAudioData(cb, ce);
@@ -1175,7 +1175,7 @@ namespace urakawa.media.data.audio.codec
             mData2.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             copy = mData2.Copy();
             copyDataBefore = GetAudioData(copy);
-            ms = mData2.AudioDuration.TimeDeltaAsMillisecondFloat;
+            ms = mData2.AudioDuration.TimeDeltaAsMillisecondDouble;
             mData2.InsertAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"), new Time(ms), null);
             CheckAudioData(copy, copyDataBefore);
             mData3.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
