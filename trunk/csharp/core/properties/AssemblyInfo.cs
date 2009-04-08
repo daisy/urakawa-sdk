@@ -10,11 +10,11 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("Urakawa SDK Core Library")]
 [assembly:
     AssemblyDescription(
-        "The core class library of the Urakawa Toolkit for .Net Framework 2.0. For more information see http://urakawa.sourceforge.net/"
+        "The core library of the Urakawa SDK for .Net Framework 2.0. For more information see http://daisy-trac.cvsdude.com/urakawa-sdk/"
         )]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Urakawa Project")]
-[assembly: AssemblyProduct("Urakawa Toolkit")]
+[assembly: AssemblyCompany("Urakawa Project, DAISY Consortium")]
+[assembly: AssemblyProduct("Urakawa Software Development Toolkit for Accessible Multimedia Authoring")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

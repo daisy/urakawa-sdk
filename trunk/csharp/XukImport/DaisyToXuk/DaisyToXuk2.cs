@@ -29,8 +29,16 @@ namespace XukImport
 
             List<string> spineListOfSmilFiles;
             string ncxPath;
+            string DtBookPath;
 
-            parseOpfManifestAndSpine(opfXmlDoc, out spineListOfSmilFiles, out ncxPath);
+            parseOpfManifestAndSpine(opfXmlDoc, out DtBookPath, out spineListOfSmilFiles, out ncxPath);
+
+            if (DtBookPath != null)
+            {
+                string fullDtBookPath = Path.Combine(dirPath, DtBookPath);
+                XmlDocument bookXmlDoc = readXmlDocument(fullDtBookPath);
+                parseDTBookXmlDocAndPopulateDataModel(bookXmlDoc, null);
+            }
 
             if (ncxPath != null)
             {
@@ -266,11 +274,12 @@ namespace XukImport
             }
         }
 
-        private void parseOpfManifestAndSpine(XmlDocument opfXmlDoc, out List<string> spineListOfSmilFiles, out string ncxPath)
+        private void parseOpfManifestAndSpine(XmlDocument opfXmlDoc, out string DtBookPath, out List<string> spineListOfSmilFiles, out string ncxPath)
         {
             spineListOfSmilFiles = new List<string>();
 
             ncxPath = null;
+            DtBookPath = null;
 
             XmlNodeList listOfSpineRootNodes = opfXmlDoc.GetElementsByTagName("spine");
             if (listOfSpineRootNodes != null)
@@ -340,7 +349,7 @@ namespace XukImport
                                         }
                                         else if (attrMediaType.Value == "application/x-dtbook+xml")
                                         {
-                                            // Ignore (DTBook)
+                                            DtBookPath = attrHref.Value;
                                         }
                                         else if (attrMediaType.Value == "text/xml")
                                         {

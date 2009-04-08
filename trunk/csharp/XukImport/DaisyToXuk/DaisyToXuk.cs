@@ -25,7 +25,6 @@ namespace XukImport
 
         private void transformDTBook()
         {
-            XmlDocument bookXmlDoc = readXmlDocument(m_Book_FilePath);
             m_Project = new Project();
 
             //m_Project.PresentationFactory.Create();
@@ -111,6 +110,7 @@ namespace XukImport
                     }
                 case ".xml":
                     {
+                        XmlDocument bookXmlDoc = readXmlDocument(m_Book_FilePath);
                         parseDTBookXmlDocAndPopulateDataModel(bookXmlDoc, null);
                         break;
                     }
