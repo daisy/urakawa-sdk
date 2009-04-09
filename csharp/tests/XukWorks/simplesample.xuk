@@ -83,12 +83,12 @@
 						<Type XukLocalName="Metadata" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.metadata.Metadata"/>
 					</RegisteredTypes>
 				</MetadataFactory>
-				<Metadata>
+				<Metadatas>
 					<Metadata Name="dc:Author" Content="Laust Skat Nielsen" />
 					<Metadata Name="dc:Author" Content="Ole Holst Andersen" />
 					<Metadata Name="dc:Title" Content="Simple XUK sample" />
 					<Metadata Name="dc:Subject" Content="Simple sample XUK file used for unit testing" />
-				</Metadata>
+				</Metadatas>
 				<RootNode>
 					<TreeNode>
 						<Properties>

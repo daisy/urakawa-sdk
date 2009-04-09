@@ -155,6 +155,8 @@ namespace urakawa.media.data.audio
         [Test]
         public override void Copy_ValueEqualsAndReferenceDiffers()
         {
+            mManagedAudioMedia1.Presentation.MediaDataManager.EnforceSinglePCMFormat = false;
+
             AppendAudioData("audiotest1-mono-22050Hz-16bits.wav", mManagedAudioMedia1);
             base.Copy_ValueEqualsAndReferenceDiffers();
         }
@@ -162,6 +164,8 @@ namespace urakawa.media.data.audio
         [Test]
         public override void Export_ValueEqualsPresentationsOk()
         {
+            mManagedAudioMedia1.Presentation.MediaDataManager.EnforceSinglePCMFormat = false;
+
             AppendAudioData("audiotest1-mono-22050Hz-16bits.wav", mManagedAudioMedia1);
             base.Export_ValueEqualsPresentationsOk();
         }

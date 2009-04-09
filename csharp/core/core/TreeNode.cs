@@ -34,6 +34,7 @@ namespace urakawa.core
             return str;
         }
 
+        /*
         public override string ToString()
         {
             QualifiedName qname = GetXmlElementQName();
@@ -41,7 +42,8 @@ namespace urakawa.core
             str += "///";
             str += GetTextMediaFlattened();
             return str;
-        } 
+        }*/
+
         ///<summary>
         /// returns the QName of the attached XmlProperty, if any
         ///</summary>

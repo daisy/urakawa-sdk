@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using NUnit.Framework;
+using urakawa.media.data.audio;
 using urakawa.xuk;
 
 namespace urakawa.media
@@ -60,10 +61,17 @@ namespace urakawa.media
         {
             mMedia1.Language = "en";
             Presentation destPres = mProject.PresentationFactory.Create();
+            if (mMedia1 is ManagedAudioMedia)
+            {
+                mMedia1.Presentation.MediaDataManager.DefaultPCMFormat =
+                    ((AudioMediaData) ((ManagedAudioMedia) mMedia1).MediaData).PCMFormat;
+            }
+            destPres.MediaDataManager.DefaultPCMFormat = mMedia1.Presentation.MediaDataManager.DefaultPCMFormat;
+
             mProject.AddPresentation(destPres);
-            Presentation sourcePres = mMedia1.MediaFactory.Presentation;
+            Presentation sourcePres = mMedia1.Presentation;
             Media expM = mMedia1.Export(destPres);
-            Assert.AreEqual(sourcePres, mMedia1.MediaFactory.Presentation,
+            Assert.AreEqual(sourcePres, mMedia1.Presentation,
                             "Presentation of export source must not change");
             Assert.AreEqual(destPres, expM.MediaFactory.Presentation,
                             "Exported Media must belong to the destination Presentation");

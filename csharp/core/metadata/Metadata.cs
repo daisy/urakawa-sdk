@@ -97,7 +97,7 @@ namespace urakawa.metadata
         {
             mName = "";
             mAttributes = new Dictionary<string, string>();
-            mAttributes.Add("content", "");
+            mAttributes.Add(XukStrings.MetaDataContent, "");
             NameChanged += this_NameChanged;
             ContentChanged += this_ContentChanged;
             OptionalAttributeChanged += this_OptionalAttributeChanged;
@@ -144,7 +144,7 @@ namespace urakawa.metadata
         /// <returns>The content, or null if none has been set yet.</returns>
         public string Content
         {
-            get { return mAttributes.ContainsKey("content") ? mAttributes["content"] : null; }
+            get { return mAttributes.ContainsKey(XukStrings.MetaDataContent) ? mAttributes[XukStrings.MetaDataContent] : null; }
             set
             {
                 if (value == null)
@@ -153,7 +153,7 @@ namespace urakawa.metadata
                         "Content can not be null");
                 }
                 string prevContent = Content;
-                mAttributes["content"] = value;
+                mAttributes[XukStrings.MetaDataContent] = value;
                 if (value != prevContent) NotifyContentChanged(value, prevContent);
             }
         }
@@ -184,8 +184,8 @@ namespace urakawa.metadata
                 throw new exception.MethodParameterIsNullException(
                     "A metadata attribute can not have null value");
             }
-            if (name == "name") Name = value;
-            if (name == "content") Content = name;
+            if (name == XukStrings.MetaDataName) Name = value;
+            else if (name == XukStrings.MetaDataContent) Content = name;
             string prevValue = GetOptionalAttributeValue(name);
             if (mAttributes.ContainsKey(name))
             {
@@ -246,10 +246,10 @@ namespace urakawa.metadata
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString("name", Name);
+            destination.WriteAttributeString(XukStrings.MetaDataName, Name);
             foreach (string a in ListOfOptionalAttributeNames)
             {
-                if (a != "name")
+                if (a != XukStrings.MetaDataName)
                 {
                     destination.WriteAttributeString(a, GetOptionalAttributeValue(a));
                 }

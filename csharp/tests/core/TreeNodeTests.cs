@@ -191,6 +191,8 @@ namespace urakawa.core
             Project exportDestProj = new Project();
             exportDestProj.AddNewPresentation();
             exportDestProj.GetPresentation(0).RootUri = exportDestProjUri;
+            exportDestProj.GetPresentation(0).MediaDataManager.DefaultPCMFormat =
+                mPresentation.MediaDataManager.DefaultPCMFormat;
             TreeNode exportedNode = nodeToExport.Export(exportDestProj.GetPresentation(0));
             Assert.AreSame(
                 exportedNode.Presentation, exportDestProj.GetPresentation(0),
