@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
+
 using urakawa.media.data.audio;
+
+//using NAudio.Wave; 
 
 namespace AudioLib
     {
@@ -15,11 +19,16 @@ namespace AudioLib
             m_DefaultPCMInfo = PCMInfo;
             }
 
+
         public PCMFormatInfo DefaultPCMFormat
             {
             get { return m_DefaultPCMInfo; }
             }
 
+        public int ProgressInfo
+            {
+            get { return 0; }
+            }
 
         /// <summary>
         /// create a new wav file by resampling an uncompressed wav file to another standard wav format
@@ -30,7 +39,20 @@ namespace AudioLib
         /// <returns>  file path of the new wave file </returns>
         public string ConvertUnpressedWavFile ( string sourceFilePath, PCMFormatInfo destinationPCMInfo, string destinationDirectory )
             {
-            return  null;
+            /*
+            NAudio.Wave.WaveFormat DestFormat = new WaveFormat ((int) destinationPCMInfo.SampleRate, destinationPCMInfo.BitDepth, destinationPCMInfo.NumberOfChannels );
+            WaveStream sourceStream = new WaveFileReader ( sourceFilePath );
+
+            NAudio.Wave.WaveFormatConversionStream conversionStream = new WaveFormatConversionStream (  DestFormat, sourceStream);
+            string destinationFilePath = GenerateOutputFileFullname ( sourceFilePath, destinationDirectory );
+            NAudio.Wave.WaveFileWriter.CreateWaveFile ( destinationFilePath , sourceStream);
+
+            
+            sourceStream.Close ();
+            sourceStream = null;
+            return destinationFilePath  ;
+            */
+            return null;
             }
 
 
@@ -85,6 +107,29 @@ namespace AudioLib
             }
 
 
+        private string GenerateOutputFileFullname ( string sourcePath, string outputDirectory )
+            {
+            if (!File.Exists ( sourcePath ))
+                throw new System.Exception ( "Invalid source file path" );
+
+            if (!Directory.Exists ( outputDirectory ))
+                throw new System.Exception ( "Invalid destination directory" );
+
+            FileInfo inputFileInfo = new FileInfo(sourcePath ) ;
+            string inputFilename = inputFileInfo.Name.Replace ( inputFileInfo.Extension ,"")  ;
+
+            Random random = new Random ();
+            
+            string destFilePath = Path.Combine ( outputDirectory, random.Next (100000).ToString () + inputFileInfo.Extension )  ;
+            int precautionCounter = 0;                
+                while ( File.Exists ( destFilePath ))
+                                        {
+                    destFilePath = Path.Combine ( outputDirectory, random.Next (100000).ToString () + inputFileInfo.Extension ) ;
+                    precautionCounter++;
+                    if (precautionCounter > 10000) throw new System.Exception( "Not able to generate destination file name" );
+                    }
+                        return destFilePath;
+            }
 
 
 
