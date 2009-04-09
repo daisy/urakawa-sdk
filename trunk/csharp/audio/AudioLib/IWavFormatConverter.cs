@@ -18,6 +18,14 @@ namespace AudioLib
             }
 
         /// <summary>
+        /// reports progress information from 0 to 100
+                /// </summary>
+        int ProgressInfo
+            {
+            get;
+            }
+
+        /// <summary>
         /// create a new wav file by resampling an uncompressed wav file to another standard wav format
                 /// </summary>
         /// <param name="sourceFilePath"></param>
