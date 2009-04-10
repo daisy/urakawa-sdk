@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Xml;
 using urakawa.core.visitor;
 using urakawa.media;
+using urakawa.media.data.audio;
+using urakawa.media.data.utilities;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
@@ -20,6 +23,31 @@ namespace urakawa.core
     public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,
                             IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
     {
+        public Stream GetManagedAudioMediaFlattened()
+        {
+            ManagedAudioMedia audioMedia = GetAudioMedia() as ManagedAudioMedia;
+            if (audioMedia != null)
+            {
+                return audioMedia.AudioMediaData.GetAudioData();
+            }
+            List<Stream> listStream = new List<Stream>();
+
+            for (int index = 0; index < ChildCount; index++)
+            {
+                TreeNode node = GetChild(index);
+                Stream childStream = node.GetManagedAudioMediaFlattened();
+                if (childStream != null)
+                {
+                    listStream.Add(childStream);
+                }
+            }
+            if (listStream.Count == 0)
+            {
+                return null;
+            }
+            return new SequenceStream(listStream);
+        }
+
         public string GetTextMediaFlattened()
         {
             string str = "";
