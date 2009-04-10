@@ -16,7 +16,7 @@ namespace urakawa.core
     /// <summary>
     /// A node in the core tree of the SDK
     /// </summary>
-    [DebuggerDisplay("{getDebugString()}"]
+    [DebuggerDisplay("{getDebugString()}")]
     public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,
                             IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
     {
