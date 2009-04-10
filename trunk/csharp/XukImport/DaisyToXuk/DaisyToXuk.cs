@@ -13,35 +13,34 @@ namespace XukImport
 {
     public partial class DaisyToXuk
     {
+        private readonly string m_outDirectory;
         private readonly string m_Book_FilePath;
+
         private Project m_Project;
         private TextChannel m_textChannel;
-        private readonly string m_outDirectory;
 
         public DaisyToXuk(string bookfile, string outDir)
         {
             m_Book_FilePath = bookfile;
             m_outDirectory = outDir;
-            transformDTBook();
+            if (!m_outDirectory.EndsWith("" + Path.DirectorySeparatorChar))
+            {
+                m_outDirectory = m_outDirectory + Path.DirectorySeparatorChar;
+            }
+            transformBook();
         }
 
-        public DaisyToXuk(string bookfile): this(bookfile, Directory.GetParent(bookfile).FullName)
+        public DaisyToXuk(string bookfile): this(bookfile, Path.GetDirectoryName(bookfile)) //Directory.GetParent(bookfile).FullName)
         {}
 
-        private void transformDTBook()
+        private void initializeProject()
         {
             m_Project = new Project();
 
             //m_Project.PresentationFactory.Create();
             Presentation presentation = m_Project.AddNewPresentation();
 
-            //string dirPath = Path.GetDirectoryName(m_Book_FilePath);
-            string dirPath = Path.GetDirectoryName(m_outDirectory);
-            if (!dirPath.EndsWith("" + Path.DirectorySeparatorChar))
-            {
-                dirPath = dirPath + Path.DirectorySeparatorChar;
-            }
-            presentation.RootUri = new Uri(dirPath);
+            presentation.RootUri = new Uri(m_outDirectory);
 
             m_Project.SetPrettyFormat(false);
 
@@ -96,6 +95,11 @@ namespace XukImport
 
             m_textChannel = presentation.ChannelFactory.CreateTextChannel();
             m_textChannel.Name = "Our Text Channel";
+        }
+
+        private void transformBook()
+        {
+            initializeProject();
 
             //FileInfo DTBFilePathInfo = new FileInfo(m_Book_FilePath);
             //switch (DTBFilePathInfo.Extension)

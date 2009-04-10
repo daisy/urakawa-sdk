@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml;
 using urakawa.core.visitor;
 using urakawa.media;
@@ -15,6 +16,7 @@ namespace urakawa.core
     /// <summary>
     /// A node in the core tree of the SDK
     /// </summary>
+    [DebuggerDisplay("{getDebugString()}"]
     public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,
                             IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
     {
@@ -34,15 +36,14 @@ namespace urakawa.core
             return str;
         }
 
-        /*
-        public override string ToString()
+        protected string getDebugString()
         {
             QualifiedName qname = GetXmlElementQName();
             String str = (qname != null ? qname.LocalName : "");
             str += "///";
             str += GetTextMediaFlattened();
             return str;
-        }*/
+        }
 
         ///<summary>
         /// returns the QName of the attached XmlProperty, if any
