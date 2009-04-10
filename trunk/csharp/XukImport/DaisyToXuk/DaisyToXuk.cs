@@ -16,12 +16,17 @@ namespace XukImport
         private readonly string m_Book_FilePath;
         private Project m_Project;
         private TextChannel m_textChannel;
+        private readonly string m_outDirectory;
 
-        public DaisyToXuk(string bookfile)
+        public DaisyToXuk(string bookfile, string outDir)
         {
             m_Book_FilePath = bookfile;
+            m_outDirectory = outDir;
             transformDTBook();
         }
+
+        public DaisyToXuk(string bookfile): this(bookfile, Directory.GetParent(bookfile).FullName)
+        {}
 
         private void transformDTBook()
         {
@@ -30,7 +35,8 @@ namespace XukImport
             //m_Project.PresentationFactory.Create();
             Presentation presentation = m_Project.AddNewPresentation();
 
-            string dirPath = Path.GetDirectoryName(m_Book_FilePath);
+            //string dirPath = Path.GetDirectoryName(m_Book_FilePath);
+            string dirPath = Path.GetDirectoryName(m_outDirectory);
             if (!dirPath.EndsWith("" + Path.DirectorySeparatorChar))
             {
                 dirPath = dirPath + Path.DirectorySeparatorChar;
