@@ -5,20 +5,34 @@ using System.IO;
 
 using urakawa.media.data.audio;
 
-//using NAudio.Wave; 
+using NAudio.Wave; 
 
 namespace AudioLib
     {
-    class WavFormatConverter : IWavFormatConverter 
+    public class WavFormatConverter : IWavFormatConverter 
         {
 
         private PCMFormatInfo m_DefaultPCMInfo;
 
+        /// <summary>
+        ///  initializes instance with PCM format info 
+                /// </summary>
+        /// <param name="PCMInfo"></param>
         public WavFormatConverter ( PCMFormatInfo PCMInfo )
             {
             m_DefaultPCMInfo = PCMInfo;
             }
 
+        /// <summary>
+        /// initializes instance without dependency on PCNFormatInfo of urakawa sdk.
+                /// </summary>
+        /// <param name="defaultNoOfChhanels"></param>
+        /// <param name="defaultSamplingRate"></param>
+        /// <param name="defaultBitDepth"></param>
+        public WavFormatConverter ( int defaultNoOfChhanels, int defaultSamplingRate, int defaultBitDepth )
+            {
+            m_DefaultPCMInfo = new PCMFormatInfo ((ushort) defaultNoOfChhanels, (uint)defaultSamplingRate,(ushort)  defaultBitDepth );
+            }
 
         public PCMFormatInfo DefaultPCMFormat
             {
@@ -37,22 +51,21 @@ namespace AudioLib
         /// <param name="destinationPCMInfo"></param>
         /// <param name="destinationDirectory"></param>
         /// <returns>  file path of the new wave file </returns>
-        public string ConvertUnpressedWavFile ( string sourceFilePath, PCMFormatInfo destinationPCMInfo, string destinationDirectory )
+        public string ConvertUnCompressedWavFile ( string sourceFilePath, PCMFormatInfo destinationPCMInfo, string destinationDirectory )
             {
-            /*
-            NAudio.Wave.WaveFormat DestFormat = new WaveFormat ((int) destinationPCMInfo.SampleRate, destinationPCMInfo.BitDepth, destinationPCMInfo.NumberOfChannels );
-            WaveStream sourceStream = new WaveFileReader ( sourceFilePath );
-
-            NAudio.Wave.WaveFormatConversionStream conversionStream = new WaveFormatConversionStream (  DestFormat, sourceStream);
-            string destinationFilePath = GenerateOutputFileFullname ( sourceFilePath, destinationDirectory );
-            NAudio.Wave.WaveFileWriter.CreateWaveFile ( destinationFilePath , sourceStream);
-
+            NAudio.Wave.WaveFormat DestFormat = new WaveFormat ( (int)destinationPCMInfo.SampleRate, destinationPCMInfo.BitDepth, destinationPCMInfo.NumberOfChannels );
             
+            WaveStream sourceStream = new WaveFileReader ( sourceFilePath );
+                        NAudio.Wave.WaveFormatConversionStream conversionStream = new WaveFormatConversionStream (  DestFormat, sourceStream);
+            
+            string destinationFilePath = GenerateOutputFileFullname ( sourceFilePath, destinationDirectory );
+                        NAudio.Wave.WaveFileWriter.CreateWaveFile ( destinationFilePath, conversionStream );
+
+            conversionStream.Close ();
+            conversionStream = null;
             sourceStream.Close ();
             sourceStream = null;
             return destinationFilePath  ;
-            */
-            return null;
             }
 
 

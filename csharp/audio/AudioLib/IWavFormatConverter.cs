@@ -5,7 +5,7 @@ using urakawa.media.data.audio;
 
 namespace AudioLib
     {
-    interface IWavFormatConverter
+    public interface IWavFormatConverter
         {
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace AudioLib
         /// <param name="destinationPCMInfo"></param>
         /// <param name="destinationDirectory"></param>
         /// <returns>  file path of the new wave file </returns>
-        string ConvertUnpressedWavFile ( string sourceFilePath, PCMFormatInfo destinationPCMInfo, string destinationDirectory );
+        string ConvertUnCompressedWavFile  ( string sourceFilePath, PCMFormatInfo destinationPCMInfo, string destinationDirectory );
 
 
         /// <summary>
