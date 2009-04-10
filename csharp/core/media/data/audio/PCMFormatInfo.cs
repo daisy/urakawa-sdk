@@ -164,14 +164,14 @@ namespace urakawa.media.data.audio
         /// </summary>
         /// <param name="dataLen">The length</param>
         /// <returns>The duration</returns>
-        public TimeDelta GetDuration(double dataLen)
+        public TimeDelta GetDuration(long dataLen)
         {
             if (ByteRate == 0)
             {
                 throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
             }
 
-            double blockCount = dataLen / BlockAlign;
+            double blockCount = ((double)dataLen) / BlockAlign;
             return new TimeDelta(TimeSpan.FromTicks((long)(Math.Round(GetTicksPerBlock() * blockCount))));
         }
 
