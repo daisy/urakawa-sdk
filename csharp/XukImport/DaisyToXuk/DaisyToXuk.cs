@@ -27,7 +27,13 @@ namespace XukImport
             {
                 m_outDirectory = m_outDirectory + Path.DirectorySeparatorChar;
             }
+            
+            initializeProject();
+
             transformBook();
+
+            Uri uri = new Uri(bookfile + ".xuk");
+            m_Project.SaveXuk(uri);
         }
 
         public DaisyToXuk(string bookfile): this(bookfile, Path.GetDirectoryName(bookfile)) //Directory.GetParent(bookfile).FullName)
@@ -36,14 +42,14 @@ namespace XukImport
         private void initializeProject()
         {
             m_Project = new Project();
-            m_Project.SetPrettyFormat(false);
+            m_Project.SetPrettyFormat(true);
 
             Presentation presentation = m_Project.AddNewPresentation();
 
             presentation.RootUri = new Uri(m_outDirectory);
             presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
-            // BEGIN OF TEST
+            // BEGIN OF INIT FACTORIES
             // => creating all kinds of objects in order to initialize the factories
             // and cache the mapping between XUK names (pretty or compressed) and actual types.
             Channel ch = presentation.ChannelFactory.Create();
@@ -76,21 +82,7 @@ namespace XukImport
             //
             presentation.TreeNodeFactory.Create();
             //
-            // END OF TEST
-
-            /*
-            Metadata mdAuthor = presentation.MetadataFactory.CreateMetadata();
-            mdAuthor.Name = "dc:author";
-            mdAuthor.Content = "Daniel + Chhavi + Rachana";
-
-            presentation.AddMetadata(mdAuthor);
-
-            Metadata mdDate = presentation.MetadataFactory.CreateMetadata();
-            mdDate.Name = "dc:date";
-            mdDate.Content = System.DateTime.Now.ToString();
-
-            presentation.AddMetadata(mdDate);
-            */
+            // END OF INIT FACTORIES
 
             m_textChannel = presentation.ChannelFactory.CreateTextChannel();
             m_textChannel.Name = "Our Text Channel";
@@ -107,8 +99,6 @@ namespace XukImport
 
         private void transformBook()
         {
-            initializeProject();
-
             //FileInfo DTBFilePathInfo = new FileInfo(m_Book_FilePath);
             //switch (DTBFilePathInfo.Extension)
 
