@@ -5,19 +5,14 @@ using urakawa.media.data.audio;
 
 namespace AudioLib
 {
+    /// <summary>
+    /// Implementations of this interface can be used to resample WAV data, 
+    /// or to uncompress WAV or MP3 data.
+    /// </summary>
     public interface IWavFormatConverter
     {
         /// <summary>
-        /// returns default wave format for the class
-        /// </summary>
-        /// <param name="formatInfo"></param>
-        PCMFormatInfo DefaultPCMFormat
-        {
-            get;
-        }
-
-        /// <summary>
-        /// reports progress information from 0 to 100
+        /// Returns progress information in the form of an integer from 0 to 100.
         /// </summary>
         int ProgressInfo
         {
@@ -25,51 +20,34 @@ namespace AudioLib
         }
 
         /// <summary>
-        /// create a new wav file by resampling an uncompressed wav file to another standard wav format
+        /// Resamples the given wav file using the specified PCM format,
+        /// and stores the result in the given directory with a random filename (the full path is returned by this method).
+        /// Only works with uncompressed wav data.
         /// </summary>
-        /// <param name="sourceFilePath"></param>
-        /// <param name="destinationPCMInfo"></param>
-        /// <param name="destinationDirectory"></param>
-        /// <returns>  file path of the new wave file </returns>
-        string ConvertUnCompressedWavFile(string sourceFilePath, PCMFormatInfo destinationPCMInfo, string destinationDirectory);
-
+        /// <param name="sourceFile">cannot be null</param>
+        /// <param name="destinationDirectory">cannot be null</param>
+        /// <param name="destinationPCMFormat">cannot be null</param>
+        /// <returns> absolute path to the new wave file </returns>
+        string ConvertSampleRate(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat);
 
         /// <summary>
-        /// Creates a new wave file by uncompressing a wav file. It takes compressed wave file as source and do not take compressed formats like mp3 as input.
+        /// Uncompress the given wav file using the optional specified PCM format,
+        /// and stores the result in the given directory with a random filename (the full path is returned by this method).
         /// </summary>
-        /// <param name="sourceFilePath"></param>
-        /// <param name="destinationDirectory"></param>
-        /// <param name="convertToDefaultFormat"></param>
-        /// <returns>  file path of new file </returns>
-        string UnCompressWavFile(string sourceFilePath, string destinationDirectory, bool convertToDefaultFormat);
-
-
+        /// <param name="sourceFile">cannot be null</param>
+        /// <param name="destinationDirectory">cannot be null</param>
+        /// <param name="destinationPCMFormat">can be null (in which case the PCM format of the given source is used)</param>
+        /// <returns> absolute path to the new wave file </returns>
+        string UnCompressWavFile(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat);
 
         /// <summary>
-        /// Creates a new wave files with supplied PCM format from a compressed wav file. It takes only compressed wav filesas input and do not uncompress mp3.
+        /// Uncompress the given mp3 file using the optional specified PCM format,
+        /// and stores the result in the given directory with a random filename (the full path is returned by this method).
         /// </summary>
-        /// <param name="sourceFilePath"></param>
-        /// <param name="destinationPCMInfo"></param>
-        /// <param name="destinationDirectory"></param>
-        /// <returns> file path of new file </returns>
-        string UnCompressWavFile(string sourceFilePath, PCMFormatInfo destinationPCMInfo, string destinationDirectory);
-
-
-        /// <summary>
-        /// Create a wave file of default PCM format by uncompressing source mp3 file. 
-        /// </summary>
-        /// <param name="sourceFilePath"></param>
-        /// <param name="destinationDirectory"></param>
-        /// <returns> file path of new wav file </returns>
-        string ImportMp3FileAsWavFile(string sourceFilePath, string destinationDirectory);
-
-        /// <summary>
-        ///  Create a wave file of supplied PCM format by uncompressing source mp3 file. 
-        /// </summary>
-        /// <param name="sourceFilePath"></param>
-        /// <param name="destinationFormatInfo"></param>
-        /// <param name="destinationDirectory"></param>
-        /// <returns>file path of new wave file </returns>
-        string ImportMp3FileAsWavFile(string sourceFilePath, PCMFormatInfo destinationFormatInfo, string destinationDirectory);
+        /// <param name="sourceFile">cannot be null</param>
+        /// <param name="destinationDirectory">cannot be null</param>
+        /// <param name="destinationPCMFormat">can be null (in which case the PCM format of the given source is used)</param>
+        /// <returns> absolute path to the new mp3 file </returns>
+        string UnCompressMp3File(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat);
     }
 }

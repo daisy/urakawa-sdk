@@ -36,13 +36,12 @@ namespace XukImport
         private void initializeProject()
         {
             m_Project = new Project();
+            m_Project.SetPrettyFormat(false);
 
-            //m_Project.PresentationFactory.Create();
             Presentation presentation = m_Project.AddNewPresentation();
 
             presentation.RootUri = new Uri(m_outDirectory);
-
-            m_Project.SetPrettyFormat(false);
+            presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
             // BEGIN OF TEST
             // => creating all kinds of objects in order to initialize the factories
@@ -95,6 +94,15 @@ namespace XukImport
 
             m_textChannel = presentation.ChannelFactory.CreateTextChannel();
             m_textChannel.Name = "Our Text Channel";
+
+            m_audioChannel = presentation.ChannelFactory.CreateAudioChannel();
+            m_audioChannel.Name = "Our Audio Channel";
+
+            string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
+            if (Directory.Exists(dataPath))
+            {
+                Directory.Delete(dataPath, true);
+            }
         }
 
         private void transformBook()

@@ -53,9 +53,9 @@ namespace urakawa.media.data
         {
             foreach (MediaData md in ListOfMediaData)
             {
-                if (md is AudioMediaData)
+                AudioMediaData amd = md as AudioMediaData;
+                if (amd != null)
                 {
-                    AudioMediaData amd = (AudioMediaData)md;
                     if (!amd.PCMFormat.ValueEquals(newDefault))
                     {
                         return false;
