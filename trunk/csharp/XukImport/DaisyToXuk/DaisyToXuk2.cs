@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using urakawa;
 using urakawa.media;
 using urakawa.media.data.audio;
@@ -19,6 +20,16 @@ namespace XukImport
 
         private void parseOPFAndPopulateDataModel()
         {
+            m_firstTimePCMFormat = true;
+            if (m_convertedWavFiles != null)
+            {
+                m_convertedWavFiles.Clear();
+            }
+            else
+            {
+                m_convertedWavFiles = new Dictionary<string, string>();
+            }
+
             XmlDocument opfXmlDoc = readXmlDocument(m_Book_FilePath);
 
             parseOpfDcMetaData(opfXmlDoc);
@@ -45,20 +56,6 @@ namespace XukImport
 
             if (spineListOfSmilFiles != null)
             {
-                //Presentation presentation = DTBooktoXukConversion.m_Project.GetPresentation(0);
-                Presentation presentation = m_Project.GetPresentation(0);
-
-                m_audioChannel = presentation.ChannelFactory.CreateAudioChannel();
-                m_audioChannel.Name = "Our Audio Channel";
-
-                presentation.MediaDataManager.EnforceSinglePCMFormat = true;
-
-                string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
-                if (Directory.Exists(dataPath))
-                {
-                    Directory.Delete(dataPath, true);
-                }
-
                 foreach (string smilPath in spineListOfSmilFiles)
                 {
                     string fullSmilPath = Path.Combine(m_outDirectory, smilPath);
@@ -66,6 +63,9 @@ namespace XukImport
                 }
             }
         }
+
+        private bool m_firstTimePCMFormat;
+        private Dictionary<string, string> m_convertedWavFiles = null;
 
         private void parseSmil(string fullSmilPath)
         {
@@ -116,6 +116,7 @@ namespace XukImport
                                                         if (existingAudioMedia != null)
                                                         {
                                                             //Ignore.
+                                                            continue; // next audio peers
                                                             //System.Diagnostics.Debug.Fail("TreeNode already has media ??");
                                                         }
 
@@ -125,9 +126,18 @@ namespace XukImport
                                                         Media media = null;
                                                         if (attrAudioSrc.Value.EndsWith("wav"))
                                                         {
-                                                            string fullWavPath = Path.Combine(m_outDirectory,
+                                                            string fullWavPathOriginal = Path.Combine(m_outDirectory,
                                                                                               attrAudioSrc.Value);
-
+                                                            if (! File.Exists(fullWavPathOriginal))
+                                                            {
+                                                                System.Diagnostics.Debug.Fail("File not found: {0}", fullWavPathOriginal);
+                                                                continue; // next audio peers
+                                                            }
+                                                            string fullWavPath = fullWavPathOriginal;
+                                                            if (m_convertedWavFiles.ContainsKey(fullWavPathOriginal))
+                                                            {
+                                                                fullWavPath = m_convertedWavFiles[fullWavPathOriginal];
+                                                            }
                                                             PCMDataInfo pcmInfo = null;
                                                             Stream wavStream = null;
                                                             try
@@ -135,7 +145,39 @@ namespace XukImport
                                                                 wavStream = File.Open(fullWavPath, FileMode.Open,
                                                                                       FileAccess.Read, FileShare.Read);
                                                                 pcmInfo = PCMDataInfo.ParseRiffWaveHeader(wavStream);
-                                                                presentation.MediaDataManager.DefaultPCMFormat = pcmInfo.Copy();
+
+                                                                if (m_firstTimePCMFormat)
+                                                                {
+                                                                    presentation.MediaDataManager.DefaultPCMFormat =
+                                                                        pcmInfo.Copy();
+                                                                    m_firstTimePCMFormat = false;
+                                                                }
+                                                                if (!presentation.MediaDataManager.DefaultPCMFormat.IsCompatibleWith(pcmInfo))
+                                                                {
+                                                                    wavStream.Close();
+
+                                                                    if (m_convertedWavFiles.ContainsKey(fullWavPathOriginal))
+                                                                    {
+                                                                        throw new Exception("The previously converted WAV file is not with the correct PCM format !!");
+                                                                    }
+
+                                                                    IWavFormatConverter wavConverter = new WavFormatConverter();
+
+                                                                    string newfullWavPath = wavConverter.ConvertSampleRate(fullWavPath, Path.GetDirectoryName(fullWavPath), presentation.MediaDataManager.DefaultPCMFormat);
+
+                                                                    m_convertedWavFiles.Add(fullWavPath, newfullWavPath);
+
+                                                                    wavStream = File.Open(newfullWavPath, FileMode.Open,
+                                                                                          FileAccess.Read, FileShare.Read);
+                                                                    pcmInfo = PCMDataInfo.ParseRiffWaveHeader(wavStream);
+
+                                                                    if (!presentation.MediaDataManager.DefaultPCMFormat.IsCompatibleWith(pcmInfo))
+                                                                    {
+                                                                        wavStream.Close();
+                                                                        throw new Exception("Could not convert the WAV PCM format !!");
+                                                                    }
+                                                                }
+
                                                                 TimeDelta totalDuration = new TimeDelta(pcmInfo.Duration);
 
                                                                 TimeDelta clipDuration = new TimeDelta(totalDuration);
@@ -177,6 +219,7 @@ namespace XukImport
                                                                 WavAudioMediaData mediaData =
                                                                     (WavAudioMediaData)
                                                                     presentation.MediaDataFactory.CreateAudioMediaData();
+
                                                                 mediaData.InsertAudioData(wavStream, Time.Zero, clipDuration);
 
                                                                 media = presentation.MediaFactory.CreateManagedAudioMedia();
@@ -205,15 +248,23 @@ namespace XukImport
                                                             }
                                                         }
 
-                                                        ChannelsProperty chProp = tNode.GetProperty<ChannelsProperty>();
-                                                        if (chProp == null)
+                                                        if (media != null)
                                                         {
-                                                            chProp =
-                                                                presentation.PropertyFactory.CreateChannelsProperty();
-                                                            tNode.AddProperty(chProp);
+                                                            ChannelsProperty chProp =
+                                                                tNode.GetProperty<ChannelsProperty>();
+                                                            if (chProp == null)
+                                                            {
+                                                                chProp =
+                                                                    presentation.PropertyFactory.CreateChannelsProperty();
+                                                                tNode.AddProperty(chProp);
+                                                            }
+                                                            chProp.SetMedia(m_audioChannel, media);
                                                         }
-                                                        chProp.SetMedia(m_audioChannel, media);
-                                                        break; // scan peers to audio node
+                                                        else
+                                                        {
+                                                            System.Diagnostics.Debug.Fail("Media is neither WAV nor MP3 ?");
+                                                        }
+                                                        break; // skip scanning of audio node peers
                                                     }
                                                     else
                                                     {
