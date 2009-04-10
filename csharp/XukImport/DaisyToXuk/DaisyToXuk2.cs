@@ -19,9 +19,6 @@ namespace XukImport
 
         private void parseOPFAndPopulateDataModel()
         {
-            string dirPath = Path.GetDirectoryName(m_Book_FilePath);
-            //dirPath = Directory.GetParent(m_Book_FilePath).FullName;
-
             XmlDocument opfXmlDoc = readXmlDocument(m_Book_FilePath);
 
             parseOpfDcMetaData(opfXmlDoc);
@@ -35,14 +32,14 @@ namespace XukImport
 
             if (DtBookPath != null)
             {
-                string fullDtBookPath = Path.Combine(dirPath, DtBookPath);
+                string fullDtBookPath = Path.Combine(m_outDirectory, DtBookPath);
                 XmlDocument bookXmlDoc = readXmlDocument(fullDtBookPath);
                 parseDTBookXmlDocAndPopulateDataModel(bookXmlDoc, null);
             }
 
             if (ncxPath != null)
             {
-                string fullNcxPath = Path.Combine(dirPath, ncxPath);
+                string fullNcxPath = Path.Combine(m_outDirectory, ncxPath);
                 parseNcx(fullNcxPath);
             }
 
@@ -64,7 +61,7 @@ namespace XukImport
 
                 foreach (string smilPath in spineListOfSmilFiles)
                 {
-                    string fullSmilPath = Path.Combine(dirPath, smilPath);
+                    string fullSmilPath = Path.Combine(m_outDirectory, smilPath);
                     parseSmil(fullSmilPath);
                 }
             }
@@ -73,8 +70,6 @@ namespace XukImport
         private void parseSmil(string fullSmilPath)
         {
             Presentation presentation = m_Project.GetPresentation(0);
-
-            string dirPath = Path.GetDirectoryName(m_Book_FilePath);
 
             XmlDocument smilXmlDoc = readXmlDocument(fullSmilPath);
 
@@ -130,8 +125,7 @@ namespace XukImport
                                                         Media media = null;
                                                         if (attrAudioSrc.Value.EndsWith("wav"))
                                                         {
-
-                                                            string fullWavPath = Path.Combine(dirPath,
+                                                            string fullWavPath = Path.Combine(m_outDirectory,
                                                                                               attrAudioSrc.Value);
 
                                                             PCMDataInfo pcmInfo = null;
