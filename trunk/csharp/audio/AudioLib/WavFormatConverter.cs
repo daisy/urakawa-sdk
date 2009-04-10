@@ -31,7 +31,7 @@ namespace AudioLib
 
                 conversionStream = new WaveFormatConversionStream(destFormat, sourceStream);
 
-                destinationFilePath = GenerateOutputFileFullname(sourceFile, destinationDirectory);
+                destinationFilePath = GenerateOutputFileFullname(sourceFile, destinationDirectory, destinationPCMFormat);
                 WaveFileWriter.CreateWaveFile(destinationFilePath, conversionStream);
             }
             finally
@@ -49,22 +49,42 @@ namespace AudioLib
             return destinationFilePath;
         }
 
-        private static string GenerateOutputFileFullname(string sourceFile, string destinationDirectory)
+        private static string GenerateOutputFileFullname(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat)
         {
-            FileInfo inputFileInfo = new FileInfo(sourceFile);
-            //string inputFilename = inputFileInfo.Name.Replace(inputFileInfo.Extension, "");
+            //FileInfo sourceFileInfo = new FileInfo(sourceFile);
+            //string sourceFileName = sourceFileInfo.Name.Replace(sourceFileInfo.Extension, "");
+
+            string sourceFileName = Path.GetFileNameWithoutExtension(sourceFile);
+            string sourceFileExt = Path.GetExtension(sourceFile);
+
+            string channels = (destinationPCMFormat.NumberOfChannels == 1 ? "Mono" : (destinationPCMFormat.NumberOfChannels == 2 ? "Stereo" : destinationPCMFormat.NumberOfChannels.ToString()));
 
             Random random = new Random();
 
-            string destFilePath = Path.Combine(destinationDirectory, random.Next(100000).ToString() + inputFileInfo.Extension);
-            int precautionCounter = 0;
-            while (File.Exists(destFilePath))
+            int loopCounter = 0;
+            string destFile = null;
+            do
             {
-                destFilePath = Path.Combine(destinationDirectory, random.Next(100000).ToString() + inputFileInfo.Extension);
-                precautionCounter++;
-                if (precautionCounter > 10000) throw new System.Exception("Not able to generate destination file name");
-            }
-            return destFilePath;
+                loopCounter++;
+                if (loopCounter > 10000)
+                {
+                    throw new Exception("Not able to generate destination file name");
+                }
+
+                destFile = Path.Combine(destinationDirectory,
+                                    sourceFileName
+                                    + "_"
+                                    + destinationPCMFormat.BitDepth
+                                    + "-"
+                                    + channels
+                                    + "-"
+                                    + destinationPCMFormat.SampleRate
+                                    + "_"
+                                    + random.Next(100000).ToString()
+                                    + sourceFileExt);
+            } while (File.Exists(destFile));
+
+            return destFile;
         }
 
         /// <exception cref="NotImplementedException">NOT IMPLEMENTED !</exception>
