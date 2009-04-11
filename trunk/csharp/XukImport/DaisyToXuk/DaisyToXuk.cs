@@ -252,7 +252,6 @@ namespace XukImport
                             }
                         }
 
-
                         foreach (XmlNode childXmlNode in xmlNode.ChildNodes)
                         {
                             parseDTBookXmlDocAndPopulateDataModel(childXmlNode, treeNode);

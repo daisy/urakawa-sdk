@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
+using urakawa.media.data.audio;
+using urakawa.media.data.utilities;
 using urakawa.progress;
 using urakawa.xuk;
 
@@ -56,7 +59,7 @@ namespace urakawa.media
         {
             if (0 <= index && index < Count)
             {
-                return (Media) mSequence[index];
+                return (Media)mSequence[index];
             }
             throw new exception.MethodParameterIsOutOfBoundsException(
                 "There is no item in the SequenceMedia at the given index");
@@ -457,7 +460,7 @@ namespace urakawa.media
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            SequenceMedia otherSeq = (SequenceMedia) other;
+            SequenceMedia otherSeq = (SequenceMedia)other;
             if (AllowMultipleTypes != otherSeq.AllowMultipleTypes)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
@@ -480,5 +483,61 @@ namespace urakawa.media
         }
 
         #endregion
+
+        public String GetMediaText()
+        {
+            if (AllowMultipleTypes)
+            {
+                return null;
+            }
+            string strSeq = "";
+            foreach (Media media in ListOfItems)
+            {
+                if (media is AbstractTextMedia)
+                {
+                    strSeq += ((AbstractTextMedia)media).Text;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (strSeq.Length == 0)
+            {
+                return null;
+            }
+            return strSeq;
+        }
+        public Stream GetManagedAudioMediaDataStream()
+        {
+            if (AllowMultipleTypes)
+            {
+                return null;
+            }
+            List<Stream> streams = new List<Stream>();
+            foreach (Media media in ListOfItems)
+            {
+                if (media is ManagedAudioMedia)
+                {
+                    if (((ManagedAudioMedia)media).AudioMediaData != null)
+                    {
+                        Stream stream = ((ManagedAudioMedia)media).AudioMediaData.GetAudioData();
+                        if (stream != null)
+                        {
+                            streams.Add(stream);
+                        }
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (streams.Count != 0)
+            {
+                return new SequenceStream(streams);
+            }
+            return null;
+        }
     }
 }

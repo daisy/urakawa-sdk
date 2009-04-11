@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml;
 using AudioLib;
 using urakawa;
+using urakawa.core;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
@@ -73,6 +74,273 @@ namespace XukImport
 
             XmlDocument smilXmlDoc = readXmlDocument(fullSmilPath);
 
+            XmlNodeList allTextNodes = smilXmlDoc.GetElementsByTagName("text");
+            if (allTextNodes == null || allTextNodes.Count == 0)
+            {
+                return;
+            }
+            foreach (XmlNode textNode in allTextNodes)
+            {
+                XmlAttributeCollection textNodeAttrs = textNode.Attributes;
+                if (textNodeAttrs == null || textNodeAttrs.Count == 0)
+                {
+                    continue;
+                }
+                XmlNode textNodeAttrSrc = textNodeAttrs.GetNamedItem("src");
+                if (textNodeAttrSrc == null || String.IsNullOrEmpty(textNodeAttrSrc.Value))
+                {
+                    continue;
+                } int index = textNodeAttrSrc.Value.LastIndexOf('#');
+                if (index == textNodeAttrSrc.Value.Length - 1)
+                {
+                    return;
+                }
+                string srcFragmentId = textNodeAttrSrc.Value.Substring(index + 1);
+                core.TreeNode textTreeNode = getTreeNodeWithXmlElementId(srcFragmentId);
+                if (textTreeNode == null)
+                {
+                    continue;
+                }
+                AbstractAudioMedia textTreeNodeAudio = textTreeNode.GetAudioMedia();
+                if (textTreeNodeAudio != null)
+                {
+                    //Ignore.
+                    continue;
+                }
+                XmlNode parent = textNode.ParentNode;
+                if (parent != null && parent.Name == "a")
+                {
+                    parent = parent.ParentNode;
+                }
+                if (parent == null)
+                {
+                    continue;
+                }
+                if (parent.Name != "par")
+                {
+                    System.Diagnostics.Debug.Fail("Text node in SMIL has no parallel time container as parent ! {0}", parent.Name);
+                    continue;
+                }
+                XmlNodeList textPeers = parent.ChildNodes;
+                foreach (XmlNode textPeerNode in textPeers)
+                {
+                    if (textPeerNode.NodeType != XmlNodeType.Element)
+                    {
+                        continue;
+                    }
+                    if (textPeerNode.Name == "audio")
+                    {
+                        addAudio(textTreeNode, textPeerNode, false);
+                        break;
+                    }
+                    else if (textPeerNode.Name == "a")
+                    {
+                        XmlNodeList aChildren = textPeerNode.ChildNodes;
+                        foreach (XmlNode aChild in aChildren)
+                        {
+                            if (aChild.Name == "audio")
+                            {
+                                addAudio(textTreeNode, aChild, false);
+                                break;
+                            }
+                        }
+                    }
+                    else if (textPeerNode.Name == "seq")
+                    {
+                        XmlNodeList seqChildren = textPeerNode.ChildNodes;
+                        foreach (XmlNode seqChild in seqChildren)
+                        {
+                            if (seqChild.Name == "audio")
+                            {
+                                addAudio(textTreeNode, seqChild, true);
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void addAudio(TreeNode treeNode, XmlNode xmlNode, bool isSequence)
+        {
+            XmlAttributeCollection audioAttrs = xmlNode.Attributes;
+
+            if (audioAttrs == null || audioAttrs.Count == 0)
+            {
+                return;
+            }
+            XmlNode audioAttrSrc = audioAttrs.GetNamedItem("src");
+            if (audioAttrSrc == null || String.IsNullOrEmpty(audioAttrSrc.Value))
+            {
+                return;
+            }
+            XmlNode audioAttrClipBegin = audioAttrs.GetNamedItem("clipBegin");
+            XmlNode audioAttrClipEnd = audioAttrs.GetNamedItem("clipEnd");
+
+            Presentation presentation = m_Project.GetPresentation(0);
+            Media media = null;
+            if (audioAttrSrc.Value.EndsWith("wav"))
+            {
+                string fullWavPathOriginal = Path.Combine(m_outDirectory,
+                                                  audioAttrSrc.Value);
+                if (!File.Exists(fullWavPathOriginal))
+                {
+                    System.Diagnostics.Debug.Fail("File not found: {0}", fullWavPathOriginal);
+                    return;
+                }
+                string fullWavPath = fullWavPathOriginal;
+                if (m_convertedWavFiles.ContainsKey(fullWavPathOriginal))
+                {
+                    fullWavPath = m_convertedWavFiles[fullWavPathOriginal];
+                }
+                PCMDataInfo pcmInfo = null;
+                Stream wavStream = null;
+                try
+                {
+                    wavStream = File.Open(fullWavPath, FileMode.Open,
+                                          FileAccess.Read, FileShare.Read);
+                    pcmInfo = PCMDataInfo.ParseRiffWaveHeader(wavStream);
+
+                    if (m_firstTimePCMFormat)
+                    {
+                        presentation.MediaDataManager.DefaultPCMFormat =
+                            pcmInfo.Copy();
+                        m_firstTimePCMFormat = false;
+                    }
+                    if (!presentation.MediaDataManager.DefaultPCMFormat.IsCompatibleWith(pcmInfo))
+                    {
+                        wavStream.Close();
+
+                        if (m_convertedWavFiles.ContainsKey(fullWavPathOriginal))
+                        {
+                            throw new Exception("The previously converted WAV file is not with the correct PCM format !!");
+                        }
+
+                        IWavFormatConverter wavConverter = new WavFormatConverter();
+
+                        string newfullWavPath = wavConverter.ConvertSampleRate(fullWavPath, Path.GetDirectoryName(fullWavPath), presentation.MediaDataManager.DefaultPCMFormat);
+
+                        m_convertedWavFiles.Add(fullWavPath, newfullWavPath);
+
+                        wavStream = File.Open(newfullWavPath, FileMode.Open,
+                                              FileAccess.Read, FileShare.Read);
+                        pcmInfo = PCMDataInfo.ParseRiffWaveHeader(wavStream);
+
+                        if (!presentation.MediaDataManager.DefaultPCMFormat.IsCompatibleWith(pcmInfo))
+                        {
+                            wavStream.Close();
+                            throw new Exception("Could not convert the WAV PCM format !!");
+                        }
+                    }
+
+                    TimeDelta totalDuration = new TimeDelta(pcmInfo.Duration);
+
+                    TimeDelta clipDuration = new TimeDelta(totalDuration);
+
+                    Time clipB = Time.Zero;
+                    Time clipE = Time.MaxValue;
+
+                    if (audioAttrClipBegin != null &&
+                        !string.IsNullOrEmpty(audioAttrClipBegin.Value))
+                    {
+                        clipB = new Time(TimeSpan.Parse(audioAttrClipBegin.Value));
+                    }
+                    if (audioAttrClipEnd != null &&
+                        !string.IsNullOrEmpty(audioAttrClipEnd.Value))
+                    {
+                        clipE = new Time(TimeSpan.Parse(audioAttrClipEnd.Value));
+                    }
+                    if (!clipB.IsEqualTo(Time.Zero) || !clipE.IsEqualTo(Time.MaxValue))
+                    {
+                        clipDuration = clipE.GetTimeDelta(clipB);
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.Fail("Audio clip with full duration ??");
+                    }
+                    long byteOffset = 0;
+                    if (!clipB.IsEqualTo(Time.Zero))
+                    {
+                        byteOffset = pcmInfo.GetByteForTime(clipB);
+                    }
+                    if (byteOffset > 0)
+                    {
+                        wavStream.Seek(byteOffset, SeekOrigin.Current);
+                    }
+
+                    presentation.MediaDataFactory.DefaultAudioMediaDataType =
+                        typeof(WavAudioMediaData);
+
+                    WavAudioMediaData mediaData =
+                        (WavAudioMediaData)
+                        presentation.MediaDataFactory.CreateAudioMediaData();
+
+                    mediaData.InsertAudioData(wavStream, Time.Zero, clipDuration);
+
+                    media = presentation.MediaFactory.CreateManagedAudioMedia();
+                    ((ManagedAudioMedia)media).AudioMediaData = mediaData;
+                }
+                finally
+                {
+                    if (wavStream != null) wavStream.Close();
+                }
+            }
+            else
+            {
+                media = presentation.MediaFactory.CreateExternalAudioMedia();
+                ((ExternalAudioMedia)media).Src = audioAttrSrc.Value;
+                if (audioAttrClipBegin != null &&
+                    !string.IsNullOrEmpty(audioAttrClipBegin.Value))
+                {
+                    ((ExternalAudioMedia)media).ClipBegin =
+                        new Time(TimeSpan.Parse(audioAttrClipBegin.Value));
+                }
+                if (audioAttrClipEnd != null &&
+                    !string.IsNullOrEmpty(audioAttrClipEnd.Value))
+                {
+                    ((ExternalAudioMedia)media).ClipEnd =
+                        new Time(TimeSpan.Parse(audioAttrClipEnd.Value));
+                }
+            }
+
+            if (media != null)
+            {
+                ChannelsProperty chProp =
+                    treeNode.GetProperty<ChannelsProperty>();
+                if (chProp == null)
+                {
+                    chProp =
+                        presentation.PropertyFactory.CreateChannelsProperty();
+                    treeNode.AddProperty(chProp);
+                }
+                if (isSequence)
+                {
+                    SequenceMedia mediaSeq = chProp.GetMedia(m_audioChannel) as SequenceMedia;
+                    if (mediaSeq == null)
+                    {
+                        mediaSeq = presentation.MediaFactory.CreateSequenceMedia();
+                        mediaSeq.AllowMultipleTypes = false;
+                        chProp.SetMedia(m_audioChannel, mediaSeq);
+                    }
+                    mediaSeq.AppendItem(media);
+                }
+                else
+                {
+                    chProp.SetMedia(m_audioChannel, media);
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.Fail("Media could not be created !");
+            }
+        }
+
+        private void parseSmil_OLD(string fullSmilPath)
+        {
+            Presentation presentation = m_Project.GetPresentation(0);
+
+            XmlDocument smilXmlDoc = readXmlDocument(fullSmilPath);
+
             XmlNodeList listOfAudioNodes = smilXmlDoc.GetElementsByTagName("audio");
             if (listOfAudioNodes != null)
             {
@@ -128,7 +396,7 @@ namespace XukImport
                                                         {
                                                             string fullWavPathOriginal = Path.Combine(m_outDirectory,
                                                                                               attrAudioSrc.Value);
-                                                            if (! File.Exists(fullWavPathOriginal))
+                                                            if (!File.Exists(fullWavPathOriginal))
                                                             {
                                                                 System.Diagnostics.Debug.Fail("File not found: {0}", fullWavPathOriginal);
                                                                 continue; // next audio peers

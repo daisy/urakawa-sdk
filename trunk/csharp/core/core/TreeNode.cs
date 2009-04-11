@@ -24,6 +24,37 @@ namespace urakawa.core
                             IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
     {
 
+        ///<summary>
+        /// returns the QName of the attached XmlProperty, if any
+        ///</summary>
+        ///<returns></returns>
+        public QualifiedName GetXmlElementQName()
+        {
+            XmlProperty xmlProp = GetProperty<XmlProperty>();
+            if (xmlProp != null)
+            {
+                return new QualifiedName(xmlProp.LocalName, xmlProp.NamespaceUri);
+            }
+            return null;
+        }
+        ///<summary>
+        /// returns the ID attribute value of the attached XmlProperty, if any
+        ///</summary>
+        ///<returns>null of there is no ID attribute</returns>
+        public string GetXmlElementId()
+        {
+            XmlProperty xmlProp = GetProperty<XmlProperty>();
+            if (xmlProp != null)
+            {
+                XmlAttribute idAttr = xmlProp.GetAttribute("id", "");
+                if (idAttr != null)
+                {
+                    return (idAttr.Value == "" ? null : idAttr.Value);
+                }
+            }
+            return null;
+        }
+
         protected string getDebugString()
         {
             QualifiedName qname = GetXmlElementQName();
@@ -89,6 +120,24 @@ namespace urakawa.core
             {
                 return Parent;
             }
+            else
+            {
+                SequenceMedia seq = Parent.GetAudioSequenceMedia();
+                if (seq != null && !seq.AllowMultipleTypes)
+                {
+                    foreach (Media media in seq.ListOfItems)
+                    {
+                        if (media is ManagedAudioMedia)
+                        {
+                            return Parent;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
             return Parent.GetFirstAncestorWithManagedAudio();
         }
 
@@ -101,10 +150,28 @@ namespace urakawa.core
 
             foreach (TreeNode child in ListOfChildren)
             {
-                ManagedAudioMedia audioMedia = child.GetAudioMedia() as ManagedAudioMedia;
+                ManagedAudioMedia audioMedia = child.GetManagedAudioMedia();
                 if (audioMedia != null) // && audioMedia.AudioMediaData != null
                 {
                     return child;
+                }
+                else
+                {
+                    SequenceMedia seq = child.GetAudioSequenceMedia();
+                    if (seq != null && !seq.AllowMultipleTypes)
+                    {
+                        foreach (Media media in seq.ListOfItems)
+                        {
+                            if (media is ManagedAudioMedia)
+                            {
+                                return child;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
                 }
                 TreeNode childIn = child.GetFirstDescendantWithManagedAudio();
                 if (childIn != null)
@@ -123,10 +190,28 @@ namespace urakawa.core
             TreeNode next = this;
             while ((next = next.NextSibling) != null)
             {
-                ManagedAudioMedia audioMedia = next.GetAudioMedia() as ManagedAudioMedia;
+                ManagedAudioMedia audioMedia = next.GetManagedAudioMedia();
                 if (audioMedia != null) // && audioMedia.AudioMediaData != null
                 {
                     return next;
+                }
+                else
+                {
+                    SequenceMedia seq = next.GetAudioSequenceMedia();
+                    if (seq != null && !seq.AllowMultipleTypes)
+                    {
+                        foreach (Media media in seq.ListOfItems)
+                        {
+                            if (media is ManagedAudioMedia)
+                            {
+                                return next;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 TreeNode nextIn = next.GetFirstDescendantWithManagedAudio();
@@ -138,12 +223,25 @@ namespace urakawa.core
 
             return Parent.GetNextSiblingWithManagedAudio();
         }
+
         public Stream GetManagedAudioDataFlattened()
         {
-            ManagedAudioMedia audioMedia = GetAudioMedia() as ManagedAudioMedia;
+            ManagedAudioMedia audioMedia = GetManagedAudioMedia();
             if (audioMedia != null && audioMedia.AudioMediaData != null)
             {
                 return audioMedia.AudioMediaData.GetAudioData();
+            }
+            else
+            {
+                SequenceMedia seq = GetAudioSequenceMedia();
+                if (seq != null)
+                {
+                    Stream stream = seq.GetManagedAudioMediaDataStream();
+                    if (stream != null)
+                    {
+                        return stream;
+                    }
+                }
             }
 
             List<Stream> listStream = new List<Stream>();
@@ -157,6 +255,7 @@ namespace urakawa.core
                     listStream.Add(childStream);
                 }
             }
+
             if (listStream.Count == 0)
             {
                 return null;
@@ -166,57 +265,61 @@ namespace urakawa.core
 
         public string GetTextMediaFlattened()
         {
-            string str = "";
             AbstractTextMedia textMedia = GetTextMedia();
             if (textMedia != null)
             {
-                str += textMedia.Text;
+                if (textMedia.Text.Length == 0)
+                {
+                    return null;
+                }
+                return textMedia.Text;
             }
+            else
+            {
+                SequenceMedia seq = GetTextSequenceMedia();
+                if (seq != null)
+                {
+                    String strText = seq.GetMediaText();
+                    if (!String.IsNullOrEmpty(strText))
+                    {
+                        return strText;
+                    }
+                }
+            }
+            string str = "";
             for (int index = 0; index < ChildCount; index ++ )
             {
                 TreeNode node = GetChild(index);
                 str += node.GetTextMediaFlattened();
             }
+            if (str.Length == 0)
+            {
+                return null;
+            }
             return str;
         }
 
 
-        ///<summary>
-        /// returns the QName of the attached XmlProperty, if any
-        ///</summary>
-        ///<returns></returns>
-        public QualifiedName GetXmlElementQName()
+        public AbstractTextMedia GetTextMedia()
         {
-            XmlProperty xmlProp = GetProperty<XmlProperty>();
-            if (xmlProp != null)
+            Media med = GetMediaInTextChannel();
+            if (med != null)
             {
-                return new QualifiedName(xmlProp.LocalName, xmlProp.NamespaceUri);
-            }
-            return null;
-        }
-        ///<summary>
-        /// returns the ID attribute value of the attached XmlProperty, if any
-        ///</summary>
-        ///<returns>null of there is no ID attribute</returns>
-        public string GetXmlElementId()
-        {
-            XmlProperty xmlProp = GetProperty<XmlProperty>();
-            if (xmlProp != null)
-            {
-                XmlAttribute idAttr = xmlProp.GetAttribute("id", "");
-                if (idAttr != null)
-                {
-                    return (idAttr.Value == "" ? null : idAttr.Value);
-                }
+                return med as AbstractTextMedia;
             }
             return null;
         }
 
-        ///<summary>
-        /// returns the audio media, if any, that is part of the default AudioChannel, if any (the default TextChannel is the first created by ChannelsFactory.CreateTextChannel()).
-        ///</summary>
-        ///<returns>null if there is no registered TextChannel or if this TreeNode's ChannelsProperty does not map an Text Media for the TextChannel</returns>
-        public AbstractTextMedia GetTextMedia()
+        public SequenceMedia GetTextSequenceMedia()
+        {
+            Media med = GetMediaInTextChannel();
+            if (med != null)
+            {
+                return med as SequenceMedia;
+            }
+            return null;
+        }
+        public Media GetMediaInTextChannel()
         {
             ChannelsProperty chProp = GetProperty<ChannelsProperty>();
             if (chProp != null)
@@ -234,17 +337,42 @@ namespace urakawa.core
                 if (channel != null)
                 {
                     Media med = chProp.GetMedia(channel);
-                    return med as AbstractTextMedia;
+                    return med;
                 }
             }
             return null;
         }
 
-        ///<summary>
-        /// returns the audio media, if any, that is part of the default AudioChannel, if any (the default AudioChannel is the first created by ChannelsFactory.CreateAudioChannel()).
-        ///</summary>
-        ///<returns>null if there is no registered AudioChannel or if this TreeNode's ChannelsProperty does not map an Audio Media for the AudioChannel</returns>
+        public ManagedAudioMedia GetManagedAudioMedia()
+        {
+            AbstractAudioMedia media = GetAudioMedia();
+            if (media != null)
+            {
+                return media as ManagedAudioMedia;
+            }
+            return null;
+        }
+
         public AbstractAudioMedia GetAudioMedia()
+        {
+            Media med = GetMediaInAudioChannel();
+            if (med != null)
+            {
+                return med as AbstractAudioMedia;
+            }
+            return null;
+        }
+        public SequenceMedia GetAudioSequenceMedia()
+        {
+            Media med = GetMediaInAudioChannel();
+            if (med != null)
+            {
+                return med as SequenceMedia;
+            }
+            return null;
+        }
+
+        public Media GetMediaInAudioChannel()
         {
             ChannelsProperty chProp = GetProperty<ChannelsProperty>();
             if (chProp != null)
@@ -262,22 +390,11 @@ namespace urakawa.core
                 if (channel != null)
                 {
                     Media med = chProp.GetMedia(channel);
-                    return med as AbstractAudioMedia;
+                    return med;
                 }
             }
             return null;
         }
-
-        public ManagedAudioMedia GetManagedAudioMedia()
-        {
-            AbstractAudioMedia media = GetAudioMedia();
-            if (media != null)
-            {
-                return media as ManagedAudioMedia;
-            }
-            return null;
-        }
-
 
 
         public override string GetTypeNameFormatted()

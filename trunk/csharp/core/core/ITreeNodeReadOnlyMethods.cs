@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using urakawa.media;
+using urakawa.media.data.audio;
 using urakawa.xuk;
 
 namespace urakawa.core
@@ -12,6 +13,13 @@ namespace urakawa.core
     /// </summary>
     public interface ITreeNodeReadOnlyMethods
     {
+        AbstractTextMedia GetTextMedia();
+        SequenceMedia GetTextSequenceMedia();
+        Media GetMediaInTextChannel();
+        ManagedAudioMedia GetManagedAudioMedia();
+        AbstractAudioMedia GetAudioMedia();
+        SequenceMedia GetAudioSequenceMedia();
+        Media GetMediaInAudioChannel();
         bool IsAfter(TreeNode node);
         bool IsBefore(TreeNode node);
         TreeNode Root { get; }
@@ -22,8 +30,6 @@ namespace urakawa.core
         TreeNode GetFirstAncestorWithManagedAudio();
         QualifiedName GetXmlElementQName();
         string GetXmlElementId();
-        AbstractTextMedia GetTextMedia();
-        AbstractAudioMedia GetAudioMedia();
 
         /// <summary>
         /// Gets the child <see cref="TreeNode"/> at a given index
