@@ -23,19 +23,135 @@ namespace urakawa.core
     public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,
                             IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
     {
-        public Stream GetManagedAudioMediaFlattened()
+
+        protected string getDebugString()
+        {
+            QualifiedName qname = GetXmlElementQName();
+            String str = (qname != null ? qname.LocalName : "");
+            str += "///";
+            str += GetTextMediaFlattened();
+            return str;
+        }
+
+        public TreeNode Root
+        {
+            get
+            {
+                if (Parent == null)
+                {
+                    return this;
+                }
+                return Parent.Root;
+            }
+        }
+
+        public bool IsAfter(TreeNode node)
+        {
+            if (node == this)
+            {
+                return false;
+            }
+            if (Root.MeetFirst(this, node) == node)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsBefore(TreeNode node)
+        {
+            return !IsAfter(node);
+        }
+
+        private TreeNode MeetFirst(TreeNode node1, TreeNode node2)
+        {
+            if (this == node1) return node1;
+            if (this == node2) return node2;
+            foreach (TreeNode child in ListOfChildren)
+            {
+                TreeNode met = child.MeetFirst(node1, node2);
+                if (met != null)
+                {
+                    return met;
+                }
+            }
+            return null;
+        }
+
+        public TreeNode GetFirstAncestorWithManagedAudio()
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            ManagedAudioMedia audioMedia = Parent.GetAudioMedia() as ManagedAudioMedia;
+            if (audioMedia != null) // && audioMedia.AudioMediaData != null
+            {
+                return Parent;
+            }
+            return Parent.GetFirstAncestorWithManagedAudio();
+        }
+
+        public TreeNode GetFirstDescendantWithManagedAudio()
+        {
+            if (ChildCount == 0)
+            {
+                return null;
+            }
+
+            foreach (TreeNode child in ListOfChildren)
+            {
+                ManagedAudioMedia audioMedia = child.GetAudioMedia() as ManagedAudioMedia;
+                if (audioMedia != null) // && audioMedia.AudioMediaData != null
+                {
+                    return child;
+                }
+                TreeNode childIn = child.GetFirstDescendantWithManagedAudio();
+                if (childIn != null)
+                {
+                    return childIn;
+                }
+            }
+            return null;
+        }
+        public TreeNode GetNextSiblingWithManagedAudio()
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            TreeNode next = this;
+            while ((next = next.NextSibling) != null)
+            {
+                ManagedAudioMedia audioMedia = next.GetAudioMedia() as ManagedAudioMedia;
+                if (audioMedia != null) // && audioMedia.AudioMediaData != null
+                {
+                    return next;
+                }
+
+                TreeNode nextIn = next.GetFirstDescendantWithManagedAudio();
+                if (nextIn != null)
+                {
+                    return nextIn;
+                }
+            }
+
+            return Parent.GetNextSiblingWithManagedAudio();
+        }
+        public Stream GetManagedAudioDataFlattened()
         {
             ManagedAudioMedia audioMedia = GetAudioMedia() as ManagedAudioMedia;
-            if (audioMedia != null)
+            if (audioMedia != null && audioMedia.AudioMediaData != null)
             {
                 return audioMedia.AudioMediaData.GetAudioData();
             }
+
             List<Stream> listStream = new List<Stream>();
 
             for (int index = 0; index < ChildCount; index++)
             {
                 TreeNode node = GetChild(index);
-                Stream childStream = node.GetManagedAudioMediaFlattened();
+                Stream childStream = node.GetManagedAudioDataFlattened();
                 if (childStream != null)
                 {
                     listStream.Add(childStream);
@@ -64,14 +180,6 @@ namespace urakawa.core
             return str;
         }
 
-        protected string getDebugString()
-        {
-            QualifiedName qname = GetXmlElementQName();
-            String str = (qname != null ? qname.LocalName : "");
-            str += "///";
-            str += GetTextMediaFlattened();
-            return str;
-        }
 
         ///<summary>
         /// returns the QName of the attached XmlProperty, if any
@@ -156,6 +264,16 @@ namespace urakawa.core
                     Media med = chProp.GetMedia(channel);
                     return med as AbstractAudioMedia;
                 }
+            }
+            return null;
+        }
+
+        public ManagedAudioMedia GetManagedAudioMedia()
+        {
+            AbstractAudioMedia media = GetAudioMedia();
+            if (media != null)
+            {
+                return media as ManagedAudioMedia;
             }
             return null;
         }
@@ -1490,5 +1608,6 @@ namespace urakawa.core
         }
 
         #endregion
+
     }
 }

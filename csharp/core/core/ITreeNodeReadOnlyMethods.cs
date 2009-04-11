@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using urakawa.media;
 using urakawa.xuk;
@@ -11,6 +12,14 @@ namespace urakawa.core
     /// </summary>
     public interface ITreeNodeReadOnlyMethods
     {
+        bool IsAfter(TreeNode node);
+        bool IsBefore(TreeNode node);
+        TreeNode Root { get; }
+        string GetTextMediaFlattened();
+        Stream GetManagedAudioDataFlattened();
+        TreeNode GetNextSiblingWithManagedAudio();
+        TreeNode GetFirstDescendantWithManagedAudio();
+        TreeNode GetFirstAncestorWithManagedAudio();
         QualifiedName GetXmlElementQName();
         string GetXmlElementId();
         AbstractTextMedia GetTextMedia();
