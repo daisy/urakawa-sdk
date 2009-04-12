@@ -79,6 +79,7 @@
     <Compile Include="Events\VuMeter\UpdateFormsEventArgs.cs" />
     <Compile Include="Events\VuMeter\UpdatePeakMeter.cs" />
     <Compile Include="IWavFormatConverter.cs" />
+    <Compile Include="NLayerMp3Stream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VuMeter.cs" />
     <Compile Include="WavFormatConverter.cs" />
@@ -91,6 +92,10 @@
     <ProjectReference Include="..\NAudio\NAudio.csproj">
       <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
       <Name>NAudio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NLayer\NLayer.csproj">
+      <Project>{1AFB5B4A-BF93-4720-84FA-78A711342C98}</Project>
+      <Name>NLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
