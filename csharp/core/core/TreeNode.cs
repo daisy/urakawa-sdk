@@ -23,6 +23,15 @@ namespace urakawa.core
     public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,
                             IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
     {
+        public override string ToString()
+        {
+            QualifiedName qname = GetXmlElementQName();
+            if (qname != null)
+            {
+                return qname.LocalName;
+            }
+            return base.ToString();
+        }
 
         ///<summary>
         /// returns the QName of the attached XmlProperty, if any
