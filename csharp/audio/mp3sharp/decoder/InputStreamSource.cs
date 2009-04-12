@@ -30,7 +30,7 @@ namespace javazoom.jl.decoder
 	/// <author>  MDM
 	/// 
 	/// </author>
-	internal class InputStreamSource : Source
+	public class InputStreamSource : Source
 	{
 		virtual public bool Seekable
 		{

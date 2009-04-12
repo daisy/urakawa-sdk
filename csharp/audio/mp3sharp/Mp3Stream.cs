@@ -6,7 +6,7 @@
 // the time to port them. --t/DD
 
 // Rob, Sept 1:F
-// - Changed access for all classes in this project except Mp3Sharp and the Exceptions to internal 
+// - Changed access for all classes in this project except Mp3Sharp and the Exceptions to public 
 // - Removed commenting from DecodeFrame method of Mp3Stream
 // - Added GPL license to Mp3Sharp.cs
 // - Changed version number to 1.4
@@ -323,7 +323,7 @@ namespace Mp3Sharp
 	/// 
 	/// This class handles stereo 16-bit data! Switch it out if you want mono or something.
 	/// </summary>
-	internal class OBuffer16BitStereo 
+	public class OBuffer16BitStereo 
 		: javazoom.jl.decoder.Obuffer
 	{
 		// This is stereo!

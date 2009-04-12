@@ -27,7 +27,7 @@ namespace javazoom.jl.decoder
 	/// 
 	/// </author>
 	
-	internal class JavaLayerUtils
+	public class JavaLayerUtils
 	{
 		//UPGRADE_NOTE: Synchronized keyword was removed from method 'getHook'. Lock expression was added. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1027"'
 		/// <summary> Sets the system-wide JavaLayer hook.

@@ -23,11 +23,11 @@ namespace javazoom.jl.decoder
 	/// <summary> Exception erorr codes for components of the JavaLayer API.
 	/// </summary>
 	
-	internal struct JavaLayerErrors_Fields{
+	public struct JavaLayerErrors_Fields{
 		public readonly static int BITSTREAM_ERROR = 0x100;
 		public readonly static int DECODER_ERROR = 0x200;
 	}
-	internal interface JavaLayerErrors
+	public interface JavaLayerErrors
 		{
 			//UPGRADE_NOTE: Members of interface 'JavaLayerErrors' were extracted into structure 'JavaLayerErrors_Fields'. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1045"'
 			/// <summary> The first bitstream error code. See the {@link DecoderErrors DecoderErrors}

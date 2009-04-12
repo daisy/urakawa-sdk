@@ -26,16 +26,16 @@ namespace javazoom.jl.decoder
 	
 	class LayerIDecoder : FrameDecoder
 	{
-		protected internal Bitstream stream;
-		protected internal Header header;
-		protected internal SynthesisFilter filter1, filter2;
-		protected internal Obuffer buffer;
-		protected internal int which_channels;
-		protected internal int mode;
+		protected Bitstream stream;
+		protected Header header;
+		protected SynthesisFilter filter1, filter2;
+		protected Obuffer buffer;
+		protected int which_channels;
+		protected int mode;
 		
-		protected internal int num_subbands;
-		protected internal Subband[] subbands;
-		protected internal Crc16 crc = null;
+		protected int num_subbands;
+		protected Subband[] subbands;
+		protected Crc16 crc = null;
 		// new Crc16[1] to enable CRC checking.
 		
 		public LayerIDecoder()
@@ -75,7 +75,7 @@ namespace javazoom.jl.decoder
 			}
 		}
 		
-		protected internal virtual void  createSubbands()
+		protected virtual void  createSubbands()
 		{
 			int i;
 			if (mode == Header.SINGLE_CHANNEL)
@@ -95,25 +95,25 @@ namespace javazoom.jl.decoder
 			}
 		}
 		
-		protected internal virtual void  readAllocation()
+		protected virtual void  readAllocation()
 		{
 			// start to read audio data:
 			for (int i = 0; i < num_subbands; ++i)
 				subbands[i].read_allocation(stream, header, crc);
 		}
 		
-		protected internal virtual void  readScaleFactorSelection()
+		protected virtual void  readScaleFactorSelection()
 		{
 			// scale factor selection not present for layer I. 
 		}
 		
-		protected internal virtual void  readScaleFactors()
+		protected virtual void  readScaleFactors()
 		{
 			for (int i = 0; i < num_subbands; ++i)
 				subbands[i].read_scalefactor(stream, header);
 		}
 		
-		protected internal virtual void  readSampleData()
+		protected virtual void  readSampleData()
 		{
 			bool read_ready = false;
 			bool write_ready = false;
@@ -160,7 +160,7 @@ namespace javazoom.jl.decoder
 		/// Used for single channel mode
 		/// and in derived class for intensity stereo mode
 		/// </summary>
-		internal class SubbandLayer1:Subband
+		public class SubbandLayer1:Subband
 		{
 			
 			// Factors and offsets for sample requantization
@@ -168,13 +168,13 @@ namespace javazoom.jl.decoder
 			
 			public static readonly float[] table_offset = new float[]{0.0f, ((1.0f / 2.0f) - 1.0f) * (4.0f / 3.0f), ((1.0f / 4.0f) - 1.0f) * (8.0f / 7.0f), ((1.0f / 8.0f) - 1.0f) * (16.0f / 15.0f), ((1.0f / 16.0f) - 1.0f) * (32.0f / 31.0f), ((1.0f / 32.0f) - 1.0f) * (64.0f / 63.0f), ((1.0f / 64.0f) - 1.0f) * (128.0f / 127.0f), ((1.0f / 128.0f) - 1.0f) * (256.0f / 255.0f), ((1.0f / 256.0f) - 1.0f) * (512.0f / 511.0f), ((1.0f / 512.0f) - 1.0f) * (1024.0f / 1023.0f), ((1.0f / 1024.0f) - 1.0f) * (2048.0f / 2047.0f), ((1.0f / 2048.0f) - 1.0f) * (4096.0f / 4095.0f), ((1.0f / 4096.0f) - 1.0f) * (8192.0f / 8191.0f), ((1.0f / 8192.0f) - 1.0f) * (16384.0f / 16383.0f), ((1.0f / 16384.0f) - 1.0f) * (32768.0f / 32767.0f)};
 			
-			protected internal int subbandnumber;
-			protected internal int samplenumber;
-			protected internal int allocation;
-			protected internal float scalefactor;
-			protected internal int samplelength;
-			protected internal float sample;
-			protected internal float factor, offset;
+			protected int subbandnumber;
+			protected int samplenumber;
+			protected int allocation;
+			protected float scalefactor;
+			protected int samplelength;
+			protected float sample;
+			protected float factor, offset;
 			
 			/// <summary> Construtor.
 			/// </summary>
@@ -243,9 +243,9 @@ namespace javazoom.jl.decoder
 		
 		/// <summary> Class for layer I subbands in joint stereo mode.
 		/// </summary>
-		internal class SubbandLayer1IntensityStereo:SubbandLayer1
+		public class SubbandLayer1IntensityStereo:SubbandLayer1
 		{
-			protected internal float channel2_scalefactor;
+			protected float channel2_scalefactor;
 			
 			/// <summary> Constructor
 			/// </summary>
@@ -309,13 +309,13 @@ namespace javazoom.jl.decoder
 		
 		/// <summary> Class for layer I subbands in stereo mode.
 		/// </summary>
-		internal class SubbandLayer1Stereo:SubbandLayer1
+		public class SubbandLayer1Stereo:SubbandLayer1
 		{
-			protected internal int channel2_allocation;
-			protected internal float channel2_scalefactor;
-			protected internal int channel2_samplelength;
-			protected internal float channel2_sample;
-			protected internal float channel2_factor, channel2_offset;
+			protected int channel2_allocation;
+			protected float channel2_scalefactor;
+			protected int channel2_samplelength;
+			protected float channel2_sample;
+			protected float channel2_factor, channel2_offset;
 			
 			
 			/// <summary> Constructor

@@ -5,7 +5,7 @@ namespace javazoom.jl.decoder
 	/// <summary> Work in progress.
 	/// </summary>
 	
-	internal interface Control
+	public interface Control
 		{
 			bool Playing
 			{

@@ -29,7 +29,7 @@ namespace javazoom.jl.decoder
 	/// 
 	/// 
 	/// </summary>
-	internal class SampleBuffer:Obuffer
+	public class SampleBuffer:Obuffer
 	{
 		virtual public int ChannelCount
 		{

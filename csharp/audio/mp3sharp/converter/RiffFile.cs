@@ -20,10 +20,10 @@ namespace javazoom.jl.converter
 	using System;
 	/// <summary> Class to manage RIFF files
 	/// </summary>
-	internal class RiffFile
+	public class RiffFile
 	{
 		//UPGRADE_NOTE: Field 'EnclosingInstance' was added to class 'RiffChunkHeader' to access its enclosing instance. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1019"'
-		internal class RiffChunkHeader
+		public class RiffChunkHeader
 		{
 			private void  InitBlock(RiffFile enclosingInstance)
 			{
@@ -63,9 +63,9 @@ namespace javazoom.jl.converter
 		public const int RFM_READ = 2; // open for read
 		
 		private RiffChunkHeader riff_header; // header for whole file
-		protected internal int fmode; // current file I/O mode
-		//protected internal System.IO.FileStream file; // I/O stream to use
-		protected internal System.IO.Stream file; // I/O stream to use
+		protected int fmode; // current file I/O mode
+		//protected System.IO.FileStream file; // I/O stream to use
+		protected System.IO.Stream file; // I/O stream to use
 		
 		/// <summary> Dummy Constructor
 		/// </summary>
@@ -568,7 +568,7 @@ namespace javazoom.jl.converter
 		
 		/// <summary> Seek in the File.
 		/// </summary>
-		protected internal virtual int Seek(long offset)
+		protected virtual int Seek(long offset)
 		{
 			int rc;
 			try
