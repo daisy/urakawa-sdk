@@ -37,7 +37,7 @@ namespace javazoom.jl.decoder
 	/// 
 	/// </author>
 	
-	internal class Equalizer
+	public class Equalizer
 	{
 		private void  InitBlock()
 		{
@@ -107,7 +107,7 @@ namespace javazoom.jl.decoder
 		/// subbands.
 		/// 
 		/// </returns>
-		internal virtual float[] BandFactors
+		public virtual float[] BandFactors
 		{
 			get
 			{
@@ -225,7 +225,7 @@ namespace javazoom.jl.decoder
 		/// n is the equalizer band setting in the range [-1.0,1.0].
 		/// 
 		/// </summary>
-		internal float getBandFactor(float eq)
+		public float getBandFactor(float eq)
 		{
 			if (eq == BAND_NOT_PRESENT)
 				return 0.0f;
@@ -235,7 +235,7 @@ namespace javazoom.jl.decoder
 		}
 		
 		
-		abstract internal class EQFunction
+		abstract public class EQFunction
 		{
 			/// <summary> Returns the setting of a band in the equalizer. 
 			/// 

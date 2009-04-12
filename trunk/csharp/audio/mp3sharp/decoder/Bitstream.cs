@@ -42,7 +42,7 @@ namespace javazoom.jl.decoder
 	/// various decoders. This should be moved into this class and associated
 	/// inner classes.
 	/// </summary>
-	internal sealed class Bitstream : BitstreamErrors
+	public sealed class Bitstream : BitstreamErrors
 	{
 		private void  InitBlock()
 		{
@@ -56,12 +56,12 @@ namespace javazoom.jl.decoder
 		/// <summary> Syncrhronization control constant for the initial
 		/// synchronization to the start of a frame.
 		/// </summary>
-		internal static sbyte INITIAL_SYNC = 0;
+		public static sbyte INITIAL_SYNC = 0;
 		
 		/// <summary> Syncrhronization control constant for non-iniital frame
 		/// synchronizations.
 		/// </summary>
-		internal static sbyte STRICT_SYNC = 1;
+		public static sbyte STRICT_SYNC = 1;
 		
 		// max. 1730 bytes per frame: 144 * 384kbit/s / 32000 Hz + 2 Bytes CRC
 		/// <summary> Maximum size of the frame buffer.
@@ -130,7 +130,7 @@ namespace javazoom.jl.decoder
 		/// <param name="in	The">InputStream to read from.
 		/// 
 		/// </param>
-		internal Bitstream(BackStream in_Renamed)
+		public Bitstream(BackStream in_Renamed)
 		{
 			InitBlock();
 			if (in_Renamed == null)
@@ -165,7 +165,7 @@ namespace javazoom.jl.decoder
 		/// or null if the end of the stream has been reached.
 		/// 
 		/// </returns>
-		internal Header readFrame()
+		public Header readFrame()
 		{
             ////System.Diagnostics.Trace.WriteLine("BitStream - readFrame");
 			Header result = null;
@@ -285,12 +285,12 @@ namespace javazoom.jl.decoder
 			return get_bits(n);
 		}
 		
-		protected internal BitstreamException newBitstreamException(int errorcode)
+		public BitstreamException newBitstreamException(int errorcode)
 		{
 			return new BitstreamException(errorcode, null);
 		}
 		//UPGRADE_NOTE: Exception 'java.lang.Throwable' was converted to 'System.Exception' which has different behavior. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1100"'
-		protected internal BitstreamException newBitstreamException(int errorcode, System.Exception throwable)
+        public BitstreamException newBitstreamException(int errorcode, System.Exception throwable)
 		{
 			return new BitstreamException(errorcode, throwable);
 		}
@@ -302,7 +302,7 @@ namespace javazoom.jl.decoder
 		/// The returned value is False at the end of stream.
 		/// </summary>
 		
-		internal int syncHeader(sbyte syncmode)
+		public int syncHeader(sbyte syncmode)
 		{
 			bool sync;
 			int headerstring;
@@ -416,7 +416,7 @@ namespace javazoom.jl.decoder
 		/// <summary> Reads the data for the next frame. The frame is not parsed
 		/// until parse frame is called.
 		/// </summary>
-		internal void  read_frame_data(int bytesize)
+		public void  read_frame_data(int bytesize)
 		{
 			int numread = 0;
 			
@@ -428,7 +428,7 @@ namespace javazoom.jl.decoder
 		
 		/// <summary> Parses the data previously read with read_frame_data().
 		/// </summary>
-		internal void  parse_frame()
+		public void  parse_frame()
 		{
 			// Convert Bytes read to int
 			int b = 0;
@@ -503,7 +503,7 @@ namespace javazoom.jl.decoder
 		/// <summary> Set the word we want to sync the header to.
 		/// In Big-Endian byte order
 		/// </summary>
-		internal void  set_syncword(int syncword0)
+		public void  set_syncword(int syncword0)
 		{
 			syncword = syncword0 & unchecked((int)0xFFFFFF3F);
 			single_ch_mode = ((syncword0 & 0x000000C0) == 0x000000C0);

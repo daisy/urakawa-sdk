@@ -40,7 +40,7 @@ namespace javazoom.jl.decoder
 	/// @since	0.0.7
 	/// 
 	/// </author>
-	internal class OutputChannels
+	public class OutputChannels
 	{
 		/// <summary> Retrieves the code representing the desired output channels.
 		/// Will be one of LEFT_CHANNEL, RIGHT_CHANNEL, BOTH_CHANNELS

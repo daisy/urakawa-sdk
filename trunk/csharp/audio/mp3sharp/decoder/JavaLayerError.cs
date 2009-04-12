@@ -25,7 +25,7 @@ namespace javazoom.jl.decoder
 	/// API usage errors may be handled by throwing an instance of this
 	/// class, as per JMF 2.0. 
 	/// </summary>
-	internal class JavaLayerError:System.ApplicationException
+	public class JavaLayerError:System.ApplicationException
 	{
 	}
 }

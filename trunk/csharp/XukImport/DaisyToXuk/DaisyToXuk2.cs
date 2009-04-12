@@ -204,7 +204,7 @@ namespace XukImport
 
                 if (m_convertedMp3Files.ContainsKey(fullMp3PathOriginal))
                 {
-                    string fullWavPath = m_convertedWavFiles[fullMp3PathOriginal];
+                    string fullWavPath = m_convertedMp3Files[fullMp3PathOriginal];
                     media = addAudioWav(fullWavPath, audioAttrClipBegin, audioAttrClipEnd);
                 }
                 else

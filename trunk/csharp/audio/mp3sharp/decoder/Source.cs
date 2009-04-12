@@ -23,10 +23,10 @@ namespace javazoom.jl.decoder
 	/// 
 	/// </summary>
 	
-	internal struct Source_Fields{
+	public struct Source_Fields{
 		public readonly static long LENGTH_UNKNOWN = - 1;
 	}
-	internal interface Source
+	public interface Source
 		{
 			//UPGRADE_NOTE: Members of interface 'Source' were extracted into structure 'Source_Fields'. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1045"'
 			bool Seekable

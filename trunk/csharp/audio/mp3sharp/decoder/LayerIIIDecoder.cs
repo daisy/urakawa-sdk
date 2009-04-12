@@ -821,10 +821,10 @@ namespace javazoom.jl.decoder
 		
 		/// <summary>*
 		/// </summary>
-		internal int[] x = new int[]{0};
-		internal int[] y = new int[]{0};
-		internal int[] v = new int[]{0};
-		internal int[] w = new int[]{0};
+		public int[] x = new int[]{0};
+		public int[] y = new int[]{0};
+		public int[] v = new int[]{0};
+		public int[] w = new int[]{0};
 		private void  huffman_decode(int ch, int gr)
 		{
 			x[0] = 0;
@@ -1200,9 +1200,9 @@ namespace javazoom.jl.decoder
 		/// </summary>
 		
 		//UPGRADE_NOTE: The initialization of  'is_pos' was moved to method 'InitBlock'. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1005"'
-		internal int[] is_pos;
+		public int[] is_pos;
 		//UPGRADE_NOTE: The initialization of  'is_ratio' was moved to method 'InitBlock'. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1005"'
-		internal float[] is_ratio;
+		public float[] is_ratio;
 		
 		private void  stereo(int gr)
 		{
@@ -1599,9 +1599,9 @@ namespace javazoom.jl.decoder
 		// MDM: tsOutCopy and rawout do not need initializing, so the arrays
 		// can be reused.
 		//UPGRADE_NOTE: The initialization of  'tsOutCopy' was moved to method 'InitBlock'. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1005"'
-		internal float[] tsOutCopy;
+		public float[] tsOutCopy;
 		//UPGRADE_NOTE: The initialization of  'rawout' was moved to method 'InitBlock'. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1005"'
-		internal float[] rawout;
+		public float[] rawout;
 		
 		private void  hybrid(int ch, int gr)
 		{
@@ -1928,7 +1928,7 @@ namespace javazoom.jl.decoder
 		private const int SSLIMIT = 18;
 		private const int SBLIMIT = 32;
 		
-		internal class SBI
+		public class SBI
 		{
 			public int[] l;
 			public int[] s;
@@ -1945,7 +1945,7 @@ namespace javazoom.jl.decoder
 			}
 		}
 		
-		internal class gr_info_s
+		public class gr_info_s
 		{
 			public int part2_3_length = 0;
 			public int big_values = 0;
@@ -1971,7 +1971,7 @@ namespace javazoom.jl.decoder
 			}
 		}
 		
-		internal class temporaire
+		public class temporaire
 		{
 			public int[] scfsi;
 			public gr_info_s[] gr;
@@ -1987,7 +1987,7 @@ namespace javazoom.jl.decoder
 			}
 		}
 		
-		internal class III_side_info_t
+		public class III_side_info_t
 		{
 			
 			public int main_data_begin = 0;
@@ -2003,7 +2003,7 @@ namespace javazoom.jl.decoder
 			}
 		}
 		
-		internal class temporaire2
+		public class temporaire2
 		{
 			public int[] l; /* [cb] */
 			public int[][] s; /* [window][cb] */
@@ -2048,7 +2048,7 @@ namespace javazoom.jl.decoder
 		private static int[][] reorder_table; // SZD: will be generated on demand
 		
 	
-		internal static int[] reorder(int[] scalefac_band)
+		public static int[] reorder(int[] scalefac_band)
 		{
 			// SZD: converted from LAME
 			int j = 0;
@@ -2083,7 +2083,7 @@ namespace javazoom.jl.decoder
 		/// </summary>
 		
 		//UPGRADE_NOTE: Field 'EnclosingInstance' was added to class 'Sftable' to access its enclosing instance. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1019"'
-		internal class Sftable
+		public class Sftable
 		{
 			private void  InitBlock(LayerIIIDecoder enclosingInstance)
 			{

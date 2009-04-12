@@ -28,7 +28,7 @@ namespace javazoom.jl.decoder
 	/// 
 	/// </author>
 	
-	internal struct DecoderErrors_Fields{
+	public struct DecoderErrors_Fields{
 		public readonly static int UNKNOWN_ERROR;
 		public readonly static int UNSUPPORTED_LAYER;
 		static DecoderErrors_Fields()
@@ -37,7 +37,7 @@ namespace javazoom.jl.decoder
 			UNSUPPORTED_LAYER = javazoom.jl.decoder.JavaLayerErrors_Fields.DECODER_ERROR + 1;
 		}
 	}
-	internal interface DecoderErrors : JavaLayerErrors
+	public interface DecoderErrors : JavaLayerErrors
 		{
 			//UPGRADE_NOTE: Members of interface 'DecoderErrors' were extracted into structure 'DecoderErrors_Fields'. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1045"'
 			/// <summary> Layer not supported by the decoder. 

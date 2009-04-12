@@ -3,12 +3,12 @@ using System;
 namespace Support
 {
 
-	internal interface IThreadRunnable
+	public interface IThreadRunnable
 	{
 		void Run();
 	}
 
-	internal class SupportClass
+	public class SupportClass
 	{
 		/// <summary>
 		/// Creates an instance of a received Type
@@ -89,7 +89,7 @@ namespace Support
 		}
 
 		/*******************************/
-		internal class ThreadClass:IThreadRunnable
+		public class ThreadClass:IThreadRunnable
 		{
 			private System.Threading.Thread threadField;
 
@@ -335,7 +335,7 @@ namespace Support
 		/*******************************/
 
 
-		internal class BackInputStream : System.IO.BinaryReader
+		public class BackInputStream : System.IO.BinaryReader
 		{
 			protected byte[] buffer;
 			protected int position = 1;
@@ -430,7 +430,7 @@ namespace Support
 		}
 
 		/*******************************/
-		internal class RandomAccessFileSupport
+		public class RandomAccessFileSupport
 		{
 			public static System.IO.FileStream CreateRandomAccessFile(string fileName, string mode) 
 			{

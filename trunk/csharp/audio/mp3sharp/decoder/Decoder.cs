@@ -30,7 +30,7 @@ namespace javazoom.jl.decoder
 	/// 
 	/// </version>
 	
-	internal class Decoder : DecoderErrors
+	public class Decoder : DecoderErrors
 	{
 		private void  InitBlock()
 		{
@@ -235,18 +235,18 @@ namespace javazoom.jl.decoder
 		
 		
 		
-		protected internal virtual DecoderException newDecoderException(int errorcode)
+		protected virtual DecoderException newDecoderException(int errorcode)
 		{
 			return new DecoderException(errorcode, null);
 		}
 		
 		//UPGRADE_NOTE: Exception 'java.lang.Throwable' was converted to 'System.Exception' which has different behavior. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1100"'
-		protected internal virtual DecoderException newDecoderException(int errorcode, System.Exception throwable)
+		protected virtual DecoderException newDecoderException(int errorcode, System.Exception throwable)
 		{
 			return new DecoderException(errorcode, throwable);
 		}
 		
-		protected internal virtual FrameDecoder retrieveDecoder(Header header, Bitstream stream, int layer)
+		protected virtual FrameDecoder retrieveDecoder(Header header, Bitstream stream, int layer)
 		{
 			FrameDecoder decoder = null;
 			
@@ -325,7 +325,7 @@ namespace javazoom.jl.decoder
 		/// <p>
 		/// Instances of this class are not thread safe. 
 		/// </summary>
-		internal class Params : System.ICloneable
+		public class Params : System.ICloneable
 		{
 			private void  InitBlock()
 			{

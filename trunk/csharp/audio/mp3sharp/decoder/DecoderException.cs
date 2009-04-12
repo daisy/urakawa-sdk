@@ -29,7 +29,7 @@ namespace javazoom.jl.decoder
 	/// 
 	/// </author>
 	
-	internal class DecoderException:Mp3SharpException, DecoderErrors
+	public class DecoderException:Mp3SharpException, DecoderErrors
 	{
 		private void  InitBlock()
 		{

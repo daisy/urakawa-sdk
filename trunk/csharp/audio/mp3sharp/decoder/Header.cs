@@ -36,7 +36,7 @@ namespace javazoom.jl.decoder
 	/// </summary>
 	// TODO: move strings into resources
 	
-	internal class Header
+	public class Header
 	{
 		private void  InitBlock()
 		{
@@ -90,7 +90,7 @@ namespace javazoom.jl.decoder
 		private int _headerstring = - 1;
 		// E.B
 		
-		internal Header()
+		public Header()
 		{
 			InitBlock();
 		}
@@ -118,7 +118,7 @@ namespace javazoom.jl.decoder
 		
 		/// <summary> Read a 32-bit header from the bitstream.
 		/// </summary>
-		internal void  read_header(Bitstream stream, Crc16[] crcp)
+		public void  read_header(Bitstream stream, Crc16[] crcp)
 		{
 			int headerstring;
 			int channel_bitrate;

@@ -5,7 +5,7 @@ namespace javazoom.jl.decoder
 	/// the way the JavaLayer library uses Resources. 
 	/// </summary>
 	
-	internal interface JavaLayerHook
+	public interface JavaLayerHook
 		{
 			/// <summary> Retrieves the named resource. This allows resources to be
 			/// obtained without specifying how they are retrieved. 

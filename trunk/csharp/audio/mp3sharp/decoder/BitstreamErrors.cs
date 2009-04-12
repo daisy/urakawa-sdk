@@ -32,7 +32,7 @@ namespace javazoom.jl.decoder
 	/// 
 	/// </author>
 	
-	internal struct BitstreamErrors_Fields{
+	public struct BitstreamErrors_Fields{
 		public readonly static int UNKNOWN_ERROR;
 		public readonly static int UNKNOWN_SAMPLE_RATE;
 		public readonly static int STREAM_ERROR;
@@ -48,7 +48,7 @@ namespace javazoom.jl.decoder
 			STREAM_EOF = javazoom.jl.decoder.JavaLayerErrors_Fields.BITSTREAM_ERROR + 4;
 		}
 	}
-	internal interface BitstreamErrors : JavaLayerErrors
+	public interface BitstreamErrors : JavaLayerErrors
 		{
 			//UPGRADE_NOTE: Members of interface 'BitstreamErrors' were extracted into structure 'BitstreamErrors_Fields'. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1045"'
 			/// <summary> An undeterminable error occurred. 

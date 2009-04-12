@@ -47,7 +47,7 @@ namespace javazoom.jl.decoder
 		}
 		
 		
-		protected internal override void  createSubbands()
+		protected override void  createSubbands()
 		{
 			int i;
 			if (mode == Header.SINGLE_CHANNEL)
@@ -67,7 +67,7 @@ namespace javazoom.jl.decoder
 			}
 		}
 		
-		protected internal override void  readScaleFactorSelection()
+		protected override void  readScaleFactorSelection()
 		{
 			for (int i = 0; i < num_subbands; ++i)
 				((SubbandLayer2) subbands[i]).read_scalefactor_selection(stream, crc);
@@ -77,7 +77,7 @@ namespace javazoom.jl.decoder
 		
 		/// <summary> Class for layer II subbands in single channel mode.
 		/// </summary>
-		internal class SubbandLayer2:Subband
+		public class SubbandLayer2:Subband
 		{
 			private void  InitBlock()
 			{
@@ -161,21 +161,21 @@ namespace javazoom.jl.decoder
 			
 			
 			
-			protected internal int subbandnumber;
-			protected internal int allocation;
-			protected internal int scfsi;
-			protected internal float scalefactor1, scalefactor2, scalefactor3;
-			protected internal int[] codelength = new int[]{0};
+			protected int subbandnumber;
+			protected int allocation;
+			protected int scfsi;
+			protected float scalefactor1, scalefactor2, scalefactor3;
+			protected int[] codelength = new int[]{0};
 			//UPGRADE_NOTE: The initialization of  'groupingtable' was moved to method 'InitBlock'. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1005"'
-			protected internal float[][] groupingtable;
+			protected float[][] groupingtable;
 			//protected float[][] 		groupingtable = {{0},{0}} ;
-			protected internal float[] factor = new float[]{0.0f};
-			protected internal int groupnumber;
-			protected internal int samplenumber;
+			protected float[] factor = new float[]{0.0f};
+			protected int groupnumber;
+			protected int samplenumber;
 			//UPGRADE_NOTE: The initialization of  'samples' was moved to method 'InitBlock'. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1005"'
-			protected internal float[] samples;
-			protected internal float[] c = new float[]{0};
-			protected internal float[] d = new float[]{0};
+			protected float[] samples;
+			protected float[] c = new float[]{0};
+			protected float[] d = new float[]{0};
 			/// <summary> Constructor
 			/// </summary>
 			public SubbandLayer2(int subbandnumber)
@@ -187,7 +187,7 @@ namespace javazoom.jl.decoder
 			
 			/// <summary>*
 			/// </summary>
-			protected internal virtual int get_allocationlength(Header header)
+			protected virtual int get_allocationlength(Header header)
 			{
 				if (header.version() == Header.MPEG1)
 				{
@@ -230,7 +230,7 @@ namespace javazoom.jl.decoder
 			
 			/// <summary>*
 			/// </summary>
-			protected internal virtual void  prepare_sample_reading(Header header, int allocation, int channel, float[] factor, int[] codelength, float[] c, float[] d)
+			protected virtual void  prepare_sample_reading(Header header, int allocation, int channel, float[] factor, int[] codelength, float[] c, float[] d)
 			{
 				int channel_bitrate = header.bitrate_index();
 				// calculate bitrate per channel:
@@ -423,10 +423,10 @@ namespace javazoom.jl.decoder
 		
 		/// <summary> Class for layer II subbands in joint stereo mode.
 		/// </summary>
-		internal class SubbandLayer2IntensityStereo:SubbandLayer2
+		public class SubbandLayer2IntensityStereo:SubbandLayer2
 		{
-			protected internal int channel2_scfsi;
-			protected internal float channel2_scalefactor1, channel2_scalefactor2, channel2_scalefactor3;
+			protected int channel2_scfsi;
+			protected float channel2_scalefactor1, channel2_scalefactor2, channel2_scalefactor3;
 			
 			/// <summary> Constructor
 			/// </summary>
@@ -563,18 +563,18 @@ namespace javazoom.jl.decoder
 		
 		/// <summary> Class for layer II subbands in stereo mode.
 		/// </summary>
-		internal class SubbandLayer2Stereo:SubbandLayer2
+		public class SubbandLayer2Stereo:SubbandLayer2
 		{
-			protected internal int channel2_allocation;
-			protected internal int channel2_scfsi;
-			protected internal float channel2_scalefactor1, channel2_scalefactor2, channel2_scalefactor3;
+			protected int channel2_allocation;
+			protected int channel2_scfsi;
+			protected float channel2_scalefactor1, channel2_scalefactor2, channel2_scalefactor3;
 			//protected boolean	 	channel2_grouping;  ???? Never used!
-			protected internal int[] channel2_codelength = new int[]{0};
+			protected int[] channel2_codelength = new int[]{0};
 			//protected float[][] 	channel2_groupingtable = {{0},{0}};
-			protected internal float[] channel2_factor = new float[]{0};
-			protected internal float[] channel2_samples;
-			protected internal float[] channel2_c = new float[]{0};
-			protected internal float[] channel2_d = new float[]{0};
+			protected float[] channel2_factor = new float[]{0};
+			protected float[] channel2_samples;
+			protected float[] channel2_c = new float[]{0};
+			protected float[] channel2_d = new float[]{0};
 			
 			/// <summary> Constructor
 			/// </summary>

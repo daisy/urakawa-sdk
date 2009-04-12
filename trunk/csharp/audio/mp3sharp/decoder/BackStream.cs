@@ -8,7 +8,7 @@ using javazoom.jl.decoder;
 namespace javazoom.jl.decoder
 {
 	[Serializable]
-	internal class CircularByteBuffer 
+	public class CircularByteBuffer 
 	{
 		byte[] dataArray = null;
 		int length = 1;
@@ -205,7 +205,7 @@ namespace javazoom.jl.decoder
 
 
 
-	internal class BackStream 
+	public class BackStream 
 	{
 		Stream S;
 		int BackBufferSize;

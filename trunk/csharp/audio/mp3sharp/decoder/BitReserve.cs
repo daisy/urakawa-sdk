@@ -34,7 +34,7 @@ namespace javazoom.jl.decoder
 		{
 			buf = new int[BUFSIZE];
 		}
-		/// <summary> Size of the internal buffer to store the reserved bits.
+		/// <summary> Size of the public buffer to store the reserved bits.
 		/// Must be a power of 2. And x8, as each bit is stored as a single
 		/// entry.
 		/// </summary>
@@ -52,7 +52,7 @@ namespace javazoom.jl.decoder
 		private int[] buf;
 		private int buf_bit_idx;
 		
-		internal BitReserve()
+		public BitReserve()
 		{
 			InitBlock();
 			

@@ -23,7 +23,7 @@ namespace javazoom.jl.decoder
 	/// Manages a number of controls.
 	/// </summary>
 	
-	internal class Manager
+	public class Manager
 	//implements Control
 	{
 		public virtual void  addControl(Control c)

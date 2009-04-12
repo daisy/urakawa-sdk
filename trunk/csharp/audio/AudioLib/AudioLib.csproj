@@ -89,13 +89,13 @@
       <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
       <Name>UrakawaSDK.core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\mp3sharp\Mp3Sharp.csproj">
+      <Project>{834CAB58-648D-47CC-AC6F-D01C08C809A4}</Project>
+      <Name>Mp3Sharp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NAudio\NAudio.csproj">
       <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
       <Name>NAudio</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NLayer\NLayer.csproj">
-      <Project>{1AFB5B4A-BF93-4720-84FA-78A711342C98}</Project>
-      <Name>NLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
