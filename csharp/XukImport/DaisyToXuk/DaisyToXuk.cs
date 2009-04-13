@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+using ICSharpCode.SharpZipLib.Zip;
 using urakawa;
 using urakawa.media;
 using urakawa.media.data;
@@ -122,6 +123,11 @@ namespace XukImport
                         parseDTBookXmlDocAndPopulateDataModel(bookXmlDoc, null);
                         break;
                     }
+                case ".epub":
+                    {
+                        unZipePub();
+                        break;
+                    }
                 default:
                     break;
             }
@@ -157,6 +163,52 @@ namespace XukImport
 
             return xmldoc;
         }
+
+        private void unZipePub()
+        {
+            bool deleteZipFile = false;
+            ZipInputStream unzipEpub = new ZipInputStream(File.OpenRead(m_Book_FilePath));
+            ZipEntry theEntry; //Files in the archive
+            string directoryName = @"C:\Users\Documents\Temp";   //Temporary directory to store unzipped files
+            while ((theEntry = unzipEpub.GetNextEntry()) != null)
+            {
+                string fileName = Path.GetFileName(theEntry.Name);
+                if (directoryName != "")
+                {
+                    Directory.CreateDirectory(directoryName);
+                }
+                if (fileName != String.Empty)
+                {
+                    if (theEntry.Name.IndexOf(".ini") < 0)
+                    {
+                        string fullPath = directoryName + "\\" + theEntry.Name;
+                        string fullDirPath = Path.GetDirectoryName(fullPath);
+                        if (!Directory.Exists(fullDirPath)) Directory.CreateDirectory(fullDirPath);
+                        FileStream streamWriter = File.Create(fullPath);
+                        int size = 2048;
+                        byte[] data = new byte[2048];
+                        while (true)
+                        {
+                            size = unzipEpub.Read(data, 0, data.Length);
+                            if (size > 0)
+                            {
+                                streamWriter.Write(data, 0, size);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }//while
+                        streamWriter.Close();
+                    }//if
+                }//if
+            }//while 
+            unzipEpub.Close();
+            if (deleteZipFile)
+                File.Delete(m_Book_FilePath);
+            // Directory.Delete(directoryName, true);
+        }//unZipePub()
+
 
         private core.TreeNode getTreeNodeWithXmlElementId(string id)
         {

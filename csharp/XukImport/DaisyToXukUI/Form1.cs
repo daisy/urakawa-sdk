@@ -136,7 +136,7 @@ namespace DaisyToXukUI
 
             var open = new OpenFileDialog();
             //open.InitialDirectory = @"C:\";
-            open.Filter = "XML Files (*.xml)|*.xml|OPF Files (*.opf)|*.opf|All files(*.*)|*.*";
+            open.Filter = "XML Files (*.xml)|*.xml|OPF Files (*.opf)|*.opf|EPUB Files (*.epub)|*.epub|All files(*.*)|*.*";
             open.FilterIndex = 1;
             open.RestoreDirectory = true;
             if (open.ShowDialog(this) == DialogResult.OK)
