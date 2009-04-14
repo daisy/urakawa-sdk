@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FB4B9F00-DAE4-46C4-B789-7A693198FA61}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -35,10 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AudioLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="AudioLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\..\audio\AudioLib\bin\Debug\AudioLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
@@ -53,6 +52,10 @@
     <ProjectReference Include="..\..\core\UrakawaSDK.core.csproj">
       <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
       <Name>UrakawaSDK.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLib\C#Unzip_lib\src\ICSharpCode.SharpZLib.csproj">
+      <Project>{0E7413FF-EB9E-4714-ACF2-BE3A6A7B2FFD}</Project>
+      <Name>ICSharpCode.SharpZLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
