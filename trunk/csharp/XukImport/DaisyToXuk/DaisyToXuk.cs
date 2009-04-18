@@ -26,7 +26,7 @@ namespace XukImport
             m_outDirectory = outDir;
             if (!m_outDirectory.EndsWith("" + Path.DirectorySeparatorChar))
             {
-                m_outDirectory = m_outDirectory + Path.DirectorySeparatorChar;
+                m_outDirectory += Path.DirectorySeparatorChar;
             }
             
             initializeProject();
@@ -166,46 +166,46 @@ namespace XukImport
 
         private void unZipePub()
         {
-            bool deleteZipFile = false;
             ZipInputStream unzipEpub = new ZipInputStream(File.OpenRead(m_Book_FilePath));
             ZipEntry theEntry; //Files in the archive
-            string directoryName = @"C:\Users\Documents\Temp";   //Temporary directory to store unzipped files
+
+            string directoryName = Path.GetTempPath();   //Temporary directory to store unzipped files
+            if (!directoryName.EndsWith("" + Path.DirectorySeparatorChar))
+            {
+                directoryName += Path.DirectorySeparatorChar;
+            }
+
             while ((theEntry = unzipEpub.GetNextEntry()) != null)
             {
                 string fileName = Path.GetFileName(theEntry.Name);
-                if (directoryName != "")
-                {
-                    Directory.CreateDirectory(directoryName);
-                }
-                if (fileName != String.Empty)
+                
+                if (! String.IsNullOrEmpty(fileName))
                 {
                     if (theEntry.Name.IndexOf(".ini") < 0)
                     {
-                        string fullPath = directoryName + "\\" + theEntry.Name;
+                        string fullPath = directoryName + Path.DirectorySeparatorChar + theEntry.Name;
                         string fullDirPath = Path.GetDirectoryName(fullPath);
                         if (!Directory.Exists(fullDirPath)) Directory.CreateDirectory(fullDirPath);
                         FileStream streamWriter = File.Create(fullPath);
-                        int size = 2048;
-                        byte[] data = new byte[2048];
-                        while (true)
+                        
+                        byte[] data = new byte[2 * 1024]; // 2 KB buffer
+                        int bytesRead = 0;
+                        try
                         {
-                            size = unzipEpub.Read(data, 0, data.Length);
-                            if (size > 0)
+                            while ((bytesRead = unzipEpub.Read(data, 0, data.Length)) > 0)
                             {
-                                streamWriter.Write(data, 0, size);
+                                streamWriter.Write(data, 0, bytesRead);
                             }
-                            else
-                            {
-                                break;
-                            }
-                        }//while
-                        streamWriter.Close();
+                        }
+                        finally
+                        {
+                            streamWriter.Close();
+                        }
                     }//if
                 }//if
             }//while 
             unzipEpub.Close();
-            if (deleteZipFile)
-                File.Delete(m_Book_FilePath);
+
             // Directory.Delete(directoryName, true);
         }//unZipePub()
 
