@@ -224,7 +224,6 @@
     <Compile Include="WaveFormat.cs" />
     <Content Include="decoder\readme.txt" />
     <Content Include="readme.txt" />
-    <None Include="MP3Sharp.cd" />
     <None Include="Support\_ConversionReport.htm">
       <SubType>Preview</SubType>
     </None>
