@@ -89,7 +89,7 @@
       <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
       <Name>UrakawaSDK.core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\mp3sharp\Mp3Sharp.csproj">
+    <ProjectReference Include="..\mp3-sharp\Mp3Sharp.csproj">
       <Project>{834CAB58-648D-47CC-AC6F-D01C08C809A4}</Project>
       <Name>Mp3Sharp</Name>
     </ProjectReference>
