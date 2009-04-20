@@ -24,7 +24,8 @@ namespace urakawa.core
         bool IsBefore(TreeNode node);
         TreeNode Root { get; }
         string GetTextMediaFlattened();
-        Stream GetManagedAudioDataFlattened();
+        StreamWithMarkers? GetManagedAudioDataFlattened();
+        StreamWithMarkers? GetManagedAudioData();
         TreeNode GetNextSiblingWithManagedAudio();
         TreeNode GetFirstDescendantWithManagedAudio();
         TreeNode GetFirstAncestorWithManagedAudio();

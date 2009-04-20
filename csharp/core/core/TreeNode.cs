@@ -7,6 +7,7 @@ using urakawa.core.visitor;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.utilities;
+using urakawa.media.timing;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
@@ -16,6 +17,18 @@ using XmlAttribute=urakawa.property.xml.XmlAttribute;
 
 namespace urakawa.core
 {
+    public struct TreeNodeAndStreamDataLength
+    {
+        public TreeNode m_TreeNode;
+        public long m_LocalStreamDataLength;
+    }
+
+    public struct StreamWithMarkers
+    {
+        public Stream m_Stream;
+        public List<TreeNodeAndStreamDataLength> m_SubStreamMarkers;
+    }
+
     /// <summary>
     /// A node in the core tree of the SDK
     /// </summary>
@@ -233,12 +246,21 @@ namespace urakawa.core
             return Parent.GetNextSiblingWithManagedAudio();
         }
 
-        public Stream GetManagedAudioDataFlattened()
+        public StreamWithMarkers? GetManagedAudioData()
         {
+            StreamWithMarkers val;
+
             ManagedAudioMedia audioMedia = GetManagedAudioMedia();
             if (audioMedia != null && audioMedia.AudioMediaData != null)
             {
-                return audioMedia.AudioMediaData.GetAudioData();
+                val.m_Stream = audioMedia.AudioMediaData.GetAudioData();
+                val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
+                val.m_SubStreamMarkers.Add(new TreeNodeAndStreamDataLength()
+                                            {
+                                                m_LocalStreamDataLength = val.m_Stream.Length,
+                                                m_TreeNode = this
+                                            });
+                return val;
             }
             else
             {
@@ -248,28 +270,62 @@ namespace urakawa.core
                     Stream stream = seq.GetManagedAudioMediaDataStream();
                     if (stream != null)
                     {
-                        return stream;
+                        val.m_Stream = stream;
+                        val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
+                        val.m_SubStreamMarkers.Add(new TreeNodeAndStreamDataLength()
+                        {
+                            m_LocalStreamDataLength = val.m_Stream.Length,
+                            m_TreeNode = this
+                        });
+                        return val;
                     }
                 }
             }
+            return null;
+        }
 
-            List<Stream> listStream = new List<Stream>();
+        public StreamWithMarkers? GetManagedAudioDataFlattened()
+        {
+            StreamWithMarkers? val = GetManagedAudioData();
+            if (val != null)
+            {
+                return val;
+            }
+
+            List<StreamWithMarkers> listStreamsWithMarkers = new List<StreamWithMarkers>();
 
             for (int index = 0; index < ChildCount; index++)
             {
                 TreeNode node = GetChild(index);
-                Stream childStream = node.GetManagedAudioDataFlattened();
-                if (childStream != null)
+                StreamWithMarkers? childVal = node.GetManagedAudioDataFlattened();
+                if (childVal != null)
                 {
-                    listStream.Add(childStream);
+                    listStreamsWithMarkers.Add(childVal.GetValueOrDefault());
                 }
             }
 
-            if (listStream.Count == 0)
+            if (listStreamsWithMarkers.Count == 0)
             {
                 return null;
             }
-            return new SequenceStream(listStream);
+
+            StreamWithMarkers returnVal = new StreamWithMarkers();
+            returnVal.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>();
+
+            List<Stream> listStreams = new List<Stream>();
+            foreach(StreamWithMarkers strct in listStreamsWithMarkers)
+            {
+                listStreams.Add(strct.m_Stream);
+                returnVal.m_SubStreamMarkers.AddRange(strct.m_SubStreamMarkers);
+                strct.m_SubStreamMarkers.Clear();
+            }
+
+            returnVal.m_Stream = new SequenceStream(listStreams);
+            
+            listStreamsWithMarkers.Clear();
+            listStreamsWithMarkers = null;
+            
+            return returnVal;
         }
 
         public string GetTextMediaFlattened()
