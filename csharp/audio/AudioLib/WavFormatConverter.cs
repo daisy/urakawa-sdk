@@ -36,17 +36,25 @@ namespace AudioLib
             WaveStream sourceStream = null;
             WaveFormatConversionStream conversionStream = null;
             try
-            {
-                WaveFormat destFormat = new WaveFormat((int)destinationPCMFormat.SampleRate,
+                {
+                WaveFormat destFormat = new WaveFormat ( (int)destinationPCMFormat.SampleRate,
                                                                    destinationPCMFormat.BitDepth,
-                                                                   destinationPCMFormat.NumberOfChannels);
-                sourceStream = new WaveFileReader(sourceFile);
+                                                                   destinationPCMFormat.NumberOfChannels );
+                sourceStream = new WaveFileReader ( sourceFile );
 
-                conversionStream = new WaveFormatConversionStream(destFormat, sourceStream);
+                conversionStream = new WaveFormatConversionStream ( destFormat, sourceStream );
 
-                destinationFilePath = GenerateOutputFileFullname(sourceFile, destinationDirectory, destinationPCMFormat);
-                WaveFileWriter.CreateWaveFile(destinationFilePath, conversionStream);
-            }
+                destinationFilePath = GenerateOutputFileFullname ( sourceFile, destinationDirectory, destinationPCMFormat );
+                WaveFileWriter.CreateWaveFile ( destinationFilePath, conversionStream );
+                }
+            catch (System.Exception ex)
+                {
+                if (conversionStream != null)
+                    {
+                    conversionStream.Close ();
+                    }
+                throw new System.Exception ( "Audio format conversion failed" );
+                }
             finally
             {
                 if (conversionStream != null)
