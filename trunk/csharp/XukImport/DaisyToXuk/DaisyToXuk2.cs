@@ -177,8 +177,10 @@ namespace XukImport
 
         private void addAudio(core.TreeNode treeNode, XmlNode xmlNode, bool isSequence)
         {
-            DirectoryInfo parentDir = Directory.GetParent(m_Book_FilePath);
-            string c = parentDir.ToString();
+            //DirectoryInfo parentDir = Directory.GetParent(m_Book_FilePath);
+            //string dirPath = parentDir.ToString();
+            string dirPath = Path.GetDirectoryName(m_Book_FilePath); 
+
             XmlAttributeCollection audioAttrs = xmlNode.Attributes;
 
             if (audioAttrs == null || audioAttrs.Count == 0)
@@ -202,7 +204,7 @@ namespace XukImport
             }
             else if (audioAttrSrc.Value.EndsWith("mp3"))
             {
-                string fullMp3PathOriginal = Path.Combine(c, audioAttrSrc.Value);
+                string fullMp3PathOriginal = Path.Combine(dirPath, audioAttrSrc.Value);
                 if (!File.Exists(fullMp3PathOriginal))
                 {
                     System.Diagnostics.Debug.Fail("File not found: {0}", fullMp3PathOriginal);
@@ -282,7 +284,8 @@ namespace XukImport
             Media media = null;
             Presentation presentation = m_Project.GetPresentation(0);
 
-            string fullWavPathOriginal = Path.Combine(m_outDirectory, src);
+            string dirPath = Path.GetDirectoryName(m_Book_FilePath);
+            string fullWavPathOriginal = Path.Combine(dirPath, src);
             if (!File.Exists(fullWavPathOriginal))
             {
                 System.Diagnostics.Debug.Fail("File not found: {0}", fullWavPathOriginal);
