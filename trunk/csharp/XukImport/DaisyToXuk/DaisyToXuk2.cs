@@ -13,14 +13,19 @@ using urakawa.metadata;
 using urakawa.property.channel;
 using core = urakawa.core;
 
+
 namespace XukImport
 {
     public partial class DaisyToXuk
     {
         private AudioChannel m_audioChannel;
+       
 
         private void parseOPFAndPopulateDataModel()
         {
+            //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
+            //string dirPath = opfParentDir.ToString();
+            string dirPath = Path.GetDirectoryName(m_Book_FilePath);
             m_firstTimePCMFormat = true;
             if (m_convertedWavFiles != null)
             {
@@ -38,7 +43,7 @@ namespace XukImport
             {
                 m_convertedMp3Files = new Dictionary<string, string>();
             }
-
+            
             XmlDocument opfXmlDoc = readXmlDocument(m_Book_FilePath);
 
             parseOpfDcMetaData(opfXmlDoc);
@@ -52,14 +57,15 @@ namespace XukImport
 
             if (DtBookPath != null)
             {
-                string fullDtBookPath = Path.Combine(m_outDirectory, DtBookPath);
+                string fullDtBookPath = Path.Combine(dirPath, DtBookPath);
                 XmlDocument bookXmlDoc = readXmlDocument(fullDtBookPath);
                 parseDTBookXmlDocAndPopulateDataModel(bookXmlDoc, null);
             }
 
             if (ncxPath != null)
             {
-                string fullNcxPath = Path.Combine(m_outDirectory, ncxPath);
+               
+                string fullNcxPath = Path.Combine(dirPath, ncxPath);
                 parseNcx(fullNcxPath);
             }
 
@@ -67,7 +73,7 @@ namespace XukImport
             {
                 foreach (string smilPath in spineListOfSmilFiles)
                 {
-                    string fullSmilPath = Path.Combine(m_outDirectory, smilPath);
+                    string fullSmilPath = Path.Combine(dirPath, smilPath);
                     parseSmil(fullSmilPath);
                 }
             }
@@ -82,7 +88,6 @@ namespace XukImport
             Presentation presentation = m_Project.GetPresentation(0);
 
             XmlDocument smilXmlDoc = readXmlDocument(fullSmilPath);
-
             XmlNodeList allTextNodes = smilXmlDoc.GetElementsByTagName("text");
             if (allTextNodes == null || allTextNodes.Count == 0)
             {
@@ -170,8 +175,10 @@ namespace XukImport
             }
         }
 
-        private void addAudio(TreeNode treeNode, XmlNode xmlNode, bool isSequence)
+        private void addAudio(core.TreeNode treeNode, XmlNode xmlNode, bool isSequence)
         {
+            DirectoryInfo parentDir = Directory.GetParent(m_Book_FilePath);
+            string c = parentDir.ToString();
             XmlAttributeCollection audioAttrs = xmlNode.Attributes;
 
             if (audioAttrs == null || audioAttrs.Count == 0)
@@ -195,7 +202,7 @@ namespace XukImport
             }
             else if (audioAttrSrc.Value.EndsWith("mp3"))
             {
-                string fullMp3PathOriginal = Path.Combine(m_outDirectory, audioAttrSrc.Value);
+                string fullMp3PathOriginal = Path.Combine(c, audioAttrSrc.Value);
                 if (!File.Exists(fullMp3PathOriginal))
                 {
                     System.Diagnostics.Debug.Fail("File not found: {0}", fullMp3PathOriginal);
@@ -210,9 +217,8 @@ namespace XukImport
                 else
                 {
                     IWavFormatConverter wavConverter = new WavFormatConverter(true);
-
+                    
                     string newfullWavPath = wavConverter.UnCompressMp3File(fullMp3PathOriginal, Path.GetDirectoryName(fullMp3PathOriginal), presentation.MediaDataManager.DefaultPCMFormat);
-
                     if (newfullWavPath != null)
                     {
                         m_convertedMp3Files.Add(fullMp3PathOriginal, newfullWavPath);
@@ -386,9 +392,9 @@ namespace XukImport
             //Presentation presentation = DTBooktoXukConversion.m_Project.GetPresentation(0);
             Presentation presentation = m_Project.GetPresentation(0);
             //XmlDocument ncxXmlDoc = DTBooktoXukConversion.readXmlDocument(ncxPath);
+            
             XmlDocument ncxXmlDoc = readXmlDocument(ncxPath);
-
-
+           
             XmlNodeList listOfHeadRootNodes = ncxXmlDoc.GetElementsByTagName("head");
             if (listOfHeadRootNodes != null)
             {
