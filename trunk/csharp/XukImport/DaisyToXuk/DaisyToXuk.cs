@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 using System.Xml;
 using ICSharpCode.SharpZipLib.Zip;
 using urakawa;
@@ -28,7 +29,7 @@ namespace XukImport
             {
                 m_outDirectory += Path.DirectorySeparatorChar;
             }
-            
+
             initializeProject();
 
             transformBook();
@@ -37,8 +38,9 @@ namespace XukImport
             m_Project.SaveXuk(uri);
         }
 
-        public DaisyToXuk(string bookfile): this(bookfile, Path.GetDirectoryName(bookfile)) //Directory.GetParent(bookfile).FullName)
-        {}
+        public DaisyToXuk(string bookfile)
+            : this(bookfile, Path.GetDirectoryName(bookfile)) //Directory.GetParent(bookfile).FullName)
+        { }
 
         private void initializeProject()
         {
@@ -170,24 +172,30 @@ namespace XukImport
             ZipEntry theEntry; //Files in the archive
 
             string directoryName = Path.GetTempPath();   //Temporary directory to store unzipped files
+            string b = Path.Combine(directoryName, "epub");
+            if (Directory.Exists(b))
+            {
+                Directory.Delete(b, true);
+                Directory.CreateDirectory(b);
+            }
             if (!directoryName.EndsWith("" + Path.DirectorySeparatorChar))
             {
                 directoryName += Path.DirectorySeparatorChar;
             }
-
             while ((theEntry = unzipEpub.GetNextEntry()) != null)
             {
                 string fileName = Path.GetFileName(theEntry.Name);
-                
-                if (! String.IsNullOrEmpty(fileName))
+
+                if (!String.IsNullOrEmpty(fileName))
                 {
                     if (theEntry.Name.IndexOf(".ini") < 0)
                     {
-                        string fullPath = directoryName + Path.DirectorySeparatorChar + theEntry.Name;
+                        //string fullPath = directoryName + Path.DirectorySeparatorChar + theEntry.Name;
+                        string fullPath = b + Path.DirectorySeparatorChar + theEntry.Name;
                         string fullDirPath = Path.GetDirectoryName(fullPath);
                         if (!Directory.Exists(fullDirPath)) Directory.CreateDirectory(fullDirPath);
                         FileStream streamWriter = File.Create(fullPath);
-                        
+
                         byte[] data = new byte[2 * 1024]; // 2 KB buffer
                         int bytesRead = 0;
                         try
@@ -205,7 +213,6 @@ namespace XukImport
                 }//if
             }//while 
             unzipEpub.Close();
-
             // Directory.Delete(directoryName, true);
         }//unZipePub()
 
