@@ -45,7 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\tobi\trunk\tobiapp\ExternalLibs\ICSharpCode\Lib.ICSharpCode.csproj">
+    <ProjectReference Include="..\..\..\..\..\Tobi\tobiapp\ExternalLibs\ICSharpCode\Lib.ICSharpCode.csproj">
       <Project>{CB23BC6E-0493-482A-89B9-DD2E2FA4E97D}</Project>
       <Name>Lib.ICSharpCode</Name>
     </ProjectReference>
