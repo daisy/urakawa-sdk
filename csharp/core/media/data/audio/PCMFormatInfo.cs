@@ -144,6 +144,21 @@ namespace urakawa.media.data.audio
                 return (ushort)(NumberOfChannels * BitDepth / 8);
             }
         }
+        
+        private bool m_IsCompressed = false;
+
+        /// <summary>
+        /// Is true if wav stream is compressed. 
+                /// </summary>
+        public bool IsCompressed
+            {
+            get { return m_IsCompressed; }
+            set
+                {
+                m_IsCompressed = value;
+                }
+            }
+
 
         /// <summary>
         /// Determines if the <see cref="PCMFormatInfo"/> is compatible with a given other <see cref="PCMDataInfo"/>

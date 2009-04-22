@@ -253,6 +253,7 @@ namespace urakawa.media.data.audio
                             pcmInfo.BitDepth = bitDepth;
                             pcmInfo.NumberOfChannels = numChannels;
                             pcmInfo.SampleRate = sampleRate;
+                            pcmInfo.IsCompressed = compressionCode != 1;
 
                             foundWavFormatChunk = true;
                             break;
