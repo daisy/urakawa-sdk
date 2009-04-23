@@ -43,19 +43,11 @@ namespace AudioLib
                 sourceStream = new WaveFileReader ( sourceFile );
 
                 conversionStream = new WaveFormatConversionStream ( destFormat, sourceStream );
-
+                
                 destinationFilePath = GenerateOutputFileFullname ( sourceFile, destinationDirectory, destinationPCMFormat );
                 WaveFileWriter.CreateWaveFile ( destinationFilePath, conversionStream );
                 }
-            catch (System.Exception ex)
-                {
-                if (conversionStream != null)
-                    {
-                    conversionStream.Close ();
-                    }
-                throw new System.Exception ( "Audio format conversion failed" );
-                }
-            finally
+                        finally
             {
                 if (conversionStream != null)
                 {
@@ -136,8 +128,46 @@ namespace AudioLib
         /// <exception cref="NotImplementedException">NOT IMPLEMENTED !</exception>
         public string UnCompressWavFile(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat)
         {
-            throw new NotImplementedException();
-        }
+        throw new System.NotImplementedException ();
+
+            // following code fails at ACM codec, so commented for now.
+            /*
+            if (!File.Exists(sourceFile))
+                throw new FileNotFoundException("Invalid source file path");
+
+            if (!Directory.Exists(destinationDirectory))
+                throw new FileNotFoundException("Invalid destination directory");
+
+            string destinationFilePath = null;
+            WaveStream sourceStream = null;
+            WaveFormatConversionStream conversionStream = null;
+            try
+                {
+                WaveFormat destFormat = new WaveFormat ( (int)destinationPCMFormat.SampleRate,
+                                                                   destinationPCMFormat.BitDepth,
+                                                                   destinationPCMFormat.NumberOfChannels );
+                sourceStream = new WaveFileReader ( sourceFile );
+
+                WaveStream intermediateStream = WaveFormatConversionStream.CreatePcmStream ( sourceStream );
+                conversionStream = new WaveFormatConversionStream ( destFormat, intermediateStream);
+
+                destinationFilePath = GenerateOutputFileFullname ( sourceFile, destinationDirectory, destinationPCMFormat );
+                WaveFileWriter.CreateWaveFile ( destinationFilePath, conversionStream );
+                }
+                        finally
+                {
+                if (conversionStream != null)
+                    {
+                    conversionStream.Close ();
+                    }
+                if (sourceStream != null)
+                    {
+                    sourceStream.Close ();
+                    }
+                }
+            return destinationFilePath;
+             */ 
+                    }
 
         /// <exception cref="NotImplementedException">NOT IMPLEMENTED !</exception>
         public string UnCompressMp3File(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat)
