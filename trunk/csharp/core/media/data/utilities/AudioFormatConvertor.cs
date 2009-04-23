@@ -41,14 +41,16 @@ namespace urakawa.media.data.utilities
                 }
 
             // now check for mp3 header
+            FileStream mp3Filestream = new FileStream ( filePath, FileMode.Open, FileAccess.Read );
             try
                 {
-                Mp3FileFormatInfo mp3FormatInfo = new Mp3FileFormatInfo ( filePath );
-                if (mp3FormatInfo != null) return AudioFileTypes.mp3;
+                Mp3Frame frame = new Mp3Frame ( mp3Filestream );
+                mp3Filestream.Close ();
+                if (frame != null) return AudioFileTypes.mp3;
                                 }
             catch (System.Exception)
                 {
-
+                if (mp3Filestream != null) mp3Filestream.Close ();
                 }
             return AudioFileTypes.NotSupported;
                         }
