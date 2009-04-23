@@ -1,0 +1,106 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.IO;
+
+using AudioLib;
+
+namespace urakawa.media.data.utilities
+    {
+
+    public enum AudioFileTypes { UncompressedWav, CompressedWav, mp3, NotSupported } ;
+
+    public class AudioFormatConvertor
+        {
+
+
+        /// <summary>
+        /// Determines audio file type on basis of header.
+                /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns> file type as enum </returns>
+        public static AudioFileTypes GetAudioFileType ( string filePath )
+            {
+            if (!File.Exists ( filePath ))
+                throw new System.IO.FileNotFoundException () ;
+
+            // first check if it is wav file
+            FileStream fs = new FileStream ( filePath, FileMode.Open, FileAccess.Read );
+            try
+                {
+                                audio.PCMFormatInfo formatInfo = audio.PCMDataInfo.ParseRiffWaveHeader ( fs );
+                fs.Close ();
+                                if (formatInfo != null)
+                                    {
+                                    return formatInfo.IsCompressed ?  AudioFileTypes.UncompressedWav: AudioFileTypes.UncompressedWav ;
+                                    }
+                                }
+            catch (System.Exception)
+                {
+                if (fs != null )  fs.Close ();
+                }
+
+            // now check for mp3 header
+            try
+                {
+                Mp3FileFormatInfo mp3FormatInfo = new Mp3FileFormatInfo ( filePath );
+                if (mp3FormatInfo != null) return AudioFileTypes.mp3;
+                                }
+            catch (System.Exception)
+                {
+
+                }
+            return AudioFileTypes.NotSupported;
+                        }
+
+        public static bool WillConversionReduceQuality ( string fileName )
+            {
+            throw new System.NotImplementedException ();
+            }
+
+
+        /// <summary>
+        /// takes wav file / mp3 file as input and converts it to wav file with default audio format of project
+        /// stores output file in data directory of project
+                /// </summary>
+        /// <param name="presentation"></param>
+        /// <param name="SourceFilePath"></param>
+        /// <returns> full file path of converted file </returns>
+        public static string ConvertToDefaultFormat (Presentation presentation  ,  string SourceFilePath)
+            {
+            if (!File.Exists ( SourceFilePath ))
+                throw new System.IO.FileNotFoundException ();
+
+            string destDirectory = presentation.DataProviderManager.DataFileDirectoryFullPath;
+            if (!Directory.Exists ( destDirectory ))
+                {
+                Directory.CreateDirectory ( destDirectory );
+                }
+
+            audio.PCMFormatInfo defaultFormat = presentation.MediaDataManager.DefaultPCMFormat;
+            string convertedFile_FullPath = null ;
+            AudioFileTypes sourceFileType = GetAudioFileType ( SourceFilePath);
+            
+            IWavFormatConverter formatConverter = new WavFormatConverter ( true );
+
+            switch (sourceFileType)
+                {
+            case AudioFileTypes.UncompressedWav :
+            case AudioFileTypes.CompressedWav :
+            convertedFile_FullPath =  formatConverter.ConvertSampleRate ( SourceFilePath, destDirectory, defaultFormat );
+            break;
+
+            case AudioFileTypes.mp3 :
+            convertedFile_FullPath = formatConverter.UnCompressMp3File ( SourceFilePath, destDirectory, defaultFormat );
+            break;
+
+            default:
+                throw new System.Exception ("Source file format not supported") ;
+                                }
+
+                            return convertedFile_FullPath;
+            }
+
+
+        }
+    }
