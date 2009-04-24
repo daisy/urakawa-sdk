@@ -165,58 +165,7 @@ namespace XukImport
 
             return xmldoc;
         }
-
-        private void unZipePub()
-        {
-            ZipInputStream unzipEpub = new ZipInputStream(File.OpenRead(m_Book_FilePath));
-            ZipEntry theEntry; //Files in the archive
-
-            string directoryName = Path.GetTempPath();   //Temporary directory to store unzipped files
-            string b = Path.Combine(directoryName, "epub");
-            if (Directory.Exists(b))
-            {
-                Directory.Delete(b, true);
-                Directory.CreateDirectory(b);
-            }
-            if (!directoryName.EndsWith("" + Path.DirectorySeparatorChar))
-            {
-                directoryName += Path.DirectorySeparatorChar;
-            }
-            while ((theEntry = unzipEpub.GetNextEntry()) != null)
-            {
-                string fileName = Path.GetFileName(theEntry.Name);
-
-                if (!String.IsNullOrEmpty(fileName))
-                {
-                    if (theEntry.Name.IndexOf(".ini") < 0)
-                    {
-                        //string fullPath = directoryName + Path.DirectorySeparatorChar + theEntry.Name;
-                        string fullPath = b + Path.DirectorySeparatorChar + theEntry.Name;
-                        string fullDirPath = Path.GetDirectoryName(fullPath);
-                        if (!Directory.Exists(fullDirPath)) Directory.CreateDirectory(fullDirPath);
-                        FileStream streamWriter = File.Create(fullPath);
-
-                        byte[] data = new byte[2 * 1024]; // 2 KB buffer
-                        int bytesRead = 0;
-                        try
-                        {
-                            while ((bytesRead = unzipEpub.Read(data, 0, data.Length)) > 0)
-                            {
-                                streamWriter.Write(data, 0, bytesRead);
-                            }
-                        }
-                        finally
-                        {
-                            streamWriter.Close();
-                        }
-                    }//if
-                }//if
-            }//while 
-            unzipEpub.Close();
-            // Directory.Delete(directoryName, true);
-        }//unZipePub()
-
-
+        
         private core.TreeNode getTreeNodeWithXmlElementId(string id)
         {
             Presentation pres = m_Project.GetPresentation(0);
