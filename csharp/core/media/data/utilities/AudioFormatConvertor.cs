@@ -104,5 +104,52 @@ namespace urakawa.media.data.utilities
             }
 
 
+        
+        /// <summary>
+        /// takes wav file / mp3 file as input and converts it to wav file with audio format info supplied as parameter
+                /// </summary>
+        /// <param name="SourceFilePath"></param>
+        /// <param name="destinationDirectory"></param>
+        /// <param name="destinationFormatInfo"></param>
+        /// <returns> full file path of converted file  </returns>
+        public static string ConvertToDefaultFormat ( string SourceFilePath, string destinationDirectory, audio.PCMFormatInfo destinationFormatInfo  )
+            {
+            if (!File.Exists ( SourceFilePath ))
+                throw new System.IO.FileNotFoundException ();
+
+            if (destinationFormatInfo== null)
+                throw new System.NullReferenceException ( "PCM format is null" );
+
+            
+            if (!Directory.Exists ( destinationDirectory ))
+                {
+                Directory.CreateDirectory ( destinationDirectory );
+                }
+
+            string convertedFile_FullPath = null;
+            AudioFileTypes sourceFileType = GetAudioFileType ( SourceFilePath );
+
+            IWavFormatConverter formatConverter = new WavFormatConverter ( true );
+
+            switch (sourceFileType)
+                {
+            case AudioFileTypes.UncompressedWav:
+            case AudioFileTypes.CompressedWav:
+            convertedFile_FullPath = formatConverter.ConvertSampleRate ( SourceFilePath, destinationDirectory, destinationFormatInfo);
+            break;
+
+            case AudioFileTypes.mp3:
+            convertedFile_FullPath = formatConverter.UnCompressMp3File ( SourceFilePath, destinationDirectory, destinationFormatInfo);
+            break;
+
+            default:
+            throw new System.Exception ( "Source file format not supported" );
+                }
+
+            return convertedFile_FullPath;
+            }
+
+
+
         }
     }
