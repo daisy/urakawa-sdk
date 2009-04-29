@@ -64,10 +64,10 @@ namespace urakawa.navigation
         TreeNode GetNext(TreeNode context);
 
         /// <summary>
-        /// Gets an enumerator enumerating the virtual sub-forest starting at a given start <see cref="TreeNode"/>
+        /// Gets an list enumerating the virtual sub-forest starting at a given start <see cref="TreeNode"/>
         /// </summary>
         /// <param name="startNode">The given</param>
         /// <returns>The enumerator</returns>
-        IEnumerator<TreeNode> GetSubForestIterator(TreeNode startNode);
+        List<TreeNode> GetSubForestIterator(TreeNode startNode);
     }
 }

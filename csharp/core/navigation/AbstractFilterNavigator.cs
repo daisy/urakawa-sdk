@@ -495,15 +495,16 @@ namespace urakawa.navigation
         }
 
         /// <summary>
-        /// Gets an enumerator enumerating the filtered sub-tree starting at a given start <see cref="TreeNode"/>
+        /// Gets an list enumerating the filtered sub-tree starting at a given start <see cref="TreeNode"/>
         /// </summary>
         /// <param name="startNode">The given</param>
         /// <returns>The enumerator</returns>
-        public IEnumerator<TreeNode> GetSubForestIterator(TreeNode startNode)
+        public List<TreeNode> GetSubForestIterator(TreeNode startNode)
         {
             List<TreeNode> subtree = new List<TreeNode>();
             GenerateSubtree(startNode, ref subtree);
-            return (IEnumerator<TreeNode>) subtree.ToArray().GetEnumerator();
+            //return (IEnumerator<TreeNode>) subtree.ToArray().GetEnumerator();
+            return subtree;
         }
 
         /// <summary>
