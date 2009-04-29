@@ -286,20 +286,6 @@ namespace AudioLib
             }
         }
 
-        /*
-		public long CurrentBytePosition
-		{
-			get
-			{
-				return GetCurrentBytePosition () ;
-			}
-			set
-			{
-				SetCurrentBytePosition (value) ;
-			}
-		}
-         */
-
         /// <summary>
         /// When playing, current playback position (either playing or stopped.)
         /// 0 when not playing.
