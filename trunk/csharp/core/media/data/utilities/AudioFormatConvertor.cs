@@ -80,27 +80,9 @@ namespace urakawa.media.data.utilities
                 }
 
             audio.PCMFormatInfo defaultFormat = presentation.MediaDataManager.DefaultPCMFormat;
-            string convertedFile_FullPath = null ;
-            AudioFileTypes sourceFileType = GetAudioFileType ( SourceFilePath);
+
+            return ConvertToDefaultFormat ( SourceFilePath, destDirectory, defaultFormat );
             
-            IWavFormatConverter formatConverter = new WavFormatConverter ( true );
-
-            switch (sourceFileType)
-                {
-            case AudioFileTypes.UncompressedWav :
-            case AudioFileTypes.CompressedWav :
-            convertedFile_FullPath =  formatConverter.ConvertSampleRate ( SourceFilePath, destDirectory, defaultFormat );
-            break;
-
-            case AudioFileTypes.mp3 :
-            convertedFile_FullPath = formatConverter.UnCompressMp3File ( SourceFilePath, destDirectory, defaultFormat );
-            break;
-
-            default:
-                throw new System.Exception ("Source file format not supported") ;
-                                }
-
-                            return convertedFile_FullPath;
             }
 
 
