@@ -618,7 +618,7 @@ void CaptureTimer_Tick(object sender, EventArgs e)
 
         }
 
-	    public void SetDevice(Control handle, string name)
+	    public void SetDevice(string name)
         {
             List<InputDevice> devices = InputDevices;
             InputDevice found = devices.Find(delegate(InputDevice d) { return d.Name == name; });
@@ -628,7 +628,7 @@ void CaptureTimer_Tick(object sender, EventArgs e)
             }
             else if (devices.Count > 0)
             {
-                mDevice = devices[0];
+                mDevice = devices[devices.Count-1];
             }
             else
             {
