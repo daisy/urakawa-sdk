@@ -54,5 +54,28 @@ namespace urakawa.media.data.utilities
 }
 
 
+/// <summary>
+/// Deletes audio files created during this session, do not deletes the file which is being referenced in presentation
+/// </summary>
+        public void DeleteSessionAudioFiles ()
+            {
+            List<string> presentationFilePaths = new List<string> ();
+
+            foreach (FileDataProvider f in m_Presentation.DataProviderManager.ListOfFileDataProviders)
+                {
+                                presentationFilePaths.Add ( f.DataFileFullPath );
+                }
+
+            foreach (string path in m_FilePathsMap.Values)
+                {
+                if  ( !presentationFilePaths.Contains ( path )   &&    File.Exists (path) ) 
+                    {
+                    File.Delete ( path ) ;
+                    }
+
+                }
+                        }
+
+
         }
     }
