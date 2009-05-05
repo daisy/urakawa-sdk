@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -156,6 +156,9 @@
     <Compile Include="exception\XukQNameNotUniqueWithinFactoryException.cs" />
     <Compile Include="GenericWithPresentationFactory.cs" />
     <Compile Include="GenericXukAbleFactory.cs" />
+    <Compile Include="media\data\utilities\AudioFormatConvertor.cs" />
+    <Compile Include="media\data\utilities\AudioFormatConvertorSession.cs" />
+    <Compile Include="media\data\utilities\Mp3Frame.cs" />
     <Compile Include="progress\ProgressAction.cs" />
     <Compile Include="progress\ProgressHandler.cs" />
     <Compile Include="properties\AssemblyInfo.cs">
@@ -309,6 +312,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="events\EventsClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\audio\AudioLib\AudioLib.csproj">
+      <Project>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</Project>
+      <Name>AudioLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="project\" />
