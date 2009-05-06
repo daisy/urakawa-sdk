@@ -65,18 +65,20 @@ namespace urakawa.media.data.utilities
                 {
                                 presentationFilePaths.Add ( f.DataFileFullPath );
                 }
-            
-            foreach (string pathKey in m_FilePathsMap.Keys)
-                {
-                string path = m_FilePathsMap[pathKey] ;
+
+            string[] keysArray = new string[m_FilePathsMap.Keys.Count];
+            m_FilePathsMap.Keys.CopyTo ( keysArray, 0 );
+
+            for ( int i = 0 ; i < keysArray.Length ; i++ )
+            {
+                string path = m_FilePathsMap[keysArray[i] ] ;
                 if  ( !presentationFilePaths.Contains ( path )   &&    File.Exists (path) ) 
                     {
                     File.Delete ( path ) ;
-                    m_FilePathsMap.Remove ( pathKey );
+                    m_FilePathsMap.Remove ( keysArray[i]);
                     }
-
                 }
-                        }
+            }
 
 
         }
