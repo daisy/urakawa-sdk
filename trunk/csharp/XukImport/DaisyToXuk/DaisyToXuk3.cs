@@ -14,6 +14,7 @@ using urakawa.media.timing;
 using urakawa.metadata;
 using urakawa.property.channel;
 using core = urakawa.core;
+using urakawa.property.xml;
 
 namespace XukImport
 {
@@ -22,6 +23,9 @@ namespace XukImport
     /// </summary>
     public partial class DaisyToXuk
     {
+        private XmlDocument ncxXmlDoc;
+        private XmlDocument bookXmlDoc;
+
         private void unZipePub()
         {
             ZipInputStream unzipEpub = new ZipInputStream(File.OpenRead(m_Book_FilePath));
@@ -47,7 +51,6 @@ namespace XukImport
                 {
                     if (theEntry.Name.IndexOf(".ini") < 0)
                     {
-                        //string fullPath = directoryName + Path.DirectorySeparatorChar + theEntry.Name;
                         string fullPath = unzippedEpubDir + Path.DirectorySeparatorChar + theEntry.Name;
                         string fullDirPath = Path.GetDirectoryName(fullPath);
                         if (!Directory.Exists(fullDirPath)) Directory.CreateDirectory(fullDirPath);
@@ -77,7 +80,7 @@ namespace XukImport
             {
                 string filepath = info.FullName;
                 string fullfilepath = Path.Combine(unzippedEpubDir, filepath);
-                //MessageBox.Show(fullfilepath);
+
                 XmlDocument xmldoc = readXmlDocument(fullfilepath);
                 parseEPUBandPopulateDataModel(fullfilepath);
             }
@@ -134,8 +137,6 @@ namespace XukImport
 
         private void parseEPUBandPopulateDataModel(string epubFilePath)
         {
-            //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
-            //string dirPath = opfParentDir.ToString();
             string dirPath = Path.GetDirectoryName(epubFilePath);
 
             XmlDocument opfXmlDoc = readXmlDocument(epubFilePath);
@@ -145,8 +146,19 @@ namespace XukImport
             List<string> spineListOfHtmlFiles;
             string ncxPath;
             string DtBookPath;
+            string fullNcxPath;
 
             parseEpubOpfManifestAndSpine(opfXmlDoc, out DtBookPath, out spineListOfHtmlFiles, out ncxPath);
+            if (DtBookPath != null)
+            {
+                string fullDtBookPath = Path.Combine(dirPath, DtBookPath);
+                bookXmlDoc = readXmlDocument(fullDtBookPath);
+            }
+            if (ncxPath != null)
+            {
+                fullNcxPath = Path.Combine(dirPath, ncxPath);
+                parseEpubNcx(fullNcxPath);
+            }
 
         }//parseEPUBandPopulateDataModel()
 
@@ -234,19 +246,16 @@ namespace XukImport
                                                 if (i >= 0)
                                                 {
                                                     spineListOfHtmlFiles[i] = attrHref.Value;
-                                                    //MessageBox.Show(spineListOfHtmlFiles[i]);
                                                 }
                                             }
                                         }
                                         else if (attrMediaType.Value == "application/x-dtbncx+xml" || attrMediaType.Value == "text/xml")
                                         {
                                             ncxPath = attrHref.Value;
-                                            MessageBox.Show(ncxPath);
                                         }
                                         else if (attrMediaType.Value == "application/x-dtbook+xml" || attrMediaType.Value == "application/oebps-page-map+xml")
                                         {
                                             DtBookPath = attrHref.Value;
-                                            //MessageBox.Show(DtBookPath);
                                         }
                                     }
 
@@ -258,5 +267,87 @@ namespace XukImport
             }
         }//parseEpubOpfManifestAndSpine
 
+        private void parseEpubNcx(string fullNcxPath)
+        {
+            Presentation presentation = m_Project.GetPresentation(0);
+            ncxXmlDoc = readXmlDocument(fullNcxPath);
+
+            XmlNodeList listOfHeadRootNodes = ncxXmlDoc.GetElementsByTagName("head");
+            if (listOfHeadRootNodes != null)
+            {
+                foreach (XmlNode headNodeRoot in listOfHeadRootNodes)
+                {
+                    XmlNodeList listOfMetaNodes = headNodeRoot.ChildNodes;
+                    if (listOfMetaNodes != null)
+                    {
+                        foreach (XmlNode metaNode in listOfMetaNodes)
+                        {
+                            if (metaNode.NodeType == XmlNodeType.Element
+                                && metaNode.Name == "meta")
+                            {
+                                XmlAttributeCollection attributeCol = metaNode.Attributes;
+
+                                if (attributeCol != null)
+                                {
+                                    XmlNode attrName = attributeCol.GetNamedItem("name");
+                                    XmlNode attrContent = attributeCol.GetNamedItem("content");
+                                    if (attrName != null && attrContent != null && !String.IsNullOrEmpty(attrName.Value)
+                                        && !String.IsNullOrEmpty(attrContent.Value))
+                                    {
+                                        Metadata md = presentation.MetadataFactory.CreateMetadata();
+                                        md.Name = attrName.Value;
+                                        md.Content = attrContent.Value;
+                                        presentation.AddMetadata(md);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            XmlNodeList listOfNavMap = ncxXmlDoc.GetElementsByTagName("navMap");
+            foreach (XmlNode node in listOfNavMap)
+            {
+                parseNcxElement(node, null);
+            }
+
+        }//parseEpubNcx
+
+        private void parseNcxElement(XmlNode navmpNode, core.TreeNode parentNode)
+        {
+            Presentation presentation = m_Project.GetPresentation(0);
+            core.TreeNode treeNode = presentation.TreeNodeFactory.Create();
+            XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
+            treeNode.AddProperty(xmlProp);
+            xmlProp.LocalName = navmpNode.Name;
+
+            if (parentNode == null)
+            {
+                presentation.RootNode = treeNode;
+                parentNode = presentation.RootNode;
+            }
+            else
+            {
+                parentNode.AppendChild(treeNode);
+            }
+
+            if (navmpNode.ParentNode != null && navmpNode.ParentNode.NodeType == XmlNodeType.Document)
+            {
+                presentation.PropertyFactory.DefaultXmlNamespaceUri = navmpNode.NamespaceURI;
+            }
+
+            if (ncxXmlDoc.NamespaceURI != presentation.PropertyFactory.DefaultXmlNamespaceUri)
+            {
+                xmlProp.NamespaceUri = navmpNode.NamespaceURI;
+            }
+
+            foreach (XmlNode childXmlNode in navmpNode.ChildNodes)
+            {
+                parseNcxElement(childXmlNode, treeNode);
+            }
+
+        }//parseNcxElement  
     }//Class
 }//Namespace
+
+
