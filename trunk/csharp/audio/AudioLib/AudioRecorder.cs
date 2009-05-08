@@ -449,7 +449,7 @@ namespace AudioLib
                 Array.Copy( CaptureData , arUpdateVM, m_UpdateVMArrayLength);
                 if (UpdateVuMeterFromRecorder != null) UpdateVuMeterFromRecorder(this, new Events.Recorder.UpdateVuMeterEventArgs());
 
-                if (mState != AudioRecorderState.Monitoring)
+                if (mState != AudioRecorderState.Monitoring && ! String.IsNullOrEmpty(m_sFileName))
                 {
                     FileInfo fi = new FileInfo(m_sFileName);
                     if (fi.Exists)
