@@ -11,7 +11,8 @@ namespace urakawa.media
     /// </summary>
     public class ExternalVideoMedia : AbstractVideoMedia, IClipped, ILocated
     {
-
+        public const string DEFAULT_SRC = "file.ext";
+        
         public override string GetTypeNameFormatted()
         {
             return XukStrings.ExternalVideoMedia;
@@ -24,7 +25,7 @@ namespace urakawa.media
 
         private void Reset()
         {
-            mSrc = ".";
+            mSrc = DEFAULT_SRC;
             mHeight = 0;
             mWidth = 0;
             mClipBegin = Time.Zero;
@@ -218,7 +219,7 @@ namespace urakawa.media
         protected override void XukInAttributes(XmlReader source)
         {
             string val = source.GetAttribute(XukStrings.Src);
-            if (val == null || val == "") val = ".";
+            if (val == null || val == "") val = DEFAULT_SRC;
             Src = val;
             string cb = source.GetAttribute(XukStrings.ClipBegin);
             string ce = source.GetAttribute(XukStrings.ClipEnd);
@@ -492,7 +493,7 @@ namespace urakawa.media
 
 
         /// <summary>
-        /// Gets or sets the src value. The default value is "."
+        /// Gets or sets the src value. The default value is DEFAULT_SRC
         /// </summary>
         /// <exception cref="exception.MethodParameterIsEmptyStringException">
         /// Thrown when trying to set the <see cref="Src"/> value to <c>null</c></exception>

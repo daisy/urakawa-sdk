@@ -31,8 +31,8 @@ namespace urakawa.media
 
         public virtual void Src_Basics()
         {
-            string src = ".";
-            Assert.AreEqual(src, mLocatedMedia1.Src, "The default src value is not '.'");
+            string src = "file.ext";
+            Assert.AreEqual(src, mLocatedMedia1.Src, "The default src value is not 'file.ext'");
             src = "temp.txt";
             mLocatedMedia1.Src = src;
             Assert.AreEqual(src, mLocatedMedia1.Src, "Unexpected src value");

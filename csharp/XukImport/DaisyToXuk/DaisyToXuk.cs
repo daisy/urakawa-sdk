@@ -94,10 +94,10 @@ namespace XukImport
             m_audioChannel.Name = "Our Audio Channel";
 
             string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
-            if (Directory.Exists(dataPath))
+            /*if (Directory.Exists(dataPath))
             {
                 Directory.Delete(dataPath, true);
-            }
+            }*/
         }
 
         private void transformBook()

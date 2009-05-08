@@ -12,6 +12,8 @@ namespace urakawa.media
     /// </summary>
     public class ExternalImageMedia : AbstractImageMedia, ILocated
     {
+        public const string DEFAULT_SRC = "file.ext";
+        
         public override string GetTypeNameFormatted()
         {
             return XukStrings.ExternalImageMedia;
@@ -22,7 +24,7 @@ namespace urakawa.media
 
         private void Reset()
         {
-            mSrc = ".";
+            mSrc = DEFAULT_SRC;
             mWidth = 0;
             mHeight = 0;
         }
@@ -210,7 +212,7 @@ namespace urakawa.media
 
 
         /// <summary>
-        /// Gets or sets the src value. The default value is "."
+        /// Gets or sets the src value. The default value is DEFAULT_SRC
         /// </summary>
         /// <exception cref="exception.MethodParameterIsEmptyStringException">
         /// Thrown when trying to set the <see cref="Src"/> value to <c>null</c></exception>
@@ -277,7 +279,7 @@ namespace urakawa.media
         protected override void XukInAttributes(XmlReader source)
         {
             string val = source.GetAttribute(XukStrings.Src);
-            if (val == null || val == "") val = ".";
+            if (val == null || val == "") val = DEFAULT_SRC;
             Src = val;
             string height = source.GetAttribute(XukStrings.Height);
             string width = source.GetAttribute(XukStrings.Width);

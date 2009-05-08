@@ -12,6 +12,11 @@ namespace urakawa.media.data.audio
     /// </summary>
     public class PCMFormatInfo : XukAble, IValueEquatable<PCMFormatInfo>
     {
+        public override string ToString()
+        {
+            return "(PCM " + BitDepth + " bits, " + SampleRate + " Hz, " + (NumberOfChannels == 1 ? "Mono" : (NumberOfChannels == 2 ? "Stereo" : "" + NumberOfChannels)) + ")";
+        }
+
         public override string GetTypeNameFormatted()
         {
             return XukStrings.PCMFormatInfo;
