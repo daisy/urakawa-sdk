@@ -94,14 +94,11 @@ namespace urakawa.property.channel
             {
                 throw new exception.MethodParameterIsNullException("channel parameter is null");
             }
-            if (uid == null)
+            if (string.IsNullOrEmpty(uid))
             {
-                throw new exception.MethodParameterIsNullException("uid parameter is null");
+                throw new exception.MethodParameterIsNullException("uid parameter cannot be null or empty");
             }
-            if (uid == "")
-            {
-                throw new exception.MethodParameterIsEmptyStringException("uid parameter is empty string");
-            }
+
             if (mChannels.Values.Contains(channel))
             {
                 throw new exception.ChannelAlreadyExistsException(
@@ -199,14 +196,11 @@ namespace urakawa.property.channel
         /// </exception>
         public Channel GetChannel(string uid)
         {
-            if (uid == null)
+            if (string.IsNullOrEmpty(uid))
             {
-                throw new exception.MethodParameterIsNullException("Can not get a Channel with null uid");
+                throw new exception.MethodParameterIsNullException("uid cannot be null or empty");
             }
-            if (uid == "")
-            {
-                throw new exception.MethodParameterIsEmptyStringException("Can not get a Channel with empty uid");
-            }
+
             if (!mChannels.Keys.Contains(uid))
             {
                 throw new exception.ChannelDoesNotExistException(String.Format(
@@ -247,13 +241,11 @@ namespace urakawa.property.channel
             {
                 throw new exception.MethodParameterIsNullException("channel parameter is null");
             }
-            if (uid == null)
+            
+
+            if (string.IsNullOrEmpty(uid))
             {
-                throw new exception.MethodParameterIsNullException("uid parameter is null");
-            }
-            if (uid == "")
-            {
-                throw new exception.MethodParameterIsEmptyStringException("uid parameter is empty string");
+                throw new exception.MethodParameterIsEmptyStringException("uid parameter cannot be null or empty string");
             }
 
             foreach (string Id in mChannels.Keys)

@@ -221,10 +221,9 @@ namespace urakawa.media
             get { return mSrc; }
             set
             {
-                if (value == null)
-                    throw new exception.MethodParameterIsNullException("The src value cannot be null");
-                if (value == "")
-                    throw new exception.MethodParameterIsEmptyStringException("The src value cannot be an empty string");
+                if (string.IsNullOrEmpty(value))
+                    throw new exception.MethodParameterIsNullException("The src value cannot be null or empty");
+
                 string prevSrc = mSrc;
                 mSrc = value;
                 if (mSrc != prevSrc) NotifySrcChanged(mSrc, prevSrc);
@@ -279,11 +278,11 @@ namespace urakawa.media
         protected override void XukInAttributes(XmlReader source)
         {
             string val = source.GetAttribute(XukStrings.Src);
-            if (val == null || val == "") val = DEFAULT_SRC;
+            if (string.IsNullOrEmpty(val)) val = DEFAULT_SRC;
             Src = val;
             string height = source.GetAttribute(XukStrings.Height);
             string width = source.GetAttribute(XukStrings.Width);
-            if (height != null && height != "")
+            if (!string.IsNullOrEmpty(height))
             {
                 int h;
                 if (!Int32.TryParse(height, out h))
@@ -297,7 +296,7 @@ namespace urakawa.media
             {
                 Height = 0;
             }
-            if (width != null && width != "")
+            if (!string.IsNullOrEmpty(width))
             {
                 int w;
                 if (!Int32.TryParse(width, out w))

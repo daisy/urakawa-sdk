@@ -524,7 +524,8 @@ void CaptureTimer_Tick(object sender, EventArgs e)
 
         private double GetCurrentAssetTime()
         {
-            if (mState == AudioRecorderState.Recording && applicationBuffer != null )
+            if ((mState == AudioRecorderState.Monitoring || mState == AudioRecorderState.Recording)
+                && applicationBuffer != null)
             {
                 if (applicationBuffer.Capturing)
                 {

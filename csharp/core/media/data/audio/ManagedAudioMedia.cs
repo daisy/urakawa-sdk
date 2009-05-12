@@ -168,7 +168,7 @@ namespace urakawa.media.data.audio
         protected override void XukInAttributes(XmlReader source)
         {
             string uid = source.GetAttribute(XukStrings.AudioMediaDataUid);
-            if (uid == null || uid == "")
+            if (string.IsNullOrEmpty(uid))
             {
                 throw new exception.XukException("audioMediaDataUid attribute is missing from AudioMediaData");
             }

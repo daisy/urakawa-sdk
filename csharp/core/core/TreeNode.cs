@@ -71,7 +71,7 @@ namespace urakawa.core
                 XmlAttribute idAttr = xmlProp.GetAttribute("id", "");
                 if (idAttr != null)
                 {
-                    return (idAttr.Value == "" ? null : idAttr.Value);
+                    return (string.IsNullOrEmpty(idAttr.Value) ? null : idAttr.Value);
                 }
             }
             return null;

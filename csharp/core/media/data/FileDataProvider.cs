@@ -340,7 +340,7 @@ namespace urakawa.media.data
         protected override void XukInAttributes(XmlReader source)
         {
             string val = source.GetAttribute(XukStrings.DataFileRelativePath);
-            if (val == null || val == "")
+            if (string.IsNullOrEmpty(val))
             {
                 throw new exception.XukException("dataFileRelativePath is missing from FileDataProvider element");
             }
