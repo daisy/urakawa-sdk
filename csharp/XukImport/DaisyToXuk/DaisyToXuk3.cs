@@ -24,7 +24,6 @@ namespace XukImport
     public partial class DaisyToXuk
     {
         private XmlDocument ncxXmlDoc;
-        private XmlDocument bookXmlDoc;
         Presentation presentation;
         
         private void unZipePub()
@@ -155,7 +154,12 @@ namespace XukImport
             {
                 fullNcxPath = Path.Combine(dirPath, ncxPath);
                 parseEpubNcx(fullNcxPath);
-            }            
+            }
+            if (spineListOfHtmlFiles.Count != 0)
+            {
+                parseHtml(dirPath, spineListOfHtmlFiles);
+            }
+
         }//parseEPUBandPopulateDataModel()
 
         private void parseEpubOpfManifestAndSpine(XmlDocument opfXmlDoc, out string DtBookPath, out List<string> spineListOfHtmlFiles, out string ncxPath)
