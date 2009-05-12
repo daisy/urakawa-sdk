@@ -37,17 +37,21 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DaisyToXuk2.cs" />
     <Compile Include="DaisyToXuk.cs" />
-    <Compile Include="DaisyToXuk3.cs" />
+    <Compile Include="DaisyToXuk_Audio.cs" />
+    <Compile Include="DaisyToXuk_ContentDocument.cs" />
+    <Compile Include="DaisyToXuk_ePub.cs" />
+    <Compile Include="DaisyToXuk_Metadata.cs" />
+    <Compile Include="DaisyToXuk_Opf.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Tobi\tobiapp\ExternalLibs\ICSharpCode\Lib.ICSharpCode.csproj">
+    <ProjectReference Include="..\..\..\..\..\tobi\trunk\tobiapp\ExternalLibs\ICSharpCode\Lib.ICSharpCode.csproj">
       <Project>{CB23BC6E-0493-482A-89B9-DD2E2FA4E97D}</Project>
       <Name>Lib.ICSharpCode</Name>
     </ProjectReference>
