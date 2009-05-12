@@ -78,13 +78,13 @@ namespace urakawa.xuk
         /// <param name="nsuri">The value for field <see cref="NamespaceUri"/></param>
         public QualifiedName(string ln, string nsuri)
         {
-            if (ln == null || nsuri == null)
+            if (nsuri == null)
             {
-                throw new MethodParameterIsNullException("The LocalName or the NamespaceUri of the qualified name cannot be null");
+                throw new MethodParameterIsNullException("The NamespaceUri of the qualified name cannot be null");
             }
-            if (ln == "")
+            if (string.IsNullOrEmpty(ln))
             {
-                throw new MethodParameterIsEmptyStringException("The LocalName of the QualifiedName cannot be an empty string");
+                throw new MethodParameterIsEmptyStringException("The LocalName of the QualifiedName cannot be null or an empty string");
             }
             LocalName = ln;
             NamespaceUri = nsuri;

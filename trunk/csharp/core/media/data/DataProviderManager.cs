@@ -655,7 +655,7 @@ namespace urakawa.media.data
         protected override void XukInAttributes(XmlReader source)
         {
             string dataFileDirectoryPath = source.GetAttribute(XukStrings.DataFileDirectoryPath);
-            if (dataFileDirectoryPath == null || dataFileDirectoryPath == "")
+            if (string.IsNullOrEmpty(dataFileDirectoryPath))
             {
                 throw new exception.XukException(
                     "dataFileDirectoryPath attribute is missing from DataProviderManager element");
@@ -797,7 +797,7 @@ namespace urakawa.media.data
                                 }
                                 mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
                             }
-                            if (uid == null || uid == "")
+                            if (string.IsNullOrEmpty(uid))
                             {
                                 throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
                             }

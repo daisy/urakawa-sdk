@@ -361,7 +361,7 @@ namespace urakawa.property.xml
         protected override void XukInAttributes(XmlReader source)
         {
             string ln = source.GetAttribute(XukStrings.LocalName);
-            if (ln == null || ln == "")
+            if (string.IsNullOrEmpty(ln))
             {
                 throw new exception.XukException("LocalName attribute is missing from XmlProperty element");
             }
