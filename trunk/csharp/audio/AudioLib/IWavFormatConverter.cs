@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
-using urakawa.media.data.audio;
+//using urakawa.media.data.audio;
 
 
 namespace AudioLib
@@ -28,7 +28,7 @@ namespace AudioLib
         /// <param name="destinationDirectory">cannot be null</param>
         /// <param name="destinationPCMFormat">cannot be null</param>
         /// <returns> absolute path to the new wave file </returns>
-        string ConvertSampleRate(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat);
+        string ConvertSampleRate ( string sourceFile, string destinationDirectory, int destChannels, int destSanplingRate, int destBitDepth );
 
         /// <summary>
         /// Uncompress the given wav file using the optional specified PCM format,
@@ -38,7 +38,7 @@ namespace AudioLib
         /// <param name="destinationDirectory">cannot be null</param>
         /// <param name="destinationPCMFormat">can be null (in which case the PCM format of the given source is used)</param>
         /// <returns> absolute path to the new wave file </returns>
-        string UnCompressWavFile(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat);
+        string UnCompressWavFile(string sourceFile, string destinationDirectory, int destChannels ,int destSanplingRate, int destBitDepth) ;
 
         /// <summary>
         /// Uncompress the given mp3 file using the optional specified PCM format,
@@ -48,6 +48,6 @@ namespace AudioLib
         /// <param name="destinationDirectory">cannot be null</param>
         /// <param name="destinationPCMFormat">can be null (in which case the PCM format of the given source is used)</param>
         /// <returns> absolute path to the new mp3 file </returns>
-        string UnCompressMp3File(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat);
+        string UnCompressMp3File(string sourceFile, string destinationDirectory, int destChannels ,int destSanplingRate, int destBitDepth) ;
     }
 }
