@@ -120,11 +120,11 @@ namespace urakawa.media.data.utilities
             {
                 case AudioFileTypes.UncompressedWav:
                 case AudioFileTypes.CompressedWav:
-                    convertedFile_FullPath = formatConverter.ConvertSampleRate(SourceFilePath, destinationDirectory, destinationFormatInfo);
+                convertedFile_FullPath = formatConverter.ConvertSampleRate ( SourceFilePath, destinationDirectory, (int)destinationFormatInfo.NumberOfChannels, (int)destinationFormatInfo.SampleRate, (int)destinationFormatInfo.BitDepth );
                     break;
 
                 case AudioFileTypes.mp3:
-                    convertedFile_FullPath = formatConverter.UnCompressMp3File(SourceFilePath, destinationDirectory, destinationFormatInfo);
+                convertedFile_FullPath = formatConverter.UnCompressMp3File ( SourceFilePath, destinationDirectory, (int)destinationFormatInfo.NumberOfChannels, (int)destinationFormatInfo.SampleRate, (int)destinationFormatInfo.BitDepth );
                     break;
 
                 default:

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-using urakawa.media.data.audio;
+//using urakawa.media.data.audio;
 
 using NAudio.Wave;
 
@@ -24,7 +24,7 @@ namespace AudioLib
             OverwriteOutputFiles = overwriteOutputFiles;
         }
 
-        public string ConvertSampleRate(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat)
+        public string ConvertSampleRate(string sourceFile, string destinationDirectory,int destChannels ,int destSanplingRate, int destBitDepth)
         {
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path");
@@ -37,14 +37,14 @@ namespace AudioLib
             WaveFormatConversionStream conversionStream = null;
             try
                 {
-                WaveFormat destFormat = new WaveFormat ( (int)destinationPCMFormat.SampleRate,
-                                                                   destinationPCMFormat.BitDepth,
-                                                                   destinationPCMFormat.NumberOfChannels );
+                WaveFormat destFormat = new WaveFormat ( (int)destSanplingRate,
+                                                                   destBitDepth,
+                                                                   destChannels);
                 sourceStream = new WaveFileReader ( sourceFile );
 
                 conversionStream = new WaveFormatConversionStream ( destFormat, sourceStream );
                 
-                destinationFilePath = GenerateOutputFileFullname ( sourceFile, destinationDirectory, destinationPCMFormat );
+                destinationFilePath = GenerateOutputFileFullname ( sourceFile, destinationDirectory, destChannels, destSanplingRate,destBitDepth);
                 WaveFileWriter.CreateWaveFile ( destinationFilePath, conversionStream );
                 }
                         finally
@@ -62,7 +62,7 @@ namespace AudioLib
             return destinationFilePath;
         }
 
-        private string GenerateOutputFileFullname(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat)
+        private string GenerateOutputFileFullname(string sourceFile, string destinationDirectory, int destChannels, int destSamplingRate, int destBitDepth)
         {
             //FileInfo sourceFileInfo = new FileInfo(sourceFile);
             //string sourceFileName = sourceFileInfo.Name.Replace(sourceFileInfo.Extension, "");
@@ -70,7 +70,7 @@ namespace AudioLib
             string sourceFileName = Path.GetFileNameWithoutExtension(sourceFile);
             string sourceFileExt = Path.GetExtension(sourceFile);
 
-            string channels = (destinationPCMFormat.NumberOfChannels == 1 ? "Mono" : (destinationPCMFormat.NumberOfChannels == 2 ? "Stereo" : destinationPCMFormat.NumberOfChannels.ToString()));
+            string channels = (destChannels == 1 ? "Mono" : (destChannels == 2 ? "Stereo" : destChannels.ToString()));
 
             string destFile = null;
 
@@ -79,11 +79,11 @@ namespace AudioLib
                 destFile = Path.Combine(destinationDirectory,
                                            sourceFileName
                                            + "_"
-                                           + destinationPCMFormat.BitDepth
+                                           + destBitDepth
                                            + "-"
                                            + channels
                                            + "-"
-                                           + destinationPCMFormat.SampleRate
+                                           + destSamplingRate
                                            + sourceFileExt);
             }
             else
@@ -103,11 +103,11 @@ namespace AudioLib
                     destFile = Path.Combine(destinationDirectory,
                                         sourceFileName
                                         + "_"
-                                        + destinationPCMFormat.BitDepth
+                                        + destBitDepth
                                         + "-"
                                         + channels
                                         + "-"
-                                        + destinationPCMFormat.SampleRate
+                                        + destSamplingRate
                                         + randomStr
                                         + sourceFileExt);
                 } while (File.Exists(destFile));
@@ -126,7 +126,7 @@ namespace AudioLib
         }
 
         /// <exception cref="NotImplementedException">NOT IMPLEMENTED !</exception>
-        public string UnCompressWavFile(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat)
+        public string UnCompressWavFile ( string sourceFile, string destinationDirectory, int destChannels, int destSanplingRate, int destBitDepth )
         {
         throw new System.NotImplementedException ();
 
@@ -170,7 +170,7 @@ namespace AudioLib
                     }
 
         /// <exception cref="NotImplementedException">NOT IMPLEMENTED !</exception>
-        public string UnCompressMp3File(string sourceFile, string destinationDirectory, PCMFormatInfo destinationPCMFormat)
+        public string UnCompressMp3File(string sourceFile, string destinationDirectory, int destChannels, int destSamplingRate, int destBitDepth)
         {
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path");
@@ -179,16 +179,22 @@ namespace AudioLib
                 throw new FileNotFoundException("Invalid destination directory");
 
             string destinationFilePath = null;
-            PCMFormatInfo pcmFormat = null;
+            //PCMFormatInfo pcmFormat = null;
+            int channels = 0;
+            int sampleRate = 0;
+            int bitDepth = 0;
+            bool exceptionError = false;
             using (Mp3FileReader mp3Reader = new Mp3FileReader(sourceFile))
             {
                 using (WaveStream pcmStream = WaveFormatConversionStream.CreatePcmStream(mp3Reader))
                 {
-                    pcmFormat = new PCMFormatInfo((ushort)pcmStream.WaveFormat.Channels,
-                                                            (uint)pcmStream.WaveFormat.SampleRate,
-                                                            (ushort)pcmStream.WaveFormat.BitsPerSample);
-
-                    destinationFilePath = GenerateOutputFileFullname(sourceFile + ".wav", destinationDirectory, pcmFormat);
+                    //pcmFormat = new PCMFormatInfo((ushort)pcmStream.WaveFormat.Channels,
+                                                            //(uint)pcmStream.WaveFormat.SampleRate,
+                                                            //(ushort)pcmStream.WaveFormat.BitsPerSample);
+                channels = pcmStream.WaveFormat.Channels;
+                sampleRate = pcmStream.WaveFormat.SampleRate;
+                bitDepth = pcmStream.WaveFormat.BitsPerSample;
+                    destinationFilePath = GenerateOutputFileFullname ( sourceFile + ".wav", destinationDirectory, pcmStream.WaveFormat.Channels, pcmStream.WaveFormat.SampleRate, pcmStream.WaveFormat.BitsPerSample );
                     using (WaveFileWriter writer = new WaveFileWriter(destinationFilePath, pcmStream.WaveFormat))
                     {
                         const int BUFFER_SIZE = 1024 * 8; // 8 KB MAX BUFFER  
@@ -206,13 +212,15 @@ namespace AudioLib
                         {
                             pcmStream.Close();
                             writer.Close();
-                            pcmFormat = null;
+                            //pcmFormat = null;
+                            exceptionError = true;
                         }
                     }
                 }
             }
 
-            if (pcmFormat == null)
+            //if (pcmFormat == null)
+            if ( exceptionError )
             {
                 Stream fileStream = File.Open(sourceFile, FileMode.Open, FileAccess.Read);
                 if (fileStream != null)
@@ -220,10 +228,13 @@ namespace AudioLib
                     int totalBytesWritten = 0;
                     using (NLayerMp3Stream mp3Stream = new NLayerMp3Stream(fileStream))
                     {
-                        pcmFormat = new PCMFormatInfo((ushort)mp3Stream.WaveFormat.Channels,
-                                                      (uint)mp3Stream.WaveFormat.SampleRate,
-                                                      (ushort)mp3Stream.WaveFormat.BitsPerSample);
-                        destinationFilePath = GenerateOutputFileFullname(sourceFile + ".wav", destinationDirectory, pcmFormat);
+                        //pcmFormat = new PCMFormatInfo((ushort)mp3Stream.WaveFormat.Channels,
+                                                      //(uint)mp3Stream.WaveFormat.SampleRate,
+                                                      //(ushort)mp3Stream.WaveFormat.BitsPerSample);
+                    channels = mp3Stream.WaveFormat.Channels;
+                    sampleRate = mp3Stream.WaveFormat.SampleRate;
+                    bitDepth = mp3Stream.WaveFormat.BitsPerSample;
+                        destinationFilePath = GenerateOutputFileFullname ( sourceFile + ".wav", destinationDirectory, mp3Stream.WaveFormat.Channels, mp3Stream.WaveFormat.SampleRate, mp3Stream.WaveFormat.BitsPerSample );
                         using (WaveFileWriter writer = new WaveFileWriter(destinationFilePath, mp3Stream.WaveFormat))
                         {
                             int buffSize = mp3Stream.GetReadSize(4000);
@@ -257,9 +268,12 @@ namespace AudioLib
                 }
             }
 
-            if (!pcmFormat.IsCompatibleWith(destinationPCMFormat))
+            //if (!pcmFormat.IsCompatibleWith(destinationPCMFormat))
+            if ( channels != destChannels
+                || sampleRate != destSamplingRate 
+                || bitDepth != destBitDepth )
             {
-                return ConvertSampleRate(destinationFilePath, destinationDirectory, destinationPCMFormat);
+                return ConvertSampleRate(destinationFilePath, destinationDirectory, destChannels, destSamplingRate, destBitDepth);
             }
             return destinationFilePath;
         }
