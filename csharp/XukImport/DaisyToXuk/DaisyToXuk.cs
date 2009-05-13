@@ -201,6 +201,20 @@ namespace XukImport
             this.enableHttpCaching = enableHttpCaching;
         }
 
+        public override Uri ResolveUri(Uri baseUri, string relativeUri)
+        {
+            if ((baseUri == null) || (!baseUri.IsAbsoluteUri && (baseUri.OriginalString.Length == 0)))
+            {
+                var uri = new Uri(relativeUri, UriKind.RelativeOrAbsolute);
+                if (!uri.IsAbsoluteUri && (uri.OriginalString.Length > 0))
+                {
+                    uri = new Uri(Path.GetFullPath(relativeUri));
+                }
+                return uri;
+            }
+            return !String.IsNullOrEmpty(relativeUri) ? new Uri(baseUri, relativeUri) : baseUri;
+        }
+
         public override ICredentials Credentials
         {
             set
@@ -229,10 +243,13 @@ namespace XukImport
                 return resp.GetResponseStream();
             }
             //otherwise use the default behavior of the XmlUrlResolver class (resolve resources from source)
-            else
+
+            if (absoluteUri.Scheme == "file" && !File.Exists(absoluteUri.LocalPath))
             {
-                return base.GetEntity(absoluteUri, role, ofObjectToReturn);
+                return null;
             }
+
+            return base.GetEntity(absoluteUri, role, ofObjectToReturn);
         }
 
     }
