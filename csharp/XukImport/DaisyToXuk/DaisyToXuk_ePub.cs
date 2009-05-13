@@ -34,12 +34,10 @@ namespace XukImport
             while ((zipEntry = zipInputStream.GetNextEntry()) != null)
             {
                 string zipEntryName = Path.GetFileName(zipEntry.Name);
-                if (String.IsNullOrEmpty(zipEntryName)) // || zipEntryName.IndexOf(".ini") >= 0
-                {
-                    continue;
-                }
-
-                string unzippedFilePath = Path.Combine(unzipDirectory, zipEntryName);
+                if (!String.IsNullOrEmpty(zipEntryName)) // || zipEntryName.IndexOf(".ini") >= 0
+                {                
+                // string unzippedFilePath = Path.Combine(unzipDirectory, zipEntryName);
+                string unzippedFilePath = unzipDirectory + Path.DirectorySeparatorChar + zipEntry.Name;
                 string unzippedFileDir = Path.GetDirectoryName(unzippedFilePath);
                 if (!Directory.Exists(unzippedFileDir))
                 {
@@ -60,6 +58,7 @@ namespace XukImport
                 {
                     fileStream.Close();
                 }
+            }
             }
             zipInputStream.Close();
 
