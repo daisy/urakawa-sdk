@@ -7,7 +7,6 @@ using urakawa.core.visitor;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.utilities;
-using urakawa.media.timing;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
@@ -36,6 +35,23 @@ namespace urakawa.core
     public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,
                             IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
     {
+
+        public TreeNode GetFirstChildWithXmlElementName(string elemName)
+        {
+            QualifiedName qname = GetXmlElementQName();
+            if (qname != null && qname.LocalName == elemName) return this;
+
+            for (int i = 0; i < ChildCount; i++)
+            {
+                TreeNode child = GetChild(i).GetFirstChildWithXmlElementName(elemName);
+                if (child != null)
+                {
+                    return child;
+                }
+            }
+            return null;
+        }
+
         public override string ToString()
         {
             QualifiedName qname = GetXmlElementQName();
