@@ -10,7 +10,7 @@ namespace AudioLib
     public class AudioLibPCMFormat
         {
         private int m_Channels;
-        private int m_SanplingRate;
+        private int m_SamplingRate;
         private int m_BitDepth;
 
         public AudioLibPCMFormat ( int channels, int samplingRate, int bitDepth )
@@ -31,7 +31,7 @@ namespace AudioLib
                 }
 
             m_Channels = channels;
-            m_SanplingRate = samplingRate;
+            m_SamplingRate = samplingRate;
             m_BitDepth = bitDepth;
             }
 
@@ -41,7 +41,7 @@ namespace AudioLib
             }
 
         public int NumberOfChannels { get { return m_Channels; } }
-        public int SampleRate { get { return m_SanplingRate; } }
+        public int SampleRate { get { return m_SamplingRate; } }
         public int BitDepth { get { return m_BitDepth; } }
         public int BlockAlign { get { return (m_BitDepth / 8) * m_Channels; } }
 
