@@ -6,8 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.DirectX;
 using Microsoft.DirectX.DirectSound;
-using urakawa.media.data.audio;
-using urakawa.media.timing;
+//using urakawa.media.data.audio;
+//using urakawa.media.timing;
 
 // TODO change all ints to longs
 
@@ -39,8 +39,8 @@ namespace AudioLib
 
         private StreamProviderDelegate mCurrentAudioStreamProvider;
         private Stream mCurrentAudioStream;
-        private PCMFormatInfo mCurrentAudioPCMFormat;
-        private TimeDelta mCurrentAudioDuration;
+        private AudioLibPCMFormat mCurrentAudioPCMFormat;
+        private double mCurrentAudioDuration;
 
         private SecondaryBuffer mSoundBuffer;  // DX playback buffer
         private int m_SizeBuffer; // Size of buffer created for playing
@@ -114,7 +114,7 @@ namespace AudioLib
         /// <summary>
         /// The audio data currently playing.
         /// </summary>
-        public PCMFormatInfo CurrentAudioPCMFormat { get { return mCurrentAudioPCMFormat; } }
+        public AudioLibPCMFormat CurrentAudioPCMFormat { get { return mCurrentAudioPCMFormat; } }
 
         /// <summary>
         /// Currently used output device.
@@ -141,11 +141,12 @@ namespace AudioLib
         // Get the current playback position in bytes.
         private long GetCurrentBytePosition()
         {
-            int PlayPosition = 0;
+                        int PlayPosition = 0;
             long lCurrentPosition = 0;
-            if (mCurrentAudioStream != null && mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration) > 0)
+            if (mCurrentAudioStream != null && 
+                mCurrentAudioPCMFormat.GetLengthInBytes ( mCurrentAudioDuration )  > 0)
             {//1
-                if (mState == AudioPlayerState.Playing)
+                                if (mState == AudioPlayerState.Playing)
                 {//2
                     PlayPosition = mSoundBuffer.PlayPosition;
                     // if refreshing of buffer has finished and player is near end of asset
@@ -170,9 +171,9 @@ namespace AudioLib
                         int subtractor = (3 * m_RefreshLength) - PlayPosition;
                         lCurrentPosition = m_lPlayed - subtractor;
                     }//-3
-                    if (lCurrentPosition >= mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration))
+                    if (lCurrentPosition >= mCurrentAudioPCMFormat.GetLengthInBytes(mCurrentAudioDuration))
                     {//3
-                        lCurrentPosition = mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration) -
+                        lCurrentPosition = mCurrentAudioPCMFormat.GetLengthInBytes (mCurrentAudioDuration) -
                             Convert.ToInt32(CalculationFunctions.ConvertTimeToByte(100, (int)mCurrentAudioPCMFormat.SampleRate, mCurrentAudioPCMFormat.BlockAlign));
                     }//-3
                     if (mPrevBytePosition > lCurrentPosition && mFwdRwdRate >= 0) return mPrevBytePosition;
@@ -424,7 +425,7 @@ namespace AudioLib
         /// <summary>
         ///  Plays an asset from beginning to end
         /// </summary>
-        public void Play(StreamProviderDelegate currentAudioStreamProvider, TimeDelta duration, PCMFormatInfo pcmInfo)
+        public void Play(StreamProviderDelegate currentAudioStreamProvider, double duration, AudioLibPCMFormat pcmInfo)
         {
             Play(currentAudioStreamProvider, duration, pcmInfo, 0);
         }
@@ -435,7 +436,7 @@ namespace AudioLib
         ///  Plays an asset from a specified time position its to ends
         /// </summary>
         /// <param name="timeFrom"></param>
-        public void Play(StreamProviderDelegate currentAudioStreamProvider, TimeDelta duration, PCMFormatInfo pcmInfo, double timeFrom)
+        public void Play(StreamProviderDelegate currentAudioStreamProvider,double  duration, AudioLibPCMFormat pcmInfo, double timeFrom)
         {
             Play(currentAudioStreamProvider, duration, pcmInfo, timeFrom, 0);
         }
@@ -444,13 +445,13 @@ namespace AudioLib
         /// <summary>
         /// Play an asset from a specified time position upto another specified time position
         /// </summary>
-        public void Play(StreamProviderDelegate currentAudioStreamProvider, TimeDelta duration, PCMFormatInfo pcmInfo, double from, double to)
+        public void Play(StreamProviderDelegate currentAudioStreamProvider, double duration, AudioLibPCMFormat pcmInfo, double from, double to)
         {
             if (currentAudioStreamProvider == null)
             {
                 throw new ArgumentNullException("Stream cannot be null !");
             }
-            if (duration.TimeDeltaAsMillisecondDouble <= 0)
+            if (duration <= 0)
             {
                 throw new ArgumentOutOfRangeException("Duration cannot be <= 0 !");
             }
@@ -478,7 +479,7 @@ namespace AudioLib
                 }
                 if (startPosition >= 0 &&
                     (endPosition == 0 || startPosition < endPosition) &&
-                    endPosition <= pcmInfo.GetDataLength(duration))
+                    endPosition <= pcmInfo.GetLengthInBytes (duration))
                 {
                     InitPlay(startPosition, endPosition);
                 }
@@ -492,9 +493,9 @@ namespace AudioLib
 
 
         // Get a byte position from a time in ms. for the given PCM format info.
-        private long BytePositionFromTime(double time, PCMFormatInfo info)
+        private long BytePositionFromTime(double time, AudioLibPCMFormat info)
         {
-            ushort align = info.BlockAlign;
+            ushort align = (ushort) info.BlockAlign;
             return CalculationFunctions.AdaptToFrame(CalculationFunctions.ConvertTimeToByte(time, (int)info.SampleRate, align), align);
         }
 
@@ -519,8 +520,8 @@ namespace AudioLib
                     // check for valid arguments
                     if (lStartPosition < 0) lStartPosition = 0;
 
-                    if (lEndPosition > pcmInfo.GetDataLength(asset.getAudioDuration()))
-                        lEndPosition = pcmInfo.GetDataLength(asset.getAudioDuration());
+                    if (lEndPosition > pcmInfo.GetLengthInBytes(asset.getAudioDuration()))
+                        lEndPosition = pcmInfo.GetLengthInBytes(asset.getAudioDuration());
 
                     if ( mFwdRwdRate == 0  )
                     {
@@ -616,7 +617,7 @@ namespace AudioLib
                 }
                 else if (mFwdRwdRate < 0)
                 {
-                    if (lStartPosition == 0) lStartPosition = mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration);
+                    if (lStartPosition == 0) lStartPosition = mCurrentAudioPCMFormat.GetLengthInBytes (mCurrentAudioDuration);
                     Rewind(lStartPosition);
                 }
             }// end of state check
@@ -650,7 +651,7 @@ namespace AudioLib
                 {
                     // folowing one line is modified on 2 Aug 2006
                     //m_lPlayEnd = (m_Asset .SizeInBytes  - lStartPosition ) ;
-                    m_lPlayEnd = (mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration));
+                    m_lPlayEnd = (mCurrentAudioPCMFormat.GetLengthInBytes (mCurrentAudioDuration));
                 }
 
                 mPrevBytePosition = lStartPosition;
@@ -922,7 +923,7 @@ namespace AudioLib
                 long lPosition = CalculationFunctions.AdaptToFrame(mPausePosition, mCurrentAudioPCMFormat.BlockAlign);
                 long lEndPosition = CalculationFunctions.AdaptToFrame(m_lResumeToPosition, mCurrentAudioPCMFormat.BlockAlign);
 
-                if (lPosition >= 0 && lPosition < mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration))
+                if (lPosition >= 0 && lPosition < mCurrentAudioPCMFormat.GetLengthInBytes (mCurrentAudioDuration))
                 {
                     mStartPosition = lPosition;
                     InitPlay(lPosition, lEndPosition);
@@ -943,7 +944,7 @@ namespace AudioLib
                 StopPlayback();
 
                 mCurrentAudioPCMFormat = null;
-                mCurrentAudioDuration = null;
+                mCurrentAudioDuration = 0 ;
                 mCurrentAudioStreamProvider = null;
             }
 
@@ -970,7 +971,7 @@ namespace AudioLib
 
             mCurrentAudioStream = null;
             mCurrentAudioPCMFormat = null;
-            mCurrentAudioDuration = null;
+            mCurrentAudioDuration = 0 ;
             mCurrentAudioStreamProvider = null;
             ////
 
@@ -993,7 +994,7 @@ namespace AudioLib
             {
                 if (position < 0) position = 0;
 
-                double duration = mCurrentAudioDuration.TimeDeltaAsMillisecondDouble;
+                double duration = mCurrentAudioDuration ;
                 if (position > duration)
                 {
                     position = duration;
@@ -1003,8 +1004,8 @@ namespace AudioLib
                 {
 
                     StreamProviderDelegate spd = mCurrentAudioStreamProvider;
-                    TimeDelta dur = mCurrentAudioDuration;
-                    PCMFormatInfo fmt = mCurrentAudioPCMFormat;
+                    double dur = mCurrentAudioDuration;
+                    AudioLibPCMFormat fmt = mCurrentAudioPCMFormat;
 
                     Stop();
                     Thread.Sleep(30);
@@ -1079,7 +1080,7 @@ namespace AudioLib
             long PlayEndPos = 0;
             if (mFwdRwdRate > 0)
             { //2
-                if ((mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration) - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
+                if ((mCurrentAudioPCMFormat.GetLengthInBytes (mCurrentAudioDuration) - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
                 { //3
                     if (m_lChunkStartPosition > 0)
                     {
@@ -1092,8 +1093,8 @@ namespace AudioLib
                     PlayEndPos = m_lChunkStartPosition + lPlayChunkLength;
                     PlayAssetStream(PlayStartPos, PlayEndPos);
 
-                    if (m_lChunkStartPosition > mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration))
-                        m_lChunkStartPosition = mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration);
+                    if (m_lChunkStartPosition > mCurrentAudioPCMFormat.GetLengthInBytes(mCurrentAudioDuration))
+                        m_lChunkStartPosition = mCurrentAudioPCMFormat.GetLengthInBytes(mCurrentAudioDuration);
                 } //-3
                 else
                 { //3
@@ -1107,10 +1108,10 @@ namespace AudioLib
                 //if (m_lChunkStartPosition > (lStepInBytes ) && lPlayChunkLength <= m_Asset.getPCMLength () )
                 if (m_lChunkStartPosition > 0)
                 { //3
-                    if (m_lChunkStartPosition < mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration))
+                    if (m_lChunkStartPosition < mCurrentAudioPCMFormat.GetLengthInBytes(mCurrentAudioDuration))
                         m_lChunkStartPosition -= lStepInBytes;
                     else
-                        m_lChunkStartPosition = mCurrentAudioPCMFormat.GetDataLength(mCurrentAudioDuration) - lPlayChunkLength;
+                        m_lChunkStartPosition = mCurrentAudioPCMFormat.GetLengthInBytes(mCurrentAudioDuration) - lPlayChunkLength;
 
                     PlayStartPos = m_lChunkStartPosition;
                     PlayEndPos = m_lChunkStartPosition + lPlayChunkLength;
