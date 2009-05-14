@@ -7,7 +7,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.DirectSound;
 using System.Threading;
 
-using urakawa.media.data.audio;
+//using urakawa.media.data.audio;
 
 namespace AudioLib
 {
@@ -22,9 +22,10 @@ namespace AudioLib
 
 	public class AudioRecorder
 	{
-	    private PCMFormatInfo mPCMFormat;
+        private AudioLibPCMFormat mPCMFormat;
 
-	    public PCMFormatInfo RecordingPCMFormat
+
+	    public AudioLibPCMFormat RecordingPCMFormat
 	    {
             get { return mPCMFormat; }
 	    }
@@ -132,7 +133,7 @@ namespace AudioLib
             }
         }
 
-        public void StartListening(PCMFormatInfo thePCMFormat)
+        public void StartListening(AudioLibPCMFormat thePCMFormat)
 		{
             mPCMFormat = thePCMFormat;
 
@@ -150,7 +151,7 @@ namespace AudioLib
         /// <summary>
         /// Start the recording process into the given asset.
         /// </summary>
-        public void StartRecording(PCMFormatInfo thePCMFormat)
+        public void StartRecording(AudioLibPCMFormat thePCMFormat)
 		{
             mPCMFormat = thePCMFormat;
 
