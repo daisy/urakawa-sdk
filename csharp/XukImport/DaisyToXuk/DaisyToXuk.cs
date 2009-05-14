@@ -29,7 +29,10 @@ namespace XukImport
             {
                 m_outDirectory += Path.DirectorySeparatorChar;
             }
-
+            if (!Directory.Exists(m_outDirectory))
+            {
+                Directory.CreateDirectory(m_outDirectory);
+            }
             initializeProject();
             transformBook();
 
