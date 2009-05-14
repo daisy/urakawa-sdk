@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-//using urakawa.media.data.audio;
-
 using NAudio.Wave;
 
 namespace AudioLib

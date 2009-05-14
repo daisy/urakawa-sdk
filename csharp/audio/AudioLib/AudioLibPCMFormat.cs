@@ -6,18 +6,31 @@ namespace AudioLib
     {
     /// <summary>
     /// Class for holding information about no. of channels, sampling rate and bit depth for PCM file or stream.
-        /// </summary> 
+    /// </summary> 
     public class AudioLibPCMFormat
         {
         private int m_Channels;
         private int m_SanplingRate;
         private int m_BitDepth;
 
-        public AudioLibPCMFormat  ( int channels, int samplingRate, int bitDepth )
+        public AudioLibPCMFormat ( int channels, int samplingRate, int bitDepth )
             {
-            // to do:  need to add invalid format exceptions here
 
-                        m_Channels = channels;
+            if (samplingRate != 11025
+    && samplingRate != 22050
+   && samplingRate != 44100
+   && samplingRate != 88200
+    && !(samplingRate >= 8000 && samplingRate <= 96000 && samplingRate % 8000 == 0))//Todo: check this line
+                {
+                throw new System.Exception ( "Invalid sampling rate" );
+                }
+
+            if (!(bitDepth >= 8 && bitDepth <= 32 && bitDepth % 8 == 0))
+                {
+                throw new System.Exception ( "Invalid bit depth" );
+                }
+
+            m_Channels = channels;
             m_SanplingRate = samplingRate;
             m_BitDepth = bitDepth;
             }
@@ -27,8 +40,8 @@ namespace AudioLib
             {
             }
 
-        public int NumberOfChannels  { get { return m_Channels; } }
-        public int SampleRate  { get { return m_SanplingRate; } }
+        public int NumberOfChannels { get { return m_Channels; } }
+        public int SampleRate { get { return m_SanplingRate; } }
         public int BitDepth { get { return m_BitDepth; } }
         public int BlockAlign { get { return (m_BitDepth / 8) * m_Channels; } }
 
@@ -36,6 +49,11 @@ namespace AudioLib
             {
             long length = CalculationFunctions.ConvertTimeToByte ( time, SampleRate, BlockAlign );
             return CalculationFunctions.AdaptToFrame ( length, BlockAlign );
+            }
+
+        public double GetDurationInMilliseconds ( long length )
+            {
+            return CalculationFunctions.ConvertByteToTime ( length, SampleRate, BlockAlign );
             }
 
         }
