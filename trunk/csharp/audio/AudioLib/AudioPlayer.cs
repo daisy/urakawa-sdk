@@ -6,8 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.DirectX;
 using Microsoft.DirectX.DirectSound;
-//using urakawa.media.data.audio;
-//using urakawa.media.timing;
+
 
 // TODO change all ints to longs
 

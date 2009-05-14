@@ -7,7 +7,6 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.DirectSound;
 using System.Threading;
 
-//using urakawa.media.data.audio;
 
 namespace AudioLib
 {
