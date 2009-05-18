@@ -7,6 +7,7 @@ using urakawa;
 using urakawa.media.data;
 using urakawa.property.channel;
 using core = urakawa.core;
+using System.Windows.Forms;
 
 namespace XukImport
 {
@@ -145,7 +146,6 @@ namespace XukImport
             settings.ProhibitDtd = false;
             settings.ValidationType = ValidationType.None;
             settings.ConformanceLevel = ConformanceLevel.Auto;
-
             settings.XmlResolver = new LocalXmlUrlResolver(true);
 
             settings.IgnoreComments = true;
@@ -154,12 +154,15 @@ namespace XukImport
 
             using (XmlReader xmlReader = XmlReader.Create(path, settings))
             {
-
                 XmlDocument xmldoc = new XmlDocument();
                 xmldoc.XmlResolver = null;
                 try
                 {
                     xmldoc.Load(xmlReader);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.ToString());
                 }
                 finally
                 {
@@ -216,6 +219,7 @@ namespace XukImport
                 return uri;
             }
             return !String.IsNullOrEmpty(relativeUri) ? new Uri(baseUri, relativeUri) : baseUri;
+
         }
 
         public override ICredentials Credentials
@@ -229,9 +233,16 @@ namespace XukImport
 
         public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
         {
+            Uri localURI;
             if (absoluteUri == null)
             {
                 throw new ArgumentNullException("absoluteUri");
+            }
+
+            localURI = mapUri(absoluteUri);
+            if (localURI != null)
+            {
+                absoluteUri = localURI;
             }
             //resolve resources from cache (if possible)
             if (absoluteUri.Scheme == "http" && enableHttpCaching && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream)))
@@ -246,14 +257,57 @@ namespace XukImport
                 return resp.GetResponseStream();
             }
             //otherwise use the default behavior of the XmlUrlResolver class (resolve resources from source)
-
+            
             if (absoluteUri.Scheme == "file" && !File.Exists(absoluteUri.LocalPath))
             {
                 return null;
             }
-
             return base.GetEntity(absoluteUri, role, ofObjectToReturn);
         }
 
-    }
+        public Uri mapUri(Uri absoluteUri)
+        {
+            bool flag = false;
+            if (absoluteUri.AbsolutePath.Contains("W3C//DTD%20XHTML%201.1//EN"))
+            {
+                string xhtml = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "xhtml11.dtd");
+                absoluteUri = new Uri(xhtml);
+                flag = true;
+            }
+            else if (absoluteUri.AbsolutePath.Contains("NISO//DTD%20ncx%202005-1//EN"))
+            {
+                string ncx = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"ncx-2005-1.dtd");
+                absoluteUri = new Uri(ncx);
+                flag = true;
+            }
+            else if (absoluteUri.AbsolutePath.Contains("W3C//DTD XHTML%201.1%20plus%20MathML%202.0%20plus%20SVG%201.1//EN"))
+            {
+                string xhtmlMathSvg = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "xhtml-math-svg-flat.dtd");
+                absoluteUri = new Uri(xhtmlMathSvg);
+                flag = true;
+            }
+            else if (absoluteUri.AbsolutePath.Contains("NISO//DTD%20dtbook%202005-2//EN"))
+            {
+                string dtb = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dtbook-2005-2.dtd");
+                absoluteUri = new Uri(dtb);
+                flag = true;
+            }
+            else if (absoluteUri.AbsolutePath.Contains("NISO//DTD dtbook 2005-3//EN"))
+            {
+                string dtb = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dtbook-2005-3");
+                absoluteUri = new Uri(dtb);
+                flag = true;
+            }
+            else if (absoluteUri.AbsolutePath.Contains("W3C//ENTITIES%20MathML%202.0%20Qualified%20Names%201.0//EN"))
+            {
+                string mathML = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mathml2.dtd");
+                absoluteUri = new Uri(mathML);
+                flag = true;
+            }
+            if (flag == true)
+                return absoluteUri;
+            else
+                return null;
+        }
+   }
 }
