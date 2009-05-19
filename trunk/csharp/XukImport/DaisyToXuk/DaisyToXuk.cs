@@ -158,7 +158,7 @@ namespace XukImport
                 xmldoc.XmlResolver = null;
                 try
                 {
-                    xmldoc.Load(xmlReader);
+                   xmldoc.Load(xmlReader);
                 }
                 catch (Exception e)
                 {
@@ -233,13 +233,11 @@ namespace XukImport
 
         public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
         {
-            Uri localURI;
             if (absoluteUri == null)
             {
                 throw new ArgumentNullException("absoluteUri");
             }
-
-            localURI = mapUri(absoluteUri);
+             Uri localURI = mapUri(absoluteUri);
             if (localURI != null)
             {
                 absoluteUri = localURI;
@@ -286,6 +284,12 @@ namespace XukImport
                 absoluteUri = new Uri(xhtmlMathSvg);
                 flag = true;
             }
+            else if (absoluteUri.AbsolutePath.Contains("NISO//DTD%20dtbook%202005-1//EN"))
+            {
+                string dtb = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dtbook-2005-1.dtd");
+                absoluteUri = new Uri(dtb);
+                flag = true;
+            }
             else if (absoluteUri.AbsolutePath.Contains("NISO//DTD%20dtbook%202005-2//EN"))
             {
                 string dtb = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dtbook-2005-2.dtd");
@@ -304,6 +308,7 @@ namespace XukImport
                 absoluteUri = new Uri(mathML);
                 flag = true;
             }
+            
             if (flag == true)
                 return absoluteUri;
             else
