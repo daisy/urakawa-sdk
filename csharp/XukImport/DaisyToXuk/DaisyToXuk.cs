@@ -162,7 +162,14 @@ namespace XukImport
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.ToString());
+                    // No message box: use debugging instead (inspect stack trace, watch values)
+                    //MessageBox.Show(e.ToString());
+
+                    // The Fail() method is better:
+                    //System.Diagnostics.Debug.Fail(e.Message);
+
+                    //Or you can explicitely break:
+                    System.Diagnostics.Debugger.Break();
                 }
                 finally
                 {

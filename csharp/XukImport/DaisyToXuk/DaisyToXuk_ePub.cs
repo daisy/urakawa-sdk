@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using ICSharpCode.SharpZipLib.Zip;
-using urakawa;
-using urakawa.metadata;
-using TreeNode = urakawa.core.TreeNode;
 
 namespace XukImport
 {
