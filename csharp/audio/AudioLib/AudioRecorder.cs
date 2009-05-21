@@ -495,7 +495,8 @@ void CaptureTimer_Tick(object sender, EventArgs e)
     if (m_PrevSampleCount == SampleCount
         && mState == AudioRecorderState.Recording)
     {
-        RecordCapturedData();
+    NotificationEvent.WaitOne ( 1 );
+        //RecordCapturedData();
         //System.Media.SystemSounds.Asterisk.Play();
     }
     m_PrevSampleCount = SampleCount;
