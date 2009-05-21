@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FB4B9F00-DAE4-46C4-B789-7A693198FA61}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -51,7 +51,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Tobi\tobiapp\ExternalLibs\ICSharpCode\Lib.ICSharpCode.csproj">
+    <ProjectReference Include="..\..\..\..\..\tobi\trunk\tobiapp\ExternalLibs\ICSharpCode\Lib.ICSharpCode.csproj">
       <Project>{CB23BC6E-0493-482A-89B9-DD2E2FA4E97D}</Project>
       <Name>Lib.ICSharpCode</Name>
     </ProjectReference>
