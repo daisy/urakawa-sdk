@@ -274,49 +274,49 @@ namespace XukImport
         {
             bool flag = false;
             string dtdDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LocalDTD");
-            if (absoluteUri.AbsolutePath.EndsWith("W3C//DTD%20XHTML%201.1//EN"))
+            if (absoluteUri.AbsolutePath.EndsWith("//W3C//DTD%20XHTML%201.1//EN"))
             {              
                 string xhtml = Path.Combine(dtdDir, "xhtml11.dtd");
                 absoluteUri = new Uri(xhtml);
                 flag = true;
             }
-            else if (absoluteUri.AbsolutePath.EndsWith("NISO//DTD%20ncx%202005-1//EN"))
+            else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20ncx%202005-1//EN"))
             {
                 string ncx = Path.Combine(dtdDir,"ncx-2005-1.dtd");
                 absoluteUri = new Uri(ncx);
                 flag = true;
             }
-            else if (absoluteUri.AbsolutePath.EndsWith("W3C//DTD XHTML%201.1%20plus%20MathML%202.0%20plus%20SVG%201.1//EN"))
+            else if (absoluteUri.AbsolutePath.EndsWith("//W3C//DTD XHTML%201.1%20plus%20MathML%202.0%20plus%20SVG%201.1//EN"))
             {
                 string xhtmlMathSvg = Path.Combine(dtdDir, "xhtml-math-svg-flat.dtd");
                 absoluteUri = new Uri(xhtmlMathSvg);
                 flag = true;
             }
-            else if (absoluteUri.AbsolutePath.EndsWith("NISO//DTD%20dtbook%202005-1//EN"))
+            else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbook%202005-1//EN"))
             {
                 string dtb = Path.Combine(dtdDir, "dtbook-2005-1.dtd");
                 absoluteUri = new Uri(dtb);
                 flag = true;
             }
-            else if (absoluteUri.AbsolutePath.EndsWith("NISO//DTD%20dtbook%202005-2//EN"))
+            else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbook%202005-2//EN"))
             {
                 string dtb = Path.Combine(dtdDir, "dtbook-2005-2.dtd");
                 absoluteUri = new Uri(dtb);
                 flag = true;
             }
-            else if (absoluteUri.AbsolutePath.EndsWith("NISO//DTD dtbook 2005-3//EN"))
+            else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbook%202005-3//EN"))
             {
                 string dtb = Path.Combine(dtdDir, "dtbook-2005-3");
                 absoluteUri = new Uri(dtb);
                 flag = true;
             }
-            else if (absoluteUri.AbsolutePath.EndsWith("W3C//ENTITIES%20MathML%202.0%20Qualified%20Names%201.0//EN"))
+            else if (absoluteUri.AbsolutePath.EndsWith("//W3C//ENTITIES%20MathML%202.0%20Qualified%20Names%201.0//EN"))
             {
                 string mathML = Path.Combine(dtdDir, "mathml2.dtd");
                 absoluteUri = new Uri(mathML);
                 flag = true;
             }
-            else if (absoluteUri.AbsolutePath.EndsWith("NISO//DTD%20dtbsmil%202005-2//EN"))
+            else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbsmil%202005-2//EN"))
             {
                 string smilDtd = Path.Combine(dtdDir, "dtbsmil-2005-2.dtd");
                 absoluteUri = new Uri(smilDtd);
