@@ -27,8 +27,21 @@ namespace urakawa.core
         StreamWithMarkers? GetManagedAudioDataFlattened();
         StreamWithMarkers? GetManagedAudioData();
         TreeNode GetNextSiblingWithManagedAudio();
+
+        TreeNode GetFirstDescendantWithText();
+        TreeNode GetLastDescendantWithText();
+
+        TreeNode GetPreviousSiblingWithText();
+        TreeNode GetPreviousSiblingWithText(TreeNode upLimit);
+
+        TreeNode GetNextSiblingWithText();
+        TreeNode GetNextSiblingWithText(TreeNode upLimit);
+        
         TreeNode GetFirstDescendantWithManagedAudio();
         TreeNode GetFirstAncestorWithManagedAudio();
+
+        TreeNode GetFirstChildWithXmlElementName(string elemName);
+
         QualifiedName GetXmlElementQName();
         string GetXmlElementId();
 

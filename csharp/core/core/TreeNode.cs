@@ -219,6 +219,7 @@ namespace urakawa.core
             }
             return null;
         }
+
         public TreeNode GetNextSiblingWithManagedAudio()
         {
             if (Parent == null)
@@ -344,7 +345,130 @@ namespace urakawa.core
             return returnVal;
         }
 
+        public TreeNode GetLastDescendantWithText()
+        {
+            if (ChildCount == 0)
+            {
+                return null;
+            }
+
+            for (int i = ListOfChildren.Count - 1; i >= 0; i--)
+            {
+                TreeNode child = ListOfChildren[i];
+
+                string str = child.GetTextMediaFlattened(false);
+                if (!string.IsNullOrEmpty(str))
+                {
+                    return child;
+                }
+
+                TreeNode childIn = child.GetLastDescendantWithText();
+                if (childIn != null)
+                {
+                    return childIn;
+                }
+            }
+            return null;
+        }
+
+        public TreeNode GetFirstDescendantWithText()
+        {
+            if (ChildCount == 0)
+            {
+                return null;
+            }
+
+            foreach (TreeNode child in ListOfChildren)
+            {
+                string str = child.GetTextMediaFlattened(false);
+                if (!string.IsNullOrEmpty(str))
+                {
+                    return child;
+                }
+
+                TreeNode childIn = child.GetFirstDescendantWithText();
+                if (childIn != null)
+                {
+                    return childIn;
+                }
+            }
+            return null;
+        }
+
+        public TreeNode GetPreviousSiblingWithText()
+        {
+            return GetPreviousSiblingWithText(null);
+        }
+
+        public TreeNode GetPreviousSiblingWithText(TreeNode upLimit)
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            TreeNode next = this;
+            while ((next = next.PreviousSibling) != null)
+            {
+                string str = next.GetTextMediaFlattened(false);
+                if (!string.IsNullOrEmpty(str))
+                {
+                    return next;
+                }
+
+                TreeNode nextIn = next.GetLastDescendantWithText();
+                if (nextIn != null)
+                {
+                    return nextIn;
+                }
+            }
+
+            if (upLimit == null || upLimit != Parent)
+            {
+                return Parent.GetPreviousSiblingWithText(upLimit);
+            }
+            return null;
+        }
+
+        public TreeNode GetNextSiblingWithText()
+        {
+            return GetNextSiblingWithText(null);
+        }
+
+        public TreeNode GetNextSiblingWithText(TreeNode upLimit)
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            TreeNode next = this;
+            while ((next = next.NextSibling) != null)
+            {
+                string str = next.GetTextMediaFlattened(false);
+                if (!string.IsNullOrEmpty(str)) 
+                {
+                    return next;
+                }
+
+                TreeNode nextIn = next.GetFirstDescendantWithText();
+                if (nextIn != null)
+                {
+                    return nextIn;
+                }
+            }
+
+            if (upLimit == null || upLimit != Parent)
+            {
+                return Parent.GetNextSiblingWithText(upLimit);
+            }
+            return null;
+        }
+
         public string GetTextMediaFlattened()
+        {
+            return GetTextMediaFlattened(true);
+        }
+
+        private string GetTextMediaFlattened(bool deep)
         {
             AbstractTextMedia textMedia = GetTextMedia();
             if (textMedia != null)
@@ -367,6 +491,12 @@ namespace urakawa.core
                     }
                 }
             }
+
+            if (!deep)
+            {
+                return null;
+            }
+
             string str = "";
             for (int index = 0; index < ChildCount; index ++ )
             {
@@ -379,7 +509,6 @@ namespace urakawa.core
             }
             return str;
         }
-
 
         public AbstractTextMedia GetTextMedia()
         {
@@ -400,6 +529,7 @@ namespace urakawa.core
             }
             return null;
         }
+
         public Media GetMediaInTextChannel()
         {
             ChannelsProperty chProp = GetProperty<ChannelsProperty>();
@@ -1322,15 +1452,6 @@ namespace urakawa.core
             return (p != null && p == node.Parent);
         }
 
-        /// <summary>
-        /// Tests if a given <see cref="TreeNode"/> is an ancestor of <c>this</c>
-        /// </summary>
-        /// <param name="node">The given <see cref="TreeNode"/></param>
-        /// <returns><c>true</c> if <paramref localName="node"/> is an ancestor of <c>this</c>, 
-        /// otherwise<c>false</c></returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="node"/> is <c>null</c>
-        /// </exception>
         public bool IsAncestorOf(TreeNode node)
         {
             if (node == null)
@@ -1338,32 +1459,21 @@ namespace urakawa.core
                 throw new exception.MethodParameterIsNullException(
                     "The node to test relationship with is null");
             }
-            TreeNode p = Parent;
+            TreeNode p = node.Parent;
             if (p == null)
             {
                 return false;
             }
-            else if (p == node)
+            else if (p == this)
             {
                 return true;
             }
             else
             {
-                return p.IsAncestorOf(node);
+                return IsAncestorOf(p);
             }
         }
 
-        /// <summary>
-        /// Tests if a given <see cref="TreeNode"/> is a descendant of <c>this</c>
-        /// </summary>
-        /// <param name="node">The given <see cref="TreeNode"/></param>
-        /// <returns><c>true</c> if <paramref localName="node"/> is a descendant of <c>this</c>, 
-        /// otherwise<c>false</c></returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="node"/> is <c>null</c>
-        /// </exception>
-        /// <remarks>This method is equivalent to <c>node.IsAncestorOf(this)</c> 
-        /// when <paramref localName="node"/> is not <c>null</c></remarks>
         public bool IsDescendantOf(TreeNode node)
         {
             if (node == null)
@@ -1597,12 +1707,12 @@ namespace urakawa.core
                 throw new exception.NodeIsSelfException(
                     "Can not append a nodes own children to itself");
             }
-            if (IsAncestorOf(node))
+            if (node.IsAncestorOf(this))
             {
                 throw new exception.NodeIsAncestorException(
                     "Can not append the children of an ancestor node");
             }
-            if (IsDescendantOf(node))
+            if (node.IsDescendantOf(this))
             {
                 throw new exception.NodeIsDescendantException(
                     "Can not append the children of a descendant node");
@@ -1652,12 +1762,12 @@ namespace urakawa.core
                 throw new exception.NodeIsSelfException(
                     "Can not swap with itself");
             }
-            if (IsAncestorOf(node))
+            if (node.IsAncestorOf(this))
             {
                 throw new exception.NodeIsAncestorException(
                     "Can not swap with an ancestor node");
             }
-            if (IsDescendantOf(node))
+            if (node.IsDescendantOf(this))
             {
                 throw new exception.NodeIsDescendantException(
                     "Can not swap with a descendant node");
