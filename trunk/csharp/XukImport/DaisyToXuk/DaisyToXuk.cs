@@ -146,7 +146,7 @@ namespace XukImport
             settings.ProhibitDtd = false;
             settings.ValidationType = ValidationType.None;
             settings.ConformanceLevel = ConformanceLevel.Auto;
-            settings.XmlResolver = new LocalXmlUrlResolver(true);
+            //settings.XmlResolver = new LocalXmlUrlResolver(false);
 
             settings.IgnoreComments = true;
             settings.IgnoreProcessingInstructions = true;
@@ -158,7 +158,7 @@ namespace XukImport
                 xmldoc.XmlResolver = null;
                 try
                 {
-                   xmldoc.Load(xmlReader);
+                    xmldoc.Load(xmlReader);
                 }
                 catch (Exception e)
                 {
@@ -225,8 +225,8 @@ namespace XukImport
                 }
                 return uri;
             }
-            return !String.IsNullOrEmpty(relativeUri) ? new Uri(baseUri, relativeUri) : baseUri;
 
+            return !String.IsNullOrEmpty(relativeUri) ? new Uri(baseUri, relativeUri) : baseUri;
         }
 
         public override ICredentials Credentials
@@ -244,10 +244,14 @@ namespace XukImport
             {
                 throw new ArgumentNullException("absoluteUri");
             }
-             Uri localURI = mapUri(absoluteUri);
-            if (localURI != null)
+
+            if (absoluteUri.Scheme != "file")
             {
-                absoluteUri = localURI;
+                Uri localURI = mapUri(absoluteUri);
+                if (localURI != null)
+                {
+                    absoluteUri = localURI;
+                }
             }
             //resolve resources from cache (if possible)
             if (absoluteUri.Scheme == "http" && enableHttpCaching && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream)))
@@ -262,7 +266,7 @@ namespace XukImport
                 return resp.GetResponseStream();
             }
             //otherwise use the default behavior of the XmlUrlResolver class (resolve resources from source)
-            
+
             if (absoluteUri.Scheme == "file" && !File.Exists(absoluteUri.LocalPath))
             {
                 return null;
@@ -272,61 +276,59 @@ namespace XukImport
 
         public Uri mapUri(Uri absoluteUri)
         {
-            bool flag = false;
+            Uri localUri = absoluteUri;
+
             string dtdDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LocalDTD");
             if (absoluteUri.AbsolutePath.EndsWith("//W3C//DTD%20XHTML%201.1//EN"))
-            {              
+            {
                 string xhtml = Path.Combine(dtdDir, "xhtml11.dtd");
-                absoluteUri = new Uri(xhtml);
-                flag = true;
+                if (File.Exists(xhtml))
+                    localUri = new Uri(xhtml);
             }
             else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20ncx%202005-1//EN"))
             {
-                string ncx = Path.Combine(dtdDir,"ncx-2005-1.dtd");
-                absoluteUri = new Uri(ncx);
-                flag = true;
+                string ncx = Path.Combine(dtdDir, "ncx-2005-1.dtd");
+                if (File.Exists(ncx))
+                    localUri = new Uri(ncx);
             }
             else if (absoluteUri.AbsolutePath.EndsWith("//W3C//DTD XHTML%201.1%20plus%20MathML%202.0%20plus%20SVG%201.1//EN"))
             {
                 string xhtmlMathSvg = Path.Combine(dtdDir, "xhtml-math-svg-flat.dtd");
-                absoluteUri = new Uri(xhtmlMathSvg);
-                flag = true;
+                if (File.Exists(xhtmlMathSvg))
+                    localUri = new Uri(xhtmlMathSvg);
             }
             else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbook%202005-1//EN"))
             {
                 string dtb = Path.Combine(dtdDir, "dtbook-2005-1.dtd");
-                absoluteUri = new Uri(dtb);
-                flag = true;
+                if (File.Exists(dtb))
+                    localUri = new Uri(dtb);
             }
             else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbook%202005-2//EN"))
             {
                 string dtb = Path.Combine(dtdDir, "dtbook-2005-2.dtd");
-                absoluteUri = new Uri(dtb);
-                flag = true;
+                if (File.Exists(dtb))
+                    localUri = new Uri(dtb);
             }
             else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbook%202005-3//EN"))
             {
                 string dtb = Path.Combine(dtdDir, "dtbook-2005-3");
-                absoluteUri = new Uri(dtb);
-                flag = true;
+                if (File.Exists(dtb))
+                    localUri = new Uri(dtb);
             }
             else if (absoluteUri.AbsolutePath.EndsWith("//W3C//ENTITIES%20MathML%202.0%20Qualified%20Names%201.0//EN"))
             {
                 string mathML = Path.Combine(dtdDir, "mathml2.dtd");
-                absoluteUri = new Uri(mathML);
-                flag = true;
+                if (File.Exists(mathML))
+                    localUri = new Uri(mathML);
             }
             else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbsmil%202005-2//EN"))
             {
                 string smilDtd = Path.Combine(dtdDir, "dtbsmil-2005-2.dtd");
-                absoluteUri = new Uri(smilDtd);
-                flag = true;
+                if (File.Exists(smilDtd))
+                    localUri = new Uri(smilDtd);
             }
-            
-            if (flag == true)
-                return absoluteUri;
-            else
-                return null;
+
+            return localUri;
         }
-   }
+    }
 }
