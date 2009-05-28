@@ -220,7 +220,7 @@ namespace AudioLib
             //if (pcmFormat == null)
             if ( exceptionError )
             {
-                Stream fileStream = File.Open(sourceFile, FileMode.Open, FileAccess.Read);
+                Stream fileStream = File.Open(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
                 if (fileStream != null)
                 {
                     int totalBytesWritten = 0;

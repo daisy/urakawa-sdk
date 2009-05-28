@@ -630,7 +630,7 @@ void CaptureTimer_Tick(object sender, EventArgs e)
             }
             else if (devices.Count > 0)
             {
-                mDevice = devices[devices.Count-1];
+                mDevice = devices[0]; //devices.Count-1
             }
             else
             {
