@@ -150,7 +150,7 @@ namespace DaisyToXukUI
         //Start Import button to strat the conversion process
         private void btnStartImport_Click(object sender, EventArgs e)
         {
-            var converter = new DaisyToXuk(m_ImportFile, m_SaveDir);
+            var converter = new XukImport.DaisyToXuk(m_ImportFile, m_SaveDir);
             Channel channelText = null;
             Channel channelAudio = null;
             List<Channel> listCh = converter.Project.GetPresentation(0).ChannelsManager.ListOfChannels;
