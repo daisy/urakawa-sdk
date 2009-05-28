@@ -48,6 +48,7 @@
     <Compile Include="DaisyToXuk_ePub.cs" />
     <Compile Include="DaisyToXuk_Metadata.cs" />
     <Compile Include="DaisyToXuk_Opf.cs" />
+    <Compile Include="DaisyToXuk_XmlParsing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
