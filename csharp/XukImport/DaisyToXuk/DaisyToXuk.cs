@@ -8,6 +8,7 @@ using urakawa.media.data;
 using urakawa.property.channel;
 using core = urakawa.core;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace XukImport
 {
@@ -169,7 +170,9 @@ namespace XukImport
                     //System.Diagnostics.Debug.Fail(e.Message);
 
                     //Or you can explicitely break:
-                    System.Diagnostics.Debugger.Break();
+#if DEBUG
+                    Debugger.Break();
+#endif
                 }
                 finally
                 {
