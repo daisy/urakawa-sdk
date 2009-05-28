@@ -1,16 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Net;
-using System.Net.Cache;
 using System.Xml;
 using urakawa;
 using urakawa.media.data;
 using urakawa.property.channel;
 using core = urakawa.core;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.Reflection;
-
 
 namespace XukImport
 {
@@ -142,49 +136,6 @@ namespace XukImport
             }
         }
 
-        private XmlDocument readXmlDocument(string path)
-        {
-            XmlReaderSettings settings = new XmlReaderSettings();
-
-            settings.ProhibitDtd = false;
-            settings.ValidationType = ValidationType.None;
-            settings.ConformanceLevel = ConformanceLevel.Auto;
-            settings.XmlResolver = new LocalXmlUrlResolver(true);
-
-            settings.IgnoreComments = true;
-            settings.IgnoreProcessingInstructions = true;
-            settings.IgnoreWhitespace = true;
-
-            using (XmlReader xmlReader = XmlReader.Create(path, settings))
-            {
-                XmlDocument xmldoc = new XmlDocument();
-                xmldoc.XmlResolver = null;
-                try
-                {
-                    xmldoc.Load(xmlReader);
-                }
-                catch (Exception e)
-                {
-                    // No message box: use debugging instead (inspect stack trace, watch values)
-                    //MessageBox.Show(e.ToString());
-
-                    // The Fail() method is better:
-                    //System.Diagnostics.Debug.Fail(e.Message);
-
-                    //Or you can explicitely break:
-#if DEBUG
-                    Debugger.Break();
-#endif
-                }
-                finally
-                {
-                    xmlReader.Close();
-                }
-
-                return xmldoc;
-            }
-        }
-
         private core.TreeNode getTreeNodeWithXmlElementId(string id)
         {
             Presentation pres = m_Project.GetPresentation(0);
@@ -204,130 +155,6 @@ namespace XukImport
                 }
             }
             return null;
-        }
-    }
-
-    public class LocalXmlUrlResolver : XmlUrlResolver
-    {
-        bool enableHttpCaching;
-        ICredentials credentials;
-
-        //resolve resources from cache (if possible) when enableHttpCaching is set to true
-        //resolve resources from source when enableHttpcaching is set to false 
-        public LocalXmlUrlResolver(bool enableHttpCaching)
-        {
-            this.enableHttpCaching = enableHttpCaching;
-        }
-
-        public override Uri ResolveUri(Uri baseUri, string relativeUri)
-        {
-            if ((baseUri == null) || (!baseUri.IsAbsoluteUri && (baseUri.OriginalString.Length == 0)))
-            {
-                var uri = new Uri(relativeUri, UriKind.RelativeOrAbsolute);
-                if (!uri.IsAbsoluteUri && (uri.OriginalString.Length > 0))
-                {
-                    uri = new Uri(Path.GetFullPath(relativeUri));
-                }
-                return uri;
-            }
-
-            return !String.IsNullOrEmpty(relativeUri) ? new Uri(baseUri, relativeUri) : baseUri;
-        }
-
-        public override ICredentials Credentials
-        {
-            set
-            {
-                credentials = value;
-                base.Credentials = value;
-            }
-        }
-
-        public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
-        {
-            if (absoluteUri == null)
-            {
-                throw new ArgumentNullException("absoluteUri");
-            }
-
-            Stream localStream = mapUri(absoluteUri);
-            if (localStream != null)
-            {
-                return localStream;
-            }
-
-            //resolve resources from cache (if possible)
-            if (absoluteUri.Scheme == "http" && enableHttpCaching && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream)))
-            {
-                WebRequest webReq = WebRequest.Create(absoluteUri);
-                webReq.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Default);
-                if (credentials != null)
-                {
-                    webReq.Credentials = credentials;
-                }
-                WebResponse resp = webReq.GetResponse();
-                return resp.GetResponseStream();
-            }
-            //otherwise use the default behavior of the XmlUrlResolver class (resolve resources from source)
-
-            if (absoluteUri.Scheme == "file" && !File.Exists(absoluteUri.LocalPath))
-            {
-                return null;
-            }
-            return base.GetEntity(absoluteUri, role, ofObjectToReturn);
-        }
-
-        public Stream mapUri(Uri absoluteUri)
-        {
-            Uri localUri = absoluteUri;
-            Stream dtdStream = null;
-
-            Assembly myAssembly = Assembly.GetExecutingAssembly();
-            string[] names = myAssembly.GetManifestResourceNames();
-
-            foreach (string file in names)
-            {
-                if (absoluteUri.AbsolutePath.EndsWith("//W3C//DTD%20XHTML%201.1//EN") && (file == "DaisyToXuk.Resources.xhtml11.dtd"))
-                {
-                    dtdStream = myAssembly.GetManifestResourceStream(file);
-                }
-
-                else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20ncx%202005-1//EN") && (file == "DaisyToXuk.Resources.ncx-2005-1.dtd"))
-                {
-                    dtdStream = myAssembly.GetManifestResourceStream(file);
-                }
-                else if (absoluteUri.AbsolutePath.EndsWith("//W3C//DTD XHTML%201.1%20plus%20MathML%202.0%20plus%20SVG%201.1//EN") && (file == "DaisyToXuk.Resources.xhtml-math-svg-flat.dtd "))
-                {
-                    dtdStream = myAssembly.GetManifestResourceStream(file);
-                }
-                else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbook%202005-1//EN") && (file == "DaisyToXuk.Resources.dtbook-2005-1.dtd"))
-                {
-                    dtdStream = myAssembly.GetManifestResourceStream(file);
-                }
-                else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbook%202005-2//EN") && (file == "DaisyToXuk.Resources.dtbook-2005-2.dtd"))
-                {
-                    dtdStream = myAssembly.GetManifestResourceStream(file);
-                }
-                else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbook%202005-3//EN") && (file == "DaisyToXuk.Resources.dtbook-2005-3"))
-                {
-                    dtdStream = myAssembly.GetManifestResourceStream(file);
-                }
-                else if (absoluteUri.AbsolutePath.EndsWith("//W3C//ENTITIES%20MathML%202.0%20Qualified%20Names%201.0//EN") && (file == "DaisyToXuk.Resources.mathml2.dtd"))
-                {
-                    dtdStream = myAssembly.GetManifestResourceStream(file);
-                }
-                else if (absoluteUri.AbsolutePath.EndsWith("//NISO//DTD%20dtbsmil%202005-2//EN") && (file == "DaisyToXuk.Resources.dtbsmil-2005-2.dtd"))
-                {
-                    dtdStream = myAssembly.GetManifestResourceStream(file);
-                }
-
-            }
-            if (dtdStream != null)
-            {
-                return dtdStream;
-            }
-            else
-                return null;
         }
     }
 }
