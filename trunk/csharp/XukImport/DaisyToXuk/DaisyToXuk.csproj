@@ -86,6 +86,10 @@
     <EmbeddedResource Include="Resources\xhtml-math-svg-flat.dtd" />
     <EmbeddedResource Include="Resources\xhtml11.dtd" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\dtbsmil-2005-1.dtd" />
+    <EmbeddedResource Include="Resources\oebpkg12.dtd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
