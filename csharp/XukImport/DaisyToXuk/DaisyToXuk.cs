@@ -14,6 +14,8 @@ namespace XukImport
         private string m_Book_FilePath;
 
         private Project m_Project;
+        private Channel m_ImageChannel;
+
         public Project Project
         {
             get { return m_Project; }
@@ -93,13 +95,16 @@ namespace XukImport
             m_audioChannel = presentation.ChannelFactory.CreateAudioChannel();
             m_audioChannel.Name = "Our Audio Channel";
 
+            m_ImageChannel = presentation.ChannelFactory.Create ();
+            m_ImageChannel.Name = "imageChannel";
+            
             /*string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
            if (Directory.Exists(dataPath))
            {
                Directory.Delete(dataPath, true);
            }*/
         }
-
+        
         private void transformBook()
         {
             //FileInfo DTBFilePathInfo = new FileInfo(m_Book_FilePath);

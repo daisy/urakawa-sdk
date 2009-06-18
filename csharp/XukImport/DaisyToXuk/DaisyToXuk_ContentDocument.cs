@@ -6,20 +6,22 @@ using urakawa.core;
 using urakawa.media;
 using urakawa.property.channel;
 using urakawa.property.xml;
+using TreeNode = urakawa.core.TreeNode;
+using System.Windows.Forms;
 
 namespace XukImport
 {
     public partial class DaisyToXuk
     {
         private TextChannel m_textChannel;
-
+      
         private void parseContentDocuments(List<string> spineOfContentDocuments)
         {
             if (spineOfContentDocuments == null || spineOfContentDocuments.Count <= 0)
             {
                 return;
             }
-
+            
             //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
             //string dirPath = opfParentDir.ToString();
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);
@@ -57,8 +59,11 @@ namespace XukImport
                     {
                         parseContentDocument(childOfBody, m_Project.GetPresentation(0).RootNode);
                     }
+                     
                 }
+                
             }
+            
         }
 
         private void parseContentDocument(XmlNode xmlNode, TreeNode parentTreeNode)
@@ -80,6 +85,7 @@ namespace XukImport
                         {
                             listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("book");
                         }
+                       
                         if (listOfBodies.Count > 0)
                         {
                             Presentation presentation = m_Project.GetPresentation(0);
@@ -91,7 +97,7 @@ namespace XukImport
                         break;
                     }
                 case XmlNodeType.Element:
-                    {
+                    {                        
                         Presentation presentation = m_Project.GetPresentation(0);
 
                         TreeNode treeNode = presentation.TreeNodeFactory.Create();
@@ -119,6 +125,41 @@ namespace XukImport
                             xmlProp.NamespaceUri = xmlNode.NamespaceURI;
                         }
 
+                        string updatedSRC = null;
+
+                        if (xmlNode.Name == "img")
+                            {
+                            XmlNode getSRC = xmlNode.Attributes.GetNamedItem ( "src" );
+                            if (getSRC != null)
+                                {
+                                    string relativePath = xmlNode.Attributes.GetNamedItem("src").Value;
+                                    string parentPath = Directory.GetParent(m_Book_FilePath).FullName;
+                                    string imgSourceFullpath = Path.Combine(parentPath, relativePath);
+                                    string datafilePath = presentation.DataProviderManager.DataFileDirectoryFullPath;
+                                    string imgDestFullpath = Path.Combine(datafilePath, Path.GetFileName(imgSourceFullpath));
+                                if (!Directory.Exists ( presentation.DataProviderManager.DataFileDirectoryFullPath ))
+                                    {
+                                    Directory.CreateDirectory ( presentation.DataProviderManager.DataFileDirectoryFullPath );
+                                    }
+                                if (File.Exists ( imgDestFullpath ))
+                                    {
+                                    File.Delete ( imgDestFullpath );
+                                    File.Copy ( imgSourceFullpath, imgDestFullpath );
+                                    }
+                                else
+                                    {
+                                    File.Copy ( imgSourceFullpath, imgDestFullpath );
+                                    }
+                                updatedSRC = Path.GetFileName ( imgDestFullpath );
+
+                                ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty ();
+                                treeNode.AddProperty ( chProp );
+                                ExternalImageMedia externalImage = presentation.MediaFactory.CreateExternalImageMedia ();
+                                externalImage.Src = updatedSRC;
+                                chProp.SetMedia ( m_ImageChannel, externalImage);
+                                }
+                            }
+                        
                         XmlAttributeCollection attributeCol = xmlNode.Attributes;
 
                         if (attributeCol != null)
@@ -128,7 +169,14 @@ namespace XukImport
                                 XmlNode attr = attributeCol.Item(i);
                                 if (attr.Name != "smilref")
                                 {
-                                    xmlProp.SetAttribute(attr.Name, "", attr.Value);
+                                    if (updatedSRC != null && attr.Name == "src")
+                                    {
+                                        xmlProp.SetAttribute(attr.Name, "", updatedSRC);
+                                    }
+                                    else
+                                    {
+                                        xmlProp.SetAttribute(attr.Name, "", attr.Value);
+                                    }
                                 }
                             }
                         }
