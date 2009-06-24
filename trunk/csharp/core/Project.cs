@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml;
 using urakawa.media.data;
 using urakawa.progress;
@@ -41,7 +42,7 @@ namespace urakawa
 
         static void Main()
         {
-            System.Console.WriteLine("Hello World, from Urakawa SDK project !");
+            Debug.WriteLine("Hello World, from Urakawa SDK project !");
         }
 
         #region Event related members
