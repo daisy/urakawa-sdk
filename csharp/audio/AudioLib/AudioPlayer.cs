@@ -300,6 +300,11 @@ namespace AudioLib
         {
             get
             {
+                if (State == AudioPlayerState.Stopped)
+                {
+                    return 0;
+                }
+
                 if (State == AudioPlayerState.Paused)
                 {
                     return
