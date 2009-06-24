@@ -2,9 +2,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Threading;
-using System.Collections;
 using System.Collections.Generic;
-using Microsoft.DirectX;
 using Microsoft.DirectX.DirectSound;
 
 
@@ -88,8 +86,10 @@ namespace AudioLib
         /// <summary>
         /// Create a new player. It doesn't have an output device yet.
         /// </summary>
-        public AudioPlayer()
+        public AudioPlayer(bool keepStreamAlive)
         {
+            m_KeepStreamAlive = keepStreamAlive;
+
             mState = AudioPlayerState.NotReady;
             MoniteringTimer = new System.Windows.Forms.Timer();
             MoniteringTimer.Tick += new System.EventHandler(this.MoniteringTimer_Tick);
@@ -224,11 +224,17 @@ namespace AudioLib
             mBufferStopPosition = -1;
             if (ResetVuMeter != null)
                 ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
+            
 
-            if (mCurrentAudioStream != null)
+            if (!m_KeepStreamAlive && mCurrentAudioStream != null)
             {
                 mCurrentAudioStream.Close();
                 mCurrentAudioStream = null;
+
+                //Reset of the following values only performed in actual Stop() method
+                //mCurrentAudioPCMFormat = null;
+                //mCurrentAudioDuration = 0;
+                //mCurrentAudioStreamProvider = null;
             }
         }
 
@@ -294,16 +300,16 @@ namespace AudioLib
         {
             get
             {
+                if (State == AudioPlayerState.Paused)
+                {
+                    return
+                CalculationFunctions.ConvertByteToTime(mPausePosition,
+                                                       (int)mCurrentAudioPCMFormat.SampleRate,
+                                                       mCurrentAudioPCMFormat.BlockAlign);
+                }
+                    
                 if(mCurrentAudioStream == null)
                 {
-                    if (State == AudioPlayerState.Paused)
-                    {
-                        return
-                    CalculationFunctions.ConvertByteToTime(mPausePosition,
-                                                           (int) mCurrentAudioPCMFormat.SampleRate,
-                                                           mCurrentAudioPCMFormat.BlockAlign);
-                    }
-                    
                     return 0;
                 }
                 else
@@ -454,9 +460,9 @@ namespace AudioLib
             {
                 throw new ArgumentOutOfRangeException("Duration cannot be <= 0 !");
             }
-            mCurrentAudioStreamProvider = currentAudioStreamProvider;
 
-            mCurrentAudioStream = currentAudioStreamProvider();
+            mCurrentAudioStreamProvider = currentAudioStreamProvider;
+            mCurrentAudioStream = mCurrentAudioStreamProvider();
             mCurrentAudioDuration = duration;
             mCurrentAudioPCMFormat = pcmInfo;
 
@@ -556,8 +562,6 @@ namespace AudioLib
         /// <param name="lEndPosition"></param>
         private void InitPlay(long lStartPosition, long lEndPosition)
         {
-            if (mState != AudioPlayerState.Playing)
-            {
                 if (mState != AudioPlayerState.Playing)
                 {
                     WaveFormat newFormat = new WaveFormat();
@@ -619,8 +623,6 @@ namespace AudioLib
                     if (lStartPosition == 0) lStartPosition = mCurrentAudioPCMFormat.GetLengthInBytes (mCurrentAudioDuration);
                     Rewind(lStartPosition);
                 }
-            }// end of state check
-            // end of function
         }
 
         private AudioPlayerState m_StateBeforePreview;
@@ -798,9 +800,17 @@ namespace AudioLib
             if (ResetVuMeter != null)
                 ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
 
-            mCurrentAudioStream.Close();
-            mCurrentAudioStream = null;
+            if (!m_KeepStreamAlive && mCurrentAudioStream != null)
+            {
+                mCurrentAudioStream.Close();
+                mCurrentAudioStream = null;
 
+                //Reset of the following values only performed in actual Stop() method
+                //mCurrentAudioPCMFormat = null;
+                //mCurrentAudioDuration = 0;
+                //mCurrentAudioStreamProvider = null;
+            }
+            
             // changes the state and trigger events
             Events.Player.StateChangedEventArgs e = new Events.Player.StateChangedEventArgs(mState);
             mState = AudioPlayerState.Stopped;
@@ -966,13 +976,15 @@ namespace AudioLib
             if (ResetVuMeter != null)
                 ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
 
-            mCurrentAudioStream.Close();
+            if (mCurrentAudioStream != null)
+            {
+                mCurrentAudioStream.Close();
+                mCurrentAudioStream = null;
+            }
 
-            mCurrentAudioStream = null;
             mCurrentAudioPCMFormat = null;
-            mCurrentAudioDuration = 0 ;
+            mCurrentAudioDuration = 0;
             mCurrentAudioStreamProvider = null;
-            ////
 
             mPausePosition = 0;
             Events.Player.StateChangedEventArgs e = new Events.Player.StateChangedEventArgs(mState);
@@ -984,6 +996,7 @@ namespace AudioLib
 
 
         long mStartPosition;
+        private bool m_KeepStreamAlive;
 
 
         // Set the current time position in milliseconds
@@ -1007,7 +1020,10 @@ namespace AudioLib
                     AudioLibPCMFormat fmt = mCurrentAudioPCMFormat;
 
                     Stop();
-                    Thread.Sleep(30);
+                    if (!m_KeepStreamAlive)
+                    {
+                        Thread.Sleep(30);
+                    }
 
                     mCurrentAudioStream = spd();
                     mStartPosition = CalculationFunctions.ConvertTimeToByte(position, (int)fmt.SampleRate, fmt.BlockAlign);
@@ -1168,5 +1184,17 @@ namespace AudioLib
         }
 
 
+        public void EnsurePlaybackStreamIsDead()
+        {
+            if (mCurrentAudioStream != null)
+            {
+                mCurrentAudioStream.Close();
+                mCurrentAudioStream = null;
+            }
+
+            mCurrentAudioPCMFormat = null;
+            mCurrentAudioDuration = 0;
+            mCurrentAudioStreamProvider = null;
+        }
     }
 }
