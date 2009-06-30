@@ -78,8 +78,6 @@ namespace XukImport
                     }
                 case XmlNodeType.Document:
                     {
-                        parseMetadata((XmlDocument)xmlNode);
-
                         XmlNodeList listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("body");
                         if (listOfBodies.Count == 0)
                         {
