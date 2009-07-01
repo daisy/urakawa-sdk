@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace urakawa.metadata.daisy
 {   
@@ -32,9 +33,11 @@ namespace urakawa.metadata.daisy
         public bool IsRepeatable { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public List<string> Synonyms { get; set; }
 
         public MetadataDefinition(string name, MetadataDataType dataType,
-            MetadataOccurrence occurrence, bool isReadOnly, bool isRepeatable, string description)
+            MetadataOccurrence occurrence, bool isReadOnly, bool isRepeatable, string description, 
+            List<string> synonyms)
         {
             Name = name;
             DataType = dataType;
@@ -42,6 +45,7 @@ namespace urakawa.metadata.daisy
             IsReadOnly = isReadOnly;
             IsRepeatable = isRepeatable;
             Description = description;
+            Synonyms = synonyms;
         }
     }
 }

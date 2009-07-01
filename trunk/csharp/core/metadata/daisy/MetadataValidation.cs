@@ -69,7 +69,10 @@ namespace urakawa.metadata.daisy
         {
             MetadataDefinition metadataDefinition =
                 m_MetadataDefinitions.Find(s => s.Name == metadata.Name);
-
+            if (metadataDefinition == null)
+            {
+                metadataDefinition = SupportedMetadata_Z39862005.AlienMetadata;
+            }
             //check the occurrence requirement
             bool meetsOccurrenceRequirement = m_OccurrenceValidator.Validate(metadata, metadataDefinition);
             //check the data type
