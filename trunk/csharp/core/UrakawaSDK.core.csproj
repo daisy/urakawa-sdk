@@ -3,7 +3,7 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</ProjectGuid>
+    <ProjectGuid>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>App.ico</ApplicationIcon>
@@ -159,6 +159,9 @@
     <Compile Include="media\data\utilities\AudioFormatConvertor.cs" />
     <Compile Include="media\data\utilities\AudioFormatConvertorSession.cs" />
     <Compile Include="media\data\utilities\Mp3Frame.cs" />
+    <Compile Include="metadata\daisy\MetadataDefinition.cs" />
+    <Compile Include="metadata\daisy\MetadataValidation.cs" />
+    <Compile Include="metadata\daisy\SupportedMetadata_Z39862005.cs" />
     <Compile Include="progress\ProgressAction.cs" />
     <Compile Include="progress\ProgressHandler.cs" />
     <Compile Include="properties\AssemblyInfo.cs">
