@@ -493,6 +493,11 @@ namespace urakawa.xuk
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TextChannel" : "txCh"); }
         }
 
+        public static string ImageChannel
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ImageChannel" : "imgCh"); }
+        }
+
         public static string AudioChannel
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AudioChannel" : "auCh"); }

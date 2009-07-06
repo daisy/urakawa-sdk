@@ -910,49 +910,49 @@ namespace urakawa
             }
         }
 
-        private delegate T CreatorDelegate<T>(string ln, string ns);
+        //private delegate T CreatorDelegate<T>(string ln, string ns);
 
-        private delegate void SetDelegate<T>(T obj);
+        //private delegate void SetDelegate<T>(T obj);
 
-        private static void XukInXukAbleFromChild<T>(XmlReader source, CreatorDelegate<T> creator, SetDelegate<T> setter, ProgressHandler handler) where T : class, IXukAble
-        {
-            if (!source.IsEmptyElement)
-            {
-                bool foundObj = false;
-                while (source.Read())
-                {
-                    if (source.NodeType == XmlNodeType.Element)
-                    {
-                        if (foundObj)
-                        {
-                            if (!source.IsEmptyElement)
-                            {
-                                source.ReadSubtree().Close();
-                            }
-                        }
-                        else
-                        {
-                            T instanceVar = creator(source.LocalName, source.NamespaceURI);
-                            if (instanceVar != null)
-                            {
-                                setter(instanceVar);
-                                foundObj = true;
-                                instanceVar.XukIn(source, handler);
-                            }
-                            else if (!source.IsEmptyElement)
-                            {
-                                source.ReadSubtree().Close();
-                            }
-                        }
-                    }
-                    else if (source.NodeType == XmlNodeType.EndElement)
-                    {
-                        break;
-                    }
-                    if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-                }
-            }
-        }
+        //private static void XukInXukAbleFromChild<T>(XmlReader source, CreatorDelegate<T> creator, SetDelegate<T> setter, ProgressHandler handler) where T : class, IXukAble
+        //{
+        //    if (!source.IsEmptyElement)
+        //    {
+        //        bool foundObj = false;
+        //        while (source.Read())
+        //        {
+        //            if (source.NodeType == XmlNodeType.Element)
+        //            {
+        //                if (foundObj)
+        //                {
+        //                    if (!source.IsEmptyElement)
+        //                    {
+        //                        source.ReadSubtree().Close();
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    T instanceVar = creator(source.LocalName, source.NamespaceURI);
+        //                    if (instanceVar != null)
+        //                    {
+        //                        setter(instanceVar);
+        //                        foundObj = true;
+        //                        instanceVar.XukIn(source, handler);
+        //                    }
+        //                    else if (!source.IsEmptyElement)
+        //                    {
+        //                        source.ReadSubtree().Close();
+        //                    }
+        //                }
+        //            }
+        //            else if (source.NodeType == XmlNodeType.EndElement)
+        //            {
+        //                break;
+        //            }
+        //            if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+        //        }
+        //    }
+        //}
 
 
         /// <summary>
@@ -1173,5 +1173,45 @@ namespace urakawa
         }
 
         #endregion
+
+        /// <summary>
+        /// creates and immediately discards objects via each factory
+        /// in order to initialize and cache the mapping between XUK names (pretty or compressed) and actual types.
+        /// CAlling this method is not required, it is provided for use-cases where the XUK XML is required to 
+        /// contain all the factory mappings, even though the types are not actually used in the document instance.
+        /// (useful for debugging factory types in XUK)
+        /// </summary>
+        public void WarmUpAllFactories()
+        {
+            Channel ch = ChannelFactory.Create();
+            ChannelsManager.RemoveChannel(ch);
+            ch = ChannelFactory.CreateAudioChannel();
+            ChannelsManager.RemoveChannel(ch);
+            ch = ChannelFactory.CreateTextChannel();
+            ChannelsManager.RemoveChannel(ch);
+            //
+            DataProvider dp = DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dp, true);
+            //
+            MediaData md = MediaDataFactory.CreateAudioMediaData();
+            MediaDataManager.RemoveMediaData(md);
+            //
+            CommandFactory.CreateCompositeCommand();
+            //
+            MediaFactory.CreateExternalImageMedia();
+            MediaFactory.CreateExternalVideoMedia();
+            MediaFactory.CreateExternalTextMedia();
+            MediaFactory.CreateExternalAudioMedia();
+            MediaFactory.CreateManagedAudioMedia();
+            MediaFactory.CreateSequenceMedia();
+            MediaFactory.CreateTextMedia();
+            //
+            MetadataFactory.CreateMetadata();
+            //
+            PropertyFactory.CreateChannelsProperty();
+            PropertyFactory.CreateXmlProperty();
+            //
+            TreeNodeFactory.Create();
+        }
     }
 }

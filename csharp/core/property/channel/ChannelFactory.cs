@@ -62,5 +62,9 @@ namespace urakawa.property.channel
         {
             return Create<TextChannel>();
         }
+        public ImageChannel CreateImageChannel()
+        {
+            return Create<ImageChannel>();
+        }
     }
 }
