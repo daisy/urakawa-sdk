@@ -16,7 +16,7 @@ namespace urakawa.metadata.daisy
 
         public static readonly List<MetadataDefinition> MetadataList =
             new List<MetadataDefinition>
-                    {
+                    [
                         new MetadataDefinition(
                             "dc:Date",
                             MetadataDataType.Date,
@@ -80,7 +80,7 @@ namespace urakawa.metadata.daisy
                             false,
                             true,
                             "A string or number identifying the DTB.",
-                            new List<string>{"dtb:uid"}),
+                            new List<string>["dtb:uid"]),
                         new MetadataDefinition(
                             "dc:Creator",
                             MetadataDataType.String,
@@ -281,7 +281,7 @@ namespace urakawa.metadata.daisy
                             "The format in which the audio files in the DTB file set are written.",
                             null)
 
-                    };
+                    ];
     }
     
 }

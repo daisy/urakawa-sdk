@@ -67,8 +67,10 @@ namespace urakawa.metadata.daisy
 
         private bool _validateItem(Metadata metadata)
         {
-            MetadataDefinition metadataDefinition =
-                m_MetadataDefinitions.Find(s => s.Name == metadata.Name);
+            MetadataDefinition metadataDefinition = m_MetadataDefinitions.Find(
+                delegate(MetadataDefinition item) 
+                    { return item.Name == metadata.Name; });
+                
             if (metadataDefinition == null)
             {
                 metadataDefinition = SupportedMetadata_Z39862005.AlienMetadata;
@@ -96,7 +98,10 @@ namespace urakawa.metadata.daisy
             {
                 if (metadataDefinition.Occurrence == MetadataOccurrence.Required)
                 {
-                    Metadata metadata = metadatas.Find(s => s.Name == metadataDefinition.Name);
+                    Metadata metadata = metadatas.Find(
+                        delegate(Metadata item) 
+                            { return item.Name == metadataDefinition.Name; });
+
                     if (metadata == null)
                     {
                         m_Report.Add(new MetadataValidationReportItem(null,
@@ -109,8 +114,14 @@ namespace urakawa.metadata.daisy
             //make sure repetitions are ok
             foreach (Metadata metadata in metadatas)
             {
-                List<Metadata> list = metadatas.FindAll(s => s.Name == metadata.Name);
-                MetadataDefinition metadataDefinition = m_MetadataDefinitions.Find(s => s.Name == metadata.Name);
+                List<Metadata> list = metadatas.FindAll(
+                    delegate(Metadata item) 
+                        { return item.Name == metadata.Name; });
+
+                MetadataDefinition metadataDefinition = m_MetadataDefinitions.Find(
+                    delegate(MetadataDefinition item)
+                        { return item.Name == metadata.Name; });
+                
                 if (list.Count > 1 && metadataDefinition.IsRepeatable == false)
                 {
                     m_Report.Add(new MetadataValidationReportItem(metadata,
@@ -353,7 +364,10 @@ namespace urakawa.metadata.daisy
             List<MetadataDefinition> availableMetadata = new List<MetadataDefinition>();
             foreach (MetadataDefinition definition in definitions)
             {
-                Metadata exists = alreadyUsedMetadata.Find(s => s.Name == definition.Name);
+                Metadata exists = alreadyUsedMetadata.Find(
+                    delegate(Metadata item) 
+                        { return item.Name == definition.Name; });
+                
                 if (exists == null)
                 {
                     availableMetadata.Add(definition);
