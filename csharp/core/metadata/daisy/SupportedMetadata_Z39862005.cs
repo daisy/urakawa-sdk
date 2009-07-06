@@ -14,8 +14,8 @@ namespace urakawa.metadata.daisy
             "An unrecognized metadata item",
             null);
 
-        private string[] m_IdentifierSynonyms = {"dtb:uid"};
-        private MetadataDefinition[] m_MetadataDefinitions = {
+        private static string[] m_IdentifierSynonyms = new string[] {"dtb:uid"};
+        private static MetadataDefinition[] m_MetadataDefinitions = new MetadataDefinition[] {
                         new MetadataDefinition(
                             "dc:Date",
                             MetadataDataType.Date,
