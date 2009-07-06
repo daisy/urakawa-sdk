@@ -6,9 +6,31 @@ namespace urakawa.metadata.daisy
     public class MetadataValidationReportItem
     {
         //what it is
-        public Metadata Metadata { get; set; }
+        private Metadata m_Metadata;
+        public Metadata Metadata
+        {
+            get
+            {
+                return m_Metadata;
+            }
+            set
+            {
+                m_Metadata = value;
+            }
+        }
         //what went wrong
-        public string Description { get; set; }
+        private string m_Description;
+        public string Description
+        {
+            get
+            {
+                return m_Description;
+            }
+            set
+            {
+                m_Description = value;
+            }
+        }
 
         public MetadataValidationReportItem(Metadata metadata, string description)
         {
