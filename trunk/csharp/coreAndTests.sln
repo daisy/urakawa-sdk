@@ -44,6 +44,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "examples", "examples\exampl
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioLib", "audio\AudioLib\AudioLib.csproj", "{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +75,12 @@ Global
 		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
 		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
