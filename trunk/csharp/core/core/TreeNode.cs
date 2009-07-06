@@ -12,7 +12,7 @@ using urakawa.property;
 using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
-using XmlAttribute=urakawa.property.xml.XmlAttribute;
+using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 namespace urakawa.core
 {
@@ -272,11 +272,10 @@ namespace urakawa.core
             {
                 val.m_Stream = audioMedia.AudioMediaData.GetAudioData();
                 val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
-                val.m_SubStreamMarkers.Add(new TreeNodeAndStreamDataLength()
-                                            {
-                                                m_LocalStreamDataLength = val.m_Stream.Length,
-                                                m_TreeNode = this
-                                            });
+                TreeNodeAndStreamDataLength tnasdl = new TreeNodeAndStreamDataLength();
+                tnasdl.m_LocalStreamDataLength = val.m_Stream.Length;
+                tnasdl.m_TreeNode = this;
+                val.m_SubStreamMarkers.Add(tnasdl);
                 return val;
             }
             else
@@ -289,11 +288,10 @@ namespace urakawa.core
                     {
                         val.m_Stream = stream;
                         val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
-                        val.m_SubStreamMarkers.Add(new TreeNodeAndStreamDataLength()
-                        {
-                            m_LocalStreamDataLength = val.m_Stream.Length,
-                            m_TreeNode = this
-                        });
+                        TreeNodeAndStreamDataLength tnasdl = new TreeNodeAndStreamDataLength();
+                        tnasdl.m_LocalStreamDataLength = val.m_Stream.Length;
+                        tnasdl.m_TreeNode = this;
+                        val.m_SubStreamMarkers.Add(tnasdl);
                         return val;
                     }
                 }
@@ -330,7 +328,7 @@ namespace urakawa.core
             returnVal.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>();
 
             List<Stream> listStreams = new List<Stream>();
-            foreach(StreamWithMarkers strct in listStreamsWithMarkers)
+            foreach (StreamWithMarkers strct in listStreamsWithMarkers)
             {
                 listStreams.Add(strct.m_Stream);
                 returnVal.m_SubStreamMarkers.AddRange(strct.m_SubStreamMarkers);
@@ -338,10 +336,10 @@ namespace urakawa.core
             }
 
             returnVal.m_Stream = new SequenceStream(listStreams);
-            
+
             listStreamsWithMarkers.Clear();
             listStreamsWithMarkers = null;
-            
+
             return returnVal;
         }
 
@@ -444,7 +442,7 @@ namespace urakawa.core
             while ((next = next.NextSibling) != null)
             {
                 string str = next.GetTextMediaFlattened(false);
-                if (!string.IsNullOrEmpty(str)) 
+                if (!string.IsNullOrEmpty(str))
                 {
                     return next;
                 }
@@ -498,7 +496,7 @@ namespace urakawa.core
             }
 
             string str = "";
-            for (int index = 0; index < ChildCount; index ++ )
+            for (int index = 0; index < ChildCount; index++)
             {
                 TreeNode node = GetChild(index);
                 str += node.GetTextMediaFlattened();
@@ -592,7 +590,7 @@ namespace urakawa.core
                 List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
                 foreach (Channel ch in listCh)
                 {
-                    if (ch is  AudioChannel)
+                    if (ch is AudioChannel)
                     {
                         channel = ch;
                         break;
@@ -823,7 +821,7 @@ namespace urakawa.core
         public List<T> GetListOfProperties<T>() where T : Property
         {
             List<T> res = new List<T>();
-            foreach (Property p in GetListOfProperties(typeof (T))) res.Add(p as T);
+            foreach (Property p in GetListOfProperties(typeof(T))) res.Add(p as T);
             return res;
         }
 
@@ -846,7 +844,7 @@ namespace urakawa.core
         /// <returns>The first <typeparamref name="T"/> property of this if it exists, else <c>null</c></returns>
         public T GetProperty<T>() where T : Property
         {
-            return GetProperty(typeof (T)) as T;
+            return GetProperty(typeof(T)) as T;
         }
 
         /// <summary>

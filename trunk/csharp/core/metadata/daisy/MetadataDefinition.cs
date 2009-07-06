@@ -27,13 +27,90 @@ namespace urakawa.metadata.daisy
     /// </summary>
     public class MetadataDefinition
     {
-        public MetadataDataType DataType { get; set; }
-        public MetadataOccurrence Occurrence { get; set; }
-        public bool IsReadOnly { get; set; }
-        public bool IsRepeatable { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public List<string> Synonyms { get; set; }
+        private MetadataDataType m_DataType;
+        public MetadataDataType DataType
+        {
+            get
+            {
+                return m_DataType;
+            }
+            set
+            {
+                m_DataType = value;
+            }
+        }
+
+        private MetadataOccurrence m_Occurrence;
+        public MetadataOccurrence Occurrence
+        {
+            get
+            {
+                return m_Occurrence;
+            }
+            set
+            {
+                m_Occurrence = value;
+            }
+        }
+
+        public bool m_IsReadOnly;
+        public bool IsReadOnly
+        {
+            get
+            {
+                return m_IsReadOnly;
+            }
+            set
+            {
+                m_IsReadOnly = value;
+            }
+        }
+
+        private bool m_IsRepeatable;
+        public bool IsRepeatable
+        {
+            get
+            {
+                return m_IsRepeatable;
+            }
+            set
+            {
+                m_IsRepeatable = value;
+            }
+        }
+
+        public string m_Name;
+        public string Name
+        {
+            get
+            {
+                return m_Name;
+            }
+            set
+            {
+                m_Name = value;
+            }
+        }
+
+        public string m_Description;
+        public string Description
+        {
+            get
+            {
+                return m_Description;
+            }
+            set
+            {
+                m_Description = value;
+            }
+        }
+
+        private List<string> m_Synonyms;
+        public List<string> Synonyms
+        {
+            get { return m_Synonyms; }
+            set { m_Synonyms = value; }
+        }
 
         public MetadataDefinition(string name, MetadataDataType dataType,
             MetadataOccurrence occurrence, bool isReadOnly, bool isRepeatable, string description, 
