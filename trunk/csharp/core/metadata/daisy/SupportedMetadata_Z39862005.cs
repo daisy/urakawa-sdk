@@ -14,9 +14,8 @@ namespace urakawa.metadata.daisy
             "An unrecognized metadata item",
             null);
 
-        public static readonly List<MetadataDefinition> MetadataList =
-            new List<MetadataDefinition>
-                    {
+        private string[] m_IdentifierSynonyms = {"dtb:uid"};
+        private MetadataDefinition[] m_MetadataDefinitions = {
                         new MetadataDefinition(
                             "dc:Date",
                             MetadataDataType.Date,
@@ -80,7 +79,7 @@ namespace urakawa.metadata.daisy
                             false,
                             true,
                             "A string or number identifying the DTB.",
-                            new List<string>{"dtb:uid"}),
+                            new List<string>(m_IdentifierSynonyms)),
                         new MetadataDefinition(
                             "dc:Creator",
                             MetadataDataType.String,
@@ -282,6 +281,9 @@ namespace urakawa.metadata.daisy
                             null)
 
                             };
+        public static readonly List<MetadataDefinition> MetadataList =
+            new List<MetadataDefinition>(m_MetadataDefinitions);
+        
     }
     
 }
