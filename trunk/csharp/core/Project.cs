@@ -323,6 +323,12 @@ namespace urakawa
         {
             Presentation newPres = PresentationFactory.Create();
             AddPresentation(newPres);
+
+            if (IsPrettyFormat())
+            {
+                newPres.WarmUpAllFactories();
+            }
+
             return newPres;
         }
 

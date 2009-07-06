@@ -1,7 +1,6 @@
 using System;
 using System.Xml;
 using urakawa.events.media;
-using urakawa.progress;
 using urakawa.xuk;
 
 

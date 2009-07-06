@@ -14,7 +14,6 @@ namespace XukImport
         private string m_Book_FilePath;
 
         private Project m_Project;
-        private Channel m_ImageChannel;
 
         public Project Project
         {
@@ -54,49 +53,14 @@ namespace XukImport
             presentation.RootUri = new Uri(m_outDirectory);
             presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
-            // BEGIN OF INIT FACTORIES
-            // => creating all kinds of objects in order to initialize the factories
-            // and cache the mapping between XUK names (pretty or compressed) and actual types.
-            Channel ch = presentation.ChannelFactory.Create();
-            presentation.ChannelsManager.RemoveChannel(ch);
-            ch = presentation.ChannelFactory.CreateAudioChannel();
-            presentation.ChannelsManager.RemoveChannel(ch);
-            ch = presentation.ChannelFactory.CreateTextChannel();
-            presentation.ChannelsManager.RemoveChannel(ch);
-            //
-            DataProvider dp = presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-            presentation.DataProviderManager.RemoveDataProvider(dp, true);
-            //
-            MediaData md = presentation.MediaDataFactory.CreateAudioMediaData();
-            presentation.MediaDataManager.RemoveMediaData(md);
-            //
-            presentation.CommandFactory.CreateCompositeCommand();
-            //
-            presentation.MediaFactory.CreateExternalImageMedia();
-            presentation.MediaFactory.CreateExternalVideoMedia();
-            presentation.MediaFactory.CreateExternalTextMedia();
-            presentation.MediaFactory.CreateExternalAudioMedia();
-            presentation.MediaFactory.CreateManagedAudioMedia();
-            presentation.MediaFactory.CreateSequenceMedia();
-            presentation.MediaFactory.CreateTextMedia();
-            //
-            presentation.MetadataFactory.CreateMetadata();
-            //
-            presentation.PropertyFactory.CreateChannelsProperty();
-            presentation.PropertyFactory.CreateXmlProperty();
-            //
-            presentation.TreeNodeFactory.Create();
-            //
-            // END OF INIT FACTORIES
-
             m_textChannel = presentation.ChannelFactory.CreateTextChannel();
             m_textChannel.Name = "Our Text Channel";
 
             m_audioChannel = presentation.ChannelFactory.CreateAudioChannel();
             m_audioChannel.Name = "Our Audio Channel";
 
-            m_ImageChannel = presentation.ChannelFactory.Create ();
-            m_ImageChannel.Name = "imageChannel";
+            m_ImageChannel = presentation.ChannelFactory.CreateImageChannel();
+            m_ImageChannel.Name = "Our Image Channel";
             
             /*string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
            if (Directory.Exists(dataPath))
