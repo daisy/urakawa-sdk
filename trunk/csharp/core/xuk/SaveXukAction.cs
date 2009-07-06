@@ -156,14 +156,6 @@ namespace urakawa.xuk
         }
 
         /// <summary>
-        /// Get a long uman-readable description of the command
-        /// </summary>
-        public override string LongDescription
-        {
-            get { return "Serializes a XUK fragment"; }
-        }
-
-        /// <summary>
         /// Execute the command.
         /// </summary>
         /// <exception cref="urakawa.exception.CannotExecuteException">Thrown when the command cannot be reversed.</exception>
@@ -219,12 +211,24 @@ namespace urakawa.xuk
             if (mHasCancelBeenRequested) e.Cancel();
         }
 
+        private string m_ShortDescription = "Serializing XUK...";
         /// <summary>
         /// Gets a short humanly readable description of the command
         /// </summary>
         public override string ShortDescription
         {
-            get { return "Save Xuk"; }
+            get { return m_ShortDescription; }
+            set { m_ShortDescription = value; }
+        }
+
+        private string m_LongDescription = "Serializing the Urakawa SDK data model into a XUK XML file...";
+        /// <summary>
+        /// Get a long uman-readable description of the command
+        /// </summary>
+        public override string LongDescription
+        {
+            get { return m_LongDescription; }
+            set { m_LongDescription = value; }
         }
 
         #endregion
