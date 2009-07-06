@@ -104,7 +104,7 @@ namespace urakawa.progress
         /// <summary>
         /// Get a long uman-readable description of the command
         /// </summary>
-        public abstract string LongDescription { get; }
+        public abstract string LongDescription { get; set; }
 
         /// <summary>
         /// Execute the command.
@@ -115,7 +115,7 @@ namespace urakawa.progress
         /// <summary>
         /// Gets a short humanly readable description of the command
         /// </summary>
-        public abstract string ShortDescription { get; }
+        public abstract string ShortDescription { get; set; }
 
         #endregion
     }
