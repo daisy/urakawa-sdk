@@ -163,10 +163,16 @@ namespace NAudio.Wave
             return bytesWritten;
         }
 
+        private bool _padWithZeroes;
+
         /// <summary>
         /// If true, Read always returns the number of bytes requested
         /// </summary>
-        public bool PadWithZeroes { get; set; }
+        public bool PadWithZeroes
+        {
+            get { return _padWithZeroes; }
+            set { _padWithZeroes = value; }
+        }
 
         /// <summary>
         /// Converts Mono to stereo, adjusting volume and pan
@@ -310,7 +316,7 @@ namespace NAudio.Wave
 
         private void RaiseBlock()
         {
-            var handler = Block;
+            EventHandler handler = Block;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);

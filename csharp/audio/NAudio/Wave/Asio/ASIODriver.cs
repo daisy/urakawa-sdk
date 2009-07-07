@@ -242,7 +242,8 @@ namespace NAudio.Wave.Asio
         /// <returns></returns>
         public ASIOChannelInfo getChannelInfo(int channelNumber, bool trueForInputInfo)
         {
-            ASIOChannelInfo info = new ASIOChannelInfo {channel = channelNumber, isInput = trueForInputInfo};
+            ASIOChannelInfo info = new ASIOChannelInfo();
+            info.channel = channelNumber; info.isInput = trueForInputInfo;
             handleException(asioDriverVTable.getChannelInfo(pASIOComObject, ref info), "getChannelInfo");
             return info;
         }

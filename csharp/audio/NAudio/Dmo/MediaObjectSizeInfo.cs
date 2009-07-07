@@ -9,20 +9,38 @@ namespace NAudio.Dmo
     /// </summary>
     public class MediaObjectSizeInfo
     {
+        private int _size;
+
         /// <summary>
         /// Minimum Buffer Size, in bytes
         /// </summary>
-        public int Size { get; private set; }
+        public int Size
+        {
+            get { return _size; }
+            private set { _size = value; }
+        }
+
+        private int _maxLookahead;
 
         /// <summary>
         /// Max Lookahead
         /// </summary>
-        public int MaxLookahead { get; private set; }
+        public int MaxLookahead
+        {
+            get { return _maxLookahead; }
+            private set { _maxLookahead = value; }
+        }
+
+        private int _alignment;
 
         /// <summary>
         /// Alignment
         /// </summary>
-        public int Alignment { get; private set; }
+        public int Alignment
+        {
+            get { return _alignment; }
+            private set { _alignment = value; }
+        }
 
         /// <summary>
         /// Media Object Size Info

@@ -24,14 +24,27 @@ namespace NAudio.Wave
     /// </summary>
     public class SampleEventArgs : EventArgs
     {
+        private float _left;
+
         /// <summary>
         /// Left sample
         /// </summary>
-        public float Left { get; set; }
+        public float Left
+        {
+            get { return _left; }
+            set { _left = value; }
+        }
+
+        private float _right;
+
         /// <summary>
         /// Right sample
         /// </summary>
-        public float Right { get; set; }
+        public float Right
+        {
+            get { return _right; }
+            set { _right = value; }
+        }
 
         /// <summary>
         /// Constructor
