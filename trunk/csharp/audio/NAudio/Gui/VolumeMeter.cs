@@ -52,23 +52,41 @@ namespace NAudio.Gui
             }
         }
 
+        private float _minDb;
+
         /// <summary>
         /// Minimum decibels
         /// </summary>
         [DefaultValue(-60.0)]
-        public float MinDb { get; set; }
-        
+        public float MinDb
+        {
+            get { return _minDb; }
+            set { _minDb = value; }
+        }
+
+        private float _maxDb;
+
         /// <summary>
         /// Maximum decibels
         /// </summary>
         [DefaultValue(18.0)]
-        public float MaxDb { get; set; }
+        public float MaxDb
+        {
+            get { return _maxDb; }
+            set { _maxDb = value; }
+        }
+
+        private Orientation _orientation;
 
         /// <summary>
         /// Meter orientation
         /// </summary>
         [DefaultValue(Orientation.Vertical)]
-        public Orientation Orientation { get; set; }
+        public Orientation Orientation
+        {
+            get { return _orientation; }
+            set { _orientation = value; }
+        }
 
         /// <summary>
         /// Paints the volume meter
