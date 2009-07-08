@@ -1189,6 +1189,8 @@ namespace urakawa
             ChannelsManager.RemoveChannel(ch);
             ch = ChannelFactory.CreateTextChannel();
             ChannelsManager.RemoveChannel(ch);
+            ch = ChannelFactory.CreateImageChannel();
+            ChannelsManager.RemoveChannel(ch);
             //
             DataProvider dp = DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
             DataProviderManager.RemoveDataProvider(dp, true);
