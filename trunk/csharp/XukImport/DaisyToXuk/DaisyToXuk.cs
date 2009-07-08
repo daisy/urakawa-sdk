@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+using System.Diagnostics;
+using System.Collections.Generic;
 using urakawa;
 using urakawa.media.data;
 using urakawa.property.channel;
@@ -10,6 +12,7 @@ namespace XukImport
 {
     public partial class DaisyToXuk
     {
+        Dictionary<string, urakawa.metadata.daisy.MetadataDefinition> m_MetadataDictionary = new Dictionary<string, urakawa.metadata.daisy.MetadataDefinition>();
         private readonly string m_outDirectory;
         private string m_Book_FilePath;
 
@@ -45,6 +48,11 @@ namespace XukImport
 
         private void initializeProject()
         {
+            //Dictionary<string, urakawa.metadata.daisy.MetadataDefinition> m_MetadataDictionary = new Dictionary<string, urakawa.metadata.daisy.MetadataDefinition>();
+            foreach (urakawa.metadata.daisy.MetadataDefinition d in urakawa.metadata.daisy.SupportedMetadata_Z39862005.MetadataList)
+            {
+                m_MetadataDictionary.Add(d.Name, d);
+            }
             m_Project = new Project();
             m_Project.SetPrettyFormat(true);
 

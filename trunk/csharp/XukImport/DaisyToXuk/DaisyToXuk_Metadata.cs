@@ -9,6 +9,7 @@ namespace XukImport
 {
     public partial class DaisyToXuk
     {
+       
         private void parseMetadata(XmlDocument xmlDoc)
         {
             parseMetadata_NameContentAll(xmlDoc);
@@ -52,8 +53,6 @@ namespace XukImport
             {
                 return;
             }
-            Presentation presentation = m_Project.GetPresentation(0);
-
             foreach (XmlNode mdNodeRoot in listOfMetadataContainers)
             {
                 foreach (XmlNode mdNode in mdNodeRoot.ChildNodes)
@@ -61,30 +60,41 @@ namespace XukImport
                     if (mdNode.NodeType == XmlNodeType.Element
                         && mdNode.Name != "meta" && !String.IsNullOrEmpty(mdNode.InnerText))
                     {
-                        if (checkDuplicacy(mdNode.Name))
+                        if (m_MetadataDictionary.ContainsKey(mdNode.Name) && !m_MetadataDictionary[mdNode.Name].IsRepeatable)
                         {
-                            //ignore
+                            if (checkDuplicacy(mdNode.Name))
+                            {
+                                //ignore
+                            }
+                            else
+                            {
+                              addMetadata(mdNode.Name, mdNode.InnerText);
+                            }      
                         }
-                        else
+                        else 
                         {
-                            Metadata md = presentation.MetadataFactory.CreateMetadata();
-                            md.Name = mdNode.Name;
-                            md.Content = mdNode.InnerText;
-                            presentation.AddMetadata(md);
-                        }
+                           addMetadata(mdNode.Name, mdNode.InnerText);
+                        }                    
                     }
                 }
             }
         }
 
-        private void parseMetadata_NameContent(XmlNodeList listOfMetaDataNodes)
+        private void addMetadata(string nodeName, string nodeContent)
         {
+            Presentation presentation = m_Project.GetPresentation(0);
+            Metadata md = presentation.MetadataFactory.CreateMetadata();
+            md.Name = nodeName;
+            md.Content = nodeContent;
+            presentation.AddMetadata(md);
+        }
+
+        private void parseMetadata_NameContent(XmlNodeList listOfMetaDataNodes)
+        {            
             if (listOfMetaDataNodes == null || listOfMetaDataNodes.Count == 0)
             {
                 return;
             }
-
-            Presentation presentation = m_Project.GetPresentation(0);
 
             foreach (XmlNode mdNode in listOfMetaDataNodes)
             {
@@ -103,23 +113,35 @@ namespace XukImport
                 XmlNode attrName = mdAttributes.GetNamedItem("name");
                 XmlNode attrContent = mdAttributes.GetNamedItem("content");
 
-                if (attrName != null && !String.IsNullOrEmpty(attrName.Value)
-                    && attrContent != null && !String.IsNullOrEmpty(attrContent.Value))
-                {
-
-                   if (checkDuplicacy(attrName.Value))
+                    if (attrName != null && !String.IsNullOrEmpty(attrName.Value)
+                        && attrContent != null && !String.IsNullOrEmpty(attrContent.Value))
                     {
-                       // ignore
-                    }
-                    else
-                    {
-                        Metadata md = presentation.MetadataFactory.CreateMetadata();
-                        md.Name = attrName.Value;
-                        md.Content = attrContent.Value;
-                        presentation.AddMetadata(md);
-                    }
-                }
+                        if (m_MetadataDictionary.ContainsKey(attrName.Value) && !m_MetadataDictionary[attrName.Value].IsRepeatable)
+                        {
+                            if (checkDuplicacy(attrName.Value))
+                            {
+                                // ignore
+                            }
+                            else
+                            {
+                                addNameContent(attrName.Value, attrContent.Value);
+                            }
+                        }
+                        else
+                        {
+                            addNameContent(attrName.Value, attrContent.Value);
+                        }
+                     }  
             }
+        }
+
+        private void addNameContent(string nodeName, string contentName)
+        {
+            Presentation presentation = m_Project.GetPresentation(0);
+            Metadata md = presentation.MetadataFactory.CreateMetadata();
+            md.Name = nodeName;
+            md.Content = contentName;
+            presentation.AddMetadata(md);
         }
 
         private bool IsDuplicateMetadata(string metaDataName)
@@ -146,8 +168,9 @@ namespace XukImport
             }
             else
                 return IsDuplicateMetadata(metadataName);
-        }
-                
+        }   
+                        
+         
         /*    private void parseMetadata_X(XmlDocument xmlDoc)
             {
                 XmlNodeList listOfMetaDataRootNodes = xmlDoc.GetElementsByTagName("x-metadata");
@@ -165,4 +188,5 @@ namespace XukImport
 
              */
     }
+
 }
