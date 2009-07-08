@@ -18,6 +18,13 @@ namespace XukImport
 
             parseOpfManifest(opfXmlDoc, out spine, out spineMimeType, out dtbookPath, out ncxPath);
 
+            if (dtbookPath != null)
+            {
+                string fullDtbookPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), dtbookPath);
+                XmlDocument dtbookXmlDoc = readXmlDocument(fullDtbookPath);
+                parseContentDocument(dtbookXmlDoc, null);
+            }
+
             if (ncxPath != null)
             {
                 string fullNcxPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), ncxPath);
@@ -25,12 +32,7 @@ namespace XukImport
                 parseMetadata(ncxXmlDoc);
             }
 
-            if (dtbookPath != null)
-            {
-                string fullDtbookPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), dtbookPath);
-                XmlDocument dtbookXmlDoc = readXmlDocument(fullDtbookPath);
-                parseContentDocument(dtbookXmlDoc, null);
-            }
+            
 
             switch (spineMimeType)
             {
