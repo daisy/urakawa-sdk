@@ -120,13 +120,13 @@ namespace urakawa.core
             ChannelsProperty chProp = GetProperty<ChannelsProperty>();
             if (chProp != null)
             {
-                Channel channel = null;
+                T channel = null;
                 List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
                 foreach (Channel ch in listCh)
                 {
                     if (ch is T)
                     {
-                        channel = ch;
+                        channel = ch as T;
                         break;
                     }
                 }
