@@ -508,6 +508,26 @@ namespace urakawa.core
             return str;
         }
 
+        public AbstractImageMedia GetImageMedia()
+        {
+            Media med = GetMediaInImageChannel();
+            if (med != null)
+            {
+                return med as AbstractImageMedia;
+            }
+            return null;
+        }
+
+        public SequenceMedia GetImageSequenceMedia()
+        {
+            Media med = GetMediaInImageChannel();
+            if (med != null)
+            {
+                return med as SequenceMedia;
+            }
+            return null;
+        }
+
         public AbstractTextMedia GetTextMedia()
         {
             Media med = GetMediaInTextChannel();
@@ -524,6 +544,30 @@ namespace urakawa.core
             if (med != null)
             {
                 return med as SequenceMedia;
+            }
+            return null;
+        }
+
+        public Media GetMediaInImageChannel()
+        {
+            ChannelsProperty chProp = GetProperty<ChannelsProperty>();
+            if (chProp != null)
+            {
+                Channel channel = null;
+                List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
+                foreach (Channel ch in listCh)
+                {
+                    if (ch is ImageChannel)
+                    {
+                        channel = ch;
+                        break;
+                    }
+                }
+                if (channel != null)
+                {
+                    Media med = chProp.GetMedia(channel);
+                    return med;
+                }
             }
             return null;
         }
