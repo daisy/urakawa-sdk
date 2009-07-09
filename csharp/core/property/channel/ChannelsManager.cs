@@ -519,5 +519,38 @@ namespace urakawa.property.channel
         }
 
         #endregion
+
+        public T GetOrCreateChannel<T>() where T : Channel, new()
+        {
+            T channel = null;
+            List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
+            foreach (Channel ch in listCh)
+            {
+                if (ch is T)
+                {
+                    channel = ch as T;
+                    break;
+                }
+            }
+            if (channel == null)
+            {
+                channel = Presentation.ChannelFactory.Create<T>();
+                //channel = Presentation.ChannelFactory.Create(typeof(T));
+            }
+            return channel;
+        }
+
+        public AudioChannel GetOrCreateAudioChannel()
+        {
+            return GetOrCreateChannel<AudioChannel>();
+        }
+        public TextChannel GetOrCreateTextChannel()
+        {
+            return GetOrCreateChannel<TextChannel>();
+        }
+        public ImageChannel GetOrCreateImageChannel()
+        {
+            return GetOrCreateChannel<ImageChannel>();
+        }
     }
 }
