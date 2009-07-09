@@ -36,18 +36,7 @@ namespace urakawa.media.data
         protected override void InitializeInstance(MediaData instance)
         {
             base.InitializeInstance(instance);
-            MediaDataManager.AddMediaData(instance);
-        }
-
-        /// <summary>
-        /// Gets the <see cref="MediaDataManager"/> associated with <c>this</c>
-        /// (via the <see cref="Presentation"/> associated with <c>this</c>.
-        /// Convenience for <c>getPresentation().getMediaDataManager()</c>
-        /// </summary>
-        /// <returns>The <see cref="MediaDataManager"/></returns>
-        public MediaDataManager MediaDataManager
-        {
-            get { return Presentation.MediaDataManager; }
+            Presentation.MediaDataManager.AddMediaData(instance);
         }
 
         private Type mDefaultAudioMediaDataType = typeof(WavAudioMediaData);

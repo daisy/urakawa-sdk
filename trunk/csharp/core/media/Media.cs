@@ -93,12 +93,6 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Gets the <see cref="MediaFactory"/> associated with the <see cref="Media"/>
-        /// </summary>
-        /// <returns>The <see cref="MediaFactory"/></returns>
-        public MediaFactory MediaFactory { get { return Presentation.MediaFactory;} }
-
-        /// <summary>
         /// Determines if the <see cref="Media"/> is continuous
         /// </summary>
         /// <returns><c>true</c> if the <see cref="Media"/> is continuous, <c>false</c> else</returns>

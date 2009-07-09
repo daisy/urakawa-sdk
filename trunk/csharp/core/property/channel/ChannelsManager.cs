@@ -48,16 +48,6 @@ namespace urakawa.property.channel
         #region ChannelsManager Members
 
         /// <summary>
-        /// Gets the <see cref="ChannelsManager"/> associated with <c>this</c>.
-        /// Convenience for <c>getPresentation().getChannelFactory()</c>
-        /// </summary>
-        /// <returns>The <see cref="ChannelsManager"/></returns>
-        public ChannelFactory ChannelFactory
-        {
-            get { return Presentation.ChannelFactory; }
-        }
-
-        /// <summary>
         /// Adds an existing  <see cref="Channel"/> to the list of <see cref="Channel"/>s 
         /// managed by the <see cref="ChannelsManager"/>
         /// </summary>
@@ -381,7 +371,7 @@ namespace urakawa.property.channel
                 {
                     throw new exception.XukException("mChannelItem element has no uid attribute");
                 }
-                Channel newCh = ChannelFactory.Create(source.LocalName, source.NamespaceURI);
+                Channel newCh = Presentation.ChannelFactory.Create(source.LocalName, source.NamespaceURI);
                 if (newCh != null)
                 {
                     newCh.XukIn(source, handler);
@@ -409,7 +399,7 @@ namespace urakawa.property.channel
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        Channel newCh = ChannelFactory.Create(source.LocalName, source.NamespaceURI);
+                        Channel newCh = Presentation.ChannelFactory.Create(source.LocalName, source.NamespaceURI);
                         if (newCh != null)
                         {
                             try

@@ -47,14 +47,6 @@ namespace urakawa.property
 
         private TreeNode mOwner = null;
 
-        /// <summary>
-        /// Gets the <see cref="PropertyFactory"/> associated with the <see cref="Property"/> (via. it's owning <see cref="Presentation"/>
-        /// </summary>
-        /// <returns>The <see cref="PropertyFactory"/></returns>
-        public PropertyFactory PropertyFactory
-        {
-            get { return Presentation.PropertyFactory; }
-        }
 
         /// <summary>
         /// Tests if a the <see cref="Property"/> can be validly added to a given potential owning <see cref="TreeNode"/>

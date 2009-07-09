@@ -33,17 +33,9 @@ namespace urakawa.property.channel
         {
             base.InitializeInstance(instance);
 
-            ChannelsManager.AddChannel(instance);
+            Presentation.ChannelsManager.AddChannel(instance);
         }
-        /// <summary>
-        /// Gets the <see cref="ChannelsManager"/> assigned the <see cref="Channel"/>s created
-        /// by the <see cref="ChannelFactory"/>
-        /// </summary>
-        /// <returns>The <see cref="ChannelsManager"/></returns>
-        public ChannelsManager ChannelsManager
-        {
-            get { return Presentation.ChannelsManager; }
-        }
+
 
         /// <summary>
         /// Creates a <see cref="Channel"/> instance
