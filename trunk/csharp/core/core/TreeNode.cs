@@ -114,6 +114,32 @@ namespace urakawa.core
             }
         }
 
+
+        public Media GetMediaInChannel<T>() where T : Channel
+        {
+            ChannelsProperty chProp = GetProperty<ChannelsProperty>();
+            if (chProp != null)
+            {
+                Channel channel = null;
+                List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
+                foreach (Channel ch in listCh)
+                {
+                    if (ch is T)
+                    {
+                        channel = ch;
+                        break;
+                    }
+                }
+                if (channel != null)
+                {
+                    Media med = chProp.GetMedia(channel);
+                    return med;
+                }
+            }
+            return null;
+        }
+
+
         public bool IsAfter(TreeNode node)
         {
             if (node == this)
@@ -550,50 +576,12 @@ namespace urakawa.core
 
         public Media GetMediaInImageChannel()
         {
-            ChannelsProperty chProp = GetProperty<ChannelsProperty>();
-            if (chProp != null)
-            {
-                Channel channel = null;
-                List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
-                foreach (Channel ch in listCh)
-                {
-                    if (ch is ImageChannel)
-                    {
-                        channel = ch;
-                        break;
-                    }
-                }
-                if (channel != null)
-                {
-                    Media med = chProp.GetMedia(channel);
-                    return med;
-                }
-            }
-            return null;
+            return GetMediaInChannel<ImageChannel>();
         }
 
         public Media GetMediaInTextChannel()
         {
-            ChannelsProperty chProp = GetProperty<ChannelsProperty>();
-            if (chProp != null)
-            {
-                Channel channel = null;
-                List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
-                foreach (Channel ch in listCh)
-                {
-                    if (ch is TextChannel)
-                    {
-                        channel = ch;
-                        break;
-                    }
-                }
-                if (channel != null)
-                {
-                    Media med = chProp.GetMedia(channel);
-                    return med;
-                }
-            }
-            return null;
+            return GetMediaInChannel<TextChannel>();
         }
 
         public ManagedAudioMedia GetManagedAudioMedia()
@@ -627,26 +615,7 @@ namespace urakawa.core
 
         public Media GetMediaInAudioChannel()
         {
-            ChannelsProperty chProp = GetProperty<ChannelsProperty>();
-            if (chProp != null)
-            {
-                Channel channel = null;
-                List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
-                foreach (Channel ch in listCh)
-                {
-                    if (ch is AudioChannel)
-                    {
-                        channel = ch;
-                        break;
-                    }
-                }
-                if (channel != null)
-                {
-                    Media med = chProp.GetMedia(channel);
-                    return med;
-                }
-            }
-            return null;
+            return GetMediaInChannel<AudioChannel>();
         }
 
 
