@@ -15,7 +15,10 @@ namespace urakawa.core
     {
         AbstractTextMedia GetTextMedia();
         SequenceMedia GetTextSequenceMedia();
+        AbstractImageMedia GetImageMedia();
+        SequenceMedia GetImageSequenceMedia();
         Media GetMediaInTextChannel();
+        Media GetMediaInImageChannel();
         ManagedAudioMedia GetManagedAudioMedia();
         AbstractAudioMedia GetAudioMedia();
         SequenceMedia GetAudioSequenceMedia();
