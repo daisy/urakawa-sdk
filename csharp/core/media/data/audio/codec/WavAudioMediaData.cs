@@ -307,7 +307,7 @@ namespace urakawa.media.data.audio.codec
         /// <returns>The <see cref="WavClip"/></returns>
         protected WavClip CreateWavClipFromRawPCMStream(Stream pcmData, TimeDelta duration)
         {
-            DataProvider newSingleDataProvider = MediaDataManager.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+            DataProvider newSingleDataProvider = Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
             PCMDataInfo pcmInfo = new PCMDataInfo(PCMFormat);
             if (duration == null)
             {
@@ -868,7 +868,7 @@ namespace urakawa.media.data.audio.codec
             {
                 throw new exception.XukException("dataProvider attribute is missing from WavClip element");
             }
-            DataProvider prov = MediaDataManager.Presentation.DataProviderManager.GetDataProvider(dataProviderUid);
+            DataProvider prov = Presentation.DataProviderManager.GetDataProvider(dataProviderUid);
 
             try
             {
@@ -1011,7 +1011,7 @@ namespace urakawa.media.data.audio.codec
                         splitPoint, AudioDuration));
             }
             WavAudioMediaData oWAMD =
-                GetMediaDataFactory().Create(GetType()) as WavAudioMediaData;
+                Presentation.MediaDataFactory.Create(GetType()) as WavAudioMediaData;
             if (oWAMD == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(

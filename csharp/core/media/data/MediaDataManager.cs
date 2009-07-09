@@ -67,27 +67,6 @@ namespace urakawa.media.data
 
 
         /// <summary>
-        /// Gets the <see cref="MediaDataFactory"/> associated with <c>this</c> 
-        /// </summary>
-        /// <returns>The <see cref="MediaDataFactory"/></returns>
-        public MediaDataFactory MediaDataFactory
-        {
-            get { return Presentation.MediaDataFactory; }
-        }
-
-
-        /// <summary>
-        /// Gets the <see cref="DataProviderFactory"/> associated with <c>this</c> 
-        /// (via. the <see cref="Presentation"/> associated with <c>this</c>).
-        /// Convenience for <c>getDataProviderManager().getDataProviderFactory()</c>
-        /// </summary>
-        /// <returns>The <see cref="DataProviderFactory"/></returns>
-        public DataProviderFactory DataProviderFactory
-        {
-            get { return Presentation.DataProviderManager.DataProviderFactory; }
-        }
-
-        /// <summary>
         /// Gets (copy of) the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager 
         /// </summary>
         /// <returns>The default PCM format</returns>
@@ -426,7 +405,7 @@ namespace urakawa.media.data
             {
                 throw new exception.MethodParameterIsNullException("Can not copy a null AudioMediaData");
             }
-            if (data.MediaDataManager != this)
+            if (data.Presentation.MediaDataManager != this)
             {
                 throw new exception.IsNotManagerOfException(
                     "Can not copy a AudioMediaData that is not managed by this");
@@ -612,7 +591,7 @@ namespace urakawa.media.data
             if (source.NodeType == XmlNodeType.Element)
             {
                 MediaData data = null;
-                data = MediaDataFactory.Create(source.LocalName, source.NamespaceURI);
+                data = Presentation.MediaDataFactory.Create(source.LocalName, source.NamespaceURI);
                 if (data != null)
                 {
                     string uid = source.GetAttribute(XukStrings.Uid);
@@ -644,7 +623,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        data = MediaDataFactory.Create(source.LocalName, source.NamespaceURI);
+                        data = Presentation.MediaDataFactory.Create(source.LocalName, source.NamespaceURI);
                         if (data != null)
                         {
                             data.XukIn(source, handler);

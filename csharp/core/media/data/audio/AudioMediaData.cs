@@ -108,9 +108,9 @@ namespace urakawa.media.data.audio
         protected virtual bool IsPCMFormatChangeOk(PCMFormatInfo newFormat, out string failReason)
         {
             failReason = "";
-            if (MediaDataManager.EnforceSinglePCMFormat)
+            if (Presentation.MediaDataManager.EnforceSinglePCMFormat)
             {
-                if (!MediaDataManager.DefaultPCMFormat.ValueEquals(newFormat))
+                if (!Presentation.MediaDataManager.DefaultPCMFormat.ValueEquals(newFormat))
                 {
                     failReason =
                         "When the MediaDataManager enforces a single PCM Format, "
@@ -119,15 +119,6 @@ namespace urakawa.media.data.audio
                 }
             }
             return true;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="MediaDataFactory"/>
-        /// </summary>
-        /// <returns></returns>
-        protected MediaDataFactory GetMediaDataFactory()
-        {
-            return MediaDataManager.MediaDataFactory;
         }
 
         /// <summary>
@@ -140,7 +131,7 @@ namespace urakawa.media.data.audio
             {
                 if (mPCMFormat == null)
                 {
-                    mPCMFormat = new PCMFormatInfo(MediaDataManager.DefaultPCMFormat);
+                    mPCMFormat = new PCMFormatInfo(Presentation.MediaDataManager.DefaultPCMFormat);
                 }
                 return mPCMFormat.Copy();
             }
@@ -507,7 +498,7 @@ namespace urakawa.media.data.audio
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The split point can not be beyond the end of the AudioMediaData");
             }
-            MediaData md = GetMediaDataFactory().Create(GetType());
+            MediaData md = Presentation.MediaDataFactory.Create(GetType());
             if (!(md is AudioMediaData))
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(

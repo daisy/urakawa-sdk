@@ -21,17 +21,6 @@ namespace urakawa.property.channel
         private string mLanguage = null;
 
         /// <summary>
-        /// Gets the <see cref="ChannelsManager"/> managing the <see cref="Channel"/>
-        /// </summary>
-        public ChannelsManager ChannelsManager
-        {
-            get
-            {
-                return Presentation.ChannelsManager;
-            }
-        }
-
-        /// <summary>
         /// Determines if the channel is equivalent to a given other channel, 
         /// possibly from another <see cref="Presentation"/>
         /// </summary>
@@ -163,7 +152,7 @@ namespace urakawa.property.channel
         /// <c>this.getChannelsManager.GetUidOfChannel(this)</c></returns>
         public string Uid
         {
-            get { return ChannelsManager.GetUidOfChannel(this); }
+            get { return Presentation.ChannelsManager.GetUidOfChannel(this); }
         }
 
         #region IXUKAble members

@@ -65,22 +65,13 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Gets the <see cref="MediaDataManager"/> associated with <c>this</c>
-        /// </summary>
-        /// <returns>The assicoated <see cref="MediaDataManager"/></returns>
-        public MediaDataManager MediaDataManager
-        {
-            get { return Presentation.MediaDataManager; }
-        }
-
-        /// <summary>
         /// Gets the UID of <c>this</c>.
-        /// Convenience for <c><see cref="MediaData.MediaDataManager"/>.<see cref="urakawa.media.data.MediaDataManager.GetUidOfMediaData"/>(this)</c>
+        /// Convenience for <c><see cref="Presentation.MediaDataManager"/>.<see cref="urakawa.media.data.MediaDataManager.GetUidOfMediaData"/>(this)</c>
         /// </summary>
         /// <returns>The UID</returns>
         public string Uid
         {
-            get { return MediaDataManager.GetUidOfMediaData(this); }
+            get { return Presentation.MediaDataManager.GetUidOfMediaData(this); }
         }
 
         private string mName = "";
@@ -116,7 +107,7 @@ namespace urakawa.media.data
         /// </summary>
         public virtual void Delete()
         {
-            MediaDataManager.RemoveMediaData(this);
+            Presentation.MediaDataManager.RemoveMediaData(this);
         }
 
         /// <summary>

@@ -33,18 +33,12 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Gets the <see cref="DataProviderManager"/> associated with <c>this</c>
-        /// - convenience for <c>Presentation.DataProviderManager</c>
-        /// </summary>
-        public DataProviderManager DataProviderManager { get { return Presentation.DataProviderManager;}}
-
-        /// <summary>
         /// Gets the UID of the data provider in the context of the manager. 
         /// Convenience for <c>DataProviderManager.GetUidOfDataProvider(this)</c>
         /// </summary>
         public string Uid
         {
-            get { return DataProviderManager.GetUidOfDataProvider(this); }
+            get { return Presentation.DataProviderManager.GetUidOfDataProvider(this); }
         }
 
         /// <summary>

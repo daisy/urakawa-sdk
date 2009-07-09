@@ -381,7 +381,7 @@ namespace urakawa.media
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        Media newMedia = MediaFactory.Create(source.LocalName, source.NamespaceURI);
+                        Media newMedia = Presentation.MediaFactory.Create(source.LocalName, source.NamespaceURI);
                         if (newMedia != null)
                         {
                             newMedia.XukIn(source, handler);

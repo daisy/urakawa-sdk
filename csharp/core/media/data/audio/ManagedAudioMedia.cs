@@ -58,11 +58,11 @@ namespace urakawa.media.data.audio
         /// <returns>The copy</returns>
         public ManagedAudioMedia Copy(Time clipBegin, Time clipEnd)
         {
-            ManagedAudioMedia copyMAM = MediaFactory.Create<ManagedAudioMedia>();
+            ManagedAudioMedia copyMAM = Presentation.MediaFactory.Create<ManagedAudioMedia>();
             Stream pcm = AudioMediaData.GetAudioData(clipBegin, clipEnd);
             try
             {
-                AudioMediaData data = MediaDataFactory.Create(typeof(AudioMediaData)) as AudioMediaData;
+                AudioMediaData data = Presentation.MediaDataFactory.Create(typeof(AudioMediaData)) as AudioMediaData;
                 data.PCMFormat = AudioMediaData.PCMFormat;
                 data.AppendAudioData(pcm, null);
                 copyMAM.AudioMediaData = data;
@@ -252,7 +252,7 @@ namespace urakawa.media.data.audio
         protected override AbstractAudioMedia SplitProtected(Time splitPoint)
         {
             AudioMediaData secondPartData = AudioMediaData.Split(splitPoint);
-            ManagedAudioMedia secondPartMAM = this.MediaFactory.Create<ManagedAudioMedia>();
+            ManagedAudioMedia secondPartMAM = Presentation.MediaFactory.Create<ManagedAudioMedia>();
             secondPartMAM.AudioMediaData = secondPartData;
             return secondPartMAM;
         }
@@ -279,17 +279,6 @@ namespace urakawa.media.data.audio
                 }
                 AudioMediaData = value as AudioMediaData;
             }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="MediaDataFactory"/> creating the <see cref="data.MediaData"/>
-        /// used by <c>this</c>.
-        /// Convenience for <c>GetMediaData().getMediaDataManager().GetMediaDataFactory()</c>
-        /// </summary>
-        /// <returns>The media data factory</returns>
-        public MediaDataFactory MediaDataFactory
-        {
-            get { return MediaFactory.Presentation.MediaDataFactory; }
         }
 
 
@@ -332,7 +321,7 @@ namespace urakawa.media.data.audio
                 if (mAudioMediaData == null)
                 {
                     //Lazy initialization
-                    AudioMediaData = MediaDataFactory.CreateAudioMediaData();
+                    AudioMediaData = Presentation.MediaDataFactory.CreateAudioMediaData();
                 }
                 return mAudioMediaData;
             }

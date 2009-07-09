@@ -253,7 +253,7 @@ namespace urakawa.media
                     throw new exception.InvalidUriException(String.Format(
                                                                 "The src value '{0}' is not a well-formed Uri", Src));
 				} 
-                return new Uri(MediaFactory.Presentation.RootUri, Src);
+                return new Uri(Presentation.RootUri, Src);
             }
         }
 
@@ -324,7 +324,7 @@ namespace urakawa.media
         {
             if (Src != "")
             {
-                Uri srcUri = new Uri(MediaFactory.Presentation.RootUri, Src);
+                Uri srcUri = new Uri(Presentation.RootUri, Src);
                 if (baseUri == null)
                 {
                     destination.WriteAttributeString(XukStrings.Src, srcUri.AbsoluteUri);

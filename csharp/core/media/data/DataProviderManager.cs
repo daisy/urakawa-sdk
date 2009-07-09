@@ -384,18 +384,6 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Gets the <see cref="urakawa.media.data.DataProviderFactory"/> of the <see cref="DataProviderManager"/>
-        /// </summary>
-        /// <returns>The <see cref="DataProviderFactory"/></returns>
-        public DataProviderFactory DataProviderFactory
-        {
-            get
-            {
-                return Presentation.DataProviderFactory;
-            }
-        }
-
-        /// <summary>
         /// Detaches one of the <see cref="DataProvider"/>s managed by the manager
         /// </summary>
         /// <param name="provider">The <see cref="DataProvider"/> to delete</param>
@@ -525,7 +513,7 @@ namespace urakawa.media.data
                                                                     "Another DataProvider with uid {0} is already manager by the manager",
                                                                     uid));
             }
-            if (provider.DataProviderManager != this)
+            if (provider.Presentation.DataProviderManager != this)
             {
                 throw new exception.IsNotManagerOfException(
                     "The given DataProvider does not return this as DataProviderManager");
@@ -726,7 +714,7 @@ namespace urakawa.media.data
         {
             if (source.NodeType == XmlNodeType.Element)
             {
-                DataProvider prov = DataProviderFactory.Create("", source.LocalName, source.NamespaceURI);
+                DataProvider prov = Presentation.DataProviderFactory.Create("", source.LocalName, source.NamespaceURI);
                 if (prov != null)
                 {
                     string uid = source.GetAttribute(XukStrings.Uid);
@@ -777,7 +765,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        DataProvider prov = DataProviderFactory.Create("", source.LocalName, source.NamespaceURI);
+                        DataProvider prov = Presentation.DataProviderFactory.Create("", source.LocalName, source.NamespaceURI);
                         if (prov != null)
                         {
                             if (addedProvider)

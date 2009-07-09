@@ -860,6 +860,26 @@ namespace urakawa.core
             return GetProperty(typeof(T)) as T;
         }
 
+        public ChannelsProperty GetOrCreateChannelsProperty()
+        {
+            return GetOrCreateProperty<ChannelsProperty>();
+        }
+        public XmlProperty GetOrCreateXmlProperty()
+        {
+            return GetOrCreateProperty<XmlProperty>();
+        }
+
+        public T GetOrCreateProperty<T>() where T : Property, new()
+        {
+            T prop = GetProperty<T>();
+            if (prop == null)
+            {
+                prop = Presentation.PropertyFactory.Create<T>();
+                AddProperty(prop);
+            }
+            return prop;
+        }
+
         /// <summary>
         /// Adds a <see cref="Property"/> to the node
         /// </summary>

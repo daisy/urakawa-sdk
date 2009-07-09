@@ -50,7 +50,7 @@ namespace urakawa.media.data
                 if (mDataFileRelativePath==null)
                 {
                     //Lazy initialization
-                    mDataFileRelativePath = DataProviderManager.GetNewDataFileRelPath(
+                    mDataFileRelativePath = Presentation.DataProviderManager.GetNewDataFileRelPath(
                         DataProviderFactory.GetExtensionFromMimeType(MimeType));
                 }
                 return mDataFileRelativePath;
@@ -72,7 +72,7 @@ namespace urakawa.media.data
         /// <returns>The full path</returns>
         public string DataFileFullPath
         {
-            get { return Path.Combine(DataProviderManager.DataFileDirectoryFullPath, DataFileRelativePath); }
+            get { return Path.Combine(Presentation.DataProviderManager.DataFileDirectoryFullPath, DataFileRelativePath); }
         }
 
         #region DataProvider Members
@@ -274,7 +274,7 @@ namespace urakawa.media.data
                                                                            DataFileFullPath, e.Message), e);
                     }
                 }
-                DataProviderManager.RemoveDataProvider(this, false);
+                Presentation.DataProviderManager.RemoveDataProvider(this, false);
             }
         }
 
