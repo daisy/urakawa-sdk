@@ -115,7 +115,7 @@ namespace XukImport
                 }
                 if (parent.Name != "par")
                 {
-                    System.Diagnostics.Debug.Fail("Text node in SMIL has no parallel time container as parent ! {0}", parent.Name);
+                    //System.Diagnostics.Debug.Fail("Text node in SMIL has no parallel time container as parent ! {0}", parent.Name);
                     continue;
                 }
                 XmlNodeList textPeers = parent.ChildNodes;
