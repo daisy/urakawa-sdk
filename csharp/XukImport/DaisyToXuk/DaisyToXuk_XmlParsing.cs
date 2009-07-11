@@ -73,10 +73,10 @@ namespace XukImport
                 m_EmbeddedEntities.Add("//W3C//DTD%20XHTML%201.1%20plus%20MathML%202.0%20plus%20SVG%201.1//EN", "DaisyToXuk.Resources.xhtml-math-svg-flat.dtd");
                 m_EmbeddedEntities.Add("//NISO//DTD%20dtbook%202005-1//EN", "DaisyToXuk.Resources.dtbook-2005-1.dtd");
                 m_EmbeddedEntities.Add("//NISO//DTD%20dtbook%202005-2//EN", "DaisyToXuk.Resources.dtbook-2005-2.dtd");
-                m_EmbeddedEntities.Add("//NISO//DTD%20dtbook%202005-3//EN", "DaisyToXuk.Resources.dtbook-2005-3");
+                m_EmbeddedEntities.Add("//NISO//DTD%20dtbook%202005-3//EN", "DaisyToXuk.Resources.dtbook-2005-3.dtd");
                 m_EmbeddedEntities.Add("//W3C//ENTITIES%20MathML%202.0%20Qualified%20Names%201.0//EN", "DaisyToXuk.Resources.mathml2.dtd");
                 m_EmbeddedEntities.Add("//NISO//DTD%20dtbsmil%202005-2//EN", "DaisyToXuk.Resources.dtbsmil-2005-2.dtd");
-                m_EmbeddedEntities.Add("+//ISBN%200-9673008-1-9//DTD%20OEB%201.2%20Package//EN", "DaisyToXuk.Resources.oebpkg12.dtd");
+                m_EmbeddedEntities.Add("//ISBN%200-9673008-1-9//DTD%20OEB%201.2%20Package//EN", "DaisyToXuk.Resources.oebpkg12.dtd");
                 m_EmbeddedEntities.Add("//NISO//DTD%20dtbsmil%202005-1//EN", "DaisyToXuk.Resources.dtbsmil-2005-1.dtd");
                 
             }
