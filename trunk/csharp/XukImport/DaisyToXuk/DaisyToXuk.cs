@@ -16,8 +16,13 @@ namespace XukImport
         private readonly string m_outDirectory;
         private string m_Book_FilePath;
 
-        private Project m_Project;
+        private string m_Xuk_FilePath;
+        public string XukPath
+        {
+            get { return m_Xuk_FilePath; }
+        }
 
+        private Project m_Project;
         public Project Project
         {
             get { return m_Project; }
@@ -38,8 +43,8 @@ namespace XukImport
             initializeProject();
             transformBook();
 
-            string xukPath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
-            m_Project.SaveXuk(new Uri(xukPath));
+            m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
+            m_Project.SaveXuk(new Uri(m_Xuk_FilePath));
         }
 
         public DaisyToXuk(string bookfile)
