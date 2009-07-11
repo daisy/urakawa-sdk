@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Xml;
 using urakawa;
 using urakawa.media;
@@ -14,6 +15,25 @@ namespace XukImport
     {
         private Channel m_ImageChannel;
         private TextChannel m_textChannel;
+
+        private string trimXmlTextInnerSpaces(string str)
+        {
+            string[] whiteSpaces = new string[] { " ", ""+'\t', "\r\n" };
+            string[] strSplit = str.Split(whiteSpaces, StringSplitOptions.RemoveEmptyEntries);
+            return String.Join(" ", strSplit);
+        }
+
+        private string trimXmlText(string str)
+        {
+            string strTrimmed = str.Trim();
+            //string strTrimmed_ = trimInnerSpaces(strTrimmed);
+            string strTrimmed_ = Regex.Replace(strTrimmed, @"\s+", " ");
+            if (strTrimmed_.Length == strTrimmed.Length && strTrimmed.Length == str.Length)
+            {
+                return str;
+            }
+            return " " + strTrimmed_ + " ";
+        }
 
         private void parseContentDocuments(List<string> spineOfContentDocuments)
         {
@@ -139,11 +159,11 @@ namespace XukImport
                                     Directory.CreateDirectory(datafilePath);
                                 }
                                 string imgDestFullpath = Path.Combine(datafilePath, Path.GetFileName(imgSourceFullpath));
-                                if (File.Exists(imgDestFullpath))
+                                if (!File.Exists(imgDestFullpath))
                                 {
-                                    File.Delete(imgDestFullpath);
+                                    //File.Delete(imgDestFullpath);
+                                    File.Copy(imgSourceFullpath, imgDestFullpath);
                                 }
-                                File.Copy(imgSourceFullpath, imgDestFullpath);
 
                                 updatedSRC = presentation.RootUri.MakeRelativeUri(new Uri(imgDestFullpath, UriKind.Absolute)).ToString();
                                 //string dirPath = Path.GetDirectoryName(presentation.RootUri.LocalPath);
@@ -188,7 +208,7 @@ namespace XukImport
                     {
                         Presentation presentation = m_Project.GetPresentation(0);
 
-                        string text = xmlNode.Value;
+                        string text = trimXmlText(xmlNode.Value);
                         TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
                         textMedia.Text = text;
 
