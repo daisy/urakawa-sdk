@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using urakawa;
@@ -133,21 +134,20 @@ namespace XukImport
                                 string parentPath = Directory.GetParent(m_Book_FilePath).FullName;
                                 string imgSourceFullpath = Path.Combine(parentPath, relativePath);
                                 string datafilePath = presentation.DataProviderManager.DataFileDirectoryFullPath;
-                                string imgDestFullpath = Path.Combine(datafilePath, Path.GetFileName(imgSourceFullpath));
-                                if (!Directory.Exists(presentation.DataProviderManager.DataFileDirectoryFullPath))
+                                if (!Directory.Exists(datafilePath))
                                 {
-                                    Directory.CreateDirectory(presentation.DataProviderManager.DataFileDirectoryFullPath);
+                                    Directory.CreateDirectory(datafilePath);
                                 }
+                                string imgDestFullpath = Path.Combine(datafilePath, Path.GetFileName(imgSourceFullpath));
                                 if (File.Exists(imgDestFullpath))
                                 {
                                     File.Delete(imgDestFullpath);
-                                    File.Copy(imgSourceFullpath, imgDestFullpath);
                                 }
-                                else
-                                {
-                                    File.Copy(imgSourceFullpath, imgDestFullpath);
-                                }
-                                updatedSRC = Path.GetFileName(imgDestFullpath);
+                                File.Copy(imgSourceFullpath, imgDestFullpath);
+
+                                updatedSRC = presentation.RootUri.MakeRelativeUri(new Uri(imgDestFullpath, UriKind.Absolute)).ToString();
+                                //string dirPath = Path.GetDirectoryName(presentation.RootUri.LocalPath);
+                                //updatedSRC = presentation.DataProviderManager.DataFileDirectory + Path.DirectorySeparatorChar + Path.GetFileName(imgDestFullpath);
 
                                 ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty();
                                 treeNode.AddProperty(chProp);
