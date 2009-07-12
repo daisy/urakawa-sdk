@@ -15,15 +15,14 @@ namespace urakawa.command
         bool CanExecute { get; }
 
         /// <summary>
+        /// Execute the action.
+        /// </summary>
+        void Execute();
+
+        /// <summary>
         /// Get a long uman-readable description of the command
         /// </summary>
         string LongDescription { get; }
-
-        /// <summary>
-        /// Execute the command.
-        /// </summary>
-        /// <exception cref="urakawa.exception.CannotExecuteException">Thrown when the command cannot be reversed.</exception>
-        void Execute();
 
         /// <summary>
         /// Gets a short humanly readable description of the command

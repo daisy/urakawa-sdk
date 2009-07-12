@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using urakawa.media.data;
 using urakawa.progress;
 using urakawa.xuk;
 using urakawa.events;
-using urakawa.events.undo;
 using ExecutedEventArgs = urakawa.events.command.ExecutedEventArgs;
 using UnExecutedEventArgs = urakawa.events.command.UnExecutedEventArgs;
 
@@ -17,10 +15,8 @@ namespace urakawa.command
     /// execution (including exception/redo). Implementations may choose various techniques suitable in terms
     /// of performance and memory usage (storage of the transition or the full object snapshot.)
     /// </summary>
-    public abstract class Command : WithPresentation, IChangeNotifier, IAction
+    public abstract class Command : WithPresentation, IChangeNotifier, IUndoableAction
     {
-
-
         protected override void XukInAttributes(XmlReader source)
         {
             mLongDescription = source.GetAttribute(XukStrings.LongDescription);

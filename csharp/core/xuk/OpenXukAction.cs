@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Xml;
 using urakawa.command;
-using urakawa.events.command;
 using urakawa.progress;
 
 namespace urakawa.xuk
