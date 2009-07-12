@@ -1,17 +1,16 @@
-using urakawa.xuk;
-
 namespace urakawa.command
 {
     /// <summary>
     /// Factory for creating <see cref="Command"/>s
     /// </summary>
-    public class CommandFactory : GenericWithPresentationFactory<Command>
+    public abstract class CommandFactoryBase : GenericWithPresentationFactory<Command>
     {
         public override string GetTypeNameFormatted()
         {
-            return XukStrings.CommandFactory;
+            return "CommandFactoryBase";
         }
-        public CommandFactory(Presentation pres) : base(pres)
+
+        protected CommandFactoryBase(Presentation pres) : base(pres)
         {
         }
 

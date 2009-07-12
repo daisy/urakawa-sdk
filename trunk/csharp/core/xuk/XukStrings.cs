@@ -219,6 +219,21 @@ namespace urakawa.xuk
         #endregion
 
 
+        #region commands
+
+
+        public static string TreeNodeSetManagedAudioMediaCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TreeNodeSetManagedAudioMediaCommand" : "nodSetManAudMedCmd"); }
+        }
+
+        public static string ManagedAudioMediaInsertDataCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ManagedAudioMediaInsertDataCommand" : "manAudMedInsertCmd"); }
+        }
+        
+        #endregion
+
         #region managers
 
 

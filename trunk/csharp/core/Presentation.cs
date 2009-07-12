@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 using System.Collections.Generic;
 using urakawa.command;
+using urakawa.commands;
 using urakawa.core;
 using urakawa.progress;
 using urakawa.property;
@@ -13,7 +14,6 @@ using urakawa.undo;
 using urakawa.xuk;
 using urakawa.events;
 using urakawa.events.presentation;
-using CommandFactory=urakawa.command.CommandFactory;
 
 namespace urakawa
 {
