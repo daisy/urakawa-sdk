@@ -223,6 +223,8 @@ namespace urakawa.metadata
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             if (source.MoveToFirstAttribute())
             {
                 bool moreAttrs = true;
@@ -233,7 +235,6 @@ namespace urakawa.metadata
                 }
                 source.MoveToElement();
             }
-            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -246,6 +247,8 @@ namespace urakawa.metadata
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            base.XukOutAttributes(destination, baseUri);
+
             destination.WriteAttributeString(XukStrings.MetaDataName, Name);
             foreach (string a in ListOfOptionalAttributeNames)
             {
@@ -254,7 +257,6 @@ namespace urakawa.metadata
                     destination.WriteAttributeString(a, GetOptionalAttributeValue(a));
                 }
             }
-            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion

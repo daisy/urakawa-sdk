@@ -276,6 +276,8 @@ namespace urakawa.media
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             string val = source.GetAttribute(XukStrings.Src);
             if (string.IsNullOrEmpty(val)) val = DEFAULT_SRC;
             Src = val;
@@ -309,7 +311,6 @@ namespace urakawa.media
             {
                 Width = 0;
             }
-            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -322,6 +323,8 @@ namespace urakawa.media
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            base.XukOutAttributes(destination, baseUri);
+
             if (Src != "")
             {
                 Uri srcUri = new Uri(Presentation.RootUri, Src);
@@ -336,7 +339,7 @@ namespace urakawa.media
             }
             destination.WriteAttributeString(XukStrings.Height, this.mHeight.ToString());
             destination.WriteAttributeString(XukStrings.Width, this.mWidth.ToString());
-            base.XukOutAttributes(destination, baseUri);
+            
         }
 
         #endregion

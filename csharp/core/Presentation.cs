@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.media.data.audio;
+using urakawa.media.timing;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
@@ -1041,6 +1043,7 @@ namespace urakawa
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             base.XukOutAttributes(destination, baseUri);
+
             if (baseUri == null)
             {
                 destination.WriteAttributeString(XukStrings.RootUri, RootUri.AbsoluteUri);
@@ -1093,7 +1096,10 @@ namespace urakawa
 
             MediaDataManager.XukOut(destination, baseUri, handler);
 
+
+
             UndoRedoManager.XukOut(destination, baseUri, handler);
+
 
 
             destination.WriteStartElement(XukStrings.Metadatas, XukNamespaceUri);
@@ -1106,6 +1112,7 @@ namespace urakawa
             destination.WriteStartElement(XukStrings.RootNode, XukNamespaceUri);
             RootNode.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
+
         }
 
         #endregion
@@ -1200,11 +1207,15 @@ namespace urakawa
             //
             CommandFactory.CreateCompositeCommand();
             //
+            ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
+            CommandFactory.CreateManagedAudioMediaInsertDataCommand(manMedia, manMedia, Time.Zero);
+            CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(TreeNodeFactory.Create(), manMedia);
+            //
             MediaFactory.CreateExternalImageMedia();
             MediaFactory.CreateExternalVideoMedia();
             MediaFactory.CreateExternalTextMedia();
             MediaFactory.CreateExternalAudioMedia();
-            MediaFactory.CreateManagedAudioMedia();
+            //MediaFactory.CreateManagedAudioMedia(); DONE ALREADY (see above)
             MediaFactory.CreateSequenceMedia();
             MediaFactory.CreateTextMedia();
             //
@@ -1213,7 +1224,7 @@ namespace urakawa
             PropertyFactory.CreateChannelsProperty();
             PropertyFactory.CreateXmlProperty();
             //
-            TreeNodeFactory.Create();
+            //TreeNodeFactory.Create(); DONE ALREADY (see above)
         }
     }
 }

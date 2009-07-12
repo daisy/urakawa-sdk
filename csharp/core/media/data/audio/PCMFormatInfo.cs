@@ -225,6 +225,8 @@ namespace urakawa.media.data.audio
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             string attr = source.GetAttribute(XukStrings.NumberOfChannels);
             if (attr == null)
             {
@@ -264,7 +266,6 @@ namespace urakawa.media.data.audio
                                                      attr));
             }
             BitDepth = bd;
-            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -277,10 +278,11 @@ namespace urakawa.media.data.audio
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            base.XukOutAttributes(destination, baseUri);
+
             destination.WriteAttributeString(XukStrings.NumberOfChannels, NumberOfChannels.ToString());
             destination.WriteAttributeString(XukStrings.SampleRate, SampleRate.ToString());
             destination.WriteAttributeString(XukStrings.BitDepth, BitDepth.ToString());
-            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion

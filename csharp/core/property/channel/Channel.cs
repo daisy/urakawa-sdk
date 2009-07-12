@@ -150,8 +150,9 @@ namespace urakawa.property.channel
         /// </summary>
         /// <returns>The Xuk Uid as calculated by 
         /// <c>this.getChannelsManager.GetUidOfChannel(this)</c></returns>
-        public string Uid
+        public override string Uid
         {
+            set { throw new NotImplementedException(); }
             get { return Presentation.ChannelsManager.GetUidOfChannel(this); }
         }
 
@@ -210,6 +211,8 @@ namespace urakawa.property.channel
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             string name = source.GetAttribute(XukStrings.Name);
             if (name == null) name = "";
             Name = name;
@@ -217,7 +220,6 @@ namespace urakawa.property.channel
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
-            base.XukInAttributes(source);
         }
 
         ///// <summary>
@@ -267,6 +269,8 @@ namespace urakawa.property.channel
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            base.XukOutAttributes(destination, baseUri);
+
             destination.WriteAttributeString(XukStrings.Name, Name);
             if (!String.IsNullOrEmpty(Language))
             {
@@ -274,10 +278,8 @@ namespace urakawa.property.channel
             }
             if (!Presentation.Project.IsPrettyFormat())
             {
-                string uid = Presentation.ChannelsManager.GetUidOfChannel(this);
-                destination.WriteAttributeString(XukStrings.Uid, uid);
+                destination.WriteAttributeString(XukStrings.Uid, Uid);
             }
-            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion
