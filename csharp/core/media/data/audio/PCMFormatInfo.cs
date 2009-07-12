@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using urakawa.xuk;
 using urakawa.media.timing;
@@ -191,17 +189,17 @@ namespace urakawa.media.data.audio
                 throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
             }
 
-            double time = 1000.0 * dataLen / ((double)SampleRate * NumberOfChannels * BitDepth / 8.0);
-            return new TimeDelta(time);
+            //double time = 1000.0 * dataLen / ((double)SampleRate * NumberOfChannels * BitDepth / 8.0);
+            //return new TimeDelta(time);
 
-            //double blockCount = ((double)dataLen) / BlockAlign;
-            //return new TimeDelta(TimeSpan.FromTicks((long)(Math.Round(GetTicksPerBlock() * blockCount))));
+            double blockCount = ((double)dataLen) / BlockAlign;
+            return new TimeDelta(TimeSpan.FromTicks((long)(Math.Round(GetTicksPerBlock() * blockCount))));
         }
 
-        //private double GetTicksPerBlock()
-        //{
-        //    return ((double)TimeSpan.TicksPerSecond) / SampleRate;
-        //}
+        private double GetTicksPerBlock()
+        {
+            return ((double)TimeSpan.TicksPerSecond) / SampleRate;
+        }
 
         /// <summary>
         /// Gets the PCM data length corresponding to a given duration
@@ -210,13 +208,13 @@ namespace urakawa.media.data.audio
         /// <returns>The PCM data length</returns>
         public uint GetDataLength(TimeDelta duration)
         {
-            double ms = duration.TimeDeltaAsMillisecondDouble;
-            double bytes = (ms * SampleRate * NumberOfChannels * BitDepth / 8.0) / 1000.0;
-            return (uint) bytes;
+            //double ms = duration.TimeDeltaAsMillisecondDouble;
+            //double bytes = (ms * SampleRate * NumberOfChannels * BitDepth / 8.0) / 1000.0;
+            //return (uint) bytes;
 
-            //uint blockCount = (uint)Math.Round(((double)duration.TimeDeltaAsTimeSpan.Ticks) / GetTicksPerBlock());
-            //uint res = blockCount * BlockAlign;
-            //return res;
+            uint blockCount = (uint)Math.Round(((double)duration.TimeDeltaAsTimeSpan.Ticks) / GetTicksPerBlock());
+            uint res = blockCount * BlockAlign;
+            return res;
         }
 
         #region IXUKAble members
