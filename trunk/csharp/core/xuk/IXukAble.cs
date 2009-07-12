@@ -9,6 +9,8 @@ namespace urakawa.xuk
     /// </summary>
     public interface IXukAble
     {
+        string Uid { get; set; }
+
         /// <summary>
         /// The implementation of XUKIn is expected to read and remove all tags
         /// up to and including the closing tag matching the element the reader was at when passed to it.

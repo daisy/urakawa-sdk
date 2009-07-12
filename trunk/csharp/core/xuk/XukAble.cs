@@ -36,6 +36,13 @@ namespace urakawa.xuk
 
         #region IXUKAble members
 
+        private string m_Uid = null;
+        public virtual string Uid
+        {
+            set { m_Uid = value; }
+            get { return m_Uid; }
+        }
+
         /// <summary>
         /// Clears the <see cref="XukAble"/> of any data - called at the beginning of <see cref="XukIn"/>
         /// </summary>
@@ -116,6 +123,8 @@ namespace urakawa.xuk
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected virtual void XukInAttributes(XmlReader source)
         {
+            string uid = source.GetAttribute(XukStrings.Uid);
+            if (!string.IsNullOrEmpty(uid)) Uid = uid;
         }
 
         /// <summary>
@@ -185,6 +194,10 @@ namespace urakawa.xuk
         /// </param>
         protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            if (!string.IsNullOrEmpty(Uid))
+            {
+                destination.WriteAttributeString(XukStrings.Uid, Uid);
+            }
         }
 
         /// <summary>

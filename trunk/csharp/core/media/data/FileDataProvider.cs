@@ -339,6 +339,8 @@ namespace urakawa.media.data
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             string val = source.GetAttribute(XukStrings.DataFileRelativePath);
             if (string.IsNullOrEmpty(val))
             {
@@ -355,7 +357,7 @@ namespace urakawa.media.data
             */
 
             HasBeenInitialized = true; //Assume that the data file exists
-            base.XukInAttributes(source);
+            
         }
 
         /// <summary>
@@ -368,16 +370,16 @@ namespace urakawa.media.data
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            base.XukOutAttributes(destination, baseUri);
+
             CheckDataFile(); //Ensure that data file exist even if no data has yet been written to it.
             destination.WriteAttributeString(XukStrings.DataFileRelativePath, DataFileRelativePath);
 
             if (!Presentation.Project.IsPrettyFormat())
             {
-                string uid = Presentation.DataProviderManager.GetUidOfDataProvider(this);
-                destination.WriteAttributeString(XukStrings.Uid, uid);
+                destination.WriteAttributeString(XukStrings.Uid, Uid);
             }
 
-            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion

@@ -172,11 +172,13 @@ namespace urakawa.media
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             string lang = source.GetAttribute(XukStrings.Language);
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
-            base.XukInAttributes(source);
+            
         }
 
         /// <summary>
@@ -189,8 +191,10 @@ namespace urakawa.media
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            if (Language != null) destination.WriteAttributeString(XukStrings.Language, Language);
             base.XukOutAttributes(destination, baseUri);
+
+            if (Language != null) destination.WriteAttributeString(XukStrings.Language, Language);
+            
         }
 
         #endregion

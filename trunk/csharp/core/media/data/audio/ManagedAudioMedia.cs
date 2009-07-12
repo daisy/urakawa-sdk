@@ -167,6 +167,8 @@ namespace urakawa.media.data.audio
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             string uid = source.GetAttribute(XukStrings.AudioMediaDataUid);
             if (string.IsNullOrEmpty(uid))
             {
@@ -186,7 +188,7 @@ namespace urakawa.media.data.audio
                                                      uid, md.GetType().FullName));
             }
             AudioMediaData = md as AudioMediaData;
-            base.XukInAttributes(source);
+            
         }
 
         /// <summary>
@@ -199,8 +201,10 @@ namespace urakawa.media.data.audio
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString(XukStrings.AudioMediaDataUid, AudioMediaData.Uid);
             base.XukOutAttributes(destination, baseUri);
+
+            destination.WriteAttributeString(XukStrings.AudioMediaDataUid, AudioMediaData.Uid);
+            
         }
 
         #endregion

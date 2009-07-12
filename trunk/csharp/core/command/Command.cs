@@ -19,10 +19,11 @@ namespace urakawa.command
     {
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             mLongDescription = source.GetAttribute(XukStrings.LongDescription);
             mShortDescription = source.GetAttribute(XukStrings.ShortDescription);
 
-            base.XukInAttributes(source);
         }
 
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
@@ -33,6 +34,8 @@ namespace urakawa.command
 
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            base.XukOutAttributes(destination, baseUri);
+
             if (LongDescription != null)
             {
                 destination.WriteAttributeString(XukStrings.LongDescription, LongDescription);
@@ -41,7 +44,6 @@ namespace urakawa.command
             {
                 destination.WriteAttributeString(XukStrings.ShortDescription, ShortDescription);
             }
-            base.XukOutAttributes(destination, baseUri);
         }
 
 

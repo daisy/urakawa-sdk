@@ -360,6 +360,8 @@ namespace urakawa.property.xml
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             string ln = source.GetAttribute(XukStrings.LocalName);
             if (string.IsNullOrEmpty(ln))
             {
@@ -448,9 +450,11 @@ namespace urakawa.property.xml
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            base.XukOutAttributes(destination, baseUri);
+
             destination.WriteAttributeString(XukStrings.LocalName, LocalName);
             if (!String.IsNullOrEmpty(NamespaceUri)) destination.WriteAttributeString(XukStrings.NamespaceUri, NamespaceUri);
-            base.XukOutAttributes(destination, baseUri);
+            
         }
 
         /// <summary>

@@ -338,6 +338,8 @@ namespace urakawa.media
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             string val = source.GetAttribute(XukStrings.AllowMultipleMediaTypes);
             if (val == "true" || val == "1")
             {
@@ -347,7 +349,6 @@ namespace urakawa.media
             {
                 AllowMultipleTypes = false;
             }
-            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -417,8 +418,10 @@ namespace urakawa.media
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString(XukStrings.AllowMultipleMediaTypes, AllowMultipleTypes ? "true" : "false");
             base.XukOutAttributes(destination, baseUri);
+
+            destination.WriteAttributeString(XukStrings.AllowMultipleMediaTypes, AllowMultipleTypes ? "true" : "false");
+            
         }
 
         /// <summary>

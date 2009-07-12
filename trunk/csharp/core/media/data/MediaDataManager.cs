@@ -477,6 +477,8 @@ namespace urakawa.media.data
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             string attr = source.GetAttribute(XukStrings.enforceSinglePCMFormat);
             if (attr == "true" || attr == "1")
             {
@@ -657,8 +659,10 @@ namespace urakawa.media.data
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString(XukStrings.enforceSinglePCMFormat, EnforceSinglePCMFormat ? "true" : "false");
             base.XukOutAttributes(destination, baseUri);
+
+            destination.WriteAttributeString(XukStrings.enforceSinglePCMFormat, EnforceSinglePCMFormat ? "true" : "false");
+            
         }
 
         /// <summary>

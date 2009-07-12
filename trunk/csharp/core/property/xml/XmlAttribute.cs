@@ -195,6 +195,8 @@ namespace urakawa.property.xml
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             string name = source.GetAttribute(XukStrings.LocalName);
             if (string.IsNullOrEmpty(name))
             {
@@ -222,6 +224,8 @@ namespace urakawa.property.xml
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            base.XukOutAttributes(destination, baseUri);
+
             //localName is required
             if (String.IsNullOrEmpty(mLocalName))
             {
@@ -234,7 +238,7 @@ namespace urakawa.property.xml
             }
             destination.WriteAttributeString(XukStrings.Value, mValue);
             if (mNamespaceUri != "") destination.WriteAttributeString(XukStrings.NamespaceUri, mNamespaceUri);
-            base.XukOutAttributes(destination, baseUri);
+            
         }
 
         public override string GetTypeNameFormatted()

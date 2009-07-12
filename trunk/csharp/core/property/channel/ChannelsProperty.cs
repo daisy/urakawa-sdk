@@ -262,15 +262,6 @@ namespace urakawa.property.channel
         #region IXukAble Members
 
         /// <summary>
-        /// Reads the attributes of a ChannelsProperty xuk element.
-        /// </summary>
-        /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void XukInAttributes(XmlReader source)
-        {
-            // No known attributes
-        }
-
-        /// <summary>
         /// Reads a child of a ChannelsProperty xuk element. 
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>

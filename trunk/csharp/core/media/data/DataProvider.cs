@@ -36,8 +36,9 @@ namespace urakawa.media.data
         /// Gets the UID of the data provider in the context of the manager. 
         /// Convenience for <c>DataProviderManager.GetUidOfDataProvider(this)</c>
         /// </summary>
-        public string Uid
+        public override string Uid
         {
+            set { throw new NotImplementedException(); }
             get { return Presentation.DataProviderManager.GetUidOfDataProvider(this); }
         }
 
@@ -142,8 +143,10 @@ namespace urakawa.media.data
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            MimeType = source.GetAttribute(XukStrings.MimeType) ?? "";
             base.XukInAttributes(source);
+
+            MimeType = source.GetAttribute(XukStrings.MimeType) ?? "";
+            
         }
 
         /// <summary>
@@ -156,8 +159,10 @@ namespace urakawa.media.data
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            destination.WriteAttributeString(XukStrings.MimeType, MimeType);
             base.XukOutAttributes(destination, baseUri);
+
+            destination.WriteAttributeString(XukStrings.MimeType, MimeType);
+            
         }
 
         #endregion

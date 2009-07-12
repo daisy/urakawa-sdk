@@ -642,6 +642,8 @@ namespace urakawa.media.data
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
+            base.XukInAttributes(source);
+
             string dataFileDirectoryPath = source.GetAttribute(XukStrings.DataFileDirectoryPath);
             if (string.IsNullOrEmpty(dataFileDirectoryPath))
             {
@@ -827,10 +829,12 @@ namespace urakawa.media.data
         /// </param>
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
+            base.XukOutAttributes(destination, baseUri);
+
             Uri presBaseUri = Presentation.RootUri;
             Uri dfdUri = new Uri(presBaseUri, DataFileDirectory);
             destination.WriteAttributeString(XukStrings.DataFileDirectoryPath, presBaseUri.MakeRelativeUri(dfdUri).ToString());
-            base.XukOutAttributes(destination, baseUri);
+            
         }
 
         /// <summary>
