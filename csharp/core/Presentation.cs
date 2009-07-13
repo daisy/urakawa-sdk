@@ -36,7 +36,7 @@ namespace urakawa
 
         public string GetNewUid(string prefix, ref ulong startIndex)
         {
-            string strFormat = prefix + "{0:00000000}";
+            string strFormat = prefix + "{0:00000}";
 
             while (startIndex < UInt64.MaxValue)
             {

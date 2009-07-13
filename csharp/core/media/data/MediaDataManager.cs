@@ -345,6 +345,29 @@ namespace urakawa.media.data
             AddMediaData(data, uid);
         }
 
+        public void RegenerateUids()
+        {
+            mUidMutex.WaitOne();
+            try
+            {
+                ulong index = 0;
+                ICollection<string> originalUids = new List<string>(mMediaDataDictionary.Keys);
+                foreach (string originalUid in originalUids)
+                {
+                    MediaData md = mMediaDataDictionary[originalUid];
+                    mMediaDataDictionary.Remove(originalUid);
+                    string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
+                    md.Uid = newUid;
+                    mMediaDataDictionary.Add(newUid, md);
+                    mReverseLookupMediaDataDictionary[md] = newUid;
+                }
+            }
+            finally
+            {
+                mUidMutex.ReleaseMutex();
+            }
+        }
+
         /// <summary>
         /// Determines if the manager manages a <see cref="MediaData"/> with a given uid
         /// </summary>
@@ -632,10 +655,11 @@ namespace urakawa.media.data
 
         private void XukInMediaDataItem(XmlReader source, ProgressHandler handler)
         {
-            //string uid = source.GetAttribute(XukStrings.Uid);
             MediaData data = null;
             if (!source.IsEmptyElement)
             {
+                string uid = source.GetAttribute(XukStrings.Uid);
+
                 while (source.Read())
                 {
                     if (source.NodeType == XmlNodeType.Element)
@@ -643,8 +667,18 @@ namespace urakawa.media.data
                         data = Presentation.MediaDataFactory.Create(source.LocalName, source.NamespaceURI);
                         if (data != null)
                         {
+                            string uid_ = source.GetAttribute(XukStrings.Uid);
+
                             data.XukIn(source, handler);
+
+                            if (string.IsNullOrEmpty(uid_) && !string.IsNullOrEmpty(uid))
+                            {
+                                data.Uid = uid;
+                            }
+
+                            SetDataMediaDataUid(data, data.Uid);
                         }
+
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {
@@ -652,15 +686,6 @@ namespace urakawa.media.data
                     }
                     if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
                 }
-            }
-            if (data != null)
-            {
-                if (string.IsNullOrEmpty(data.Uid))
-                {
-                    throw new exception.XukException(
-                        "uid attribute is missing from mMediaDataItem attribute");
-                }
-                SetDataMediaDataUid(data, data.Uid);
             }
         }
 
