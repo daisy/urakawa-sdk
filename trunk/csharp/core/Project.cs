@@ -450,6 +450,10 @@ namespace urakawa
             destination.WriteStartElement(XukStrings.Presentations, XukNamespaceUri);
             foreach (Presentation pres in ListOfPresentations)
             {
+                pres.DataProviderManager.RegenerateUids();
+                pres.ChannelsManager.RegenerateUids();
+                pres.MediaDataManager.RegenerateUids();
+
                 pres.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();

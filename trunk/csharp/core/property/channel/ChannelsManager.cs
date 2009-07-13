@@ -240,7 +240,7 @@ namespace urakawa.property.channel
             {
                 throw new exception.MethodParameterIsNullException("channel parameter is null");
             }
-            
+
 
             if (string.IsNullOrEmpty(uid))
             {
@@ -258,6 +258,20 @@ namespace urakawa.property.channel
                 }
             }
             throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
+        }
+
+        public void RegenerateUids()
+        {
+            ulong index = 0;
+            ICollection<string> originalUids = new List<string>(mChannels.Keys);
+            foreach (string originalUid in originalUids)
+            {
+                Channel ch = mChannels[originalUid];
+                mChannels.Remove(originalUid);
+                string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
+                ch.Uid = newUid;
+                mChannels.Add(newUid, ch);
+            }
         }
 
         /// <summary>
@@ -362,10 +376,10 @@ namespace urakawa.property.channel
                         {
                             XukInChannel(source, handler);
                         }
-                    //else if (!source.IsEmptyElement)
-                    //    {
-                    //        source.ReadSubtree().Close();
-                    //    }
+                        //else if (!source.IsEmptyElement)
+                        //    {
+                        //        source.ReadSubtree().Close();
+                        //    }
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {
@@ -380,7 +394,7 @@ namespace urakawa.property.channel
         {
             if (source.NodeType == XmlNodeType.Element)
             {
-                
+
                 Channel newCh = Presentation.ChannelFactory.Create(source.LocalName, source.NamespaceURI);
                 if (newCh != null)
                 {
@@ -403,10 +417,11 @@ namespace urakawa.property.channel
 
         private void XukInChannelItem(XmlReader source, ProgressHandler handler)
         {
-            
             bool foundChannel = false;
             if (!source.IsEmptyElement)
             {
+                string uid = source.GetAttribute(XukStrings.Uid);
+
                 while (source.Read())
                 {
                     if (source.NodeType == XmlNodeType.Element)
@@ -414,12 +429,13 @@ namespace urakawa.property.channel
                         Channel newCh = Presentation.ChannelFactory.Create(source.LocalName, source.NamespaceURI);
                         if (newCh != null)
                         {
+                            string uid_ = source.GetAttribute(XukStrings.Uid);
+
                             newCh.XukIn(source, handler);
 
-                            //string uid = source.GetAttribute(XukStrings.Uid);
-                            if (string.IsNullOrEmpty(newCh.Uid))
+                            if (string.IsNullOrEmpty(uid_) && !string.IsNullOrEmpty(uid))
                             {
-                                throw new exception.XukException("mChannelItem element has no uid attribute");
+                                newCh.Uid = uid;
                             }
 
                             try

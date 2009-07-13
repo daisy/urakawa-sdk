@@ -430,6 +430,20 @@ namespace urakawa.media.data
             mReverseLookupDataProvidersDictionary.Remove(provider);
         }
 
+        public void RegenerateUids()
+        {
+            ulong index = 0;
+            ICollection<string> originalUids = new List<string>(mDataProvidersDictionary.Keys);
+            foreach (string originalUid in originalUids)
+            {
+                DataProvider dp = mDataProvidersDictionary[originalUid];
+                mDataProvidersDictionary.Remove(originalUid);
+                string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
+                dp.Uid = newUid;
+                mDataProvidersDictionary.Add(newUid, dp);
+                mReverseLookupDataProvidersDictionary[dp] = newUid;
+            }
+        }
         /// <summary>
         /// Gets the UID of a given <see cref="DataProvider"/>
         /// </summary>
@@ -774,9 +788,10 @@ namespace urakawa.media.data
 
         private void XukInDataProviderItem(XmlReader source, ProgressHandler handler)
         {
-            //string uid = source.GetAttribute(XukStrings.Uid);
             if (!source.IsEmptyElement)
             {
+                string uid = source.GetAttribute(XukStrings.Uid);
+
                 bool addedProvider = false;
                 while (source.Read())
                 {
@@ -790,6 +805,9 @@ namespace urakawa.media.data
                                 throw new exception.XukException(
                                     "Multiple DataProviders within the same mDataProviderItem is not supported");
                             }
+
+                            string uid_ = source.GetAttribute(XukStrings.Uid);
+
                             prov.XukIn(source, handler);
                             if (prov is FileDataProvider)
                             {
@@ -802,10 +820,13 @@ namespace urakawa.media.data
                                 }
                                 mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
                             }
-                            if (string.IsNullOrEmpty(prov.Uid))
+
+                            if (string.IsNullOrEmpty(uid_) && !string.IsNullOrEmpty(uid))
                             {
-                                throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
+                                prov.Uid = uid;
                             }
+                            
+
                             if (IsManagerOf(prov.Uid))
                             {
                                 if (GetDataProvider(prov.Uid) != prov)
