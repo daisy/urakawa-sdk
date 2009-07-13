@@ -25,10 +25,10 @@ namespace urakawa.commands
             return command;
         }
 
-        public ManagedAudioMediaInsertDataCommand CreateManagedAudioMediaInsertDataCommand(ManagedAudioMedia managedAudioMediaTarget, ManagedAudioMedia managedAudioMediaSource, Time timeInsert)
+        public ManagedAudioMediaInsertDataCommand CreateManagedAudioMediaInsertDataCommand(TreeNode treeNode, ManagedAudioMedia managedAudioMediaTarget, ManagedAudioMedia managedAudioMediaSource, Time timeInsert)
         {
             ManagedAudioMediaInsertDataCommand command = Create<ManagedAudioMediaInsertDataCommand>();
-            command.Init(managedAudioMediaTarget, managedAudioMediaSource, timeInsert);
+            command.Init(treeNode, managedAudioMediaTarget, managedAudioMediaSource, timeInsert);
             return command;
         }
     }
