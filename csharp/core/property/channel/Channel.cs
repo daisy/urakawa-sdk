@@ -150,11 +150,11 @@ namespace urakawa.property.channel
         /// </summary>
         /// <returns>The Xuk Uid as calculated by 
         /// <c>this.getChannelsManager.GetUidOfChannel(this)</c></returns>
-        public override string Uid
-        {
-            set { throw new NotImplementedException(); }
-            get { return Presentation.ChannelsManager.GetUidOfChannel(this); }
-        }
+        //public override string Uid
+        //{
+        //    set { throw new NotImplementedException(); }
+        //    get { return Presentation.ChannelsManager.GetUidOfChannel(this); }
+        //}
 
         #region IXUKAble members
 
@@ -278,7 +278,7 @@ namespace urakawa.property.channel
             }
             if (!Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteAttributeString(XukStrings.Uid, Uid);
+                //destination.WriteAttributeString(XukStrings.Uid, Uid);
             }
         }
 

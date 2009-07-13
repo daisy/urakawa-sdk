@@ -377,7 +377,7 @@ namespace urakawa.media.data
 
             if (!Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteAttributeString(XukStrings.Uid, Uid);
+                //destination.WriteAttributeString(XukStrings.Uid, Uid);
             }
 
         }

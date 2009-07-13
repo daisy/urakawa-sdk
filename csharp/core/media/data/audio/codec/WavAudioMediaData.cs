@@ -891,7 +891,7 @@ namespace urakawa.media.data.audio.codec
 
             if (!Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteAttributeString(XukStrings.Uid, Uid);
+                //destination.WriteAttributeString(XukStrings.Uid, Uid);
             }
         }
         /// <summary>

@@ -69,11 +69,11 @@ namespace urakawa.media.data
         /// Convenience for <c><see cref="Presentation.MediaDataManager"/>.<see cref="urakawa.media.data.MediaDataManager.GetUidOfMediaData"/>(this)</c>
         /// </summary>
         /// <returns>The UID</returns>
-        public override string Uid
-        {
-            set { throw new NotImplementedException(); }
-            get { return Presentation.MediaDataManager.GetUidOfMediaData(this); }
-        }
+        //public override string Uid
+        //{
+        //    set { throw new NotImplementedException(); }
+        //    get { return Presentation.MediaDataManager.GetUidOfMediaData(this); }
+        //}
 
         private string mName = "";
 

@@ -39,13 +39,9 @@ namespace urakawa.media.data
             mEnforceSinglePCMFormat = true;
         }
 
-        private const string DEFAULT_UID_PREFIX = "UID";
-
         private Dictionary<string, MediaData> mMediaDataDictionary = new Dictionary<string, MediaData>();
         private Dictionary<MediaData, string> mReverseLookupMediaDataDictionary = new Dictionary<MediaData, string>();
-        private System.Threading.Mutex mUidMutex = new System.Threading.Mutex();
-        private ulong mUidNo = 0;
-        private string mUidPrefix = DEFAULT_UID_PREFIX;
+        
         private PCMFormatInfo mDefaultPCMFormat;
         private bool mEnforceSinglePCMFormat;
 
@@ -236,25 +232,36 @@ namespace urakawa.media.data
             return mReverseLookupMediaDataDictionary[data];
         }
 
-        private string GetNewUid()
+
+        public const string UID_PREFIX = "MEDAT";
+        private ulong m_UidIndex = 0;
+
+        private System.Threading.Mutex mUidMutex = new System.Threading.Mutex();
+
+        public bool HasUid(string uid)
         {
-            while (true)
-            {
-                if (mUidNo < UInt64.MaxValue)
-                {
-                    mUidNo++;
-                }
-                else
-                {
-                    mUidPrefix += "X";
-                }
-                string key = String.Format("{0}{1:00000000}", mUidPrefix, mUidNo);
-                if (!mMediaDataDictionary.ContainsKey(key))
-                {
-                    return key;
-                }
-            }
+            return mMediaDataDictionary.ContainsKey(uid);
         }
+
+        //private string GetNewUid()
+        //{
+        //    while (true)
+        //    {
+        //        if (mUidNo < UInt64.MaxValue)
+        //        {
+        //            mUidNo++;
+        //        }
+        //        else
+        //        {
+        //            mUidPrefix += "X";
+        //        }
+        //        string key = String.Format("{0}{1:00000000}", mUidPrefix, mUidNo);
+        //        if (!mMediaDataDictionary.ContainsKey(key))
+        //        {
+        //            return key;
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Adds a <see cref="MediaData"/> to the <see cref="MediaDataManager"/>
@@ -272,7 +279,7 @@ namespace urakawa.media.data
             mUidMutex.WaitOne();
             try
             {
-                string uid = GetNewUid();
+                string uid = Presentation.GetNewUid(UID_PREFIX, ref m_UidIndex);
                 AddMediaData(data, uid);
             }
             finally
@@ -312,6 +319,7 @@ namespace urakawa.media.data
                     }
                 }
             }
+            data.Uid = uid;
             mMediaDataDictionary.Add(uid, data);
             mReverseLookupMediaDataDictionary.Add(data, uid);
         }
@@ -330,9 +338,10 @@ namespace urakawa.media.data
         /// <exception cref="exception.IsAlreadyManagerOfException">
         /// Thrown when <paramref name="uid"/> is already the uid of another <see cref="MediaData"/>
         /// </exception>
-        public void SetDataMediaDataUid(MediaData data, string uid)
+        private void SetDataMediaDataUid(MediaData data, string uid)
         {
             RemoveMediaData(data);
+            data.Uid = uid;
             AddMediaData(data, uid);
         }
 
@@ -511,7 +520,7 @@ namespace urakawa.media.data
                 {
                     XukInMediaDatas(source, handler);
                 }
-                else if (!Presentation.Project.IsPrettyFormat()
+                else if (true || !Presentation.Project.IsPrettyFormat()
                     // && source.LocalName == XukStrings.MediaDataItem
                     )
                 {
@@ -573,10 +582,15 @@ namespace urakawa.media.data
                         {
                             XukInMediaDataItem(source, handler);
                         }
-                        else if (!source.IsEmptyElement)
+                        else
                         {
-                            source.ReadSubtree().Close();
+                            XukInMediaData(source, handler);
                         }
+                    
+                    //else if (!source.IsEmptyElement)
+                        //{
+                        //    source.ReadSubtree().Close();
+                        //}
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {
@@ -596,17 +610,18 @@ namespace urakawa.media.data
                 data = Presentation.MediaDataFactory.Create(source.LocalName, source.NamespaceURI);
                 if (data != null)
                 {
-                    string uid = source.GetAttribute(XukStrings.Uid);
+                    data.XukIn(source, handler);
 
-                    if (string.IsNullOrEmpty(uid))
+                    //string uid = source.GetAttribute(XukStrings.Uid);
+
+                    if (string.IsNullOrEmpty(data.Uid))
                     {
                         throw new exception.XukException(
                             "uid attribute is missing from mMediaDataItem attribute");
                     }
 
-                    data.XukIn(source, handler);
 
-                    SetDataMediaDataUid(data, uid);
+                    SetDataMediaDataUid(data, data.Uid);
                 }
                 else if (!source.IsEmptyElement)
                 {
@@ -617,7 +632,7 @@ namespace urakawa.media.data
 
         private void XukInMediaDataItem(XmlReader source, ProgressHandler handler)
         {
-            string uid = source.GetAttribute(XukStrings.Uid);
+            //string uid = source.GetAttribute(XukStrings.Uid);
             MediaData data = null;
             if (!source.IsEmptyElement)
             {
@@ -640,12 +655,12 @@ namespace urakawa.media.data
             }
             if (data != null)
             {
-                if (string.IsNullOrEmpty(uid))
+                if (string.IsNullOrEmpty(data.Uid))
                 {
                     throw new exception.XukException(
                         "uid attribute is missing from mMediaDataItem attribute");
                 }
-                SetDataMediaDataUid(data, uid);
+                SetDataMediaDataUid(data, data.Uid);
             }
         }
 
@@ -687,15 +702,15 @@ namespace urakawa.media.data
             }
             foreach (string uid in mMediaDataDictionary.Keys)
             {
-                if (Presentation.Project.IsPrettyFormat())
+                if (false && Presentation.Project.IsPrettyFormat())
                 {
                     destination.WriteStartElement(XukStrings.MediaDataItem, XukNamespaceUri);
-                    destination.WriteAttributeString(XukStrings.Uid, uid);
+                    //destination.WriteAttributeString(XukStrings.Uid, uid);
                 }
 
                 mMediaDataDictionary[uid].XukOut(destination, baseUri, handler);
 
-                if (Presentation.Project.IsPrettyFormat())
+                if (false && Presentation.Project.IsPrettyFormat())
                 {
                     destination.WriteEndElement();
                 }
