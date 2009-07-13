@@ -35,15 +35,17 @@ namespace urakawa.property.channel
         {
             mPresentation = pres;
 
-            mChannels = new Dictionary<string, Channel>();
+            //mChannels = new Dictionary<string, Channel>();
+            m_Channels = new List<Channel>();
         }
 
 
         /// <summary>
         /// A dictionary of the <see cref="Channel"/>s managed by the manager, sorted by their uid
         /// </summary>
-        private IDictionary<string, Channel> mChannels;
+        //private IDictionary<string, Channel> mChannels;
 
+        private List<Channel> m_Channels;
 
         #region ChannelsManager Members
 
@@ -89,18 +91,20 @@ namespace urakawa.property.channel
                 throw new exception.MethodParameterIsNullException("uid parameter cannot be null or empty");
             }
 
-            if (mChannels.Values.Contains(channel))
+            //if (mChannels.Values.Contains(channel))
+            if (m_Channels.Contains(channel))
             {
                 throw new exception.ChannelAlreadyExistsException(
                     "The given channel is already managed by the ChannelsManager");
             }
-            if (mChannels.ContainsKey(uid))
+            if (HasUid(uid))//mChannels.ContainsKey(uid))
             {
                 throw new exception.ChannelAlreadyExistsException(
                     String.Format("Another channel exists with uid {0}", uid));
             }
             channel.Uid = uid;
-            mChannels.Add(uid, channel);
+            //mChannels.Add(uid, channel);
+            m_Channels.Add(channel);
         }
 
         public const string UID_PREFIX = "CH";
@@ -108,7 +112,12 @@ namespace urakawa.property.channel
 
         public bool HasUid(string uid)
         {
-            return mChannels.ContainsKey(uid);
+            foreach (Channel ch in m_Channels)
+            {
+                if (ch.Uid == uid) return true;
+            }
+            return false;
+            //return mChannels.ContainsKey(uid);
         }
 
         //private string GetNewId()
@@ -158,7 +167,8 @@ namespace urakawa.property.channel
             Channel channel = GetChannel(uid);
             ClearChannelTreeNodeVisitor clChVisitor = new ClearChannelTreeNodeVisitor(channel);
             Presentation.RootNode.AcceptDepthFirst(clChVisitor);
-            mChannels.Remove(uid);
+            //mChannels.Remove(uid);
+            m_Channels.Remove(channel);
         }
 
         /// <summary>
@@ -167,7 +177,10 @@ namespace urakawa.property.channel
         /// <returns>The list</returns>
         public List<Channel> ListOfChannels
         {
-            get { return new List<Channel>(mChannels.Values); }
+            get
+            {
+                return new List<Channel>(m_Channels); //mChannels.Values);
+            }
         }
 
         /// <summary>
@@ -176,7 +189,16 @@ namespace urakawa.property.channel
         /// <returns>The list</returns>
         public List<string> ListOfUids
         {
-            get { return new List<string>(mChannels.Keys); }
+            get
+            {
+                List<string> list = new List<string>(m_Channels.Count);
+                foreach (Channel ch in m_Channels)
+                {
+                    list.Add(ch.Uid);
+                }
+                return list;
+                //return new List<string>(mChannels.Keys);
+            }
         }
 
         /// <summary>
@@ -200,13 +222,21 @@ namespace urakawa.property.channel
                 throw new exception.MethodParameterIsNullException("uid cannot be null or empty");
             }
 
-            if (!mChannels.Keys.Contains(uid))
+            foreach (Channel ch in m_Channels)
             {
-                throw new exception.ChannelDoesNotExistException(String.Format(
+                if (ch.Uid == uid) return ch;
+            }
+            throw new exception.ChannelDoesNotExistException(String.Format(
                                                                      "The channels manager does not manage a channel with xuk uid {0}",
                                                                      uid));
-            }
-            return mChannels[uid];
+
+            //if (!mChannels.Keys.Contains(uid))
+            //{
+            //    throw new exception.ChannelDoesNotExistException(String.Format(
+            //                                                         "The channels manager does not manage a channel with xuk uid {0}",
+            //                                                         uid));
+            //}
+            //return mChannels[uid];
         }
 
 
@@ -225,14 +255,21 @@ namespace urakawa.property.channel
                 throw new exception.MethodParameterIsNullException("channel parameter is null");
             }
 
-            foreach (string Id in mChannels.Keys)
+            foreach (Channel channel in m_Channels)
             {
-                if (mChannels[Id] == ch)
-                {
-                    return Id;
-                }
+                if (ch == channel) return ch.Uid;
             }
             throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
+
+
+            //foreach (string Id in mChannels.Keys)
+            //{
+            //    if (mChannels[Id] == ch)
+            //    {
+            //        return Id;
+            //    }
+            //}
+            //throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
         }
         private void SetUidOfChannel(Channel ch, string uid)
         {
@@ -247,13 +284,22 @@ namespace urakawa.property.channel
                 throw new exception.MethodParameterIsEmptyStringException("uid parameter cannot be null or empty string");
             }
 
-            foreach (string Id in mChannels.Keys)
+            //foreach (string Id in mChannels.Keys)
+            //{
+            //    if (mChannels[Id] == ch)
+            //    {
+            //        mChannels.Remove(Id);
+            //        ch.Uid = uid;
+            //        mChannels.Add(uid, ch);
+            //        return;
+            //    }
+            //}
+
+            foreach (Channel channel in m_Channels)
             {
-                if (mChannels[Id] == ch)
+                if (channel == ch)
                 {
-                    mChannels.Remove(Id);
                     ch.Uid = uid;
-                    mChannels.Add(uid, ch);
                     return;
                 }
             }
@@ -263,15 +309,22 @@ namespace urakawa.property.channel
         public void RegenerateUids()
         {
             ulong index = 0;
-            ICollection<string> originalUids = new List<string>(mChannels.Keys);
-            foreach (string originalUid in originalUids)
+
+            foreach (Channel ch in m_Channels)
             {
-                Channel ch = mChannels[originalUid];
-                mChannels.Remove(originalUid);
                 string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
                 ch.Uid = newUid;
-                mChannels.Add(newUid, ch);
             }
+
+            //ICollection<string> originalUids = new List<string>(mChannels.Keys);
+            //foreach (string originalUid in originalUids)
+            //{
+            //    Channel ch = mChannels[originalUid];
+            //    mChannels.Remove(originalUid);
+            //    string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
+            //    ch.Uid = newUid;
+            //    mChannels.Add(newUid, ch);
+            //}
         }
 
         /// <summary>
@@ -294,7 +347,7 @@ namespace urakawa.property.channel
         public List<Channel> GetChannelsByName(string channelName)
         {
             List<Channel> res = new List<Channel>();
-            foreach (Channel ch in mChannels.Values)
+            foreach (Channel ch in m_Channels) //mChannels.Values)
             {
                 if (ch.Name == channelName) res.Add(ch);
             }
@@ -311,7 +364,8 @@ namespace urakawa.property.channel
         /// </returns>
         public bool IsManagerOf(string uid)
         {
-            return mChannels.ContainsKey(uid);
+            return HasUid(uid);
+            //return mChannels.ContainsKey(uid);
         }
 
         #endregion
@@ -323,7 +377,8 @@ namespace urakawa.property.channel
         /// </summary>
         protected override void Clear()
         {
-            mChannels.Clear();
+            //mChannels.Clear();
+            m_Channels.Clear();
             base.Clear();
         }
 
