@@ -73,10 +73,10 @@ namespace urakawa.undo
         /// <summary>
         /// Fires the <see cref="TransactionStarted"/> event
         /// </summary>
-        private void NotifyTransactionStarted()
+        private void NotifyTransactionStarted(CompositeCommand command)
         {
             EventHandler<TransactionStartedEventArgs> d = TransactionStarted;
-            if (d != null) d(this, new TransactionStartedEventArgs(this));
+            if (d != null) d(this, new TransactionStartedEventArgs(this, command));
         }
 
         private void this_transactionStarted(object sender, TransactionStartedEventArgs e)
@@ -92,10 +92,10 @@ namespace urakawa.undo
         /// <summary>
         /// Fires the <see cref="TransactionEnded"/> event
         /// </summary>
-        private void NotifyTransactionEnded()
+        private void NotifyTransactionEnded(CompositeCommand command)
         {
             EventHandler<TransactionEndedEventArgs> d = TransactionEnded;
-            if (d != null) d(this, new TransactionEndedEventArgs(this));
+            if (d != null) d(this, new TransactionEndedEventArgs(this, command));
         }
 
         private void this_transactionEnded(object sender, TransactionEndedEventArgs e)
@@ -111,10 +111,10 @@ namespace urakawa.undo
         /// <summary>
         /// Fires the <see cref="TransactionCancelled"/> event
         /// </summary>
-        private void NotifyTransactionCancelled()
+        private void NotifyTransactionCancelled(CompositeCommand command)
         {
             EventHandler<TransactionCancelledEventArgs> d = TransactionCancelled;
-            if (d != null) d(this, new TransactionCancelledEventArgs(this));
+            if (d != null) d(this, new TransactionCancelledEventArgs(this, command));
         }
 
         private void this_transactionCancelled(object sender, TransactionCancelledEventArgs e)
@@ -402,7 +402,7 @@ namespace urakawa.undo
             newTrans.ShortDescription = shortDesc;
             newTrans.LongDescription = longDesc;
             mActiveTransactions.Push(newTrans);
-            NotifyTransactionStarted();
+            NotifyTransactionStarted(newTrans);
         }
 
         /// <summary>
@@ -417,8 +417,9 @@ namespace urakawa.undo
                 throw new exception.UndoRedoTransactionIsNotStartedException(
                     "Can not end transaction while no is active");
             }
-            pushCommand(mActiveTransactions.Pop());
-            NotifyTransactionEnded();
+            CompositeCommand command = mActiveTransactions.Pop();
+            pushCommand(command);
+            NotifyTransactionEnded(command);
         }
 
         /// <summary>
@@ -433,8 +434,9 @@ namespace urakawa.undo
                 throw new exception.UndoRedoTransactionIsNotStartedException(
                     "Can not end transaction while no is active");
             }
-            mActiveTransactions.Pop().UnExecute();
-            NotifyTransactionCancelled();
+            CompositeCommand command = mActiveTransactions.Pop();
+            command.UnExecute();
+            NotifyTransactionCancelled(command);
         }
 
         /// <summary>

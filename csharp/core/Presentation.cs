@@ -1227,9 +1227,10 @@ namespace urakawa
             //
             CommandFactory.CreateCompositeCommand();
             //
+            TreeNode treeNode = TreeNodeFactory.Create();
             ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
-            CommandFactory.CreateManagedAudioMediaInsertDataCommand(manMedia, manMedia, Time.Zero);
-            CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(TreeNodeFactory.Create(), manMedia);
+            CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, manMedia, Time.Zero);
+            CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
             //
             MediaFactory.CreateExternalImageMedia();
             MediaFactory.CreateExternalVideoMedia();

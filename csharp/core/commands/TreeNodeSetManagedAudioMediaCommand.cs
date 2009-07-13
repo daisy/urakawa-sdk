@@ -21,8 +21,23 @@ namespace urakawa.commands
         }
 
         private TreeNode m_TreeNode;
+        public TreeNode TreeNode
+        {
+            private set { m_TreeNode = value; }
+            get { return m_TreeNode; }
+        }
         private ManagedAudioMedia m_ManagedAudioMedia;
+        public ManagedAudioMedia ManagedAudioMedia
+        {
+            private set { m_ManagedAudioMedia = value; }
+            get { return m_ManagedAudioMedia; }
+        }
         private Media m_PreviousMedia;
+        public Media PreviousMedia
+        {
+            private set { m_PreviousMedia = value; }
+            get { return m_PreviousMedia; }
+        }
 
         public void Init(TreeNode treeNode, ManagedAudioMedia managedMedia)
         {
@@ -42,21 +57,21 @@ namespace urakawa.commands
             {
                 throw new NodeInDifferentPresentationException("TreeNode vs ManagedAudioMedia");
             }
-            m_TreeNode = treeNode;
-            m_ManagedAudioMedia = managedMedia;
+            TreeNode = treeNode;
+            ManagedAudioMedia = managedMedia;
 
             m_ListOfUsedMediaData.Add(m_ManagedAudioMedia.AudioMediaData);
 
             AudioChannel audioChannel = Presentation.ChannelsManager.GetOrCreateAudioChannel();
-            ChannelsProperty chProp = m_TreeNode.GetOrCreateChannelsProperty();
-            m_PreviousMedia = chProp.GetMedia(audioChannel);
-            if (m_PreviousMedia is ManagedAudioMedia)
+            ChannelsProperty chProp = TreeNode.GetOrCreateChannelsProperty();
+            PreviousMedia = chProp.GetMedia(audioChannel);
+            if (PreviousMedia is ManagedAudioMedia)
             {
-                m_ListOfUsedMediaData.Add(((ManagedAudioMedia)m_PreviousMedia).AudioMediaData);
+                m_ListOfUsedMediaData.Add(((ManagedAudioMedia)PreviousMedia).AudioMediaData);
             }
-            if (m_PreviousMedia is SequenceMedia)
+            if (PreviousMedia is SequenceMedia)
             {
-                foreach (Media media in ((SequenceMedia)m_PreviousMedia).ListOfItems)
+                foreach (Media media in ((SequenceMedia)PreviousMedia).ListOfItems)
                 {
                     if (media is ManagedAudioMedia)
                     {

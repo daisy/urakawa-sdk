@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using urakawa.command;
 using urakawa.undo;
 
@@ -17,14 +14,8 @@ namespace urakawa.events.undo
         /// <param name="source">The source <see cref="UndoRedoManager"/> of the event</param>
         /// <param name="doneCmd">The <see cref="Command"/> that was done</param>
         public DoneEventArgs(UndoRedoManager source, Command doneCmd)
-            : base(source)
+            : base(source, doneCmd)
         {
-            DoneCommand = doneCmd;
         }
-
-        /// <summary>
-        /// The <see cref="Command"/> that was done
-        /// </summary>
-        public readonly Command DoneCommand;
     }
 }

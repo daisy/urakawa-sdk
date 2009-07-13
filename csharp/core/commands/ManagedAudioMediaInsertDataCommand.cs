@@ -5,12 +5,10 @@ using System.Xml;
 using urakawa.command;
 using urakawa.core;
 using urakawa.exception;
-using urakawa.media;
 using urakawa.media.data;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
 using urakawa.progress;
-using urakawa.property.channel;
 using urakawa.xuk;
 
 namespace urakawa.commands
@@ -22,12 +20,37 @@ namespace urakawa.commands
             return XukStrings.ManagedAudioMediaInsertDataCommand;
         }
 
-        private ManagedAudioMedia m_ManagedAudioMediaTarget;
-        private ManagedAudioMedia m_ManagedAudioMediaSource;
-        private Time m_TimeInsert;
-
-        public void Init(ManagedAudioMedia managedAudioMediaTarget, ManagedAudioMedia managedAudioMediaSource, Time insertTime)
+        private TreeNode m_TreeNode;
+        public TreeNode TreeNode
         {
+            private set { m_TreeNode = value; }
+            get { return m_TreeNode; }
+        }
+        private ManagedAudioMedia m_ManagedAudioMediaTarget;
+        public ManagedAudioMedia ManagedAudioMediaTarget
+        {
+            private set { m_ManagedAudioMediaTarget = value; }
+            get { return m_ManagedAudioMediaTarget; }
+        }
+        private ManagedAudioMedia m_ManagedAudioMediaSource;
+        public ManagedAudioMedia ManagedAudioMediaSource
+        {
+            private set { m_ManagedAudioMediaSource = value; }
+            get { return m_ManagedAudioMediaSource; }
+        }
+        private Time m_TimeInsert;
+        public Time TimeInsert
+        {
+            private set { m_TimeInsert = value; }
+            get { return m_TimeInsert; }
+        }
+
+        public void Init(TreeNode treeNode, ManagedAudioMedia managedAudioMediaTarget, ManagedAudioMedia managedAudioMediaSource, Time insertTime)
+        {
+            if (treeNode == null)
+            {
+                throw new ArgumentNullException("treeNode");
+            }
             if (insertTime == null)
             {
                 throw new ArgumentNullException("insertTime");
@@ -49,10 +72,11 @@ namespace urakawa.commands
                 throw new NodeInDifferentPresentationException("TreeNode vs ManagedAudioMedia");
             }
 
-            m_TimeInsert = insertTime;
+            TreeNode = treeNode;
+            TimeInsert = insertTime;
 
-            m_ManagedAudioMediaSource = managedAudioMediaSource;
-            m_ManagedAudioMediaTarget = managedAudioMediaTarget;
+            ManagedAudioMediaSource = managedAudioMediaSource;
+            ManagedAudioMediaTarget = managedAudioMediaTarget;
 
             m_ListOfUsedMediaData.Add(managedAudioMediaSource.AudioMediaData);
             m_ListOfUsedMediaData.Add(managedAudioMediaTarget.AudioMediaData);
@@ -73,11 +97,11 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            TimeDelta duration = m_ManagedAudioMediaSource.Duration;
-            Stream stream = m_ManagedAudioMediaSource.AudioMediaData.GetAudioData();
+            TimeDelta duration = ManagedAudioMediaSource.Duration;
+            Stream stream = ManagedAudioMediaSource.AudioMediaData.GetAudioData();
             try
             {
-                m_ManagedAudioMediaTarget.AudioMediaData.InsertAudioData(stream, m_TimeInsert, duration);
+                ManagedAudioMediaTarget.AudioMediaData.InsertAudioData(stream, TimeInsert, duration);
             }
             finally
             {
@@ -87,8 +111,8 @@ namespace urakawa.commands
 
         public override void UnExecute()
         {
-            TimeDelta duration = m_ManagedAudioMediaSource.Duration;
-            m_ManagedAudioMediaTarget.AudioMediaData.RemoveAudioData(m_TimeInsert, m_TimeInsert.AddTimeDelta(duration));
+            TimeDelta duration = ManagedAudioMediaSource.Duration;
+            ManagedAudioMediaTarget.AudioMediaData.RemoveAudioData(TimeInsert, TimeInsert.AddTimeDelta(duration));
         }
 
         private List<MediaData> m_ListOfUsedMediaData = new List<MediaData>();
