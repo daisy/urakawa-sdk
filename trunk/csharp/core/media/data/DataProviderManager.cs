@@ -36,6 +36,7 @@ namespace urakawa.media.data
             mPresentation = pres;
             mDataFileDirectory = null;
             m_CompareByteStreamsDuringValueEqual = true;
+            m_DataProviders = new List<DataProvider>();
         }
 
         public void AllowCopyDataOnUriChanged(bool enable)
@@ -50,10 +51,10 @@ namespace urakawa.media.data
             }
         }
 
-        private Dictionary<string, DataProvider> mDataProvidersDictionary = new Dictionary<string, DataProvider>();
+        private List<DataProvider> m_DataProviders;
 
-        private Dictionary<DataProvider, string> mReverseLookupDataProvidersDictionary =
-            new Dictionary<DataProvider, string>();
+        //private Dictionary<string, DataProvider> mDataProvidersDictionary = new Dictionary<string, DataProvider>();
+        //private Dictionary<DataProvider, string> mReverseLookupDataProvidersDictionary = new Dictionary<DataProvider, string>();
 
         private List<string> mXukedInFilDataProviderPaths = new List<string>();
         private string mDataFileDirectory;
@@ -426,23 +427,35 @@ namespace urakawa.media.data
 
         private void RemoveDataProvider(string uid, DataProvider provider)
         {
-            mDataProvidersDictionary.Remove(uid);
-            mReverseLookupDataProvidersDictionary.Remove(provider);
+            m_DataProviders.Remove(provider);
+            //mDataProvidersDictionary.Remove(uid);
+            //mReverseLookupDataProvidersDictionary.Remove(provider);
         }
 
         public void RegenerateUids()
         {
             ulong index = 0;
-            ICollection<string> originalUids = new List<string>(mDataProvidersDictionary.Keys);
-            foreach (string originalUid in originalUids)
+
+            List<DataProvider> list = new List<DataProvider>(m_DataProviders);
+            m_DataProviders.Clear();
+
+            foreach (DataProvider obj in list)
             {
-                DataProvider dp = mDataProvidersDictionary[originalUid];
-                mDataProvidersDictionary.Remove(originalUid);
                 string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
-                dp.Uid = newUid;
-                mDataProvidersDictionary.Add(newUid, dp);
-                mReverseLookupDataProvidersDictionary[dp] = newUid;
+                obj.Uid = newUid;
+                m_DataProviders.Add(obj);
             }
+
+            //ICollection<string> originalUids = new List<string>(mDataProvidersDictionary.Keys);
+            //foreach (string originalUid in originalUids)
+            //{
+            //    DataProvider dp = mDataProvidersDictionary[originalUid];
+            //    mDataProvidersDictionary.Remove(originalUid);
+            //    string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
+            //    dp.Uid = newUid;
+            //    mDataProvidersDictionary.Add(newUid, dp);
+            //    mReverseLookupDataProvidersDictionary[dp] = newUid;
+            //}
         }
         /// <summary>
         /// Gets the UID of a given <see cref="DataProvider"/>
@@ -461,11 +474,18 @@ namespace urakawa.media.data
             {
                 throw new exception.MethodParameterIsNullException("Can not get the uid of a null DataProvider");
             }
-            if (!mReverseLookupDataProvidersDictionary.ContainsKey(provider))
+
+            foreach (DataProvider dp in m_DataProviders)
             {
-                throw new exception.IsNotManagerOfException("The given DataProvider is not managed by this");
+                if (dp == provider) return dp.Uid;
             }
-            return mReverseLookupDataProvidersDictionary[provider];
+            throw new exception.IsNotManagerOfException("The given DataProvider is not managed by this");
+
+            //if (!mReverseLookupDataProvidersDictionary.ContainsKey(provider))
+            //{
+            //    throw new exception.IsNotManagerOfException("The given DataProvider is not managed by this");
+            //}
+            //return mReverseLookupDataProvidersDictionary[provider];
         }
 
         /// <summary>
@@ -485,12 +505,21 @@ namespace urakawa.media.data
             {
                 throw new exception.MethodParameterIsNullException("Can not get the data provider with UID null");
             }
-            if (!mDataProvidersDictionary.ContainsKey(uid))
+            if (!HasUid(uid)) // mDataProvidersDictionary.ContainsKey(uid))
             {
                 throw new exception.IsNotManagerOfException(
                     String.Format("The manager does not manage a DataProvider with UID {0}", uid));
             }
-            return mDataProvidersDictionary[uid];
+
+            foreach (DataProvider dp in m_DataProviders)
+            {
+                if (dp.Uid == uid) return dp;
+            }
+
+            throw new exception.IsNotManagerOfException(
+                String.Format("The manager does not manage a DataProvider with UID {0}", uid));
+
+            //return mDataProvidersDictionary[uid];
         }
 
         /// <summary>
@@ -516,12 +545,12 @@ namespace urakawa.media.data
             {
                 throw new exception.MethodParameterIsNullException("A managed DataProvider can not have uid null");
             }
-            if (mReverseLookupDataProvidersDictionary.ContainsKey(provider))
+            if (m_DataProviders.Contains(provider)) // mReverseLookupDataProvidersDictionary.ContainsKey(provider))
             {
                 throw new exception.IsAlreadyManagerOfException(
                     "The given DataProvider is already managed by the manager");
             }
-            if (mDataProvidersDictionary.ContainsKey(uid))
+            if (HasUid(uid)) //mDataProvidersDictionary.ContainsKey(uid)
             {
                 throw new exception.IsAlreadyManagerOfException(String.Format(
                                                                     "Another DataProvider with uid {0} is already manager by the manager",
@@ -533,8 +562,10 @@ namespace urakawa.media.data
                     "The given DataProvider does not return this as DataProviderManager");
             }
             provider.Uid = uid;
-            mDataProvidersDictionary.Add(uid, provider);
-            mReverseLookupDataProvidersDictionary.Add(provider, uid);
+            m_DataProviders.Add(provider);
+
+            //mDataProvidersDictionary.Add(uid, provider);
+            //mReverseLookupDataProvidersDictionary.Add(provider, uid);
         }
 
         /// <summary>
@@ -565,7 +596,8 @@ namespace urakawa.media.data
         /// </returns>
         public bool IsManagerOf(string uid)
         {
-            return mDataProvidersDictionary.ContainsKey(uid);
+            return HasUid(uid);
+            //return mDataProvidersDictionary.ContainsKey(uid);
         }
 
         /// <summary>
@@ -585,7 +617,12 @@ namespace urakawa.media.data
 
         public bool HasUid(string uid)
         {
-            return mDataProvidersDictionary.ContainsKey(uid);
+            foreach (DataProvider dp in m_DataProviders)
+            {
+                if (dp.Uid == uid) return true;
+            }
+            return false;
+            //return mDataProvidersDictionary.ContainsKey(uid);
         }
 
         //private string GetNextUid()
@@ -607,7 +644,10 @@ namespace urakawa.media.data
         /// <returns>The list</returns>
         public List<DataProvider> ListOfDataProviders
         {
-            get { return new List<DataProvider>(mDataProvidersDictionary.Values); }
+            get
+            {
+                return new List<DataProvider>(m_DataProviders); // mDataProvidersDictionary.Values);
+            }
         }
 
         private bool m_CompareByteStreamsDuringValueEqual = true;
@@ -651,9 +691,11 @@ namespace urakawa.media.data
         /// </summary>
         protected override void Clear()
         {
-            mDataProvidersDictionary.Clear();
-            mDataFileDirectory = null;
-            mReverseLookupDataProvidersDictionary.Clear();
+        //    mDataProvidersDictionary.Clear();
+        //    mReverseLookupDataProvidersDictionary.Clear();
+            m_DataProviders.Clear();
+
+            mDataFileDirectory = null;    
             mXukedInFilDataProviderPaths.Clear();
             base.Clear();
         }

@@ -37,10 +37,14 @@ namespace urakawa.media.data
 
             mDefaultPCMFormat = new PCMFormatInfo();
             mEnforceSinglePCMFormat = true;
+
+            m_MediaDatas = new List<MediaData>();
         }
 
-        private Dictionary<string, MediaData> mMediaDataDictionary = new Dictionary<string, MediaData>();
-        private Dictionary<MediaData, string> mReverseLookupMediaDataDictionary = new Dictionary<MediaData, string>();
+        private List<MediaData> m_MediaDatas;
+
+        //private Dictionary<string, MediaData> mMediaDataDictionary = new Dictionary<string, MediaData>();
+        //private Dictionary<MediaData, string> mReverseLookupMediaDataDictionary = new Dictionary<MediaData, string>();
         
         private PCMFormatInfo mDefaultPCMFormat;
         private bool mEnforceSinglePCMFormat;
@@ -200,11 +204,25 @@ namespace urakawa.media.data
             {
                 throw new exception.MethodParameterIsNullException("The UID must not be null");
             }
-            if (mMediaDataDictionary.ContainsKey(uid))
+            if (!HasUid(uid))
             {
-                return mMediaDataDictionary[uid];
+                throw new exception.IsNotManagerOfException(
+                    String.Format("The manager does not manage a MediaData with UID {0}", uid));
             }
-            return null;
+
+            foreach (MediaData md in m_MediaDatas)
+            {
+                if (md.Uid == uid) return md;
+            }
+
+            throw new exception.IsNotManagerOfException(
+                String.Format("The manager does not manage a MediaData with UID {0}", uid));
+
+            //if (mMediaDataDictionary.ContainsKey(uid))
+            //{
+            //    return mMediaDataDictionary[uid];
+            //}
+            //return null;
         }
 
         /// <summary>
@@ -224,12 +242,21 @@ namespace urakawa.media.data
             {
                 throw new exception.MethodParameterIsNullException("Can not get the UID of a null AudioMediaData");
             }
-            if (!mReverseLookupMediaDataDictionary.ContainsKey(data))
+
+            foreach (MediaData md in m_MediaDatas)
             {
-                throw new exception.IsNotManagerOfException(
-                    "The given AudioMediaData is not managed by this MediaDataManager");
+                if (md == data) return md.Uid;
             }
-            return mReverseLookupMediaDataDictionary[data];
+
+            throw new exception.IsNotManagerOfException(
+                "The given AudioMediaData is not managed by this MediaDataManager");
+
+            //if (!mReverseLookupMediaDataDictionary.ContainsKey(data))
+            //{
+            //    throw new exception.IsNotManagerOfException(
+            //        "The given AudioMediaData is not managed by this MediaDataManager");
+            //}
+            //return mReverseLookupMediaDataDictionary[data];
         }
 
 
@@ -240,7 +267,12 @@ namespace urakawa.media.data
 
         public bool HasUid(string uid)
         {
-            return mMediaDataDictionary.ContainsKey(uid);
+            foreach (MediaData md in m_MediaDatas)
+            {
+                if (md.Uid == uid) return true;
+            }
+            return false;
+            //return mMediaDataDictionary.ContainsKey(uid);
         }
 
         //private string GetNewUid()
@@ -301,11 +333,16 @@ namespace urakawa.media.data
         /// </exception>
         private void AddMediaData(MediaData data, string uid)
         {
-            if (mMediaDataDictionary.ContainsKey(uid))
+            if (HasUid(uid)) //mMediaDataDictionary.ContainsKey(uid))
             {
                 throw new exception.IsAlreadyManagerOfException(String.Format(
                                                                     "There is already another AudioMediaData with uid {0}",
                                                                     uid));
+            }
+            if (m_MediaDatas.Contains(data)) // mReverseLookupDataProvidersDictionary.ContainsKey(provider))
+            {
+                throw new exception.IsAlreadyManagerOfException(
+                    "The given MediaData is already managed by the manager");
             }
             if (EnforceSinglePCMFormat)
             {
@@ -320,8 +357,10 @@ namespace urakawa.media.data
                 }
             }
             data.Uid = uid;
-            mMediaDataDictionary.Add(uid, data);
-            mReverseLookupMediaDataDictionary.Add(data, uid);
+            m_MediaDatas.Add(data);
+
+            //mMediaDataDictionary.Add(uid, data);
+            //mReverseLookupMediaDataDictionary.Add(data, uid);
         }
 
         /// <summary>
@@ -351,16 +390,27 @@ namespace urakawa.media.data
             try
             {
                 ulong index = 0;
-                ICollection<string> originalUids = new List<string>(mMediaDataDictionary.Keys);
-                foreach (string originalUid in originalUids)
+
+                List<MediaData> list = new List<MediaData>(m_MediaDatas);
+                m_MediaDatas.Clear();
+
+                foreach (MediaData obj in list)
                 {
-                    MediaData md = mMediaDataDictionary[originalUid];
-                    mMediaDataDictionary.Remove(originalUid);
                     string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
-                    md.Uid = newUid;
-                    mMediaDataDictionary.Add(newUid, md);
-                    mReverseLookupMediaDataDictionary[md] = newUid;
+                    obj.Uid = newUid;
+                    m_MediaDatas.Add(obj);
                 }
+
+                //ICollection<string> originalUids = new List<string>(mMediaDataDictionary.Keys);
+                //foreach (string originalUid in originalUids)
+                //{
+                //    MediaData md = mMediaDataDictionary[originalUid];
+                //    mMediaDataDictionary.Remove(originalUid);
+                //    string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
+                //    md.Uid = newUid;
+                //    mMediaDataDictionary.Add(newUid, md);
+                //    mReverseLookupMediaDataDictionary[md] = newUid;
+                //}
             }
             finally
             {
@@ -377,7 +427,8 @@ namespace urakawa.media.data
         /// </returns>
         public bool IsManagerOf(string uid)
         {
-            return mMediaDataDictionary.ContainsKey(uid);
+            return HasUid(uid);
+            //return mMediaDataDictionary.ContainsKey(uid);
         }
 
         /// <summary>
@@ -411,8 +462,9 @@ namespace urakawa.media.data
             mUidMutex.WaitOne();
             try
             {
-                mMediaDataDictionary.Remove(uid);
-                mReverseLookupMediaDataDictionary.Remove(data);
+                m_MediaDatas.Remove(data);
+                //mMediaDataDictionary.Remove(uid);
+                //mReverseLookupMediaDataDictionary.Remove(data);
             }
             finally
             {
@@ -471,7 +523,10 @@ namespace urakawa.media.data
         /// <returns>The list</returns>
         public List<MediaData> ListOfMediaData
         {
-            get { return new List<MediaData>(mMediaDataDictionary.Values); }
+            get
+            {   
+                return new List<MediaData>(m_MediaDatas); //mMediaDataDictionary.Values);
+            }
         }
 
         /// <summary>
@@ -480,7 +535,17 @@ namespace urakawa.media.data
         /// <returns>The list of uids</returns>
         public List<string> ListOfUids
         {
-            get { return new List<string>(mMediaDataDictionary.Keys); }
+            get
+            {
+
+                List<string> list = new List<string>(m_MediaDatas.Count);
+                foreach (MediaData md in m_MediaDatas)
+                {
+                    list.Add(md.Uid);
+                }
+                return list;
+                //return new List<string>(mMediaDataDictionary.Keys);
+            }
         }
 
         #region IXukAble Members
@@ -493,8 +558,10 @@ namespace urakawa.media.data
             mUidMutex.WaitOne();
             try
             {
-                mMediaDataDictionary.Clear();
-                mReverseLookupMediaDataDictionary.Clear();
+                m_MediaDatas.Clear();
+                
+                //mMediaDataDictionary.Clear();
+                //mReverseLookupMediaDataDictionary.Clear();
             }
             finally
             {
@@ -725,7 +792,8 @@ namespace urakawa.media.data
             {
                 destination.WriteStartElement(XukStrings.MediaDatas, XukNamespaceUri);
             }
-            foreach (string uid in mMediaDataDictionary.Keys)
+            //foreach (string uid in mMediaDataDictionary.Keys)
+            foreach (MediaData md in m_MediaDatas)
             {
                 if (false && Presentation.Project.IsPrettyFormat())
                 {
@@ -733,7 +801,8 @@ namespace urakawa.media.data
                     //destination.WriteAttributeString(XukStrings.Uid, uid);
                 }
 
-                mMediaDataDictionary[uid].XukOut(destination, baseUri, handler);
+                //mMediaDataDictionary[uid].XukOut(destination, baseUri, handler);
+                md.XukOut(destination, baseUri, handler);
 
                 if (false && Presentation.Project.IsPrettyFormat())
                 {
@@ -765,7 +834,9 @@ namespace urakawa.media.data
                 return false;
             }
             List<MediaData> otherMediaData = other.ListOfMediaData;
-            if (mMediaDataDictionary.Count != otherMediaData.Count)
+            
+            //if (mMediaDataDictionary.Count != otherMediaData.Count)
+            if (m_MediaDatas.Count != otherMediaData.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;

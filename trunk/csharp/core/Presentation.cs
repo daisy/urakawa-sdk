@@ -33,7 +33,6 @@ namespace urakawa
     /// </summary>
     public class Presentation : XukAble, IValueEquatable<Presentation>, IChangeNotifier
     {
-
         public string GetNewUid(string prefix, ref ulong startIndex)
         {
             string strFormat = prefix + "{0:00000}";

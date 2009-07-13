@@ -310,10 +310,14 @@ namespace urakawa.property.channel
         {
             ulong index = 0;
 
-            foreach (Channel ch in m_Channels)
+            List<Channel> channels = new List<Channel>(m_Channels);
+            m_Channels.Clear();
+
+            foreach (Channel ch in channels)
             {
                 string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
                 ch.Uid = newUid;
+                m_Channels.Add(ch);
             }
 
             //ICollection<string> originalUids = new List<string>(mChannels.Keys);
