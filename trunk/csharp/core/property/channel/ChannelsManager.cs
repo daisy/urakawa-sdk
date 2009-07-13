@@ -60,7 +60,7 @@ namespace urakawa.property.channel
         /// </exception>
         public void AddChannel(Channel channel)
         {
-            AddChannel(channel, GetNewId());
+            AddChannel(channel, Presentation.GetNewUid(UID_PREFIX, ref m_UidIndex));
         }
 
         /// <summary>
@@ -99,21 +99,30 @@ namespace urakawa.property.channel
                 throw new exception.ChannelAlreadyExistsException(
                     String.Format("Another channel exists with uid {0}", uid));
             }
+            channel.Uid = uid;
             mChannels.Add(uid, channel);
         }
 
-        private string GetNewId()
+        public const string UID_PREFIX = "CH";
+        private ulong m_UidIndex = 0;
+
+        public bool HasUid(string uid)
         {
-            ulong i = 0;
-            while (i < UInt64.MaxValue)
-            {
-                string newId = String.Format(
-                    "CHID{0:0000}", i);
-                if (!mChannels.ContainsKey(newId)) return newId;
-                i++;
-            }
-            throw new OverflowException("YOU HAVE WAY TOO MANY CHANNELS!!!");
+            return mChannels.ContainsKey(uid);
         }
+
+        //private string GetNewId()
+        //{
+        //    ulong i = 0;
+        //    while (i < UInt64.MaxValue)
+        //    {
+        //        string newId = String.Format(
+        //            "CHID{0:0000}", i);
+        //        if (!mChannels.ContainsKey(newId)) return newId;
+        //        i++;
+        //    }
+        //    throw new OverflowException("YOU HAVE WAY TOO MANY CHANNELS!!!");
+        //}
 
         /// <summary>
         /// Removes an <see cref="Channel"/> from the manager
@@ -225,7 +234,7 @@ namespace urakawa.property.channel
             }
             throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
         }
-        public void SetUidOfChannel(Channel ch, string uid)
+        private void SetUidOfChannel(Channel ch, string uid)
         {
             if (ch == null)
             {
@@ -243,6 +252,7 @@ namespace urakawa.property.channel
                 if (mChannels[Id] == ch)
                 {
                     mChannels.Remove(Id);
+                    ch.Uid = uid;
                     mChannels.Add(uid, ch);
                     return;
                 }
@@ -318,7 +328,7 @@ namespace urakawa.property.channel
                 {
                     XukInChannels(source, handler);
                 }
-                else if (!Presentation.Project.IsPrettyFormat()
+                else if (true || !Presentation.Project.IsPrettyFormat()
                     // && source.LocalName == XukStrings.ChannelItem
                     )
                 {
@@ -348,10 +358,14 @@ namespace urakawa.property.channel
                         {
                             XukInChannelItem(source, handler);
                         }
-                        else if (!source.IsEmptyElement)
+                        else
                         {
-                            source.ReadSubtree().Close();
+                            XukInChannel(source, handler);
                         }
+                    //else if (!source.IsEmptyElement)
+                    //    {
+                    //        source.ReadSubtree().Close();
+                    //    }
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {
@@ -366,17 +380,19 @@ namespace urakawa.property.channel
         {
             if (source.NodeType == XmlNodeType.Element)
             {
-                string uid = source.GetAttribute(XukStrings.Uid);
-                if (string.IsNullOrEmpty(uid))
-                {
-                    throw new exception.XukException("mChannelItem element has no uid attribute");
-                }
+                
                 Channel newCh = Presentation.ChannelFactory.Create(source.LocalName, source.NamespaceURI);
                 if (newCh != null)
                 {
                     newCh.XukIn(source, handler);
 
-                    SetUidOfChannel(newCh, uid);
+                    //string uid = source.GetAttribute(XukStrings.Uid);
+                    if (string.IsNullOrEmpty(newCh.Uid))
+                    {
+                        throw new exception.XukException("mChannelItem element has no uid attribute");
+                    }
+
+                    SetUidOfChannel(newCh, newCh.Uid);
                 }
                 else if (!source.IsEmptyElement)
                 {
@@ -387,11 +403,7 @@ namespace urakawa.property.channel
 
         private void XukInChannelItem(XmlReader source, ProgressHandler handler)
         {
-            string uid = source.GetAttribute(XukStrings.Uid);
-            if (string.IsNullOrEmpty(uid))
-            {
-                throw new exception.XukException("mChannelItem element has no uid attribute");
-            }
+            
             bool foundChannel = false;
             if (!source.IsEmptyElement)
             {
@@ -402,9 +414,17 @@ namespace urakawa.property.channel
                         Channel newCh = Presentation.ChannelFactory.Create(source.LocalName, source.NamespaceURI);
                         if (newCh != null)
                         {
+                            newCh.XukIn(source, handler);
+
+                            //string uid = source.GetAttribute(XukStrings.Uid);
+                            if (string.IsNullOrEmpty(newCh.Uid))
+                            {
+                                throw new exception.XukException("mChannelItem element has no uid attribute");
+                            }
+
                             try
                             {
-                                SetUidOfChannel(newCh, uid);
+                                SetUidOfChannel(newCh, newCh.Uid);
                             }
                             catch (exception.CheckedException e)
                             {
@@ -412,7 +432,6 @@ namespace urakawa.property.channel
                                     String.Format("Could not add Xuked In channel: {0}", e.Message),
                                     e);
                             }
-                            newCh.XukIn(source, handler);
                             foundChannel = true;
                         }
                         else if (!source.IsEmptyElement)
@@ -453,15 +472,15 @@ namespace urakawa.property.channel
                 }
                 foreach (string uid in uids)
                 {
-                    if (Presentation.Project.IsPrettyFormat())
+                    if (false && Presentation.Project.IsPrettyFormat())
                     {
                         destination.WriteStartElement(XukStrings.ChannelItem);
-                        destination.WriteAttributeString(XukStrings.Uid, uid);
+                        //destination.WriteAttributeString(XukStrings.Uid, uid);
                     }
 
                     GetChannel(uid).XukOut(destination, baseUri, handler);
 
-                    if (Presentation.Project.IsPrettyFormat())
+                    if (false && Presentation.Project.IsPrettyFormat())
                     {
                         destination.WriteEndElement();
                     }

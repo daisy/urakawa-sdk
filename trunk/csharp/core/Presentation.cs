@@ -33,6 +33,27 @@ namespace urakawa
     /// </summary>
     public class Presentation : XukAble, IValueEquatable<Presentation>, IChangeNotifier
     {
+
+        public string GetNewUid(string prefix, ref ulong startIndex)
+        {
+            string strFormat = prefix + "{0:00000000}";
+
+            while (startIndex < UInt64.MaxValue)
+            {
+                string newId = String.Format(strFormat, startIndex);
+
+                if (!DataProviderManager.HasUid(newId)
+                    && !ChannelsManager.HasUid(newId)
+                    && !MediaDataManager.HasUid(newId))
+                {
+                    return newId;
+                }
+
+                startIndex++;
+            }
+            throw new OverflowException("YOU HAVE WAY TOO MANY UIDs !!!");
+        }
+
         public override string GetTypeNameFormatted()
         {
             return XukStrings.Presentation;

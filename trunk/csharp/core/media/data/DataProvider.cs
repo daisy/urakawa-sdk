@@ -36,11 +36,11 @@ namespace urakawa.media.data
         /// Gets the UID of the data provider in the context of the manager. 
         /// Convenience for <c>DataProviderManager.GetUidOfDataProvider(this)</c>
         /// </summary>
-        public override string Uid
-        {
-            set { throw new NotImplementedException(); }
-            get { return Presentation.DataProviderManager.GetUidOfDataProvider(this); }
-        }
+        //public override string Uid
+        //{
+        //    set { throw new NotImplementedException(); }
+        //    get { return Presentation.DataProviderManager.GetUidOfDataProvider(this); }
+        //}
 
         /// <summary>
         /// Gets a <see cref="Stream"/> providing read access to the data

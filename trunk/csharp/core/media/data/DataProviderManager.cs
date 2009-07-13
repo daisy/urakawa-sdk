@@ -518,7 +518,7 @@ namespace urakawa.media.data
                 throw new exception.IsNotManagerOfException(
                     "The given DataProvider does not return this as DataProviderManager");
             }
-
+            provider.Uid = uid;
             mDataProvidersDictionary.Add(uid, provider);
             mReverseLookupDataProvidersDictionary.Add(provider, uid);
         }
@@ -539,7 +539,7 @@ namespace urakawa.media.data
         /// <seealso cref="DataProvider.DataProviderManager"/>
         public void AddDataProvider(DataProvider provider)
         {
-            AddDataProvider(provider, GetNextUid());
+            AddDataProvider(provider, Presentation.GetNewUid(UID_PREFIX, ref m_UidIndex));
         }
 
         /// <summary>
@@ -559,24 +559,33 @@ namespace urakawa.media.data
         /// </summary>
         /// <param name="provider">The given data provider</param>
         /// <param name="uid">The given uid</param>
-        public void SetDataProviderUid(DataProvider provider, string uid)
+        private void SetDataProviderUid(DataProvider provider, string uid)
         {
             RemoveDataProvider(provider, false);
+            provider.Uid = uid;
             AddDataProvider(provider, uid);
         }
 
-        private string GetNextUid()
+        public const string UID_PREFIX = "DTPRV";
+        private ulong m_UidIndex = 0;
+
+        public bool HasUid(string uid)
         {
-            ulong i = 0;
-            while (i < UInt64.MaxValue)
-            {
-                string newId = String.Format(
-                    "DPID{0:0000}", i);
-                if (!mDataProvidersDictionary.ContainsKey(newId)) return newId;
-                i++;
-            }
-            throw new OverflowException("YOU HAVE WAY TOO MANY DATAPROVIDERS!!!");
+            return mDataProvidersDictionary.ContainsKey(uid);
         }
+
+        //private string GetNextUid()
+        //{
+        //    ulong i = 0;
+        //    while (i < UInt64.MaxValue)
+        //    {
+        //        string newId = String.Format(
+        //            "DPID{0:0000}", i);
+        //        if (!mDataProvidersDictionary.ContainsKey(newId)) return newId;
+        //        i++;
+        //    }
+        //    throw new OverflowException("YOU HAVE WAY TOO MANY DATAPROVIDERS!!!");
+        //}
 
         /// <summary>
         /// Gets a list of the <see cref="DataProvider"/>s managed by the manager
@@ -668,7 +677,7 @@ namespace urakawa.media.data
                 {
                     XukInDataProviders(source, handler);
                 }
-                else if (!Presentation.Project.IsPrettyFormat()
+                else if (true || !Presentation.Project.IsPrettyFormat()
                     //&& source.LocalName == XukStrings.DataProviderItem
                     )
                 {
@@ -698,10 +707,15 @@ namespace urakawa.media.data
                         {
                             XukInDataProviderItem(source, handler);
                         }
-                        else if (!source.IsEmptyElement)
+                        else
                         {
-                            source.ReadSubtree().Close();
+                            XukInDataProvider(source, handler);
                         }
+                    
+                    //else if (!source.IsEmptyElement)
+                        //{
+                        //    source.ReadSubtree().Close();
+                        //}
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {
@@ -719,12 +733,13 @@ namespace urakawa.media.data
                 DataProvider prov = Presentation.DataProviderFactory.Create("", source.LocalName, source.NamespaceURI);
                 if (prov != null)
                 {
-                    string uid = source.GetAttribute(XukStrings.Uid);
-                    if (string.IsNullOrEmpty(uid))
+                    prov.XukIn(source, handler);
+
+                    //string uid = source.GetAttribute(XukStrings.Uid);
+                    if (string.IsNullOrEmpty(prov.Uid))
                     {
                         throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
                     }
-                    prov.XukIn(source, handler);
                     if (prov is FileDataProvider)
                     {
                         FileDataProvider fdProv = (FileDataProvider)prov;
@@ -736,18 +751,18 @@ namespace urakawa.media.data
                         }
                         mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
                     }
-                    
-                    if (IsManagerOf(uid))
+
+                    if (IsManagerOf(prov.Uid))
                     {
-                        if (GetDataProvider(uid) != prov)
+                        if (GetDataProvider(prov.Uid) != prov)
                         {
                             throw new exception.XukException(
-                                String.Format("Another DataProvider exists in the manager with uid {0}", uid));
+                                String.Format("Another DataProvider exists in the manager with uid {0}", prov.Uid));
                         }
                     }
                     else
                     {
-                        SetDataProviderUid(prov, uid);
+                        SetDataProviderUid(prov, prov.Uid);
                     }
                 }
                 else if (!source.IsEmptyElement)
@@ -759,7 +774,7 @@ namespace urakawa.media.data
 
         private void XukInDataProviderItem(XmlReader source, ProgressHandler handler)
         {
-            string uid = source.GetAttribute(XukStrings.Uid);
+            //string uid = source.GetAttribute(XukStrings.Uid);
             if (!source.IsEmptyElement)
             {
                 bool addedProvider = false;
@@ -787,21 +802,21 @@ namespace urakawa.media.data
                                 }
                                 mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
                             }
-                            if (string.IsNullOrEmpty(uid))
+                            if (string.IsNullOrEmpty(prov.Uid))
                             {
                                 throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
                             }
-                            if (IsManagerOf(uid))
+                            if (IsManagerOf(prov.Uid))
                             {
-                                if (GetDataProvider(uid) != prov)
+                                if (GetDataProvider(prov.Uid) != prov)
                                 {
                                     throw new exception.XukException(
-                                        String.Format("Another DataProvider exists in the manager with uid {0}", uid));
+                                        String.Format("Another DataProvider exists in the manager with uid {0}", prov.Uid));
                                 }
                             }
                             else
                             {
-                                SetDataProviderUid(prov, uid);
+                                SetDataProviderUid(prov, prov.Uid);
                             }
                             addedProvider = true;
                         }
@@ -854,15 +869,15 @@ namespace urakawa.media.data
             }
             foreach (DataProvider prov in ListOfDataProviders)
             {
-                if (Presentation.Project.IsPrettyFormat())
+                if (false && Presentation.Project.IsPrettyFormat())
                 {
                     destination.WriteStartElement(XukStrings.DataProviderItem, XukNamespaceUri);
-                    destination.WriteAttributeString(XukStrings.Uid, prov.Uid);
+                    //destination.WriteAttributeString(XukStrings.Uid, prov.Uid);
                 }
 
                 prov.XukOut(destination, baseUri, handler);
 
-                if (Presentation.Project.IsPrettyFormat())
+                if (false && Presentation.Project.IsPrettyFormat())
                 {
                     destination.WriteEndElement();
                 }
