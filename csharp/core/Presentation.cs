@@ -1210,56 +1210,5 @@ namespace urakawa
         }
 
         #endregion
-
-        /// <summary>
-        /// creates and immediately discards objects via each factory
-        /// in order to initialize and cache the mapping between XUK names (pretty or compressed) and actual types.
-        /// CAlling this method is not required, it is provided for use-cases where the XUK XML is required to 
-        /// contain all the factory mappings, even though the types are not actually used in the document instance.
-        /// (useful for debugging factory types in XUK)
-        /// </summary>
-        public void WarmUpAllFactories()
-        {
-            Channel ch = ChannelFactory.Create();
-            ChannelsManager.RemoveChannel(ch);
-            ch = ChannelFactory.CreateAudioChannel();
-            ChannelsManager.RemoveChannel(ch);
-            ch = ChannelFactory.CreateTextChannel();
-            ChannelsManager.RemoveChannel(ch);
-            ch = ChannelFactory.CreateImageChannel();
-            ChannelsManager.RemoveChannel(ch);
-            //
-            DataProvider dp = DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-            DataProviderManager.RemoveDataProvider(dp, true);
-            //
-            MediaData md = MediaDataFactory.CreateAudioMediaData();
-            MediaDataManager.RemoveMediaData(md);
-            //
-            CommandFactory.CreateCompositeCommand();
-            //
-            TreeNode treeNode = TreeNodeFactory.Create();
-            ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
-            CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, manMedia, Time.Zero);
-            CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
-            //
-            MediaFactory.CreateExternalImageMedia();
-            MediaFactory.CreateExternalVideoMedia();
-            MediaFactory.CreateExternalTextMedia();
-            MediaFactory.CreateExternalAudioMedia();
-            //MediaFactory.CreateManagedAudioMedia(); DONE ALREADY (see above)
-            MediaFactory.CreateSequenceMedia();
-            MediaFactory.CreateTextMedia();
-            //
-            MetadataFactory.CreateMetadata();
-            //
-            PropertyFactory.CreateChannelsProperty();
-            PropertyFactory.CreateXmlProperty();
-            //
-            //TreeNodeFactory.Create(); DONE ALREADY (see above)
-
-            Debug.Assert(DataProviderManager.IsEmpty);
-            Debug.Assert(ChannelsManager.IsEmpty);
-            Debug.Assert(MediaDataManager.IsEmpty);
-        }
     }
 }
