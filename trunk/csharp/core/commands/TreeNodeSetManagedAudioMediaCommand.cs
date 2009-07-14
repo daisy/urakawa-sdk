@@ -60,28 +60,55 @@ namespace urakawa.commands
             TreeNode = treeNode;
             ManagedAudioMedia = managedMedia;
 
-            m_ListOfUsedMediaData.Add(m_ManagedAudioMedia.AudioMediaData);
+            if (ManagedAudioMedia.HasActualAudioMediaData)
+            {
+                m_ListOfUsedMediaData.Add(ManagedAudioMedia.AudioMediaData);
+            }
+
+            ShortDescription = "Add new audio";
+            LongDescription = "Attach a ManagedAudioMedia to a TreeNode in the AudioChannel via the ChannelsProperty";
+
+            if (!Presentation.ChannelsManager.HasAudioChannel)
+            {
+                return;
+            }
 
             AudioChannel audioChannel = Presentation.ChannelsManager.GetOrCreateAudioChannel();
+
+            if (!TreeNode.HasChannelsProperty)
+            {
+                return;
+            }
+
             ChannelsProperty chProp = TreeNode.GetOrCreateChannelsProperty();
+
             PreviousMedia = chProp.GetMedia(audioChannel);
+
+            if (PreviousMedia == null)
+            {
+                return;
+            }
+
             if (PreviousMedia is ManagedAudioMedia)
             {
-                m_ListOfUsedMediaData.Add(((ManagedAudioMedia)PreviousMedia).AudioMediaData);
+                if (((ManagedAudioMedia)PreviousMedia).HasActualAudioMediaData)
+                {
+                    m_ListOfUsedMediaData.Add(((ManagedAudioMedia)PreviousMedia).AudioMediaData);
+                }
             }
-            if (PreviousMedia is SequenceMedia)
+            else if (PreviousMedia is SequenceMedia)
             {
                 foreach (Media media in ((SequenceMedia)PreviousMedia).ListOfItems)
                 {
                     if (media is ManagedAudioMedia)
                     {
-                        m_ListOfUsedMediaData.Add(((ManagedAudioMedia)media).AudioMediaData);
+                        if (((ManagedAudioMedia)media).HasActualAudioMediaData)
+                        {
+                            m_ListOfUsedMediaData.Add(((ManagedAudioMedia)media).AudioMediaData);
+                        }
                     }
                 }
             }
-
-            ShortDescription = "Add new audio";
-            LongDescription = "Attach a ManagedAudioMedia to a TreeNode in the AudioChannel via the ChannelsProperty";
         }
 
         public override bool CanExecute

@@ -71,7 +71,7 @@ namespace urakawa.media.data
         public virtual void GetUid_Basics()
         {
             Assert.AreEqual(
-                mDataProvider1.DataProviderManager.GetUidOfDataProvider(mDataProvider1),
+                mDataProvider1.Presentation.DataProviderManager.GetUidOfDataProvider(mDataProvider1),
                 mDataProvider1.Uid,
                 "DataProvider.getUid did not return the expected value");
         }

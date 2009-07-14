@@ -92,7 +92,7 @@
 				<RootNode>
 					<TreeNode>
 						<Properties>
-							<XmlProperty LocalName="body" namespaceUri="http://www.daisy.org/urakawa/test">
+							<XmlProperty LocalName="body" NamespaceUri="http://www.daisy.org/urakawa/test">
 								<XmlAttributes>
 									<XmlAttribute LocalName="class" Value="DAISY"/>
 								</XmlAttributes>

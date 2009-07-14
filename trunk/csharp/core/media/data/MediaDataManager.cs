@@ -548,6 +548,14 @@ namespace urakawa.media.data
             }
         }
 
+        public bool IsEmpty
+        {
+            get
+            {
+                return m_MediaDatas.Count == 0;
+            }
+        }
+
         #region IXukAble Members
 
         /// <summary>

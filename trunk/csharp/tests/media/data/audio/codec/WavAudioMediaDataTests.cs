@@ -699,18 +699,20 @@ namespace urakawa.media.data.audio.codec
             }
         }
 
-		[Test]
+        [Test]
         public void GetAudioData_EmptyData()
         {
-            Stream s = mData1.GetAudioData();
-            try
-            {
-                Assert.IsTrue(s.Length == 0, "the returned audio data should be empty");
-            }
-            finally
-            {
-                s.Close();
-            }
+            Assert.IsTrue(!mData1.HasActualAudioData);
+
+            //Stream s = mData1.GetAudioData();
+            //try
+            //{
+            //    Assert.IsTrue(s.Length == 0, "the returned audio data should be empty");
+            //}
+            //finally
+            //{
+            //    s.Close();
+            //}
         }
 
 		[Test]
@@ -964,7 +966,10 @@ namespace urakawa.media.data.audio.codec
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             mData2.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             mData2.MergeWith(mData3);
-            Assert.IsTrue(mData3.GetAudioData().Length == 0);
+
+            Assert.IsTrue(!mData3.HasActualAudioData);
+            //Assert.IsTrue(mData3.GetAudioData().Length == 0);
+
             Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
         }
 
@@ -974,7 +979,10 @@ namespace urakawa.media.data.audio.codec
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             mData3.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             mData2.MergeWith(mData3);
-            Assert.IsTrue(mData3.GetAudioData().Length == 0);
+
+            Assert.IsTrue(!mData3.HasActualAudioData);
+            //Assert.IsTrue(mData3.GetAudioData().Length == 0);
+
             Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
         }
 
@@ -985,7 +993,10 @@ namespace urakawa.media.data.audio.codec
             mData2.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
             mData3.AppendAudioDataFromRiffWave(GetPath("audiotest2-mono-44100Hz-16bits.wav"));
             mData2.MergeWith(mData3);
-            Assert.IsTrue(mData3.GetAudioData().Length == 0);
+
+            Assert.IsTrue(!mData3.HasActualAudioData);
+            //Assert.IsTrue(mData3.GetAudioData().Length == 0);
+
             Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
         }
 
@@ -997,7 +1008,10 @@ namespace urakawa.media.data.audio.codec
             mData3.AppendAudioDataFromRiffWave(GetPath("audiotest2-mono-44100Hz-16bits.wav"));
             mData3.AppendAudioDataFromRiffWave(GetPath("audiotest3-mono-44100Hz-16bits.wav"));
             mData2.MergeWith(mData3);
-            Assert.IsTrue(mData3.GetAudioData().Length == 0);
+
+            Assert.IsTrue(!mData3.HasActualAudioData);
+            //Assert.IsTrue(mData3.GetAudioData().Length == 0);
+
             Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
         }
 
@@ -1009,7 +1023,10 @@ namespace urakawa.media.data.audio.codec
             mData2.AppendAudioDataFromRiffWave(GetPath("audiotest2-mono-44100Hz-16bits.wav"));
             mData3.AppendAudioDataFromRiffWave(GetPath("audiotest3-mono-44100Hz-16bits.wav"));
             mData2.MergeWith(mData3);
-            Assert.IsTrue(mData3.GetAudioData().Length == 0);
+
+            Assert.IsTrue(!mData3.HasActualAudioData);
+            //Assert.IsTrue(mData3.GetAudioData().Length == 0);
+
             Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
         }
 

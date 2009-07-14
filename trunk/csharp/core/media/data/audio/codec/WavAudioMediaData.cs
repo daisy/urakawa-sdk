@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using urakawa.media.data;
@@ -440,6 +441,11 @@ namespace urakawa.media.data.audio.codec
 
         #endregion
 
+        public override bool HasActualAudioData
+        {
+            get { return mWavClips.Count > 0; }
+        }
+
         /// <summary>
         /// Gets a <see cref="Stream"/> providing read access to all audio between given clip begin and end <see cref="Time"/>s
         /// as raw PCM data
@@ -466,6 +472,7 @@ namespace urakawa.media.data.audio.codec
             }
             if (mWavClips.Count == 0)
             {
+                Debug.Fail("That's probably going to create problems ?");
                 return new MemoryStream(0);
             }
             if (mWavClips.Count == 1)
@@ -532,6 +539,7 @@ namespace urakawa.media.data.audio.codec
             }
             if (resStreams.Count == 0)
             {
+                Debug.Fail("That's probably going to create problems ?");
                 return new MemoryStream(0);
             }
             return new SequenceStream(resStreams);

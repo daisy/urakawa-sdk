@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using urakawa.core;
+using urakawa.progress;
 using urakawa.xuk;
 
 namespace urakawa.property
@@ -131,6 +132,13 @@ namespace urakawa.property
                                                                          XukLocalName, XukNamespaceUri));
             }
             return exportedProp;
+        }
+
+        public void XukIn(XmlReader source, ProgressHandler handler, TreeNode node)
+        {
+            mOwner = node;
+            XukIn(source, handler);
+            mOwner = null;
         }
 
         /// <summary>

@@ -344,8 +344,8 @@ namespace urakawa.property.channel
                             throw new exception.XukException(
                                 String.Format("Found no channel with uid {0}", channelRef));
                         }
-                        SetMedia(channel, newMedia);
                         newMedia.XukIn(source, handler);
+                        SetMedia(channel, newMedia);
                     }
                     else if (!source.IsEmptyElement)
                     {

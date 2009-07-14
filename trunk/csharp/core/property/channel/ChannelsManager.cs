@@ -201,6 +201,14 @@ namespace urakawa.property.channel
             }
         }
 
+        public bool IsEmpty
+        {
+            get
+            {
+                return m_Channels.Count == 0;
+            }
+        }
+
         /// <summary>
         /// Gets the <see cref="Channel"/> with a given xuk uid
         /// </summary>
@@ -603,6 +611,32 @@ namespace urakawa.property.channel
         }
 
         #endregion
+
+        public bool HasChannel<T>() where T : Channel, new()
+        {
+            List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
+            foreach (Channel ch in listCh)
+            {
+                if (ch is T)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool HasAudioChannel
+        {
+            get { return HasChannel<AudioChannel>(); }
+        }
+        public bool HasImageChannel
+        {
+            get { return HasChannel<ImageChannel>(); }
+        }
+        public bool HasTextChannel
+        {
+            get { return HasChannel<TextChannel>(); }
+        }
 
         public T GetOrCreateChannel<T>() where T : Channel, new()
         {

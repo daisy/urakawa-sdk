@@ -530,8 +530,8 @@ namespace urakawa.undo
                                 String.Format("Could not create a {2} matching XUK QName {1}:{0}", source.LocalName,
                                               source.NamespaceURI, typeof (T).Name));
                         }
-                        stack.Push((T) cmd);
                         cmd.XukIn(source, handler);
+                        stack.Push((T)cmd);
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {

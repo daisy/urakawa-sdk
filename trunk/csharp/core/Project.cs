@@ -417,8 +417,8 @@ namespace urakawa
                         Presentation pres = PresentationFactory.Create(source.LocalName, source.NamespaceURI);
                         if (pres != null)
                         {
+                            pres.XukIn(source, handler, this);
                             AddPresentation(pres);
-                            pres.XukIn(source, handler);
                         }
                         else if (!source.IsEmptyElement)
                         {

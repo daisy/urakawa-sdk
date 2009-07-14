@@ -73,7 +73,7 @@ namespace urakawa.media
             Media expM = mMedia1.Export(destPres);
             Assert.AreEqual(sourcePres, mMedia1.Presentation,
                             "Presentation of export source must not change");
-            Assert.AreEqual(destPres, expM.MediaFactory.Presentation,
+            Assert.AreEqual(destPres, expM.Presentation,
                             "Exported Media must belong to the destination Presentation");
             Assert.IsTrue(mMedia1.ValueEquals(expM), "The exported Media must have the same value as the source");
         }

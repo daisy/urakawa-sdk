@@ -294,7 +294,7 @@ namespace urakawa.core
             StreamWithMarkers val;
 
             ManagedAudioMedia audioMedia = GetManagedAudioMedia();
-            if (audioMedia != null && audioMedia.AudioMediaData != null)
+            if (audioMedia != null)
             {
                 val.m_Stream = audioMedia.AudioMediaData.GetAudioData();
                 val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
@@ -860,6 +860,15 @@ namespace urakawa.core
             return GetProperty(typeof(T)) as T;
         }
 
+        public bool HasChannelsProperty
+        {
+            get { return GetProperty<ChannelsProperty>() != null; }
+        }
+        public bool HasXmlProperty
+        {
+            get { return GetProperty<XmlProperty>() != null; }
+        }
+
         public ChannelsProperty GetOrCreateChannelsProperty()
         {
             return GetOrCreateProperty<ChannelsProperty>();
@@ -1115,8 +1124,8 @@ namespace urakawa.core
                         Property newProp = Presentation.PropertyFactory.Create(source.LocalName, source.NamespaceURI);
                         if (newProp != null)
                         {
+                            newProp.XukIn(source, handler, this);
                             AddProperty(newProp);
-                            newProp.XukIn(source, handler);
                         }
                         else if (!source.IsEmptyElement)
                         {
@@ -1137,8 +1146,8 @@ namespace urakawa.core
             TreeNode newChild = Presentation.TreeNodeFactory.Create(source.LocalName, source.NamespaceURI);
             if (newChild != null)
             {
-                AppendChild(newChild);
                 newChild.XukIn(source, handler);
+                AppendChild(newChild);
             }
             else if (!source.IsEmptyElement)
             {

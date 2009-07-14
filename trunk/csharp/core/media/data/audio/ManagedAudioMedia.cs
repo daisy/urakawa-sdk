@@ -315,6 +315,19 @@ namespace urakawa.media.data.audio
         #endregion
 
         /// <summary>
+        /// The AudioMediaData getter lazily instanciates an AudioMediaData object,
+        /// so this method can be used to test whether this ManagedAudioMedia is actually empty.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasActualAudioMediaData
+        {
+            get
+            {
+                return mAudioMediaData != null;
+            }
+        }
+
+        /// <summary>
         /// Gets the <see cref="audio.AudioMediaData"/> storing the audio of <c>this</c>
         /// </summary>
         /// <returns>The audio media data</returns>
@@ -382,7 +395,13 @@ namespace urakawa.media.data.audio
                 return false;
             }
             ManagedAudioMedia otherMAM = (ManagedAudioMedia) other;
-            if (!AudioMediaData.ValueEquals(otherMAM.AudioMediaData))
+
+            if (otherMAM.HasActualAudioMediaData != HasActualAudioMediaData)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            if (HasActualAudioMediaData && !AudioMediaData.ValueEquals(otherMAM.AudioMediaData))
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
