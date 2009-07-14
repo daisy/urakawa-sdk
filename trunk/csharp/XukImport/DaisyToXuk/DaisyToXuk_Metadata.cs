@@ -2,7 +2,6 @@
 using System.Xml;
 using urakawa;
 using urakawa.metadata;
-using System.Windows.Forms;
 using System.Collections.Generic;
 
 namespace XukImport
