@@ -64,13 +64,13 @@ namespace XukImport
                     if (first)
                     {
                         Presentation presentation = m_Project.GetPresentation(0);
-                        TreeNode treeNode = presentation.TreeNodeFactory.Create();
-                        presentation.RootNode = treeNode;
                         XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
-                        treeNode.AddProperty(xmlProp);
                         xmlProp.LocalName = "book";
                         presentation.PropertyFactory.DefaultXmlNamespaceUri = listOfBodies[0].NamespaceURI;
                         xmlProp.NamespaceUri = presentation.PropertyFactory.DefaultXmlNamespaceUri;
+                        TreeNode treeNode = presentation.TreeNodeFactory.Create();
+                        treeNode.AddProperty(xmlProp);
+                        presentation.RootNode = treeNode;
 
                         first = false;
                     }
@@ -79,11 +79,8 @@ namespace XukImport
                     {
                         parseContentDocument(childOfBody, m_Project.GetPresentation(0).RootNode);
                     }
-
                 }
-
             }
-
         }
 
         private void parseContentDocument(XmlNode xmlNode, TreeNode parentTreeNode)
@@ -151,29 +148,36 @@ namespace XukImport
                             if (getSRC != null)
                             {
                                 string relativePath = xmlNode.Attributes.GetNamedItem("src").Value;
-                                string parentPath = Directory.GetParent(m_Book_FilePath).FullName;
-                                string imgSourceFullpath = Path.Combine(parentPath, relativePath);
-                                string datafilePath = presentation.DataProviderManager.DataFileDirectoryFullPath;
-                                if (!Directory.Exists(datafilePath))
+                                if (!relativePath.StartsWith("http://"))
                                 {
-                                    Directory.CreateDirectory(datafilePath);
-                                }
-                                string imgDestFullpath = Path.Combine(datafilePath, Path.GetFileName(imgSourceFullpath));
-                                if (!File.Exists(imgDestFullpath))
-                                {
-                                    //File.Delete(imgDestFullpath);
-                                    File.Copy(imgSourceFullpath, imgDestFullpath);
-                                }
+                                    string parentPath = Directory.GetParent(m_Book_FilePath).FullName;
+                                    string imgSourceFullpath = Path.Combine(parentPath, relativePath);
+                                    string datafilePath = presentation.DataProviderManager.DataFileDirectoryFullPath;
+                                    if (!Directory.Exists(datafilePath))
+                                    {
+                                        Directory.CreateDirectory(datafilePath);
+                                    }
+                                    string imgDestFullpath = Path.Combine(datafilePath,
+                                                                          Path.GetFileName(imgSourceFullpath));
+                                    if (!File.Exists(imgDestFullpath))
+                                    {
+                                        //File.Delete(imgDestFullpath);
+                                        File.Copy(imgSourceFullpath, imgDestFullpath);
+                                    }
 
-                                updatedSRC = presentation.RootUri.MakeRelativeUri(new Uri(imgDestFullpath, UriKind.Absolute)).ToString();
-                                //string dirPath = Path.GetDirectoryName(presentation.RootUri.LocalPath);
-                                //updatedSRC = presentation.DataProviderManager.DataFileDirectory + Path.DirectorySeparatorChar + Path.GetFileName(imgDestFullpath);
+                                    updatedSRC =
+                                        presentation.RootUri.MakeRelativeUri(new Uri(imgDestFullpath, UriKind.Absolute))
+                                            .ToString();
+                                    //string dirPath = Path.GetDirectoryName(presentation.RootUri.LocalPath);
+                                    //updatedSRC = presentation.DataProviderManager.DataFileDirectory + Path.DirectorySeparatorChar + Path.GetFileName(imgDestFullpath);
 
-                                ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty();
-                                treeNode.AddProperty(chProp);
-                                ExternalImageMedia externalImage = presentation.MediaFactory.CreateExternalImageMedia();
-                                externalImage.Src = updatedSRC;
-                                chProp.SetMedia(m_ImageChannel, externalImage);
+                                    ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty();
+                                    treeNode.AddProperty(chProp);
+                                    ExternalImageMedia externalImage =
+                                        presentation.MediaFactory.CreateExternalImageMedia();
+                                    externalImage.Src = updatedSRC;
+                                    chProp.SetMedia(m_ImageChannel, externalImage);
+                                }
                             }
                         }
 

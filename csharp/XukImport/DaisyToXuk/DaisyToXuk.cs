@@ -1,11 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
-using System.Diagnostics;
 using System.Collections.Generic;
 using urakawa;
-using urakawa.media.data;
-using urakawa.property.channel;
 using core = urakawa.core;
 
 namespace XukImport
@@ -105,6 +102,7 @@ namespace XukImport
                 case ".xml":
                     {
                         XmlDocument contentXmlDoc = readXmlDocument(m_Book_FilePath);
+                        parseMetadata(contentXmlDoc);
                         parseContentDocument(contentXmlDoc, null);
                         break;
                     }
