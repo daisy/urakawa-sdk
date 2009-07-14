@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using urakawa.core;
 using urakawa.media.data;
+using urakawa.media.data.audio;
+using urakawa.media.timing;
 using urakawa.progress;
+using urakawa.property.channel;
 using urakawa.xuk;
 using urakawa.events;
 using urakawa.events.project;
@@ -326,12 +330,62 @@ namespace urakawa
 
             if (IsPrettyFormat())
             {
-                newPres.WarmUpAllFactories();
+                warmUpAllFactories(newPres);
             }
 
             return newPres;
         }
 
+        /// <summary>
+        /// creates and immediately discards objects via each factory
+        /// in order to initialize and cache the mapping between XUK names (pretty or compressed) and actual types.
+        /// CAlling this method is not required, it is provided for use-cases where the XUK XML is required to 
+        /// contain all the factory mappings, even though the types are not actually used in the document instance.
+        /// (useful for debugging factory types in XUK)
+        /// </summary>
+        private static void warmUpAllFactories(Presentation pres)
+        {
+            Channel ch = pres.ChannelFactory.Create();
+            pres.ChannelsManager.RemoveChannel(ch);
+            ch = pres.ChannelFactory.CreateAudioChannel();
+            pres.ChannelsManager.RemoveChannel(ch);
+            ch = pres.ChannelFactory.CreateTextChannel();
+            pres.ChannelsManager.RemoveChannel(ch);
+            ch = pres.ChannelFactory.CreateImageChannel();
+            pres.ChannelsManager.RemoveChannel(ch);
+            //
+            DataProvider dp = pres.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+            pres.DataProviderManager.RemoveDataProvider(dp, true);
+            //
+            MediaData md = pres.MediaDataFactory.CreateAudioMediaData();
+            pres.MediaDataManager.RemoveMediaData(md);
+            //
+            pres.CommandFactory.CreateCompositeCommand();
+            //
+            TreeNode treeNode = pres.TreeNodeFactory.Create();
+            ManagedAudioMedia manMedia = pres.MediaFactory.CreateManagedAudioMedia();
+            pres.CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, manMedia, Time.Zero);
+            pres.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
+            //
+            pres.MediaFactory.CreateExternalImageMedia();
+            pres.MediaFactory.CreateExternalVideoMedia();
+            pres.MediaFactory.CreateExternalTextMedia();
+            pres.MediaFactory.CreateExternalAudioMedia();
+            //MediaFactory.CreateManagedAudioMedia(); DONE ALREADY (see above)
+            pres.MediaFactory.CreateSequenceMedia();
+            pres.MediaFactory.CreateTextMedia();
+            //
+            pres.MetadataFactory.CreateMetadata();
+            //
+            pres.PropertyFactory.CreateChannelsProperty();
+            pres.PropertyFactory.CreateXmlProperty();
+            //
+            //TreeNodeFactory.Create(); DONE ALREADY (see above)
+
+            Debug.Assert(pres.DataProviderManager.IsEmpty);
+            Debug.Assert(pres.ChannelsManager.IsEmpty);
+            Debug.Assert(pres.MediaDataManager.IsEmpty);
+        }
         /// <summary>
         /// Gets the number of <see cref="Presentation"/>s in the <see cref="Project"/>
         /// </summary>
