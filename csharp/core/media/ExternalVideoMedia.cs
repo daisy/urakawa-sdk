@@ -505,9 +505,14 @@ namespace urakawa.media
             get { return mSrc; }
             set
             {
-                if (string.IsNullOrEmpty(value))
+                if (value == null)
+                {
                     throw new exception.MethodParameterIsNullException("The src value cannot be null or empty");
-
+                }
+                if (value == "")
+                {
+                    throw new exception.MethodParameterIsEmptyStringException("The src value cannot be null or empty");
+                }
                 string prevSrc = mSrc;
                 mSrc = value;
                 if (mSrc != prevSrc) NotifySrcChanged(mSrc, prevSrc);

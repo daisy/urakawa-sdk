@@ -650,6 +650,14 @@ namespace urakawa.media.data
             }
         }
 
+        public bool IsEmpty
+        {
+            get
+            {
+                return m_DataProviders.Count == 0;
+            }
+        }
+
         private bool m_CompareByteStreamsDuringValueEqual = true;
 
         public bool CompareByteStreamsDuringValueEqual

@@ -78,8 +78,14 @@ namespace urakawa.commands
             ManagedAudioMediaSource = managedAudioMediaSource;
             ManagedAudioMediaTarget = managedAudioMediaTarget;
 
-            m_ListOfUsedMediaData.Add(managedAudioMediaSource.AudioMediaData);
-            m_ListOfUsedMediaData.Add(managedAudioMediaTarget.AudioMediaData);
+            if (ManagedAudioMediaSource.HasActualAudioMediaData)
+            {
+                m_ListOfUsedMediaData.Add(ManagedAudioMediaSource.AudioMediaData);
+            }
+            if (ManagedAudioMediaTarget.HasActualAudioMediaData)
+            {
+                m_ListOfUsedMediaData.Add(ManagedAudioMediaTarget.AudioMediaData);
+            }
 
             ShortDescription = "Insert new audio";
             LongDescription = "Insert WaveAudioMediaData from a source ManagedAudioMedia into a target ManagedAudioMedia";

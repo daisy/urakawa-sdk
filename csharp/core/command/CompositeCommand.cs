@@ -301,8 +301,8 @@ namespace urakawa.command
                                                                  "Could not create Command matching xuk QName {1}:{0}",
                                                                  source.LocalName, source.NamespaceURI));
                         }
-                        Append(cmd);
                         cmd.XukIn(source, handler);
+                        Append(cmd);
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {

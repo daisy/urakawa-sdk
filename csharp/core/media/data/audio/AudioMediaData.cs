@@ -278,6 +278,12 @@ namespace urakawa.media.data.audio
         public abstract Stream GetAudioData(Time clipBegin, Time clipEnd);
 
         /// <summary>
+        /// Returns true if the actual underlying data content is not empty.
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool HasActualAudioData { get; }
+
+        /// <summary>
         /// Appends audio of a given duration to <c>this</c>
         /// </summary>
         /// <param name="pcmData">A <see cref="Stream"/> providing read access to the input raw PCM audio data</param>
@@ -582,26 +588,34 @@ namespace urakawa.media.data.audio
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            Stream thisData = GetAudioData();
-            try
+
+            if (HasActualAudioData != amdOther.HasActualAudioData)
             {
-                Stream otherdata = amdOther.GetAudioData();
+                return false;
+            }
+            if (HasActualAudioData)
+            {
+                Stream thisData = GetAudioData();
                 try
                 {
-                    if (!PCMDataInfo.CompareStreamData(thisData, otherdata, (int) thisData.Length))
+                    Stream otherdata = amdOther.GetAudioData();
+                    try
                     {
-                        //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                        return false;
+                        if (!PCMDataInfo.CompareStreamData(thisData, otherdata, (int) thisData.Length))
+                        {
+                            //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                            return false;
+                        }
+                    }
+                    finally
+                    {
+                        otherdata.Close();
                     }
                 }
                 finally
                 {
-                    otherdata.Close();
+                    thisData.Close();
                 }
-            }
-            finally
-            {
-                thisData.Close();
             }
             return true;
         }

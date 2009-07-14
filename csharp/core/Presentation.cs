@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Xml;
 using System.Collections.Generic;
 using urakawa.command;
@@ -261,6 +262,15 @@ namespace urakawa
         private Uri mRootUri;
         private string mLanguage;
         private List<Metadata> mMetadata;
+
+
+        public void XukIn(XmlReader source, ProgressHandler handler, Project project)
+        {
+            mProject = project;
+            XukIn(source, handler);
+            mProject = null;
+        }
+
 
         /// <summary>
         /// Gets the <see cref="Project"/> of <c>this</c>
@@ -876,8 +886,8 @@ namespace urakawa
                     Metadata newMeta = MetadataFactory.Create(source.LocalName, source.NamespaceURI);
                     if (newMeta != null)
                     {
-                        mMetadata.Add(newMeta);
                         newMeta.XukIn(source, handler);
+                        mMetadata.Add(newMeta);
                     }
                     else if (!source.IsEmptyElement)
                     {
@@ -915,8 +925,8 @@ namespace urakawa
                         TreeNode newRoot = TreeNodeFactory.Create(source.LocalName, source.NamespaceURI);
                         if (newRoot != null)
                         {
-                            RootNode = newRoot;
                             newRoot.XukIn(source, handler);
+                            RootNode = newRoot;
                         }
                         else if (!source.IsEmptyElement)
                         {
@@ -1246,6 +1256,10 @@ namespace urakawa
             PropertyFactory.CreateXmlProperty();
             //
             //TreeNodeFactory.Create(); DONE ALREADY (see above)
+
+            Debug.Assert(DataProviderManager.IsEmpty);
+            Debug.Assert(ChannelsManager.IsEmpty);
+            Debug.Assert(MediaDataManager.IsEmpty);
         }
     }
 }

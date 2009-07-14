@@ -32,7 +32,7 @@ namespace urakawa.media.data
         [Test]
         public void Temp()
         {
-            FileDataProvider fdp = mDataProviderManager.DataProviderFactory.Create<FileDataProvider>(
+            FileDataProvider fdp = mDataProviderManager.Presentation.DataProviderFactory.Create<FileDataProvider>(
                 DataProviderFactory.AUDIO_WAV_MIME_TYPE);
             Assert.IsNotNull(fdp, "Could not create FileDataProvider");
         }
