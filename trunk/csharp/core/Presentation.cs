@@ -565,7 +565,7 @@ namespace urakawa
                 if (prop is ChannelsProperty)
                 {
                     ChannelsProperty chProp = (ChannelsProperty) prop;
-                    foreach (Channel ch in chProp.ListOfUsedChannels)
+                    foreach (Channel ch in chProp.UsedChannels)
                     {
                         res.Add(chProp.GetMedia(ch));
                     }

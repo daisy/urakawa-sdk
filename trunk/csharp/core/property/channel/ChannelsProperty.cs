@@ -161,19 +161,21 @@ namespace urakawa.property.channel
         /// Gets the list of <see cref="Channel"/>s used by this instance of <see cref="ChannelsProperty"/>
         /// </summary>
         /// <returns>The list of used <see cref="Channel"/>s</returns>
-        public List<Channel> ListOfUsedChannels
+        public IEnumerable<Channel> UsedChannels
         {
             get
             {
-                List<Channel> res = new List<Channel>();
+                //List<Channel> res = new List<Channel>();
                 foreach (Channel ch in Presentation.ChannelsManager.ListProvider.ContentsAs_YieldEnumerable)
                 {
                     if (GetMedia(ch) != null)
                     {
-                        res.Add(ch);
+                        //res.Add(ch);
+                        yield return ch;
                     }
                 }
-                return res;
+                yield break;
+                //return res;
             }
         }
 
@@ -207,7 +209,7 @@ namespace urakawa.property.channel
                                                                          "The property factory can not create a ChannelsProperty matching QName {0}:{1}",
                                                                          XukNamespaceUri, XukLocalName));
             }
-            foreach (Channel ch in ListOfUsedChannels)
+            foreach (Channel ch in UsedChannels)
             {
                 theCopy.SetMedia(ch, GetMedia(ch).Copy());
             }
@@ -239,7 +241,7 @@ namespace urakawa.property.channel
                 throw new exception.OperationNotValidException(
                     "The ExportProtected method of the base class unexpectedly did not return a ChannelsProperty");
             }
-            foreach (Channel ch in ListOfUsedChannels)
+            foreach (Channel ch in UsedChannels)
             {
                 Channel exportDestCh = null;
                 foreach (Channel dCh in destPres.ChannelsManager.ListProvider.ContentsAs_YieldEnumerable)
@@ -378,8 +380,7 @@ namespace urakawa.property.channel
             {
                 destination.WriteStartElement(XukStrings.ChannelMappings, XukNamespaceUri);
             }
-            List<Channel> channelsList = ListOfUsedChannels;
-            foreach (Channel channel in channelsList)
+            foreach (Channel channel in UsedChannels)
             {
                 destination.WriteStartElement(XukStrings.ChannelMapping, XukNamespaceUri);
                 destination.WriteAttributeString(XukStrings.Channel, channel.Uid);
@@ -416,8 +417,8 @@ namespace urakawa.property.channel
                 return false;
             }
 
-            List<Channel> chs = ListOfUsedChannels;
-            List<Channel> otherChs = otherz.ListOfUsedChannels;
+            IList<Channel> chs = new List<Channel>(UsedChannels);
+            IList<Channel> otherChs = new List<Channel>(otherz.UsedChannels);
             if (chs.Count != otherChs.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 

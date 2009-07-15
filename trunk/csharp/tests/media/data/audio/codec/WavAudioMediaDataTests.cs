@@ -1113,8 +1113,8 @@ namespace urakawa.media.data.audio.codec
         {
             WavAudioMediaData copy = mData1.Copy();
             Assert.IsTrue(mData1.ValueEquals(copy));
-            //List<DataProvider> provList = mData1.getListOfUsedDataProviders();
-            //List<DataProvider> provListCopy = copy.getListOfUsedDataProviders();
+            //List<DataProvider> provList = mData1.UsedDataProviders();
+            //List<DataProvider> provListCopy = copy.UsedDataProviders();
             //Assert.IsTrue(provList.Count == provListCopy.Count,"the copy does not have the same number of data providers");
             //for (int i = 0; i < provList.Count; i++)
             //{
@@ -1130,8 +1130,8 @@ namespace urakawa.media.data.audio.codec
             Assert.IsTrue(mData1.ValueEquals(copy), "Copy does not have the same value as the original");
             
             
-            //List<DataProvider> provList = mData1.getListOfUsedDataProviders();
-            //List<DataProvider> provListCopy = copy.getListOfUsedDataProviders();
+            //List<DataProvider> provList = mData1.UsedDataProviders();
+            //List<DataProvider> provListCopy = copy.UsedDataProviders();
             //Assert.IsTrue(provList.Count == provListCopy.Count, "the copy does not have the same number of data providers");
             //for (int i = 0; i < provList.Count; i++)
             //{
