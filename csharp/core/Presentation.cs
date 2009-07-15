@@ -335,13 +335,20 @@ namespace urakawa
             {
                 RootNode.AcceptDepthFirst(collectorVisitor);
             }
-            List<MediaData> usedMediaData = UndoRedoManager.ListOfUsedMediaData;
+            List<MediaData> usedMediaData = new List<MediaData>();
+            foreach (MediaData md in UndoRedoManager.UsedMediaData)
+            {
+                if (!usedMediaData.Contains(md))
+                {
+                    usedMediaData.Add(md);
+                }
+            }
             foreach (IManaged mm in collectorVisitor.ListOfCollectedMedia)
             {
                 if (!usedMediaData.Contains(mm.MediaData)) usedMediaData.Add(mm.MediaData);
             }
             List<DataProvider> usedDataProviders = new List<DataProvider>();
-            foreach (MediaData md in MediaDataManager.ListProvider.ContentsAs_YieldEnumerable)
+            foreach (MediaData md in MediaDataManager.ListProvider.ContentsAs_ListCopy)
             {
                 if (usedMediaData.Contains(md))
                 {
@@ -359,7 +366,7 @@ namespace urakawa
                     md.Delete();
                 }
             }
-            foreach (DataProvider dp in DataProviderManager.ListProvider.ContentsAs_YieldEnumerable)
+            foreach (DataProvider dp in DataProviderManager.ListProvider.ContentsAs_ListCopy)
             {
                 if (!usedDataProviders.Contains(dp)) dp.Delete();
             }

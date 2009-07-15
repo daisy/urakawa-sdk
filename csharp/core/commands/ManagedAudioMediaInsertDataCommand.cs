@@ -140,7 +140,7 @@ namespace urakawa.commands
         }
 
         private List<MediaData> m_ListOfUsedMediaData = new List<MediaData>();
-        public override List<MediaData> ListOfUsedMediaData
+        public override IEnumerable<MediaData> UsedMediaData
         {
             get
             {

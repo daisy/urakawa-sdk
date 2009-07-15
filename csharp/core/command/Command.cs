@@ -15,7 +15,7 @@ namespace urakawa.command
     /// execution (including exception/redo). Implementations may choose various techniques suitable in terms
     /// of performance and memory usage (storage of the transition or the full object snapshot.)
     /// </summary>
-    public abstract class Command : WithPresentation, IChangeNotifier, IUndoableAction
+    public abstract class Command : WithPresentation, IChangeNotifier, IUndoableAction, IUsingMediaData
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -154,7 +154,7 @@ namespace urakawa.command
         /// Gets a list of the <see cref="media.data.MediaData"/> used by the Command
         /// </summary>
         /// <returns></returns>
-        public virtual List<MediaData> ListOfUsedMediaData
+        public virtual IEnumerable<MediaData> UsedMediaData
         {
             get { return new List<MediaData>(); }
         }

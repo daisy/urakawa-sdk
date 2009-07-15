@@ -13,7 +13,7 @@ namespace urakawa.undo
     /// <summary>
     /// The command manager.
     /// </summary>
-    public sealed class UndoRedoManager : XukAble, IChangeNotifier
+    public sealed class UndoRedoManager : XukAble, IChangeNotifier, IUsingMediaData
     {
         public override string GetTypeNameFormatted()
         {
@@ -217,7 +217,7 @@ namespace urakawa.undo
                 List<Command> res = new List<Command>();
                 foreach (CompositeCommand trans in mActiveTransactions)
                 {
-                    res.AddRange(trans.ListOfCommands);
+                    res.AddRange(trans.ChildCommands.ContentsAs_YieldEnumerable);
                 }
                 return res;
             }
@@ -229,23 +229,25 @@ namespace urakawa.undo
         /// or if it is part of the currently active transaction
         /// </summary>
         /// <returns>The list</returns>
-        public List<MediaData> ListOfUsedMediaData
+        public IEnumerable<MediaData> UsedMediaData
         {
             get
             {
-                List<MediaData> res = new List<MediaData>();
+                //List<MediaData> res = new List<MediaData>();
                 List<Command> commands = new List<Command>();
                 commands.AddRange(ListOfUndoStackCommands);
                 commands.AddRange(ListOfRedoStackCommands);
                 commands.AddRange(ListOfCommandsInCurrentTransactions);
                 foreach (Command cmd in commands)
                 {
-                    foreach (MediaData md in cmd.ListOfUsedMediaData)
+                    foreach (MediaData md in cmd.UsedMediaData)
                     {
-                        if (!res.Contains(md)) res.Add(md);
+                        yield return md; // the duplicates don't matter.
+                        //if (!res.Contains(md)) res.Add(md);
                     }
                 }
-                return res;
+                yield break;
+                //return res;
             }
         }
 
@@ -337,7 +339,7 @@ namespace urakawa.undo
                     throw new exception.IrreversibleCommandDuringActiveUndoRedoTransactionException(
                         "Can not execute an irreversible command when a transaction is active");
                 }
-                mActiveTransactions.Peek().Append(command);
+                mActiveTransactions.Peek().ChildCommands.Add(command);
             }
             else
             {
