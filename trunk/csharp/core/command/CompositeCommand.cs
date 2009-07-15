@@ -5,8 +5,6 @@ using urakawa.media.data;
 using urakawa.progress;
 using urakawa.xuk;
 using CommandAddedEventArgs = urakawa.events.command.CommandAddedEventArgs;
-using ExecutedEventArgs = urakawa.events.command.ExecutedEventArgs;
-using UnExecutedEventArgs = urakawa.events.command.UnExecutedEventArgs;
 
 namespace urakawa.command
 {
@@ -16,14 +14,12 @@ namespace urakawa.command
     /// </summary>
     public class CompositeCommand : Command
     {
-        public Command GetItem(int index)
+        public ObjectListProvider<Command> ChildCommands
         {
-            if (0 <= index && index < Count)
+            get
             {
-                return mCommands[index];
+                return mCommands;
             }
-            throw new exception.MethodParameterIsOutOfBoundsException(
-                "There is no item in the CompositeCommand at the given index");
         }
 
         public override bool ValueEquals(WithPresentation other)
@@ -39,13 +35,14 @@ namespace urakawa.command
                 return false;
             }
 
-            if (otherz.Count != Count)
+            if (otherz.ChildCommands.Count != mCommands.Count)
             {
                 return false;
             }
-            for (int i = 0; i < Count; i++)
+
+            for (int i = 0; i < mCommands.Count; i++)
             {
-                if (!GetItem(i).ValueEquals(otherz.GetItem(i)))
+                if (!mCommands.Get(i).ValueEquals(otherz.ChildCommands.Get(i)))
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                     return false;
@@ -96,7 +93,7 @@ namespace urakawa.command
 
         #endregion
 
-        private List<Command> mCommands;
+        private ObjectListProvider<Command> mCommands;
 
         /// <summary>
         /// Format string for the short description of the composite command. 
@@ -119,7 +116,7 @@ namespace urakawa.command
         /// </summary>
         public CompositeCommand()
         {
-            mCommands = new List<Command>();
+            mCommands = new ObjectListProvider<Command>();
         }
 
         /// <summary>
@@ -139,7 +136,7 @@ namespace urakawa.command
                 {
                     for (int i = 0; i < mCommands.Count; i++)
                     {
-                        cmds += "//" + mCommands[0].LongDescription;
+                        cmds += "//" + mCommands.Get(0).LongDescription;
                     }
                 }
                 return String.Format(LongDescriptionFormatString, mCommands.Count, cmds);
@@ -163,62 +160,11 @@ namespace urakawa.command
                 {
                     for (int i = 0; i < mCommands.Count; i++)
                     {
-                        cmds += "//" + mCommands[0].ShortDescription;
+                        cmds += "//" + mCommands.Get(0).ShortDescription;
                     }
                 }
                 return String.Format(ShortDescriptionFormatString, mCommands.Count, cmds);
             }
-        }
-
-        /// <summary>
-        /// Insert the given command as a child of this node, at the given index. Does NOT replace the existing child,
-        /// but increments (+1) the indices of the all children which index >= insertIndex. If insertIndex == children.size
-        /// (no following children), then the given node is appended at the end of the existing children list.
-        /// </summary>
-        /// <param name="command">Cannot be null.</param>
-        /// <param name="index">Must be within bounds [0 .. children.size]</param>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">Thrown when the index is out of bounds.</exception>
-        /// <exception cref="exception.MethodParameterIsNullException">Thrown when a null command is given.</exception>
-        public void Insert(Command command, int index)
-        {
-            if (command == null) throw new exception.MethodParameterIsNullException("Cannot insert a null command.");
-            if (index < 0 || index > mCommands.Count)
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    String.Format("Cannot insert at index {0}; expected index in range [0 .. {1}]", index,
-                                  mCommands.Count));
-            }
-            mCommands.Insert(index, command);
-            NotifyCommandAdded(command, index);
-        }
-
-        /// <summary>
-        /// Appends the given command as a child of this node, at the given index. Does NOT replace the existing child,
-        /// but increments (+1) the indices of the all children which index >= insertIndex. If insertIndex == children.size
-        /// (no following children), then the given node is appended at the end of the existing children list.
-        /// </summary>
-        /// <param name="command">Cannot be null.</param>
-        public void Append(Command command)
-        {
-            Insert(command, Count);
-        }
-
-        /// <summary>
-        /// Gets a list of the <see cref="Command"/>s making up the composite command
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<Command> ListOfCommands
-        {
-            get { return new List<Command>(mCommands); }
-        }
-
-        /// <summary>
-        /// Gets the number of <see cref="Command"/>s in <c>this</c>
-        /// </summary>
-        /// <returns></returns>
-        public int Count
-        {
-            get { return mCommands.Count; }
         }
 
         #region Command Members
@@ -235,7 +181,7 @@ namespace urakawa.command
             if (mCommands.Count == 0) throw new exception.CannotUndoException("Composite command is empty.");
             try
             {
-                for (int i = mCommands.Count - 1; i >= 0; --i) mCommands[i].UnExecute();
+                for (int i = mCommands.Count - 1; i >= 0; --i) mCommands.Get(i).UnExecute();
             }
             catch (exception.CannotUndoException e)
             {
@@ -258,7 +204,7 @@ namespace urakawa.command
             if (mCommands.Count == 0) throw new exception.CannotRedoException("Composite command is empty.");
             try
             {
-                foreach (Command command in mCommands) command.Execute();
+                foreach (Command command in mCommands.ContentsAs_YieldEnumerable) command.Execute();
             }
             catch (exception.CannotRedoException e)
             {
@@ -276,7 +222,10 @@ namespace urakawa.command
         /// </summary>
         public override bool CanUnExecute
         {
-            get { return mCommands.Count > 0 && mCommands.TrueForAll(delegate(Command c) { return c.CanUnExecute; }); }
+            get
+            {
+                return mCommands.Count > 0 && mCommands.Contents.TrueForAll(delegate(Command c) { return c.CanUnExecute; });
+            }
         }
 
         /// <summary>
@@ -285,23 +234,28 @@ namespace urakawa.command
         /// <returns></returns>
         public override bool CanExecute
         {
-            get { return mCommands.Count > 0 && mCommands.TrueForAll(delegate(Command c) { return c.CanExecute; }); }
+            get { return mCommands.Count > 0 && mCommands.Contents.TrueForAll(delegate(Command c) { return c.CanExecute; }); }
         }
 
         /// <summary>
         /// Gets a list of all <see cref="urakawa.media.data.MediaData"/> used by sub-commands of the composite command
         /// </summary>
         /// <returns></returns>
-        public override List<MediaData> ListOfUsedMediaData
+        public override IEnumerable<MediaData> UsedMediaData
         {
             get
             {
-                List<media.data.MediaData> res = new List<urakawa.media.data.MediaData>();
-                foreach (Command cmd in mCommands)
+                //List<MediaData> res = new List<MediaData>();
+                foreach (Command cmd in mCommands.ContentsAs_YieldEnumerable)
                 {
-                    res.AddRange(cmd.ListOfUsedMediaData);
+                    foreach (MediaData md in cmd.UsedMediaData)
+                    {
+                        yield return md;
+                    }
+                    //res.AddRange(cmd.UsedMediaData);
                 }
-                return res;
+                //return res;
+                yield break;
             }
         }
 
@@ -356,7 +310,7 @@ namespace urakawa.command
                                                                  source.LocalName, source.NamespaceURI));
                         }
                         cmd.XukIn(source, handler);
-                        Append(cmd);
+                        mCommands.Add(cmd);
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {
@@ -380,7 +334,7 @@ namespace urakawa.command
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             destination.WriteStartElement(XukStrings.Commands, XukNamespaceUri);
-            foreach (Command cmd in ListOfCommands)
+            foreach (Command cmd in mCommands.ContentsAs_YieldEnumerable)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }
