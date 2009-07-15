@@ -693,7 +693,7 @@ namespace urakawa.media.data
 
         #region IValueEquatable<IDataProviderManager> Members
 
-        public override bool ValueEquals(XukAbleManager<DataProvider> other)
+        public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
             {

@@ -276,16 +276,17 @@ namespace urakawa.metadata
                 return false;
             }
 
-            if (other==null) return false;
             if (Name != otherz.Name) return false;
             List<string> names = ListOfOptionalAttributeNames;
-            List<string> otherNames = ListOfOptionalAttributeNames;
+            List<string> otherNames = otherz.ListOfOptionalAttributeNames;
             if (names.Count != otherNames.Count) return false;
             foreach (string name in names)
             {
                 if (!otherNames.Contains(name)) return false;
                 if (GetOptionalAttributeValue(name) != otherz.GetOptionalAttributeValue(name)) return false;
             }
+
+
             return true;
         }
 

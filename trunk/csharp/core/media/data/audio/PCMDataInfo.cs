@@ -11,7 +11,7 @@ namespace urakawa.media.data.audio
     /// <summary>
     /// Represents information describing raw PCM data
     /// </summary>
-    public class PCMDataInfo : PCMFormatInfo, IValueEquatable<PCMDataInfo>
+    public class PCMDataInfo : PCMFormatInfo
     {
         /// <summary>
         /// Default constructor
@@ -397,14 +397,19 @@ namespace urakawa.media.data.audio
         /// </summary>
         /// <param name="other">The given other PCMDataInfo with which to compare</param>
         /// <returns>A <see cref="bool"/> indicating value equality</returns>
-        public bool ValueEquals(PCMDataInfo other)
+        public override bool ValueEquals(PCMFormatInfo other)
         {
             if (!base.ValueEquals(other))
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (DataLength != other.DataLength)
+            PCMDataInfo otherz = other as PCMDataInfo;
+            if (otherz == null)
+            {
+                return false;
+            }
+            if (DataLength != otherz.DataLength)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
