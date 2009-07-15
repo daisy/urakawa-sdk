@@ -341,7 +341,7 @@ namespace urakawa
                 if (!usedMediaData.Contains(mm.MediaData)) usedMediaData.Add(mm.MediaData);
             }
             List<DataProvider> usedDataProviders = new List<DataProvider>();
-            foreach (MediaData md in MediaDataManager.ListOfManagedObjects)
+            foreach (MediaData md in MediaDataManager.ListProvider.ContentsAs_YieldEnumerable)
             {
                 if (usedMediaData.Contains(md))
                 {
@@ -359,7 +359,7 @@ namespace urakawa
                     md.Delete();
                 }
             }
-            foreach (DataProvider dp in DataProviderManager.ListOfManagedObjects)
+            foreach (DataProvider dp in DataProviderManager.ListProvider.ContentsAs_YieldEnumerable)
             {
                 if (!usedDataProviders.Contains(dp)) dp.Delete();
             }

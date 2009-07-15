@@ -105,7 +105,7 @@ namespace urakawa.property.channel
                 throw new exception.MethodParameterIsNullException(
                     "channel parameter is null");
             }
-            if (!Presentation.ChannelsManager.ListOfManagedObjects.Contains(channel))
+            if (!Presentation.ChannelsManager.ListProvider.Contains(channel))
             {
                 throw new exception.ChannelDoesNotExistException(
                     "The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
@@ -138,7 +138,7 @@ namespace urakawa.property.channel
                 throw new exception.MethodParameterIsNullException(
                     "channel parameter is null");
             }
-            if (!Presentation.ChannelsManager.ListOfManagedObjects.Contains(channel))
+            if (!Presentation.ChannelsManager.ListProvider.Contains(channel))
             {
                 throw new exception.ChannelDoesNotExistException(
                     "The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
@@ -166,7 +166,7 @@ namespace urakawa.property.channel
             get
             {
                 List<Channel> res = new List<Channel>();
-                foreach (Channel ch in Presentation.ChannelsManager.ListOfManagedObjects)
+                foreach (Channel ch in Presentation.ChannelsManager.ListProvider.ContentsAs_YieldEnumerable)
                 {
                     if (GetMedia(ch) != null)
                     {
@@ -242,7 +242,7 @@ namespace urakawa.property.channel
             foreach (Channel ch in ListOfUsedChannels)
             {
                 Channel exportDestCh = null;
-                foreach (Channel dCh in destPres.ChannelsManager.ListOfManagedObjects)
+                foreach (Channel dCh in destPres.ChannelsManager.ListProvider.ContentsAs_YieldEnumerable)
                 {
                     if (ch.IsEquivalentTo(dCh))
                     {

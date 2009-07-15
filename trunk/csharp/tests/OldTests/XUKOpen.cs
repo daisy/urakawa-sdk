@@ -53,7 +53,7 @@ namespace urakawa.oldTests
             Project proj;
             OpenXUK(out proj, mDefaultFile);
             ChannelsManager chMgr = proj.GetPresentation(0).ChannelsManager;
-            Channel ch = (Channel) chMgr.ListOfManagedObjects[0];
+            Channel ch = (Channel) chMgr.ListProvider.Get(0);
             chMgr.RemoveManagedObject(ch);
             chMgr.AddManagedObject(ch);
             urakawa.examples.CollectMediaFromChannelTreeNodeVisitor collVis

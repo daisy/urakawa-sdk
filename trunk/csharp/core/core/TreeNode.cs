@@ -121,8 +121,8 @@ namespace urakawa.core
             if (chProp != null)
             {
                 T channel = null;
-                List<Channel> listCh = Presentation.ChannelsManager.ListOfManagedObjects;
-                foreach (Channel ch in listCh)
+
+                foreach (Channel ch in Presentation.ChannelsManager.ListProvider.ContentsAs_YieldEnumerable)
                 {
                     if (ch is T)
                     {

@@ -340,7 +340,7 @@ namespace urakawa.media.data
             get
             {
                 List<FileDataProvider> res = new List<FileDataProvider>();
-                foreach (DataProvider prov in ListOfManagedObjects)
+                foreach (DataProvider prov in ListProvider.ContentsAs_YieldEnumerable)
                 {
                     if (prov is FileDataProvider)
                     {
@@ -405,14 +405,14 @@ namespace urakawa.media.data
         public void RemoveUnusedDataProviders(bool delete)
         {
             List<DataProvider> usedDataProviders = new List<DataProvider>();
-            foreach (MediaData md in Presentation.MediaDataManager.ListOfManagedObjects)
+            foreach (MediaData md in Presentation.MediaDataManager.ListProvider.ContentsAs_YieldEnumerable)
             {
                 foreach (DataProvider prov in md.ListOfUsedDataProviders)
                 {
                     if (!usedDataProviders.Contains(prov)) usedDataProviders.Add(prov);
                 }
             }
-            foreach (DataProvider prov in ListOfManagedObjects)
+            foreach (DataProvider prov in ListProvider.ContentsAs_YieldEnumerable)
             {
                 if (!usedDataProviders.Contains(prov))
                 {
@@ -430,7 +430,7 @@ namespace urakawa.media.data
         /// </summary>
         protected override void Clear()
         {
-            ClearManagedObjects();
+            ListProvider.Clear();
 
             mDataFileDirectory = null;
             mXukedInFilDataProviderPaths.Clear();
@@ -667,7 +667,7 @@ namespace urakawa.media.data
             {
                 destination.WriteStartElement(XukStrings.DataProviders, XukNamespaceUri);
             }
-            foreach (DataProvider prov in ListOfManagedObjects)
+            foreach (DataProvider prov in ListProvider.ContentsAs_YieldEnumerable)
             {
                 if (false && Presentation.Project.IsPrettyFormat())
                 {
