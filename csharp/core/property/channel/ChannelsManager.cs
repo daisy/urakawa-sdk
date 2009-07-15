@@ -40,8 +40,7 @@ namespace urakawa.property.channel
 
         public bool HasChannel<T>() where T : Channel, new()
         {
-            List<Channel> listCh = Presentation.ChannelsManager.ListOfManagedObjects;
-            foreach (Channel ch in listCh)
+            foreach (Channel ch in Presentation.ChannelsManager.ListProvider.ContentsAs_YieldEnumerable)
             {
                 if (ch is T)
                 {
@@ -67,8 +66,8 @@ namespace urakawa.property.channel
         public T GetOrCreateChannel<T>() where T : Channel, new()
         {
             T channel = null;
-            List<Channel> listCh = Presentation.ChannelsManager.ListOfManagedObjects;
-            foreach (Channel ch in listCh)
+
+            foreach (Channel ch in Presentation.ChannelsManager.ListProvider.ContentsAs_YieldEnumerable)
             {
                 if (ch is T)
                 {
@@ -105,7 +104,7 @@ namespace urakawa.property.channel
         public List<Channel> GetChannelsByName(string channelName)
         {
             List<Channel> res = new List<Channel>();
-            foreach (Channel ch in ListOfManagedObjects)
+            foreach (Channel ch in ListProvider.ContentsAs_YieldEnumerable)
             {
                 if (ch.Name == channelName) res.Add(ch);
             }
@@ -121,7 +120,7 @@ namespace urakawa.property.channel
         /// </summary>
         protected override void Clear()
         {
-            ClearManagedObjects();
+            ListProvider.Clear();
             base.Clear();
         }
 
@@ -289,14 +288,13 @@ namespace urakawa.property.channel
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            List<Channel> channels = ListOfManagedObjects;
-            if (channels.Count > 0)
+            if (ListProvider.Count > 0)
             {
                 if (Presentation.Project.IsPrettyFormat())
                 {
                     destination.WriteStartElement(XukStrings.Channels);
                 }
-                foreach (Channel ch in channels)
+                foreach (Channel ch in ListProvider.ContentsAs_YieldEnumerable)
                 {
                     if (false && Presentation.Project.IsPrettyFormat())
                     {

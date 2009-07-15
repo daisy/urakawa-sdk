@@ -55,7 +55,7 @@ namespace urakawa.oldTests
             foreach (FileInfo file in dataDI.GetFiles())
             {
                 bool found = false;
-                foreach (FileDataProvider fileDataProv in dataProvMngr.ListOfManagedObjects)
+                foreach (FileDataProvider fileDataProv in dataProvMngr.ListProvider.ContentsAs_YieldEnumerable)
                 {
                     if (file.FullName.ToLower() == fileDataProv.DataFileFullPath.ToLower())
                     {

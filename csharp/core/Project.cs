@@ -382,9 +382,9 @@ namespace urakawa
             //
             //TreeNodeFactory.Create(); DONE ALREADY (see above)
 
-            Debug.Assert(pres.DataProviderManager.NumberOfManagedObjects == 0);
-            Debug.Assert(pres.ChannelsManager.NumberOfManagedObjects == 0);
-            Debug.Assert(pres.MediaDataManager.NumberOfManagedObjects == 0);
+            Debug.Assert(pres.DataProviderManager.ListProvider.Count == 0);
+            Debug.Assert(pres.ChannelsManager.ListProvider.Count == 0);
+            Debug.Assert(pres.MediaDataManager.ListProvider.Count == 0);
         }
         /// <summary>
         /// Gets the number of <see cref="Presentation"/>s in the <see cref="Project"/>
