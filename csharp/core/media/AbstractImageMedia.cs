@@ -8,7 +8,71 @@ namespace urakawa.media
     /// </summary>
     public abstract class AbstractImageMedia : Media, ISized
     {
+        private ResizeMode m_ResizeMode;
+        public ResizeMode ResizeMode
+        {
+            get { return m_ResizeMode; }
+            set { m_ResizeMode = value; }
+        }
 
+        /// <summary>
+        /// This always returns <c>false</c>, because
+        /// image media is never considered continuous
+        /// </summary>
+        /// <returns><c>false</c></returns>
+        public override bool IsContinuous
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        /// This always returns <c>true</c>, because
+        /// image media is always considered discrete
+        /// </summary>
+        /// <returns><c>true</c></returns>
+        public override bool IsDiscrete
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// This always returns <c>false</c>, because
+        /// a single media object is never considered to be a sequence
+        /// </summary>
+        /// <returns><c>false</c></returns>
+        public override bool IsSequence
+        {
+            get { return false; }
+        }
+
+        public override bool ValueEquals(WithPresentation other)
+        {
+            if (!base.ValueEquals(other))
+            {
+                return false;
+            }
+
+            AbstractImageMedia otherz = other as AbstractImageMedia;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            if (ResizeMode != otherz.ResizeMode)
+            {
+                return false;
+            }
+            if (Height != otherz.Height)
+            {
+                return false;
+            }
+            if (Width != otherz.Width)
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// Default constructor - for system use only, 

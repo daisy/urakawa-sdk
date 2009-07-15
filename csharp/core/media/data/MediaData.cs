@@ -12,7 +12,7 @@ namespace urakawa.media.data
     /// Abstract implementation of <see cref="MediaData"/> that provides the common functionality 
     /// needed by any implementation of <see cref="MediaData"/>
     /// </summary>
-    public abstract class MediaData : WithPresentation, IValueEquatable<MediaData>, IChangeNotifier
+    public abstract class MediaData : WithPresentation, IChangeNotifier
     {
         #region Event related members
 
@@ -108,7 +108,7 @@ namespace urakawa.media.data
         /// </summary>
         public virtual void Delete()
         {
-            Presentation.MediaDataManager.RemoveMediaData(this);
+            Presentation.MediaDataManager.RemoveManagedObject(this);
         }
 
         /// <summary>
@@ -147,24 +147,21 @@ namespace urakawa.media.data
 
         #region IValueEquatable<AudioMediaData> Members
 
-        /// <summary>
-        /// Determines of <c>this</c> has the same value as a given other instance
-        /// </summary>
-        /// <param name="other">The other instance</param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        public virtual bool ValueEquals(MediaData other)
+
+        public override bool ValueEquals(WithPresentation other)
         {
-            if (other == null)
+            if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (GetType() != other.GetType())
+
+            MediaData otherz = other as MediaData;
+            if (otherz == null)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (Name != other.Name)
+
+            if (Name != otherz.Name)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;

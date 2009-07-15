@@ -80,8 +80,8 @@ namespace urakawa.media.data
         {
             DataProviderManager mngr = mPresentation.DataProviderManager as DataProviderManager;
             string path = mngr.DataFileDirectoryFullPath;
-            Assert.Greater(mngr.ListOfDataProviders.Count, 0, "The manager does not manage any DataProviders");
-            foreach (DataProvider prov in mngr.ListOfDataProviders)
+            Assert.Greater(mngr.ListOfManagedObjects.Count, 0, "The manager does not manage any DataProviders");
+            foreach (DataProvider prov in mngr.ListOfManagedObjects)
             {
                 Stream outStm = prov.GetOutputStream();
                 try
@@ -95,7 +95,7 @@ namespace urakawa.media.data
                 prov.Delete();
             }
             Assert.AreEqual(
-                0, mngr.ListOfDataProviders.Count,
+                0, mngr.ListOfManagedObjects.Count,
                 "The manager still contains DataProviders after they are all deleted");
             Assert.IsTrue(
                 Directory.Exists(path),

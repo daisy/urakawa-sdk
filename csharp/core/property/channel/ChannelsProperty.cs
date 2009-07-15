@@ -4,7 +4,6 @@ using System.Xml;
 using urakawa.media;
 using urakawa.core;
 using urakawa.progress;
-using urakawa.property;
 using urakawa.xuk;
 
 namespace urakawa.property.channel
@@ -105,7 +104,7 @@ namespace urakawa.property.channel
                 throw new exception.MethodParameterIsNullException(
                     "channel parameter is null");
             }
-            if (!Presentation.ChannelsManager.ListOfChannels.Contains(channel))
+            if (!Presentation.ChannelsManager.ListOfManagedObjects.Contains(channel))
             {
                 throw new exception.ChannelDoesNotExistException(
                     "The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
@@ -138,7 +137,7 @@ namespace urakawa.property.channel
                 throw new exception.MethodParameterIsNullException(
                     "channel parameter is null");
             }
-            if (!Presentation.ChannelsManager.ListOfChannels.Contains(channel))
+            if (!Presentation.ChannelsManager.ListOfManagedObjects.Contains(channel))
             {
                 throw new exception.ChannelDoesNotExistException(
                     "The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
@@ -166,7 +165,7 @@ namespace urakawa.property.channel
             get
             {
                 List<Channel> res = new List<Channel>();
-                foreach (Channel ch in Presentation.ChannelsManager.ListOfChannels)
+                foreach (Channel ch in Presentation.ChannelsManager.ListOfManagedObjects)
                 {
                     if (GetMedia(ch) != null)
                     {
@@ -242,7 +241,7 @@ namespace urakawa.property.channel
             foreach (Channel ch in ListOfUsedChannels)
             {
                 Channel exportDestCh = null;
-                foreach (Channel dCh in destPres.ChannelsManager.ListOfChannels)
+                foreach (Channel dCh in destPres.ChannelsManager.ListOfManagedObjects)
                 {
                     if (ch.IsEquivalentTo(dCh))
                     {
@@ -338,7 +337,7 @@ namespace urakawa.property.channel
                     Media newMedia = Presentation.MediaFactory.Create(source.LocalName, source.NamespaceURI);
                     if (newMedia != null)
                     {
-                        Channel channel = Presentation.ChannelsManager.GetChannel(channelRef);
+                        Channel channel = Presentation.ChannelsManager.GetManagedObject(channelRef);
                         if (channel == null)
                         {
                             throw new exception.XukException(
@@ -402,22 +401,20 @@ namespace urakawa.property.channel
         #endregion
 
         #region IValueEquatable<Property> Members
-
-        /// <summary>
-        /// Conpares <c>this</c> with a given other <see cref="Property"/> for value equality
-        /// </summary>
-        /// <param name="other">The other <see cref="Property"/></param>
-        /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(Property other)
+        public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            ChannelsProperty otherChProp = (ChannelsProperty) other;
+
+            ChannelsProperty otherz = other as ChannelsProperty;
+            if (otherz == null)
+            {
+                return false;
+            }
             List<Channel> chs = ListOfUsedChannels;
-            List<Channel> otherChs = otherChProp.ListOfUsedChannels;
+            List<Channel> otherChs = otherz.ListOfUsedChannels;
             if (chs.Count != otherChs.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
@@ -439,12 +436,13 @@ namespace urakawa.property.channel
                     //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                     return false;
                 }
-                if (!GetMedia(ch).ValueEquals(otherChProp.GetMedia(otherCh)))
+                if (!GetMedia(ch).ValueEquals(otherz.GetMedia(otherCh)))
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !");
                     return false;
                 }
             }
+
             return true;
         }
 

@@ -385,26 +385,19 @@ namespace urakawa.media.data
         #endregion
 
         #region IValueEquatable<DataProvider> Members
-
-        /// <summary>
-        /// Determines if the 
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public override bool ValueEquals(DataProvider other)
+        public override bool ValueEquals(WithPresentation other)
         {
-            if (other == null)
+            if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (GetType() != other.GetType())
+
+            FileDataProvider otherz = other as FileDataProvider;
+            if (otherz == null)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            FileDataProvider o = (FileDataProvider) other;
-            if (o.MimeType != MimeType)
+            if (otherz.MimeType != MimeType)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
@@ -412,7 +405,7 @@ namespace urakawa.media.data
             if (Presentation.DataProviderManager.CompareByteStreamsDuringValueEqual
                 && other.Presentation.DataProviderManager.CompareByteStreamsDuringValueEqual)
             {
-                if (!DataProviderManager.CompareDataProviderContent(this, o))
+                if (!DataProviderManager.CompareDataProviderContent(this, otherz))
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                     return false;
@@ -420,6 +413,7 @@ namespace urakawa.media.data
             }
             return true;
         }
+
 
         #endregion
     }

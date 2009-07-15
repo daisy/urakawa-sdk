@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
-using urakawa.media.data;
 using urakawa.media.timing;
 using urakawa.media.data.utilities;
 using urakawa.progress;
@@ -876,7 +875,7 @@ namespace urakawa.media.data.audio.codec
             {
                 throw new exception.XukException("dataProvider attribute is missing from WavClip element");
             }
-            DataProvider prov = Presentation.DataProviderManager.GetDataProvider(dataProviderUid);
+            DataProvider prov = Presentation.DataProviderManager.GetManagedObject(dataProviderUid);
 
             try
             {

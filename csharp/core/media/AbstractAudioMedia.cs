@@ -1,4 +1,3 @@
-using System;
 using urakawa.media.timing;
 
 namespace urakawa.media
@@ -8,6 +7,56 @@ namespace urakawa.media
     /// </summary>
     public abstract class AbstractAudioMedia : Media, IContinuous
     {
+
+        /// <summary>
+        /// This always returns true, because
+        /// audio media is always considered continuous
+        /// </summary>
+        /// <returns></returns>
+        public override bool IsContinuous
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// This always returns false, because
+        /// audio media is never considered discrete
+        /// </summary>
+        /// <returns></returns>
+        public override bool IsDiscrete
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        /// This always returns false, because
+        /// a single media object is never considered to be a sequence
+        /// </summary>
+        /// <returns></returns>
+        public override bool IsSequence
+        {
+            get { return false; }
+        }
+        public override bool ValueEquals(WithPresentation other)
+        {
+            if (!base.ValueEquals(other))
+            {
+                return false;
+            }
+
+            AbstractAudioMedia otherz = other as AbstractAudioMedia;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            if (!Duration.IsEqualTo(otherz.Duration))
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         #region Implementation of IContinuous
 

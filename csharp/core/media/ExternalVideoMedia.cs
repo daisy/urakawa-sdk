@@ -18,16 +18,12 @@ namespace urakawa.media
             return XukStrings.ExternalVideoMedia;
         }
         private string mSrc;
-        private int mWidth;
-        private int mHeight;
         private Time mClipBegin;
         private Time mClipEnd;
 
         private void Reset()
         {
             mSrc = DEFAULT_SRC;
-            mHeight = 0;
-            mWidth = 0;
             mClipBegin = Time.Zero;
             mClipEnd = Time.MaxValue;
         }
@@ -43,36 +39,6 @@ namespace urakawa.media
         }
 
         #region Media Members
-
-        /// <summary>
-        /// This always returns true, because
-        /// video media is always considered continuous
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsContinuous
-        {
-            get { return true; }
-        }
-
-        /// <summary>
-        /// This always returns false, because
-        /// video media is never considered discrete
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsDiscrete
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// This always returns false, because
-        /// a single media object is never considered to be a sequence
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsSequence
-        {
-            get { return false; }
-        }
 
         /// <summary>
         /// Copy function which returns an <see cref="ExternalVideoMedia"/> object
@@ -144,59 +110,6 @@ namespace urakawa.media
         #endregion
 
         #region ISized Members
-
-        /// <summary>
-        /// Return the image width
-        /// </summary>
-        /// <returns>The width</returns>
-        public override int Width
-        {
-            get { return mWidth; }
-            set { SetSize(Height, value); }
-        }
-
-        /// <summary>
-        /// Return the image height
-        /// </summary>
-        /// <returns>The height</returns>
-        public override int Height
-        {
-            get { return mHeight; }
-            set { SetSize(value, Width); }
-        }
-
-
-        /// <summary>
-        /// Sets the image size
-        /// </summary>
-        /// <param name="height">The new height</param>
-        /// <param name="width">The new width</param>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when the new width or height is negative
-        /// </exception>
-        public override void SetSize(int height, int width)
-        {
-
-            if (width < 0)
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    "The width of an image can not be negative");
-            }
-            if (height < 0)
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    "The height of an image can not be negative");
-            }
-            int prevWidth = mWidth;
-            mWidth = width;
-            int prevHeight = mHeight;
-            mHeight = height;
-            if (mWidth != prevWidth || mHeight != prevHeight)
-            {
-                NotifySizeChanged(mHeight, mWidth, prevHeight, prevWidth);
-            }
-        }
-
 
 
         #endregion
@@ -545,44 +458,33 @@ namespace urakawa.media
         
         #region IValueEquatable<Media> Members
 
-        /// <summary>
-        /// Conpares <c>this</c> with a given other <see cref="Media"/> for equality
-        /// </summary>
-        /// <param name="other">The other <see cref="Media"/></param>
-        /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(Media other)
+        public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            ExternalVideoMedia otherVideo = (ExternalVideoMedia) other;
-            if (Src != otherVideo.Src)
+
+            ExternalVideoMedia otherz = other as ExternalVideoMedia;
+            if (otherz == null)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (!ClipBegin.IsEqualTo(otherVideo.ClipBegin))
+
+            if (Src != otherz.Src)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (!ClipEnd.IsEqualTo(otherVideo.ClipEnd))
+
+            if (!ClipBegin.IsEqualTo(otherz.ClipBegin))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (Width != otherVideo.Width)
+            if (!ClipEnd.IsEqualTo(otherz.ClipEnd))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (Height != otherVideo.Height)
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !");
-                return false;
-            }
+
             return true;
         }
 

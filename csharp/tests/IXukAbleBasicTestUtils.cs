@@ -12,7 +12,7 @@ namespace urakawa
         public delegate T XukQNameCreatorDelegate<T>(string ln, string ns);
 
         public static void XukInOut_RoundTrip<T>(T o, XukQNameCreatorDelegate<T> creatorDelegate, Presentation pres)
-            where T : class, IValueEquatable<T>, xuk.IXukAble
+            where T : WithPresentation
         {
             StringBuilder sb = new StringBuilder();
             XmlWriter wr = XmlWriter.Create(sb);

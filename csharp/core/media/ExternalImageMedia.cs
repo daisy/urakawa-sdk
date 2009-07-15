@@ -50,36 +50,6 @@ namespace urakawa.media
         #region Media Members
 
         /// <summary>
-        /// This always returns <c>false</c>, because
-        /// image media is never considered continuous
-        /// </summary>
-        /// <returns><c>false</c></returns>
-        public override bool IsContinuous
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// This always returns <c>true</c>, because
-        /// image media is always considered discrete
-        /// </summary>
-        /// <returns><c>true</c></returns>
-        public override bool IsDiscrete
-        {
-            get { return true; }
-        }
-
-        /// <summary>
-        /// This always returns <c>false</c>, because
-        /// a single media object is never considered to be a sequence
-        /// </summary>
-        /// <returns><c>false</c></returns>
-        public override bool IsSequence
-        {
-            get { return false; }
-        }
-
-        /// <summary>
         /// Creates a copy of the <c>this</c>
         /// </summary>
         /// <returns>The copy</returns>
@@ -351,37 +321,26 @@ namespace urakawa.media
 
         #region IValueEquatable<Media> Members
 
-        /// <summary>
-        /// Conpares <c>this</c> with a given other <see cref="Media"/> for equality
-        /// </summary>
-        /// <param name="other">The other <see cref="Media"/></param>
-        /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(Media other)
+        public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            ExternalImageMedia otherImage = (ExternalImageMedia)other;
-            if (Src != otherImage.Src)
+
+            ExternalImageMedia otherz = other as ExternalImageMedia;
+            if (otherz == null)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (Height != otherImage.Height)
+
+            if (Src != otherz.Src)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (Width != otherImage.Width)
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
+
             return true;
         }
-
         #endregion
     }
 }

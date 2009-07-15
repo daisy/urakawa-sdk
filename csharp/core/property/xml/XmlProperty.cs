@@ -491,32 +491,30 @@ namespace urakawa.property.xml
         #endregion
 
         #region IValueEquatable<Property> Members
-
-        /// <summary>
-        /// Compares <c>this</c> with another <see cref="Property"/> for equality.
-        /// </summary>
-        /// <param name="other">The other <see cref="Property"/></param>
-        /// <returns><c>true</c> if the <see cref="Property"/>s are equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(Property other)
+        public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            XmlProperty xmlProp = (XmlProperty) other;
-            if (LocalName != xmlProp.LocalName)
+
+            XmlProperty otherz = other as XmlProperty;
+            if (otherz == null)
+            {
+                return false;
+            }
+            if (LocalName != otherz.LocalName)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (NamespaceUri != xmlProp.NamespaceUri)
+            if (NamespaceUri != otherz.NamespaceUri)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
             List<XmlAttribute> thisAttrs = ListOfAttributes;
-            List<XmlAttribute> otherAttrs = xmlProp.ListOfAttributes;
+            List<XmlAttribute> otherAttrs = otherz.ListOfAttributes;
             if (thisAttrs.Count != otherAttrs.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
@@ -524,7 +522,7 @@ namespace urakawa.property.xml
             }
             foreach (XmlAttribute thisAttr in thisAttrs)
             {
-                XmlAttribute otherAttr = xmlProp.GetAttribute(thisAttr.LocalName, thisAttr.NamespaceUri);
+                XmlAttribute otherAttr = otherz.GetAttribute(thisAttr.LocalName, thisAttr.NamespaceUri);
                 if (otherAttr == null)
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !"); 

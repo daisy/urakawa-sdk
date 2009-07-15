@@ -107,6 +107,7 @@
     <Compile Include="events\progress\FinishedEventArgs.cs" />
     <Compile Include="events\progress\ProgressEventArgs.cs" />
     <Compile Include="exception\CannotExecuteException.cs" />
+    <Compile Include="exception\CannotManageObjectException.cs" />
     <Compile Include="exception\CannotReadFromExternalFileException.cs" />
     <Compile Include="exception\CannotRedoException.cs" />
     <Compile Include="exception\CannotUndoException.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="exception\NodeIsDescendantException.cs" />
     <Compile Include="exception\NodeIsSelfException.cs" />
     <Compile Include="exception\NodeNotDetachedException.cs" />
+    <Compile Include="exception\ObjectIsAlreadyManagedException.cs" />
     <Compile Include="exception\ProgressCancelledException.cs" />
     <Compile Include="exception\OperationNotValidException.cs" />
     <Compile Include="exception\OutputStreamOpenException.cs" />
@@ -311,6 +313,7 @@
     <Compile Include="command\Command.cs" />
     <Compile Include="undo\UndoRedoManager.cs" />
     <Compile Include="WithPresentation.cs" />
+    <Compile Include="XukAbleManager.cs" />
     <Compile Include="xuk\OpenXukAction.cs" />
     <Compile Include="xuk\QualifiedName.cs" />
     <Compile Include="xuk\SaveXukAction.cs" />

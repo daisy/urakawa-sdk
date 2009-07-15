@@ -103,16 +103,21 @@ namespace urakawa.examples
         #endregion
 
         #region IValueEquatable<Property> Members
-
-        /// <summary>
-        /// Comapres <c>this</c> with a given other <see cref="Property"/> for equality
-        /// </summary>
-        /// <param name="other">The other <see cref="Property"/></param>
-        /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(Property other)
+        public override bool ValueEquals(WithPresentation other)
         {
-            if (!base.ValueEquals(other)) return false;
-            if (CustomData != ((ExampleCustomProperty) other).CustomData) return false;
+            if (!base.ValueEquals(other))
+            {
+                return false;
+            }
+
+            ExampleCustomProperty otherz = other as ExampleCustomProperty;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            if (CustomData != otherz.CustomData) return false;
+
             return true;
         }
 

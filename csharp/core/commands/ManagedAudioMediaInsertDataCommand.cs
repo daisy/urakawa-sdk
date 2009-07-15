@@ -15,6 +15,24 @@ namespace urakawa.commands
 {
     public class ManagedAudioMediaInsertDataCommand : Command
     {
+        public override bool ValueEquals(WithPresentation other)
+        {
+            if (!base.ValueEquals(other))
+            {
+                return false;
+            }
+
+            ManagedAudioMediaInsertDataCommand otherz = other as ManagedAudioMediaInsertDataCommand;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            // TODO: test local equality
+
+            return true;
+        }
+
         public override string GetTypeNameFormatted()
         {
             return XukStrings.ManagedAudioMediaInsertDataCommand;

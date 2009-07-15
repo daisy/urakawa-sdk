@@ -16,6 +16,60 @@ namespace urakawa.command
     /// </summary>
     public class CompositeCommand : Command
     {
+        public Command GetItem(int index)
+        {
+            if (0 <= index && index < Count)
+            {
+                return mCommands[index];
+            }
+            throw new exception.MethodParameterIsOutOfBoundsException(
+                "There is no item in the CompositeCommand at the given index");
+        }
+
+        public override bool ValueEquals(WithPresentation other)
+        {
+            if (!base.ValueEquals(other))
+            {
+                return false;
+            }
+
+            CompositeCommand otherz = other as CompositeCommand;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            if (otherz.Count != Count)
+            {
+                return false;
+            }
+            for (int i = 0; i < Count; i++)
+            {
+                if (!GetItem(i).ValueEquals(otherz.GetItem(i)))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
+            }
+            //foreach (Command cmd in mCommands)
+            //{
+            //    bool foundEqualCommand = false;
+            //    foreach (Command cmdOther in otherz.ListOfCommands)
+            //    {
+            //        if (cmdOther.ValueEquals(cmd))
+            //        {
+            //            foundEqualCommand = true;
+            //            break;
+            //        }
+            //    }
+            //    if (!foundEqualCommand)
+            //    {
+            //        return false;
+            //    }
+            //}
+            return true;
+        }
+
         public override string GetTypeNameFormatted()
         {
             return XukStrings.CompositeCommand;

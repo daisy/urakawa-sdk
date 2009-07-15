@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace urakawa.media
 {
@@ -7,6 +8,80 @@ namespace urakawa.media
     /// </summary>
     public abstract class AbstractTextMedia : Media
     {
+        /// <summary>
+        /// This always returns false, because
+        /// text media is never considered continuous
+        /// </summary>
+        /// <returns></returns>
+        public override bool IsContinuous
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        /// This always returns true, because
+        /// text media is always considered discrete
+        /// </summary>
+        /// <returns></returns>
+        public override bool IsDiscrete
+        {
+            get { return true; }
+        }
+
+
+        /// <summary>
+        /// This always returns false, because
+        /// a single media object is never considered to be a sequence
+        /// </summary>
+        /// <returns></returns>
+        public override bool IsSequence
+        {
+            get { return false; }
+        }
+
+        public override bool ValueEquals(WithPresentation other)
+        {
+            if (!base.ValueEquals(other))
+            {
+                return false;
+            }
+
+            AbstractTextMedia otherz = other as AbstractTextMedia;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            //TODO: is there a more reliable way to handle DOS versus UNIX line breaks at the end of the strings ??
+            try
+            {
+                string str1 = Text;
+                string str2 = otherz.Text;
+
+                str1 = str1.Replace("\r\n", "\n");
+                str2 = str2.Replace("\r\n", "\n");
+
+                if (!str1.Equals(str2))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                    return false;
+                }
+            }
+            catch(Exception e)
+            {
+                // WebClient failure in unit-tests, non-existing file.
+                //Debugger.Break();
+                int debug = 1;
+            }
+        
+
+        //if (Text != otherz.Text)
+            //{
+            //    return false;
+            //}
+
+            return true;
+        }
         /// <summary>
         /// Event fired after the text of the <see cref="ExternalTextMedia"/> has changed
         /// </summary>

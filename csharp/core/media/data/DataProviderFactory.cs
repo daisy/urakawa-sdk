@@ -28,7 +28,7 @@ namespace urakawa.media.data
         protected override void InitializeInstance(DataProvider instance)
         {
             base.InitializeInstance(instance);
-            Presentation.DataProviderManager.AddDataProvider(instance);
+            Presentation.DataProviderManager.AddManagedObject(instance);
         }
 
         /// <summary>

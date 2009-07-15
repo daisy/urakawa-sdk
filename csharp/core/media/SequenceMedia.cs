@@ -451,37 +451,36 @@ namespace urakawa.media
 
         #region IValueEquatable<Media> Members
 
-        /// <summary>
-        /// Conpares <c>this</c> with a given other <see cref="Media"/> for equality
-        /// </summary>
-        /// <param name="other">The other <see cref="Media"/></param>
-        /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(Media other)
+        public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            SequenceMedia otherSeq = (SequenceMedia)other;
-            if (AllowMultipleTypes != otherSeq.AllowMultipleTypes)
+
+            SequenceMedia otherz = other as SequenceMedia;
+            if (otherz == null)
+            {
+                return false;
+            }
+            if (AllowMultipleTypes != otherz.AllowMultipleTypes)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (Count != otherSeq.Count)
+            if (otherz.Count != Count)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
             for (int i = 0; i < Count; i++)
             {
-                if (!GetItem(i).ValueEquals(otherSeq.GetItem(i)))
+                if (!GetItem(i).ValueEquals(otherz.GetItem(i)))
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                     return false;
                 }
             }
+
             return true;
         }
 

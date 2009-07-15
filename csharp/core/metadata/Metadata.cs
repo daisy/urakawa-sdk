@@ -263,22 +263,28 @@ namespace urakawa.metadata
 
         #region IValueEquatable<Metadata> Members
 
-        /// <summary>
-        /// Determines if <c>this</c> is value equal to another given <see cref="Metadata"/>
-        /// </summary>
-        /// <param name="other">The other <see cref="Metadata"/></param>
-        /// <returns>The result as a <see cref="bool"/></returns>
-        public bool ValueEquals(Metadata other)
+        public override bool ValueEquals(WithPresentation other)
         {
+            if (!base.ValueEquals(other))
+            {
+                return false;
+            }
+
+            Metadata otherz = other as Metadata;
+            if (otherz == null)
+            {
+                return false;
+            }
+
             if (other==null) return false;
-            if (Name != other.Name) return false;
+            if (Name != otherz.Name) return false;
             List<string> names = ListOfOptionalAttributeNames;
             List<string> otherNames = ListOfOptionalAttributeNames;
             if (names.Count != otherNames.Count) return false;
             foreach (string name in names)
             {
                 if (!otherNames.Contains(name)) return false;
-                if (GetOptionalAttributeValue(name) != other.GetOptionalAttributeValue(name)) return false;
+                if (GetOptionalAttributeValue(name) != otherz.GetOptionalAttributeValue(name)) return false;
             }
             return true;
         }

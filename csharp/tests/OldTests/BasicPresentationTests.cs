@@ -13,11 +13,11 @@ namespace urakawa.oldTests
         public void setPropertyAndCheckForNewValue()
         {
             TreeNode root = mProject.GetPresentation(0).RootNode;
-            if (mProject.GetPresentation(0).ChannelsManager.ListOfChannels.Count == 0)
+            if (mProject.GetPresentation(0).ChannelsManager.ListOfManagedObjects.Count == 0)
             {
                     mProject.GetPresentation(0).ChannelFactory.Create();
             }
-            Channel textCh = mProject.GetPresentation(0).ChannelsManager.ListOfChannels[0];
+            Channel textCh = mProject.GetPresentation(0).ChannelsManager.ListOfManagedObjects[0];
             if (textCh != null)
             {
                 ChannelsProperty text_cp;

@@ -13,7 +13,7 @@ namespace urakawa.media.data
     /// Interface for a generic <see cref="DataProvider"/> providing access to data storage 
     /// via input and output <see cref="Stream"/>s
     /// </summary>
-    public abstract class DataProvider : WithPresentation, IValueEquatable<DataProvider>
+    public abstract class DataProvider : WithPresentation
     {
         private string mMimeType;
 
@@ -167,16 +167,5 @@ namespace urakawa.media.data
 
         #endregion
 
-
-        #region IValueEquatable<DataProvider> Members
-
-        /// <summary>
-        /// Determines of <c>this</c> has the same value as a given other instance
-        /// </summary>
-        /// <param name="other">The other instance</param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        public abstract bool ValueEquals(DataProvider other);
-
-        #endregion
     }
 }
