@@ -10,12 +10,15 @@ namespace urakawa
 
     public class ObjectListProvider<T> where T : WithPresentation
     {
-        private readonly Mutex m_Mutex;
+        //"lock() {}" is syntactic sugar for Monitor.Enter/Exit() with a try/finally wrapper => sync multiple threads owned by the same process.
+        // Mutex is a heavyweight multi-process lock, implemented using Win32 interop wrapper => sync threads across several processes.
+
+        private readonly Object LOCK = new object();
+
         private List<T> m_objects;
 
         public ObjectListProvider()
         {
-            m_Mutex = new Mutex();
             m_objects = new List<T>();
         }
 
@@ -23,14 +26,9 @@ namespace urakawa
         {
             get
             {
-                m_Mutex.WaitOne();
-                try
+                lock (LOCK)
                 {
                     return m_objects.Count;
-                }
-                finally
-                {
-                    m_Mutex.ReleaseMutex();
                 }
             }
         }
@@ -41,14 +39,9 @@ namespace urakawa
         {
             get
             {
-                m_Mutex.WaitOne();
-                try
+                lock (LOCK)
                 {
                     return new ReadOnlyCollection<T>(m_objects);
-                }
-                finally
-                {
-                    m_Mutex.ReleaseMutex();
                 }
             }
         }
@@ -57,14 +50,9 @@ namespace urakawa
         {
             get
             {
-                m_Mutex.WaitOne();
-                try
+                lock (LOCK)
                 {
                     return m_objects.AsReadOnly();
-                }
-                finally
-                {
-                    m_Mutex.ReleaseMutex();
                 }
             }
         }
@@ -73,14 +61,9 @@ namespace urakawa
         {
             get
             {
-                m_Mutex.WaitOne();
-                try
+                lock (LOCK)
                 {
                     return new List<T>(m_objects);
-                }
-                finally
-                {
-                    m_Mutex.ReleaseMutex();
                 }
             }
         }
@@ -89,17 +72,14 @@ namespace urakawa
         {
             get
             {
-                m_Mutex.WaitOne();
-                try
+                lock (LOCK)
                 {
                     foreach (T obj in m_objects)
                     {
                         yield return obj;
                     }
-                }
-                finally
-                {
-                    m_Mutex.ReleaseMutex();
+
+                    yield break;
                 }
             }
         }
@@ -108,14 +88,9 @@ namespace urakawa
         {
             get
             {
-                m_Mutex.WaitOne();
-                try
+                lock (LOCK)
                 {
                     return ArrayList.ReadOnly(m_objects);
-                }
-                finally
-                {
-                    m_Mutex.ReleaseMutex();
                 }
             }
         }
@@ -124,87 +99,57 @@ namespace urakawa
         {
             get
             {
-                m_Mutex.WaitOne();
-                try
+                lock (LOCK)
                 {
                     return m_objects;
-                }
-                finally
-                {
-                    m_Mutex.ReleaseMutex();
                 }
             }
         }
 
         public void Add(T obj)
         {
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 m_objects.Add(obj);
-            }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
             }
         }
 
         public void Remove(T obj)
         {
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 m_objects.Remove(obj);
-            }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
             }
         }
 
         public void Clear()
         {
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 m_objects.Clear();
-            }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
             }
         }
 
         public bool Contains(T obj)
         {
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 return m_objects.Contains(obj);
-            }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
             }
         }
 
         public T Get(int index)
         {
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 return m_objects[index];
-            }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
             }
         }
     }
 
     public abstract class XukAbleManager<T> : WithPresentation where T : WithPresentation
     {
-        private readonly Mutex m_Mutex;
+        private readonly Object LOCK = new object();
         private ObjectListProvider<T> m_managedObjects;
 
         private readonly string m_UidPrefix;
@@ -212,7 +157,6 @@ namespace urakawa
 
         public XukAbleManager(Presentation pres, string uidPrefix)
         {
-            m_Mutex = new Mutex();
             Presentation = pres;
             m_managedObjects = new ObjectListProvider<T>();
             m_UidPrefix = uidPrefix;
@@ -229,8 +173,7 @@ namespace urakawa
 
         public void RegenerateUids()
         {
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 ulong index = 0;
 
@@ -245,10 +188,6 @@ namespace urakawa
                     m_managedObjects.Add(obj);
                 }
             }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
-            }
         }
 
 
@@ -259,17 +198,12 @@ namespace urakawa
             {
                 throw new exception.MethodParameterIsNullException("uid cannot be null or empty");
             }
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 foreach (T obj in m_managedObjects.ContentsAs_YieldEnumerable)
                 {
                     if (obj.Uid == uid) return obj;
                 }
-            }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
             }
             throw new exception.IsNotManagerOfException(String.Format(
                                                                      "The manager does not manage an object with uid {0}",
@@ -282,17 +216,12 @@ namespace urakawa
             {
                 throw new exception.MethodParameterIsNullException("channel parameter is null");
             }
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 foreach (T objz in m_managedObjects.ContentsAs_YieldEnumerable)
                 {
                     if (objz == obj) return objz.Uid;
                 }
-            }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
             }
             throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
         }
@@ -309,8 +238,7 @@ namespace urakawa
                 throw new exception.MethodParameterIsEmptyStringException("uid parameter cannot be null or empty string");
             }
 
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 string oldUid = null;
                 foreach (T objz in m_managedObjects.ContentsAs_YieldEnumerable)
@@ -335,16 +263,11 @@ namespace urakawa
                 }
                 obj.Uid = uid;
             }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
-            }
         }
 
         public virtual void RemoveManagedObject(T obj)
         {
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 T objectToRemove = null;
                 foreach (T objz in m_managedObjects.ContentsAs_YieldEnumerable)
@@ -360,10 +283,6 @@ namespace urakawa
                     m_managedObjects.Remove(obj);
                     return;
                 }
-            }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
             }
             throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
         }
@@ -384,8 +303,7 @@ namespace urakawa
             {
                 throw new exception.MethodParameterIsNullException("uid parameter cannot be null or empty");
             }
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 foreach (T objz in m_managedObjects.ContentsAs_YieldEnumerable)
                 {
@@ -409,28 +327,18 @@ namespace urakawa
                 obj.Uid = uid;
                 m_managedObjects.Add(obj);
             }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
-            }
-
         }
 
 
         public bool IsManagerOf(string uid)
         {
-            m_Mutex.WaitOne();
-            try
+            lock (LOCK)
             {
                 foreach (T obj in m_managedObjects.ContentsAs_YieldEnumerable)
                 {
                     if (obj.Uid == uid) return true;
                 }
                 return false;
-            }
-            finally
-            {
-                m_Mutex.ReleaseMutex();
             }
         }
 
