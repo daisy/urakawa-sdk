@@ -161,7 +161,7 @@ namespace urakawa.core
             bool equal = mRootNode.ValueEquals(mRootCopy);
             Assert.IsTrue(equal, "The copy is not the same as the original");
             Assert.AreNotSame(mRootNode, mRootCopy, "The copy is just a reference of the original itself");
-            foreach (Type propType in mRootCopy.ListOfUsedPropertyTypes)
+            foreach (Type propType in mRootCopy.UsedPropertyTypes)
             {
                 Assert.AreNotEqual(
                     mRootNode.GetProperty(propType), mRootCopy.GetProperty(propType),

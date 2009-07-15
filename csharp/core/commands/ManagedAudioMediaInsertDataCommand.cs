@@ -98,11 +98,11 @@ namespace urakawa.commands
 
             if (ManagedAudioMediaSource.HasActualAudioMediaData)
             {
-                m_ListOfUsedMediaData.Add(ManagedAudioMediaSource.AudioMediaData);
+                m_UsedMediaData.Add(ManagedAudioMediaSource.AudioMediaData);
             }
             if (ManagedAudioMediaTarget.HasActualAudioMediaData)
             {
-                m_ListOfUsedMediaData.Add(ManagedAudioMediaTarget.AudioMediaData);
+                m_UsedMediaData.Add(ManagedAudioMediaTarget.AudioMediaData);
             }
 
             ShortDescription = "Insert new audio";
@@ -139,12 +139,12 @@ namespace urakawa.commands
             ManagedAudioMediaTarget.AudioMediaData.RemoveAudioData(TimeInsert, TimeInsert.AddTimeDelta(duration));
         }
 
-        private List<MediaData> m_ListOfUsedMediaData = new List<MediaData>();
+        private List<MediaData> m_UsedMediaData = new List<MediaData>();
         public override IEnumerable<MediaData> UsedMediaData
         {
             get
             {
-                return m_ListOfUsedMediaData;
+                return m_UsedMediaData;
             }
         }
 

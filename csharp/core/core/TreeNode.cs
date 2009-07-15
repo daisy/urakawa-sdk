@@ -190,7 +190,7 @@ namespace urakawa.core
                 SequenceMedia seq = Parent.GetAudioSequenceMedia();
                 if (seq != null && !seq.AllowMultipleTypes)
                 {
-                    foreach (Media media in seq.ListOfItems)
+                    foreach (Media media in seq.ChildMedias.ContentsAs_YieldEnumerable)
                     {
                         if (media is ManagedAudioMedia)
                         {
@@ -225,7 +225,7 @@ namespace urakawa.core
                     SequenceMedia seq = child.GetAudioSequenceMedia();
                     if (seq != null && !seq.AllowMultipleTypes)
                     {
-                        foreach (Media media in seq.ListOfItems)
+                        foreach (Media media in seq.ChildMedias.ContentsAs_YieldEnumerable)
                         {
                             if (media is ManagedAudioMedia)
                             {
@@ -266,7 +266,7 @@ namespace urakawa.core
                     SequenceMedia seq = next.GetAudioSequenceMedia();
                     if (seq != null && !seq.AllowMultipleTypes)
                     {
-                        foreach (Media media in seq.ListOfItems)
+                        foreach (Media media in seq.ChildMedias.ContentsAs_YieldEnumerable)
                         {
                             if (media is ManagedAudioMedia)
                             {
@@ -798,7 +798,7 @@ namespace urakawa.core
         /// Gets a list of the <see cref="Type"/>s of <see cref="Property"/> set for the <see cref="TreeNode"/>
         /// </summary>
         /// <returns>The list</returns>
-        public List<Type> ListOfUsedPropertyTypes
+        public List<Type> UsedPropertyTypes
         {
             get
             {
@@ -1543,7 +1543,7 @@ namespace urakawa.core
         {
             TreeNode removedChild = mChildren.Get(index);
             removedChild.mParent = null;
-            mChildren.RemoveAt(index);
+            mChildren.Remove(removedChild);
             NotifyChildRemoved(this, removedChild, index);
             return removedChild;
         }
@@ -1875,8 +1875,8 @@ namespace urakawa.core
                 return false;
             }
 
-            List<Type> thisProps = ListOfUsedPropertyTypes;
-            List<Type> otherProps = otherz.ListOfUsedPropertyTypes;
+            List<Type> thisProps = UsedPropertyTypes;
+            List<Type> otherProps = otherz.UsedPropertyTypes;
             if (thisProps.Count != otherProps.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 

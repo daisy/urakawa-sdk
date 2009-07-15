@@ -4,7 +4,6 @@ using System.Xml;
 using urakawa.media.data;
 using urakawa.progress;
 using urakawa.xuk;
-using CommandAddedEventArgs = urakawa.events.command.CommandAddedEventArgs;
 
 namespace urakawa.command
 {
@@ -51,7 +50,7 @@ namespace urakawa.command
             //foreach (Command cmd in mCommands)
             //{
             //    bool foundEqualCommand = false;
-            //    foreach (Command cmdOther in otherz.ListOfCommands)
+            //    foreach (Command cmdOther in otherz.Commands)
             //    {
             //        if (cmdOther.ValueEquals(cmd))
             //        {
@@ -71,27 +70,7 @@ namespace urakawa.command
         {
             return XukStrings.CompositeCommand;
         }
-        #region Event related members
 
-        /// <summary>
-        /// Event fired after a <see cref="Command"/> has been added to the <see cref="CompositeCommand"/>
-        /// </summary>
-        public event EventHandler<CommandAddedEventArgs> CommandAdded;
-
-        /// <summary>
-        /// Fires the <see cref="CommandAdded"/> event
-        /// </summary>
-        /// <param name="addedCmd">
-        /// The <see cref="Command"/> that was added
-        /// </param>
-        /// <param name="index">The index of the added <see cref="Command"/></param>
-        protected void NotifyCommandAdded(Command addedCmd, int index)
-        {
-            EventHandler<CommandAddedEventArgs> d = CommandAdded;
-            if (d != null) d(this, new CommandAddedEventArgs(this, addedCmd, index));
-        }
-
-        #endregion
 
         private ObjectListProvider<Command> mCommands;
 

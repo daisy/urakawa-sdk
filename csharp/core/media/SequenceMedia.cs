@@ -24,13 +24,22 @@ namespace urakawa.media
             NotifyChanged(e);
         }
 
-        private List<Media> mSequence = new List<Media>();
+        private ObjectListProvider<Media> mSequence;
+
+        public ObjectListProvider<Media> ChildMedias
+        {
+            get
+            {
+                return mSequence;
+            }
+        }
+
         private bool mAllowMultipleTypes;
 
         private void Reset()
         {
             mAllowMultipleTypes = false;
-            foreach (Media item in ListOfItems)
+            foreach (Media item in mSequence.ContentsAs_ListCopy)
             {
                 RemoveItem(item);
             }
@@ -44,25 +53,8 @@ namespace urakawa.media
         /// </exception>
         public SequenceMedia()
         {
+            mSequence = new ObjectListProvider<Media>();
             Reset();
-        }
-
-        /// <summary>
-        /// Get the item at the given index
-        /// </summary>
-        /// <param name="index">Index of the item to return</param>
-        /// <returns>The <see cref="Media"/> item at the given index</returns>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when the given index is out of bounds
-        /// </exception>
-        public Media GetItem(int index)
-        {
-            if (0 <= index && index < Count)
-            {
-                return (Media)mSequence[index];
-            }
-            throw new exception.MethodParameterIsOutOfBoundsException(
-                "There is no item in the SequenceMedia at the given index");
         }
 
 
@@ -86,7 +78,7 @@ namespace urakawa.media
             {
                 throw new exception.MethodParameterIsNullException("The new item can not be null");
             }
-            if (index < 0 || Count < index)
+            if (index < 0 || mSequence.Count < index)
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The index at which to insert media is out of bounds");
@@ -97,23 +89,10 @@ namespace urakawa.media
                     "The new media to insert is of a type that is incompatible with the sequence media");
             }
             mSequence.Insert(index, newItem);
-            newItem.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_Changed);
+
+            newItem.Changed += Item_Changed;
         }
 
-        /// <summary>
-        /// Appends a new <see cref="Media"/> item to the end of the sequence
-        /// </summary>
-        /// <param name="newItem">The new item</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when the given <see cref="Media"/> to insert is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.MediaNotAcceptable">
-        ///	Thrown if the <see cref="SequenceMedia"/> can not accept the media
-        /// </exception>
-        public void AppendItem(Media newItem)
-        {
-            InsertItem(Count, newItem);
-        }
 
         /// <summary>
         /// Remove an item from the sequence.
@@ -125,7 +104,7 @@ namespace urakawa.media
         /// </exception>
         public Media RemoveItem(int index)
         {
-            Media removedMedia = GetItem(index);
+            Media removedMedia = mSequence.Get(index);
             RemoveItem(removedMedia);
             return removedMedia;
         }
@@ -145,25 +124,8 @@ namespace urakawa.media
                     "Cannot remove a Media item that is not part of the sequence");
             }
             mSequence.Remove(item);
-            item.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_Changed);
-        }
 
-        /// <summary>
-        /// Return the number of items in the sequence.
-        /// </summary>
-        /// <returns>The number of items</returns>
-        public int Count
-        {
-            get { return mSequence.Count; }
-        }
-
-        /// <summary>
-        /// Gets a list of the <see cref="Media"/> items in the sequence
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<Media> ListOfItems
-        {
-            get { return new List<Media>(mSequence); }
+            item.Changed -= Item_Changed;
         }
 
         /// <summary>
@@ -177,14 +139,14 @@ namespace urakawa.media
             {
                 if (!value)
                 {
-                    int count = Count;
+                    int count = mSequence.Count;
                     if (count > 0)
                     {
-                        Type firstItemType = GetItem(0).GetType();
+                        Type firstItemType = mSequence.Get(0).GetType();
                         int i = 1;
                         while (i < count)
                         {
-                            if (GetItem(i).GetType() != firstItemType)
+                            if (mSequence.Get(i).GetType() != firstItemType)
                             {
                                 throw new exception.OperationNotValidException(
                                     "Can not prohibit multiple Media types in the sequence, since the Type of the sequence items differ");
@@ -206,9 +168,9 @@ namespace urakawa.media
         {
             get
             {
-                if (Count > 0)
+                if (mSequence.Count > 0)
                 {
-                    return GetItem(0).IsContinuous;
+                    return mSequence.Get(0).IsContinuous;
                 }
                 else
                 {
@@ -227,9 +189,9 @@ namespace urakawa.media
             get
             {
                 //use the first item in the collection to determine the value
-                if (Count > 0)
+                if (mSequence.Count > 0)
                 {
-                    return GetItem(0).IsDiscrete;
+                    return mSequence.Get(0).IsDiscrete;
                 }
                 else
                 {
@@ -264,9 +226,10 @@ namespace urakawa.media
         protected override Media CopyProtected()
         {
             SequenceMedia newSeqMedia = (SequenceMedia)base.CopyProtected();
-            foreach (Media item in ListOfItems)
+            foreach (Media item in mSequence.ContentsAs_YieldEnumerable)
             {
-                newSeqMedia.AppendItem(item.Copy());
+                //newSeqMedia.mSequence.Add(item.Copy());
+                newSeqMedia.InsertItem(mSequence.Count, item.Copy());
             }
             return newSeqMedia;
         }
@@ -289,9 +252,10 @@ namespace urakawa.media
         protected override Media ExportProtected(Presentation destPres)
         {
             SequenceMedia newSeqMedia = (SequenceMedia)base.ExportProtected(destPres);
-            foreach (Media item in ListOfItems)
+            foreach (Media item in mSequence.ContentsAs_YieldEnumerable)
             {
-                newSeqMedia.AppendItem(item.Export(destPres));
+                //newSeqMedia.mSequence.Add(item.Export(destPres));
+                newSeqMedia.InsertItem(mSequence.Count, item.Export(destPres));
             }
             return newSeqMedia;
         }
@@ -314,9 +278,9 @@ namespace urakawa.media
                 throw new exception.MethodParameterIsNullException(
                     "The proposed addition is null");
             }
-            if (Count > 0 && !AllowMultipleTypes)
+            if (mSequence.Count > 0 && !AllowMultipleTypes)
             {
-                if (GetItem(0).GetType() != proposedAddition.GetType()) return false;
+                if (mSequence.Get(0).GetType() != proposedAddition.GetType()) return false;
             }
             return true;
         }
@@ -392,7 +356,7 @@ namespace urakawa.media
                                     String.Format("Media type {0} is not supported by the sequence",
                                                   newMedia.GetType().FullName));
                             }
-                            InsertItem(Count, newMedia);
+                            InsertItem(mSequence.Count, newMedia);
                         }
                         else if (!source.IsEmptyElement)
                         {
@@ -435,12 +399,12 @@ namespace urakawa.media
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            if (Count > 0)
+            if (mSequence.Count > 0)
             {
                 destination.WriteStartElement(XukStrings.Sequence, XukNamespaceUri);
-                for (int i = 0; i < Count; i++)
+                for (int i = 0; i < mSequence.Count; i++)
                 {
-                    GetItem(i).XukOut(destination, baseUri, handler);
+                    mSequence.Get(i).XukOut(destination, baseUri, handler);
                 }
                 destination.WriteEndElement();
             }
@@ -468,13 +432,13 @@ namespace urakawa.media
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (otherz.Count != Count)
+            if (otherz.mSequence.Count != mSequence.Count)
             {
                 return false;
             }
-            for (int i = 0; i < Count; i++)
+            for (int i = 0; i < mSequence.Count; i++)
             {
-                if (!GetItem(i).ValueEquals(otherz.GetItem(i)))
+                if (!mSequence.Get(i).ValueEquals(otherz.mSequence.Get(i)))
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                     return false;
@@ -493,7 +457,7 @@ namespace urakawa.media
                 return null;
             }
             string strSeq = "";
-            foreach (Media media in ListOfItems)
+            foreach (Media media in mSequence.ContentsAs_YieldEnumerable)
             {
                 if (media is AbstractTextMedia)
                 {
@@ -517,7 +481,7 @@ namespace urakawa.media
                 return null;
             }
             List<Stream> streams = new List<Stream>();
-            foreach (Media media in ListOfItems)
+            foreach (Media media in mSequence.ContentsAs_YieldEnumerable)
             {
                 if (media is ManagedAudioMedia)
                 {

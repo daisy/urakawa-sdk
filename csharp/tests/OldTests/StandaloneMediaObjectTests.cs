@@ -162,7 +162,7 @@ namespace urakawa.oldTests
             SequenceMedia obj = factory.CreateSequenceMedia();
 
             Assert.AreEqual(true, obj.IsSequence);
-            Assert.AreEqual(0, obj.Count);
+            Assert.AreEqual(0, obj.ChildMedias.Count);
             Assert.AreEqual(false, obj.IsContinuous);
             Assert.AreEqual(false, obj.IsDiscrete);
         }
@@ -182,9 +182,9 @@ namespace urakawa.oldTests
             AbstractAudioMedia audio_obj = factory.Create<ExternalAudioMedia>();
             AbstractTextMedia text_obj = factory.CreateTextMedia();
 
-            obj.InsertItem(obj.Count, audio_obj);
+            obj.InsertItem(obj.ChildMedias.Count, audio_obj);
 
-            obj.InsertItem(obj.Count, text_obj);
+            obj.InsertItem(obj.ChildMedias.Count, text_obj);
             Assert.Fail("The previous should have thrown an MediaNotAcceptable exception");
         }
 

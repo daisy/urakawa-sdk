@@ -2,12 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using urakawa.core;
 
 namespace urakawa
 {
     public class ObjectListProvider<T> where T : WithPresentation
     {
+        #region backing fieds
+
         //"lock() {}" is syntactic sugar for Monitor.Enter/Exit() with a try/finally wrapper => sync multiple threads owned by the same process.
         // Mutex is a heavyweight multi-process lock, implemented using Win32 interop wrapper => sync threads across several processes.
 
@@ -15,23 +16,18 @@ namespace urakawa
 
         private List<T> m_objects;
 
+        #endregion backing fieds
+
+        #region ctr
+
         public ObjectListProvider()
         {
             m_objects = new List<T>();
         }
 
-        public int Count
-        {
-            get
-            {
-                lock (LOCK)
-                {
-                    return m_objects.Count;
-                }
-            }
-        }
+        #endregion ctr
 
-
+        #region list adaptation
 
         public ReadOnlyCollection<T> ContentsAs_ReadOnlyCollectionWrapper
         {
@@ -104,6 +100,49 @@ namespace urakawa
             }
         }
 
+        #endregion list adaptation
+
+        #region read-only access
+
+        public int Count
+        {
+            get
+            {
+                lock (LOCK)
+                {
+                    return m_objects.Count;
+                }
+            }
+        }
+
+        public bool Contains(T obj)
+        {
+            lock (LOCK)
+            {
+                return m_objects.Contains(obj);
+            }
+        }
+
+        public T Get(int index)
+        {
+            lock (LOCK)
+            {
+                return m_objects[index];
+            }
+        }
+
+        public int IndexOf(T obj)
+        {
+            lock (LOCK)
+            {
+                return m_objects.IndexOf(obj);
+            }
+        }
+
+        #endregion read-only access
+
+        #region modifiers
+
         public void Add(T obj)
         {
             lock (LOCK)
@@ -128,22 +167,6 @@ namespace urakawa
             }
         }
 
-        public bool Contains(T obj)
-        {
-            lock (LOCK)
-            {
-                return m_objects.Contains(obj);
-            }
-        }
-
-        public T Get(int index)
-        {
-            lock (LOCK)
-            {
-                return m_objects[index];
-            }
-        }
-
         public void Insert(int index, T obj)
         {
             lock (LOCK)
@@ -152,20 +175,8 @@ namespace urakawa
             }
         }
 
-        public void RemoveAt(int index)
-        {
-            lock (LOCK)
-            {
-                m_objects.RemoveAt(index);
-            }
-        }
+        #endregion modifiers
 
-        public int IndexOf(T obj)
-        {
-            lock (LOCK)
-            {
-                return m_objects.IndexOf(obj);
-            }
-        }
+
     }
 }
