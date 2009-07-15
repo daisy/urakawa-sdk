@@ -122,7 +122,7 @@ namespace urakawa.publish
                     }
                 }
             }
-            foreach (TreeNode child in node.ListOfChildren)
+            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
             {
                 CheckPublishedFiles(child, sourceCh, destCh, curWavUri, curAudioData, curPCMFormat);
             }

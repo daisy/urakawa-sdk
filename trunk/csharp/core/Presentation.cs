@@ -598,9 +598,9 @@ namespace urakawa
             {
                 if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
             }
-            for (int i = 0; i < node.ChildCount; i++)
+            for (int i = 0; i < node.Children.Count; i++)
             {
-                CollectUsedMedia(node.GetChild(i), collectedMedia);
+                CollectUsedMedia(node.Children.Get(i), collectedMedia);
             }
         }
 

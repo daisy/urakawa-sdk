@@ -48,26 +48,6 @@ namespace urakawa.core
         QualifiedName GetXmlElementQName();
         string GetXmlElementId();
 
-        /// <summary>
-        /// Gets the child <see cref="TreeNode"/> at a given index
-        /// </summary>
-        /// <param name="index">The given index</param>
-        /// <returns>The child <see cref="TreeNode"/> at the given index</returns>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref localName="index"/> is out if range, 
-        /// that is not between 0 and <c><see cref="ChildCount"/>()-1</c></exception>
-        TreeNode GetChild(int index);
-
-        /// <summary>
-        /// Gets the index of a given child <see cref="TreeNode"/>
-        /// </summary>
-        /// <param name="node">The given child <see cref="TreeNode"/></param>
-        /// <returns>The index of the given child</returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when parameter <paranref localName="node"/> is null</exception>
-        /// <exception cref="exception.NodeDoesNotExistException">
-        /// Thrown when <paramref localName="node"/> is not a child of the <see cref="TreeNode"/></exception>
-        int IndexOf(TreeNode node);
 
         /// <summary>
         /// Gets the parent <see cref="TreeNode"/> of the instance,
@@ -75,12 +55,6 @@ namespace urakawa.core
         /// </summary>
         /// <returns>The parent</returns>
         TreeNode Parent { get; }
-
-        /// <summary>
-        /// Gets the number of children
-        /// </summary>
-        /// <returns>The number of children</returns>
-        int ChildCount { get; }
 
         /// <summary>
         /// Make a copy of the node

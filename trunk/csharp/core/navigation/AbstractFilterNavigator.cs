@@ -135,10 +135,10 @@ namespace urakawa.navigation
         /// <returns>The last child or <c>null</c> if the context <see cref="TreeNode"/> has no children</returns>
         private TreeNode GetLastChild(TreeNode context)
         {
-            int index = context.ChildCount - 1;
+            int index = context.Children.Count - 1;
             while (index >= 0)
             {
-                TreeNode child = context.GetChild(index);
+                TreeNode child = context.Children.Get(index);
                 if (IsIncluded(child))
                 {
                     return child;
@@ -274,9 +274,9 @@ namespace urakawa.navigation
         /// <param name="childList">The given child <see cref="List{TreeNode}"/></param>
         private void FindChildren(TreeNode context, List<TreeNode> childList)
         {
-            for (int i = 0; i < context.ChildCount; i++)
+            for (int i = 0; i < context.Children.Count; i++)
             {
-                TreeNode child = context.GetChild(i);
+                TreeNode child = context.Children.Get(i);
                 if (IsIncluded(child))
                 {
                     childList.Add(child);
@@ -324,9 +324,9 @@ namespace urakawa.navigation
         /// </returns>
         private bool FindIndexOf(TreeNode context, TreeNode childToFind, ref int index)
         {
-            for (int i = 0; i < context.ChildCount; i++)
+            for (int i = 0; i < context.Children.Count; i++)
             {
-                TreeNode child = context.GetChild(i);
+                TreeNode child = context.Children.Get(i);
                 if (IsIncluded(child))
                 {
                     if (child == childToFind)
@@ -354,9 +354,9 @@ namespace urakawa.navigation
         /// - <c>null</c> if there is no child at the given index</returns>
         private TreeNode FindChildAtIndex(TreeNode context, int index, ref int acumIndex)
         {
-            for (int i = 0; i < context.ChildCount; i++)
+            for (int i = 0; i < context.Children.Count; i++)
             {
-                TreeNode child = context.GetChild(i);
+                TreeNode child = context.Children.Get(i);
                 if (IsIncluded(child))
                 {
                     if (index == acumIndex) return child;
@@ -431,9 +431,9 @@ namespace urakawa.navigation
             TreeNode prev = context.PreviousSibling;
             if (prev != null)
             {
-                while (prev.ChildCount > 0)
+                while (prev.Children.Count > 0)
                 {
-                    prev = prev.GetChild(prev.ChildCount - 1);
+                    prev = prev.Children.Get(prev.Children.Count - 1);
                 }
             }
             if (prev == null)
@@ -516,9 +516,9 @@ namespace urakawa.navigation
         private void GenerateSubtree(TreeNode context, ref List<TreeNode> subtree)
         {
             if (IsIncluded(context)) subtree.Add(context);
-            for (int i = 0; i < context.ChildCount; i++)
+            for (int i = 0; i < context.Children.Count; i++)
             {
-                GenerateSubtree(context.GetChild(i), ref subtree);
+                GenerateSubtree(context.Children.Get(i), ref subtree);
             }
         }
 

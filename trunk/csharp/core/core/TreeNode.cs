@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using urakawa.core.visitor;
 using urakawa.events;
+using urakawa.exception;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.utilities;
@@ -41,9 +42,9 @@ namespace urakawa.core
             QualifiedName qname = GetXmlElementQName();
             if (qname != null && qname.LocalName == elemName) return this;
 
-            for (int i = 0; i < ChildCount; i++)
+            for (int i = 0; i < mChildren.Count; i++)
             {
-                TreeNode child = GetChild(i).GetFirstChildWithXmlElementName(elemName);
+                TreeNode child = mChildren.Get(i).GetFirstChildWithXmlElementName(elemName);
                 if (child != null)
                 {
                     return child;
@@ -162,7 +163,7 @@ namespace urakawa.core
         {
             if (this == node1) return node1;
             if (this == node2) return node2;
-            foreach (TreeNode child in ListOfChildren)
+            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
             {
                 TreeNode met = child.MeetFirst(node1, node2);
                 if (met != null)
@@ -207,12 +208,12 @@ namespace urakawa.core
 
         public TreeNode GetFirstDescendantWithManagedAudio()
         {
-            if (ChildCount == 0)
+            if (mChildren.Count == 0)
             {
                 return null;
             }
 
-            foreach (TreeNode child in ListOfChildren)
+            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
             {
                 ManagedAudioMedia audioMedia = child.GetManagedAudioMedia();
                 if (audioMedia != null) // && audioMedia.AudioMediaData != null
@@ -335,9 +336,9 @@ namespace urakawa.core
 
             List<StreamWithMarkers> listStreamsWithMarkers = new List<StreamWithMarkers>();
 
-            for (int index = 0; index < ChildCount; index++)
+            for (int index = 0; index < mChildren.Count; index++)
             {
-                TreeNode node = GetChild(index);
+                TreeNode node = mChildren.Get(index);
                 StreamWithMarkers? childVal = node.GetManagedAudioDataFlattened();
                 if (childVal != null)
                 {
@@ -371,14 +372,14 @@ namespace urakawa.core
 
         public TreeNode GetLastDescendantWithText()
         {
-            if (ChildCount == 0)
+            if (mChildren.Count == 0)
             {
                 return null;
             }
 
-            for (int i = ListOfChildren.Count - 1; i >= 0; i--)
+            for (int i = Children.Count - 1; i >= 0; i--)
             {
-                TreeNode child = ListOfChildren[i];
+                TreeNode child = Children.Get(i);
 
                 string str = child.GetTextMediaFlattened(false);
                 if (!string.IsNullOrEmpty(str))
@@ -397,12 +398,12 @@ namespace urakawa.core
 
         public TreeNode GetFirstDescendantWithText()
         {
-            if (ChildCount == 0)
+            if (mChildren.Count == 0)
             {
                 return null;
             }
 
-            foreach (TreeNode child in ListOfChildren)
+            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
             {
                 string str = child.GetTextMediaFlattened(false);
                 if (!string.IsNullOrEmpty(str))
@@ -522,9 +523,9 @@ namespace urakawa.core
             }
 
             string str = "";
-            for (int index = 0; index < ChildCount; index++)
+            for (int index = 0; index < mChildren.Count; index++)
             {
-                TreeNode node = GetChild(index);
+                TreeNode node = mChildren.Get(index);
                 str += node.GetTextMediaFlattened();
             }
             if (str.Length == 0)
@@ -763,7 +764,15 @@ namespace urakawa.core
         /// <summary>
         /// Contains the children of the node
         /// </summary>
-        private List<TreeNode> mChildren;
+        private ObjectListProvider<TreeNode> mChildren;
+
+        public ObjectListProvider<TreeNode> Children
+        {
+            get
+            {
+                return mChildren;
+            }
+        }
 
         /// <summary>
         /// The parent <see cref="TreeNode"/>
@@ -778,7 +787,7 @@ namespace urakawa.core
         public TreeNode()
         {
             mProperties = new List<Property>();
-            mChildren = new List<TreeNode>();
+            mChildren = new ObjectListProvider<TreeNode>();
             ChildAdded += new EventHandler<urakawa.events.core.ChildAddedEventArgs>(this_childAdded);
             ChildRemoved += new EventHandler<urakawa.events.core.ChildRemovedEventArgs>(this_childRemoved);
             PropertyAdded += new EventHandler<urakawa.events.core.PropertyAddedEventArgs>(this_propertyAdded);
@@ -1013,9 +1022,9 @@ namespace urakawa.core
         /// are not removed</remarks>
         protected void CopyChildren(TreeNode destinationNode)
         {
-            for (int i = 0; i < this.ChildCount; i++)
+            for (int i = 0; i < this.mChildren.Count; i++)
             {
-                destinationNode.AppendChild(GetChild(i).Copy(true));
+                destinationNode.AppendChild(mChildren.Get(i).Copy(true));
             }
         }
 
@@ -1064,9 +1073,9 @@ namespace urakawa.core
             }
             if (visitChildren)
             {
-                for (int i = 0; i < ChildCount; i++)
+                for (int i = 0; i < Children.Count; i++)
                 {
-                    GetChild(i).AcceptDepthFirst(preVisit, postVisit);
+                    mChildren.Get(i).AcceptDepthFirst(preVisit, postVisit);
                 }
             }
             if (postVisit != null) postVisit(this);
@@ -1086,9 +1095,9 @@ namespace urakawa.core
             {
                 TreeNode next = nodeQueue.Dequeue();
                 if (!preVisit(next)) break;
-                for (int i = 0; i < next.ChildCount; i++)
+                for (int i = 0; i < next.Children.Count; i++)
                 {
-                    nodeQueue.Enqueue(next.GetChild(i));
+                    nodeQueue.Enqueue(next.mChildren.Get(i));
                 }
             }
         }
@@ -1102,7 +1111,7 @@ namespace urakawa.core
         /// </summary>
         protected override void Clear()
         {
-            foreach (TreeNode child in this.ListOfChildren)
+            foreach (TreeNode child in Children.ContentsAs_ListCopy)
             {
                 RemoveChild(child);
             }
@@ -1229,9 +1238,9 @@ namespace urakawa.core
             {
                 destination.WriteStartElement(XukStrings.Children, XukNamespaceUri);
             }
-            for (int i = 0; i < this.ChildCount; i++)
+            for (int i = 0; i < Children.Count; i++)
             {
-                GetChild(i).XukOut(destination, baseUri, handler);
+                mChildren.Get(i).XukOut(destination, baseUri, handler);
             }
             if (IsPrettyFormat())
             {
@@ -1244,71 +1253,12 @@ namespace urakawa.core
         #region ITreeNodeReadOnlyMethods Members
 
         /// <summary>
-        /// Gets the index of a given child <see cref="TreeNode"/>
-        /// </summary>
-        /// <param name="node">The given child <see cref="TreeNode"/></param>
-        /// <returns>The index of the given child</returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when parameter <paranref localName="node"/> is null</exception>
-        /// <exception cref="exception.NodeDoesNotExistException">
-        /// Thrown when <paramref localName="node"/> is not a child of the <see cref="TreeNode"/></exception>
-        public int IndexOf(TreeNode node)
-        {
-            if (node == null)
-            {
-                throw new exception.MethodParameterIsNullException("The given node is null");
-            }
-            if (!mChildren.Contains(node))
-            {
-                throw new exception.NodeDoesNotExistException("The given node is not a child");
-            }
-            return mChildren.IndexOf(node);
-        }
-
-        /// <summary>
-        /// Gets the child <see cref="TreeNode"/> at a given index
-        /// </summary>
-        /// <param name="index">The given index</param>
-        /// <returns>The child <see cref="TreeNode"/> at the given index</returns>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref localName="index"/> is out if range, 
-        /// that is not between <c>0</c> and <c>GetChildCount-1</c></exception>
-        public TreeNode GetChild(int index)
-        {
-            if (index < 0 || mChildren.Count <= index)
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
-                                                                              "Could not get child at index {0:0} - index is out of bounds",
-                                                                              index));
-            }
-            return mChildren[index];
-        }
-
-        /// <summary>
         /// Gets the parent <see cref="TreeNode"/> of the instance
         /// </summary>
         /// <returns>The parent</returns>
         public TreeNode Parent
         {
             get { return mParent; }
-        }
-
-        /// <summary>
-        /// Gets the number of children
-        /// </summary>
-        /// <returns>The number of children</returns>
-        public int ChildCount
-        {
-            get { return mChildren.Count; }
-        }
-
-        /// <summary>
-        /// Gets a list of the child <see cref="TreeNode"/>s of this
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<TreeNode> ListOfChildren
-        {
-            get { return new List<TreeNode>(mChildren); }
         }
 
 
@@ -1432,7 +1382,7 @@ namespace urakawa.core
             {
                 exportedNode.AddProperty(prop.Export(destPres));
             }
-            foreach (TreeNode child in ListOfChildren)
+            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
             {
                 exportedNode.AppendChild(child.Export(destPres));
             }
@@ -1450,9 +1400,9 @@ namespace urakawa.core
             {
                 TreeNode p = Parent;
                 if (p == null) return null;
-                int i = p.IndexOf(this);
-                if (i + 1 >= p.ChildCount) return null;
-                return p.GetChild(i + 1);
+                int i = p.Children.IndexOf(this);
+                if (i + 1 >= p.mChildren.Count) return null;
+                return p.mChildren.Get(i + 1);
             }
         }
 
@@ -1466,9 +1416,9 @@ namespace urakawa.core
             {
                 TreeNode p = Parent;
                 if (p == null) return null;
-                int i = p.IndexOf(this);
+                int i = p.Children.IndexOf(this);
                 if (i == 0) return null;
-                return p.GetChild(i - 1);
+                return p.mChildren.Get(i - 1);
             }
         }
 
@@ -1539,7 +1489,7 @@ namespace urakawa.core
         /// <param name="insertIndex">The index at which to insert the new child</param>
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when <paramref localName="insertIndex"/> is out if range, 
-        /// that is not between <c>0</c> and <c>GetChildCount-1</c></exception>
+        /// that is not between <c>0</c> and <c>GetmChildren.Count-1</c></exception>
         /// <exception cref="exception.MethodParameterIsNullException">
         /// Thrown when <paramref localName="node"/> is null</exception>
         /// <exception cref="exception.NodeNotDetachedException">
@@ -1587,11 +1537,11 @@ namespace urakawa.core
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when <paramref localName="index"/> is out of bounds, 
         /// that is not the index of a child 
-        /// (child indexes range from <c>0</c> to <c>GetChildCount-1</c>)
+        /// (child indexes range from <c>0</c> to <c>GetmChildren.Count-1</c>)
         /// </exception>
         public TreeNode RemoveChild(int index)
         {
-            TreeNode removedChild = GetChild(index);
+            TreeNode removedChild = mChildren.Get(index);
             removedChild.mParent = null;
             mChildren.RemoveAt(index);
             NotifyChildRemoved(this, removedChild, index);
@@ -1609,7 +1559,11 @@ namespace urakawa.core
         /// Thrown when <paramref localName="node"/> is not a child of the instance <see cref="TreeNode"/></exception>
         public TreeNode RemoveChild(TreeNode node)
         {
-            int index = IndexOf(node);
+            int index = Children.IndexOf(node);
+            if (index == -1)
+            {
+                throw new NodeDoesNotExistException("The given node is not a children of this node !");
+            }
             return RemoveChild(index);
         }
 
@@ -1628,7 +1582,11 @@ namespace urakawa.core
         /// </exception>
         public void InsertBefore(TreeNode node, TreeNode anchorNode)
         {
-            int index = IndexOf(anchorNode);
+            int index = Children.IndexOf(anchorNode);
+            if (index == -1)
+            {
+                throw new NodeDoesNotExistException("The given node is not a children of this node !");
+            }
             Insert(node, index);
         }
 
@@ -1647,8 +1605,12 @@ namespace urakawa.core
         /// </exception>
         public void InsertAfter(TreeNode node, TreeNode anchorNode)
         {
-            int index = IndexOf(anchorNode) + 1;
-            Insert(node, index);
+            int index = Children.IndexOf(anchorNode);
+            if (index == -1)
+            {
+                throw new NodeDoesNotExistException("The given node is not a children of this node !");
+            }
+            Insert(node, index+1);
         }
 
         /// <summary>
@@ -1661,14 +1623,14 @@ namespace urakawa.core
         /// Thrown when parameter <paranref localName="node"/> is null</exception>
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when index is out if range, 
-        /// that is when <paramref localName="index"/> is not between <c>0</c> and <c>GetChildCount-1</c>
+        /// that is when <paramref localName="index"/> is not between <c>0</c> and <c>GetmChildren.Count-1</c>
         /// </exception>
         /// <exception cref="exception.NodeNotDetachedException">
         /// Thrown when <paramref localName="node"/> is already attached as a child of a parent 
         /// </exception>
         public TreeNode ReplaceChild(TreeNode node, int index)
         {
-            TreeNode replacedChild = GetChild(index);
+            TreeNode replacedChild = mChildren.Get(index);
             Insert(node, index);
             replacedChild.Detach();
             return replacedChild;
@@ -1691,7 +1653,12 @@ namespace urakawa.core
         /// </exception>
         public TreeNode ReplaceChild(TreeNode node, TreeNode oldNode)
         {
-            return ReplaceChild(node, IndexOf(oldNode));
+            int index = Children.IndexOf(oldNode);
+            if (index == -1)
+            {
+                throw new NodeDoesNotExistException("The given node is not a children of this node !");
+            }
+            return ReplaceChild(node, index);
         }
 
         /// <summary>
@@ -1707,7 +1674,7 @@ namespace urakawa.core
         /// </exception>
         public void AppendChild(TreeNode node)
         {
-            Insert(node, ChildCount);
+            Insert(node, mChildren.Count);
         }
 
         /// <summary>
@@ -1757,7 +1724,7 @@ namespace urakawa.core
                 throw new exception.NodeIsDescendantException(
                     "Can not append the children of a descendant node");
             }
-            while (node.ChildCount > 0)
+            while (node.mChildren.Count > 0)
             {
                 AppendChild(node.RemoveChild(0));
             }
@@ -1818,7 +1785,7 @@ namespace urakawa.core
                     "Both nodes in a swap need to have a parent");
             }
             TreeNode thisParent = Parent;
-            int thisIndex = thisParent.IndexOf(this);
+            int thisIndex = thisParent.Children.IndexOf(this);
             Detach();
             TreeNode nodeParent = node.Parent;
             nodeParent.InsertAfter(this, node);
@@ -1828,7 +1795,7 @@ namespace urakawa.core
         /// <summary>
         /// Splits <c>this</c> at the child at a given <paramref localName="index"/>, 
         /// producing a new <see cref="TreeNode"/> with the children 
-        /// at indexes <c><paramref localName="index"/></c> to <c>GetChildCount()-1</c> 
+        /// at indexes <c><paramref localName="index"/></c> to <c>GetmChildren.Count()-1</c> 
         /// and leaving <c>this</c> with the children at indexes <c>0</c> to <paramref localName="index"/>-1
         /// </summary>
         /// <param name="index">The index of the child at which to split</param>
@@ -1838,22 +1805,22 @@ namespace urakawa.core
         /// </param>
         /// <returns>
         /// The new <see cref="TreeNode"/> with the children 
-        /// at indexes <c><paramref localName="index"/></c> to <c>GetChildCount()-1</c> 
+        /// at indexes <c><paramref localName="index"/></c> to <c>GetmChildren.Count()-1</c> 
         /// and optionally with a copy of the <see cref="Property"/>s
         /// </returns>
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when <paramref localName="index"/> is out of bounds, 
-        /// that is not between <c>0</c> and <c>GetChildCount()-1</c>
+        /// that is not between <c>0</c> and <c>GetmChildren.Count()-1</c>
         /// </exception>
         public TreeNode SplitChildren(int index, bool copyProperties)
         {
-            if (index < 0 || ChildCount <= index)
+            if (index < 0 || mChildren.Count <= index)
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The given index at which to split children is out of bounds");
             }
             TreeNode res = Copy(false, copyProperties);
-            while (index < ChildCount)
+            while (index < mChildren.Count)
             {
                 res.AppendChild(RemoveChild(index));
             }
@@ -1933,14 +1900,14 @@ namespace urakawa.core
                     }
                 }
             }
-            if (ChildCount != otherz.ChildCount)
+            if (mChildren.Count != otherz.mChildren.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            for (int i = 0; i < ChildCount; i++)
+            for (int i = 0; i < mChildren.Count; i++)
             {
-                if (!GetChild(i).ValueEquals(otherz.GetChild(i)))
+                if (!mChildren.Get(i).ValueEquals(otherz.mChildren.Get(i)))
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                     return false;

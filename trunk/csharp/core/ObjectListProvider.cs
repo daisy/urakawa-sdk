@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using urakawa.core;
 
 namespace urakawa
 {
@@ -140,6 +141,30 @@ namespace urakawa
             lock (LOCK)
             {
                 return m_objects[index];
+            }
+        }
+
+        public void Insert(int index, T obj)
+        {
+            lock (LOCK)
+            {
+                m_objects.Insert(index, obj);
+            }
+        }
+
+        public void RemoveAt(int index)
+        {
+            lock (LOCK)
+            {
+                m_objects.RemoveAt(index);
+            }
+        }
+
+        public int IndexOf(T obj)
+        {
+            lock (LOCK)
+            {
+                return m_objects.IndexOf(obj);
             }
         }
     }
