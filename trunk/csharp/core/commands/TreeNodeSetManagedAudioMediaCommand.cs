@@ -79,7 +79,7 @@ namespace urakawa.commands
 
             if (ManagedAudioMedia.HasActualAudioMediaData)
             {
-                m_ListOfUsedMediaData.Add(ManagedAudioMedia.AudioMediaData);
+                m_UsedMediaData.Add(ManagedAudioMedia.AudioMediaData);
             }
 
             ShortDescription = "Add new audio";
@@ -110,18 +110,18 @@ namespace urakawa.commands
             {
                 if (((ManagedAudioMedia)PreviousMedia).HasActualAudioMediaData)
                 {
-                    m_ListOfUsedMediaData.Add(((ManagedAudioMedia)PreviousMedia).AudioMediaData);
+                    m_UsedMediaData.Add(((ManagedAudioMedia)PreviousMedia).AudioMediaData);
                 }
             }
             else if (PreviousMedia is SequenceMedia)
             {
-                foreach (Media media in ((SequenceMedia)PreviousMedia).ListOfItems)
+                foreach (Media media in ((SequenceMedia)PreviousMedia).ChildMedias.ContentsAs_YieldEnumerable)
                 {
                     if (media is ManagedAudioMedia)
                     {
                         if (((ManagedAudioMedia)media).HasActualAudioMediaData)
                         {
-                            m_ListOfUsedMediaData.Add(((ManagedAudioMedia)media).AudioMediaData);
+                            m_UsedMediaData.Add(((ManagedAudioMedia)media).AudioMediaData);
                         }
                     }
                 }
@@ -152,12 +152,12 @@ namespace urakawa.commands
             chProp.SetMedia(audioChannel, m_PreviousMedia);
         }
 
-        private List<MediaData> m_ListOfUsedMediaData = new List<MediaData>();
+        private List<MediaData> m_UsedMediaData = new List<MediaData>();
         public override IEnumerable<MediaData> UsedMediaData
         {
             get
             {
-                return m_ListOfUsedMediaData;
+                return m_UsedMediaData;
             }
         }
 

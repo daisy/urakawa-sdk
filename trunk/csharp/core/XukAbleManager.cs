@@ -137,7 +137,7 @@ namespace urakawa
                 }
                 if (objectToRemove != null)
                 {
-                    m_managedObjects.Remove(obj);
+                    m_managedObjects.Remove(objectToRemove);
                     return;
                 }
             }
