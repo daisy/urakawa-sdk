@@ -42,7 +42,7 @@ namespace urakawa.media.data.utilities
                 if (prop is ChannelsProperty)
                 {
                     ChannelsProperty chProp = (ChannelsProperty) prop;
-                    foreach (Channel ch in chProp.ListOfUsedChannels)
+                    foreach (Channel ch in chProp.UsedChannels)
                     {
                         if (chProp.GetMedia(ch) is IManaged)
                         {

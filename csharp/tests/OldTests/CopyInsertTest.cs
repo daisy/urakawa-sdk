@@ -43,15 +43,15 @@ namespace urakawa.oldTests
         public urakawa.media.TextMedia GetTextMedia(TreeNode node)
         {
             ChannelsProperty channelsProp = (ChannelsProperty) node.GetProperty(typeof (ChannelsProperty));
-            Channel textChannel;
-            IList<Channel> channelsList = channelsProp.ListOfUsedChannels;
-            for (int i = 0; i < channelsList.Count; i++)
+            
+            //IList<Channel> channelsList = channelsProp.UsedChannels;
+            //for (int i = 0; i < channelsList.Count; i++)
+            foreach (Channel ch in channelsProp.UsedChannels)
             {
-                string channelName = ((Channel) channelsList[i]).Name;
+                string channelName = ch.Name;
                 if (channelName == "obi.text") //Project.TextChannel)
                 {
-                    textChannel = (Channel) channelsList[i];
-                    return (urakawa.media.TextMedia) channelsProp.GetMedia(textChannel);
+                    return (media.TextMedia) channelsProp.GetMedia(ch);
                 }
             }
             return null;
