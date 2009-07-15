@@ -1,12 +1,9 @@
 using System;
-using System.Diagnostics;
 using System.Xml;
 using System.Collections.Generic;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
-using urakawa.media.data.audio;
-using urakawa.media.timing;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
@@ -42,9 +39,9 @@ namespace urakawa
             {
                 string newId = String.Format(strFormat, startIndex);
 
-                if (!DataProviderManager.HasUid(newId)
-                    && !ChannelsManager.HasUid(newId)
-                    && !MediaDataManager.HasUid(newId))
+                if (!DataProviderManager.IsManagerOf(newId)
+                    && !ChannelsManager.IsManagerOf(newId)
+                    && !MediaDataManager.IsManagerOf(newId))
                 {
                     return newId;
                 }
@@ -344,7 +341,7 @@ namespace urakawa
                 if (!usedMediaData.Contains(mm.MediaData)) usedMediaData.Add(mm.MediaData);
             }
             List<DataProvider> usedDataProviders = new List<DataProvider>();
-            foreach (MediaData md in MediaDataManager.ListOfMediaData)
+            foreach (MediaData md in MediaDataManager.ListOfManagedObjects)
             {
                 if (usedMediaData.Contains(md))
                 {
@@ -362,7 +359,7 @@ namespace urakawa
                     md.Delete();
                 }
             }
-            foreach (DataProvider dp in DataProviderManager.ListOfDataProviders)
+            foreach (DataProvider dp in DataProviderManager.ListOfManagedObjects)
             {
                 if (!usedDataProviders.Contains(dp)) dp.Delete();
             }

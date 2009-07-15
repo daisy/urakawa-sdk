@@ -17,6 +17,30 @@ namespace urakawa.command
     /// </summary>
     public abstract class Command : WithPresentation, IChangeNotifier, IUndoableAction
     {
+        public override bool ValueEquals(WithPresentation other)
+        {
+            if (!base.ValueEquals(other))
+            {
+                return false;
+            }
+
+            Command otherz = other as Command;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            if (LongDescription != otherz.LongDescription)
+            {
+                return false;
+            }
+            if (ShortDescription != otherz.ShortDescription)
+            {
+                return false;
+            }
+            return true;
+        }
+
         protected override void XukInAttributes(XmlReader source)
         {
             base.XukInAttributes(source);

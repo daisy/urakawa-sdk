@@ -120,34 +120,6 @@ namespace urakawa.media
 
         #region Media Members
 
-        /// <summary>
-        /// Determines if the <see cref="Media"/> is continuous
-        /// </summary>
-        /// <returns>A <see cref="bool"/> indicating if the <see cref="Media"/> is continuous</returns>
-        public override bool IsContinuous
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// Determines if <c>this</c> is a descrete media (which it is)
-        /// </summary>
-        /// <returns><c>true</c></returns>
-        public override bool IsDiscrete
-        {
-            get { return true; }
-        }
-
-        /// <summary>
-        /// Determines if <c>this</c>is a sequence media (which it is not)
-        /// </summary>
-        /// <returns><c>false</c></returns>
-        public override bool IsSequence
-        {
-            get { return false; }
-        }
-
-
 
         /// <summary>
         /// Exports the external text media to a destination <see cref="Presentation"/>
@@ -352,24 +324,24 @@ namespace urakawa.media
         #region IValueEquatable<Media> Members
 
 
-        /// <summary>
-        /// Compares <c>this</c> with a given other <see cref="Media"/> for equality
-        /// </summary>
-        /// <param name="other">The other <see cref="Media"/></param>
-        /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(Media other)
+        public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            ExternalTextMedia otherText = (ExternalTextMedia)other;
-            if (otherText.Src != Src)
+
+            ExternalTextMedia otherz = other as ExternalTextMedia;
+            if (otherz == null)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
+
+            if (Src != otherz.Src)
+            {
+                return false;
+            }
+
             return true;
         }
 

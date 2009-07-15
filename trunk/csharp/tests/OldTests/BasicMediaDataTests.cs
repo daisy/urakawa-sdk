@@ -18,7 +18,7 @@ namespace urakawa.oldTests
         [Test]
         public void CheckNumberOfFileDataProviders()
         {
-            int count = mProject.GetPresentation(0).DataProviderManager.ListOfDataProviders.Count;
+            int count = mProject.GetPresentation(0).DataProviderManager.ListOfManagedObjects.Count;
             Assert.AreEqual(
                 2, count, "Invalid number of DataProviders, expected 2, but found {0:0}", count);
         }

@@ -36,7 +36,7 @@ namespace urakawa.media.data
         protected override void InitializeInstance(MediaData instance)
         {
             base.InitializeInstance(instance);
-            Presentation.MediaDataManager.AddMediaData(instance);
+            Presentation.MediaDataManager.AddManagedObject(instance);
         }
 
         private Type mDefaultAudioMediaDataType = typeof(WavAudioMediaData);

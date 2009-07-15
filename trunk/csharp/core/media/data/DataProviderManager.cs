@@ -10,33 +10,19 @@ namespace urakawa.media.data
     /// <summary>
     /// Manager for <see cref="DataProvider"/>s
     /// </summary>
-    public sealed class DataProviderManager : XukAble
+    public sealed class DataProviderManager : XukAbleManager<DataProvider>
     {
 
         public override string GetTypeNameFormatted()
         {
             return XukStrings.DataProviderManager;
         }
-        private Presentation mPresentation;
-
-        /// <summary>
-        /// Gets the <see cref="Presentation"/> associated with <c>this</c>
-        /// </summary>
-        /// <returns>The owning <see cref="Presentation"/></returns>
-        public Presentation Presentation
-        {
-            get
-            {
-                return mPresentation;
-            }
-        }
 
         public DataProviderManager(Presentation pres)
+            : base(pres, "DP")
         {
-            mPresentation = pres;
             mDataFileDirectory = null;
             m_CompareByteStreamsDuringValueEqual = true;
-            m_DataProviders = new List<DataProvider>();
         }
 
         public void AllowCopyDataOnUriChanged(bool enable)
@@ -50,11 +36,6 @@ namespace urakawa.media.data
                 Presentation.RootUriChanged -= Presentation_rootUriChanged;
             }
         }
-
-        private List<DataProvider> m_DataProviders;
-
-        //private Dictionary<string, DataProvider> mDataProvidersDictionary = new Dictionary<string, DataProvider>();
-        //private Dictionary<DataProvider, string> mReverseLookupDataProvidersDictionary = new Dictionary<DataProvider, string>();
 
         private List<string> mXukedInFilDataProviderPaths = new List<string>();
         private string mDataFileDirectory;
@@ -359,7 +340,7 @@ namespace urakawa.media.data
             get
             {
                 List<FileDataProvider> res = new List<FileDataProvider>();
-                foreach (DataProvider prov in ListOfDataProviders)
+                foreach (DataProvider prov in ListOfManagedObjects)
                 {
                     if (prov is FileDataProvider)
                     {
@@ -401,260 +382,10 @@ namespace urakawa.media.data
             }
             else
             {
-                string uid = GetUidOfDataProvider(provider);
-                RemoveDataProvider(uid, provider);
-            }
-        }
+                //string uid = GetUidOfManagedObject(provider);
+                //RemoveManagedObject(uid);
 
-
-        /// <summary>
-        /// Detaches the <see cref="DataProvider"/> with a given UID from the manager
-        /// </summary>
-        /// <param name="uid">The given UID</param>
-        /// <param name="delete">A <see cref="bool"/> indicating if the removed data provider should be deleted</param>
-        public void RemoveDataProvider(string uid, bool delete)
-        {
-            DataProvider provider = GetDataProvider(uid);
-            if (delete)
-            {
-                provider.Delete();
-            }
-            else
-            {
-                RemoveDataProvider(uid, provider);
-            }
-        }
-
-        private void RemoveDataProvider(string uid, DataProvider provider)
-        {
-            m_DataProviders.Remove(provider);
-            //mDataProvidersDictionary.Remove(uid);
-            //mReverseLookupDataProvidersDictionary.Remove(provider);
-        }
-
-        public void RegenerateUids()
-        {
-            ulong index = 0;
-
-            List<DataProvider> list = new List<DataProvider>(m_DataProviders);
-            m_DataProviders.Clear();
-
-            foreach (DataProvider obj in list)
-            {
-                string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
-                obj.Uid = newUid;
-                m_DataProviders.Add(obj);
-            }
-
-            //ICollection<string> originalUids = new List<string>(mDataProvidersDictionary.Keys);
-            //foreach (string originalUid in originalUids)
-            //{
-            //    DataProvider dp = mDataProvidersDictionary[originalUid];
-            //    mDataProvidersDictionary.Remove(originalUid);
-            //    string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
-            //    dp.Uid = newUid;
-            //    mDataProvidersDictionary.Add(newUid, dp);
-            //    mReverseLookupDataProvidersDictionary[dp] = newUid;
-            //}
-        }
-        /// <summary>
-        /// Gets the UID of a given <see cref="DataProvider"/>
-        /// </summary>
-        /// <param name="provider">The given data provider</param>
-        /// <returns>The UID of <paramref name="provider"/></returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="provider"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.IsNotManagerOfException">
-        /// Thrown when data provider <paramref name="provider"/> is not managed by <c>this</c>
-        /// </exception>
-        public string GetUidOfDataProvider(DataProvider provider)
-        {
-            if (provider == null)
-            {
-                throw new exception.MethodParameterIsNullException("Can not get the uid of a null DataProvider");
-            }
-
-            foreach (DataProvider dp in m_DataProviders)
-            {
-                if (dp == provider) return dp.Uid;
-            }
-            throw new exception.IsNotManagerOfException("The given DataProvider is not managed by this");
-
-            //if (!mReverseLookupDataProvidersDictionary.ContainsKey(provider))
-            //{
-            //    throw new exception.IsNotManagerOfException("The given DataProvider is not managed by this");
-            //}
-            //return mReverseLookupDataProvidersDictionary[provider];
-        }
-
-        /// <summary>
-        /// Gets the <see cref="DataProvider"/> with a given UID
-        /// </summary>
-        /// <param name="uid">The given UID</param>
-        /// <returns>The data provider with the given UID</returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="uid"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.IsNotManagerOfException">
-        /// When no data providers managed by <c>this</c> has the given UID
-        /// </exception>
-        public DataProvider GetDataProvider(string uid)
-        {
-            if (uid == null)
-            {
-                throw new exception.MethodParameterIsNullException("Can not get the data provider with UID null");
-            }
-            if (!HasUid(uid)) // mDataProvidersDictionary.ContainsKey(uid))
-            {
-                throw new exception.IsNotManagerOfException(
-                    String.Format("The manager does not manage a DataProvider with UID {0}", uid));
-            }
-
-            foreach (DataProvider dp in m_DataProviders)
-            {
-                if (dp.Uid == uid) return dp;
-            }
-
-            throw new exception.IsNotManagerOfException(
-                String.Format("The manager does not manage a DataProvider with UID {0}", uid));
-
-            //return mDataProvidersDictionary[uid];
-        }
-
-        /// <summary>
-        /// Adds a <see cref="DataProvider"/> to the manager with a given uid
-        /// </summary>
-        /// <param name="provider">The data provider to add</param>
-        /// <param name="uid">The uid to assign to the added data provider</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="provider"/> or <paramref name="uid"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.IsAlreadyManagerOfException">
-        /// Thrown when the data provider is already added tothe manager 
-        /// or if the manager already manages another data provider with the given uid
-        /// </exception>
-        /// <exception cref="exception.IsNotManagerOfException">Thrown if the data provides does not have <c>this</c> as manager</exception>
-        private void AddDataProvider(DataProvider provider, string uid)
-        {
-            if (provider == null)
-            {
-                throw new exception.MethodParameterIsNullException("Can not manage a null DataProvider");
-            }
-            if (uid == null)
-            {
-                throw new exception.MethodParameterIsNullException("A managed DataProvider can not have uid null");
-            }
-            if (m_DataProviders.Contains(provider)) // mReverseLookupDataProvidersDictionary.ContainsKey(provider))
-            {
-                throw new exception.IsAlreadyManagerOfException(
-                    "The given DataProvider is already managed by the manager");
-            }
-            if (HasUid(uid)) //mDataProvidersDictionary.ContainsKey(uid)
-            {
-                throw new exception.IsAlreadyManagerOfException(String.Format(
-                                                                    "Another DataProvider with uid {0} is already manager by the manager",
-                                                                    uid));
-            }
-            if (provider.Presentation.DataProviderManager != this)
-            {
-                throw new exception.IsNotManagerOfException(
-                    "The given DataProvider does not return this as DataProviderManager");
-            }
-            provider.Uid = uid;
-            m_DataProviders.Add(provider);
-
-            //mDataProvidersDictionary.Add(uid, provider);
-            //mReverseLookupDataProvidersDictionary.Add(provider, uid);
-        }
-
-        /// <summary>
-        /// Adds a <see cref="DataProvider"/> to be managed by the manager
-        /// </summary>
-        /// <param name="provider">The data provider</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="provider"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.IsAlreadyManagerOfException">
-        /// Thrown when <paramref name="provider"/> is already managed by <c>this</c>
-        /// </exception>
-        /// <exception cref="exception.IsNotManagerOfException">
-        /// Thrown when <paramref name="provider"/> does not return <c>this</c> as owning manager
-        /// </exception>
-        /// <seealso cref="DataProvider.DataProviderManager"/>
-        public void AddDataProvider(DataProvider provider)
-        {
-            AddDataProvider(provider, Presentation.GetNewUid(UID_PREFIX, ref m_UidIndex));
-        }
-
-        /// <summary>
-        /// Determines if the manager manages a <see cref="DataProvider"/> with a given uid
-        /// </summary>
-        /// <param name="uid">The given uid</param>
-        /// <returns>
-        /// A <see cref="bool"/> indicating if the manager manages a <see cref="DataProvider"/> with the given uid
-        /// </returns>
-        public bool IsManagerOf(string uid)
-        {
-            return HasUid(uid);
-            //return mDataProvidersDictionary.ContainsKey(uid);
-        }
-
-        /// <summary>
-        /// Sets the uid of a given <see cref="DataProvider"/> to a given value
-        /// </summary>
-        /// <param name="provider">The given data provider</param>
-        /// <param name="uid">The given uid</param>
-        private void SetDataProviderUid(DataProvider provider, string uid)
-        {
-            RemoveDataProvider(provider, false);
-            provider.Uid = uid;
-            AddDataProvider(provider, uid);
-        }
-
-        public const string UID_PREFIX = "DTPRV";
-        private ulong m_UidIndex = 0;
-
-        public bool HasUid(string uid)
-        {
-            foreach (DataProvider dp in m_DataProviders)
-            {
-                if (dp.Uid == uid) return true;
-            }
-            return false;
-            //return mDataProvidersDictionary.ContainsKey(uid);
-        }
-
-        //private string GetNextUid()
-        //{
-        //    ulong i = 0;
-        //    while (i < UInt64.MaxValue)
-        //    {
-        //        string newId = String.Format(
-        //            "DPID{0:0000}", i);
-        //        if (!mDataProvidersDictionary.ContainsKey(newId)) return newId;
-        //        i++;
-        //    }
-        //    throw new OverflowException("YOU HAVE WAY TOO MANY DATAPROVIDERS!!!");
-        //}
-
-        /// <summary>
-        /// Gets a list of the <see cref="DataProvider"/>s managed by the manager
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<DataProvider> ListOfDataProviders
-        {
-            get
-            {
-                return new List<DataProvider>(m_DataProviders); // mDataProvidersDictionary.Values);
-            }
-        }
-
-        public bool IsEmpty
-        {
-            get
-            {
-                return m_DataProviders.Count == 0;
+                RemoveManagedObject(provider);
             }
         }
 
@@ -674,14 +405,14 @@ namespace urakawa.media.data
         public void RemoveUnusedDataProviders(bool delete)
         {
             List<DataProvider> usedDataProviders = new List<DataProvider>();
-            foreach (MediaData md in Presentation.MediaDataManager.ListOfMediaData)
+            foreach (MediaData md in Presentation.MediaDataManager.ListOfManagedObjects)
             {
                 foreach (DataProvider prov in md.ListOfUsedDataProviders)
                 {
                     if (!usedDataProviders.Contains(prov)) usedDataProviders.Add(prov);
                 }
             }
-            foreach (DataProvider prov in ListOfDataProviders)
+            foreach (DataProvider prov in ListOfManagedObjects)
             {
                 if (!usedDataProviders.Contains(prov))
                 {
@@ -699,11 +430,9 @@ namespace urakawa.media.data
         /// </summary>
         protected override void Clear()
         {
-        //    mDataProvidersDictionary.Clear();
-        //    mReverseLookupDataProvidersDictionary.Clear();
-            m_DataProviders.Clear();
+            ClearManagedObjects();
 
-            mDataFileDirectory = null;    
+            mDataFileDirectory = null;
             mXukedInFilDataProviderPaths.Clear();
             base.Clear();
         }
@@ -775,8 +504,8 @@ namespace urakawa.media.data
                         {
                             XukInDataProvider(source, handler);
                         }
-                    
-                    //else if (!source.IsEmptyElement)
+
+                        //else if (!source.IsEmptyElement)
                         //{
                         //    source.ReadSubtree().Close();
                         //}
@@ -818,7 +547,7 @@ namespace urakawa.media.data
 
                     if (IsManagerOf(prov.Uid))
                     {
-                        if (GetDataProvider(prov.Uid) != prov)
+                        if (GetManagedObject(prov.Uid) != prov)
                         {
                             throw new exception.XukException(
                                 String.Format("Another DataProvider exists in the manager with uid {0}", prov.Uid));
@@ -826,7 +555,7 @@ namespace urakawa.media.data
                     }
                     else
                     {
-                        SetDataProviderUid(prov, prov.Uid);
+                        SetUidOfManagedObject(prov, prov.Uid);
                     }
                 }
                 else if (!source.IsEmptyElement)
@@ -875,11 +604,11 @@ namespace urakawa.media.data
                             {
                                 prov.Uid = uid;
                             }
-                            
+
 
                             if (IsManagerOf(prov.Uid))
                             {
-                                if (GetDataProvider(prov.Uid) != prov)
+                                if (GetManagedObject(prov.Uid) != prov)
                                 {
                                     throw new exception.XukException(
                                         String.Format("Another DataProvider exists in the manager with uid {0}", prov.Uid));
@@ -887,7 +616,7 @@ namespace urakawa.media.data
                             }
                             else
                             {
-                                SetDataProviderUid(prov, prov.Uid);
+                                SetUidOfManagedObject(prov, prov.Uid);
                             }
                             addedProvider = true;
                         }
@@ -920,7 +649,7 @@ namespace urakawa.media.data
             Uri presBaseUri = Presentation.RootUri;
             Uri dfdUri = new Uri(presBaseUri, DataFileDirectory);
             destination.WriteAttributeString(XukStrings.DataFileDirectoryPath, presBaseUri.MakeRelativeUri(dfdUri).ToString());
-            
+
         }
 
         /// <summary>
@@ -938,7 +667,7 @@ namespace urakawa.media.data
             {
                 destination.WriteStartElement(XukStrings.DataProviders, XukNamespaceUri);
             }
-            foreach (DataProvider prov in ListOfDataProviders)
+            foreach (DataProvider prov in ListOfManagedObjects)
             {
                 if (false && Presentation.Project.IsPrettyFormat())
                 {
@@ -964,28 +693,29 @@ namespace urakawa.media.data
 
         #region IValueEquatable<IDataProviderManager> Members
 
-        /// <summary>
-        /// Determines of <c>this</c> has the same value as a given other instance
-        /// </summary>
-        /// <param name="other">The other instance</param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        /// <remarks>The base path of the <see cref="DataProviderManager"/>s are not compared</remarks>
-        public bool ValueEquals(DataProviderManager other)
+        public override bool ValueEquals(XukAbleManager<DataProvider> other)
         {
-            if (other == null) return false;
-            DataProviderManager o = other;
-            if (o.DataFileDirectory != DataFileDirectory) return false;
-            List<DataProvider> oDP = ListOfDataProviders;
-            if (o.ListOfDataProviders.Count != oDP.Count) return false;
-            foreach (DataProvider dp in oDP)
+            if (!base.ValueEquals(other))
             {
-                string uid = dp.Uid;
-                if (!o.IsManagerOf(uid)) return false;
-                if (!o.GetDataProvider(uid).ValueEquals(dp)) return false;
+                return false;
             }
+            DataProviderManager otherManager = other as DataProviderManager;
+
+            if (otherManager == null)
+            {
+                return false;
+            }
+
+            if (otherManager.DataFileDirectory != DataFileDirectory) return false;
+
             return true;
         }
 
         #endregion
+
+        public override bool CanAddManagedObject(DataProvider managedObject)
+        {
+            return true;
+        }
     }
 }

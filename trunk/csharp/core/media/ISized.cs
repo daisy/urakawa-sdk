@@ -2,6 +2,17 @@ using System;
 
 namespace urakawa.media
 {
+    //http://www.w3.org/TR/SMIL3/smil-layout.html#adef-fit
+    public enum ResizeMode
+    {
+        Fill,
+        Hidden,
+        Meet,
+        MeetBest,
+        Scroll,
+        Slice
+    }
+
     /// <summary>
     /// Summary description for ISized.
     /// </summary>
@@ -11,6 +22,8 @@ namespace urakawa.media
         /// Event fired after the size (height or width) of the <see cref="ISized"/> has changed
         /// </summary>
         event EventHandler<events.media.SizeChangedEventArgs> SizeChanged;
+
+        ResizeMode ResizeMode { get; set; }
 
         /// <summary>
         /// Get the width of the <see cref="ISized"/> object.

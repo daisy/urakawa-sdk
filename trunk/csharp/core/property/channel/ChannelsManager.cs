@@ -11,345 +11,91 @@ namespace urakawa.property.channel
     /// Can only manage channels that inherit <see cref="Channel"/>
     /// TODO: Check XUKIn/XukOut implementation
     /// </summary>
-    public sealed class ChannelsManager : XukAble, IValueEquatable<ChannelsManager>
+    public sealed class ChannelsManager : XukAbleManager<Channel>
     {
         public override string GetTypeNameFormatted()
         {
             return XukStrings.ChannelsManager;
         }
-        private Presentation mPresentation;
 
-        /// <summary>
-        /// Gets the <see cref="Presentation"/> associated with <c>this</c>
-        /// </summary>
-        /// <returns>The owning <see cref="Presentation"/></returns>
-        public Presentation Presentation
+        public ChannelsManager(Presentation pres) : base(pres, "CH")
         {
-            get
-            {
-                return mPresentation;
-            }
         }
-
-        public ChannelsManager(Presentation pres)
-        {
-            mPresentation = pres;
-
-            //mChannels = new Dictionary<string, Channel>();
-            m_Channels = new List<Channel>();
-        }
-
-
-        /// <summary>
-        /// A dictionary of the <see cref="Channel"/>s managed by the manager, sorted by their uid
-        /// </summary>
-        //private IDictionary<string, Channel> mChannels;
-
-        private List<Channel> m_Channels;
 
         #region ChannelsManager Members
 
-        /// <summary>
-        /// Adds an existing  <see cref="Channel"/> to the list of <see cref="Channel"/>s 
-        /// managed by the <see cref="ChannelsManager"/>
-        /// </summary>
-        /// <param name="channel">The <see cref="Channel"/> to add</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="channel"/> is null
-        /// </exception>
-        /// <exception cref="exception.ChannelAlreadyExistsException">
-        /// Thrown when <paramref localName="channel"/> is already in the managers list of channels
-        /// </exception>
-        public void AddChannel(Channel channel)
+
+        public override void RemoveManagedObject(Channel channel)
         {
-            AddChannel(channel, Presentation.GetNewUid(UID_PREFIX, ref m_UidIndex));
-        }
-
-        /// <summary>
-        /// Adds an existing  <see cref="Channel"/> to the list of <see cref="Channel"/>s 
-        /// managed by the <see cref="ChannelsManager"/> with a given UID
-        /// </summary>
-        /// <param name="channel">The <see cref="Channel"/> to add</param>
-        /// <param name="uid">The UID assigned to the added channel</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="channel"/> or <paramref name="uid"/> are <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.MethodParameterIsEmptyStringException">
-        /// Thrown when <paramref name="uid"/> is an empty string</exception>
-        /// <exception cref="exception.ChannelAlreadyExistsException">
-        /// Thrown when <paramref name="channel"/> is already in the managers list of channels
-        /// or when another channel exists with the given uid.
-        /// </exception>
-        public void AddChannel(Channel channel, string uid)
-        {
-            if (channel == null)
-            {
-                throw new exception.MethodParameterIsNullException("channel parameter is null");
-            }
-            if (string.IsNullOrEmpty(uid))
-            {
-                throw new exception.MethodParameterIsNullException("uid parameter cannot be null or empty");
-            }
-
-            //if (mChannels.Values.Contains(channel))
-            if (m_Channels.Contains(channel))
-            {
-                throw new exception.ChannelAlreadyExistsException(
-                    "The given channel is already managed by the ChannelsManager");
-            }
-            if (HasUid(uid))//mChannels.ContainsKey(uid))
-            {
-                throw new exception.ChannelAlreadyExistsException(
-                    String.Format("Another channel exists with uid {0}", uid));
-            }
-            channel.Uid = uid;
-            //mChannels.Add(uid, channel);
-            m_Channels.Add(channel);
-        }
-
-        public const string UID_PREFIX = "CH";
-        private ulong m_UidIndex = 0;
-
-        public bool HasUid(string uid)
-        {
-            foreach (Channel ch in m_Channels)
-            {
-                if (ch.Uid == uid) return true;
-            }
-            return false;
-            //return mChannels.ContainsKey(uid);
-        }
-
-        //private string GetNewId()
-        //{
-        //    ulong i = 0;
-        //    while (i < UInt64.MaxValue)
-        //    {
-        //        string newId = String.Format(
-        //            "CHID{0:0000}", i);
-        //        if (!mChannels.ContainsKey(newId)) return newId;
-        //        i++;
-        //    }
-        //    throw new OverflowException("YOU HAVE WAY TOO MANY CHANNELS!!!");
-        //}
-
-        /// <summary>
-        /// Removes an <see cref="Channel"/> from the manager
-        /// </summary>
-        /// <param name="channel">The <see cref="Channel"/> to remove</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="channel"/> is null
-        /// </exception>
-        /// <exception cref="exception.ChannelDoesNotExistException">
-        /// Thrown when <paramref localName="channel"/> is not in the managers list of channels
-        /// </exception>
-        public void RemoveChannel(Channel channel)
-        {
-            RemoveChannel(GetUidOfChannel(channel));
-        }
-
-
-        /// <summary>
-        /// Removes an <see cref="Channel"/> from the manager by uid
-        /// </summary>
-        /// <param name="uid">The uid of the <see cref="Channel"/> to remove</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="uid"/> is null
-        /// </exception>
-        /// <exception cref="exception.MethodParameterIsEmptyStringException">
-        /// Thrown when <paramref localName="uid"/> is an empty string
-        /// </exception>
-        /// <exception cref="exception.ChannelDoesNotExistException">
-        /// Thrown when <paramref localName="uid"/> is the uid of any managed channel
-        /// </exception>
-        public void RemoveChannel(string uid)
-        {
-            Channel channel = GetChannel(uid);
             ClearChannelTreeNodeVisitor clChVisitor = new ClearChannelTreeNodeVisitor(channel);
             Presentation.RootNode.AcceptDepthFirst(clChVisitor);
-            //mChannels.Remove(uid);
-            m_Channels.Remove(channel);
+
+            base.RemoveManagedObject(channel);
         }
 
-        /// <summary>
-        /// Gets a lists of the <see cref="Channel"/>s managed by the <see cref="ChannelsManager"/>
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<Channel> ListOfChannels
+        public override bool CanAddManagedObject(Channel managedObject)
         {
-            get
-            {
-                return new List<Channel>(m_Channels); //mChannels.Values);
-            }
+            return true;
         }
 
-        /// <summary>
-        /// Gets a list of the uids of <see cref="Channel"/>s managed by the <see cref="ChannelsManager"/>
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<string> ListOfUids
+        public bool HasChannel<T>() where T : Channel, new()
         {
-            get
+            List<Channel> listCh = Presentation.ChannelsManager.ListOfManagedObjects;
+            foreach (Channel ch in listCh)
             {
-                List<string> list = new List<string>(m_Channels.Count);
-                foreach (Channel ch in m_Channels)
+                if (ch is T)
                 {
-                    list.Add(ch.Uid);
-                }
-                return list;
-                //return new List<string>(mChannels.Keys);
-            }
-        }
-
-        public bool IsEmpty
-        {
-            get
-            {
-                return m_Channels.Count == 0;
-            }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Channel"/> with a given xuk uid
-        /// </summary>
-        /// <param name="uid">The given xuk uid</param>
-        /// <returns>The <see cref="Channel"/> with the given xuk uid</returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="uid"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.MethodParameterIsEmptyStringException">
-        /// Thrown when <paramref name="uid"/> is an empty string
-        /// </exception>
-        /// <exception cref="exception.ChannelDoesNotExistException">
-        /// Thrown when <c>this</c> does not manage a <see cref="Channel"/> with the given xuk uid
-        /// </exception>
-        public Channel GetChannel(string uid)
-        {
-            if (string.IsNullOrEmpty(uid))
-            {
-                throw new exception.MethodParameterIsNullException("uid cannot be null or empty");
-            }
-
-            foreach (Channel ch in m_Channels)
-            {
-                if (ch.Uid == uid) return ch;
-            }
-            throw new exception.ChannelDoesNotExistException(String.Format(
-                                                                     "The channels manager does not manage a channel with xuk uid {0}",
-                                                                     uid));
-
-            //if (!mChannels.Keys.Contains(uid))
-            //{
-            //    throw new exception.ChannelDoesNotExistException(String.Format(
-            //                                                         "The channels manager does not manage a channel with xuk uid {0}",
-            //                                                         uid));
-            //}
-            //return mChannels[uid];
-        }
-
-
-        /// <summary>
-        /// Gets the Xuk id of a given channel
-        /// </summary>
-        /// <param name="ch">The given channel</param>
-        /// <returns>The Xuk uid of the given channel</returns>
-        /// <exception cref="exception.ChannelDoesNotExistException">
-        /// Thrown when the given channel is not managed by <c>this</c>
-        /// </exception>
-        public string GetUidOfChannel(Channel ch)
-        {
-            if (ch == null)
-            {
-                throw new exception.MethodParameterIsNullException("channel parameter is null");
-            }
-
-            foreach (Channel channel in m_Channels)
-            {
-                if (ch == channel) return ch.Uid;
-            }
-            throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
-
-
-            //foreach (string Id in mChannels.Keys)
-            //{
-            //    if (mChannels[Id] == ch)
-            //    {
-            //        return Id;
-            //    }
-            //}
-            //throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
-        }
-        private void SetUidOfChannel(Channel ch, string uid)
-        {
-            if (ch == null)
-            {
-                throw new exception.MethodParameterIsNullException("channel parameter is null");
-            }
-
-
-            if (string.IsNullOrEmpty(uid))
-            {
-                throw new exception.MethodParameterIsEmptyStringException("uid parameter cannot be null or empty string");
-            }
-
-            //foreach (string Id in mChannels.Keys)
-            //{
-            //    if (mChannels[Id] == ch)
-            //    {
-            //        mChannels.Remove(Id);
-            //        ch.Uid = uid;
-            //        mChannels.Add(uid, ch);
-            //        return;
-            //    }
-            //}
-
-            foreach (Channel channel in m_Channels)
-            {
-                if (channel == ch)
-                {
-                    ch.Uid = uid;
-                    return;
+                    return true;
                 }
             }
-            throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
+            return false;
         }
 
-        public void RegenerateUids()
+        public bool HasAudioChannel
         {
-            ulong index = 0;
-
-            List<Channel> channels = new List<Channel>(m_Channels);
-            m_Channels.Clear();
-
-            foreach (Channel ch in channels)
-            {
-                string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
-                ch.Uid = newUid;
-                m_Channels.Add(ch);
-            }
-
-            //ICollection<string> originalUids = new List<string>(mChannels.Keys);
-            //foreach (string originalUid in originalUids)
-            //{
-            //    Channel ch = mChannels[originalUid];
-            //    mChannels.Remove(originalUid);
-            //    string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
-            //    ch.Uid = newUid;
-            //    mChannels.Add(newUid, ch);
-            //}
+            get { return HasChannel<AudioChannel>(); }
         }
-
-        /// <summary>
-        /// Removes all <see cref="Channel"/>s from the manager
-        /// </summary>
-        public void ClearChannels()
+        public bool HasImageChannel
         {
-            foreach (Channel ch in ListOfChannels)
-            {
-                RemoveChannel(ch);
-            }
+            get { return HasChannel<ImageChannel>(); }
+        }
+        public bool HasTextChannel
+        {
+            get { return HasChannel<TextChannel>(); }
         }
 
+        public T GetOrCreateChannel<T>() where T : Channel, new()
+        {
+            T channel = null;
+            List<Channel> listCh = Presentation.ChannelsManager.ListOfManagedObjects;
+            foreach (Channel ch in listCh)
+            {
+                if (ch is T)
+                {
+                    channel = ch as T;
+                    break;
+                }
+            }
+            if (channel == null)
+            {
+                channel = Presentation.ChannelFactory.Create<T>();
+                //channel = Presentation.ChannelFactory.Create(typeof(T));
+            }
+            return channel;
+        }
+
+        public AudioChannel GetOrCreateAudioChannel()
+        {
+            return GetOrCreateChannel<AudioChannel>();
+        }
+        public TextChannel GetOrCreateTextChannel()
+        {
+            return GetOrCreateChannel<TextChannel>();
+        }
+        public ImageChannel GetOrCreateImageChannel()
+        {
+            return GetOrCreateChannel<ImageChannel>();
+        }
 
         /// <summary>
         /// this is a helper function for getting one or more channels by its localName
@@ -359,25 +105,11 @@ namespace urakawa.property.channel
         public List<Channel> GetChannelsByName(string channelName)
         {
             List<Channel> res = new List<Channel>();
-            foreach (Channel ch in m_Channels) //mChannels.Values)
+            foreach (Channel ch in ListOfManagedObjects)
             {
                 if (ch.Name == channelName) res.Add(ch);
             }
             return res;
-        }
-
-
-        /// <summary>
-        /// Determines if the manager manages a <see cref="Channel"/> with a given uid
-        /// </summary>
-        /// <param name="uid">The given uid</param>
-        /// <returns>
-        /// A <see cref="bool"/> indicating if the manager manages a <see cref="Channel"/> with the given uid
-        /// </returns>
-        public bool IsManagerOf(string uid)
-        {
-            return HasUid(uid);
-            //return mChannels.ContainsKey(uid);
         }
 
         #endregion
@@ -389,8 +121,7 @@ namespace urakawa.property.channel
         /// </summary>
         protected override void Clear()
         {
-            //mChannels.Clear();
-            m_Channels.Clear();
+            ClearManagedObjects();
             base.Clear();
         }
 
@@ -472,8 +203,18 @@ namespace urakawa.property.channel
                     {
                         throw new exception.XukException("mChannelItem element has no uid attribute");
                     }
-
-                    SetUidOfChannel(newCh, newCh.Uid);
+                    if (IsManagerOf(newCh.Uid))
+                    {
+                        if (GetManagedObject(newCh.Uid) != newCh)
+                        {
+                            throw new exception.XukException(
+                                String.Format("Another MediaData exists in the manager with uid {0}", newCh.Uid));
+                        }
+                    }
+                    else
+                    {
+                        SetUidOfManagedObject(newCh, newCh.Uid);
+                    }
                 }
                 else if (!source.IsEmptyElement)
                 {
@@ -505,15 +246,17 @@ namespace urakawa.property.channel
                                 newCh.Uid = uid;
                             }
 
-                            try
+                            if (IsManagerOf(newCh.Uid))
                             {
-                                SetUidOfChannel(newCh, newCh.Uid);
+                                if (GetManagedObject(newCh.Uid) != newCh)
+                                {
+                                    throw new exception.XukException(
+                                        String.Format("Another MediaData exists in the manager with uid {0}", newCh.Uid));
+                                }
                             }
-                            catch (exception.CheckedException e)
+                            else
                             {
-                                throw new exception.XukException(
-                                    String.Format("Could not add Xuked In channel: {0}", e.Message),
-                                    e);
+                                SetUidOfManagedObject(newCh, newCh.Uid);
                             }
                             foundChannel = true;
                         }
@@ -546,14 +289,14 @@ namespace urakawa.property.channel
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            List<string> uids = ListOfUids;
-            if (uids.Count > 0)
+            List<Channel> channels = ListOfManagedObjects;
+            if (channels.Count > 0)
             {
                 if (Presentation.Project.IsPrettyFormat())
                 {
                     destination.WriteStartElement(XukStrings.Channels);
                 }
-                foreach (string uid in uids)
+                foreach (Channel ch in channels)
                 {
                     if (false && Presentation.Project.IsPrettyFormat())
                     {
@@ -561,7 +304,7 @@ namespace urakawa.property.channel
                         //destination.WriteAttributeString(XukStrings.Uid, uid);
                     }
 
-                    GetChannel(uid).XukOut(destination, baseUri, handler);
+                    ch.XukOut(destination, baseUri, handler);
 
                     if (false && Presentation.Project.IsPrettyFormat())
                     {
@@ -577,98 +320,5 @@ namespace urakawa.property.channel
         }
 
         #endregion
-
-        #region IValueEquatable<ChannelsManager> Members
-
-        /// <summary>
-        /// Determines of <c>this</c> has the same value as a given other instance
-        /// </summary>
-        /// <param name="other">The other instance</param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        public bool ValueEquals(ChannelsManager other)
-        {
-            List<string> thisUids = ListOfUids;
-            List<string> otherUids = other.ListOfUids;
-            if (thisUids.Count != otherUids.Count)
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !");
-                return false;
-            }
-            foreach (string uid in thisUids)
-            {
-                if (!otherUids.Contains(uid))
-                {
-                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                    return false;
-                }
-                if (!GetChannel(uid).ValueEquals(other.GetChannel(uid)))
-                {
-                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        #endregion
-
-        public bool HasChannel<T>() where T : Channel, new()
-        {
-            List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
-            foreach (Channel ch in listCh)
-            {
-                if (ch is T)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool HasAudioChannel
-        {
-            get { return HasChannel<AudioChannel>(); }
-        }
-        public bool HasImageChannel
-        {
-            get { return HasChannel<ImageChannel>(); }
-        }
-        public bool HasTextChannel
-        {
-            get { return HasChannel<TextChannel>(); }
-        }
-
-        public T GetOrCreateChannel<T>() where T : Channel, new()
-        {
-            T channel = null;
-            List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
-            foreach (Channel ch in listCh)
-            {
-                if (ch is T)
-                {
-                    channel = ch as T;
-                    break;
-                }
-            }
-            if (channel == null)
-            {
-                channel = Presentation.ChannelFactory.Create<T>();
-                //channel = Presentation.ChannelFactory.Create(typeof(T));
-            }
-            return channel;
-        }
-
-        public AudioChannel GetOrCreateAudioChannel()
-        {
-            return GetOrCreateChannel<AudioChannel>();
-        }
-        public TextChannel GetOrCreateTextChannel()
-        {
-            return GetOrCreateChannel<TextChannel>();
-        }
-        public ImageChannel GetOrCreateImageChannel()
-        {
-            return GetOrCreateChannel<ImageChannel>();
-        }
     }
 }

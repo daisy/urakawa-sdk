@@ -14,7 +14,7 @@ namespace urakawa
         /// <param name="o1">An instance of <see cref="IValueEquatable{T}"/></param>
         /// <param name="o2">Another instance of <see cref="IValueEquatable{T}"/></param>
         /// <param name="o3">A third instance of <see cref="IValueEquatable{T}"/></param>
-        public static void ValueEquals_BasicTests<T>(T o1, T o2, T o3) where T : class, IValueEquatable<T>
+        public static void ValueEquals_BasicTests<T>(T o1, T o2, T o3) where T : WithPresentation
         {
             Assert.IsNotNull(o1, "The parameter o1 may not be null");
             Assert.IsNotNull(o2, "The parameter o2 may not be null");
@@ -27,15 +27,15 @@ namespace urakawa
             Assert.IsTrue(o1.ValueEquals(o1), "An instance of IValueEquatable<T> is value equal to itself");
             Assert.IsTrue(o2.ValueEquals(o2), "An instance of IValueEquatable<T> is value equal to itself");
             Assert.IsTrue(o3.ValueEquals(o3), "An instance of IValueEquatable<T> is value equal to itself");
-            ValueEquals_TransitiveTests<T>(o1, o2, o3);
-            ValueEquals_TransitiveTests<T>(o1, o3, o2);
-            ValueEquals_TransitiveTests<T>(o2, o1, o3);
-            ValueEquals_TransitiveTests<T>(o2, o3, o1);
-            ValueEquals_TransitiveTests<T>(o3, o1, o2);
-            ValueEquals_TransitiveTests<T>(o3, o2, o1);
+            ValueEquals_TransitiveTests(o1, o2, o3);
+            ValueEquals_TransitiveTests(o1, o3, o2);
+            ValueEquals_TransitiveTests(o2, o1, o3);
+            ValueEquals_TransitiveTests(o2, o3, o1);
+            ValueEquals_TransitiveTests(o3, o1, o2);
+            ValueEquals_TransitiveTests(o3, o2, o1);
         }
 
-        private static void ValueEquals_TransitiveTests<T>(T o1, T o2, T o3) where T : class, IValueEquatable<T>
+        private static void ValueEquals_TransitiveTests<T>(T o1, T o2, T o3) where T : WithPresentation
         {
             bool t12 = o1.ValueEquals(o2);
             bool t23 = o2.ValueEquals(o3);

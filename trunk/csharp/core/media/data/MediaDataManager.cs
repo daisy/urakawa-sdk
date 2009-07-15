@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Xml;
 using urakawa.media.data.audio;
 using urakawa.progress;
@@ -10,48 +9,26 @@ namespace urakawa.media.data
     /// <summary>
     /// Default implementation of a <see cref="MediaDataManager"/>
     /// </summary>
-    public sealed class MediaDataManager : XukAble, IValueEquatable<MediaDataManager>
+    public sealed class MediaDataManager : XukAbleManager<MediaData>
     {
 
         public override string GetTypeNameFormatted()
         {
             return XukStrings.MediaDataManager;
         }
-        private Presentation mPresentation;
 
-        /// <summary>
-        /// Gets the <see cref="Presentation"/> associated with <c>this</c>
-        /// </summary>
-        /// <returns>The owning <see cref="Presentation"/></returns>
-        public Presentation Presentation
+        public MediaDataManager(Presentation pres) : base(pres, "MD")
         {
-            get
-            {
-                return mPresentation;
-            }
-        }
-
-        public MediaDataManager(Presentation pres)
-        {
-            mPresentation = pres;
-
             mDefaultPCMFormat = new PCMFormatInfo();
             mEnforceSinglePCMFormat = true;
-
-            m_MediaDatas = new List<MediaData>();
         }
 
-        private List<MediaData> m_MediaDatas;
-
-        //private Dictionary<string, MediaData> mMediaDataDictionary = new Dictionary<string, MediaData>();
-        //private Dictionary<MediaData, string> mReverseLookupMediaDataDictionary = new Dictionary<MediaData, string>();
-        
         private PCMFormatInfo mDefaultPCMFormat;
         private bool mEnforceSinglePCMFormat;
 
         private bool isNewDefaultPCMFormatOk(PCMFormatInfo newDefault)
         {
-            foreach (MediaData md in ListOfMediaData)
+            foreach (MediaData md in ListOfManagedObjects)
             {
                 AudioMediaData amd = md as AudioMediaData;
                 if (amd != null)
@@ -188,162 +165,8 @@ namespace urakawa.media.data
             }
         }
 
-
-        /// <summary>
-        /// Gets the <see cref="MediaData"/> with a given UID
-        /// </summary>
-        /// <param name="uid">The given UID</param>
-        /// <returns>The <see cref="MediaData"/> with the given UID 
-        /// or <c>null</c> if no such <see cref="MediaData"/> exists</returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="uid"/> is <c>null</c>
-        /// </exception>
-        public MediaData GetMediaData(string uid)
+        public override bool CanAddManagedObject(MediaData data)
         {
-            if (uid == null)
-            {
-                throw new exception.MethodParameterIsNullException("The UID must not be null");
-            }
-            if (!HasUid(uid))
-            {
-                throw new exception.IsNotManagerOfException(
-                    String.Format("The manager does not manage a MediaData with UID {0}", uid));
-            }
-
-            foreach (MediaData md in m_MediaDatas)
-            {
-                if (md.Uid == uid) return md;
-            }
-
-            throw new exception.IsNotManagerOfException(
-                String.Format("The manager does not manage a MediaData with UID {0}", uid));
-
-            //if (mMediaDataDictionary.ContainsKey(uid))
-            //{
-            //    return mMediaDataDictionary[uid];
-            //}
-            //return null;
-        }
-
-        /// <summary>
-        /// Gets the UID of a given <see cref="MediaData"/>
-        /// </summary>
-        /// <param name="data">The given <see cref="MediaData"/></param>
-        /// <returns>The UID of <see cref="MediaData"/> <paramref name="data"/></returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="data"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.IsNotManagerOfException">
-        /// Thrown when <c>this</c> is not the manager of <paramref name="data"/>
-        /// </exception>
-        public string GetUidOfMediaData(MediaData data)
-        {
-            if (data == null)
-            {
-                throw new exception.MethodParameterIsNullException("Can not get the UID of a null AudioMediaData");
-            }
-
-            foreach (MediaData md in m_MediaDatas)
-            {
-                if (md == data) return md.Uid;
-            }
-
-            throw new exception.IsNotManagerOfException(
-                "The given AudioMediaData is not managed by this MediaDataManager");
-
-            //if (!mReverseLookupMediaDataDictionary.ContainsKey(data))
-            //{
-            //    throw new exception.IsNotManagerOfException(
-            //        "The given AudioMediaData is not managed by this MediaDataManager");
-            //}
-            //return mReverseLookupMediaDataDictionary[data];
-        }
-
-
-        public const string UID_PREFIX = "MEDAT";
-        private ulong m_UidIndex = 0;
-
-        private System.Threading.Mutex mUidMutex = new System.Threading.Mutex();
-
-        public bool HasUid(string uid)
-        {
-            foreach (MediaData md in m_MediaDatas)
-            {
-                if (md.Uid == uid) return true;
-            }
-            return false;
-            //return mMediaDataDictionary.ContainsKey(uid);
-        }
-
-        //private string GetNewUid()
-        //{
-        //    while (true)
-        //    {
-        //        if (mUidNo < UInt64.MaxValue)
-        //        {
-        //            mUidNo++;
-        //        }
-        //        else
-        //        {
-        //            mUidPrefix += "X";
-        //        }
-        //        string key = String.Format("{0}{1:00000000}", mUidPrefix, mUidNo);
-        //        if (!mMediaDataDictionary.ContainsKey(key))
-        //        {
-        //            return key;
-        //        }
-        //    }
-        //}
-
-        /// <summary>
-        /// Adds a <see cref="MediaData"/> to the <see cref="MediaDataManager"/>
-        /// </summary>
-        /// <param name="data">The <see cref="MediaData"/> to add</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="data"/> is <c>null</c>
-        /// </exception>
-        public void AddMediaData(MediaData data)
-        {
-            if (data == null)
-            {
-                throw new exception.MethodParameterIsNullException("Can not add null AudioMediaData to the manager");
-            }
-            mUidMutex.WaitOne();
-            try
-            {
-                string uid = Presentation.GetNewUid(UID_PREFIX, ref m_UidIndex);
-                AddMediaData(data, uid);
-            }
-            finally
-            {
-                mUidMutex.ReleaseMutex();
-            }
-        }
-
-        /// <summary>
-        /// Adds a <see cref="MediaData"/> to the <see cref="MediaDataManager"/>, assigning it a given uid
-        /// </summary>
-        /// <param name="data">The <see cref="MediaData"/> to add</param>
-        /// <param name="uid">The uid to assign to the added <see cref="MediaData"/></param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="data"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.IsAlreadyManagerOfException">
-        /// Thrown when another <see cref="MediaData"/> has the same uid
-        /// </exception>
-        private void AddMediaData(MediaData data, string uid)
-        {
-            if (HasUid(uid)) //mMediaDataDictionary.ContainsKey(uid))
-            {
-                throw new exception.IsAlreadyManagerOfException(String.Format(
-                                                                    "There is already another AudioMediaData with uid {0}",
-                                                                    uid));
-            }
-            if (m_MediaDatas.Contains(data)) // mReverseLookupDataProvidersDictionary.ContainsKey(provider))
-            {
-                throw new exception.IsAlreadyManagerOfException(
-                    "The given MediaData is already managed by the manager");
-            }
             if (EnforceSinglePCMFormat)
             {
                 if (data is AudioMediaData)
@@ -351,125 +174,11 @@ namespace urakawa.media.data
                     AudioMediaData amdata = (AudioMediaData)data;
                     if (!amdata.PCMFormat.ValueEquals(DefaultPCMFormat))
                     {
-                        throw new exception.InvalidDataFormatException(
-                            "The AudioMediaData being added has a PCM format that is in-compatible with the manager (breaks enforcing of single PCM format)");
+                        return false;
                     }
                 }
             }
-            data.Uid = uid;
-            m_MediaDatas.Add(data);
-
-            //mMediaDataDictionary.Add(uid, data);
-            //mReverseLookupMediaDataDictionary.Add(data, uid);
-        }
-
-        /// <summary>
-        /// Sets the uid of a given managed <see cref="MediaData"/> to a given value
-        /// </summary>
-        /// <param name="data">The given <see cref="MediaData"/></param>
-        /// <param name="uid">The given uid value</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="data"/> or <paramref name="uid"/> is <c>null</c> 
-        /// </exception>
-        /// <exception cref="exception.IsNotManagerOfException">
-        /// Thrown when the manager instance does not manage <paramref name="data"/>
-        /// </exception>
-        /// <exception cref="exception.IsAlreadyManagerOfException">
-        /// Thrown when <paramref name="uid"/> is already the uid of another <see cref="MediaData"/>
-        /// </exception>
-        private void SetDataMediaDataUid(MediaData data, string uid)
-        {
-            RemoveMediaData(data);
-            data.Uid = uid;
-            AddMediaData(data, uid);
-        }
-
-        public void RegenerateUids()
-        {
-            mUidMutex.WaitOne();
-            try
-            {
-                ulong index = 0;
-
-                List<MediaData> list = new List<MediaData>(m_MediaDatas);
-                m_MediaDatas.Clear();
-
-                foreach (MediaData obj in list)
-                {
-                    string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
-                    obj.Uid = newUid;
-                    m_MediaDatas.Add(obj);
-                }
-
-                //ICollection<string> originalUids = new List<string>(mMediaDataDictionary.Keys);
-                //foreach (string originalUid in originalUids)
-                //{
-                //    MediaData md = mMediaDataDictionary[originalUid];
-                //    mMediaDataDictionary.Remove(originalUid);
-                //    string newUid = Presentation.GetNewUid(UID_PREFIX, ref index);
-                //    md.Uid = newUid;
-                //    mMediaDataDictionary.Add(newUid, md);
-                //    mReverseLookupMediaDataDictionary[md] = newUid;
-                //}
-            }
-            finally
-            {
-                mUidMutex.ReleaseMutex();
-            }
-        }
-
-        /// <summary>
-        /// Determines if the manager manages a <see cref="MediaData"/> with a given uid
-        /// </summary>
-        /// <param name="uid">The given uid</param>
-        /// <returns>
-        /// A <see cref="bool"/> indicating if the manager manages a <see cref="MediaData"/> with the given uid
-        /// </returns>
-        public bool IsManagerOf(string uid)
-        {
-            return HasUid(uid);
-            //return mMediaDataDictionary.ContainsKey(uid);
-        }
-
-        /// <summary>
-        /// Removes a <see cref="MediaData"/> from <c>this</c>
-        /// </summary>
-        /// <param name="data">The <see cref="MediaData"/> to remove</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="data"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.IsNotManagerOfException">
-        /// Thrown when <paramref name="data"/> is not managed by <c>this</c>
-        /// </exception>
-        public void RemoveMediaData(MediaData data)
-        {
-            RemoveMediaData(GetUidOfMediaData(data));
-        }
-
-        /// <summary>
-        /// Removes a <see cref="MediaData"/> from <c>this</c>
-        /// </summary>
-        /// <param name="uid">The uid of the <see cref="MediaData"/> to remove</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="uid"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.IsNotManagerOfException">
-        /// Thrown when no managed <see cref="MediaData"/> has the given uid
-        /// </exception>
-        public void RemoveMediaData(string uid)
-        {
-            MediaData data = GetMediaData(uid);
-            mUidMutex.WaitOne();
-            try
-            {
-                m_MediaDatas.Remove(data);
-                //mMediaDataDictionary.Remove(uid);
-                //mReverseLookupMediaDataDictionary.Remove(data);
-            }
-            finally
-            {
-                mUidMutex.ReleaseMutex();
-            }
+            return true;
         }
 
         /// <summary>
@@ -507,7 +216,7 @@ namespace urakawa.media.data
         /// </exception>
         public MediaData CopyMediaData(string uid)
         {
-            MediaData data = GetMediaData(uid);
+            MediaData data = GetManagedObject(uid);
             if (data == null)
             {
                 throw new exception.IsNotManagerOfException(String.Format(
@@ -517,44 +226,6 @@ namespace urakawa.media.data
             return CopyMediaData(data);
         }
 
-        /// <summary>
-        /// Gets a list of all <see cref="MediaData"/> managed by <c>this</c>
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<MediaData> ListOfMediaData
-        {
-            get
-            {   
-                return new List<MediaData>(m_MediaDatas); //mMediaDataDictionary.Values);
-            }
-        }
-
-        /// <summary>
-        /// Gets a list of the uids assigned to <see cref="MediaData"/> by the manager
-        /// </summary>
-        /// <returns>The list of uids</returns>
-        public List<string> ListOfUids
-        {
-            get
-            {
-
-                List<string> list = new List<string>(m_MediaDatas.Count);
-                foreach (MediaData md in m_MediaDatas)
-                {
-                    list.Add(md.Uid);
-                }
-                return list;
-                //return new List<string>(mMediaDataDictionary.Keys);
-            }
-        }
-
-        public bool IsEmpty
-        {
-            get
-            {
-                return m_MediaDatas.Count == 0;
-            }
-        }
 
         #region IXukAble Members
 
@@ -563,18 +234,7 @@ namespace urakawa.media.data
         /// </summary>
         protected override void Clear()
         {
-            mUidMutex.WaitOne();
-            try
-            {
-                m_MediaDatas.Clear();
-                
-                //mMediaDataDictionary.Clear();
-                //mReverseLookupMediaDataDictionary.Clear();
-            }
-            finally
-            {
-                mUidMutex.ReleaseMutex();
-            }
+            ClearManagedObjects();
             base.Clear();
         }
 
@@ -717,9 +377,19 @@ namespace urakawa.media.data
                         throw new exception.XukException(
                             "uid attribute is missing from mMediaDataItem attribute");
                     }
+                    if (IsManagerOf(data.Uid))
+                    {
+                        if (GetManagedObject(data.Uid) != data)
+                        {
+                            throw new exception.XukException(
+                                String.Format("Another MediaData exists in the manager with uid {0}", data.Uid));
+                        }
+                    }
+                    else
+                    {
+                        SetUidOfManagedObject(data, data.Uid);
+                    }
 
-
-                    SetDataMediaDataUid(data, data.Uid);
                 }
                 else if (!source.IsEmptyElement)
                 {
@@ -751,7 +421,18 @@ namespace urakawa.media.data
                                 data.Uid = uid;
                             }
 
-                            SetDataMediaDataUid(data, data.Uid);
+                            if (IsManagerOf(data.Uid))
+                            {
+                                if (GetManagedObject(data.Uid) != data)
+                                {
+                                    throw new exception.XukException(
+                                        String.Format("Another MediaData exists in the manager with uid {0}", data.Uid));
+                                }
+                            }
+                            else
+                            {
+                                SetUidOfManagedObject(data, data.Uid);
+                            }
                         }
 
                     }
@@ -801,7 +482,7 @@ namespace urakawa.media.data
                 destination.WriteStartElement(XukStrings.MediaDatas, XukNamespaceUri);
             }
             //foreach (string uid in mMediaDataDictionary.Keys)
-            foreach (MediaData md in m_MediaDatas)
+            foreach (MediaData md in ListOfManagedObjects)
             {
                 if (false && Presentation.Project.IsPrettyFormat())
                 {
@@ -829,34 +510,29 @@ namespace urakawa.media.data
 
         #region IValueEquatable<MediaDataManager> Members
 
-        /// <summary>
-        /// Determines of <c>this</c> has the same value as a given other instance
-        /// </summary>
-        /// <param name="other">The other instance</param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        public bool ValueEquals(MediaDataManager other)
+        public override bool ValueEquals(XukAbleManager<MediaData> other)
         {
-            if (other == null)
+            if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            List<MediaData> otherMediaData = other.ListOfMediaData;
-            
-            //if (mMediaDataDictionary.Count != otherMediaData.Count)
-            if (m_MediaDatas.Count != otherMediaData.Count)
+            MediaDataManager otherManager = other as MediaDataManager;
+
+            if (otherManager == null)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            foreach (MediaData oMD in otherMediaData)
+
+
+            if (otherManager.EnforceSinglePCMFormat != EnforceSinglePCMFormat)
             {
-                if (!oMD.ValueEquals(GetMediaData(other.GetUidOfMediaData(oMD))))
-                {
-                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                    return false;
-                }
+                return false;
             }
+            if (!otherManager.DefaultPCMFormat.ValueEquals(DefaultPCMFormat))
+            {
+                return false;
+            }
+
             return true;
         }
 

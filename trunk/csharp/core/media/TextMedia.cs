@@ -66,36 +66,6 @@ namespace urakawa.media
 
         #region Media Members
 
-        /// <summary>
-        /// This always returns false, because
-        /// text media is never considered continuous
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsContinuous
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// This always returns true, because
-        /// text media is always considered discrete
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsDiscrete
-        {
-            get { return true; }
-        }
-
-
-        /// <summary>
-        /// This always returns false, because
-        /// a single media object is never considered to be a sequence
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsSequence
-        {
-            get { return false; }
-        }
 
         /// <summary>
         /// Make a copy of this text object
@@ -211,37 +181,5 @@ namespace urakawa.media
 
         #endregion
 
-        #region IValueEquatable<Media> Members
-
-        /// <summary>
-        /// Compares <c>this</c> with a given other <see cref="Media"/> for equality
-        /// </summary>
-        /// <param name="other">The other <see cref="Media"/></param>
-        /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(Media other)
-        {
-            if (!base.ValueEquals(other))
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-
-            //TODO: is there a more reliable way to handle DOS versus UNIX line breaks at the end of the strings ??
-            
-            string str1 = Text;
-            string str2 = ((TextMedia) other).Text;
-
-            str1 = str1.Replace("\r\n", "\n");
-            str2 = str2.Replace("\r\n", "\n");
-
-            if (!str1.Equals(str2))
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !");
-                return false;
-            }
-            return true;
-        }
-
-        #endregion
     }
 }

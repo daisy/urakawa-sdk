@@ -11,6 +11,40 @@ namespace urakawa.media
     /// </summary>
     public class ExternalAudioMedia : AbstractAudioMedia, ILocated, IClipped
     {
+
+        #region IValueEquatable<Media> Members
+
+        public override bool ValueEquals(WithPresentation other)
+        {
+            if (!base.ValueEquals(other))
+            {
+                return false;
+            }
+
+            ExternalAudioMedia otherz = other as ExternalAudioMedia;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            if (Src != otherz.Src)
+            {
+                return false;
+            }
+
+            if (!ClipBegin.IsEqualTo(otherz.ClipBegin))
+            {
+                return false;
+            }
+            if (!ClipEnd.IsEqualTo(otherz.ClipEnd))
+            {
+                return false;
+            }
+
+            return true;
+        }
+        #endregion
+
         public const string DEFAULT_SRC = "file.ext";
         
         public override string GetTypeNameFormatted()
@@ -41,35 +75,6 @@ namespace urakawa.media
 
         #region Media members
 
-        /// <summary>
-        /// This always returns true, because
-        /// audio media is always considered continuous
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsContinuous
-        {
-            get { return true; }
-        }
-
-        /// <summary>
-        /// This always returns false, because
-        /// audio media is never considered discrete
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsDiscrete
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// This always returns false, because
-        /// a single media object is never considered to be a sequence
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsSequence
-        {
-            get { return false; }
-        }
 
         /// <summary>
         /// Copy function which returns an <see cref="AbstractAudioMedia"/> object
@@ -445,40 +450,6 @@ namespace urakawa.media
 
         #endregion
 
-        #region IValueEquatable<Media> Members
-
-        /// <summary>
-        /// Conpares <c>this</c> with a given other <see cref="Media"/> for equality
-        /// </summary>
-        /// <param name="other">The other <see cref="Media"/></param>
-        /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(Media other)
-        {
-            if (!base.ValueEquals(other))
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            ExternalAudioMedia otherAudio = (ExternalAudioMedia) other;
-            if (Src != otherAudio.Src)
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            if (!ClipBegin.IsEqualTo(otherAudio.ClipBegin))
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            if (!ClipEnd.IsEqualTo(otherAudio.ClipEnd))
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            return true;
-        }
-
-        #endregion
 
     }
 }

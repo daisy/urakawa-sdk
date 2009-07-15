@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using System.IO;
-using urakawa.media;
 using urakawa.media.timing;
-using urakawa.media.data.audio;
 using urakawa.events.media.data;
 using urakawa.xuk;
 
@@ -180,7 +176,7 @@ namespace urakawa.media.data.audio
                                                      "The MediaDataManager does not mamage a AudioMediaData with uid {0}",
                                                      uid));
             }
-            MediaData md = Presentation.MediaDataManager.GetMediaData(uid);
+            MediaData md = Presentation.MediaDataManager.GetManagedObject(uid);
             if (!(md is AudioMediaData))
             {
                 throw new exception.XukException(String.Format(
@@ -382,30 +378,30 @@ namespace urakawa.media.data.audio
 
         #region IValueEquatable<Media> Members
 
-        /// <summary>
-        /// Determines of <c>this</c> has the same value as a given other instance
-        /// </summary>
-        /// <param name="other">The other instance</param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>		
-        public override bool ValueEquals(Media other)
+        public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            ManagedAudioMedia otherMAM = (ManagedAudioMedia) other;
 
-            if (otherMAM.HasActualAudioMediaData != HasActualAudioMediaData)
+            ManagedAudioMedia otherz = other as ManagedAudioMedia;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            if (otherz.HasActualAudioMediaData != HasActualAudioMediaData)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (HasActualAudioMediaData && !AudioMediaData.ValueEquals(otherMAM.AudioMediaData))
+            if (HasActualAudioMediaData && !AudioMediaData.ValueEquals(otherz.AudioMediaData))
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
+
             return true;
         }
 

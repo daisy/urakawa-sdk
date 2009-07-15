@@ -7,7 +7,7 @@ namespace urakawa
     /// Base class for classes that are associated with a <see cref="Presentation"/>,
     /// extends <see cref="xuk.XukAble"/> and is therefore also <see cref="xuk.IXukAble"/>
     /// </summary>
-    public abstract class WithPresentation : XukAble
+    public abstract class WithPresentation : XukAble, IValueEquatable<WithPresentation>
     {
         public override bool IsPrettyFormat()
         {
@@ -54,6 +54,26 @@ namespace urakawa
                 }
                 mPresentation = value;
             }
+        }
+
+        public virtual bool ValueEquals(WithPresentation other)
+        {
+            if (other == null)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
+            if (other.GetType() != GetType())
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+            }
+            //if (!this.GetType().IsInstanceOfType(other))
+            //{
+            //    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+            //    return false;
+            //}
+            return true;
         }
     }
 }

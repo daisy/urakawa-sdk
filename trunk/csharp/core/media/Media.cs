@@ -9,7 +9,7 @@ namespace urakawa.media
     /// This is the base interface for all media-related classes and interfaces.  
     /// Media is continuous (time-based) or discrete (static), and is of a specific type.
     /// </summary>
-    public abstract class Media : WithPresentation, IValueEquatable<Media>, IChangeNotifier
+    public abstract class Media : WithPresentation, IChangeNotifier
     {
 
         /// <summary>
@@ -202,24 +202,20 @@ namespace urakawa.media
 
         #region Implementation of IValueEquatable<Media>
 
-        /// <summary>
-        /// Determines of <c>this</c> has the same value as a given other instance
-        /// </summary>
-        /// <param name="other">The other instance</param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        public virtual bool ValueEquals(Media other)
+        public override bool ValueEquals(WithPresentation other)
         {
-            if (other == null)
+            if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (other.GetType() != GetType())
+
+            Media otherz = other as Media;
+            if (otherz == null)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (other.Language != Language)
+
+            if (otherz.Language != Language)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;

@@ -11,7 +11,7 @@ namespace urakawa.property.channel
     /// A <see cref="Channel"/> is used to associate <see cref="Media"/> 
     /// with <see cref="core.TreeNode"/>s via <see cref="ChannelsProperty"/>
     /// </summary>
-    public class Channel : WithPresentation, IValueEquatable<Channel>
+    public class Channel : WithPresentation
     {
         public override string GetTypeNameFormatted()
         {
@@ -286,29 +286,25 @@ namespace urakawa.property.channel
 
         #region IValueEquatable<Channel> Members
 
-        /// <summary>
-        /// Determines of <c>this</c> has the same value as a given other instance
-        /// </summary>
-        /// <param name="other">The other instance</param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        public virtual bool ValueEquals(Channel other)
+        public override bool ValueEquals(WithPresentation other)
         {
-            if (other == null)
+            if (!base.ValueEquals(other))
+            {
+                return false;
+            }
+
+            Channel otherz = other as Channel;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            if (Name != otherz.Name)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (GetType() != other.GetType())
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            if (Name != other.Name)
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
-            if (Language != other.Language)
+            if (Language != otherz.Language)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;

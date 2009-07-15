@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using urakawa.core.visitor;
+using urakawa.events;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.utilities;
@@ -32,8 +33,7 @@ namespace urakawa.core
     /// A node in the core tree of the SDK
     /// </summary>
     [DebuggerDisplay("{getDebugString()}")]
-    public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,
-                            IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
+    public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IChangeNotifier
     {
 
         public TreeNode GetFirstChildWithXmlElementName(string elemName)
@@ -121,7 +121,7 @@ namespace urakawa.core
             if (chProp != null)
             {
                 T channel = null;
-                List<Channel> listCh = Presentation.ChannelsManager.ListOfChannels;
+                List<Channel> listCh = Presentation.ChannelsManager.ListOfManagedObjects;
                 foreach (Channel ch in listCh)
                 {
                     if (ch is T)
@@ -1895,27 +1895,21 @@ namespace urakawa.core
 
         #region IValueEquatable<TreeNode> Members
 
-        /// <summary>
-        /// Compares <c>this</c> with another given <see cref="TreeNode"/> to test for equality. 
-        /// The comparison is deep in that any child <see cref="TreeNode"/>s are also tested,
-        /// but the ancestry is not tested
-        /// </summary>
-        /// <param name="other">The other <see cref="TreeNode"/></param>
-        /// <returns><c>true</c> if the <see cref="TreeNode"/>s are equal, otherwise <c>false</c></returns>
-        public virtual bool ValueEquals(TreeNode other)
+        public override bool ValueEquals(WithPresentation other)
         {
-            if (other == null)
+            if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !");
                 return false;
             }
-            if (other.GetType() != this.GetType())
+
+            TreeNode otherz = other as TreeNode;
+            if (otherz == null)
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
+
             List<Type> thisProps = ListOfUsedPropertyTypes;
-            List<Type> otherProps = other.ListOfUsedPropertyTypes;
+            List<Type> otherProps = otherz.ListOfUsedPropertyTypes;
             if (thisProps.Count != otherProps.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
@@ -1924,7 +1918,7 @@ namespace urakawa.core
             foreach (Type pt in thisProps)
             {
                 List<Property> thisPs = GetListOfProperties(pt);
-                List<Property> otherPs = other.GetListOfProperties(pt);
+                List<Property> otherPs = otherz.GetListOfProperties(pt);
                 if (thisPs.Count != otherPs.Count)
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
@@ -1939,14 +1933,14 @@ namespace urakawa.core
                     }
                 }
             }
-            if (ChildCount != other.ChildCount)
+            if (ChildCount != otherz.ChildCount)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
             for (int i = 0; i < ChildCount; i++)
             {
-                if (!GetChild(i).ValueEquals(other.GetChild(i)))
+                if (!GetChild(i).ValueEquals(otherz.GetChild(i)))
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                     return false;

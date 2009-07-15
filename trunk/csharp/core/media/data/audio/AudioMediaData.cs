@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using urakawa.media.timing;
-using urakawa.media.data.utilities;
 
 namespace urakawa.media.data.audio
 {
@@ -565,31 +562,30 @@ namespace urakawa.media.data.audio
             other.RemoveAudioData(Time.Zero);
         }
 
-        /// <summary>
-        /// Determines of <c>this</c> has the same value as a given other instance
-        /// </summary>
-        /// <param name="other">The other instance</param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>		
-        public override bool ValueEquals(MediaData other)
+        public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            AudioMediaData amdOther = (AudioMediaData) other;
-            if (!PCMFormat.ValueEquals(amdOther.PCMFormat))
+
+            AudioMediaData otherz = other as AudioMediaData;
+            if (otherz == null)
+            {
+                return false;
+            }
+            if (!PCMFormat.ValueEquals(otherz.PCMFormat))
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (GetPCMLength() != amdOther.GetPCMLength())
+            if (GetPCMLength() != otherz.GetPCMLength())
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
 
-            if (HasActualAudioData != amdOther.HasActualAudioData)
+            if (HasActualAudioData != otherz.HasActualAudioData)
             {
                 return false;
             }
@@ -598,10 +594,10 @@ namespace urakawa.media.data.audio
                 Stream thisData = GetAudioData();
                 try
                 {
-                    Stream otherdata = amdOther.GetAudioData();
+                    Stream otherdata = otherz.GetAudioData();
                     try
                     {
-                        if (!PCMDataInfo.CompareStreamData(thisData, otherdata, (int) thisData.Length))
+                        if (!PCMDataInfo.CompareStreamData(thisData, otherdata, (int)thisData.Length))
                         {
                             //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                             return false;
@@ -617,6 +613,7 @@ namespace urakawa.media.data.audio
                     thisData.Close();
                 }
             }
+
             return true;
         }
     }

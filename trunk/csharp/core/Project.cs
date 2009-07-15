@@ -346,19 +346,19 @@ namespace urakawa
         private static void warmUpAllFactories(Presentation pres)
         {
             Channel ch = pres.ChannelFactory.Create();
-            pres.ChannelsManager.RemoveChannel(ch);
+            pres.ChannelsManager.RemoveManagedObject(ch);
             ch = pres.ChannelFactory.CreateAudioChannel();
-            pres.ChannelsManager.RemoveChannel(ch);
+            pres.ChannelsManager.RemoveManagedObject(ch);
             ch = pres.ChannelFactory.CreateTextChannel();
-            pres.ChannelsManager.RemoveChannel(ch);
+            pres.ChannelsManager.RemoveManagedObject(ch);
             ch = pres.ChannelFactory.CreateImageChannel();
-            pres.ChannelsManager.RemoveChannel(ch);
+            pres.ChannelsManager.RemoveManagedObject(ch);
             //
             DataProvider dp = pres.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
             pres.DataProviderManager.RemoveDataProvider(dp, true);
             //
             MediaData md = pres.MediaDataFactory.CreateAudioMediaData();
-            pres.MediaDataManager.RemoveMediaData(md);
+            pres.MediaDataManager.RemoveManagedObject(md);
             //
             pres.CommandFactory.CreateCompositeCommand();
             //
@@ -382,9 +382,9 @@ namespace urakawa
             //
             //TreeNodeFactory.Create(); DONE ALREADY (see above)
 
-            Debug.Assert(pres.DataProviderManager.IsEmpty);
-            Debug.Assert(pres.ChannelsManager.IsEmpty);
-            Debug.Assert(pres.MediaDataManager.IsEmpty);
+            Debug.Assert(pres.DataProviderManager.NumberOfManagedObjects == 0);
+            Debug.Assert(pres.ChannelsManager.NumberOfManagedObjects == 0);
+            Debug.Assert(pres.MediaDataManager.NumberOfManagedObjects == 0);
         }
         /// <summary>
         /// Gets the number of <see cref="Presentation"/>s in the <see cref="Project"/>

@@ -33,7 +33,7 @@ namespace urakawa.property.channel
         {
             base.InitializeInstance(instance);
 
-            Presentation.ChannelsManager.AddChannel(instance);
+            Presentation.ChannelsManager.AddManagedObject(instance);
         }
 
 
