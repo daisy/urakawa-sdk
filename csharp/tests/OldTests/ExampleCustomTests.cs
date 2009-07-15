@@ -110,7 +110,7 @@ namespace urakawa.oldTests
 
         private void TestRootNodeFirstChildCustTreeNodeData(Project proj)
         {
-            ExampleCustomTreeNode firstCh = (ExampleCustomTreeNode) proj.GetPresentation(0).RootNode.GetChild(0);
+            ExampleCustomTreeNode firstCh = (ExampleCustomTreeNode)proj.GetPresentation(0).RootNode.Children.Get(0);
             Assert.AreEqual("Test Ex Cust Tree Node Data", firstCh.CustomTreeNodeData);
         }
 

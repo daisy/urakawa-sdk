@@ -167,10 +167,10 @@ namespace urakawa.core
                     mRootNode.GetProperty(propType), mRootCopy.GetProperty(propType),
                     "Property of copy is just a reference to the property of the original");
             }
-            for (int i = 0; i < mRootCopy.ChildCount; i++)
+            for (int i = 0; i < mRootCopy.Children.Count; i++)
             {
                 Assert.AreNotEqual(
-                    mRootNode.GetChild(i), mRootCopy.GetChild(i),
+                    mRootNode.Children.Get(i), mRootCopy.Children.Get(i),
                     "Child of copy is just a reference of the child of the original");
             }
         }
@@ -187,7 +187,7 @@ namespace urakawa.core
             {
                 Directory.Delete(exportDestProjUri.LocalPath, true);
             }
-            TreeNode nodeToExport = mPresentation.RootNode.GetChild(1);
+            TreeNode nodeToExport = mPresentation.RootNode.Children.Get(1);
             Project exportDestProj = new Project();
             exportDestProj.AddNewPresentation();
             exportDestProj.GetPresentation(0).RootUri = exportDestProjUri;
@@ -203,25 +203,25 @@ namespace urakawa.core
         }
 
         /// <summary>
-        /// Tests the functionality of <see cref="TreeNode.ChildCount"/>
+        /// Tests the functionality of <see cref="TreeNode.Children.Count"/>
         /// </summary>
         [Test]
         public void ChildCount()
         {
-            int initCount = mRootNode.ChildCount;
+            int initCount = mRootNode.Children.Count;
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
-            Assert.AreEqual(initCount + 1, mRootNode.ChildCount,
+            Assert.AreEqual(initCount + 1, mRootNode.Children.Count,
                             "Child count should increase by one when appending a child");
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
-            for (int index = 0; index < mRootNode.ChildCount; index++)
+            for (int index = 0; index < mRootNode.Children.Count; index++)
             {
-                Assert.IsNotNull(mRootNode.GetChild(index),
+                Assert.IsNotNull(mRootNode.Children.Get(index),
                                  String.Format("No child at index {0:0} that is within bounds", index));
             }
-            initCount = mRootNode.ChildCount;
+            initCount = mRootNode.Children.Count;
             mRootNode.RemoveChild(0);
-            Assert.AreEqual(initCount - 1, mRootNode.ChildCount,
+            Assert.AreEqual(initCount - 1, mRootNode.Children.Count,
                             "Child count should decrease by one when removing a child");
         }
 
@@ -229,28 +229,29 @@ namespace urakawa.core
         /// Tests the functionality of the <see cref="TreeNode.Detach"/>
         /// </summary>
         [Test]
-        [ExpectedException(typeof (exception.NodeDoesNotExistException))]
         public void Detach()
         {
             TreeNode newNode = mPresentation.TreeNodeFactory.Create();
             mRootNode.AppendChild(newNode);
             newNode.Detach();
             Assert.IsNull(newNode.Parent, "Parent of detached child must be null");
-            mRootNode.IndexOf(newNode);
+            int index = mRootNode.Children.IndexOf(newNode);
+            Assert.That(index == -1);
         }
 
         /// <summary>
         /// Tests the basics of the <see cref="TreeNode.RemoveChild(TreeNode)"/> method
         /// </summary>
         [Test]
-        [ExpectedException(typeof (exception.NodeDoesNotExistException))]
         public void RemoveChild_Basics()
         {
             TreeNode newNode = mPresentation.TreeNodeFactory.Create();
             mRootNode.AppendChild(newNode);
             mRootNode.RemoveChild(newNode);
             Assert.IsNull(newNode.Parent, "Parent of removed child must be null");
-            mRootNode.IndexOf(newNode);
+
+            int index = mRootNode.Children.IndexOf(newNode);
+            Assert.That(index == -1);
         }
 
         /// <summary>
@@ -268,7 +269,7 @@ namespace urakawa.core
         }
 
         /// <summary>
-        /// Tests the basics of the <see cref="TreeNode.IndexOf"/>
+        /// Tests the basics of the <see cref="TreeNode.Children.IndexOf"/>
         /// </summary>
         [Test]
         public void IndexOf_Basics()
@@ -276,25 +277,25 @@ namespace urakawa.core
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
-            for (int index = 0; index < mRootNode.ChildCount; index++)
+            for (int index = 0; index < mRootNode.Children.Count; index++)
             {
-                Assert.AreEqual(index, mRootNode.IndexOf(mRootNode.GetChild(index)));
+                Assert.AreEqual(index, mRootNode.Children.IndexOf(mRootNode.Children.Get(index)));
             }
         }
 
         /// <summary>
-        /// Tests that a <see cref="exception.NodeDoesNotExistException"/> calling <see cref="TreeNode.IndexOf"/>
+        /// Tests that a <see cref="exception.NodeDoesNotExistException"/> calling <see cref="TreeNode.Children.IndexOf"/>
         /// with a non-child
         /// </summary>
         [Test]
-        [ExpectedException(typeof (exception.NodeDoesNotExistException))]
         public void IndexOf_NonChild()
         {
             TreeNode rootChild = mPresentation.TreeNodeFactory.Create();
             mRootNode.AppendChild(rootChild);
             TreeNode newNode = mPresentation.TreeNodeFactory.Create();
             rootChild.AppendChild(newNode);
-            mRootNode.IndexOf(newNode);
+            int index = mRootNode.Children.IndexOf(newNode);
+            Assert.That(index == -1);
         }
 
         [Test]
@@ -308,10 +309,10 @@ namespace urakawa.core
             mRootNode.AppendChild(rootChild);
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
-            int index = mRootNode.IndexOf(rootChild);
+            int index = mRootNode.Children.IndexOf(rootChild);
             TreeNode newNode = mPresentation.TreeNodeFactory.Create();
             mRootNode.ReplaceChild(newNode, rootChild);
-            Assert.AreEqual(newNode, mRootNode.GetChild(index));
+            Assert.AreEqual(newNode, mRootNode.Children.Get(index));
         }
 
         [Test]
@@ -339,7 +340,7 @@ namespace urakawa.core
         {
             TreeNode new_node = mPresentation.TreeNodeFactory.Create();
             mRootNode.AppendChild(new_node);
-            Assert.AreEqual(mRootNode.ChildCount - 1, mRootNode.IndexOf(new_node),
+            Assert.AreEqual(mRootNode.Children.Count - 1, mRootNode.Children.IndexOf(new_node),
                             "A newly appended child is at the last index");
         }
 
@@ -384,7 +385,7 @@ namespace urakawa.core
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
-            mRootNode.Insert(mPresentation.TreeNodeFactory.Create(), mRootNode.ChildCount + 2);
+            mRootNode.Insert(mPresentation.TreeNodeFactory.Create(), mRootNode.Children.Count + 2);
         }
 
         [Test]
@@ -400,11 +401,11 @@ namespace urakawa.core
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
-            int index = mRootNode.ChildCount/2;
-            TreeNode anchorNode = mRootNode.GetChild(index);
+            int index = mRootNode.Children.Count/2;
+            TreeNode anchorNode = mRootNode.Children.Get(index);
             TreeNode newNode = mPresentation.TreeNodeFactory.Create();
             mRootNode.InsertAfter(newNode, anchorNode);
-            int newIndex = mRootNode.IndexOf(newNode);
+            int newIndex = mRootNode.Children.IndexOf(newNode);
             Assert.AreEqual(index + 1, newIndex);
         }
 
@@ -426,11 +427,11 @@ namespace urakawa.core
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.Create());
-            int index = mRootNode.ChildCount/2;
-            TreeNode anchorNode = mRootNode.GetChild(index);
+            int index = mRootNode.Children.Count/2;
+            TreeNode anchorNode = mRootNode.Children.Get(index);
             TreeNode newNode = mPresentation.TreeNodeFactory.Create();
             mRootNode.InsertBefore(newNode, anchorNode);
-            Assert.AreEqual(index, mRootNode.IndexOf(newNode));
+            Assert.AreEqual(index, mRootNode.Children.IndexOf(newNode));
         }
 
         [Test]
@@ -534,7 +535,7 @@ namespace urakawa.core
             removedChild.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
             try
             {
-                removedChild.RemoveChild(removedChild.GetChild(removedChild.ChildCount - 1));
+                removedChild.RemoveChild(removedChild.Children.Get(removedChild.Children.Count - 1));
                 AssertChildRemovedEventOccured(beforeCount, changedBeforeCount);
             }
             finally
@@ -578,7 +579,7 @@ namespace urakawa.core
                 pos, mLatestChildRemovedEventArgs.RemovedPosition,
                 "The RemovedPosition member of the child removed event args must be the position of the child before it was removed");
             removedChild.ChildRemoved += new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
-            pos = removedChild.ChildCount - 1;
+            pos = removedChild.Children.Count - 1;
             TreeNode removedChild2 = removedChild.RemoveChild(pos);
             Assert.AreSame(
                 removedChild, mLatestChildRemovedSender,
@@ -723,7 +724,7 @@ namespace urakawa.core
         [Test]
         public void Changed_BubblesFromChildren()
         {
-            TreeNode child = mRootNode.GetChild(0);
+            TreeNode child = mRootNode.Children.Get(0);
             events.DataModelChangedEventArgs childChangedEventArgs = null;
             object childChangedSender = null;
             EventHandler<urakawa.events.DataModelChangedEventArgs> handler =
