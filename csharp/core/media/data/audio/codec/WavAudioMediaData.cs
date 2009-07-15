@@ -15,6 +15,25 @@ namespace urakawa.media.data.audio.codec
     /// </summary>
     public class WavAudioMediaData : AudioMediaData
     {
+        public override bool ValueEquals(WithPresentation other)
+        {
+            if (!base.ValueEquals(other))
+            {
+                return false;
+            }
+
+            WavAudioMediaData otherz = other as WavAudioMediaData;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            ///Here we do not compare the WavClip equality. Instead, we let the super class compare the resulting streams of PCM data.
+            ///See AudioMediaData.ValueEquals();
+
+            return true;
+        }
+
         public override string GetTypeNameFormatted()
         {
             return XukStrings.WavAudioMediaData;
@@ -232,6 +251,11 @@ namespace urakawa.media.data.audio.codec
             public bool ValueEquals(WavClip other)
             {
                 if (other == null)
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
+                if (other.GetType() != GetType())
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                     return false;

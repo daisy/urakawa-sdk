@@ -4,6 +4,7 @@ using System.Xml;
 using urakawa.media;
 using urakawa.core;
 using urakawa.progress;
+using urakawa.property;
 using urakawa.xuk;
 
 namespace urakawa.property.channel
@@ -401,6 +402,7 @@ namespace urakawa.property.channel
         #endregion
 
         #region IValueEquatable<Property> Members
+
         public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
@@ -413,6 +415,7 @@ namespace urakawa.property.channel
             {
                 return false;
             }
+
             List<Channel> chs = ListOfUsedChannels;
             List<Channel> otherChs = otherz.ListOfUsedChannels;
             if (chs.Count != otherChs.Count)
@@ -442,7 +445,6 @@ namespace urakawa.property.channel
                     return false;
                 }
             }
-
             return true;
         }
 

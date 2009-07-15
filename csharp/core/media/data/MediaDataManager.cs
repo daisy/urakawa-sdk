@@ -510,7 +510,7 @@ namespace urakawa.media.data
 
         #region IValueEquatable<MediaDataManager> Members
 
-        public override bool ValueEquals(XukAbleManager<MediaData> other)
+        public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
             {

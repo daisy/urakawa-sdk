@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Threading;
 using urakawa.exception;
-using urakawa.media.data;
 using urakawa.xuk;
 
 namespace urakawa
 {
-    public abstract class XukAbleManager<T> : XukAble, IValueEquatable<XukAbleManager<T>> where T : WithPresentation
+    public abstract class XukAbleManager<T> : WithPresentation where T : WithPresentation
     {
         private Mutex m_Mutex = new Mutex();
 
@@ -15,19 +14,10 @@ namespace urakawa
         private readonly string m_UidPrefix;
         private ulong m_UidIndex = 0;
 
-        private readonly Presentation m_Presentation;
-        public Presentation Presentation
-        {
-            get
-            {
-                return m_Presentation;
-            }
-        }
-
         public XukAbleManager(Presentation pres, string uidPrefix)
         {
+            Presentation = pres;
             m_managedObjects = new List<T>();
-            m_Presentation = pres;
             m_UidPrefix = uidPrefix;
         }
 
@@ -280,22 +270,28 @@ namespace urakawa
 
         #region IValueEquatable<ChannelsManager> Members
 
-        public virtual bool ValueEquals(XukAbleManager<T> other)
+        public override bool ValueEquals(WithPresentation other)
         {
-            if (other == null)
+            if (!base.ValueEquals(other))
             {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (other.NumberOfManagedObjects != NumberOfManagedObjects)
+
+            XukAbleManager<T> otherz = other as XukAbleManager<T>;
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            if (otherz.NumberOfManagedObjects != NumberOfManagedObjects)
             {
                 return false;
             }
 
             foreach (T obj in m_managedObjects)
             {
-                if (!other.IsManagerOf(obj.Uid)) return false;
-                if (!other.GetManagedObject(obj.Uid).ValueEquals(obj)) return false;
+                if (!otherz.IsManagerOf(obj.Uid)) return false;
+                if (!otherz.GetManagedObject(obj.Uid).ValueEquals(obj)) return false;
             }
 
             return true;

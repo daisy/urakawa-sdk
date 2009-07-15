@@ -522,7 +522,7 @@ namespace urakawa
         /// </summary>
         /// <param name="other">The other instance</param>
         /// <returns>A <see cref="bool"/> indicating the result</returns>
-        public bool ValueEquals(Project other)
+        public virtual bool ValueEquals(Project other)
         {
             if (other == null)
             {

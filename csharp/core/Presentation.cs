@@ -1151,9 +1151,14 @@ namespace urakawa
         /// </summary>
         /// <param name="other">The other instance</param>
         /// <returns>A <see cref="bool"/> indicating the result</returns>
-        public bool ValueEquals(Presentation other)
+        public virtual bool ValueEquals(Presentation other)
         {
             if (other == null)
+            {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !");
+                return false;
+            }
+            if (GetType() != other.GetType())
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !");
                 return false;
