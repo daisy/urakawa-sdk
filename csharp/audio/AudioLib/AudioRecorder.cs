@@ -63,8 +63,9 @@ namespace AudioLib
                 private BufferPositionNotify[] PositionNotify; // array containing notification  position in capture buffer
                 public byte[] arUpdateVM; // array for updating VuMeter
         public int m_UpdateVMArrayLength; // Length of Vumeter array
-        private Mutex m_MutexCaptureData; // Implement mutual exclusion in threads updating captured data
-
+        
+        //private Mutex m_MutexCaptureData; // Implement mutual exclusion in threads updating captured data
+	    private readonly Object LOCK = new object();
 
 // member variables  which are re assigned during recording
        AudioRecorderState mState; //  state of AudioRecorder
@@ -399,92 +400,110 @@ namespace AudioLib
 		}
 		
 		//  Copies data from the capture buffer to the output buffer 
-		public void RecordCapturedData( ) 
+		public void RecordCapturedData( )
 		{
-            m_MutexCaptureData.WaitOne();
-			int ReadPos ;
-			byte[] CaptureData = null;
-			int CapturePos ;
-			int LockSize ;
-			applicationBuffer.GetCurrentPosition(out CapturePos, out ReadPos);
-                        long mPosition = (long)CapturePos;
-            CurrentPositionInByte = SampleCount + mPosition;
-            mCurrentTime = CalculationFunctions.ConvertByteToTime(CurrentPositionInByte, (int) mPCMFormat.SampleRate, mPCMFormat.BlockAlign);
+		    //m_MutexCaptureData.WaitOne();
 
-            
-			LockSize = ReadPos - NextCaptureOffset;
-			if (LockSize < 0)
-				LockSize += m_iCaptureBufferSize;
-			// Block align lock size so that we are always write on a boundary
-			LockSize -= (LockSize % m_iNotifySize);
-            if (0 == LockSize)
-            {
-                m_MutexCaptureData.ReleaseMutex();
-                return;
-            }
+		    Monitor.Enter(LOCK);
 
-            //CaptureData = new byte [ LockSize ] ;
+		    try
+		    {
 
-			// Read the capture buffer.
-            try
-            {
-                CaptureData = (byte[]) applicationBuffer.Read ( NextCaptureOffset , typeof(byte) , LockFlag.None , LockSize );
-            }
-            catch (System.Exception)
-            {
-                m_MutexCaptureData.ReleaseMutex();
-                return;
-                            }
+		        int ReadPos;
+		        byte[] CaptureData = null;
+		        int CapturePos;
+		        int LockSize;
+		        applicationBuffer.GetCurrentPosition(out CapturePos, out ReadPos);
+		        long mPosition = (long) CapturePos;
+		        CurrentPositionInByte = SampleCount + mPosition;
+		        mCurrentTime = CalculationFunctions.ConvertByteToTime(CurrentPositionInByte, (int) mPCMFormat.SampleRate,
+		                                                              mPCMFormat.BlockAlign);
 
-            // make update vumeter array length equal to CaptureData length
-                if (CaptureData.Length != arUpdateVM.Length
-                    && CaptureData.Length < CalculationFunctions.ConvertTimeToByte(125, (int)mPCMFormat.SampleRate, mPCMFormat.BlockAlign))
-                {
 
-                    m_UpdateVMArrayLength = CaptureData.Length;
-                    Array.Resize(ref arUpdateVM, CaptureData.Length);
-                }
+		        LockSize = ReadPos - NextCaptureOffset;
+		        if (LockSize < 0)
+		            LockSize += m_iCaptureBufferSize;
+		        // Block align lock size so that we are always write on a boundary
+		        LockSize -= (LockSize%m_iNotifySize);
+		        if (0 == LockSize)
+		        {
+		            //m_MutexCaptureData.ReleaseMutex();
+		            return;
+		        }
 
-            // copy Capture data to an array and update it to VuMeter
-                Array.Copy( CaptureData , arUpdateVM, m_UpdateVMArrayLength);
-                if (UpdateVuMeterFromRecorder != null) UpdateVuMeterFromRecorder(this, new Events.Recorder.UpdateVuMeterEventArgs());
+		        //CaptureData = new byte [ LockSize ] ;
 
-                if (mState != AudioRecorderState.Monitoring && ! String.IsNullOrEmpty(m_sFileName))
-                {
-                    FileInfo fi = new FileInfo(m_sFileName);
-                    if (fi.Exists)
-                    {
-                        BinaryWriter Writer = null;
-                        try
-                        {
-                            Writer = new BinaryWriter(File.OpenWrite(fi.FullName));
-                        }
-                        catch (Exception)
-                        {
-                            m_MutexCaptureData.ReleaseMutex();
-                            return;
-                        }
-                        // Write the data into the wav file");	   
-                        Writer.BaseStream.Position = (long)(fi.Length);
-                        //Writer.Seek(0, SeekOrigin.End);			
-                        Writer.Write(CaptureData, 0, CaptureData.Length);
-                        Writer.Close();
-                        Writer = null;
-                    }
-                }
-			NotifyThread = null;	
-			// Update the number of samples, in bytes, of the file so far.
-			//SampleCount+= datalength;
-			SampleCount+=(long)CaptureData.Length;
-			// Move the capture offset along
-			NextCaptureOffset+= CaptureData.Length ; 
-			NextCaptureOffset %= m_iCaptureBufferSize; // Circular buffer
-            
-            long mLength = (long)SampleCount;
+		        // Read the capture buffer.
+                //try
+                //{
+		            CaptureData =
+		                (byte[]) applicationBuffer.Read(NextCaptureOffset, typeof (byte), LockFlag.None, LockSize);
+                //}
+                //catch (System.Exception)
+                //{
+                //    m_MutexCaptureData.ReleaseMutex();
+                //    return;
+                //}
 
-            mTime = CalculationFunctions.ConvertByteToTime(mLength, (int)mPCMFormat.SampleRate, mPCMFormat.BlockAlign);
-            m_MutexCaptureData.ReleaseMutex();
-}
+		        // make update vumeter array length equal to CaptureData length
+		        if (CaptureData.Length != arUpdateVM.Length
+		            &&
+		            CaptureData.Length <
+		            CalculationFunctions.ConvertTimeToByte(125, (int) mPCMFormat.SampleRate, mPCMFormat.BlockAlign))
+		        {
+
+		            m_UpdateVMArrayLength = CaptureData.Length;
+		            Array.Resize(ref arUpdateVM, CaptureData.Length);
+		        }
+
+		        // copy Capture data to an array and update it to VuMeter
+		        Array.Copy(CaptureData, arUpdateVM, m_UpdateVMArrayLength);
+		        if (UpdateVuMeterFromRecorder != null)
+		            UpdateVuMeterFromRecorder(this, new Events.Recorder.UpdateVuMeterEventArgs());
+
+		        if (mState != AudioRecorderState.Monitoring && !String.IsNullOrEmpty(m_sFileName))
+		        {
+		            FileInfo fi = new FileInfo(m_sFileName);
+		            if (fi.Exists)
+		            {
+		                BinaryWriter Writer = null;
+                        //try
+                        //{
+		                    Writer = new BinaryWriter(File.OpenWrite(fi.FullName));
+                        //}
+                        //catch (Exception)
+                        //{
+                        //    m_MutexCaptureData.ReleaseMutex();
+                        //    return;
+                        //}
+		                // Write the data into the wav file");	   
+		                Writer.BaseStream.Position = (long) (fi.Length);
+		                //Writer.Seek(0, SeekOrigin.End);			
+		                Writer.Write(CaptureData, 0, CaptureData.Length);
+		                Writer.Close();
+		                Writer = null;
+		            }
+		        }
+		        NotifyThread = null;
+		        // Update the number of samples, in bytes, of the file so far.
+		        //SampleCount+= datalength;
+		        SampleCount += (long) CaptureData.Length;
+		        // Move the capture offset along
+		        NextCaptureOffset += CaptureData.Length;
+		        NextCaptureOffset %= m_iCaptureBufferSize; // Circular buffer
+
+		        long mLength = (long) SampleCount;
+
+		        mTime = CalculationFunctions.ConvertByteToTime(mLength, (int) mPCMFormat.SampleRate,
+		                                                       mPCMFormat.BlockAlign);
+		        //m_MutexCaptureData.ReleaseMutex();
+
+		    }
+		    finally
+		    {
+                Monitor.Exit(LOCK);
+		    }
+	}
 
 
         long m_PrevSampleCount = 0;
@@ -558,7 +577,8 @@ void CaptureTimer_Tick(object sender, EventArgs e)
 
             if (SRecording)
             {
-                m_MutexCaptureData = new Mutex();
+                //m_MutexCaptureData = new Mutex();
+
                 SampleCount = 0;
                 CreateCaptureBuffer();
                 applicationBuffer.Start(true);//it will set the looping till the stop is used
@@ -576,7 +596,9 @@ void CaptureTimer_Tick(object sender, EventArgs e)
                 CaptureTimer.Stop();
                 applicationBuffer.Stop();
                 RecordCapturedData();
-                m_MutexCaptureData.Close();
+
+                //m_MutexCaptureData.Close();
+
                 // condition for listening added to eleminate listen file on 2 Feb 2007
                 if (!WasListening)
                 {
