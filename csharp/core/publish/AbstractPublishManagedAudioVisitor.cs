@@ -32,7 +32,7 @@ namespace urakawa.publish
 		private Channel mSourceChannel;
 		private Channel mDestinationChannel;
 		private Uri mDestinationDirectory;
-		private string mAudioFileBaseNameFormat = "aud{0:0}.wav";
+		private string mAudioFileBaseNameFormat = "aud{0:00}.wav";
 		private int mCurrentAudioFileNumber;
 		private PCMFormatInfo mCurrentAudioFilePCMFormat = null;
 		private Stream mCurrentAudioFileStream = null;
