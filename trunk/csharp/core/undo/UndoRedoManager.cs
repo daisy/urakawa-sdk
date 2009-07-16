@@ -189,41 +189,6 @@ namespace urakawa.undo
         private Stack<CompositeCommand> mActiveTransactions;
 
         /// <summary>
-        /// Gets a list of the <see cref="Command"/>s currently in the undo stack
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<Command> ListOfUndoStackCommands
-        {
-            get { return new List<Command>(mUndoStack); }
-        }
-
-        /// <summary>
-        /// Gets a list of the <see cref="Command"/>s currently in the redo stack
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<Command> ListOfRedoStackCommands
-        {
-            get { return new List<Command>(mRedoStack); }
-        }
-
-        /// <summary>
-        /// Gets a list of the <see cref="Command"/>s in the currently active transactions.
-        /// </summary>
-        /// <returns>The list - empty if no transactions are currently active</returns>
-        public List<Command> ListOfCommandsInCurrentTransactions
-        {
-            get
-            {
-                List<Command> res = new List<Command>();
-                foreach (CompositeCommand trans in mActiveTransactions)
-                {
-                    res.AddRange(trans.ChildCommands.ContentsAs_YieldEnumerable);
-                }
-                return res;
-            }
-        }
-
-        /// <summary>
         /// Gets a list of all <see cref="MediaData"/> used by the undo/redo manager associated <see cref="Command"/>s,
         /// here a <see cref="Command"/> is considered associated with the manager if it is in the undo or redo stacks 
         /// or if it is part of the currently active transaction
@@ -235,9 +200,14 @@ namespace urakawa.undo
             {
                 //List<MediaData> res = new List<MediaData>();
                 List<Command> commands = new List<Command>();
-                commands.AddRange(ListOfUndoStackCommands);
-                commands.AddRange(ListOfRedoStackCommands);
-                commands.AddRange(ListOfCommandsInCurrentTransactions);
+                commands.AddRange(mUndoStack);
+                commands.AddRange(mRedoStack);
+
+                foreach (CompositeCommand trans in mActiveTransactions)
+                {
+                    commands.AddRange(trans.ChildCommands.ContentsAs_YieldEnumerable);
+                }
+
                 foreach (Command cmd in commands)
                 {
                     foreach (MediaData md in cmd.UsedMediaData)

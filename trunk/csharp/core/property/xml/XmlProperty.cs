@@ -158,7 +158,7 @@ namespace urakawa.property.xml
         /// Gets a list of the <see cref="XmlAttribute"/>s of <c>this</c>
         /// </summary>
         /// <returns>The list</returns>
-        public List<XmlAttribute> ListOfAttributes
+        public List<XmlAttribute> Attributes
         {
             get { return new List<XmlAttribute>(mAttributes.Values); }
         }
@@ -299,7 +299,7 @@ namespace urakawa.property.xml
             XmlProperty xmlProp = (XmlProperty) base.CopyProtected();
             
             xmlProp.SetQName(LocalName, NamespaceUri);
-            foreach (XmlAttribute attr in ListOfAttributes)
+            foreach (XmlAttribute attr in Attributes)
             {
                 xmlProp.SetAttribute(attr.Copy());
             }
@@ -331,7 +331,7 @@ namespace urakawa.property.xml
                                                                          XukNamespaceUri, XukLocalName));
             }
             xmlProp.SetQName(LocalName, NamespaceUri);
-            foreach (XmlAttribute attr in ListOfAttributes)
+            foreach (XmlAttribute attr in Attributes)
             {
                 xmlProp.SetAttribute(attr.Copy());
             }
@@ -347,7 +347,7 @@ namespace urakawa.property.xml
         {
             mLocalName = null;
             mNamespaceUri = "";
-            foreach (XmlAttribute attr in this.ListOfAttributes)
+            foreach (XmlAttribute attr in this.Attributes)
             {
                 RemoveAttribute(attr);
             }
@@ -470,7 +470,7 @@ namespace urakawa.property.xml
         {
             base.XukOutChildren(destination, baseUri, handler);
 
-            List<XmlAttribute> attrs = ListOfAttributes;
+            List<XmlAttribute> attrs = Attributes;
             if (attrs.Count > 0)
             {
                 if (IsPrettyFormat())
@@ -513,8 +513,8 @@ namespace urakawa.property.xml
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            List<XmlAttribute> thisAttrs = ListOfAttributes;
-            List<XmlAttribute> otherAttrs = otherz.ListOfAttributes;
+            List<XmlAttribute> thisAttrs = Attributes;
+            List<XmlAttribute> otherAttrs = otherz.Attributes;
             if (thisAttrs.Count != otherAttrs.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
@@ -548,7 +548,7 @@ namespace urakawa.property.xml
             string displayName = mLocalName ?? "null";
             if (NamespaceUri != "") displayName += String.Format(" xmlns='{0}'", NamespaceUri.Replace("'", "''"));
             string attrs = " ";
-            foreach (XmlAttribute attr in ListOfAttributes)
+            foreach (XmlAttribute attr in Attributes)
             {
                 string attrDisplayName;
                 try
