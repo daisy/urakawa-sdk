@@ -17,7 +17,8 @@ namespace urakawa.media.data
 
 		private Dictionary<string, MediaData> mMediaDataDictionary = new Dictionary<string, MediaData>();
 		private Dictionary<MediaData, string> mReverseLookupMediaDataDictionary = new Dictionary<MediaData, string>();
-		private System.Threading.Mutex mUidMutex = new System.Threading.Mutex();
+		//private System.Threading.Mutex mUidMutex = new System.Threading.Mutex();
+        private Object LOCK = new object();
 		private ulong mUidNo = 0;
 		private string mUidPrefix = DEFAULT_UID_PREFIX;
 		private audio.PCMFormatInfo mDefaultPCMFormat;
@@ -283,15 +284,10 @@ namespace urakawa.media.data
 			{
 				throw new exception.MethodParameterIsNullException("Can not add null MediaData to the manager");
 			}
-			mUidMutex.WaitOne();
-			try
+			lock (LOCK)
 			{
 				string uid = getNewUid();
 				addMediaData(data, uid);
-			}
-			finally
-			{
-				mUidMutex.ReleaseMutex();
 			}
 		}
 
@@ -389,16 +385,12 @@ namespace urakawa.media.data
 		public void removeMediaData(string uid)
 		{
 			MediaData data = getMediaData(uid);
-			mUidMutex.WaitOne();
-			try
+			lock(LOCK)
 			{
 				mMediaDataDictionary.Remove(uid);
 				mReverseLookupMediaDataDictionary.Remove(data);
 			}
-			finally
-			{
-				mUidMutex.ReleaseMutex();
-			}
+			
 		}
 
 		/// <summary>
@@ -471,15 +463,10 @@ namespace urakawa.media.data
 		/// </summary>
 		protected override void clear()
 		{
-			mUidMutex.WaitOne();
-			try
+			lock (LOCK)
 			{
 				mMediaDataDictionary.Clear();
 				mReverseLookupMediaDataDictionary.Clear();
-			}
-			finally
-			{
-				mUidMutex.ReleaseMutex();
 			}
 			base.clear();
 		}
