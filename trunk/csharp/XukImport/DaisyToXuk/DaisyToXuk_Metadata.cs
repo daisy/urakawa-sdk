@@ -81,11 +81,11 @@ namespace XukImport
 
         private void addMetadata(string nodeName, string nodeContent)
         {
-            Presentation presentation = m_Project.GetPresentation(0);
+            Presentation presentation = m_Project.Presentations.Get(0);
             Metadata md = presentation.MetadataFactory.CreateMetadata();
             md.Name = nodeName;
             md.Content = nodeContent;
-            presentation.AddMetadata(md);
+            presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
         }
 
         private void parseMetadata_NameContent(XmlNodeList listOfMetaDataNodes)
@@ -136,16 +136,16 @@ namespace XukImport
 
         private void addNameContent(string nodeName, string contentName)
         {
-            Presentation presentation = m_Project.GetPresentation(0);
+            Presentation presentation = m_Project.Presentations.Get(0);
             Metadata md = presentation.MetadataFactory.CreateMetadata();
             md.Name = nodeName;
             md.Content = contentName;
-            presentation.AddMetadata(md);
+            presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
         }
 
         private bool IsDuplicateMetadata(string metaDataName)
         {
-            Presentation presentation = m_Project.ListOfPresentations[0];
+            Presentation presentation = m_Project.Presentations.Get(0);
             List<Metadata> metadataList = presentation.GetMetadata(metaDataName);
 
             if (metadataList != null && metadataList.Count > 0)

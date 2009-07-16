@@ -16,7 +16,7 @@ namespace urakawa.core
         /// </summary>
         /// <param name="node">The new child <see cref="TreeNode"/> to insert,
         /// must be between 0 and the number of children as returned by member method 
-        /// <see cref="ITreeNodeReadOnlyMethods.ChildCount"/></param>
+        /// <see cref="ITreeNodeReadOnlyMethods.Children.Count"/></param>
         /// <exception cref="exception.MethodParameterIsNullException">
         /// Thrown when <paramref localName="node"/> is null</exception>
         /// <param name="insertIndex">The index at which to insert the new child</param>

@@ -118,7 +118,7 @@ namespace XukImport
 
         private core.TreeNode getTreeNodeWithXmlElementId(string id)
         {
-            Presentation pres = m_Project.GetPresentation(0);
+            Presentation pres = m_Project.Presentations.Get(0);
             return getTreeNodeWithXmlElementId(pres.RootNode, id);
         }
 
@@ -126,9 +126,9 @@ namespace XukImport
         {
             if (node.GetXmlElementId() == id) return node;
 
-            for (int i = 0; i < node.ChildCount; i++)
+            for (int i = 0; i < node.Children.Count; i++)
             {
-                core.TreeNode child = getTreeNodeWithXmlElementId(node.GetChild(i), id);
+                core.TreeNode child = getTreeNodeWithXmlElementId(node.Children.Get(i), id);
                 if (child != null)
                 {
                     return child;

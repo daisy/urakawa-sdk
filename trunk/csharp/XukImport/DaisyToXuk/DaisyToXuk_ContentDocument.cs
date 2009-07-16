@@ -63,7 +63,7 @@ namespace XukImport
                 {
                     if (first)
                     {
-                        Presentation presentation = m_Project.GetPresentation(0);
+                        Presentation presentation = m_Project.Presentations.Get(0);
                         XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
                         xmlProp.LocalName = "book";
                         presentation.PropertyFactory.DefaultXmlNamespaceUri = listOfBodies[0].NamespaceURI;
@@ -77,7 +77,7 @@ namespace XukImport
 
                     foreach (XmlNode childOfBody in listOfBodies[0].ChildNodes)
                     {
-                        parseContentDocument(childOfBody, m_Project.GetPresentation(0).RootNode);
+                        parseContentDocument(childOfBody, m_Project.Presentations.Get(0).RootNode);
                     }
                 }
             }
@@ -103,7 +103,7 @@ namespace XukImport
 
                         if (listOfBodies.Count > 0)
                         {
-                            Presentation presentation = m_Project.GetPresentation(0);
+                            Presentation presentation = m_Project.Presentations.Get(0);
                             presentation.PropertyFactory.DefaultXmlNamespaceUri = listOfBodies[0].NamespaceURI;
 
                             parseContentDocument(listOfBodies[0], parentTreeNode);
@@ -113,7 +113,7 @@ namespace XukImport
                     }
                 case XmlNodeType.Element:
                     {
-                        Presentation presentation = m_Project.GetPresentation(0);
+                        Presentation presentation = m_Project.Presentations.Get(0);
 
                         TreeNode treeNode = presentation.TreeNodeFactory.Create();
 
@@ -210,7 +210,7 @@ namespace XukImport
                     }
                 case XmlNodeType.Text:
                     {
-                        Presentation presentation = m_Project.GetPresentation(0);
+                        Presentation presentation = m_Project.Presentations.Get(0);
 
                         string text = trimXmlText(xmlNode.Value);
                         TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
