@@ -123,7 +123,7 @@ namespace urakawa.core
             {
                 T channel = null;
 
-                foreach (Channel ch in Presentation.ChannelsManager.ListProvider.ContentsAs_YieldEnumerable)
+                foreach (Channel ch in Presentation.ChannelsManager.ManagedObjects.ContentsAs_YieldEnumerable)
                 {
                     if (ch is T)
                     {
@@ -642,88 +642,88 @@ namespace urakawa.core
             if (d != null) d(this, args);
         }
 
-        /// <summary>
-        /// Event fired after the <see cref="TreeNode"/> has been added as a child 
-        /// of another <see cref="TreeNode"/> (now it's parent)
-        /// </summary>
-        public event EventHandler<urakawa.events.core.ChildAddedEventArgs> ChildAdded;
+        ///// <summary>
+        ///// Event fired after the <see cref="TreeNode"/> has been added as a child 
+        ///// of another <see cref="TreeNode"/> (now it's parent)
+        ///// </summary>
+        //public event EventHandler<urakawa.events.core.ChildAddedEventArgs> ChildAdded;
 
-        /// <summary>
-        /// Fires the <see cref="ChildAdded"/> event
-        /// </summary>
-        /// <param name="source">
-        /// The source, that is the <see cref="TreeNode"/> at which the event occured
-        /// </param>
-        /// <param name="addedChild">
-        /// The child <see cref="TreeNode"/> that was added to <paramref name="source"/>
-        /// </param>
-        protected void NotifyChildAdded(TreeNode source, TreeNode addedChild)
+        ///// <summary>
+        ///// Fires the <see cref="ChildAdded"/> event
+        ///// </summary>
+        ///// <param name="source">
+        ///// The source, that is the <see cref="TreeNode"/> at which the event occured
+        ///// </param>
+        ///// <param name="addedChild">
+        ///// The child <see cref="TreeNode"/> that was added to <paramref name="source"/>
+        ///// </param>
+        //protected void NotifyChildAdded(TreeNode source, TreeNode addedChild)
+        //{
+        //    EventHandler<urakawa.events.core.ChildAddedEventArgs> d = ChildAdded;
+        //    if (d != null) d(this, new urakawa.events.core.ChildAddedEventArgs(source, addedChild));
+        //}
+
+        ///// <summary>
+        ///// Event fired after the <see cref="TreeNode"/> has been removed as a child 
+        ///// of another <see cref="TreeNode"/> (porperly it's parent)
+        ///// </summary>
+        //public event EventHandler<urakawa.events.core.ChildRemovedEventArgs> ChildRemoved;
+
+        ///// <summary>
+        ///// Fires the <see cref="ChildRemoved"/> event
+        ///// </summary>
+        ///// <param name="source">
+        ///// The source, that is the <see cref="TreeNode"/> at which the event occured, 
+        ///// i.e. the <see cref="TreeNode"/> from which a child was removed
+        ///// </param>
+        ///// <param name="removedChild">The child that was removed</param>
+        ///// <param name="position">The position from which the child was removed</param>
+        //protected void NotifyChildRemoved(TreeNode source, TreeNode removedChild, int position)
+        //{
+        //    EventHandler<urakawa.events.core.ChildRemovedEventArgs> d = ChildRemoved;
+        //    if (d != null) d(this, new urakawa.events.core.ChildRemovedEventArgs(source, removedChild, position));
+        //}
+
+        ///// <summary>
+        ///// Event fired after a <see cref="Property"/> has been added to a <see cref="TreeNode"/>
+        ///// </summary>
+        //public event EventHandler<urakawa.events.core.PropertyAddedEventArgs> PropertyAdded;
+
+        ///// <summary>
+        ///// Fires the <see cref="PropertyAdded"/> event
+        ///// </summary>
+        ///// <param name="source">
+        ///// The source, that is the <see cref="TreeNode"/> to which a <see cref="Property"/> was added
+        ///// </param>
+        ///// <param name="addedProp">The <see cref="Property"/> that was added</param>
+        //protected void NotifyPropertyAdded(TreeNode source, Property addedProp)
+        //{
+        //    EventHandler<urakawa.events.core.PropertyAddedEventArgs> d = PropertyAdded;
+        //    if (d != null) d(this, new urakawa.events.core.PropertyAddedEventArgs(source, addedProp));
+        //}
+
+        ///// <summary>
+        ///// Event fired after a <see cref="Property"/> has been removed from a <see cref="TreeNode"/>
+        ///// </summary>
+        //public event EventHandler<urakawa.events.core.PropertyRemovedEventArgs> PropertyRemoved;
+
+        ///// <summary>
+        ///// Fires the <see cref="PropertyRemoved"/> event
+        ///// </summary>
+        ///// <param name="source">
+        ///// The source, that is the <see cref="TreeNode"/> to which a <see cref="Property"/> was added
+        ///// </param>
+        ///// <param name="removedProp">The <see cref="Property"/> that was removed</param>
+        //protected void NotifyPropertyRemoved(TreeNode source, Property removedProp)
+        //{
+        //    EventHandler<urakawa.events.core.PropertyRemovedEventArgs> d = PropertyRemoved;
+        //    if (d != null) d(this, new urakawa.events.core.PropertyRemovedEventArgs(source, removedProp));
+        //}
+
+        private void this_childAdded(object sender, ObjectAddedEventArgs<TreeNode> ev)
         {
-            EventHandler<urakawa.events.core.ChildAddedEventArgs> d = ChildAdded;
-            if (d != null) d(this, new urakawa.events.core.ChildAddedEventArgs(source, addedChild));
-        }
-
-        /// <summary>
-        /// Event fired after the <see cref="TreeNode"/> has been removed as a child 
-        /// of another <see cref="TreeNode"/> (porperly it's parent)
-        /// </summary>
-        public event EventHandler<urakawa.events.core.ChildRemovedEventArgs> ChildRemoved;
-
-        /// <summary>
-        /// Fires the <see cref="ChildRemoved"/> event
-        /// </summary>
-        /// <param name="source">
-        /// The source, that is the <see cref="TreeNode"/> at which the event occured, 
-        /// i.e. the <see cref="TreeNode"/> from which a child was removed
-        /// </param>
-        /// <param name="removedChild">The child that was removed</param>
-        /// <param name="position">The position from which the child was removed</param>
-        protected void NotifyChildRemoved(TreeNode source, TreeNode removedChild, int position)
-        {
-            EventHandler<urakawa.events.core.ChildRemovedEventArgs> d = ChildRemoved;
-            if (d != null) d(this, new urakawa.events.core.ChildRemovedEventArgs(source, removedChild, position));
-        }
-
-        /// <summary>
-        /// Event fired after a <see cref="Property"/> has been added to a <see cref="TreeNode"/>
-        /// </summary>
-        public event EventHandler<urakawa.events.core.PropertyAddedEventArgs> PropertyAdded;
-
-        /// <summary>
-        /// Fires the <see cref="PropertyAdded"/> event
-        /// </summary>
-        /// <param name="source">
-        /// The source, that is the <see cref="TreeNode"/> to which a <see cref="Property"/> was added
-        /// </param>
-        /// <param name="addedProp">The <see cref="Property"/> that was added</param>
-        protected void NotifyPropertyAdded(TreeNode source, Property addedProp)
-        {
-            EventHandler<urakawa.events.core.PropertyAddedEventArgs> d = PropertyAdded;
-            if (d != null) d(this, new urakawa.events.core.PropertyAddedEventArgs(source, addedProp));
-        }
-
-        /// <summary>
-        /// Event fired after a <see cref="Property"/> has been removed from a <see cref="TreeNode"/>
-        /// </summary>
-        public event EventHandler<urakawa.events.core.PropertyRemovedEventArgs> PropertyRemoved;
-
-        /// <summary>
-        /// Fires the <see cref="PropertyRemoved"/> event
-        /// </summary>
-        /// <param name="source">
-        /// The source, that is the <see cref="TreeNode"/> to which a <see cref="Property"/> was added
-        /// </param>
-        /// <param name="removedProp">The <see cref="Property"/> that was removed</param>
-        protected void NotifyPropertyRemoved(TreeNode source, Property removedProp)
-        {
-            EventHandler<urakawa.events.core.PropertyRemovedEventArgs> d = PropertyRemoved;
-            if (d != null) d(this, new urakawa.events.core.PropertyRemovedEventArgs(source, removedProp));
-        }
-
-        private void this_childAdded(object sender, urakawa.events.core.ChildAddedEventArgs e)
-        {
-            e.AddedChild.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Child_Changed);
-            NotifyChanged(e);
+            ev.m_AddedObject.Changed += Child_Changed;
+            NotifyChanged(ev);
         }
 
         private void Child_Changed(object sender, urakawa.events.DataModelChangedEventArgs e)
@@ -731,16 +731,16 @@ namespace urakawa.core
             NotifyChanged(e);
         }
 
-        private void this_childRemoved(object sender, urakawa.events.core.ChildRemovedEventArgs e)
+        private void this_childRemoved(object sender, ObjectRemovedEventArgs<TreeNode> ev)
         {
-            e.RemovedChild.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Child_Changed);
-            NotifyChanged(e);
+            ev.m_RemovedObject.Changed -= Child_Changed;
+            NotifyChanged(ev);
         }
 
-        private void this_propertyAdded(object sender, urakawa.events.core.PropertyAddedEventArgs e)
+        private void this_propertyAdded(object sender, ObjectAddedEventArgs<Property> ev)
         {
-            e.AddedProperty.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Property_Changed);
-            NotifyChanged(e);
+            ev.m_AddedObject.Changed += Property_Changed;
+            NotifyChanged(ev);
         }
 
         private void Property_Changed(object sender, urakawa.events.DataModelChangedEventArgs e)
@@ -748,10 +748,10 @@ namespace urakawa.core
             NotifyChanged(e);
         }
 
-        private void this_propertyRemoved(object sender, urakawa.events.core.PropertyRemovedEventArgs e)
+        private void this_propertyRemoved(object sender, ObjectRemovedEventArgs<Property> ev)
         {
-            e.RemovedProperty.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Property_Changed);
-            NotifyChanged(e);
+            ev.m_RemovedObject.Changed -= Property_Changed;
+            NotifyChanged(ev);
         }
 
         #endregion
@@ -759,7 +759,15 @@ namespace urakawa.core
         /// <summary>
         /// Containe the <see cref="Property"/>s of the node
         /// </summary>
-        private List<Property> mProperties;
+        private ObjectListProvider<Property> mProperties;
+
+        public ObjectListProvider<Property> Properties
+        {
+            get
+            {
+                return mProperties;
+            }
+        }
 
         /// <summary>
         /// Contains the children of the node
@@ -786,12 +794,13 @@ namespace urakawa.core
         /// </summary>
         public TreeNode()
         {
-            mProperties = new List<Property>();
-            mChildren = new ObjectListProvider<TreeNode>();
-            ChildAdded += new EventHandler<urakawa.events.core.ChildAddedEventArgs>(this_childAdded);
-            ChildRemoved += new EventHandler<urakawa.events.core.ChildRemovedEventArgs>(this_childRemoved);
-            PropertyAdded += new EventHandler<urakawa.events.core.PropertyAddedEventArgs>(this_propertyAdded);
-            PropertyRemoved += new EventHandler<urakawa.events.core.PropertyRemovedEventArgs>(this_propertyRemoved);
+            mChildren = new ObjectListProvider<TreeNode>(this);
+            mChildren.ObjectAdded += this_childAdded;
+            mChildren.ObjectRemoved += this_childRemoved;
+
+            mProperties = new ObjectListProvider<Property>(this);
+            mProperties.ObjectAdded += this_propertyAdded;
+            mProperties.ObjectRemoved += this_propertyRemoved;
         }
 
         /// <summary>
@@ -803,7 +812,7 @@ namespace urakawa.core
             get
             {
                 List<Type> res = new List<Type>();
-                foreach (Property p in GetListOfProperties())
+                foreach (Property p in Properties.ContentsAs_YieldEnumerable)
                 {
                     if (!res.Contains(p.GetType())) res.Add(p.GetType());
                 }
@@ -812,23 +821,14 @@ namespace urakawa.core
         }
 
         /// <summary>
-        /// Gets a list of all <see cref="Property"/>s of this
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<Property> GetListOfProperties()
-        {
-            return new List<Property>(mProperties);
-        }
-
-        /// <summary>
         /// Gets a list of the <see cref="Property"/>s of this of a given <see cref="Type"/>
         /// </summary>
         /// <param name="t">The given type</param>
         /// <returns>The list</returns>
-        public List<Property> GetListOfProperties(Type t)
+        public List<Property> GetProperties(Type t)
         {
             List<Property> res = new List<Property>();
-            foreach (Property p in GetListOfProperties())
+            foreach (Property p in Properties.ContentsAs_YieldEnumerable)
             {
                 if (p.GetType() == t) res.Add(p);
             }
@@ -840,10 +840,10 @@ namespace urakawa.core
         /// </summary>
         /// <typeparam name="T">The type of the properties to get - must sub-class <see cref="Property"/></typeparam>
         /// <returns>A list of all <typeparamref name="T"/> properties of <c>this</c>, possibly an empty list</returns>
-        public List<T> GetListOfProperties<T>() where T : Property
+        public List<T> GetProperties<T>() where T : Property
         {
             List<T> res = new List<T>();
-            foreach (Property p in GetListOfProperties(typeof(T))) res.Add(p as T);
+            foreach (Property p in GetProperties(typeof(T))) res.Add(p as T);
             return res;
         }
 
@@ -854,7 +854,7 @@ namespace urakawa.core
         /// <returns>The first property of the given subtype - possibly null</returns>
         public Property GetProperty(Type t)
         {
-            List<Property> props = GetListOfProperties(t);
+            List<Property> props = GetProperties(t);
             if (props.Count > 0) return props[0];
             return null;
         }
@@ -924,7 +924,7 @@ namespace urakawa.core
         {
             if (prop == null)
                 throw new exception.MethodParameterIsNullException("Can not add a null Property to the TreeNode");
-            if (!mProperties.Contains(prop))
+            if (mProperties.IndexOf(prop) == -1)
             {
                 if (!prop.CanBeAddedTo(this))
                 {
@@ -932,8 +932,8 @@ namespace urakawa.core
                         "The given Property can not be added to the TreeNode");
                 }
                 prop.TreeNodeOwner = this;
-                mProperties.Add(prop);
-                NotifyPropertyAdded(this, prop);
+                mProperties.Insert(mProperties.Count, prop);
+                
             }
         }
 
@@ -944,23 +944,12 @@ namespace urakawa.core
         /// <returns>The list of removed properties</returns>
         public List<Property> RemoveProperties(Type propType)
         {
-            List<Property> remProps = GetListOfProperties(propType);
+            List<Property> remProps = GetProperties(propType);
             foreach (Property p in remProps)
             {
                 RemoveProperty(p);
             }
             return remProps;
-        }
-
-        /// <summary>
-        /// Removes all <see cref="Property"/>s from this
-        /// </summary>
-        public void RemoveProperties()
-        {
-            foreach (Property p in GetListOfProperties())
-            {
-                RemoveProperty(p);
-            }
         }
 
         /// <summary>
@@ -970,11 +959,10 @@ namespace urakawa.core
         public void RemoveProperty(Property prop)
         {
             if (prop == null) throw new exception.MethodParameterIsNullException("Can not remove a null Property");
-            if (mProperties.Contains(prop))
+            if (mProperties.IndexOf(prop) != -1)
             {
-                mProperties.Remove(prop);
                 prop.TreeNodeOwner = null;
-                NotifyPropertyRemoved(this, prop);
+                mProperties.Remove(prop);
             }
         }
 
@@ -994,7 +982,7 @@ namespace urakawa.core
         /// <returns>A <see cref="bool"/> indicating if this has any properties</returns>
         public bool HasProperties(Type t)
         {
-            foreach (Property p in GetListOfProperties())
+            foreach (Property p in Properties.ContentsAs_YieldEnumerable)
             {
                 if (p.GetType() == t) return true;
             }
@@ -1010,7 +998,7 @@ namespace urakawa.core
         {
             if (prop == null)
                 throw new exception.MethodParameterIsNullException("The TreeNode can not have a null Property");
-            return mProperties.Contains(prop);
+            return mProperties.IndexOf(prop) != -1;
         }
 
 
@@ -1115,7 +1103,7 @@ namespace urakawa.core
             {
                 RemoveChild(child);
             }
-            foreach (Property prop in this.GetListOfProperties())
+            foreach (Property prop in Properties.ContentsAs_ListCopy)
             {
                 RemoveProperty(prop);
             }
@@ -1228,7 +1216,7 @@ namespace urakawa.core
             base.XukOutChildren(destination, baseUri, handler);
 
             destination.WriteStartElement(XukStrings.Properties, XukNamespaceUri);
-            foreach (Property prop in GetListOfProperties())
+            foreach (Property prop in Properties.ContentsAs_YieldEnumerable)
             {
                 prop.XukOut(destination, baseUri, handler);
             }
@@ -1303,7 +1291,7 @@ namespace urakawa.core
         /// <param name="destinationNode">The destination <see cref="TreeNode"/></param>
         protected void CopyProperties(TreeNode destinationNode)
         {
-            foreach (Property prop in GetListOfProperties())
+            foreach (Property prop in Properties.ContentsAs_YieldEnumerable)
             {
                 destinationNode.AddProperty(prop.Copy());
             }
@@ -1378,7 +1366,7 @@ namespace urakawa.core
                     XukLocalName, XukNamespaceUri);
                 throw new exception.FactoryCannotCreateTypeException(msg);
             }
-            foreach (Property prop in GetListOfProperties())
+            foreach (Property prop in Properties.ContentsAs_YieldEnumerable)
             {
                 exportedNode.AddProperty(prop.Export(destPres));
             }
@@ -1514,9 +1502,8 @@ namespace urakawa.core
                                                                               "Could not insert a new child at index {0:0} - index is out of bounds",
                                                                               insertIndex));
             }
-            mChildren.Insert(insertIndex, node);
             node.mParent = this;
-            NotifyChildAdded(this, node);
+            mChildren.Insert(insertIndex, node);
         }
 
         /// <summary>
@@ -1544,7 +1531,6 @@ namespace urakawa.core
             TreeNode removedChild = mChildren.Get(index);
             removedChild.mParent = null;
             mChildren.Remove(removedChild);
-            NotifyChildRemoved(this, removedChild, index);
             return removedChild;
         }
 
@@ -1884,8 +1870,8 @@ namespace urakawa.core
             }
             foreach (Type pt in thisProps)
             {
-                List<Property> thisPs = GetListOfProperties(pt);
-                List<Property> otherPs = otherz.GetListOfProperties(pt);
+                List<Property> thisPs = GetProperties(pt);
+                List<Property> otherPs = otherz.GetProperties(pt);
                 if (thisPs.Count != otherPs.Count)
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !"); 

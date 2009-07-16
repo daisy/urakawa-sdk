@@ -100,7 +100,7 @@ namespace urakawa.media.data
         /// Gets a <see cref="List{IDataProvider}"/> of the <see cref="DataProvider"/>s used by <c>this</c>
         /// </summary>
         /// <returns>The <see cref="List{DataProvider}"/></returns>
-        public abstract List<DataProvider> ListOfUsedDataProviders { get; }
+        public abstract IEnumerable<DataProvider> UsedDataProviders { get; }
 
         /// <summary>
         /// Deletes the <see cref="MediaData"/>, detaching it from it's manager and releasing 

@@ -12,31 +12,31 @@ namespace urakawa.oldTests
         [Test]
         public void setPropertyAndCheckForNewValue()
         {
-            TreeNode root = mProject.GetPresentation(0).RootNode;
-            if (mProject.GetPresentation(0).ChannelsManager.ListProvider.Count == 0)
+            TreeNode root = mProject.Presentations.Get(0).RootNode;
+            if (mProject.Presentations.Get(0).ChannelsManager.ManagedObjects.Count == 0)
             {
-                    mProject.GetPresentation(0).ChannelFactory.Create();
+                    mProject.Presentations.Get(0).ChannelFactory.Create();
             }
-            Channel textCh = mProject.GetPresentation(0).ChannelsManager.ListProvider.Get(0);
+            Channel textCh = mProject.Presentations.Get(0).ChannelsManager.ManagedObjects.Get(0);
             if (textCh != null)
             {
                 ChannelsProperty text_cp;
                 if (!root.HasProperties(typeof (ChannelsProperty)))
                 {
-                    text_cp = mProject.GetPresentation(0).PropertyFactory.CreateChannelsProperty();
+                    text_cp = mProject.Presentations.Get(0).PropertyFactory.CreateChannelsProperty();
                 }
                 else
                 {
                     text_cp = (ChannelsProperty) root.GetProperty(typeof (ChannelsProperty));
                 }
-                urakawa.media.AbstractTextMedia txt = mProject.GetPresentation(0).MediaFactory.CreateTextMedia();
+                urakawa.media.AbstractTextMedia txt = mProject.Presentations.Get(0).MediaFactory.CreateTextMedia();
                 txt.Text = "hello I am the new text for the root node";
                 text_cp.SetMedia(textCh, txt);
 
                 root.AddProperty(text_cp);
 
                 ChannelsProperty root_cp =
-                    (ChannelsProperty) mProject.GetPresentation(0).RootNode.GetProperty(typeof (ChannelsProperty));
+                    (ChannelsProperty) mProject.Presentations.Get(0).RootNode.GetProperty(typeof (ChannelsProperty));
                 urakawa.media.AbstractTextMedia txt2 =
                     (urakawa.media.AbstractTextMedia) root_cp.GetMedia(textCh);
 
@@ -48,43 +48,43 @@ namespace urakawa.oldTests
         [Test]
         public void IsPresentationNull()
         {
-            Assert.IsNotNull(mProject.GetPresentation(0));
+            Assert.IsNotNull(mProject.Presentations.Get(0));
         }
 
         [Test]
         public void IsChannelsManagerNull()
         {
-            Assert.IsNotNull(mProject.GetPresentation(0).ChannelsManager);
+            Assert.IsNotNull(mProject.Presentations.Get(0).ChannelsManager);
         }
 
         [Test]
         public void IsChannelFactoryNull()
         {
-            Assert.IsNotNull(mProject.GetPresentation(0).ChannelFactory);
+            Assert.IsNotNull(mProject.Presentations.Get(0).ChannelFactory);
         }
 
         [Test]
         public void IsTreeNodeFactoryNull()
         {
-            Assert.IsNotNull(mProject.GetPresentation(0).TreeNodeFactory);
+            Assert.IsNotNull(mProject.Presentations.Get(0).TreeNodeFactory);
         }
 
         [Test]
         public void IsMediaFactoryNull()
         {
-            Assert.IsNotNull(mProject.GetPresentation(0).MediaFactory);
+            Assert.IsNotNull(mProject.Presentations.Get(0).MediaFactory);
         }
 
         [Test]
         public void IsPropertyFactoryNull()
         {
-            Assert.IsNotNull(mProject.GetPresentation(0).PropertyFactory);
+            Assert.IsNotNull(mProject.Presentations.Get(0).PropertyFactory);
         }
 
         [Test]
         public void TryToSetNullProperty()
         {
-            urakawa.core.TreeNode root = mProject.GetPresentation(0).RootNode;
+            urakawa.core.TreeNode root = mProject.Presentations.Get(0).RootNode;
             if (root != null)
             {
                 try
@@ -102,7 +102,7 @@ namespace urakawa.oldTests
         [Test]
         public void GetRootParent()
         {
-            urakawa.core.TreeNode root = mProject.GetPresentation(0).RootNode;
+            urakawa.core.TreeNode root = mProject.Presentations.Get(0).RootNode;
             if (root != null)
             {
                 Assert.IsNull(root.Parent, "Parent of root is null");

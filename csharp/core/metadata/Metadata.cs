@@ -202,14 +202,15 @@ namespace urakawa.metadata
         /// Gets the names of all attributes with non-empty names
         /// </summary>
         /// <returns>A <see cref="List{String}"/> containing the attribute names</returns>
-        public List<string> ListOfOptionalAttributeNames
+        public List<string> OptionalAttributeNames
         {
             get
             {
-                List<string> names = new List<string>(mAttributes.Keys);
-                foreach (string name in new List<string>(names))
+                List<string> names = new List<string>();
+                foreach (string name in mAttributes.Keys)
                 {
-                    if (mAttributes[name] == "") names.Remove(name);
+                    if (!string.IsNullOrEmpty(mAttributes[name]))
+                        names.Add(name);
                 }
                 return names;
             }
@@ -250,7 +251,7 @@ namespace urakawa.metadata
             base.XukOutAttributes(destination, baseUri);
 
             destination.WriteAttributeString(XukStrings.MetaDataName, Name);
-            foreach (string a in ListOfOptionalAttributeNames)
+            foreach (string a in OptionalAttributeNames)
             {
                 if (a != XukStrings.MetaDataName)
                 {
@@ -277,8 +278,8 @@ namespace urakawa.metadata
             }
 
             if (Name != otherz.Name) return false;
-            List<string> names = ListOfOptionalAttributeNames;
-            List<string> otherNames = otherz.ListOfOptionalAttributeNames;
+            List<string> names = OptionalAttributeNames;
+            List<string> otherNames = otherz.OptionalAttributeNames;
             if (names.Count != otherNames.Count) return false;
             foreach (string name in names)
             {

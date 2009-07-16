@@ -16,7 +16,7 @@ namespace urakawa.media.data.audio.codec
 
         protected Presentation mPresentation
         {
-            get { return mProject.GetPresentation(0); }
+            get { return mProject.Presentations.Get(0); }
         }
 
         protected WavAudioMediaData mData1;

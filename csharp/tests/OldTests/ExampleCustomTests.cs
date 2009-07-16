@@ -51,7 +51,7 @@ namespace urakawa.oldTests
 
 
             navigator = new urakawa.navigation.TypeFilterNavigator<ExampleCustomTreeNode>();
-            TreeNode root = mProject.GetPresentation(0).RootNode;
+            TreeNode root = mProject.Presentations.Get(0).RootNode;
             node1 = navigator.GetNext(root);
             Assert.IsNotNull(node1, "Node 1 not found");
             Assert.AreEqual(node1.Label, "1", "Label of node 1 is not '1'");
@@ -103,14 +103,14 @@ namespace urakawa.oldTests
         private void TestRootNodeCustomPropData(Project proj)
         {
             ExampleCustomProperty rootExCustProp =
-                (ExampleCustomProperty) proj.GetPresentation(0).RootNode
+                (ExampleCustomProperty) proj.Presentations.Get(0).RootNode
                                             .GetProperty(typeof (ExampleCustomProperty));
             Assert.AreEqual("Test Data", rootExCustProp.CustomData);
         }
 
         private void TestRootNodeFirstChildCustTreeNodeData(Project proj)
         {
-            ExampleCustomTreeNode firstCh = (ExampleCustomTreeNode)proj.GetPresentation(0).RootNode.Children.Get(0);
+            ExampleCustomTreeNode firstCh = (ExampleCustomTreeNode)proj.Presentations.Get(0).RootNode.Children.Get(0);
             Assert.AreEqual("Test Ex Cust Tree Node Data", firstCh.CustomTreeNodeData);
         }
 
@@ -141,7 +141,7 @@ namespace urakawa.oldTests
         {
             urakawa.navigation.TypeFilterNavigator<ExampleCustomTreeNode> navigator
                 = new urakawa.navigation.TypeFilterNavigator<ExampleCustomTreeNode>();
-            TreeNode root = mProject.GetPresentation(0).RootNode;
+            TreeNode root = mProject.Presentations.Get(0).RootNode;
             ExampleCustomTreeNode nod1 = navigator.GetNext(root);
             Assert.IsNotNull(nod1, "Node 1 not found");
             Assert.AreEqual(nod1.Label, "1", "Label of node 1 is not '1'");

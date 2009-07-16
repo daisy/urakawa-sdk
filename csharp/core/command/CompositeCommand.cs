@@ -95,7 +95,7 @@ namespace urakawa.command
         /// </summary>
         public CompositeCommand()
         {
-            mCommands = new ObjectListProvider<Command>();
+            mCommands = new ObjectListProvider<Command>(this);
         }
 
         /// <summary>
@@ -203,7 +203,14 @@ namespace urakawa.command
         {
             get
             {
-                return mCommands.Count > 0 && mCommands.Contents.TrueForAll(delegate(Command c) { return c.CanUnExecute; });
+                foreach (Command cmd in mCommands.ContentsAs_YieldEnumerable)
+                {
+                    if (!cmd.CanUnExecute)
+                    {
+                        return false;
+                    }
+                }
+                return true;
             }
         }
 
@@ -213,7 +220,17 @@ namespace urakawa.command
         /// <returns></returns>
         public override bool CanExecute
         {
-            get { return mCommands.Count > 0 && mCommands.Contents.TrueForAll(delegate(Command c) { return c.CanExecute; }); }
+            get
+            {
+                foreach(Command cmd in mCommands.ContentsAs_YieldEnumerable)
+                {
+                    if (!cmd.CanExecute)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
         }
 
         /// <summary>
@@ -247,7 +264,10 @@ namespace urakawa.command
         /// </summary>
         protected override void Clear()
         {
-            mCommands.Clear();
+            foreach (Command cmd in ChildCommands.ContentsAs_ListCopy)
+            {
+                ChildCommands.Remove(cmd);
+            }
             mShortDescription = null;
             mLongDescription = null;
             base.Clear();
@@ -289,7 +309,7 @@ namespace urakawa.command
                                                                  source.LocalName, source.NamespaceURI));
                         }
                         cmd.XukIn(source, handler);
-                        mCommands.Add(cmd);
+                        mCommands.Insert(mCommands.Count, cmd);
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {

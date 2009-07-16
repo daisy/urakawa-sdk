@@ -26,9 +26,9 @@ namespace urakawa.oldTests
             mProjectUri = new Uri(mProjectUri, "../XukWorks/EmptyMediaDataPresentationTests/");
             mProject = new Project();
             mProject.AddNewPresentation();
-            mProject.GetPresentation(0).RootUri = mProjectUri;
-            mProject.GetPresentation(0).MediaDataManager.DefaultPCMFormat = new PCMFormatInfo(1, 22050, 16);
-            mProject.GetPresentation(0).MediaDataManager.EnforceSinglePCMFormat = true;
+            mProject.Presentations.Get(0).RootUri = mProjectUri;
+            mProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat = new PCMFormatInfo(1, 22050, 16);
+            mProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat = true;
         }
 
         [TearDown]
@@ -41,7 +41,7 @@ namespace urakawa.oldTests
         [Test]
         public void ImportAudio()
         {
-            ManagedAudioMedia mam = mProject.GetPresentation(0).MediaFactory.Create<ManagedAudioMedia>();
+            ManagedAudioMedia mam = mProject.Presentations.Get(0).MediaFactory.Create<ManagedAudioMedia>();
             string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
             mam.AudioMediaData.AppendAudioDataFromRiffWave(path);
             Assert.AreEqual(
@@ -58,20 +58,20 @@ namespace urakawa.oldTests
         [ExpectedException(typeof (urakawa.exception.InvalidDataFormatException))]
         public void ImportInvalidPCMFormatAudio()
         {
-            mProject.GetPresentation(0).MediaDataManager.DefaultSampleRate = 44100;
+            mProject.Presentations.Get(0).MediaDataManager.DefaultSampleRate = 44100;
             ImportAudio();
         }
 
         [Test]
         public void MergeAudio()
         {
-            ManagedAudioMedia mam0 = mProject.GetPresentation(0).MediaFactory.Create<ManagedAudioMedia>();
+            ManagedAudioMedia mam0 = mProject.Presentations.Get(0).MediaFactory.Create<ManagedAudioMedia>();
             string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
             mam0.AudioMediaData.AppendAudioDataFromRiffWave(path);
             Assert.AreEqual(
                 93312, mam0.AudioMediaData.GetPCMLength(),
                 "Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
-            ManagedAudioMedia mam1 = mProject.GetPresentation(0).MediaFactory.Create<ManagedAudioMedia>();
+            ManagedAudioMedia mam1 = mProject.Presentations.Get(0).MediaFactory.Create<ManagedAudioMedia>();
             path = "../../XukWorks/MediaDataSample/Data/aud000001.wav";
             mam1.AudioMediaData.AppendAudioDataFromRiffWave(path);
             Assert.AreEqual(
@@ -90,7 +90,7 @@ namespace urakawa.oldTests
         public void SplitAudio()
         {
             List<ManagedAudioMedia> mams = new List<ManagedAudioMedia>();
-            mams.Add(mProject.GetPresentation(0).MediaFactory.Create<ManagedAudioMedia>());
+            mams.Add(mProject.Presentations.Get(0).MediaFactory.Create<ManagedAudioMedia>());
             string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
             mams[0].AudioMediaData.AppendAudioDataFromRiffWave(path);
             double initMSecs = mams[0].Duration.TimeDeltaAsMillisecondDouble;

@@ -37,9 +37,9 @@ namespace urakawa
             {
                 m_PrettyFormat = pretty;
                 //PresentationFactory.RefreshQNames();
-                for (int i = 0; i < NumberOfPresentations; i++)
+                foreach (Presentation pres in mPresentations.ContentsAs_YieldEnumerable)
                 {
-                    GetPresentation(i).RefreshFactoryQNames();
+                    pres.RefreshFactoryQNames();
                 }
             }
         }
@@ -74,28 +74,28 @@ namespace urakawa
             if (d != null) d(this, args);
         }
 
-        /// <summary>
-        /// Event fired after a <see cref="Presentation"/> has been added to the <see cref="Project"/>
-        /// </summary>
-        public event EventHandler<PresentationAddedEventArgs> PresentationAdded;
+        ///// <summary>
+        ///// Event fired after a <see cref="Presentation"/> has been added to the <see cref="Project"/>
+        ///// </summary>
+        //public event EventHandler<PresentationAddedEventArgs> PresentationAdded;
 
-        /// <summary>
-        /// Fires the <see cref="PresentationAdded"/> event
-        /// </summary>
-        /// <param name="source">
-        /// The source, that is the <see cref="Project"/> to which a <see cref="Presentation"/> was added
-        /// </param>
-        /// <param name="addedPres">The <see cref="Presentation"/> that was added</param>
-        protected void NotifyPresentationAdded(Project source, Presentation addedPres)
-        {
-            EventHandler<PresentationAddedEventArgs> d = PresentationAdded;
-            if (d != null) d(this, new PresentationAddedEventArgs(source, addedPres));
-        }
+        ///// <summary>
+        ///// Fires the <see cref="PresentationAdded"/> event
+        ///// </summary>
+        ///// <param name="source">
+        ///// The source, that is the <see cref="Project"/> to which a <see cref="Presentation"/> was added
+        ///// </param>
+        ///// <param name="addedPres">The <see cref="Presentation"/> that was added</param>
+        //protected void NotifyPresentationAdded(Project source, Presentation addedPres)
+        //{
+        //    EventHandler<PresentationAddedEventArgs> d = PresentationAdded;
+        //    if (d != null) d(this, new PresentationAddedEventArgs(source, addedPres));
+        //}
 
-        private void this_presentationAdded(object sender, PresentationAddedEventArgs e)
+        private void this_presentationAdded(object sender, ObjectAddedEventArgs<Presentation> ev)
         {
-            NotifyChanged(e);
-            e.AddedPresentation.Changed += Presentation_changed;
+            NotifyChanged(ev);
+            ev.m_AddedObject.Changed += Presentation_changed;
         }
 
         private void Presentation_changed(object sender, DataModelChangedEventArgs e)
@@ -103,33 +103,41 @@ namespace urakawa
             NotifyChanged(e);
         }
 
-        /// <summary>
-        /// Event fired after a <see cref="Presentation"/> has been added to the <see cref="Project"/>
-        /// </summary>
-        public event EventHandler<PresentationRemovedEventArgs> PresentationRemoved;
+        ///// <summary>
+        ///// Event fired after a <see cref="Presentation"/> has been added to the <see cref="Project"/>
+        ///// </summary>
+        //public event EventHandler<PresentationRemovedEventArgs> PresentationRemoved;
 
-        /// <summary>
-        /// Fires the <see cref="PresentationRemoved"/> event
-        /// </summary>
-        /// <param name="source">
-        /// The source, that is the <see cref="Project"/> to which a <see cref="Presentation"/> was added
-        /// </param>
-        /// <param name="removedPres">The <see cref="Presentation"/> that was added</param>
-        protected void NotifyPresentationRemoved(Project source, Presentation removedPres)
-        {
-            EventHandler<PresentationRemovedEventArgs> d = PresentationRemoved;
-            if (d != null) d(this, new PresentationRemovedEventArgs(source, removedPres));
-        }
+        ///// <summary>
+        ///// Fires the <see cref="PresentationRemoved"/> event
+        ///// </summary>
+        ///// <param name="source">
+        ///// The source, that is the <see cref="Project"/> to which a <see cref="Presentation"/> was added
+        ///// </param>
+        ///// <param name="removedPres">The <see cref="Presentation"/> that was added</param>
+        //protected void NotifyPresentationRemoved(Project source, Presentation removedPres)
+        //{
+        //    EventHandler<PresentationRemovedEventArgs> d = PresentationRemoved;
+        //    if (d != null) d(this, new PresentationRemovedEventArgs(source, removedPres));
+        //}
 
-        private void this_presentationRemoved(object sender, PresentationRemovedEventArgs e)
+        private void this_presentationRemoved(object sender, ObjectRemovedEventArgs<Presentation> ev)
         {
-            e.RemovedPresentation.Changed -= Presentation_changed;
-            NotifyChanged(e);
+            ev.m_RemovedObject.Changed -= Presentation_changed;
+            NotifyChanged(ev);
         }
 
         #endregion
 
-        private List<Presentation> mPresentations;
+        private ObjectListProvider<Presentation> mPresentations;
+
+        public ObjectListProvider<Presentation> Presentations
+        {
+            get
+            {
+                return mPresentations;
+            }
+        }
 
         /// <summary>
         /// Default constructor
@@ -137,9 +145,9 @@ namespace urakawa
         public Project()
         {
             mXukStrings = new XukStrings(this);
-            mPresentations = new List<Presentation>();
-            PresentationAdded += this_presentationAdded;
-            PresentationRemoved += this_presentationRemoved;
+            mPresentations = new ObjectListProvider<Presentation>(this);
+            mPresentations.ObjectAdded += this_presentationAdded;
+            mPresentations.ObjectRemoved += this_presentationRemoved;
         }
 
         private XukStrings mXukStrings;
@@ -229,35 +237,6 @@ namespace urakawa
 
 
         /// <summary>
-        /// Gets the <see cref="urakawa.Presentation"/> of the <see cref="Project"/> at a given index
-        /// </summary>
-        /// <param name="index">The index of the <see cref="Presentation"/> to get</param>
-        /// <returns>The presentation at the given index</returns>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()-1]</c>
-        /// </exception>
-        public Presentation GetPresentation(int index)
-        {
-            if (index < 0 || NumberOfPresentations <= index)
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    String.Format(
-                        "There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
-                        index, NumberOfPresentations - 1));
-            }
-            return mPresentations[index];
-        }
-
-        /// <summary>
-        /// Gets a list of the <see cref="Presentation"/>s in the <see cref="Project"/>
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<Presentation> ListOfPresentations
-        {
-            get { return new List<Presentation>(mPresentations); }
-        }
-
-        /// <summary>
         /// Sets the <see cref="Presentation"/> at a given index
         /// </summary>
         /// <param name="newPres">The <see cref="Presentation"/> to set</param>
@@ -276,13 +255,13 @@ namespace urakawa
             {
                 throw new exception.MethodParameterIsNullException("The new Presentation can not be null");
             }
-            if (index < 0 || NumberOfPresentations < index)
+            if (index < 0 || mPresentations.Count < index)
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
                                                                               "There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
-                                                                              index, NumberOfPresentations));
+                                                                              index, mPresentations.Count));
             }
-            if (mPresentations.Contains(newPres))
+            if (mPresentations.IndexOf(newPres) != -1)
             {
                 if (mPresentations.IndexOf(newPres) != index)
                 {
@@ -291,31 +270,17 @@ namespace urakawa
                                                                         mPresentations.IndexOf(newPres)));
                 }
             }
-            if (index < NumberOfPresentations)
+            if (index < mPresentations.Count)
             {
-                RemovePresentation(index);
+                mPresentations.Remove(mPresentations.Get(index));
+                newPres.Project = this;
                 mPresentations.Insert(index, newPres);
             }
             else
             {
-                mPresentations.Add(newPres);
+                newPres.Project = this;
+                mPresentations.Insert(mPresentations.Count, newPres);
             }
-            newPres.Project = this;
-            NotifyPresentationAdded(this, newPres);
-        }
-
-        /// <summary>
-        /// Adds a <see cref="Presentation"/> to the <see cref="Project"/>
-        /// </summary>
-        /// <param name="newPres">The <see cref="Presentation"/> to add</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="newPres"/> is <c>null</c></exception>
-        /// <exception cref="exception.IsAlreadyManagerOfException">
-        /// Thrown when <paramref name="newPres"/> already exists in <c>this</c>
-        /// </exception>
-        public void AddPresentation(Presentation newPres)
-        {
-            SetPresentation(newPres, NumberOfPresentations);
         }
 
         /// <summary>
@@ -326,7 +291,10 @@ namespace urakawa
         public Presentation AddNewPresentation()
         {
             Presentation newPres = PresentationFactory.Create();
-            AddPresentation(newPres);
+
+            newPres.Project = this;
+
+            mPresentations.Insert(mPresentations.Count, newPres);
 
             if (IsPrettyFormat())
             {
@@ -382,39 +350,9 @@ namespace urakawa
             //
             //TreeNodeFactory.Create(); DONE ALREADY (see above)
 
-            Debug.Assert(pres.DataProviderManager.ListProvider.Count == 0);
-            Debug.Assert(pres.ChannelsManager.ListProvider.Count == 0);
-            Debug.Assert(pres.MediaDataManager.ListProvider.Count == 0);
-        }
-        /// <summary>
-        /// Gets the number of <see cref="Presentation"/>s in the <see cref="Project"/>
-        /// </summary>
-        /// <returns>The number of <see cref="Presentation"/>s</returns>
-        public int NumberOfPresentations
-        {
-            get { return mPresentations.Count; }
-        }
-
-        /// <summary>
-        /// Removes the <see cref="Presentation"/> at a given index
-        /// </summary>
-        /// <param name="index">The given index</param>
-        /// <returns>The removed <see cref="Presentation"/></returns>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()-1]</c>
-        /// </exception>
-        public Presentation RemovePresentation(int index)
-        {
-            if (index < 0 || NumberOfPresentations <= index)
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
-                                                                              "There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
-                                                                              index, NumberOfPresentations - 1));
-            }
-            Presentation pres = GetPresentation(index);
-            mPresentations.RemoveAt(index);
-            NotifyPresentationRemoved(this, pres);
-            return pres;
+            Debug.Assert(pres.DataProviderManager.ManagedObjects.Count == 0);
+            Debug.Assert(pres.ChannelsManager.ManagedObjects.Count == 0);
+            Debug.Assert(pres.MediaDataManager.ManagedObjects.Count == 0);
         }
 
         /// <summary>
@@ -422,7 +360,11 @@ namespace urakawa
         /// </summary>
         public void RemoveAllPresentations()
         {
-            mPresentations.Clear();
+            foreach (Presentation pres in mPresentations.ContentsAs_ListCopy)
+            {
+                pres.Project = null;
+                mPresentations.Remove(pres);
+            }
         }
 
         #region IXUKAble members
@@ -472,7 +414,8 @@ namespace urakawa
                         if (pres != null)
                         {
                             pres.XukIn(source, handler, this);
-                            AddPresentation(pres);
+                            pres.Project = this;
+                            mPresentations.Insert(mPresentations.Count, pres);
                         }
                         else if (!source.IsEmptyElement)
                         {
@@ -502,7 +445,7 @@ namespace urakawa
             base.XukOutChildren(destination, baseUri, handler);
             PresentationFactory.XukOut(destination, baseUri, handler);
             destination.WriteStartElement(XukStrings.Presentations, XukNamespaceUri);
-            foreach (Presentation pres in ListOfPresentations)
+            foreach (Presentation pres in mPresentations.ContentsAs_YieldEnumerable)
             {
                 pres.DataProviderManager.RegenerateUids();
                 pres.ChannelsManager.RegenerateUids();
@@ -534,14 +477,14 @@ namespace urakawa
                 //System.Diagnostics.Debug.Fail("! ValueEquals !");
                 return false;
             }
-            if (NumberOfPresentations != other.NumberOfPresentations)
+            if (mPresentations.Count != other.Presentations.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !");
                 return false;
             }
-            for (int index = 0; index < NumberOfPresentations; index++)
+            for (int index = 0; index < mPresentations.Count; index++)
             {
-                if (!GetPresentation(index).ValueEquals(other.GetPresentation(index)))
+                if (!mPresentations.Get(index).ValueEquals(other.Presentations.Get(index)))
                 {
                     //System.Diagnostics.Debug.Fail("! ValueEquals !");
                     return false;

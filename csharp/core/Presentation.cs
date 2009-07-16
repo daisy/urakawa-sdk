@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Xml;
 using System.Collections.Generic;
 using urakawa.command;
@@ -174,46 +175,46 @@ namespace urakawa
             notifyChanged(e);
         }
 
-        /// <summary>
-        /// Event fired after a <see cref="Metadata"/> item has been added to the <see cref="Presentation"/>
-        /// </summary>
-        public event EventHandler<MetadataAddedEventArgs> MetadataAdded;
+        ///// <summary>
+        ///// Event fired after a <see cref="Metadata"/> item has been added to the <see cref="Presentation"/>
+        ///// </summary>
+        //public event EventHandler<MetadataAddedEventArgs> MetadataAdded;
 
-        /// <summary>
-        /// Fires the <see cref="MetadataAdded"/> event
-        /// </summary>
-        /// <param name="addee">The <see cref="Metadata"/> item that was added</param>
-        protected void notifyMetadataAdded(Metadata addee)
+        ///// <summary>
+        ///// Fires the <see cref="MetadataAdded"/> event
+        ///// </summary>
+        ///// <param name="addee">The <see cref="Metadata"/> item that was added</param>
+        //protected void notifyMetadataAdded(Metadata addee)
+        //{
+        //    EventHandler<MetadataAddedEventArgs> d = MetadataAdded;
+        //    if (d != null) d(this, new MetadataAddedEventArgs(this, addee));
+        //}
+
+        ///// <summary>
+        ///// Event fired after a <see cref="Metadata"/> item has been removed from the <see cref="Presentation"/>
+        ///// </summary>
+        //public event EventHandler<MetadataDeletedEventArgs> MetadataDeleted;
+
+        ///// <summary>
+        ///// Fires the <see cref="MetadataDeleted"/> event
+        ///// </summary>
+        ///// <param name="deletee">The <see cref="Metadata"/> item that was removed</param>
+        //protected void notifyMetadataDeleted(Metadata deletee)
+        //{
+        //    EventHandler<MetadataDeletedEventArgs> d = MetadataDeleted;
+        //    if (d != null) d(this, new MetadataDeletedEventArgs(this, deletee));
+        //}
+
+        private void this_metadataRemoved(object sender, ObjectRemovedEventArgs<Metadata> ev)
         {
-            EventHandler<MetadataAddedEventArgs> d = MetadataAdded;
-            if (d != null) d(this, new MetadataAddedEventArgs(this, addee));
+            ev.m_RemovedObject.Changed -= Metadata_Changed;
+            notifyChanged(ev);
         }
 
-        /// <summary>
-        /// Event fired after a <see cref="Metadata"/> item has been removed from the <see cref="Presentation"/>
-        /// </summary>
-        public event EventHandler<MetadataDeletedEventArgs> MetadataDeleted;
-
-        /// <summary>
-        /// Fires the <see cref="MetadataDeleted"/> event
-        /// </summary>
-        /// <param name="deletee">The <see cref="Metadata"/> item that was removed</param>
-        protected void notifyMetadataDeleted(Metadata deletee)
+        private void this_metadataAdded(object sender, ObjectAddedEventArgs<Metadata> ev)
         {
-            EventHandler<MetadataDeletedEventArgs> d = MetadataDeleted;
-            if (d != null) d(this, new MetadataDeletedEventArgs(this, deletee));
-        }
-
-        private void this_metadataRemoved(object sender, MetadataDeletedEventArgs e)
-        {
-            e.DeletedMetadata.Changed -= Metadata_Changed;
-            notifyChanged(e);
-        }
-
-        private void this_metadataAdded(object sender, MetadataAddedEventArgs e)
-        {
-            e.AddedMetadata.Changed += Metadata_Changed;
-            notifyChanged(e);
+            ev.m_AddedObject.Changed += Metadata_Changed;
+            notifyChanged(ev);
         }
 
         private void Metadata_Changed(object sender, DataModelChangedEventArgs e)
@@ -229,13 +230,14 @@ namespace urakawa
         /// </summary>
         public Presentation()
         {
-            mMetadata = new List<Metadata>();
+            mMetadata = new ObjectListProvider<Metadata>(this);
             mRootNodeInitialized = false;
             LanguageChanged += this_languageChanged;
             RootUriChanged += this_rootUriChanged;
             RootNodeChanged += this_rootNodeChanged;
-            MetadataAdded += this_metadataAdded;
-            MetadataDeleted += this_metadataRemoved;
+
+            mMetadata.ObjectAdded += this_metadataAdded;
+            mMetadata.ObjectRemoved += this_metadataRemoved;
         }
 
         private Project mProject;
@@ -258,7 +260,15 @@ namespace urakawa
         private bool mRootNodeInitialized;
         private Uri mRootUri;
         private string mLanguage;
-        private List<Metadata> mMetadata;
+
+        private ObjectListProvider<Metadata> mMetadata;
+        public ObjectListProvider<Metadata>  Metadatas
+        {
+            get
+            {
+                return mMetadata;
+            }
+        }
 
 
         public void XukIn(XmlReader source, ProgressHandler handler, Project project)
@@ -343,12 +353,12 @@ namespace urakawa
                     usedMediaData.Add(md);
                 }
             }
-            foreach (IManaged mm in collectorVisitor.ListOfCollectedMedia)
+            foreach (IManaged mm in collectorVisitor.CollectedMedia)
             {
                 if (!usedMediaData.Contains(mm.MediaData)) usedMediaData.Add(mm.MediaData);
             }
             List<DataProvider> usedDataProviders = new List<DataProvider>();
-            foreach (MediaData md in MediaDataManager.ListProvider.ContentsAs_ListCopy)
+            foreach (MediaData md in MediaDataManager.ManagedObjects.ContentsAs_ListCopy)
             {
                 if (usedMediaData.Contains(md))
                 {
@@ -356,7 +366,7 @@ namespace urakawa
                     {
                         ((media.data.audio.codec.WavAudioMediaData) md).ForceSingleDataProvider();
                     }
-                    foreach (DataProvider dp in md.ListOfUsedDataProviders)
+                    foreach (DataProvider dp in md.UsedDataProviders)
                     {
                         if (!usedDataProviders.Contains(dp)) usedDataProviders.Add(dp);
                     }
@@ -366,7 +376,7 @@ namespace urakawa
                     md.Delete();
                 }
             }
-            foreach (DataProvider dp in DataProviderManager.ListProvider.ContentsAs_ListCopy)
+            foreach (DataProvider dp in DataProviderManager.ManagedObjects.ContentsAs_ListCopy)
             {
                 if (!usedDataProviders.Contains(dp)) dp.Delete();
             }
@@ -557,10 +567,10 @@ namespace urakawa
         /// An <see cref="Media"/> is considered to be used by a <see cref="TreeNode"/> if the media
         /// is linked to the node via. a <see cref="ChannelsProperty"/>
         /// </remarks>
-        protected virtual List<Media> GetListOfMediaUsedByTreeNode(TreeNode node)
+        protected virtual List<Media> GetMediaUsedByTreeNode(TreeNode node)
         {
             List<Media> res = new List<Media>();
-            foreach (Property prop in node.GetListOfProperties())
+            foreach (Property prop in node.Properties.ContentsAs_YieldEnumerable)
             {
                 if (prop is ChannelsProperty)
                 {
@@ -579,7 +589,7 @@ namespace urakawa
         /// Remark that a 
         /// </summary>
         /// <returns>The list</returns>
-        public List<Media> ListOfUsedMedia
+        public List<Media> UsedMedia
         {
             get
             {
@@ -594,7 +604,7 @@ namespace urakawa
 
         private void CollectUsedMedia(TreeNode node, ICollection<Media> collectedMedia)
         {
-            foreach (Media m in GetListOfMediaUsedByTreeNode(node))
+            foreach (Media m in GetMediaUsedByTreeNode(node))
             {
                 if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
             }
@@ -729,26 +739,6 @@ namespace urakawa
 
 
         /// <summary>
-        /// Adds a <see cref="Metadata"/> to the <see cref="Presentation"/>
-        /// </summary>
-        /// <param name="metadata">The <see cref="Metadata"/> to add</param>
-        public void AddMetadata(Metadata metadata)
-        {
-            mMetadata.Add(metadata);
-            notifyMetadataAdded(metadata);
-        }
-
-        /// <summary>
-        /// Gets a <see cref="List{Metadata}"/> of all <see cref="Metadata"/>
-        /// in the <see cref="urakawa.Project"/>
-        /// </summary>
-        /// <returns>The <see cref="List{Metadata}"/> of metadata <see cref="Metadata"/></returns>
-        public List<Metadata> ListOfMetadata
-        {
-            get { return new List<Metadata>(mMetadata); }
-        }
-
-        /// <summary>
         /// Gets a <see cref="List{Metadata}"/> of all <see cref="Metadata"/>
         /// in the <see cref="urakawa.Project"/> with a given name
         /// </summary>
@@ -757,7 +747,7 @@ namespace urakawa
         public List<Metadata> GetMetadata(string name)
         {
             List<Metadata> list = new List<Metadata>();
-            foreach (Metadata md in mMetadata)
+            foreach (Metadata md in mMetadata.ContentsAs_YieldEnumerable)
             {
                 if (md.Name == name) list.Add(md);
             }
@@ -772,27 +762,10 @@ namespace urakawa
         {
             foreach (Metadata md in GetMetadata(name))
             {
-                DeleteMetadata(md);
+                Metadatas.Remove(md);
             }
         }
 
-        /// <summary>
-        /// Deletes a given <see cref="Metadata"/>
-        /// </summary>
-        /// <param name="metadata">The given <see cref="Metadata"/></param>
-        /// <exception cref="exception.IsNotManagerOfException">
-        /// When <paramref name="metadata"/> does not belong to the <see cref="Presentation"/>
-        /// </exception>
-        public void DeleteMetadata(Metadata metadata)
-        {
-            if (!mMetadata.Contains(metadata))
-            {
-                throw new exception.IsNotManagerOfException(
-                    "The given Metadata item does not belong to the Presentation");
-            }
-            mMetadata.Remove(metadata);
-            notifyMetadataDeleted(metadata);
-        }
 
         #endregion
 
@@ -819,7 +792,11 @@ namespace urakawa
             mRootNodeInitialized = false;
             mRootUri = null;
             mLanguage = null;
-            mMetadata.Clear();
+            
+            foreach (Metadata md in mMetadata.ContentsAs_ListCopy)
+            {
+                mMetadata.Remove(md);
+            }
             base.Clear();
         }
 
@@ -891,7 +868,7 @@ namespace urakawa
                     if (newMeta != null)
                     {
                         newMeta.XukIn(source, handler);
-                        mMetadata.Add(newMeta);
+                        mMetadata.Insert(mMetadata.Count, newMeta);
                     }
                     else if (!source.IsEmptyElement)
                     {
@@ -1137,7 +1114,7 @@ namespace urakawa
 
 
             destination.WriteStartElement(XukStrings.Metadatas, XukNamespaceUri);
-            foreach (Metadata md in mMetadata)
+            foreach (Metadata md in mMetadata.ContentsAs_YieldEnumerable)
             {
                 md.XukOut(destination, baseUri, handler);
             }
@@ -1185,8 +1162,8 @@ namespace urakawa
                 //System.Diagnostics.Debug.Fail("! ValueEquals !");
                 return false;
             }
-            List<Metadata> thisMetadata = ListOfMetadata;
-            List<Metadata> otherMetadata = other.ListOfMetadata;
+            ReadOnlyCollection<Metadata> thisMetadata = Metadatas.ContentsAs_ListAsReadOnly;
+            ReadOnlyCollection<Metadata> otherMetadata = other.Metadatas.ContentsAs_ListAsReadOnly;
             if (thisMetadata.Count != otherMetadata.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !");

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using NUnit.Framework;
 using urakawa.core;
@@ -17,7 +15,7 @@ namespace urakawa.publish
         public void PublishTest_With_TreeNodeTestsSample()
         {
             Project proj = TreeNodeTests.CreateTreeNodeTestSampleProject();
-            Presentation pres = proj.GetPresentation(0);
+            Presentation pres = proj.Presentations.Get(0);
             PublishTest(pres);
         }
 
@@ -61,7 +59,7 @@ namespace urakawa.publish
             publishVisitor.DestinationDirectory = publishDestination;
             pres.RootNode.AcceptDepthFirst(publishVisitor);
             publishVisitor.WriteAndCloseCurrentAudioFile();
-            Uri xukFile = new Uri(proj.GetPresentation(0).RootUri, "TreeNodeTestsSample.xuk");
+            Uri xukFile = new Uri(proj.Presentations.Get(0).RootUri, "TreeNodeTestsSample.xuk");
             if (File.Exists(xukFile.LocalPath)) File.Delete(xukFile.LocalPath);
             proj.SaveXuk(xukFile);
             CheckPublishedFiles(pres.RootNode, sourceCh, destCh, null, null, null);

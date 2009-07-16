@@ -52,13 +52,13 @@ namespace urakawa.oldTests
         {
             Project proj;
             OpenXUK(out proj, mDefaultFile);
-            ChannelsManager chMgr = proj.GetPresentation(0).ChannelsManager;
-            Channel ch = (Channel) chMgr.ListProvider.Get(0);
+            ChannelsManager chMgr = proj.Presentations.Get(0).ChannelsManager;
+            Channel ch = (Channel) chMgr.ManagedObjects.Get(0);
             chMgr.RemoveManagedObject(ch);
             chMgr.AddManagedObject(ch);
             urakawa.examples.CollectMediaFromChannelTreeNodeVisitor collVis
                 = new urakawa.examples.CollectMediaFromChannelTreeNodeVisitor(ch);
-            proj.GetPresentation(0).RootNode.AcceptDepthFirst(collVis);
+            proj.Presentations.Get(0).RootNode.AcceptDepthFirst(collVis);
             Assert.AreEqual(
                 0, collVis.CollectedMedia.Length,
                 "The channel unexpectedly contained media after being deleted and re-added");

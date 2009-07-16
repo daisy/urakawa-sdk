@@ -23,7 +23,7 @@ namespace urakawa.media.data.utilities
         /// any changes made to the returned list will reflect in 
         /// the <see cref="CollectManagedMediaTreeNodeVisitor"/> instance
         /// </remarks>
-        public List<IManaged> ListOfCollectedMedia
+        public List<IManaged> CollectedMedia
         {
             get { return mCollectedMedia; }
         }
@@ -37,7 +37,7 @@ namespace urakawa.media.data.utilities
         /// <returns><c>true</c></returns>
         public bool PreVisit(TreeNode node)
         {
-            foreach (urakawa.property.Property prop in node.GetListOfProperties())
+            foreach (property.Property prop in node.Properties.ContentsAs_YieldEnumerable)
             {
                 if (prop is ChannelsProperty)
                 {
