@@ -50,12 +50,12 @@ namespace urakawa.oldTests
             Init();
             //Delete any files in the data directory not used by the DataProviderManager
             DataProviderManager dataProvMngr =
-                (DataProviderManager) mProject.GetPresentation(0).DataProviderManager;
+                (DataProviderManager) mProject.Presentations.Get(0).DataProviderManager;
             DirectoryInfo dataDI = new DirectoryInfo(dataProvMngr.DataFileDirectoryFullPath);
             foreach (FileInfo file in dataDI.GetFiles())
             {
                 bool found = false;
-                foreach (FileDataProvider fileDataProv in dataProvMngr.ListProvider.ContentsAs_YieldEnumerable)
+                foreach (FileDataProvider fileDataProv in dataProvMngr.ManagedObjects.ContentsAs_YieldEnumerable)
                 {
                     if (file.FullName.ToLower() == fileDataProv.DataFileFullPath.ToLower())
                     {

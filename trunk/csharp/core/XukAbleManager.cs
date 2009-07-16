@@ -15,11 +15,11 @@ namespace urakawa
         public XukAbleManager(Presentation pres, string uidPrefix)
         {
             Presentation = pres;
-            m_managedObjects = new ObjectListProvider<T>();
+            m_managedObjects = new ObjectListProvider<T>(this);
             m_UidPrefix = uidPrefix;
         }
 
-        public ObjectListProvider<T> ListProvider
+        public ObjectListProvider<T> ManagedObjects
         {
             get
             {
@@ -36,13 +36,16 @@ namespace urakawa
 
                 List<T> localList = m_managedObjects.ContentsAs_ListCopy;
 
-                m_managedObjects.Clear();
+                foreach (T obj in localList)
+                {
+                    m_managedObjects.Remove(obj);
+                }
 
                 foreach (T obj in localList)
                 {
                     string newUid = Presentation.GetNewUid(m_UidPrefix, ref index);
                     obj.Uid = newUid;
-                    m_managedObjects.Add(obj);
+                    m_managedObjects.Insert(m_managedObjects.Count, obj);
                 }
             }
         }
@@ -182,7 +185,7 @@ namespace urakawa
                 }
 
                 obj.Uid = uid;
-                m_managedObjects.Add(obj);
+                m_managedObjects.Insert(m_managedObjects.Count, obj);
             }
         }
 
@@ -215,7 +218,7 @@ namespace urakawa
                 return false;
             }
 
-            if (otherz.ListProvider.Count != m_managedObjects.Count)
+            if (otherz.ManagedObjects.Count != m_managedObjects.Count)
             {
                 return false;
             }

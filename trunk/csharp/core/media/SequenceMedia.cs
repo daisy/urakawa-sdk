@@ -53,7 +53,7 @@ namespace urakawa.media
         /// </exception>
         public SequenceMedia()
         {
-            mSequence = new ObjectListProvider<Media>();
+            mSequence = new ObjectListProvider<Media>(this);
             Reset();
         }
 
@@ -91,6 +91,7 @@ namespace urakawa.media
             mSequence.Insert(index, newItem);
 
             newItem.Changed += Item_Changed;
+
         }
 
 
@@ -118,7 +119,7 @@ namespace urakawa.media
         /// </exception>
         public void RemoveItem(Media item)
         {
-            if (!mSequence.Contains(item))
+            if (mSequence.IndexOf(item) == -1)
             {
                 throw new exception.MediaNotInSequenceException(
                     "Cannot remove a Media item that is not part of the sequence");
@@ -126,6 +127,7 @@ namespace urakawa.media
             mSequence.Remove(item);
 
             item.Changed -= Item_Changed;
+
         }
 
         /// <summary>

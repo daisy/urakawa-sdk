@@ -18,7 +18,7 @@ namespace urakawa.media
 
         protected Presentation mPresentation
         {
-            get { return mProject.GetPresentation(0); }
+            get { return mProject.Presentations.Get(0); }
         }
 
         protected Type mDefaultMediaType;
@@ -68,7 +68,7 @@ namespace urakawa.media
             }
             destPres.MediaDataManager.DefaultPCMFormat = mMedia1.Presentation.MediaDataManager.DefaultPCMFormat;
 
-            mProject.AddPresentation(destPres);
+            mProject.Presentations.Insert(mProject.Presentations.Count, destPres);
             Presentation sourcePres = mMedia1.Presentation;
             Media expM = mMedia1.Export(destPres);
             Assert.AreEqual(sourcePres, mMedia1.Presentation,

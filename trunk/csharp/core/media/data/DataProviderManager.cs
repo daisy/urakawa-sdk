@@ -247,7 +247,7 @@ namespace urakawa.media.data
         private void CopyDataFiles(string source, string dest)
         {
             CreateDirectory(dest);
-            foreach (FileDataProvider fdp in ListOfFileDataProviders)
+            foreach (FileDataProvider fdp in ManagedFileDataProviders)
             {
                 if (!File.Exists(Path.Combine(source, fdp.DataFileRelativePath)))
                 {
@@ -320,7 +320,7 @@ namespace urakawa.media.data
             while (true)
             {
                 res = Path.ChangeExtension(Path.GetRandomFileName(), extension);
-                foreach (FileDataProvider prov in ListOfFileDataProviders)
+                foreach (FileDataProvider prov in ManagedFileDataProviders)
                 {
                     if (!prov.IsDataFileInitialized) continue;
                     if (res.ToLower() == prov.DataFileRelativePath.ToLower()) continue;
@@ -335,19 +335,21 @@ namespace urakawa.media.data
         /// Gets a list of the <see cref="FileDataProvider"/>s managed by the manager
         /// </summary>
         /// <returns>The list of file data providers</returns>
-        public List<FileDataProvider> ListOfFileDataProviders
+        public IEnumerable<FileDataProvider> ManagedFileDataProviders
         {
             get
             {
-                List<FileDataProvider> res = new List<FileDataProvider>();
-                foreach (DataProvider prov in ListProvider.ContentsAs_YieldEnumerable)
+                //List<FileDataProvider> res = new List<FileDataProvider>();
+                foreach (DataProvider prov in ManagedObjects.ContentsAs_YieldEnumerable)
                 {
                     if (prov is FileDataProvider)
                     {
-                        res.Add((FileDataProvider)prov);
+                        //res.Add((FileDataProvider)prov);
+                        yield return (FileDataProvider)prov;
                     }
                 }
-                return res;
+                yield break;
+                //return res;
             }
         }
 
@@ -405,14 +407,14 @@ namespace urakawa.media.data
         public void RemoveUnusedDataProviders(bool delete)
         {
             List<DataProvider> usedDataProviders = new List<DataProvider>();
-            foreach (MediaData md in Presentation.MediaDataManager.ListProvider.ContentsAs_YieldEnumerable)
+            foreach (MediaData md in Presentation.MediaDataManager.ManagedObjects.ContentsAs_YieldEnumerable)
             {
-                foreach (DataProvider prov in md.ListOfUsedDataProviders)
+                foreach (DataProvider prov in md.UsedDataProviders)
                 {
                     if (!usedDataProviders.Contains(prov)) usedDataProviders.Add(prov);
                 }
             }
-            foreach (DataProvider prov in ListProvider.ContentsAs_YieldEnumerable)
+            foreach (DataProvider prov in ManagedObjects.ContentsAs_YieldEnumerable)
             {
                 if (!usedDataProviders.Contains(prov))
                 {
@@ -430,8 +432,10 @@ namespace urakawa.media.data
         /// </summary>
         protected override void Clear()
         {
-            ListProvider.Clear();
-
+            foreach (DataProvider dp in ManagedObjects.ContentsAs_ListCopy)
+            {
+                ManagedObjects.Remove(dp);
+            }
             mDataFileDirectory = null;
             mXukedInFilDataProviderPaths.Clear();
             base.Clear();
@@ -667,7 +671,7 @@ namespace urakawa.media.data
             {
                 destination.WriteStartElement(XukStrings.DataProviders, XukNamespaceUri);
             }
-            foreach (DataProvider prov in ListProvider.ContentsAs_YieldEnumerable)
+            foreach (DataProvider prov in ManagedObjects.ContentsAs_YieldEnumerable)
             {
                 if (false && Presentation.Project.IsPrettyFormat())
                 {

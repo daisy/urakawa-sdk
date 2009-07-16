@@ -17,7 +17,7 @@ namespace urakawa.media.data
 
         protected Presentation mPresentation
         {
-            get { return mProject.GetPresentation(0); }
+            get { return mProject.Presentations.Get(0); }
         }
 
         protected DataProvider mDataProvider1;

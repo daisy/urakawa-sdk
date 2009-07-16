@@ -339,7 +339,8 @@ namespace urakawa.undo
                     throw new exception.IrreversibleCommandDuringActiveUndoRedoTransactionException(
                         "Can not execute an irreversible command when a transaction is active");
                 }
-                mActiveTransactions.Peek().ChildCommands.Add(command);
+                ObjectListProvider<Command> list = mActiveTransactions.Peek().ChildCommands;
+                list.Insert(list.Count, command);
             }
             else
             {

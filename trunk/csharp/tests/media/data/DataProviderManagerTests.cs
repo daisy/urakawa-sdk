@@ -26,7 +26,7 @@ namespace urakawa.media.data
         {
             Project proj = new Project();
             proj.AddNewPresentation();
-            mManager = proj.GetPresentation(0).DataProviderManager;
+            mManager = proj.Presentations.Get(0).DataProviderManager;
         }
 
         [Test]

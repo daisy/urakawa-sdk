@@ -18,7 +18,7 @@ namespace urakawa.oldTests
         [Test]
         public void CheckNumberOfFileDataProviders()
         {
-            int count = mProject.GetPresentation(0).DataProviderManager.ListProvider.Count;
+            int count = mProject.Presentations.Get(0).DataProviderManager.ManagedObjects.Count;
             Assert.AreEqual(
                 2, count, "Invalid number of DataProviders, expected 2, but found {0:0}", count);
         }
@@ -27,14 +27,14 @@ namespace urakawa.oldTests
         public void SetBaseUriMovesDataFiles()
         {
             Project copyProj = new Project();
-            Uri copyDir = new Uri(mProject.GetPresentation(0).RootUri, "../MediaDataSampleCopy/");
-            copyProj.OpenXuk(new Uri(mProject.GetPresentation(0).RootUri, "MediaDataSample.xuk"));
+            Uri copyDir = new Uri(mProject.Presentations.Get(0).RootUri, "../MediaDataSampleCopy/");
+            copyProj.OpenXuk(new Uri(mProject.Presentations.Get(0).RootUri, "MediaDataSample.xuk"));
 
-            copyProj.GetPresentation(0).DataProviderManager.AllowCopyDataOnUriChanged(true);
+            copyProj.Presentations.Get(0).DataProviderManager.AllowCopyDataOnUriChanged(true);
 
-            copyProj.GetPresentation(0).RootUri = copyDir;
-            bool dataProvMngrsEqual = copyProj.GetPresentation(0).DataProviderManager.ValueEquals(
-                mProject.GetPresentation(0).DataProviderManager);
+            copyProj.Presentations.Get(0).RootUri = copyDir;
+            bool dataProvMngrsEqual = copyProj.Presentations.Get(0).DataProviderManager.ValueEquals(
+                mProject.Presentations.Get(0).DataProviderManager);
             Assert.IsTrue(dataProvMngrsEqual, "The DataProviderManagers are not equal after setting a new BaseUri");
         }
 

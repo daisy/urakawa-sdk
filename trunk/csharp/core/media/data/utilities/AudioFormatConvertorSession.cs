@@ -57,7 +57,7 @@ namespace urakawa.media.data.utilities
         {
             List<string> presentationFilePaths = new List<string>();
 
-            foreach (FileDataProvider f in m_Presentation.DataProviderManager.ListOfFileDataProviders)
+            foreach (FileDataProvider f in m_Presentation.DataProviderManager.ManagedFileDataProviders)
             {
                 presentationFilePaths.Add(f.DataFileFullPath);
             }

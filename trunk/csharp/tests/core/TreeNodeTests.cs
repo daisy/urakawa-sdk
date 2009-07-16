@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using NUnit.Framework;
+using urakawa.property;
 using urakawa.property.channel;
 using urakawa.media;
 using urakawa.media.data.audio;
@@ -34,7 +35,7 @@ namespace urakawa.core
         /// </summary>
         protected Presentation mPresentation
         {
-            get { return mProject.GetPresentation(0); }
+            get { return mProject.Presentations.Get(0); }
         }
 
         /// <summary>
@@ -114,7 +115,7 @@ namespace urakawa.core
             Channel textChannel = pres.ChannelFactory.Create();
             textChannel.Name = "channel.text";
 
-            TreeNode mRootNode = proj.GetPresentation(0).RootNode;
+            TreeNode mRootNode = proj.Presentations.Get(0).RootNode;
             Assert.IsNotNull(mRootNode, "The mRootNode node of the newly created Presentation is null");
 
             mRootNode.AppendChild(CreateTreeNode(pres, "SamplePDTB2.wav", "Sample PDTB V2"));
@@ -139,10 +140,10 @@ namespace urakawa.core
         {
             mProject = CreateTreeNodeTestSampleProject();
             mRootNode.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
-            mRootNode.ChildAdded += new EventHandler<ChildAddedEventArgs>(mTreeNode_childAdded);
-            mRootNode.ChildRemoved += new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
-            mRootNode.PropertyAdded += new EventHandler<PropertyAddedEventArgs>(mTreeNode_propertyAdded);
-            mRootNode.PropertyRemoved += new EventHandler<PropertyRemovedEventArgs>(mTreeNode_propertyRemoved);
+            mRootNode.Children.ObjectAdded += mTreeNode_childAdded;
+            mRootNode.Children.ObjectRemoved += mTreeNode_childRemoved;
+            mRootNode.Properties.ObjectAdded += mTreeNode_propertyAdded;
+            mRootNode.Properties.ObjectRemoved += mTreeNode_propertyRemoved;
         }
 
         /// <summary>
@@ -190,14 +191,14 @@ namespace urakawa.core
             TreeNode nodeToExport = mPresentation.RootNode.Children.Get(1);
             Project exportDestProj = new Project();
             exportDestProj.AddNewPresentation();
-            exportDestProj.GetPresentation(0).RootUri = exportDestProjUri;
-            exportDestProj.GetPresentation(0).MediaDataManager.DefaultPCMFormat =
+            exportDestProj.Presentations.Get(0).RootUri = exportDestProjUri;
+            exportDestProj.Presentations.Get(0).MediaDataManager.DefaultPCMFormat =
                 mPresentation.MediaDataManager.DefaultPCMFormat;
-            TreeNode exportedNode = nodeToExport.Export(exportDestProj.GetPresentation(0));
+            TreeNode exportedNode = nodeToExport.Export(exportDestProj.Presentations.Get(0));
             Assert.AreSame(
-                exportedNode.Presentation, exportDestProj.GetPresentation(0),
+                exportedNode.Presentation, exportDestProj.Presentations.Get(0),
                 "The exported TreeNode does not belong to the destination Presentation");
-            exportDestProj.GetPresentation(0).RootNode = exportedNode;
+            exportDestProj.Presentations.Get(0).RootNode = exportedNode;
             bool valueEquals = nodeToExport.ValueEquals(exportedNode);
             Assert.IsTrue(valueEquals, "The exported TreeNode did not have the same value as the original");
         }
@@ -479,10 +480,10 @@ namespace urakawa.core
             addee = mPresentation.TreeNodeFactory.Create();
             mRootNode.AppendChild(addee);
             Assert.AreSame(
-                addee, mLatestChildAddedEventArgs.AddedChild,
+                addee, mLatestChildAddedEventArgs.m_AddedObject,
                 "The AddedChild member of the ChildAddedEventArgs is unexpectedly not TreeNode that was added");
             Assert.AreSame(
-                mRootNode, mLatestChildAddedEventArgs.SourceTreeNode,
+                mRootNode, mLatestChildAddedEventArgs.SourceObject,
                 "The SourceTreeNode is unexpectedly not the mRootNode TreeNode");
             Assert.AreSame(
                 mRootNode, mLatestChildAddedSender,
@@ -490,10 +491,10 @@ namespace urakawa.core
             addee = mPresentation.TreeNodeFactory.Create();
             mRootNode.Insert(addee, 0);
             Assert.AreSame(
-                addee, mLatestChildAddedEventArgs.AddedChild,
+                addee, mLatestChildAddedEventArgs.m_AddedObject,
                 "The AddedChild member of the ChildAddedEventArgs is unexpectedly not TreeNode that was added");
             Assert.AreSame(
-                mRootNode, mLatestChildAddedEventArgs.SourceTreeNode,
+                mRootNode, mLatestChildAddedEventArgs.SourceObject,
                 "The SourceTreeNode is unexpectedly not the mRootNode TreeNode");
             Assert.AreSame(
                 mRootNode, mLatestChildAddedSender,
@@ -531,7 +532,7 @@ namespace urakawa.core
             AssertChildRemovedEventOccured(beforeCount, changedBeforeCount);
             beforeCount = mChildRemovedEventCount;
             changedBeforeCount = mChangedEventCount;
-            removedChild.ChildRemoved += new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
+            removedChild.Children.ObjectRemoved += mTreeNode_childRemoved;
             removedChild.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
             try
             {
@@ -540,7 +541,7 @@ namespace urakawa.core
             }
             finally
             {
-                removedChild.ChildRemoved -= new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
+                removedChild.Children.ObjectRemoved -= mTreeNode_childRemoved;
                 removedChild.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
             }
         }
@@ -573,22 +574,22 @@ namespace urakawa.core
                 mRootNode, mLatestChildRemovedSender,
                 "The sender of the ChildRemoved event must be the TreeNode from which the the child was removed");
             Assert.AreSame(
-                removedChild, mLatestChildRemovedEventArgs.RemovedChild,
+                removedChild, mLatestChildRemovedEventArgs.m_RemovedObject,
                 "The RemovedChild member of the child removed event args must be the child that was removed");
             Assert.AreEqual(
-                pos, mLatestChildRemovedEventArgs.RemovedPosition,
+                pos, mLatestChildRemovedEventArgs.m_RemovedObjectPosition,
                 "The RemovedPosition member of the child removed event args must be the position of the child before it was removed");
-            removedChild.ChildRemoved += new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
+            removedChild.Children.ObjectRemoved += mTreeNode_childRemoved;
             pos = removedChild.Children.Count - 1;
             TreeNode removedChild2 = removedChild.RemoveChild(pos);
             Assert.AreSame(
                 removedChild, mLatestChildRemovedSender,
                 "The sender of the ChildRemoved event must be the TreeNode from which the the child was removed");
             Assert.AreSame(
-                removedChild2, mLatestChildRemovedEventArgs.RemovedChild,
+                removedChild2, mLatestChildRemovedEventArgs.m_RemovedObject,
                 "The RemovedChild member of the child removed event args must be the child that was removed");
             Assert.AreEqual(
-                pos, mLatestChildRemovedEventArgs.RemovedPosition,
+                pos, mLatestChildRemovedEventArgs.m_RemovedObjectPosition,
                 "The RemovedPosition member of the child removed event args must be the position of the child before it was removed");
         }
 
@@ -643,10 +644,10 @@ namespace urakawa.core
             urakawa.property.xml.XmlProperty newXmlProp = mPresentation.PropertyFactory.CreateXmlProperty();
             mRootNode.AddProperty(newXmlProp);
             Assert.AreSame(
-                newXmlProp, mLatestPropertyAddedEventArgs.AddedProperty,
+                newXmlProp, mLatestPropertyAddedEventArgs.m_AddedObject,
                 "The PropertyAddedEventArgs.AddedProperty must be the Property instance that was added");
             Assert.AreSame(
-                mRootNode, mLatestPropertyAddedEventArgs.SourceTreeNode,
+                mRootNode, mLatestPropertyAddedEventArgs.SourceObject,
                 "The PropertyAddedEventArgs.SourceTreeNode must be the TreeNode to which the property was added");
             Assert.AreSame(
                 mRootNode, mLatestPropertyAddedSender,
@@ -707,10 +708,10 @@ namespace urakawa.core
             mRootNode.AddProperty(newChProp);
             mRootNode.RemoveProperty(newXmlProp);
             Assert.AreSame(
-                newXmlProp, mLatestPropertyRemovedEventArgs.RemovedProperty,
+                newXmlProp, mLatestPropertyRemovedEventArgs.m_RemovedObject,
                 "The PropertyRemovedEventArgs.RemovedProperty must be the Property that was removed");
             Assert.AreSame(
-                mRootNode, mLatestPropertyRemovedEventArgs.SourceTreeNode,
+                mRootNode, mLatestPropertyRemovedEventArgs.SourceObject,
                 "The PropertyRemovedEventArgs.SourceTreeNode must be the TreeNode from which the Property was removed");
             Assert.AreSame(
                 mRootNode, mLatestPropertyRemovedSender,
@@ -803,47 +804,47 @@ namespace urakawa.core
             }
         }
 
-        private PropertyAddedEventArgs mLatestPropertyAddedEventArgs;
+        private ObjectAddedEventArgs<Property> mLatestPropertyAddedEventArgs;
         private object mLatestPropertyAddedSender;
         private int mPropertyAddedEventCount = 0;
 
-        private void mTreeNode_propertyAdded(object sender, PropertyAddedEventArgs e)
+        private void mTreeNode_propertyAdded(object sender, ObjectAddedEventArgs<Property> ev)
         {
             mLatestPropertyAddedSender = sender;
-            mLatestPropertyAddedEventArgs = e;
+            mLatestPropertyAddedEventArgs = ev;
             mPropertyAddedEventCount++;
         }
 
-        private PropertyRemovedEventArgs mLatestPropertyRemovedEventArgs;
+        private ObjectRemovedEventArgs<Property> mLatestPropertyRemovedEventArgs;
         private object mLatestPropertyRemovedSender;
         private int mPropertyRemovedEventCount = 0;
 
-        private void mTreeNode_propertyRemoved(object sender, PropertyRemovedEventArgs e)
+        private void mTreeNode_propertyRemoved(object sender, ObjectRemovedEventArgs<Property> ev)
         {
             mLatestPropertyRemovedSender = sender;
-            mLatestPropertyRemovedEventArgs = e;
+            mLatestPropertyRemovedEventArgs = ev;
             mPropertyRemovedEventCount++;
         }
 
-        private ChildRemovedEventArgs mLatestChildRemovedEventArgs;
+        private ObjectRemovedEventArgs<TreeNode> mLatestChildRemovedEventArgs;
         private object mLatestChildRemovedSender;
         private int mChildRemovedEventCount = 0;
 
-        private void mTreeNode_childRemoved(object sender, ChildRemovedEventArgs e)
+        private void mTreeNode_childRemoved(object sender, ObjectRemovedEventArgs<TreeNode> ev)
         {
             mLatestChildRemovedSender = sender;
-            mLatestChildRemovedEventArgs = e;
+            mLatestChildRemovedEventArgs = ev;
             mChildRemovedEventCount++;
         }
 
-        private ChildAddedEventArgs mLatestChildAddedEventArgs;
+        private ObjectAddedEventArgs<TreeNode> mLatestChildAddedEventArgs;
         private object mLatestChildAddedSender;
         private int mChildAddedEventCount = 0;
 
-        private void mTreeNode_childAdded(object sender, ChildAddedEventArgs e)
+        private void mTreeNode_childAdded(object sender, ObjectAddedEventArgs<TreeNode> ev)
         {
             mLatestChildAddedSender = sender;
-            mLatestChildAddedEventArgs = e;
+            mLatestChildAddedEventArgs = ev;
             mChildAddedEventCount++;
         }
 

@@ -449,7 +449,7 @@ namespace urakawa.media.data.audio.codec
         /// used to store the Wav audio data
         /// </summary>
         /// <returns>The <see cref="List{DataProvider}"/></returns>
-        public override List<DataProvider> ListOfUsedDataProviders
+        public override IEnumerable<DataProvider> UsedDataProviders
         {
             get
             {

@@ -24,9 +24,9 @@ namespace urakawa.oldTests
             //get the first child of the root node and paste it under the second
             //child of the root node
 
-            TreeNode node_a = mProject.GetPresentation(0).RootNode.Children.Get(0);
+            TreeNode node_a = mProject.Presentations.Get(0).RootNode.Children.Get(0);
             TreeNode node_a_copy = node_a.Copy(true);
-            TreeNode node_b = mProject.GetPresentation(0).RootNode.Children.Get(1);
+            TreeNode node_b = mProject.Presentations.Get(0).RootNode.Children.Get(1);
 
             node_b.Insert(node_a_copy, 0);
 
