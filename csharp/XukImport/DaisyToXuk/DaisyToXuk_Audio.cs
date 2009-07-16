@@ -48,7 +48,7 @@ namespace XukImport
             }
 
             m_firstTimePCMFormat = true;
-            m_AudioConversionSession = new AudioFormatConvertorSession(m_Project.ListOfPresentations[0]);
+            m_AudioConversionSession = new AudioFormatConvertorSession(m_Project.Presentations.Get(0));
 
             //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
             //string dirPath = opfParentDir.ToString();
@@ -178,7 +178,7 @@ namespace XukImport
             XmlNode audioAttrClipBegin = audioAttrs.GetNamedItem("clipBegin");
             XmlNode audioAttrClipEnd = audioAttrs.GetNamedItem("clipEnd");
 
-            Presentation presentation = m_Project.GetPresentation(0);
+            Presentation presentation = m_Project.Presentations.Get(0);
             Media media = null;
 
             if (audioAttrSrc.Value.EndsWith("wav"))
@@ -251,7 +251,7 @@ namespace XukImport
                         mediaSeq.AllowMultipleTypes = false;
                         chProp.SetMedia(m_audioChannel, mediaSeq);
                     }
-                    mediaSeq.AppendItem(media);
+                    mediaSeq.ChildMedias.Insert(mediaSeq.ChildMedias.Count, media);
                 }
                 else
                 {
@@ -267,7 +267,7 @@ namespace XukImport
         private Media addAudioWav(string src, XmlNode audioAttrClipBegin, XmlNode audioAttrClipEnd)
         {
             Media media = null;
-            Presentation presentation = m_Project.GetPresentation(0);
+            Presentation presentation = m_Project.Presentations.Get(0);
 
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);
             string fullWavPathOriginal = Path.Combine(dirPath, src);
