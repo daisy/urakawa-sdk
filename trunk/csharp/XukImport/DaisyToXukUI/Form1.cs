@@ -25,7 +25,7 @@ namespace DaisyToXukUI
         {
             m_newName = source.GetAttribute(XukString_NewName);
             m_oldName = source.GetAttribute(XukString_OldName);
-            m_Channel = Presentation.ChannelsManager.GetChannel(source.GetAttribute(XukString_ChannelId));
+            m_Channel = Presentation.ChannelsManager.GetManagedObject(source.GetAttribute(XukString_ChannelId));
             base.XukInAttributes(source);
         }
 
@@ -39,7 +39,7 @@ namespace DaisyToXukUI
         {
             destination.WriteAttributeString(XukString_NewName, m_newName);
             destination.WriteAttributeString(XukString_OldName, m_oldName);
-            destination.WriteAttributeString(XukString_ChannelId, Presentation.ChannelsManager.GetUidOfChannel(m_Channel));
+            destination.WriteAttributeString(XukString_ChannelId, Presentation.ChannelsManager.GetUidOfManagedObject(m_Channel));
             base.XukOutAttributes(destination, baseUri);
         }
 
@@ -153,7 +153,7 @@ namespace DaisyToXukUI
             var converter = new XukImport.DaisyToXuk(m_ImportFile, m_SaveDir);
             Channel channelText = null;
             Channel channelAudio = null;
-            List<Channel> listCh = converter.Project.GetPresentation(0).ChannelsManager.ListOfChannels;
+            List<Channel> listCh = converter.Project.Presentations.Get(0).ChannelsManager.ManagedObjects.ContentsAs_ListCopy;
             foreach (Channel ch in listCh)
             {
                 if (ch is TextChannel)
@@ -171,21 +171,21 @@ namespace DaisyToXukUI
             RenameChannelCommand cmd1 = null;
             if (channelText != null)
             {
-                cmd1 = converter.Project.GetPresentation(0).CommandFactory.Create<RenameChannelCommand>();
+                cmd1 = converter.Project.Presentations.Get(0).CommandFactory.Create<RenameChannelCommand>();
                 cmd1.Init(channelText, "The new TEXT Channel Name");
             }
 
             RenameChannelCommand cmd2 = null;
             if (channelAudio != null)
             {
-                cmd2 = converter.Project.GetPresentation(0).CommandFactory.Create<RenameChannelCommand>();
+                cmd2 = converter.Project.Presentations.Get(0).CommandFactory.Create<RenameChannelCommand>();
                 cmd2.Init(channelAudio, "The new AUDIO Channel Name");
             }
 
             RenameChannelCommand cmd3 = null;
             if (channelText != null)
             {
-                cmd3 = converter.Project.GetPresentation(0).CommandFactory.Create<RenameChannelCommand>();
+                cmd3 = converter.Project.Presentations.Get(0).CommandFactory.Create<RenameChannelCommand>();
                 cmd3.Init(channelText, "NEW TEXT Channel Name");
             }
 
@@ -198,27 +198,27 @@ namespace DaisyToXukUI
              * */
 
 
-            converter.Project.GetPresentation(0).UndoRedoManager.StartTransaction("rename transaction", null);
+            converter.Project.Presentations.Get(0).UndoRedoManager.StartTransaction("rename transaction", null);
 
             if (cmd1 != null)
             {
-                converter.Project.GetPresentation(0).UndoRedoManager.Execute(cmd1);
+                converter.Project.Presentations.Get(0).UndoRedoManager.Execute(cmd1);
             }
 
             if (cmd2 != null)
             {
-                converter.Project.GetPresentation(0).UndoRedoManager.Execute(cmd2);
+                converter.Project.Presentations.Get(0).UndoRedoManager.Execute(cmd2);
             }
 
-            converter.Project.GetPresentation(0).UndoRedoManager.EndTransaction();
+            converter.Project.Presentations.Get(0).UndoRedoManager.EndTransaction();
 
 
             if (cmd3 != null)
             {
-                converter.Project.GetPresentation(0).UndoRedoManager.Execute(cmd3);
+                converter.Project.Presentations.Get(0).UndoRedoManager.Execute(cmd3);
             }
 
-            converter.Project.GetPresentation(0).UndoRedoManager.Undo();
+            converter.Project.Presentations.Get(0).UndoRedoManager.Undo();
 
             Uri uriComp = new Uri(m_SaveDir + ".COMPRESSED.xuk");
 
@@ -250,7 +250,7 @@ namespace DaisyToXukUI
 
             /////
             //// Make sure we don't create concurrent access to WAV files while opening the same XUK file in several projects.
-            converter.Project.GetPresentation(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
+            converter.Project.Presentations.Get(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
             /////
             Project projectPretty = new Project();
             {
@@ -262,7 +262,7 @@ namespace DaisyToXukUI
                     return;
                 }
             }
-            projectPretty.GetPresentation(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
+            projectPretty.Presentations.Get(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
             System.Diagnostics.Debug.Assert(converter.Project.ValueEquals(projectPretty));
             
             Project projectComp = new Project();
@@ -275,13 +275,13 @@ namespace DaisyToXukUI
                     return;
                 }
             }
-            projectComp.GetPresentation(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
+            projectComp.Presentations.Get(0).DataProviderManager.CompareByteStreamsDuringValueEqual = false;
             System.Diagnostics.Debug.Assert(converter.Project.ValueEquals(projectComp));
 
             //// Make sure we don't create concurrent access to WAV files while opening the same XUK file in several projects.
             System.Diagnostics.Debug.Assert(projectComp.ValueEquals(projectPretty));
 
-            converter.Project.GetPresentation(0).UndoRedoManager.Redo();
+            converter.Project.Presentations.Get(0).UndoRedoManager.Redo();
 
             System.Diagnostics.Debug.Assert(!converter.Project.ValueEquals(projectPretty));
 
