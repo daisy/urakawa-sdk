@@ -249,13 +249,18 @@ namespace urakawa.media.data
             CreateDirectory(dest);
             foreach (FileDataProvider fdp in ManagedFileDataProviders)
             {
-                if (!File.Exists(Path.Combine(source, fdp.DataFileRelativePath)))
+                string pathSource = Path.Combine(source, fdp.DataFileRelativePath);
+                if (!File.Exists(pathSource))
                 {
                     throw new exception.DataMissingException(String.Format(
                                                                  "Error while copying data files from {0} to {1}: Data file {2} does not exist in the source",
                                                                  source, dest, fdp.DataFileRelativePath));
                 }
-                File.Copy(Path.Combine(source, fdp.DataFileRelativePath), Path.Combine(dest, fdp.DataFileRelativePath));
+                string pathDest = Path.Combine(dest, fdp.DataFileRelativePath);
+                if (!File.Exists(pathDest))
+                {
+                    File.Copy(pathSource, pathDest);
+                }
             }
         }
 
