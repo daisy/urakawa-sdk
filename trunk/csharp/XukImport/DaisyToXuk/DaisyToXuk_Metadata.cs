@@ -8,7 +8,7 @@ namespace XukImport
 {
     public partial class DaisyToXuk
     {
-       
+        XmlNode attrPackage;
         private void parseMetadata(XmlDocument xmlDoc)
         {
             parseMetadata_NameContentAll(xmlDoc);
@@ -38,6 +38,20 @@ namespace XukImport
 
         private void parseMetadata_NameContentAll(XmlDocument xmlDoc)
         {
+            XmlNodeList listOfPackageNodes = xmlDoc.GetElementsByTagName("package");
+            if (listOfPackageNodes.Count == 0)
+            {
+                return;
+            }
+            foreach (XmlNode mdNodeRoot in listOfPackageNodes)
+            {
+                XmlAttributeCollection mdPkgAttributes = mdNodeRoot.Attributes;
+                if (mdPkgAttributes == null || mdPkgAttributes.Count <= 0)
+                {
+                    continue;
+                }
+                attrPackage = mdPkgAttributes.GetNamedItem("unique-identifier");
+            }
             XmlNodeList listOfMetaNodes = xmlDoc.GetElementsByTagName("meta");
             if (listOfMetaNodes.Count == 0)
             {
@@ -59,7 +73,19 @@ namespace XukImport
                     if (mdNode.NodeType == XmlNodeType.Element
                         && mdNode.Name != "meta" && !String.IsNullOrEmpty(mdNode.InnerText))
                     {
-                        if (m_MetadataDictionary.ContainsKey(mdNode.Name) && !m_MetadataDictionary[mdNode.Name].IsRepeatable)
+                        if (mdNode.Name == "dc:identifier" || mdNode.Name == "dc:Identifier")
+                        {
+                            XmlNode mdIdentifier;
+                            XmlAttributeCollection mdAttributes = mdNode.Attributes;
+                            if ((mdIdentifier = mdAttributes.GetNamedItem("id")) != null)
+                            {
+                                if (attrPackage.Value == mdIdentifier.Value)
+                                {
+                                    addMetadata(mdNode.Name, mdNode.InnerText);
+                                }
+                            }
+                        }
+                        else if (m_MetadataDictionary.ContainsKey(mdNode.Name) && !m_MetadataDictionary[mdNode.Name].IsRepeatable)
                         {
                             if (checkDuplicacy(mdNode.Name))
                             {
