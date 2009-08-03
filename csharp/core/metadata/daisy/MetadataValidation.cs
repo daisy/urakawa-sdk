@@ -41,6 +41,14 @@ namespace urakawa.metadata.daisy
 
     public class MetadataValidation
     {
+        public delegate void ValidationError(MetadataValidationReportItem error);
+        public event ValidationError ValidationErrorEvent;
+        private void NotifyValidationError(MetadataValidationReportItem error)
+        {
+            if (ValidationErrorEvent != null)
+                ValidationErrorEvent(error);
+        }
+
         private List<MetadataDefinition> m_MetadataDefinitions;
         private MetadataDataTypeValidator m_DataTypeValidator;
         private MetadataOccurrenceValidator m_OccurrenceValidator;
@@ -58,8 +66,8 @@ namespace urakawa.metadata.daisy
         {
             m_MetadataDefinitions = metadataDefinitions;
             m_Report = new List<MetadataValidationReportItem>();
-            m_DataTypeValidator = new MetadataDataTypeValidator(m_Report);
-            m_OccurrenceValidator = new MetadataOccurrenceValidator(m_Report);
+            m_DataTypeValidator = new MetadataDataTypeValidator(this);
+            m_OccurrenceValidator = new MetadataOccurrenceValidator(this);
         }
 
         //validate the entire set and generate a report
@@ -86,7 +94,11 @@ namespace urakawa.metadata.daisy
             m_Report.Clear();
             return _validateItem(metadata);
         }
-
+        internal void ReportError(MetadataValidationReportItem item)
+        {
+            m_Report.Add(item);
+            NotifyValidationError(item);
+        }
         private bool _validateItem(Metadata metadata)
         {
             MetadataDefinition metadataDefinition = m_MetadataDefinitions.Find(
@@ -125,8 +137,8 @@ namespace urakawa.metadata.daisy
                             { return item.Name == metadataDefinition.Name; });
 
                     if (metadata == null)
-                    {
-                        m_Report.Add(new MetadataValidationReportItem(null,
+                    {   
+                        ReportError(new MetadataValidationReportItem(null,
                             string.Format("Missing {0}", metadataDefinition.Name)));
                         isValid = false;
                     }
@@ -146,7 +158,7 @@ namespace urakawa.metadata.daisy
                 
                 if (list.Count > 1 && metadataDefinition.IsRepeatable == false)
                 {
-                    m_Report.Add(new MetadataValidationReportItem(metadata,
+                    ReportError(new MetadataValidationReportItem(metadata,
                         string.Format("{0} must not appear more than once", metadata.Name)));
                     isValid = false;
                 }
@@ -154,16 +166,14 @@ namespace urakawa.metadata.daisy
 
             return isValid;
         }
-        
     }
 
     public class MetadataDataTypeValidator
     {
-        private List<MetadataValidationReportItem> m_Report;
-        
-        public MetadataDataTypeValidator(List<MetadataValidationReportItem> report)
+        private MetadataValidation m_ParentValidator;
+        public MetadataDataTypeValidator(MetadataValidation parentValidator)
         {
-            m_Report = report;
+            m_ParentValidator = parentValidator;
         }
         public bool Validate(Metadata metadata, MetadataDefinition metadataDefinition)
         {
@@ -211,14 +221,14 @@ namespace urakawa.metadata.daisy
             //Require at least the year field
             if (date.Length < 4)
             {
-                m_Report.Add(new MetadataValidationReportItem(metadata, "Minimum size is 4"));
+                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Minimum size is 4"));
                 return false;
             }
 
             //The longest it can be is 10
              if (date.Length > 10)
              {
-                 m_Report.Add(new MetadataValidationReportItem(metadata, "Maximum size is 10"));
+                 m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Maximum size is 10"));
                  return false;
              }
                 
@@ -231,7 +241,7 @@ namespace urakawa.metadata.daisy
             //the year has to be 4 digits
             if (dateArray[0].Length != 4)
             {
-                m_Report.Add(new MetadataValidationReportItem(metadata, "Year must be 4 digits"));
+                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Year must be 4 digits"));
                 return false;                
             }
                 
@@ -243,7 +253,7 @@ namespace urakawa.metadata.daisy
             }
             catch
             {
-                m_Report.Add(new MetadataValidationReportItem(metadata, "Invalid year"));
+                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid year"));
                 return false;
             }
 
@@ -257,13 +267,13 @@ namespace urakawa.metadata.daisy
                 }
                 catch
                 {
-                    m_Report.Add(new MetadataValidationReportItem(metadata, "Invalid month"));
+                    m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid month"));
                     return false;
                 }
                 //the month has to be in this range
                 if (month < 1 || month > 12)
                 {
-                    m_Report.Add(new MetadataValidationReportItem(metadata, "Month out of range"));
+                    m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Month out of range"));
                     return false;
                 }
             }
@@ -277,13 +287,13 @@ namespace urakawa.metadata.daisy
                 }
                 catch
                 {
-                    m_Report.Add(new MetadataValidationReportItem(metadata, "Invalid day"));
+                    m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid day"));
                     return false;
                 }
                 //it has to be in this range
                 if (day < 1 || day > 31)
                 {
-                    m_Report.Add(new MetadataValidationReportItem(metadata, "Day out of range"));
+                    m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Day out of range"));
                     return false;
                 }
             }
@@ -302,7 +312,7 @@ namespace urakawa.metadata.daisy
             }
             catch (Exception)
             {
-                m_Report.Add(new MetadataValidationReportItem(metadata, "Invalid numeric value"));
+                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid numeric value"));
                 return false;
             }
             return true;
@@ -315,7 +325,7 @@ namespace urakawa.metadata.daisy
             }
             catch (Exception)
             {
-                m_Report.Add(new MetadataValidationReportItem(metadata, "Invalid numeric value"));
+                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid numeric value"));
                 return false;
             }
             return true;
@@ -333,7 +343,7 @@ namespace urakawa.metadata.daisy
             }
             catch
             {
-                m_Report.Add(new MetadataValidationReportItem(metadata, "Invalid numeric value"));
+                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid numeric value"));
                 return false;
             }
             return true;
@@ -350,12 +360,12 @@ namespace urakawa.metadata.daisy
 
     public class MetadataOccurrenceValidator
     {
-        private List<MetadataValidationReportItem> m_Report;
-        
-        public MetadataOccurrenceValidator(List<MetadataValidationReportItem> report)
+        private MetadataValidation m_ParentValidator;
+        public MetadataOccurrenceValidator(MetadataValidation parentValidator)
         {
-            m_Report = report;
+            m_ParentValidator = parentValidator;
         }
+        
         public bool Validate(Metadata metadata, MetadataDefinition metadataDefinition)
         {
             //if it's a required field, it can't be empty
@@ -367,7 +377,7 @@ namespace urakawa.metadata.daisy
                 }
                 else
                 {
-                    m_Report.Add(new MetadataValidationReportItem(metadata, "Must not be empty"));
+                    m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Must not be empty"));
                     return false;
                 }
             }
