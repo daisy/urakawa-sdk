@@ -5,7 +5,7 @@ namespace urakawa.metadata.daisy
 {
     public static class SupportedMetadata_Z39862005
     {
-        public static readonly MetadataDefinition AlienMetadata = new MetadataDefinition(
+        public static readonly MetadataDefinition UnrecognizedMetadata = new MetadataDefinition(
             "",
             MetadataDataType.String,
             MetadataOccurrence.Optional,

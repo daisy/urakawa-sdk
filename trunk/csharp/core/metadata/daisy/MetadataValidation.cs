@@ -2,8 +2,42 @@ using System;
 using System.Collections.Generic;
 
 namespace urakawa.metadata.daisy
-{
-    public class MetadataValidationReportItem
+{   
+    public class MetadataValidationError
+    {
+        //what went wrong
+        private string m_Description;
+        public string Description
+        {
+            get
+            {
+                return m_Description;
+            }
+            set
+            {
+                m_Description = value;
+            }
+        }
+        //the criteria
+        private MetadataDefinition m_Definition;
+        public MetadataDefinition Definition
+        {
+            get
+            {
+                return m_Definition;
+            }
+            set
+            {
+                m_Definition = value;
+            }
+        }
+        public MetadataValidationError(string description, MetadataDefinition definition)
+        {
+            m_Definition = definition;
+            m_Description = description;
+        }
+    }
+    public class MetadataValidationFormatError : MetadataValidationError
     {
         //what it is
         private Metadata m_Metadata;
@@ -18,62 +52,61 @@ namespace urakawa.metadata.daisy
                 m_Metadata = value;
             }
         }
-        //what went wrong
-        private string m_Description;
-        public string Description
-        {
-            get
-            {
-                return m_Description;
-            }
-            set
-            {
-                m_Description = value;
-            }
-        }
 
-        public MetadataValidationReportItem(Metadata metadata, string description)
+        public MetadataValidationFormatError(Metadata metadata, string description, MetadataDefinition definition) :
+            base(description, definition)
         {
-            Metadata = metadata;
-            Description = description;
+            m_Metadata = metadata;
+        }
+    }
+    public class MetadataValidationMissingItemError : MetadataValidationError
+    {
+        public MetadataValidationMissingItemError(string description, MetadataDefinition definition) :
+            base(description, definition)
+        {
+        }
+    }
+    public class MetadataValidationDuplicateItemError : MetadataValidationError
+    {
+        public MetadataValidationDuplicateItemError(string description, MetadataDefinition definition) :
+            base(description, definition)
+        {
         }
     }
 
-    public class MetadataValidation
-    {
-        public delegate void ValidationError(MetadataValidationReportItem error);
-        public event ValidationError ValidationErrorEvent;
-        private void NotifyValidationError(MetadataValidationReportItem error)
-        {
-            if (ValidationErrorEvent != null)
-                ValidationErrorEvent(error);
-        }
 
+    public class MetadataValidator
+    {
         private List<MetadataDefinition> m_MetadataDefinitions;
         private MetadataDataTypeValidator m_DataTypeValidator;
         private MetadataOccurrenceValidator m_OccurrenceValidator;
 
-        private List<MetadataValidationReportItem> m_Report;
-        public List<MetadataValidationReportItem> Report
+        private List<MetadataValidationError> m_Errors;
+        public List<MetadataValidationError> Errors
         {
             get
             {
-                return m_Report;
+                return m_Errors;
             }
         }
 
-        public MetadataValidation(List<MetadataDefinition> metadataDefinitions)
+        public MetadataValidator(List<MetadataDefinition> metadataDefinitions)
         {
             m_MetadataDefinitions = metadataDefinitions;
-            m_Report = new List<MetadataValidationReportItem>();
+            m_Errors = new List<MetadataValidationError>();
             m_DataTypeValidator = new MetadataDataTypeValidator(this);
             m_OccurrenceValidator = new MetadataOccurrenceValidator(this);
         }
-
+        public MetadataDefinition FindDefinition(string name)
+        {
+            return m_MetadataDefinitions.Find(
+                delegate(MetadataDefinition item) 
+                    { return item.Name == name; });
+        }
         //validate the entire set and generate a report
         public bool Validate(List<Metadata> metadatas)
         {
-            m_Report.Clear();
+            m_Errors.Clear();
             bool isValid = true;
 
             //validate each item by itself
@@ -83,7 +116,7 @@ namespace urakawa.metadata.daisy
                     isValid = false;
             }
 
-            isValid = _validateAsSet(metadatas);
+            isValid = isValid & _validateAsSet(metadatas);
 
             return isValid;
         }
@@ -91,23 +124,20 @@ namespace urakawa.metadata.daisy
         //validate a single item (do not look at the entire set - do not look for repetitions)
         public bool ValidateItem(Metadata metadata)
         {
-            m_Report.Clear();
+            m_Errors.Clear();
             return _validateItem(metadata);
         }
-        internal void ReportError(MetadataValidationReportItem item)
+        internal void ReportError(MetadataValidationError item)
         {
-            m_Report.Add(item);
-            NotifyValidationError(item);
+            m_Errors.Add(item);
         }
         private bool _validateItem(Metadata metadata)
         {
-            MetadataDefinition metadataDefinition = m_MetadataDefinitions.Find(
-                delegate(MetadataDefinition item) 
-                    { return item.Name == metadata.Name; });
+            MetadataDefinition metadataDefinition = FindDefinition(metadata.Name);
                 
             if (metadataDefinition == null)
             {
-                metadataDefinition = SupportedMetadata_Z39862005.AlienMetadata;
+                metadataDefinition = SupportedMetadata_Z39862005.UnrecognizedMetadata;
             }
             //check the occurrence requirement
             bool meetsOccurrenceRequirement = m_OccurrenceValidator.Validate(metadata, metadataDefinition);
@@ -138,8 +168,9 @@ namespace urakawa.metadata.daisy
 
                     if (metadata == null)
                     {   
-                        ReportError(new MetadataValidationReportItem(null,
-                            string.Format("Missing {0}", metadataDefinition.Name)));
+                        ReportError(new MetadataValidationMissingItemError
+                            (string.Format("Missing {0}", metadataDefinition.Name),
+                            metadataDefinition));
                         isValid = false;
                     }
                 }
@@ -158,8 +189,9 @@ namespace urakawa.metadata.daisy
                 
                 if (list.Count > 1 && metadataDefinition.IsRepeatable == false)
                 {
-                    ReportError(new MetadataValidationReportItem(metadata,
-                        string.Format("{0} must not appear more than once", metadata.Name)));
+                    ReportError(new MetadataValidationDuplicateItemError
+                        (string.Format("{0} must not appear more than once",metadata.Name),
+                        metadataDefinition));
                     isValid = false;
                 }
             }
@@ -170,65 +202,72 @@ namespace urakawa.metadata.daisy
 
     public class MetadataDataTypeValidator
     {
-        private MetadataValidation m_ParentValidator;
-        public MetadataDataTypeValidator(MetadataValidation parentValidator)
+        private MetadataValidator m_ParentValidator;
+        public MetadataDataTypeValidator(MetadataValidator parentValidator)
         {
             m_ParentValidator = parentValidator;
         }
-        public bool Validate(Metadata metadata, MetadataDefinition metadataDefinition)
+        public bool Validate(Metadata metadata, MetadataDefinition definition)
         {
-            if (metadataDefinition.DataType == MetadataDataType.ClockValue)
+            if (definition.DataType == MetadataDataType.ClockValue)
             {
-                return _validateClockValue(metadata);
+                return _validateClockValue(metadata, definition);
             }
-            else if (metadataDefinition.DataType == MetadataDataType.Date)
+            else if (definition.DataType == MetadataDataType.Date)
             {
-                return _validateDate(metadata);
+                return _validateDate(metadata, definition);
             }
-            else if (metadataDefinition.DataType == MetadataDataType.FileUri)
+            else if (definition.DataType == MetadataDataType.FileUri)
             {
-                return _validateFileUri(metadata);
+                return _validateFileUri(metadata, definition);
             }
-            else if (metadataDefinition.DataType == MetadataDataType.Integer)
+            else if (definition.DataType == MetadataDataType.Integer)
             {
-                return _validateInteger(metadata);
+                return _validateInteger(metadata, definition);
             }
-            else if (metadataDefinition.DataType == MetadataDataType.Double)
+            else if (definition.DataType == MetadataDataType.Double)
             {
-                return _validateDouble(metadata);
+                return _validateDouble(metadata, definition);
             }
-            else if (metadataDefinition.DataType == MetadataDataType.Number)
+            else if (definition.DataType == MetadataDataType.Number)
             {
-                return _validateNumber(metadata);
+                return _validateNumber(metadata, definition);
             }
-            else if (metadataDefinition.DataType == MetadataDataType.LanguageCode)
+            else if (definition.DataType == MetadataDataType.LanguageCode)
             {
-                return _validateLanguageCode(metadata);
+                return _validateLanguageCode(metadata, definition);
             }
-            else if (metadataDefinition.DataType == MetadataDataType.String)
+            else if (definition.DataType == MetadataDataType.String)
             {
-                return _validateString(metadata);
+                return _validateString(metadata, definition);
             }
             return true;
         }
-        private bool _validateClockValue(Metadata metadata)
+        private bool _validateClockValue(Metadata metadata, MetadataDefinition definition)
         {
             return true;
         }
-        private bool _validateDate(Metadata metadata)
+        private bool _validateDate(Metadata metadata, MetadataDefinition definition)
         {
             string date = metadata.Content;
+            
             //Require at least the year field
             if (date.Length < 4)
             {
-                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Minimum size is 4"));
+                m_ParentValidator.ReportError(new MetadataValidationFormatError
+                    (metadata, 
+                    "Minimum size is 4", 
+                    definition));
                 return false;
             }
 
             //The longest it can be is 10
              if (date.Length > 10)
              {
-                 m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Maximum size is 10"));
+                 m_ParentValidator.ReportError(new MetadataValidationFormatError
+                     (metadata, 
+                     "Maximum size is 10", 
+                     definition));
                  return false;
              }
                 
@@ -241,7 +280,10 @@ namespace urakawa.metadata.daisy
             //the year has to be 4 digits
             if (dateArray[0].Length != 4)
             {
-                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Year must be 4 digits"));
+                m_ParentValidator.ReportError(new MetadataValidationFormatError
+                    (metadata, 
+                    "Year must be 4 digits",
+                    definition));
                 return false;                
             }
                 
@@ -253,7 +295,10 @@ namespace urakawa.metadata.daisy
             }
             catch
             {
-                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid year"));
+                m_ParentValidator.ReportError(new MetadataValidationFormatError
+                    (metadata, 
+                    "Invalid year", 
+                    definition));
                 return false;
             }
 
@@ -267,13 +312,19 @@ namespace urakawa.metadata.daisy
                 }
                 catch
                 {
-                    m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid month"));
+                    m_ParentValidator.ReportError(new MetadataValidationFormatError
+                        (metadata, 
+                        "Invalid month", 
+                        definition));
                     return false;
                 }
                 //the month has to be in this range
                 if (month < 1 || month > 12)
                 {
-                    m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Month out of range"));
+                    m_ParentValidator.ReportError(new MetadataValidationFormatError
+                        (metadata, 
+                        "Month out of range", 
+                        definition));
                     return false;
                 }
             }
@@ -287,24 +338,30 @@ namespace urakawa.metadata.daisy
                 }
                 catch
                 {
-                    m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid day"));
+                    m_ParentValidator.ReportError(new MetadataValidationFormatError
+                        (metadata, 
+                        "Invalid day", 
+                        definition));
                     return false;
                 }
                 //it has to be in this range
                 if (day < 1 || day > 31)
                 {
-                    m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Day out of range"));
+                    m_ParentValidator.ReportError(new MetadataValidationFormatError
+                        (metadata, 
+                        "Day out of range", 
+                        definition));
                     return false;
                 }
             }
 
             return true;
         }
-        private bool _validateFileUri(Metadata metadata)
+        private bool _validateFileUri(Metadata metadata, MetadataDefinition definition)
         {
             return true;
         }
-        private bool _validateInteger(Metadata metadata)
+        private bool _validateInteger(Metadata metadata, MetadataDefinition definition)
         {
             try
             {
@@ -312,12 +369,15 @@ namespace urakawa.metadata.daisy
             }
             catch (Exception)
             {
-                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid numeric value"));
+                m_ParentValidator.ReportError(new MetadataValidationFormatError
+                    (metadata, 
+                    "Invalid numeric value", 
+                    definition));
                 return false;
             }
             return true;
         }
-        private bool _validateDouble(Metadata metadata)
+        private bool _validateDouble(Metadata metadata, MetadataDefinition definition)
         {
             try
             {
@@ -325,13 +385,16 @@ namespace urakawa.metadata.daisy
             }
             catch (Exception)
             {
-                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid numeric value"));
+                m_ParentValidator.ReportError(new MetadataValidationFormatError
+                    (metadata, 
+                    "Invalid numeric value", 
+                    definition));
                 return false;
             }
             return true;
         }
         //works for both double and int
-        private bool _validateNumber(Metadata metadata)
+        private bool _validateNumber(Metadata metadata, MetadataDefinition definition)
         {
             try
             {
@@ -343,16 +406,19 @@ namespace urakawa.metadata.daisy
             }
             catch
             {
-                m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Invalid numeric value"));
+                m_ParentValidator.ReportError(new MetadataValidationFormatError
+                    (metadata, 
+                    "Invalid numeric value", 
+                    definition));
                 return false;
             }
             return true;
         }
-        private bool _validateLanguageCode(Metadata metadata)
+        private bool _validateLanguageCode(Metadata metadata, MetadataDefinition definition)
         {
             return true;
         }
-        private bool _validateString(Metadata metadata)
+        private bool _validateString(Metadata metadata, MetadataDefinition definition)
         {
             return true;
         }
@@ -360,16 +426,16 @@ namespace urakawa.metadata.daisy
 
     public class MetadataOccurrenceValidator
     {
-        private MetadataValidation m_ParentValidator;
-        public MetadataOccurrenceValidator(MetadataValidation parentValidator)
+        private MetadataValidator m_ParentValidator;
+        public MetadataOccurrenceValidator(MetadataValidator parentValidator)
         {
             m_ParentValidator = parentValidator;
         }
         
-        public bool Validate(Metadata metadata, MetadataDefinition metadataDefinition)
+        public bool Validate(Metadata metadata, MetadataDefinition definition)
         {
             //if it's a required field, it can't be empty
-            if (metadataDefinition.Occurrence == MetadataOccurrence.Required)
+            if (definition.Occurrence == MetadataOccurrence.Required)
             {
                 if (metadata.Content.Length > 0)
                 {
@@ -377,7 +443,10 @@ namespace urakawa.metadata.daisy
                 }
                 else
                 {
-                    m_ParentValidator.ReportError(new MetadataValidationReportItem(metadata, "Must not be empty"));
+                    m_ParentValidator.ReportError(new MetadataValidationFormatError
+                        (metadata, 
+                        "Content must not be empty", 
+                        definition));
                     return false;
                 }
             }
