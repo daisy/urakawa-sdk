@@ -57,7 +57,10 @@ namespace XukImport
                 foreach (XmlNode mdNode in mdNodeRoot.ChildNodes)
                 {
                     if (mdNode.NodeType == XmlNodeType.Element
-                        && mdNode.Name != "meta" && !String.IsNullOrEmpty(mdNode.InnerText))
+                        && mdNode.Name != "meta"
+                        && mdNode.Name != "dc-metadata"
+                        && mdNode.Name != "x-metadata"
+                        && !String.IsNullOrEmpty(mdNode.InnerText))
                     {
                         if (m_PackageUniqueIdAttr != null && isUniqueIdName(mdNode.Name))
                         {
@@ -83,7 +86,7 @@ namespace XukImport
             }
         }
 
-        private bool isUniqueIdName(string name)
+        private static bool isUniqueIdName(string name)
         {
             if ("dc:Identifier" == name)
             {
