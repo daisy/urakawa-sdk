@@ -8,9 +8,20 @@ namespace XukImport
 {
     public partial class DaisyToXuk
     {
-        XmlNode attrPackage;
+        XmlNode m_PackageUniqueIdAttr;
         private void parseMetadata(XmlDocument xmlDoc)
         {
+            XmlNodeList listOfPackageNodes = xmlDoc.GetElementsByTagName("package");
+            foreach (XmlNode mdNodeRoot in listOfPackageNodes)
+            {
+                XmlAttributeCollection mdPkgAttributes = mdNodeRoot.Attributes;
+                if (mdPkgAttributes == null || mdPkgAttributes.Count <= 0)
+                {
+                    continue;
+                }
+                m_PackageUniqueIdAttr = mdPkgAttributes.GetNamedItem("unique-identifier");
+            }
+
             parseMetadata_NameContentAll(xmlDoc);
             parseMetadata_ElementInnerTextAll(xmlDoc);
         }
@@ -38,20 +49,6 @@ namespace XukImport
 
         private void parseMetadata_NameContentAll(XmlDocument xmlDoc)
         {
-            XmlNodeList listOfPackageNodes = xmlDoc.GetElementsByTagName("package");
-            if (listOfPackageNodes.Count == 0)
-            {
-                return;
-            }
-            foreach (XmlNode mdNodeRoot in listOfPackageNodes)
-            {
-                XmlAttributeCollection mdPkgAttributes = mdNodeRoot.Attributes;
-                if (mdPkgAttributes == null || mdPkgAttributes.Count <= 0)
-                {
-                    continue;
-                }
-                attrPackage = mdPkgAttributes.GetNamedItem("unique-identifier");
-            }
             XmlNodeList listOfMetaNodes = xmlDoc.GetElementsByTagName("meta");
             if (listOfMetaNodes.Count == 0)
             {
@@ -79,7 +76,8 @@ namespace XukImport
                             XmlAttributeCollection mdAttributes = mdNode.Attributes;
                             if ((mdIdentifier = mdAttributes.GetNamedItem("id")) != null)
                             {
-                                if (attrPackage.Value == mdIdentifier.Value)
+                                if (m_PackageUniqueIdAttr != null
+                                    && m_PackageUniqueIdAttr.Value == mdIdentifier.Value)
                                 {
                                     addMetadata(mdNode.Name, mdNode.InnerText);
                                 }

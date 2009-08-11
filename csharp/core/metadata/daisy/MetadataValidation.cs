@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace urakawa.metadata.daisy
-{   
+{
     public class MetadataValidationError
     {
         //what went wrong
@@ -100,8 +100,8 @@ namespace urakawa.metadata.daisy
         public MetadataDefinition FindDefinition(string name)
         {
             return m_MetadataDefinitions.Find(
-                delegate(MetadataDefinition item) 
-                    { return item.Name == name; });
+                delegate(MetadataDefinition item)
+                { return item.Name == name; });
         }
         //validate the entire set and generate a report
         public bool Validate(List<Metadata> metadatas)
@@ -112,7 +112,7 @@ namespace urakawa.metadata.daisy
             //validate each item by itself
             foreach (Metadata metadata in metadatas)
             {
-                if (! _validateItem(metadata))
+                if (!_validateItem(metadata))
                     isValid = false;
             }
 
@@ -134,7 +134,7 @@ namespace urakawa.metadata.daisy
         private bool _validateItem(Metadata metadata)
         {
             MetadataDefinition metadataDefinition = FindDefinition(metadata.Name);
-                
+
             if (metadataDefinition == null)
             {
                 metadataDefinition = SupportedMetadata_Z39862005.UnrecognizedMetadata;
@@ -163,11 +163,11 @@ namespace urakawa.metadata.daisy
                 if (metadataDefinition.Occurrence == MetadataOccurrence.Required)
                 {
                     Metadata metadata = metadatas.Find(
-                        delegate(Metadata item) 
-                            { return item.Name == metadataDefinition.Name; });
+                        delegate(Metadata item)
+                        { return item.Name == metadataDefinition.Name; });
 
                     if (metadata == null)
-                    {   
+                    {
                         ReportError(new MetadataValidationMissingItemError
                             (string.Format("Missing {0}", metadataDefinition.Name),
                             metadataDefinition));
@@ -180,17 +180,17 @@ namespace urakawa.metadata.daisy
             foreach (Metadata metadata in metadatas)
             {
                 List<Metadata> list = metadatas.FindAll(
-                    delegate(Metadata item) 
-                        { return item.Name == metadata.Name; });
+                    delegate(Metadata item)
+                    { return item.Name == metadata.Name; });
 
                 MetadataDefinition metadataDefinition = m_MetadataDefinitions.Find(
                     delegate(MetadataDefinition item)
-                        { return item.Name == metadata.Name; });
-                
+                    { return item.Name == metadata.Name; });
+
                 if (list.Count > 1 && metadataDefinition.IsRepeatable == false)
                 {
                     ReportError(new MetadataValidationDuplicateItemError
-                        (string.Format("{0} must not appear more than once",metadata.Name),
+                        (string.Format("{0} must not appear more than once", metadata.Name),
                         metadataDefinition));
                     isValid = false;
                 }
@@ -250,27 +250,27 @@ namespace urakawa.metadata.daisy
         private bool _validateDate(Metadata metadata, MetadataDefinition definition)
         {
             string date = metadata.Content;
-            
+
             //Require at least the year field
             if (date.Length < 4)
             {
                 m_ParentValidator.ReportError(new MetadataValidationFormatError
-                    (metadata, 
-                    "Minimum size is 4", 
+                    (metadata,
+                    "Minimum size is 4",
                     definition));
                 return false;
             }
 
             //The longest it can be is 10
-             if (date.Length > 10)
-             {
-                 m_ParentValidator.ReportError(new MetadataValidationFormatError
-                     (metadata, 
-                     "Maximum size is 10", 
-                     definition));
-                 return false;
-             }
-                
+            if (date.Length > 10)
+            {
+                m_ParentValidator.ReportError(new MetadataValidationFormatError
+                    (metadata,
+                    "Maximum size is 10",
+                    definition));
+                return false;
+            }
+
 
             string[] dateArray = date.Split('-');
             int year = 0;
@@ -281,12 +281,12 @@ namespace urakawa.metadata.daisy
             if (dateArray[0].Length != 4)
             {
                 m_ParentValidator.ReportError(new MetadataValidationFormatError
-                    (metadata, 
+                    (metadata,
                     "Year must be 4 digits",
                     definition));
-                return false;                
+                return false;
             }
-                
+
 
             //the year has to be digits
             try
@@ -296,8 +296,8 @@ namespace urakawa.metadata.daisy
             catch
             {
                 m_ParentValidator.ReportError(new MetadataValidationFormatError
-                    (metadata, 
-                    "Invalid year", 
+                    (metadata,
+                    "Invalid year",
                     definition));
                 return false;
             }
@@ -313,8 +313,8 @@ namespace urakawa.metadata.daisy
                 catch
                 {
                     m_ParentValidator.ReportError(new MetadataValidationFormatError
-                        (metadata, 
-                        "Invalid month", 
+                        (metadata,
+                        "Invalid month",
                         definition));
                     return false;
                 }
@@ -322,8 +322,8 @@ namespace urakawa.metadata.daisy
                 if (month < 1 || month > 12)
                 {
                     m_ParentValidator.ReportError(new MetadataValidationFormatError
-                        (metadata, 
-                        "Month out of range", 
+                        (metadata,
+                        "Month out of range",
                         definition));
                     return false;
                 }
@@ -339,8 +339,8 @@ namespace urakawa.metadata.daisy
                 catch
                 {
                     m_ParentValidator.ReportError(new MetadataValidationFormatError
-                        (metadata, 
-                        "Invalid day", 
+                        (metadata,
+                        "Invalid day",
                         definition));
                     return false;
                 }
@@ -348,8 +348,8 @@ namespace urakawa.metadata.daisy
                 if (day < 1 || day > 31)
                 {
                     m_ParentValidator.ReportError(new MetadataValidationFormatError
-                        (metadata, 
-                        "Day out of range", 
+                        (metadata,
+                        "Day out of range",
                         definition));
                     return false;
                 }
@@ -370,8 +370,8 @@ namespace urakawa.metadata.daisy
             catch (Exception)
             {
                 m_ParentValidator.ReportError(new MetadataValidationFormatError
-                    (metadata, 
-                    "Invalid numeric value", 
+                    (metadata,
+                    "Invalid numeric value",
                     definition));
                 return false;
             }
@@ -386,8 +386,8 @@ namespace urakawa.metadata.daisy
             catch (Exception)
             {
                 m_ParentValidator.ReportError(new MetadataValidationFormatError
-                    (metadata, 
-                    "Invalid numeric value", 
+                    (metadata,
+                    "Invalid numeric value",
                     definition));
                 return false;
             }
@@ -407,8 +407,8 @@ namespace urakawa.metadata.daisy
             catch
             {
                 m_ParentValidator.ReportError(new MetadataValidationFormatError
-                    (metadata, 
-                    "Invalid numeric value", 
+                    (metadata,
+                    "Invalid numeric value",
                     definition));
                 return false;
             }
@@ -431,7 +431,7 @@ namespace urakawa.metadata.daisy
         {
             m_ParentValidator = parentValidator;
         }
-        
+
         public bool Validate(Metadata metadata, MetadataDefinition definition)
         {
             //if it's a required field, it can't be empty
@@ -444,8 +444,8 @@ namespace urakawa.metadata.daisy
                 else
                 {
                     m_ParentValidator.ReportError(new MetadataValidationFormatError
-                        (metadata, 
-                        "Content must not be empty", 
+                        (metadata,
+                        "Content must not be empty",
                         definition));
                     return false;
                 }
@@ -466,9 +466,9 @@ namespace urakawa.metadata.daisy
             foreach (MetadataDefinition definition in definitions)
             {
                 Metadata exists = alreadyUsedMetadata.Find(
-                    delegate(Metadata item) 
-                        { return item.Name == definition.Name; });
-                
+                    delegate(Metadata item)
+                    { return item.Name == definition.Name; });
+
                 if (exists == null)
                 {
                     availableMetadata.Add(definition);
@@ -480,7 +480,7 @@ namespace urakawa.metadata.daisy
                         availableMetadata.Add(definition);
                     }
                 }
-                
+
             }
             return availableMetadata;
         }
