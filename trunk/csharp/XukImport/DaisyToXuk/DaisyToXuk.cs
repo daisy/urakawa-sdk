@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
-using System.Collections.Generic;
 using urakawa;
 using core = urakawa.core;
 
@@ -9,7 +8,6 @@ namespace XukImport
 {
     public partial class DaisyToXuk
     {
-        Dictionary<string, urakawa.metadata.daisy.MetadataDefinition> m_MetadataDictionary = new Dictionary<string, urakawa.metadata.daisy.MetadataDefinition>();
         private readonly string m_outDirectory;
         private string m_Book_FilePath;
 
@@ -27,6 +25,7 @@ namespace XukImport
 
         public DaisyToXuk(string bookfile, string outDir)
         {
+            m_PackageUniqueIdAttr = null;
             m_Book_FilePath = bookfile;
             m_outDirectory = outDir;
             if (!m_outDirectory.EndsWith("" + Path.DirectorySeparatorChar))
@@ -50,11 +49,6 @@ namespace XukImport
 
         private void initializeProject()
         {
-            //Dictionary<string, urakawa.metadata.daisy.MetadataDefinition> m_MetadataDictionary = new Dictionary<string, urakawa.metadata.daisy.MetadataDefinition>();
-            foreach (urakawa.metadata.daisy.MetadataDefinition d in urakawa.metadata.daisy.SupportedMetadata_Z39862005.MetadataList)
-            {
-                m_MetadataDictionary.Add(d.Name, d);
-            }
             m_Project = new Project();
             m_Project.SetPrettyFormat(true);
 

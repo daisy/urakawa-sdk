@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace urakawa.metadata.daisy
@@ -14,7 +13,7 @@ namespace urakawa.metadata.daisy
             "An unrecognized metadata item",
             null);
 
-        private static string[] m_IdentifierSynonyms = new string[] {"dtb:uid"};
+        private static string[] m_IdentifierSynonyms = new string[] { "dtb:uid" };
         private static MetadataDefinition[] m_MetadataDefinitions = new MetadataDefinition[] {
                         new MetadataDefinition(
                             "dc:Date",
@@ -283,7 +282,17 @@ namespace urakawa.metadata.daisy
                             };
         public static readonly List<MetadataDefinition> MetadataList =
             new List<MetadataDefinition>(m_MetadataDefinitions);
-        
+
+        public static MetadataDefinition GetMetadataDefinition(string name)
+        {
+            foreach (MetadataDefinition md in MetadataList)
+            {
+                if (md.Name == name)
+                {
+                    return md;
+                }
+            }
+            return null;
+        }
     }
-    
 }

@@ -2,26 +2,14 @@
 using System.Xml;
 using urakawa;
 using urakawa.metadata;
-using System.Collections.Generic;
+using urakawa.metadata.daisy;
 
 namespace XukImport
 {
     public partial class DaisyToXuk
     {
-        XmlNode m_PackageUniqueIdAttr;
         private void parseMetadata(XmlDocument xmlDoc)
         {
-            XmlNodeList listOfPackageNodes = xmlDoc.GetElementsByTagName("package");
-            foreach (XmlNode mdNodeRoot in listOfPackageNodes)
-            {
-                XmlAttributeCollection mdPkgAttributes = mdNodeRoot.Attributes;
-                if (mdPkgAttributes == null || mdPkgAttributes.Count <= 0)
-                {
-                    continue;
-                }
-                m_PackageUniqueIdAttr = mdPkgAttributes.GetNamedItem("unique-identifier");
-            }
-
             parseMetadata_NameContentAll(xmlDoc);
             parseMetadata_ElementInnerTextAll(xmlDoc);
         }
@@ -63,6 +51,7 @@ namespace XukImport
             {
                 return;
             }
+
             foreach (XmlNode mdNodeRoot in listOfMetadataContainers)
             {
                 foreach (XmlNode mdNode in mdNodeRoot.ChildNodes)
@@ -70,50 +59,43 @@ namespace XukImport
                     if (mdNode.NodeType == XmlNodeType.Element
                         && mdNode.Name != "meta" && !String.IsNullOrEmpty(mdNode.InnerText))
                     {
-                        if (mdNode.Name == "dc:identifier" || mdNode.Name == "dc:Identifier")
+                        if (m_PackageUniqueIdAttr != null && isUniqueIdName(mdNode.Name))
                         {
-                            XmlNode mdIdentifier;
-                            XmlAttributeCollection mdAttributes = mdNode.Attributes;
-                            if ((mdIdentifier = mdAttributes.GetNamedItem("id")) != null)
+                            XmlNode mdIdentifier = mdNode.Attributes.GetNamedItem("id");
+                            if (mdIdentifier != null)
                             {
-                                if (m_PackageUniqueIdAttr != null
-                                    && m_PackageUniqueIdAttr.Value == mdIdentifier.Value)
+                                if (m_PackageUniqueIdAttr.Value == mdIdentifier.Value)
                                 {
                                     addMetadata(mdNode.Name, mdNode.InnerText);
                                 }
                             }
                         }
-                        else if (m_MetadataDictionary.ContainsKey(mdNode.Name) && !m_MetadataDictionary[mdNode.Name].IsRepeatable)
+                        else
                         {
-                            if (checkDuplicacy(mdNode.Name))
+                            MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition(mdNode.Name);
+                            if (md == null || md.IsRepeatable || !metadataNameAlreadyExists(mdNode.Name))
                             {
-                                //ignore
+                                addMetadata(mdNode.Name, mdNode.InnerText);
                             }
-                            else
-                            {
-                              addMetadata(mdNode.Name, mdNode.InnerText);
-                            }      
                         }
-                        else 
-                        {
-                           addMetadata(mdNode.Name, mdNode.InnerText);
-                        }                    
                     }
                 }
             }
         }
 
-        private void addMetadata(string nodeName, string nodeContent)
+        private bool isUniqueIdName(string name)
         {
-            Presentation presentation = m_Project.Presentations.Get(0);
-            Metadata md = presentation.MetadataFactory.CreateMetadata();
-            md.Name = nodeName;
-            md.Content = nodeContent;
-            presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
+            if ("dc:Identifier" == name)
+            {
+                return true;
+            }
+
+            MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition("dc:Identifier");
+            return md != null && md.Synonyms.Contains(name);
         }
 
         private void parseMetadata_NameContent(XmlNodeList listOfMetaDataNodes)
-        {            
+        {
             if (listOfMetaDataNodes == null || listOfMetaDataNodes.Count == 0)
             {
                 return;
@@ -136,80 +118,55 @@ namespace XukImport
                 XmlNode attrName = mdAttributes.GetNamedItem("name");
                 XmlNode attrContent = mdAttributes.GetNamedItem("content");
 
-                    if (attrName != null && !String.IsNullOrEmpty(attrName.Value)
-                        && attrContent != null && !String.IsNullOrEmpty(attrContent.Value))
+                if (attrName != null && !String.IsNullOrEmpty(attrName.Value)
+                    && attrContent != null && !String.IsNullOrEmpty(attrContent.Value))
+                {
+
+                    if (m_PackageUniqueIdAttr != null && isUniqueIdName(attrName.Value))
                     {
-                        if (m_MetadataDictionary.ContainsKey(attrName.Value) && !m_MetadataDictionary[attrName.Value].IsRepeatable)
+                        XmlNode attrId = mdAttributes.GetNamedItem("id");
+                        if (attrId != null)
                         {
-                            if (checkDuplicacy(attrName.Value))
+                            if (m_PackageUniqueIdAttr.Value == attrId.Value)
                             {
-                                // ignore
-                            }
-                            else
-                            {
-                                addNameContent(attrName.Value, attrContent.Value);
+                                addMetadata(attrName.Value, attrContent.Value);
                             }
                         }
-                        else
+                    }
+                    else
+                    {
+                        MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition(attrName.Value);
+                        if (md == null || md.IsRepeatable || !metadataNameAlreadyExists(attrName.Value))
                         {
-                            addNameContent(attrName.Value, attrContent.Value);
+                            addMetadata(attrName.Value, attrContent.Value);
                         }
-                     }  
+                    }
+                }
             }
         }
 
-        private void addNameContent(string nodeName, string contentName)
+        private void addMetadata(string name, string content)
         {
             Presentation presentation = m_Project.Presentations.Get(0);
             Metadata md = presentation.MetadataFactory.CreateMetadata();
-            md.Name = nodeName;
-            md.Content = contentName;
+            md.Name = name;
+            md.Content = content;
             presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
         }
 
-        private bool IsDuplicateMetadata(string metaDataName)
+        private bool metadataNameAlreadyExists(string metaDataName)
         {
             Presentation presentation = m_Project.Presentations.Get(0);
-            List<Metadata> metadataList = presentation.GetMetadata(metaDataName);
-
-            if (metadataList != null && metadataList.Count > 0)
-               return true;
-            else
-               return false;
+            foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
+            {
+                if (md.Name == metaDataName)
+                {
+                    return true;
+                }
+            }
+            return false;
+            //List<Metadata> metadataList = presentation.GetMetadata(metaDataName);
+            //return (metadataList != null && metadataList.Count > 0);
         }
-
-        public bool checkDuplicacy(string metadataName)
-        {
-            if (metadataName == "dtb:uid")
-            {
-               if (IsDuplicateMetadata("dc:identifier") || IsDuplicateMetadata(metadataName))
-                    {
-                       return true;
-                    }
-                else 
-                return false;
-            }
-            else
-                return IsDuplicateMetadata(metadataName);
-        }   
-                        
-         
-        /*    private void parseMetadata_X(XmlDocument xmlDoc)
-            {
-                XmlNodeList listOfMetaDataRootNodes = xmlDoc.GetElementsByTagName("x-metadata");
-                if (listOfMetaDataRootNodes.Count == 0)
-                {
-                    return;
-                }
-                foreach (XmlNode mdNodeRoot in listOfMetaDataRootNodes)
-                {
-                    XmlNodeList listOfMetaDataNodes = mdNodeRoot.ChildNodes;
-
-                    parseMetadata_NameContent(listOfMetaDataNodes);
-                }
-            }
-
-             */
     }
-
 }

@@ -179,20 +179,23 @@ namespace urakawa.metadata.daisy
             //make sure repetitions are ok
             foreach (Metadata metadata in metadatas)
             {
-                List<Metadata> list = metadatas.FindAll(
-                    delegate(Metadata item)
-                    { return item.Name == metadata.Name; });
-
                 MetadataDefinition metadataDefinition = m_MetadataDefinitions.Find(
                     delegate(MetadataDefinition item)
                     { return item.Name == metadata.Name; });
 
-                if (list.Count > 1 && metadataDefinition.IsRepeatable == false)
+                if (metadataDefinition != null && !metadataDefinition.IsRepeatable)
                 {
-                    ReportError(new MetadataValidationDuplicateItemError
-                        (string.Format("{0} must not appear more than once", metadata.Name),
-                        metadataDefinition));
-                    isValid = false;
+                    List<Metadata> list = metadatas.FindAll(
+                        delegate(Metadata item)
+                        { return item.Name == metadata.Name; });
+
+                    if (list.Count > 1)
+                    {
+                        ReportError(new MetadataValidationDuplicateItemError
+                                        (string.Format("{0} must not appear more than once", metadata.Name),
+                                         metadataDefinition));
+                        isValid = false;
+                    }
                 }
             }
 
