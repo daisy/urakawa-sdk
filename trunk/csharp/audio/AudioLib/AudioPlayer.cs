@@ -597,7 +597,7 @@ namespace AudioLib
                     m_RefreshLength = (int)(mCurrentAudioPCMFormat.SampleRate / 2) * mCurrentAudioPCMFormat.BlockAlign;
 
                     // calculate the size of VuMeter Update array length
-                    m_UpdateVMArrayLength = m_SizeBuffer / 20;
+                    m_UpdateVMArrayLength = m_SizeBuffer / 20; //50ms
                     m_UpdateVMArrayLength = Convert.ToInt32(CalculationFunctions.AdaptToFrame(Convert.ToInt32(m_UpdateVMArrayLength), mCurrentAudioPCMFormat.BlockAlign));
                     arUpdateVM = new byte[m_UpdateVMArrayLength];
                     // reset the VuMeter (if set)
@@ -797,7 +797,7 @@ namespace AudioLib
                     if (CurrentPlayPosition  < ((m_SizeBuffer) - m_UpdateVMArrayLength))
                         {
                         Array.Copy ( mSoundBuffer.Read ( CurrentPlayPosition, typeof ( byte ), LockFlag.None, m_UpdateVMArrayLength ), arUpdateVM, m_UpdateVMArrayLength );
-                        if (mEventsEnabled == true && UpdateVuMeter != null)
+                        if (mEventsEnabled && UpdateVuMeter != null)
                             UpdateVuMeter ( this, new Events.Player.UpdateVuMeterEventArgs () );  // JQ // temp for debugging tk
                         }
                     }
