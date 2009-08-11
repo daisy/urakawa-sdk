@@ -220,7 +220,11 @@ namespace AudioLib
         {
             StopForwardRewind();
             mSoundBuffer.Stop();
-            if (RefreshThread != null && RefreshThread.IsAlive) RefreshThread.Abort();
+            if (RefreshThread != null && RefreshThread.IsAlive)
+            {
+                RefreshThread.Abort();
+                Console.WriteLine("Player refresh thread abort.");
+            }
             mBufferStopPosition = -1;
             if (ResetVuMeter != null)
                 ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
@@ -696,8 +700,10 @@ namespace AudioLib
 
                 //initialise and start thread for refreshing buffer
                 RefreshThread = new Thread(new ThreadStart(RefreshBuffer));
+                RefreshThread.Name = "Player Refresh Thread";
                 RefreshThread.Start();
 
+                Console.WriteLine("Player refresh thread start.");
 
             }
         } // function ends
@@ -831,6 +837,9 @@ namespace AudioLib
 
             PreviewPlaybackStop();
             // RefreshBuffer ends
+
+
+            Console.WriteLine("Player refresh thread exit.");
         }
         private bool m_IsEventEnabledDelayedTillTimer = true;
 
@@ -976,7 +985,11 @@ namespace AudioLib
             ////
             StopForwardRewind();
             mSoundBuffer.Stop();
-            if (RefreshThread != null && RefreshThread.IsAlive) RefreshThread.Abort();
+            if (RefreshThread != null && RefreshThread.IsAlive)
+            {
+                RefreshThread.Abort();
+                Console.WriteLine("Player refresh thread abort.");
+            }
             mBufferStopPosition = -1;
             if (ResetVuMeter != null)
                 ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
