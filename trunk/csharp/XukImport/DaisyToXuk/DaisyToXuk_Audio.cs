@@ -161,8 +161,6 @@ namespace XukImport
 
         private void addAudio(TreeNode treeNode, XmlNode xmlNode, bool isSequence)
         {
-            return; //TODO REMOVE THIS LINE, THIS IS FOR TESTING ONLY !
-
             //DirectoryInfo parentDir = Directory.GetParent(m_Book_FilePath);
             //string dirPath = parentDir.ToString();
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);

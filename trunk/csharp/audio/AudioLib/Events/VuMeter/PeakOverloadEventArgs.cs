@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Text;
 
 namespace AudioLib.Events.VuMeter
 {
@@ -33,7 +31,7 @@ namespace AudioLib.Events.VuMeter
 		/// <summary>
 		/// Create a new PeakOverload event at a given time.
 		/// </summary>
-		/// <param name="channel">The channel that overloaded.</param>
+		/// <param name="channel">The channel that overloaded (1, 2, etc.).</param>
 		/// <param name="timePosition">The time when the event occurred.</param>
 		public PeakOverloadEventArgs(int channel, double timePosition)
 		{

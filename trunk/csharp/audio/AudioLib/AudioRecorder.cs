@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
-using Microsoft.DirectX;
 using Microsoft.DirectX.DirectSound;
 using System.Threading;
 
@@ -40,7 +37,7 @@ namespace AudioLib
 
         
         public event Events.Recorder.StateChangedHandler StateChanged;                // recorder state changed
-		public event Events.Recorder.UpdateVuMeterHandler UpdateVuMeterFromRecorder;  // send update to VU meter
+		public event Events.Recorder.UpdateVuMeterHandler UpdateVuMeter;  // send update to VU meter
         public event Events.Recorder.ResetVuMeterHandler ResetVuMeter;                // reset the VU meter
 
 
@@ -368,12 +365,15 @@ namespace AudioLib
 			if (null == NotifyThread)
 			{
 				NotifyThread = new Thread(new ThreadStart(WaitThread));
+			    NotifyThread.Name = "Recorder Notify Thread";
                 NotifyThread.Priority = ThreadPriority.Highest;
 				Capturing = true;
 				
 				// Create a notification event, for when the sound stops playing
 				NotificationEvent = new AutoResetEvent(false);
                 NotifyThread.Start();
+
+                Console.WriteLine("Recorder notify thread start.");
 			}
 			// Setup the notification POSITIONS 
 			for (int i = 0; i < NumberRecordNotifications; i++)
@@ -397,6 +397,8 @@ namespace AudioLib
 				//waits for infinite time span before recieving a signal
 				RecordCapturedData();
 			}
+
+            Console.WriteLine("Recorder notify thread exit.");
 		}
 		
 		//  Copies data from the capture buffer to the output buffer 
@@ -458,8 +460,8 @@ namespace AudioLib
 
 		        // copy Capture data to an array and update it to VuMeter
 		        Array.Copy(CaptureData, arUpdateVM, m_UpdateVMArrayLength);
-		        if (UpdateVuMeterFromRecorder != null)
-		            UpdateVuMeterFromRecorder(this, new Events.Recorder.UpdateVuMeterEventArgs());
+		        if (UpdateVuMeter != null)
+		            UpdateVuMeter(this, new Events.Recorder.UpdateVuMeterEventArgs());
 
 		        if (mState != AudioRecorderState.Monitoring && !String.IsNullOrEmpty(m_sFileName))
 		        {
