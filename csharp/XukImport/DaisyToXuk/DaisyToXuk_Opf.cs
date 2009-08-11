@@ -7,8 +7,25 @@ namespace XukImport
 {
     public partial class DaisyToXuk
     {
+        XmlNode m_PackageUniqueIdAttr;
         private void parseOpf(XmlDocument opfXmlDoc)
         {
+            XmlNodeList packageNodes = opfXmlDoc.GetElementsByTagName("package");
+            foreach (XmlNode packageNode in packageNodes)
+            {
+                XmlAttributeCollection packageNodeAttrs = packageNode.Attributes;
+                if (packageNodeAttrs == null || packageNodeAttrs.Count <= 0)
+                {
+                    continue;
+                }
+                XmlNode node = packageNodeAttrs.GetNamedItem("unique-identifier");
+                if (node != null)
+                {
+                    m_PackageUniqueIdAttr = node;
+                    break;
+                }
+            }
+
             parseMetadata(opfXmlDoc);
 
             List<string> spine;
@@ -25,14 +42,12 @@ namespace XukImport
                 parseContentDocument(dtbookXmlDoc, null);
             }
 
-            if (ncxPath != null)
+            if (false && ncxPath != null) //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
             {
                 string fullNcxPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), ncxPath);
                 XmlDocument ncxXmlDoc = readXmlDocument(fullNcxPath);
                 parseMetadata(ncxXmlDoc);
             }
-
-            
 
             switch (spineMimeType)
             {

@@ -68,7 +68,8 @@ namespace XukImport
         {
             XmlDocument smilXmlDoc = readXmlDocument(fullSmilPath);
 
-            parseMetadata(smilXmlDoc);
+            //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
+            //parseMetadata(smilXmlDoc);
 
             XmlNodeList allTextNodes = smilXmlDoc.GetElementsByTagName("text");
             if (allTextNodes.Count == 0)
