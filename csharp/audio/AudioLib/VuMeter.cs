@@ -49,7 +49,7 @@ namespace AudioLib
                 if (PeakOverload != null)
                 {
                     PeakOverload(this,
-                                 new Events.VuMeter.PeakOverloadEventArgs(index, mPlayer.CurrentTimePosition));
+                          new Events.VuMeter.PeakOverloadEventArgs(index, mPlayer.CurrentTimePosition));
                 }
             }
         }
@@ -101,14 +101,16 @@ namespace AudioLib
 
             int bytesPerSample = pcmFormat.BitDepth / 8;
 
-            for (int i = 0; i < m_arUpdatedVM.Length; i += pcmFormat.BlockAlign)
+            for (int byteOffsetOfFrame = 0; byteOffsetOfFrame < m_arUpdatedVM.Length; byteOffsetOfFrame += pcmFormat.BlockAlign)
             {
-                for (int c = 0; c < pcmFormat.NumberOfChannels; c++)
+                for (int channelIndex = 0; channelIndex < pcmFormat.NumberOfChannels; channelIndex++)
                 {
                     double val = 0;
-                    for (int j = 0; j < bytesPerSample; j++)
+                    for (int byteOffsetInSample = 0; byteOffsetInSample < bytesPerSample; byteOffsetInSample++)
                     {
-                        val += Math.Pow(2, 8 * j) * m_arUpdatedVM[i + (c * bytesPerSample) + j];
+                        int arrayIndex = byteOffsetOfFrame + (channelIndex*bytesPerSample) + byteOffsetInSample;
+                        val += Math.Pow(2, 8 * byteOffsetInSample)
+                            * m_arUpdatedVM[arrayIndex];
                     }
 
                     if (val > halfFull)
@@ -116,16 +118,16 @@ namespace AudioLib
                         val = full - val;
                     }
 
-                    if (val > m_PeakDbValue[c])
+                    if (val > m_PeakDbValue[channelIndex])
                     {
-                        m_PeakDbValue[c] = val;
+                        m_PeakDbValue[channelIndex] = val;
                     }
                 }
             }
 
-            for (int c = 0; c < pcmFormat.NumberOfChannels; c++)
+            for (int channelIndex = 0; channelIndex < pcmFormat.NumberOfChannels; channelIndex++)
             {
-                m_PeakDbValue[c] = 20 * Math.Log10(m_PeakDbValue[c] / halfFull);
+                m_PeakDbValue[channelIndex] = 20 * Math.Log10(m_PeakDbValue[channelIndex] / halfFull);
             }
 
             if (UpdatePeakMeter != null)
