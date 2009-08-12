@@ -166,6 +166,15 @@ namespace AudioLib
             }
         }
 
+        private OutputDevice mDevice;
+        /// <summary>
+        /// Currently used output device.
+        /// </summary>
+        public OutputDevice OutputDevice
+        {
+            get { return mDevice; }
+        }
+
 
         private AudioLibPCMFormat mCurrentAudioPCMFormat;
         /// <summary>
@@ -176,14 +185,6 @@ namespace AudioLib
             get { return mCurrentAudioPCMFormat; }
         }
 
-        private OutputDevice mDevice;
-        /// <summary>
-        /// Currently used output device.
-        /// </summary>
-        public OutputDevice OutputDevice
-        {
-            get { return mDevice; }
-        }
 
         private AudioPlayerState mState;
         /// <summary>
@@ -198,8 +199,110 @@ namespace AudioLib
             }
         }
 
+        public void Pause()
+        {
+            if (!State.Equals(AudioPlayerState.Playing))
+            {
+                return;
+            }
 
-        // Get the current playback position in bytes.
+            //if (m_IsPreviewing)
+            //    m_IsPreviewing = false;
+
+            mPausePosition = GetCurrentBytePosition();
+
+            m_lResumeToPosition = m_lPlayEnd;
+
+            //if (!mIsFwdRwd)
+            //    m_lResumeToPosition = m_lPlayEnd;
+            //else
+            //    m_lResumeToPosition = 0;
+
+            StopPlayback();
+
+            AudioPlayerState oldState = mState;
+            mState = AudioPlayerState.Paused;
+
+            if (StateChanged != null)//mEventsEnabled && 
+                StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
+        }
+
+        public void Resume()
+        {
+            if (State.Equals(AudioPlayerState.Paused))
+            {
+                return;
+            }
+
+            long lPosition = CalculationFunctions.AdaptToFrame(mPausePosition, mCurrentAudioPCMFormat.BlockAlign);
+            long lEndPosition = CalculationFunctions.AdaptToFrame(m_lResumeToPosition, mCurrentAudioPCMFormat.BlockAlign);
+
+            if (lPosition >= 0 && lPosition < mCurrentAudioPCMFormat.GetLengthInBytes(mCurrentAudioDuration))
+            {
+                mStartPosition = lPosition;
+                InitPlay(lPosition, lEndPosition);
+            }
+            else
+                throw new Exception("Start Position is out of bounds of Audio Asset");
+        }
+
+        public void Stop()
+        {
+            if (State != AudioPlayerState.Stopped)
+            {
+                //if (m_IsPreviewing)
+                //    m_IsPreviewing = false;
+
+                StopPlayback();
+
+                mCurrentAudioPCMFormat = null;
+                mCurrentAudioDuration = 0;
+                mCurrentAudioStreamProvider = null;
+            }
+
+            mPausePosition = 0;
+
+            if (mState == AudioPlayerState.Stopped)
+            {
+                return;
+            }
+
+            AudioPlayerState oldState = mState;
+            mState = AudioPlayerState.Stopped;
+
+            if (StateChanged != null)//mEventsEnabled && 
+                StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
+        }
+
+
+        private void StopPlayback()
+        {
+            //StopForwardRewind();
+
+            mSoundBuffer.Stop();
+            if (RefreshThread != null && RefreshThread.IsAlive)
+            {
+                RefreshThread.Abort();
+                Console.WriteLine("Player refresh thread abort.");
+            }
+            mBufferStopPosition = -1;
+            if (ResetVuMeter != null)
+                ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
+
+
+            if (!m_KeepStreamAlive && mCurrentAudioStream != null)
+            {
+                mCurrentAudioStream.Close();
+                mCurrentAudioStream = null;
+
+                //Reset of the following values only performed in actual Stop() method
+                //mCurrentAudioPCMFormat = null;
+                //mCurrentAudioDuration = 0;
+                //mCurrentAudioStreamProvider = null;
+            }
+        }
+
+        // position in bytes.
         private long GetCurrentBytePosition()
         {
             int PlayPosition = 0;
@@ -254,33 +357,6 @@ namespace AudioLib
             return lCurrentPosition;
         }
 
-
-        private void StopPlayback()
-        {
-            //StopForwardRewind();
-
-            mSoundBuffer.Stop();
-            if (RefreshThread != null && RefreshThread.IsAlive)
-            {
-                RefreshThread.Abort();
-                Console.WriteLine("Player refresh thread abort.");
-            }
-            mBufferStopPosition = -1;
-            if (ResetVuMeter != null)
-                ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
-
-
-            if (!m_KeepStreamAlive && mCurrentAudioStream != null)
-            {
-                mCurrentAudioStream.Close();
-                mCurrentAudioStream = null;
-
-                //Reset of the following values only performed in actual Stop() method
-                //mCurrentAudioPCMFormat = null;
-                //mCurrentAudioDuration = 0;
-                //mCurrentAudioStreamProvider = null;
-            }
-        }
 
 
         /// <summary>
@@ -429,13 +505,6 @@ namespace AudioLib
         }
 
 
-        // Get a byte position from a time in ms. for the given PCM format info.
-        private long BytePositionFromTime(double time, AudioLibPCMFormat info)
-        {
-            ushort align = (ushort)info.BlockAlign;
-            return CalculationFunctions.AdaptToFrame(CalculationFunctions.ConvertTimeToByte(time, (int)info.SampleRate, align), align);
-        }
-
         /// <summary>
         ///  convenience function to start playback of an asset
         ///  first initialise player with asset followed by starting playback using PlayAssetStream function
@@ -508,9 +577,6 @@ namespace AudioLib
             //    Rewind(lStartPosition);
             //}
         }
-
-        private AudioPlayerState m_StateBeforePreview;
-        private long m_PreviewStartPosition;
 
         /// <summary>
         ///  Called to start playback when player is already initialised with an asset
@@ -730,108 +796,6 @@ namespace AudioLib
 
 
 
-        /// <summary>
-        /// Pause from stopped state, in order to reset the pause position after preview.
-        /// </summary>
-        public void PauseFromStopped(double time)
-        {
-            if (State == AudioPlayerState.Stopped)
-            {
-                m_lResumeToPosition = 0;
-
-                AudioPlayerState oldState = mState;
-                mState = AudioPlayerState.Paused;
-                CurrentTimePosition = time;
-
-                if (StateChanged != null)//mEventsEnabled && 
-                    StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
-            }
-        }
-
-        /// <summary>
-        ///  Pauses playing asset. 
-        /// Resumes from paused position with resume command or starts from begining/specified start position with play command.
-        /// /<see cref=""/>
-        /// </summary>
-        public void Pause()
-        {
-            if (!State.Equals(AudioPlayerState.Playing))
-            {
-                return;
-            }
-
-            //if (m_IsPreviewing)
-            //    m_IsPreviewing = false;
-
-            mPausePosition = GetCurrentBytePosition();
-
-            m_lResumeToPosition = m_lPlayEnd;
-
-            //if (!mIsFwdRwd)
-            //    m_lResumeToPosition = m_lPlayEnd;
-            //else
-            //    m_lResumeToPosition = 0;
-
-            StopPlayback();
-
-            AudioPlayerState oldState = mState;
-            mState = AudioPlayerState.Paused;
-
-            if (StateChanged != null)//mEventsEnabled && 
-                StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
-        }
-
-        /// <summary>
-        ///  Resumes from paused position if player is in paused state
-        /// </summary>
-        public void Resume()
-        {
-            if (State.Equals(AudioPlayerState.Paused))
-            {
-                return;
-            }
-
-            long lPosition = CalculationFunctions.AdaptToFrame(mPausePosition, mCurrentAudioPCMFormat.BlockAlign);
-            long lEndPosition = CalculationFunctions.AdaptToFrame(m_lResumeToPosition, mCurrentAudioPCMFormat.BlockAlign);
-
-            if (lPosition >= 0 && lPosition < mCurrentAudioPCMFormat.GetLengthInBytes(mCurrentAudioDuration))
-            {
-                mStartPosition = lPosition;
-                InitPlay(lPosition, lEndPosition);
-            }
-            else
-                throw new Exception("Start Position is out of bounds of Audio Asset");
-        }
-
-        public void Stop()
-        {
-            if (State != AudioPlayerState.Stopped)
-            {
-                //if (m_IsPreviewing)
-                //    m_IsPreviewing = false;
-
-                StopPlayback();
-
-                mCurrentAudioPCMFormat = null;
-                mCurrentAudioDuration = 0;
-                mCurrentAudioStreamProvider = null;
-            }
-
-            mPausePosition = 0;
-
-            if (mState == AudioPlayerState.Stopped)
-            {
-                return;
-            }
-
-            AudioPlayerState oldState = mState;
-            mState = AudioPlayerState.Stopped;
-
-            if (StateChanged != null)//mEventsEnabled && 
-                StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
-        }
-
-
         private void EmergencyStopForSoundBufferProblem()
         {
             //if (m_IsPreviewing)
@@ -884,6 +848,35 @@ namespace AudioLib
             mCurrentAudioDuration = 0;
             mCurrentAudioStreamProvider = null;
         }
+
+        /// <summary>
+        /// Pause from stopped state, in order to reset the pause position after preview.
+        /// </summary>
+        //public void PauseFromStopped(double time)
+        //{
+        //    if (State == AudioPlayerState.Stopped)
+        //    {
+        //        m_lResumeToPosition = 0;
+
+        //        AudioPlayerState oldState = mState;
+        //        mState = AudioPlayerState.Paused;
+        //        CurrentTimePosition = time;
+
+        //        if (StateChanged != null)//mEventsEnabled && 
+        //            StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
+        //    }
+        //}
+
+        //private AudioPlayerState m_StateBeforePreview;
+        //private long m_PreviewStartPosition;
+
+
+        //// Get a byte position from a time in ms. for the given PCM format info.
+        //private long BytePositionFromTime(double time, AudioLibPCMFormat info)
+        //{
+        //    ushort align = (ushort)info.BlockAlign;
+        //    return CalculationFunctions.AdaptToFrame(CalculationFunctions.ConvertTimeToByte(time, (int)info.SampleRate, align), align);
+        //}
 
         //private bool mIsFwdRwd;                // flag indicating forward or rewind playback is going on
 

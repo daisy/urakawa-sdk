@@ -108,6 +108,11 @@ namespace XukImport
                 default:
                     break;
             }
+
+            if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
+            {
+                addMetadata("dc:Identifier", m_PublicationUniqueIdentifier);
+            }
         }
 
         private core.TreeNode getTreeNodeWithXmlElementId(string id)

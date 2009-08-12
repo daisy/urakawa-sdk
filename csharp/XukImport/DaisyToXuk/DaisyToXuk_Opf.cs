@@ -7,7 +7,9 @@ namespace XukImport
 {
     public partial class DaisyToXuk
     {
-        XmlNode m_PackageUniqueIdAttr;
+        private XmlNode m_PackageUniqueIdAttr;
+        private string m_PublicationUniqueIdentifier;
+
         private void parseOpf(XmlDocument opfXmlDoc)
         {
             XmlNodeList packageNodes = opfXmlDoc.GetElementsByTagName("package");

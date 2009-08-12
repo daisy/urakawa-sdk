@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Xml;
 using urakawa;
 using urakawa.metadata;
@@ -62,26 +63,51 @@ namespace XukImport
                         && mdNode.Name != "x-metadata"
                         && !String.IsNullOrEmpty(mdNode.InnerText))
                     {
-                        if (m_PackageUniqueIdAttr != null && isUniqueIdName(mdNode.Name))
+                        XmlNode mdIdentifier = mdNode.Attributes.GetNamedItem("id");
+
+                        handleMetaData(mdNode.Name, mdNode.InnerText, (mdIdentifier == null ? null : mdIdentifier.Value));
+                    }
+                }
+            }
+        }
+
+        private void handleMetaData(string name, string content, string id)
+        {
+            if (isUniqueIdName(name))
+            {
+                if (m_PackageUniqueIdAttr != null
+                    && id != null
+                    && id == m_PackageUniqueIdAttr.Value)
+                {
+                    Debug.Assert(String.IsNullOrEmpty(m_PublicationUniqueIdentifier),
+                        String.Format("The Publication's Unique Identifier is specified several times !! OLD: [{0}], NEW: [{1}]", m_PublicationUniqueIdentifier, content));
+
+                    m_PublicationUniqueIdentifier = content;
+
+                    Presentation presentation = m_Project.Presentations.Get(0);
+                    foreach (Metadata md in presentation.Metadatas.ContentsAs_ListCopy)
+                    {
+                        if (isUniqueIdName(md.Name) && md.Content == m_PublicationUniqueIdentifier)
                         {
-                            XmlNode mdIdentifier = mdNode.Attributes.GetNamedItem("id");
-                            if (mdIdentifier != null)
-                            {
-                                if (m_PackageUniqueIdAttr.Value == mdIdentifier.Value)
-                                {
-                                    addMetadata(mdNode.Name, mdNode.InnerText);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition(mdNode.Name);
-                            if (md == null || md.IsRepeatable || !metadataNameAlreadyExists(mdNode.Name))
-                            {
-                                addMetadata(mdNode.Name, mdNode.InnerText);
-                            }
+                            presentation.Metadatas.Remove(md);
                         }
                     }
+
+                }
+                else if (!metadataUidValueAlreadyExists(content)
+                    && (String.IsNullOrEmpty(m_PublicationUniqueIdentifier) || content != m_PublicationUniqueIdentifier))
+                {
+                    addMetadata(name, content);
+                }
+            }
+            else
+            {
+                MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition(name);
+                if (md == null
+                    || md.IsRepeatable
+                    || !metadataNameAlreadyExists(name))
+                {
+                    addMetadata(name, content);
                 }
             }
         }
@@ -124,26 +150,9 @@ namespace XukImport
                 if (attrName != null && !String.IsNullOrEmpty(attrName.Value)
                     && attrContent != null && !String.IsNullOrEmpty(attrContent.Value))
                 {
+                    XmlNode mdIdentifier = mdAttributes.GetNamedItem("id");
 
-                    if (m_PackageUniqueIdAttr != null && isUniqueIdName(attrName.Value))
-                    {
-                        XmlNode attrId = mdAttributes.GetNamedItem("id");
-                        if (attrId != null)
-                        {
-                            if (m_PackageUniqueIdAttr.Value == attrId.Value)
-                            {
-                                addMetadata(attrName.Value, attrContent.Value);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition(attrName.Value);
-                        if (md == null || md.IsRepeatable || !metadataNameAlreadyExists(attrName.Value))
-                        {
-                            addMetadata(attrName.Value, attrContent.Value);
-                        }
-                    }
+                    handleMetaData(attrName.Value, attrContent.Value, (mdIdentifier == null ? null : mdIdentifier.Value));
                 }
             }
         }
@@ -170,6 +179,19 @@ namespace XukImport
             return false;
             //List<Metadata> metadataList = presentation.GetMetadata(metaDataName);
             //return (metadataList != null && metadataList.Count > 0);
+        }
+
+        private bool metadataUidValueAlreadyExists(string uid)
+        {
+            Presentation presentation = m_Project.Presentations.Get(0);
+            foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
+            {
+                if (isUniqueIdName(md.Name) && md.Content == uid)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
