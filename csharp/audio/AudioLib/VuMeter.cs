@@ -9,96 +9,113 @@ namespace AudioLib
     // http://daisy.trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/audio/AudioLib/VuMeter.cs?rev=1485
     public class VuMeter
     {
-        public event Events.VuMeter.PeakOverloadHandler PeakOverload;
-        public event Events.VuMeter.UpdatePeakMeterHandler UpdatePeakMeter;
+        private readonly PeakOverloadEventArgs m_PeakOverloadEventArgs = new PeakOverloadEventArgs(1, 0);
+        public event PeakOverloadHandler PeakMeterOverloaded;
 
-        private AudioPlayer mPlayer;
-        private AudioRecorder mRecorder;
+        private readonly PeakMeterUpdateEventArgs m_PeakMeterUpdateEventArgs = new PeakMeterUpdateEventArgs(new double[] { -1, -1 });
+        public event PeakMeterUpdateHandler PeakMeterUpdated;
 
-        private byte[] m_arUpdatedVM;
+        private AudioPlayer m_Player;
+        private AudioRecorder m_Recorder;
+
+        private byte[] m_PcmDataBuffer;
 
         public VuMeter(AudioPlayer player, AudioRecorder recorder)
         {
-            mPlayer = player;
-            mRecorder = recorder;
+            m_Player = player;
+            m_Recorder = recorder;
 
-            mPlayer.UpdateVuMeter += new Events.Player.UpdateVuMeterHandler(OnPlayerUpdateVuMeter);
-            mRecorder.UpdateVuMeter += new Events.Recorder.UpdateVuMeterHandler(OnRecorderUpdateVuMeter);
+            m_Player.PcmDataBufferAvailable += new AudioPlayer.PcmDataBufferAvailableHandler(OnPcmDataBufferAvailable_Player);
+            m_Recorder.PcmDataBufferAvailable += new AudioRecorder.PcmDataBufferAvailableHandler(OnPcmDataBufferAvailable_Recorder);
         }
 
-        public void OnPlayerUpdateVuMeter(object sender, Events.Player.UpdateVuMeterEventArgs Update)
+        public void OnPcmDataBufferAvailable_Player(object sender, AudioPlayer.PcmDataBufferAvailableEventArgs e)
         {
             AudioPlayer ob_AudioPlayer = sender as AudioPlayer;
-            if (ob_AudioPlayer == null || ob_AudioPlayer != mPlayer)
+            if (ob_AudioPlayer == null || ob_AudioPlayer != m_Player)
             {
                 return;
             }
 
-            if (m_arUpdatedVM == null || m_arUpdatedVM.Length != mPlayer.arUpdateVM.Length)
+            if (m_PcmDataBuffer == null || m_PcmDataBuffer.Length != e.PcmDataBuffer.Length)
             {
-                Console.WriteLine("*** creating mPlayer buffer");
-                m_arUpdatedVM = new byte[mPlayer.arUpdateVM.Length];
+                Console.WriteLine("*** creating m_Player buffer");
+                m_PcmDataBuffer = new byte[e.PcmDataBuffer.Length];
             }
-            Array.Copy(mPlayer.arUpdateVM, m_arUpdatedVM, mPlayer.arUpdateVM.Length);
+            Array.Copy(e.PcmDataBuffer, m_PcmDataBuffer, e.PcmDataBuffer.Length);
 
-            ComputePeakDbValue(mPlayer.CurrentAudioPCMFormat);
+            double[] peakDb = computePeakDb(m_Player.CurrentAudioPCMFormat);
+
+            if (PeakMeterUpdated != null)
+            {
+                m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
+                PeakMeterUpdated(this, m_PeakMeterUpdateEventArgs);
+            }
 
             int index = 0;
-            foreach (double peak in m_PeakDbValue)
+            foreach (double peak in peakDb)
             {
                 index++;
                 if (peak < 0)
                 {
                     continue;
                 }
-                if (PeakOverload != null)
+                if (PeakMeterOverloaded != null)
                 {
-                    PeakOverload(this,
-                          new Events.VuMeter.PeakOverloadEventArgs(index, mPlayer.CurrentTimePosition));
+                    m_PeakOverloadEventArgs.Channel = index;
+                    m_PeakOverloadEventArgs.Time = m_Player.CurrentTimePosition;
+                    PeakMeterOverloaded(this, m_PeakOverloadEventArgs);
                 }
             }
         }
 
-        public void OnRecorderUpdateVuMeter(object sender, Events.Recorder.UpdateVuMeterEventArgs UpdateVuMeter)
+        public void OnPcmDataBufferAvailable_Recorder(object sender, AudioRecorder.PcmDataBufferAvailableEventArgs e)
         {
             AudioRecorder ob_AudioRecorder = sender as AudioRecorder;
-            if (ob_AudioRecorder == null || ob_AudioRecorder != mRecorder)
+            if (ob_AudioRecorder == null || ob_AudioRecorder != m_Recorder)
             {
                 return;
             }
 
-            if (m_arUpdatedVM == null || m_arUpdatedVM.Length != mRecorder.arUpdateVM.Length)
+            if (m_PcmDataBuffer == null || m_PcmDataBuffer.Length != e.PcmDataBuffer.Length)
             {
-                Console.WriteLine("*** creating mRecorder buffer");
-                m_arUpdatedVM = new byte[mRecorder.arUpdateVM.Length];
+                Console.WriteLine("*** creating m_Recorder buffer");
+                m_PcmDataBuffer = new byte[e.PcmDataBuffer.Length];
             }
-            Array.Copy(mRecorder.arUpdateVM, m_arUpdatedVM, mRecorder.arUpdateVM.Length);
+            Array.Copy(e.PcmDataBuffer, m_PcmDataBuffer, e.PcmDataBuffer.Length);
 
-            ComputePeakDbValue(mRecorder.RecordingPCMFormat);
+            double[] peakDb = computePeakDb(m_Recorder.RecordingPCMFormat);
+
+            if (PeakMeterUpdated != null)
+            {
+                m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
+                PeakMeterUpdated(this, m_PeakMeterUpdateEventArgs);
+            }
 
             int index = 0;
-            foreach (double peak in m_PeakDbValue)
+            foreach (double peak in peakDb)
             {
                 index++;
                 if (peak < 0)
                 {
                     continue;
                 }
-                if (PeakOverload != null)
+                if (PeakMeterOverloaded != null)
                 {
-                    PeakOverload(this,
-                        new Events.VuMeter.PeakOverloadEventArgs(index, mRecorder.TimeOfAsset));
+                    m_PeakOverloadEventArgs.Channel = index;
+                    m_PeakOverloadEventArgs.Time = m_Recorder.TimeOfAsset;
+                    PeakMeterOverloaded(this, m_PeakOverloadEventArgs);
                 }
             }
         }
 
-        private double[] m_PeakDbValue;
-        private void ComputePeakDbValue(AudioLibPCMFormat pcmFormat)
+        private double[] m_PeakDb; //to avoid re-allocating the buffer when not necessary
+        private double[] computePeakDb(AudioLibPCMFormat pcmFormat)
         {
-            if (m_PeakDbValue == null || m_PeakDbValue.Length != pcmFormat.NumberOfChannels)
+            if (m_PeakDb == null || m_PeakDb.Length != pcmFormat.NumberOfChannels)
             {
                 Console.WriteLine("*** creating PeakDbValue buffer");
-                m_PeakDbValue = new double[pcmFormat.NumberOfChannels];
+                m_PeakDb = new double[pcmFormat.NumberOfChannels];
             }
 
             double full = Math.Pow(2, pcmFormat.BitDepth);
@@ -106,7 +123,7 @@ namespace AudioLib
 
             int bytesPerSample = pcmFormat.BitDepth / 8;
 
-            for (int byteOffsetOfFrame = 0; byteOffsetOfFrame < m_arUpdatedVM.Length; byteOffsetOfFrame += pcmFormat.BlockAlign)
+            for (int byteOffsetOfFrame = 0; byteOffsetOfFrame < m_PcmDataBuffer.Length; byteOffsetOfFrame += pcmFormat.BlockAlign)
             {
                 for (int channelIndex = 0; channelIndex < pcmFormat.NumberOfChannels; channelIndex++)
                 {
@@ -114,8 +131,8 @@ namespace AudioLib
                     for (int byteOffsetInSample = 0; byteOffsetInSample < bytesPerSample; byteOffsetInSample++)
                     {
                         int arrayIndex = byteOffsetOfFrame + (channelIndex*bytesPerSample) + byteOffsetInSample;
-                        val += Math.Pow(2, 8 * byteOffsetInSample)
-                            * m_arUpdatedVM[arrayIndex];
+                        
+                        val += Math.Pow(2, 8 * byteOffsetInSample) * m_PcmDataBuffer[arrayIndex];
                     }
 
                     if (val > halfFull)
@@ -123,20 +140,79 @@ namespace AudioLib
                         val = full - val;
                     }
 
-                    if (val > m_PeakDbValue[channelIndex])
+                    if (m_PeakDb[channelIndex] < val)
                     {
-                        m_PeakDbValue[channelIndex] = val;
+                        m_PeakDb[channelIndex] = val;
                     }
                 }
             }
 
             for (int channelIndex = 0; channelIndex < pcmFormat.NumberOfChannels; channelIndex++)
             {
-                m_PeakDbValue[channelIndex] = 20 * Math.Log10(m_PeakDbValue[channelIndex] / halfFull);
+                m_PeakDb[channelIndex] = 20 * Math.Log10(m_PeakDb[channelIndex] / halfFull);
             }
 
-            if (UpdatePeakMeter != null)
-                UpdatePeakMeter(this, new Events.VuMeter.UpdatePeakMeter(m_PeakDbValue));
+            return m_PeakDb;
+        }
+
+        public delegate void PeakOverloadHandler(object sender, PeakOverloadEventArgs e);
+
+        public class PeakOverloadEventArgs : EventArgs
+        {
+            private int m_Channel; //1, 2, etc.
+            public int Channel
+            {
+                get
+                {
+                    return m_Channel;
+                }
+                set
+                {
+                    m_Channel = value;
+                }
+            }
+
+            private double m_Time;  //in milliseconds
+            public double Time
+            {
+                get
+                {
+                    return m_Time;
+                }
+                set
+                {
+                    m_Time = value;
+                }
+            }
+
+            public PeakOverloadEventArgs(int channel, double time)
+            {
+                m_Channel = channel;
+                m_Time = time;
+            }
+        }
+
+        public delegate void PeakMeterUpdateHandler(object sender, PeakMeterUpdateEventArgs e);
+
+        public class PeakMeterUpdateEventArgs
+        {
+            private double[] m_PeakDb; // in decibels, one value per channel
+            public double[] PeakDb
+            {
+                get
+                {
+                    return m_PeakDb;
+                }
+                set
+                {
+                    m_PeakDb = value;
+                }
+            }
+
+            public PeakMeterUpdateEventArgs(double[] Values)
+            {
+                m_PeakDb = Values;
+            }
         }
     }
 }

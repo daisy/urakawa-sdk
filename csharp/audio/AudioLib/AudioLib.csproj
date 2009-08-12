@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -67,17 +67,6 @@
     <Compile Include="AudioPlayer.cs" />
     <Compile Include="AudioRecorder.cs" />
     <Compile Include="CalculationFunctions.cs" />
-    <Compile Include="Events\Player\EndOfAudioDataEventArgs.cs" />
-    <Compile Include="Events\Player\StateChangedEventArgs.cs" />
-    <Compile Include="Events\Player\UpdateVuMeter.cs" />
-    <Compile Include="Events\Recorder\StateChangedEventArgs.cs" />
-    <Compile Include="Events\Recorder\UpdateVuMeter.cs" />
-    <Compile Include="Events\VuMeter\LevelGoodArgs.cs" />
-    <Compile Include="Events\VuMeter\LevelTooLowEventArgs.cs" />
-    <Compile Include="Events\VuMeter\PeakOverloadEventArgs.cs" />
-    <Compile Include="Events\VuMeter\ResetEventArgs.cs" />
-    <Compile Include="Events\VuMeter\UpdateFormsEventArgs.cs" />
-    <Compile Include="Events\VuMeter\UpdatePeakMeter.cs" />
     <Compile Include="IWavFormatConverter.cs" />
     <Compile Include="NLayerMp3Stream.cs" />
     <Compile Include="AudioLibPCMFormat.cs" />
@@ -121,6 +110,11 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Events\Player\" />
+    <Folder Include="Events\Recorder\" />
+    <Folder Include="Events\VuMeter\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
