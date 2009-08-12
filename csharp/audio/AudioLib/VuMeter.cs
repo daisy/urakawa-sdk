@@ -2,6 +2,11 @@ using System;
 
 namespace AudioLib
 {
+    // This class underwent a major cleanup and simplification at revision 1486.
+    // See:
+    // http://daisy.trac.cvsdude.com/urakawa-sdk/changeset/1486#file6
+    // Just in case we need to restore some functionality:
+    // http://daisy.trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/audio/AudioLib/VuMeter.cs?rev=1485
     public class VuMeter
     {
         public event Events.VuMeter.PeakOverloadHandler PeakOverload;
