@@ -7,19 +7,55 @@ using Microsoft.DirectX.DirectSound;
 
 namespace AudioLib
 {
-    /// <summary>
-    /// The four states of the audio player.
-    /// NotReady: the player has no output device set yet.
-    /// Playing: sound is currently playing.
-    /// Paused: playback was paused and can be resumed.
-    /// Stopped: player is idle.
-    /// </summary>
-    public enum AudioPlayerState { NotReady, Stopped, Playing, Paused };
-
-
-    // TODO change all ints to longs
+    // This class underwent a major cleanup and simplification at revision 1488.
+    // See:
+    // http://daisy.trac.cvsdude.com/urakawa-sdk/changeset/1488#file0
+    // Just in case we need to restore some functionality:
+    // http://daisy.trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/audio/AudioLib/AudioPlayer.cs?rev=1487
     public class AudioPlayer
     {
+        public event StateChangedHandler StateChanged;
+
+        public event AudioPlaybackFinishHandler AudioPlaybackFinished;
+
+        private readonly PcmDataBufferAvailableEventArgs m_PcmDataBufferAvailableEventArgs = new PcmDataBufferAvailableEventArgs(new byte[] {0,0,0,0});
+        public event PcmDataBufferAvailableHandler PcmDataBufferAvailable;
+        
+        
+        //public event Events.Player.ResetVuMeterHandler ResetVuMeter;
+
+        /// <summary>
+        /// The four states of the audio player.
+        /// NotReady: the player has no output device set yet.
+        /// Playing: sound is currently playing.
+        /// Paused: playback was paused and can be resumed.
+        /// Stopped: player is idle.
+        /// </summary>
+        public enum State { NotReady, Stopped, Playing, Paused };
+
+        private State mState;
+        public State CurrentState
+        {
+            get
+            {
+                //if (mIsFwdRwd) return State.Playing; else
+                return mState;
+            }
+            set
+            {
+                if (mState == value)
+                {
+                    return;
+                }
+
+                State oldState = mState;
+                mState = value;
+
+                if (StateChanged != null)//mEventsEnabled && 
+                    StateChanged(this, new StateChangedEventArgs(oldState));
+            }
+        }
+
         public delegate Stream StreamProviderDelegate();
 
         #region private members
@@ -42,7 +78,7 @@ namespace AudioLib
         private Thread RefreshThread; // thread for refreshing buffer while playing 
 
 
-        public byte[] arUpdateVM; // array for update current amplitude to VuMeter
+        private byte[] arUpdateVM; // array for update current amplitude to VuMeter
         private int m_UpdateVMArrayLength; // length of VuMeter update array ( may be removed )
 
 
@@ -61,10 +97,6 @@ namespace AudioLib
 
         #endregion
 
-        public event Events.Player.EndOfAudioAssetHandler EndOfAudioAsset;
-        public event Events.Player.StateChangedHandler StateChanged;
-        public event Events.Player.UpdateVuMeterHandler UpdateVuMeter;
-        public event Events.Player.ResetVuMeterHandler ResetVuMeter;
 
 
         /// <summary>
@@ -74,7 +106,7 @@ namespace AudioLib
         {
             m_KeepStreamAlive = keepStreamAlive;
 
-            mState = AudioPlayerState.NotReady;
+            CurrentState = State.NotReady;
 
             m_lResumeToPosition = 0;
             mBufferStopPosition = -1;
@@ -103,17 +135,12 @@ namespace AudioLib
         /// </summary>
         public void SetDevice(Control handle, OutputDevice device)
         {
-            mDevice = device;
             if (handle != null)
             {
-                mDevice.Device.SetCooperativeLevel(handle, CooperativeLevel.Priority);
+                device.Device.SetCooperativeLevel(handle, CooperativeLevel.Priority);
             }
 
-            AudioPlayerState oldState = mState;
-            mState = AudioPlayerState.Stopped;
-
-            if (StateChanged != null)//mEventsEnabled && 
-                StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
+            OutputDevice = device;
         }
 
         /// <summary>
@@ -127,81 +154,62 @@ namespace AudioLib
             if (found != null)
             {
                 SetDevice(FormHandle, found);
-
-                AudioPlayerState oldState = mState;
-                mState = AudioPlayerState.Stopped;
-
-                if (StateChanged != null)//mEventsEnabled && 
-                    StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
             }
             else if (devices.Count > 0)
             {
                 SetDevice(FormHandle, devices[0]);
-
-                AudioPlayerState oldState = mState;
-                mState = AudioPlayerState.Stopped;
-
-                if (StateChanged != null)//mEventsEnabled && 
-                    StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
             }
             else
             {
-                mState = AudioPlayerState.NotReady;
+                CurrentState = State.NotReady;
                 throw new Exception("No output device available.");
             }
         }
 
+        private List<OutputDevice> m_DevicesList;
         public List<OutputDevice> OutputDevices
         {
             get
             {
-                DevicesCollection devices = new DevicesCollection();
-                List<OutputDevice> devicesList = new List<OutputDevice>(devices.Count);
-                foreach (DeviceInformation info in devices)
+                if (m_DevicesList != null)
                 {
-                    devicesList.Add(new OutputDevice(info));
+                    return m_DevicesList;
                 }
 
-                return devicesList;
+                DevicesCollection devices = new DevicesCollection();
+                m_DevicesList = new List<OutputDevice>(devices.Count);
+                foreach (DeviceInformation info in devices)
+                {
+                    m_DevicesList.Add(new OutputDevice(info));
+                }
+
+                return m_DevicesList;
             }
         }
 
         private OutputDevice mDevice;
-        /// <summary>
-        /// Currently used output device.
-        /// </summary>
         public OutputDevice OutputDevice
         {
             get { return mDevice; }
+            set
+            {
+                mDevice = value;
+
+                CurrentState = State.Stopped;
+            }
         }
 
 
         private AudioLibPCMFormat mCurrentAudioPCMFormat;
-        /// <summary>
-        /// The audio data currently playing.
-        /// </summary>
         public AudioLibPCMFormat CurrentAudioPCMFormat
         {
             get { return mCurrentAudioPCMFormat; }
         }
 
 
-        private AudioPlayerState mState;
-        /// <summary>
-        /// Current state of the player.
-        /// </summary>
-        public AudioPlayerState State
-        {
-            get
-            {
-                //if (mIsFwdRwd) return AudioPlayerState.Playing; else
-                return mState;
-            }
-        }
-
         public void Pause()
         {
-            if (!State.Equals(AudioPlayerState.Playing))
+            if (!CurrentState.Equals(State.Playing))
             {
                 return;
             }
@@ -220,16 +228,13 @@ namespace AudioLib
 
             StopPlayback();
 
-            AudioPlayerState oldState = mState;
-            mState = AudioPlayerState.Paused;
-
-            if (StateChanged != null)//mEventsEnabled && 
-                StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
+            CurrentState = State.Paused;
+               
         }
 
         public void Resume()
         {
-            if (State.Equals(AudioPlayerState.Paused))
+            if (CurrentState.Equals(State.Paused))
             {
                 return;
             }
@@ -248,7 +253,7 @@ namespace AudioLib
 
         public void Stop()
         {
-            if (State != AudioPlayerState.Stopped)
+            if (CurrentState != State.Stopped)
             {
                 //if (m_IsPreviewing)
                 //    m_IsPreviewing = false;
@@ -262,16 +267,7 @@ namespace AudioLib
 
             mPausePosition = 0;
 
-            if (mState == AudioPlayerState.Stopped)
-            {
-                return;
-            }
-
-            AudioPlayerState oldState = mState;
-            mState = AudioPlayerState.Stopped;
-
-            if (StateChanged != null)//mEventsEnabled && 
-                StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
+            CurrentState = State.Stopped;
         }
 
 
@@ -286,8 +282,9 @@ namespace AudioLib
                 Console.WriteLine("Player refresh thread abort.");
             }
             mBufferStopPosition = -1;
-            if (ResetVuMeter != null)
-                ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
+
+            //if (ResetVuMeter != null)
+            //    ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
 
 
             if (!m_KeepStreamAlive && mCurrentAudioStream != null)
@@ -310,7 +307,7 @@ namespace AudioLib
             if (mCurrentAudioStream != null &&
                 mCurrentAudioPCMFormat.GetLengthInBytes(mCurrentAudioDuration) > 0)
             {//1
-                if (mState == AudioPlayerState.Playing)
+                if (CurrentState == State.Playing)
                 {//2
                     PlayPosition = mSoundBuffer.PlayPosition;
                     // if refreshing of buffer has finished and player is near end of asset
@@ -345,7 +342,7 @@ namespace AudioLib
 
                     mPrevBytePosition = lCurrentPosition;
                 }//-2
-                else if (mState == AudioPlayerState.Paused)
+                else if (CurrentState == State.Paused)
                 {//2
                     lCurrentPosition = mPausePosition;
                 }//-2
@@ -367,12 +364,12 @@ namespace AudioLib
         {
             get
             {
-                if (State == AudioPlayerState.Stopped)
+                if (CurrentState == State.Stopped)
                 {
                     return 0;
                 }
 
-                if (State == AudioPlayerState.Paused)
+                if (CurrentState == State.Paused)
                 {
                     return CalculationFunctions.ConvertByteToTime(mPausePosition,
                                                        (int)mCurrentAudioPCMFormat.SampleRate,
@@ -389,7 +386,7 @@ namespace AudioLib
             }
             set
             {
-                if (!(mState != AudioPlayerState.Stopped || mCurrentAudioStream != null))
+                if (!(CurrentState != State.Stopped || mCurrentAudioStream != null))
                 {
                     return;
                 }
@@ -403,7 +400,7 @@ namespace AudioLib
                     position = duration;
                 }
                 //mEventsEnabled = false;
-                if (State == AudioPlayerState.Playing)
+                if (CurrentState == State.Playing)
                 {
 
                     StreamProviderDelegate spd = mCurrentAudioStreamProvider;
@@ -421,7 +418,7 @@ namespace AudioLib
                     //InitPlay (position, 0 );
                     Play(spd, dur, fmt, position);
                 }
-                else if (mState.Equals(AudioPlayerState.Paused))
+                else if (CurrentState.Equals(State.Paused))
                 {
                     mStartPosition = CalculationFunctions.ConvertTimeToByte(position, (int)mCurrentAudioPCMFormat.SampleRate, mCurrentAudioPCMFormat.BlockAlign);
                     mPausePosition = mStartPosition;
@@ -474,9 +471,9 @@ namespace AudioLib
             mCurrentAudioDuration = duration;
             mCurrentAudioPCMFormat = pcmInfo;
 
-            System.Diagnostics.Debug.Assert(mState == AudioPlayerState.Stopped || mState == AudioPlayerState.Paused, "Already playing?!");
-            if (State == AudioPlayerState.Stopped
-                || State == AudioPlayerState.Paused)
+            System.Diagnostics.Debug.Assert(CurrentState == State.Stopped || CurrentState == State.Paused, "Already playing?!");
+            if (CurrentState == State.Stopped
+                || CurrentState == State.Paused)
             {
                 long startPosition = 0;
                 if (from > 0)
@@ -513,7 +510,7 @@ namespace AudioLib
         /// <param name="lEndPosition"></param>
         private void InitPlay(long lStartPosition, long lEndPosition)
         {
-            if (mState != AudioPlayerState.Playing)
+            if (CurrentState != State.Playing)
             {
                 WaveFormat newFormat = new WaveFormat();
                 BufferDescription BufferDesc = new BufferDescription();
@@ -542,9 +539,10 @@ namespace AudioLib
                 m_UpdateVMArrayLength = m_SizeBuffer / 20; //50ms
                 m_UpdateVMArrayLength = Convert.ToInt32(CalculationFunctions.AdaptToFrame(Convert.ToInt32(m_UpdateVMArrayLength), mCurrentAudioPCMFormat.BlockAlign));
                 arUpdateVM = new byte[m_UpdateVMArrayLength];
-                // reset the VuMeter (if set)
-                if (ResetVuMeter != null)
-                    ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
+                
+
+                //if (ResetVuMeter != null)
+                //    ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
 
                 // sets the calculated size of buffer
                 BufferDesc.BufferBytes = m_SizeBuffer;
@@ -554,7 +552,7 @@ namespace AudioLib
 
                 // initialising secondary buffer
                 // m_SoundBuffer = new SecondaryBuffer(BufferDesc, SndDevice);
-                mSoundBuffer = new SecondaryBuffer(BufferDesc, mDevice.Device);
+                mSoundBuffer = new SecondaryBuffer(BufferDesc, OutputDevice.Device);
 
                 //SetPlayFrequency(m_fFastPlayFactor);
 
@@ -587,7 +585,7 @@ namespace AudioLib
         /// <param name="lEndPosition"></param>
         private void PlayAssetStream(long lStartPosition, long lEndPosition)
         {
-            if (mState != AudioPlayerState.Playing)
+            if (CurrentState != State.Playing)
             {
                 // Adjust the start and end position according to frame size
                 lStartPosition = CalculationFunctions.AdaptToFrame(lStartPosition, mCurrentAudioPCMFormat.BlockAlign);
@@ -620,14 +618,8 @@ namespace AudioLib
                 // Adds the length (count) of file played into a variable
                 m_lPlayed += m_SizeBuffer;
 
-                // trigger  events (modified JQ)
-
-
-                AudioPlayerState oldState = mState;
-                mState = AudioPlayerState.Playing;
-
-                if (StateChanged != null)//mEventsEnabled && 
-                    StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
+                CurrentState = State.Playing;
+               
 
                 //MoniteringTimer.Enabled = true;
 
@@ -675,15 +667,19 @@ namespace AudioLib
 
                 Thread.Sleep(50);
 
-                if (UpdateVuMeter != null)
+                if (PcmDataBufferAvailable != null)
                 {
                     ReadPosition = mSoundBuffer.PlayPosition;
 
                     if (ReadPosition < ((m_SizeBuffer) - m_UpdateVMArrayLength))
                     {
                         Array.Copy(mSoundBuffer.Read(ReadPosition, typeof(byte), LockFlag.None, m_UpdateVMArrayLength), arUpdateVM, m_UpdateVMArrayLength);
-                        if (UpdateVuMeter != null) //mEventsEnabled == true && 
-                            UpdateVuMeter(this, new Events.Player.UpdateVuMeterEventArgs());  // JQ // temp for debugging tk
+
+                        if (PcmDataBufferAvailable != null) //mEventsEnabled == true && 
+                        {
+                            m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = arUpdateVM;
+                            PcmDataBufferAvailable(this, m_PcmDataBufferAvailableEventArgs);
+                        }
                     }
                 }
                 // check if play cursor is in second half , then refresh first half else second
@@ -739,14 +735,18 @@ namespace AudioLib
             {
                 Thread.Sleep(50);
                 CurrentPlayPosition = mSoundBuffer.PlayPosition;
-                if (UpdateVuMeter != null)
+                if (PcmDataBufferAvailable != null)
                 {
                     // trigger VuMeter events in this trailing part. Need cleanup, should be placed in another function to avoid duplicacy. But first it should work.
                     if (CurrentPlayPosition < ((m_SizeBuffer) - m_UpdateVMArrayLength))
                     {
                         Array.Copy(mSoundBuffer.Read(CurrentPlayPosition, typeof(byte), LockFlag.None, m_UpdateVMArrayLength), arUpdateVM, m_UpdateVMArrayLength);
-                        if (UpdateVuMeter != null)//mEventsEnabled && 
-                            UpdateVuMeter(this, new Events.Player.UpdateVuMeterEventArgs());  // JQ // temp for debugging tk
+
+                        if (PcmDataBufferAvailable != null) //mEventsEnabled == true && 
+                        {
+                            m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = arUpdateVM;
+                            PcmDataBufferAvailable(this, m_PcmDataBufferAvailableEventArgs);
+                        }
                     }
                 }
             }
@@ -756,8 +756,9 @@ namespace AudioLib
             mBufferStopPosition = -1;
             mPausePosition = 0;
             mSoundBuffer.Stop();
-            if (ResetVuMeter != null)
-                ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
+
+            //if (ResetVuMeter != null)
+            //    ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
 
             if (!m_KeepStreamAlive && mCurrentAudioStream != null)
             {
@@ -770,12 +771,7 @@ namespace AudioLib
                 //mCurrentAudioStreamProvider = null;
             }
 
-
-            AudioPlayerState oldState = mState;
-            mState = AudioPlayerState.Stopped;
-
-            if (StateChanged != null)//mEventsEnabled && 
-                StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
+            CurrentState = State.Stopped;
 
             //if (mEventsEnabled)
             //    m_IsEventEnabledDelayedTillTimer = true;
@@ -784,8 +780,8 @@ namespace AudioLib
 
             //m_IsEndOfAsset = true;
 
-            if (EndOfAudioAsset != null)
-                EndOfAudioAsset(this, new Events.Player.EndOfAudioAssetEventArgs());
+            if (AudioPlaybackFinished != null)
+                AudioPlaybackFinished(this, new AudioPlaybackFinishEventArgs());
 
             //PreviewPlaybackStop();
             // RefreshBuffer ends
@@ -811,27 +807,16 @@ namespace AudioLib
                 Console.WriteLine("Player refresh thread abort.");
             }
             mBufferStopPosition = -1;
-            if (ResetVuMeter != null)
-                ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
 
-            if (mCurrentAudioStream != null)
-            {
-                mCurrentAudioStream.Close();
-                mCurrentAudioStream = null;
-            }
+            //if (ResetVuMeter != null)
+            //    ResetVuMeter(this, new AudioLib.Events.Player.UpdateVuMeterEventArgs());
 
-            mCurrentAudioPCMFormat = null;
-            mCurrentAudioDuration = 0;
-            mCurrentAudioStreamProvider = null;
+            EnsurePlaybackStreamIsDead();
 
             mPausePosition = 0;
 
+            CurrentState = State.Stopped;
 
-            AudioPlayerState oldState = mState;
-            mState = AudioPlayerState.Stopped;
-
-            if (StateChanged != null)//mEventsEnabled && 
-                StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
 
         }
 
@@ -849,25 +834,74 @@ namespace AudioLib
             mCurrentAudioStreamProvider = null;
         }
 
+
+        public delegate void AudioPlaybackFinishHandler(object sender, AudioPlaybackFinishEventArgs e);
+
+        public class AudioPlaybackFinishEventArgs : EventArgs
+        {
+        }
+
+        public delegate void StateChangedHandler(object sender, StateChangedEventArgs e);
+
+        public class StateChangedEventArgs : EventArgs
+        {
+            private State m_OldState;
+            public State OldState
+            {
+                get
+                {
+                    return m_OldState;
+                }
+            }
+
+            public StateChangedEventArgs(State oldState)
+            {
+                m_OldState = oldState;
+            }
+        }
+
+        public delegate void PcmDataBufferAvailableHandler(object sender, PcmDataBufferAvailableEventArgs e);
+
+        public class PcmDataBufferAvailableEventArgs : EventArgs
+        {
+            private byte[] m_PcmDataBuffer;
+            public byte[] PcmDataBuffer
+            {
+                get
+                {
+                    return m_PcmDataBuffer;
+                }
+                set
+                {
+                    m_PcmDataBuffer = value;
+                }
+            }
+
+            public PcmDataBufferAvailableEventArgs(byte[] pcmDataBuffer)
+            {
+                m_PcmDataBuffer = pcmDataBuffer;
+            }
+        }
+
         /// <summary>
         /// Pause from stopped state, in order to reset the pause position after preview.
         /// </summary>
         //public void PauseFromStopped(double time)
         //{
-        //    if (State == AudioPlayerState.Stopped)
+        //    if (State == State.Stopped)
         //    {
         //        m_lResumeToPosition = 0;
 
-        //        AudioPlayerState oldState = mState;
-        //        mState = AudioPlayerState.Paused;
+        //        State oldState = mState;
+        //        mState = State.Paused;
         //        CurrentTimePosition = time;
 
         //        if (StateChanged != null)//mEventsEnabled && 
-        //            StateChanged(this, new Events.Player.StateChangedEventArgs(oldState));
+        //            StateChanged(this, new StateChangedEventArgs(oldState));
         //    }
         //}
 
-        //private AudioPlayerState m_StateBeforePreview;
+        //private State m_StateBeforePreview;
         //private long m_PreviewStartPosition;
 
 
@@ -889,8 +923,8 @@ namespace AudioLib
 
         //        if (m_IsEventEnabledDelayedTillTimer)
         //        {
-        //            if (EndOfAudioAsset != null)
-        //                EndOfAudioAsset(this, new Events.Player.EndOfAudioAssetEventArgs());
+        //            if (AudioPlaybackFinished != null)
+        //                AudioPlaybackFinished(this, new Events.Player.EndOfAudioAssetEventArgs());
 
         //        }
         //        if (mEventsEnabled == true)
@@ -911,7 +945,7 @@ namespace AudioLib
         public void PlayPreview(AudioMediaData asset, double from, double timeTo, double RestoreTime)
         {
             // it is public function so API state will be used
-            if (State == AudioPlayerState.Stopped || State == AudioPlayerState.Paused)
+            if (State == State.Stopped || State == State.Paused)
             {
                 if (   asset != null  &&    asset.getAudioDuration().TimeDeltaAsMillisecondFloat > 0)
                 {
@@ -969,16 +1003,16 @@ namespace AudioLib
         //{
         //    if (rate != mFwdRwdRate)
         //    {
-        //        if (State == AudioPlayerState.Playing)
+        //        if (State == State.Playing)
         //        {
         //            long restartPos = GetCurrentBytePosition();
         //            StopPlayback();
-        //            mState = AudioPlayerState.Paused;
+        //            mState = State.Paused;
         //            mFwdRwdRate = rate;
 
         //            InitPlay(restartPos, 0);
         //        }
-        //        else if (mState == AudioPlayerState.Paused || mState == AudioPlayerState.Stopped)
+        //        else if (mState == State.Paused || mState == State.Stopped)
         //        {
         //            mFwdRwdRate = rate;
         //        }
@@ -1071,8 +1105,8 @@ namespace AudioLib
         //    else
         //    { //3
         //        Stop();
-        //        if (mEventsEnabled && EndOfAudioAsset != null)
-        //            EndOfAudioAsset(this, new Events.Player.EndOfAudioAssetEventArgs());
+        //        if (mEventsEnabled && AudioPlaybackFinished != null)
+        //            AudioPlaybackFinished(this, new Events.Player.EndOfAudioAssetEventArgs());
         //    } //-3
         //} //-2
         //else if (mFwdRwdRate < 0)
@@ -1095,8 +1129,8 @@ namespace AudioLib
         //    else
         //    {
         //        Stop();
-        //        if (mEventsEnabled && EndOfAudioAsset != null)
-        //            EndOfAudioAsset(this, new Events.Player.EndOfAudioAssetEventArgs());
+        //        if (mEventsEnabled && AudioPlaybackFinished != null)
+        //            AudioPlaybackFinished(this, new Events.Player.EndOfAudioAssetEventArgs());
         //    }
         //} //-2
         //} //-1
@@ -1139,16 +1173,16 @@ namespace AudioLib
         //        m_IsEndOfAsset = false;
         //        mEventsEnabled = true;
 
-        //        if (m_StateBeforePreview == AudioPlayerState.Paused)
+        //        if (m_StateBeforePreview == State.Paused)
         //        {
-        //            Events.Player.StateChangedEventArgs e = new AudioLib.Events.Player.StateChangedEventArgs(AudioPlayerState.Playing);
-        //            mState = AudioPlayerState.Paused;
+        //            StateChangedEventArgs e = new AudioLib.StateChangedEventArgs(State.Playing);
+        //            mState = State.Paused;
         //            mPausePosition = m_PreviewStartPosition;
         //            TriggerStateChangedEvent(e);
         //        }
-        //        else if (m_StateBeforePreview == AudioPlayerState.Stopped)
+        //        else if (m_StateBeforePreview == State.Stopped)
         //        {
-        //            Events.Player.StateChangedEventArgs e = new AudioLib.Events.Player.StateChangedEventArgs(AudioPlayerState.Playing);
+        //            StateChangedEventArgs e = new AudioLib.StateChangedEventArgs(State.Playing);
         //            TriggerStateChangedEvent(e);
         //        }
         //    }
@@ -1156,20 +1190,20 @@ namespace AudioLib
 
         //public void PlaySimulateEmpty()
         //{
-        //    Events.Player.StateChangedEventArgs e = new Events.Player.StateChangedEventArgs(mState);
-        //    mState = AudioPlayerState.Playing;
+        //    StateChangedEventArgs e = new StateChangedEventArgs(mState);
+        //    mState = State.Playing;
         //    TriggerStateChangedEvent(e);
 
 
         //    Thread.Sleep(50);
 
-        //    e = new Events.Player.StateChangedEventArgs(mState);
-        //    mState = AudioPlayerState.Stopped;
+        //    e = new StateChangedEventArgs(mState);
+        //    mState = State.Stopped;
         //    TriggerStateChangedEvent(e);
 
         //    // trigger end of asset event
-        //    if (mEventsEnabled == true && EndOfAudioAsset != null)
-        //        EndOfAudioAsset(this, new Events.Player.EndOfAudioAssetEventArgs());
+        //    if (mEventsEnabled == true && AudioPlaybackFinished != null)
+        //        AudioPlaybackFinished(this, new Events.Player.EndOfAudioAssetEventArgs());
         //    //            System.Media.SystemSounds.Asterisk.Play();
         //}
 

@@ -1,4 +1,3 @@
-using System;
 using Microsoft.DirectX.DirectSound;
 
 namespace AudioLib
@@ -23,9 +22,6 @@ namespace AudioLib
     {
         private Device mDevice;
 
-        /// <summary>
-        /// The actual device object
-        /// </summary>
         public Device Device
         {
             get { return mDevice; }
