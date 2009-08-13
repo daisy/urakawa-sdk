@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using urakawa.media.timing;
 
 namespace urakawa.media.data.utilities

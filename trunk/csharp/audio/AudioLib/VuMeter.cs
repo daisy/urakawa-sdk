@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace AudioLib
 {
@@ -34,6 +35,7 @@ namespace AudioLib
             AudioPlayer ob_AudioPlayer = sender as AudioPlayer;
             if (ob_AudioPlayer == null || ob_AudioPlayer != m_Player)
             {
+                Debug.Fail("This should never happen !!!?");
                 return;
             }
 
@@ -63,7 +65,7 @@ namespace AudioLib
                 if (PeakMeterOverloaded != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
-                    m_PeakOverloadEventArgs.Time = m_Player.CurrentTimePosition;
+                    m_PeakOverloadEventArgs.Time = m_Player.CurrentTime;
                     PeakMeterOverloaded(this, m_PeakOverloadEventArgs);
                 }
             }
@@ -74,6 +76,7 @@ namespace AudioLib
             AudioRecorder ob_AudioRecorder = sender as AudioRecorder;
             if (ob_AudioRecorder == null || ob_AudioRecorder != m_Recorder)
             {
+                Debug.Fail("This should never happen !!!?");
                 return;
             }
 

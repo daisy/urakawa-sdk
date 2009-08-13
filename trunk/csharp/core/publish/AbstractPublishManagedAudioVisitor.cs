@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using AudioLib;
 using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.property.channel;
@@ -270,8 +271,7 @@ namespace urakawa.publish
 
                     TimeDelta durationFromRiffHeader = amd.AudioDuration;
 
-                    Time clipBegin = Time.Zero.AddTimeDelta(mCurrentAudioFilePCMFormat.GetDuration(
-                        (uint)(mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength)));
+                    Time clipBegin = new Time(AudioLibPCMFormat.ConvertBytesToTime(mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength, (int)mCurrentAudioFilePCMFormat.SampleRate, mCurrentAudioFilePCMFormat.BlockAlign));
                     Time clipEnd = clipBegin.AddTimeDelta(durationFromRiffHeader);
                     Stream stream = amd.GetAudioData();
 
@@ -284,7 +284,8 @@ namespace urakawa.publish
                         //long pcmDataLength = stream.Length - stream.Position; 
                         //TimeDelta durationFromReverseArithmetics = amd.PCMFormat.GetDuration(pcmLength); 
 
-                        long pcmLength = amd.PCMFormat.GetDataLength(durationFromRiffHeader);
+                        long pcmLength = AudioLibPCMFormat.ConvertTimeToBytes(durationFromRiffHeader.TimeDeltaAsMillisecondDouble,
+                                                             (int) amd.PCMFormat.SampleRate, amd.PCMFormat.BlockAlign);
 
                         if (pcmLength <= BUFFER_SIZE)
                         {

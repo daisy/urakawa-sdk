@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using urakawa;
 using urakawa.core;
 using urakawa.media;
@@ -351,7 +352,7 @@ namespace XukImport
                 long byteOffset = 0;
                 if (!clipB.IsEqualTo(Time.Zero))
                 {
-                    byteOffset = pcmInfo.GetByteForTime(clipB);
+                    byteOffset = AudioLibPCMFormat.ConvertTimeToBytes(clipB.TimeAsMillisecondFloat, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
                 }
                 if (byteOffset > 0)
                 {
