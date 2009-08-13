@@ -1,3 +1,5 @@
+using System;
+
 namespace AudioLib
 {
     /// <summary>
@@ -14,11 +16,6 @@ namespace AudioLib
             NumberOfChannels = channels;
             SampleRate = samplingRate;
             BitDepth = bitDepth;
-        }
-
-        public AudioLibPCMFormat(ushort channels, uint samplingRate, ushort bitDepth)
-            : this((int)channels, (int)samplingRate, (int)bitDepth)
-        {
         }
 
         public int NumberOfChannels // 1 = mono, 2 = stereo
@@ -46,6 +43,7 @@ namespace AudioLib
                 m_SamplingRate = value;
             }
         }
+
         public int BitDepth // number of bits per sample
         {
             get { return m_BitDepth; }
@@ -64,22 +62,31 @@ namespace AudioLib
             get { return (m_BitDepth / 8) * m_Channels; }
         }
 
-        public long GetLengthInBytes(double time)
-        {
-            long length = CalculationFunctions.ConvertTimeToByte(time, SampleRate, BlockAlign);
-            return CalculationFunctions.AdaptToFrame(length, BlockAlign);
-        }
-
-        public double GetDurationInMilliseconds(long length)
-        {
-            return CalculationFunctions.ConvertByteToTime(length, SampleRate, BlockAlign);
-        }
-
         public void CopyValues(AudioLibPCMFormat pcmFormat)
         {
             NumberOfChannels = pcmFormat.NumberOfChannels;
             SampleRate = pcmFormat.SampleRate;
             BitDepth = pcmFormat.BitDepth;
+        }
+
+        public long ConvertTimeToBytes(double time)
+        {
+            return ConvertTimeToBytes(time, m_SamplingRate, BlockAlign);
+        }
+
+        public static long ConvertTimeToBytes(double time, int samplingRate, int frameSize)
+        {
+            return Convert.ToInt64((time * samplingRate * frameSize) / 1000.0);
+        }
+
+        public double ConvertBytesToTime(long bytes)
+        {
+            return ConvertBytesToTime(bytes, m_SamplingRate, BlockAlign);
+        }
+
+        public static double ConvertBytesToTime(long bytes, int samplingRate, int frameSize)
+        {
+            return (1000.0 * bytes) / (samplingRate * frameSize); //Convert.ToDouble
         }
     }
 }

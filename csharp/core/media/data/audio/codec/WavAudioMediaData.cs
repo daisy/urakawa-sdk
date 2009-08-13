@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using urakawa.media.timing;
 using urakawa.media.data.utilities;
 using urakawa.progress;
@@ -219,8 +220,8 @@ namespace urakawa.media.data.audio.codec
                 Time rawClipBegin = ClipBegin.AddTime(subClipBegin);
                 Time rawClipEnd = ClipBegin.AddTime(subClipEnd);
 
-                long beginPos = raw.Position + pcmInfo.GetByteForTime(rawClipBegin);
-                long endPos = raw.Position + pcmInfo.GetByteForTime(rawClipEnd);
+                long beginPos = raw.Position + AudioLibPCMFormat.ConvertTimeToBytes(rawClipBegin.TimeAsMillisecondFloat, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                long endPos = raw.Position + AudioLibPCMFormat.ConvertTimeToBytes(rawClipEnd.TimeAsMillisecondFloat, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
                 return new SubStream(
                     raw,
                     beginPos,
@@ -339,7 +340,7 @@ namespace urakawa.media.data.audio.codec
             }
             else
             {
-                pcmInfo.DataLength = pcmInfo.GetDataLength(duration);
+                pcmInfo.DataLength = (uint)AudioLibPCMFormat.ConvertTimeToBytes(duration.TimeDeltaAsMillisecondDouble, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
             }
             Stream nsdps = newSingleDataProvider.GetOutputStream();
             try

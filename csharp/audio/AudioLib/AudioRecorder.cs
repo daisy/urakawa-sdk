@@ -500,8 +500,7 @@ namespace AudioLib
                 applicationBuffer.GetCurrentPosition(out CapturePos, out ReadPos);
                 long mPosition = (long)CapturePos;
                 CurrentPositionInByte = SampleCount + mPosition;
-                mCurrentTime = CalculationFunctions.ConvertByteToTime(CurrentPositionInByte, (int)mPCMFormat.SampleRate,
-                                                                      mPCMFormat.BlockAlign);
+                mCurrentTime = mPCMFormat.ConvertBytesToTime(CurrentPositionInByte);
 
 
                 LockSize = ReadPos - NextCaptureOffset;
@@ -533,7 +532,7 @@ namespace AudioLib
                 if (CaptureData.Length != arUpdateVM.Length
                     &&
                     CaptureData.Length <
-                    CalculationFunctions.ConvertTimeToByte(125, (int)mPCMFormat.SampleRate, mPCMFormat.BlockAlign))
+                    mPCMFormat.ConvertTimeToBytes(125))
                 {
 
                     m_UpdateVMArrayLength = CaptureData.Length;
@@ -582,8 +581,7 @@ namespace AudioLib
 
                 long mLength = (long)SampleCount;
 
-                mTime = CalculationFunctions.ConvertByteToTime(mLength, (int)mPCMFormat.SampleRate,
-                                                               mPCMFormat.BlockAlign);
+                mTime = mPCMFormat.ConvertBytesToTime(mLength);
                 //m_MutexCaptureData.ReleaseMutex();
 
             }
@@ -642,7 +640,7 @@ namespace AudioLib
                     applicationBuffer.GetCurrentPosition(out CapturePos, out ReadPos);
                     long mPosition = (long)CapturePos;
                     mPosition = mPosition - NextCaptureOffset;
-                    double TimeDifference = CalculationFunctions.ConvertByteToTime(mPosition, (int)mPCMFormat.SampleRate, mPCMFormat.BlockAlign);
+                    double TimeDifference = mPCMFormat.ConvertBytesToTime(mPosition);
                     return mTime + TimeDifference;
                 }
             }
@@ -671,9 +669,10 @@ namespace AudioLib
                 CreateCaptureBuffer();
                 applicationBuffer.Start(true);//it will set the looping till the stop is used
 
-                // following lines added to initialise and set array length forupdating VuMeter
                 m_UpdateVMArrayLength = m_iCaptureBufferSize / 20;
-                m_UpdateVMArrayLength = Convert.ToInt32(CalculationFunctions.AdaptToFrame(Convert.ToInt32(m_UpdateVMArrayLength), mPCMFormat.BlockAlign));
+                //m_UpdateVMArrayLength = Convert.ToInt32(CalculationFunctions.AdaptToFrame(Convert.ToInt32(m_UpdateVMArrayLength), mPCMFormat.BlockAlign));
+                m_UpdateVMArrayLength -= mPCMFormat.BlockAlign % mPCMFormat.BlockAlign;
+
                 arUpdateVM = new byte[m_UpdateVMArrayLength];
 
                 m_PrevSampleCount = 0;

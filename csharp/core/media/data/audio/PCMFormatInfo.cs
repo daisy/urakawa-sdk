@@ -1,7 +1,6 @@
 using System;
 using System.Xml;
 using urakawa.xuk;
-using urakawa.media.timing;
 
 namespace urakawa.media.data.audio
 {
@@ -80,10 +79,42 @@ namespace urakawa.media.data.audio
             }
         }
 
-        public long GetByteForTime(Time time)
-        {
-            return (long)(Math.Round(time.TimeAsTimeSpan.Ticks / ((double)TimeSpan.TicksPerSecond / SampleRate)) * BlockAlign);
-        }
+        ///// <summary>
+        ///// Gets the PCM data length corresponding to a given duration
+        ///// </summary>
+        ///// <param name="duration">The given duration</param>
+        ///// <returns>The PCM data length</returns>
+        //public uint GetDataLength(TimeDelta duration)
+        //{
+        //    //double ms = duration.TimeDeltaAsMillisecondDouble;
+        //    //double bytes = (ms * SampleRate * NumberOfChannels * BitDepth / 8.0) / 1000.0;
+        //    //return (uint) bytes;
+
+        //    uint blockCount = (uint)Math.Round(((double)duration.TimeDeltaAsTimeSpan.Ticks) / GetTicksPerBlock());
+        //    uint res = blockCount * BlockAlign;
+        //    return res;
+        //}
+
+        //public long GetByteForTime(Time time)
+        //{
+        //    double ms = time.TimeAsMillisecondFloat;
+        //    return AudioLibPCMFormat.ConvertTimeToBytes(ms, (int)mSampleRate, BlockAlign);
+        //    //return (long)(Math.Round(time.TimeAsTimeSpan.Ticks / ((double)TimeSpan.TicksPerSecond / SampleRate))* BlockAlign);
+        //}
+
+        /// <summary>
+        /// Gets the duration of PCM data in the format of a given length
+        /// </summary>
+        /// <param name="dataLen">The length</param>
+        /// <returns>The duration</returns>
+        //public TimeDelta GetDuration(long dataLen)
+        //{
+        //    //double time = 1000.0 * dataLen / ((double)SampleRate * NumberOfChannels * BitDepth / 8.0);
+        //    //return new TimeDelta(time);
+
+        //    double blockCount = ((double)dataLen) / BlockAlign;
+        //    return new TimeDelta(TimeSpan.FromTicks((long)(Math.Round(GetTicksPerBlock() * blockCount))));
+        //}
 
         private uint mSampleRate = 44100;
 
@@ -177,45 +208,13 @@ namespace urakawa.media.data.audio
             return true;
         }
 
-        /// <summary>
-        /// Gets the duration of PCM data in the format of a given length
-        /// </summary>
-        /// <param name="dataLen">The length</param>
-        /// <returns>The duration</returns>
-        public TimeDelta GetDuration(long dataLen)
-        {
-            if (ByteRate == 0)
-            {
-                throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
-            }
+       
 
-            //double time = 1000.0 * dataLen / ((double)SampleRate * NumberOfChannels * BitDepth / 8.0);
-            //return new TimeDelta(time);
+        //private double GetTicksPerBlock()
+        //{
+        //    return ((double)TimeSpan.TicksPerSecond) / SampleRate;
+        //}
 
-            double blockCount = ((double)dataLen) / BlockAlign;
-            return new TimeDelta(TimeSpan.FromTicks((long)(Math.Round(GetTicksPerBlock() * blockCount))));
-        }
-
-        private double GetTicksPerBlock()
-        {
-            return ((double)TimeSpan.TicksPerSecond) / SampleRate;
-        }
-
-        /// <summary>
-        /// Gets the PCM data length corresponding to a given duration
-        /// </summary>
-        /// <param name="duration">The given duration</param>
-        /// <returns>The PCM data length</returns>
-        public uint GetDataLength(TimeDelta duration)
-        {
-            //double ms = duration.TimeDeltaAsMillisecondDouble;
-            //double bytes = (ms * SampleRate * NumberOfChannels * BitDepth / 8.0) / 1000.0;
-            //return (uint) bytes;
-
-            uint blockCount = (uint)Math.Round(((double)duration.TimeDeltaAsTimeSpan.Ticks) / GetTicksPerBlock());
-            uint res = blockCount * BlockAlign;
-            return res;
-        }
 
         #region IXUKAble members
 

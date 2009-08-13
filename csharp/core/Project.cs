@@ -47,6 +47,7 @@ namespace urakawa
         static void Main()
         {
             Debug.WriteLine("Hello World, from Urakawa SDK project !");
+            Console.WriteLine("Testing output.");
         }
 
         #region Event related members

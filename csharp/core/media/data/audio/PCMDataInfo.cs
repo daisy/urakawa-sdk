@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using AudioLib;
 using urakawa.exception;
 using urakawa.media.timing;
 using urakawa.xuk;
@@ -59,7 +60,10 @@ namespace urakawa.media.data.audio
         /// <returns>The duration as a <see cref="TimeSpan"/></returns>
         public TimeDelta Duration
         {
-            get { return GetDuration(DataLength); }
+            get
+            {
+                return new TimeDelta(AudioLibPCMFormat.ConvertBytesToTime(DataLength, (int)SampleRate, BlockAlign));
+            }
         }
 
         /// <summary>

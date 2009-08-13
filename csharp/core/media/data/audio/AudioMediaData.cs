@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using AudioLib;
 using urakawa.media.timing;
 
 namespace urakawa.media.data.audio
@@ -150,82 +151,6 @@ namespace urakawa.media.data.audio
                     NotifyPCMFormatChanged(this, mPCMFormat.Copy(), prevFormat);
                 }
             }
-        }
-
-        /// <summary>
-        /// Sets the number of channels of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
-        /// </summary>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when the new value is less than <c>1</c>
-        /// </exception>
-        /// <exception cref="exception.InvalidDataFormatException">
-        /// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different number of channels from the new value
-        /// or when audio data with a different number of channels has already been added to the <see cref="AudioMediaData"/>
-        /// </exception>
-        public ushort NumberOfChannels
-        {
-            set
-            {
-                PCMFormatInfo newFormat = PCMFormat;
-                newFormat.NumberOfChannels = value;
-                PCMFormat = newFormat;
-            }
-        }
-
-        /// <summary>
-        /// Sets the sample rate of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
-        /// </summary>
-        /// <exception cref="exception.InvalidDataFormatException">
-        /// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different sample rate from the new value
-        /// or when audio data with a different sample rate has already been added to the <see cref="AudioMediaData"/>
-        /// </exception>
-        public uint SampleRate
-        {
-            set
-            {
-                PCMFormatInfo newFormat = PCMFormat;
-                newFormat.SampleRate = value;
-                PCMFormat = newFormat;
-            }
-        }
-
-        /// <summary>
-        /// Sets the number of channels of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
-        /// </summary>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when the new value is less than <c>1</c>
-        /// </exception>
-        /// <exception cref="exception.InvalidDataFormatException">
-        /// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different bit depth from the new value
-        /// or when audio data with a different bit depth has already been added to the <see cref="AudioMediaData"/>
-        /// </exception>
-        public ushort BitDepth
-        {
-            set
-            {
-                PCMFormatInfo newFormat = PCMFormat;
-                newFormat.BitDepth = value;
-                PCMFormat = newFormat;
-            }
-        }
-
-        /// <summary>
-        /// Gets the count in bytes of PCM data of the audio media data of a given duration
-        /// </summary>
-        /// <param name="duration">The duration</param>
-        /// <returns>The count in bytes</returns>
-        public int GetPCMLength(TimeDelta duration)
-        {
-            return (int) PCMFormat.GetDataLength(duration);
-        }
-
-        /// <summary>
-        /// Gets the count in bytes of the PCM data of the audio media data
-        /// </summary>
-        /// <returns>The count in bytes</returns>
-        public int GetPCMLength()
-        {
-            return GetPCMLength(AudioDuration);
         }
 
 
@@ -579,7 +504,8 @@ namespace urakawa.media.data.audio
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (GetPCMLength() != otherz.GetPCMLength())
+            if (AudioLibPCMFormat.ConvertTimeToBytes(AudioDuration.TimeDeltaAsMillisecondDouble, (int)PCMFormat.SampleRate, PCMFormat.BlockAlign)
+                != AudioLibPCMFormat.ConvertTimeToBytes(otherz.AudioDuration.TimeDeltaAsMillisecondDouble, (int)otherz.PCMFormat.SampleRate, otherz.PCMFormat.BlockAlign))
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
