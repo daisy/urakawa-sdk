@@ -78,6 +78,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <ProjectReference Include="..\audio\AudioLib\AudioLib.csproj">
+      <Project>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</Project>
+      <Name>AudioLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\examples\examples.csproj">
       <Project>{B11190FE-650E-4863-9376-A3ACC4DBDD99}</Project>
       <Name>examples</Name>

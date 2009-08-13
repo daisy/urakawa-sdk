@@ -120,7 +120,7 @@ namespace urakawa.media.data.audio
         }
 
         /// <summary>
-        /// Gets (a copy of) the <see cref="PCMFormatInfo"/> of the audio media data 
+        /// Gets the <see cref="PCMFormatInfo"/> of the audio media data 
         /// </summary>
         /// <returns>The PCMFormatInfo</returns>
         public PCMFormatInfo PCMFormat
@@ -131,7 +131,7 @@ namespace urakawa.media.data.audio
                 {
                     mPCMFormat = new PCMFormatInfo(Presentation.MediaDataManager.DefaultPCMFormat);
                 }
-                return mPCMFormat.Copy();
+                return mPCMFormat;
             }
             set
             {
