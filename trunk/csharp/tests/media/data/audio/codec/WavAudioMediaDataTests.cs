@@ -210,8 +210,8 @@ namespace urakawa.media.data.audio.codec
 
             Assert.IsTrue(mData1.PCMFormat.ValueEquals(mData2.PCMFormat), "[Pre-Condition] PCM formats should be equal");
             Assert.IsTrue(mData1.ValueEquals(mData2), "empty media datas with the same PCM format should be equal");
-            mData1.NumberOfChannels = 1;
-            mData2.NumberOfChannels = 2;
+            mData1.PCMFormat.NumberOfChannels = 1;
+            mData2.PCMFormat.NumberOfChannels = 2;
             Assert.IsFalse(mData1.PCMFormat.ValueEquals(mData2.PCMFormat),
                            "[Pre-Condition] PCM formats shouldn't be equal");
             Assert.IsFalse(mData1.ValueEquals(mData2), "empty media datas with different PCM formats shouldn't be equal");
@@ -260,7 +260,7 @@ namespace urakawa.media.data.audio.codec
             mData1.Presentation.MediaDataManager.EnforceSinglePCMFormat = false;
 
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-44100Hz-16bits.wav"));
-            mData2.SampleRate = 22050;
+            mData2.PCMFormat.SampleRate = 22050;
             mData2.AppendAudioDataFromRiffWave(GetPath("audiotest1-mono-22050Hz-16bits.wav"));
             Assert.IsFalse(mData1.PCMFormat.ValueEquals(mData2.PCMFormat),
                            "[Pre-Condition] PCM formats shouldn't be equal");
@@ -364,9 +364,9 @@ namespace urakawa.media.data.audio.codec
         {
             mData1.Presentation.MediaDataManager.EnforceSinglePCMFormat = false;
 
-            mData1.NumberOfChannels = 2;
+            mData1.PCMFormat.NumberOfChannels = 2;
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest-stereo-44100Hz-16bits.wav"));
-            mData2.NumberOfChannels = 2;
+            mData2.PCMFormat.NumberOfChannels = 2;
             mData2.AppendAudioDataFromRiffWave(GetPath("audiotest-stereo-44100Hz-16bits.wav"));
             Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
             mData1.RemoveAudioData(Time.Zero);
@@ -376,9 +376,9 @@ namespace urakawa.media.data.audio.codec
             Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
             mData1.RemoveAudioData(Time.Zero);
             mData2.RemoveAudioData(Time.Zero);
-            mData1.SampleRate = 22050;
+            mData1.PCMFormat.SampleRate = 22050;
             mData1.AppendAudioDataFromRiffWave(GetPath("stereo.wav"));
-            mData2.SampleRate = 22050;
+            mData2.PCMFormat.SampleRate = 22050;
             mData2.AppendAudioDataFromRiffWave(GetPath("stereo.wav"));
             Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
         }
@@ -718,7 +718,7 @@ namespace urakawa.media.data.audio.codec
 		[Test]
         public void GetAudioData_Stereo_FromTheBeginning()
         {
-            mData1.NumberOfChannels = 2;
+            mData1.PCMFormat.NumberOfChannels = 2;
             mData1.AppendAudioDataFromRiffWave(GetPath("audiotest-stereo-44100Hz-16bits.wav"));
             Stream s1 = mData1.GetAudioData(Time.Zero, new Time(10000));
             try
@@ -956,7 +956,7 @@ namespace urakawa.media.data.audio.codec
         [ExpectedException(typeof (exception.InvalidDataFormatException))]
         public void MergeWith_IncompatiblePCMFormat()
         {
-            mData1.NumberOfChannels = 2;
+            mData1.PCMFormat.NumberOfChannels = 2;
             mData1.MergeWith(mData2);
         }
 

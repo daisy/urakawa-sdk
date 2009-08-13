@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using AudioLib;
 using NUnit.Framework;
 using urakawa.media.timing;
 
@@ -36,7 +37,8 @@ namespace urakawa.media.data.audio
             {
                 uint dl = (uint) Math.Round(rnd.NextDouble()*UInt32.MaxValue);
                 dl -= dl%ba;
-                uint roundI = pcmInfo.GetDataLength(pcmInfo.GetDuration(dl));
+                //uint roundI = pcmInfo.GetDataLength(pcmInfo.GetDuration(dl));
+                uint roundI = (uint)AudioLibPCMFormat.ConvertTimeToBytes(AudioLibPCMFormat.ConvertBytesToTime(dl, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign), (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
                 Assert.AreEqual(
                     dl,
                     roundI,
