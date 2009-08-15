@@ -292,7 +292,41 @@ namespace urakawa.metadata.daisy
                     return md;
                 }
             }
-            return null;
+            return null; 
         }
+
+        /*experimental to search synonyms too*/
+        public static MetadataDefinition GetMetadataDefinition(string name, bool searchSynonyms)
+        {
+            MetadataDefinition definition = MetadataList.Find(
+                delegate(MetadataDefinition item)
+                    {
+                        return item.Name == name;
+                    });
+            if (definition == null)
+            {
+                definition = MetadataList.Find(
+                    delegate(MetadataDefinition item)
+                        {
+                            if (item.Synonyms != null)
+                            {
+                                string found = item.Synonyms.Find(
+                                    delegate(string s)
+                                        {
+                                            return s == name;
+                                        });
+                                return (found != null);
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        });
+            }
+
+            return definition;
+             
+        }
+        
     }
 }
