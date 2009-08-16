@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using AudioLib;
 using urakawa.core;
 using urakawa.core.visitor;
@@ -9,7 +7,6 @@ using urakawa.property.channel;
 using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
-using urakawa.xuk;
 
 namespace urakawa.publish
 {

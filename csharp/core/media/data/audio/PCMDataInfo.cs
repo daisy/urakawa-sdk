@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using AudioLib;
@@ -72,28 +71,7 @@ namespace urakawa.media.data.audio
         /// <param name="output">The destination output <see cref="Stream"/></param>
         public ulong WriteRiffWaveHeader(Stream output)
         {
-            long initPos = output.Position;
-
-            BinaryWriter wr = new BinaryWriter(output);
-            wr.Write(Encoding.ASCII.GetBytes("RIFF")); //Chunk Uid
-            uint chunkSize = 4 + 8 + 16 + 8 + DataLength;
-            wr.Write(chunkSize); //Chunk Size
-            wr.Write(Encoding.ASCII.GetBytes("WAVE")); //Format field
-            wr.Write(Encoding.ASCII.GetBytes("fmt ")); //Format sub-chunk
-            uint formatChunkSize = 16;
-            wr.Write(formatChunkSize);
-            ushort audioFormat = 1; //PCM format
-            wr.Write(audioFormat);
-            wr.Write(NumberOfChannels);
-            wr.Write(SampleRate);
-            wr.Write(ByteRate);
-            wr.Write(BlockAlign);
-            wr.Write(BitDepth);
-            wr.Write(Encoding.ASCII.GetBytes("data"));
-            wr.Write(DataLength);
-
-            long endPos = output.Position;
-            return (ulong) (endPos - initPos);
+            return AudioLibPCMFormat.WriteWavePcmRiffHeader(output, DataLength, NumberOfChannels, SampleRate, BitDepth);
         }
 
         /// <summary>
