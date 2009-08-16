@@ -8,6 +8,30 @@ namespace AudioLib
 {
     public class AudioRecorder
     {
+        private const int NOTIFICATIONS = 16;
+
+        private byte[] m_PcmDataBuffer;
+
+        private CaptureBuffer m_CircularBuffer;
+        private int m_CircularBufferReadPositon;
+        private AutoResetEvent m_CircularBufferNotificationEvent;
+
+        private Thread m_CircularBufferRefreshThread;
+
+        private Notify m_Notify;
+
+        private long m_TotalRecordedBytes;
+
+
+        public AudioRecorder()
+        {
+            CurrentState = State.NotReady;
+
+            //m_CircularBufferNotificationEventCheckTimer.Enabled = false;
+            //m_CircularBufferNotificationEventCheckTimer.Interval = 200;
+            //m_CircularBufferNotificationEventCheckTimer.Tick += new EventHandler(onCircularBufferNotificationEventCheckTimerTick);
+        }
+
         /// <summary>
         /// The three states of the audio recorder.
         /// NotReady: the recorder is not ready to record, for whatever reason.
@@ -17,30 +41,31 @@ namespace AudioLib
         /// </summary>
         public enum State { NotReady, Stopped, Monitoring, Recording };
 
-        private State mState;
+        private State m_PreviousState;
+        private State m_State;
         public State CurrentState
         {
             get
             {
-                return mState;
+                return m_State;
             }
-            set
+            private set
             {
-                if (mState == value)
+                if (m_State == value)
                 {
                     return;
                 }
 
-                State oldState = mState;
-                mState = value;
+                m_PreviousState = m_State;
+                m_State = value;
 
-                if (StateChanged != null)//mEventsEnabled && 
-                    StateChanged(this, new StateChangedEventArgs(oldState));
+                if (StateChanged != null)
+                    StateChanged(this, new StateChangedEventArgs(m_PreviousState));
             }
         }
 
+        public event StateChangedHandler StateChanged;
         public delegate void StateChangedHandler(object sender, StateChangedEventArgs e);
-
         public class StateChangedEventArgs : EventArgs
         {
             private State m_OldState;
@@ -58,8 +83,16 @@ namespace AudioLib
             }
         }
 
-        public delegate void PcmDataBufferAvailableHandler(object sender, PcmDataBufferAvailableEventArgs e);
 
+        public event AudioRecordingFinishHandler AudioRecordingFinished;
+        public delegate void AudioRecordingFinishHandler(object sender, AudioRecordingFinishEventArgs e);
+        public class AudioRecordingFinishEventArgs : EventArgs
+        {
+        }
+
+        private readonly PcmDataBufferAvailableEventArgs m_PcmDataBufferAvailableEventArgs = new PcmDataBufferAvailableEventArgs(new byte[] { 0, 0, 0, 0 });
+        public event PcmDataBufferAvailableHandler PcmDataBufferAvailable;
+        public delegate void PcmDataBufferAvailableHandler(object sender, PcmDataBufferAvailableEventArgs e);
         public class PcmDataBufferAvailableEventArgs : EventArgs
         {
             private byte[] m_PcmDataBuffer;
@@ -81,14 +114,6 @@ namespace AudioLib
             }
         }
 
-        public event StateChangedHandler StateChanged;
-
-        private readonly PcmDataBufferAvailableEventArgs m_PcmDataBufferAvailableEventArgs = new PcmDataBufferAvailableEventArgs(new byte[] { 0, 0, 0, 0 });
-        public event PcmDataBufferAvailableHandler PcmDataBufferAvailable;
-
-
-        //public event Events.Recorder.ResetVuMeterHandler ResetVuMeter;
-
 
         public void SetDevice(string name)
         {
@@ -108,626 +133,447 @@ namespace AudioLib
             }
         }
 
-        InputDevice mDevice;
+        InputDevice m_InputDevice;
         public InputDevice InputDevice
         {
-            get { return mDevice; }
-            set { mDevice = value; }
+            get { return m_InputDevice; }
+            set
+            {
+                m_InputDevice = value;
+
+                CurrentState = State.Stopped;
+            }
         }
 
-        private List<InputDevice> mInputDevicesList;
+        private List<InputDevice> m_InputDevices;
         public List<InputDevice> InputDevices
         {
             get
             {
-                if (mInputDevicesList != null)
+                if (m_InputDevices != null)
                 {
-                    return mInputDevicesList;
+                    return m_InputDevices;
                 }
 
                 CaptureDevicesCollection devices = new CaptureDevicesCollection();
-                mInputDevicesList = new List<InputDevice>(devices.Count);
+                m_InputDevices = new List<InputDevice>(devices.Count);
                 foreach (DeviceInformation info in devices)
                 {
-                    mInputDevicesList.Add(new InputDevice(info));
+                    m_InputDevices.Add(new InputDevice(info));
                 }
 
-                return mInputDevicesList;
+                return m_InputDevices;
             }
         }
 
 
-        private AudioLibPCMFormat mPCMFormat;
-
+        private AudioLibPCMFormat m_RecordingPCMFormat;
         public AudioLibPCMFormat RecordingPCMFormat
         {
-            get { return mPCMFormat; }
+            get { return m_RecordingPCMFormat; }
         }
 
-        private string m_sFileName; // Full file path of file being recorded
+        private ulong m_RecordedFileRiffHeaderSize;
+
+        private string m_RecordedFilePath;
         public string RecordedFilePath
         {
-            get { return m_sFileName; }
+            get { return m_RecordedFilePath; }
         }
 
 
-        private double mCurrentTime;  // Time in milliseconds
-
-
-
-        //member variables
-        // member variables initialised only once in a session
-        private string sProjectDirectory;  //the directory to hold the recorded files
-        
-        private const int NumberRecordNotifications = 16; // number of notifications in capture buffer 
-        private System.Windows.Forms.Timer CaptureTimer = new System.Windows.Forms.Timer();
-
-
-
-        WaveFormat InputFormat; // DX wave format object for DX buffers etc.
-
-        private CaptureBuffer applicationBuffer; // DX Capture buffer for recording
-        private bool Capturing; // Flag to indicate status of capturing
-        private Notify applicationNotify;  // DX notification Object to setup capture buffer notifications
-        private int m_iCaptureBufferSize; // Size of capture buffer
-        private int m_iNotifySize; // size of bytes between two notifications
-        private BufferPositionNotify[] PositionNotify; // array containing notification  position in capture buffer
-        private byte[] arUpdateVM; // array for updating VuMeter
-        public int m_UpdateVMArrayLength; // Length of Vumeter array
-
-        //private Mutex m_MutexCaptureData; // Implement mutual exclusion in threads updating captured data
-        private readonly Object LOCK = new object();
-
-        // member variables  which are re assigned during recording
-        //the variables for current position and current time for VuMeter
-        long CurrentPositionInByte;
-        private double mTime;
-
-        private int NextCaptureOffset; // Offset in DX capture buffer
-        private long SampleCount; // Count of total bytes being recorded at an instance of time
-
-        private AutoResetEvent NotificationEvent = null;
-        private Thread NotifyThread = null;
-
-        // constructor, made public by Avn
-        public AudioRecorder()
-        {
-            CurrentState = State.Stopped;
-            PositionNotify = new BufferPositionNotify[NumberRecordNotifications + 1];
-            Capturing = false;
-            SampleCount = 0;
-
-            CaptureTimer.Enabled = false;
-            CaptureTimer.Interval = 200;
-            CaptureTimer.Tick += new EventHandler(CaptureTimer_Tick);
-        }
-
-
-        public string AssetsDirectory
+        private string m_RecordingDirectory;
+        public string RecordingDirectory
         {
             get
             {
-                return sProjectDirectory;
+                return m_RecordingDirectory;
             }
             set
             {
-                sProjectDirectory = value;
+                m_RecordingDirectory = value;
+                if (!Directory.Exists(m_RecordingDirectory))
+                {
+                    Directory.CreateDirectory(m_RecordingDirectory);
+                }
             }
         }
 
-
-        public void StartListening(AudioLibPCMFormat thePCMFormat)
+        public double CurrentDuration
         {
-            mPCMFormat = thePCMFormat;
-
-            CurrentState = State.Monitoring;
-
-            InputFormat = GetInputFormat();
-
-            CreateCaptureBuffer();
-            InitRecording(true);
-        }
-
-
-        /// <summary>
-        /// Start the recording process into the given asset.
-        /// </summary>
-        public void StartRecording(AudioLibPCMFormat thePCMFormat)
-        {
-            mPCMFormat = thePCMFormat;
-
-            CurrentState = State.Recording;
-
-
-            InputFormat = GetInputFormat();
-
-            m_sFileName = GetFileName();
-            BinaryWriter bw = new BinaryWriter(File.Create(m_sFileName));
-            CreateRIFF(bw);
-            CreateCaptureBuffer();
-            InitRecording(true);
-        }
-        bool WasListening = false;
-
-
-
-
-        // this is to stop the recording
-        // desc:  this will first check the condition and stops the recording and then capture any left  overs recorded data which is not saved
-        public void StopRecording()
-        {
-            if (CurrentState == State.Monitoring)
-                WasListening = true;
-            else
-                WasListening = false;
-
-            if (CurrentState == State.Recording || CurrentState == State.Monitoring)
+            get
             {
-
-                CurrentState = State.Stopped;
-
-                if (null != NotificationEvent)
+                if (CurrentState == State.NotReady)
                 {
-                    Capturing = false;
-                    NotificationEvent.Set();
+                    return 0;
                 }
-                if (null != applicationBuffer)
-                    if (applicationBuffer.Capturing)
-                        InitRecording(false);
 
-                if (!String.IsNullOrEmpty(m_sFileName))
+                if (CurrentState != State.Monitoring && CurrentState != State.Recording)
                 {
-                    FileInfo fi = new FileInfo(m_sFileName);
-                    if (File.Exists(m_sFileName))
-                    {
-                        if (fi.Length == 44)
-                        {
-                            File.Delete(m_sFileName);
-                            m_sFileName = "";
-                        }
+                    return 0;
+                }
 
+                return RecordingPCMFormat.ConvertBytesToTime(m_TotalRecordedBytes);
+            }
+        }
+
+        public void StartMonitoring(AudioLibPCMFormat pcmFormat)
+        {
+            if (CurrentState == State.NotReady)
+            {
+                return;
+            }
+
+            if (CurrentState != State.Stopped)
+            {
+                return;
+            }
+
+            startRecordingOrMonitoring(pcmFormat, false);
+        }
+
+
+        public void StartRecording(AudioLibPCMFormat pcmFormat)
+        {
+            if (CurrentState == State.NotReady)
+            {
+                return;
+            }
+
+            if (CurrentState != State.Stopped)
+            {
+                return;
+            }
+
+            startRecordingOrMonitoring(pcmFormat, true);
+        }
+
+        private const int REFRESH_INTERVAL_MS = 75; //ms interval for refreshing PCM data
+        private void startRecordingOrMonitoring(AudioLibPCMFormat pcmFormat, bool recordingToFile)
+        {
+            m_RecordingPCMFormat = pcmFormat;
+
+            WaveFormat waveFormat = new WaveFormat();
+            waveFormat.FormatTag = WaveFormatTag.Pcm;
+            waveFormat.Channels = Convert.ToInt16(RecordingPCMFormat.NumberOfChannels);
+            waveFormat.SamplesPerSecond = RecordingPCMFormat.SampleRate;
+            waveFormat.BitsPerSample = Convert.ToInt16(RecordingPCMFormat.BitDepth);
+            waveFormat.AverageBytesPerSecond = RecordingPCMFormat.SampleRate * RecordingPCMFormat.BlockAlign;
+            waveFormat.BlockAlign = Convert.ToInt16(RecordingPCMFormat.BlockAlign);
+
+            int byteRate = RecordingPCMFormat.SampleRate * RecordingPCMFormat.BlockAlign;
+
+            int pcmDataBufferSize = (int)(byteRate * REFRESH_INTERVAL_MS / 1000.0);
+            pcmDataBufferSize -= pcmDataBufferSize % RecordingPCMFormat.BlockAlign;
+
+            m_PcmDataBuffer = new byte[pcmDataBufferSize];
+
+            int circularBufferSize = pcmDataBufferSize * NOTIFICATIONS;
+
+            CaptureBufferDescription bufferDescription = new CaptureBufferDescription();
+            bufferDescription.BufferBytes = circularBufferSize;
+            bufferDescription.Format = waveFormat;
+
+            m_CircularBuffer = new CaptureBuffer(bufferDescription, InputDevice.Capture);
+
+            m_CircularBufferNotificationEvent = new AutoResetEvent(false);
+
+            BufferPositionNotify[] m_BufferPositionNotify = new BufferPositionNotify[NOTIFICATIONS];
+            for (int i = 0; i < NOTIFICATIONS; i++)
+            {
+                m_BufferPositionNotify[i].Offset = (pcmDataBufferSize * i) + pcmDataBufferSize - 1;
+                m_BufferPositionNotify[i].EventNotifyHandle = m_CircularBufferNotificationEvent.SafeWaitHandle.DangerousGetHandle();
+            }
+
+            m_Notify = new Notify(m_CircularBuffer);
+            m_Notify.SetNotificationPositions(m_BufferPositionNotify, NOTIFICATIONS);
+
+            m_CircularBufferReadPositon = 0;
+            m_RecordingFileWriter = null;
+            m_TotalRecordedBytes = 0;
+
+            if (recordingToFile)
+            {
+                int i = -1;
+                do
+                {
+                    i++;
+                    m_RecordedFilePath = RecordingDirectory + Path.DirectorySeparatorChar + i.ToString() + ".wav";
+
+                } while (File.Exists(RecordedFilePath));
+
+                Stream stream = File.Create(RecordedFilePath);
+                try
+                {
+                    m_RecordedFileRiffHeaderSize = AudioLibPCMFormat.WriteWavePcmRiffHeader(stream, 0,
+                                                                                            (ushort)
+                                                                                            m_CircularBuffer.Format.
+                                                                                                Channels,
+                                                                                            (uint)
+                                                                                            m_CircularBuffer.Format.
+                                                                                                SamplesPerSecond,
+                                                                                            (ushort)
+                                                                                            m_CircularBuffer.Format.
+                                                                                                BitsPerSample);
+                }
+                finally
+                {
+                    stream.Close();
+                }
+            }
+
+            m_CircularBufferRefreshThread = new Thread(new ThreadStart(circularBufferRefreshThreadMethod));
+            m_CircularBufferRefreshThread.Name = "Recorder Notify Thread";
+            m_CircularBufferRefreshThread.Priority = ThreadPriority.Highest;
+
+
+            CurrentState = (recordingToFile ? State.Recording : State.Monitoring);
+
+            m_CircularBuffer.Start(true);
+
+            m_CircularBufferRefreshThread.Start();
+
+
+            Console.WriteLine("Recorder notify thread start.");
+
+            //m_PreviousTotalRecordedBytes = 0;
+            //m_CircularBufferNotificationEventCheckTimer.Start();
+        }
+
+        //private System.Windows.Forms.Timer m_CircularBufferNotificationEventCheckTimer = new System.Windows.Forms.Timer();
+        //long m_PreviousTotalRecordedBytes;
+        //private void onCircularBufferNotificationEventCheckTimerTick(object sender, EventArgs e)
+        //{
+        //    if (m_PreviousTotalRecordedBytes == m_TotalRecordedBytes
+        //        && CurrentState == State.Recording)
+        //    {
+        //        m_CircularBufferNotificationEvent.WaitOne(1);
+        //    }
+        //    m_PreviousTotalRecordedBytes = m_TotalRecordedBytes;
+        //}
+
+        private BinaryWriter m_RecordingFileWriter;
+
+        private readonly Object LOCK = new object();
+        private void circularBufferRefreshThreadMethod()
+        {
+            while (true)
+            {
+                m_CircularBufferNotificationEvent.WaitOne(Timeout.Infinite, true);
+
+                Monitor.Enter(LOCK);
+                try
+                {
+                    if (m_CircularBuffer == null || !m_CircularBuffer.Capturing || CurrentState == State.Stopped)
+                    {
+                        Console.WriteLine("circularBufferRefreshThreadMethod EXIT while");
+                        break;
+                    }
+                    else
+                    {
+                        circularBufferTransferData();
                     }
                 }
-
-            }
-        }
-
-        /// <summary>
-        /// Stop recording when something went wrong.
-        /// </summary>
-        internal void EmergencyStop()
-        {
-            CurrentState = State.Stopped;
-
-            if (null != NotificationEvent)
-            {
-                Capturing = false;
-                NotificationEvent.Set();
-            }
-            if (null != applicationBuffer)
-            {
-                if (applicationBuffer.Capturing)
+                finally
                 {
-                    applicationBuffer.Stop();
+                    Monitor.Exit(LOCK);
                 }
-            }
-            FileInfo fi = new FileInfo(m_sFileName);
-
-            if (File.Exists(m_sFileName))
-                if (fi.Length == 44)
-                {
-                    File.Delete(m_sFileName);
-                    m_sFileName = "";
-                }
-        }
-
-
-        public WaveFormat GetInputFormat()
-        {
-            InputFormat.Channels = Convert.ToInt16(mPCMFormat.NumberOfChannels);
-            InputFormat.SamplesPerSecond = (int)mPCMFormat.SampleRate;
-            InputFormat.BitsPerSample = Convert.ToInt16(mPCMFormat.BitDepth);
-            InputFormat.AverageBytesPerSecond = (int)mPCMFormat.SampleRate * mPCMFormat.BlockAlign;
-            InputFormat.BlockAlign = Convert.ToInt16(mPCMFormat.BlockAlign);
-
-            return InputFormat;
-        }
-
-        public void CreateRIFF(BinaryWriter Writer)
-        {
-            // Set up file with RIFF chunk info.
-            char[] ChunkRiff = { 'R', 'I', 'F', 'F' };
-            char[] ChunkType = { 'W', 'A', 'V', 'E' };
-            char[] ChunkFmt = { 'f', 'm', 't', ' ' };
-            char[] ChunkData = { 'd', 'a', 't', 'a' };
-            short shPad = 1; // File padding
-            int nFormatChunkLength = 0x10;
-            // Format chunk length.
-            short shBytesPerSample = 0;
-            // Figure out how many bytes there will be per sample.
-            if (8 == InputFormat.BitsPerSample && 1 == InputFormat.Channels)
-                shBytesPerSample = 1;
-            else if ((8 == InputFormat.BitsPerSample && 2 == InputFormat.Channels) || (16 == InputFormat.BitsPerSample && 1 == InputFormat.Channels))
-                shBytesPerSample = 2;
-            else if (16 == InputFormat.BitsPerSample && 2 == InputFormat.Channels)
-                shBytesPerSample = 4;
-            // Fill in the riff info for the wave file.
-            Writer.Write(ChunkRiff);
-            Writer.Write(1);
-            Writer.Write(ChunkType);
-            // Fill in the format info for the wave file.
-            Writer.Write(ChunkFmt);
-            Writer.Write(nFormatChunkLength);
-            Writer.Write(shPad);
-            Writer.Write(InputFormat.Channels);
-            Writer.Write(InputFormat.SamplesPerSecond);
-            Writer.Write(InputFormat.AverageBytesPerSecond);
-            Writer.Write(shBytesPerSample);
-            Writer.Write(InputFormat.BitsPerSample);
-            // Now fill in the data chunk.
-            Writer.BaseStream.Position = 36;
-            Writer.Write(ChunkData);
-            Writer.BaseStream.Position = 40;
-            Writer.Write(0);	// The sample length will be written in later
-            Writer.Close();
-            //Writer = null;
-        }
-
-        internal string GenerateFileName(string ext, string sDir)
-        {
-            int i = 0;
-            string sTemp;
-            sTemp = sDir + System.IO.Path.DirectorySeparatorChar + i.ToString() + ext;
-            //FileInfo file = new FileInfo(sTemp) ;
-
-            while (File.Exists(sTemp) && i < 90000)
-            {
-                i++;
-                sTemp = sDir + System.IO.Path.DirectorySeparatorChar + i.ToString() + ext;
-
-            }
-
-            if (i < 90000)
-            {
-                return sTemp;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        public string GetFileName()
-        {
-            m_sFileName = GenerateFileName(".wav", sProjectDirectory);
-            return m_sFileName;
-        }
-
-
-        public void CreateCaptureBuffer()
-        {
-            // Desc: Creates a capture buffer and sets the format 
-            CaptureBufferDescription dsc = new CaptureBufferDescription();
-            if (null != applicationNotify)
-            {
-                applicationNotify.Dispose();
-                applicationNotify = null;
-            }
-            if (null != applicationBuffer)
-            {
-                applicationBuffer.Dispose();
-                applicationBuffer = null;
-            }
-            if (0 == InputFormat.Channels)
-                return;
-            m_iNotifySize = (1024 > InputFormat.AverageBytesPerSecond / 8) ? 1024 : (InputFormat.AverageBytesPerSecond / 8);
-            m_iNotifySize -= m_iNotifySize % InputFormat.BlockAlign;
-            // Set the buffer sizes
-            m_iCaptureBufferSize = m_iNotifySize * NumberRecordNotifications;
-
-            // Create the capture buffer
-            dsc.BufferBytes = m_iCaptureBufferSize;
-            InputFormat.FormatTag = WaveFormatTag.Pcm;
-            // Set the format during creatation
-            dsc.Format = InputFormat;
-            // applicationBuffer = new CaptureBuffer(dsc, this.m_cApplicationDevice);
-            applicationBuffer = new CaptureBuffer(dsc, InputDevice.Capture);
-            NextCaptureOffset = 0;
-            InitNotifications();
-        }
-
-        public void InitNotifications()
-        {
-            // Name: InitNotifications()
-            // Desc: Inits the notifications on the capture buffer which are handled
-            //       in the notify thread.
-            if (null == applicationBuffer)
-                throw new NullReferenceException();
-            //Create a thread to monitor the notify events
-            if (null == NotifyThread)
-            {
-                NotifyThread = new Thread(new ThreadStart(WaitThread));
-                NotifyThread.Name = "Recorder Notify Thread";
-                NotifyThread.Priority = ThreadPriority.Highest;
-                Capturing = true;
-
-                // Create a notification event, for when the sound stops playing
-                NotificationEvent = new AutoResetEvent(false);
-                NotifyThread.Start();
-
-                Console.WriteLine("Recorder notify thread start.");
-            }
-            // Setup the notification POSITIONS 
-            for (int i = 0; i < NumberRecordNotifications; i++)
-            {
-                PositionNotify[i].Offset = (m_iNotifySize * i) + m_iNotifySize - 1;
-                PositionNotify[i].EventNotifyHandle = NotificationEvent.SafeWaitHandle.DangerousGetHandle();
-            }
-            applicationNotify = new Notify(applicationBuffer);
-            // Tell DirectSound when to notify the app. The notification will come in the from 
-            // of signaled events that are handled in the notify thread.
-            applicationNotify.SetNotificationPositions(PositionNotify, NumberRecordNotifications);
-        }
-
-        private void WaitThread()
-        {
-            while (Capturing)
-            {
-                //Sit here and wait for a message to arrive
-                //NotificationEvent = new AutoResetEvent(false);
-                NotificationEvent.WaitOne(Timeout.Infinite, true);
-                //waits for infinite time span before recieving a signal
-                RecordCapturedData();
             }
 
             Console.WriteLine("Recorder notify thread exit.");
         }
 
-        //  Copies data from the capture buffer to the output buffer 
-        public void RecordCapturedData()
+        private int circularBufferTransferData()
         {
-            //m_MutexCaptureData.WaitOne();
+            int circularBufferCapturePosition;
+            int readPosition;
+            m_CircularBuffer.GetCurrentPosition(out circularBufferCapturePosition, out readPosition);
+
+
+            int circularBufferBytesAvailableForReading = (circularBufferCapturePosition == m_CircularBufferReadPositon ? 0
+                                    : (circularBufferCapturePosition < m_CircularBufferReadPositon
+                              ? circularBufferCapturePosition + (m_CircularBuffer.Caps.BufferBytes - m_CircularBufferReadPositon)
+                              : circularBufferCapturePosition - m_CircularBufferReadPositon));
+
+            circularBufferBytesAvailableForReading -= (circularBufferBytesAvailableForReading % (m_CircularBuffer.Caps.BufferBytes / NOTIFICATIONS));
+
+            int circularBufferBytesAvailableForCapturing = m_CircularBuffer.Caps.BufferBytes - circularBufferBytesAvailableForReading;
+
+            if (circularBufferBytesAvailableForReading <= 0)
+            {
+                Console.WriteLine(
+                    string.Format("circularBufferTransferData: no more bytes to fetch {0}", circularBufferBytesAvailableForReading));
+                return circularBufferBytesAvailableForReading;
+            }
+
+            //int toRead = readPosition - m_CircularBufferReadPositon;
+            //if (toRead < 0)
+            //    toRead += m_CircularBuffer.Caps.BufferBytes;
+
+            //toRead -= (toRead % (m_CircularBuffer.Caps.BufferBytes / NOTIFICATIONS));
+            //if (toRead <= 0)
+            //{
+            //    Console.WriteLine(string.Format("BAD toRead {0}", toRead));
+            //    continue;
+            //}
+
+            byte[] incomingPcmData =
+                (byte[])
+                m_CircularBuffer.Read(m_CircularBufferReadPositon, typeof(byte), LockFlag.None, circularBufferBytesAvailableForReading);
+
+            /*
+             * 
+    if (m_CircularBuffer != null && m_CircularBuffer.Capturing)
+    {
+        int capturePosition;
+        int readPosition;
+        m_CircularBuffer.GetCurrentPosition(out capturePosition, out readPosition);
+
+        return
+            RecordingPCMFormat.ConvertBytesToTime(m_TotalRecordedBytes + capturePosition -
+                                                    m_CircularBufferReadPositon);
+    }
+             */
+
+            m_TotalRecordedBytes += incomingPcmData.Length;
+
+            m_CircularBufferReadPositon += incomingPcmData.Length;
+            m_CircularBufferReadPositon %= m_CircularBuffer.Caps.BufferBytes;
+
+            if (CurrentState == State.Recording)
+            {
+                if (m_RecordingFileWriter == null)
+                {
+                    FileInfo fi = new FileInfo(RecordedFilePath);
+                    m_RecordingFileWriter = new BinaryWriter(File.OpenWrite(fi.FullName));
+                }
+
+                m_RecordingFileWriter.BaseStream.Position = m_TotalRecordedBytes +
+                                                            (long)m_RecordedFileRiffHeaderSize;
+                // m_RecordingFileWriter.BaseStream.Length;
+                m_RecordingFileWriter.Write(incomingPcmData, 0, incomingPcmData.Length);
+            }
+
+
+            if (m_PcmDataBuffer.Length != incomingPcmData.Length)
+            {
+                Console.WriteLine(
+                    string.Format(">>>>> Resizing buffer: m_PcmDataBuffer = {0}, incomingPcmData = {1}",
+                                  m_PcmDataBuffer.Length, incomingPcmData.Length));
+
+                Array.Resize(ref m_PcmDataBuffer, incomingPcmData.Length);
+            }
+
+            Array.Copy(incomingPcmData, m_PcmDataBuffer, m_PcmDataBuffer.Length);
+
+            if (PcmDataBufferAvailable != null)
+            {
+                m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
+                PcmDataBufferAvailable(this, m_PcmDataBufferAvailableEventArgs);
+            }
+
+            return circularBufferBytesAvailableForReading;
+        }
+
+        public void StopRecording()
+        {
+            if (CurrentState == State.NotReady)
+            {
+                return;
+            }
+
+            if (CurrentState != State.Recording && CurrentState != State.Monitoring)
+            {
+                return;
+            }
 
             Monitor.Enter(LOCK);
-
             try
             {
-
-                int ReadPos;
-                byte[] CaptureData = null;
-                int CapturePos;
-                int LockSize;
-                applicationBuffer.GetCurrentPosition(out CapturePos, out ReadPos);
-                long mPosition = (long)CapturePos;
-                CurrentPositionInByte = SampleCount + mPosition;
-                mCurrentTime = mPCMFormat.ConvertBytesToTime(CurrentPositionInByte);
-
-
-                LockSize = ReadPos - NextCaptureOffset;
-                if (LockSize < 0)
-                    LockSize += m_iCaptureBufferSize;
-                // Block align lock size so that we are always write on a boundary
-                LockSize -= (LockSize % m_iNotifySize);
-                if (0 == LockSize)
-                {
-                    //m_MutexCaptureData.ReleaseMutex();
-                    return;
-                }
-
-                //CaptureData = new byte [ LockSize ] ;
-
-                // Read the capture buffer.
-                //try
-                //{
-                CaptureData =
-                    (byte[])applicationBuffer.Read(NextCaptureOffset, typeof(byte), LockFlag.None, LockSize);
-                //}
-                //catch (System.Exception)
-                //{
-                //    m_MutexCaptureData.ReleaseMutex();
-                //    return;
-                //}
-
-                // make update vumeter array length equal to CaptureData length
-                if (CaptureData.Length != arUpdateVM.Length
-                    &&
-                    CaptureData.Length <
-                    mPCMFormat.ConvertTimeToBytes(125))
-                {
-
-                    m_UpdateVMArrayLength = CaptureData.Length;
-                    Array.Resize(ref arUpdateVM, CaptureData.Length);
-                }
-
-                // copy Capture data to an array and update it to VuMeter
-                Array.Copy(CaptureData, arUpdateVM, m_UpdateVMArrayLength);
-
-                if (PcmDataBufferAvailable != null)
-                {
-                    m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = arUpdateVM;
-                    PcmDataBufferAvailable(this, m_PcmDataBufferAvailableEventArgs);
-                }
-
-                if (CurrentState != State.Monitoring && !String.IsNullOrEmpty(m_sFileName))
-                {
-                    FileInfo fi = new FileInfo(m_sFileName);
-                    if (fi.Exists)
-                    {
-                        BinaryWriter Writer = null;
-                        //try
-                        //{
-                        Writer = new BinaryWriter(File.OpenWrite(fi.FullName));
-                        //}
-                        //catch (Exception)
-                        //{
-                        //    m_MutexCaptureData.ReleaseMutex();
-                        //    return;
-                        //}
-                        // Write the data into the wav file");	   
-                        Writer.BaseStream.Position = (long)(fi.Length);
-                        //Writer.Seek(0, SeekOrigin.End);			
-                        Writer.Write(CaptureData, 0, CaptureData.Length);
-                        Writer.Close();
-                        Writer = null;
-                    }
-                }
-                NotifyThread = null;
-                // Update the number of samples, in bytes, of the file so far.
-                //SampleCount+= datalength;
-                SampleCount += (long)CaptureData.Length;
-                // Move the capture offset along
-                NextCaptureOffset += CaptureData.Length;
-                NextCaptureOffset %= m_iCaptureBufferSize; // Circular buffer
-
-                long mLength = (long)SampleCount;
-
-                mTime = mPCMFormat.ConvertBytesToTime(mLength);
-                //m_MutexCaptureData.ReleaseMutex();
-
+                m_CircularBuffer.Stop();
             }
             finally
             {
                 Monitor.Exit(LOCK);
             }
-        }
 
+            m_CircularBufferNotificationEvent.Set();
+            m_CircularBufferNotificationEvent.Close();
 
-        long m_PrevSampleCount = 0;
+            m_CircularBufferRefreshThread = null;
 
-        void CaptureTimer_Tick(object sender, EventArgs e)
-        {
-
-            if (m_PrevSampleCount == SampleCount
-                && CurrentState == State.Recording)
+            int remainingBytesToRead = 0;
+            do
             {
-                NotificationEvent.WaitOne(1);
-                //RecordCapturedData();
-                //System.Media.SystemSounds.Asterisk.Play();
-            }
-            m_PrevSampleCount = SampleCount;
-        }
+                remainingBytesToRead = circularBufferTransferData();
+                Console.WriteLine(
+                    string.Format("circularBufferTransferData: fetched remaining bytes: {0}", remainingBytesToRead));
+            } while (remainingBytesToRead > 0);
 
+            if (m_RecordingFileWriter != null)
+            {
+                m_RecordingFileWriter.Close();
 
-        private long GetCurrentPositioninBytes
-        {
-            get
-            {
-                return CurrentPositionInByte;
-            }
-            set
-            {
-                CurrentPositionInByte = value;
-            }
-        }
-
-        public double TimeOfAsset
-        {
-            get
-            {
-                return GetCurrentAssetTime();
-            }
-        }
-
-        private double GetCurrentAssetTime()
-        {
-            if ((CurrentState == State.Monitoring || CurrentState == State.Recording)
-                && applicationBuffer != null)
-            {
-                if (applicationBuffer.Capturing)
+                FileInfo fileInfo = new FileInfo(RecordedFilePath);
+                Stream stream = File.OpenWrite(RecordedFilePath);
+                try
                 {
-                    int CapturePos;
-                    int ReadPos;
-                    applicationBuffer.GetCurrentPosition(out CapturePos, out ReadPos);
-                    long mPosition = (long)CapturePos;
-                    mPosition = mPosition - NextCaptureOffset;
-                    double TimeDifference = mPCMFormat.ConvertBytesToTime(mPosition);
-                    return mTime + TimeDifference;
+                    m_RecordedFileRiffHeaderSize = AudioLibPCMFormat.WriteWavePcmRiffHeader(stream,
+                                                            (uint)
+                                                            (fileInfo.Length -
+                                                             (long)
+                                                             m_RecordedFileRiffHeaderSize),
+                                                            (ushort)
+                                                            m_CircularBuffer.Format.
+                                                                Channels,
+                                                            (uint)
+                                                            m_CircularBuffer.Format.
+                                                                SamplesPerSecond,
+                                                            (ushort)
+                                                            m_CircularBuffer.Format.
+                                                                BitsPerSample);
+                }
+                finally
+                {
+                    stream.Close();
+                }
+
+                if (fileInfo.Length == (long) m_RecordedFileRiffHeaderSize) // no PCM data, just RIFF header
+                {
+                    File.Delete(RecordedFilePath);
+                    m_RecordedFilePath = "";
                 }
             }
 
-            return 0;
+            m_Notify.Dispose();
+            m_Notify = null;
+
+            m_CircularBuffer.Dispose();
+            m_CircularBuffer = null;
+
+            CurrentState = State.Stopped;
+
+            if (AudioRecordingFinished != null)
+                AudioRecordingFinished(this, new AudioRecordingFinishEventArgs());
         }
+    }
+}
 
 
 
+//BinaryWriter Writer = new BinaryWriter(File.OpenWrite(RecordedFilePath));
+//FileInfo RecordedFile = new FileInfo(RecordedFilePath);
 
-        public void InitRecording(bool SRecording)
-        {
-            //if no device is set then it is informed then no device is set
-            //if(null == m_cApplicationDevice)
-            if (InputDevice.Capture == null) throw new Exception("no device is set for recording");
-            //format of the capture buffer and the input format is compared
-            //if not sam2e then it is informed that formats do not match
-            if (applicationBuffer.Format.ToString() != InputFormat.ToString())
-                throw new Exception("formats do not match");
-
-            if (SRecording)
-            {
-                //m_MutexCaptureData = new Mutex();
-
-                SampleCount = 0;
-                CreateCaptureBuffer();
-                applicationBuffer.Start(true);//it will set the looping till the stop is used
-
-                m_UpdateVMArrayLength = m_iCaptureBufferSize / 20;
-                //m_UpdateVMArrayLength = Convert.ToInt32(CalculationFunctions.AdaptToFrame(Convert.ToInt32(m_UpdateVMArrayLength), mPCMFormat.BlockAlign));
-                m_UpdateVMArrayLength -= mPCMFormat.BlockAlign % mPCMFormat.BlockAlign;
-
-                arUpdateVM = new byte[m_UpdateVMArrayLength];
-
-                m_PrevSampleCount = 0;
-                CaptureTimer.Start();
-            }
-            else
-            {
-                CaptureTimer.Stop();
-                applicationBuffer.Stop();
-                RecordCapturedData();
-
-                //m_MutexCaptureData.Close();
-
-                // condition for listening added to eleminate listen file on 2 Feb 2007
-                if (!WasListening)
-                {
-                    BinaryWriter Writer = new BinaryWriter(File.OpenWrite(m_sFileName));
-                    FileInfo RecordedFile = new FileInfo(m_sFileName);
-                    //				long Audiolength = (long)(SampleCount+44);
-                    long Audiolength = RecordedFile.Length - 8;
-                    for (int i = 0; i < 4; i++)
-                    {
-                        Writer.BaseStream.Position = i + 4;
-                        Writer.Write(Convert.ToByte(CalculationFunctions.ConvertFromDecimal(Audiolength)[i]));
-                    }
-                    Audiolength = Audiolength - 36;
-                    for (int i = 0; i < 4; i++)
-                    {
-                        Writer.BaseStream.Position = i + 40;
-                        Writer.Write(Convert.ToByte(CalculationFunctions.ConvertFromDecimal(Audiolength)[i]));
-                    }
-                    Writer.Close();	// Close the file now.
-                    //Set the writer to null.
-                    Writer = null;
-                    Audiolength = 0;
-                }
-
-                SampleCount = 0;
-
-            }
-
-            //if (ResetVuMeter != null)
-            //    ResetVuMeter(this, new AudioLib.Events.Recorder.UpdateVuMeterEventArgs());
-        }
-
-        public void DeleteRecordedFile()
-        {
-            // the file has been copied so it should be deleted.
-            if (File.Exists(m_sFileName))
-            {
-                File.Delete(m_sFileName);
-                m_sFileName = "";
-            }
-
-        }
-
-    }//end of AudioRecorder Class
-}//end
+//long Audiolength = RecordedFile.Length - 8;
+//for (int i = 0; i < 4; i++)
+//{
+//    Writer.BaseStream.Position = i + 4;
+//    Writer.Write(Convert.ToByte(CalculationFunctions.ConvertFromDecimal(Audiolength)[i]));
+//}
+//Audiolength = Audiolength - 36;
+//for (int i = 0; i < 4; i++)
+//{
+//    Writer.BaseStream.Position = i + 40;
+//    Writer.Write(Convert.ToByte(CalculationFunctions.ConvertFromDecimal(Audiolength)[i]));
+//}
+//Writer.Close();

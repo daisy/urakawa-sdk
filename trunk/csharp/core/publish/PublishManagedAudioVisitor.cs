@@ -1,13 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using urakawa.core;
-using urakawa.core.visitor;
-using urakawa.property.channel;
-using urakawa.media;
-using urakawa.media.timing;
-using urakawa.media.data.audio;
 
 namespace urakawa.publish
 {

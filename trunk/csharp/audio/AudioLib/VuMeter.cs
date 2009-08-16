@@ -106,7 +106,7 @@ namespace AudioLib
                 if (PeakMeterOverloaded != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
-                    m_PeakOverloadEventArgs.Time = m_Recorder.TimeOfAsset;
+                    m_PeakOverloadEventArgs.Time = m_Recorder.CurrentDuration;
                     PeakMeterOverloaded(this, m_PeakOverloadEventArgs);
                 }
             }
