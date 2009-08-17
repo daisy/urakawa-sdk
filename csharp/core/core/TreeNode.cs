@@ -18,6 +18,13 @@ using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 namespace urakawa.core
 {
+    public struct TreeNodeAndStreamSelection
+    {
+        public TreeNode m_TreeNode;
+        public long m_LocalStreamLeftMark;
+        public long m_LocalStreamRightMark;
+    }
+
     public struct TreeNodeAndStreamDataLength
     {
         public TreeNode m_TreeNode;
