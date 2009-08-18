@@ -231,6 +231,11 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ManagedAudioMediaInsertDataCommand" : "manAudMedInsertCmd"); }
         }
+
+        public static string TreeNodeAudioStreamDeleteCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TreeNodeAudioStreamDeleteCommand" : "nodAudDelCmd"); }
+        }
         
         #endregion
 

@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -98,6 +98,7 @@
     <Content Include="events\EventsClassDiagram.png" />
     <Compile Include="commands\CommandFactory.cs" />
     <Compile Include="commands\ManagedAudioMediaInsertDataCommand.cs" />
+    <Compile Include="commands\TreeNodeAudioStreamDeleteCommand.cs" />
     <Compile Include="commands\TreeNodeSetManagedAudioMediaCommand.cs" />
     <Compile Include="command\IAction.cs" />
     <Compile Include="command\IUndoableAction.cs" />

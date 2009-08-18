@@ -355,7 +355,10 @@ namespace urakawa
             }
             foreach (IManaged mm in collectorVisitor.CollectedMedia)
             {
-                if (!usedMediaData.Contains(mm.MediaData)) usedMediaData.Add(mm.MediaData);
+                if (mm.MediaData != null && !usedMediaData.Contains(mm.MediaData))
+                {
+                    usedMediaData.Add(mm.MediaData);
+                }
             }
             List<DataProvider> usedDataProviders = new List<DataProvider>();
             foreach (MediaData md in MediaDataManager.ManagedObjects.ContentsAs_ListCopy)

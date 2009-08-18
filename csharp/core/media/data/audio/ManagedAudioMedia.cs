@@ -55,6 +55,12 @@ namespace urakawa.media.data.audio
         public ManagedAudioMedia Copy(Time clipBegin, Time clipEnd)
         {
             ManagedAudioMedia copyMAM = Presentation.MediaFactory.Create<ManagedAudioMedia>();
+
+            if (!HasActualAudioMediaData)
+            {
+                return copyMAM;
+            }
+
             Stream pcm = AudioMediaData.GetAudioData(clipBegin, clipEnd);
             try
             {
@@ -127,7 +133,10 @@ namespace urakawa.media.data.audio
         protected override Media CopyProtected()
         {
             ManagedAudioMedia cp = (ManagedAudioMedia)base.CopyProtected();
-            cp.MediaData = MediaData.Copy();
+            if (HasActualAudioMediaData)
+            {
+                cp.AudioMediaData = AudioMediaData.Copy();
+            }
             return cp;
         }
 
@@ -139,7 +148,12 @@ namespace urakawa.media.data.audio
         protected override Media ExportProtected(Presentation destPres)
         {
             ManagedAudioMedia exported = (ManagedAudioMedia)base.ExportProtected(destPres);
-            exported.AudioMediaData = AudioMediaData.Export(destPres) as AudioMediaData;
+
+            if (HasActualAudioMediaData)
+            {
+                exported.AudioMediaData = AudioMediaData.Export(destPres) as AudioMediaData;
+            }
+            
             return exported;
         }
 
@@ -213,7 +227,14 @@ namespace urakawa.media.data.audio
         /// <returns>The duration</returns>
         public override TimeDelta Duration
         {
-            get { return AudioMediaData.AudioDuration; }
+            get
+            {
+                if (HasActualAudioMediaData)
+                {
+                    return AudioMediaData.AudioDuration;
+                }
+                return new TimeDelta(0);
+            }
         }
 
         /// <summary>
@@ -251,9 +272,14 @@ namespace urakawa.media.data.audio
         /// </exception>
         protected override AbstractAudioMedia SplitProtected(Time splitPoint)
         {
-            AudioMediaData secondPartData = AudioMediaData.Split(splitPoint);
             ManagedAudioMedia secondPartMAM = Presentation.MediaFactory.Create<ManagedAudioMedia>();
-            secondPartMAM.AudioMediaData = secondPartData;
+
+            if (HasActualAudioMediaData)
+            {
+                AudioMediaData secondPartData = AudioMediaData.Split(splitPoint);
+                secondPartMAM.AudioMediaData = secondPartData;
+            }
+
             return secondPartMAM;
         }
 
@@ -269,7 +295,14 @@ namespace urakawa.media.data.audio
         /// </exception>
         public MediaData MediaData
         {
-            get { return AudioMediaData; }
+            get
+            {
+                if (HasActualAudioMediaData)
+                {
+                    return AudioMediaData;
+                }
+                return null;
+            }
             set
             {
                 if (!(value is AudioMediaData))
