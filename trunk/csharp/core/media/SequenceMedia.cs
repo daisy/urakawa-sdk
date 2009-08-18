@@ -487,10 +487,13 @@ namespace urakawa.media
             {
                 if (media is ManagedAudioMedia)
                 {
-                    Stream stream = ((ManagedAudioMedia)media).AudioMediaData.GetAudioData();
-                    if (stream != null)
+                    if (((ManagedAudioMedia)media).HasActualAudioMediaData)
                     {
-                        streams.Add(stream);
+                        Stream stream = ((ManagedAudioMedia) media).AudioMediaData.GetAudioData();
+                        if (stream != null)
+                        {
+                            streams.Add(stream);
+                        }
                     }
                 }
                 else

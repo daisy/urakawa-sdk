@@ -71,7 +71,6 @@ namespace urakawa.media
             {
                 // WebClient failure in unit-tests, non-existing file.
                 //Debugger.Break();
-                int debug = 1;
             }
         
 

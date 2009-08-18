@@ -221,7 +221,11 @@ namespace urakawa.media.data.audio.codec
                 Time rawClipEnd = ClipBegin.AddTime(subClipEnd);
 
                 long beginPos = raw.Position + AudioLibPCMFormat.ConvertTimeToBytes(rawClipBegin.TimeAsMillisecondFloat, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                beginPos -= beginPos % pcmInfo.BlockAlign;
+
                 long endPos = raw.Position + AudioLibPCMFormat.ConvertTimeToBytes(rawClipEnd.TimeAsMillisecondFloat, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                endPos -= endPos % pcmInfo.BlockAlign;
+
                 return new SubStream(
                     raw,
                     beginPos,
@@ -337,6 +341,7 @@ namespace urakawa.media.data.audio.codec
             if (duration == null)
             {
                 pcmInfo.DataLength = (uint)(pcmData.Length - pcmData.Position);
+                pcmInfo.DataLength -= pcmInfo.DataLength % pcmInfo.BlockAlign;
             }
             else
             {
@@ -953,7 +958,7 @@ namespace urakawa.media.data.audio.codec
             {
                 destination.WriteStartElement(XukStrings.WavClip, XukNamespaceUri);
                 destination.WriteAttributeString(XukStrings.DataProvider, clip.DataProvider.Uid);
-                if (! clip.ClipBegin.IsEqualTo(Time.Zero))
+                if (!clip.ClipBegin.IsEqualTo(Time.Zero))
                 {
                     destination.WriteAttributeString(XukStrings.ClipBegin, clip.ClipBegin.ToString());
                 }

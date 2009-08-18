@@ -187,29 +187,13 @@ namespace urakawa.core
             {
                 return null;
             }
-            ManagedAudioMedia audioMedia = Parent.GetAudioMedia() as ManagedAudioMedia;
-            if (audioMedia != null) // && audioMedia.AudioMediaData != null
+
+            Media manMedia = Parent.GetManagedAudioMediaOrSequenceMedia();
+            if (manMedia != null)
             {
                 return Parent;
             }
-            else
-            {
-                SequenceMedia seq = Parent.GetAudioSequenceMedia();
-                if (seq != null && !seq.AllowMultipleTypes)
-                {
-                    foreach (Media media in seq.ChildMedias.ContentsAs_YieldEnumerable)
-                    {
-                        if (media is ManagedAudioMedia)
-                        {
-                            return Parent;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
+
             return Parent.GetFirstAncestorWithManagedAudio();
         }
 
@@ -222,29 +206,12 @@ namespace urakawa.core
 
             foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
             {
-                ManagedAudioMedia audioMedia = child.GetManagedAudioMedia();
-                if (audioMedia != null) // && audioMedia.AudioMediaData != null
+                Media manMedia = child.GetManagedAudioMediaOrSequenceMedia();
+                if (manMedia != null)
                 {
                     return child;
                 }
-                else
-                {
-                    SequenceMedia seq = child.GetAudioSequenceMedia();
-                    if (seq != null && !seq.AllowMultipleTypes)
-                    {
-                        foreach (Media media in seq.ChildMedias.ContentsAs_YieldEnumerable)
-                        {
-                            if (media is ManagedAudioMedia)
-                            {
-                                return child;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
+
                 TreeNode childIn = child.GetFirstDescendantWithManagedAudio();
                 if (childIn != null)
                 {
@@ -263,28 +230,10 @@ namespace urakawa.core
             TreeNode next = this;
             while ((next = next.NextSibling) != null)
             {
-                ManagedAudioMedia audioMedia = next.GetManagedAudioMedia();
-                if (audioMedia != null) // && audioMedia.AudioMediaData != null
+                Media manMedia = next.GetManagedAudioMediaOrSequenceMedia();
+                if (manMedia != null)
                 {
                     return next;
-                }
-                else
-                {
-                    SequenceMedia seq = next.GetAudioSequenceMedia();
-                    if (seq != null && !seq.AllowMultipleTypes)
-                    {
-                        foreach (Media media in seq.ChildMedias.ContentsAs_YieldEnumerable)
-                        {
-                            if (media is ManagedAudioMedia)
-                            {
-                                return next;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                    }
                 }
 
                 TreeNode nextIn = next.GetFirstDescendantWithManagedAudio();
@@ -302,7 +251,7 @@ namespace urakawa.core
             StreamWithMarkers val;
 
             ManagedAudioMedia audioMedia = GetManagedAudioMedia();
-            if (audioMedia != null)
+            if (audioMedia != null && audioMedia.HasActualAudioMediaData)
             {
                 val.m_Stream = audioMedia.AudioMediaData.GetAudioData();
                 val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
@@ -312,22 +261,19 @@ namespace urakawa.core
                 val.m_SubStreamMarkers.Add(tnasdl);
                 return val;
             }
-            else
+            SequenceMedia seq = GetManagedAudioSequenceMedia();
+            if (seq != null)
             {
-                SequenceMedia seq = GetAudioSequenceMedia();
-                if (seq != null)
+                Stream stream = seq.GetManagedAudioMediaDataStream();
+                if (stream != null)
                 {
-                    Stream stream = seq.GetManagedAudioMediaDataStream();
-                    if (stream != null)
-                    {
-                        val.m_Stream = stream;
-                        val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
-                        TreeNodeAndStreamDataLength tnasdl = new TreeNodeAndStreamDataLength();
-                        tnasdl.m_LocalStreamDataLength = val.m_Stream.Length;
-                        tnasdl.m_TreeNode = this;
-                        val.m_SubStreamMarkers.Add(tnasdl);
-                        return val;
-                    }
+                    val.m_Stream = stream;
+                    val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
+                    TreeNodeAndStreamDataLength tnasdl = new TreeNodeAndStreamDataLength();
+                    tnasdl.m_LocalStreamDataLength = val.m_Stream.Length;
+                    tnasdl.m_TreeNode = this;
+                    val.m_SubStreamMarkers.Add(tnasdl);
+                    return val;
                 }
             }
             return null;
@@ -511,16 +457,13 @@ namespace urakawa.core
                 }
                 return textMedia.Text;
             }
-            else
+            SequenceMedia seq = GetTextSequenceMedia();
+            if (seq != null)
             {
-                SequenceMedia seq = GetTextSequenceMedia();
-                if (seq != null)
+                String strText = seq.GetMediaText();
+                if (!String.IsNullOrEmpty(strText))
                 {
-                    String strText = seq.GetMediaText();
-                    if (!String.IsNullOrEmpty(strText))
-                    {
-                        return strText;
-                    }
+                    return strText;
                 }
             }
 
@@ -592,6 +535,16 @@ namespace urakawa.core
             return GetMediaInChannel<TextChannel>();
         }
 
+        public Media GetManagedAudioMediaOrSequenceMedia()
+        {
+            ManagedAudioMedia managedAudioMedia = GetManagedAudioMedia();
+            if (managedAudioMedia == null)
+            {
+                return GetManagedAudioSequenceMedia();
+            }
+            return managedAudioMedia;
+        }
+
         public ManagedAudioMedia GetManagedAudioMedia()
         {
             AbstractAudioMedia media = GetAudioMedia();
@@ -611,6 +564,30 @@ namespace urakawa.core
             }
             return null;
         }
+
+        public SequenceMedia GetManagedAudioSequenceMedia()
+        {
+            SequenceMedia seqAudioMedia = GetAudioSequenceMedia();
+            bool isSeqValid = seqAudioMedia != null
+                && seqAudioMedia.ChildMedias.Count > 0 && !seqAudioMedia.AllowMultipleTypes;
+            if (isSeqValid)
+            {
+                foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
+                {
+                    if (!(media is ManagedAudioMedia))
+                    {
+                        isSeqValid = false;
+                        break;
+                    }
+                }
+            }
+            if (isSeqValid)
+            {
+                return seqAudioMedia;
+            }
+            return null;
+        }
+
         public SequenceMedia GetAudioSequenceMedia()
         {
             Media med = GetMediaInAudioChannel();
@@ -940,7 +917,7 @@ namespace urakawa.core
                 }
                 prop.TreeNodeOwner = this;
                 mProperties.Insert(mProperties.Count, prop);
-                
+
             }
         }
 
@@ -1603,7 +1580,7 @@ namespace urakawa.core
             {
                 throw new NodeDoesNotExistException("The given node is not a children of this node !");
             }
-            Insert(node, index+1);
+            Insert(node, index + 1);
         }
 
         /// <summary>

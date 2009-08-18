@@ -90,20 +90,19 @@ namespace urakawa.commands
                 throw new NodeInDifferentPresentationException("TreeNode vs ManagedAudioMedia");
             }
 
+            if (!managedAudioMediaSource.HasActualAudioMediaData || !managedAudioMediaTarget.HasActualAudioMediaData)
+            {
+                throw new ArgumentException("HasActualAudioMediaData");
+            }
+
             TreeNode = treeNode;
             TimeInsert = insertTime;
 
             ManagedAudioMediaSource = managedAudioMediaSource;
             ManagedAudioMediaTarget = managedAudioMediaTarget;
 
-            if (ManagedAudioMediaSource.HasActualAudioMediaData)
-            {
-                m_UsedMediaData.Add(ManagedAudioMediaSource.AudioMediaData);
-            }
-            if (ManagedAudioMediaTarget.HasActualAudioMediaData)
-            {
-                m_UsedMediaData.Add(ManagedAudioMediaTarget.AudioMediaData);
-            }
+            m_UsedMediaData.Add(ManagedAudioMediaSource.AudioMediaData);
+            m_UsedMediaData.Add(ManagedAudioMediaTarget.AudioMediaData);
 
             ShortDescription = "Insert new audio";
             LongDescription = "Insert WaveAudioMediaData from a source ManagedAudioMedia into a target ManagedAudioMedia";

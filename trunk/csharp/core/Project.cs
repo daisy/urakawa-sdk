@@ -335,6 +335,9 @@ namespace urakawa
             ManagedAudioMedia manMedia = pres.MediaFactory.CreateManagedAudioMedia();
             pres.CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, manMedia, Time.Zero);
             pres.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
+            TreeNodeAndStreamSelection selection = new TreeNodeAndStreamSelection();
+            selection.m_TreeNode = treeNode;
+            pres.CommandFactory.CreateTreeNodeAudioStreamDeleteCommand(selection);
             //
             pres.MediaFactory.CreateExternalImageMedia();
             pres.MediaFactory.CreateExternalVideoMedia();

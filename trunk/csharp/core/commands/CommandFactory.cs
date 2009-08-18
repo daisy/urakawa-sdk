@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using urakawa.command;
 using urakawa.core;
 using urakawa.media.data.audio;
@@ -29,6 +30,13 @@ namespace urakawa.commands
         {
             ManagedAudioMediaInsertDataCommand command = Create<ManagedAudioMediaInsertDataCommand>();
             command.Init(treeNode, managedAudioMediaTarget, managedAudioMediaSource, timeInsert);
+            return command;
+        }
+
+        public TreeNodeAudioStreamDeleteCommand CreateTreeNodeAudioStreamDeleteCommand(TreeNodeAndStreamSelection selection)
+        {
+            TreeNodeAudioStreamDeleteCommand command = Create<TreeNodeAudioStreamDeleteCommand>();
+            command.Init(selection);
             return command;
         }
     }

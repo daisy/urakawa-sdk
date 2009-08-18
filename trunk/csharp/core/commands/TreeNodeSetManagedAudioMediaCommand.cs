@@ -74,13 +74,16 @@ namespace urakawa.commands
             {
                 throw new NodeInDifferentPresentationException("TreeNode vs ManagedAudioMedia");
             }
+
+            if (!managedMedia.HasActualAudioMediaData)
+            {
+                throw new ArgumentException("HasActualAudioMediaData");
+            }
+
             TreeNode = treeNode;
             ManagedAudioMedia = managedMedia;
 
-            if (ManagedAudioMedia.HasActualAudioMediaData)
-            {
-                m_UsedMediaData.Add(ManagedAudioMedia.AudioMediaData);
-            }
+            m_UsedMediaData.Add(ManagedAudioMedia.AudioMediaData);
 
             ShortDescription = "Add new audio";
             LongDescription = "Attach a ManagedAudioMedia to a TreeNode in the AudioChannel via the ChannelsProperty";
