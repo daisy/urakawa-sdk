@@ -125,14 +125,14 @@ namespace urakawa.media.data
         /// <exception cref="exception.OperationNotValidException">
         /// Thrown if the underlying data file could not be opened in read-mode - see inner <see cref="Exception"/> for datails of cause
         /// </exception>
-        public override Stream GetInputStream()
+        public override Stream OpenInputStream()
         {
             lock (m_lock)
             {
-                return GetInputStream_NoLock();
+                return OpenInputStream_NoLock();
             }
         }
-        private Stream GetInputStream_NoLock()  
+        private Stream OpenInputStream_NoLock()  
         {
             if (mOpenOutputStream != null)
             {
@@ -187,7 +187,7 @@ namespace urakawa.media.data
         /// <exception cref="exception.OperationNotValidException">
         /// Thrown if the underlying data file could not be opened in write-mode - see inner <see cref="Exception"/> for datails of cause
         /// </exception>
-        public override Stream GetOutputStream()
+        public override Stream OpenOutputStream()
         {
             lock (m_lock)
             {
@@ -287,7 +287,7 @@ namespace urakawa.media.data
             lock (m_lock)
             {
                 DataProvider c = Presentation.DataProviderFactory.Create<FileDataProvider>(MimeType);
-                Stream thisData = GetInputStream_NoLock();
+                Stream thisData = OpenInputStream_NoLock();
                 try
                 {
                     if (thisData.Length > 0)
@@ -313,7 +313,7 @@ namespace urakawa.media.data
             lock (m_lock)
             {
                 FileDataProvider expFDP = destPres.DataProviderFactory.Create<FileDataProvider>(MimeType);
-                Stream thisStm = GetInputStream_NoLock();
+                Stream thisStm = OpenInputStream_NoLock();
                 try
                 {
                     if (thisStm.Length > 0)

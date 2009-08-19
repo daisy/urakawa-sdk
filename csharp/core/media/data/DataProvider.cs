@@ -52,9 +52,9 @@ namespace urakawa.media.data
         /// <remarks>
         /// Make sure to close any <see cref="Stream"/> returned by this method when it is no longer needed. 
         /// If there are any open input <see cref="Stream"/>s, subsequent calls to methods
-        /// <see cref="GetOutputStream"/> and <see cref="Delete"/> will cause <see cref="exception.InputStreamsOpenException"/>s
+        /// <see cref="OpenOutputStream"/> and <see cref="Delete"/> will cause <see cref="exception.InputStreamsOpenException"/>s
         /// </remarks>
-        public abstract Stream GetInputStream();
+        public abstract Stream OpenInputStream();
 
         /// <summary>
         /// Gets a <see cref="Stream"/> providing write access to the data
@@ -69,10 +69,10 @@ namespace urakawa.media.data
         /// <remarks>
         /// Make sure to close any <see cref="Stream"/> returned by this method when it is no longer needed. 
         /// If there are any open input <see cref="Stream"/>s, subsequent calls to methods
-        /// <see cref="GetOutputStream"/> and <see cref="GetInputStream"/> and <see cref="Delete"/> 
+        /// <see cref="OpenOutputStream"/> and <see cref="OpenInputStream"/> and <see cref="Delete"/> 
         /// will cause <see cref="exception.OutputStreamOpenException"/>s
         /// </remarks>
-        public abstract Stream GetOutputStream();
+        public abstract Stream OpenOutputStream();
 
         /// <summary>
         /// Deletes any resources associated with <c>this</c> permanently. Additionally removes the <see cref="DataProvider"/>

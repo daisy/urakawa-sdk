@@ -23,11 +23,14 @@ namespace urakawa.media.data.utilities
             FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             try
             {
-                audio.PCMFormatInfo formatInfo = audio.PCMDataInfo.ParseRiffWaveHeader(fs);
+                uint dataLength;
+                AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(fs, out dataLength);
+
                 fs.Close();
-                if (formatInfo != null)
+
+                if (format != null)
                 {
-                    return formatInfo.IsCompressed ? AudioFileTypes.UncompressedWav : AudioFileTypes.UncompressedWav;
+                    return format.IsCompressed ? AudioFileTypes.UncompressedWav : AudioFileTypes.UncompressedWav;
                 }
             }
             catch (System.Exception)
@@ -120,11 +123,11 @@ namespace urakawa.media.data.utilities
             {
                 case AudioFileTypes.UncompressedWav:
                 case AudioFileTypes.CompressedWav:
-                convertedFile_FullPath = formatConverter.ConvertSampleRate ( SourceFilePath, destinationDirectory, (int)destinationFormatInfo.NumberOfChannels, (int)destinationFormatInfo.SampleRate, (int)destinationFormatInfo.BitDepth );
+                    convertedFile_FullPath = formatConverter.ConvertSampleRate(SourceFilePath, destinationDirectory, destinationFormatInfo.Data.NumberOfChannels, (int)destinationFormatInfo.Data.SampleRate, (int)destinationFormatInfo.Data.BitDepth);
                     break;
 
                 case AudioFileTypes.mp3:
-                convertedFile_FullPath = formatConverter.UnCompressMp3File ( SourceFilePath, destinationDirectory, (int)destinationFormatInfo.NumberOfChannels, (int)destinationFormatInfo.SampleRate, (int)destinationFormatInfo.BitDepth );
+                    convertedFile_FullPath = formatConverter.UnCompressMp3File(SourceFilePath, destinationDirectory, destinationFormatInfo.Data.NumberOfChannels, (int)destinationFormatInfo.Data.SampleRate, (int)destinationFormatInfo.Data.BitDepth);
                     break;
 
                 default:

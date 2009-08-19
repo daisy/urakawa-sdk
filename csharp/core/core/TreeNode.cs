@@ -246,14 +246,14 @@ namespace urakawa.core
             return Parent.GetNextSiblingWithManagedAudio();
         }
 
-        public StreamWithMarkers? GetManagedAudioData()
+        public StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMedia()
         {
             StreamWithMarkers val;
 
             ManagedAudioMedia audioMedia = GetManagedAudioMedia();
             if (audioMedia != null && audioMedia.HasActualAudioMediaData)
             {
-                val.m_Stream = audioMedia.AudioMediaData.GetAudioData();
+                val.m_Stream = audioMedia.AudioMediaData.OpenPcmInputStream();
                 val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
                 TreeNodeAndStreamDataLength tnasdl = new TreeNodeAndStreamDataLength();
                 tnasdl.m_LocalStreamDataLength = val.m_Stream.Length;
@@ -264,7 +264,7 @@ namespace urakawa.core
             SequenceMedia seq = GetManagedAudioSequenceMedia();
             if (seq != null)
             {
-                Stream stream = seq.GetManagedAudioMediaDataStream();
+                Stream stream = seq.OpenPcmInputStreamOfManagedAudioMedia();
                 if (stream != null)
                 {
                     val.m_Stream = stream;
@@ -279,9 +279,9 @@ namespace urakawa.core
             return null;
         }
 
-        public StreamWithMarkers? GetManagedAudioDataFlattened()
+        public StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened()
         {
-            StreamWithMarkers? val = GetManagedAudioData();
+            StreamWithMarkers? val = OpenPcmInputStreamOfManagedAudioMedia();
             if (val != null)
             {
                 return val;
@@ -292,7 +292,7 @@ namespace urakawa.core
             for (int index = 0; index < mChildren.Count; index++)
             {
                 TreeNode node = mChildren.Get(index);
-                StreamWithMarkers? childVal = node.GetManagedAudioDataFlattened();
+                StreamWithMarkers? childVal = node.OpenPcmInputStreamOfManagedAudioMediaFlattened();
                 if (childVal != null)
                 {
                     listStreamsWithMarkers.Add(childVal.GetValueOrDefault());
