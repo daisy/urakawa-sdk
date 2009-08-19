@@ -83,11 +83,22 @@ namespace AudioLib
             }
         }
 
+        private string m_RecordedFilePath;
 
         public event AudioRecordingFinishHandler AudioRecordingFinished;
         public delegate void AudioRecordingFinishHandler(object sender, AudioRecordingFinishEventArgs e);
         public class AudioRecordingFinishEventArgs : EventArgs
         {
+            private string m_RecordedFilePath;
+            public string RecordedFilePath
+            {
+                get { return m_RecordedFilePath; }
+            }
+
+            public AudioRecordingFinishEventArgs(string recordedFilePath)
+            {
+                m_RecordedFilePath = recordedFilePath;
+            }
         }
 
         private readonly PcmDataBufferAvailableEventArgs m_PcmDataBufferAvailableEventArgs = new PcmDataBufferAvailableEventArgs(new byte[] { 0, 0, 0, 0 });
@@ -175,12 +186,6 @@ namespace AudioLib
 
         private ulong m_RecordedFileRiffHeaderSize;
 
-        private string m_RecordedFilePath;
-        public string RecordedFilePath
-        {
-            get { return m_RecordedFilePath; }
-        }
-
 
         private string m_RecordingDirectory;
         public string RecordingDirectory
@@ -255,13 +260,13 @@ namespace AudioLib
 
             WaveFormat waveFormat = new WaveFormat();
             waveFormat.FormatTag = WaveFormatTag.Pcm;
-            waveFormat.Channels = Convert.ToInt16(RecordingPCMFormat.NumberOfChannels);
-            waveFormat.SamplesPerSecond = RecordingPCMFormat.SampleRate;
-            waveFormat.BitsPerSample = Convert.ToInt16(RecordingPCMFormat.BitDepth);
-            waveFormat.AverageBytesPerSecond = RecordingPCMFormat.SampleRate * RecordingPCMFormat.BlockAlign;
-            waveFormat.BlockAlign = Convert.ToInt16(RecordingPCMFormat.BlockAlign);
+            waveFormat.Channels = (short)RecordingPCMFormat.NumberOfChannels;
+            waveFormat.SamplesPerSecond = (int)RecordingPCMFormat.SampleRate;
+            waveFormat.BitsPerSample = (short)RecordingPCMFormat.BitDepth;
+            waveFormat.AverageBytesPerSecond = (int)RecordingPCMFormat.SampleRate * RecordingPCMFormat.BlockAlign;
+            waveFormat.BlockAlign = (short)RecordingPCMFormat.BlockAlign;
 
-            int byteRate = RecordingPCMFormat.SampleRate * RecordingPCMFormat.BlockAlign;
+            uint byteRate = RecordingPCMFormat.SampleRate * RecordingPCMFormat.BlockAlign;
 
             int pcmDataBufferSize = (int)(byteRate * REFRESH_INTERVAL_MS / 1000.0);
             pcmDataBufferSize -= pcmDataBufferSize % RecordingPCMFormat.BlockAlign;
@@ -300,21 +305,12 @@ namespace AudioLib
                     i++;
                     m_RecordedFilePath = RecordingDirectory + Path.DirectorySeparatorChar + i.ToString() + ".wav";
 
-                } while (File.Exists(RecordedFilePath));
+                } while (File.Exists(m_RecordedFilePath));
 
-                Stream stream = File.Create(RecordedFilePath);
+                Stream stream = File.Create(m_RecordedFilePath);
                 try
                 {
-                    m_RecordedFileRiffHeaderSize = AudioLibPCMFormat.WriteWavePcmRiffHeader(stream, 0,
-                                                                                            (ushort)
-                                                                                            m_CircularBuffer.Format.
-                                                                                                Channels,
-                                                                                            (uint)
-                                                                                            m_CircularBuffer.Format.
-                                                                                                SamplesPerSecond,
-                                                                                            (ushort)
-                                                                                            m_CircularBuffer.Format.
-                                                                                                BitsPerSample);
+                    m_RecordedFileRiffHeaderSize = m_RecordingPCMFormat.RiffHeaderWrite(stream, 0);
                 }
                 finally
                 {
@@ -325,6 +321,7 @@ namespace AudioLib
             m_CircularBufferRefreshThread = new Thread(new ThreadStart(circularBufferRefreshThreadMethod));
             m_CircularBufferRefreshThread.Name = "Recorder Notify Thread";
             m_CircularBufferRefreshThread.Priority = ThreadPriority.Highest;
+            m_CircularBufferRefreshThread.IsBackground = true;
 
 
             CurrentState = (recordingToFile ? State.Recording : State.Monitoring);
@@ -444,7 +441,7 @@ namespace AudioLib
             {
                 if (m_RecordingFileWriter == null)
                 {
-                    FileInfo fi = new FileInfo(RecordedFilePath);
+                    FileInfo fi = new FileInfo(m_RecordedFilePath);
                     m_RecordingFileWriter = new BinaryWriter(File.OpenWrite(fi.FullName));
                 }
 
@@ -487,6 +484,8 @@ namespace AudioLib
                 return;
             }
 
+            bool wasRecording = CurrentState == State.Recording;
+
             Monitor.Enter(LOCK);
             try
             {
@@ -514,24 +513,15 @@ namespace AudioLib
             {
                 m_RecordingFileWriter.Close();
 
-                FileInfo fileInfo = new FileInfo(RecordedFilePath);
-                Stream stream = File.OpenWrite(RecordedFilePath);
+                FileInfo fileInfo = new FileInfo(m_RecordedFilePath);
+                Stream stream = File.OpenWrite(m_RecordedFilePath);
                 try
                 {
-                    m_RecordedFileRiffHeaderSize = AudioLibPCMFormat.WriteWavePcmRiffHeader(stream,
+                    m_RecordedFileRiffHeaderSize = m_RecordingPCMFormat.RiffHeaderWrite(stream,
                                                             (uint)
                                                             (fileInfo.Length -
                                                              (long)
-                                                             m_RecordedFileRiffHeaderSize),
-                                                            (ushort)
-                                                            m_CircularBuffer.Format.
-                                                                Channels,
-                                                            (uint)
-                                                            m_CircularBuffer.Format.
-                                                                SamplesPerSecond,
-                                                            (ushort)
-                                                            m_CircularBuffer.Format.
-                                                                BitsPerSample);
+                                                             m_RecordedFileRiffHeaderSize));
                 }
                 finally
                 {
@@ -540,7 +530,7 @@ namespace AudioLib
 
                 if (fileInfo.Length == (long) m_RecordedFileRiffHeaderSize) // no PCM data, just RIFF header
                 {
-                    File.Delete(RecordedFilePath);
+                    File.Delete(m_RecordedFilePath);
                     m_RecordedFilePath = "";
                 }
             }
@@ -553,8 +543,8 @@ namespace AudioLib
 
             CurrentState = State.Stopped;
 
-            if (AudioRecordingFinished != null)
-                AudioRecordingFinished(this, new AudioRecordingFinishEventArgs());
+            if (wasRecording && AudioRecordingFinished != null)
+                AudioRecordingFinished(this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
         }
     }
 }

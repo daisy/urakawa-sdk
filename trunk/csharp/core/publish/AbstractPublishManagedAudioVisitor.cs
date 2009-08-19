@@ -164,12 +164,11 @@ namespace urakawa.publish
             {
                 if (mCurrentAudioFilePCMFormat != null)
                 {
-                    PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
-                    pcmData.DataLength = (uint)mCurrentAudioFileStream.Length -
+                    uint dataLength = (uint)mCurrentAudioFileStream.Length -
                                           mCurrentAudioFileStreamRiffWaveHeaderLength;
                     mCurrentAudioFileStream.Position = 0;
                     mCurrentAudioFileStream.Seek(0, SeekOrigin.Begin);
-                    pcmData.WriteRiffWaveHeader(mCurrentAudioFileStream);
+                    mCurrentAudioFilePCMFormat.Data.RiffHeaderWrite(mCurrentAudioFileStream, dataLength);
                     /*
                     Uri file = getCurrentAudioFileUri();
                     FileStream fs = new FileStream(
@@ -227,11 +226,9 @@ namespace urakawa.publish
             if (mCurrentAudioFileStream == null) throw new Exception("mCurrentAudioFileStream is null !!!");
 
             mCurrentAudioFilePCMFormat = pcmfi;
-            PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
-            //pcmData.setDataLength((uint)mCurrentAudioFileStream.Length); 
-            pcmData.DataLength = 0;
+            
             mCurrentAudioFileStreamRiffWaveHeaderLength =
-                (uint)pcmData.WriteRiffWaveHeader(mCurrentAudioFileStream);
+                (uint)mCurrentAudioFilePCMFormat.Data.RiffHeaderWrite(mCurrentAudioFileStream, 0);
         }
 
         #region ITreeNodeVisitor Members
@@ -268,12 +265,12 @@ namespace urakawa.publish
 
                     TimeDelta durationFromRiffHeader = amd.AudioDuration;
 
-                    Time clipBegin = new Time(AudioLibPCMFormat.ConvertBytesToTime(mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength, (int)mCurrentAudioFilePCMFormat.SampleRate, mCurrentAudioFilePCMFormat.BlockAlign));
+                    Time clipBegin = new Time(mCurrentAudioFilePCMFormat.Data.ConvertBytesToTime(mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength));
                     Time clipEnd = clipBegin.AddTimeDelta(durationFromRiffHeader);
-                    Stream stream = amd.GetAudioData();
 
                     //BinaryReader rd = new BinaryReader(stream);
 
+                    Stream stream = amd.OpenPcmInputStream();
                     try
                     {
                         const int BUFFER_SIZE = 6 * 1024 * 1024; // 6 MB
@@ -281,8 +278,7 @@ namespace urakawa.publish
                         //long pcmDataLength = stream.Length - stream.Position; 
                         //TimeDelta durationFromReverseArithmetics = amd.PCMFormat.GetDuration(pcmLength); 
 
-                        long pcmLength = AudioLibPCMFormat.ConvertTimeToBytes(durationFromRiffHeader.TimeDeltaAsMillisecondDouble,
-                                                             (int) amd.PCMFormat.SampleRate, amd.PCMFormat.BlockAlign);
+                        long pcmLength = amd.PCMFormat.Data.ConvertTimeToBytes(durationFromRiffHeader.TimeDeltaAsMillisecondDouble);
 
                         if (pcmLength <= BUFFER_SIZE)
                         {

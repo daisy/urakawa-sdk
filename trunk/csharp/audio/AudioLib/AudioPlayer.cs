@@ -353,7 +353,7 @@ namespace AudioLib
         {
             // example: 44.1 kHz (44,100 samples per second) * 16 bits per sample / 8 bits per byte * 2 channels (stereo)
             // blockAlign is number of bytes per frame (samples required for all channels)
-            int byteRate = m_CurrentAudioPCMFormat.SampleRate * m_CurrentAudioPCMFormat.BlockAlign;
+            uint byteRate = m_CurrentAudioPCMFormat.SampleRate * m_CurrentAudioPCMFormat.BlockAlign;
 
             int pcmDataBufferSize = (int)(byteRate * REFRESH_INTERVAL_MS / 1000.0);
             pcmDataBufferSize -= pcmDataBufferSize % m_CurrentAudioPCMFormat.BlockAlign;
@@ -368,11 +368,12 @@ namespace AudioLib
 
             WaveFormat waveFormat = new WaveFormat();
             waveFormat.FormatTag = WaveFormatTag.Pcm;
-            waveFormat.BitsPerSample = Convert.ToInt16(m_CurrentAudioPCMFormat.BitDepth);
-            waveFormat.Channels = Convert.ToInt16(m_CurrentAudioPCMFormat.NumberOfChannels);
-            waveFormat.SamplesPerSecond = m_CurrentAudioPCMFormat.SampleRate;
-            waveFormat.BlockAlign = Convert.ToInt16(m_CurrentAudioPCMFormat.BlockAlign);
-            waveFormat.AverageBytesPerSecond = byteRate;
+
+            waveFormat.Channels = (short)m_CurrentAudioPCMFormat.NumberOfChannels;
+            waveFormat.SamplesPerSecond = (int)m_CurrentAudioPCMFormat.SampleRate;
+            waveFormat.BitsPerSample = (short)m_CurrentAudioPCMFormat.BitDepth;
+            waveFormat.AverageBytesPerSecond = (int) byteRate;
+            waveFormat.BlockAlign = (short)m_CurrentAudioPCMFormat.BlockAlign;
 
             BufferDescription bufferDescription = new BufferDescription();
             bufferDescription.BufferBytes = dxBufferSize;
@@ -431,6 +432,7 @@ namespace AudioLib
             m_CircularBufferRefreshThread = new Thread(new ThreadStart(circularBufferRefreshThreadMethod));
             m_CircularBufferRefreshThread.Name = "Player Refresh Thread";
             m_CircularBufferRefreshThread.Priority = ThreadPriority.Highest;
+            m_CircularBufferRefreshThread.IsBackground = true;
             m_CircularBufferRefreshThread.Start();
 
 
@@ -506,7 +508,7 @@ namespace AudioLib
                 }
 
 
-                int byteRate = m_CurrentAudioPCMFormat.SampleRate * m_CurrentAudioPCMFormat.BlockAlign;
+                uint byteRate = m_CurrentAudioPCMFormat.SampleRate * m_CurrentAudioPCMFormat.BlockAlign;
                 long predictedByteIncrement = (long)(byteRate * (REFRESH_INTERVAL_MS * 1.5) / 1000.0); // TODO: determine time experied since last iteration by comparing DateTime.Now.Ticks or a more efficient system timer
                 predictedByteIncrement -= predictedByteIncrement % m_CurrentAudioPCMFormat.BlockAlign;
 

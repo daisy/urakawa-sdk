@@ -121,10 +121,10 @@ namespace urakawa.commands
         public override void Execute()
         {
             TimeDelta duration = ManagedAudioMediaSource.Duration;
-            Stream stream = ManagedAudioMediaSource.AudioMediaData.GetAudioData();
+            Stream stream = ManagedAudioMediaSource.AudioMediaData.OpenPcmInputStream();
             try
             {
-                ManagedAudioMediaTarget.AudioMediaData.InsertAudioData(stream, TimeInsert, duration);
+                ManagedAudioMediaTarget.AudioMediaData.InsertPcmData(stream, TimeInsert, duration);
             }
             finally
             {
@@ -135,7 +135,7 @@ namespace urakawa.commands
         public override void UnExecute()
         {
             TimeDelta duration = ManagedAudioMediaSource.Duration;
-            ManagedAudioMediaTarget.AudioMediaData.RemoveAudioData(TimeInsert, TimeInsert.AddTimeDelta(duration));
+            ManagedAudioMediaTarget.AudioMediaData.RemovePcmData(TimeInsert, TimeInsert.AddTimeDelta(duration));
         }
 
         private List<MediaData> m_UsedMediaData = new List<MediaData>();

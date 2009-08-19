@@ -61,8 +61,7 @@ namespace urakawa.media.data
                             count));
             }
 
-            Stream provOutputStream = provider.GetOutputStream();
-
+            Stream provOutputStream = provider.OpenOutputStream();
             try
             {
                 provOutputStream.Seek(0, SeekOrigin.End);
@@ -124,8 +123,8 @@ namespace urakawa.media.data
             bool allEq;
             try
             {
-                s1 = dp1.GetInputStream();
-                s2 = dp2.GetInputStream();
+                s1 = dp1.OpenInputStream();
+                s2 = dp2.OpenInputStream();
                 allEq = ((s1.Length - s1.Position) == (s2.Length - s2.Position));
                 while (allEq && (s1.Position < s1.Length))
                 {

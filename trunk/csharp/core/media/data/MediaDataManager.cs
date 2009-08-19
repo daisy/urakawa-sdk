@@ -19,11 +19,9 @@ namespace urakawa.media.data
 
         public MediaDataManager(Presentation pres) : base(pres, "MD")
         {
-            mDefaultPCMFormat = new PCMFormatInfo();
             mEnforceSinglePCMFormat = true;
         }
 
-        private PCMFormatInfo mDefaultPCMFormat;
         private bool mEnforceSinglePCMFormat;
 
         private bool isNewDefaultPCMFormatOk(PCMFormatInfo newDefault)
@@ -43,13 +41,22 @@ namespace urakawa.media.data
         }
 
 
+        private PCMFormatInfo mDefaultPCMFormat;
         /// <summary>
         /// Gets (copy of) the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager 
         /// </summary>
         /// <returns>The default PCM format</returns>
         public PCMFormatInfo DefaultPCMFormat
         {
-            get { return mDefaultPCMFormat.Copy(); }
+            get
+            {
+                if (mDefaultPCMFormat == null)
+                {
+                    mDefaultPCMFormat = new PCMFormatInfo();
+                    return mDefaultPCMFormat;
+                }
+                return mDefaultPCMFormat.Copy();
+            }
             set
             {
                 if (value == null)
@@ -82,15 +89,15 @@ namespace urakawa.media.data
         /// <exception cref="exception.InvalidDataFormatException">
         /// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different number of channels
         /// </exception>
-        public ushort DefaultNumberOfChannels
-        {
-            set
-            {
-                PCMFormatInfo newFormat = DefaultPCMFormat;
-                newFormat.NumberOfChannels = value;
-                DefaultPCMFormat = newFormat;
-            }
-        }
+        //public ushort DefaultNumberOfChannels
+        //{
+        //    set
+        //    {
+        //        PCMFormatInfo newFormat = DefaultPCMFormat;
+        //        newFormat.Data.NumberOfChannels = value;
+        //        DefaultPCMFormat = newFormat;
+        //    }
+        //}
 
         /// <summary>
         /// Sets the sample rate of the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
@@ -98,15 +105,15 @@ namespace urakawa.media.data
         /// <exception cref="exception.InvalidDataFormatException">
         /// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different sample rate
         /// </exception>
-        public uint DefaultSampleRate
-        {
-            set
-            {
-                PCMFormatInfo newFormat = DefaultPCMFormat;
-                newFormat.SampleRate = value;
-                DefaultPCMFormat = newFormat;
-            }
-        }
+        //public uint DefaultSampleRate
+        //{
+        //    set
+        //    {
+        //        PCMFormatInfo newFormat = DefaultPCMFormat;
+        //        newFormat.Data.SampleRate = value;
+        //        DefaultPCMFormat = newFormat;
+        //    }
+        //}
 
         /// <summary>
         /// Sets the number of channels of the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
@@ -117,15 +124,15 @@ namespace urakawa.media.data
         /// <exception cref="exception.InvalidDataFormatException">
         /// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different bit depth
         /// </exception>
-        public ushort DefaultBitDepth
-        {
-            set
-            {
-                PCMFormatInfo newFormat = DefaultPCMFormat;
-                newFormat.BitDepth = value;
-                DefaultPCMFormat = newFormat;
-            }
-        }
+        //public ushort DefaultBitDepth
+        //{
+        //    set
+        //    {
+        //        PCMFormatInfo newFormat = DefaultPCMFormat;
+        //        newFormat.Data.BitDepth = value;
+        //        DefaultPCMFormat = newFormat;
+        //    }
+        //}
 
         /// <summary>
         /// Sets the default PCM format by number of channels, sample rate and bit depth
@@ -133,14 +140,14 @@ namespace urakawa.media.data
         /// <param name="numberOfChannels">The number of channels</param>
         /// <param name="sampleRate">The sample rate</param>
         /// <param name="bitDepth">The bit depth</param>
-        public void SetDefaultPCMFormat(ushort numberOfChannels, uint sampleRate, ushort bitDepth)
-        {
-            PCMFormatInfo newDefault = new PCMFormatInfo();
-            newDefault.NumberOfChannels = numberOfChannels;
-            newDefault.SampleRate = sampleRate;
-            newDefault.BitDepth = bitDepth;
-            DefaultPCMFormat = newDefault;
-        }
+        //public void SetDefaultPCMFormat(ushort numberOfChannels, uint sampleRate, ushort bitDepth)
+        //{
+        //    PCMFormatInfo newDefault = new PCMFormatInfo();
+        //    newDefault.Data.NumberOfChannels = numberOfChannels;
+        //    newDefault.Data.SampleRate = sampleRate;
+        //    newDefault.Data.BitDepth = bitDepth;
+        //    DefaultPCMFormat = newDefault;
+        //}
 
         /// <summary>
         /// Gets a <see cref="bool"/> indicating if a single 

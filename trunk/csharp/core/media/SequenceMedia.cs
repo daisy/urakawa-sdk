@@ -476,7 +476,7 @@ namespace urakawa.media
             }
             return strSeq;
         }
-        public Stream GetManagedAudioMediaDataStream()
+        public Stream OpenPcmInputStreamOfManagedAudioMedia()
         {
             if (AllowMultipleTypes)
             {
@@ -489,7 +489,7 @@ namespace urakawa.media
                 {
                     if (((ManagedAudioMedia)media).HasActualAudioMediaData)
                     {
-                        Stream stream = ((ManagedAudioMedia) media).AudioMediaData.GetAudioData();
+                        Stream stream = ((ManagedAudioMedia) media).AudioMediaData.OpenPcmInputStream();
                         if (stream != null)
                         {
                             streams.Add(stream);

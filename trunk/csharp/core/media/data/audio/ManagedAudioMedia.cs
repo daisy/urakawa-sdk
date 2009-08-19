@@ -61,12 +61,12 @@ namespace urakawa.media.data.audio
                 return copyMAM;
             }
 
-            Stream pcm = AudioMediaData.GetAudioData(clipBegin, clipEnd);
+            Stream pcm = AudioMediaData.OpenPcmInputStream(clipBegin, clipEnd);
             try
             {
                 AudioMediaData data = Presentation.MediaDataFactory.Create(typeof(AudioMediaData)) as AudioMediaData;
                 data.PCMFormat = AudioMediaData.PCMFormat;
-                data.AppendAudioData(pcm, null);
+                data.AppendPcmData(pcm, null);
                 copyMAM.AudioMediaData = data;
                 return copyMAM;
             }

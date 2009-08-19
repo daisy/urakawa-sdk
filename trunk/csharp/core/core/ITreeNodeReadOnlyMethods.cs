@@ -27,8 +27,8 @@ namespace urakawa.core
         bool IsBefore(TreeNode node);
         TreeNode Root { get; }
         string GetTextMediaFlattened();
-        StreamWithMarkers? GetManagedAudioDataFlattened();
-        StreamWithMarkers? GetManagedAudioData();
+        StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened();
+        StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMedia();
         TreeNode GetNextSiblingWithManagedAudio();
 
         TreeNode GetFirstDescendantWithText();

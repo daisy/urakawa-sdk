@@ -283,21 +283,24 @@ namespace XukImport
             //{
             //fullWavPath = m_convertedWavFiles[fullWavPathOriginal];
             //}
-            PCMDataInfo pcmInfo = null;
+
+            uint dataLength;
+            AudioLibPCMFormat pcmInfo = null;
+
             Stream wavStream = null;
             try
             {
                 wavStream = File.Open(fullWavPath, FileMode.Open,
                                       FileAccess.Read, FileShare.Read);
-                pcmInfo = PCMDataInfo.ParseRiffWaveHeader(wavStream);
+
+                pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
 
                 if (m_firstTimePCMFormat)
                 {
-                    presentation.MediaDataManager.DefaultPCMFormat =
-                        pcmInfo.Copy();
+                    presentation.MediaDataManager.DefaultPCMFormat = new PCMFormatInfo(pcmInfo);
                     m_firstTimePCMFormat = false;
                 }
-                if (!presentation.MediaDataManager.DefaultPCMFormat.IsCompatibleWith(pcmInfo))
+                if (!presentation.MediaDataManager.DefaultPCMFormat.Data.IsCompatibleWith(pcmInfo))
                 {
                     wavStream.Close();
 
@@ -315,18 +318,18 @@ namespace XukImport
 
                     wavStream = File.Open(newfullWavPath, FileMode.Open,
                                           FileAccess.Read, FileShare.Read);
-                    pcmInfo = PCMDataInfo.ParseRiffWaveHeader(wavStream);
 
-                    if (!presentation.MediaDataManager.DefaultPCMFormat.IsCompatibleWith(pcmInfo))
+                    pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
+
+
+                    if (!presentation.MediaDataManager.DefaultPCMFormat.Data.IsCompatibleWith(pcmInfo))
                     {
                         wavStream.Close();
                         throw new Exception("Could not convert the WAV PCM format !!");
                     }
                 }
 
-                TimeDelta totalDuration = new TimeDelta(pcmInfo.Duration);
-
-                TimeDelta clipDuration = new TimeDelta(totalDuration);
+                TimeDelta clipDuration = new TimeDelta(pcmInfo.ConvertBytesToTime(dataLength));
 
                 Time clipB = Time.Zero;
                 Time clipE = Time.MaxValue;
@@ -352,7 +355,7 @@ namespace XukImport
                 long byteOffset = 0;
                 if (!clipB.IsEqualTo(Time.Zero))
                 {
-                    byteOffset = AudioLibPCMFormat.ConvertTimeToBytes(clipB.TimeAsMillisecondFloat, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                    byteOffset = pcmInfo.ConvertTimeToBytes(clipB.TimeAsMillisecondFloat);
                 }
                 if (byteOffset > 0)
                 {
@@ -366,7 +369,7 @@ namespace XukImport
                     (WavAudioMediaData)
                     presentation.MediaDataFactory.CreateAudioMediaData();
 
-                mediaData.InsertAudioData(wavStream, Time.Zero, clipDuration);
+                mediaData.InsertPcmData(wavStream, Time.Zero, clipDuration);
 
                 media = presentation.MediaFactory.CreateManagedAudioMedia();
                 ((ManagedAudioMedia)media).AudioMediaData = mediaData;

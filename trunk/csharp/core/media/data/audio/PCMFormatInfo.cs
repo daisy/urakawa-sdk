@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using AudioLib;
 using urakawa.xuk;
 
 namespace urakawa.media.data.audio
@@ -9,15 +10,25 @@ namespace urakawa.media.data.audio
     /// </summary>
     public class PCMFormatInfo : XukAble, IValueEquatable<PCMFormatInfo>
     {
+        private AudioLibPCMFormat m_Data;
+        public AudioLibPCMFormat Data
+        {
+            get
+            {
+                return m_Data;
+            }
+        }
+
         public override string ToString()
         {
-            return "(PCM " + BitDepth + " bits, " + SampleRate + " Hz, " + (NumberOfChannels == 1 ? "Mono" : (NumberOfChannels == 2 ? "Stereo" : "" + NumberOfChannels)) + ")";
+            return "(PCM " + Data.BitDepth + " bits, " + Data.SampleRate + " Hz, " + (Data.NumberOfChannels == 1 ? "Mono" : (Data.NumberOfChannels == 2 ? "Stereo" : "" + Data.NumberOfChannels)) + ")";
         }
 
         public override string GetTypeNameFormatted()
         {
             return XukStrings.PCMFormatInfo;
         }
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -31,7 +42,7 @@ namespace urakawa.media.data.audio
         /// </summary>
         /// <param name="other">The PCMFormatInfo to copy</param>
         public PCMFormatInfo(PCMFormatInfo other)
-            : this(other.NumberOfChannels, other.SampleRate, other.BitDepth)
+            : this(other.Data)
         {
         }
 
@@ -43,10 +54,14 @@ namespace urakawa.media.data.audio
         /// <param name="bd">The given bit depth value</param>
         public PCMFormatInfo(ushort noc, uint sr, ushort bd)
         {
-            NumberOfChannels = noc;
-            SampleRate = sr;
-            BitDepth = bd;
+            m_Data = new AudioLibPCMFormat(noc, sr, bd);
         }
+
+        public PCMFormatInfo(AudioLibPCMFormat format)
+            : this(format.NumberOfChannels, format.SampleRate, format.BitDepth)
+        {
+        }
+
 
         /// <summary>
         /// Create a copy of the <see cref="PCMFormatInfo"/>
@@ -56,165 +71,6 @@ namespace urakawa.media.data.audio
         {
             return new PCMFormatInfo(this);
         }
-
-        private ushort mNumberOfChannels = 1;
-
-        /// <summary>
-        /// Gets or sets the number of channels of audio
-        /// </summary>
-        /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref name="value"/> is less than <c>1</c>
-        /// </exception>
-        public virtual ushort NumberOfChannels
-        {
-            get { return mNumberOfChannels; }
-            set
-            {
-                if (value < 1)
-                {
-                    throw new exception.MethodParameterIsOutOfBoundsException(
-                        "Minimum number of channels is 1");
-                }
-                mNumberOfChannels = value;
-            }
-        }
-
-        ///// <summary>
-        ///// Gets the PCM data length corresponding to a given duration
-        ///// </summary>
-        ///// <param name="duration">The given duration</param>
-        ///// <returns>The PCM data length</returns>
-        //public uint GetDataLength(TimeDelta duration)
-        //{
-        //    //double ms = duration.TimeDeltaAsMillisecondDouble;
-        //    //double bytes = (ms * SampleRate * NumberOfChannels * BitDepth / 8.0) / 1000.0;
-        //    //return (uint) bytes;
-
-        //    uint blockCount = (uint)Math.Round(((double)duration.TimeDeltaAsTimeSpan.Ticks) / GetTicksPerBlock());
-        //    uint res = blockCount * BlockAlign;
-        //    return res;
-        //}
-
-        //public long GetByteForTime(Time time)
-        //{
-        //    double ms = time.TimeAsMillisecondFloat;
-        //    return AudioLibPCMFormat.ConvertTimeToBytes(ms, (int)mSampleRate, BlockAlign);
-        //    //return (long)(Math.Round(time.TimeAsTimeSpan.Ticks / ((double)TimeSpan.TicksPerSecond / SampleRate))* BlockAlign);
-        //}
-
-        /// <summary>
-        /// Gets the duration of PCM data in the format of a given length
-        /// </summary>
-        /// <param name="dataLen">The length</param>
-        /// <returns>The duration</returns>
-        //public TimeDelta GetDuration(long dataLen)
-        //{
-        //    //double time = 1000.0 * dataLen / ((double)SampleRate * NumberOfChannels * BitDepth / 8.0);
-        //    //return new TimeDelta(time);
-
-        //    double blockCount = ((double)dataLen) / BlockAlign;
-        //    return new TimeDelta(TimeSpan.FromTicks((long)(Math.Round(GetTicksPerBlock() * blockCount))));
-        //}
-
-        private uint mSampleRate = 44100;
-
-        /// <summary>
-        /// Gets the sample rate in Hz of the audio
-        /// </summary>
-        public virtual uint SampleRate
-        {
-            get { return mSampleRate; }
-            set
-            {
-                if (mSampleRate < 1)
-                {
-                    throw new exception.MethodParameterIsOutOfBoundsException(
-                        "Sample rate must be positive");
-                }
-                mSampleRate = value;
-            }
-        }
-
-        private ushort mBitDepth = 16;
-
-        /// <summary>
-        /// Gets the depth in bits of the audio, ie. the size in bits of each sample of audio
-        /// </summary>
-        public virtual ushort BitDepth
-        {
-            get { return mBitDepth; }
-            set
-            {
-                if ((value % 8) != 0)
-                {
-                    throw new exception.MethodParameterIsOutOfBoundsException(
-                        "Bit depth must be a multiple of 8");
-                }
-                if (value < 8)
-                {
-                    throw new exception.MethodParameterIsOutOfBoundsException(
-                        "Bit depth must be a least 8");
-                }
-                mBitDepth = value;
-            }
-        }
-
-
-        /// <summary>
-        /// Gets the byte rate of the raw PCM data
-        /// </summary>
-        public uint ByteRate
-        {
-            get { return NumberOfChannels * SampleRate * BitDepth / 8U; }
-        }
-
-        /// <summary>
-        /// Gets the size in bytes of a single block (i.e. a sample from each channel)
-        /// </summary>
-        public ushort BlockAlign
-        {
-            get
-            {
-                return (ushort)(NumberOfChannels * BitDepth / 8);
-            }
-        }
-        
-        private bool m_IsCompressed = false;
-
-        /// <summary>
-        /// Is true if wav stream is compressed. 
-                /// </summary>
-        public bool IsCompressed
-            {
-            get { return m_IsCompressed; }
-            set
-                {
-                m_IsCompressed = value;
-                }
-            }
-
-
-        /// <summary>
-        /// Determines if the <see cref="PCMFormatInfo"/> is compatible with a given other <see cref="PCMDataInfo"/>
-        /// </summary>
-        /// <param name="pcmInfo">The other PCMDataInfo</param>
-        /// <returns>A <see cref="bool"/> indicating the compatebility</returns>
-        public bool IsCompatibleWith(PCMFormatInfo pcmInfo)
-        {
-            if (pcmInfo == null) return false;
-            if (NumberOfChannels != pcmInfo.NumberOfChannels) return false;
-            if (SampleRate != pcmInfo.SampleRate) return false;
-            if (BitDepth != pcmInfo.BitDepth) return false;
-            return true;
-        }
-
-       
-
-        //private double GetTicksPerBlock()
-        //{
-        //    return ((double)TimeSpan.TicksPerSecond) / SampleRate;
-        //}
-
 
         #region IXUKAble members
 
@@ -238,7 +94,7 @@ namespace urakawa.media.data.audio
                                                      "Attribute NumberOfChannels value {0} is not an unsigned short integer",
                                                      attr));
             }
-            NumberOfChannels = noc;
+            Data.NumberOfChannels = noc;
             uint sr;
             attr = source.GetAttribute(XukStrings.SampleRate);
             if (attr == null)
@@ -251,7 +107,7 @@ namespace urakawa.media.data.audio
                                                      "Attribute SampleRate value {0} is not an unsigned integer",
                                                      attr));
             }
-            SampleRate = sr;
+            Data.SampleRate = sr;
             ushort bd;
             attr = source.GetAttribute(XukStrings.BitDepth);
             if (attr == null)
@@ -264,7 +120,7 @@ namespace urakawa.media.data.audio
                                                      "Attribute BitDepth value {0} is not an unsigned short integer",
                                                      attr));
             }
-            BitDepth = bd;
+            Data.BitDepth = bd;
         }
 
         /// <summary>
@@ -279,9 +135,9 @@ namespace urakawa.media.data.audio
         {
             base.XukOutAttributes(destination, baseUri);
 
-            destination.WriteAttributeString(XukStrings.NumberOfChannels, NumberOfChannels.ToString());
-            destination.WriteAttributeString(XukStrings.SampleRate, SampleRate.ToString());
-            destination.WriteAttributeString(XukStrings.BitDepth, BitDepth.ToString());
+            destination.WriteAttributeString(XukStrings.NumberOfChannels, Data.NumberOfChannels.ToString());
+            destination.WriteAttributeString(XukStrings.SampleRate, Data.SampleRate.ToString());
+            destination.WriteAttributeString(XukStrings.BitDepth, Data.BitDepth.ToString());
         }
 
         #endregion
@@ -305,7 +161,7 @@ namespace urakawa.media.data.audio
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (!IsCompatibleWith(other))
+            if (!Data.IsCompatibleWith(other.Data))
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;

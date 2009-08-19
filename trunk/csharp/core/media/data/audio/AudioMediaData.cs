@@ -165,9 +165,9 @@ namespace urakawa.media.data.audio
         /// Gets an input <see cref="Stream"/> giving access to all audio data as raw PCM
         /// </summary>
         /// <returns>The input <see cref="Stream"/></returns>
-        public Stream GetAudioData()
+        public Stream OpenPcmInputStream()
         {
-            return GetAudioData(Time.Zero);
+            return OpenPcmInputStream(Time.Zero);
         }
 
         /// <summary>
@@ -180,9 +180,9 @@ namespace urakawa.media.data.audio
         /// Failing to do so may cause <see cref="exception.InputStreamsOpenException"/> when trying to added data to or delete
         /// the <see cref="DataProvider"/>s used by the <see cref="AudioMediaData"/> instance
         /// </remarks>
-        public Stream GetAudioData(Time clipBegin)
+        public Stream OpenPcmInputStream(Time clipBegin)
         {
-            return GetAudioData(clipBegin, Time.Zero.AddTimeDelta(AudioDuration));
+            return OpenPcmInputStream(clipBegin, Time.Zero.AddTimeDelta(AudioDuration));
         }
 
         /// <summary>
@@ -197,61 +197,52 @@ namespace urakawa.media.data.audio
         /// Failing to do so may cause <see cref="exception.InputStreamsOpenException"/> when trying to added data to or delete
         /// the <see cref="DataProvider"/>s used by the <see cref="AudioMediaData"/> instance
         /// </remarks>
-        public abstract Stream GetAudioData(Time clipBegin, Time clipEnd);
+        public abstract Stream OpenPcmInputStream(Time clipBegin, Time clipEnd);
 
         /// <summary>
         /// Returns true if the actual underlying data content is not empty.
         /// </summary>
         /// <returns></returns>
-        public abstract bool HasActualAudioData { get; }
+        public abstract bool HasActualPcmData { get; }
 
         /// <summary>
         /// Appends audio of a given duration to <c>this</c>
         /// </summary>
         /// <param name="pcmData">A <see cref="Stream"/> providing read access to the input raw PCM audio data</param>
         /// <param name="duration">The duration of the audio to add</param>
-        public virtual void AppendAudioData(Stream pcmData, TimeDelta duration)
+        public virtual void AppendPcmData(Stream pcmData, TimeDelta duration)
         {
-            InsertAudioData(pcmData, new Time(AudioDuration.TimeDeltaAsMillisecondDouble), duration);
-        }
-
-        private void ParseRiffWaveStream(Stream riffWaveStream, out TimeDelta duration)
-        {
-            PCMDataInfo pcmInfo = PCMDataInfo.ParseRiffWaveHeader(riffWaveStream);
-            if (!pcmInfo.IsCompatibleWith(PCMFormat))
-            {
-                throw new exception.InvalidDataFormatException(
-                    String.Format("RIFF WAV file has incompatible PCM format"));
-            }
-            duration = new TimeDelta(pcmInfo.Duration);
+            InsertPcmData(pcmData, new Time(AudioDuration.TimeDeltaAsMillisecondDouble), duration);
         }
 
         /// <summary>
         /// Appends audio data from a RIFF Wave file
         /// </summary>
         /// <param name="riffWaveStream">The RIFF Wave file</param>
-        public void AppendAudioDataFromRiffWave(Stream riffWaveStream)
+        public void AppendPcmData_RiffHeader(Stream riffWaveStream)
         {
-            TimeDelta duration;
-            ParseRiffWaveStream(riffWaveStream, out duration);
-            AppendAudioData(riffWaveStream, duration);
-        }
+            uint dataLength;
+            AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(riffWaveStream, out dataLength);
 
-        private Stream OpenFileStream(string path)
-        {
-            return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            if (!format.IsCompatibleWith(PCMFormat.Data))
+            {
+                throw new exception.InvalidDataFormatException(
+                    String.Format("RIFF WAV file has incompatible PCM format"));
+            }
+
+            AppendPcmData(riffWaveStream, new TimeDelta(format.ConvertBytesToTime(dataLength)));
         }
 
         /// <summary>
         /// Appends audio data from a RIFF Wave file
         /// </summary>
         /// <param name="path">The path of the RIFF Wave file</param>
-        public void AppendAudioDataFromRiffWave(string path)
+        public void AppendPcmData_RiffHeader(string path)
         {
-            Stream rwFS = OpenFileStream(path);
+            Stream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             try
             {
-                AppendAudioDataFromRiffWave(rwFS);
+                AppendPcmData_RiffHeader(rwFS);
             }
             finally
             {
@@ -266,7 +257,7 @@ namespace urakawa.media.data.audio
         /// <param name="pcmData">A <see cref="Stream"/> providing read access to the audio data as RAW PCM</param>
         /// <param name="insertPoint">The insert point</param>
         /// <param name="duration">The duration</param>
-        public abstract void InsertAudioData(Stream pcmData, Time insertPoint, TimeDelta duration);
+        public abstract void InsertPcmData(Stream pcmData, Time insertPoint, TimeDelta duration);
 
         /// <summary>
         /// Inserts audio data from a RIFF Wave file at a given insert point and of a given duration
@@ -274,18 +265,29 @@ namespace urakawa.media.data.audio
         /// <param name="riffWaveStream">The RIFF Wave file</param>
         /// <param name="insertPoint">The insert point</param>
         /// <param name="duration">The duration - if <c>null</c> the entire RIFF Wave file is inserted</param>
-        public void InsertAudioDataFromRiffWave(Stream riffWaveStream, Time insertPoint, TimeDelta duration)
+        public void InsertPcmData_RiffHeader(Stream riffWaveStream, Time insertPoint, TimeDelta duration)
         {
-            TimeDelta fileDuration;
-            ParseRiffWaveStream(riffWaveStream, out fileDuration);
+
+            uint dataLength;
+            AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(riffWaveStream, out dataLength);
+
+            if (!format.IsCompatibleWith(PCMFormat.Data))
+            {
+                throw new exception.InvalidDataFormatException(
+                    String.Format("RIFF WAV file has incompatible PCM format"));
+            }
+
+            TimeDelta fileDuration = new TimeDelta(format.ConvertBytesToTime(dataLength));
+
             if (duration == null) duration = fileDuration;
+
             if (fileDuration.IsLessThan(duration))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
                                                                               "Can not insert {0} of audio from RIFF Wave file since the file's duration is only {1}",
                                                                               duration, fileDuration));
             }
-            InsertAudioData(riffWaveStream, insertPoint, duration);
+            InsertPcmData(riffWaveStream, insertPoint, duration);
         }
 
         /// <summary>
@@ -294,12 +296,12 @@ namespace urakawa.media.data.audio
         /// <param name="path">The path of the RIFF Wave file</param>
         /// <param name="insertPoint">The insert point</param>
         /// <param name="duration">The duration - if <c>null</c> the entire RIFF Wave file is inserted</param>
-        public void InsertAudioDataFromRiffWave(string path, Time insertPoint, TimeDelta duration)
+        public void InsertPcmData_RiffHeader(string path, Time insertPoint, TimeDelta duration)
         {
-            Stream rwFS = OpenFileStream(path);
+            Stream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             try
             {
-                InsertAudioDataFromRiffWave(rwFS, insertPoint, duration);
+                InsertPcmData_RiffHeader(rwFS, insertPoint, duration);
             }
             finally
             {
@@ -313,10 +315,10 @@ namespace urakawa.media.data.audio
         /// <param name="pcmData">A <see cref="Stream"/> providing read access to the input raw PCM audio data</param>
         /// <param name="replacePoint">The given replace point</param>
         /// <param name="duration">The duration of the audio to replace</param>
-        public void ReplaceAudioData(Stream pcmData, Time replacePoint, TimeDelta duration)
+        public void ReplacePcmData(Stream pcmData, Time replacePoint, TimeDelta duration)
         {
-            RemoveAudioData(replacePoint, replacePoint.AddTimeDelta(duration));
-            InsertAudioData(pcmData, replacePoint, duration);
+            RemovePcmData(replacePoint, replacePoint.AddTimeDelta(duration));
+            InsertPcmData(pcmData, replacePoint, duration);
         }
 
         /// <summary>
@@ -325,17 +327,26 @@ namespace urakawa.media.data.audio
         /// <param name="riffWaveStream">The RIFF Wave file</param>
         /// <param name="replacePoint">The given replace point</param>
         /// <param name="duration">The duration of the audio to replace</param>
-        public void ReplaceAudioDataFromRiffWave(Stream riffWaveStream, Time replacePoint, TimeDelta duration)
+        public void ReplacePcmData_RiffHeader(Stream riffWaveStream, Time replacePoint, TimeDelta duration)
         {
-            TimeDelta fileDuration;
-            ParseRiffWaveStream(riffWaveStream, out fileDuration);
+            uint dataLength;
+            AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(riffWaveStream, out dataLength);
+
+            if (!format.IsCompatibleWith(PCMFormat.Data))
+            {
+                throw new exception.InvalidDataFormatException(
+                    String.Format("RIFF WAV file has incompatible PCM format"));
+            }
+
+            TimeDelta fileDuration = new TimeDelta(format.ConvertBytesToTime(dataLength));
+
             if (fileDuration.IsLessThan(duration))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
                                                                               "Can not insert {0} of audio from RIFF Wave file since the file's duration is only {1}",
                                                                               duration, fileDuration));
             }
-            ReplaceAudioData(riffWaveStream, replacePoint, duration);
+            ReplacePcmData(riffWaveStream, replacePoint, duration);
         }
 
         /// <summary>
@@ -344,12 +355,12 @@ namespace urakawa.media.data.audio
         /// <param name="path">The path of the RIFF Wave file</param>
         /// <param name="replacePoint">The given replace point</param>
         /// <param name="duration">The duration of the audio to replace</param>
-        public void ReplaceAudioDataFromRiffWave(string path, Time replacePoint, TimeDelta duration)
+        public void ReplacePcmData_RiffHeader(string path, Time replacePoint, TimeDelta duration)
         {
-            Stream rwFS = OpenFileStream(path);
+            Stream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             try
             {
-                ReplaceAudioDataFromRiffWave(rwFS, replacePoint, duration);
+                ReplacePcmData_RiffHeader(rwFS, replacePoint, duration);
             }
             finally
             {
@@ -361,9 +372,9 @@ namespace urakawa.media.data.audio
         /// Removes all audio after a given clip begin <see cref="Time"/>
         /// </summary>
         /// <param name="clipBegin">The clip begin</param>
-        public virtual void RemoveAudioData(Time clipBegin)
+        public virtual void RemovePcmData(Time clipBegin)
         {
-            RemoveAudioData(clipBegin, Time.Zero.AddTimeDelta(AudioDuration));
+            RemovePcmData(clipBegin, Time.Zero.AddTimeDelta(AudioDuration));
         }
 
         /// <summary>
@@ -371,7 +382,7 @@ namespace urakawa.media.data.audio
         /// </summary>
         /// <param name="clipBegin">The givne clip begin <see cref="Time"/></param>
         /// <param name="clipEnd">The givne clip end <see cref="Time"/></param>
-        public abstract void RemoveAudioData(Time clipBegin, Time clipEnd);
+        public abstract void RemovePcmData(Time clipBegin, Time clipEnd);
 
         ///// <summary>
         ///// Part of technical solution to make copy method return correct type. 
@@ -435,16 +446,16 @@ namespace urakawa.media.data.audio
             }
             AudioMediaData secondPartAMD = (AudioMediaData) md;
             TimeDelta spDur = Time.Zero.AddTimeDelta(AudioDuration).GetTimeDelta(splitPoint);
-            Stream secondPartAudioStream = GetAudioData(splitPoint);
+            Stream secondPartAudioStream = OpenPcmInputStream(splitPoint);
             try
             {
-                secondPartAMD.AppendAudioData(secondPartAudioStream, spDur);
+                secondPartAMD.AppendPcmData(secondPartAudioStream, spDur);
             }
             finally
             {
                 secondPartAudioStream.Close();
             }
-            RemoveAudioData(splitPoint);
+            RemovePcmData(splitPoint);
             return secondPartAMD;
         }
 
@@ -470,21 +481,21 @@ namespace urakawa.media.data.audio
             {
                 throw new exception.OperationNotValidException("Can not merge a AudioMediaData with itself");
             }
-            if (!PCMFormat.IsCompatibleWith(other.PCMFormat))
+            if (!PCMFormat.Data.IsCompatibleWith(other.PCMFormat.Data))
             {
                 throw new exception.InvalidDataFormatException(
                     "Can not merge this with a AudioMediaData with incompatible audio data");
             }
-            System.IO.Stream otherData = other.GetAudioData();
+            Stream otherData = other.OpenPcmInputStream();
             try
             {
-                AppendAudioData(otherData, other.AudioDuration);
+                AppendPcmData(otherData, other.AudioDuration);
             }
             finally
             {
                 otherData.Close();
             }
-            other.RemoveAudioData(Time.Zero);
+            other.RemovePcmData(Time.Zero);
         }
 
         public override bool ValueEquals(WithPresentation other)
@@ -504,26 +515,26 @@ namespace urakawa.media.data.audio
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (AudioLibPCMFormat.ConvertTimeToBytes(AudioDuration.TimeDeltaAsMillisecondDouble, (int)PCMFormat.SampleRate, PCMFormat.BlockAlign)
-                != AudioLibPCMFormat.ConvertTimeToBytes(otherz.AudioDuration.TimeDeltaAsMillisecondDouble, (int)otherz.PCMFormat.SampleRate, otherz.PCMFormat.BlockAlign))
+            if (PCMFormat.Data.ConvertTimeToBytes(AudioDuration.TimeDeltaAsMillisecondDouble)
+                != otherz.PCMFormat.Data.ConvertTimeToBytes(otherz.AudioDuration.TimeDeltaAsMillisecondDouble))
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
 
-            if (HasActualAudioData != otherz.HasActualAudioData)
+            if (HasActualPcmData != otherz.HasActualPcmData)
             {
                 return false;
             }
-            if (HasActualAudioData)
+            if (HasActualPcmData)
             {
-                Stream thisData = GetAudioData();
+                Stream thisData = OpenPcmInputStream();
                 try
                 {
-                    Stream otherdata = otherz.GetAudioData();
+                    Stream otherdata = otherz.OpenPcmInputStream();
                     try
                     {
-                        if (!PCMDataInfo.CompareStreamData(thisData, otherdata, (int)thisData.Length))
+                        if (!AudioLibPCMFormat.CompareStreamData(thisData, otherdata, (int)thisData.Length))
                         {
                             //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                             return false;
