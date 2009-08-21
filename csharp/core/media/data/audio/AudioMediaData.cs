@@ -215,6 +215,8 @@ namespace urakawa.media.data.audio
             InsertPcmData(pcmData, new Time(AudioDuration.TimeDeltaAsMillisecondDouble), duration);
         }
 
+        public abstract void AppendPcmData(DataProvider fileDataProvider);
+
         /// <summary>
         /// Appends audio data from a RIFF Wave file
         /// </summary>
@@ -223,6 +225,11 @@ namespace urakawa.media.data.audio
         {
             uint dataLength;
             AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(riffWaveStream, out dataLength);
+
+            if (dataLength <= 0)
+            {
+                dataLength = (uint)(riffWaveStream.Length - riffWaveStream.Position);
+            }
 
             if (!format.IsCompatibleWith(PCMFormat.Data))
             {

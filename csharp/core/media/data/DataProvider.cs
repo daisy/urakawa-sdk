@@ -42,6 +42,75 @@ namespace urakawa.media.data
         //    get { return Presentation.DataProviderManager.GetUidOfDataProvider(this); }
         //}
 
+
+        /// <summary>
+        /// Appends data from a given input <see cref="Stream"/>
+        /// </summary>
+        /// <param name="data">The given input stream</param>
+        /// <param name="count">The number of bytes to append</param>
+        public void AppendData(Stream data, long count)
+        {
+            if (count <= 0)
+            {
+                return;
+            }
+
+            if (count > (data.Length - data.Position))
+            {
+                throw new exception.InputStreamIsTooShortException(
+                            String.Format("The given data Stream is shorter than the requested {0:0} bytes",
+                            count));
+            }
+
+            Stream provOutputStream = OpenOutputStream();
+            try
+            {
+                provOutputStream.Seek(0, SeekOrigin.End);
+
+                const int BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER  
+                if (count <= BUFFER_SIZE)
+                {
+                    byte[] buffer = new byte[count];
+                    int bytesRead = data.Read(buffer, 0, (int)count);
+                    if (bytesRead > 0)
+                    {
+                        provOutputStream.Write(buffer, 0, bytesRead);
+                    }
+                    else
+                    {
+                        throw new exception.InputStreamIsTooShortException(
+                            String.Format("Can not read {0:0} bytes from the given data Stream",
+                            count));
+                    }
+                }
+                else
+                {
+                    int bytesRead = 0;
+                    int totalBytesWritten = 0;
+                    byte[] buffer = new byte[BUFFER_SIZE];
+
+                    while ((bytesRead = data.Read(buffer, 0, BUFFER_SIZE)) > 0)
+                    {
+                        if ((totalBytesWritten + bytesRead) > count)
+                        {
+                            int bytesToWrite = (int)(count - totalBytesWritten);
+                            provOutputStream.Write(buffer, 0, bytesToWrite);
+                            totalBytesWritten += bytesToWrite;
+                        }
+                        else
+                        {
+                            provOutputStream.Write(buffer, 0, bytesRead);
+                            totalBytesWritten += bytesRead;
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                provOutputStream.Close();
+            }
+        }
+
         /// <summary>
         /// Gets a <see cref="Stream"/> providing read access to the data
         /// </summary>

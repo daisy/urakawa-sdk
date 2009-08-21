@@ -307,23 +307,12 @@ namespace urakawa.media.data.audio.codec
         }
 
         /// <summary>
-        /// Gets a <see cref="WavClip"/> from a RAW PCM audio <see cref="Stream"/>, 
-        /// reading all data from the current position in the stream till it's end
-        /// </summary>
-        /// <param name="pcmData">The raw PCM stream</param>
-        /// <returns>The <see cref="WavClip"/></returns>
-        protected WavClip CreateWavClipFromRawPCMStream(Stream pcmData)
-        {
-            return CreateWavClipFromRawPCMStream(pcmData, null);
-        }
-
-        /// <summary>
         /// Gets a <see cref="WavClip"/> from a RAW PCM audio <see cref="Stream"/> of a given duration
         /// </summary>
         /// <param name="pcmData">The raw PCM data stream</param>
         /// <param name="duration">The duration</param>
         /// <returns>The <see cref="WavClip"/></returns>
-        protected WavClip CreateWavClipFromRawPCMStream(Stream pcmData, TimeDelta duration)
+        protected DataProvider CreateDataProviderFromRawPCMStream(Stream pcmData, TimeDelta duration)
         {
             DataProvider newSingleDataProvider = Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
 
@@ -338,6 +327,7 @@ namespace urakawa.media.data.audio.codec
             {
                 dataLength = (uint)PCMFormat.Data.ConvertTimeToBytes(duration.TimeDeltaAsMillisecondDouble);
             }
+
             Stream nsdps = newSingleDataProvider.OpenOutputStream();
             try
             {
@@ -347,10 +337,15 @@ namespace urakawa.media.data.audio.codec
             {
                 nsdps.Close();
             }
-            DataProviderManager.AppendDataToProvider(pcmData, dataLength, newSingleDataProvider);
-            WavClip newSingleWavClip = new WavClip(newSingleDataProvider);
-            return newSingleWavClip;
+
+            newSingleDataProvider.AppendData(pcmData, dataLength);
+
+            return newSingleDataProvider;
+
+            //WavClip newSingleWavClip = new WavClip(newSingleDataProvider);
+            //return newSingleWavClip;
         }
+
 
         /// <summary>
         /// Forces the PCM data to be stored in a single <see cref="DataProvider"/>.
@@ -368,7 +363,7 @@ namespace urakawa.media.data.audio.codec
             Stream audioData = OpenPcmInputStream();
             try
             {
-                newSingleClip = CreateWavClipFromRawPCMStream(audioData);
+                newSingleClip = new WavClip(CreateDataProviderFromRawPCMStream(audioData, null));
             }
             finally
             {
@@ -574,13 +569,28 @@ namespace urakawa.media.data.audio.codec
         /// - if <c>null</c>, all audio data from <paramref name="pcmData"/> is added</param>
         public override void AppendPcmData(Stream pcmData, TimeDelta duration)
         {
-            Time insertPoint = Time.Zero.AddTimeDelta(AudioDuration);
-            WavClip newAppClip = CreateWavClipFromRawPCMStream(pcmData, duration);
-            mWavClips.Add(newAppClip);
-            if (duration == null) duration = newAppClip.MediaDuration;
-            NotifyAudioDataInserted(this, insertPoint, duration);
+            AppendPcmData(CreateDataProviderFromRawPCMStream(pcmData, duration));
+
+            //Time insertPoint = Time.Zero.AddTimeDelta(AudioDuration);
+            //WavClip newAppClip = new WavClip(CreateDataProviderFromRawPCMStream(pcmData, duration));
+            //mWavClips.Add(newAppClip);
+            //if (duration == null) duration = newAppClip.MediaDuration;
+            //NotifyAudioDataInserted(this, insertPoint, duration);
         }
 
+        public override void AppendPcmData(DataProvider fileDataProvider)
+        {
+            if (fileDataProvider.MimeType != DataProviderFactory.AUDIO_WAV_MIME_TYPE)
+            {
+                throw new exception.OperationNotValidException(
+                    "The mime type of the given DataProvider is not WAV !");
+            }
+
+            WavClip newSingleWavClip = new WavClip(fileDataProvider);
+            mWavClips.Add(newSingleWavClip);
+
+            NotifyAudioDataInserted(this, Time.Zero.AddTimeDelta(AudioDuration), newSingleWavClip.MediaDuration);
+        }
 
         /// <summary>
         /// Inserts audio of a given duration from a given source PCM data <see cref="Stream"/> to the wav audio media data
@@ -597,7 +607,7 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The given insert point is negative");
             }
-            WavClip newInsClip = CreateWavClipFromRawPCMStream(pcmData, duration);
+            WavClip newInsClip = new WavClip(CreateDataProviderFromRawPCMStream(pcmData, duration));
             Time endTime = Time.Zero.AddTimeDelta(AudioDuration);
             if (insertPoint.IsGreaterThan(endTime))
             {
@@ -628,11 +638,11 @@ namespace urakawa.media.data.audio.codec
                     //the audio in the current clip before the insert point,
                     //the audio to be inserted and the audio in the current clip after the insert point respectively
                     Time insPtInCurClip = Time.Zero.AddTimeDelta(insPt.GetTimeDelta(elapsedTime));
-                    Stream audioDataStream = curClip.OpenPcmInputStream(Time.Zero, insPtInCurClip);
                     WavClip curClipBeforeIns, curClipAfterIns;
+                    Stream audioDataStream = curClip.OpenPcmInputStream(Time.Zero, insPtInCurClip);
                     try
                     {
-                        curClipBeforeIns = CreateWavClipFromRawPCMStream(audioDataStream);
+                        curClipBeforeIns = new WavClip(CreateDataProviderFromRawPCMStream(audioDataStream, null));
                     }
                     finally
                     {
@@ -641,7 +651,7 @@ namespace urakawa.media.data.audio.codec
                     audioDataStream = curClip.OpenPcmInputStream(insPtInCurClip);
                     try
                     {
-                        curClipAfterIns = CreateWavClipFromRawPCMStream(audioDataStream);
+                        curClipAfterIns = new WavClip(CreateDataProviderFromRawPCMStream(audioDataStream, null));
                     }
                     finally
                     {
@@ -733,7 +743,7 @@ namespace urakawa.media.data.audio.codec
                     WavClip beyondPartClip;
                     try
                     {
-                        beyondPartClip = CreateWavClipFromRawPCMStream(beyondAS);
+                        beyondPartClip = new WavClip(CreateDataProviderFromRawPCMStream(beyondAS, null));
                     }
                     finally
                     {
