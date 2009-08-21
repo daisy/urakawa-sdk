@@ -182,6 +182,7 @@ namespace AudioLib
         public AudioLibPCMFormat RecordingPCMFormat
         {
             get { return m_RecordingPCMFormat; }
+            private set { m_RecordingPCMFormat = value; }
         }
 
         private ulong m_RecordedFileRiffHeaderSize;
@@ -256,7 +257,7 @@ namespace AudioLib
         private const int REFRESH_INTERVAL_MS = 75; //ms interval for refreshing PCM data
         private void startRecordingOrMonitoring(AudioLibPCMFormat pcmFormat, bool recordingToFile)
         {
-            m_RecordingPCMFormat = pcmFormat;
+            RecordingPCMFormat = pcmFormat;
 
             WaveFormat waveFormat = new WaveFormat();
             waveFormat.FormatTag = WaveFormatTag.Pcm;
@@ -310,7 +311,7 @@ namespace AudioLib
                 Stream stream = File.Create(m_RecordedFilePath);
                 try
                 {
-                    m_RecordedFileRiffHeaderSize = m_RecordingPCMFormat.RiffHeaderWrite(stream, 0);
+                    m_RecordedFileRiffHeaderSize = RecordingPCMFormat.RiffHeaderWrite(stream, 0);
                 }
                 finally
                 {
@@ -517,7 +518,8 @@ namespace AudioLib
                 Stream stream = File.OpenWrite(m_RecordedFilePath);
                 try
                 {
-                    m_RecordedFileRiffHeaderSize = m_RecordingPCMFormat.RiffHeaderWrite(stream,
+                    // overriding the existing RIFF header, this time with correct data length
+                    m_RecordedFileRiffHeaderSize = RecordingPCMFormat.RiffHeaderWrite(stream,
                                                             (uint)
                                                             (fileInfo.Length -
                                                              (long)
@@ -531,7 +533,7 @@ namespace AudioLib
                 if (fileInfo.Length == (long) m_RecordedFileRiffHeaderSize) // no PCM data, just RIFF header
                 {
                     File.Delete(m_RecordedFilePath);
-                    m_RecordedFilePath = "";
+                    m_RecordedFilePath = null;
                 }
             }
 

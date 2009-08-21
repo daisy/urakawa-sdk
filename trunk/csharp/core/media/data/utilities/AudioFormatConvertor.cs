@@ -20,7 +20,7 @@ namespace urakawa.media.data.utilities
                 throw new FileNotFoundException();
 
             // first check if it is wav file
-            FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             try
             {
                 uint dataLength;
@@ -39,7 +39,7 @@ namespace urakawa.media.data.utilities
             }
 
             // now check for mp3 header
-            FileStream mp3Filestream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            FileStream mp3Filestream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             try
             {
                 Mp3Frame frame = new Mp3Frame(mp3Filestream);

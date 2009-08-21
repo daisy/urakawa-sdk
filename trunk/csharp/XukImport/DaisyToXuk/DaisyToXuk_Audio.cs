@@ -290,8 +290,7 @@ namespace XukImport
             Stream wavStream = null;
             try
             {
-                wavStream = File.Open(fullWavPath, FileMode.Open,
-                                      FileAccess.Read, FileShare.Read);
+                wavStream = File.Open(fullWavPath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                 pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
 
@@ -316,8 +315,7 @@ namespace XukImport
 
                     //m_convertedWavFiles.Add(fullWavPath, newfullWavPath);
 
-                    wavStream = File.Open(newfullWavPath, FileMode.Open,
-                                          FileAccess.Read, FileShare.Read);
+                    wavStream = File.Open(newfullWavPath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                     pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
 

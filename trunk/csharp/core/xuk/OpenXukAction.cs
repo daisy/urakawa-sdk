@@ -18,7 +18,7 @@ namespace urakawa.xuk
 
         private static Stream GetStreamFromUri(Uri src)
         {
-            return new FileStream(src.LocalPath, FileMode.Open, FileAccess.Read);
+            return new FileStream(src.LocalPath, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
         private void initializeXmlReader(Stream stream)
         {

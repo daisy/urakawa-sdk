@@ -77,28 +77,73 @@ namespace urakawa.media.data
 
         #region DataProvider Members
 
+        public void InitByMovingExistingFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new exception.DataMissingException(
+                    String.Format("The data file {0} does not exist", path));
+            }
+
+            if (File.Exists(DataFileFullPath))
+            {
+                throw new exception.OperationNotValidException(
+                    String.Format("The data file {0} already exists", DataFileFullPath));
+            }
+
+            foreach (DataProvider dp in Presentation.DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
+            {
+                if (dp is FileDataProvider)
+                {
+                    FileDataProvider fdp = (FileDataProvider) dp;
+                    if (fdp.DataFileFullPath == path)
+                    {
+                        throw new exception.OperationNotValidException(
+                            String.Format("The data file {0} is already managed", path));
+                    }
+                }
+            }
+
+            //Directory.GetParent(filePath).FullName
+            //if (Path.GetDirectoryName(path) != Presentation.DataProviderManager.DataFileDirectoryFullPath)
+            //{
+            //    throw new exception.OperationNotValidException(
+            //        String.Format("The data file {0} is not in the data directory {1}", path, Presentation.DataProviderManager.DataFileDirectoryFullPath));
+            //}
+
+            File.Move(path, DataFileFullPath);
+
+            HasBeenInitialized = true;
+        }
+
         private bool HasBeenInitialized;
 
         private void CheckDataFile()
         {
-            string dirPath = Path.GetDirectoryName(DataFileFullPath);
-            if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
             if (File.Exists(DataFileFullPath))
             {
-                if (!HasBeenInitialized)
-                {
-                    File.Delete(DataFileFullPath);
-                }
-                else
+                if (HasBeenInitialized)
                 {
                     return;
                 }
+
+                File.Delete(DataFileFullPath);
             }
-            if (HasBeenInitialized)
+            else
             {
-                throw new exception.DataMissingException(
-                    String.Format("The data file {0} does not exist", DataFileFullPath));
+                if (HasBeenInitialized)
+                {
+                    throw new exception.DataMissingException(
+                        String.Format("The data file {0} does not exist", DataFileFullPath));
+                }
+
+                string dirPath = Path.GetDirectoryName(DataFileFullPath);
+                if (!Directory.Exists(dirPath))
+                {
+                    Directory.CreateDirectory(dirPath);
+                }
             }
+
             try
             {
                 File.Create(DataFileFullPath).Close();
@@ -109,6 +154,7 @@ namespace urakawa.media.data
                     String.Format("Could not create data file {0}: {1}", DataFileFullPath, e.Message),
                     e);
             }
+
             HasBeenInitialized = true;
         }
 
@@ -144,7 +190,7 @@ namespace urakawa.media.data
             CheckDataFile();
             try
             {
-                inputFS = new FileStream(fp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                inputFS = new FileStream(fp, FileMode.Open, FileAccess.Read, FileShare.Read);
             }
             catch (Exception e)
             {
@@ -207,7 +253,7 @@ namespace urakawa.media.data
                 FileStream outputFS;
                 try
                 {
-                    outputFS = new FileStream(fp, FileMode.Open, FileAccess.Write, FileShare.Read);
+                    outputFS = new FileStream(fp, FileMode.Open, FileAccess.Write, FileShare.None);
                 }
                 catch (Exception e)
                 {
@@ -292,7 +338,7 @@ namespace urakawa.media.data
                 {
                     if (thisData.Length > 0)
                     {
-                        data.DataProviderManager.AppendDataToProvider(thisData, thisData.Length, c);
+                        c.AppendData(thisData, thisData.Length);
                     }
                 }
                 finally
@@ -318,7 +364,7 @@ namespace urakawa.media.data
                 {
                     if (thisStm.Length > 0)
                     {
-                        DataProviderManager.AppendDataToProvider(thisStm, thisStm.Length, expFDP);
+                        expFDP.AppendData(thisStm, thisStm.Length);
                     }
                 }
                 finally

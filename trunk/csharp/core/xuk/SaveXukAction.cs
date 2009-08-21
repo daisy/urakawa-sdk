@@ -20,7 +20,7 @@ namespace urakawa.xuk
 
         private static Stream GetStreamFromUri(Uri src)
         {
-            FileStream fs = new FileStream(src.LocalPath, FileMode.Create, FileAccess.Write);
+            FileStream fs = new FileStream(src.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
             return fs;
         }
 
