@@ -98,6 +98,10 @@
     <Content Include="events\EventsClassDiagram.png" />
     <Compile Include="commands\CommandFactory.cs" />
     <Compile Include="commands\ManagedAudioMediaInsertDataCommand.cs" />
+    <Compile Include="commands\MetadataAddCommand.cs" />
+    <Compile Include="commands\MetadataRemoveCommand.cs" />
+    <Compile Include="commands\MetadataSetContentCommand.cs" />
+    <Compile Include="commands\MetadataSetNameCommand.cs" />
     <Compile Include="commands\TreeNodeAudioStreamDeleteCommand.cs" />
     <Compile Include="commands\TreeNodeSetManagedAudioMediaCommand.cs" />
     <Compile Include="command\IAction.cs" />
