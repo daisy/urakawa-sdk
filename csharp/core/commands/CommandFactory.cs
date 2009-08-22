@@ -5,6 +5,7 @@ using urakawa.core;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
 using urakawa.xuk;
+using urakawa.metadata;
 
 namespace urakawa.commands
 {
@@ -37,6 +38,34 @@ namespace urakawa.commands
         {
             TreeNodeAudioStreamDeleteCommand command = Create<TreeNodeAudioStreamDeleteCommand>();
             command.Init(selection);
+            return command;
+        }
+
+        public MetadataAddCommand CreateMetadataAddCommand(Metadata metadata, Presentation presentation)
+        {
+            MetadataAddCommand command = Create<MetadataAddCommand>();
+            command.Init(metadata, presentation);
+            return command;
+        }
+
+        public MetadataRemoveCommand CreateMetadataRemoveCommand(Metadata metadata, Presentation presentation)
+        {
+            MetadataRemoveCommand command = Create<MetadataRemoveCommand>();
+            command.Init(metadata, presentation);
+            return command;
+        }
+
+        public MetadataSetContentCommand CreateMetadataSetContentCommand(Metadata metadata, string content)
+        {
+            MetadataSetContentCommand command = Create<MetadataSetContentCommand>();
+            command.Init(metadata, content);
+            return command;
+        }
+
+        public MetadataSetNameCommand CreateMetadataSetNameCommand(Metadata metadata, string content)
+        {
+            MetadataSetNameCommand command = Create<MetadataSetNameCommand>();
+            command.Init(metadata, content);
             return command;
         }
     }
