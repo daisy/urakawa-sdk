@@ -204,7 +204,7 @@ namespace urakawa
         /// </remarks>
         protected virtual void InitializeInstance(T instance)
         {
-
+            // subclasses do extra work, if needed.
         }
 
         /// <summary>

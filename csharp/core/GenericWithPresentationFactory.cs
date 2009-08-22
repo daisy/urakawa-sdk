@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
 using System.Xml;
-using urakawa.exception;
 using urakawa.xuk;
 
 namespace urakawa

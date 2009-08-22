@@ -391,7 +391,17 @@ namespace urakawa.undo
                     "Can not end transaction while no is active");
             }
             CompositeCommand command = mActiveTransactions.Pop();
-            pushCommand(command);
+            if (command.ChildCommands.Count > 0)
+            {
+                if (command.ChildCommands.Count == 1)
+                {
+                    pushCommand(command.ChildCommands.Get(0));
+                }
+                else
+                {
+                    pushCommand(command);
+                }
+            }
             NotifyTransactionEnded(command);
         }
 
