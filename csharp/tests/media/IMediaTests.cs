@@ -60,13 +60,13 @@ namespace urakawa.media
         public virtual void Export_ValueEqualsPresentationsOk()
         {
             mMedia1.Language = "en";
-            Presentation destPres = mProject.PresentationFactory.Create();
+            Presentation destPres = mProject.PresentationFactory.Create(mProject);
             if (mMedia1 is ManagedAudioMedia)
             {
                 mMedia1.Presentation.MediaDataManager.DefaultPCMFormat =
-                    ((AudioMediaData) ((ManagedAudioMedia) mMedia1).MediaData).PCMFormat;
+                    ((AudioMediaData) ((ManagedAudioMedia) mMedia1).MediaData).PCMFormat.Copy();
             }
-            destPres.MediaDataManager.DefaultPCMFormat = mMedia1.Presentation.MediaDataManager.DefaultPCMFormat;
+            destPres.MediaDataManager.DefaultPCMFormat = mMedia1.Presentation.MediaDataManager.DefaultPCMFormat.Copy();
 
             mProject.Presentations.Insert(mProject.Presentations.Count, destPres);
             Presentation sourcePres = mMedia1.Presentation;

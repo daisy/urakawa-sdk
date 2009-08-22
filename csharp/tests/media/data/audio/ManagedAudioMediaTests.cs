@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using AudioLib;
 using NUnit.Framework;
 using urakawa;
 using urakawa.core;
+using urakawa.media.timing;
 using urakawa.property.channel;
 using urakawa.media;
 using urakawa.media.data.audio;
@@ -53,12 +55,13 @@ namespace urakawa.media.data.audio
             return s;
         }
 
-        private PCMDataInfo GetInfo(string name)
+
+        private AudioLibPCMFormat GetInfo(string name, out uint dataLength)
         {
             FileStream fs = new FileStream(GetPath(name), FileMode.Open, FileAccess.Read, FileShare.Read);
             try
             {
-                return PCMDataInfo.ParseRiffWaveHeader(fs);
+                return AudioLibPCMFormat.RiffHeaderParse(fs, out dataLength);
             }
             finally
             {
@@ -139,12 +142,13 @@ namespace urakawa.media.data.audio
 
         private void AppendAudioData(string filename, ManagedAudioMedia amd)
         {
-            PCMDataInfo info = GetInfo("audiotest1-mono-22050Hz-16bits.wav");
-            mManagedAudioMedia1.AudioMediaData.PCMFormat = info;
+            uint dataLength;
+            AudioLibPCMFormat info = GetInfo("audiotest1-mono-22050Hz-16bits.wav", out dataLength);
+            mManagedAudioMedia1.AudioMediaData.PCMFormat = new PCMFormatInfo(info);
             Stream fs = GetRawStream("audiotest1-mono-22050Hz-16bits.wav");
             try
             {
-                amd.AudioMediaData.AppendAudioData(fs, info.Duration);
+                amd.AudioMediaData.AppendPcmData(fs, new TimeDelta(info.ConvertBytesToTime(dataLength)));
             }
             finally
             {

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using AudioLib;
 using NUnit.Framework;
 using urakawa.core;
 using urakawa.property.channel;
@@ -88,14 +89,16 @@ namespace urakawa.publish
                                                               FileShare.ReadWrite);
                             try
                             {
-                                PCMDataInfo pcmInfo = PCMDataInfo.ParseRiffWaveHeader(wavFS);
-                                Assert.IsTrue(pcmInfo.IsCompatibleWith(curPCMFormat),
+                                uint dataLength;
+                                AudioLibPCMFormat pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavFS, out dataLength);
+
+                                Assert.IsTrue(pcmInfo.IsCompatibleWith(curPCMFormat.Data),
                                               "External audio has incompatible pcm format");
                                 curAudioData.Position = 0;
-                                Assert.AreEqual(curAudioData.Length, (long) pcmInfo.DataLength,
+                                Assert.AreEqual(curAudioData.Length, (long) dataLength,
                                                 "External audio has unexpected length");
                                 Assert.IsTrue(
-                                    PCMDataInfo.CompareStreamData(curAudioData, wavFS, (int) curAudioData.Length),
+                                    AudioLibPCMFormat.CompareStreamData(curAudioData, wavFS, (int)curAudioData.Length),
                                     "External audio contains wrong data");
                             }
                             finally
@@ -109,7 +112,7 @@ namespace urakawa.publish
                     }
                     Assert.IsTrue(curPCMFormat.ValueEquals(mam.AudioMediaData.PCMFormat),
                                   "Managed audio has incompatible pcm format");
-                    Stream manAudio = mam.AudioMediaData.GetAudioData();
+                    Stream manAudio = mam.AudioMediaData.OpenPcmInputStream();
                     try
                     {
                         media.data.StreamUtils.CopyData(manAudio, curAudioData);

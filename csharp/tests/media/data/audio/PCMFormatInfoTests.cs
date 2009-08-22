@@ -15,30 +15,30 @@ namespace urakawa.media.data.audio
         public void Duration_DataLength_RoundTrip()
         {
             PCMFormatInfo pcmInfo = new PCMFormatInfo();
-            pcmInfo.BitDepth = 16;
-            pcmInfo.NumberOfChannels = 1;
-            pcmInfo.SampleRate = 22050;
+            pcmInfo.Data.BitDepth = 16;
+            pcmInfo.Data.NumberOfChannels = 1;
+            pcmInfo.Data.SampleRate = 22050;
             Duration_DataLength_RoundTrip(pcmInfo);
-            pcmInfo.BitDepth = 16;
-            pcmInfo.NumberOfChannels = 1;
-            pcmInfo.SampleRate = 44100;
+            pcmInfo.Data.BitDepth = 16;
+            pcmInfo.Data.NumberOfChannels = 1;
+            pcmInfo.Data.SampleRate = 44100;
             Duration_DataLength_RoundTrip(pcmInfo);
-            pcmInfo.BitDepth = 8;
-            pcmInfo.NumberOfChannels = 2;
-            pcmInfo.SampleRate = 22050;
+            pcmInfo.Data.BitDepth = 8;
+            pcmInfo.Data.NumberOfChannels = 2;
+            pcmInfo.Data.SampleRate = 22050;
             Duration_DataLength_RoundTrip(pcmInfo);
         }
 
         private void Duration_DataLength_RoundTrip(PCMFormatInfo pcmInfo)
         {
             Random rnd = new Random();
-            uint ba = pcmInfo.BlockAlign;
+            uint ba = pcmInfo.Data.BlockAlign;
             for (int i = 0; i < 20480; i++)
             {
                 uint dl = (uint) Math.Round(rnd.NextDouble()*UInt32.MaxValue);
                 dl -= dl%ba;
-                //uint roundI = pcmInfo.GetDataLength(pcmInfo.GetDuration(dl));
-                uint roundI = (uint)AudioLibPCMFormat.ConvertTimeToBytes(AudioLibPCMFormat.ConvertBytesToTime(dl, (int)pcmInfo.SampleRate, pcmInfo.BlockAlign), (int)pcmInfo.SampleRate, pcmInfo.BlockAlign);
+                //uint roundI = pcmInfo.Data.GetDataLength(pcmInfo.Data.GetDuration(dl));
+                uint roundI = (uint)pcmInfo.Data.ConvertTimeToBytes(pcmInfo.Data.ConvertBytesToTime(dl));
                 Assert.AreEqual(
                     dl,
                     roundI,

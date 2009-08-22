@@ -53,9 +53,8 @@ namespace urakawa.media.data
                 if (mDefaultPCMFormat == null)
                 {
                     mDefaultPCMFormat = new PCMFormatInfo();
-                    return mDefaultPCMFormat;
                 }
-                return mDefaultPCMFormat.Copy();
+                return mDefaultPCMFormat;
             }
             set
             {
@@ -75,7 +74,7 @@ namespace urakawa.media.data
                                 + "and since at least one AudioMediaData is currently managed");
                         }
                     }
-                    mDefaultPCMFormat = value.Copy();
+                    mDefaultPCMFormat = value;
                 }
             }
         }
