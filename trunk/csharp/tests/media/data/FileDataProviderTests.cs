@@ -33,34 +33,34 @@ namespace urakawa.media.data
         #region DataProvider tests
 
         [Test]
-        public override void GetInputStream_InitialState()
+        public override void OpenInputStream_InitialState()
         {
-            base.GetInputStream_InitialState();
+            base.OpenInputStream_InitialState();
         }
 
         [Test]
-        public override void GetInputStream_CanGetMultiple()
+        public override void OpenInputStream_CanGetMultiple()
         {
-            base.GetInputStream_CanGetMultiple();
+            base.OpenInputStream_CanGetMultiple();
         }
 
         [Test]
-        public override void GetOutputStream_InitialState()
+        public override void OpenOutputStream_InitialState()
         {
-            base.GetOutputStream_InitialState();
+            base.OpenOutputStream_InitialState();
         }
 
         [Test]
         [ExpectedException(typeof (exception.OutputStreamOpenException))]
-        public override void GetOutputStream_CannotGetMultiple()
+        public override void OpenOutputStream_CannotGetMultiple()
         {
-            base.GetOutputStream_CannotGetMultiple();
+            base.OpenOutputStream_CannotGetMultiple();
         }
 
         [Test]
-        public override void GetOutputStream_RetrieveDataWritten()
+        public override void OpenOutputStream_RetrieveDataWritten()
         {
-            base.GetOutputStream_RetrieveDataWritten();
+            base.OpenOutputStream_RetrieveDataWritten();
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace urakawa.media.data
             Assert.Greater(mngr.ManagedObjects.Count, 0, "The manager does not manage any DataProviders");
             foreach (DataProvider prov in mngr.ManagedObjects.ContentsAs_YieldEnumerable)
             {
-                Stream outStm = prov.GetOutputStream();
+                Stream outStm = prov.OpenOutputStream();
                 try
                 {
                     outStm.WriteByte(0xAA); //Ensure that files are created

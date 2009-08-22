@@ -76,7 +76,7 @@ namespace urakawa.media.data.utilities
                 Directory.CreateDirectory(destDirectory);
             }
 
-            audio.PCMFormatInfo defaultFormat = presentation.MediaDataManager.DefaultPCMFormat;
+            audio.PCMFormatInfo defaultFormat = presentation.MediaDataManager.DefaultPCMFormat.Copy();
 
             return ConvertToDefaultFormat(SourceFilePath, destDirectory, defaultFormat);
         }

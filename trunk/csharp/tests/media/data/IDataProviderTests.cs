@@ -76,9 +76,9 @@ namespace urakawa.media.data
                 "DataProvider.getUid did not return the expected value");
         }
 
-        public virtual void GetInputStream_InitialState()
+        public virtual void OpenInputStream_InitialState()
         {
-            Stream inpStm = mDataProvider1.GetInputStream();
+            Stream inpStm = mDataProvider1.OpenInputStream();
             try
             {
                 Assert.AreEqual(0, inpStm.Position, "Unexpected initial position of input stream");
@@ -93,13 +93,13 @@ namespace urakawa.media.data
             }
         }
 
-        public virtual void GetInputStream_CanGetMultiple()
+        public virtual void OpenInputStream_CanGetMultiple()
         {
             Stream inpStm1, inpStm2;
-            inpStm1 = mDataProvider1.GetInputStream();
+            inpStm1 = mDataProvider1.OpenInputStream();
             try
             {
-                inpStm2 = mDataProvider1.GetInputStream();
+                inpStm2 = mDataProvider1.OpenInputStream();
                 inpStm2.Close();
             }
             finally
@@ -108,9 +108,9 @@ namespace urakawa.media.data
             }
         }
 
-        public virtual void GetOutputStream_InitialState()
+        public virtual void OpenOutputStream_InitialState()
         {
-            Stream outStm = mDataProvider1.GetOutputStream();
+            Stream outStm = mDataProvider1.OpenOutputStream();
             try
             {
                 Assert.AreEqual(0, outStm.Position, "Unexpected initial Position of output Stream");
@@ -125,12 +125,12 @@ namespace urakawa.media.data
             }
         }
 
-        public virtual void GetOutputStream_CannotGetMultiple()
+        public virtual void OpenOutputStream_CannotGetMultiple()
         {
-            Stream outStm1 = mDataProvider1.GetOutputStream();
+            Stream outStm1 = mDataProvider1.OpenOutputStream();
             try
             {
-                Stream outStm2 = mDataProvider1.GetOutputStream();
+                Stream outStm2 = mDataProvider1.OpenOutputStream();
                 outStm2.Close();
             }
             finally
@@ -139,10 +139,10 @@ namespace urakawa.media.data
             }
         }
 
-        public virtual void GetOutputStream_RetrieveDataWritten()
+        public virtual void OpenOutputStream_RetrieveDataWritten()
         {
             MemoryStream memStm = StreamUtils.GetRandomMemoryStream(100*1024);
-            Stream outStm = mDataProvider1.GetOutputStream();
+            Stream outStm = mDataProvider1.OpenOutputStream();
             try
             {
                 StreamUtils.CopyData(memStm, outStm);
@@ -152,7 +152,7 @@ namespace urakawa.media.data
                 outStm.Close();
             }
             memStm.Seek(0, SeekOrigin.Begin);
-            Stream inpStm = mDataProvider1.GetInputStream();
+            Stream inpStm = mDataProvider1.OpenInputStream();
             try
             {
                 Assert.AreEqual(0, inpStm.Position, "The input Stream  is not positioned at 0");
@@ -167,7 +167,7 @@ namespace urakawa.media.data
             {
                 inpStm.Close();
             }
-            outStm = mDataProvider1.GetOutputStream();
+            outStm = mDataProvider1.OpenOutputStream();
             try
             {
                 memStm.Seek(0, SeekOrigin.Begin);
@@ -192,7 +192,7 @@ namespace urakawa.media.data
 
         public virtual void Delete_OpenInputStream()
         {
-            Stream intStm = mDataProvider1.GetInputStream();
+            Stream intStm = mDataProvider1.OpenInputStream();
             try
             {
                 mDataProvider1.Delete();
@@ -205,7 +205,7 @@ namespace urakawa.media.data
 
         public virtual void Delete_OpenOutputStream()
         {
-            Stream outStm = mDataProvider1.GetOutputStream();
+            Stream outStm = mDataProvider1.OpenOutputStream();
             try
             {
                 mDataProvider1.Delete();
@@ -224,7 +224,7 @@ namespace urakawa.media.data
             Assert.IsTrue(mDataProvider1.ValueEquals(cpy), "The copy must have the same value as the original");
             Assert.IsFalse(Type.ReferenceEquals(mDataProvider1, cpy),
                            "The copy may not be reference equal to the original");
-            Stream outStm = mDataProvider1.GetOutputStream();
+            Stream outStm = mDataProvider1.OpenOutputStream();
             try
             {
                 StreamUtils.CopyData(StreamUtils.GetRandomMemoryStream(23564), outStm);
@@ -246,7 +246,7 @@ namespace urakawa.media.data
         {
             MemoryStream memStmA = StreamUtils.GetRandomMemoryStream(95567);
             MemoryStream memStmB = StreamUtils.GetRandomMemoryStream(23479);
-            Stream outStm1 = mDataProvider1.GetOutputStream();
+            Stream outStm1 = mDataProvider1.OpenOutputStream();
             try
             {
                 StreamUtils.CopyData(memStmA, outStm1);
@@ -256,7 +256,7 @@ namespace urakawa.media.data
             {
                 outStm1.Close();
             }
-            Stream outStm2 = mDataProvider2.GetOutputStream();
+            Stream outStm2 = mDataProvider2.OpenOutputStream();
             try
             {
                 StreamUtils.CopyData(memStmB, outStm2);
@@ -266,7 +266,7 @@ namespace urakawa.media.data
             {
                 outStm2.Close();
             }
-            Stream outStm3 = mDataProvider3.GetOutputStream();
+            Stream outStm3 = mDataProvider3.OpenOutputStream();
             try
             {
                 StreamUtils.CopyData(memStmA, outStm3);

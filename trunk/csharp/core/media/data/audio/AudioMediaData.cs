@@ -129,7 +129,7 @@ namespace urakawa.media.data.audio
             {
                 if (mPCMFormat == null)
                 {
-                    mPCMFormat = new PCMFormatInfo(Presentation.MediaDataManager.DefaultPCMFormat);
+                    mPCMFormat = Presentation.MediaDataManager.DefaultPCMFormat.Copy();
                 }
                 return mPCMFormat;
             }

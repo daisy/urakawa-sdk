@@ -57,7 +57,7 @@ namespace urakawa.core
         {
             ManagedAudioMedia res = pres.MediaFactory.Create<ManagedAudioMedia>();
             Assert.IsNotNull(res, "Could not create a ManagedAudioMedia");
-            res.AudioMediaData.AppendAudioDataFromRiffWave(Path.Combine(pres.RootUri.LocalPath, waveFileName));
+            res.AudioMediaData.AppendPcmData_RiffHeader(Path.Combine(pres.RootUri.LocalPath, waveFileName));
             return res;
         }
 
@@ -193,7 +193,7 @@ namespace urakawa.core
             exportDestProj.AddNewPresentation();
             exportDestProj.Presentations.Get(0).RootUri = exportDestProjUri;
             exportDestProj.Presentations.Get(0).MediaDataManager.DefaultPCMFormat =
-                mPresentation.MediaDataManager.DefaultPCMFormat;
+                mPresentation.MediaDataManager.DefaultPCMFormat.Copy();
             TreeNode exportedNode = nodeToExport.Export(exportDestProj.Presentations.Get(0));
             Assert.AreSame(
                 exportedNode.Presentation, exportDestProj.Presentations.Get(0),
