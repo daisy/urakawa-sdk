@@ -236,7 +236,23 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TreeNodeAudioStreamDeleteCommand" : "nodAudDelCmd"); }
         }
-        
+
+        public static string MetadataAddCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataAddCommand" : "metaAddCmd"); }
+        }
+        public static string MetadataRemoveCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataRemoveCommand" : "metaRemoveCmd"); }
+        }
+        public static string MetadataSetNameCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataSetNameCommand" : "metaSetNameCmd"); }
+        }
+        public static string MetadataSetContentCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataSetContentCommand" : "metaSetContentCmd"); }
+        }
         #endregion
 
         #region managers
