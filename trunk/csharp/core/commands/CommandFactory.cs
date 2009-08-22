@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using urakawa.command;
+﻿using urakawa.command;
 using urakawa.core;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
@@ -41,17 +39,17 @@ namespace urakawa.commands
             return command;
         }
 
-        public MetadataAddCommand CreateMetadataAddCommand(Metadata metadata, Presentation presentation)
+        public MetadataAddCommand CreateMetadataAddCommand(Metadata metadata)
         {
             MetadataAddCommand command = Create<MetadataAddCommand>();
-            command.Init(metadata, presentation);
+            command.Init(metadata);
             return command;
         }
 
-        public MetadataRemoveCommand CreateMetadataRemoveCommand(Metadata metadata, Presentation presentation)
+        public MetadataRemoveCommand CreateMetadataRemoveCommand(Metadata metadata)
         {
             MetadataRemoveCommand command = Create<MetadataRemoveCommand>();
-            command.Init(metadata, presentation);
+            command.Init(metadata);
             return command;
         }
 

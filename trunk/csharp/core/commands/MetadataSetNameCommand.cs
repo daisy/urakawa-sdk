@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Xml;
 using urakawa.command;
-using urakawa.core;
-using urakawa.exception;
 using urakawa.progress;
 using urakawa.xuk;
 using urakawa.metadata;

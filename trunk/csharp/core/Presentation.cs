@@ -1,10 +1,13 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Xml;
 using System.Collections.Generic;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.media.data.audio;
+using urakawa.media.timing;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
@@ -1199,5 +1202,64 @@ namespace urakawa
         }
 
         #endregion
+
+        /// <summary>
+        /// creates and immediately discards objects via each factory
+        /// in order to initialize and cache the mapping between XUK names (pretty or compressed) and actual types.
+        /// Calling this method is not required, it is provided for use-cases where the XUK XML is required to 
+        /// contain all the factory mappings, even though the types are not actually used in the document instance.
+        /// (useful for debugging factory types in XUK)
+        /// </summary>
+        public void WarmUpAllFactories()
+        {
+            Channel ch = ChannelFactory.Create();
+            ChannelsManager.RemoveManagedObject(ch);
+            ch = ChannelFactory.CreateAudioChannel();
+            ChannelsManager.RemoveManagedObject(ch);
+            ch = ChannelFactory.CreateTextChannel();
+            ChannelsManager.RemoveManagedObject(ch);
+            ch = ChannelFactory.CreateImageChannel();
+            ChannelsManager.RemoveManagedObject(ch);
+            //
+            DataProvider dp = DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dp, true);
+            //
+            CommandFactory.CreateCompositeCommand();
+            //
+            MediaData md = MediaDataFactory.CreateAudioMediaData();
+            MediaDataManager.RemoveManagedObject(md);
+            //
+            TreeNode treeNode = TreeNodeFactory.Create();
+            ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
+            manMedia.MediaData = md;
+            CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, manMedia, Time.Zero);
+            CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
+            TreeNodeAndStreamSelection selection = new TreeNodeAndStreamSelection();
+            selection.m_TreeNode = treeNode;
+            CommandFactory.CreateTreeNodeAudioStreamDeleteCommand(selection);
+            //
+            Metadata meta = MetadataFactory.CreateMetadata();
+            //
+            CommandFactory.CreateMetadataAddCommand(meta);
+            CommandFactory.CreateMetadataRemoveCommand(meta);
+            CommandFactory.CreateMetadataSetContentCommand(meta, "dummy");
+            CommandFactory.CreateMetadataSetNameCommand(meta, "dummy");
+            //
+            MediaFactory.CreateExternalImageMedia();
+            MediaFactory.CreateExternalVideoMedia();
+            MediaFactory.CreateExternalTextMedia();
+            MediaFactory.CreateExternalAudioMedia();
+            //
+            MediaFactory.CreateSequenceMedia();
+            MediaFactory.CreateTextMedia();
+            //
+            PropertyFactory.CreateChannelsProperty();
+            PropertyFactory.CreateXmlProperty();
+            //
+
+            Debug.Assert(DataProviderManager.ManagedObjects.Count == 0);
+            Debug.Assert(ChannelsManager.ManagedObjects.Count == 0);
+            Debug.Assert(MediaDataManager.ManagedObjects.Count == 0);
+        }
     }
 }
