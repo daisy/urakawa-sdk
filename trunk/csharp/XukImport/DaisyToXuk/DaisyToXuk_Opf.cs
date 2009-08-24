@@ -9,6 +9,7 @@ namespace XukImport
     {
         private XmlNode m_PackageUniqueIdAttr;
         private string m_PublicationUniqueIdentifier;
+        private XmlNode m_PublicationUniqueIdentifierNode;
 
         private void parseOpf(XmlDocument opfXmlDoc)
         {

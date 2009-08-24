@@ -65,13 +65,38 @@ namespace XukImport
                     {
                         XmlNode mdIdentifier = mdNode.Attributes.GetNamedItem("id");
 
-                        handleMetaData(mdNode.Name, mdNode.InnerText, (mdIdentifier == null ? null : mdIdentifier.Value));
+                        handleMetaData(mdNode, mdNode.Name, mdNode.InnerText, (mdIdentifier == null ? null : mdIdentifier.Value));
                     }
                 }
             }
         }
 
-        private void handleMetaData(string name, string content, string id)
+        private void handleMetaDataOptionalAttrs(Metadata meta, XmlNode node)
+        {
+            if (meta != null)
+            {
+                for (int i = 0; i < node.Attributes.Count; i++)
+                {
+                    XmlAttribute attribute = node.Attributes[i];
+                    if (attribute.Name == "id"
+                        || attribute.Name == "name"
+                        || attribute.Name == "content")
+                    {
+                        continue;
+                    }
+                    if (attribute.Name.StartsWith("xmlns:"))
+                    {
+                        meta.NameNamespace = attribute.Value;
+                    }
+                    else
+                    {
+                        meta.SetOptionalAttributeValue(attribute.Name, attribute.Value);
+                    }
+                }
+            }
+        }
+
+        private void handleMetaData(XmlNode mdNode, string name, string content, string id)
         {
             if (isUniqueIdName(name))
             {
@@ -83,6 +108,7 @@ namespace XukImport
                         String.Format("The Publication's Unique Identifier is specified several times !! OLD: [{0}], NEW: [{1}]", m_PublicationUniqueIdentifier, content));
 
                     m_PublicationUniqueIdentifier = content;
+                    m_PublicationUniqueIdentifierNode = mdNode;
 
                     Presentation presentation = m_Project.Presentations.Get(0);
                     foreach (Metadata md in presentation.Metadatas.ContentsAs_ListCopy)
@@ -97,7 +123,8 @@ namespace XukImport
                 else if (!metadataUidValueAlreadyExists(content)
                     && (String.IsNullOrEmpty(m_PublicationUniqueIdentifier) || content != m_PublicationUniqueIdentifier))
                 {
-                    addMetadata(name, content);
+                    Metadata meta = addMetadata(name, content);
+                    handleMetaDataOptionalAttrs(meta, mdNode);
                 }
             }
             else
@@ -107,7 +134,8 @@ namespace XukImport
                     || md.IsRepeatable
                     || !metadataNameAlreadyExists(name))
                 {
-                    addMetadata(name, content);
+                    Metadata meta = addMetadata(name, content);
+                    handleMetaDataOptionalAttrs(meta, mdNode);
                 }
             }
         }
@@ -152,18 +180,20 @@ namespace XukImport
                 {
                     XmlNode mdIdentifier = mdAttributes.GetNamedItem("id");
 
-                    handleMetaData(attrName.Value, attrContent.Value, (mdIdentifier == null ? null : mdIdentifier.Value));
+                    handleMetaData(mdNode, attrName.Value, attrContent.Value, (mdIdentifier == null ? null : mdIdentifier.Value));
                 }
             }
         }
 
-        private void addMetadata(string name, string content)
+        private Metadata addMetadata(string name, string content)
         {
             Presentation presentation = m_Project.Presentations.Get(0);
             Metadata md = presentation.MetadataFactory.CreateMetadata();
             md.Name = name;
             md.Content = content;
             presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
+
+            return md;
         }
 
         private bool metadataNameAlreadyExists(string metaDataName)

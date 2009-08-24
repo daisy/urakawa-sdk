@@ -375,6 +375,11 @@ namespace urakawa.xuk
         #endregion
 
 
+        public static string MetaDataNameNamespace
+        {
+            //TODO: Special need: same strings because of Dictionary keys in Metadata.cs
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "NameNS" : "NameNS"); }
+        }
 
         public static string MetaDataName
         {

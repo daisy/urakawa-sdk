@@ -2,6 +2,7 @@
 using System.IO;
 using System.Xml;
 using urakawa;
+using urakawa.metadata;
 using core = urakawa.core;
 
 namespace XukImport
@@ -111,7 +112,8 @@ namespace XukImport
 
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
             {
-                addMetadata("dc:Identifier", m_PublicationUniqueIdentifier);
+                Metadata meta = addMetadata("dc:Identifier", m_PublicationUniqueIdentifier);
+                handleMetaDataOptionalAttrs(meta, m_PublicationUniqueIdentifierNode);
             }
         }
 
