@@ -85,7 +85,6 @@ namespace urakawa.metadata
             if (d != null) d(this, new OptionalAttributeChangedEventArgs(this, name, newVal, prevValue));
         }
 
-        private string mName;
 
         private Dictionary<string, string> mAttributes;
 
@@ -118,6 +117,8 @@ namespace urakawa.metadata
             NotifyChanged(e);
         }
 
+
+        private string mName;
         /// <summary>
         /// Gets the name
         /// </summary>
@@ -130,11 +131,28 @@ namespace urakawa.metadata
                 if (value == null)
                 {
                     throw new exception.MethodParameterIsNullException(
-                        "The name can no t be null");
+                        "The name can not be null");
                 }
                 string prevName = mName;
                 mName = value;
                 if (prevName != mName) NotifyNameChanged(value, prevName);
+            }
+        }
+
+        private string mNameNamespace;
+        public string NameNamespace
+        {
+            get { return mNameNamespace; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new exception.MethodParameterIsNullException(
+                        "The nameNamespace can not be null");
+                }
+                string prevName = mNameNamespace;
+                mNameNamespace = value;
+                if (prevName != mNameNamespace) NotifyNameChanged(value, prevName);
             }
         }
 
@@ -184,18 +202,22 @@ namespace urakawa.metadata
                 throw new exception.MethodParameterIsNullException(
                     "A metadata attribute can not have null value");
             }
-            if (name == XukStrings.MetaDataName) Name = value;
+            if (name == XukStrings.MetaDataNameNamespace) NameNamespace = value;
+            else if (name == XukStrings.MetaDataName) Name = value;
             else if (name == XukStrings.MetaDataContent) Content = name;
-            string prevValue = GetOptionalAttributeValue(name);
-            if (mAttributes.ContainsKey(name))
-            {
-                mAttributes[name] = value;
-            }
             else
             {
-                mAttributes.Add(name, value);
+                string prevValue = GetOptionalAttributeValue(name);
+                if (mAttributes.ContainsKey(name))
+                {
+                    mAttributes[name] = value;
+                }
+                else
+                {
+                    mAttributes.Add(name, value);
+                }
+                if (prevValue != name) NotifyOptionalAttributeChanged(name, value, prevValue);
             }
-            if (prevValue != name) NotifyOptionalAttributeChanged(name, value, prevValue);
         }
 
         /// <summary>
@@ -250,6 +272,10 @@ namespace urakawa.metadata
         {
             base.XukOutAttributes(destination, baseUri);
 
+            if (!String.IsNullOrEmpty(NameNamespace))
+            {
+                destination.WriteAttributeString(XukStrings.MetaDataNameNamespace, NameNamespace);
+            }
             destination.WriteAttributeString(XukStrings.MetaDataName, Name);
             foreach (string a in OptionalAttributeNames)
             {
