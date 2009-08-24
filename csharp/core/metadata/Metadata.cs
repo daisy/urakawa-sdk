@@ -231,8 +231,11 @@ namespace urakawa.metadata
                 List<string> names = new List<string>();
                 foreach (string name in mAttributes.Keys)
                 {
-                    if (!string.IsNullOrEmpty(mAttributes[name]))
+                    if (name != XukStrings.MetaDataContent
+                        && !string.IsNullOrEmpty(mAttributes[name]))
+                    {
                         names.Add(name);
+                    }
                 }
                 return names;
             }
