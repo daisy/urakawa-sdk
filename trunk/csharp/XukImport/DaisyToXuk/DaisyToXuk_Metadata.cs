@@ -78,12 +78,17 @@ namespace XukImport
                 for (int i = 0; i < node.Attributes.Count; i++)
                 {
                     XmlAttribute attribute = node.Attributes[i];
-                    if (attribute.Name == "id"
-                        || attribute.Name == "name"
+                    if (attribute.Name == "name"
                         || attribute.Name == "content")
                     {
                         continue;
                     }
+                    if (attribute.Name == "id"
+                        && node != m_PublicationUniqueIdentifierNode)
+                    {
+                        continue;
+                    }
+
                     if (attribute.Name.StartsWith("xmlns:"))
                     {
                         meta.NameNamespace = attribute.Value;
