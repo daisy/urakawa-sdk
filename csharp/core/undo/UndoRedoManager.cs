@@ -13,7 +13,7 @@ namespace urakawa.undo
     /// <summary>
     /// The command manager.
     /// </summary>
-    public sealed class UndoRedoManager : XukAble, IChangeNotifier, IUsingMediaData
+    public sealed class UndoRedoManager : XukAble, IUsingMediaData //IChangeNotifier
     {
         public override string GetTypeNameFormatted()
         {
@@ -40,12 +40,14 @@ namespace urakawa.undo
             mUndoStack = new Stack<Command>();
             mRedoStack = new Stack<Command>();
             mActiveTransactions = new Stack<CompositeCommand>();
-            TransactionStarted += this_transactionStarted;
-            TransactionEnded += this_transactionEnded;
-            TransactionCancelled += this_transactionCancelled;
-            CommandDone += this_commandDone;
-            CommandUnDone += this_commandUnDone;
-            CommandReDone += this_commandReDone;
+
+            //TransactionStarted += this_transactionStarted;
+            //TransactionEnded += this_transactionEnded;
+            //TransactionCancelled += this_transactionCancelled;
+
+            //CommandDone += this_commandDone;
+            //CommandUnDone += this_commandUnDone;
+            //CommandReDone += this_commandReDone;
         }
         #region Event related members
 
@@ -53,17 +55,17 @@ namespace urakawa.undo
         /// Event fired after the <see cref="UndoRedoManager"/> has changed. 
         /// The event fire before any change specific event 
         /// </summary>
-        public event EventHandler<DataModelChangedEventArgs> Changed;
+        //public event EventHandler<DataModelChangedEventArgs> Changed;
 
         /// <summary>
         /// Fires the <see cref="Changed"/> event 
         /// </summary>
         /// <param name="args">The arguments of the event</param>
-        private void NotifyChanged(DataModelChangedEventArgs args)
-        {
-            EventHandler<DataModelChangedEventArgs> d = Changed;
-            if (d != null) d(this, args);
-        }
+        //private void NotifyChanged(DataModelChangedEventArgs args)
+        //{
+        //    EventHandler<DataModelChangedEventArgs> d = Changed;
+        //    if (d != null) d(this, args);
+        //}
 
         /// <summary>
         /// Event fired after a transaction has started
@@ -79,10 +81,10 @@ namespace urakawa.undo
             if (d != null) d(this, new TransactionStartedEventArgs(this, command));
         }
 
-        private void this_transactionStarted(object sender, TransactionStartedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
+        //private void this_transactionStarted(object sender, TransactionStartedEventArgs e)
+        //{
+        //    NotifyChanged(e);
+        //}
 
         /// <summary>
         /// Event fired after a transaction has ended
@@ -98,10 +100,10 @@ namespace urakawa.undo
             if (d != null) d(this, new TransactionEndedEventArgs(this, command));
         }
 
-        private void this_transactionEnded(object sender, TransactionEndedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
+        //private void this_transactionEnded(object sender, TransactionEndedEventArgs e)
+        //{
+        //    NotifyChanged(e);
+        //}
 
         /// <summary>
         /// Event fired after a transaction has been cancelled
@@ -117,10 +119,10 @@ namespace urakawa.undo
             if (d != null) d(this, new TransactionCancelledEventArgs(this, command));
         }
 
-        private void this_transactionCancelled(object sender, TransactionCancelledEventArgs e)
-        {
-            NotifyChanged(e);
-        }
+        //private void this_transactionCancelled(object sender, TransactionCancelledEventArgs e)
+        //{
+        //    NotifyChanged(e);
+        //}
 
         /// <summary>
         /// Event fired after a command has been done/executed via the <see cref="UndoRedoManager"/>
@@ -137,10 +139,10 @@ namespace urakawa.undo
             if (d != null) d(this, new DoneEventArgs(this, doneCmd));
         }
 
-        private void this_commandDone(object sender, DoneEventArgs e)
-        {
-            NotifyChanged(e);
-        }
+        //private void this_commandDone(object sender, DoneEventArgs e)
+        //{
+        //    NotifyChanged(e);
+        //}
 
         /// <summary>
         /// Event fired after a command has been undone <see cref="UndoRedoManager"/>
@@ -157,10 +159,10 @@ namespace urakawa.undo
             if (d != null) d(this, new UnDoneEventArgs(this, unDoneCmd));
         }
 
-        private void this_commandUnDone(object sender, UnDoneEventArgs e)
-        {
-            NotifyChanged(e);
-        }
+        //private void this_commandUnDone(object sender, UnDoneEventArgs e)
+        //{
+        //    NotifyChanged(e);
+        //}
 
         /// <summary>
         /// Event fired after a command has been done/executed via the <see cref="UndoRedoManager"/>
@@ -177,10 +179,10 @@ namespace urakawa.undo
             if (d != null) d(this, new ReDoneEventArgs(this, reDoneCmd));
         }
 
-        private void this_commandReDone(object sender, ReDoneEventArgs e)
-        {
-            NotifyChanged(e);
-        }
+        //private void this_commandReDone(object sender, ReDoneEventArgs e)
+        //{
+        //    NotifyChanged(e);
+        //}
 
         #endregion
 

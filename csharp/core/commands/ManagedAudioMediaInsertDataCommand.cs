@@ -44,6 +44,12 @@ namespace urakawa.commands
             private set { m_TreeNode = value; }
             get { return m_TreeNode; }
         }
+        private TreeNode m_CurrentTreeNode;
+        public TreeNode CurrentTreeNode
+        {
+            private set { m_CurrentTreeNode = value; }
+            get { return m_CurrentTreeNode; }
+        }
         private ManagedAudioMedia m_ManagedAudioMediaTarget;
         public ManagedAudioMedia ManagedAudioMediaTarget
         {
@@ -63,12 +69,17 @@ namespace urakawa.commands
             get { return m_TimeInsert; }
         }
 
-        public void Init(TreeNode treeNode, ManagedAudioMedia managedAudioMediaTarget, ManagedAudioMedia managedAudioMediaSource, Time insertTime)
+        public void Init(TreeNode treeNode, ManagedAudioMedia managedAudioMediaTarget, ManagedAudioMedia managedAudioMediaSource, Time insertTime, TreeNode currentTreeNode)
         {
             if (treeNode == null)
             {
                 throw new ArgumentNullException("treeNode");
             }
+            if (currentTreeNode == null)
+            {
+                throw new ArgumentNullException("treeNode");
+            }
+            
             if (insertTime == null)
             {
                 throw new ArgumentNullException("insertTime");
@@ -96,6 +107,7 @@ namespace urakawa.commands
             }
 
             TreeNode = treeNode;
+            CurrentTreeNode = currentTreeNode;
             TimeInsert = insertTime;
 
             ManagedAudioMediaSource = managedAudioMediaSource;

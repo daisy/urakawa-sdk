@@ -173,10 +173,10 @@ namespace urakawa
             notifyChanged(e);
         }
 
-        private void UndoRedoManager_Changed(object sender, DataModelChangedEventArgs e)
-        {
-            notifyChanged(e);
-        }
+        //private void UndoRedoManager_Changed(object sender, DataModelChangedEventArgs e)
+        //{
+        //    notifyChanged(e);
+        //}
 
         ///// <summary>
         ///// Event fired after a <see cref="Metadata"/> item has been added to the <see cref="Presentation"/>
@@ -484,7 +484,7 @@ namespace urakawa
                 if (mUndoRedoManager == null)
                 {
                     mUndoRedoManager = new UndoRedoManager(this);
-                    mUndoRedoManager.Changed += new EventHandler<DataModelChangedEventArgs>(UndoRedoManager_Changed);
+                    //mUndoRedoManager.Changed += new EventHandler<DataModelChangedEventArgs>(UndoRedoManager_Changed);
                 }
                 return mUndoRedoManager;
             }
@@ -1232,7 +1232,7 @@ namespace urakawa
             TreeNode treeNode = TreeNodeFactory.Create();
             ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
             manMedia.MediaData = md;
-            CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, manMedia, Time.Zero);
+            CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, manMedia, Time.Zero, treeNode);
             CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
             TreeNodeAndStreamSelection selection = new TreeNodeAndStreamSelection();
             selection.m_TreeNode = treeNode;
