@@ -15,7 +15,7 @@ namespace urakawa.command
     /// execution (including exception/redo). Implementations may choose various techniques suitable in terms
     /// of performance and memory usage (storage of the transition or the full object snapshot.)
     /// </summary>
-    public abstract class Command : WithPresentation, IChangeNotifier, IUndoableAction, IUsingMediaData
+    public abstract class Command : WithPresentation, IUndoableAction, IUsingMediaData //IChangeNotifier
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -112,17 +112,17 @@ namespace urakawa.command
         /// Event fired after the <see cref="CompositeCommand"/> has changed. 
         /// The event fire before any change specific event 
         /// </summary>
-        public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
+        //public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
 
         /// <summary>
         /// Fires the <see cref="Changed"/> event 
         /// </summary>
         /// <param name="args">The arguments of the event</param>
-        protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
-        {
-            EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
-            if (d != null) d(this, args);
-        }
+        //protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
+        //{
+        //    EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
+        //    if (d != null) d(this, args);
+        //}
         #endregion
 
         /// <summary>

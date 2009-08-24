@@ -4,7 +4,6 @@ using System.Xml;
 using urakawa.command;
 using urakawa.core;
 using urakawa.exception;
-using urakawa.media;
 using urakawa.media.data;
 using urakawa.media.data.audio;
 using urakawa.progress;
@@ -49,12 +48,12 @@ namespace urakawa.commands
             private set { m_ManagedAudioMedia = value; }
             get { return m_ManagedAudioMedia; }
         }
-        private Media m_PreviousMedia;
-        public Media PreviousMedia
-        {
-            private set { m_PreviousMedia = value; }
-            get { return m_PreviousMedia; }
-        }
+        //private Media m_PreviousMedia;
+        //public Media PreviousMedia
+        //{
+        //    private set { m_PreviousMedia = value; }
+        //    get { return m_PreviousMedia; }
+        //}
 
         public void Init(TreeNode treeNode, ManagedAudioMedia managedMedia)
         {
@@ -80,6 +79,11 @@ namespace urakawa.commands
                 throw new ArgumentException("HasActualAudioMediaData");
             }
 
+            if (treeNode.GetManagedAudioMediaOrSequenceMedia() != null)
+            {
+                throw new ArgumentException("treeNode.GetManagedAudioMediaOrSequenceMedia");
+            }
+
             TreeNode = treeNode;
             ManagedAudioMedia = managedMedia;
 
@@ -88,47 +92,45 @@ namespace urakawa.commands
             ShortDescription = "Add new audio";
             LongDescription = "Attach a ManagedAudioMedia to a TreeNode in the AudioChannel via the ChannelsProperty";
 
-            if (!Presentation.ChannelsManager.HasAudioChannel)
-            {
-                return;
-            }
+            //if (!Presentation.ChannelsManager.HasAudioChannel)
+            //{
+            //    return;
+            //}
 
-            AudioChannel audioChannel = Presentation.ChannelsManager.GetOrCreateAudioChannel();
+            //AudioChannel audioChannel = Presentation.ChannelsManager.GetOrCreateAudioChannel();
 
-            if (!TreeNode.HasChannelsProperty)
-            {
-                return;
-            }
+            //if (!TreeNode.HasChannelsProperty)
+            //{
+            //    return;
+            //}
 
-            ChannelsProperty chProp = TreeNode.GetOrCreateChannelsProperty();
+            //ChannelsProperty chProp = TreeNode.GetOrCreateChannelsProperty();
 
-            PreviousMedia = chProp.GetMedia(audioChannel);
+            //PreviousMedia = chProp.GetMedia(audioChannel);
 
-            if (PreviousMedia == null)
-            {
-                return;
-            }
+            //if (PreviousMedia == null)
+            //{
+            //    return;
+            //}
 
-            if (PreviousMedia is ManagedAudioMedia)
-            {
-                if (((ManagedAudioMedia)PreviousMedia).HasActualAudioMediaData)
-                {
-                    m_UsedMediaData.Add(((ManagedAudioMedia)PreviousMedia).AudioMediaData);
-                }
-            }
-            else if (PreviousMedia is SequenceMedia)
-            {
-                foreach (Media media in ((SequenceMedia)PreviousMedia).ChildMedias.ContentsAs_YieldEnumerable)
-                {
-                    if (media is ManagedAudioMedia)
-                    {
-                        if (((ManagedAudioMedia)media).HasActualAudioMediaData)
-                        {
-                            m_UsedMediaData.Add(((ManagedAudioMedia)media).AudioMediaData);
-                        }
-                    }
-                }
-            }
+            //if (PreviousMedia is ManagedAudioMedia)
+            //{
+            //    if (((ManagedAudioMedia)PreviousMedia).HasActualAudioMediaData)
+            //    {
+            //        m_UsedMediaData.Add(((ManagedAudioMedia)PreviousMedia).AudioMediaData);
+            //    }
+            //}
+            //else if (PreviousMedia is SequenceMedia)
+            //{
+            //    foreach (Media media in ((SequenceMedia)PreviousMedia).ChildMedias.ContentsAs_YieldEnumerable)
+            //    {
+            //        if (media is ManagedAudioMedia
+            //            && ((ManagedAudioMedia)media).HasActualAudioMediaData)
+            //        {
+            //            m_UsedMediaData.Add(((ManagedAudioMedia)media).AudioMediaData);
+            //        }
+            //    }
+            //}
         }
 
         public override bool CanExecute
@@ -152,7 +154,7 @@ namespace urakawa.commands
         {
             AudioChannel audioChannel = Presentation.ChannelsManager.GetOrCreateAudioChannel();
             ChannelsProperty chProp = m_TreeNode.GetOrCreateChannelsProperty();
-            chProp.SetMedia(audioChannel, m_PreviousMedia);
+            chProp.SetMedia(audioChannel, null);// PreviousMedia
         }
 
         private List<MediaData> m_UsedMediaData = new List<MediaData>();
