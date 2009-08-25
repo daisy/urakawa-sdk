@@ -629,6 +629,10 @@ namespace urakawa.xuk
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "DefaultXmlNamespaceUri" : "xmlNS"); }
         }
 
+        public static string ManagedImageMedia
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ManagedImageMedia" : "mIm"); }
+        }
         #endregion
 
 #endregion

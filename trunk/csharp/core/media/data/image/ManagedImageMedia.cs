@@ -6,32 +6,28 @@ using urakawa.events.media.data;
 namespace urakawa.media.data.image
 {
 
-    class ManagedImageMedia : AbstractImageMedia, IManaged
+   public class ManagedImageMedia : AbstractImageMedia, IManaged
     {
+        private ImageMediaData m_ImageMediaData;
         public override string GetTypeNameFormatted()
         {
-            throw new NotImplementedException();
+            return xuk.XukStrings.ManagedImageMedia;
+        }
+        private void Reset()
+        {
+           m_ImageMediaData = null;
         }
         public override bool IsContinuous
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { return false; }
         }
         public override bool IsDiscrete
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { return true; }
         }
         public override bool IsSequence
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { return false; }
         }
 
         protected override Media CopyProtected()
@@ -74,19 +70,17 @@ namespace urakawa.media.data.image
             }
         }
 
-        public MediaData MediaData
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public event EventHandler<MediaDataChangedEventArgs> MediaDataChanged;
-
-    }
+       public MediaData MediaData
+       {
+           get
+           { return m_ImageMediaData; }
+           set
+           {
+               if (value is ImageMediaData)
+                   m_ImageMediaData = value as ImageMediaData;
+           }
+       }
+  
+       public event EventHandler<MediaDataChangedEventArgs> MediaDataChanged;
+     }
 }
