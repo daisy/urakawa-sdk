@@ -21,7 +21,7 @@ namespace urakawa.media.data.audio
 
         public override string ToString()
         {
-            return "[PCM " + Data.BitDepth + " bits, " + Data.SampleRate + " Hz, " + (Data.NumberOfChannels == 1 ? "Mono" : (Data.NumberOfChannels == 2 ? "Stereo" : "" + Data.NumberOfChannels)) + "]";
+            return Data.BitDepth + " bits " + String.Format("{0:0.###}", Data.SampleRate / 1000) + " KHz " + (Data.NumberOfChannels == 1 ? "Mono" : (Data.NumberOfChannels == 2 ? "Stereo" : "" + Data.NumberOfChannels));
         }
 
         public override string GetTypeNameFormatted()
