@@ -112,8 +112,7 @@ namespace XukImport
 
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
             {
-                Metadata meta = addMetadata("dc:Identifier", m_PublicationUniqueIdentifier);
-                handleMetaDataOptionalAttrs(meta, m_PublicationUniqueIdentifierNode);
+                Metadata meta = addMetadata("dc:Identifier", m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);
             }
         }
 
