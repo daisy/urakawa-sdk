@@ -1,6 +1,5 @@
 using System;
 using System.Xml;
-using urakawa.property;
 using urakawa.xuk;
 
 namespace urakawa.property.xml
@@ -8,8 +7,25 @@ namespace urakawa.property.xml
     /// <summary>
     /// Default implementation of <see cref="XmlAttribute"/>
     /// </summary>
-    public class XmlAttribute : XukAble
+    public class XmlAttribute : XukAble, IValueEquatable<XmlAttribute>
     {
+        public bool ValueEquals(XmlAttribute otherz)
+        {
+            if (otherz == null)
+            {
+                return false;
+            }
+
+            if (otherz.LocalName != LocalName
+                || otherz.NamespaceUri != NamespaceUri
+                || otherz.Value != Value)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         internal class ValueChangedEventArgs : urakawa.events.DataModelChangedEventArgs
         {
             public ValueChangedEventArgs(XmlAttribute src, string newVal, string prevVal)
@@ -202,12 +218,14 @@ namespace urakawa.property.xml
             {
                 throw new exception.XukException("LocalName attribute of XmlAttribute element is missing");
             }
+
             string value = source.GetAttribute(XukStrings.Value);
             if (value == null)
             {
                 throw new exception.XukException("Value attribute of XmlAttribute element is missing");
             }
             Value = value;
+
             string ns = source.GetAttribute(XukStrings.NamespaceUri);
             if (ns == null) ns = "";
             SetQName(name, ns);
@@ -226,19 +244,22 @@ namespace urakawa.property.xml
         {
             base.XukOutAttributes(destination, baseUri);
 
-            //localName is required
             if (String.IsNullOrEmpty(mLocalName))
             {
                 throw new exception.XukException("The XmlAttribute has no name");
             }
             destination.WriteAttributeString(XukStrings.LocalName, mLocalName);
+
             if (mValue == null)
             {
                 throw new exception.XukException("The XmlAttribute has no value");
             }
             destination.WriteAttributeString(XukStrings.Value, mValue);
-            if (mNamespaceUri != "") destination.WriteAttributeString(XukStrings.NamespaceUri, mNamespaceUri);
-            
+
+            if (mNamespaceUri != "")
+            {
+                destination.WriteAttributeString(XukStrings.NamespaceUri, mNamespaceUri);
+            }
         }
 
         public override string GetTypeNameFormatted()

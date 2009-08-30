@@ -132,7 +132,7 @@ namespace urakawa.metadata.daisy
         }
         private bool _validateItem(Metadata metadata)
         {
-            MetadataDefinition metadataDefinition = FindDefinition(metadata.Name);
+            MetadataDefinition metadataDefinition = FindDefinition(metadata.NameContentAttribute.LocalName);
 
             if (metadataDefinition == null)
             {
@@ -163,7 +163,7 @@ namespace urakawa.metadata.daisy
                 {
                     Metadata metadata = metadatas.Find(
                         delegate(Metadata item)
-                        { return item.Name == metadataDefinition.Name; });
+                        { return item.NameContentAttribute.LocalName == metadataDefinition.Name; });
 
                     if (metadata == null)
                     {
@@ -178,13 +178,13 @@ namespace urakawa.metadata.daisy
             {
                 MetadataDefinition metadataDefinition = m_MetadataDefinitions.Find(
                     delegate(MetadataDefinition item)
-                    { return item.Name == metadata.Name; });
+                    { return item.Name == metadata.NameContentAttribute.LocalName; });
 
                 if (metadataDefinition != null && !metadataDefinition.IsRepeatable)
                 {
                     List<Metadata> list = metadatas.FindAll(
                         delegate(Metadata item)
-                        { return item.Name == metadata.Name; });
+                        { return item.NameContentAttribute.LocalName == metadata.NameContentAttribute.LocalName; });
 
                     if (list.Count > 1)
                     {
@@ -252,7 +252,7 @@ namespace urakawa.metadata.daisy
         }
         private bool _validateDate(Metadata metadata, MetadataDefinition definition)
         {
-            string date = metadata.Content;
+            string date = metadata.NameContentAttribute.Value;
             //Require at least the year field
             if (date.Length < 4)
             {
@@ -351,7 +351,7 @@ namespace urakawa.metadata.daisy
         {
             try
             {
-                int x = Convert.ToInt32(metadata.Content);
+                int x = Convert.ToInt32(metadata.NameContentAttribute.Value);
             }
             catch (Exception)
             {
@@ -365,7 +365,7 @@ namespace urakawa.metadata.daisy
         {
             try
             {
-                double x = Convert.ToDouble(metadata.Content);
+                double x = Convert.ToDouble(metadata.NameContentAttribute.Value);
             }
             catch (Exception)
             {
@@ -380,11 +380,11 @@ namespace urakawa.metadata.daisy
         {
             try
             {
-                int x = Convert.ToInt32(metadata.Content);
+                int x = Convert.ToInt32(metadata.NameContentAttribute.Value);
             }
             catch (Exception)
             {
-                double x = Convert.ToDouble(metadata.Content);
+                double x = Convert.ToDouble(metadata.NameContentAttribute.Value);
             }
             catch
             {
@@ -419,7 +419,7 @@ namespace urakawa.metadata.daisy
             //if it's a required field, it can't be empty
             if (definition.Occurrence == MetadataOccurrence.Required)
             {
-                if (metadata.Content.Length > 0)
+                if (metadata.NameContentAttribute.Value.Length > 0)
                 {
                     return true;
                 }
@@ -447,7 +447,7 @@ namespace urakawa.metadata.daisy
             {
                 Metadata exists = alreadyUsedMetadata.Find(
                     delegate(Metadata item)
-                    { return item.Name == definition.Name; });
+                    { return item.NameContentAttribute.LocalName == definition.Name; });
 
                 if (exists == null)
                 {

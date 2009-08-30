@@ -60,7 +60,7 @@ namespace urakawa.commands
             }
 
             Metadata = metadata;
-            m_OriginalContent = Metadata.Content;
+            m_OriginalContent = Metadata.NameContentAttribute.Value;
             Content = content;
 
             ShortDescription = "Set metadata content";
@@ -79,12 +79,12 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            Metadata.Content = m_NewContent;
+            Metadata.NameContentAttribute.Value = m_NewContent;
         }
 
         public override void UnExecute()
         {
-            Metadata.Content = m_OriginalContent;
+            Metadata.NameContentAttribute.Value = m_OriginalContent;
         }
 
 
