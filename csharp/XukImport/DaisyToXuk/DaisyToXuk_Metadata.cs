@@ -57,10 +57,12 @@ namespace XukImport
             {
                 foreach (XmlNode mdNode in mdNodeRoot.ChildNodes)
                 {
+                    string lowerCaseName = mdNode.Name.ToLower();
+
                     if (mdNode.NodeType == XmlNodeType.Element
-                        && mdNode.Name != "meta"
-                        && mdNode.Name != "dc-metadata"
-                        && mdNode.Name != "x-metadata"
+                        && lowerCaseName != "meta"
+                        && lowerCaseName != "dc-metadata"
+                        && lowerCaseName != "x-metadata"
                         && !String.IsNullOrEmpty(mdNode.InnerText))
                     {
                         XmlNode mdIdentifier = mdNode.Attributes.GetNamedItem("id");
@@ -78,20 +80,27 @@ namespace XukImport
                 for (int i = 0; i < node.Attributes.Count; i++)
                 {
                     XmlAttribute attribute = node.Attributes[i];
-                    if (attribute.Name == "name"
-                        || attribute.Name == "content")
+
+                    string lowerCaseName = attribute.Name.ToLower();
+
+                    if (lowerCaseName == "name"
+                        || lowerCaseName == "content")
                     {
                         continue;
                     }
-                    if (attribute.Name == "id"
+                    if (lowerCaseName == "id"
                         && node != m_PublicationUniqueIdentifierNode)
                     {
                         continue;
                     }
 
-                    if (attribute.Name.StartsWith("xmlns:"))
+                    if (lowerCaseName.StartsWith("xmlns:"))
                     {
-                        meta.NameContentAttribute.NamespaceUri = attribute.Value;
+                        //meta.NameContentAttribute.NamespaceUri = attribute.Value;
+                    }
+                    else if (lowerCaseName == "xmlns")
+                    {
+                        //meta.OtherAttributes.NamespaceUri = attribute.Value;
                     }
                     else
                     {
@@ -99,7 +108,7 @@ namespace XukImport
 
                         xmlAttr.LocalName = attribute.Name;
 
-                        if (attribute.Name.Contains(":"))
+                        if (lowerCaseName.Contains(":"))
                         {
                             xmlAttr.NamespaceUri = attribute.NamespaceURI;
                         }
@@ -129,43 +138,46 @@ namespace XukImport
                     Presentation presentation = m_Project.Presentations.Get(0);
                     foreach (Metadata md in presentation.Metadatas.ContentsAs_ListCopy)
                     {
-                        if (isUniqueIdName(md.NameContentAttribute.LocalName)
+                        if (isUniqueIdName(md.NameContentAttribute.LocalName.ToLower())
                             && md.NameContentAttribute.Value == m_PublicationUniqueIdentifier)
                         {
                             presentation.Metadatas.Remove(md);
                         }
                     }
-
                 }
                 else if (!metadataUidValueAlreadyExists(content)
                     && (String.IsNullOrEmpty(m_PublicationUniqueIdentifier) || content != m_PublicationUniqueIdentifier))
                 {
-                    Metadata meta = addMetadata(name, content);
-                    handleMetaDataOptionalAttrs(meta, mdNode);
+                    Metadata meta = addMetadata(name, content, mdNode);
                 }
             }
             else
             {
                 MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition(name);
-                if (md == null
-                    || md.IsRepeatable
-                    || !metadataNameAlreadyExists(name))
+                if ((md == null && !metadataNameContentAlreadyExists(name, content))
+                    || (md != null && md.IsRepeatable && !metadataNameContentAlreadyExists(name, content))
+                    || (md != null && !md.IsRepeatable && !metadataNameAlreadyExists(name)))
                 {
-                    Metadata meta = addMetadata(name, content);
-                    handleMetaDataOptionalAttrs(meta, mdNode);
+                    Metadata meta = addMetadata(name, content, mdNode);
                 }
             }
         }
 
         private static bool isUniqueIdName(string name)
         {
-            if ("dc:Identifier" == name)
+            string lower = name.ToLower();
+
+            if ("dc:identifier" == lower)
             {
                 return true;
             }
 
             MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition("dc:Identifier");
-            return md != null && md.Synonyms.Contains(name);
+            return md != null && md.Synonyms.Find(
+                                delegate(string s)
+                                {
+                                    return s.ToLower() == lower;
+                                }) != null;
         }
 
         private void parseMetadata_NameContent(XmlNodeList listOfMetaDataNodes)
@@ -202,26 +214,52 @@ namespace XukImport
             }
         }
 
-        private Metadata addMetadata(string name, string content)
+        private Metadata addMetadata(string name, string content, XmlNode node)
         {
             Presentation presentation = m_Project.Presentations.Get(0);
             
             Metadata md = presentation.MetadataFactory.CreateMetadata();
             md.NameContentAttribute = new urakawa.property.xml.XmlAttribute();
-            md.NameContentAttribute.LocalName = name;
+            md.NameContentAttribute.LocalName = name.ToLower();
             md.NameContentAttribute.Value = content;
 
+            if (md.NameContentAttribute.LocalName.Contains(":")
+                && node.Name.ToLower() == md.NameContentAttribute.LocalName)
+            {
+                md.NameContentAttribute.NamespaceUri = node.NamespaceURI;
+            }
+
             presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
+
+            handleMetaDataOptionalAttrs(md, node);
 
             return md;
         }
 
-        private bool metadataNameAlreadyExists(string metaDataName)
+        private bool metadataNameContentAlreadyExists(string metaDataName, string metaDataContent)
         {
+            string lower = metaDataName.ToLower();
+
             Presentation presentation = m_Project.Presentations.Get(0);
             foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
-                if (md.NameContentAttribute.LocalName == metaDataName)
+                if (md.NameContentAttribute.LocalName.ToLower() == lower
+                    && md.NameContentAttribute.Value == metaDataContent)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool metadataNameAlreadyExists(string metaDataName)
+        {
+            string lower = metaDataName.ToLower();
+
+            Presentation presentation = m_Project.Presentations.Get(0);
+            foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
+            {
+                if (md.NameContentAttribute.LocalName.ToLower() == lower)
                 {
                     return true;
                 }
@@ -232,9 +270,11 @@ namespace XukImport
         private bool metadataUidValueAlreadyExists(string uid)
         {
             Presentation presentation = m_Project.Presentations.Get(0);
+
             foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
-                if (isUniqueIdName(md.NameContentAttribute.LocalName) && md.NameContentAttribute.Value == uid)
+                if (isUniqueIdName(md.NameContentAttribute.LocalName)
+                    && md.NameContentAttribute.Value == uid)
                 {
                     return true;
                 }

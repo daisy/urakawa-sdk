@@ -283,50 +283,53 @@ namespace urakawa.metadata.daisy
         public static readonly List<MetadataDefinition> MetadataList =
             new List<MetadataDefinition>(m_MetadataDefinitions);
 
+        // Note: case-insensitive
         public static MetadataDefinition GetMetadataDefinition(string name)
         {
+            string lowerCaseName = name.ToLower();
+
             foreach (MetadataDefinition md in MetadataList)
             {
-                if (md.Name == name)
+                if (md.Name.ToLower() == lowerCaseName)
                 {
                     return md;
                 }
             }
-            return null; 
+            return null;
         }
 
         /*experimental to search synonyms too*/
         public static MetadataDefinition GetMetadataDefinition(string name, bool searchSynonyms)
         {
+            string lowerCaseName = name.ToLower();
+
             MetadataDefinition definition = MetadataList.Find(
                 delegate(MetadataDefinition item)
-                    {
-                        return item.Name == name;
-                    });
+                {
+                    return item.Name.ToLower() == lowerCaseName;
+                });
             if (definition == null)
             {
                 definition = MetadataList.Find(
                     delegate(MetadataDefinition item)
+                    {
+                        if (item.Synonyms != null)
                         {
-                            if (item.Synonyms != null)
-                            {
-                                string found = item.Synonyms.Find(
-                                    delegate(string s)
-                                        {
-                                            return s == name;
-                                        });
-                                return (found != null);
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        });
+                            string found = item.Synonyms.Find(
+                                delegate(string s)
+                                {
+                                    return s.ToLower() == lowerCaseName;
+                                });
+                            return (found != null);
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
             }
 
             return definition;
-             
         }
-        
     }
 }
