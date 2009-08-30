@@ -121,7 +121,7 @@ namespace urakawa.metadata.daisy
         }
 
         //validate a single item (do not look at the entire set - do not look for repetitions)
-        public bool ValidateItem(Metadata metadata)
+        public bool Validate(Metadata metadata)
         {
             m_Errors.Clear();
             return _validateItem(metadata);
