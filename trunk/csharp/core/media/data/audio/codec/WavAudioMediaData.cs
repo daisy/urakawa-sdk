@@ -113,6 +113,8 @@ namespace urakawa.media.data.audio.codec
                 Time clipEnd = null;
                 if (!IsClipEndTiedToEOM) clipEnd = ClipEnd.Copy();
                 //TODO: Check that sharing DataProvider with the copy is not a problem
+                // REMARK: FileDataProviders: once created, binary content (including RIFF header) is never changed.
+                // therefore, OPEN-only FilsStream access should work concurrently (i.e. FileShare.Read)
                 return new WavClip(DataProvider, ClipBegin.Copy(), clipEnd);
             }
 

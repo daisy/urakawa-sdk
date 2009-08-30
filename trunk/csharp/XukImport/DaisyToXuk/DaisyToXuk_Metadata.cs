@@ -91,11 +91,22 @@ namespace XukImport
 
                     if (attribute.Name.StartsWith("xmlns:"))
                     {
-                        meta.NameNamespace = attribute.Value;
+                        meta.NameContentAttribute.NamespaceUri = attribute.Value;
                     }
                     else
                     {
-                        meta.SetOptionalAttributeValue(attribute.Name, attribute.Value);
+                        urakawa.property.xml.XmlAttribute xmlAttr = new urakawa.property.xml.XmlAttribute();
+
+                        xmlAttr.LocalName = attribute.Name;
+
+                        if (attribute.Name.Contains(":"))
+                        {
+                            xmlAttr.NamespaceUri = attribute.NamespaceURI;
+                        }
+
+                        xmlAttr.Value = attribute.Value;
+
+                        meta.OtherAttributes.Insert(meta.OtherAttributes.Count, xmlAttr);
                     }
                 }
             }
@@ -118,7 +129,8 @@ namespace XukImport
                     Presentation presentation = m_Project.Presentations.Get(0);
                     foreach (Metadata md in presentation.Metadatas.ContentsAs_ListCopy)
                     {
-                        if (isUniqueIdName(md.Name) && md.Content == m_PublicationUniqueIdentifier)
+                        if (isUniqueIdName(md.NameContentAttribute.LocalName)
+                            && md.NameContentAttribute.Value == m_PublicationUniqueIdentifier)
                         {
                             presentation.Metadatas.Remove(md);
                         }
@@ -193,9 +205,12 @@ namespace XukImport
         private Metadata addMetadata(string name, string content)
         {
             Presentation presentation = m_Project.Presentations.Get(0);
+            
             Metadata md = presentation.MetadataFactory.CreateMetadata();
-            md.Name = name;
-            md.Content = content;
+            md.NameContentAttribute = new urakawa.property.xml.XmlAttribute();
+            md.NameContentAttribute.LocalName = name;
+            md.NameContentAttribute.Value = content;
+
             presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
 
             return md;
@@ -206,14 +221,12 @@ namespace XukImport
             Presentation presentation = m_Project.Presentations.Get(0);
             foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
-                if (md.Name == metaDataName)
+                if (md.NameContentAttribute.LocalName == metaDataName)
                 {
                     return true;
                 }
             }
             return false;
-            //List<Metadata> metadataList = presentation.GetMetadata(metaDataName);
-            //return (metadataList != null && metadataList.Count > 0);
         }
 
         private bool metadataUidValueAlreadyExists(string uid)
@@ -221,7 +234,7 @@ namespace XukImport
             Presentation presentation = m_Project.Presentations.Get(0);
             foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
-                if (isUniqueIdName(md.Name) && md.Content == uid)
+                if (isUniqueIdName(md.NameContentAttribute.LocalName) && md.NameContentAttribute.Value == uid)
                 {
                     return true;
                 }
