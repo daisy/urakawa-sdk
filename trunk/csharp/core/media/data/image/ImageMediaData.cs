@@ -21,24 +21,20 @@ namespace urakawa.media.data.image
                 case ".jpg":
                     {
                         imgDataProvider = Presentation.DataProviderFactory.Create(DataProviderFactory.IMAGE_JPG_MIME_TYPE);
-                        return imgDataProvider;
                         break;
                     }
                 case ".png":
                     {
                         imgDataProvider = Presentation.DataProviderFactory.Create(DataProviderFactory.IMAGE_PNG_MIME_TYPE);
-                        return imgDataProvider;
                         break;
                     }
                 case ".svg":
                     {
                         imgDataProvider = Presentation.DataProviderFactory.Create(DataProviderFactory.IMAGE_SVG_MIME_TYPE);
-                        return imgDataProvider;
                         break;
                     }
                 default:
-                    return imgDataProvider;
-                    break;
+                        break;
             }
           
           FileStream originalImageStream = new FileStream ( path, FileMode.Open, FileAccess.Read );
@@ -52,6 +48,7 @@ namespace urakawa.media.data.image
                 originalImageStream.Close ();
                 originalImageStream = null;
             }
+            return imgDataProvider;
           }
     }//Class
 }//namespace
