@@ -6,7 +6,6 @@ using System.Net.Cache;
 using System.Xml;
 using System.Diagnostics;
 using System.Reflection;
-using System.Windows.Forms;
 
 namespace XukImport
 {
@@ -68,6 +67,23 @@ namespace XukImport
                 m_EnableHttpCaching = enableHttpCaching;
 
                 m_EmbeddedEntities = new Dictionary<String, String>();
+
+                // -//W3C//DTD XHTML 1.0 Transitional//EN
+                // http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd
+
+                m_EmbeddedEntities.Add("xhtml-lat1.ent", "DaisyToXuk.Resources.xhtml-lat1.ent");
+                m_EmbeddedEntities.Add("xhtml-symbol.ent", "DaisyToXuk.Resources.xhtml-symbol.ent");
+                m_EmbeddedEntities.Add("xhtml-special.ent", "DaisyToXuk.Resources.xhtml-special.ent");
+
+                m_EmbeddedEntities.Add("HTMLlat1", "DaisyToXuk.Resources.xhtml-lat1.ent");
+                m_EmbeddedEntities.Add("HTMLsymbol", "DaisyToXuk.Resources.xhtml-symbol.ent");
+                m_EmbeddedEntities.Add("HTMLspecial", "DaisyToXuk.Resources.xhtml-special.ent");
+
+                m_EmbeddedEntities.Add("//W3C//ENTITIES%20Latin%201%20for%20XHTML//EN", "DaisyToXuk.Resources.xhtml-lat1.ent");
+                m_EmbeddedEntities.Add("//W3C//ENTITIES%20Symbols%20for%20XHTML//EN", "DaisyToXuk.Resources.xhtml-symbol.ent");
+                m_EmbeddedEntities.Add("//W3C//ENTITIES%20Special%20for%20XHTML//EN", "DaisyToXuk.Resources.xhtml-special.ent");
+
+                m_EmbeddedEntities.Add("//W3C//DTD%20XHTML%201.0%20Transitional//EN", "DaisyToXuk.Resources.xhtml1-transitional.dtd");
                 m_EmbeddedEntities.Add("//W3C//DTD%20XHTML%201.1//EN", "DaisyToXuk.Resources.xhtml11.dtd");
                 m_EmbeddedEntities.Add("//NISO//DTD%20ncx%202005-1//EN", "DaisyToXuk.Resources.ncx-2005-1.dtd");
                 m_EmbeddedEntities.Add("//W3C//DTD%20XHTML%201.1%20plus%20MathML%202.0%20plus%20SVG%201.1//EN", "DaisyToXuk.Resources.xhtml-math-svg-flat.dtd");
@@ -78,7 +94,6 @@ namespace XukImport
                 m_EmbeddedEntities.Add("//NISO//DTD%20dtbsmil%202005-2//EN", "DaisyToXuk.Resources.dtbsmil-2005-2.dtd");
                 m_EmbeddedEntities.Add("//ISBN%200-9673008-1-9//DTD%20OEB%201.2%20Package//EN", "DaisyToXuk.Resources.oebpkg12.dtd");
                 m_EmbeddedEntities.Add("//NISO//DTD%20dtbsmil%202005-1//EN", "DaisyToXuk.Resources.dtbsmil-2005-1.dtd");
-                
             }
 
             public override Uri ResolveUri(Uri baseUri, string relativeUri)
@@ -146,6 +161,13 @@ namespace XukImport
             {
                 Assembly myAssembly = Assembly.GetExecutingAssembly();
                 //string[] names = myAssembly.GetManifestResourceNames();
+
+                //if (!absoluteUri.AbsolutePath.EndsWith("opf")
+                //    && !absoluteUri.AbsolutePath.EndsWith("xhtml")
+                //    && !absoluteUri.AbsolutePath.EndsWith("html"))
+                //{
+                //    Debugger.Break();
+                //}
 
                 Stream dtdStream = null;
                 foreach (String key in m_EmbeddedEntities.Keys)
