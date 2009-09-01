@@ -69,15 +69,15 @@ namespace XukImport
         {
             XmlDocument smilXmlDoc = readXmlDocument(fullSmilPath);
 
-            //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
+            //we skip SMIL metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
             //parseMetadata(smilXmlDoc);
 
-            XmlNodeList allTextNodes = smilXmlDoc.GetElementsByTagName("text");
-            if (allTextNodes.Count == 0)
-            {
-                return;
-            }
-            foreach (XmlNode textNode in allTextNodes)
+            //XmlNodeList allTextNodes = smilXmlDoc.GetElementsByTagName("text");
+            //if (allTextNodes.Count == 0)
+            //{
+            //    return;
+            //}
+            foreach (XmlNode textNode in getChildrenElementsWithName(smilXmlDoc, true, "text", null, false))
             {
                 XmlAttributeCollection textNodeAttrs = textNode.Attributes;
                 if (textNodeAttrs == null || textNodeAttrs.Count == 0)
@@ -107,7 +107,7 @@ namespace XukImport
                     continue;
                 }
                 XmlNode parent = textNode.ParentNode;
-                if (parent != null && parent.Name == "a")
+                if (parent != null && parent.LocalName == "a")
                 {
                     parent = parent.ParentNode;
                 }
@@ -115,7 +115,7 @@ namespace XukImport
                 {
                     continue;
                 }
-                if (parent.Name != "par")
+                if (parent.LocalName != "par")
                 {
                     //System.Diagnostics.Debug.Fail("Text node in SMIL has no parallel time container as parent ! {0}", parent.Name);
                     continue;
@@ -127,29 +127,29 @@ namespace XukImport
                     {
                         continue;
                     }
-                    if (textPeerNode.Name == "audio")
+                    if (textPeerNode.LocalName == "audio")
                     {
                         addAudio(textTreeNode, textPeerNode, false, fullSmilPath);
                         break;
                     }
-                    else if (textPeerNode.Name == "a")
+                    else if (textPeerNode.LocalName == "a")
                     {
                         XmlNodeList aChildren = textPeerNode.ChildNodes;
                         foreach (XmlNode aChild in aChildren)
                         {
-                            if (aChild.Name == "audio")
+                            if (aChild.LocalName == "audio")
                             {
                                 addAudio(textTreeNode, aChild, false, fullSmilPath);
                                 break;
                             }
                         }
                     }
-                    else if (textPeerNode.Name == "seq")
+                    else if (textPeerNode.LocalName == "seq")
                     {
                         XmlNodeList seqChildren = textPeerNode.ChildNodes;
                         foreach (XmlNode seqChild in seqChildren)
                         {
-                            if (seqChild.Name == "audio")
+                            if (seqChild.LocalName == "audio")
                             {
                                 addAudio(textTreeNode, seqChild, true, fullSmilPath);
                             }
