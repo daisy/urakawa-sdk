@@ -60,7 +60,7 @@ namespace urakawa.commands
             }
 
             Metadata = metadata;
-            m_OriginalName = Metadata.NameContentAttribute.LocalName;
+            m_OriginalName = Metadata.NameContentAttribute.Name;
             Name = name;
 
             ShortDescription = "Set metadata name";
@@ -79,12 +79,12 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            Metadata.NameContentAttribute.LocalName = m_NewName;
+            Metadata.NameContentAttribute.Name = m_NewName;
         }
 
         public override void UnExecute()
         {
-            Metadata.NameContentAttribute.LocalName = m_OriginalName;
+            Metadata.NameContentAttribute.Name = m_OriginalName;
         }
 
 

@@ -18,7 +18,6 @@ using urakawa.undo;
 using urakawa.xuk;
 using urakawa.events;
 using urakawa.events.presentation;
-using XmlAttribute=urakawa.property.xml.XmlAttribute;
 
 namespace urakawa
 {
@@ -756,7 +755,7 @@ namespace urakawa
             List<Metadata> list = new List<Metadata>();
             foreach (Metadata md in mMetadata.ContentsAs_YieldEnumerable)
             {
-                if (md.NameContentAttribute.LocalName == name) list.Add(md);
+                if (md.NameContentAttribute.Name == name) list.Add(md);
             }
             return list;
         }
@@ -1240,8 +1239,9 @@ namespace urakawa
             CommandFactory.CreateTreeNodeAudioStreamDeleteCommand(selection);
             //
             Metadata meta = MetadataFactory.CreateMetadata();
-            meta.NameContentAttribute = new XmlAttribute();
-            meta.NameContentAttribute.LocalName = "dummy name";
+            meta.NameContentAttribute = new MetadataAttribute();
+            meta.NameContentAttribute.Name = "dummy name";
+            meta.NameContentAttribute.NamespaceUri = "dummy namespace";
             meta.NameContentAttribute.Value = "dummy content";
             //
             CommandFactory.CreateMetadataAddCommand(meta);
