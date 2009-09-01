@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FB4B9F00-DAE4-46C4-B789-7A693198FA61}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -89,6 +89,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\dtbsmil-2005-1.dtd" />
     <EmbeddedResource Include="Resources\oebpkg12.dtd" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\xhtml-lat1.ent" />
+    <EmbeddedResource Include="Resources\xhtml-special.ent" />
+    <EmbeddedResource Include="Resources\xhtml-symbol.ent" />
+    <EmbeddedResource Include="Resources\xhtml1-transitional.dtd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
