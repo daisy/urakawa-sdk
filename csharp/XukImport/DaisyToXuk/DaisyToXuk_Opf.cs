@@ -13,18 +13,12 @@ namespace XukImport
 
         private void parseOpf(XmlDocument opfXmlDoc)
         {
-            XmlNodeList packageNodes = opfXmlDoc.GetElementsByTagName("package");
-            foreach (XmlNode packageNode in packageNodes)
+            foreach (XmlNode packageNode in getChildrenElementsWithName(opfXmlDoc, true, "package", null, true))
             {
                 XmlAttributeCollection packageNodeAttrs = packageNode.Attributes;
-                if (packageNodeAttrs == null || packageNodeAttrs.Count <= 0)
+                if (packageNodeAttrs != null && packageNodeAttrs.Count > 0)
                 {
-                    continue;
-                }
-                XmlNode node = packageNodeAttrs.GetNamedItem("unique-identifier");
-                if (node != null)
-                {
-                    m_PackageUniqueIdAttr = node;
+                    m_PackageUniqueIdAttr = packageNodeAttrs.GetNamedItem("unique-identifier");
                     break;
                 }
             }
@@ -79,16 +73,20 @@ namespace XukImport
             ncxPath = null;
             dtbookPath = null;
 
-            XmlNodeList listOfSpineRootNodes = opfXmlDoc.GetElementsByTagName("spine");
-            if (listOfSpineRootNodes.Count > 0)
+            XmlNode spineNodeRoot = null;
+            foreach (XmlNode node in getChildrenElementsWithName(opfXmlDoc, true, "spine", null, true))
             {
-                XmlNode spineNodeRoot = listOfSpineRootNodes[0];
+                spineNodeRoot = node;
+                break;
+            }
 
+            if (spineNodeRoot != null)
+            {
                 XmlNodeList listOfSpineItemNodes = spineNodeRoot.ChildNodes;
                 foreach (XmlNode spineItemNode in listOfSpineItemNodes)
                 {
                     if (spineItemNode.NodeType != XmlNodeType.Element
-                        || spineItemNode.Name != "itemref")
+                        || spineItemNode.LocalName != "itemref")
                     {
                         continue;
                     }
@@ -107,18 +105,24 @@ namespace XukImport
                 }
             }
 
-            XmlNodeList listOfManifestRootNodes = opfXmlDoc.GetElementsByTagName("manifest");
-            if (listOfManifestRootNodes.Count <= 0)
+            XmlNode manifNodeRoot = null;
+            foreach (XmlNode node in getChildrenElementsWithName(opfXmlDoc, true, "manifest", null, true))
+            {
+                manifNodeRoot = node;
+                break;
+            }
+
+            if (manifNodeRoot == null)
             {
                 return;
             }
-            XmlNode manifNodeRoot = listOfManifestRootNodes[0];
+
             XmlNodeList listOfManifestItemNodes = manifNodeRoot.ChildNodes;
 
             foreach (XmlNode manifItemNode in listOfManifestItemNodes)
             {
                 if (manifItemNode.NodeType != XmlNodeType.Element
-                    || manifItemNode.Name != "item")
+                    || manifItemNode.LocalName != "item")
                 {
                     continue;
                 }

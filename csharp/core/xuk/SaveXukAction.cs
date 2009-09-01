@@ -183,7 +183,7 @@ namespace urakawa.xuk
                             "xsi",
                             "noNamespaceSchemaLocation",
                             "http://www.w3.org/2001/XMLSchema-instance",
-                            String.Format("{0} {1}", m_Project.XukNamespaceUri,
+                            String.Format("{0} {1}", m_Project.XukNamespaceUri + (m_Project.XukNamespaceUri.EndsWith("/") ? "" : "/"),
                                           XukAble.XUK_XSD_PATH));
                     }
                 }

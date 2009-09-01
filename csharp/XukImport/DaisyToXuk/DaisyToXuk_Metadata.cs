@@ -17,58 +17,46 @@ namespace XukImport
 
         private void parseMetadata_ElementInnerTextAll(XmlDocument xmlDoc)
         {
-            XmlNodeList listOfMetadataContainers = xmlDoc.GetElementsByTagName("metadata");
-            if (listOfMetadataContainers.Count != 0)
+            foreach (XmlNode node in getChildrenElementsWithName(xmlDoc, true, "metadata", null, false))
             {
-                parseMetadata_ElementInnerText(listOfMetadataContainers);
+                parseMetadata_ElementInnerText(node);
             }
 
-            listOfMetadataContainers = xmlDoc.GetElementsByTagName("dc-metadata");
-            if (listOfMetadataContainers.Count != 0)
+            foreach (XmlNode node in getChildrenElementsWithName(xmlDoc, true, "dc-metadata", null, false))
             {
-                parseMetadata_ElementInnerText(listOfMetadataContainers);
+                parseMetadata_ElementInnerText(node);
             }
 
-            listOfMetadataContainers = xmlDoc.GetElementsByTagName("x-metadata");
-            if (listOfMetadataContainers.Count != 0)
+            foreach (XmlNode node in getChildrenElementsWithName(xmlDoc, true, "x-metadata", null, false))
             {
-                parseMetadata_ElementInnerText(listOfMetadataContainers);
+                parseMetadata_ElementInnerText(node);
             }
         }
 
         private void parseMetadata_NameContentAll(XmlDocument xmlDoc)
         {
-            XmlNodeList listOfMetaNodes = xmlDoc.GetElementsByTagName("meta");
-            if (listOfMetaNodes.Count == 0)
+            foreach (XmlNode node in getChildrenElementsWithName(xmlDoc, true, "meta", null, false))
             {
-                return;
+                parseMetadata_NameContent(node);
             }
-            parseMetadata_NameContent(listOfMetaNodes);
         }
 
-        private void parseMetadata_ElementInnerText(XmlNodeList listOfMetadataContainers)
+        private void parseMetadata_ElementInnerText(XmlNode metadataContainer)
         {
-            if (listOfMetadataContainers == null || listOfMetadataContainers.Count == 0)
+            foreach (XmlNode mdNode in metadataContainer.ChildNodes)
             {
-                return;
-            }
+                //string lowerCaseName = mdNode.Name.ToLower();
+                string lowerCaseLocalName = mdNode.LocalName.ToLower();
 
-            foreach (XmlNode mdNodeRoot in listOfMetadataContainers)
-            {
-                foreach (XmlNode mdNode in mdNodeRoot.ChildNodes)
+                if (mdNode.NodeType == XmlNodeType.Element
+                    && lowerCaseLocalName != "meta"
+                    && lowerCaseLocalName != "dc-metadata"
+                    && lowerCaseLocalName != "x-metadata"
+                    && !String.IsNullOrEmpty(mdNode.InnerText))
                 {
-                    string lowerCaseName = mdNode.Name.ToLower();
+                    XmlNode mdIdentifier = mdNode.Attributes.GetNamedItem("id");
 
-                    if (mdNode.NodeType == XmlNodeType.Element
-                        && lowerCaseName != "meta"
-                        && lowerCaseName != "dc-metadata"
-                        && lowerCaseName != "x-metadata"
-                        && !String.IsNullOrEmpty(mdNode.InnerText))
-                    {
-                        XmlNode mdIdentifier = mdNode.Attributes.GetNamedItem("id");
-
-                        handleMetaData(mdNode, mdNode.Name, mdNode.InnerText, (mdIdentifier == null ? null : mdIdentifier.Value));
-                    }
+                    handleMetaData(mdNode, mdNode.Name, mdNode.InnerText, (mdIdentifier == null ? null : mdIdentifier.Value));
                 }
             }
         }
@@ -82,13 +70,14 @@ namespace XukImport
                     XmlAttribute attribute = node.Attributes[i];
 
                     string lowerCaseName = attribute.Name.ToLower();
+                    string lowerCaseLocalName = attribute.LocalName.ToLower();
 
-                    if (lowerCaseName == "name"
-                        || lowerCaseName == "content")
+                    if (lowerCaseLocalName == "name"
+                        || lowerCaseLocalName == "content")
                     {
                         continue;
                     }
-                    if (lowerCaseName == "id"
+                    if (lowerCaseLocalName == "id"
                         && node != m_PublicationUniqueIdentifierNode)
                     {
                         continue;
@@ -180,44 +169,36 @@ namespace XukImport
                                 }) != null;
         }
 
-        private void parseMetadata_NameContent(XmlNodeList listOfMetaDataNodes)
+        private void parseMetadata_NameContent(XmlNode metaDataNode)
         {
-            if (listOfMetaDataNodes == null || listOfMetaDataNodes.Count == 0)
+            if (metaDataNode.NodeType != XmlNodeType.Element || metaDataNode.LocalName != "meta")
             {
                 return;
             }
 
-            foreach (XmlNode mdNode in listOfMetaDataNodes)
+            XmlAttributeCollection mdAttributes = metaDataNode.Attributes;
+
+            if (mdAttributes == null || mdAttributes.Count <= 0)
             {
-                if (mdNode.NodeType != XmlNodeType.Element || mdNode.Name != "meta")
-                {
-                    continue;
-                }
+                return;
+            }
 
-                XmlAttributeCollection mdAttributes = mdNode.Attributes;
+            XmlNode attrName = mdAttributes.GetNamedItem("name");
+            XmlNode attrContent = mdAttributes.GetNamedItem("content");
 
-                if (mdAttributes == null || mdAttributes.Count <= 0)
-                {
-                    continue;
-                }
+            if (attrName != null && !String.IsNullOrEmpty(attrName.Value)
+                && attrContent != null && !String.IsNullOrEmpty(attrContent.Value))
+            {
+                XmlNode mdIdentifier = mdAttributes.GetNamedItem("id");
 
-                XmlNode attrName = mdAttributes.GetNamedItem("name");
-                XmlNode attrContent = mdAttributes.GetNamedItem("content");
-
-                if (attrName != null && !String.IsNullOrEmpty(attrName.Value)
-                    && attrContent != null && !String.IsNullOrEmpty(attrContent.Value))
-                {
-                    XmlNode mdIdentifier = mdAttributes.GetNamedItem("id");
-
-                    handleMetaData(mdNode, attrName.Value, attrContent.Value, (mdIdentifier == null ? null : mdIdentifier.Value));
-                }
+                handleMetaData(metaDataNode, attrName.Value, attrContent.Value, (mdIdentifier == null ? null : mdIdentifier.Value));
             }
         }
 
         private Metadata addMetadata(string name, string content, XmlNode node)
         {
             Presentation presentation = m_Project.Presentations.Get(0);
-            
+
             Metadata md = presentation.MetadataFactory.CreateMetadata();
             md.NameContentAttribute = new MetadataAttribute();
             md.NameContentAttribute.Name = name.ToLower();

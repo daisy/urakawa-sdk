@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using urakawa;
@@ -66,14 +68,14 @@ namespace XukImport
 
             m_ImageChannel = presentation.ChannelFactory.CreateImageChannel();
             m_ImageChannel.Name = "Our Image Channel";
-            
+
             /*string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
            if (Directory.Exists(dataPath))
            {
                Directory.Delete(dataPath, true);
            }*/
         }
-        
+
         private void transformBook()
         {
             //FileInfo DTBFilePathInfo = new FileInfo(m_Book_FilePath);
@@ -135,6 +137,99 @@ namespace XukImport
                 }
             }
             return null;
+        }
+
+        private static IEnumerable<XmlNode> getChildrenElementsWithName(XmlNode root, bool deep, string localName, string namespaceUri, bool breakOnFirstFound)
+        {
+            if (root.NodeType == XmlNodeType.Document)
+            {
+                XmlNode element = null;
+                XmlDocument doc = (XmlDocument) root;
+                IEnumerator docEnum = doc.GetEnumerator();
+                while (docEnum.MoveNext())
+                {
+                    XmlNode node = (XmlNode)docEnum.Current;
+
+                    if (node != null
+                        && node.NodeType == XmlNodeType.Element)
+                    {
+                        element = node;
+                        break; // first element is ok.
+                    }
+
+                }
+
+                if (element == null)
+                {
+                    yield break;
+                }
+
+                foreach (XmlNode childNode in getChildrenElementsWithName(element, deep, localName, namespaceUri, breakOnFirstFound))
+                {
+                    yield return childNode;
+
+                    if (breakOnFirstFound)
+                    {
+                        yield break;
+                    }
+                }
+
+                yield break;
+            }
+
+            if (root.NodeType != XmlNodeType.Element)
+            {
+                yield break;
+            }
+
+            IEnumerator enumerator = root.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                XmlNode node = (XmlNode)enumerator.Current;
+
+                if (node != null
+                    && node.NodeType == XmlNodeType.Element
+                    && node.LocalName == localName)
+                {
+                    if (!string.IsNullOrEmpty(namespaceUri))
+                    {
+                        if (node.NamespaceURI == namespaceUri)
+                        {
+                            yield return node;
+
+                            if (breakOnFirstFound)
+                            {
+                                yield break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        yield return node;
+
+                        if (breakOnFirstFound)
+                        {
+                            yield break;
+                        }
+                    }
+                }
+
+                if (deep)
+                {
+                    foreach (XmlNode childNode in getChildrenElementsWithName(node, deep, localName, namespaceUri, breakOnFirstFound))
+                    {
+                        yield return childNode;
+
+                        if (breakOnFirstFound)
+                        {
+                            yield break;
+                        }
+                    }
+                }
+
+            }
+
+            yield break;
         }
     }
 }

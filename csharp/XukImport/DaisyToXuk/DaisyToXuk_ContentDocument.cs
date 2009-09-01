@@ -18,7 +18,7 @@ namespace XukImport
 
         private string trimXmlTextInnerSpaces(string str)
         {
-            string[] whiteSpaces = new string[] { " ", ""+'\t', "\r\n" };
+            string[] whiteSpaces = new string[] { " ", "" + '\t', "\r\n" };
             string[] strSplit = str.Split(whiteSpaces, StringSplitOptions.RemoveEmptyEntries);
             return String.Join(" ", strSplit);
         }
@@ -54,31 +54,48 @@ namespace XukImport
 
                 parseMetadata(xmlDoc);
 
-                XmlNodeList listOfBodies = xmlDoc.GetElementsByTagName("body");
-                if (listOfBodies.Count == 0)
+                //XmlNodeList listOfBodies = xmlDoc.GetElementsByTagName("body");
+                //if (listOfBodies.Count == 0)
+                //{
+                //    listOfBodies = xmlDoc.GetElementsByTagName("book");
+                //}
+                XmlNode bodyElement = null;
+                foreach (XmlNode node in getChildrenElementsWithName(xmlDoc, true, "body", null, true))
                 {
-                    listOfBodies = xmlDoc.GetElementsByTagName("book");
+                    bodyElement = node;
+                    break;
                 }
-                if (listOfBodies.Count > 0)
+                if (bodyElement == null)
                 {
-                    if (first)
+                    foreach (XmlNode node in getChildrenElementsWithName(xmlDoc, true, "book", null, true))
                     {
-                        Presentation presentation = m_Project.Presentations.Get(0);
-                        XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
-                        xmlProp.LocalName = "book";
-                        presentation.PropertyFactory.DefaultXmlNamespaceUri = listOfBodies[0].NamespaceURI;
-                        xmlProp.NamespaceUri = presentation.PropertyFactory.DefaultXmlNamespaceUri;
-                        TreeNode treeNode = presentation.TreeNodeFactory.Create();
-                        treeNode.AddProperty(xmlProp);
-                        presentation.RootNode = treeNode;
-
-                        first = false;
+                        bodyElement = node;
+                        break;
                     }
+                }
 
-                    foreach (XmlNode childOfBody in listOfBodies[0].ChildNodes)
-                    {
-                        parseContentDocument(childOfBody, m_Project.Presentations.Get(0).RootNode, fullDocPath);
-                    }
+                if (bodyElement == null)
+                {
+                    continue;
+                }
+
+                if (first)
+                {
+                    Presentation presentation = m_Project.Presentations.Get(0);
+                    XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
+                    xmlProp.LocalName = "book";
+                    presentation.PropertyFactory.DefaultXmlNamespaceUri = bodyElement.NamespaceURI;
+                    xmlProp.NamespaceUri = presentation.PropertyFactory.DefaultXmlNamespaceUri;
+                    TreeNode treeNode = presentation.TreeNodeFactory.Create();
+                    treeNode.AddProperty(xmlProp);
+                    presentation.RootNode = treeNode;
+
+                    first = false;
+                }
+
+                foreach (XmlNode childOfBody in bodyElement.ChildNodes)
+                {
+                    parseContentDocument(childOfBody, m_Project.Presentations.Get(0).RootNode, fullDocPath);
                 }
             }
         }
@@ -95,18 +112,32 @@ namespace XukImport
                     }
                 case XmlNodeType.Document:
                     {
-                        XmlNodeList listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("body");
-                        if (listOfBodies.Count == 0)
+                        //XmlNodeList listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("body");
+                        //if (listOfBodies.Count == 0)
+                        //{
+                        //    listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("book");
+                        //}
+                        XmlNode bodyElement = null;
+                        foreach (XmlNode node in getChildrenElementsWithName(xmlNode, true, "body", null, true))
                         {
-                            listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("book");
+                            bodyElement = node;
+                            break;
+                        }
+                        if (bodyElement == null)
+                        {
+                            foreach (XmlNode node in getChildrenElementsWithName(xmlNode, true, "book", null, true))
+                            {
+                                bodyElement = node;
+                                break;
+                            }
                         }
 
-                        if (listOfBodies.Count > 0)
+                        if (bodyElement != null)
                         {
                             Presentation presentation = m_Project.Presentations.Get(0);
-                            presentation.PropertyFactory.DefaultXmlNamespaceUri = listOfBodies[0].NamespaceURI;
+                            presentation.PropertyFactory.DefaultXmlNamespaceUri = bodyElement.NamespaceURI;
 
-                            parseContentDocument(listOfBodies[0], parentTreeNode, filePath);
+                            parseContentDocument(bodyElement, parentTreeNode, filePath);
                         }
                         //parseContentDocument(((XmlDocument)xmlNode).DocumentElement, parentTreeNode);
                         break;
@@ -129,7 +160,7 @@ namespace XukImport
 
                         XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
                         treeNode.AddProperty(xmlProp);
-                        xmlProp.LocalName = xmlNode.Name;
+                        xmlProp.LocalName = xmlNode.LocalName;
                         if (xmlNode.ParentNode != null && xmlNode.ParentNode.NodeType == XmlNodeType.Document)
                         {
                             presentation.PropertyFactory.DefaultXmlNamespaceUri = xmlNode.NamespaceURI;
@@ -142,7 +173,7 @@ namespace XukImport
 
                         string updatedSRC = null;
 
-                        if (xmlNode.Name == "img")
+                        if (xmlNode.LocalName == "img")
                         {
                             XmlNode getSRC = xmlNode.Attributes.GetNamedItem("src");
                             if (getSRC != null)
@@ -188,25 +219,25 @@ namespace XukImport
                             for (int i = 0; i < attributeCol.Count; i++)
                             {
                                 XmlNode attr = attributeCol.Item(i);
-                                if (attr.Name != "smilref" && attr.Name != "xmlns:xsi" && attr.Name != "xml:space")
+                                if (attr.LocalName != "smilref" && attr.Name != "xmlns:xsi" && attr.Name != "xml:space")
                                 {
-                                    if (updatedSRC != null && attr.Name == "src")
+                                    if (updatedSRC != null && attr.LocalName == "src")
                                     {
-                                        xmlProp.SetAttribute(attr.Name, "", updatedSRC);
+                                        xmlProp.SetAttribute(attr.LocalName, "", updatedSRC);
                                     }
                                     else
                                     {
-                                        if (attr.Name == "xmlns")
+                                        if (attr.LocalName == "xmlns")
                                         {
                                             if (attr.Value != presentation.PropertyFactory.DefaultXmlNamespaceUri)
                                             {
-                                                xmlProp.SetAttribute(attr.Name, "", attr.Value);
+                                                xmlProp.SetAttribute(attr.LocalName, "", attr.Value);
                                             }
                                         }
                                         else if (string.IsNullOrEmpty(attr.NamespaceURI)
                                             || attr.NamespaceURI == presentation.PropertyFactory.DefaultXmlNamespaceUri)
                                         {
-                                            xmlProp.SetAttribute(attr.Name, "", attr.Value);
+                                            xmlProp.SetAttribute(attr.LocalName, "", attr.Value);
                                         }
                                         else
                                         {
