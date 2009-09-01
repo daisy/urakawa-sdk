@@ -77,13 +77,13 @@ namespace XukImport
 
                     foreach (XmlNode childOfBody in listOfBodies[0].ChildNodes)
                     {
-                        parseContentDocument(childOfBody, m_Project.Presentations.Get(0).RootNode);
+                        parseContentDocument(childOfBody, m_Project.Presentations.Get(0).RootNode, fullDocPath);
                     }
                 }
             }
         }
 
-        private void parseContentDocument(XmlNode xmlNode, TreeNode parentTreeNode)
+        private void parseContentDocument(XmlNode xmlNode, TreeNode parentTreeNode, string filePath)
         {
             XmlNodeType xmlType = xmlNode.NodeType;
             switch (xmlType)
@@ -106,7 +106,7 @@ namespace XukImport
                             Presentation presentation = m_Project.Presentations.Get(0);
                             presentation.PropertyFactory.DefaultXmlNamespaceUri = listOfBodies[0].NamespaceURI;
 
-                            parseContentDocument(listOfBodies[0], parentTreeNode);
+                            parseContentDocument(listOfBodies[0], parentTreeNode, filePath);
                         }
                         //parseContentDocument(((XmlDocument)xmlNode).DocumentElement, parentTreeNode);
                         break;
@@ -150,7 +150,7 @@ namespace XukImport
                                 string relativePath = xmlNode.Attributes.GetNamedItem("src").Value;
                                 if (!relativePath.StartsWith("http://"))
                                 {
-                                    string parentPath = Directory.GetParent(m_Book_FilePath).FullName;
+                                    string parentPath = Directory.GetParent(filePath).FullName;
                                     string imgSourceFullpath = Path.Combine(parentPath, relativePath);
                                     string datafilePath = presentation.DataProviderManager.DataFileDirectoryFullPath;
                                     if (!Directory.Exists(datafilePath))
@@ -219,7 +219,7 @@ namespace XukImport
 
                         foreach (XmlNode childXmlNode in xmlNode.ChildNodes)
                         {
-                            parseContentDocument(childXmlNode, treeNode);
+                            parseContentDocument(childXmlNode, treeNode, filePath);
                         }
                         break;
                     }

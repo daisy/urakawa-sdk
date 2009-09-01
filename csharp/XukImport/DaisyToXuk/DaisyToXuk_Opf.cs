@@ -43,7 +43,7 @@ namespace XukImport
                 string fullDtbookPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), dtbookPath);
                 XmlDocument dtbookXmlDoc = readXmlDocument(fullDtbookPath);
                 parseMetadata(dtbookXmlDoc);
-                parseContentDocument(dtbookXmlDoc, null);
+                parseContentDocument(dtbookXmlDoc, null, fullDtbookPath);
             }
 
             if (false && ncxPath != null) //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
