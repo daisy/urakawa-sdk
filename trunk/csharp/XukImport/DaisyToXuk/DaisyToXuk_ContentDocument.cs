@@ -188,7 +188,7 @@ namespace XukImport
                             for (int i = 0; i < attributeCol.Count; i++)
                             {
                                 XmlNode attr = attributeCol.Item(i);
-                                if (attr.Name != "smilref")
+                                if (attr.Name != "smilref" && attr.Name != "xmlns:xsi" && attr.Name != "xml:space")
                                 {
                                     if (updatedSRC != null && attr.Name == "src")
                                     {
@@ -196,7 +196,22 @@ namespace XukImport
                                     }
                                     else
                                     {
-                                        xmlProp.SetAttribute(attr.Name, "", attr.Value);
+                                        if (attr.Name == "xmlns")
+                                        {
+                                            if (attr.Value != presentation.PropertyFactory.DefaultXmlNamespaceUri)
+                                            {
+                                                xmlProp.SetAttribute(attr.Name, "", attr.Value);
+                                            }
+                                        }
+                                        else if (string.IsNullOrEmpty(attr.NamespaceURI)
+                                            || attr.NamespaceURI == presentation.PropertyFactory.DefaultXmlNamespaceUri)
+                                        {
+                                            xmlProp.SetAttribute(attr.Name, "", attr.Value);
+                                        }
+                                        else
+                                        {
+                                            xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
+                                        }
                                     }
                                 }
                             }

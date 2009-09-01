@@ -15,10 +15,6 @@ namespace urakawa.metadata
         {
         }
 
-        /// <summary>
-        /// Creates an <see cref="Metadata"/> instance
-        /// </summary>
-        /// <returns>The created instance</returns>
         public Metadata CreateMetadata()
         {
             return Create<Metadata>();

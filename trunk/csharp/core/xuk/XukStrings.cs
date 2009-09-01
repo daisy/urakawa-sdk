@@ -304,6 +304,14 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "Metadata" : "metadt"); }
         }
+        public static string MetadataAttribute
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataAttribute" : "metadtattr"); }
+        }
+        public static string MetadataOtherAttributes
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataOtherAttributes" : "metadtattrs"); }
+        }
 
 
         #region undo-redo

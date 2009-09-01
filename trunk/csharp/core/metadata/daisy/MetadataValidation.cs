@@ -132,7 +132,7 @@ namespace urakawa.metadata.daisy
         }
         private bool _validateItem(Metadata metadata)
         {
-            MetadataDefinition metadataDefinition = FindDefinition(metadata.NameContentAttribute.LocalName);
+            MetadataDefinition metadataDefinition = FindDefinition(metadata.NameContentAttribute.Name);
 
             if (metadataDefinition == null)
             {
@@ -163,7 +163,7 @@ namespace urakawa.metadata.daisy
                 {
                     Metadata metadata = metadatas.Find(
                         delegate(Metadata item)
-                        { return item.NameContentAttribute.LocalName == metadataDefinition.Name; });
+                        { return item.NameContentAttribute.Name == metadataDefinition.Name; });
 
                     if (metadata == null)
                     {
@@ -178,13 +178,13 @@ namespace urakawa.metadata.daisy
             {
                 MetadataDefinition metadataDefinition = m_MetadataDefinitions.Find(
                     delegate(MetadataDefinition item)
-                    { return item.Name == metadata.NameContentAttribute.LocalName; });
+                    { return item.Name == metadata.NameContentAttribute.Name; });
 
                 if (metadataDefinition != null && !metadataDefinition.IsRepeatable)
                 {
                     List<Metadata> list = metadatas.FindAll(
                         delegate(Metadata item)
-                        { return item.NameContentAttribute.LocalName == metadata.NameContentAttribute.LocalName; });
+                        { return item.NameContentAttribute.Name == metadata.NameContentAttribute.Name; });
 
                     if (list.Count > 1)
                     {
@@ -447,7 +447,7 @@ namespace urakawa.metadata.daisy
             {
                 Metadata exists = alreadyUsedMetadata.Find(
                     delegate(Metadata item)
-                    { return item.NameContentAttribute.LocalName == definition.Name; });
+                    { return item.NameContentAttribute.Name == definition.Name; });
 
                 if (exists == null)
                 {

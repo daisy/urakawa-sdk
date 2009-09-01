@@ -104,9 +104,9 @@ namespace XukImport
                     }
                     else
                     {
-                        urakawa.property.xml.XmlAttribute xmlAttr = new urakawa.property.xml.XmlAttribute();
+                        MetadataAttribute xmlAttr = new MetadataAttribute();
 
-                        xmlAttr.LocalName = attribute.Name;
+                        xmlAttr.Name = attribute.Name;
 
                         if (lowerCaseName.Contains(":"))
                         {
@@ -138,7 +138,7 @@ namespace XukImport
                     Presentation presentation = m_Project.Presentations.Get(0);
                     foreach (Metadata md in presentation.Metadatas.ContentsAs_ListCopy)
                     {
-                        if (isUniqueIdName(md.NameContentAttribute.LocalName.ToLower())
+                        if (isUniqueIdName(md.NameContentAttribute.Name.ToLower())
                             && md.NameContentAttribute.Value == m_PublicationUniqueIdentifier)
                         {
                             presentation.Metadatas.Remove(md);
@@ -219,12 +219,12 @@ namespace XukImport
             Presentation presentation = m_Project.Presentations.Get(0);
             
             Metadata md = presentation.MetadataFactory.CreateMetadata();
-            md.NameContentAttribute = new urakawa.property.xml.XmlAttribute();
-            md.NameContentAttribute.LocalName = name.ToLower();
+            md.NameContentAttribute = new MetadataAttribute();
+            md.NameContentAttribute.Name = name.ToLower();
             md.NameContentAttribute.Value = content;
 
-            if (md.NameContentAttribute.LocalName.Contains(":")
-                && node.Name.ToLower() == md.NameContentAttribute.LocalName)
+            if (md.NameContentAttribute.Name.Contains(":")
+                && node.Name.ToLower() == md.NameContentAttribute.Name)
             {
                 md.NameContentAttribute.NamespaceUri = node.NamespaceURI;
             }
@@ -243,7 +243,7 @@ namespace XukImport
             Presentation presentation = m_Project.Presentations.Get(0);
             foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
-                if (md.NameContentAttribute.LocalName.ToLower() == lower
+                if (md.NameContentAttribute.Name.ToLower() == lower
                     && md.NameContentAttribute.Value == metaDataContent)
                 {
                     return true;
@@ -259,7 +259,7 @@ namespace XukImport
             Presentation presentation = m_Project.Presentations.Get(0);
             foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
-                if (md.NameContentAttribute.LocalName.ToLower() == lower)
+                if (md.NameContentAttribute.Name.ToLower() == lower)
                 {
                     return true;
                 }
@@ -273,7 +273,7 @@ namespace XukImport
 
             foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
-                if (isUniqueIdName(md.NameContentAttribute.LocalName)
+                if (isUniqueIdName(md.NameContentAttribute.Name)
                     && md.NameContentAttribute.Value == uid)
                 {
                     return true;
