@@ -98,7 +98,7 @@ namespace XukImport
                     {
                         XmlDocument contentXmlDoc = readXmlDocument(m_Book_FilePath);
                         parseMetadata(contentXmlDoc);
-                        parseContentDocument(contentXmlDoc, null);
+                        parseContentDocument(contentXmlDoc, null, m_Book_FilePath);
                         break;
                     }
                 case ".epub":

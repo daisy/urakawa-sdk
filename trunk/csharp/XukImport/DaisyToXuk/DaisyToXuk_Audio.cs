@@ -129,7 +129,7 @@ namespace XukImport
                     }
                     if (textPeerNode.Name == "audio")
                     {
-                        addAudio(textTreeNode, textPeerNode, false);
+                        addAudio(textTreeNode, textPeerNode, false, fullSmilPath);
                         break;
                     }
                     else if (textPeerNode.Name == "a")
@@ -139,7 +139,7 @@ namespace XukImport
                         {
                             if (aChild.Name == "audio")
                             {
-                                addAudio(textTreeNode, aChild, false);
+                                addAudio(textTreeNode, aChild, false, fullSmilPath);
                                 break;
                             }
                         }
@@ -151,7 +151,7 @@ namespace XukImport
                         {
                             if (seqChild.Name == "audio")
                             {
-                                addAudio(textTreeNode, seqChild, true);
+                                addAudio(textTreeNode, seqChild, true, fullSmilPath);
                             }
                         }
                         break;
@@ -160,11 +160,11 @@ namespace XukImport
             }
         }
 
-        private void addAudio(TreeNode treeNode, XmlNode xmlNode, bool isSequence)
+        private void addAudio(TreeNode treeNode, XmlNode xmlNode, bool isSequence, string fullSmilPath)
         {
             //DirectoryInfo parentDir = Directory.GetParent(m_Book_FilePath);
             //string dirPath = parentDir.ToString();
-            string dirPath = Path.GetDirectoryName(m_Book_FilePath);
+            string dirPath = Path.GetDirectoryName(fullSmilPath);
 
             XmlAttributeCollection audioAttrs = xmlNode.Attributes;
 
