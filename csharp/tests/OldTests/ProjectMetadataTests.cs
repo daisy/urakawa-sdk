@@ -35,7 +35,8 @@ namespace urakawa.oldTests
             //First remove any metadata with the test name
             mProject.Presentations.Get(0).DeleteMetadata("testAppendName");
             Metadata newMeta = mProject.Presentations.Get(0).MetadataFactory.CreateMetadata();
-            newMeta.Name = "testAppendName";
+            newMeta.NameContentAttribute = new MetadataAttribute();
+            newMeta.NameContentAttribute.Name = "testAppendName";
 
             ObjectListProvider<Metadata> list = mProject.Presentations.Get(0).Metadatas;
             list.Insert(list.Count, newMeta);
@@ -53,7 +54,7 @@ namespace urakawa.oldTests
             foundOther = false;
             foreach (Metadata md in mProject.Presentations.Get(0).GetMetadata("dc:Author"))
             {
-                switch (md.Content)
+                switch (md.NameContentAttribute.Value)
                 {
                     case "Laust Skat Nielsen":
                         foundLNN = true;
@@ -84,7 +85,7 @@ namespace urakawa.oldTests
             int otherCount = 0;
             foreach (Metadata md in mProject.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable)
             {
-                switch (md.Name)
+                switch (md.NameContentAttribute.Name)
                 {
                     case "dc:Author":
                         dcAuthorCount++;
@@ -114,7 +115,7 @@ namespace urakawa.oldTests
             Assert.IsFalse(foundOther, "Found dc:Author besides 'Laust Skat Nielsen' and 'Ole Holst Andersen'");
             foreach (Metadata md in mProject.Presentations.Get(0).GetMetadata("dc:Author"))
             {
-                if (md.Content == "Laust Skat Nielsen") mProject.Presentations.Get(0).Metadatas.Remove(md);
+                if (md.NameContentAttribute.Value == "Laust Skat Nielsen") mProject.Presentations.Get(0).Metadatas.Remove(md);
             }
             CheckDCAuthor(out foundLNN, out foundOHA, out foundOther);
             Assert.IsFalse(foundLNN, "Found dc:Author 'Laust Skat Nielsen' after delete of same");

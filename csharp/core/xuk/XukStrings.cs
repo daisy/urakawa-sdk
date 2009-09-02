@@ -300,19 +300,6 @@ namespace urakawa.xuk
         }
 
 
-        public static string Metadata
-        {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "Metadata" : "metadt"); }
-        }
-        public static string MetadataAttribute
-        {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataAttribute" : "metadtattr"); }
-        }
-        public static string MetadataOtherAttributes
-        {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataOtherAttributes" : "metadtattrs"); }
-        }
-
 
         #region undo-redo
 
@@ -383,21 +370,17 @@ namespace urakawa.xuk
         #endregion
 
 
-        public static string MetaDataNameNamespace
+        public static string Metadata
         {
-            //TODO: Special need: same strings because of Dictionary keys in Metadata.cs
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "NameNS" : "NameNS"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "Metadata" : "metadt"); }
         }
-
-        public static string MetaDataName
+        public static string MetadataAttribute
         {
-            //TODO: Special need: same strings because of Dictionary keys in Metadata.cs
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "Name" : "Name"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataAttribute" : "metadtattr"); }
         }
-        public static string MetaDataContent
+        public static string MetadataOtherAttributes
         {
-            //TODO: Special need: same strings because of Dictionary keys in Metadata.cs
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "Content" : "Content"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataOtherAttributes" : "metadtattrs"); }
         }
 
         public static string Name

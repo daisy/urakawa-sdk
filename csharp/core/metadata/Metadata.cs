@@ -156,7 +156,11 @@ namespace urakawa.metadata
             if (source.NamespaceURI == XukNamespaceUri)
             {
                 readItem = true;
-                if (IsPrettyFormat() && source.LocalName == XukStrings.MetadataOtherAttributes)
+                if (m_firstXukInAttribute && source.LocalName == XukStrings.MetadataAttribute)
+                {
+                    XukInMetadataAttribute(source, handler);
+                }
+                else if (IsPrettyFormat() && source.LocalName == XukStrings.MetadataOtherAttributes)
                 {
                     XukInMetadataOtherAttributes(source, handler);
                 }
@@ -180,7 +184,7 @@ namespace urakawa.metadata
         {
             if (source.LocalName == XukStrings.MetadataAttribute && source.NamespaceURI == XukNamespaceUri)
             {
-                var attr = new MetadataAttribute();
+                MetadataAttribute attr = new MetadataAttribute();
                 attr.XukIn(source, handler);
 
                 if (m_firstXukInAttribute)
