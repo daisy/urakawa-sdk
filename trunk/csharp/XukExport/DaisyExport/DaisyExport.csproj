@@ -38,7 +38,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonFunctions.cs" />
     <Compile Include="DAISY3Export.cs" />
+    <Compile Include="DAISY3Export_ContentDoc.cs" />
+    <Compile Include="DAISY3Export_Ncx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
