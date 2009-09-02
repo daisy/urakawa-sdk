@@ -135,10 +135,10 @@ namespace urakawa.metadata
         {
             base.XukInAttributes(source);
 
-            string name = source.GetAttribute(XukStrings.LocalName);
+            string name = source.GetAttribute(XukStrings.Name);
             if (string.IsNullOrEmpty(name))
             {
-                throw new exception.XukException("LocalName attribute of MetadataAttribute element is missing");
+                throw new exception.XukException("Name attribute of MetadataAttribute element is missing");
             }
             Name = name;
 
@@ -161,7 +161,7 @@ namespace urakawa.metadata
             {
                 throw new exception.XukException("The MetadataAttribute has no name");
             }
-            destination.WriteAttributeString(XukStrings.LocalName, Name);
+            destination.WriteAttributeString(XukStrings.Name, Name);
 
             if (String.IsNullOrEmpty(Value))
             {

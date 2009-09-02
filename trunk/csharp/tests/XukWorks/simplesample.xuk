@@ -84,10 +84,18 @@
 					</RegisteredTypes>
 				</MetadataFactory>
 				<Metadatas>
-					<Metadata Name="dc:Author" Content="Laust Skat Nielsen" />
-					<Metadata Name="dc:Author" Content="Ole Holst Andersen" />
-					<Metadata Name="dc:Title" Content="Simple XUK sample" />
-					<Metadata Name="dc:Subject" Content="Simple sample XUK file used for unit testing" />
+					<Metadata>
+						<MetadataAttribute Name="dc:Author" Value="Laust Skat Nielsen"/>
+					</Metadata>
+					<Metadata >
+						<MetadataAttribute Name="dc:Author" Value="Ole Holst Andersen"/>
+					</Metadata>
+					<Metadata >
+						<MetadataAttribute Name="dc:Title" Value="Simple XUK sample"/>
+					</Metadata>
+					<Metadata  >
+						<MetadataAttribute Name="dc:Subject" Value="Simple sample XUK file used for unit testing"/>
+					</Metadata>
 				</Metadatas>
 				<RootNode>
 					<TreeNode>
