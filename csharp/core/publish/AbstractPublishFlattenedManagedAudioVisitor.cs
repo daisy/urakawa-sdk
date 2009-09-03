@@ -124,7 +124,7 @@ namespace urakawa.publish
                             {
                                 Debug.Assert(
                                     pcmInfo.IsCompatibleWith(
-                                        ((ManagedAudioMedia) seqMedia.ChildMedias.Get(0)).AudioMediaData.PCMFormat.Data));
+                                        ((ManagedAudioMedia)seqMedia.ChildMedias.Get(0)).AudioMediaData.PCMFormat.Data));
                             }
 
                             extMediaStream.Position +=
@@ -134,7 +134,7 @@ namespace urakawa.publish
                             long extMediaStreamPosBefore = extMediaStream.Position;
 
                             Debug.Assert(AudioLibPCMFormat.CompareStreamData(manMediaStream, extMediaStream,
-                                                                             (int) manMediaStream.Length));
+                                                                             (int)manMediaStream.Length));
 
                             Debug.Assert(manMediaStream.Position == manMediaStreamPosBefore + manMediaStream.Length);
                             Debug.Assert(extMediaStream.Position == extMediaStreamPosBefore + manMediaStream.Length);
@@ -257,12 +257,17 @@ namespace urakawa.publish
             {
                 copyStreamData(audioPcmStream, m_TransientWavFileStream);
             }
-            finally
+            catch
             {
-                audioPcmStream.Close();
                 m_TransientWavFileStream.Close();
                 m_TransientWavFileStream = null;
                 m_TransientWavFileStreamRiffOffset = 0;
+
+                Debugger.Break();
+            }
+            finally
+            {
+                audioPcmStream.Close();
             }
 
             if (m_TransientWavFileStream == null)
@@ -362,7 +367,7 @@ namespace urakawa.publish
 
                 TimeDelta durationFromRiffHeader = new TimeDelta(marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(marker.m_LocalStreamDataLength));
                 extAudioMedia.ClipEnd = extAudioMedia.ClipBegin.AddTimeDelta(durationFromRiffHeader);
-                
+
 
                 ChannelsProperty chProp = marker.m_TreeNode.GetOrCreateChannelsProperty();
 
