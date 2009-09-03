@@ -853,6 +853,15 @@ namespace urakawa.core
             return GetProperty(typeof(T)) as T;
         }
 
+        public ChannelsProperty GetChannelsProperty()
+        {
+            return GetProperty<ChannelsProperty>();
+        }
+        public XmlProperty GetXmlProperty()
+        {
+            return GetProperty<XmlProperty>();
+        }
+
         public bool HasChannelsProperty
         {
             get { return GetProperty<ChannelsProperty>() != null; }

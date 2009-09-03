@@ -59,6 +59,8 @@ namespace urakawa.publish
             publishVisitor.DestinationChannel = destCh;
             publishVisitor.DestinationDirectory = publishDestination;
             pres.RootNode.AcceptDepthFirst(publishVisitor);
+
+            publishVisitor.VerifyTree(pres.RootNode);
             
             Uri xukFile = new Uri(proj.Presentations.Get(0).RootUri, "TreeNodeTestsSample.xuk");
             if (File.Exists(xukFile.LocalPath)) File.Delete(xukFile.LocalPath);
