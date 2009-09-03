@@ -10,7 +10,7 @@ using urakawa.media.data.audio;
 namespace urakawa.publish
 {
     [TestFixture]
-    public class PublishManagedAudioVisitorTests
+    public class PublishFlattenedManagedAudioVisitorTests
     {
         [Test]
         public void PublishTest_With_TreeNodeTestsSample()
@@ -30,13 +30,13 @@ namespace urakawa.publish
 
         public static void PublishTest(Presentation pres)
         {
+            Project proj = pres.Project;
             Channel sourceCh = pres.ChannelsManager.GetChannelsByName("channel.audio")[0];
-
             Channel destCh = pres.ChannelFactory.Create();
             destCh.Language = sourceCh.Language;
             destCh.Name = String.Format("{0}.published", sourceCh.Name);
-            
-            Uri publishDestination = new Uri(pres.RootUri, "AudioPublishDestination/");
+
+            Uri publishDestination = new Uri(pres.RootUri, "AudioPublishFlattenedDestination/");
             if (Directory.Exists(publishDestination.LocalPath))
             {
                 foreach (string file in Directory.GetFiles(publishDestination.LocalPath))
@@ -48,43 +48,37 @@ namespace urakawa.publish
             {
                 Directory.CreateDirectory(publishDestination.LocalPath);
             }
-
             TreeNodeTestDelegate del = new TreeNodeTestDelegate(
                 delegate(TreeNode node)
-                    {
-                        if (node.Parent == node.Presentation.RootNode) return true;
-                        return false;
-                    });
-
-            PublishManagedAudioVisitor publishVisitor = new PublishManagedAudioVisitor(del, null);
+                {
+                    if (node.Parent == node.Presentation.RootNode) return true;
+                    return false;
+                });
+            PublishFlattenedManagedAudioVisitor publishVisitor = new PublishFlattenedManagedAudioVisitor(del, null);
             publishVisitor.SourceChannel = sourceCh;
             publishVisitor.DestinationChannel = destCh;
             publishVisitor.DestinationDirectory = publishDestination;
-
             pres.RootNode.AcceptDepthFirst(publishVisitor);
-            publishVisitor.WriteAndCloseCurrentAudioFile();
-
-            Uri xukFile = new Uri(pres.RootUri, "TreeNodeTestsSample.xuk");
+            
+            Uri xukFile = new Uri(proj.Presentations.Get(0).RootUri, "TreeNodeTestsSample.xuk");
             if (File.Exists(xukFile.LocalPath)) File.Delete(xukFile.LocalPath);
-            pres.Project.SaveXuk(xukFile);
-
+            proj.SaveXuk(xukFile);
             CheckPublishedFiles(pres.RootNode, sourceCh, destCh, null, null, null);
         }
 
-        private static void CheckPublishedFiles(TreeNode node, Channel sourceCh, Channel destCh,
-            Uri curWavUri_, MemoryStream curAudioData, PCMFormatInfo curPCMFormat)
+        private static void CheckPublishedFiles(TreeNode node, Channel sourceCh, Channel destCh, Uri curWavUri_,
+                                                MemoryStream curAudioData, PCMFormatInfo curPCMFormat)
         {
             Uri curWavUri = (curWavUri_ == null ? null : new Uri(curWavUri_.ToString()));
 
-            if (node.HasProperties(typeof (ChannelsProperty)))
+            if (node.HasProperties(typeof(ChannelsProperty)))
             {
                 ChannelsProperty chProp = node.GetProperty<ChannelsProperty>();
                 ManagedAudioMedia mam = chProp.GetMedia(sourceCh) as ManagedAudioMedia;
                 ExternalAudioMedia eam = chProp.GetMedia(destCh) as ExternalAudioMedia;
                 
-                Assert.AreEqual(mam == null, eam == null,
-                                "There may be external audio media if and only if there is managed audio media");
-
+                //Assert.AreEqual(mam == null, eam == null, "There may be external audio media if and only if there is managed audio media");
+                
                 if (mam != null && eam != null)
                 {
                     Assert.IsTrue(mam.Duration.IsEqualTo(eam.Duration),
@@ -114,6 +108,7 @@ namespace urakawa.publish
                             manAudioStream.Close();
                         }
                     }
+
 
                     if (curWavUri != null)
                     {
@@ -156,7 +151,6 @@ namespace urakawa.publish
 
                     Assert.IsTrue(curPCMFormat.ValueEquals(mam.AudioMediaData.PCMFormat),
                                   "Managed audio has incompatible pcm format");
-
                     Stream manAudio = mam.AudioMediaData.OpenPcmInputStream();
                     try
                     {

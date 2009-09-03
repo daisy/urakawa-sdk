@@ -177,6 +177,7 @@
     <Compile Include="media\data\audio\codec\WavAudioMediaDataTests.cs" />
     <Compile Include="media\data\audio\ManagedAudioMediaTests.cs" />
     <Compile Include="ProjectTests.cs" />
+    <Compile Include="publish\PublishFlattenedManagedAudioVisitorTests.cs" />
     <Compile Include="publish\PublishManagedAudioVisitorTests.cs" />
     <Compile Include="OldTests\XMLPropertyVisitorTests.cs">
       <SubType>Code</SubType>
