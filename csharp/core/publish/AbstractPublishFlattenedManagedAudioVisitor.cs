@@ -173,6 +173,7 @@ namespace urakawa.publish
             }
 
             ulong bytesPcmTotal = (ulong)m_TransientWavFileStream.Position - m_TransientWavFileStreamRiffOffset;
+            m_TransientWavFileStream.Position = 0;
             m_TransientWavFileStreamRiffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(m_TransientWavFileStream, (uint)bytesPcmTotal);
 
             m_TransientWavFileStream.Close();

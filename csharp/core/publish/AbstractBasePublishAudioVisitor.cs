@@ -47,8 +47,7 @@ namespace urakawa.publish
 
         protected Uri GetCurrentAudioFileUri()
         {
-            Uri res = DestinationDirectory;
-            res = new Uri(res, String.Format(AudioFileNameFormat, CurrentAudioFileNumber));
+            Uri res = new Uri(DestinationDirectory.LocalPath + Path.DirectorySeparatorChar + String.Format(AudioFileNameFormat, CurrentAudioFileNumber), UriKind.Absolute);
             return res;
         }
 
