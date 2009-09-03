@@ -14,35 +14,36 @@ namespace urakawa.publish
         private Stream mCurrentAudioFileStream = null;
         private uint mCurrentAudioFileStreamRiffWaveHeaderLength = 0;
 
-        public void WriteAndCloseCurrentAudioFile()
+        private void writeAndCloseCurrentAudioFile()
         {
-            if (mCurrentAudioFileStream != null)
+            if (mCurrentAudioFileStream == null)
             {
-                if (mCurrentAudioFilePCMFormat != null)
-                {
-                    uint dataLength = (uint)mCurrentAudioFileStream.Length -
-                                          mCurrentAudioFileStreamRiffWaveHeaderLength;
-                    mCurrentAudioFileStream.Position = 0;
-                    mCurrentAudioFileStream.Seek(0, SeekOrigin.Begin);
-                    mCurrentAudioFilePCMFormat.Data.RiffHeaderWrite(mCurrentAudioFileStream, dataLength);
-                }
-                mCurrentAudioFileStream.Close();
-                mCurrentAudioFileStream = null;
-                mCurrentAudioFilePCMFormat = null;
-                mCurrentAudioFileStreamRiffWaveHeaderLength = 0;
+                return;
             }
+
+            if (mCurrentAudioFilePCMFormat != null)
+            {
+                uint dataLength = (uint)mCurrentAudioFileStream.Length -
+                                      mCurrentAudioFileStreamRiffWaveHeaderLength;
+                mCurrentAudioFileStream.Position = 0;
+                mCurrentAudioFileStream.Seek(0, SeekOrigin.Begin);
+                mCurrentAudioFilePCMFormat.Data.RiffHeaderWrite(mCurrentAudioFileStream, dataLength);
+            }
+            mCurrentAudioFileStream.Close();
+            mCurrentAudioFileStream = null;
+            mCurrentAudioFilePCMFormat = null;
+            mCurrentAudioFileStreamRiffWaveHeaderLength = 0;
         }
 
-        private void CreateNextAudioFile()
+        private void createNextAudioFile()
         {
-            WriteAndCloseCurrentAudioFile();
+            writeAndCloseCurrentAudioFile();
 
             mCurrentAudioFileNumber++;
             //mCurrentAudioFileStream = new MemoryStream();
 
             Uri file = GetCurrentAudioFileUri();
-            mCurrentAudioFileStream = new FileStream(
-                file.LocalPath,
+            mCurrentAudioFileStream = new FileStream(file.LocalPath,
                 FileMode.Create, FileAccess.Write, FileShare.Read);
         }
 
@@ -57,17 +58,24 @@ namespace urakawa.publish
                 (uint)mCurrentAudioFilePCMFormat.Data.RiffHeaderWrite(mCurrentAudioFileStream, 0);
         }
 
+        private TreeNode m_RootNode = null;
+
         #region ITreeNodeVisitor Members
 
         public override bool PreVisit(TreeNode node)
         {
+            if (m_RootNode == null)
+            {
+                m_RootNode = node;
+            }
+
             if (TreeNodeMustBeSkipped(node)) return false;
-            if (TreeNodeTriggersNewAudioFile(node)) CreateNextAudioFile();
+            if (TreeNodeTriggersNewAudioFile(node)) createNextAudioFile();
 
             if (node.HasProperties(typeof(ChannelsProperty)))
             {
                 ChannelsProperty chProp = node.GetProperty<ChannelsProperty>();
-                
+
                 ManagedAudioMedia mam = chProp.GetMedia(SourceChannel) as ManagedAudioMedia;
                 if (mam != null)
                 {
@@ -77,7 +85,7 @@ namespace urakawa.publish
                         (mCurrentAudioFilePCMFormat != null &&
                         !mCurrentAudioFilePCMFormat.ValueEquals(amd.PCMFormat)))
                     {
-                        CreateNextAudioFile();
+                        createNextAudioFile();
                     }
                     if (mCurrentAudioFileStream != null && mCurrentAudioFilePCMFormat == null)
                     {
@@ -123,7 +131,11 @@ namespace urakawa.publish
 
         public override void PostVisit(TreeNode node)
         {
-            //Nothing to do here.
+            if (m_RootNode == node)
+            {
+                m_RootNode = null;
+                writeAndCloseCurrentAudioFile();
+            }
         }
 
         #endregion

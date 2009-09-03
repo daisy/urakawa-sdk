@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using AudioLib;
 using urakawa.core;
 using urakawa.property.channel;
 using urakawa.media;
@@ -11,6 +12,156 @@ namespace urakawa.publish
 {
     public abstract class AbstractPublishFlattenedManagedAudioVisitor : AbstractBasePublishAudioVisitor
     {
+        public void VerifyTree(TreeNode rootNode)
+        {
+            if (!rootNode.Presentation.ChannelsManager.HasAudioChannel
+                || SourceChannel != rootNode.Presentation.ChannelsManager.GetOrCreateAudioChannel())
+            {
+                throw new Exception("The verification routine for the 'publish visitor' only works when the SourceChannel is the default audio channel of the Presentation !");
+            }
+
+            Debug.Assert(m_RootNode == null);
+            Debug.Assert(m_TransientWavFileStream == null);
+            Debug.Assert(m_TransientWavFileStreamRiffOffset == 0);
+
+            verifyTree(rootNode, false, null);
+        }
+
+        private void verifyTree(TreeNode node, bool ancestorHasAudio, string ancestorExtAudioFile)
+        {
+            if (TreeNodeMustBeSkipped(node))
+            {
+                return;
+            }
+
+            if (TreeNodeTriggersNewAudioFile(node) && ancestorExtAudioFile == null)
+            {
+                ancestorExtAudioFile = "";
+            }
+
+            Media manSeqMedia = node.GetManagedAudioMediaOrSequenceMedia();
+
+            if (ancestorHasAudio)
+            {
+                Debug.Assert(manSeqMedia == null);
+            }
+
+            if (node.HasChannelsProperty)
+            {
+                ChannelsProperty chProp = node.GetChannelsProperty();
+                Media media = chProp.GetMedia(DestinationChannel);
+
+                if (ancestorHasAudio)
+                {
+                    Debug.Assert(media == null);
+                }
+
+                if (media != null)
+                {
+                    Debug.Assert(media is ExternalAudioMedia);
+                    Debug.Assert(manSeqMedia != null);
+
+                    if (!ancestorHasAudio)
+                    {
+                        ExternalAudioMedia extMedia = (ExternalAudioMedia)media;
+
+                        ancestorHasAudio = true;
+
+                        if (ancestorExtAudioFile != null)
+                        {
+                            if (ancestorExtAudioFile == "")
+                            {
+                                ancestorExtAudioFile = extMedia.Uri.LocalPath;
+                            }
+                            else
+                            {
+                                Debug.Assert(ancestorExtAudioFile == extMedia.Uri.LocalPath);
+                            }
+                        }
+                        else
+                        {
+                            ancestorExtAudioFile = extMedia.Uri.LocalPath;
+                        }
+
+                        Stream extMediaStream = new FileStream(ancestorExtAudioFile, FileMode.Open, FileAccess.Read,
+                                                               FileShare.None);
+
+                        Stream manMediaStream = null;
+
+                        ManagedAudioMedia manMedia = node.GetManagedAudioMedia();
+                        SequenceMedia seqMedia = node.GetManagedAudioSequenceMedia();
+
+                        if (manMedia != null)
+                        {
+                            Debug.Assert(seqMedia == null);
+                            Debug.Assert(manMedia.HasActualAudioMediaData);
+
+                            manMediaStream = manMedia.AudioMediaData.OpenPcmInputStream();
+                        }
+                        else
+                        {
+                            Debug.Assert(seqMedia != null);
+                            Debug.Assert(!seqMedia.AllowMultipleTypes);
+                            Debug.Assert(seqMedia.ChildMedias.Count > 0);
+                            Debug.Assert(seqMedia.ChildMedias.Get(0) is ManagedAudioMedia);
+
+                            manMediaStream = seqMedia.OpenPcmInputStreamOfManagedAudioMedia();
+                        }
+
+                        try
+                        {
+                            uint extMediaPcmLength;
+                            AudioLibPCMFormat pcmInfo = AudioLibPCMFormat.RiffHeaderParse(extMediaStream,
+                                                                                          out extMediaPcmLength);
+
+                            Debug.Assert(extMediaPcmLength == extMediaStream.Length - extMediaStream.Position);
+
+                            if (manMedia != null)
+                            {
+                                Debug.Assert(pcmInfo.IsCompatibleWith(manMedia.AudioMediaData.PCMFormat.Data));
+                            }
+                            if (seqMedia != null)
+                            {
+                                Debug.Assert(
+                                    pcmInfo.IsCompatibleWith(
+                                        ((ManagedAudioMedia) seqMedia.ChildMedias.Get(0)).AudioMediaData.PCMFormat.Data));
+                            }
+
+                            extMediaStream.Position +=
+                                pcmInfo.ConvertTimeToBytes(extMedia.ClipBegin.TimeAsMillisecondFloat);
+
+                            long manMediaStreamPosBefore = manMediaStream.Position;
+                            long extMediaStreamPosBefore = extMediaStream.Position;
+
+                            Debug.Assert(AudioLibPCMFormat.CompareStreamData(manMediaStream, extMediaStream,
+                                                                             (int) manMediaStream.Length));
+
+                            Debug.Assert(manMediaStream.Position == manMediaStreamPosBefore + manMediaStream.Length);
+                            Debug.Assert(extMediaStream.Position == extMediaStreamPosBefore + manMediaStream.Length);
+                        }
+                        finally
+                        {
+                            extMediaStream.Close();
+                            manMediaStream.Close();
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.Assert(manSeqMedia == null);
+                }
+            }
+            else
+            {
+                Debug.Assert(manSeqMedia == null);
+            }
+
+            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
+            {
+                verifyTree(child, ancestorHasAudio, ancestorExtAudioFile);
+            }
+        }
+
         private Stream m_TransientWavFileStream = null;
         private ulong m_TransientWavFileStreamRiffOffset = 0;
 
@@ -51,7 +202,7 @@ namespace urakawa.publish
                 return false; // skips children, see postVisit
             }
 
-            if (!node.HasProperties(typeof(ChannelsProperty)))
+            if (!node.HasChannelsProperty)
             {
                 return true;
             }
@@ -195,7 +346,7 @@ namespace urakawa.publish
             long bytesBegin = 0;
             foreach (TreeNodeAndStreamDataLength marker in sm.GetValueOrDefault().m_SubStreamMarkers)
             {
-                long bytesEnd = bytesBegin + marker.m_LocalStreamDataLength;
+                //long bytesEnd = bytesBegin + marker.m_LocalStreamDataLength;
 
                 ExternalAudioMedia extAudioMedia = marker.m_TreeNode.Presentation.MediaFactory.Create<ExternalAudioMedia>();
                 extAudioMedia.Language = marker.m_TreeNode.Presentation.Language;
@@ -203,11 +354,15 @@ namespace urakawa.publish
 
                 double timeBegin =
                     marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesBegin);
-                double timeEnd =
-                    marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesEnd);
-
                 extAudioMedia.ClipBegin = new Time(timeBegin);
-                extAudioMedia.ClipEnd = new Time(timeEnd);
+
+                //double timeEnd =
+                //    marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesEnd);
+                //extAudioMedia.ClipEnd = new Time(timeEnd);
+
+                TimeDelta durationFromRiffHeader = new TimeDelta(marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(marker.m_LocalStreamDataLength));
+                extAudioMedia.ClipEnd = extAudioMedia.ClipBegin.AddTimeDelta(durationFromRiffHeader);
+                
 
                 ChannelsProperty chProp = marker.m_TreeNode.GetOrCreateChannelsProperty();
 
@@ -218,7 +373,7 @@ namespace urakawa.publish
                 }
                 chProp.SetMedia(DestinationChannel, extAudioMedia);
 
-                bytesBegin = bytesEnd;
+                bytesBegin += marker.m_LocalStreamDataLength;
             }
         }
 

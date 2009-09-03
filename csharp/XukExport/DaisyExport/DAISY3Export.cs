@@ -45,7 +45,6 @@ namespace DaisyExport
 
             m_Presentation.RootNode.AcceptDepthFirst ( publishVisitor );
 
-            publishVisitor.WriteAndCloseCurrentAudioFile ();
             m_Presentation.ChannelsManager.RemoveManagedObject ( publishChannel );
 
             }
