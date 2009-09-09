@@ -100,12 +100,11 @@ namespace urakawa.metadata.daisy
         {
             return m_MetadataDefinitions.Find(
                 delegate(MetadataDefinition item)
-                { return item.Name == name; });
+                { return item.Name.ToLower() == name.ToLower(); });
         }
         //validate the entire set and generate a report
         public bool Validate(List<Metadata> metadatas)
         {
-            m_Errors.Clear();
             bool isValid = true;
 
             //validate each item by itself
@@ -123,17 +122,29 @@ namespace urakawa.metadata.daisy
         //validate a single item (do not look at the entire set - do not look for repetitions)
         public bool Validate(Metadata metadata)
         {
-            m_Errors.Clear();
             return _validateItem(metadata);
         }
         internal void ReportError(MetadataValidationError item)
         {
-            m_Errors.Add(item);
+            //prevent duplicate errors: check that the items aren't identical
+            //and check that the definitions don't match and the error types don't match
+            //theoretically, there should only be one error type per definition (e.g. format, duplicate, etc)
+
+            if (m_Errors.Find
+                (s =>
+                    s == item
+                    ||
+                    (s.Definition == item.Definition && s.GetType() == item.GetType())
+                ) == null)
+            {
+                m_Errors.Add(item);
+            }
         }
         private bool _validateItem(Metadata metadata)
         {
-            MetadataDefinition metadataDefinition = FindDefinition(metadata.NameContentAttribute.Name);
 
+            MetadataDefinition metadataDefinition = FindDefinition(metadata.NameContentAttribute.Name);
+			
             if (metadataDefinition == null)
             {
                 metadataDefinition = SupportedMetadata_Z39862005.UnrecognizedMetadata;
@@ -447,7 +458,7 @@ namespace urakawa.metadata.daisy
             {
                 Metadata exists = alreadyUsedMetadata.Find(
                     delegate(Metadata item)
-                    { return item.NameContentAttribute.Name == definition.Name; });
+                    { return item.NameContentAttribute.Name.ToLower() == definition.Name.ToLower(); });
 
                 if (exists == null)
                 {
