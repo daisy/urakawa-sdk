@@ -106,6 +106,7 @@ namespace urakawa.metadata.daisy
         public bool Validate(List<Metadata> metadatas)
         {
             bool isValid = true;
+            m_Errors.Clear();
 
             //validate each item by itself
             foreach (Metadata metadata in metadatas)
@@ -149,6 +150,7 @@ namespace urakawa.metadata.daisy
             {
                 metadataDefinition = SupportedMetadata_Z39862005.UnrecognizedMetadata;
             }
+            
             //check the occurrence requirement
             bool meetsOccurrenceRequirement = m_OccurrenceValidator.Validate(metadata, metadataDefinition);
             //check the data type
@@ -174,7 +176,8 @@ namespace urakawa.metadata.daisy
                 {
                     Metadata metadata = metadatas.Find(
                         delegate(Metadata item)
-                        { return item.NameContentAttribute.Name == metadataDefinition.Name; });
+                        { return item.NameContentAttribute.Name.ToLower() == 
+                            metadataDefinition.Name.ToLower(); });
 
                     if (metadata == null)
                     {
@@ -189,13 +192,14 @@ namespace urakawa.metadata.daisy
             {
                 MetadataDefinition metadataDefinition = m_MetadataDefinitions.Find(
                     delegate(MetadataDefinition item)
-                    { return item.Name == metadata.NameContentAttribute.Name; });
+                    { return item.Name.ToLower() == metadata.NameContentAttribute.Name.ToLower(); });
 
                 if (metadataDefinition != null && !metadataDefinition.IsRepeatable)
                 {
                     List<Metadata> list = metadatas.FindAll(
                         delegate(Metadata item)
-                        { return item.NameContentAttribute.Name == metadata.NameContentAttribute.Name; });
+                        { return item.NameContentAttribute.Name.ToLower() == 
+                            metadata.NameContentAttribute.Name.ToLower(); });
 
                     if (list.Count > 1)
                     {
