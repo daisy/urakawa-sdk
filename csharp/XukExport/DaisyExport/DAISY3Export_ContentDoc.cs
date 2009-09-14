@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 
+using urakawa.xuk;
 
 namespace DaisyExport
     {
@@ -11,9 +12,27 @@ namespace DaisyExport
         {
         // DAISY3Export_ContentDoc
 
-        private void CreateDTBookDocument ()
+        private const string m_ContentFileName = "dtbook.xml";
+        private string m_CurrentSmilFileName;
+        private uint m_SmilFileNameCounter;
+
+
+        private string GetNextSmilFileName
+            {
+            get
+                {
+                string strNumericFrag = (++m_SmilFileNameCounter).ToString ();
+                return strNumericFrag.PadLeft ( 4, '0' ) + ".smil";
+                }
+            }
+
+
+        private void CreateDTBookAndSmilDocuments ()
             {
             XmlDocument DTBookDocument = CreateStub_DTBDocument ();
+            XmlDocument smilDocument = CreateStub_SmilDocument();
+            m_SmilFileNameCounter = 0;
+            m_CurrentSmilFileName = GetNextSmilFileName;
 
             // add metadata
             XmlNode headNode = DTBookDocument.GetElementsByTagName ( "head" )[0];
@@ -44,6 +63,12 @@ namespace DaisyExport
             rNode.AcceptDepthFirst (
                     delegate ( urakawa.core.TreeNode n )
                         {
+
+                        if (ShouldCreateNextSmilFile ( n ))
+                            {
+                            smilDocument = SaveCurrentSmilAndCreateNextSmilDocument ( smilDocument );
+                            }
+
 
                         urakawa.property.xml.XmlProperty xmlProp = n.GetProperty<urakawa.property.xml.XmlProperty> ();
                         if (xmlProp != null && xmlProp.LocalName != "book")
@@ -81,6 +106,13 @@ namespace DaisyExport
 
                             // add nodes to dictionary 
                             treeNode_XmlNodeMap.Add ( n, currentXmlNode );
+
+                            // add to smil document if both txt media and external audio media  exists
+                            if (txt != null
+                                && GetExternalAudioMedia ( n ) != null)
+                                {
+                                AddNodeToSmil ( smilDocument, currentXmlNode, GetExternalAudioMedia(n));
+                                }
                             return true;
                             }
 
@@ -88,10 +120,46 @@ namespace DaisyExport
                         },
                     delegate ( urakawa.core.TreeNode n ) { } );
 
-
+            CommonFunctions.WriteXmlDocumentToFile ( smilDocument,
+                Path.Combine ( m_OutputDirectory, m_CurrentSmilFileName ) );
 
             CommonFunctions.WriteXmlDocumentToFile ( DTBookDocument,
-                Path.Combine ( System.AppDomain.CurrentDomain.BaseDirectory, "try.xml" ) );
+                Path.Combine ( m_OutputDirectory, m_ContentFileName ) );
+
+            }
+
+        private bool ShouldCreateNextSmilFile ( urakawa.core.TreeNode node )
+            {
+            QualifiedName qName = node.GetXmlElementQName ();
+            return qName != null && qName.LocalName == "level1";
+            }
+
+        private XmlDocument SaveCurrentSmilAndCreateNextSmilDocument ( XmlDocument smilDocument )
+            {
+            CommonFunctions.WriteXmlDocumentToFile ( smilDocument,
+                Path.Combine ( m_OutputDirectory, m_CurrentSmilFileName ) );
+            m_CurrentSmilFileName = GetNextSmilFileName;
+            return CreateStub_SmilDocument ();
+            }
+
+        
+        private void AddNodeToSmil ( XmlDocument smilDocument, XmlNode dtbNode, urakawa.media.ExternalAudioMedia externalMedia )
+            {
+            XmlNode mainSeq = smilDocument.GetElementsByTagName ( "body" )[0].FirstChild;
+            XmlNode parNode = smilDocument.CreateElement ( null, "par", mainSeq.NamespaceURI );
+            CommonFunctions.CreateAppendXmlAttribute ( smilDocument, parNode, "id", GetNextID(ID_SmilPrefix) );
+            mainSeq.AppendChild ( parNode );
+
+            XmlNode textNode = smilDocument.CreateElement ( null, "text", mainSeq.NamespaceURI );
+            CommonFunctions.CreateAppendXmlAttribute ( smilDocument, textNode, "id", GetNextID(ID_SmilPrefix) );
+            CommonFunctions.CreateAppendXmlAttribute ( smilDocument, textNode, "src", m_ContentFileName + "#" + dtbNode.Attributes.GetNamedItem ( "id" ).Value );
+            parNode.AppendChild ( textNode );
+
+            XmlNode audioNode = smilDocument.CreateElement ( null, "audio", mainSeq.NamespaceURI );
+            CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "clipBegin", externalMedia.ClipBegin.TimeAsTimeSpan.ToString ()  ); 
+            CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "clipEnd", externalMedia.ClipEnd.TimeAsTimeSpan.ToString ()) ; 
+CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "src" ,Path.GetFileName( externalMedia.Src ) ) ;
+            parNode.AppendChild ( audioNode);
 
             }
 
@@ -146,6 +214,8 @@ namespace DaisyExport
             smilRootNode.AppendChild ( headNode );
             XmlNode bodyNode = smilDocument.CreateElement ( null, "body", smilRootNode.NamespaceURI );
             smilRootNode.AppendChild ( bodyNode );
+            XmlNode mainSeqNode = smilDocument.CreateElement ( null, "seq", smilRootNode.NamespaceURI );
+            bodyNode.AppendChild ( mainSeqNode);
 
             return smilDocument;
             }
