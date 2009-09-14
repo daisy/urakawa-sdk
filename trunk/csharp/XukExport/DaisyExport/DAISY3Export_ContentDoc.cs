@@ -126,6 +126,30 @@ namespace DaisyExport
             return DTBDocument;
             }
 
+        public XmlDocument CreateStub_SmilDocument ()
+            {
+            XmlDocument smilDocument = new XmlDocument ();
+            smilDocument.XmlResolver = null;
+
+            smilDocument.AppendChild ( smilDocument.CreateXmlDeclaration ( "1.0", "utf-8", null ) );
+            smilDocument.AppendChild ( smilDocument.CreateDocumentType ( "smil",
+                "-//NISO//DTD dtbsmil 2005-1//EN",
+                    "http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd",
+                null ) );
+            XmlNode smilRootNode = smilDocument.CreateElement ( null,
+                "smil", "http://www.w3.org/2001/SMIL20/");
+
+            //"http://www.w3.org/1999/xhtml" );
+            smilDocument.AppendChild ( smilRootNode );
+
+            XmlNode headNode = smilDocument.CreateElement ( null, "head", smilRootNode.NamespaceURI );
+            smilRootNode.AppendChild ( headNode );
+            XmlNode bodyNode = smilDocument.CreateElement ( null, "body", smilRootNode.NamespaceURI );
+            smilRootNode.AppendChild ( bodyNode );
+
+            return smilDocument;
+            }
+
 
         }
     }
