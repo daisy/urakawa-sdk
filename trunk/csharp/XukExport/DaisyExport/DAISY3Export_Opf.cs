@@ -22,13 +22,13 @@ namespace DaisyExport
 
             XmlNode itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
             manifestNode.AppendChild ( itemNode );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", "TObi.ncx" );
+            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", m_Filename_Ncx );
             CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", GetNextID ( ID_OpfPrefix ) );
             CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Opf );
 
             itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
             manifestNode.AppendChild ( itemNode );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", "TObi.opf" );
+            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", m_Filename_Opf );
             CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", GetNextID ( ID_OpfPrefix ) );
             CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Ncx );
 
@@ -68,22 +68,22 @@ namespace DaisyExport
 
             // create spine
             XmlNode spineNode = opfDocument.GetElementsByTagName ( "spine" )[0];
-            
+
             foreach (string strSmilID in smilIDListInPlayOrder)
                 {
                 XmlNode itemRefNode = opfDocument.CreateElement ( null, "itemref", spineNode.NamespaceURI );
-                spineNode.AppendChild ( itemRefNode);
+                spineNode.AppendChild ( itemRefNode );
                 CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemRefNode, "idref", strSmilID );
                 }
 
             AddMetadata_Opf ( opfDocument );
             CommonFunctions.WriteXmlDocumentToFile ( opfDocument,
-                Path.Combine ( m_OutputDirectory, "TObi.Opf") );
+                Path.Combine ( m_OutputDirectory, m_Filename_Opf ) );
             }
 
         private void AddMetadata_Opf ( XmlDocument opfDocument )
             {
-            XmlNode dc_metadataNode = opfDocument.GetElementsByTagName ( "dc-metadata" )[0] ;
+            XmlNode dc_metadataNode = opfDocument.GetElementsByTagName ( "dc-metadata" )[0];
             XmlNode x_metadataNode = opfDocument.GetElementsByTagName ( "x-metadata" )[0];
 
             foreach (urakawa.metadata.Metadata m in m_Presentation.Metadatas.ContentsAs_ListCopy)
@@ -92,7 +92,7 @@ namespace DaisyExport
                     {
                     if (m.NameContentAttribute.Name == "dc:format")
                         {
-                        AddMetadataAsInnerText ( opfDocument, dc_metadataNode, m.NameContentAttribute.Name, "ANSI/NISO Z39.86-2005"  );
+                        AddMetadataAsInnerText ( opfDocument, dc_metadataNode, m.NameContentAttribute.Name, "ANSI/NISO Z39.86-2005" );
                         }
                     else
                         {
@@ -106,14 +106,14 @@ namespace DaisyExport
                 }
 
             // add uid to dc:identifier
-            XmlNode identifierMetaNode = opfDocument.GetElementsByTagName ("dc:identifier" )[0];
+            XmlNode identifierMetaNode = opfDocument.GetElementsByTagName ( "dc:identifier" )[0];
             if (identifierMetaNode != null)
                 {
                 CommonFunctions.CreateAppendXmlAttribute ( opfDocument, identifierMetaNode, "id", "uid" );
                 }
             }
 
-        private void AddMetadataAsInnerText ( XmlDocument doc,  XmlNode metadataParentNode, string name, string content )
+        private void AddMetadataAsInnerText ( XmlDocument doc, XmlNode metadataParentNode, string name, string content )
             {
             XmlNode node = null;
             if (name.Contains ( ":" ))
@@ -124,7 +124,7 @@ namespace DaisyExport
                 {
                 node = doc.CreateElement ( null, name, metadataParentNode.NamespaceURI );
                 }
-            metadataParentNode.AppendChild ( node);
+            metadataParentNode.AppendChild ( node );
             node.AppendChild (
                 doc.CreateTextNode ( content ) );
 
