@@ -27,6 +27,7 @@ namespace DaisyExport
 
         private List<string> m_FilesList_Smil; //xmils files list generated in createNcx function
         private List<string> m_FilesList_Audio; // list of audio files generated in create ncx function.
+        private List<string> m_FilesList_Image; // list of images, populated in create content document function
         private TimeSpan m_TotalTime;
 
         public DAISY3Export(Presentation presentation)
