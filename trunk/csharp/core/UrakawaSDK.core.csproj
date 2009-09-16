@@ -107,6 +107,11 @@
     <Compile Include="command\IAction.cs" />
     <Compile Include="command\IUndoableAction.cs" />
     <Compile Include="command\IUsingMediaData.cs" />
+    <Compile Include="core\TreeNode_Audio.cs" />
+    <Compile Include="core\TreeNode_Channels.cs" />
+    <Compile Include="core\TreeNode_Image.cs" />
+    <Compile Include="core\TreeNode_Text.cs" />
+    <Compile Include="core\TreeNode_Xml.cs" />
     <Compile Include="events\media\data\DataIsMissingEventArgs.cs" />
     <Compile Include="events\metadata\MetadataAttributeEventArgs.cs" />
     <Compile Include="events\progress\CancellableEventArgs.cs" />
