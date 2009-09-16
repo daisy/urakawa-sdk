@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{EEA41DEC-C8AA-4681-9A18-166C6C34C94E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -52,19 +52,18 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="urakawa, Version=2.0.0.21087, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\core\bin\Debug\urakawa.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonFunctions.cs" />
     <Compile Include="DAISY3Export.cs" />
     <Compile Include="DAISY3Export_ContentDoc.cs" />
     <Compile Include="DAISY3Export_Ncx.cs" />
+    <Compile Include="DAISY3Export_Opf.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\core\UrakawaSDK.core.csproj">
-      <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
-      <Name>UrakawaSDK.core</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
