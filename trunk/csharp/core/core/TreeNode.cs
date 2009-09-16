@@ -1,609 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Xml;
 using urakawa.core.visitor;
 using urakawa.events;
 using urakawa.exception;
-using urakawa.media;
-using urakawa.media.data.audio;
-using urakawa.media.data.utilities;
 using urakawa.progress;
 using urakawa.property;
-using urakawa.property.channel;
-using urakawa.property.xml;
 using urakawa.xuk;
-using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 namespace urakawa.core
 {
-    public struct TreeNodeAndStreamSelection
-    {
-        public TreeNode m_TreeNode;
-        public long m_LocalStreamLeftMark;
-        public long m_LocalStreamRightMark;
-    }
-
-    public struct TreeNodeAndStreamDataLength
-    {
-        public TreeNode m_TreeNode;
-        public long m_LocalStreamDataLength;
-    }
-
-    public struct StreamWithMarkers
-    {
-        public Stream m_Stream;
-        public List<TreeNodeAndStreamDataLength> m_SubStreamMarkers;
-    }
-
     /// <summary>
     /// A node in the core tree of the SDK
     /// </summary>
-    [DebuggerDisplay("{getDebugString()}")]
-    public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IChangeNotifier
+    public partial class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IChangeNotifier
     {
-
-        public TreeNode GetFirstChildWithXmlElementName(string elemName)
-        {
-            QualifiedName qname = GetXmlElementQName();
-            if (qname != null && qname.LocalName == elemName) return this;
-
-            for (int i = 0; i < mChildren.Count; i++)
-            {
-                TreeNode child = mChildren.Get(i).GetFirstChildWithXmlElementName(elemName);
-                if (child != null)
-                {
-                    return child;
-                }
-            }
-            return null;
-        }
-
-        public override string ToString()
-        {
-            QualifiedName qname = GetXmlElementQName();
-            if (qname != null)
-            {
-                return qname.LocalName;
-            }
-            return base.ToString();
-        }
-
-        ///<summary>
-        /// returns the QName of the attached XmlProperty, if any
-        ///</summary>
-        ///<returns></returns>
-        public QualifiedName GetXmlElementQName()
-        {
-            XmlProperty xmlProp = GetProperty<XmlProperty>();
-            if (xmlProp != null)
-            {
-                return new QualifiedName(xmlProp.LocalName, xmlProp.NamespaceUri);
-            }
-            return null;
-        }
-        ///<summary>
-        /// returns the ID attribute value of the attached XmlProperty, if any
-        ///</summary>
-        ///<returns>null of there is no ID attribute</returns>
-        public string GetXmlElementId()
-        {
-            XmlProperty xmlProp = GetProperty<XmlProperty>();
-            if (xmlProp != null)
-            {
-                XmlAttribute idAttr = xmlProp.GetAttribute("id", "");
-                if (idAttr != null)
-                {
-                    return (string.IsNullOrEmpty(idAttr.Value) ? null : idAttr.Value);
-                }
-            }
-            return null;
-        }
-
-        protected string getDebugString()
-        {
-            QualifiedName qname = GetXmlElementQName();
-            String str = (qname != null ? qname.LocalName : "");
-            str += "///";
-            str += GetTextMediaFlattened();
-            return str;
-        }
-
-        public TreeNode Root
-        {
-            get
-            {
-                if (Parent == null)
-                {
-                    return this;
-                }
-                return Parent.Root;
-            }
-        }
-
-
-        public Media GetMediaInChannel<T>() where T : Channel
-        {
-            ChannelsProperty chProp = GetProperty<ChannelsProperty>();
-            if (chProp != null)
-            {
-                T channel = null;
-
-                foreach (Channel ch in Presentation.ChannelsManager.ManagedObjects.ContentsAs_YieldEnumerable)
-                {
-                    if (ch is T)
-                    {
-                        channel = ch as T;
-                        break;
-                    }
-                }
-                if (channel != null)
-                {
-                    Media med = chProp.GetMedia(channel);
-                    return med;
-                }
-            }
-            return null;
-        }
-
-
-        public bool IsAfter(TreeNode node)
-        {
-            if (node == this)
-            {
-                return false;
-            }
-            if (Root.MeetFirst(this, node) == node)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public bool IsBefore(TreeNode node)
-        {
-            return !IsAfter(node);
-        }
-
-        private TreeNode MeetFirst(TreeNode node1, TreeNode node2)
-        {
-            if (this == node1) return node1;
-            if (this == node2) return node2;
-            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
-            {
-                TreeNode met = child.MeetFirst(node1, node2);
-                if (met != null)
-                {
-                    return met;
-                }
-            }
-            return null;
-        }
-
-        public TreeNode GetFirstAncestorWithManagedAudio()
-        {
-            if (Parent == null)
-            {
-                return null;
-            }
-
-            Media manMedia = Parent.GetManagedAudioMediaOrSequenceMedia();
-            if (manMedia != null)
-            {
-                return Parent;
-            }
-
-            return Parent.GetFirstAncestorWithManagedAudio();
-        }
-
-        public TreeNode GetFirstDescendantWithManagedAudio()
-        {
-            if (mChildren.Count == 0)
-            {
-                return null;
-            }
-
-            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
-            {
-                Media manMedia = child.GetManagedAudioMediaOrSequenceMedia();
-                if (manMedia != null)
-                {
-                    return child;
-                }
-
-                TreeNode childIn = child.GetFirstDescendantWithManagedAudio();
-                if (childIn != null)
-                {
-                    return childIn;
-                }
-            }
-            return null;
-        }
-
-        public TreeNode GetNextSiblingWithManagedAudio()
-        {
-            if (Parent == null)
-            {
-                return null;
-            }
-            TreeNode next = this;
-            while ((next = next.NextSibling) != null)
-            {
-                Media manMedia = next.GetManagedAudioMediaOrSequenceMedia();
-                if (manMedia != null)
-                {
-                    return next;
-                }
-
-                TreeNode nextIn = next.GetFirstDescendantWithManagedAudio();
-                if (nextIn != null)
-                {
-                    return nextIn;
-                }
-            }
-
-            return Parent.GetNextSiblingWithManagedAudio();
-        }
-
-        public StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMedia()
-        {
-            StreamWithMarkers val;
-
-            ManagedAudioMedia audioMedia = GetManagedAudioMedia();
-            if (audioMedia != null && audioMedia.HasActualAudioMediaData)
-            {
-                val.m_Stream = audioMedia.AudioMediaData.OpenPcmInputStream();
-                val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
-                TreeNodeAndStreamDataLength tnasdl = new TreeNodeAndStreamDataLength();
-                tnasdl.m_LocalStreamDataLength = val.m_Stream.Length;
-                tnasdl.m_TreeNode = this;
-                val.m_SubStreamMarkers.Add(tnasdl);
-                return val;
-            }
-            SequenceMedia seq = GetManagedAudioSequenceMedia();
-            if (seq != null)
-            {
-                Stream stream = seq.OpenPcmInputStreamOfManagedAudioMedia();
-                if (stream != null)
-                {
-                    val.m_Stream = stream;
-                    val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
-                    TreeNodeAndStreamDataLength tnasdl = new TreeNodeAndStreamDataLength();
-                    tnasdl.m_LocalStreamDataLength = val.m_Stream.Length;
-                    tnasdl.m_TreeNode = this;
-                    val.m_SubStreamMarkers.Add(tnasdl);
-                    return val;
-                }
-            }
-            return null;
-        }
-
-        public StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened()
-        {
-            StreamWithMarkers? val = OpenPcmInputStreamOfManagedAudioMedia();
-            if (val != null)
-            {
-                return val;
-            }
-
-            List<StreamWithMarkers> listStreamsWithMarkers = new List<StreamWithMarkers>();
-
-            for (int index = 0; index < mChildren.Count; index++)
-            {
-                TreeNode node = mChildren.Get(index);
-                StreamWithMarkers? childVal = node.OpenPcmInputStreamOfManagedAudioMediaFlattened();
-                if (childVal != null)
-                {
-                    listStreamsWithMarkers.Add(childVal.GetValueOrDefault());
-                }
-            }
-
-            if (listStreamsWithMarkers.Count == 0)
-            {
-                return null;
-            }
-
-            StreamWithMarkers returnVal = new StreamWithMarkers();
-            returnVal.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>();
-
-            List<Stream> listStreams = new List<Stream>();
-            foreach (StreamWithMarkers strct in listStreamsWithMarkers)
-            {
-                listStreams.Add(strct.m_Stream);
-                returnVal.m_SubStreamMarkers.AddRange(strct.m_SubStreamMarkers);
-                strct.m_SubStreamMarkers.Clear();
-            }
-
-            returnVal.m_Stream = new SequenceStream(listStreams);
-
-            listStreamsWithMarkers.Clear();
-            listStreamsWithMarkers = null;
-
-            return returnVal;
-        }
-
-        public TreeNode GetLastDescendantWithText()
-        {
-            if (mChildren.Count == 0)
-            {
-                return null;
-            }
-
-            for (int i = Children.Count - 1; i >= 0; i--)
-            {
-                TreeNode child = Children.Get(i);
-
-                string str = child.GetTextMediaFlattened(false);
-                if (!string.IsNullOrEmpty(str))
-                {
-                    return child;
-                }
-
-                TreeNode childIn = child.GetLastDescendantWithText();
-                if (childIn != null)
-                {
-                    return childIn;
-                }
-            }
-            return null;
-        }
-
-        public TreeNode GetFirstDescendantWithText()
-        {
-            if (mChildren.Count == 0)
-            {
-                return null;
-            }
-
-            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
-            {
-                string str = child.GetTextMediaFlattened(false);
-                if (!string.IsNullOrEmpty(str))
-                {
-                    return child;
-                }
-
-                TreeNode childIn = child.GetFirstDescendantWithText();
-                if (childIn != null)
-                {
-                    return childIn;
-                }
-            }
-            return null;
-        }
-
-        public TreeNode GetPreviousSiblingWithText()
-        {
-            return GetPreviousSiblingWithText(null);
-        }
-
-        public TreeNode GetPreviousSiblingWithText(TreeNode upLimit)
-        {
-            if (Parent == null)
-            {
-                return null;
-            }
-            TreeNode next = this;
-            while ((next = next.PreviousSibling) != null)
-            {
-                string str = next.GetTextMediaFlattened(false);
-                if (!string.IsNullOrEmpty(str))
-                {
-                    return next;
-                }
-
-                TreeNode nextIn = next.GetLastDescendantWithText();
-                if (nextIn != null)
-                {
-                    return nextIn;
-                }
-            }
-
-            if (upLimit == null || upLimit != Parent)
-            {
-                return Parent.GetPreviousSiblingWithText(upLimit);
-            }
-            return null;
-        }
-
-        public TreeNode GetNextSiblingWithText()
-        {
-            return GetNextSiblingWithText(null);
-        }
-
-        public TreeNode GetNextSiblingWithText(TreeNode upLimit)
-        {
-            if (Parent == null)
-            {
-                return null;
-            }
-            TreeNode next = this;
-            while ((next = next.NextSibling) != null)
-            {
-                string str = next.GetTextMediaFlattened(false);
-                if (!string.IsNullOrEmpty(str))
-                {
-                    return next;
-                }
-
-                TreeNode nextIn = next.GetFirstDescendantWithText();
-                if (nextIn != null)
-                {
-                    return nextIn;
-                }
-            }
-
-            if (upLimit == null || upLimit != Parent)
-            {
-                return Parent.GetNextSiblingWithText(upLimit);
-            }
-            return null;
-        }
-
-        public string GetTextMediaFlattened()
-        {
-            return GetTextMediaFlattened(true);
-        }
-
-        private string GetTextMediaFlattened(bool deep)
-        {
-            AbstractTextMedia textMedia = GetTextMedia();
-            if (textMedia != null)
-            {
-                if (textMedia.Text.Length == 0)
-                {
-                    return null;
-                }
-                return textMedia.Text;
-            }
-            SequenceMedia seq = GetTextSequenceMedia();
-            if (seq != null)
-            {
-                String strText = seq.GetMediaText();
-                if (!String.IsNullOrEmpty(strText))
-                {
-                    return strText;
-                }
-            }
-
-            if (!deep)
-            {
-                return null;
-            }
-
-            string str = "";
-            for (int index = 0; index < mChildren.Count; index++)
-            {
-                TreeNode node = mChildren.Get(index);
-                str += node.GetTextMediaFlattened();
-            }
-            if (str.Length == 0)
-            {
-                return null;
-            }
-            return str;
-        }
-
-        public AbstractImageMedia GetImageMedia()
-        {
-            Media med = GetMediaInImageChannel();
-            if (med != null)
-            {
-                return med as AbstractImageMedia;
-            }
-            return null;
-        }
-
-        public SequenceMedia GetImageSequenceMedia()
-        {
-            Media med = GetMediaInImageChannel();
-            if (med != null)
-            {
-                return med as SequenceMedia;
-            }
-            return null;
-        }
-
-        public AbstractTextMedia GetTextMedia()
-        {
-            Media med = GetMediaInTextChannel();
-            if (med != null)
-            {
-                return med as AbstractTextMedia;
-            }
-            return null;
-        }
-
-        public SequenceMedia GetTextSequenceMedia()
-        {
-            Media med = GetMediaInTextChannel();
-            if (med != null)
-            {
-                return med as SequenceMedia;
-            }
-            return null;
-        }
-
-        public Media GetMediaInImageChannel()
-        {
-            return GetMediaInChannel<ImageChannel>();
-        }
-
-        public Media GetMediaInTextChannel()
-        {
-            return GetMediaInChannel<TextChannel>();
-        }
-
-        public Media GetManagedAudioMediaOrSequenceMedia()
-        {
-            ManagedAudioMedia managedAudioMedia = GetManagedAudioMedia();
-            if (managedAudioMedia == null)
-            {
-                return GetManagedAudioSequenceMedia();
-            }
-            return managedAudioMedia;
-        }
-
-        public ManagedAudioMedia GetManagedAudioMedia()
-        {
-            AbstractAudioMedia media = GetAudioMedia();
-            if (media != null)
-            {
-                return media as ManagedAudioMedia;
-            }
-            return null;
-        }
-
-        public AbstractAudioMedia GetAudioMedia()
-        {
-            Media med = GetMediaInAudioChannel();
-            if (med != null)
-            {
-                return med as AbstractAudioMedia;
-            }
-            return null;
-        }
-
-        public SequenceMedia GetManagedAudioSequenceMedia()
-        {
-            SequenceMedia seqAudioMedia = GetAudioSequenceMedia();
-            bool isSeqValid = seqAudioMedia != null
-                && seqAudioMedia.ChildMedias.Count > 0 && !seqAudioMedia.AllowMultipleTypes;
-            if (isSeqValid)
-            {
-                foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
-                {
-                    if (!(media is ManagedAudioMedia))
-                    {
-                        isSeqValid = false;
-                        break;
-                    }
-                }
-            }
-            if (isSeqValid)
-            {
-                return seqAudioMedia;
-            }
-            return null;
-        }
-
-        public SequenceMedia GetAudioSequenceMedia()
-        {
-            Media med = GetMediaInAudioChannel();
-            if (med != null)
-            {
-                return med as SequenceMedia;
-            }
-            return null;
-        }
-
-        public Media GetMediaInAudioChannel()
-        {
-            return GetMediaInChannel<AudioChannel>();
-        }
-
-
         public override string GetTypeNameFormatted()
         {
             return XukStrings.TreeNode;
@@ -745,26 +156,11 @@ namespace urakawa.core
         /// </summary>
         private ObjectListProvider<Property> mProperties;
 
-        public ObjectListProvider<Property> Properties
-        {
-            get
-            {
-                return mProperties;
-            }
-        }
-
         /// <summary>
         /// Contains the children of the node
         /// </summary>
         private ObjectListProvider<TreeNode> mChildren;
 
-        public ObjectListProvider<TreeNode> Children
-        {
-            get
-            {
-                return mChildren;
-            }
-        }
 
         /// <summary>
         /// The parent <see cref="TreeNode"/>
@@ -787,227 +183,6 @@ namespace urakawa.core
             mProperties.ObjectRemoved += this_propertyRemoved;
         }
 
-        /// <summary>
-        /// Gets a list of the <see cref="Type"/>s of <see cref="Property"/> set for the <see cref="TreeNode"/>
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<Type> UsedPropertyTypes
-        {
-            get
-            {
-                List<Type> res = new List<Type>();
-                foreach (Property p in Properties.ContentsAs_YieldEnumerable)
-                {
-                    if (!res.Contains(p.GetType())) res.Add(p.GetType());
-                }
-                return res;
-            }
-        }
-
-        /// <summary>
-        /// Gets a list of the <see cref="Property"/>s of this of a given <see cref="Type"/>
-        /// </summary>
-        /// <param name="t">The given type</param>
-        /// <returns>The list</returns>
-        public List<Property> GetProperties(Type t)
-        {
-            List<Property> res = new List<Property>();
-            foreach (Property p in Properties.ContentsAs_YieldEnumerable)
-            {
-                if (p.GetType() == t) res.Add(p);
-            }
-            return res;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Property"/>s of a the given <see cref="Property"/> sub-type
-        /// </summary>
-        /// <typeparam name="T">The type of the properties to get - must sub-class <see cref="Property"/></typeparam>
-        /// <returns>A list of all <typeparamref name="T"/> properties of <c>this</c>, possibly an empty list</returns>
-        public List<T> GetProperties<T>() where T : Property
-        {
-            List<T> res = new List<T>();
-            foreach (Property p in GetProperties(typeof(T))) res.Add(p as T);
-            return res;
-        }
-
-        /// <summary>
-        /// Gets the first <see cref="Property"/> of a the given <see cref="Property"/> sub-type
-        /// </summary>
-        /// <param name="t">The given <see cref="Property"/> subtype</param>
-        /// <returns>The first property of the given subtype - possibly null</returns>
-        public Property GetProperty(Type t)
-        {
-            List<Property> props = GetProperties(t);
-            if (props.Count > 0) return props[0];
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the first <see cref="Property"/> of a the given <see cref="Property"/> sub-type
-        /// </summary>
-        /// <typeparam name="T">The type of the property to get - must sub-class <see cref="Property"/></typeparam>
-        /// <returns>The first <typeparamref name="T"/> property of this if it exists, else <c>null</c></returns>
-        public T GetProperty<T>() where T : Property
-        {
-            return GetProperty(typeof(T)) as T;
-        }
-
-        public ChannelsProperty GetChannelsProperty()
-        {
-            return GetProperty<ChannelsProperty>();
-        }
-        public XmlProperty GetXmlProperty()
-        {
-            return GetProperty<XmlProperty>();
-        }
-
-        public bool HasChannelsProperty
-        {
-            get { return GetProperty<ChannelsProperty>() != null; }
-        }
-        public bool HasXmlProperty
-        {
-            get { return GetProperty<XmlProperty>() != null; }
-        }
-
-        public ChannelsProperty GetOrCreateChannelsProperty()
-        {
-            return GetOrCreateProperty<ChannelsProperty>();
-        }
-        public XmlProperty GetOrCreateXmlProperty()
-        {
-            return GetOrCreateProperty<XmlProperty>();
-        }
-
-        public T GetOrCreateProperty<T>() where T : Property, new()
-        {
-            T prop = GetProperty<T>();
-            if (prop == null)
-            {
-                prop = Presentation.PropertyFactory.Create<T>();
-                AddProperty(prop);
-            }
-            return prop;
-        }
-
-        /// <summary>
-        /// Adds a <see cref="Property"/> to the node
-        /// </summary>
-        /// <param name="props">The list of <see cref="Property"/>s to add.</param>
-        /// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="props"/> is null</exception>
-        public void AddProperties(IList<Property> props)
-        {
-            if (props == null) throw new exception.MethodParameterIsNullException("No list of Property was given");
-            foreach (Property p in props)
-            {
-                AddProperty(p);
-            }
-        }
-
-        /// <summary>
-        /// Adds a <see cref="Property"/> to the node
-        /// </summary>
-        /// <param name="prop">The <see cref="Property"/> to add. </param>
-        /// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="prop"/> is null</exception>
-        /// <exception cref="exception.PropertyAlreadyHasOwnerException">Thrown when <see cref="Property"/> is already owned by another node</exception>
-        /// <exception cref="exception.NodeInDifferentPresentationException">Thrown when the new <see cref="Property"/> belongs to a different <see cref="Presentation"/></exception>
-        /// <exception cref="exception.PropertyCanNotBeAddedException">Thrown when <c><paramref name="prop"/>.<see cref="Property.CanBeAddedTo"/>(this)</c> returns <c>false</c></exception>
-        public void AddProperty(Property prop)
-        {
-            if (prop == null)
-                throw new exception.MethodParameterIsNullException("Can not add a null Property to the TreeNode");
-            if (mProperties.IndexOf(prop) == -1)
-            {
-                if (!prop.CanBeAddedTo(this))
-                {
-                    throw new exception.PropertyCanNotBeAddedException(
-                        "The given Property can not be added to the TreeNode");
-                }
-                prop.TreeNodeOwner = this;
-                mProperties.Insert(mProperties.Count, prop);
-
-            }
-        }
-
-        /// <summary>
-        /// Remove the <see cref="Property"/>s of a given <see cref="Type"/> from this
-        /// </summary>
-        /// <param name="propType">Specify the type of properties to remove</param>
-        /// <returns>The list of removed properties</returns>
-        public List<Property> RemoveProperties(Type propType)
-        {
-            List<Property> remProps = GetProperties(propType);
-            foreach (Property p in remProps)
-            {
-                RemoveProperty(p);
-            }
-            return remProps;
-        }
-
-        /// <summary>
-        /// Removes a given <see cref="Property"/>
-        /// </summary>
-        /// <param name="prop">The <see cref="Property"/> to remove</param>
-        public void RemoveProperty(Property prop)
-        {
-            if (prop == null) throw new exception.MethodParameterIsNullException("Can not remove a null Property");
-            if (mProperties.IndexOf(prop) != -1)
-            {
-                prop.TreeNodeOwner = null;
-                mProperties.Remove(prop);
-            }
-        }
-
-        /// <summary>
-        /// Determines if this has any <see cref="Property"/>s
-        /// </summary>
-        /// <returns>A <see cref="bool"/> indicating if this has any properties</returns>
-        public bool HasProperties()
-        {
-            return (mProperties.Count > 0);
-        }
-
-        /// <summary>
-        /// Determines if this has any <see cref="Property"/>s of a given <see cref="Type"/>
-        /// </summary>
-        /// <param name="t">The given type</param>
-        /// <returns>A <see cref="bool"/> indicating if this has any properties</returns>
-        public bool HasProperties(Type t)
-        {
-            foreach (Property p in Properties.ContentsAs_YieldEnumerable)
-            {
-                if (p.GetType() == t) return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Determines if a given <see cref="Property"/> is owned by this
-        /// </summary>
-        /// <param name="prop">The property</param>
-        /// <returns>A <see cref="bool"/> indicating if the given property is a property of this</returns>
-        public bool HasProperty(Property prop)
-        {
-            if (prop == null)
-                throw new exception.MethodParameterIsNullException("The TreeNode can not have a null Property");
-            return mProperties.IndexOf(prop) != -1;
-        }
-
-
-        /// <summary>
-        /// Copies the children of the current instance to a given destination <see cref="TreeNode"/>
-        /// </summary>
-        /// <param name="destinationNode">The destination <see cref="TreeNode"/></param>
-        /// <remarks>The children are copied deep and any existing children of the destination <see cref="TreeNode"/>
-        /// are not removed</remarks>
-        protected void CopyChildren(TreeNode destinationNode)
-        {
-            for (int i = 0; i < this.mChildren.Count; i++)
-            {
-                destinationNode.AppendChild(mChildren.Get(i).Copy(true));
-            }
-        }
 
         #region IVisitableTreeNode Members
 
@@ -1233,6 +408,124 @@ namespace urakawa.core
 
         #region ITreeNodeReadOnlyMethods Members
 
+        public ObjectListProvider<Property> Properties
+        {
+            get
+            {
+                return mProperties;
+            }
+        }
+
+        public ObjectListProvider<TreeNode> Children
+        {
+            get
+            {
+                return mChildren;
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of the <see cref="Type"/>s of <see cref="Property"/> set for the <see cref="TreeNode"/>
+        /// </summary>
+        /// <returns>The list</returns>
+        public List<Type> UsedPropertyTypes
+        {
+            get
+            {
+                List<Type> res = new List<Type>();
+                foreach (Property p in Properties.ContentsAs_YieldEnumerable)
+                {
+                    if (!res.Contains(p.GetType())) res.Add(p.GetType());
+                }
+                return res;
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of the <see cref="Property"/>s of this of a given <see cref="Type"/>
+        /// </summary>
+        /// <param name="t">The given type</param>
+        /// <returns>The list</returns>
+        public List<Property> GetProperties(Type t)
+        {
+            List<Property> res = new List<Property>();
+            foreach (Property p in Properties.ContentsAs_YieldEnumerable)
+            {
+                if (p.GetType() == t) res.Add(p);
+            }
+            return res;
+        }
+
+        /// <summary>
+        /// Gets the <see cref="Property"/>s of a the given <see cref="Property"/> sub-type
+        /// </summary>
+        /// <typeparam name="T">The type of the properties to get - must sub-class <see cref="Property"/></typeparam>
+        /// <returns>A list of all <typeparamref name="T"/> properties of <c>this</c>, possibly an empty list</returns>
+        public List<T> GetProperties<T>() where T : Property
+        {
+            List<T> res = new List<T>();
+            foreach (Property p in GetProperties(typeof(T))) res.Add(p as T);
+            return res;
+        }
+
+        /// <summary>
+        /// Gets the first <see cref="Property"/> of a the given <see cref="Property"/> sub-type
+        /// </summary>
+        /// <param name="t">The given <see cref="Property"/> subtype</param>
+        /// <returns>The first property of the given subtype - possibly null</returns>
+        public Property GetProperty(Type t)
+        {
+            List<Property> props = GetProperties(t);
+            if (props.Count > 0) return props[0];
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the first <see cref="Property"/> of a the given <see cref="Property"/> sub-type
+        /// </summary>
+        /// <typeparam name="T">The type of the property to get - must sub-class <see cref="Property"/></typeparam>
+        /// <returns>The first <typeparamref name="T"/> property of this if it exists, else <c>null</c></returns>
+        public T GetProperty<T>() where T : Property
+        {
+            return GetProperty(typeof(T)) as T;
+        }
+
+
+        /// <summary>
+        /// Determines if this has any <see cref="Property"/>s
+        /// </summary>
+        /// <returns>A <see cref="bool"/> indicating if this has any properties</returns>
+        public bool HasProperties()
+        {
+            return (mProperties.Count > 0);
+        }
+
+        /// <summary>
+        /// Determines if this has any <see cref="Property"/>s of a given <see cref="Type"/>
+        /// </summary>
+        /// <param name="t">The given type</param>
+        /// <returns>A <see cref="bool"/> indicating if this has any properties</returns>
+        public bool HasProperties(Type t)
+        {
+            foreach (Property p in Properties.ContentsAs_YieldEnumerable)
+            {
+                if (p.GetType() == t) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Determines if a given <see cref="Property"/> is owned by this
+        /// </summary>
+        /// <param name="prop">The property</param>
+        /// <returns>A <see cref="bool"/> indicating if the given property is a property of this</returns>
+        public bool HasProperty(Property prop)
+        {
+            if (prop == null)
+                throw new exception.MethodParameterIsNullException("The TreeNode can not have a null Property");
+            return mProperties.IndexOf(prop) != -1;
+        }
+
         /// <summary>
         /// Gets the parent <see cref="TreeNode"/> of the instance
         /// </summary>
@@ -1276,6 +569,21 @@ namespace urakawa.core
         public TreeNode Copy()
         {
             return Copy(true, true);
+        }
+
+
+        /// <summary>
+        /// Copies the children of the current instance to a given destination <see cref="TreeNode"/>
+        /// </summary>
+        /// <param name="destinationNode">The destination <see cref="TreeNode"/></param>
+        /// <remarks>The children are copied deep and any existing children of the destination <see cref="TreeNode"/>
+        /// are not removed</remarks>
+        protected void CopyChildren(TreeNode destinationNode)
+        {
+            for (int i = 0; i < this.mChildren.Count; i++)
+            {
+                destinationNode.AppendChild(mChildren.Get(i).Copy(true));
+            }
         }
 
         /// <summary>
@@ -1455,9 +763,134 @@ namespace urakawa.core
             return node.IsAncestorOf(this);
         }
 
+        public TreeNode Root
+        {
+            get
+            {
+                if (Parent == null)
+                {
+                    return this;
+                }
+                return Parent.Root;
+            }
+        }
+
+        public bool IsAfter(TreeNode node)
+        {
+            if (node == this)
+            {
+                return false;
+            }
+            if (Root.MeetFirst(this, node) == node)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsBefore(TreeNode node)
+        {
+            return !IsAfter(node);
+        }
+
+        private TreeNode MeetFirst(TreeNode node1, TreeNode node2)
+        {
+            if (this == node1) return node1;
+            if (this == node2) return node2;
+            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
+            {
+                TreeNode met = child.MeetFirst(node1, node2);
+                if (met != null)
+                {
+                    return met;
+                }
+            }
+            return null;
+        }
+
         #endregion
 
         #region ITreeNodeWriteOnlyMethods Members
+
+        public T GetOrCreateProperty<T>() where T : Property, new()
+        {
+            T prop = GetProperty<T>();
+            if (prop == null)
+            {
+                prop = Presentation.PropertyFactory.Create<T>();
+                AddProperty(prop);
+            }
+            return prop;
+        }
+
+        /// <summary>
+        /// Adds a <see cref="Property"/> to the node
+        /// </summary>
+        /// <param name="props">The list of <see cref="Property"/>s to add.</param>
+        /// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="props"/> is null</exception>
+        public void AddProperties(IList<Property> props)
+        {
+            if (props == null) throw new exception.MethodParameterIsNullException("No list of Property was given");
+            foreach (Property p in props)
+            {
+                AddProperty(p);
+            }
+        }
+
+        /// <summary>
+        /// Adds a <see cref="Property"/> to the node
+        /// </summary>
+        /// <param name="prop">The <see cref="Property"/> to add. </param>
+        /// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="prop"/> is null</exception>
+        /// <exception cref="exception.PropertyAlreadyHasOwnerException">Thrown when <see cref="Property"/> is already owned by another node</exception>
+        /// <exception cref="exception.NodeInDifferentPresentationException">Thrown when the new <see cref="Property"/> belongs to a different <see cref="Presentation"/></exception>
+        /// <exception cref="exception.PropertyCanNotBeAddedException">Thrown when <c><paramref name="prop"/>.<see cref="Property.CanBeAddedTo"/>(this)</c> returns <c>false</c></exception>
+        public void AddProperty(Property prop)
+        {
+            if (prop == null)
+                throw new exception.MethodParameterIsNullException("Can not add a null Property to the TreeNode");
+            if (mProperties.IndexOf(prop) == -1)
+            {
+                if (!prop.CanBeAddedTo(this))
+                {
+                    throw new exception.PropertyCanNotBeAddedException(
+                        "The given Property can not be added to the TreeNode");
+                }
+                prop.TreeNodeOwner = this;
+                mProperties.Insert(mProperties.Count, prop);
+
+            }
+        }
+
+        /// <summary>
+        /// Remove the <see cref="Property"/>s of a given <see cref="Type"/> from this
+        /// </summary>
+        /// <param name="propType">Specify the type of properties to remove</param>
+        /// <returns>The list of removed properties</returns>
+        public List<Property> RemoveProperties(Type propType)
+        {
+            List<Property> remProps = GetProperties(propType);
+            foreach (Property p in remProps)
+            {
+                RemoveProperty(p);
+            }
+            return remProps;
+        }
+
+        /// <summary>
+        /// Removes a given <see cref="Property"/>
+        /// </summary>
+        /// <param name="prop">The <see cref="Property"/> to remove</param>
+        public void RemoveProperty(Property prop)
+        {
+            if (prop == null) throw new exception.MethodParameterIsNullException("Can not remove a null Property");
+            if (mProperties.IndexOf(prop) != -1)
+            {
+                prop.TreeNodeOwner = null;
+                mProperties.Remove(prop);
+            }
+        }
+
 
         /// <summary>
         /// Inserts a <see cref="TreeNode"/> child at a given index. 
