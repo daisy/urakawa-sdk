@@ -153,13 +153,18 @@ namespace DaisyExport
 
                     if (!IsNcxNativeNodeAdded)
                         {
-                        if (currentHeadingTreeNode != null &&
-                            (currentHeadingTreeNode == n || currentHeadingTreeNode.IsAncestorOf ( n )))
+                        QualifiedName qName = urakawaNode.GetXmlElementQName ();
+                        bool isDoctitleOrDocAuthor = (qName != null &&
+                                (qName.LocalName == "doctitle" || qName.LocalName == "docauthor"));
+
+                        if ((currentHeadingTreeNode != null &&
+                            (currentHeadingTreeNode == n || currentHeadingTreeNode.IsAncestorOf ( n )) )
+                            || isDoctitleOrDocAuthor)
                             {
                             // check and create doctitle and docauthor nodes
-                            QualifiedName qName = urakawaNode.GetXmlElementQName ();
-                            if (qName != null &&
-                                (qName.LocalName == "doctitle" || qName.LocalName == "docauthor"))
+                                                        //if (qName != null &&
+                                //(qName.LocalName == "doctitle" || qName.LocalName == "docauthor"))
+                            if ( isDoctitleOrDocAuthor )
                                 {
                                 XmlNode docNode = ncxDocument.CreateElement ( null,
                                     qName.LocalName == "doctitle" ? "docTitle" : "docAuthor",

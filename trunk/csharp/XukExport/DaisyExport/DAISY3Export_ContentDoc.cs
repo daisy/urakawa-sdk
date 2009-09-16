@@ -104,8 +104,8 @@ namespace DaisyExport
                                     {
                                     string imgFileName =  Path.GetFileName ( imgSrcAttribute.Value );
                                     string sourcePath = Path.Combine (m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
-                                        imgFileName.Replace("%20", " " ) );
-                                    string destPath = Path.Combine ( m_OutputDirectory, imgFileName );
+                                        Uri.UnescapeDataString ( imgFileName) );
+                                    string destPath = Path.Combine ( m_OutputDirectory,Uri.UnescapeDataString ( imgFileName) );
                                     if (File.Exists ( sourcePath ))
                                         {
                                         if (!File.Exists ( destPath )) File.Copy ( sourcePath, destPath );
