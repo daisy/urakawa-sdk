@@ -12,6 +12,9 @@ namespace DaisyExport
         {
         //DAISY3Export_Ncx
 
+        private List<string> m_FilesList_Smil;
+        private List<string> m_FilesList_Audio;
+
         private void CreateNcxAndSmilDocuments ()
             {
             XmlDocument ncxDocument = CreateStub_NcxDocument ();
@@ -19,6 +22,8 @@ namespace DaisyExport
             XmlNode ncxRootNode = ncxDocument.GetElementsByTagName ( "ncx" )[0];
             XmlNode navMapNode = ncxDocument.GetElementsByTagName ( "navMap" )[0];
             Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap = new Dictionary<urakawa.core.TreeNode, XmlNode> ();
+            m_FilesList_Smil= new List<string> ();
+            m_FilesList_Audio = new List<string> ();
             uint playOrder = 0;
             int totalPageCount = 0;
             int maxNormalPageNumber = 0;
@@ -78,6 +83,10 @@ namespace DaisyExport
                         CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString () );
                         CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "src", Path.GetFileName ( externalAudio.Src ) );
                         parNode.AppendChild ( audioNode );
+
+                        // add audio file name in audio files list for use in opf creation
+                        string audioFileName = Path.GetFileName( externalAudio.Src );
+                        if (!m_FilesList_Audio.Contains ( audioFileName )) m_FilesList_Audio.Add ( audioFileName );
 
                         // add to duration
                         durationOfCurrentSmil = durationOfCurrentSmil.Add ( externalAudio.Duration.TimeDeltaAsTimeSpan );
@@ -235,6 +244,7 @@ CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smil
                         Path.Combine ( m_OutputDirectory, smilFileName ) );
 
                     smilElapseTime = smilElapseTime.Add ( durationOfCurrentSmil );
+                    m_FilesList_Smil.Add ( smilFileName );
                     }
                 }
             
