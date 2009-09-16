@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using urakawa.media;
 using urakawa.media.data.audio;
+using urakawa.media.timing;
 using urakawa.property;
 using urakawa.xuk;
 
@@ -25,6 +26,7 @@ namespace urakawa.core
         SequenceMedia GetManagedAudioSequenceMedia();
         SequenceMedia GetAudioSequenceMedia();
         Media GetMediaInAudioChannel();
+        TimeDelta GetDurationOfManagedAudioMediaFlattened();
         bool IsAfter(TreeNode node);
         bool IsBefore(TreeNode node);
         TreeNode MeetFirst(TreeNode node1, TreeNode node2);
