@@ -144,7 +144,7 @@ namespace DaisyExport
                 string  splittedName = name.Split ( ':' )[1] ;
                 splittedName  = splittedName.Substring (0,1).ToUpper () + splittedName.Remove (0,1 ) ;
 
-                node = doc.CreateElement ( name.Split ( ':' )[0], splittedName, metadataParentNode.NamespaceURI );
+                node = doc.CreateElement ( name.Split ( ':' )[0], splittedName,metadataParentNode.Attributes.GetNamedItem ("xmlns:dc").Value );
                 }
             else
                 {
