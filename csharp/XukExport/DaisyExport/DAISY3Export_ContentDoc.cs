@@ -17,6 +17,7 @@ namespace DaisyExport
             {
             XmlDocument DTBookDocument = CreateStub_DTBDocument ();
             m_ListOfLevels = new List<urakawa.core.TreeNode> ();
+            m_FilesList_Image = new List<string> ();
 
             // add metadata
             XmlNode headNode = DTBookDocument.GetElementsByTagName ( "head" )[0];
@@ -95,6 +96,28 @@ namespace DaisyExport
                             // add nodes to dictionary 
                             m_TreeNode_XmlNodeMap.Add ( n, currentXmlNode );
 
+                            // if QName is img and img src is on disk, copy it to output dir
+                            if (currentXmlNode.LocalName == "img" )
+                                {
+                                XmlAttribute imgSrcAttribute = (XmlAttribute )  currentXmlNode.Attributes.GetNamedItem ( "src" );
+                                if ( imgSrcAttribute != null && imgSrcAttribute.Value.StartsWith (m_Presentation.DataProviderManager.DataFileDirectory ) )
+                                    {
+                                    string imgFileName =  Path.GetFileName ( imgSrcAttribute.Value );
+                                    string sourcePath = Path.Combine (m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
+                                        imgFileName.Replace("%20", " " ) );
+                                    string destPath = Path.Combine ( m_OutputDirectory, imgFileName );
+                                    if (File.Exists ( sourcePath ))
+                                        {
+                                        if (!File.Exists ( destPath )) File.Copy ( sourcePath, destPath );
+                                        imgSrcAttribute.Value = imgFileName;
+
+                                        if ( !m_FilesList_Image.Contains ( imgFileName))
+                                        m_FilesList_Image.Add ( imgFileName );
+                                        }
+                                    else
+                                        System.Diagnostics.Debug.Fail ( "source image not found", sourcePath );
+                                    }
+                                }
                             
                             return true;
                             }

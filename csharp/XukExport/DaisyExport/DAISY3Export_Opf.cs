@@ -19,6 +19,8 @@ namespace DaisyExport
             const string mediaType_Mpg = "audio/mpeg";
             const string mediaType_Opf = "text/xml";
             const string mediaType_Ncx = "application/x-dtbncx+xml";
+            const string mediaType_Image_Jpg = "image/jpeg";
+            const string mediaType_Image_Png =  "image/png" ;
 
             XmlNode itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
             manifestNode.AppendChild ( itemNode );
@@ -64,6 +66,25 @@ namespace DaisyExport
                     CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Mpg );
                     }
                 }
+
+            foreach (string imageFileName in m_FilesList_Image)
+                {
+                itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
+                manifestNode.AppendChild ( itemNode );
+                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", imageFileName );
+                string strID = GetNextID ( ID_OpfPrefix );
+                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", strID );
+
+                if (string.Compare ( Path.GetExtension ( imageFileName ), ".png", true ) == 0 )
+                    {
+                                        CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Image_Png );
+                    }
+                else
+                    {
+                    CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Image_Jpg );
+                    }
+                }
+
 
 
             // create spine

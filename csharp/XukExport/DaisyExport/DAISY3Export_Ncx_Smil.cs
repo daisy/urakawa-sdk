@@ -25,7 +25,7 @@ namespace DaisyExport
             Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap = new Dictionary<urakawa.core.TreeNode, XmlNode> ();
             m_FilesList_Smil = new List<string> ();
             m_FilesList_Audio = new List<string> ();
-            m_SmilFileNameCounter = 0;
+                        m_SmilFileNameCounter = 0;
             uint playOrder = 0;
             int totalPageCount = 0;
             int maxNormalPageNumber = 0;
@@ -69,6 +69,7 @@ namespace DaisyExport
                     if (smilDocument != null)
                         {
                         XmlNode mainSeq = smilDocument.GetElementsByTagName ( "body" )[0].FirstChild;
+                        CommonFunctions.CreateAppendXmlAttribute ( smilDocument, mainSeq, "id", GetNextID ( ID_SmilPrefix ) );
                         XmlNode parNode = smilDocument.CreateElement ( null, "par", mainSeq.NamespaceURI );
                         par_id = GetNextID ( ID_SmilPrefix );
                         CommonFunctions.CreateAppendXmlAttribute ( smilDocument, parNode, "id", par_id );
@@ -182,6 +183,8 @@ namespace DaisyExport
                                 {
                                 // first create navPoints
                                 navPointNode = ncxDocument.CreateElement ( null, "navPoint", navMapNode.NamespaceURI );
+                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "class", currentHeadingTreeNode.GetProperty<urakawa.property.xml.XmlProperty> ().LocalName );
+                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "id", GetNextID ( ID_NcxPrefix) );
                                 CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "playOrder", (++playOrder).ToString () );
 
                                 urakawa.core.TreeNode parentNode = GetParentLevelNode ( urakawaNode );
@@ -196,8 +199,7 @@ namespace DaisyExport
                                     }
 
                                 treeNode_NavNodeMap.Add ( urakawaNode, navPointNode );
-                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "class", currentHeadingTreeNode.GetProperty<urakawa.property.xml.XmlProperty> ().LocalName );
-
+                                
                                 // create navLabel
                                 XmlNode navLabel = ncxDocument.CreateElement ( null, "navLabel", navPointNode.NamespaceURI );
                                 navPointNode.AppendChild ( navLabel );
