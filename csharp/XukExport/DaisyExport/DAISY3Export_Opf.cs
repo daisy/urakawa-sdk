@@ -76,12 +76,59 @@ namespace DaisyExport
                 CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemRefNode, "idref", strSmilID );
                 }
 
+            AddMetadata_Opf ( opfDocument );
             CommonFunctions.WriteXmlDocumentToFile ( opfDocument,
                 Path.Combine ( m_OutputDirectory, "TObi.Opf") );
             }
 
+        private void AddMetadata_Opf ( XmlDocument opfDocument )
+            {
+            XmlNode dc_metadataNode = opfDocument.GetElementsByTagName ( "dc-metadata" )[0] ;
+            XmlNode x_metadataNode = opfDocument.GetElementsByTagName ( "x-metadata" )[0];
 
+            foreach (urakawa.metadata.Metadata m in m_Presentation.Metadatas.ContentsAs_ListCopy)
+                {
+                if (m.NameContentAttribute.Name.StartsWith ( "dc:" ))
+                    {
+                    if (m.NameContentAttribute.Name == "dc:format")
+                        {
+                        AddMetadataAsInnerText ( opfDocument, dc_metadataNode, m.NameContentAttribute.Name, "ANSI/NISO Z39.86-2005"  );
+                        }
+                    else
+                        {
+                        AddMetadataAsInnerText ( opfDocument, dc_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value );
+                        }
+                    }
+                else
+                    {
+                    AddMetadataAsAttributes ( opfDocument, x_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value );
+                    }
+                }
 
+            // add uid to dc:identifier
+            XmlNode identifierMetaNode = opfDocument.GetElementsByTagName ("dc:identifier" )[0];
+            if (identifierMetaNode != null)
+                {
+                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, identifierMetaNode, "id", "uid" );
+                }
+            }
+
+        private void AddMetadataAsInnerText ( XmlDocument doc,  XmlNode metadataParentNode, string name, string content )
+            {
+            XmlNode node = null;
+            if (name.Contains ( ":" ))
+                {
+                node = doc.CreateElement ( name.Split ( ':' )[0], name.Split ( ':' )[1], metadataParentNode.NamespaceURI );
+                }
+            else
+                {
+                node = doc.CreateElement ( null, name, metadataParentNode.NamespaceURI );
+                }
+            metadataParentNode.AppendChild ( node);
+            node.AppendChild (
+                doc.CreateTextNode ( content ) );
+
+            }
 
         private XmlDocument CreateStub_OpfDocument ()
             {

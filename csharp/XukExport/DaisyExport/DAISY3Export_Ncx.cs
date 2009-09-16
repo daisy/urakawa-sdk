@@ -14,6 +14,7 @@ namespace DaisyExport
 
         private List<string> m_FilesList_Smil;
         private List<string> m_FilesList_Audio;
+        private TimeSpan m_TotalTime;
 
         private void CreateNcxAndSmilDocuments ()
             {
@@ -247,7 +248,8 @@ CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smil
                     m_FilesList_Smil.Add ( smilFileName );
                     }
                 }
-            
+
+            m_TotalTime = smilElapseTime ;
             AddMetadata_Ncx ( ncxDocument, totalPageCount.ToString (), maxNormalPageNumber.ToString (), maxDepth.ToString ()  );
             CommonFunctions.WriteXmlDocumentToFile ( ncxDocument,
                 Path.Combine ( m_OutputDirectory, "TObi.ncx" ) );
