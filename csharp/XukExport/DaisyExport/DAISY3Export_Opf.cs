@@ -127,7 +127,7 @@ namespace DaisyExport
                 }
 
             // add uid to dc:identifier
-            XmlNode identifierMetaNode = opfDocument.GetElementsByTagName ( "dc:identifier" )[0];
+            XmlNode identifierMetaNode = opfDocument.GetElementsByTagName ( "dc:Identifier" )[0];
             if (identifierMetaNode != null)
                 {
                 CommonFunctions.CreateAppendXmlAttribute ( opfDocument, identifierMetaNode, "id", "uid" );
@@ -137,9 +137,14 @@ namespace DaisyExport
         private void AddMetadataAsInnerText ( XmlDocument doc, XmlNode metadataParentNode, string name, string content )
             {
             XmlNode node = null;
+            
             if (name.Contains ( ":" ))
                 {
-                node = doc.CreateElement ( name.Split ( ':' )[0], name.Split ( ':' )[1], metadataParentNode.NamespaceURI );
+                // split the metadata name and make first alphabet upper, required for daisy 3.0
+                string  splittedName = name.Split ( ':' )[1] ;
+                splittedName  = splittedName.Substring (0,1).ToUpper () + splittedName.Remove (0,1 ) ;
+
+                node = doc.CreateElement ( name.Split ( ':' )[0], splittedName, metadataParentNode.NamespaceURI );
                 }
             else
                 {
