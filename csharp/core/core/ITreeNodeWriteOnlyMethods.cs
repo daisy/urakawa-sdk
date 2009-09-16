@@ -31,6 +31,12 @@ namespace urakawa.core
         /// <returns>The detached <see cref="TreeNode"/> (i.e. <c>this</c>)</returns>
         TreeNode Detach();
 
+        T GetOrCreateProperty<T>() where T : Property, new();
+        void AddProperties(IList<Property> props);
+        void AddProperty(Property prop);
+        List<Property> RemoveProperties(Type propType);
+        void RemoveProperty(Property prop);
+
 
         /// <summary>
         /// Removes the child at a given index. 

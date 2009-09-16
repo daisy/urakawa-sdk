@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml;
 using urakawa.media.data.audio;
 using urakawa.media.data.utilities;
+using urakawa.media.timing;
 using urakawa.progress;
 using urakawa.xuk;
 
@@ -476,6 +477,32 @@ namespace urakawa.media
             }
             return strSeq;
         }
+
+        public TimeDelta GetDurationOfManagedAudioMedia()
+        {
+            if (AllowMultipleTypes)
+            {
+                return null;
+            }
+
+            TimeDelta dur = new TimeDelta();
+            foreach (Media media in mSequence.ContentsAs_YieldEnumerable)
+            {
+                if (media is ManagedAudioMedia)
+                {
+                    if (((ManagedAudioMedia)media).HasActualAudioMediaData)
+                    {
+                        dur.AddTimeDelta(((ManagedAudioMedia)media).Duration);
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return dur;
+        }
+
         public Stream OpenPcmInputStreamOfManagedAudioMedia()
         {
             if (AllowMultipleTypes)

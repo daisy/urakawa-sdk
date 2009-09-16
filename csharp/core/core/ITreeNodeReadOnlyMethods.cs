@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using urakawa.media;
 using urakawa.media.data.audio;
+using urakawa.property;
 using urakawa.xuk;
 
 namespace urakawa.core
@@ -21,13 +22,16 @@ namespace urakawa.core
         Media GetMediaInImageChannel();
         ManagedAudioMedia GetManagedAudioMedia();
         AbstractAudioMedia GetAudioMedia();
+        SequenceMedia GetManagedAudioSequenceMedia();
         SequenceMedia GetAudioSequenceMedia();
         Media GetMediaInAudioChannel();
         bool IsAfter(TreeNode node);
         bool IsBefore(TreeNode node);
+        TreeNode MeetFirst(TreeNode node1, TreeNode node2);
         TreeNode Root { get; }
         string GetTextMediaFlattened();
         StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened();
+        Media GetManagedAudioMediaOrSequenceMedia();
         StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMedia();
         TreeNode GetNextSiblingWithManagedAudio();
 
@@ -48,6 +52,16 @@ namespace urakawa.core
         QualifiedName GetXmlElementQName();
         string GetXmlElementId();
 
+        ObjectListProvider<Property> Properties { get;}
+        ObjectListProvider<TreeNode> Children { get; }
+        List<Type> UsedPropertyTypes { get; }
+        List<Property> GetProperties(Type t);
+        List<T> GetProperties<T>() where T : Property;
+        Property GetProperty(Type t);
+        T GetProperty<T>() where T : Property;
+        bool HasProperties();
+        bool HasProperties(Type t);
+        bool HasProperty(Property prop);
 
         /// <summary>
         /// Gets the parent <see cref="TreeNode"/> of the instance,
@@ -78,6 +92,8 @@ namespace urakawa.core
         /// </summary>
         /// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
         TreeNode Copy();
+
+        TreeNode Export(Presentation destPres);
 
         /// <summary>
         /// Gets the next sibling of <c>this</c>
