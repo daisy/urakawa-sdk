@@ -318,13 +318,14 @@ namespace DaisyExport
             AddMetadataAsAttributes ( smilDocument, headNode, "dtb:totalElapsedTime", strElapsedTime );
             }
 
-        private void AddMetadataAsAttributes ( XmlDocument doc, XmlNode headNode, string name, string content )
+        private XmlNode AddMetadataAsAttributes ( XmlDocument doc, XmlNode headNode, string name, string content )
             {
             XmlNode metaNode = doc.CreateElement ( null, "meta", headNode.NamespaceURI );
             headNode.AppendChild ( metaNode );
             CommonFunctions.CreateAppendXmlAttribute ( doc, metaNode, "name", name );
             CommonFunctions.CreateAppendXmlAttribute ( doc, metaNode, "content", content );
 
+            return metaNode;
             }
 
 

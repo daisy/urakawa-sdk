@@ -32,6 +32,14 @@ namespace DaisyExport
                     headNode.AppendChild ( metaNode );
                     CommonFunctions.CreateAppendXmlAttribute ( DTBookDocument, metaNode, "name", m.NameContentAttribute.Name );
                     CommonFunctions.CreateAppendXmlAttribute ( DTBookDocument, metaNode, "content", m.NameContentAttribute.Value );
+
+                    // add metadata scheme attributes from other attributes if any
+                    foreach (urakawa.metadata.MetadataAttribute ma in m.OtherAttributes.ContentsAs_ListCopy)
+                        {
+                        if (ma.Name == "scheme")
+                            CommonFunctions.CreateAppendXmlAttribute ( DTBookDocument, metaNode, ma.Name, ma.Value );
+                        }
+
                     }
                 }
 
