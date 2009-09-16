@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Xml;
 
 using urakawa;
 using urakawa.publish;
@@ -17,6 +18,17 @@ namespace DaisyExport
         private string m_OutputDirectory;
         private const string PUBLISH_AUDIO_CHANNEL_NAME = "Temporary External Audio Medias (Publish Visitor)";
 
+        private const string m_Filename_Content = "dtbook.xml";
+        private const string m_Filename_Ncx = "TObi.ncx";
+        private const string m_Filename_Opf = "TObi.opf";
+
+        private Dictionary<urakawa.core.TreeNode, XmlNode> m_TreeNode_XmlNodeMap; // dictionary created in create content document function, used in create ncx and smil function
+        private List<urakawa.core.TreeNode> m_ListOfLevels; // list of level anddoctitle, docauthor nodes collected in createContentDoc function, for creating equivalent navPoints in create NCX funtion 
+
+        private List<string> m_FilesList_Smil; //xmils files list generated in createNcx function
+        private List<string> m_FilesList_Audio; // list of audio files generated in create ncx function.
+        private TimeSpan m_TotalTime;
+
         public DAISY3Export(Presentation presentation)
         {
             m_Presentation = presentation;
@@ -26,6 +38,7 @@ namespace DaisyExport
         public void ExportToDaisy3(string exportDirectory)
         {
         m_ID_Counter = 0;
+        m_OutputDirectory = exportDirectory;
         
             //TreeNodeTestDelegate triggerDelegate  = delegate(urakawa.core.TreeNode node) { return node.GetManagedAudioMedia () != null ; };
             TreeNodeTestDelegate triggerDelegate = delegate(urakawa.core.TreeNode node)
@@ -55,8 +68,11 @@ namespace DaisyExport
 
             publishVisitor.VerifyTree(m_Presentation.RootNode);
 
-            CreateDTBookAndSmilDocuments ();
-            System.Windows.Forms.MessageBox.Show ( "done" );
+            // following functions can be called only in this order.
+            CreateDTBookDocument();
+            CreateNcxAndSmilDocuments ();
+            CreateOpfDocument ();
+            
             m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
         }
 
@@ -70,7 +86,13 @@ namespace DaisyExport
                 throw new System.Exception ( "more than one publish channel cannot exist" );
 
             Channel publishChannel = channelsList[0];
-            ExternalAudioMedia externalMedia = (ExternalAudioMedia)node.GetProperty <ChannelsProperty> ().GetMedia( publishChannel );
+
+            urakawa.property.channel.ChannelsProperty mediaProperty = node.GetProperty<ChannelsProperty> ();
+
+            ExternalAudioMedia externalMedia  = null ;
+            if ( mediaProperty != null )
+            externalMedia = (ExternalAudioMedia) mediaProperty.GetMedia ( publishChannel );
+
             return externalMedia;
             }
 

@@ -12,10 +12,10 @@ namespace DaisyExport
         {
         //DAISY3Export_Ncx
 
-        private List<string> m_FilesList_Smil;
-        private List<string> m_FilesList_Audio;
-        private TimeSpan m_TotalTime;
 
+        private uint m_SmilFileNameCounter;
+
+        // to do create IDs
         private void CreateNcxAndSmilDocuments ()
             {
             XmlDocument ncxDocument = CreateStub_NcxDocument ();
@@ -23,8 +23,9 @@ namespace DaisyExport
             XmlNode ncxRootNode = ncxDocument.GetElementsByTagName ( "ncx" )[0];
             XmlNode navMapNode = ncxDocument.GetElementsByTagName ( "navMap" )[0];
             Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap = new Dictionary<urakawa.core.TreeNode, XmlNode> ();
-            m_FilesList_Smil= new List<string> ();
+            m_FilesList_Smil = new List<string> ();
             m_FilesList_Audio = new List<string> ();
+            m_SmilFileNameCounter = 0;
             uint playOrder = 0;
             int totalPageCount = 0;
             int maxNormalPageNumber = 0;
@@ -38,7 +39,7 @@ namespace DaisyExport
                 string smilFileName = GetNextSmilFileName;
                 XmlNode navPointNode = null;
                 urakawa.core.TreeNode currentHeadingTreeNode = null;
-                TimeSpan durationOfCurrentSmil = new   TimeSpan() ; 
+                TimeSpan durationOfCurrentSmil = new TimeSpan ();
 
 
                 urakawaNode.AcceptDepthFirst (
@@ -76,7 +77,7 @@ namespace DaisyExport
                         XmlNode textNode = smilDocument.CreateElement ( null, "text", mainSeq.NamespaceURI );
                         CommonFunctions.CreateAppendXmlAttribute ( smilDocument, textNode, "id", GetNextID ( ID_SmilPrefix ) );
                         string dtbookID = m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "id" ).Value;
-                        CommonFunctions.CreateAppendXmlAttribute ( smilDocument, textNode, "src", m_ContentFileName + "#" + dtbookID );
+                        CommonFunctions.CreateAppendXmlAttribute ( smilDocument, textNode, "src", m_Filename_Content + "#" + dtbookID );
                         parNode.AppendChild ( textNode );
 
                         XmlNode audioNode = smilDocument.CreateElement ( null, "audio", mainSeq.NamespaceURI );
@@ -86,7 +87,7 @@ namespace DaisyExport
                         parNode.AppendChild ( audioNode );
 
                         // add audio file name in audio files list for use in opf creation
-                        string audioFileName = Path.GetFileName( externalAudio.Src );
+                        string audioFileName = Path.GetFileName ( externalAudio.Src );
                         if (!m_FilesList_Audio.Contains ( audioFileName )) m_FilesList_Audio.Add ( audioFileName );
 
                         // add to duration
@@ -109,7 +110,7 @@ namespace DaisyExport
                             pageListNode = listOfPages[0];
                             }
 
-                        
+
                         XmlNode pageTargetNode = ncxDocument.CreateElement ( null, "pageTarget", pageListNode.NamespaceURI );
                         pageListNode.AppendChild ( pageTargetNode );
 
@@ -121,7 +122,7 @@ namespace DaisyExport
 
                         if (strTypeVal == "normal")
                             {
-                            int tmp = int.Parse( strPageValue );
+                            int tmp = int.Parse ( strPageValue );
                             if (maxNormalPageNumber < tmp) maxNormalPageNumber = tmp;
                             }
                         if (strTypeVal != "special")
@@ -141,11 +142,11 @@ namespace DaisyExport
                         navLabelNode.AppendChild ( audioNode );
                         CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNode, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString () );
                         CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNode, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString () );
-CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNode, "src", Path.GetFileName ( externalAudio.Src ) );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNode, "src", Path.GetFileName ( externalAudio.Src ) );
 
-XmlNode contentNode = ncxDocument.CreateElement ( null, "content", pageListNode.NamespaceURI );
-pageTargetNode.AppendChild ( contentNode );
-CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smilFileName + "#" + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "id" ).Value );
+                        XmlNode contentNode = ncxDocument.CreateElement ( null, "content", pageListNode.NamespaceURI );
+                        pageTargetNode.AppendChild ( contentNode );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smilFileName + "#" + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "id" ).Value );
                         }
 
 
@@ -192,15 +193,15 @@ CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smil
                                 else
                                     {
                                     treeNode_NavNodeMap[parentNode].AppendChild ( navPointNode );
-                                                                        }
-                                                                    
+                                    }
+
                                 treeNode_NavNodeMap.Add ( urakawaNode, navPointNode );
                                 CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "class", currentHeadingTreeNode.GetProperty<urakawa.property.xml.XmlProperty> ().LocalName );
 
                                 // create navLabel
                                 XmlNode navLabel = ncxDocument.CreateElement ( null, "navLabel", navPointNode.NamespaceURI );
                                 navPointNode.AppendChild ( navLabel );
-                                
+
                                 // create text node
                                 XmlNode txtNode = ncxDocument.CreateElement ( null, "text", navMapNode.NamespaceURI );
                                 navLabel.AppendChild ( txtNode );
@@ -233,7 +234,7 @@ CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smil
                 },
                     delegate ( urakawa.core.TreeNode n ) { } );
 
-                
+
                 if (smilDocument != null)
                     {
                     // update duration in seq node
@@ -249,10 +250,10 @@ CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smil
                     }
                 }
 
-            m_TotalTime = smilElapseTime ;
-            AddMetadata_Ncx ( ncxDocument, totalPageCount.ToString (), maxNormalPageNumber.ToString (), maxDepth.ToString ()  );
+            m_TotalTime = smilElapseTime;
+            AddMetadata_Ncx ( ncxDocument, totalPageCount.ToString (), maxNormalPageNumber.ToString (), maxDepth.ToString () );
             CommonFunctions.WriteXmlDocumentToFile ( ncxDocument,
-                Path.Combine ( m_OutputDirectory, "TObi.ncx" ) );
+                Path.Combine ( m_OutputDirectory, m_Filename_Ncx ) );
             }
 
         private urakawa.core.TreeNode GetParentLevelNode ( urakawa.core.TreeNode node )
@@ -275,7 +276,7 @@ CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smil
         private int GetDepthOfNavPointNode ( XmlDocument doc, XmlNode navPointNode )
             {
             XmlNode parent = navPointNode.ParentNode;
-            
+
             int i = 1;
             for (i = 1; i <= 9; i++)
                 {
@@ -284,21 +285,21 @@ CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smil
                     {
                     return i;
                     }
-                parent = parent.ParentNode ;
+                parent = parent.ParentNode;
                 }
-            return i ;
+            return i;
             }
 
         private void AddMetadata_Ncx ( XmlDocument ncxDocument, string strTotalPages, string strMaxNormalPage, string strDepth )
             {
             XmlNode headNode = ncxDocument.GetElementsByTagName ( "head" )[0];
 
-            urakawa.metadata.Metadata m = m_Presentation.GetMetadata ("dc:identifier")[0] ;
-                    AddMetadataAsAttributes ( ncxDocument, headNode, "dtb:uid" , m.NameContentAttribute.Value );
+            urakawa.metadata.Metadata m = m_Presentation.GetMetadata ( "dc:identifier" )[0];
+            AddMetadataAsAttributes ( ncxDocument, headNode, "dtb:uid", m.NameContentAttribute.Value );
 
-                    AddMetadataAsAttributes ( ncxDocument, headNode, "dtb:depth", strDepth);
-                    AddMetadataAsAttributes ( ncxDocument, headNode, "dtb:totalPageCount", strTotalPages );
-                    AddMetadataAsAttributes ( ncxDocument, headNode, "dtb:maxPageNumber", strMaxNormalPage );
+            AddMetadataAsAttributes ( ncxDocument, headNode, "dtb:depth", strDepth );
+            AddMetadataAsAttributes ( ncxDocument, headNode, "dtb:totalPageCount", strTotalPages );
+            AddMetadataAsAttributes ( ncxDocument, headNode, "dtb:maxPageNumber", strMaxNormalPage );
             }
 
         private void AddMetadata_Smil ( XmlDocument smilDocument, string strElapsedTime )
@@ -315,11 +316,22 @@ CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smil
             XmlNode metaNode = doc.CreateElement ( null, "meta", headNode.NamespaceURI );
             headNode.AppendChild ( metaNode );
             CommonFunctions.CreateAppendXmlAttribute ( doc, metaNode, "name", name );
-            CommonFunctions.CreateAppendXmlAttribute ( doc, metaNode, "content", content);
-             
+            CommonFunctions.CreateAppendXmlAttribute ( doc, metaNode, "content", content );
+
             }
 
-        
+
+
+        private string GetNextSmilFileName
+            {
+            get
+                {
+                string strNumericFrag = (++m_SmilFileNameCounter).ToString ();
+                return strNumericFrag.PadLeft ( 4, '0' ) + ".smil";
+                }
+            }
+
+
         private XmlDocument CreateStub_NcxDocument ()
             {
             XmlDocument NcxDocument = new XmlDocument ();
@@ -351,6 +363,31 @@ CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smil
             return NcxDocument;
             }
 
+        public XmlDocument CreateStub_SmilDocument ()
+            {
+            XmlDocument smilDocument = new XmlDocument ();
+            smilDocument.XmlResolver = null;
+
+            smilDocument.AppendChild ( smilDocument.CreateXmlDeclaration ( "1.0", "utf-8", null ) );
+            smilDocument.AppendChild ( smilDocument.CreateDocumentType ( "smil",
+                "-//NISO//DTD dtbsmil 2005-1//EN",
+                    "http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd",
+                null ) );
+            XmlNode smilRootNode = smilDocument.CreateElement ( null,
+                "smil", "http://www.w3.org/2001/SMIL20/" );
+
+            //"http://www.w3.org/1999/xhtml" );
+            smilDocument.AppendChild ( smilRootNode );
+
+            XmlNode headNode = smilDocument.CreateElement ( null, "head", smilRootNode.NamespaceURI );
+            smilRootNode.AppendChild ( headNode );
+            XmlNode bodyNode = smilDocument.CreateElement ( null, "body", smilRootNode.NamespaceURI );
+            smilRootNode.AppendChild ( bodyNode );
+            XmlNode mainSeqNode = smilDocument.CreateElement ( null, "seq", smilRootNode.NamespaceURI );
+            bodyNode.AppendChild ( mainSeqNode );
+
+            return smilDocument;
+            }
 
 
         }

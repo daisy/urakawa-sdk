@@ -12,24 +12,8 @@ namespace DaisyExport
         {
         // DAISY3Export_ContentDoc
 
-        private const string m_ContentFileName = "dtbook.xml";
-        private string m_CurrentSmilFileName;
-        private Dictionary<urakawa.core.TreeNode, XmlNode> m_TreeNode_XmlNodeMap;
-        private List<urakawa.core.TreeNode> m_ListOfLevels;
-        private uint m_SmilFileNameCounter;
-
-
-        private string GetNextSmilFileName
-            {
-            get
-                {
-                string strNumericFrag = (++m_SmilFileNameCounter).ToString ();
-                return strNumericFrag.PadLeft ( 4, '0' ) + ".smil";
-                }
-            }
-
-        XmlDocument m_NcxDocument;
-        private void CreateDTBookAndSmilDocuments ()
+// to do regenerate ids
+        private void CreateDTBookDocument ()
             {
             XmlDocument DTBookDocument = CreateStub_DTBDocument ();
             m_ListOfLevels = new List<urakawa.core.TreeNode> ();
@@ -111,12 +95,7 @@ namespace DaisyExport
                             // add nodes to dictionary 
                             m_TreeNode_XmlNodeMap.Add ( n, currentXmlNode );
 
-                            // add to smil document if both txt media and external audio media  exists
-                            if (txt != null
-                                && GetExternalAudioMedia ( n ) != null)
-                                {
-                                //AddNodeToSmil ( smilDocument, currentXmlNode, GetExternalAudioMedia(n));
-                                }
+                            
                             return true;
                             }
 
@@ -125,7 +104,7 @@ namespace DaisyExport
                     delegate ( urakawa.core.TreeNode n ) { } );
 
             CommonFunctions.WriteXmlDocumentToFile ( DTBookDocument,
-                Path.Combine ( m_OutputDirectory, m_ContentFileName ) );
+                Path.Combine ( m_OutputDirectory, m_Filename_Content ) );
 
             }
 
@@ -134,7 +113,7 @@ namespace DaisyExport
             QualifiedName qName = node.GetXmlElementQName ();
             return qName != null && qName.LocalName == "level1";
             }
-
+        /*
         private XmlDocument SaveCurrentSmilAndCreateNextSmilDocument ( XmlDocument smilDocument )
             {
             CommonFunctions.WriteXmlDocumentToFile ( smilDocument,
@@ -163,7 +142,7 @@ namespace DaisyExport
             parNode.AppendChild ( audioNode );
 
             }
-
+        */
 
         private XmlDocument CreateStub_DTBDocument ()
             {
@@ -195,32 +174,6 @@ namespace DaisyExport
             return DTBDocument;
             }
 
-        public XmlDocument CreateStub_SmilDocument ()
-            {
-            XmlDocument smilDocument = new XmlDocument ();
-            smilDocument.XmlResolver = null;
-
-            smilDocument.AppendChild ( smilDocument.CreateXmlDeclaration ( "1.0", "utf-8", null ) );
-            smilDocument.AppendChild ( smilDocument.CreateDocumentType ( "smil",
-                "-//NISO//DTD dtbsmil 2005-1//EN",
-                    "http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd",
-                null ) );
-            XmlNode smilRootNode = smilDocument.CreateElement ( null,
-                "smil", "http://www.w3.org/2001/SMIL20/" );
-
-            //"http://www.w3.org/1999/xhtml" );
-            smilDocument.AppendChild ( smilRootNode );
-
-            XmlNode headNode = smilDocument.CreateElement ( null, "head", smilRootNode.NamespaceURI );
-            smilRootNode.AppendChild ( headNode );
-            XmlNode bodyNode = smilDocument.CreateElement ( null, "body", smilRootNode.NamespaceURI );
-            smilRootNode.AppendChild ( bodyNode );
-            XmlNode mainSeqNode = smilDocument.CreateElement ( null, "seq", smilRootNode.NamespaceURI );
-            bodyNode.AppendChild ( mainSeqNode );
-
-            return smilDocument;
-            }
-
-
+        
         }
     }
