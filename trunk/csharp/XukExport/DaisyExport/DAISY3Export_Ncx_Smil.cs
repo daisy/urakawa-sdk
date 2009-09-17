@@ -433,7 +433,7 @@ namespace DaisyExport
             return NcxDocument;
             }
 
-        public XmlDocument CreateStub_SmilDocument ()
+        private XmlDocument CreateStub_SmilDocument ()
             {
             XmlDocument smilDocument = new XmlDocument ();
             smilDocument.XmlResolver = null;
