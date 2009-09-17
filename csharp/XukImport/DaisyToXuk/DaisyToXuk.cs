@@ -139,6 +139,15 @@ namespace XukImport
             return null;
         }
 
+        private static XmlNode getFirstChildElementsWithName(XmlNode root, bool deep, string localName, string namespaceUri)
+        {
+            foreach (XmlNode node in getChildrenElementsWithName(root, deep, localName, namespaceUri, true))
+            {
+                return node;
+            }
+            return null;
+        }
+
         private static IEnumerable<XmlNode> getChildrenElementsWithName(XmlNode root, bool deep, string localName, string namespaceUri, bool breakOnFirstFound)
         {
             if (root.NodeType == XmlNodeType.Document)

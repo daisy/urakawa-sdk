@@ -1,149 +1,146 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Xml;
 
 using urakawa.xuk;
 
 namespace DaisyExport
-    {
+{
     public partial class DAISY3Export
-        {
+    {
         // DAISY3Export_ContentDoc
 
-// to do regenerate ids
-        private void CreateDTBookDocument ()
-            {
-            XmlDocument DTBookDocument = CreateStub_DTBDocument ();
-            m_ListOfLevels = new List<urakawa.core.TreeNode> ();
-            m_FilesList_Image = new List<string> ();
+        // to do regenerate ids
+        private void CreateDTBookDocument()
+        {
+            XmlDocument DTBookDocument = CreateStub_DTBDocument();
+            m_ListOfLevels = new List<urakawa.core.TreeNode>();
+            m_FilesList_Image = new List<string>();
 
             // add metadata
-            XmlNode headNode = DTBookDocument.GetElementsByTagName ( "head" )[0];
+            XmlNode headNode = DTBookDocument.GetElementsByTagName("head")[0];
 
-            List<urakawa.metadata.Metadata> metadataList = m_Presentation.Metadatas.ContentsAs_ListCopy;
-
-            foreach (urakawa.metadata.Metadata m in metadataList)
-                {
-                XmlNode metaNode = DTBookDocument.CreateElement ( null, "meta", headNode.NamespaceURI );
+            foreach (urakawa.metadata.Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
+            {
+                XmlNode metaNode = DTBookDocument.CreateElement(null, "meta", headNode.NamespaceURI);
                 if (m.NameContentAttribute != null)
-                    {
-                    headNode.AppendChild ( metaNode );
-                    CommonFunctions.CreateAppendXmlAttribute ( DTBookDocument, metaNode, "name", m.NameContentAttribute.Name );
-                    CommonFunctions.CreateAppendXmlAttribute ( DTBookDocument, metaNode, "content", m.NameContentAttribute.Value );
+                {
+                    headNode.AppendChild(metaNode);
+                    CommonFunctions.CreateAppendXmlAttribute(DTBookDocument, metaNode, "name", m.NameContentAttribute.Name);
+                    CommonFunctions.CreateAppendXmlAttribute(DTBookDocument, metaNode, "content", m.NameContentAttribute.Value);
 
                     // add metadata scheme attributes from other attributes if any
-                    foreach (urakawa.metadata.MetadataAttribute ma in m.OtherAttributes.ContentsAs_ListCopy)
-                        {
+                    foreach (urakawa.metadata.MetadataAttribute ma in m.OtherAttributes.ContentsAs_YieldEnumerable)
+                    {
                         if (ma.Name == "scheme")
-                            CommonFunctions.CreateAppendXmlAttribute ( DTBookDocument, metaNode, ma.Name, ma.Value );
-                        }
-
+                            CommonFunctions.CreateAppendXmlAttribute(DTBookDocument, metaNode, ma.Name, ma.Value);
                     }
+
                 }
+            }
 
             // add elements to book body
-            m_TreeNode_XmlNodeMap = new Dictionary<urakawa.core.TreeNode, XmlNode> ();
+            m_TreeNode_XmlNodeMap = new Dictionary<urakawa.core.TreeNode, XmlNode>();
 
 
             urakawa.core.TreeNode rNode = m_Presentation.RootNode;
-            XmlNode bookNode = DTBookDocument.GetElementsByTagName ( "book" )[0];
+            XmlNode bookNode = DTBookDocument.GetElementsByTagName("book")[0];
 
 
-            m_TreeNode_XmlNodeMap.Add ( rNode, bookNode );
+            m_TreeNode_XmlNodeMap.Add(rNode, bookNode);
             XmlNode currentXmlNode = null;
 
-            rNode.AcceptDepthFirst (
-                    delegate ( urakawa.core.TreeNode n )
-                        {
+            rNode.AcceptDepthFirst(
+                    delegate(urakawa.core.TreeNode n)
+                    {
 
                         // add to list of levels if xml property has level string
-                        QualifiedName qName = n.GetXmlElementQName ();
+                        QualifiedName qName = n.GetXmlElementQName();
                         if (qName != null &&
-                            (qName.LocalName.StartsWith ( "level" ) || qName.LocalName == "doctitle" || qName.LocalName == "docauthor"))
-                            {
-                            m_ListOfLevels.Add ( n );
-                            }
+                            (qName.LocalName.StartsWith("level") || qName.LocalName == "doctitle" || qName.LocalName == "docauthor"))
+                        {
+                            m_ListOfLevels.Add(n);
+                        }
 
 
-                        urakawa.property.xml.XmlProperty xmlProp = n.GetProperty<urakawa.property.xml.XmlProperty> ();
+                        urakawa.property.xml.XmlProperty xmlProp = n.GetProperty<urakawa.property.xml.XmlProperty>();
                         if (xmlProp != null && xmlProp.LocalName != "book")
-                            {
+                        {
                             // create sml node in dtbook document
 
                             string name = xmlProp.LocalName;
-                            string prefix = name.Contains ( ":" ) ? name.Split ( ':' )[0] : null;
-                            string elementName = name.Contains ( ":" ) ? name.Split ( ':' )[1] : name;
-                            currentXmlNode = DTBookDocument.CreateElement ( prefix, elementName, bookNode.NamespaceURI );
+                            string prefix = name.Contains(":") ? name.Split(':')[0] : null;
+                            string elementName = name.Contains(":") ? name.Split(':')[1] : name;
+                            currentXmlNode = DTBookDocument.CreateElement(prefix, elementName, bookNode.NamespaceURI);
 
                             // add attributes
                             if (xmlProp.Attributes != null && xmlProp.Attributes.Count > 0)
-                                {
+                            {
                                 for (int i = 0; i < xmlProp.Attributes.Count; i++)
-                                    {
-                                    CommonFunctions.CreateAppendXmlAttribute ( DTBookDocument,
+                                {
+                                    CommonFunctions.CreateAppendXmlAttribute(DTBookDocument,
                                         currentXmlNode,
                                         xmlProp.Attributes[i].LocalName,
-    xmlProp.Attributes[i].Value );
-                                    }
-                                } // attribute nodes created
+    xmlProp.Attributes[i].Value);
+                                }
+                            } // attribute nodes created
 
                             // add text from text property
 
-                            string txt = n.GetTextMedia () != null ? n.GetTextMedia ().Text : null;
+                            string txt = n.GetTextMedia() != null ? n.GetTextMedia().Text : null;
                             if (txt != null)
-                                {
-                                XmlNode textNode = DTBookDocument.CreateTextNode ( txt );
-                                currentXmlNode.AppendChild ( textNode );
-                                }
-
-                            // add current node to its parent
-                            m_TreeNode_XmlNodeMap[n.Parent].AppendChild ( currentXmlNode );
-
-                            // add nodes to dictionary 
-                            m_TreeNode_XmlNodeMap.Add ( n, currentXmlNode );
-
-                            // if QName is img and img src is on disk, copy it to output dir
-                            if (currentXmlNode.LocalName == "img" )
-                                {
-                                XmlAttribute imgSrcAttribute = (XmlAttribute )  currentXmlNode.Attributes.GetNamedItem ( "src" );
-                                if ( imgSrcAttribute != null && imgSrcAttribute.Value.StartsWith (m_Presentation.DataProviderManager.DataFileDirectory ) )
-                                    {
-                                    string imgFileName =  Path.GetFileName ( imgSrcAttribute.Value );
-                                    string sourcePath = Path.Combine (m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
-                                        Uri.UnescapeDataString ( imgFileName) );
-                                    string destPath = Path.Combine ( m_OutputDirectory,Uri.UnescapeDataString ( imgFileName) );
-                                    if (File.Exists ( sourcePath ))
-                                        {
-                                        if (!File.Exists ( destPath )) File.Copy ( sourcePath, destPath );
-                                        imgSrcAttribute.Value = imgFileName;
-
-                                        if ( !m_FilesList_Image.Contains ( imgFileName))
-                                        m_FilesList_Image.Add ( imgFileName );
-                                        }
-                                    else
-                                        System.Diagnostics.Debug.Fail ( "source image not found", sourcePath );
-                                    }
-                                }
-                            
-                            return true;
+                            {
+                                XmlNode textNode = DTBookDocument.CreateTextNode(txt);
+                                currentXmlNode.AppendChild(textNode);
                             }
 
+                            // add current node to its parent
+                            m_TreeNode_XmlNodeMap[n.Parent].AppendChild(currentXmlNode);
+
+                            // add nodes to dictionary 
+                            m_TreeNode_XmlNodeMap.Add(n, currentXmlNode);
+
+                            // if QName is img and img src is on disk, copy it to output dir
+                            if (currentXmlNode.LocalName == "img")
+                            {
+                                XmlAttribute imgSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
+                                if (imgSrcAttribute != null && imgSrcAttribute.Value.StartsWith(m_Presentation.DataProviderManager.DataFileDirectory))
+                                {
+                                    string imgFileName = Path.GetFileName(imgSrcAttribute.Value);
+                                    string sourcePath = Path.Combine(m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
+                                        Uri.UnescapeDataString(imgFileName));
+                                    string destPath = Path.Combine(m_OutputDirectory, Uri.UnescapeDataString(imgFileName));
+                                    if (File.Exists(sourcePath))
+                                    {
+                                        if (!File.Exists(destPath)) File.Copy(sourcePath, destPath);
+                                        imgSrcAttribute.Value = imgFileName;
+
+                                        if (!m_FilesList_Image.Contains(imgFileName))
+                                            m_FilesList_Image.Add(imgFileName);
+                                    }
+                                    else
+                                        System.Diagnostics.Debug.Fail("source image not found", sourcePath);
+                                }
+                            }
+
+                            return true;
+                        }
+
                         return true;
-                        },
-                    delegate ( urakawa.core.TreeNode n ) { } );
+                    },
+                    delegate(urakawa.core.TreeNode n) { });
 
-            CommonFunctions.WriteXmlDocumentToFile ( DTBookDocument,
-                Path.Combine ( m_OutputDirectory, m_Filename_Content ) );
+            CommonFunctions.WriteXmlDocumentToFile(DTBookDocument,
+                Path.Combine(m_OutputDirectory, m_Filename_Content));
 
-            }
+        }
 
-        private bool ShouldCreateNextSmilFile ( urakawa.core.TreeNode node )
-            {
-            QualifiedName qName = node.GetXmlElementQName ();
+        private bool ShouldCreateNextSmilFile(urakawa.core.TreeNode node)
+        {
+            QualifiedName qName = node.GetXmlElementQName();
             return qName != null && qName.LocalName == "level1";
-            }
+        }
         /*
         private XmlDocument SaveCurrentSmilAndCreateNextSmilDocument ( XmlDocument smilDocument )
             {
@@ -175,36 +172,36 @@ namespace DaisyExport
             }
         */
 
-        private XmlDocument CreateStub_DTBDocument ()
-            {
-            XmlDocument DTBDocument = new XmlDocument ();
+        private XmlDocument CreateStub_DTBDocument()
+        {
+            XmlDocument DTBDocument = new XmlDocument();
             DTBDocument.XmlResolver = null;
 
-            DTBDocument.CreateXmlDeclaration ( "1.0", "utf-8", null );
-            DTBDocument.AppendChild ( DTBDocument.CreateDocumentType ( "dtbook",
+            DTBDocument.CreateXmlDeclaration("1.0", "utf-8", null);
+            DTBDocument.AppendChild(DTBDocument.CreateDocumentType("dtbook",
                 "-//NISO//DTD dtbook 2005-1//EN",
                 "http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd",
-                null ) );
+                null));
 
-            XmlNode DTBNode = DTBDocument.CreateElement ( null,
+            XmlNode DTBNode = DTBDocument.CreateElement(null,
                 "dtbook",
-                "http://www.daisy.org/z3986/2005/dtbook/" );
+                "http://www.daisy.org/z3986/2005/dtbook/");
 
-            DTBDocument.AppendChild ( DTBNode );
-
-
-            CommonFunctions.CreateAppendXmlAttribute ( DTBDocument, DTBNode, "version", "2005-1" );
-            CommonFunctions.CreateAppendXmlAttribute ( DTBDocument, DTBNode, "xml:lang", "en" );
+            DTBDocument.AppendChild(DTBNode);
 
 
-            XmlNode headNode = DTBDocument.CreateElement ( null, "head", DTBNode.NamespaceURI );
-            DTBNode.AppendChild ( headNode );
-            XmlNode bookNode = DTBDocument.CreateElement ( null, "book", DTBNode.NamespaceURI );
-            DTBNode.AppendChild ( bookNode );
+            CommonFunctions.CreateAppendXmlAttribute(DTBDocument, DTBNode, "version", "2005-1");
+            CommonFunctions.CreateAppendXmlAttribute(DTBDocument, DTBNode, "xml:lang", "en");
+
+
+            XmlNode headNode = DTBDocument.CreateElement(null, "head", DTBNode.NamespaceURI);
+            DTBNode.AppendChild(headNode);
+            XmlNode bookNode = DTBDocument.CreateElement(null, "book", DTBNode.NamespaceURI);
+            DTBNode.AppendChild(bookNode);
 
             return DTBDocument;
-            }
-
-        
         }
+
+
     }
+}
