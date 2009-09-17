@@ -26,13 +26,13 @@ namespace DaisyExport
             manifestNode.AppendChild ( itemNode );
             CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", m_Filename_Ncx );
             CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", GetNextID ( ID_OpfPrefix ) );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Opf );
+            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Ncx);
 
             itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
             manifestNode.AppendChild ( itemNode );
             CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", m_Filename_Opf );
             CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", GetNextID ( ID_OpfPrefix ) );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Ncx );
+            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Opf);
 
             // add smil files to manifest
             List<string> smilIDListInPlayOrder = new List<string> ();
@@ -123,7 +123,14 @@ namespace DaisyExport
                     }
                 else
                     {
-                    metadataNodeCreated = AddMetadataAsAttributes ( opfDocument, x_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value );
+                    if (m.NameContentAttribute.Name == "dtb:totaltime")
+                        {
+                        metadataNodeCreated = AddMetadataAsAttributes ( opfDocument, x_metadataNode, m.NameContentAttribute.Name, m_TotalTime.ToString () );
+                        }
+                    else
+                        {
+                        metadataNodeCreated = AddMetadataAsAttributes ( opfDocument, x_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value );
+                        }
                     }
                 // add other metadata attributes if any
                 foreach (urakawa.metadata.MetadataAttribute ma in m.OtherAttributes.ContentsAs_ListCopy)
@@ -133,7 +140,13 @@ namespace DaisyExport
 
                 } // end of metadata for each loop
 
-
+            // add total time
+            XmlNodeList totalTimeNodesList = opfDocument.GetElementsByTagName ("dtb:totaltime") ;
+                        if (totalTimeNodesList == null || ( totalTimeNodesList != null && totalTimeNodesList.Count == 0))
+                {
+                AddMetadataAsAttributes ( opfDocument, x_metadataNode, "dtb:totaltime", m_TotalTime.ToString ());
+                }
+            
             // add uid to dc:identifier
             XmlNodeList identifierList = opfDocument.GetElementsByTagName ( "dc:Identifier" );
             bool isUidReAssigned = false;
