@@ -84,6 +84,11 @@ namespace DaisyExport
                     continue;
                     }
 
+                //caching playorder for navPoints because page numbers are added first.
+                uint navPointPlayOrder = playOrder;
+                if (!isDoctitleOrDocAuthor) navPointPlayOrder = ++playOrder;
+
+
                 // create smil stub document
                 smilDocument = CreateStub_SmilDocument ();
                 smilFileName = GetNextSmilFileName;
@@ -229,7 +234,7 @@ namespace DaisyExport
                     navPointNode = ncxDocument.CreateElement ( null, "navPoint", navMapNode.NamespaceURI );
                     if (currentHeadingTreeNode != null) CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "class", currentHeadingTreeNode.GetProperty<urakawa.property.xml.XmlProperty> ().LocalName );
                     CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "id", GetNextID ( ID_NcxPrefix ) );
-                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "playOrder", (++playOrder).ToString () );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "playOrder", (navPointPlayOrder).ToString () );
 
                     urakawa.core.TreeNode parentNode = GetParentLevelNode ( urakawaNode );
 
