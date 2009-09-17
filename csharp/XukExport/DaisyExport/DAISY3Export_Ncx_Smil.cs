@@ -25,7 +25,7 @@ namespace DaisyExport
             Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap = new Dictionary<urakawa.core.TreeNode, XmlNode> ();
             m_FilesList_Smil = new List<string> ();
             m_FilesList_Audio = new List<string> ();
-                        m_SmilFileNameCounter = 0;
+            m_SmilFileNameCounter = 0;
             uint playOrder = 0;
             int totalPageCount = 0;
             int maxNormalPageNumber = 0;
@@ -36,11 +36,11 @@ namespace DaisyExport
                 {
                 bool IsNcxNativeNodeAdded = false;
                 XmlDocument smilDocument = null;
-                string smilFileName = GetNextSmilFileName;
+                string smilFileName = null;
                 XmlNode navPointNode = null;
                 urakawa.core.TreeNode currentHeadingTreeNode = null;
                 TimeSpan durationOfCurrentSmil = new TimeSpan ();
-
+                List<urakawa.core.TreeNode> textAudioNodesList = new List<urakawa.core.TreeNode> ();
 
                 urakawaNode.AcceptDepthFirst (
             delegate ( urakawa.core.TreeNode n )
@@ -51,27 +51,60 @@ namespace DaisyExport
                     || currentQName.LocalName == "h5" || currentQName.LocalName == "h6"))
                     {
                     currentHeadingTreeNode = n;
+
                     }
+
+                if (currentQName != null &&
+                        currentQName.LocalName != urakawaNode.GetXmlElementQName ().LocalName && currentQName.LocalName.StartsWith ( "level" ))
+                    return false;
 
                 urakawa.media.AbstractTextMedia txtMedia = n.GetTextMedia ();
                 urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia ( n );
 
                 if (txtMedia != null && externalAudio != null)
                     {
-                    if (!IsNcxNativeNodeAdded)
-                        {
-                        // in first pass, create smil stub document
-                        smilDocument = CreateStub_SmilDocument ();
-                        }
+                    textAudioNodesList.Add ( n );
+                    return true;
+                    }
+                return true;
+                },
+                    delegate ( urakawa.core.TreeNode n ) { } );
 
-                    // create smil nodes
+
+                QualifiedName qName = urakawaNode.GetXmlElementQName ();
+                bool isDoctitleOrDocAuthor = (qName != null &&
+                        (qName.LocalName == "doctitle" || qName.LocalName == "docauthor"));
+
+                if (textAudioNodesList.Count > 0 && (currentHeadingTreeNode != null || isDoctitleOrDocAuthor))
+                    {
+                    // carry on processing following lines. and in case this is not true, skip all the following lines
+                    }
+                else
+                    {
+                    continue;
+                    }
+
+                // create smil stub document
+                smilDocument = CreateStub_SmilDocument ();
+                smilFileName = GetNextSmilFileName;
+
+                // create smil nodes
+
+                string firstPar_id = null;
+                foreach (urakawa.core.TreeNode n in textAudioNodesList)
+                    {
+                    urakawa.media.AbstractTextMedia txtMedia = n.GetTextMedia ();
+                    urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia ( n );
                     string par_id = null;
+
                     if (smilDocument != null)
                         {
+
                         XmlNode mainSeq = smilDocument.GetElementsByTagName ( "body" )[0].FirstChild;
                         CommonFunctions.CreateAppendXmlAttribute ( smilDocument, mainSeq, "id", GetNextID ( ID_SmilPrefix ) );
                         XmlNode parNode = smilDocument.CreateElement ( null, "par", mainSeq.NamespaceURI );
                         par_id = GetNextID ( ID_SmilPrefix );
+                        if (n == textAudioNodesList[0]) firstPar_id = par_id;
                         CommonFunctions.CreateAppendXmlAttribute ( smilDocument, parNode, "id", par_id );
                         mainSeq.AppendChild ( parNode );
 
@@ -96,8 +129,8 @@ namespace DaisyExport
                         }// smilDocumeent null check ends
 
                     // if node n is pagenum, add to pageList
-                    if (currentQName != null
-                        && currentQName.LocalName == "pagenum")
+                    if (n.GetXmlElementQName () != null
+                        && n.GetXmlElementQName ().LocalName == "pagenum")
                         {
                         XmlNodeList listOfPages = ncxDocument.GetElementsByTagName ( "pageList" );
                         XmlNode pageListNode = null;
@@ -147,101 +180,116 @@ namespace DaisyExport
 
                         XmlNode contentNode = ncxDocument.CreateElement ( null, "content", pageListNode.NamespaceURI );
                         pageTargetNode.AppendChild ( contentNode );
-                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smilFileName + "#" + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "id" ).Value );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smilFileName + "#" + par_id );
                         }
+                    }// foreach for tree nodes n ends
 
 
-                    if (!IsNcxNativeNodeAdded)
-                        {
-                        QualifiedName qName = urakawaNode.GetXmlElementQName ();
-                        bool isDoctitleOrDocAuthor = (qName != null &&
-                                (qName.LocalName == "doctitle" || qName.LocalName == "docauthor"));
+                /*
+                if ((currentHeadingTreeNode != null &&
+                    (currentHeadingTreeNode == n || currentHeadingTreeNode.IsAncestorOf ( n )) )
+                    || isDoctitleOrDocAuthor)
+                    {
+                    */
+                // check and create doctitle and docauthor nodes
+                //if (qName != null &&
+                //(qName.LocalName == "doctitle" || qName.LocalName == "docauthor"))
 
-                        if ((currentHeadingTreeNode != null &&
-                            (currentHeadingTreeNode == n || currentHeadingTreeNode.IsAncestorOf ( n )) )
-                            || isDoctitleOrDocAuthor)
-                            {
-                            // check and create doctitle and docauthor nodes
-                                                        //if (qName != null &&
-                                //(qName.LocalName == "doctitle" || qName.LocalName == "docauthor"))
-                            if ( isDoctitleOrDocAuthor )
-                                {
-                                XmlNode docNode = ncxDocument.CreateElement ( null,
-                                    qName.LocalName == "doctitle" ? "docTitle" : "docAuthor",
-                                     ncxRootNode.NamespaceURI );
+                if (isDoctitleOrDocAuthor)
+                    {
+                    urakawa.core.TreeNode n = textAudioNodesList[0];
+                    urakawa.media.AbstractTextMedia txtMedia = n.GetTextMedia ();
+                    urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia ( n );
 
-                                ncxRootNode.InsertBefore ( docNode, navMapNode );
+                    XmlNode docNode = ncxDocument.CreateElement ( null,
+                        qName.LocalName == "doctitle" ? "docTitle" : "docAuthor",
+                         ncxRootNode.NamespaceURI );
 
-                                XmlNode docTxtNode = ncxDocument.CreateElement ( null, "text", docNode.NamespaceURI );
-                                docNode.AppendChild ( docTxtNode );
-                                docTxtNode.AppendChild (
-                                ncxDocument.CreateTextNode ( txtMedia.Text ) );
+                    ncxRootNode.InsertBefore ( docNode, navMapNode );
 
-                                // create audio node
-                                XmlNode docAudioNode = ncxDocument.CreateElement ( null, "audio", docNode.NamespaceURI );
-                                docNode.AppendChild ( docAudioNode );
-                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, docAudioNode, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString () );
-                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, docAudioNode, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString () );
-                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, docAudioNode, "src", Path.GetFileName ( externalAudio.Src ) );
-                                }
-                            else
-                                {
-                                // first create navPoints
-                                navPointNode = ncxDocument.CreateElement ( null, "navPoint", navMapNode.NamespaceURI );
-                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "class", currentHeadingTreeNode.GetProperty<urakawa.property.xml.XmlProperty> ().LocalName );
-                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "id", GetNextID ( ID_NcxPrefix) );
-                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "playOrder", (++playOrder).ToString () );
+                    XmlNode docTxtNode = ncxDocument.CreateElement ( null, "text", docNode.NamespaceURI );
+                    docNode.AppendChild ( docTxtNode );
+                    docTxtNode.AppendChild (
+                    ncxDocument.CreateTextNode ( txtMedia.Text ) );
 
-                                urakawa.core.TreeNode parentNode = GetParentLevelNode ( urakawaNode );
-
-                                if (parentNode == null)
-                                    {
-                                    navMapNode.AppendChild ( navPointNode );
-                                    }
-                                else
-                                    {
-                                    treeNode_NavNodeMap[parentNode].AppendChild ( navPointNode );
-                                    }
-
-                                treeNode_NavNodeMap.Add ( urakawaNode, navPointNode );
-                                
-                                // create navLabel
-                                XmlNode navLabel = ncxDocument.CreateElement ( null, "navLabel", navPointNode.NamespaceURI );
-                                navPointNode.AppendChild ( navLabel );
-
-                                // create text node
-                                XmlNode txtNode = ncxDocument.CreateElement ( null, "text", navMapNode.NamespaceURI );
-                                navLabel.AppendChild ( txtNode );
-                                txtNode.AppendChild (
-                                ncxDocument.CreateTextNode ( currentHeadingTreeNode.GetTextMediaFlattened () ) );
-
-                                // create audio node
-                                XmlNode audioNode = ncxDocument.CreateElement ( null, "audio", navMapNode.NamespaceURI );
-                                navLabel.AppendChild ( audioNode );
-                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNode, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString () );
-                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNode, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString () );
-                                CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNode, "src", Path.GetFileName ( externalAudio.Src ) );
-
-                                // add content node
-                                if (par_id != null)
-                                    {
-                                    XmlNode contentNode = ncxDocument.CreateElement ( null, "content", navMapNode.NamespaceURI );
-                                    navPointNode.AppendChild ( contentNode );
-                                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smilFileName + "#" + par_id );
-                                    }
-                                int navPointDepth = GetDepthOfNavPointNode ( ncxDocument, navPointNode );
-                                if (maxDepth < navPointDepth) maxDepth = navPointDepth;
-                                }
-                            IsNcxNativeNodeAdded = true;
-                            }
-                        }
-
+                    // create audio node
+                    XmlNode docAudioNode = ncxDocument.CreateElement ( null, "audio", docNode.NamespaceURI );
+                    docNode.AppendChild ( docAudioNode );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, docAudioNode, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString () );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, docAudioNode, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString () );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, docAudioNode, "src", Path.GetFileName ( externalAudio.Src ) );
                     }
-                return true;
-                },
-                    delegate ( urakawa.core.TreeNode n ) { } );
+                else
+                    {
+                    urakawa.core.TreeNode n = textAudioNodesList[0];
+                    urakawa.media.AbstractTextMedia txtMedia = n.GetTextMedia ();
+                    urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia ( n );
 
+                    // first create navPoints
+                    navPointNode = ncxDocument.CreateElement ( null, "navPoint", navMapNode.NamespaceURI );
+                    if (currentHeadingTreeNode != null) CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "class", currentHeadingTreeNode.GetProperty<urakawa.property.xml.XmlProperty> ().LocalName );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "id", GetNextID ( ID_NcxPrefix ) );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navPointNode, "playOrder", (++playOrder).ToString () );
 
+                    urakawa.core.TreeNode parentNode = GetParentLevelNode ( urakawaNode );
+
+                    if (parentNode == null)
+                        {
+                        navMapNode.AppendChild ( navPointNode );
+                        }
+                    else
+                        {
+                        int counter = 0;
+                        while (parentNode != null && counter <= 6)
+                            {
+                            parentNode = GetParentLevelNode ( parentNode );
+                            counter++;
+                            }
+
+                        if (parentNode == null || counter > 7)
+                            {
+                            navMapNode.AppendChild ( navPointNode );
+                            }
+                        else if (treeNode_NavNodeMap.ContainsKey ( parentNode ))
+                            {
+                            treeNode_NavNodeMap[parentNode].AppendChild ( navPointNode );
+                            }
+
+                        }
+
+                    treeNode_NavNodeMap.Add ( urakawaNode, navPointNode );
+
+                    // create navLabel
+                    XmlNode navLabel = ncxDocument.CreateElement ( null, "navLabel", navPointNode.NamespaceURI );
+                    navPointNode.AppendChild ( navLabel );
+
+                    // create text node
+                    XmlNode txtNode = ncxDocument.CreateElement ( null, "text", navMapNode.NamespaceURI );
+                    navLabel.AppendChild ( txtNode );
+                    if (currentHeadingTreeNode != null)
+                        txtNode.AppendChild (
+                        ncxDocument.CreateTextNode ( currentHeadingTreeNode.GetTextMediaFlattened () ) );
+
+                    // create audio node
+                    XmlNode audioNode = ncxDocument.CreateElement ( null, "audio", navMapNode.NamespaceURI );
+                    navLabel.AppendChild ( audioNode );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNode, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString () );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNode, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString () );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNode, "src", Path.GetFileName ( externalAudio.Src ) );
+
+                    // add content node
+                    if (firstPar_id != null)
+                        {
+                        XmlNode contentNode = ncxDocument.CreateElement ( null, "content", navMapNode.NamespaceURI );
+                        navPointNode.AppendChild ( contentNode );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smilFileName + "#" + firstPar_id );
+                        }
+                    int navPointDepth = GetDepthOfNavPointNode ( ncxDocument, navPointNode );
+                    if (maxDepth < navPointDepth) maxDepth = navPointDepth;
+                    }
+                
+
+// add metadata to smil document and write to file.
                 if (smilDocument != null)
                     {
                     // update duration in seq node
@@ -255,8 +303,10 @@ namespace DaisyExport
                     smilElapseTime = smilElapseTime.Add ( durationOfCurrentSmil );
                     m_FilesList_Smil.Add ( smilFileName );
                     }
+
                 }
 
+            // write ncs document to file
             m_TotalTime = smilElapseTime;
             AddMetadata_Ncx ( ncxDocument, totalPageCount.ToString (), maxNormalPageNumber.ToString (), maxDepth.ToString () );
             CommonFunctions.WriteXmlDocumentToFile ( ncxDocument,
