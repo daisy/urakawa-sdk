@@ -15,6 +15,21 @@ namespace urakawa.core
     /// </summary>
     public partial class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IChangeNotifier
     {
+        private TreeNode MeetFirst(TreeNode node1, TreeNode node2)
+        {
+            if (this == node1) return node1;
+            if (this == node2) return node2;
+            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
+            {
+                TreeNode met = child.MeetFirst(node1, node2);
+                if (met != null)
+                {
+                    return met;
+                }
+            }
+            return null;
+        }
+
         public override string GetTypeNameFormatted()
         {
             return XukStrings.TreeNode;
@@ -791,21 +806,6 @@ namespace urakawa.core
         public bool IsBefore(TreeNode node)
         {
             return !IsAfter(node);
-        }
-
-        private TreeNode MeetFirst(TreeNode node1, TreeNode node2)
-        {
-            if (this == node1) return node1;
-            if (this == node2) return node2;
-            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
-            {
-                TreeNode met = child.MeetFirst(node1, node2);
-                if (met != null)
-                {
-                    return met;
-                }
-            }
-            return null;
         }
 
         #endregion

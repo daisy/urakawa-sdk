@@ -29,7 +29,7 @@ namespace urakawa.core
         TimeDelta GetDurationOfManagedAudioMediaFlattened();
         bool IsAfter(TreeNode node);
         bool IsBefore(TreeNode node);
-        TreeNode MeetFirst(TreeNode node1, TreeNode node2);
+
         TreeNode Root { get; }
         string GetTextMediaFlattened();
         StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened();
