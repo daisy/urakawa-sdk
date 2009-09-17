@@ -19,7 +19,7 @@ namespace DaisyExport
             m_FilesList_Image = new List<string>();
 
             // add metadata
-            XmlNode headNode = DTBookDocument.GetElementsByTagName("head")[0];
+            XmlNode headNode = getFirstChildElementsWithName(DTBookDocument, true, "head", null); //DTBookDocument.GetElementsByTagName("head")[0]
 
             foreach (urakawa.metadata.Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
@@ -45,7 +45,7 @@ namespace DaisyExport
 
 
             urakawa.core.TreeNode rNode = m_Presentation.RootNode;
-            XmlNode bookNode = DTBookDocument.GetElementsByTagName("book")[0];
+            XmlNode bookNode = getFirstChildElementsWithName(DTBookDocument, true, "book", null); //DTBookDocument.GetElementsByTagName("book")[0];
 
 
             m_TreeNode_XmlNodeMap.Add(rNode, bookNode);

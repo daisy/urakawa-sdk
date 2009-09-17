@@ -168,7 +168,7 @@ namespace DaisyExport
 
                 if (node != null
                     && node.NodeType == XmlNodeType.Element
-                    && node.LocalName == localName)
+                    && (node.LocalName == localName || node.Name == localName))
                 {
                     if (!string.IsNullOrEmpty(namespaceUri))
                     {

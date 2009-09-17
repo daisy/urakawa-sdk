@@ -19,8 +19,8 @@ namespace DaisyExport
         {
             XmlDocument ncxDocument = CreateStub_NcxDocument();
 
-            XmlNode ncxRootNode = ncxDocument.GetElementsByTagName("ncx")[0];
-            XmlNode navMapNode = ncxDocument.GetElementsByTagName("navMap")[0];
+            XmlNode ncxRootNode = getFirstChildElementsWithName(ncxDocument, true, "ncx", null); //ncxDocument.GetElementsByTagName("ncx")[0];
+            XmlNode navMapNode = getFirstChildElementsWithName(ncxDocument, true, "navMap", null); //ncxDocument.GetElementsByTagName("navMap")[0];
             Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap = new Dictionary<urakawa.core.TreeNode, XmlNode>();
             m_FilesList_Smil = new List<string>();
             m_FilesList_Audio = new List<string>();
@@ -104,7 +104,7 @@ namespace DaisyExport
                     if (smilDocument != null)
                     {
 
-                        XmlNode mainSeq = smilDocument.GetElementsByTagName("body")[0].FirstChild;
+                        XmlNode mainSeq = getFirstChildElementsWithName(smilDocument, true, "body", null).FirstChild; //smilDocument.GetElementsByTagName("body")[0].FirstChild;
                         CommonFunctions.CreateAppendXmlAttribute(smilDocument, mainSeq, "id", GetNextID(ID_SmilPrefix));
                         XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
                         par_id = GetNextID(ID_SmilPrefix);
@@ -136,17 +136,24 @@ namespace DaisyExport
                     if (n.GetXmlElementQName() != null
                         && n.GetXmlElementQName().LocalName == "pagenum")
                     {
-                        XmlNodeList listOfPages = ncxDocument.GetElementsByTagName("pageList");
-                        XmlNode pageListNode = null;
-                        if (listOfPages == null || listOfPages.Count == 0)
+                        XmlNode pageListNode = getFirstChildElementsWithName(ncxDocument, true, "pageList", null);
+                        if (pageListNode == null)
                         {
                             pageListNode = ncxDocument.CreateElement(null, "pageList", ncxRootNode.NamespaceURI);
                             ncxRootNode.AppendChild(pageListNode);
                         }
-                        else
-                        {
-                            pageListNode = listOfPages[0];
-                        }
+
+                        //XmlNode pageListNode = null;
+                        //XmlNodeList listOfPages = ncxDocument.GetElementsByTagName("pageList");
+                        //if (listOfPages == null || listOfPages.Count == 0)
+                        //{
+                        //    pageListNode = ncxDocument.CreateElement(null, "pageList", ncxRootNode.NamespaceURI);
+                        //    ncxRootNode.AppendChild(pageListNode);
+                        //}
+                        //else
+                        //{
+                        //    pageListNode = listOfPages[0];
+                        //}
 
 
                         XmlNode pageTargetNode = ncxDocument.CreateElement(null, "pageTarget", pageListNode.NamespaceURI);
@@ -303,7 +310,7 @@ namespace DaisyExport
                 if (smilDocument != null)
                 {
                     // update duration in seq node
-                    XmlNode mainSeqNode = smilDocument.GetElementsByTagName("body")[0].FirstChild;
+                    XmlNode mainSeqNode = getFirstChildElementsWithName(smilDocument, true, "body", null).FirstChild; //smilDocument.GetElementsByTagName("body")[0].FirstChild;
                     CommonFunctions.CreateAppendXmlAttribute(smilDocument, mainSeqNode, "dur", durationOfCurrentSmil.ToString());
                     CommonFunctions.CreateAppendXmlAttribute(smilDocument, mainSeqNode, "fill", "remove");
                     AddMetadata_Smil(smilDocument, smilElapseTime.ToString());
@@ -360,7 +367,7 @@ namespace DaisyExport
 
         private void AddMetadata_Ncx(XmlDocument ncxDocument, string strTotalPages, string strMaxNormalPage, string strDepth)
         {
-            XmlNode headNode = ncxDocument.GetElementsByTagName("head")[0];
+            XmlNode headNode = getFirstChildElementsWithName(ncxDocument, true, "head", null); //ncxDocument.GetElementsByTagName("head")[0];
 
             urakawa.metadata.Metadata m = m_Presentation.GetMetadata("dc:identifier")[0];
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:uid", m.NameContentAttribute.Value);
@@ -372,7 +379,7 @@ namespace DaisyExport
 
         private void AddMetadata_Smil(XmlDocument smilDocument, string strElapsedTime)
         {
-            XmlNode headNode = smilDocument.GetElementsByTagName("head")[0];
+            XmlNode headNode = getFirstChildElementsWithName(smilDocument, true, "head", null); //smilDocument.GetElementsByTagName("head")[0];
 
             urakawa.metadata.Metadata m = m_Presentation.GetMetadata("dc:identifier")[0];
             AddMetadataAsAttributes(smilDocument, headNode, "dtb:uid", m.NameContentAttribute.Value);

@@ -11,7 +11,7 @@ namespace DaisyExport
         {
             XmlDocument opfDocument = CreateStub_OpfDocument();
 
-            XmlNode manifestNode = opfDocument.GetElementsByTagName("manifest")[0];
+            XmlNode manifestNode = getFirstChildElementsWithName(opfDocument, true, "manifest", null); //opfDocument.GetElementsByTagName("manifest")[0];
             const string mediaType_Smil = "application/smil";
             const string mediaType_Wav = "audio/x-wav";
             const string mediaType_Mpg = "audio/mpeg";
@@ -93,7 +93,7 @@ namespace DaisyExport
 
 
             // create spine
-            XmlNode spineNode = opfDocument.GetElementsByTagName("spine")[0];
+            XmlNode spineNode = getFirstChildElementsWithName(opfDocument, true, "spine", null); //opfDocument.GetElementsByTagName("spine")[0];
 
             foreach (string strSmilID in smilIDListInPlayOrder)
             {
@@ -109,8 +109,8 @@ namespace DaisyExport
 
         private void AddMetadata_Opf(XmlDocument opfDocument)
         {
-            XmlNode dc_metadataNode = opfDocument.GetElementsByTagName("dc-metadata")[0];
-            XmlNode x_metadataNode = opfDocument.GetElementsByTagName("x-metadata")[0];
+            XmlNode dc_metadataNode = getFirstChildElementsWithName(opfDocument, true, "dc-metadata", null); //opfDocument.GetElementsByTagName("dc-metadata")[0];
+            XmlNode x_metadataNode = getFirstChildElementsWithName(opfDocument, true, "x-metadata", null); //opfDocument.GetElementsByTagName("x-metadata")[0];
 
             foreach (urakawa.metadata.Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
@@ -146,17 +146,25 @@ namespace DaisyExport
             } // end of metadata for each loop
 
             // add total time
-            XmlNodeList totalTimeNodesList = opfDocument.GetElementsByTagName("dtb:totaltime");
-            if (totalTimeNodesList == null || (totalTimeNodesList != null && totalTimeNodesList.Count == 0))
+            XmlNode totalTimeNode = getFirstChildElementsWithName(opfDocument, true, "dtb:totaltime", null);
+            if (totalTimeNode == null)
             {
                 AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totaltime", m_TotalTime.ToString());
             }
+            //XmlNodeList totalTimeNodesList = opfDocument.GetElementsByTagName("dtb:totaltime");
+            //if (totalTimeNodesList == null || (totalTimeNodesList != null && totalTimeNodesList.Count == 0))
+            //{
+            //    AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totaltime", m_TotalTime.ToString());
+            //}
 
             // add uid to dc:identifier
-            XmlNodeList identifierList = opfDocument.GetElementsByTagName("dc:Identifier");
+            //XmlNodeList identifierList = opfDocument.GetElementsByTagName("dc:Identifier");
+            XmlNode identifierNode = null;
             bool isUidReAssigned = false;
-            foreach (XmlNode identifierMetaNode in identifierList)
+            foreach (XmlNode identifierMetaNode in getChildrenElementsWithName(opfDocument, true, "dc:Identifier", null, false))
             {
+                if (identifierNode == null) identifierNode = identifierMetaNode;
+
                 if (identifierMetaNode.Attributes.GetNamedItem("uid") != null)
                 {
                     identifierMetaNode.Attributes.GetNamedItem("uid").Value = "uid";
@@ -165,7 +173,7 @@ namespace DaisyExport
             }
             if (!isUidReAssigned)
             {
-                CommonFunctions.CreateAppendXmlAttribute(opfDocument, identifierList[0], "id", "uid");
+                CommonFunctions.CreateAppendXmlAttribute(opfDocument, identifierNode, "id", "uid");
             }
         }
 
