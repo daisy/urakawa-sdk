@@ -19,6 +19,7 @@ namespace DaisyExport
             const string mediaType_Mpg = "audio/mpeg";
             const string mediaType_Opf = "text/xml";
             const string mediaType_Ncx = "application/x-dtbncx+xml";
+            const string mediaType_Dtbook = "application/x-dtbook+xml";
             const string mediaType_Image_Jpg = "image/jpeg";
             const string mediaType_Image_Png = "image/png";
 
@@ -27,6 +28,12 @@ namespace DaisyExport
             CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", m_Filename_Ncx );
             CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", GetNextID ( ID_OpfPrefix ) );
             CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Ncx);
+
+            itemNode = opfDocument.CreateElement(null, "item", manifestNode.NamespaceURI);
+            manifestNode.AppendChild(itemNode);
+            CommonFunctions.CreateAppendXmlAttribute(opfDocument, itemNode, "href", m_Filename_Content);
+            CommonFunctions.CreateAppendXmlAttribute(opfDocument, itemNode, "id", GetNextID(ID_OpfPrefix));
+            CommonFunctions.CreateAppendXmlAttribute(opfDocument, itemNode, "media-type", mediaType_Dtbook);
 
             itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
             manifestNode.AppendChild ( itemNode );
