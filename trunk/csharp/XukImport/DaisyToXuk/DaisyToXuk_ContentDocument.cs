@@ -59,19 +59,11 @@ namespace XukImport
                 //{
                 //    listOfBodies = xmlDoc.GetElementsByTagName("book");
                 //}
-                XmlNode bodyElement = null;
-                foreach (XmlNode node in getChildrenElementsWithName(xmlDoc, true, "body", null, true))
-                {
-                    bodyElement = node;
-                    break;
-                }
+                XmlNode bodyElement = getFirstChildElementsWithName(xmlDoc, true, "body", null);
+                
                 if (bodyElement == null)
                 {
-                    foreach (XmlNode node in getChildrenElementsWithName(xmlDoc, true, "book", null, true))
-                    {
-                        bodyElement = node;
-                        break;
-                    }
+                    bodyElement = getFirstChildElementsWithName(xmlDoc, true, "book", null);
                 }
 
                 if (bodyElement == null)
@@ -117,19 +109,11 @@ namespace XukImport
                         //{
                         //    listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("book");
                         //}
-                        XmlNode bodyElement = null;
-                        foreach (XmlNode node in getChildrenElementsWithName(xmlNode, true, "body", null, true))
-                        {
-                            bodyElement = node;
-                            break;
-                        }
+                        XmlNode bodyElement = getFirstChildElementsWithName(xmlNode, true, "body", null);
+                        
                         if (bodyElement == null)
                         {
-                            foreach (XmlNode node in getChildrenElementsWithName(xmlNode, true, "book", null, true))
-                            {
-                                bodyElement = node;
-                                break;
-                            }
+                            bodyElement = getFirstChildElementsWithName(xmlNode, true, "book", null);
                         }
 
                         if (bodyElement != null)

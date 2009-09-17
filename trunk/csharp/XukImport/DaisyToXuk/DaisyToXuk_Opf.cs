@@ -13,13 +13,13 @@ namespace XukImport
 
         private void parseOpf(XmlDocument opfXmlDoc)
         {
-            foreach (XmlNode packageNode in getChildrenElementsWithName(opfXmlDoc, true, "package", null, true))
+            XmlNode packageNode = getFirstChildElementsWithName(opfXmlDoc, true, "package", null);
+            if (packageNode != null)
             {
                 XmlAttributeCollection packageNodeAttrs = packageNode.Attributes;
                 if (packageNodeAttrs != null && packageNodeAttrs.Count > 0)
                 {
                     m_PackageUniqueIdAttr = packageNodeAttrs.GetNamedItem("unique-identifier");
-                    break;
                 }
             }
 
@@ -73,12 +73,7 @@ namespace XukImport
             ncxPath = null;
             dtbookPath = null;
 
-            XmlNode spineNodeRoot = null;
-            foreach (XmlNode node in getChildrenElementsWithName(opfXmlDoc, true, "spine", null, true))
-            {
-                spineNodeRoot = node;
-                break;
-            }
+            XmlNode spineNodeRoot = getFirstChildElementsWithName(opfXmlDoc, true, "spine", null);
 
             if (spineNodeRoot != null)
             {
@@ -105,12 +100,7 @@ namespace XukImport
                 }
             }
 
-            XmlNode manifNodeRoot = null;
-            foreach (XmlNode node in getChildrenElementsWithName(opfXmlDoc, true, "manifest", null, true))
-            {
-                manifNodeRoot = node;
-                break;
-            }
+            XmlNode manifNodeRoot = getFirstChildElementsWithName(opfXmlDoc, true, "manifest", null);
 
             if (manifNodeRoot == null)
             {
