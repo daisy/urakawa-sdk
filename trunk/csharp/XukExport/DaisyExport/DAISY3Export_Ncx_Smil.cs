@@ -242,25 +242,30 @@ namespace DaisyExport
                         {
                         navMapNode.AppendChild ( navPointNode );
                         }
-                    else
+                    else if (treeNode_NavNodeMap.ContainsKey ( parentNode ))
+                        {
+                        treeNode_NavNodeMap[parentNode].AppendChild ( navPointNode );
+                        }
+                    else // surch up for node
                         {
                         int counter = 0;
                         while (parentNode != null && counter <= 6)
                             {
-                            parentNode = GetParentLevelNode ( parentNode );
+                                                        parentNode = GetParentLevelNode ( parentNode );
+                            if (parentNode != null &&  treeNode_NavNodeMap.ContainsKey ( parentNode ))
+                                {
+                                treeNode_NavNodeMap[parentNode].AppendChild ( navPointNode );
+                                break;
+                                }
                             counter++;
-                            }
+                                                        }
 
                         if (parentNode == null || counter > 7)
                             {
                             navMapNode.AppendChild ( navPointNode );
                             }
-                        else if (treeNode_NavNodeMap.ContainsKey ( parentNode ))
-                            {
-                            treeNode_NavNodeMap[parentNode].AppendChild ( navPointNode );
-                            }
-
                         }
+                        
 
                     treeNode_NavNodeMap.Add ( urakawaNode, navPointNode );
 
@@ -273,7 +278,7 @@ namespace DaisyExport
                     navLabel.AppendChild ( txtNode );
                     if (currentHeadingTreeNode != null)
                         txtNode.AppendChild (
-                        ncxDocument.CreateTextNode ( currentHeadingTreeNode.GetTextMediaFlattened () ) );
+                        ncxDocument.CreateTextNode ( txtMedia.Text ) );
 
                     // create audio node
                     XmlNode audioNode = ncxDocument.CreateElement ( null, "audio", navMapNode.NamespaceURI );
