@@ -153,6 +153,7 @@ namespace DaisyExport
                         XmlNode pageTargetNode = ncxDocument.CreateElement ( null, "pageTarget", pageListNode.NamespaceURI );
                         pageListNode.AppendChild ( pageTargetNode );
 
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, pageTargetNode, "class" , "pagenum");
                         CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, pageTargetNode, "playOrder", (++playOrder).ToString () );
                         string strTypeVal = n.GetXmlProperty ().GetAttribute ( "page" ).Value;
                         CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, pageTargetNode, "type", strTypeVal );
@@ -305,6 +306,7 @@ namespace DaisyExport
                     // update duration in seq node
                     XmlNode mainSeqNode = smilDocument.GetElementsByTagName ( "body" )[0].FirstChild;
                     CommonFunctions.CreateAppendXmlAttribute ( smilDocument, mainSeqNode, "dur", durationOfCurrentSmil.ToString () );
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, mainSeqNode, "fill", "remove" );
                     AddMetadata_Smil ( smilDocument, smilElapseTime.ToString () );
 
                     CommonFunctions.WriteXmlDocumentToFile ( smilDocument,
