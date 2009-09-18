@@ -201,7 +201,7 @@ namespace XukImport
 
             Metadata md = presentation.MetadataFactory.CreateMetadata();
             md.NameContentAttribute = new MetadataAttribute();
-            md.NameContentAttribute.Name = name.ToLower();
+            md.NameContentAttribute.Name = name; //.ToLower();
             md.NameContentAttribute.Value = content;
 
             if (md.NameContentAttribute.Name.Contains(":")

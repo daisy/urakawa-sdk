@@ -160,6 +160,7 @@ namespace DaisyExport
                         XmlNode pageTargetNode = ncxDocument.CreateElement(null, "pageTarget", pageListNode.NamespaceURI);
                         pageListNode.AppendChild(pageTargetNode);
 
+                        CommonFunctions.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "id", GetNextID(ID_NcxPrefix));
                         CommonFunctions.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "class", "pagenum");
                         CommonFunctions.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "playOrder", (++playOrder).ToString());
                         string strTypeVal = n.GetXmlProperty().GetAttribute("page").Value;
@@ -366,7 +367,7 @@ namespace DaisyExport
             return i;
         }
 
-        private Metadata AddMetadata_DtbUid(XmlDocument ncxDocument, XmlNode headNode)
+        private Metadata AddMetadata_DtbUid(bool asInnerText, XmlDocument doc, XmlNode parentNode)
         {
             Metadata mdUid = null;
             XmlNode metaNodeUid = null;
@@ -380,14 +381,21 @@ namespace DaisyExport
 
                     //AddMetadataAsAttributes(ncxDocument, headNode, "dtb:uid", md.NameContentAttribute.Value);
 
-                    XmlNode metaNode = ncxDocument.CreateElement(null, "meta", headNode.NamespaceURI);
-                    headNode.AppendChild(metaNode);
+                    if (asInnerText)
+                    {
+                        metaNodeUid = AddMetadataAsInnerText(doc, parentNode, "dc:Identifier", md.NameContentAttribute.Value);
+                        CommonFunctions.CreateAppendXmlAttribute(doc, metaNodeUid, "id", "uid");
+                    }
+                    else
+                    {
+                        metaNodeUid = doc.CreateElement(null, "meta", parentNode.NamespaceURI);
+                        parentNode.AppendChild(metaNodeUid);
 
-                    CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNode, "name", "dtb:uid");
-                    CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNode, "content", md.NameContentAttribute.Value);
-
+                        CommonFunctions.CreateAppendXmlAttribute(doc, metaNodeUid, "name", "dtb:uid");
+                        CommonFunctions.CreateAppendXmlAttribute(doc, metaNodeUid, "content", md.NameContentAttribute.Value);
+                    }
+                    
                     mdUid = md;
-                    metaNodeUid = metaNode;
                     break;
                 }
 
@@ -398,7 +406,7 @@ namespace DaisyExport
                     {
                         if (ma.Name == "id") continue;
 
-                        CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNodeUid, ma.Name, ma.Value);
+                        CommonFunctions.CreateAppendXmlAttribute(doc, metaNodeUid, ma.Name, ma.Value);
                     }
 
                     return mdUid;
@@ -410,19 +418,27 @@ namespace DaisyExport
                 if (!isUniqueIdName(md.NameContentAttribute.Name)) continue;
 
                 //AddMetadataAsAttributes(ncxDocument, headNode, "dtb:uid", md.NameContentAttribute.Value);
+                if (asInnerText)
+                {
+                    metaNodeUid = AddMetadataAsInnerText(doc, parentNode, "dc:Identifier", md.NameContentAttribute.Value);
+                    CommonFunctions.CreateAppendXmlAttribute(doc, metaNodeUid, "id", "uid");
+                }
+                else
+                {
+                    metaNodeUid = doc.CreateElement(null, "meta", parentNode.NamespaceURI);
+                    parentNode.AppendChild(metaNodeUid);
 
-                XmlNode metaNode = ncxDocument.CreateElement(null, "meta", headNode.NamespaceURI);
-                headNode.AppendChild(metaNode);
-
-                CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNode, "name", "dtb:uid");
-                CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNode, "content", md.NameContentAttribute.Value);
+                    CommonFunctions.CreateAppendXmlAttribute(doc, metaNodeUid, "name", "dtb:uid");
+                    CommonFunctions.CreateAppendXmlAttribute(doc, metaNodeUid, "content",
+                                                             md.NameContentAttribute.Value);
+                }
 
                 // add metadata optional attributes if any
                 foreach (MetadataAttribute ma in md.OtherAttributes.ContentsAs_YieldEnumerable)
                 {
                     if (ma.Name == "id") continue;
 
-                    CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNode, ma.Name, ma.Value);
+                    CommonFunctions.CreateAppendXmlAttribute(doc, metaNodeUid, ma.Name, ma.Value);
                 }
                 return md;
             }
@@ -451,7 +467,9 @@ namespace DaisyExport
         {
             XmlNode headNode = getFirstChildElementsWithName(ncxDocument, true, "head", null); //ncxDocument.GetElementsByTagName("head")[0];
 
-            AddMetadata_DtbUid(ncxDocument, headNode);
+            AddMetadata_DtbUid(false, ncxDocument, headNode);
+
+            AddMetadata_Generator(ncxDocument, headNode);
 
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:depth", strDepth);
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:totalPageCount", strTotalPages);
@@ -462,7 +480,9 @@ namespace DaisyExport
         {
             XmlNode headNode = getFirstChildElementsWithName(smilDocument, true, "head", null); //smilDocument.GetElementsByTagName("head")[0];
 
-            AddMetadata_DtbUid(smilDocument, headNode);
+            AddMetadata_DtbUid(false, smilDocument, headNode);
+
+            AddMetadata_Generator(smilDocument, headNode);
 
             AddMetadataAsAttributes(smilDocument, headNode, "dtb:totalElapsedTime", strElapsedTime);
         }

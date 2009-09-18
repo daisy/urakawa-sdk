@@ -21,7 +21,9 @@ namespace DaisyExport
             // add metadata
             XmlNode headNode = getFirstChildElementsWithName(DTBookDocument, true, "head", null); //DTBookDocument.GetElementsByTagName("head")[0]
 
-            Metadata mdId = AddMetadata_DtbUid(DTBookDocument, headNode);
+            Metadata mdId = AddMetadata_DtbUid(false, DTBookDocument, headNode);
+
+            AddMetadata_Generator(DTBookDocument, headNode);
 
             // todo: filter-out unecessary metadata for DTBOOK (e.g. dtb:multimediatype)
             foreach (urakawa.metadata.Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
@@ -29,9 +31,20 @@ namespace DaisyExport
                 if (mdId == m) continue;
 
                 XmlNode metaNode = DTBookDocument.CreateElement(null, "meta", headNode.NamespaceURI);
-
                 headNode.AppendChild(metaNode);
-                CommonFunctions.CreateAppendXmlAttribute(DTBookDocument, metaNode, "name", m.NameContentAttribute.Name);
+
+                string name = m.NameContentAttribute.Name;
+
+                if (name.Contains(":"))
+                {
+                    // split the metadata name and make first alphabet upper, required for daisy 3.0
+                    string splittedName = name.Split(':')[1];
+                    splittedName = splittedName.Substring(0, 1).ToUpper() + splittedName.Remove(0, 1);
+
+                    name = name.Split(':')[0] + ":" + splittedName;
+                }
+
+                CommonFunctions.CreateAppendXmlAttribute(DTBookDocument, metaNode, "name", name);
                 CommonFunctions.CreateAppendXmlAttribute(DTBookDocument, metaNode, "content", m.NameContentAttribute.Value);
 
                 // add metadata optional attributes if any
@@ -92,6 +105,20 @@ namespace DaisyExport
                             }
                         } // attribute nodes created
 
+                        if (currentXmlNode.LocalName == "table")
+                        {
+                            CommonFunctions.CreateAppendXmlAttribute(DTBookDocument,
+                                currentXmlNode,
+                                "class", "table");
+                        }
+
+                        if (currentXmlNode.LocalName == "list")
+                        {
+                            CommonFunctions.CreateAppendXmlAttribute(DTBookDocument,
+                                currentXmlNode,
+                                "class", "list");
+                        }
+
                         // add text from text property
 
                         string txt = n.GetTextMedia() != null ? n.GetTextMedia().Text : null;
@@ -122,7 +149,7 @@ namespace DaisyExport
                                     if (!File.Exists(destPath)) File.Copy(sourcePath, destPath);
                                     imgSrcAttribute.Value = imgFileName;
 
-                                    if (!m_FilesList_Image.Contains(imgFileName))
+                                    if (!imgFileName.StartsWith("http://") && !m_FilesList_Image.Contains(imgFileName))
                                         m_FilesList_Image.Add(imgFileName);
                                 }
                                 else
