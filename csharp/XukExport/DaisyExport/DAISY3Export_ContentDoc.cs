@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using urakawa.media;
 using urakawa.metadata;
 using urakawa.xuk;
 
@@ -16,7 +18,10 @@ namespace DaisyExport
         private void CreateDTBookDocument()
         {
             XmlDocument DTBookDocument = CreateStub_DTBDocument();
+
             m_ListOfLevels = new List<urakawa.core.TreeNode>();
+
+
             m_FilesList_Image = new List<string>();
 
             // add metadata
@@ -64,6 +69,7 @@ namespace DaisyExport
             urakawa.core.TreeNode rNode = m_Presentation.RootNode;
             XmlNode bookNode = getFirstChildElementsWithName(DTBookDocument, true, "book", null); //DTBookDocument.GetElementsByTagName("book")[0];
 
+            m_ListOfLevels.Add(m_Presentation.RootNode);
 
             m_TreeNode_XmlNodeMap.Add(rNode, bookNode);
             XmlNode currentXmlNode = null;
@@ -72,10 +78,14 @@ namespace DaisyExport
                     delegate(urakawa.core.TreeNode n)
                     {
                         // add to list of levels if xml property has level string
-                        //todo: how do we know what level strings are (e.g. doctitle and docauthor) ?
-                        QualifiedName qName = n.GetXmlElementQName();
-                        if (qName != null &&
-                            (qName.LocalName.StartsWith("level") || qName.LocalName == "doctitle" || qName.LocalName == "docauthor"))
+                        //QualifiedName qName = n.GetXmlElementQName();
+                        //if (qName != null &&
+                        //    (qName.LocalName.StartsWith("level") || qName.LocalName == "doctitle" || qName.LocalName == "docauthor"))
+                        //{
+                        //    m_ListOfLevels.Add(n);
+                        //}
+
+                        if (doesTreeNodeTriggerNewSmil(n))
                         {
                             m_ListOfLevels.Add(n);
                         }
@@ -91,8 +101,25 @@ namespace DaisyExport
                             if (txtx != null)
                             {
                                 XmlNode textNode = DTBookDocument.CreateTextNode(txtx);
-                                m_TreeNode_XmlNodeMap[n.Parent].AppendChild(textNode);
-                                m_TreeNode_XmlNodeMap.Add(n, textNode);
+
+
+                                ExternalAudioMedia extAudio = GetExternalAudioMedia(n);
+
+                                if (extAudio == null)
+                                {
+                                    m_TreeNode_XmlNodeMap[n.Parent].AppendChild(textNode);
+                                    m_TreeNode_XmlNodeMap.Add(n, textNode);
+                                }
+                                else
+                                {
+                                    Debug.Fail("TreeNode without XmlProperty but with TextMedia cannot have Audio attached to it ! (reason: at authoring time, an XmlProperty should have been added when audio was recorded for the pure-text TreeNode) => " + txtx);
+
+                                    //XmlNode textParent = DTBookDocument.CreateElement(null, "sent", bookNode.NamespaceURI);
+                                    //textParent.AppendChild(textNode);
+
+                                    //m_TreeNode_XmlNodeMap[n.Parent].AppendChild(textParent);
+                                    //m_TreeNode_XmlNodeMap.Add(n, textParent);
+                                }
                             }
 
                             return true;
@@ -113,6 +140,10 @@ namespace DaisyExport
                         {
                             for (int i = 0; i < xmlProp.Attributes.Count; i++)
                             {
+                                //todo: check ID attribute, normalize with fresh new list of IDs
+                                // (warning: be careful maintaining ID REFS, such as idref attributes for annotation/annoref and prodnote/noteref
+                                // (be careful because idref contain URIs with hash character),
+                                // and also the special imgref and headers attributes which contain space-separated list of IDs, not URIs)
                                 CommonFunctions.CreateAppendXmlAttribute(DTBookDocument,
                                     currentXmlNode,
                                     xmlProp.Attributes[i].LocalName, xmlProp.Attributes[i].Value);
@@ -127,6 +158,8 @@ namespace DaisyExport
                         {
                             XmlNode textNode = DTBookDocument.CreateTextNode(txt);
                             currentXmlNode.AppendChild(textNode);
+
+                            Debug.Assert(n.Children.Count == 0);
                         }
 
                         // add current node to its parent
