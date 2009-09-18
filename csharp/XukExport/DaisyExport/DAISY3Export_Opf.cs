@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
+using urakawa.metadata;
 
 namespace DaisyExport
 {
@@ -24,7 +25,7 @@ namespace DaisyExport
             XmlNode itemNode = opfDocument.CreateElement(null, "item", manifestNode.NamespaceURI);
             manifestNode.AppendChild(itemNode);
             CommonFunctions.CreateAppendXmlAttribute(opfDocument, itemNode, "href", m_Filename_Ncx);
-            CommonFunctions.CreateAppendXmlAttribute(opfDocument, itemNode, "id", GetNextID(ID_OpfPrefix));
+            CommonFunctions.CreateAppendXmlAttribute(opfDocument, itemNode, "id", "ncx");
             CommonFunctions.CreateAppendXmlAttribute(opfDocument, itemNode, "media-type", mediaType_Ncx);
 
             itemNode = opfDocument.CreateElement(null, "item", manifestNode.NamespaceURI);
@@ -107,74 +108,73 @@ namespace DaisyExport
                 Path.Combine(m_OutputDirectory, m_Filename_Opf));
         }
 
+        private void AddMetadata_Generator(XmlDocument doc, XmlNode parentNode)
+        {
+            AddMetadataAsAttributes(doc, parentNode, "dtb:generator", "Tobi and the Urakawa SDK: the open-source DAISY multimedia authoring toolkit");
+        }
+
         private void AddMetadata_Opf(XmlDocument opfDocument)
         {
             XmlNode dc_metadataNode = getFirstChildElementsWithName(opfDocument, true, "dc-metadata", null); //opfDocument.GetElementsByTagName("dc-metadata")[0];
             XmlNode x_metadataNode = getFirstChildElementsWithName(opfDocument, true, "x-metadata", null); //opfDocument.GetElementsByTagName("x-metadata")[0];
 
-            foreach (urakawa.metadata.Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
+            Metadata mdId = AddMetadata_DtbUid(true, opfDocument, dc_metadataNode);
+            
+            //AddMetadata_Generator(opfDocument, x_metadataNode);
+            
+            AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totalTime", m_TotalTime.ToString());
+            AddMetadataAsInnerText(opfDocument, dc_metadataNode, "dc:format", "ANSI/NISO Z39.86-2005");
+            
+            foreach (Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
+                if (mdId == m
+                    || m.NameContentAttribute.Name.ToLower() == "dtb:totaltime"
+                    || m.NameContentAttribute.Name.ToLower() == "dc:format") continue;
+
                 XmlNode metadataNodeCreated = null;
                 if (m.NameContentAttribute.Name.StartsWith("dc:"))
                 {
-                    if (m.NameContentAttribute.Name == "dc:format")
-                    {
-                        metadataNodeCreated = AddMetadataAsInnerText(opfDocument, dc_metadataNode, m.NameContentAttribute.Name, "ANSI/NISO Z39.86-2005");
-                    }
-                    else
-                    {
-                        metadataNodeCreated = AddMetadataAsInnerText(opfDocument, dc_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
-                    }
+                    metadataNodeCreated = AddMetadataAsInnerText(opfDocument, dc_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
                 }
                 else
                 {
-                    if (m.NameContentAttribute.Name == "dtb:totaltime")
-                    {
-                        metadataNodeCreated = AddMetadataAsAttributes(opfDocument, x_metadataNode, m.NameContentAttribute.Name, m_TotalTime.ToString());
-                    }
-                    else
-                    {
-                        metadataNodeCreated = AddMetadataAsAttributes(opfDocument, x_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
-                    }
+                    metadataNodeCreated = AddMetadataAsAttributes(opfDocument, x_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
                 }
                 // add other metadata attributes if any
-                foreach (urakawa.metadata.MetadataAttribute ma in m.OtherAttributes.ContentsAs_YieldEnumerable)
+                foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_YieldEnumerable)
                 {
+                    if (ma.Name == "id") continue;
+
                     CommonFunctions.CreateAppendXmlAttribute(opfDocument, metadataNodeCreated, ma.Name, ma.Value);
                 }
 
             } // end of metadata for each loop
 
-            // add total time
-            XmlNode totalTimeNode = getFirstChildElementsWithName(opfDocument, true, "dtb:totaltime", null);
-            if (totalTimeNode == null)
-            {
-                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totaltime", m_TotalTime.ToString());
-            }
+
             //XmlNodeList totalTimeNodesList = opfDocument.GetElementsByTagName("dtb:totaltime");
             //if (totalTimeNodesList == null || (totalTimeNodesList != null && totalTimeNodesList.Count == 0))
             //{
-            //    AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totaltime", m_TotalTime.ToString());
+            //    AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totalTime", m_TotalTime.ToString());
             //}
 
             // add uid to dc:identifier
             //XmlNodeList identifierList = opfDocument.GetElementsByTagName("dc:Identifier");
-            XmlNode identifierNode = null;
-            bool isUidReAssigned = false;
-            foreach (XmlNode identifierMetaNode in getChildrenElementsWithName(opfDocument, true, "dc:Identifier", null, false))
-            {
-                if (identifierNode == null) identifierNode = identifierMetaNode;
+            //XmlNode identifierNode = null;
+            //bool isUidReAssigned = false;
+            //foreach (XmlNode identifierMetaNode in getChildrenElementsWithName(opfDocument, true, "dc:Identifier", null, false))
+            //{
+            //    if (identifierNode == null) identifierNode = identifierMetaNode;
 
-                if (identifierMetaNode.Attributes.GetNamedItem("uid") != null)
-                {
-                    identifierMetaNode.Attributes.GetNamedItem("uid").Value = "uid";
-                    isUidReAssigned = true;
-                }
-            }
-            if (!isUidReAssigned)
-            {
-                CommonFunctions.CreateAppendXmlAttribute(opfDocument, identifierNode, "id", "uid");
-            }
+            //    if (identifierMetaNode.Attributes.GetNamedItem("uid") != null)
+            //    {
+            //        identifierMetaNode.Attributes.GetNamedItem("uid").Value = "uid";
+            //        isUidReAssigned = true;
+            //    }
+            //}
+            //if (!isUidReAssigned)
+            //{
+            //    CommonFunctions.CreateAppendXmlAttribute(opfDocument, identifierNode, "id", "uid");
+            //}
         }
 
         private XmlNode AddMetadataAsInnerText(XmlDocument doc, XmlNode metadataParentNode, string name, string content)
