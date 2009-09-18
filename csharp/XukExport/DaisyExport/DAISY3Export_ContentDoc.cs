@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-
+using urakawa.metadata;
 using urakawa.xuk;
 
 namespace DaisyExport
@@ -21,12 +21,24 @@ namespace DaisyExport
             // add metadata
             XmlNode headNode = getFirstChildElementsWithName(DTBookDocument, true, "head", null); //DTBookDocument.GetElementsByTagName("head")[0]
 
+            Metadata mdId = null;
+            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
+            {
+                if (md.NameContentAttribute.Name != "dc:identifier") continue;
+
+                foreach (MetadataAttribute mda in md.OtherAttributes.ContentsAs_YieldEnumerable)
+                {
+                    if (mda.Name == "id")
+                    {
+                        mdId = md;
+                        AddMetadataAsAttributes(DTBookDocument, headNode, "dtb:uid", md.NameContentAttribute.Value);
+                    }
+                }
+            }
+
             foreach (urakawa.metadata.Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
-                if (m.NameContentAttribute == null)
-                {
-                    continue;
-                }
+                if (mdId == m) continue;
 
                 XmlNode metaNode = DTBookDocument.CreateElement(null, "meta", headNode.NamespaceURI);
 
