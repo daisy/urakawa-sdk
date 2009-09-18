@@ -23,72 +23,46 @@ namespace DaisyExport
             const string mediaType_Image_Png = "image/png";
             const string mediaType_Resource = "application/x-dtbresource+xml";
 
-            XmlNode itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
-            manifestNode.AppendChild ( itemNode );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", m_Filename_Ncx );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", "ncx" );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Ncx );
-
-            itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
-            manifestNode.AppendChild ( itemNode );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", m_Filename_Content );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", GetNextID ( ID_OpfPrefix ) );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Dtbook );
-
-            itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
-            manifestNode.AppendChild ( itemNode );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", m_Filename_Opf );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", GetNextID ( ID_OpfPrefix ) );
-            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Opf );
+            // add all files to manifest
+            AddFilenameToManifest ( opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx );
+            AddFilenameToManifest ( opfDocument, manifestNode, m_Filename_Content, GetNextID ( ID_OpfPrefix ), mediaType_Dtbook );
+            AddFilenameToManifest ( opfDocument, manifestNode, m_Filename_Opf, GetNextID ( ID_OpfPrefix ), mediaType_Opf );
 
             // add smil files to manifest
             List<string> smilIDListInPlayOrder = new List<string> ();
 
             foreach (string smilFileName in m_FilesList_Smil)
                 {
-                itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
-                manifestNode.AppendChild ( itemNode );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", smilFileName );
                 string strID = GetNextID ( ID_OpfPrefix );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", strID );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Smil );
-
+                AddFilenameToManifest ( opfDocument, manifestNode, smilFileName, strID, mediaType_Smil );
                 smilIDListInPlayOrder.Add ( strID );
                 }
 
             foreach (string audioFileName in m_FilesList_Audio)
                 {
-                itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
-                manifestNode.AppendChild ( itemNode );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", audioFileName );
                 string strID = GetNextID ( ID_OpfPrefix );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", strID );
 
                 if (string.Compare ( Path.GetExtension ( audioFileName ), ".wav", true ) == 0)
                     {
-                    CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Wav );
+                    AddFilenameToManifest ( opfDocument, manifestNode, audioFileName, strID, mediaType_Wav );
                     }
                 else
                     {
-                    CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Mpg );
+                    AddFilenameToManifest ( opfDocument, manifestNode, audioFileName, strID, mediaType_Mpg );
                     }
                 }
 
             foreach (string imageFileName in m_FilesList_Image)
                 {
-                itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
-                manifestNode.AppendChild ( itemNode );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", imageFileName );
                 string strID = GetNextID ( ID_OpfPrefix );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", strID );
 
                 if (string.Compare ( Path.GetExtension ( imageFileName ), ".png", true ) == 0)
                     {
-                    CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Image_Png );
+                    AddFilenameToManifest ( opfDocument, manifestNode, imageFileName, strID, mediaType_Image_Png );
                     }
                 else
                     {
-                    CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Image_Jpg );
+                    AddFilenameToManifest ( opfDocument, manifestNode, imageFileName, strID, mediaType_Image_Jpg );
                     }
                 }
 
@@ -109,17 +83,8 @@ Path.Combine ( m_OutputDirectory, resourceAudio_Filename ),
 true );
 
                 // add entry to manifest
-                itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
-                manifestNode.AppendChild ( itemNode );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", ResourceRes_Filename );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", "resource" );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Resource );
-
-                itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
-                manifestNode.AppendChild ( itemNode );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", resourceAudio_Filename );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", GetNextID ( ID_OpfPrefix ) );
-                CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType_Mpg );
+                AddFilenameToManifest ( opfDocument, manifestNode, ResourceRes_Filename, "resource", mediaType_Resource );
+                AddFilenameToManifest ( opfDocument, manifestNode, resourceAudio_Filename, GetNextID ( ID_OpfPrefix ), mediaType_Mpg );
                 }
 
             // create spine
@@ -130,11 +95,23 @@ true );
                 XmlNode itemRefNode = opfDocument.CreateElement ( null, "itemref", spineNode.NamespaceURI );
                 spineNode.AppendChild ( itemRefNode );
                 CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemRefNode, "idref", strSmilID );
+
                 }
 
             AddMetadata_Opf ( opfDocument );
             CommonFunctions.WriteXmlDocumentToFile ( opfDocument,
                 Path.Combine ( m_OutputDirectory, m_Filename_Opf ) );
+            }
+
+        private XmlNode AddFilenameToManifest ( XmlDocument opfDocument, XmlNode manifestNode, string filename, string strID, string mediaType )
+            {
+            XmlNode itemNode = opfDocument.CreateElement ( null, "item", manifestNode.NamespaceURI );
+            manifestNode.AppendChild ( itemNode );
+            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "href", filename );
+            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "id", strID );
+            CommonFunctions.CreateAppendXmlAttribute ( opfDocument, itemNode, "media-type", mediaType );
+
+            return itemNode;
             }
 
         private void AddMetadata_Generator ( XmlDocument doc, XmlNode parentNode )
