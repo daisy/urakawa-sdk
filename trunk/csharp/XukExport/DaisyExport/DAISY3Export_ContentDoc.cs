@@ -11,6 +11,7 @@ namespace DaisyExport
     {
         // DAISY3Export_ContentDoc
 
+        private XmlDocument m_DTBDocument;
         // to do regenerate ids
         private void CreateDTBookDocument()
         {
@@ -160,9 +161,9 @@ namespace DaisyExport
                         return true;
                     },
                     delegate(urakawa.core.TreeNode n) { });
-
-            CommonFunctions.WriteXmlDocumentToFile(DTBookDocument,
-                Path.Combine(m_OutputDirectory, m_Filename_Content));
+            m_DTBDocument = DTBookDocument;
+            //CommonFunctions.WriteXmlDocumentToFile(DTBookDocument,
+              //  Path.Combine(m_OutputDirectory, m_Filename_Content));
 
         }
 

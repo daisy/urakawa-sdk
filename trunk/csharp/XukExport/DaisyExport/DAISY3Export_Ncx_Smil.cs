@@ -92,6 +92,7 @@ namespace DaisyExport
                 // create smil stub document
                 smilDocument = CreateStub_SmilDocument();
                 smilFileName = GetNextSmilFileName;
+                bool IsPageAdded = false;
 
                 // create smil nodes
 
@@ -102,9 +103,7 @@ namespace DaisyExport
                     urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
                     string par_id = null;
 
-                    if (smilDocument != null)
-                    {
-
+                    
                         XmlNode mainSeq = getFirstChildElementsWithName(smilDocument, true, "body", null).FirstChild; //smilDocument.GetElementsByTagName("body")[0].FirstChild;
                         CommonFunctions.CreateAppendXmlAttribute(smilDocument, mainSeq, "id", GetNextID(ID_SmilPrefix));
                         XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
@@ -113,11 +112,11 @@ namespace DaisyExport
                         CommonFunctions.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
                         mainSeq.AppendChild(parNode);
 
-                        XmlNode textNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
-                        CommonFunctions.CreateAppendXmlAttribute(smilDocument, textNode, "id", GetNextID(ID_SmilPrefix));
+                        XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
+                        CommonFunctions.CreateAppendXmlAttribute ( smilDocument, SmilTextNode, "id", GetNextID ( ID_SmilPrefix ) );
                         string dtbookID = m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value;
-                        CommonFunctions.CreateAppendXmlAttribute(smilDocument, textNode, "src", m_Filename_Content + "#" + dtbookID);
-                        parNode.AppendChild(textNode);
+                        CommonFunctions.CreateAppendXmlAttribute ( smilDocument, SmilTextNode, "src", m_Filename_Content + "#" + dtbookID );
+                        parNode.AppendChild ( SmilTextNode );
 
                         XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
                         CommonFunctions.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString());
@@ -125,18 +124,23 @@ namespace DaisyExport
                         CommonFunctions.CreateAppendXmlAttribute(smilDocument, audioNode, "src", Path.GetFileName(externalAudio.Src));
                         parNode.AppendChild(audioNode);
 
+                    
                         // add audio file name in audio files list for use in opf creation
                         string audioFileName = Path.GetFileName(externalAudio.Src);
                         if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
 
                         // add to duration
                         durationOfCurrentSmil = durationOfCurrentSmil.Add(externalAudio.Duration.TimeDeltaAsTimeSpan);
-                    }// smilDocumeent null check ends
+                    
 
                     // if node n is pagenum, add to pageList
                     if (n.GetXmlElementQName() != null
                         && n.GetXmlElementQName().LocalName == "pagenum")
                     {
+                        // add custom test to par node
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, parNode, "customTest", "pagenum" );
+                    IsPageAdded = true;
+
                         XmlNode pageListNode = getFirstChildElementsWithName(ncxDocument, true, "pageList", null);
                         if (pageListNode == null)
                         {
@@ -186,28 +190,29 @@ namespace DaisyExport
                         txtNode.AppendChild(
                             ncxDocument.CreateTextNode(strPageValue));
 
-                        XmlNode audioNode = ncxDocument.CreateElement(null, "audio", pageListNode.NamespaceURI);
-                        navLabelNode.AppendChild(audioNode);
-                        CommonFunctions.CreateAppendXmlAttribute(ncxDocument, audioNode, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString());
-                        CommonFunctions.CreateAppendXmlAttribute(ncxDocument, audioNode, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString());
-                        CommonFunctions.CreateAppendXmlAttribute(ncxDocument, audioNode, "src", Path.GetFileName(externalAudio.Src));
+                        XmlNode audioNodeNcx = ncxDocument.CreateElement(null, "audio", pageListNode.NamespaceURI);
+                        navLabelNode.AppendChild ( audioNodeNcx );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString () );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString () );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "src", Path.GetFileName ( externalAudio.Src ) );
 
                         XmlNode contentNode = ncxDocument.CreateElement(null, "content", pageListNode.NamespaceURI);
                         pageTargetNode.AppendChild(contentNode);
                         CommonFunctions.CreateAppendXmlAttribute(ncxDocument, contentNode, "src", smilFileName + "#" + par_id);
+
+                        // add reference to par in dtbook document
+                        string strBtbookID = SmilTextNode.Attributes.GetNamedItem ( "src" ).Value.Split ( '#' )[1];
+                        XmlNodeList dtbookNodesList = m_DTBDocument.GetElementsByTagName ( "pagenum" );
+                        foreach (XmlNode p in dtbookNodesList)
+                            {
+                            if (p.Attributes.GetNamedItem ( "id" ).Value == strBtbookID)
+                                {
+                                CommonFunctions.CreateAppendXmlAttribute ( m_DTBDocument, p, "smilref", smilFileName + "#" + par_id );
+                                                                                                }
+                            }
                     }
                 }// foreach for tree nodes n ends
 
-
-                /*
-                if ((currentHeadingTreeNode != null &&
-                    (currentHeadingTreeNode == n || currentHeadingTreeNode.IsAncestorOf ( n )) )
-                    || isDoctitleOrDocAuthor)
-                    {
-                    */
-                // check and create doctitle and docauthor nodes
-                //if (qName != null &&
-                //(qName.LocalName == "doctitle" || qName.LocalName == "docauthor"))
 
                 if (isDoctitleOrDocAuthor)
                 {
@@ -315,7 +320,7 @@ namespace DaisyExport
                     XmlNode mainSeqNode = getFirstChildElementsWithName(smilDocument, true, "body", null).FirstChild; //smilDocument.GetElementsByTagName("body")[0].FirstChild;
                     CommonFunctions.CreateAppendXmlAttribute(smilDocument, mainSeqNode, "dur", durationOfCurrentSmil.ToString());
                     CommonFunctions.CreateAppendXmlAttribute(smilDocument, mainSeqNode, "fill", "remove");
-                    AddMetadata_Smil(smilDocument, smilElapseTime.ToString());
+                    AddMetadata_Smil(smilDocument, smilElapseTime.ToString(), IsPageAdded);
 
                     CommonFunctions.WriteXmlDocumentToFile(smilDocument,
                         Path.Combine(m_OutputDirectory, smilFileName));
@@ -325,6 +330,8 @@ namespace DaisyExport
                 }
 
             }
+        CommonFunctions.WriteXmlDocumentToFile(m_DTBDocument,
+          Path.Combine(m_OutputDirectory, m_Filename_Content));
 
             // write ncs document to file
             m_TotalTime = smilElapseTime;
@@ -474,9 +481,19 @@ namespace DaisyExport
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:depth", strDepth);
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:totalPageCount", strTotalPages);
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:maxPageNumber", strMaxNormalPage);
+
+
+            // add custom test to headNode
+                        XmlNode customTestNode = ncxDocument.CreateElement ( null, "smilCustomTest", headNode.NamespaceURI );
+            headNode.AppendChild ( customTestNode );
+            CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "bookStruct", "PAGE_NUMBER" );
+            CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "defaultState", "false" );
+            CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "id", "pagenum");
+            CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "override", "visible" );
+
         }
 
-        private void AddMetadata_Smil(XmlDocument smilDocument, string strElapsedTime)
+        private void AddMetadata_Smil ( XmlDocument smilDocument, string strElapsedTime, bool isCustomTestRequired )
         {
             XmlNode headNode = getFirstChildElementsWithName(smilDocument, true, "head", null); //smilDocument.GetElementsByTagName("head")[0];
 
@@ -485,6 +502,18 @@ namespace DaisyExport
             AddMetadata_Generator(smilDocument, headNode);
 
             AddMetadataAsAttributes(smilDocument, headNode, "dtb:totalElapsedTime", strElapsedTime);
+
+
+            if (isCustomTestRequired)
+                {
+                XmlNode customAttributesNode = smilDocument.CreateElement ( null, "customAttributes", headNode.NamespaceURI );
+                headNode.AppendChild ( customAttributesNode );
+                XmlNode customTestNode = smilDocument.CreateElement ( null, "customTest", headNode.NamespaceURI );
+                customAttributesNode.AppendChild ( customTestNode );
+                CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "defaultState", "false" );
+                CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "id", "pagenum" );
+                CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "override", "visible" );
+                }
         }
 
         private XmlNode AddMetadataAsAttributes(XmlDocument doc, XmlNode headNode, string name, string content)
