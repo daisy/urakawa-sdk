@@ -174,6 +174,8 @@ namespace DaisyExport
                         string strPageValue = n.GetTextMediaFlattened();
                         ++totalPageCount;
 
+                        playOrderList_Sorted.Add(pageTargetNode);
+
                         if (strTypeVal == "normal")
                         {
                             int tmp = int.Parse(strPageValue);
