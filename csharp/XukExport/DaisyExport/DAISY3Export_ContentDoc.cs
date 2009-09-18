@@ -82,7 +82,20 @@ namespace DaisyExport
 
                         urakawa.property.xml.XmlProperty xmlProp = n.GetProperty<urakawa.property.xml.XmlProperty>();
 
-                        if (xmlProp == null || xmlProp.LocalName == "book") return true;
+                        if (xmlProp != null && xmlProp.LocalName == "book") return true;
+
+                        if (xmlProp == null)
+                        {
+                            string txtx = n.GetTextMedia() != null ? n.GetTextMedia().Text : null;
+                            if (txtx != null)
+                            {
+                                XmlNode textNode = DTBookDocument.CreateTextNode(txtx);
+                                m_TreeNode_XmlNodeMap[n.Parent].AppendChild(textNode);
+                                m_TreeNode_XmlNodeMap.Add(n, textNode);
+                            }
+
+                            return true;
+                        }
 
                         // create sml node in dtbook document
 
@@ -105,19 +118,6 @@ namespace DaisyExport
                             }
                         } // attribute nodes created
 
-                        if (currentXmlNode.LocalName == "table")
-                        {
-                            CommonFunctions.CreateAppendXmlAttribute(DTBookDocument,
-                                currentXmlNode,
-                                "class", "table");
-                        }
-
-                        if (currentXmlNode.LocalName == "list")
-                        {
-                            CommonFunctions.CreateAppendXmlAttribute(DTBookDocument,
-                                currentXmlNode,
-                                "class", "list");
-                        }
 
                         // add text from text property
 
@@ -149,7 +149,7 @@ namespace DaisyExport
                                     if (!File.Exists(destPath)) File.Copy(sourcePath, destPath);
                                     imgSrcAttribute.Value = imgFileName;
 
-                                    if (!imgFileName.StartsWith("http://") && !m_FilesList_Image.Contains(imgFileName))
+                                    if (!m_FilesList_Image.Contains(imgFileName))
                                         m_FilesList_Image.Add(imgFileName);
                                 }
                                 else
