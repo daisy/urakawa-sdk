@@ -1069,7 +1069,7 @@ namespace urakawa
             {
                 destination.WriteAttributeString(XukStrings.RootUri, baseUri.MakeRelativeUri(RootUri).ToString());
             }
-            if (Language != null)
+            if (!String.IsNullOrEmpty(Language))
             {
                 destination.WriteAttributeString(XukStrings.Language, Language);
             }

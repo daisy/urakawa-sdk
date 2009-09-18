@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-
+using urakawa.metadata;
 using urakawa.xuk;
 
 namespace DaisyExport
@@ -45,12 +45,12 @@ namespace DaisyExport
             delegate(urakawa.core.TreeNode n)
             {
                 QualifiedName currentQName = n.GetXmlElementQName();
+
                 if (currentQName != null &&
-                    (currentQName.LocalName == "h1" || currentQName.LocalName == "h2" || currentQName.LocalName == "h3" || currentQName.LocalName == "h4"
+                    (currentQName.LocalName == "hd" || currentQName.LocalName == "h1" || currentQName.LocalName == "h2" || currentQName.LocalName == "h3" || currentQName.LocalName == "h4"
                     || currentQName.LocalName == "h5" || currentQName.LocalName == "h6"))
                 {
                     currentHeadingTreeNode = n;
-
                 }
 
                 if (currentQName != null &&
@@ -369,9 +369,20 @@ namespace DaisyExport
         {
             XmlNode headNode = getFirstChildElementsWithName(ncxDocument, true, "head", null); //ncxDocument.GetElementsByTagName("head")[0];
 
-            urakawa.metadata.Metadata m = m_Presentation.GetMetadata("dc:identifier")[0];
-            AddMetadataAsAttributes(ncxDocument, headNode, "dtb:uid", m.NameContentAttribute.Value);
+            //urakawa.metadata.Metadata m = m_Presentation.GetMetadata("dc:identifier")[0];
+            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
+            {
+                if (md.NameContentAttribute.Name != "dc:identifier") continue;
 
+                foreach (MetadataAttribute mda in md.OtherAttributes.ContentsAs_YieldEnumerable)
+                {
+                    if (mda.Name=="id")
+                    {
+                        AddMetadataAsAttributes(ncxDocument, headNode, "dtb:uid", md.NameContentAttribute.Value);
+                    }
+                }
+            }
+            
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:depth", strDepth);
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:totalPageCount", strTotalPages);
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:maxPageNumber", strMaxNormalPage);
@@ -381,8 +392,20 @@ namespace DaisyExport
         {
             XmlNode headNode = getFirstChildElementsWithName(smilDocument, true, "head", null); //smilDocument.GetElementsByTagName("head")[0];
 
-            urakawa.metadata.Metadata m = m_Presentation.GetMetadata("dc:identifier")[0];
-            AddMetadataAsAttributes(smilDocument, headNode, "dtb:uid", m.NameContentAttribute.Value);
+            //urakawa.metadata.Metadata m = m_Presentation.GetMetadata("dc:identifier")[0];
+            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
+            {
+                if (md.NameContentAttribute.Name != "dc:identifier") continue;
+
+                foreach (MetadataAttribute mda in md.OtherAttributes.ContentsAs_YieldEnumerable)
+                {
+                    if (mda.Name == "id")
+                    {
+                        AddMetadataAsAttributes(smilDocument, headNode, "dtb:uid", md.NameContentAttribute.Value);
+                    }
+                }
+            }
+            
             AddMetadataAsAttributes(smilDocument, headNode, "dtb:totalElapsedTime", strElapsedTime);
         }
 
@@ -427,7 +450,7 @@ namespace DaisyExport
 
 
             CommonFunctions.CreateAppendXmlAttribute(NcxDocument, rootNode, "version", "2005-1");
-            CommonFunctions.CreateAppendXmlAttribute(NcxDocument, rootNode, "xml:lang", "en");
+            CommonFunctions.CreateAppendXmlAttribute(NcxDocument, rootNode, "xml:lang", (string.IsNullOrEmpty(m_Presentation.Language) ? "en-US" : m_Presentation.Language));
 
 
             XmlNode headNode = NcxDocument.CreateElement(null, "head", rootNode.NamespaceURI);
@@ -446,8 +469,8 @@ namespace DaisyExport
 
             smilDocument.AppendChild(smilDocument.CreateXmlDeclaration("1.0", "utf-8", null));
             smilDocument.AppendChild(smilDocument.CreateDocumentType("smil",
-                "-//NISO//DTD dtbsmil 2005-1//EN",
-                    "http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd",
+                "-//NISO//DTD dtbsmil 2005-2//EN",
+                    "http://www.daisy.org/z3986/2005/dtbsmil-2005-2.dtd",
                 null));
             XmlNode smilRootNode = smilDocument.CreateElement(null,
                 "smil", "http://www.w3.org/2001/SMIL20/");
@@ -464,7 +487,5 @@ namespace DaisyExport
 
             return smilDocument;
         }
-
-
     }
 }
