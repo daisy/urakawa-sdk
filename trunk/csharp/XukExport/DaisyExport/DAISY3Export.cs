@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Xml;
 
 using urakawa;
+using urakawa.core;
 using urakawa.publish;
 using urakawa.property.channel;
 using urakawa.media;
@@ -37,17 +38,19 @@ namespace DaisyExport
 
         }
 
+        private bool doesTreeNodeTriggerNewSmil(TreeNode node)
+        {
+            QualifiedName qName = node.GetXmlElementQName();
+            return qName != null && qName.LocalName.StartsWith("level");
+        }
+
         public void ExportToDaisy3(string exportDirectory)
         {
             m_ID_Counter = 0;
             m_OutputDirectory = exportDirectory;
 
             //TreeNodeTestDelegate triggerDelegate  = delegate(urakawa.core.TreeNode node) { return node.GetManagedAudioMedia () != null ; };
-            TreeNodeTestDelegate triggerDelegate = delegate(urakawa.core.TreeNode node)
-                                                       {
-                                                           QualifiedName qName = node.GetXmlElementQName();
-                                                           return qName != null && qName.LocalName == "level1";
-                                                       };
+            TreeNodeTestDelegate triggerDelegate = doesTreeNodeTriggerNewSmil;
             TreeNodeTestDelegate skipDelegate = delegate(urakawa.core.TreeNode node) { return false; };
 
             PublishFlattenedManagedAudioVisitor publishVisitor = new PublishFlattenedManagedAudioVisitor(triggerDelegate, skipDelegate);
