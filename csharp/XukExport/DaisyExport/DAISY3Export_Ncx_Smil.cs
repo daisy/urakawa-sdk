@@ -26,7 +26,7 @@ namespace DaisyExport
             m_FilesList_Smil = new List<string>();
             m_FilesList_Audio = new List<string>();
             m_SmilFileNameCounter = 0;
-            uint playOrder = 0;
+                        List<XmlNode> playOrderList_Sorted = new List<XmlNode> ();
             int totalPageCount = 0;
             int maxNormalPageNumber = 0;
             int maxDepth = 1;
@@ -84,10 +84,9 @@ namespace DaisyExport
                     continue;
                 }
 
-                //caching playorder for navPoints because page numbers are added first.
-                uint navPointPlayOrder = playOrder;
-                if (!isDoctitleOrDocAuthor) navPointPlayOrder = ++playOrder;
-
+                //caching playorder for navPoints because page numbers are added first in code below.
+            int navPointPlayOrderListIndex = playOrderList_Sorted.Count ;
+                
 
                 // create smil stub document
                 smilDocument = CreateStub_SmilDocument();
@@ -166,11 +165,14 @@ namespace DaisyExport
 
                         CommonFunctions.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "id", GetNextID(ID_NcxPrefix));
                         CommonFunctions.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "class", "pagenum");
-                        CommonFunctions.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "playOrder", (++playOrder).ToString());
+                        CommonFunctions.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "playOrder", "");
                         string strTypeVal = n.GetXmlProperty().GetAttribute("page").Value;
                         CommonFunctions.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "type", strTypeVal);
                         string strPageValue = n.GetTextMediaFlattened();
                         ++totalPageCount;
+
+                        // adding node to play order node list
+                        playOrderList_Sorted.Add ( pageTargetNode );
 
                         if (strTypeVal == "normal")
                         {
@@ -248,7 +250,10 @@ namespace DaisyExport
                     navPointNode = ncxDocument.CreateElement(null, "navPoint", navMapNode.NamespaceURI);
                     if (currentHeadingTreeNode != null) CommonFunctions.CreateAppendXmlAttribute(ncxDocument, navPointNode, "class", currentHeadingTreeNode.GetProperty<urakawa.property.xml.XmlProperty>().LocalName);
                     CommonFunctions.CreateAppendXmlAttribute(ncxDocument, navPointNode, "id", GetNextID(ID_NcxPrefix));
-                    CommonFunctions.CreateAppendXmlAttribute(ncxDocument, navPointNode, "playOrder", (navPointPlayOrder).ToString());
+                    CommonFunctions.CreateAppendXmlAttribute(ncxDocument, navPointNode, "playOrder","" );
+
+                    // insert node to play order list at cached index
+                    playOrderList_Sorted.Insert (navPointPlayOrderListIndex, navPointNode );
 
                     urakawa.core.TreeNode parentNode = GetParentLevelNode(urakawaNode);
 
@@ -330,6 +335,27 @@ namespace DaisyExport
                 }
 
             }
+            // assign play orders
+        Dictionary<string, string> playOrder_ReferenceMap = new Dictionary<string, string> ();
+        int playOrderCounter = 1;
+        foreach (XmlNode xn in playOrderList_Sorted)
+            {
+            XmlNode referedContentNode = getFirstChildElementsWithName ( xn, false, "content", xn.NamespaceURI );
+            string contentNode_Src = referedContentNode.Attributes.GetNamedItem("src").Value ;
+
+            if (playOrder_ReferenceMap.ContainsKey ( contentNode_Src ))
+                {
+                xn.Attributes.GetNamedItem ( "playOrder" ).Value = playOrder_ReferenceMap[contentNode_Src];
+                }
+            else
+                {
+                xn.Attributes.GetNamedItem ( "playOrder" ).Value = playOrderCounter.ToString ();
+                playOrder_ReferenceMap.Add ( contentNode_Src, playOrderCounter.ToString () );
+                ++playOrderCounter; 
+                }
+
+            }
+
         CommonFunctions.WriteXmlDocumentToFile(m_DTBDocument,
           Path.Combine(m_OutputDirectory, m_Filename_Content));
 
