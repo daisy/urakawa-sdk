@@ -127,7 +127,7 @@ namespace XukImport
                     Presentation presentation = m_Project.Presentations.Get(0);
                     foreach (Metadata md in presentation.Metadatas.ContentsAs_ListCopy)
                     {
-                        if (isUniqueIdName(md.NameContentAttribute.Name.ToLower())
+                        if (isUniqueIdName(md.NameContentAttribute.Name)
                             && md.NameContentAttribute.Value == m_PublicationUniqueIdentifier)
                         {
                             presentation.Metadatas.Remove(md);

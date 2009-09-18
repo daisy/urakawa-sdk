@@ -165,7 +165,6 @@ namespace XukImport
                         element = node;
                         break; // first element is ok.
                     }
-
                 }
 
                 if (element == null)
@@ -191,36 +190,39 @@ namespace XukImport
                 yield break;
             }
 
-            IEnumerator enumerator = root.GetEnumerator();
-            while (enumerator.MoveNext())
+            if (root.LocalName == localName || root.Name == localName)
             {
-                XmlNode node = (XmlNode)enumerator.Current;
-
-                if (node != null
-                    && node.NodeType == XmlNodeType.Element
-                    && (node.LocalName == localName || node.Name == localName))
+                if (!string.IsNullOrEmpty(namespaceUri))
                 {
-                    if (!string.IsNullOrEmpty(namespaceUri))
+                    if (root.NamespaceURI == namespaceUri)
                     {
-                        if (node.NamespaceURI == namespaceUri)
-                        {
-                            yield return node;
-
-                            if (breakOnFirstFound)
-                            {
-                                yield break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        yield return node;
+                        yield return root;
 
                         if (breakOnFirstFound)
                         {
                             yield break;
                         }
                     }
+                }
+                else
+                {
+                    yield return root;
+
+                    if (breakOnFirstFound)
+                    {
+                        yield break;
+                    }
+                }
+            }
+
+            IEnumerator enumerator = root.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                XmlNode node = (XmlNode)enumerator.Current;
+
+                if (node.NodeType != XmlNodeType.Element)
+                {
+                    continue;
                 }
 
                 if (deep)
@@ -235,7 +237,33 @@ namespace XukImport
                         }
                     }
                 }
+                else
+                {
+                    if (node.LocalName == localName || node.Name == localName)
+                    {
+                        if (!string.IsNullOrEmpty(namespaceUri))
+                        {
+                            if (node.NamespaceURI == namespaceUri)
+                            {
+                                yield return node;
 
+                                if (breakOnFirstFound)
+                                {
+                                    yield break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            yield return node;
+
+                            if (breakOnFirstFound)
+                            {
+                                yield break;
+                            }
+                        }
+                    }
+                }
             }
 
             yield break;
