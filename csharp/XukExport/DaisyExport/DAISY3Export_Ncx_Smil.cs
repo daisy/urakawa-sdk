@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using urakawa.metadata;
+using urakawa.metadata.daisy;
 using urakawa.xuk;
 
 namespace DaisyExport
@@ -365,24 +366,93 @@ namespace DaisyExport
             return i;
         }
 
+        private Metadata AddMetadata_DtbUid(XmlDocument ncxDocument, XmlNode headNode)
+        {
+            Metadata mdUid = null;
+            XmlNode metaNodeUid = null;
+            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
+            {
+                if (!isUniqueIdName(md.NameContentAttribute.Name)) continue;
+
+                foreach (MetadataAttribute mda in md.OtherAttributes.ContentsAs_YieldEnumerable)
+                {
+                    if (mda.Name != "id") continue;
+
+                    //AddMetadataAsAttributes(ncxDocument, headNode, "dtb:uid", md.NameContentAttribute.Value);
+
+                    XmlNode metaNode = ncxDocument.CreateElement(null, "meta", headNode.NamespaceURI);
+                    headNode.AppendChild(metaNode);
+
+                    CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNode, "name", "dtb:uid");
+                    CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNode, "content", md.NameContentAttribute.Value);
+
+                    mdUid = md;
+                    metaNodeUid = metaNode;
+                    break;
+                }
+
+                if (mdUid != null)
+                {
+                    // add metadata optional attributes if any
+                    foreach (MetadataAttribute ma in md.OtherAttributes.ContentsAs_YieldEnumerable)
+                    {
+                        if (ma.Name == "id") continue;
+
+                        CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNodeUid, ma.Name, ma.Value);
+                    }
+
+                    return mdUid;
+                }
+            }
+
+            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
+            {
+                if (!isUniqueIdName(md.NameContentAttribute.Name)) continue;
+
+                //AddMetadataAsAttributes(ncxDocument, headNode, "dtb:uid", md.NameContentAttribute.Value);
+
+                XmlNode metaNode = ncxDocument.CreateElement(null, "meta", headNode.NamespaceURI);
+                headNode.AppendChild(metaNode);
+
+                CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNode, "name", "dtb:uid");
+                CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNode, "content", md.NameContentAttribute.Value);
+
+                // add metadata optional attributes if any
+                foreach (MetadataAttribute ma in md.OtherAttributes.ContentsAs_YieldEnumerable)
+                {
+                    if (ma.Name == "id") continue;
+
+                    CommonFunctions.CreateAppendXmlAttribute(ncxDocument, metaNode, ma.Name, ma.Value);
+                }
+                return md;
+            }
+
+            return null;
+        }
+
+        private static bool isUniqueIdName(string name)
+        {
+            string lower = name.ToLower();
+
+            if ("dc:identifier" == lower)
+            {
+                return true;
+            }
+
+            MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition("dc:Identifier");
+            return md != null && md.Synonyms.Find(
+                                delegate(string s)
+                                {
+                                    return s.ToLower() == lower;
+                                }) != null;
+        }
+
         private void AddMetadata_Ncx(XmlDocument ncxDocument, string strTotalPages, string strMaxNormalPage, string strDepth)
         {
             XmlNode headNode = getFirstChildElementsWithName(ncxDocument, true, "head", null); //ncxDocument.GetElementsByTagName("head")[0];
 
-            //urakawa.metadata.Metadata m = m_Presentation.GetMetadata("dc:identifier")[0];
-            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
-            {
-                if (md.NameContentAttribute.Name != "dc:identifier") continue;
+            AddMetadata_DtbUid(ncxDocument, headNode);
 
-                foreach (MetadataAttribute mda in md.OtherAttributes.ContentsAs_YieldEnumerable)
-                {
-                    if (mda.Name=="id")
-                    {
-                        AddMetadataAsAttributes(ncxDocument, headNode, "dtb:uid", md.NameContentAttribute.Value);
-                    }
-                }
-            }
-            
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:depth", strDepth);
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:totalPageCount", strTotalPages);
             AddMetadataAsAttributes(ncxDocument, headNode, "dtb:maxPageNumber", strMaxNormalPage);
@@ -392,20 +462,8 @@ namespace DaisyExport
         {
             XmlNode headNode = getFirstChildElementsWithName(smilDocument, true, "head", null); //smilDocument.GetElementsByTagName("head")[0];
 
-            //urakawa.metadata.Metadata m = m_Presentation.GetMetadata("dc:identifier")[0];
-            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
-            {
-                if (md.NameContentAttribute.Name != "dc:identifier") continue;
+            AddMetadata_DtbUid(smilDocument, headNode);
 
-                foreach (MetadataAttribute mda in md.OtherAttributes.ContentsAs_YieldEnumerable)
-                {
-                    if (mda.Name == "id")
-                    {
-                        AddMetadataAsAttributes(smilDocument, headNode, "dtb:uid", md.NameContentAttribute.Value);
-                    }
-                }
-            }
-            
             AddMetadataAsAttributes(smilDocument, headNode, "dtb:totalElapsedTime", strElapsedTime);
         }
 

@@ -21,21 +21,9 @@ namespace DaisyExport
             // add metadata
             XmlNode headNode = getFirstChildElementsWithName(DTBookDocument, true, "head", null); //DTBookDocument.GetElementsByTagName("head")[0]
 
-            Metadata mdId = null;
-            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
-            {
-                if (md.NameContentAttribute.Name != "dc:identifier") continue;
+            Metadata mdId = AddMetadata_DtbUid(DTBookDocument, headNode);
 
-                foreach (MetadataAttribute mda in md.OtherAttributes.ContentsAs_YieldEnumerable)
-                {
-                    if (mda.Name == "id")
-                    {
-                        mdId = md;
-                        AddMetadataAsAttributes(DTBookDocument, headNode, "dtb:uid", md.NameContentAttribute.Value);
-                    }
-                }
-            }
-
+            // todo: filter-out unecessary metadata for DTBOOK (e.g. dtb:multimediatype)
             foreach (urakawa.metadata.Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
                 if (mdId == m) continue;
