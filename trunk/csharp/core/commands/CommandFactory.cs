@@ -66,5 +66,12 @@ namespace urakawa.commands
             command.Init(metadata, content);
             return command;
         }
+
+        public MetadataSetUidCommand CreateMetadataSetUidCommand(Metadata metadata, string content)
+        {
+            MetadataSetUidCommand command = Create<MetadataSetUidCommand>();
+            command.Init(metadata, content);
+            return command;
+        }
     }
 }
