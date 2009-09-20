@@ -7,7 +7,7 @@ using urakawa.metadata;
 
 namespace urakawa.commands
 {
-    public class MetadataSetNameCommand : Command
+    public class MetadataSetUidCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -16,7 +16,7 @@ namespace urakawa.commands
                 return false;
             }
 
-            MetadataSetNameCommand otherz = other as MetadataSetNameCommand;
+            MetadataSetUidCommand otherz = other as MetadataSetUidCommand;
             if (otherz == null)
             {
                 return false;
@@ -29,16 +29,16 @@ namespace urakawa.commands
 
         public override string GetTypeNameFormatted()
         {
-            return XukStrings.MetadataSetNameCommand;
+            return XukStrings.MetadataSetUidCommand;
         }
 
-        private string m_OriginalName;
-        private string m_NewName;
+        private string m_OriginalUid;
+        private string m_NewUid;
 
-        public string Name
+        public string Uid
         {
-            private set { m_NewName = value; }
-            get { return m_NewName; }
+            private set { m_NewUid = value; }
+            get { return m_NewUid; }
         }
         private Metadata m_Metadata;
         public Metadata Metadata
@@ -47,25 +47,25 @@ namespace urakawa.commands
             get { return m_Metadata; }
         }
 
-        
 
-        public void Init(Metadata metadata, string name)
+
+        public void Init(Metadata metadata, string uid)
         {
             if (metadata == null)
             {
                 throw new ArgumentNullException("metadata");
             }
-            if (name == null)
+            if (uid == null)
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException("uid");
             }
 
             Metadata = metadata;
-            m_OriginalName = Metadata.NameContentAttribute.Name;
-            Name = name;
+            m_OriginalUid = Metadata.NameContentAttribute.Uid;
+            Uid = uid;
 
-            ShortDescription = "Set metadata name";
-            LongDescription = "Set the Name of the Metadata object";
+            ShortDescription = "Set metadata UID";
+            LongDescription = "Set the UID of the Metadata object";
         }
 
         public override bool CanExecute
@@ -80,12 +80,12 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            Metadata.NameContentAttribute.Name = m_NewName;
+            Metadata.NameContentAttribute.Uid = m_NewUid;
         }
 
         public override void UnExecute()
         {
-            Metadata.NameContentAttribute.Name = m_OriginalName;
+            Metadata.NameContentAttribute.Uid = m_OriginalUid;
         }
 
 
