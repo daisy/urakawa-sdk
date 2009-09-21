@@ -20,7 +20,8 @@ namespace DaisyExport
             XmlDocument DTBookDocument = CreateStub_DTBDocument();
 
             m_ListOfLevels = new List<urakawa.core.TreeNode>();
-
+            Dictionary<string, string> old_New_IDMap = new Dictionary<string, string> ();
+            List<XmlAttribute> referencingAttributesList = new List<XmlAttribute> ();
 
             m_FilesList_Image = new List<string>();
 
@@ -140,17 +141,34 @@ namespace DaisyExport
                         {
                             for (int i = 0; i < xmlProp.Attributes.Count; i++)
                             {
-                                //todo: check ID attribute, normalize with fresh new list of IDs
+                                                                //todo: check ID attribute, normalize with fresh new list of IDs
                                 // (warning: be careful maintaining ID REFS, such as idref attributes for annotation/annoref and prodnote/noteref
                                 // (be careful because idref contain URIs with hash character),
                                 // and also the special imgref and headers attributes which contain space-separated list of IDs, not URIs)
-                                CommonFunctions.CreateAppendXmlAttribute(DTBookDocument,
+                            
+                            if (xmlProp.Attributes[i].LocalName == "id")
+                                {
+                                string id_New = GetNextID ( ID_DTBPrefix );
+                                CommonFunctions.CreateAppendXmlAttribute ( DTBookDocument,
                                     currentXmlNode,
-                                    xmlProp.Attributes[i].LocalName, xmlProp.Attributes[i].Value);
-                            }
+                                    "id", id_New );
+                                
+                                old_New_IDMap.Add ( xmlProp.Attributes[i].Value, id_New );
+                                }
+                            else
+                                {
+                                CommonFunctions.CreateAppendXmlAttribute ( DTBookDocument,
+                                    currentXmlNode,
+                                    xmlProp.Attributes[i].LocalName, xmlProp.Attributes[i].Value );
+                                }
+                            } // for loop ends
                         } // attribute nodes created
 
-
+                    // add id attribute in case it do not exists and it is required
+                    if ( currentXmlNode.Attributes.GetNamedItem("id") == null && IsIDRequired ( currentXmlNode.LocalName))
+                        {
+                        CommonFunctions.CreateAppendXmlAttribute( DTBookDocument, currentXmlNode, "id", GetNextID( ID_DTBPrefix )  );
+                        }
                         // add text from text property
 
                         string txt = n.GetTextMedia() != null ? n.GetTextMedia().Text : null;
@@ -167,6 +185,9 @@ namespace DaisyExport
 
                         // add nodes to dictionary 
                         m_TreeNode_XmlNodeMap.Add(n, currentXmlNode);
+
+                    // if current xmlnode is referencing node, add its referencing attribute to referencingAttributesList
+                        AddReferencingNodeToReferencedAttributesList ( currentXmlNode, referencingAttributesList );
 
                         // if QName is img and img src is on disk, copy it to output dir
                         if (currentXmlNode.LocalName == "img")
@@ -194,11 +215,60 @@ namespace DaisyExport
                         return true;
                     },
                     delegate(urakawa.core.TreeNode n) { });
+
+            // set references to new ids
+            foreach ( XmlAttribute attr in referencingAttributesList )
+                {
+                string strIDToFind = attr.Value;
+                if ( strIDToFind.Contains ("#"))
+                    {
+                    strIDToFind =  strIDToFind.Split('#')[1] ;
+                    }
+                if (old_New_IDMap.ContainsKey ( strIDToFind ))
+                    {
+                    string id_New = old_New_IDMap[strIDToFind];
+                    
+                    attr.Value = "#" + id_New;
+                    }          
+                }
+
             m_DTBDocument = DTBookDocument;
             //CommonFunctions.WriteXmlDocumentToFile(DTBookDocument,
               //  Path.Combine(m_OutputDirectory, m_Filename_Content));
 
         }
+
+        private bool IsIDRequired ( string nodeLocalName)
+            {
+             if ( string.IsNullOrEmpty ( nodeLocalName )
+                 || nodeLocalName == "book"
+                 || nodeLocalName == "frontmatter"
+                 || nodeLocalName == "bodymatter"
+                  ||  nodeLocalName == "rearmatter"
+                 || nodeLocalName.StartsWith ("level"))
+                 {
+                 return false;
+                 }
+            return true ;
+            }
+
+        private bool AddReferencingNodeToReferencedAttributesList ( XmlNode node, List<XmlAttribute> attributesList )
+            {
+            string nodeLocalName = node.LocalName;
+
+            if (nodeLocalName == "noteref"
+                || nodeLocalName == "annoref" )
+                                {
+                                attributesList.Add ((XmlAttribute)  node.Attributes.GetNamedItem ( "idref" ) );
+                return true;
+                }
+            else if (nodeLocalName == "a" )
+                {
+                attributesList.Add ((XmlAttribute)  node.Attributes.GetNamedItem ( "href" ) );
+                return true;
+                }
+            return false;
+            }
 
         //private bool ShouldCreateNextSmilFile(urakawa.core.TreeNode node)
         //{

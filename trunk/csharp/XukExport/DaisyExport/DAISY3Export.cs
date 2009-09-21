@@ -104,7 +104,7 @@ namespace DaisyExport
         private const string ID_SmilPrefix = "sm_";
         private const string ID_NcxPrefix = "ncx_";
         private const string ID_OpfPrefix = "opf_";
-        private uint m_ID_Counter;
+        private long m_ID_Counter;
 
         private string GetNextID(string prefix)
         {
