@@ -46,6 +46,11 @@ namespace DaisyExport
 
         public void ExportToDaisy3(string exportDirectory)
         {
+        if (m_Presentation.RootNode.GetDurationOfManagedAudioMediaFlattened ().TimeDeltaAsMillisecondLong == 0)
+            {
+            System.Diagnostics.Debug.Fail ( "no audio found", "No audio node found in the project being exported" );
+            }
+
             m_ID_Counter = 0;
             m_OutputDirectory = exportDirectory;
 
