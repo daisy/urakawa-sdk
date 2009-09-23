@@ -3,7 +3,7 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</ProjectGuid>
+    <ProjectGuid>{05DB208F-091E-41EC-B783-2C591FA8E936}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>App.ico</ApplicationIcon>
@@ -212,6 +212,7 @@
     <Compile Include="events\undo\UndoRedoManagerEventArgs.cs" />
     <Compile Include="media\data\utilities\CloseNotifyingStream.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
+    <Compile Include="property\channel\ImageChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />
     <Compile Include="property\channel\TextChannel.cs" />
     <Compile Include="property\Property.cs" />

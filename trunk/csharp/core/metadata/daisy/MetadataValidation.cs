@@ -125,20 +125,35 @@ namespace urakawa.metadata.daisy
         {
             return _validateItem(metadata);
         }
-        internal void ReportError(MetadataValidationError item)
+        internal void ReportError(MetadataValidationError error)
         {
             //prevent duplicate errors: check that the items aren't identical
             //and check that the definitions don't match and the error types don't match
             //theoretically, there should only be one error type per definition (e.g. format, duplicate, etc)
 
             if (m_Errors.Find
-                (s =>
-                    s == item
-                    ||
-                    (s.Definition == item.Definition && s.GetType() == item.GetType())
+                (
+                        delegate(MetadataValidationError e)
+                        { 
+                            bool same_item = false;
+                            if (e is MetadataValidationFormatError && error is MetadataValidationFormatError)
+                            {
+                                //does this error's target metadata item already have a formatting error
+                                //associated with it?
+                                same_item = 
+                                    (((MetadataValidationFormatError)e).Metadata == 
+                                    ((MetadataValidationFormatError)error).Metadata);
+                            }
+                            //does this error's type and target metadata definition already exist?
+                            bool same_def = (e.Definition == error.Definition);
+                            bool same_type = (e.GetType() == error.GetType());
+
+                            if (same_item | (same_def & same_type)) return true;
+                            else return false;
+                        }
                 ) == null)
             {
-                m_Errors.Add(item);
+                m_Errors.Add(error);
             }
         }
         private bool _validateItem(Metadata metadata)
