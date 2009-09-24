@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using urakawa;
 using urakawa.metadata;
+using urakawa.metadata.daisy;
 using core = urakawa.core;
 
 namespace XukImport
@@ -115,6 +116,34 @@ namespace XukImport
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
             {
                 Metadata meta = addMetadata("dc:Identifier", m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);
+                //mark this metadata item as being the publication UID
+                meta.Uid = meta.NameContentAttribute.Value;
+            }
+            //if no unique publication identifier could be determined, see how many identifiers there are
+            //if there is only one, then make that the unique publication identifier
+            //this code assumes that all metadata parsing has been completed, which seems to be the case
+            //at the moment.  however, should additional documents start getting parsed for metadata,
+            //then this code should be moved to a spot after that parsing has finished.
+            else
+            {
+                if (m_Project.Presentations.Count > 0)
+                {
+                    IEnumerator<Metadata> enumerator = 
+                        m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable.GetEnumerator();
+                    List<Metadata> identifiers = new List<Metadata>();
+                    while (enumerator.MoveNext())
+                    {
+                        //get this metadata's definition (and search synonyms too)
+                        MetadataDefinition definition = SupportedMetadata_Z39862005.GetMetadataDefinition(
+                            enumerator.Current.NameContentAttribute.Name, true);
+
+                        //if this is a dc:identifier, then add it to our list
+                        if (definition.Name == "dc:Identifier") identifiers.Add(enumerator.Current);
+                    }
+                    //if there is only one identifier, then make it the publication UID
+                    if (identifiers.Count == 1) 
+                        identifiers[0].Uid = identifiers[0].NameContentAttribute.Value;
+                }
             }
         }
 
