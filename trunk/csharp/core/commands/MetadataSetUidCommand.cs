@@ -32,13 +32,13 @@ namespace urakawa.commands
             return XukStrings.MetadataSetUidCommand;
         }
 
-        private string m_OriginalUid;
-        private string m_NewUid;
+        private string m_OriginalId;
+        private string m_NewId;
 
-        public string Uid
+        public string Id
         {
-            private set { m_NewUid = value; }
-            get { return m_NewUid; }
+            private set { m_NewId = value; }
+            get { return m_NewId; }
         }
         private Metadata m_Metadata;
         public Metadata Metadata
@@ -49,23 +49,23 @@ namespace urakawa.commands
 
 
 
-        public void Init(Metadata metadata, string uid)
+        public void Init(Metadata metadata, string id)
         {
             if (metadata == null)
             {
                 throw new ArgumentNullException("metadata");
             }
-            if (uid == null)
+            if (id == null)
             {
-                throw new ArgumentNullException("uid");
+                throw new ArgumentNullException("id");
             }
 
             Metadata = metadata;
-            m_OriginalUid = Metadata.NameContentAttribute.Uid;
-            Uid = uid;
+            m_OriginalId = Metadata.NameContentAttribute.Id;
+            Id = id;
 
-            ShortDescription = "Set metadata UID";
-            LongDescription = "Set the UID of the Metadata object";
+            ShortDescription = "Set metadata ID";
+            LongDescription = "Set the ID string of the Metadata object";
         }
 
         public override bool CanExecute
@@ -80,12 +80,12 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            Metadata.Uid = m_NewUid;
+            Metadata.Id = m_NewId;
         }
 
         public override void UnExecute()
         {
-            Metadata.Uid = m_OriginalUid;
+            Metadata.Id = m_OriginalId;
         }
 
 
