@@ -110,7 +110,15 @@ namespace DaisyExport
                     CommonFunctions.CreateAppendXmlAttribute(smilDocument, mainSeq, "id", GetNextID(ID_SmilPrefix));
                     XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
                     par_id = GetNextID(ID_SmilPrefix);
-                    if (n == textAudioNodesList[0]) firstPar_id = par_id;
+                    // check and assign first par ID
+                    if (firstPar_id == null)
+                        {
+                        if (n.GetXmlElementQName () != null && n.GetXmlElementQName ().LocalName != "pagenum")
+                            {
+                            firstPar_id = par_id;
+                            }
+                        }
+
                     CommonFunctions.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
                     mainSeq.AppendChild(parNode);
 
@@ -243,7 +251,17 @@ namespace DaisyExport
                 }
                 else
                 {
-                    urakawa.core.TreeNode n = textAudioNodesList[0];
+                    // find node for heading
+                    urakawa.core.TreeNode n  = null ;
+
+                    for (int i = 0; i < textAudioNodesList.Count; i++)
+                        {
+                        if (textAudioNodesList[i].GetXmlElementQName () != null && textAudioNodesList[i].GetXmlElementQName ().LocalName != "pagenum")
+                            {
+                            n = textAudioNodesList[i];
+                            break;
+                            }
+                        }
                     string txtMedia = n.GetTextMediaFlattened();
                     urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
