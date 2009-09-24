@@ -113,7 +113,7 @@ namespace DaisyExport
                     // check and assign first par ID
                     if (firstPar_id == null)
                         {
-                        if (n.GetXmlElementQName () != null && n.IsDescendantOf ( currentHeadingTreeNode ))
+                        if (n.GetXmlElementQName () != null && (n.IsDescendantOf ( currentHeadingTreeNode ) || n == currentHeadingTreeNode))
                             {
                             firstPar_id = par_id;
                             }
@@ -256,7 +256,7 @@ namespace DaisyExport
 
                     for (int i = 0; i < textAudioNodesList.Count; i++)
                         {
-                        if (textAudioNodesList[i].GetXmlElementQName () != null && textAudioNodesList[i].IsDescendantOf ( currentHeadingTreeNode ))
+                        if (textAudioNodesList[i].GetXmlElementQName () != null && (textAudioNodesList[i].IsDescendantOf ( currentHeadingTreeNode ) || textAudioNodesList[i] == currentHeadingTreeNode))
                             {
                             n = textAudioNodesList[i];
                             break;
