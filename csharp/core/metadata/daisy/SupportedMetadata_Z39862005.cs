@@ -280,7 +280,7 @@ namespace urakawa.metadata.daisy
                             null)
 
                             };
-        public static readonly List<MetadataDefinition> MetadataList =
+        public static readonly List<MetadataDefinition> MetadataDefinitions =
             new List<MetadataDefinition>(m_MetadataDefinitions);
 
         // Note: case-insensitive
@@ -288,14 +288,14 @@ namespace urakawa.metadata.daisy
         {
             string lowerCaseName = name.ToLower();
 
-            foreach (MetadataDefinition md in MetadataList)
+            foreach (MetadataDefinition md in MetadataDefinitions)
             {
                 if (md.Name.ToLower() == lowerCaseName)
                 {
                     return md;
                 }
             }
-            return null;
+            return UnrecognizedMetadata;
         }
 
         /*experimental to search synonyms too*/
@@ -303,14 +303,14 @@ namespace urakawa.metadata.daisy
         {
             string lowerCaseName = name.ToLower();
 
-            MetadataDefinition definition = MetadataList.Find(
+            MetadataDefinition definition = MetadataDefinitions.Find(
                 delegate(MetadataDefinition item)
                 {
                     return item.Name.ToLower() == lowerCaseName;
                 });
             if (definition == null)
             {
-                definition = MetadataList.Find(
+                definition = MetadataDefinitions.Find(
                     delegate(MetadataDefinition item)
                     {
                         if (item.Synonyms != null)
@@ -328,8 +328,10 @@ namespace urakawa.metadata.daisy
                         }
                     });
             }
-
-            return definition;
+            if (definition == null)
+                return UnrecognizedMetadata;
+            else
+                return definition;
         }
     }
 }
