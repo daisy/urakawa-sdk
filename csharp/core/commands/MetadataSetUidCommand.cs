@@ -80,12 +80,12 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            Metadata.NameContentAttribute.Uid = m_NewUid;
+            Metadata.Uid = m_NewUid;
         }
 
         public override void UnExecute()
         {
-            Metadata.NameContentAttribute.Uid = m_OriginalUid;
+            Metadata.Uid = m_OriginalUid;
         }
 
 
