@@ -95,6 +95,7 @@ namespace DaisyExport
                 smilDocument = CreateStub_SmilDocument();
                 smilFileName = GetNextSmilFileName;
                 bool IsPageAdded = false;
+                List<int> indexOfNodesWithPlayOrder = new List<int> ();
 
                 // create smil nodes
 
@@ -183,6 +184,7 @@ namespace DaisyExport
                         ++totalPageCount;
 
                         playOrderList_Sorted.Add(pageTargetNode);
+                        indexOfNodesWithPlayOrder.Add ( textAudioNodesList.IndexOf (n) );
 
                         if (strTypeVal == "normal")
                         {
@@ -254,11 +256,13 @@ namespace DaisyExport
                     // find node for heading
                     urakawa.core.TreeNode n  = null ;
 
+                    int indexOf_n = 0;
                     for (int i = 0; i < textAudioNodesList.Count; i++)
                         {
                         if (textAudioNodesList[i].GetXmlElementQName () != null && (textAudioNodesList[i].IsDescendantOf ( currentHeadingTreeNode ) || textAudioNodesList[i] == currentHeadingTreeNode))
                             {
                             n = textAudioNodesList[i];
+                            indexOf_n = i;
                             break;
                             }
                         }
@@ -270,9 +274,28 @@ namespace DaisyExport
                     if (currentHeadingTreeNode != null) CommonFunctions.CreateAppendXmlAttribute(ncxDocument, navPointNode, "class", currentHeadingTreeNode.GetProperty<urakawa.property.xml.XmlProperty>().LocalName);
                     CommonFunctions.CreateAppendXmlAttribute(ncxDocument, navPointNode, "id", GetNextID(ID_NcxPrefix));
                     CommonFunctions.CreateAppendXmlAttribute(ncxDocument, navPointNode, "playOrder", "");
+                    if (indexOfNodesWithPlayOrder.Count == 0 ||
+                        (indexOfNodesWithPlayOrder.Count > 0 && indexOf_n < indexOfNodesWithPlayOrder[0]))
+                        {
+                        playOrderList_Sorted.Insert ( navPointPlayOrderListIndex, navPointNode );
+                        }
+                    else
+                        {
+                        for (int i = 0; i < indexOfNodesWithPlayOrder.Count; i++)
+                            {
+                            if (indexOf_n >= indexOfNodesWithPlayOrder[i]
+                                && playOrderList_Sorted.Count >= navPointPlayOrderListIndex + i + 1)
+                                {
+                                playOrderList_Sorted.Insert ( navPointPlayOrderListIndex + i + 1, navPointNode );
+                                break;
+                                }
+                            else if (i == indexOfNodesWithPlayOrder.Count - 1)
+                                {
+                                playOrderList_Sorted.Add (navPointNode );
+                                }
+                            }
 
-                    playOrderList_Sorted.Insert(navPointPlayOrderListIndex, navPointNode);
-
+                        }
                     urakawa.core.TreeNode parentNode = GetParentLevelNode(urakawaNode);
 
                     if (parentNode == null)
@@ -371,6 +394,7 @@ namespace DaisyExport
                     xn.Attributes.GetNamedItem("playOrder").Value = playOrderCounter.ToString();
                     playOrder_ReferenceMap.Add(contentNode_Src, playOrderCounter.ToString());
                     ++playOrderCounter;
+                    //System.Windows.Forms.MessageBox.Show ( contentNode_Src );
                 }
             }
 
