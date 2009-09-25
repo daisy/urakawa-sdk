@@ -7,7 +7,7 @@ using urakawa.metadata;
 
 namespace urakawa.commands
 {
-    public class MetadataSetUidCommand : Command
+    public class MetadataSetIdCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -16,7 +16,7 @@ namespace urakawa.commands
                 return false;
             }
 
-            MetadataSetUidCommand otherz = other as MetadataSetUidCommand;
+            MetadataSetIdCommand otherz = other as MetadataSetIdCommand;
             if (otherz == null)
             {
                 return false;
@@ -29,7 +29,7 @@ namespace urakawa.commands
 
         public override string GetTypeNameFormatted()
         {
-            return XukStrings.MetadataSetUidCommand;
+            return XukStrings.MetadataSetIdCommand;
         }
 
         private string m_OriginalId;
@@ -61,7 +61,7 @@ namespace urakawa.commands
             }
 
             Metadata = metadata;
-            m_OriginalId = Metadata.NameContentAttribute.Id;
+            m_OriginalId = Metadata.Id;
             Id = id;
 
             ShortDescription = "Set metadata ID";

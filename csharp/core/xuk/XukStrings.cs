@@ -253,9 +253,9 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataSetContentCommand" : "metaSetContentCmd"); }
         }
-        public static string MetadataSetUidCommand
+        public static string MetadataSetIdCommand
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataSetUidCommand" : "metaSetUidCmd"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataSetIdCommand" : "metaSetIdCmd"); }
         }
         #endregion
 
