@@ -26,6 +26,43 @@ namespace urakawa.metadata
             m_firstXukInAttribute = true;
         }
 
+        //easily set and get the id attribute (in "OtherAttributes")
+        //in Metadata, this Id is used to mark the publication's primary unique identifier
+        //multiple identifiers are allowed but only one can be the primary UID.
+        public string Id
+        {
+            get
+            {
+                MetadataAttribute idAttr = this.OtherAttributes.ContentsAs_ListCopy.Find(
+                    delegate(MetadataAttribute attr)
+                    {
+                        if (attr.Name == "id") return true;
+                        else return false;
+                    });
+                if (idAttr != null) return idAttr.Value;
+                else return "";
+            }
+            set
+            {
+                MetadataAttribute idAttr = this.OtherAttributes.ContentsAs_ListCopy.Find(
+                   delegate(MetadataAttribute attr)
+                   {
+                       if (attr.Name == "id") return true;
+                       else return false;
+                   });
+                if (idAttr == null)
+                {
+                    MetadataAttribute newIdAttr = new MetadataAttribute();
+                    newIdAttr.Name = "id";
+                    newIdAttr.Value = value;
+                    this.OtherAttributes.Insert(0, newIdAttr);
+                }
+                else
+                {
+                    idAttr.Value = value;
+                }
+            }
+        }
         #region IChangeNotifier members
 
         /// <summary>
