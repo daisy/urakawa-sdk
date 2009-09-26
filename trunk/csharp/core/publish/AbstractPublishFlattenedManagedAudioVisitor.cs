@@ -200,7 +200,7 @@ namespace urakawa.publish
             if (TreeNodeTriggersNewAudioFile(node))
             {
                 checkTransientWavFileAndClose(node);
-                return false; // skips children, see postVisit
+                // REMOVED, because doesn't support nested TreeNode matches ! return false; // skips children, see postVisit
             }
 
             if (!node.HasChannelsProperty)
@@ -318,6 +318,9 @@ namespace urakawa.publish
             {
                 return;
             }
+
+            // REMOVED, because doesn't support nested TreeNode matches !
+            return;
 
             if (!node.Presentation.MediaDataManager.EnforceSinglePCMFormat)
             {

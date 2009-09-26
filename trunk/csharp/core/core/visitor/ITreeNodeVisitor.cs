@@ -1,6 +1,3 @@
-using System;
-using urakawa.core;
-
 namespace urakawa.core.visitor
 {
     /// <summary>
