@@ -152,8 +152,15 @@ namespace DaisyExport
                                 CommonFunctions.CreateAppendXmlAttribute ( DTBookDocument,
                                     currentXmlNode,
                                     "id", id_New );
-                                
-                                old_New_IDMap.Add ( xmlProp.Attributes[i].Value, id_New );
+
+                                if (!old_New_IDMap.ContainsKey ( xmlProp.Attributes[i].Value ))
+                                    {
+                                    old_New_IDMap.Add ( xmlProp.Attributes[i].Value, id_New ); 
+                                    }
+                                else
+                                    {
+                                    System.Diagnostics.Debug.Fail ( "Duplicate ID found in original DTBook document", "Original DTBook document has duplicate ID: " + xmlProp.Attributes[i].Value );
+                                    }
                                 }
                             else
                                 {
