@@ -1,6 +1,7 @@
 using System;
 using urakawa.exception;
 using urakawa.media.data.audio;
+using urakawa.media.data.image;
 using urakawa.media.data.audio.codec;
 using urakawa.xuk;
 
@@ -92,5 +93,11 @@ namespace urakawa.media.data
         {
             return Create(DefaultAudioMediaDataType) as AudioMediaData;
         }
+
+        public ImageMediaData CreateImageMediaData ()
+            {
+            // to do: add default image type as jpg when derived classes for images are implemented
+            return Create ( typeof( ImageMediaData ))  as ImageMediaData;
+            }
     }
 }

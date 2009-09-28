@@ -1,4 +1,5 @@
 using urakawa.media.data.audio;
+using urakawa.media.data.image;
 using urakawa.xuk;
 
 namespace urakawa.media
@@ -33,6 +34,15 @@ namespace urakawa.media
         {
             return Create<TextMedia>();
         }
+
+        /// <summary>
+    /// Creates a <see cref="ManagedImageMedia"/>
+        /// </summary>
+        /// <returns></returns>
+        public ManagedImageMedia CreateManagedImageMedia ()
+            {
+            return Create<ManagedImageMedia> ();
+            }
 
         /// <summary>
         /// Creates a <see cref="ExternalImageMedia"/>
