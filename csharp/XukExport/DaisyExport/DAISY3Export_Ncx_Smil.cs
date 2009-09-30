@@ -40,19 +40,24 @@ namespace DaisyExport
                 string smilFileName = null;
                 XmlNode navPointNode = null;
                 urakawa.core.TreeNode currentHeadingTreeNode = null;
+                urakawa.core.TreeNode special_UrakawaNode = null;
                 TimeSpan durationOfCurrentSmil = new TimeSpan ();
-                //List<urakawa.core.TreeNode> textAudioNodesList = new List<urakawa.core.TreeNode>();
+                XmlNode mainSeq = null;
+                XmlNode Seq_SpecialNode = null;
                 bool IsPageAdded = false;
                 string firstPar_id = null;
+                bool shouldAddNewSeq = false ;
+                string par_id = null;
 
                 urakawaNode.AcceptDepthFirst (
             delegate ( urakawa.core.TreeNode n )
                 {
                 QualifiedName currentQName = n.GetXmlElementQName ();
 
-                if (currentQName != null &&
-                    (currentQName.LocalName == "hd" || currentQName.LocalName == "h1" || currentQName.LocalName == "h2" || currentQName.LocalName == "h3" || currentQName.LocalName == "h4"
-                    || currentQName.LocalName == "h5" || currentQName.LocalName == "h6" || currentQName.LocalName == "doctitle"))
+                //if (currentQName != null &&
+                    //(currentQName.LocalName == "hd" || currentQName.LocalName == "h1" || currentQName.LocalName == "h2" || currentQName.LocalName == "h3" || currentQName.LocalName == "h4"
+                    //|| currentQName.LocalName == "h5" || currentQName.LocalName == "h6" || currentQName.LocalName == "doctitle"))
+                if ( IsHeadingNode ( n ))
                     {
                     currentHeadingTreeNode = n;
                     }
@@ -62,6 +67,13 @@ namespace DaisyExport
                         && doesTreeNodeTriggerNewSmil ( n )) //currentQName.LocalName.StartsWith("level")
                     {
                     return false;
+                    }
+
+                if ( (IsHeadingNode(n) || IsEscapableNode (n))
+                    && ( special_UrakawaNode != n ))
+                    {
+                    special_UrakawaNode = n ;
+                    shouldAddNewSeq = true ;
                     }
 
                 urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia ( n );
@@ -82,11 +94,6 @@ namespace DaisyExport
                 //continue;
                 //}
 
-                //caching playorder for navPoints because page numbers are added first.
-                if (!IsNcxNativeNodeAdded)
-                    {
-                    //navPointPlayOrderListIndex = playOrderList_Sorted.Count;
-                    }
 
                 QualifiedName qName = currentHeadingTreeNode != null ? currentHeadingTreeNode.GetXmlElementQName () : null;
                 bool isDoctitle_ = (qName != null && qName.LocalName == "doctitle");
@@ -95,16 +102,66 @@ namespace DaisyExport
                 if (smilDocument == null)
                     {
                     smilDocument = CreateStub_SmilDocument ();
+                    mainSeq = getFirstChildElementsWithName ( smilDocument, true, "body", null ).FirstChild;
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, mainSeq, "id", GetNextID ( ID_SmilPrefix ) );
                     smilFileName = GetNextSmilFileName;
                     }
 
 
                 // create smil nodes
-                string par_id = null;
+                
+                if ( shouldAddNewSeq )
+                    {
+                    if (Seq_SpecialNode != null)
+                        {
+                        if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                            {
+                            Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
+                            }
+                        Seq_SpecialNode = null;
+                        }
+                    
+                    Seq_SpecialNode = smilDocument.CreateElement ( null, "seq", mainSeq.NamespaceURI );
+                    string strSeqID = GetNextID ( ID_SmilPrefix )  ;
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, Seq_SpecialNode, "id", strSeqID);
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, Seq_SpecialNode, "class", special_UrakawaNode.GetXmlElementQName ().LocalName );
 
-                XmlNode mainSeq = getFirstChildElementsWithName ( smilDocument, true, "body", null ).FirstChild; //smilDocument.GetElementsByTagName("body")[0].FirstChild;
-                CommonFunctions.CreateAppendXmlAttribute ( smilDocument, mainSeq, "id", GetNextID ( ID_SmilPrefix ) );
+                    if (IsEscapableNode ( special_UrakawaNode ))
+                        {
+                        CommonFunctions.CreateAppendXmlAttribute ( smilDocument, Seq_SpecialNode, "end", "" );
+                        CommonFunctions.CreateAppendXmlAttribute ( smilDocument, Seq_SpecialNode, "fill", "remove" );
+
+                        // add reference to seq_special  in dtbook document
+                    XmlNode dtbEscapableNode  = m_TreeNode_XmlNodeMap[special_UrakawaNode] ;
+                    CommonFunctions.CreateAppendXmlAttribute ( m_DTBDocument, dtbEscapableNode, "smilref", smilFileName + "#" + strSeqID );
+                        
+                    }
+                    mainSeq.AppendChild ( Seq_SpecialNode );
+
+                    shouldAddNewSeq = false;    
+                    }
+
                 XmlNode parNode = smilDocument.CreateElement ( null, "par", mainSeq.NamespaceURI );
+                if (special_UrakawaNode != null && (special_UrakawaNode == n || n.IsDescendantOf ( special_UrakawaNode )))
+                    {
+                    Seq_SpecialNode.AppendChild ( parNode );
+                    }
+                else
+                    {
+                    mainSeq.AppendChild ( parNode );
+                    special_UrakawaNode = null;
+                    if (Seq_SpecialNode != null)
+                        {
+                        if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                            {
+                            //System.Windows.Forms.MessageBox.Show ( par_id == null ? "null" : par_id );
+                            Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
+                            }
+                        Seq_SpecialNode = null;
+                        }
+                    }
+                
+
                 par_id = GetNextID ( ID_SmilPrefix );
                 // check and assign first par ID
                 if (firstPar_id == null)
@@ -117,7 +174,8 @@ namespace DaisyExport
                     }
 
                 CommonFunctions.CreateAppendXmlAttribute ( smilDocument, parNode, "id", par_id );
-                mainSeq.AppendChild ( parNode );
+
+                
 
                 XmlNode SmilTextNode = smilDocument.CreateElement ( null, "text", mainSeq.NamespaceURI );
                 CommonFunctions.CreateAppendXmlAttribute ( smilDocument, SmilTextNode, "id", GetNextID ( ID_SmilPrefix ) );
@@ -268,6 +326,17 @@ namespace DaisyExport
                 },
                     delegate ( urakawa.core.TreeNode n ) { } );
 
+                // make specials to null
+                special_UrakawaNode = null;
+                if (Seq_SpecialNode != null)
+                    {
+                    if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                        {
+                        //System.Windows.Forms.MessageBox.Show ( par_id == null ? "null" : par_id );
+                        Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
+                        }
+                    Seq_SpecialNode = null;
+                    }
 
                 // add metadata to smil document and write to file.
                 if (smilDocument != null)
@@ -317,6 +386,31 @@ namespace DaisyExport
             AddMetadata_Ncx ( ncxDocument, totalPageCount.ToString (), maxNormalPageNumber.ToString (), maxDepth.ToString () );
             CommonFunctions.WriteXmlDocumentToFile ( ncxDocument,
                 Path.Combine ( m_OutputDirectory, m_Filename_Ncx ) );
+            }
+
+        private bool IsHeadingNode ( urakawa.core.TreeNode node )
+            {
+            QualifiedName currentQName = node.GetXmlElementQName () != null ? node.GetXmlElementQName () : null;
+            if (currentQName != null &&
+                    (currentQName.LocalName == "hd" || currentQName.LocalName == "h1" || currentQName.LocalName == "h2" || currentQName.LocalName == "h3" || currentQName.LocalName == "h4"
+                    || currentQName.LocalName == "h5" || currentQName.LocalName == "h6" || currentQName.LocalName == "doctitle"))
+                {
+                return true;
+                }
+            return false;
+            }
+
+        private bool IsEscapableNode ( urakawa.core.TreeNode node )
+            {
+            string qName = node.GetXmlElementQName () != null ? node.GetXmlElementQName ().LocalName : null;
+            if (qName != null
+                && 
+                (qName == "list" || qName == "table" || qName == "sidebar"
+                || qName == "prodnote"    ||   qName == "annotation"))
+                {
+                return true;
+                }
+            return false;
             }
 
         private XmlNode CreateDocTitle ( XmlDocument ncxDocument, XmlNode ncxRootNode, urakawa.core.TreeNode n )
@@ -589,6 +683,9 @@ namespace DaisyExport
                 CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "defaultState", "false" );
                 CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "id", "pagenum" );
                 CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "override", "visible" );
+
+                //<customTest defaultState="false" id="note" override="visible" />
+
                 }
             }
 
