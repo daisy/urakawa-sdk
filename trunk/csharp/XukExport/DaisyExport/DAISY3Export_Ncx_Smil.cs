@@ -31,7 +31,7 @@ namespace DaisyExport
             int maxNormalPageNumber = 0;
             int maxDepth = 1;
             TimeSpan smilElapseTime = new TimeSpan ();
-
+            List<string> ncxCustomTestList = new List<string> ();
 
             foreach (urakawa.core.TreeNode urakawaNode in m_ListOfLevels)
                 {
@@ -44,10 +44,11 @@ namespace DaisyExport
                 TimeSpan durationOfCurrentSmil = new TimeSpan ();
                 XmlNode mainSeq = null;
                 XmlNode Seq_SpecialNode = null;
-                bool IsPageAdded = false;
+                //bool IsPageAdded = false;
                 string firstPar_id = null;
-                bool shouldAddNewSeq = false ;
+                bool shouldAddNewSeq = false;
                 string par_id = null;
+                List<string> currentSmilCustomTestList = new List<string> ();
 
                 urakawaNode.AcceptDepthFirst (
             delegate ( urakawa.core.TreeNode n )
@@ -55,9 +56,9 @@ namespace DaisyExport
                 QualifiedName currentQName = n.GetXmlElementQName ();
 
                 //if (currentQName != null &&
-                    //(currentQName.LocalName == "hd" || currentQName.LocalName == "h1" || currentQName.LocalName == "h2" || currentQName.LocalName == "h3" || currentQName.LocalName == "h4"
-                    //|| currentQName.LocalName == "h5" || currentQName.LocalName == "h6" || currentQName.LocalName == "doctitle"))
-                if ( IsHeadingNode ( n ))
+                //(currentQName.LocalName == "hd" || currentQName.LocalName == "h1" || currentQName.LocalName == "h2" || currentQName.LocalName == "h3" || currentQName.LocalName == "h4"
+                //|| currentQName.LocalName == "h5" || currentQName.LocalName == "h6" || currentQName.LocalName == "doctitle"))
+                if (IsHeadingNode ( n ))
                     {
                     currentHeadingTreeNode = n;
                     }
@@ -69,11 +70,11 @@ namespace DaisyExport
                     return false;
                     }
 
-                if ( (IsHeadingNode(n) || IsEscapableNode (n))
-                    && ( special_UrakawaNode != n ))
+                if ((IsHeadingNode ( n ) || IsEscapableNode ( n ) || IsSkippableNode ( n ))
+                    && (special_UrakawaNode != n))
                     {
-                    special_UrakawaNode = n ;
-                    shouldAddNewSeq = true ;
+                    special_UrakawaNode = n;
+                    shouldAddNewSeq = true;
                     }
 
                 urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia ( n );
@@ -109,8 +110,8 @@ namespace DaisyExport
 
 
                 // create smil nodes
-                
-                if ( shouldAddNewSeq )
+
+                if (shouldAddNewSeq)
                     {
                     if (Seq_SpecialNode != null)
                         {
@@ -120,25 +121,54 @@ namespace DaisyExport
                             }
                         Seq_SpecialNode = null;
                         }
-                    
+
                     Seq_SpecialNode = smilDocument.CreateElement ( null, "seq", mainSeq.NamespaceURI );
-                    string strSeqID = GetNextID ( ID_SmilPrefix )  ;
-                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, Seq_SpecialNode, "id", strSeqID);
+                    string strSeqID = "";
+                    if (special_UrakawaNode.GetXmlElementQName ().LocalName == "note")
+                        {
+                        strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "id" ).Value;
+                        //System.Windows.Forms.MessageBox.Show ( smilFileName + " : " + strSeqID);
+                        }
+                    else
+                        {
+                        strSeqID = GetNextID ( ID_SmilPrefix );
+                        }
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, Seq_SpecialNode, "id", strSeqID );
                     CommonFunctions.CreateAppendXmlAttribute ( smilDocument, Seq_SpecialNode, "class", special_UrakawaNode.GetXmlElementQName ().LocalName );
 
                     if (IsEscapableNode ( special_UrakawaNode ))
                         {
                         CommonFunctions.CreateAppendXmlAttribute ( smilDocument, Seq_SpecialNode, "end", "" );
                         CommonFunctions.CreateAppendXmlAttribute ( smilDocument, Seq_SpecialNode, "fill", "remove" );
+                        }
 
-                        // add reference to seq_special  in dtbook document
-                    XmlNode dtbEscapableNode  = m_TreeNode_XmlNodeMap[special_UrakawaNode] ;
-                    CommonFunctions.CreateAppendXmlAttribute ( m_DTBDocument, dtbEscapableNode, "smilref", smilFileName + "#" + strSeqID );
-                        
-                    }
+                    if (IsSkippableNode ( special_UrakawaNode ))
+                        {
+                        CommonFunctions.CreateAppendXmlAttribute ( smilDocument, Seq_SpecialNode, "customTest", special_UrakawaNode.GetXmlElementQName ().LocalName );
+
+                        if (special_UrakawaNode.GetXmlElementQName ().LocalName == "noteref")
+                            {
+                            XmlNode anchorNode = smilDocument.CreateElement ( null, "a", Seq_SpecialNode.NamespaceURI );
+                            Seq_SpecialNode.AppendChild ( anchorNode );
+                            CommonFunctions.CreateAppendXmlAttribute ( smilDocument, anchorNode, "external", "false" );
+                            CommonFunctions.CreateAppendXmlAttribute ( smilDocument, anchorNode, "href", "#" + ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "idref" ).Value.Replace ( "#", "" ) );
+                            }
+                        if (!currentSmilCustomTestList.Contains ( special_UrakawaNode.GetXmlElementQName ().LocalName ))
+                            {
+                            currentSmilCustomTestList.Add ( special_UrakawaNode.GetXmlElementQName ().LocalName );
+                            }
+                        }
+
+                    // add reference to seq_special  in dtbook document
+                    if (IsEscapableNode ( special_UrakawaNode ) || IsSkippableNode ( special_UrakawaNode ))
+                        {
+                        XmlNode dtbEscapableNode = m_TreeNode_XmlNodeMap[special_UrakawaNode];
+                        CommonFunctions.CreateAppendXmlAttribute ( m_DTBDocument, dtbEscapableNode, "smilref", smilFileName + "#" + strSeqID );
+                        }
+
                     mainSeq.AppendChild ( Seq_SpecialNode );
 
-                    shouldAddNewSeq = false;    
+                    shouldAddNewSeq = false;
                     }
 
                 XmlNode parNode = smilDocument.CreateElement ( null, "par", mainSeq.NamespaceURI );
@@ -160,7 +190,7 @@ namespace DaisyExport
                         Seq_SpecialNode = null;
                         }
                     }
-                
+
 
                 par_id = GetNextID ( ID_SmilPrefix );
                 // check and assign first par ID
@@ -175,7 +205,7 @@ namespace DaisyExport
 
                 CommonFunctions.CreateAppendXmlAttribute ( smilDocument, parNode, "id", par_id );
 
-                
+
 
                 XmlNode SmilTextNode = smilDocument.CreateElement ( null, "text", mainSeq.NamespaceURI );
                 CommonFunctions.CreateAppendXmlAttribute ( smilDocument, SmilTextNode, "id", GetNextID ( ID_SmilPrefix ) );
@@ -204,7 +234,11 @@ namespace DaisyExport
                     {
                     // add custom test to par node
                     CommonFunctions.CreateAppendXmlAttribute ( smilDocument, parNode, "customTest", "pagenum" );
-                    IsPageAdded = true;
+                    //IsPageAdded = true;
+                    if (!currentSmilCustomTestList.Contains ( "pagenum" ))
+                        {
+                        currentSmilCustomTestList.Add ( "pagenum" );
+                        }
 
                     XmlNode pageListNode = getFirstChildElementsWithName ( ncxDocument, true, "pageList", null );
                     if (pageListNode == null)
@@ -345,7 +379,7 @@ namespace DaisyExport
                     XmlNode mainSeqNode = getFirstChildElementsWithName ( smilDocument, true, "body", null ).FirstChild; //smilDocument.GetElementsByTagName("body")[0].FirstChild;
                     CommonFunctions.CreateAppendXmlAttribute ( smilDocument, mainSeqNode, "dur", durationOfCurrentSmil.ToString () );
                     CommonFunctions.CreateAppendXmlAttribute ( smilDocument, mainSeqNode, "fill", "remove" );
-                    AddMetadata_Smil ( smilDocument, smilElapseTime.ToString (), IsPageAdded );
+                    AddMetadata_Smil ( smilDocument, smilElapseTime.ToString (), currentSmilCustomTestList );
 
                     CommonFunctions.WriteXmlDocumentToFile ( smilDocument,
                         Path.Combine ( m_OutputDirectory, smilFileName ) );
@@ -353,6 +387,14 @@ namespace DaisyExport
                     smilElapseTime = smilElapseTime.Add ( durationOfCurrentSmil );
                     m_FilesList_Smil.Add ( smilFileName );
                     smilDocument = null;
+
+                    // add smil custon test list items to ncx custom test list
+                    foreach (string customTestName in currentSmilCustomTestList)
+                        {
+                        if (!ncxCustomTestList.Contains ( customTestName ))
+                            ncxCustomTestList.Add ( customTestName );
+                        }
+
                     }
 
                 }
@@ -383,7 +425,7 @@ namespace DaisyExport
 
             // write ncs document to file
             m_TotalTime = smilElapseTime;
-            AddMetadata_Ncx ( ncxDocument, totalPageCount.ToString (), maxNormalPageNumber.ToString (), maxDepth.ToString () );
+            AddMetadata_Ncx ( ncxDocument, totalPageCount.ToString (), maxNormalPageNumber.ToString (), maxDepth.ToString (), ncxCustomTestList );
             CommonFunctions.WriteXmlDocumentToFile ( ncxDocument,
                 Path.Combine ( m_OutputDirectory, m_Filename_Ncx ) );
             }
@@ -404,14 +446,27 @@ namespace DaisyExport
             {
             string qName = node.GetXmlElementQName () != null ? node.GetXmlElementQName ().LocalName : null;
             if (qName != null
-                && 
+                &&
                 (qName == "list" || qName == "table" || qName == "sidebar"
-                || qName == "prodnote"    ||   qName == "annotation"))
+                || qName == "prodnote" || qName == "annotation"))
                 {
                 return true;
                 }
             return false;
             }
+
+        private bool IsSkippableNode ( urakawa.core.TreeNode node )
+            {
+            string qName = node.GetXmlElementQName () != null ? node.GetXmlElementQName ().LocalName : null;
+            if (qName != null
+                &&
+                (qName == "noteref" || qName == "note"))
+                {
+                return true;
+                }
+            return false;
+            }
+
 
         private XmlNode CreateDocTitle ( XmlDocument ncxDocument, XmlNode ncxRootNode, urakawa.core.TreeNode n )
             {
@@ -640,7 +695,7 @@ namespace DaisyExport
                                     } ) != null;
             }
 
-        private void AddMetadata_Ncx ( XmlDocument ncxDocument, string strTotalPages, string strMaxNormalPage, string strDepth )
+        private void AddMetadata_Ncx ( XmlDocument ncxDocument, string strTotalPages, string strMaxNormalPage, string strDepth, List<string> ncxCustomTestList )
             {
             XmlNode headNode = getFirstChildElementsWithName ( ncxDocument, true, "head", null ); //ncxDocument.GetElementsByTagName("head")[0];
 
@@ -654,16 +709,32 @@ namespace DaisyExport
 
 
             // add custom test to headNode
-            XmlNode customTestNode = ncxDocument.CreateElement ( null, "smilCustomTest", headNode.NamespaceURI );
-            headNode.AppendChild ( customTestNode );
-            CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "bookStruct", "PAGE_NUMBER" );
-            CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "defaultState", "false" );
-            CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "id", "pagenum" );
-            CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "override", "visible" );
+            if (ncxCustomTestList.Count > 0)
+                {
+                // create dictionary for custom test
+                Dictionary<string, string> bookStrucMap = new Dictionary<string, string> ();
+                bookStrucMap.Add ( "pagenum", "PAGE_NUMBER" );
+                bookStrucMap.Add ( "note", "NOTE" );
+                bookStrucMap.Add ( "noteref", "NOTE_REFERENCE" );
+                bookStrucMap.Add ( "annotation", "ANNOTATION" );
+                bookStrucMap.Add ( "prodnote", "OPTIONAL_PRODUCER_NOTE" );
+
+                // to do: also add LINE_NUMBER OPTIONAL_SIDEBAR 
+
+                foreach (string customTestName in ncxCustomTestList)
+                    {
+                    XmlNode customTestNode = ncxDocument.CreateElement ( null, "smilCustomTest", headNode.NamespaceURI );
+                    headNode.AppendChild ( customTestNode );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "bookStruct", bookStrucMap[customTestName] );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "defaultState", "false" );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "id", customTestName );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, customTestNode, "override", "visible" );
+                    }
+                }
 
             }
 
-        private void AddMetadata_Smil ( XmlDocument smilDocument, string strElapsedTime, bool isCustomTestRequired )
+        private void AddMetadata_Smil ( XmlDocument smilDocument, string strElapsedTime, List<string> currentSmilCustomTestList )
             {
             XmlNode headNode = getFirstChildElementsWithName ( smilDocument, true, "head", null ); //smilDocument.GetElementsByTagName("head")[0];
 
@@ -674,19 +745,25 @@ namespace DaisyExport
             AddMetadataAsAttributes ( smilDocument, headNode, "dtb:totalElapsedTime", strElapsedTime );
 
 
-            if (isCustomTestRequired)
+            //if (isCustomTestRequired)
+            //{
+            if (currentSmilCustomTestList.Count > 0)
                 {
                 XmlNode customAttributesNode = smilDocument.CreateElement ( null, "customAttributes", headNode.NamespaceURI );
                 headNode.AppendChild ( customAttributesNode );
-                XmlNode customTestNode = smilDocument.CreateElement ( null, "customTest", headNode.NamespaceURI );
-                customAttributesNode.AppendChild ( customTestNode );
-                CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "defaultState", "false" );
-                CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "id", "pagenum" );
-                CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "override", "visible" );
+                foreach (string customTestName in currentSmilCustomTestList)
+                    {
 
-                //<customTest defaultState="false" id="note" override="visible" />
+                    XmlNode customTestNode = smilDocument.CreateElement ( null, "customTest", headNode.NamespaceURI );
+                    customAttributesNode.AppendChild ( customTestNode );
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "defaultState", "false" );
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "id", customTestName );
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, customTestNode, "override", "visible" );
 
+                    //<customTest defaultState="false" id="note" override="visible" />
+                    }
                 }
+
             }
 
         private XmlNode AddMetadataAsAttributes ( XmlDocument doc, XmlNode headNode, string name, string content )
