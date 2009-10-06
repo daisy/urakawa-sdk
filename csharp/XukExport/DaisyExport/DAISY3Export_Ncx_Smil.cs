@@ -126,7 +126,7 @@ namespace DaisyExport
                     Seq_SpecialNode = smilDocument.CreateElement ( null, "seq", mainSeq.NamespaceURI );
                     string strSeqID = "";
                     // specific handling of IDs for notes for allowing predetermined refered IDs
-                    if (special_UrakawaNode.GetXmlElementQName ().LocalName == "note")
+                    if (special_UrakawaNode.GetXmlElementQName ().LocalName == "note" || special_UrakawaNode.GetXmlElementQName ().LocalName == "annotation" )
                         {
                         strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "id" ).Value;
                         }
@@ -147,7 +147,7 @@ namespace DaisyExport
                         {
                         CommonFunctions.CreateAppendXmlAttribute ( smilDocument, Seq_SpecialNode, "customTest", special_UrakawaNode.GetXmlElementQName ().LocalName );
 
-                        if (special_UrakawaNode.GetXmlElementQName ().LocalName == "noteref")
+                        if (special_UrakawaNode.GetXmlElementQName ().LocalName == "noteref" || special_UrakawaNode.GetXmlElementQName ().LocalName == "annoref")
                             {
                             XmlNode anchorNode = smilDocument.CreateElement ( null, "a", Seq_SpecialNode.NamespaceURI );
                             Seq_SpecialNode.AppendChild ( anchorNode );
@@ -527,7 +527,8 @@ namespace DaisyExport
             string qName = node.GetXmlElementQName () != null ? node.GetXmlElementQName ().LocalName : null;
             if (qName != null
                 &&
-                (qName == "noteref" || qName == "note"))
+                (qName == "noteref" || qName == "note"
+                || qName == "linenum"))
                 {
                 return true;
                 }
