@@ -49,15 +49,14 @@ namespace DaisyExport
                 bool shouldAddNewSeq = false;
                 string par_id = null;
                 List<string> currentSmilCustomTestList = new List<string> ();
+                Stack<urakawa.core.TreeNode> specialParentNodeStack = new Stack<urakawa.core.TreeNode> ();
+                Stack<XmlNode> specialSeqNodeStack = new Stack<XmlNode> ();
 
                 urakawaNode.AcceptDepthFirst (
             delegate ( urakawa.core.TreeNode n )
                 {
                 QualifiedName currentQName = n.GetXmlElementQName ();
 
-                //if (currentQName != null &&
-                //(currentQName.LocalName == "hd" || currentQName.LocalName == "h1" || currentQName.LocalName == "h2" || currentQName.LocalName == "h3" || currentQName.LocalName == "h4"
-                //|| currentQName.LocalName == "h5" || currentQName.LocalName == "h6" || currentQName.LocalName == "doctitle"))
                 if (IsHeadingNode ( n ))
                     {
                     currentHeadingTreeNode = n;
@@ -65,7 +64,7 @@ namespace DaisyExport
 
                 if (currentQName != null &&
                         currentQName.LocalName != urakawaNode.GetXmlElementQName ().LocalName
-                        && doesTreeNodeTriggerNewSmil ( n )) //currentQName.LocalName.StartsWith("level")
+                        && doesTreeNodeTriggerNewSmil ( n ))
                     {
                     return false;
                     }
@@ -73,27 +72,29 @@ namespace DaisyExport
                 if ((IsHeadingNode ( n ) || IsEscapableNode ( n ) || IsSkippableNode ( n ))
                     && (special_UrakawaNode != n))
                     {
+                    // if this candidate special node is child of existing special node then ad existing special node to stack for nesting.
+                    if (special_UrakawaNode != null && Seq_SpecialNode != null
+                        && n.IsDescendantOf ( special_UrakawaNode ))
+                        {
+                        specialParentNodeStack.Push ( special_UrakawaNode );
+                        specialSeqNodeStack.Push ( Seq_SpecialNode );
+                        }
                     special_UrakawaNode = n;
                     shouldAddNewSeq = true;
                     }
 
                 urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia ( n );
-
+                /*
                 if (externalAudio == null)
                     {
                     return true;
                     }
-
+                */
                 if (currentHeadingTreeNode == null && urakawaNode.GetDurationOfManagedAudioMediaFlattened ().TimeDeltaAsMillisecondLong == 0)
                     {
                     return true;
                     // carry on processing following lines. and in case this is not true, skip all the following lines
                     }
-                //else
-                //{
-                //return true ;
-                //continue;
-                //}
 
 
                 QualifiedName qName = currentHeadingTreeNode != null ? currentHeadingTreeNode.GetXmlElementQName () : null;
@@ -124,10 +125,10 @@ namespace DaisyExport
 
                     Seq_SpecialNode = smilDocument.CreateElement ( null, "seq", mainSeq.NamespaceURI );
                     string strSeqID = "";
+                    // specific handling of IDs for notes for allowing predetermined refered IDs
                     if (special_UrakawaNode.GetXmlElementQName ().LocalName == "note")
                         {
                         strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "id" ).Value;
-                        //System.Windows.Forms.MessageBox.Show ( smilFileName + " : " + strSeqID);
                         }
                     else
                         {
@@ -159,36 +160,95 @@ namespace DaisyExport
                             }
                         }
 
-                    // add reference to seq_special  in dtbook document
+                    // add smilref reference to seq_special  in dtbook document
                     if (IsEscapableNode ( special_UrakawaNode ) || IsSkippableNode ( special_UrakawaNode ))
                         {
                         XmlNode dtbEscapableNode = m_TreeNode_XmlNodeMap[special_UrakawaNode];
                         CommonFunctions.CreateAppendXmlAttribute ( m_DTBDocument, dtbEscapableNode, "smilref", smilFileName + "#" + strSeqID );
                         }
 
-                    mainSeq.AppendChild ( Seq_SpecialNode );
+                    // decide the parent node to which this new seq node is to be appended.
+                    if (specialSeqNodeStack.Count == 0)
+                        {
+                        mainSeq.AppendChild ( Seq_SpecialNode );
+                        }
+                    else
+                        {
+                        specialSeqNodeStack.Peek ().AppendChild ( Seq_SpecialNode );
+                        }
 
                     shouldAddNewSeq = false;
                     }
 
+                if (externalAudio == null)
+                    {
+                    return true;
+                    }
+
                 XmlNode parNode = smilDocument.CreateElement ( null, "par", mainSeq.NamespaceURI );
+
+                // decide the parent node for this new par node.
+                // if node n is child of current specialParentNode than append to it 
+                //else check if it has to be appended to parent of this special node in stack or to main seq.
                 if (special_UrakawaNode != null && (special_UrakawaNode == n || n.IsDescendantOf ( special_UrakawaNode )))
                     {
                     Seq_SpecialNode.AppendChild ( parNode );
                     }
                 else
                     {
-                    mainSeq.AppendChild ( parNode );
-                    special_UrakawaNode = null;
-                    if (Seq_SpecialNode != null)
+                    bool IsParNodeAppended = false;
+                    string strReferedID = par_id;
+                    if (specialParentNodeStack.Count > 0)
                         {
-                        if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                        // check and pop stack till specialParentNode of   iterating node n is found in stack
+                        // the loop is also used to assign value of last imidiate seq or par to end attribute of parent seq while pop up
+                        while (specialParentNodeStack.Count > 0 && !n.IsDescendantOf ( special_UrakawaNode ))
                             {
-                            //System.Windows.Forms.MessageBox.Show ( par_id == null ? "null" : par_id );
-                            Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
+                            if (Seq_SpecialNode != null
+                                            &&
+                                            strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                                {
+                                Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + strReferedID + ".end";
+                                }
+                            strReferedID = Seq_SpecialNode.Attributes.GetNamedItem ( "id" ).Value;
+                            special_UrakawaNode = specialParentNodeStack.Pop ();
+                            Seq_SpecialNode = specialSeqNodeStack.Pop ();
                             }
-                        Seq_SpecialNode = null;
-                        }
+
+                        // if parent of node n is retrieved from stack, apend the par node to it.
+                        if (n.IsDescendantOf ( special_UrakawaNode ))
+                            {
+                            Seq_SpecialNode.AppendChild ( parNode );
+                            IsParNodeAppended = true;
+                            /*
+                            if (Seq_SpecialNode != null
+                                &&
+                                par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                                {
+                                Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
+                                }
+                            */
+                            }
+                        //System.Windows.Forms.MessageBox.Show ( "par_ id " + par_id + " count " + specialParentNodeStack.Count.ToString ());
+                        }// stack > 0 check ends
+
+                    if (specialSeqNodeStack.Count == 0 && !IsParNodeAppended)
+                        {
+                        mainSeq.AppendChild ( parNode );
+                        special_UrakawaNode = null;
+                        if (Seq_SpecialNode != null)
+                            {
+                            //if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                            if (strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                                {
+                                //System.Windows.Forms.MessageBox.Show ( par_id == null ? "null" : par_id );
+                                //Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
+                                Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + strReferedID + ".end";
+                                }
+                            Seq_SpecialNode = null;
+                            }
+                        }// check of append to main seq ends
+
                     }
 
 
@@ -204,7 +264,6 @@ namespace DaisyExport
                     }
 
                 CommonFunctions.CreateAppendXmlAttribute ( smilDocument, parNode, "id", par_id );
-
 
 
                 XmlNode SmilTextNode = smilDocument.CreateElement ( null, "text", mainSeq.NamespaceURI );
@@ -366,11 +425,19 @@ namespace DaisyExport
                     {
                     if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
                         {
-                        //System.Windows.Forms.MessageBox.Show ( par_id == null ? "null" : par_id );
                         Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
                         }
-                    Seq_SpecialNode = null;
                     }
+                while (specialSeqNodeStack.Count > 0)
+                    {
+                    string str_RefferedSeqID = Seq_SpecialNode.Attributes.GetNamedItem ( "id" ).Value;
+                    Seq_SpecialNode = specialSeqNodeStack.Pop ();
+                    if (str_RefferedSeqID != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                        Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + str_RefferedSeqID + ".end";
+                    //System.Windows.Forms.MessageBox.Show ( "last " + smilFileName + " id " + par_id);
+                    }
+                Seq_SpecialNode = null;
+
 
                 // add metadata to smil document and write to file.
                 if (smilDocument != null)
@@ -447,8 +514,8 @@ namespace DaisyExport
             string qName = node.GetXmlElementQName () != null ? node.GetXmlElementQName ().LocalName : null;
             if (qName != null
                 &&
-                (qName == "list" || qName == "table" || qName == "sidebar"
-                || qName == "prodnote" || qName == "annotation"))
+                (qName == "list" || qName == "table" || qName == "tr"
+                || qName == "sidebar" || qName == "prodnote" || qName == "annotation"))
                 {
                 return true;
                 }
