@@ -291,9 +291,6 @@ namespace DaisyExport
                 if (n.GetXmlElementQName () != null
                     && n.GetXmlElementQName ().LocalName == "pagenum")
                     {
-                    // add custom test to par node
-                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, parNode, "customTest", "pagenum" );
-                    //IsPageAdded = true;
                     if (!currentSmilCustomTestList.Contains ( "pagenum" ))
                         {
                         currentSmilCustomTestList.Add ( "pagenum" );
@@ -348,6 +345,7 @@ namespace DaisyExport
                     CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smilFileName + "#" + par_id );
 
                     // add reference to par in dtbook document
+                    /*
                     string strBtbookID = SmilTextNode.Attributes.GetNamedItem ( "src" ).Value.Split ( '#' )[1];
                     XmlNodeList dtbookNodesList = m_DTBDocument.GetElementsByTagName ( "pagenum" );
                     foreach (XmlNode p in dtbookNodesList)
@@ -357,6 +355,7 @@ namespace DaisyExport
                             CommonFunctions.CreateAppendXmlAttribute ( m_DTBDocument, p, "smilref", smilFileName + "#" + par_id );
                             }
                         }
+                     */ 
                     }
 
 
@@ -527,7 +526,7 @@ namespace DaisyExport
             string qName = node.GetXmlElementQName () != null ? node.GetXmlElementQName ().LocalName : null;
             if (qName != null
                 &&
-                (qName == "noteref" || qName == "note"
+                ( qName == "pagenum"   ||   qName == "noteref" || qName == "note"
                 || qName == "linenum"))
                 {
                 return true;
