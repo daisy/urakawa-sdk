@@ -32,6 +32,7 @@ namespace DaisyExport
             int maxDepth = 1;
             TimeSpan smilElapseTime = new TimeSpan ();
             List<string> ncxCustomTestList = new List<string> ();
+            List<urakawa.core.TreeNode> specialParentNodesAddedToNavList = new List<urakawa.core.TreeNode> ();
 
             foreach (urakawa.core.TreeNode urakawaNode in m_ListOfLevels)
                 {
@@ -126,7 +127,7 @@ namespace DaisyExport
                     Seq_SpecialNode = smilDocument.CreateElement ( null, "seq", mainSeq.NamespaceURI );
                     string strSeqID = "";
                     // specific handling of IDs for notes for allowing predetermined refered IDs
-                    if (special_UrakawaNode.GetXmlElementQName ().LocalName == "note" || special_UrakawaNode.GetXmlElementQName ().LocalName == "annotation" )
+                    if (special_UrakawaNode.GetXmlElementQName ().LocalName == "note" || special_UrakawaNode.GetXmlElementQName ().LocalName == "annotation")
                         {
                         strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "id" ).Value;
                         }
@@ -355,7 +356,66 @@ namespace DaisyExport
                             CommonFunctions.CreateAppendXmlAttribute ( m_DTBDocument, p, "smilref", smilFileName + "#" + par_id );
                             }
                         }
-                     */ 
+                     */
+                    }
+                else if (special_UrakawaNode != null
+                    && m_NavListElementNamesList.Contains ( special_UrakawaNode.GetXmlElementQName ().LocalName ) && !specialParentNodesAddedToNavList.Contains ( special_UrakawaNode ))
+                    {
+                    string navListNodeName = special_UrakawaNode.GetXmlElementQName ().LocalName;
+                    specialParentNodesAddedToNavList.Add ( special_UrakawaNode );
+                    XmlNode navListNode = null;
+
+                    //= getFirstChildElementsWithName ( ncxDocument, true, "navList", null );
+                    foreach (XmlNode xn in getChildrenElementsWithName ( ncxRootNode, true, "navList", ncxRootNode.NamespaceURI, true ))
+                        {
+                        if (xn.Attributes.GetNamedItem ( "class" ).Value == navListNodeName)
+                            {
+                            navListNode = xn;
+                            }
+                        }
+
+                    if (navListNode == null)
+                        {
+                        navListNode = ncxDocument.CreateElement ( null, "navList", ncxRootNode.NamespaceURI );
+                        ncxRootNode.AppendChild ( navListNode );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navListNode, "class", navListNodeName );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navListNode, "id", GetNextID ( ID_NcxPrefix ) );
+
+                        XmlNode mainNavLabel = ncxDocument.CreateElement ( null, "navLabel", navListNode.NamespaceURI );
+                        navListNode.AppendChild ( mainNavLabel );
+                        XmlNode mainTextNode = ncxDocument.CreateElement ( null, "text", navListNode.NamespaceURI );
+                        mainNavLabel.AppendChild ( mainTextNode );
+                        mainTextNode.AppendChild ( ncxDocument.CreateTextNode ( navListNodeName ) );
+                        }
+
+                    XmlNode navTargetNode = ncxDocument.CreateElement ( null, "navTarget", navListNode.NamespaceURI );
+                    navListNode.AppendChild ( navTargetNode );
+
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navTargetNode, "id", GetNextID ( ID_NcxPrefix ) );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navTargetNode, "class", navListNodeName );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, navTargetNode, "playOrder", "" );
+
+                    playOrderList_Sorted.Add ( navTargetNode );
+
+
+                    XmlNode navLabelNode = ncxDocument.CreateElement ( null, "navLabel", navListNode.NamespaceURI );
+                    navTargetNode.AppendChild ( navLabelNode );
+
+                    XmlNode txtNode = ncxDocument.CreateElement ( null, "text", navTargetNode.NamespaceURI );
+                    navLabelNode.AppendChild ( txtNode );
+                    txtNode.AppendChild (
+                        ncxDocument.CreateTextNode ( n.GetTextMediaFlattened () ) );
+
+                    XmlNode audioNodeNcx = ncxDocument.CreateElement ( null, "audio", navTargetNode.NamespaceURI );
+                    navLabelNode.AppendChild ( audioNodeNcx );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString () );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString () );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "src", Path.GetFileName ( externalAudio.Src ) );
+
+                    XmlNode contentNode = ncxDocument.CreateElement ( null, "content", navTargetNode.NamespaceURI );
+                    navTargetNode.AppendChild ( contentNode );
+                    CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smilFileName + "#" + par_id );
+
                     }
 
 
@@ -526,7 +586,7 @@ namespace DaisyExport
             string qName = node.GetXmlElementQName () != null ? node.GetXmlElementQName ().LocalName : null;
             if (qName != null
                 &&
-                ( qName == "pagenum"   ||   qName == "noteref" || qName == "note"
+                (qName == "pagenum" || qName == "noteref" || qName == "note"
                 || qName == "linenum"))
                 {
                 return true;
