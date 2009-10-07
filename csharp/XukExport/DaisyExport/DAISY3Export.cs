@@ -18,6 +18,7 @@ namespace DaisyExport
     {
         private Presentation m_Presentation;
         private string m_OutputDirectory;
+        private List<string> m_NavListElementNamesList;
         private const string PUBLISH_AUDIO_CHANNEL_NAME = "Temporary External Audio Medias (Publish Visitor)";
 
         private const string m_Filename_Content = "dtbook.xml";
@@ -36,6 +37,12 @@ namespace DaisyExport
         {
             m_Presentation = presentation;
 
+            m_NavListElementNamesList = new List<string> ();
+            if (!m_NavListElementNamesList.Contains ( "note" ))
+                {
+                m_NavListElementNamesList.Add ( "note" );
+                }
+            
         }
 
         private bool doesTreeNodeTriggerNewSmil(TreeNode node)
