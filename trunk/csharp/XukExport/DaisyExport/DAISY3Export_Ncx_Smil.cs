@@ -574,7 +574,7 @@ namespace DaisyExport
             if (qName != null
                 &&
                 (qName == "list" || qName == "table" || qName == "tr"
-                || qName == "sidebar" || qName == "prodnote" || qName == "annotation"))
+                || qName == "note"  ||  qName == "annotation"   ||   qName == "sidebar"   ||   qName == "prodnote"))
                 {
                 return true;
                 }
@@ -587,7 +587,7 @@ namespace DaisyExport
             if (qName != null
                 &&
                 (qName == "pagenum" || qName == "noteref" || qName == "note"
-                || qName == "linenum"))
+                ||   qName == "annotation"   ||   qName == "linenum"))
                 {
                 return true;
                 }
