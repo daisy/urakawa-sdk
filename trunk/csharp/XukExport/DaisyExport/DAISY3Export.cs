@@ -33,6 +33,10 @@ namespace DaisyExport
         private List<string> m_FilesList_Image; // list of images, populated in create content document function
         private TimeSpan m_TotalTime;
 
+        /// <summary>
+        /// initializes instance with presentation. NavList will be created for only note elements
+        /// </summary>
+        /// <param name="presentation"></param>
         public DAISY3Export(Presentation presentation)
         {
             m_Presentation = presentation;
@@ -44,6 +48,28 @@ namespace DaisyExport
                 }
             
         }
+
+/// <summary>
+/// initializes instance with presentation and list of element names for which navList will be created, 
+/// if null is passed as list parameter , no navList will be created
+/// </summary>
+/// <param name="presentation"></param>
+/// <param name="navListElementNamesList"></param>
+        public DAISY3Export ( Presentation presentation, List<string> navListElementNamesList )
+            {
+            m_Presentation = presentation;
+
+            if (navListElementNamesList != null)
+                {
+                m_NavListElementNamesList = navListElementNamesList;
+                }
+            else
+                {
+                m_NavListElementNamesList = new List<string> ();
+                }
+
+            }
+
 
         private bool doesTreeNodeTriggerNewSmil(TreeNode node)
         {
