@@ -841,12 +841,13 @@ namespace DaisyExport
                 // create dictionary for custom test
                 Dictionary<string, string> bookStrucMap = new Dictionary<string, string> ();
                 bookStrucMap.Add ( "pagenum", "PAGE_NUMBER" );
+                bookStrucMap.Add ( "linenum", "LINE_NUMBER" );
                 bookStrucMap.Add ( "note", "NOTE" );
                 bookStrucMap.Add ( "noteref", "NOTE_REFERENCE" );
                 bookStrucMap.Add ( "annotation", "ANNOTATION" );
                 bookStrucMap.Add ( "prodnote", "OPTIONAL_PRODUCER_NOTE" );
+                bookStrucMap.Add ( "sidebar", "OPTIONAL_SIDEBAR" );
 
-                // to do: also add LINE_NUMBER OPTIONAL_SIDEBAR 
 
                 foreach (string customTestName in ncxCustomTestList)
                     {
