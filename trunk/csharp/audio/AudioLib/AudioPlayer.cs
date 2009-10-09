@@ -55,6 +55,22 @@ namespace AudioLib
             }
         }
 
+        private float m_FastPlayFactor = 1 ;
+        /// <summary>
+        /// Gets and sets fast play multiplying factor,suggested value is between 1.0 and 2.0
+        /// </summary>
+        public float FastPlayFactor
+            {
+            get
+                {
+                return m_FastPlayFactor;
+                }
+            set
+                {
+                SetPlayFrequency ( value );
+                }
+            }
+
         public delegate Stream StreamProviderDelegate();
         private StreamProviderDelegate m_CurrentAudioStreamProvider;
         private Stream m_CurrentAudioStream;
@@ -677,6 +693,16 @@ namespace AudioLib
                 EnsurePlaybackStreamIsDead();
             }
         }
+
+        void SetPlayFrequency ( float frequencyMultiplier )
+            {
+            if (m_CircularBuffer  != null &&  m_CircularBuffer.Caps.ControlFrequency)
+                {
+                    m_CircularBuffer.Frequency = (int)(m_CircularBuffer.Format.SamplesPerSecond * frequencyMultiplier);
+                }
+                m_FastPlayFactor = frequencyMultiplier;
+            }
+
 
 
 
