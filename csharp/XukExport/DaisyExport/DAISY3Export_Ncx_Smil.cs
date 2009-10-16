@@ -418,7 +418,6 @@ namespace DaisyExport
 
                     }
 
-
                 if (!IsNcxNativeNodeAdded)
                     {
                     if (isDoctitle_)
@@ -574,7 +573,7 @@ namespace DaisyExport
             if (qName != null
                 &&
                 (qName == "list" || qName == "table" || qName == "tr"
-                || qName == "note"  ||  qName == "annotation"   ||   qName == "sidebar"   ||   qName == "prodnote"))
+                || qName == "note" || qName == "annotation" || qName == "sidebar" || qName == "prodnote"))
                 {
                 return true;
                 }
@@ -587,13 +586,33 @@ namespace DaisyExport
             if (qName != null
                 &&
                 (qName == "pagenum" || qName == "noteref" || qName == "note"
-                ||   qName == "annotation"   ||   qName == "linenum"))
+                || qName == "annotation" || qName == "linenum"
+                || IsOptionalSidebarOrProducerNote ( node )))
                 {
                 return true;
                 }
             return false;
             }
 
+        private bool IsOptionalSidebarOrProducerNote ( urakawa.core.TreeNode node )
+            {
+            string qName = node.GetXmlElementQName () != null ? node.GetXmlElementQName ().LocalName : null;
+            if (qName != null
+                && (qName == "sidebar" || qName == "prodnote"))
+                {
+                foreach (urakawa.property.xml.XmlAttribute attr in node.GetXmlProperty ().Attributes)
+                    {
+                    if (attr.LocalName == "render" && attr.Value == "optional")
+                        {
+                        System.Windows.Forms.MessageBox.Show ( attr.Value + " : " + qName );
+                        return true;
+                        }
+                    }// foreach loop ends
+
+                } // end check for sidebar and producer notes local name
+
+            return false;
+            }
 
         private XmlNode CreateDocTitle ( XmlDocument ncxDocument, XmlNode ncxRootNode, urakawa.core.TreeNode n )
             {
