@@ -220,6 +220,12 @@ namespace AudioLib
             //if (pcmFormat == null)
             if ( exceptionError )
             {
+                // in case of exception, delete incomplete file just created
+            if (File.Exists ( destinationFilePath ))
+                {
+                File.Delete ( destinationFilePath );
+                }
+
                 Stream fileStream = File.Open(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
                 if (fileStream != null)
                 {
@@ -271,7 +277,12 @@ namespace AudioLib
                 || sampleRate != destSamplingRate 
                 || bitDepth != destBitDepth )
             {
-                return ConvertSampleRate(destinationFilePath, destinationDirectory, destChannels, destSamplingRate, destBitDepth);
+                string newDestinationFilePath =  ConvertSampleRate(destinationFilePath, destinationDirectory, destChannels, destSamplingRate, destBitDepth);
+                if (File.Exists ( destinationFilePath ))
+                    {
+                    File.Delete ( destinationFilePath );
+                    }
+                return newDestinationFilePath;
             }
             return destinationFilePath;
         }
