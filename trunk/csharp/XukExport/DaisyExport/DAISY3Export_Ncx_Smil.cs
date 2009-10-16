@@ -417,7 +417,7 @@ namespace DaisyExport
                     CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, contentNode, "src", smilFileName + "#" + par_id );
 
                     }
-
+                
                 if (!IsNcxNativeNodeAdded)
                     {
                     if (isDoctitle_)
@@ -604,8 +604,7 @@ namespace DaisyExport
                     {
                     if (attr.LocalName == "render" && attr.Value == "optional")
                         {
-                        System.Windows.Forms.MessageBox.Show ( attr.Value + " : " + qName );
-                        return true;
+                                                return true;
                         }
                     }// foreach loop ends
 
