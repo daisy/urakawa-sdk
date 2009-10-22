@@ -181,6 +181,7 @@ namespace AudioLib
             int channels = 0;
             int sampleRate = 0;
             int bitDepth = 0;
+            /*
             bool exceptionError = false;
             using (Mp3FileReader mp3Reader = new Mp3FileReader(sourceFile))
             {
@@ -225,7 +226,7 @@ namespace AudioLib
                 {
                 File.Delete ( destinationFilePath );
                 }
-
+*/
                 Stream fileStream = File.Open(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
                 if (fileStream != null)
                 {
@@ -270,7 +271,7 @@ namespace AudioLib
                 {
                     return null;
                 }
-            }
+            //}
 
             //if (!pcmFormat.IsCompatibleWith(destinationPCMFormat))
             if ( channels != destChannels
@@ -286,5 +287,6 @@ namespace AudioLib
             }
             return destinationFilePath;
         }
+
     }
 }
