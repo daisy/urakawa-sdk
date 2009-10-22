@@ -88,7 +88,7 @@ namespace XukImport
                 return;
             }
 
-            string fileExt = m_Book_FilePath.Substring(indexOfDot);
+            string fileExt = m_Book_FilePath.Substring(indexOfDot).ToLower () ;
             switch (fileExt)
             {
                 case ".opf":
