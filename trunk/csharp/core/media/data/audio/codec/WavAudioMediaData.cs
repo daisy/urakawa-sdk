@@ -594,6 +594,22 @@ namespace urakawa.media.data.audio.codec
             NotifyAudioDataInserted(this, Time.Zero.AddTimeDelta(AudioDuration), newSingleWavClip.MediaDuration);
         }
 
+        public override void AppendPcmData(DataProvider fileDataProvider, Time clipBegin, Time clipEnd)
+        {
+            if (fileDataProvider.MimeType != DataProviderFactory.AUDIO_WAV_MIME_TYPE)
+            {
+                throw new exception.OperationNotValidException(
+                    "The mime type of the given DataProvider is not WAV !");
+            }
+
+            WavClip newSingleWavClip = new WavClip(fileDataProvider);
+            newSingleWavClip.ClipBegin = clipBegin;
+            newSingleWavClip.ClipEnd = clipEnd;
+            mWavClips.Add(newSingleWavClip);
+
+            NotifyAudioDataInserted(this, Time.Zero.AddTimeDelta(AudioDuration), newSingleWavClip.ClipEnd.GetTimeDelta(newSingleWavClip.ClipBegin));
+        }
+
         /// <summary>
         /// Inserts audio of a given duration from a given source PCM data <see cref="Stream"/> to the wav audio media data
         /// at a given point
