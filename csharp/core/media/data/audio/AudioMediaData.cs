@@ -216,6 +216,7 @@ namespace urakawa.media.data.audio
         }
 
         public abstract void AppendPcmData(DataProvider fileDataProvider);
+        public abstract void AppendPcmData(DataProvider fileDataProvider, Time clipBegin, Time clipEnd);
 
         /// <summary>
         /// Appends audio data from a RIFF Wave file

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -68,10 +69,24 @@ namespace urakawa.media.data.utilities
             for (int i = 0; i < keysArray.Length; i++)
             {
                 string path = m_FilePathsMap[keysArray[i]];
-                if (!presentationFilePaths.Contains(path) && File.Exists(path))
+                if (!presentationFilePaths.Contains(path))
                 {
-                    File.Delete(path);
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
                     m_FilePathsMap.Remove(keysArray[i]);
+                }
+            }
+        }
+
+        public void RelocateDestinationFilePath(string originalPath, string newPath)
+        {
+            foreach (string srcFilePath in m_FilePathsMap.Keys)
+            {
+                if (m_FilePathsMap[srcFilePath] == originalPath)
+                {
+                    m_FilePathsMap[srcFilePath] = newPath;
                 }
             }
         }
