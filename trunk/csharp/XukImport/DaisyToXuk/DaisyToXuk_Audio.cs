@@ -19,7 +19,9 @@ namespace XukImport
     {
         private AudioChannel m_audioChannel;
         private AudioFormatConvertorSession m_AudioConversionSession;
-        
+        private Dictionary<string, FileDataProvider> m_Src_FileDataProviderMap = new Dictionary<string,FileDataProvider> ();
+        private Dictionary<string, string> m_MovedFilePaths = new Dictionary<string, string> ();
+
         //private bool m_firstTimePCMFormat;
         
         //private Dictionary<string, string> m_convertedWavFiles = null;
@@ -31,7 +33,7 @@ namespace XukImport
             if (m_convertedWavFiles != null)
             {
                 m_convertedWavFiles.Clear();
-            }
+                         }
             else
             {
                 m_convertedWavFiles = new Dictionary<string, string>();
@@ -54,7 +56,8 @@ namespace XukImport
             //m_firstTimePCMFormat = true;
 
             m_AudioConversionSession = new AudioFormatConvertorSession(m_Project.Presentations.Get(0));
-
+            m_Src_FileDataProviderMap.Clear ();
+            m_MovedFilePaths.Clear ();
             //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
             //string dirPath = opfParentDir.ToString();
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);
@@ -278,6 +281,7 @@ namespace XukImport
 
                 //string newfullWavPath = wavConverter.UnCompressMp3File(fullMp3PathOriginal, Path.GetDirectoryName(fullMp3PathOriginal), presentation.MediaDataManager.DefaultPCMFormat);
                 string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullMp3PathOriginal);
+                
 
                 if (newfullWavPath != null)
                 {
@@ -303,6 +307,21 @@ namespace XukImport
                     //}
 
                     //m_convertedMp3Files.Add(fullMp3PathOriginal, newfullWavPath);
+                if (m_MovedFilePaths.ContainsKey ( newfullWavPath ))
+                    {
+                    newfullWavPath = m_MovedFilePaths[newfullWavPath];
+                    }
+                else
+                    {
+                    FileDataProvider dataProv = (FileDataProvider)presentation.DataProviderFactory.Create ( DataProviderFactory.AUDIO_WAV_MIME_TYPE );
+                    //System.Windows.Forms.MessageBox.Show ( newfullWavPath );
+                    dataProv.InitByMovingExistingFile ( newfullWavPath );
+                    m_MovedFilePaths.Add ( newfullWavPath, dataProv.DataFileFullPath );
+                    m_Src_FileDataProviderMap.Add ( dataProv.DataFileFullPath, dataProv );
+                    newfullWavPath = dataProv.DataFileFullPath;
+                    }
+                
+
                     media = addAudioWav(newfullWavPath, true, audioAttrClipBegin, audioAttrClipEnd);
                 }
                 //}
@@ -386,11 +405,12 @@ namespace XukImport
                     (WavAudioMediaData)
                     presentation.MediaDataFactory.CreateAudioMediaData();
 
-                FileDataProvider dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-                dataProv.InitByMovingExistingFile(fullWavPath);
+                //FileDataProvider dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                //dataProv.InitByMovingExistingFile(fullWavPath);
 
-                m_AudioConversionSession.RelocateDestinationFilePath(fullWavPath, dataProv.DataFileFullPath);
+                //m_AudioConversionSession.RelocateDestinationFilePath(fullWavPath, dataProv.DataFileFullPath);
 
+                FileDataProvider dataProv = m_Src_FileDataProviderMap[fullWavPath];
                 mediaData.AppendPcmData(dataProv, clipB, clipE);
 
                 media = presentation.MediaFactory.CreateManagedAudioMedia();
