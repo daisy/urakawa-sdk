@@ -110,6 +110,10 @@ namespace urakawa.media.data
             //    throw new exception.OperationNotValidException(
             //        String.Format("The data file {0} is not in the data directory {1}", path, Presentation.DataProviderManager.DataFileDirectoryFullPath));
             //}
+            if (!Directory.Exists ( Presentation.DataProviderManager.DataFileDirectoryFullPath ))
+                {
+                Directory.CreateDirectory ( Presentation.DataProviderManager.DataFileDirectoryFullPath );
+                }
 
             File.Move(path, DataFileFullPath);
 
