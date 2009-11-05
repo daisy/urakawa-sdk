@@ -47,7 +47,7 @@ namespace urakawa.media.data
         {
             get
             {
-                if (mDataFileRelativePath==null)
+                if (mDataFileRelativePath == null)
                 {
                     //Lazy initialization
                     mDataFileRelativePath = Presentation.DataProviderManager.GetNewDataFileRelPath(
@@ -77,6 +77,45 @@ namespace urakawa.media.data
 
         #region DataProvider Members
 
+        public void InitByCopyingExistingFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new exception.DataMissingException(
+                    String.Format("The data file {0} does not exist", path));
+            }
+
+            if (File.Exists(DataFileFullPath))
+            {
+                throw new exception.OperationNotValidException(
+                    String.Format("The data file {0} already exists", DataFileFullPath));
+            }
+
+            foreach (DataProvider dp in Presentation.DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
+            {
+                if (dp is FileDataProvider)
+                {
+                    FileDataProvider fdp = (FileDataProvider)dp;
+                    if (fdp.DataFileFullPath == path)
+                    {
+                        throw new exception.OperationNotValidException(
+                            String.Format("The data file {0} is already managed", path));
+                    }
+                }
+            }
+
+            //Directory.GetParent(filePath).FullName
+            //if (Path.GetDirectoryName(path) != Presentation.DataProviderManager.DataFileDirectoryFullPath)
+            //{
+            //    throw new exception.OperationNotValidException(
+            //        String.Format("The data file {0} is not in the data directory {1}", path, Presentation.DataProviderManager.DataFileDirectoryFullPath));
+            //}
+
+            File.Copy(path, DataFileFullPath);
+
+            HasBeenInitialized = true;
+        }
+
         public void InitByMovingExistingFile(string path)
         {
             if (!File.Exists(path))
@@ -95,7 +134,7 @@ namespace urakawa.media.data
             {
                 if (dp is FileDataProvider)
                 {
-                    FileDataProvider fdp = (FileDataProvider) dp;
+                    FileDataProvider fdp = (FileDataProvider)dp;
                     if (fdp.DataFileFullPath == path)
                     {
                         throw new exception.OperationNotValidException(
@@ -110,10 +149,6 @@ namespace urakawa.media.data
             //    throw new exception.OperationNotValidException(
             //        String.Format("The data file {0} is not in the data directory {1}", path, Presentation.DataProviderManager.DataFileDirectoryFullPath));
             //}
-            if (!Directory.Exists ( Presentation.DataProviderManager.DataFileDirectoryFullPath ))
-                {
-                Directory.CreateDirectory ( Presentation.DataProviderManager.DataFileDirectoryFullPath );
-                }
 
             File.Move(path, DataFileFullPath);
 
@@ -141,11 +176,13 @@ namespace urakawa.media.data
                         String.Format("The data file {0} does not exist", DataFileFullPath));
                 }
 
-                string dirPath = Path.GetDirectoryName(DataFileFullPath);
-                if (!Directory.Exists(dirPath))
-                {
-                    Directory.CreateDirectory(dirPath);
-                }
+                //string dirPath = Path.GetDirectoryName(DataFileFullPath);
+
+                // this may be needed in the future when we allow the Data folder to contain subfolders, for example to organize images, audio ,etc.
+                //if (!Directory.Exists(dirPath))
+                //{
+                //    Directory.CreateDirectory(dirPath); // may be needed in case one intermediary folder does not exist in the path
+                //}
             }
 
             try
@@ -182,7 +219,7 @@ namespace urakawa.media.data
                 return OpenInputStream_NoLock();
             }
         }
-        private Stream OpenInputStream_NoLock()  
+        private Stream OpenInputStream_NoLock()
         {
             if (mOpenOutputStream != null)
             {
@@ -217,7 +254,7 @@ namespace urakawa.media.data
                 {
                     cnStm.StreamClosed -= InputStreamClosed_StreamClosed;
                     if (mOpenInputStreams.Contains(cnStm)) mOpenInputStreams.Remove(cnStm);
-                } 
+                }
             }
         }
 
@@ -277,7 +314,7 @@ namespace urakawa.media.data
             {
                 lock (m_lock)
                 {
-                    mOpenOutputStream.StreamClosed -= new EventHandler(OutputStream_StreamClosed); 
+                    mOpenOutputStream.StreamClosed -= new EventHandler(OutputStream_StreamClosed);
                     mOpenOutputStream = null;
                 }
             }
@@ -397,7 +434,7 @@ namespace urakawa.media.data
                 throw new exception.XukException("dataFileRelativePath is missing from FileDataProvider element");
             }
             mDataFileRelativePath = val;
-            
+
             /*
             if (!File.Exists(getDataFileFullPath()))
             {
@@ -407,7 +444,7 @@ namespace urakawa.media.data
             */
 
             HasBeenInitialized = true; //Assume that the data file exists
-            
+
         }
 
         /// <summary>

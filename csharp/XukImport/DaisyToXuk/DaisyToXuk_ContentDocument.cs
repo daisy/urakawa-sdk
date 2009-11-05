@@ -168,10 +168,6 @@ namespace XukImport
                                     string parentPath = Directory.GetParent(filePath).FullName;
                                     string imgSourceFullpath = Path.Combine(parentPath, relativePath);
                                     string datafilePath = presentation.DataProviderManager.DataFileDirectoryFullPath;
-                                    if (!Directory.Exists(datafilePath))
-                                    {
-                                        Directory.CreateDirectory(datafilePath);
-                                    }
                                     string imgDestFullpath = Path.Combine(datafilePath,
                                                                           Path.GetFileName(imgSourceFullpath));
                                     if (!File.Exists(imgDestFullpath))
