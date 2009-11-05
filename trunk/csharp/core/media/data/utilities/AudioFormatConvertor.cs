@@ -71,10 +71,6 @@ namespace urakawa.media.data.utilities
                 throw new System.IO.FileNotFoundException();
 
             string destDirectory = presentation.DataProviderManager.DataFileDirectoryFullPath;
-            if (!Directory.Exists(destDirectory))
-            {
-                Directory.CreateDirectory(destDirectory);
-            }
 
             audio.PCMFormatInfo defaultFormat = presentation.MediaDataManager.DefaultPCMFormat.Copy();
 

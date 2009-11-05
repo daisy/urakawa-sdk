@@ -19,11 +19,11 @@ namespace XukImport
     {
         private AudioChannel m_audioChannel;
         private AudioFormatConvertorSession m_AudioConversionSession;
-        private Dictionary<string, FileDataProvider> m_OriginalAudioFile_FileDataProviderMap = new Dictionary<string,FileDataProvider> () ; // maps original audio file refered by smil to FileDataProvider of sdk.
-        
+        private Dictionary<string, FileDataProvider> m_OriginalAudioFile_FileDataProviderMap = new Dictionary<string, FileDataProvider>(); // maps original audio file refered by smil to FileDataProvider of sdk.
+
 
         //private bool m_firstTimePCMFormat;
-        
+
         //private Dictionary<string, string> m_convertedWavFiles = null;
         //private Dictionary<string, string> m_convertedMp3Files = null;
 
@@ -38,16 +38,16 @@ namespace XukImport
             //m_firstTimePCMFormat = true;
 
             m_AudioConversionSession = new AudioFormatConvertorSession(m_Project.Presentations.Get(0));
-            m_OriginalAudioFile_FileDataProviderMap.Clear () ;
+            m_OriginalAudioFile_FileDataProviderMap.Clear();
 
-            
+
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);
 
             foreach (string smilPath in spineOfSmilFiles)
             {
-                string fullSmilPath = Path.Combine ( dirPath, smilPath );
-                parseSmil ( fullSmilPath );
-                
+                string fullSmilPath = Path.Combine(dirPath, smilPath);
+                parseSmil(fullSmilPath);
+
             }
 
             //m_AudioConversionSession.DeleteSessionAudioFiles();
@@ -175,13 +175,13 @@ namespace XukImport
                 string dirPathBook = Path.GetDirectoryName(m_Book_FilePath);
                 FileDataProvider dataProv = null;
                 string fullWavPathOriginal = Path.Combine(dirPathBook, audioAttrSrc.Value);
-                if (!File.Exists ( fullWavPathOriginal ))
-                    {
-                    System.Diagnostics.Debug.Fail ( "File not found: {0}", fullWavPathOriginal );
+                if (!File.Exists(fullWavPathOriginal))
+                {
+                    System.Diagnostics.Debug.Fail("File not found: {0}", fullWavPathOriginal);
                     media = null;
-                    }
+                }
                 else
-                    {
+                {
                     //bool deleteSrcAfterCompletion = false;
 
                     string fullWavPath = fullWavPathOriginal;
@@ -189,18 +189,18 @@ namespace XukImport
                     uint dataLength;
                     AudioLibPCMFormat pcmInfo = null;
 
-                    if (m_OriginalAudioFile_FileDataProviderMap.ContainsKey ( fullWavPath ))
-                        {
+                    if (m_OriginalAudioFile_FileDataProviderMap.ContainsKey(fullWavPath))
+                    {
                         dataProv = m_OriginalAudioFile_FileDataProviderMap[fullWavPath];
-                        }
+                    }
                     else // create FileDataProvider
-                        {
+                    {
                         Stream wavStream = null;
                         try
-                            {
-                            wavStream = File.Open ( fullWavPath, FileMode.Open, FileAccess.Read, FileShare.Read );
+                        {
+                            wavStream = File.Open(fullWavPath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-                            pcmInfo = AudioLibPCMFormat.RiffHeaderParse ( wavStream, out dataLength );
+                            pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
 
 
                             //if (m_firstTimePCMFormat)
@@ -209,39 +209,35 @@ namespace XukImport
                             //    m_firstTimePCMFormat = false;
                             //}
 
-                            if (!presentation.MediaDataManager.DefaultPCMFormat.Data.IsCompatibleWith ( pcmInfo ))
-                                {
-                                wavStream.Close ();
+                            if (!presentation.MediaDataManager.DefaultPCMFormat.Data.IsCompatibleWith(pcmInfo))
+                            {
+                                wavStream.Close();
                                 wavStream = null;
 
-                                string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat ( fullWavPath );
+                                string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullWavPath);
 
-                                    dataProv = (FileDataProvider)presentation.DataProviderFactory.Create ( DataProviderFactory.AUDIO_WAV_MIME_TYPE );
-                                    dataProv.InitByMovingExistingFile ( newfullWavPath );
-                                    m_OriginalAudioFile_FileDataProviderMap.Add ( fullWavPath, dataProv );
-                                
-                                }
-                            else // use original wav file by copying it to data directory
-                                {
-                                dataProv = (FileDataProvider)presentation.DataProviderFactory.Create ( DataProviderFactory.AUDIO_WAV_MIME_TYPE );
-                                string mediatorFilePath = GenerateFileFullPath ( Path.GetDirectoryName ( presentation.DataProviderManager.DataFileDirectoryFullPath  ) );
+                                dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                                dataProv.InitByMovingExistingFile(newfullWavPath);
+                                m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
 
-                                File.Copy ( fullWavPath,
-                                   mediatorFilePath);
-
-                                dataProv.InitByMovingExistingFile ( mediatorFilePath);
-                                m_OriginalAudioFile_FileDataProviderMap.Add ( fullWavPath, dataProv );
-                                }
                             }
-                        finally
+                            else // use original wav file by copying it to data directory
                             {
-                            if (wavStream != null) wavStream.Close ();
+                                dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                                string mediatorFilePath = GenerateFileFullPath(Path.GetDirectoryName(presentation.DataProviderManager.DataFileDirectoryFullPath));
+                                dataProv.InitByCopyingExistingFile(mediatorFilePath);
+                                m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
                             }
                         }
+                        finally
+                        {
+                            if (wavStream != null) wavStream.Close();
+                        }
+                    }
 
-                    } // FileDataProvider  key check ends
+                } // FileDataProvider  key check ends
 
-                media = addAudioWav ( dataProv, audioAttrClipBegin, audioAttrClipEnd );
+                media = addAudioWav(dataProv, audioAttrClipBegin, audioAttrClipEnd);
                 //media = addAudioWav ( fullWavPath, deleteSrcAfterCompletion, audioAttrClipBegin, audioAttrClipEnd );
 
             }
@@ -257,16 +253,16 @@ namespace XukImport
                 string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullMp3PathOriginal);
 
                 FileDataProvider dataProv = null;
-                if (m_OriginalAudioFile_FileDataProviderMap.ContainsKey ( fullMp3PathOriginal ))
-                    {
+                if (m_OriginalAudioFile_FileDataProviderMap.ContainsKey(fullMp3PathOriginal))
+                {
                     dataProv = m_OriginalAudioFile_FileDataProviderMap[fullMp3PathOriginal];
-                    }
+                }
                 else
-                    {
-                    dataProv = (FileDataProvider)presentation.DataProviderFactory.Create ( DataProviderFactory.AUDIO_WAV_MIME_TYPE );
-                    dataProv.InitByMovingExistingFile ( newfullWavPath );
-                    m_OriginalAudioFile_FileDataProviderMap.Add ( fullMp3PathOriginal, dataProv );
-                    }
+                {
+                    dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                    dataProv.InitByMovingExistingFile(newfullWavPath);
+                    m_OriginalAudioFile_FileDataProviderMap.Add(fullMp3PathOriginal, dataProv);
+                }
 
                 if (newfullWavPath != null)
                 {
@@ -290,10 +286,10 @@ namespace XukImport
                     //        m_firstTimePCMFormat = false;
                     //    }
                     //}
-                    
+
 
                     //media = addAudioWav(newfullWavPath, true, audioAttrClipBegin, audioAttrClipEnd);
-                media = addAudioWav ( dataProv, audioAttrClipBegin, audioAttrClipEnd );
+                    media = addAudioWav(dataProv, audioAttrClipBegin, audioAttrClipEnd);
                 }
                 //}
             }
@@ -348,20 +344,20 @@ namespace XukImport
             }
         }
 
-        private string GenerateFileFullPath ( string directoryPath )
-            {
-            
+        private string GenerateFileFullPath(string directoryPath)
+        {
+
             for (int i = 0; i < 900000; i++)
+            {
+                string fullPath = Path.Combine(directoryPath, i.ToString());
+                fullPath = fullPath + ".wav";
+                if (!File.Exists(fullPath))
                 {
-                string fullPath = Path.Combine ( directoryPath, i.ToString () ) ;
-                fullPath = fullPath+ ".wav" ;
-                if (!File.Exists ( fullPath ))
-                    {
                     return fullPath;
-                    }
                 }
-            return null;
             }
+            return null;
+        }
 
         private Media addAudioWav(FileDataProvider dataProv, XmlNode audioAttrClipBegin, XmlNode audioAttrClipEnd)
         {
@@ -378,86 +374,86 @@ namespace XukImport
             {
                 clipE = new Time(TimeSpan.Parse(audioAttrClipEnd.Value));
             }
-            
+
             Media media = null;
             Presentation presentation = m_Project.Presentations.Get(0);
 
-            
+
             //if (deleteSrcAfterCompletion)
             //{
-                presentation.MediaDataFactory.DefaultAudioMediaDataType =
-                    typeof(WavAudioMediaData);
+            presentation.MediaDataFactory.DefaultAudioMediaDataType =
+                typeof(WavAudioMediaData);
 
-                WavAudioMediaData mediaData =
-                    (WavAudioMediaData)
-                    presentation.MediaDataFactory.CreateAudioMediaData();
+            WavAudioMediaData mediaData =
+                (WavAudioMediaData)
+                presentation.MediaDataFactory.CreateAudioMediaData();
 
-                //FileDataProvider dataProv = m_Src_FileDataProviderMap[fullWavPath];
-                //System.Windows.Forms.MessageBox.Show ( clipB.ToString () + " : " + clipE.ToString () ) ;
-                mediaData.AppendPcmData(dataProv, clipB, clipE);
+            //FileDataProvider dataProv = m_Src_FileDataProviderMap[fullWavPath];
+            //System.Windows.Forms.MessageBox.Show ( clipB.ToString () + " : " + clipE.ToString () ) ;
+            mediaData.AppendPcmData(dataProv, clipB, clipE);
 
-                media = presentation.MediaFactory.CreateManagedAudioMedia();
-                ((ManagedAudioMedia)media).AudioMediaData = mediaData;
+            media = presentation.MediaFactory.CreateManagedAudioMedia();
+            ((ManagedAudioMedia)media).AudioMediaData = mediaData;
             //}
-                /* else
-                {
+            /* else
+            {
                 
-                    uint dataLength;
-                    AudioLibPCMFormat pcmInfo = null;
-                    Stream wavStream = null;
-                    try
+                uint dataLength;
+                AudioLibPCMFormat pcmInfo = null;
+                Stream wavStream = null;
+                try
+                {
+                    wavStream = File.Open(fullWavPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                    pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
+
+                    //if (m_firstTimePCMFormat)
+                    //{
+                    //    presentation.MediaDataManager.DefaultPCMFormat = new PCMFormatInfo(pcmInfo);
+                    //    m_firstTimePCMFormat = false;
+                    //}
+
+                    TimeDelta clipDuration = new TimeDelta(pcmInfo.ConvertBytesToTime(dataLength));
+                    if (!clipB.IsEqualTo(Time.Zero) || !clipE.IsEqualTo(Time.MaxValue))
                     {
-                        wavStream = File.Open(fullWavPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                        clipDuration = clipE.GetTimeDelta(clipB);
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.Fail("Audio clip with full duration ??");
+                    }
 
-                        pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
+                    long byteOffset = 0;
+                    if (!clipB.IsEqualTo(Time.Zero))
+                    {
+                        byteOffset = pcmInfo.ConvertTimeToBytes(clipB.TimeAsMillisecondFloat);
+                    }
+                    if (byteOffset > 0)
+                    {
+                        wavStream.Seek(byteOffset, SeekOrigin.Current);
+                    }
 
-                        //if (m_firstTimePCMFormat)
-                        //{
-                        //    presentation.MediaDataManager.DefaultPCMFormat = new PCMFormatInfo(pcmInfo);
-                        //    m_firstTimePCMFormat = false;
-                        //}
+                    presentation.MediaDataFactory.DefaultAudioMediaDataType =
+                        typeof (WavAudioMediaData);
 
-                        TimeDelta clipDuration = new TimeDelta(pcmInfo.ConvertBytesToTime(dataLength));
-                        if (!clipB.IsEqualTo(Time.Zero) || !clipE.IsEqualTo(Time.MaxValue))
-                        {
-                            clipDuration = clipE.GetTimeDelta(clipB);
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.Fail("Audio clip with full duration ??");
-                        }
-
-                        long byteOffset = 0;
-                        if (!clipB.IsEqualTo(Time.Zero))
-                        {
-                            byteOffset = pcmInfo.ConvertTimeToBytes(clipB.TimeAsMillisecondFloat);
-                        }
-                        if (byteOffset > 0)
-                        {
-                            wavStream.Seek(byteOffset, SeekOrigin.Current);
-                        }
-
-                        presentation.MediaDataFactory.DefaultAudioMediaDataType =
-                            typeof (WavAudioMediaData);
-
-                        WavAudioMediaData mediaData =
-                            (WavAudioMediaData)
-                            presentation.MediaDataFactory.CreateAudioMediaData();
+                    WavAudioMediaData mediaData =
+                        (WavAudioMediaData)
+                        presentation.MediaDataFactory.CreateAudioMediaData();
 
                     
-                        mediaData.InsertPcmData(wavStream, Time.Zero, clipDuration);
+                    mediaData.InsertPcmData(wavStream, Time.Zero, clipDuration);
 
-                        media = presentation.MediaFactory.CreateManagedAudioMedia();
-                        ((ManagedAudioMedia) media).AudioMediaData = mediaData;
-                    }
-                    finally
-                    {
-                        if (wavStream != null) wavStream.Close();
-                    }
-                 
+                    media = presentation.MediaFactory.CreateManagedAudioMedia();
+                    ((ManagedAudioMedia) media).AudioMediaData = mediaData;
                 }
-                */
-                return media;
+                finally
+                {
+                    if (wavStream != null) wavStream.Close();
+                }
+                 
+            }
+            */
+            return media;
         }
     }
 }

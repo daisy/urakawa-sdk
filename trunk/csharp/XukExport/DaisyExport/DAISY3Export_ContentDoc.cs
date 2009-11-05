@@ -200,7 +200,8 @@ namespace DaisyExport
                         if (currentXmlNode.LocalName == "img")
                         {
                             XmlAttribute imgSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
-                            if (imgSrcAttribute != null && imgSrcAttribute.Value.StartsWith(m_Presentation.DataProviderManager.DataFileDirectory))
+                            if (imgSrcAttribute != null &&
+                                (imgSrcAttribute.Value.StartsWith(m_Presentation.DataProviderManager.DataFileDirectory)))
                             {
                                 string imgFileName = Path.GetFileName(imgSrcAttribute.Value);
                                 string sourcePath = Path.Combine(m_Presentation.DataProviderManager.DataFileDirectoryFullPath,

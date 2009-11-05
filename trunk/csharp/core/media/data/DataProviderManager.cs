@@ -84,40 +84,40 @@ namespace urakawa.media.data
         /// The DataFileDirectory is initialized lazily:
         /// If the DataFileDirectory has not been explicitly initialized using the <see cref="DataFileDirectory"/> setter,
         /// retrieving <see cref="DataFileDirectory"/> will assing it the default value "Data"</remarks>
-        public string DataFileDirectory
-        {
-            get
-            {
-                if (mDataFileDirectory == null) mDataFileDirectory = "Data";
-                return mDataFileDirectory;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The DataFileDirectory can not be null");
-                }
-                if (mDataFileDirectory != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The DataProviderManager has already been initialized with a DataFileDirectory");
-                }
-                Uri tmp;
-                if (!Uri.TryCreate(value, UriKind.Relative, out tmp))
-                {
-                    throw new exception.InvalidUriException(String.Format(
-                                                                "DataFileDirectory must be a relative Uri, '{0}' is not",
-                                                                value));
-                }
 
-                if (!Directory.Exists(value))
-                {
-                    Directory.CreateDirectory(value);
-                }
-                mDataFileDirectory = value;
-            }
-        }
+        //{
+        //    get
+        //    {
+        //        if (mDataFileDirectory == null) mDataFileDirectory = "Data";
+        //        return mDataFileDirectory;
+        //    }
+            //set
+            //{
+            //    if (value == null)
+            //    {
+            //        throw new exception.MethodParameterIsNullException(
+            //            "The DataFileDirectory can not be null");
+            //    }
+            //    if (mDataFileDirectory != null)
+            //    {
+            //        throw new exception.IsAlreadyInitializedException(
+            //            "The DataProviderManager has already been initialized with a DataFileDirectory");
+            //    }
+            //    Uri tmp;
+            //    if (!Uri.TryCreate(value, UriKind.Relative, out tmp))
+            //    {
+            //        throw new exception.InvalidUriException(String.Format(
+            //                                                    "DataFileDirectory must be a relative Uri, '{0}' is not",
+            //                                                    value));
+            //    }
+
+            //    if (!Directory.Exists(value))
+            //    {
+            //        Directory.CreateDirectory(value);
+            //    }
+            //    mDataFileDirectory = value;
+            //}
+        //}
 
         /// <summary>
         /// Moves the data file directory of the manager
@@ -163,19 +163,13 @@ namespace urakawa.media.data
             }
         }
 
-        private static void CreateDirectory(string path)
-        {
-            if (!Directory.Exists(path))
-            {
-                string parentDir = Path.GetDirectoryName(path);
-                if (!Directory.Exists(parentDir)) CreateDirectory(parentDir);
-                Directory.CreateDirectory(path);
-            }
-        }
-
         private void CopyDataFiles(string source, string dest)
         {
-            CreateDirectory(dest);
+            if (!Directory.Exists(dest))
+            {
+                Directory.CreateDirectory(dest);
+            }
+
             foreach (FileDataProvider fdp in ManagedFileDataProviders)
             {
                 string pathSource = Path.Combine(source, fdp.DataFileRelativePath);
@@ -201,12 +195,22 @@ namespace urakawa.media.data
                     "The base Uri of the presentation to which the DataProviderManager belongs must be a file Uri");
             }
             Uri dataFileDirUri = new Uri(baseUri, DataFileDirectory);
-            return dataFileDirUri.LocalPath;
+
+            string localPath = dataFileDirUri.LocalPath;
+
+            if (!Directory.Exists(localPath))
+            {
+                Directory.CreateDirectory(localPath);
+            }
+
+            return localPath;
         }
 
 
+        public static string DataFileDirectory = "Data";
+
         /// <summary>
-        /// Gets the full path of the data file directory. 
+        /// Gets the full path of the data file directory and creates it. 
         /// Convenience for <c>Path.Combine(getBasePath(), getDataFileDirectory())</c>
         /// </summary>
         /// <returns>The full path</returns>
