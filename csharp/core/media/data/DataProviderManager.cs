@@ -206,8 +206,8 @@ namespace urakawa.media.data
             return localPath;
         }
 
-
-        public static string DataFileDirectory = "Data";
+        // it's only public because XukIn needs it !
+        public string DataFileDirectory = "Data";
 
         /// <summary>
         /// Gets the full path of the data file directory and creates it. 
