@@ -224,8 +224,7 @@ namespace XukImport
                             else // use original wav file by copying it to data directory
                             {
                                 dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-                                string mediatorFilePath = GenerateFileFullPath(Path.GetDirectoryName(presentation.DataProviderManager.DataFileDirectoryFullPath));
-                                dataProv.InitByCopyingExistingFile(mediatorFilePath);
+                                dataProv.InitByCopyingExistingFile(fullWavPath);
                                 m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
                             }
                         }
