@@ -46,6 +46,7 @@ namespace XukImport
             foreach (string smilPath in spineOfSmilFiles)
             {
                 string fullSmilPath = Path.Combine(dirPath, smilPath);
+                Console.WriteLine ("smil file to be parsed: " + Path.GetFileName(smilPath ))  ;
                 parseSmil(fullSmilPath);
 
             }
@@ -217,13 +218,15 @@ namespace XukImport
                                 string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullWavPath);
 
                                 dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                                Console.WriteLine ( "Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullWavPath) + " = " + dataProv.DataFileRelativePath );
                                 dataProv.InitByMovingExistingFile(newfullWavPath);
                                 m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
-
+                                
                             }
                             else // use original wav file by copying it to data directory
                             {
                                 dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                                Console.WriteLine ( "Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullWavPath) + " = " + dataProv.DataFileRelativePath );
                                 dataProv.InitByCopyingExistingFile(fullWavPath);
                                 m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
                             }
@@ -259,6 +262,7 @@ namespace XukImport
                 else
                 {
                     dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                    Console.WriteLine ( "Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullMp3PathOriginal) + " = " + dataProv.DataFileRelativePath );
                     dataProv.InitByMovingExistingFile(newfullWavPath);
                     m_OriginalAudioFile_FileDataProviderMap.Add(fullMp3PathOriginal, dataProv);
                 }
