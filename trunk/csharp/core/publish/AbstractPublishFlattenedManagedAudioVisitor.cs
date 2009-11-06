@@ -264,7 +264,9 @@ namespace urakawa.publish
                 m_TransientWavFileStream = null;
                 m_TransientWavFileStreamRiffOffset = 0;
 
+#if DEBUG
                 Debugger.Break();
+#endif
             }
             finally
             {
