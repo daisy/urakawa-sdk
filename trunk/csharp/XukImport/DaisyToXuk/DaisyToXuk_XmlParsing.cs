@@ -34,6 +34,8 @@ namespace XukImport
                 }
                 catch (Exception e)
                 {
+                    Console.Write(e.Message);
+
                     // No message box: use debugging instead (inspect stack trace, watch values)
                     //MessageBox.Show(e.ToString());
 
@@ -174,7 +176,7 @@ namespace XukImport
                 Stream dtdStream = null;
                 foreach (String key in m_EmbeddedEntities.Keys)
                 {
-                    if (absoluteUri.AbsolutePath.EndsWith(key))
+                    if (absoluteUri.AbsolutePath.Contains(key))
                     {
                         dtdStream = myAssembly.GetManifestResourceStream(m_EmbeddedEntities[key]);
                         Console.WriteLine("XML Entity Resolver [" + m_EmbeddedEntities[key] + "]: " + (dtdStream != null ? dtdStream.Length + " bytes resource. " : "resource not found ?? ") + " ( " + absoluteUri + " )");
