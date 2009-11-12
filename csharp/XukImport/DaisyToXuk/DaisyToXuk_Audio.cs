@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using AudioLib;
@@ -304,14 +305,36 @@ namespace XukImport
                 if (audioAttrClipBegin != null &&
                     !string.IsNullOrEmpty(audioAttrClipBegin.Value))
                 {
-                    ((ExternalAudioMedia)media).ClipBegin =
-                        new Time(TimeSpan.Parse(audioAttrClipBegin.Value));
+                    try
+                    {
+                        ((ExternalAudioMedia)media).ClipBegin =
+                            Time.ParseTimeString(audioAttrClipBegin.Value);
+                    }
+                    catch (FormatException e)
+                    {
+                        ((ExternalAudioMedia)media).ClipBegin =
+                            new Time(0);
+                        string str = "bad time string: " + audioAttrClipBegin.Value;
+                        Console.Write(str);
+                        Debug.Fail(str);
+                    }
                 }
                 if (audioAttrClipEnd != null &&
                     !string.IsNullOrEmpty(audioAttrClipEnd.Value))
                 {
-                    ((ExternalAudioMedia)media).ClipEnd =
-                        new Time(TimeSpan.Parse(audioAttrClipEnd.Value));
+                    try
+                    {
+                        ((ExternalAudioMedia) media).ClipEnd =
+                            Time.ParseTimeString(audioAttrClipEnd.Value);
+                    }
+                    catch (FormatException e)
+                    {
+                        ((ExternalAudioMedia)media).ClipEnd =
+                            new Time(0);
+                        string str = "bad time string: " + audioAttrClipEnd.Value;
+                        Console.Write(str);
+                        Debug.Fail(str);
+                    }
                 }
             }
 
@@ -370,12 +393,32 @@ namespace XukImport
             if (audioAttrClipBegin != null &&
                 !string.IsNullOrEmpty(audioAttrClipBegin.Value))
             {
-                clipB = new Time(TimeSpan.Parse(audioAttrClipBegin.Value));
+                try
+                {
+                    clipB = Time.ParseTimeString(audioAttrClipBegin.Value);
+                }
+                catch (FormatException e)
+                {
+                    clipB = new Time(0);
+                    string str = "bad time string: " + audioAttrClipBegin.Value;
+                    Console.Write(str);
+                    Debug.Fail(str);
+                }
             }
             if (audioAttrClipEnd != null &&
                 !string.IsNullOrEmpty(audioAttrClipEnd.Value))
             {
-                clipE = new Time(TimeSpan.Parse(audioAttrClipEnd.Value));
+                try
+                {
+                    clipE = Time.ParseTimeString(audioAttrClipEnd.Value);
+                }
+                catch (FormatException e)
+                {
+                    clipE = new Time(0);
+                    string str = "bad time string: " + audioAttrClipEnd.Value;
+                    Console.Write(str);
+                    Debug.Fail(str);
+                }
             }
 
             Media media = null;

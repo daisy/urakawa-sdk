@@ -128,16 +128,31 @@ namespace urakawa.media.timing
                 throw new exception.MethodParameterIsEmptyStringException(
                     "Can not parse an empty string");
             }
+
+            return ParseTimeString(stringRepresentation);
+        }
+
+        public static Time ParseTimeString(string str)
+        {
             try
             {
-                return new Time(TimeSpan.Parse(stringRepresentation));
+                return new Time(TimeSpan.Parse(str));
             }
-            catch (Exception e)
+            catch (FormatException e1)
             {
-                throw new exception.TimeStringRepresentationIsInvalidException(
-                    String.Format("The string \"{0}\" is not a valid string representation of a Time",
-                                  stringRepresentation),
-                    e);
+                //Console.Write("!! ==> bad time string: " + str);
+
+                try
+                {
+                    return new Time(TimeSpan.Parse("0:" + str));
+                }
+                catch (FormatException e2)
+                {
+                    //Console.Write("!! ==> bad time string: [" + "0:" + str + "]");
+
+                    throw new exception.TimeStringRepresentationIsInvalidException(
+                        String.Format("The string \"{0}\" is not a valid string representation of a Time", str), e2);
+                }
             }
         }
 
@@ -181,7 +196,7 @@ namespace urakawa.media.timing
             }
             if (t is Time)
             {
-                Time otherTime = (Time) t;
+                Time otherTime = (Time)t;
                 if (mTime > otherTime.mTime)
                 {
                     return new TimeDelta(mTime.Subtract(otherTime.mTime));
@@ -205,8 +220,8 @@ namespace urakawa.media.timing
         /// <returns>The number of milliseconds</returns>
         public long TimeAsMillisecondLong
         {
-            get { return (long) Math.Round(TimeAsMillisecondFloat); }
-            set { TimeAsTimeSpan = TimeSpan.FromTicks(value*TimeSpan.TicksPerMillisecond); }
+            get { return (long)Math.Round(TimeAsMillisecondFloat); }
+            set { TimeAsTimeSpan = TimeSpan.FromTicks(value * TimeSpan.TicksPerMillisecond); }
         }
 
         /// <summary>
@@ -215,8 +230,8 @@ namespace urakawa.media.timing
         /// <returns>The foaling point millisecond value</returns>
         public double TimeAsMillisecondFloat
         {
-            get { return ((double) mTime.Ticks)/((double) TimeSpan.TicksPerMillisecond); }
-            set { TimeAsTimeSpan = TimeSpan.FromTicks((long) (value*TimeSpan.TicksPerMillisecond)); }
+            get { return ((double)mTime.Ticks) / ((double)TimeSpan.TicksPerMillisecond); }
+            set { TimeAsTimeSpan = TimeSpan.FromTicks((long)(value * TimeSpan.TicksPerMillisecond)); }
         }
 
 
@@ -275,7 +290,7 @@ namespace urakawa.media.timing
             bool res;
             if (otherTime is Time)
             {
-                res = (mTime > ((Time) otherTime).mTime);
+                res = (mTime > ((Time)otherTime).mTime);
             }
             else
             {
