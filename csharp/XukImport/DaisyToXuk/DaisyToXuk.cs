@@ -54,7 +54,7 @@ namespace XukImport
         private void initializeProject()
         {
             m_Project = new Project();
-            m_Project.SetPrettyFormat(true);
+            m_Project.SetPrettyFormat(false);
 
             Presentation presentation = m_Project.AddNewPresentation();
 

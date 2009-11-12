@@ -71,6 +71,8 @@ namespace XukImport
                 // -//W3C//DTD XHTML 1.0 Transitional//EN
                 // http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd
 
+                m_EmbeddedEntities.Add("dtbook110.dtd", "DaisyToXuk.Resources.dtbook110.dtd");
+
                 m_EmbeddedEntities.Add("xhtml-lat1.ent", "DaisyToXuk.Resources.xhtml-lat1.ent");
                 m_EmbeddedEntities.Add("xhtml-symbol.ent", "DaisyToXuk.Resources.xhtml-symbol.ent");
                 m_EmbeddedEntities.Add("xhtml-special.ent", "DaisyToXuk.Resources.xhtml-special.ent");
@@ -175,7 +177,7 @@ namespace XukImport
                     if (absoluteUri.AbsolutePath.EndsWith(key))
                     {
                         dtdStream = myAssembly.GetManifestResourceStream(m_EmbeddedEntities[key]);
-                        Debug.WriteLine("XML Entity Resolver [" + m_EmbeddedEntities[key] + "]: " + (dtdStream != null ? dtdStream.Length + " bytes resource. " : "resource not found ?? ") + " ( " + absoluteUri + " )");
+                        Console.WriteLine("XML Entity Resolver [" + m_EmbeddedEntities[key] + "]: " + (dtdStream != null ? dtdStream.Length + " bytes resource. " : "resource not found ?? ") + " ( " + absoluteUri + " )");
                         return dtdStream;
                     }
                 }

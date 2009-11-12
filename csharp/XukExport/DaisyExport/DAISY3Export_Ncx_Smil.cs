@@ -560,7 +560,7 @@ namespace DaisyExport
         {
             QualifiedName currentQName = node.GetXmlElementQName() != null ? node.GetXmlElementQName() : null;
             if (currentQName != null &&
-                    (currentQName.LocalName == "hd" || currentQName.LocalName == "h1" || currentQName.LocalName == "h2" || currentQName.LocalName == "h3" || currentQName.LocalName == "h4"
+                    (currentQName.LocalName == "levelhd" || currentQName.LocalName == "hd" || currentQName.LocalName == "h1" || currentQName.LocalName == "h2" || currentQName.LocalName == "h3" || currentQName.LocalName == "h4"
                     || currentQName.LocalName == "h5" || currentQName.LocalName == "h6" || currentQName.LocalName == "doctitle"))
             {
                 return true;

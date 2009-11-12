@@ -194,9 +194,18 @@ namespace urakawa.media.data
                 throw new exception.InvalidUriException(
                     "The base Uri of the presentation to which the DataProviderManager belongs must be a file Uri");
             }
-            Uri dataFileDirUri = new Uri(baseUri, DataFileDirectory);
 
-            string localPath = dataFileDirUri.LocalPath;
+            string localPathPresentation = baseUri.LocalPath;
+
+            if (File.Exists(localPathPresentation))
+            {
+                localPathPresentation = Path.GetDirectoryName(localPathPresentation);
+            }
+
+            string localPath = Path.Combine(localPathPresentation, DataFileDirectory);
+
+            //Uri dataFileDirUri = new Uri(baseUri, DataFileDirectory);
+            //string localPath = dataFileDirUri.LocalPath;
 
             if (!Directory.Exists(localPath))
             {
@@ -216,7 +225,10 @@ namespace urakawa.media.data
         /// <returns>The full path</returns>
         public string DataFileDirectoryFullPath
         {
-            get { return getDataFileDirectoryFullPath(Presentation.RootUri); }
+            get
+            {
+                return getDataFileDirectoryFullPath(Presentation.RootUri);
+            }
         }
 
         /*
