@@ -116,8 +116,7 @@ namespace XukImport
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
             {
                 Metadata meta = addMetadata("dc:Identifier", m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);
-                //mark this metadata item as being the publication UID
-                meta.Uid = meta.NameContentAttribute.Value;
+                meta.Id = meta.NameContentAttribute.Value;
             }
             //if no unique publication identifier could be determined, see how many identifiers there are
             //if there is only one, then make that the unique publication identifier
@@ -142,7 +141,7 @@ namespace XukImport
                     }
                     //if there is only one identifier, then make it the publication UID
                     if (identifiers.Count == 1) 
-                        identifiers[0].Uid = identifiers[0].NameContentAttribute.Value;
+                        identifiers[0].Id = identifiers[0].NameContentAttribute.Value;
                 }
             }
         }
