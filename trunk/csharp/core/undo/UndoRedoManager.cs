@@ -420,7 +420,10 @@ namespace urakawa.undo
                     "Can not end transaction while no is active");
             }
             CompositeCommand command = mActiveTransactions.Pop();
-            command.UnExecute();
+            if (command.ChildCommands.Count > 0)
+            {
+                command.UnExecute();
+            }
             NotifyTransactionCancelled(command);
         }
 
