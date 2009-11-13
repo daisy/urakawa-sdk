@@ -146,10 +146,10 @@ namespace urakawa.metadata
             NamespaceUri = ns;
 
             string value = source.GetAttribute(XukStrings.Value);
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new exception.XukException("Value attribute of MetadataAttribute element is missing");
-            }
+            //if (string.IsNullOrEmpty(value))
+            //{   
+            //    throw new exception.XukException("Value attribute of MetadataAttribute element is missing");
+            //}
             Value = value;
         }
 
@@ -163,12 +163,12 @@ namespace urakawa.metadata
             }
             destination.WriteAttributeString(XukStrings.Name, Name);
 
-            if (String.IsNullOrEmpty(Value))
+            if (!String.IsNullOrEmpty(Value))
             {
-                throw new exception.XukException("The MetadataAttribute has no value");
+                destination.WriteAttributeString(XukStrings.Value, Value);
+                //throw new exception.XukException("The MetadataAttribute has no value");
             }
-            destination.WriteAttributeString(XukStrings.Value, Value);
-
+            
             if (!String.IsNullOrEmpty(NamespaceUri))
             {
                 destination.WriteAttributeString(XukStrings.NamespaceUri, NamespaceUri);
