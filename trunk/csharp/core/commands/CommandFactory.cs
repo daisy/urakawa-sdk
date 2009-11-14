@@ -67,10 +67,10 @@ namespace urakawa.commands
             return command;
         }
 
-        public MetadataSetIdCommand CreateMetadataSetIdCommand(Metadata metadata, string content)
+        public MetadataSetIdCommand CreateMetadataSetIdCommand(Metadata metadata, bool id)
         {
             MetadataSetIdCommand command = Create<MetadataSetIdCommand>();
-            command.Init(metadata, content);
+            command.Init(metadata, id);
             return command;
         }
     }

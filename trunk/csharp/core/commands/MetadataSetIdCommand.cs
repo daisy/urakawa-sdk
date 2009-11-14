@@ -32,40 +32,23 @@ namespace urakawa.commands
             return XukStrings.MetadataSetIdCommand;
         }
 
-        private string m_OriginalId;
-        private string m_NewId;
-
-        public string Id
-        {
-            private set { m_NewId = value; }
-            get { return m_NewId; }
-        }
+        private bool m_OriginalId;
+        private bool m_NewId;
         private Metadata m_Metadata;
-        public Metadata Metadata
-        {
-            private set { m_Metadata = value; }
-            get { return m_Metadata; }
-        }
-
-
-
-        public void Init(Metadata metadata, string id)
+        
+        public void Init(Metadata metadata, bool id)
         {
             if (metadata == null)
             {
                 throw new ArgumentNullException("metadata");
             }
-            if (id == null)
-            {
-                throw new ArgumentNullException("id");
-            }
 
-            Metadata = metadata;
-            m_OriginalId = Metadata.Id;
-            Id = id;
+            m_Metadata = metadata;
+            m_OriginalId = m_Metadata.IsMarkedAsPrimaryIdentifier;
+            m_NewId = id;
 
-            ShortDescription = "Set metadata ID";
-            LongDescription = "Set the ID string of the Metadata object";
+            ShortDescription = "Set metadata ID marker";
+            LongDescription = "Set the marker that indicates whether a metadata is the unique identifier of the publication";
         }
 
         public override bool CanExecute
@@ -80,12 +63,12 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            Metadata.Id = m_NewId;
+            m_Metadata.IsMarkedAsPrimaryIdentifier = m_NewId;
         }
 
         public override void UnExecute()
         {
-            Metadata.Id = m_OriginalId;
+            m_Metadata.IsMarkedAsPrimaryIdentifier = m_OriginalId;
         }
 
 

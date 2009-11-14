@@ -116,7 +116,7 @@ namespace XukImport
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
             {
                 Metadata meta = addMetadata("dc:Identifier", m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);
-                meta.Id = meta.NameContentAttribute.Value;
+                meta.IsMarkedAsPrimaryIdentifier = true;
             }
             //if no unique publication identifier could be determined, see how many identifiers there are
             //if there is only one, then make that the unique publication identifier
@@ -127,21 +127,21 @@ namespace XukImport
             {
                 if (m_Project.Presentations.Count > 0)
                 {
-                    IEnumerator<Metadata> enumerator = 
-                        m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable.GetEnumerator();
                     List<Metadata> identifiers = new List<Metadata>();
-                    while (enumerator.MoveNext())
+
+                    foreach (Metadata md in m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable)
                     {
                         //get this metadata's definition (and search synonyms too)
                         MetadataDefinition definition = SupportedMetadata_Z39862005.GetMetadataDefinition(
-                            enumerator.Current.NameContentAttribute.Name, true);
+                            md.NameContentAttribute.Name, true);
 
                         //if this is a dc:identifier, then add it to our list
-                        if (definition.Name == "dc:Identifier") identifiers.Add(enumerator.Current);
+                        if (definition.Name == "dc:Identifier") identifiers.Add(md);
                     }
+
                     //if there is only one identifier, then make it the publication UID
                     if (identifiers.Count == 1) 
-                        identifiers[0].Id = identifiers[0].NameContentAttribute.Value;
+                        identifiers[0].IsMarkedAsPrimaryIdentifier = true;
                 }
             }
         }
