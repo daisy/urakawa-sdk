@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Xml;
 using urakawa.events;
 using urakawa.events.metadata;
@@ -29,37 +30,51 @@ namespace urakawa.metadata
         //easily set and get the id attribute (in "OtherAttributes")
         //in Metadata, this Id is used to mark the publication's primary unique identifier
         //multiple identifiers are allowed but only one can be the primary UID.
-        public string Id
+        public bool IsMarkedAsPrimaryIdentifier
         {
             get
             {
-                MetadataAttribute idAttr = this.OtherAttributes.ContentsAs_ListCopy.Find(
-                    delegate(MetadataAttribute attr)
+                foreach (var attr in OtherAttributes.ContentsAs_YieldEnumerable)
+                {
+                    if (attr.Name == "id")
                     {
-                        if (attr.Name == "id") return true;
-                        else return false;
-                    });
-                if (idAttr != null) return idAttr.Value;
-                else return "";
+                        return true;
+                    }
+                }
+                return false;
+
+                //return OtherAttributes.ContentsAs_YieldEnumerable.Any(attr => attr.Name == "id");
             }
             set
             {
-                MetadataAttribute idAttr = this.OtherAttributes.ContentsAs_ListCopy.Find(
-                   delegate(MetadataAttribute attr)
-                   {
-                       if (attr.Name == "id") return true;
-                       else return false;
-                   });
-                if (idAttr == null)
+                if (value)
                 {
-                    MetadataAttribute newIdAttr = new MetadataAttribute();
-                    newIdAttr.Name = "id";
-                    newIdAttr.Value = value;
-                    this.OtherAttributes.Insert(0, newIdAttr);
+                    bool foundID = false;
+                    foreach (var attr in OtherAttributes.ContentsAs_YieldEnumerable)
+                    {
+                        if (attr.Name == "id")
+                        {
+                            foundID = true;
+                            break;
+                        }
+                    }
+                    if (!foundID)
+                    {
+                        MetadataAttribute newIdAttr = new MetadataAttribute();
+                        newIdAttr.Name = "id";
+                        newIdAttr.Value = "I'm an Unique Identifier marker !";
+                        OtherAttributes.Insert(0, newIdAttr);
+                    }
                 }
                 else
                 {
-                    idAttr.Value = value;
+                    foreach (var attr in OtherAttributes.ContentsAs_ListCopy)
+                    {
+                        if (attr.Name == "id")
+                        {
+                            OtherAttributes.Remove(attr);
+                        }
+                    }
                 }
             }
         }
