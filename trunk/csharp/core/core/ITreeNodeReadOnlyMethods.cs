@@ -51,6 +51,8 @@ namespace urakawa.core
 
         TreeNode GetFirstChildWithXmlElementName(string elemName);
 
+        TreeNode GetTreeNodeWithXmlElementId(string id);
+
         QualifiedName GetXmlElementQName();
         string GetXmlElementId();
 
