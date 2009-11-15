@@ -141,7 +141,7 @@ namespace urakawa.daisy.import
             }
             else
             {
-                MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition(name);
+                MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(name);
                 if ((md == null && !metadataNameContentAlreadyExists(name, content))
                     || (md != null && md.IsRepeatable && !metadataNameContentAlreadyExists(name, content))
                     || (md != null && !md.IsRepeatable && !metadataNameAlreadyExists(name)))
@@ -160,7 +160,7 @@ namespace urakawa.daisy.import
                 return true;
             }
 
-            MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition("dc:Identifier");
+            MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition("dc:Identifier");
             return md != null && md.Synonyms.Find(
                                 delegate(string s)
                                 {

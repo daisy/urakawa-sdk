@@ -851,7 +851,7 @@ namespace urakawa.daisy.export
                 return true;
             }
 
-            MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition("dc:Identifier");
+            MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition("dc:Identifier");
             return md != null && md.Synonyms.Find(
                                 delegate(string s)
                                 {
