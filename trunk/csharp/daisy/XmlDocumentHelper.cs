@@ -25,8 +25,8 @@ namespace urakawa.daisy
             DTBDocument.AppendChild(DTBNode);
 
 
-            XmlDocumentHelper.CreateAppendXmlAttribute(DTBDocument, DTBNode, "version", "2005-3");
-            XmlDocumentHelper.CreateAppendXmlAttribute(DTBDocument, DTBNode, "xml:lang", (string.IsNullOrEmpty(language) ? "en-US" : language));
+            CreateAppendXmlAttribute(DTBDocument, DTBNode, "version", "2005-3");
+            CreateAppendXmlAttribute(DTBDocument, DTBNode, "xml:lang", (string.IsNullOrEmpty(language) ? "en-US" : language));
 
 
             XmlNode headNode = DTBDocument.CreateElement(null, "head", DTBNode.NamespaceURI);
