@@ -439,11 +439,11 @@ namespace urakawa.media
             get
             {
                 if (Src == null) return null;
-                if (!Uri.IsWellFormedUriString(Src, UriKind.RelativeOrAbsolute))
-                {
-                    throw new exception.InvalidUriException(String.Format(
-                                                                "The src value '{0}' is not a well-formed Uri", Src));
-                }
+                //if (!Uri.IsWellFormedUriString(Src, UriKind.RelativeOrAbsolute))
+                //{
+                //    throw new exception.InvalidUriException(String.Format(
+                //                                                "The src value '{0}' is not a well-formed Uri", Src));
+                //}
                 return new Uri(Presentation.RootUri, Src);
             }
         }

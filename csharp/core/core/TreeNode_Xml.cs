@@ -39,6 +39,22 @@ namespace urakawa.core
             return GetProperty<XmlProperty>();
         }
 
+
+        public TreeNode GetTreeNodeWithXmlElementId(string id)
+        {
+            if (GetXmlElementId() == id) return this;
+
+            for (int i = 0; i < Children.Count; i++)
+            {
+                TreeNode child = Children.Get(i).GetTreeNodeWithXmlElementId(id);
+                if (child != null)
+                {
+                    return child;
+                }
+            }
+            return null;
+        }
+
         ///<summary>
         /// returns the QName of the attached XmlProperty, if any
         ///</summary>
