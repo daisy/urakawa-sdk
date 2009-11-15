@@ -186,7 +186,6 @@
     <Compile Include="media\data\utilities\AudioFormatConvertor.cs" />
     <Compile Include="media\data\utilities\AudioFormatConvertorSession.cs" />
     <Compile Include="media\data\utilities\Mp3Frame.cs" />
-    <Compile Include="metadata\daisy\MetadataValidation.cs" />
     <Compile Include="metadata\daisy\SupportedMetadata_Z39862005.cs" />
     <Compile Include="metadata\MetadataAttribute.cs" />
     <Compile Include="metadata\MetadataDefinition.cs" />
