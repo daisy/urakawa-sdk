@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace urakawa.metadata.daisy
+namespace urakawa.metadata
 {   
     public enum MetadataDataType
     {
@@ -111,7 +111,7 @@ namespace urakawa.metadata.daisy
             get { return m_Synonyms; }
             set { m_Synonyms = value; }
         }
-
+        
         public MetadataDefinition(string name, MetadataDataType dataType,
             MetadataOccurrence occurrence, bool isReadOnly, bool isRepeatable, string description, 
             List<string> synonyms)
@@ -125,4 +125,92 @@ namespace urakawa.metadata.daisy
             Synonyms = synonyms;
         }
     }
+
+    public class MetadataDefinitionSet
+    {
+        public List<MetadataDefinition> Definitions;
+        public MetadataDefinition UnrecognizedItemFallbackDefinition;
+
+        // Note: case-insensitive
+        public MetadataDefinition GetMetadataDefinition(string name)
+        {
+            string lowerCaseName = name.ToLower();
+
+            foreach (MetadataDefinition md in Definitions)
+            {
+                if (md.Name.ToLower() == lowerCaseName)
+                {
+                    return md;
+                }
+            }
+            return UnrecognizedItemFallbackDefinition;
+        }
+
+        public MetadataDefinition GetMetadataDefinition(string name, bool searchSynonyms)
+        {
+            string lowerCaseName = name.ToLower();
+
+            MetadataDefinition definition = Definitions.Find(
+                delegate(MetadataDefinition item)
+                {
+                    return item.Name.ToLower() == lowerCaseName;
+                });
+
+            if (definition == null)
+            {
+                definition = Definitions.Find(
+                    delegate(MetadataDefinition item)
+                    {
+                        if (item.Synonyms != null)
+                        {
+                            string found = item.Synonyms.Find(
+                                delegate(string s)
+                                {
+                                    return s.ToLower() == lowerCaseName;
+                                });
+                            return (found != null);
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+            }
+            if (definition == null)
+                return this.UnrecognizedItemFallbackDefinition;
+            else
+                return definition;
+        }
+    }
+
+    //helper class: based on the existing metadata list, what metadata am I still allowed to add?
+    public class MetadataAvailability
+    {
+        public static List<MetadataDefinition> GetAvailableMetadata(List<Metadata> alreadyUsedMetadata, List<MetadataDefinition> definitions)
+        {
+            List<MetadataDefinition> availableMetadata = new List<MetadataDefinition>();
+            foreach (MetadataDefinition definition in definitions)
+            {
+                Metadata exists = alreadyUsedMetadata.Find(
+                    delegate(Metadata item)
+                    { return item.NameContentAttribute.Name.ToLower() == definition.Name.ToLower(); });
+
+                if (exists == null)
+                {
+                    availableMetadata.Add(definition);
+                }
+                else
+                {
+                    if (definition.IsRepeatable == true)
+                    {
+                        availableMetadata.Add(definition);
+                    }
+                }
+
+            }
+            return availableMetadata;
+        }
+    }
+
+
 }
