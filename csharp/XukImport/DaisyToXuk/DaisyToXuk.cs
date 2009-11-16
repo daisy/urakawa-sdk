@@ -132,7 +132,7 @@ namespace XukImport
                     foreach (Metadata md in m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable)
                     {
                         //get this metadata's definition (and search synonyms too)
-                        MetadataDefinition definition = SupportedMetadata_Z39862005.GetMetadataDefinition(
+                        MetadataDefinition definition = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(
                             md.NameContentAttribute.Name, true);
 
                         //if this is a dc:identifier, then add it to our list
