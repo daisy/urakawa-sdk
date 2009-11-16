@@ -198,11 +198,25 @@ namespace DaisyExport
                     shouldAddNewSeq = false;
                 }
 
-                if (externalAudio == null)
+                //if (externalAudio == null)
+                //{
+                    //return true;
+                //}
+
+            if ( externalAudio != null
+                || 
+                ( n.GetTextMedia () != null 
+                &&     special_UrakawaNode != null  &&  (IsEscapableNode ( special_UrakawaNode )    ||    (special_UrakawaNode.GetXmlProperty () != null && special_UrakawaNode.GetXmlProperty().LocalName.ToLower() == "doctitle") )
+                && m_TreeNode_XmlNodeMap[n].Attributes != null ))
                 {
-                    return true;
+                // continue ahead
+                }
+            else
+                {
+                return true ;
                 }
 
+            
                 XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
 
                 // decide the parent node for this new par node.
@@ -290,20 +304,22 @@ namespace DaisyExport
                 CommonFunctions.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src", m_Filename_Content + "#" + dtbookID);
                 parNode.AppendChild(SmilTextNode);
 
-                XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
-                CommonFunctions.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString());
-                CommonFunctions.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString());
-                CommonFunctions.CreateAppendXmlAttribute(smilDocument, audioNode, "src", Path.GetFileName(externalAudio.Src));
-                parNode.AppendChild(audioNode);
+                if (externalAudio != null)
+                    {
+                    XmlNode audioNode = smilDocument.CreateElement ( null, "audio", mainSeq.NamespaceURI );
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString () );
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString () );
+                    CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "src", Path.GetFileName ( externalAudio.Src ) );
+                    parNode.AppendChild ( audioNode );
 
 
-                // add audio file name in audio files list for use in opf creation
-                string audioFileName = Path.GetFileName(externalAudio.Src);
-                if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
+                    // add audio file name in audio files list for use in opf creation
+                    string audioFileName = Path.GetFileName ( externalAudio.Src );
+                    if (!m_FilesList_Audio.Contains ( audioFileName )) m_FilesList_Audio.Add ( audioFileName );
 
-                // add to duration
-                durationOfCurrentSmil = durationOfCurrentSmil.Add(externalAudio.Duration.TimeDeltaAsTimeSpan);
-
+                    // add to duration
+                    durationOfCurrentSmil = durationOfCurrentSmil.Add ( externalAudio.Duration.TimeDeltaAsTimeSpan );
+                    }
 
                 // if node n is pagenum, add to pageList
                 if (n.GetXmlElementQName() != null
@@ -851,7 +867,7 @@ namespace DaisyExport
                 return true;
             }
 
-            MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition("dc:Identifier");
+            MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition("dc:Identifier");
             return md != null && md.Synonyms.Find(
                                 delegate(string s)
                                 {
