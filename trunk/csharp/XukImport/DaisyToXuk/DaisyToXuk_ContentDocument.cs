@@ -121,6 +121,15 @@ namespace XukImport
                             Presentation presentation = m_Project.Presentations.Get(0);
                             presentation.PropertyFactory.DefaultXmlNamespaceUri = bodyElement.NamespaceURI;
 
+                            // preserve internal DTD if it exists in dtbook
+                            string strInternalDTD = ExtractInternalDTD ( ((XmlDocument)xmlNode).DocumentType ) ;
+                            if (strInternalDTD != null)
+                                {
+                                File.WriteAllText (
+                                    Path.Combine ( presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd" ),
+                                    strInternalDTD );
+                                }
+
                             parseContentDocument(bodyElement, parentTreeNode, filePath);
                         }
                         //parseContentDocument(((XmlDocument)xmlNode).DocumentElement, parentTreeNode);
@@ -273,5 +282,23 @@ namespace XukImport
                     }
             }
         }
+
+        private string ExtractInternalDTD ( XmlDocumentType docType )
+            {
+            string completeString = docType.OuterXml;
+            if (completeString.Contains ( "[" ) && completeString.Contains ( "]" ))
+                {
+                string DTDString = completeString.Split ( '[' )[1];
+                DTDString = DTDString.Split ( ']' )[0];
+
+                if (!string.IsNullOrEmpty ( DTDString ))
+                    {
+                    return DTDString;
+                    }
+                }
+
+            return null;
+            }
+                
     }
 }
