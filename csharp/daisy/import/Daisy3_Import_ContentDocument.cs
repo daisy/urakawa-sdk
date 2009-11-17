@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
+using urakawa.core;
 using urakawa.media;
 using urakawa.property.channel;
 using urakawa.property.xml;
-using TreeNode = urakawa.core.TreeNode;
 
 namespace urakawa.daisy.import
 {
@@ -59,7 +59,7 @@ namespace urakawa.daisy.import
                 //    listOfBodies = xmlDoc.GetElementsByTagName("book");
                 //}
                 XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementWithName(xmlDoc, true, "body", null);
-                
+
                 if (bodyElement == null)
                 {
                     bodyElement = XmlDocumentHelper.GetFirstChildElementWithName(xmlDoc, true, "book", null);
@@ -91,6 +91,23 @@ namespace urakawa.daisy.import
             }
         }
 
+        private string ExtractInternalDTD(XmlDocumentType docType)
+        {
+            string completeString = docType.OuterXml;
+            if (completeString.Contains("[") && completeString.Contains("]"))
+            {
+                string DTDString = completeString.Split('[')[1];
+                DTDString = DTDString.Split(']')[0];
+
+                if (!string.IsNullOrEmpty(DTDString))
+                {
+                    return DTDString;
+                }
+            }
+
+            return null;
+        }
+
         private void parseContentDocument(XmlNode xmlNode, TreeNode parentTreeNode, string filePath)
         {
             XmlNodeType xmlType = xmlNode.NodeType;
@@ -109,7 +126,7 @@ namespace urakawa.daisy.import
                         //    listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("book");
                         //}
                         XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementWithName(xmlNode, true, "body", null);
-                        
+
                         if (bodyElement == null)
                         {
                             bodyElement = XmlDocumentHelper.GetFirstChildElementWithName(xmlNode, true, "book", null);
@@ -119,6 +136,15 @@ namespace urakawa.daisy.import
                         {
                             Presentation presentation = m_Project.Presentations.Get(0);
                             presentation.PropertyFactory.DefaultXmlNamespaceUri = bodyElement.NamespaceURI;
+
+                            // preserve internal DTD if it exists in dtbook 
+                            string strInternalDTD = ExtractInternalDTD(((XmlDocument)xmlNode).DocumentType);
+                            if (strInternalDTD != null)
+                            {
+                                File.WriteAllText(
+                                    Path.Combine(presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd"),
+                                    strInternalDTD);
+                            }
 
                             parseContentDocument(bodyElement, parentTreeNode, filePath);
                         }

@@ -7,7 +7,7 @@ namespace urakawa.daisy
 {
     public static class XmlDocumentHelper
     {
-        public static XmlDocument CreateStub_DTBDocument(string language)
+        public static XmlDocument CreateStub_DTBDocument(string language, string strInternalDTD)
         {
             XmlDocument DTBDocument = new XmlDocument();
             DTBDocument.XmlResolver = null;
@@ -16,7 +16,7 @@ namespace urakawa.daisy
             DTBDocument.AppendChild(DTBDocument.CreateDocumentType("dtbook",
                 "-//NISO//DTD dtbook 2005-3//EN",
                 "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd",
-                null));
+                strInternalDTD));
 
             XmlNode DTBNode = DTBDocument.CreateElement(null,
                 "dtbook",
