@@ -17,7 +17,16 @@ namespace DaisyExport
         // to do regenerate ids
         private void CreateDTBookDocument()
         {
-            XmlDocument DTBookDocument = CreateStub_DTBDocument();
+            // check if there is preserved internal DTD
+        string [] dtbFilesList =  Directory.GetFiles ( m_Presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd", SearchOption.AllDirectories );
+        string strInternalDTD = null;
+        if (dtbFilesList.Length > 0)
+            {
+            strInternalDTD = File.ReadAllText ( dtbFilesList[0] );
+            if (strInternalDTD.Trim () == "") strInternalDTD = null;
+            }
+
+            XmlDocument DTBookDocument = CreateStub_DTBDocument( strInternalDTD);
 
             m_ListOfLevels = new List<urakawa.core.TreeNode>();
             Dictionary<string, string> old_New_IDMap = new Dictionary<string, string> ();
@@ -315,7 +324,7 @@ namespace DaisyExport
             }
         */
 
-        private XmlDocument CreateStub_DTBDocument()
+        private XmlDocument CreateStub_DTBDocument( string strInternalDTD)
         {
             XmlDocument DTBDocument = new XmlDocument();
             DTBDocument.XmlResolver = null;
@@ -324,7 +333,7 @@ namespace DaisyExport
             DTBDocument.AppendChild(DTBDocument.CreateDocumentType("dtbook",
                 "-//NISO//DTD dtbook 2005-3//EN",
                 "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd",
-                null));
+                strInternalDTD));
 
             XmlNode DTBNode = DTBDocument.CreateElement(null,
                 "dtbook",
