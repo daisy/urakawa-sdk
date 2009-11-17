@@ -198,7 +198,14 @@ namespace urakawa.daisy.export
                     shouldAddNewSeq = false;
                 }
 
-                if (externalAudio == null)
+                if (externalAudio != null ||
+                    (n.GetTextMedia() != null
+                    && special_UrakawaNode != null && (IsEscapableNode(special_UrakawaNode) || (special_UrakawaNode.GetXmlProperty() != null && special_UrakawaNode.GetXmlProperty().LocalName.ToLower() == "doctitle"))
+                    && m_TreeNode_XmlNodeMap[n].Attributes != null))
+                {
+                    // continue ahead 
+                }
+                else
                 {
                     return true;
                 }
@@ -289,21 +296,21 @@ namespace urakawa.daisy.export
                 string dtbookID = m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value;
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src", m_Filename_Content + "#" + dtbookID);
                 parNode.AppendChild(SmilTextNode);
+                if (externalAudio != null)
+                {
+                    XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString());
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString());
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src", Path.GetFileName(externalAudio.Src));
+                    parNode.AppendChild(audioNode);
 
-                XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString());
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString());
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src", Path.GetFileName(externalAudio.Src));
-                parNode.AppendChild(audioNode);
+                    // add audio file name in audio files list for use in opf creation 
+                    string audioFileName = Path.GetFileName(externalAudio.Src);
+                    if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
 
-
-                // add audio file name in audio files list for use in opf creation
-                string audioFileName = Path.GetFileName(externalAudio.Src);
-                if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
-
-                // add to duration
-                durationOfCurrentSmil = durationOfCurrentSmil.Add(externalAudio.Duration.TimeDeltaAsTimeSpan);
-
+                    // add to duration 
+                    durationOfCurrentSmil = durationOfCurrentSmil.Add(externalAudio.Duration.TimeDeltaAsTimeSpan);
+                }
 
                 // if node n is pagenum, add to pageList
                 if (n.GetXmlElementQName() != null

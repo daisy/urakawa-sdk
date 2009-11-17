@@ -15,7 +15,24 @@ namespace urakawa.daisy.export
         // to do regenerate ids
         private void CreateDTBookDocument()
         {
-            XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language);
+            // check if there is preserved internal DTD 
+            //string[] dtbFilesList = Directory.GetFiles(m_Presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd", SearchOption.AllDirectories);
+            //string strInternalDTD = null;
+            //if (dtbFilesList.Length > 0)
+            //{
+            //    strInternalDTD = File.ReadAllText(dtbFilesList[0]);
+            //    if (strInternalDTD.Trim() == "") strInternalDTD = null;
+            //}
+
+            string dtdFilePath = Path.Combine(m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
+                                              "DTBookLocalDTD.dtd");
+            string strInternalDTD = null;
+            if (File.Exists(dtdFilePath))
+            {
+                strInternalDTD = File.ReadAllText(dtdFilePath);
+            }
+
+            XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD); 
 
             m_ListOfLevels = new List<TreeNode>();
             Dictionary<string, string> old_New_IDMap = new Dictionary<string, string>();
