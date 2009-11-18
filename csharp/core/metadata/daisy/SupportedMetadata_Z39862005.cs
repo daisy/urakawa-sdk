@@ -5,11 +5,11 @@ namespace urakawa.metadata.daisy
     //wraps the generic MetadataDefinitionSet
     public static class SupportedMetadata_Z39862005
     {
-        public static MetadataDefinitionSet DefinitionSet;
-        
-        private static MetadataDefinition m_UnrecognizedItem;
-        private static List<string> m_IdentifierSynonyms;
-        private static List<MetadataDefinition> m_MetadataDefinitions;
+        public static readonly MetadataDefinitionSet DefinitionSet;
+
+        private static readonly MetadataDefinition m_UnrecognizedItem;
+        private static readonly List<string> m_IdentifierSynonyms;
+        private static readonly List<MetadataDefinition> m_MetadataDefinitions;
 
         static SupportedMetadata_Z39862005()
         {
