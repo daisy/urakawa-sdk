@@ -80,7 +80,7 @@ namespace urakawa.property.xml
         {
             XmlProperty xp = node.GetProperty<XmlProperty>();
 
-            if (xp != null && IsMatch(xp.LocalName, xp.NamespaceUri) == true)
+            if (xp != null && IsMatch(xp.LocalName, xp.NamespaceUri))
             {
                 mNodes.Add(node);
             }

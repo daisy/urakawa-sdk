@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace urakawa.metadata
-{   
+{
     public enum MetadataDataType
     {
         String,
@@ -13,14 +13,14 @@ namespace urakawa.metadata
         LanguageCode,
         Date,
         FileUri
-    } 
+    }
 
     public enum MetadataOccurrence
     {
         Required,
         Recommended,
         Optional
-    } 
+    }
 
     /// <summary>
     /// Defines a type of metadata item (e.g. string, date, required, optional, etc)
@@ -111,9 +111,9 @@ namespace urakawa.metadata
             get { return m_Synonyms; }
             set { m_Synonyms = value; }
         }
-        
+
         public MetadataDefinition(string name, MetadataDataType dataType,
-            MetadataOccurrence occurrence, bool isReadOnly, bool isRepeatable, string description, 
+            MetadataOccurrence occurrence, bool isReadOnly, bool isRepeatable, string description,
             List<string> synonyms)
         {
             Name = name;
@@ -192,8 +192,7 @@ namespace urakawa.metadata
             foreach (MetadataDefinition definition in definitions)
             {
                 Metadata exists = alreadyUsedMetadata.Find(
-                    delegate(Metadata item)
-                    { return item.NameContentAttribute.Name.ToLower() == definition.Name.ToLower(); });
+                    item => item.NameContentAttribute.Name.ToLower() == definition.Name.ToLower());
 
                 if (exists == null)
                 {
@@ -201,13 +200,13 @@ namespace urakawa.metadata
                 }
                 else
                 {
-                    if (definition.IsRepeatable == true)
+                    if (definition.IsRepeatable)
                     {
                         availableMetadata.Add(definition);
                     }
                 }
-
             }
+
             return availableMetadata;
         }
     }
