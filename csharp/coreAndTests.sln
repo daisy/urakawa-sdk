@@ -1,10 +1,6 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{51496829-4DB0-4024-B67A-4EFD5F253D56}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 	ProjectSection(SolutionItems) = preProject
 		xukschema\channels.xsd = xukschema\channels.xsd
 		xukschema\channels.xsx = xukschema\channels.xsx
@@ -24,6 +20,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		xukschema\xml.xsx = xukschema\xml.xsx
 		xukschema\xuk.xsd = xukschema\xuk.xsd
 		xukschema\xuk.xsx = xukschema\xuk.xsx
+	EndProjectSection
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaSDK.core", "core\UrakawaSDK.core.csproj", "{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}"
