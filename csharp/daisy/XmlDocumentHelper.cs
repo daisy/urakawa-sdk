@@ -196,6 +196,38 @@ namespace urakawa.daisy
             return attr;
         }
 
+        public static XmlAttribute CreateAppendXmlAttribute ( XmlDocument xmlDoc, XmlNode node, string name, string val, string strNamespace )
+            {
+            XmlAttribute attr = null;
+            if (name.Contains ( ":" ))
+                {
+                string[] splitArray = name.Split ( ':' );
+
+                XmlNode parentNode = xmlDoc.DocumentElement;
+
+                string parentAttributeName = "xmlns:" + splitArray[0];
+
+                if (parentNode != null &&
+                    parentNode.Attributes != null && parentNode.Attributes.GetNamedItem ( parentAttributeName ) != null && parentNode.Attributes.GetNamedItem ( parentAttributeName ).Value == strNamespace)
+                    {
+                    //System.Console.WriteLine ( parentNode.Name );
+                    // do nothing
+                    }
+                else if (parentNode != null)
+                    {
+                    CreateAppendXmlAttribute ( xmlDoc, parentNode, parentAttributeName, strNamespace );
+                    }
+                attr = xmlDoc.CreateAttribute ( name, "SYSTEM" );
+                }
+            else
+                {
+                attr = xmlDoc.CreateAttribute ( name );
+                }
+            attr.Value = val;
+            node.Attributes.Append ( attr );
+            return attr;
+            }
+
 
         //private static XmlNode getFirstChildElementsWithName(XmlNode root, bool deep, string localName, string namespaceUri)
         //{
