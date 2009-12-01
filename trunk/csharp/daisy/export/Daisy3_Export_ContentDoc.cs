@@ -181,7 +181,9 @@ namespace urakawa.daisy.export
                                 {
                                     XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument,
                                     currentXmlNode,
-                                    xmlProp.Attributes[i].LocalName, xmlProp.Attributes[i].Value);
+                                    xmlProp.Attributes[i].LocalName, 
+                                    xmlProp.Attributes[i].Value,
+                                    xmlProp.Attributes[i].NamespaceUri );
                                 }
                             } // for loop ends
                         } // attribute nodes created
