@@ -169,22 +169,24 @@ namespace urakawa.daisy
 
         public static void WriteXmlDocumentToFile(XmlDocument xmlDoc, string path)
         {
+            if (!File.Exists(path))
+            {
+                File.Create(path).Close();
+            }
+
             XmlTextWriter writer = null;
             try
             {
-                if (!File.Exists(path))
-                {
-                    File.Create(path).Close();
-                }
-
                 writer = new XmlTextWriter(path, null);
                 writer.Formatting = Formatting.Indented;
                 xmlDoc.Save(writer);
             }
             finally
             {
-                writer.Close();
-                writer = null;
+                if (writer != null)
+                {
+                    writer.Close();
+                }
             }
         }
 
@@ -196,167 +198,38 @@ namespace urakawa.daisy
             return attr;
         }
 
-        public static XmlAttribute CreateAppendXmlAttribute ( XmlDocument xmlDoc, XmlNode node, string name, string val, string strNamespace )
-            {
+        public static XmlAttribute CreateAppendXmlAttribute(XmlDocument xmlDoc, XmlNode node, string name, string val, string strNamespace)
+        {
             XmlAttribute attr = null;
-            if (name.Contains ( ":" ))
-                {
-                string[] splitArray = name.Split ( ':' );
+            if (name.Contains(":"))
+            {
+                string[] splitArray = name.Split(':');
 
                 XmlNode parentNode = xmlDoc.DocumentElement;
 
                 string parentAttributeName = "xmlns:" + splitArray[0];
 
-                if (parentNode != null &&
-                    parentNode.Attributes != null && parentNode.Attributes.GetNamedItem ( parentAttributeName ) != null && parentNode.Attributes.GetNamedItem ( parentAttributeName ).Value == strNamespace)
-                    {
+                if (parentNode != null
+                    && parentNode.Attributes != null
+                    && parentNode.Attributes.GetNamedItem(parentAttributeName) != null
+                    && parentNode.Attributes.GetNamedItem(parentAttributeName).Value == strNamespace)
+                {
                     //System.Console.WriteLine ( parentNode.Name );
                     // do nothing
-                    }
+                }
                 else if (parentNode != null)
-                    {
-                    CreateAppendXmlAttribute ( xmlDoc, parentNode, parentAttributeName, strNamespace );
-                    }
-                attr = xmlDoc.CreateAttribute ( name, "SYSTEM" );
-                }
-            else
                 {
-                attr = xmlDoc.CreateAttribute ( name );
+                    CreateAppendXmlAttribute(xmlDoc, parentNode, parentAttributeName, strNamespace);
                 }
-            attr.Value = val;
-            node.Attributes.Append ( attr );
-            return attr;
+                attr = xmlDoc.CreateAttribute(name, "SYSTEM");
             }
-
-
-        //private static XmlNode getFirstChildElementsWithName(XmlNode root, bool deep, string localName, string namespaceUri)
-        //{
-        //    foreach (XmlNode node in getChildrenElementsWithName(root, deep, localName, namespaceUri, true))
-        //    {
-        //        return node;
-        //    }
-        //    return null;
-        //}
-
-        //private static IEnumerable<XmlNode> getChildrenElementsWithName(XmlNode root, bool deep, string localName, string namespaceUri, bool breakOnFirstFound)
-        //{
-        //    if (root.NodeType == XmlNodeType.Document)
-        //    {
-        //        XmlNode element = null;
-        //        XmlDocument doc = (XmlDocument)root;
-        //        IEnumerator docEnum = doc.GetEnumerator();
-        //        while (docEnum.MoveNext())
-        //        {
-        //            XmlNode node = (XmlNode)docEnum.Current;
-
-        //            if (node != null
-        //                && node.NodeType == XmlNodeType.Element)
-        //            {
-        //                element = node;
-        //                break; // first element is ok.
-        //            }
-        //        }
-
-        //        if (element == null)
-        //        {
-        //            yield break;
-        //        }
-
-        //        foreach (XmlNode childNode in getChildrenElementsWithName(element, deep, localName, namespaceUri, breakOnFirstFound))
-        //        {
-        //            yield return childNode;
-
-        //            if (breakOnFirstFound)
-        //            {
-        //                yield break;
-        //            }
-        //        }
-
-        //        yield break;
-        //    }
-
-        //    if (root.NodeType != XmlNodeType.Element)
-        //    {
-        //        yield break;
-        //    }
-
-        //    if (root.LocalName == localName || root.Name == localName)
-        //    {
-        //        if (!string.IsNullOrEmpty(namespaceUri))
-        //        {
-        //            if (root.NamespaceURI == namespaceUri)
-        //            {
-        //                yield return root;
-
-        //                if (breakOnFirstFound)
-        //                {
-        //                    yield break;
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            yield return root;
-
-        //            if (breakOnFirstFound)
-        //            {
-        //                yield break;
-        //            }
-        //        }
-        //    }
-
-        //    IEnumerator enumerator = root.GetEnumerator();
-        //    while (enumerator.MoveNext())
-        //    {
-        //        XmlNode node = (XmlNode)enumerator.Current;
-
-        //        if (node.NodeType != XmlNodeType.Element)
-        //        {
-        //            continue;
-        //        }
-
-        //        if (deep)
-        //        {
-        //            foreach (XmlNode childNode in getChildrenElementsWithName(node, deep, localName, namespaceUri, breakOnFirstFound))
-        //            {
-        //                yield return childNode;
-
-        //                if (breakOnFirstFound)
-        //                {
-        //                    yield break;
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (node.LocalName == localName || node.Name == localName)
-        //            {
-        //                if (!string.IsNullOrEmpty(namespaceUri))
-        //                {
-        //                    if (node.NamespaceURI == namespaceUri)
-        //                    {
-        //                        yield return node;
-
-        //                        if (breakOnFirstFound)
-        //                        {
-        //                            yield break;
-        //                        }
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    yield return node;
-
-        //                    if (breakOnFirstFound)
-        //                    {
-        //                        yield break;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    yield break;
-        //}
+            else
+            {
+                attr = xmlDoc.CreateAttribute(name);
+            }
+            attr.Value = val;
+            node.Attributes.Append(attr);
+            return attr;
+        }
     }
 }
