@@ -628,6 +628,22 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ManagedImageMedia" : "mIm"); }
         }
+
+        public static string JpgImageMediaData
+            {
+            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "JpgImageMediaData" : "jpgIm"); }
+            }
+
+        public static string PngImageMediaData
+            {
+            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "PngImageMediaData" : "pngIm"); }
+            }
+
+        public static string BmpImageMediaData
+            {
+            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "BmpImageMediaData" : "bmpIm"); }
+            }
+
         #endregion
 
 #endregion
