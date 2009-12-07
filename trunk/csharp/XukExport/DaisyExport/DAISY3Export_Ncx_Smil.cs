@@ -439,11 +439,14 @@ namespace DaisyExport
                     txtNode.AppendChild(
                         ncxDocument.CreateTextNode(n.GetTextMediaFlattened()));
 
-                    XmlNode audioNodeNcx = ncxDocument.CreateElement(null, "audio", navTargetNode.NamespaceURI);
-                    navLabelNode.AppendChild(audioNodeNcx);
-                    CommonFunctions.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString());
-                    CommonFunctions.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString());
-                    CommonFunctions.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "src", Path.GetFileName(externalAudio.Src));
+                    if (externalAudio != null)
+                        {
+                        XmlNode audioNodeNcx = ncxDocument.CreateElement ( null, "audio", navTargetNode.NamespaceURI );
+                        navLabelNode.AppendChild ( audioNodeNcx );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString () );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString () );
+                        CommonFunctions.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "src", Path.GetFileName ( externalAudio.Src ) );
+                        }
 
                     XmlNode contentNode = ncxDocument.CreateElement(null, "content", navTargetNode.NamespaceURI);
                     navTargetNode.AppendChild(contentNode);
@@ -867,7 +870,7 @@ namespace DaisyExport
                 return true;
             }
 
-            MetadataDefinition md = SupportedMetadata_Z39862005.GetMetadataDefinition("dc:Identifier");
+            MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition("dc:Identifier");
             return md != null && md.Synonyms.Find(
                                 delegate(string s)
                                 {
