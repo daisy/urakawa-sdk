@@ -197,8 +197,11 @@
     <Compile Include="exception\XukQNameNotUniqueWithinFactoryException.cs" />
     <Compile Include="GenericWithPresentationFactory.cs" />
     <Compile Include="GenericXukAbleFactory.cs" />
+    <Compile Include="media\data\image\BmpImageMediaData.cs" />
     <Compile Include="media\data\image\ImageMediaData.cs" />
+    <Compile Include="media\data\image\JpgImageMediaData.cs" />
     <Compile Include="media\data\image\ManagedImageMedia.cs" />
+    <Compile Include="media\data\image\PngImageMediaData.cs" />
     <Compile Include="media\data\utilities\AudioFormatConvertor.cs" />
     <Compile Include="media\data\utilities\AudioFormatConvertorSession.cs" />
     <Compile Include="media\data\utilities\Mp3Frame.cs" />
@@ -368,9 +371,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="project\" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -391,6 +391,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="project\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
