@@ -7,10 +7,46 @@ namespace urakawa.media.data.image
 {
     public abstract class ImageMediaData: MediaData
     {
-        protected abstract override MediaData CopyProtected();
-        DataProvider imgDataProvider;
+        private string m_ImageOriginalName;
 
-        protected DataProvider CreateDataProviderFromNewImage(string path)
+        protected abstract override MediaData CopyProtected();
+
+        public string ImageOriginalName
+            {
+            get
+                {
+                return m_ImageOriginalName;
+                }
+            protected set
+                {
+                m_ImageOriginalName = value;
+                }
+            }
+
+
+        public void AddImage ( string path )
+            {
+            if (string.IsNullOrEmpty ( path ))
+                {
+                throw new exception.MethodParameterIsNullException ( "The path of a png image can not be null" );
+                }
+
+            if (!File.Exists(path ))
+                {
+                throw new FileNotFoundException( "File not found at " + path);
+                }
+
+            AddImage ( 
+                CreateDataProviderFromNewImage ( path),
+                Path.GetFileName(path)  );
+            }
+
+
+        public abstract void AddImage ( DataProvider dataProv, string imageOriginalName );
+
+
+        protected abstract DataProvider CreateDataProviderFromNewImage(string path) ;
+        /*
         {            
             FileInfo mImgFile = new FileInfo(path);
 
@@ -50,5 +86,6 @@ namespace urakawa.media.data.image
             }
             return imgDataProvider;
           }
+         */ 
     }//Class
 }//namespace

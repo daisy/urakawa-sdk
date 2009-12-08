@@ -57,6 +57,12 @@ namespace urakawa.media.data
         public const string IMAGE_PNG_MIME_TYPE = "image/png";
 
         /// <summary>
+        /// MIME type for BMP images
+        /// </summary>
+        public const string IMAGE_BMP_MIME_TYPE = "image/bmp";
+
+
+        /// <summary>
         /// MIME type for Scalable Vector Graphics (SVG) images
         /// </summary>
         public const string IMAGE_SVG_MIME_TYPE = "image/svg+xml";
@@ -96,6 +102,9 @@ namespace urakawa.media.data
                     break;
                 case IMAGE_PNG_MIME_TYPE:
                     extension = ".png";
+                    break;
+                case IMAGE_BMP_MIME_TYPE:
+                    extension = ".bmp";
                     break;
                 case IMAGE_SVG_MIME_TYPE:
                     extension = ".svg";
