@@ -3,6 +3,7 @@ using urakawa.exception;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
 using urakawa.media.data.audio.codec;
+using urakawa.media.data.image.codecs;
 using urakawa.xuk;
 
 namespace urakawa.media.data

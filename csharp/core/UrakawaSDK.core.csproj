@@ -197,11 +197,11 @@
     <Compile Include="exception\XukQNameNotUniqueWithinFactoryException.cs" />
     <Compile Include="GenericWithPresentationFactory.cs" />
     <Compile Include="GenericXukAbleFactory.cs" />
-    <Compile Include="media\data\image\BmpImageMediaData.cs" />
+    <Compile Include="media\data\image\codecs\BmpImageMediaData.cs" />
+    <Compile Include="media\data\image\codecs\JpgImageMediaData.cs" />
+    <Compile Include="media\data\image\codecs\PngImageMediaData.cs" />
     <Compile Include="media\data\image\ImageMediaData.cs" />
-    <Compile Include="media\data\image\JpgImageMediaData.cs" />
     <Compile Include="media\data\image\ManagedImageMedia.cs" />
-    <Compile Include="media\data\image\PngImageMediaData.cs" />
     <Compile Include="media\data\utilities\AudioFormatConvertor.cs" />
     <Compile Include="media\data\utilities\AudioFormatConvertorSession.cs" />
     <Compile Include="media\data\utilities\Mp3Frame.cs" />

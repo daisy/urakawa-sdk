@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace urakawa.media.data.image
+namespace urakawa.media.data.image.codecs
     {
-    public class BmpImageMediaData : ImageMediaData
+    public class JpgImageMediaData : ImageMediaData
         {
         private DataProvider m_ImageDataProvider;
-        
-protected override MediaData CopyProtected ()
+
+        protected override MediaData CopyProtected ()
             {
-            ImageMediaData copyImageMediaData = Presentation.MediaDataFactory.Create<BmpImageMediaData> ();
+            ImageMediaData copyImageMediaData = Presentation.MediaDataFactory.Create<JpgImageMediaData> ();
             copyImageMediaData.AddImage ( m_ImageDataProvider, OriginalFileName );
             return copyImageMediaData;
             }
@@ -38,9 +38,8 @@ protected override MediaData CopyProtected ()
 
         public override string GetTypeNameFormatted ()
             {
-            return xuk.XukStrings.BmpImageMediaData;
+            return xuk.XukStrings.JpgImageMediaData;
             }
-
 
 
         public override void AddImage ( DataProvider dataProv, string imgOriginalName )
@@ -51,10 +50,10 @@ protected override MediaData CopyProtected ()
                 }
 
 
-            if (dataProv.MimeType != DataProviderFactory.IMAGE_BMP_MIME_TYPE)
+            if (dataProv.MimeType != DataProviderFactory.IMAGE_JPG_MIME_TYPE)
                 {
                 throw new exception.OperationNotValidException (
-                    "The mime type of the given DataProvider is not BMP!" );
+                    "The mime type of the given DataProvider is not JPG!" );
                 }
 
             if (string.IsNullOrEmpty ( imgOriginalName ))
@@ -67,17 +66,13 @@ protected override MediaData CopyProtected ()
             }
 
 
-
         protected override DataProvider CreateDataProviderFromNewImage ( string path )
             {
-            DataProvider imgDataProvider = Presentation.DataProviderFactory.Create ( DataProviderFactory.IMAGE_BMP_MIME_TYPE );
+            DataProvider imgDataProvider = Presentation.DataProviderFactory.Create ( DataProviderFactory.IMAGE_JPG_MIME_TYPE );
             ((FileDataProvider)imgDataProvider).InitByCopyingExistingFile ( path );
 
             return imgDataProvider;
             }
-
-
-
 
         }
     }
