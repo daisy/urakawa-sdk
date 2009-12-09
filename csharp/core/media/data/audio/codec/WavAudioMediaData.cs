@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using AudioLib;
+using urakawa.data;
 using urakawa.media.timing;
 using urakawa.media.data.utilities;
 using urakawa.progress;
@@ -29,8 +30,8 @@ namespace urakawa.media.data.audio.codec
                 return false;
             }
 
-            ///Here we do not compare the WavClip equality. Instead, we let the super class compare the resulting streams of PCM data.
-            ///See AudioMediaData.ValueEquals();
+            //Here we do not compare the WavClip/FileDataProvider equality. Instead, we let the super class compare the resulting streams of PCM data.
+            //See AudioMediaData.ValueEquals();
 
             return true;
         }
@@ -45,20 +46,20 @@ namespace urakawa.media.data.audio.codec
         protected class WavClip : Clip, IValueEquatable<WavClip>
         {
             /// <summary>
-            /// Constructor setting the <see cref="data.DataProvider"/>, 
+            /// Constructor setting the <see cref="urakawa.data.DataProvider"/>, 
             /// clip begin and clip end will in this case be initialized to <c>null</c>,
             /// which means beginning/end if the RIFF WAVE PCM data
             /// </summary>
-            /// <param name="clipDataProvider">The <see cref="data.DataProvider"/></param>
+            /// <param name="clipDataProvider">The <see cref="urakawa.data.DataProvider"/></param>
             public WavClip(DataProvider clipDataProvider)
                 : this(clipDataProvider, new Time(), null)
             {
             }
 
             /// <summary>
-            /// Constructor setting the <see cref="data.DataProvider"/> and clip begin/end values
+            /// Constructor setting the <see cref="urakawa.data.DataProvider"/> and clip begin/end values
             /// </summary>
-            /// <param name="clipDataProvider">The <see cref="data.DataProvider"/> - can not be <c>null</c></param>
+            /// <param name="clipDataProvider">The <see cref="urakawa.data.DataProvider"/> - can not be <c>null</c></param>
             /// <param name="clipBegin">The clip begin <see cref="Time"/> - can not be <c>null</c></param>
             /// <param name="clipEnd">
             /// The clip end <see cref="Time"/>
@@ -133,9 +134,9 @@ namespace urakawa.media.data.audio.codec
             private DataProvider mDataProvider;
 
             /// <summary>
-            /// Gets the <see cref="data.DataProvider"/> storing the RIFF WAVE PCM audio data of <c>this</c>
+            /// Gets the <see cref="urakawa.data.DataProvider"/> storing the RIFF WAVE PCM audio data of <c>this</c>
             /// </summary>
-            /// <returns>The <see cref="data.DataProvider"/></returns>
+            /// <returns>The <see cref="urakawa.data.DataProvider"/></returns>
             public DataProvider DataProvider
             {
                 get { return mDataProvider; }
@@ -921,11 +922,17 @@ namespace urakawa.media.data.audio.codec
                 }
             }
             string dataProviderUid = source.GetAttribute(XukStrings.DataProvider);
-            if (dataProviderUid == null)
+            if (String.IsNullOrEmpty(dataProviderUid))
             {
                 throw new exception.XukException("dataProvider attribute is missing from WavClip element");
             }
             DataProvider prov = Presentation.DataProviderManager.GetManagedObject(dataProviderUid);
+
+            if (prov == null)
+            {
+                throw new exception.XukException(
+                        String.Format("DataProvider cannot be found {0}", dataProviderUid));
+            }
 
             try
             {

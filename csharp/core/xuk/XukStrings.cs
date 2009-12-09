@@ -17,7 +17,7 @@ namespace urakawa.xuk
         }
 
 
-#region low occurence
+        #region low occurence
 
 
         #region the root
@@ -214,7 +214,7 @@ namespace urakawa.xuk
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "PresentationFactory" : "presFct"); }
         }
 
-        
+
 
         #endregion
 
@@ -289,9 +289,9 @@ namespace urakawa.xuk
 
         #endregion
 
-#endregion
+        #endregion
 
-#region medium occurence
+        #region medium occurence
 
         public static string Sequence
         {
@@ -408,9 +408,9 @@ namespace urakawa.xuk
         }
 
 
-#endregion
+        #endregion
 
-#region high occurence
+        #region high occurence
 
 
         public static string Language
@@ -461,10 +461,11 @@ namespace urakawa.xuk
 
         #region media
 
-        public static string AudioMediaDataUid
+        public static string MediaDataUid
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AudioMediaDataUid" : "medDtUid"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MediaDataUid" : "medDtUid"); }
         }
+
         public static string DataProviderItem
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "DataProviderItem" : "dtPrvItm"); }
@@ -548,7 +549,7 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ChannelMapping" : "cM"); }
         }
-        
+
         public static string TextMedia
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TextMedia" : "tx"); }
@@ -630,23 +631,27 @@ namespace urakawa.xuk
         }
 
         public static string JpgImageMediaData
-            {
-            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "JpgImageMediaData" : "jpgIm"); }
-            }
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "JpgImageMediaData" : "jpgIm"); }
+        }
 
         public static string PngImageMediaData
-            {
-            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "PngImageMediaData" : "pngIm"); }
-            }
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "PngImageMediaData" : "pngIm"); }
+        }
 
         public static string BmpImageMediaData
-            {
-            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "BmpImageMediaData" : "bmpIm"); }
-            }
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "BmpImageMediaData" : "bmpIm"); }
+        }
 
+        public static string OriginalRelativePath
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "OriginalRelativePath" : "orgPth"); }
+        }
         #endregion
 
-#endregion
+        #endregion
 
     }
 }

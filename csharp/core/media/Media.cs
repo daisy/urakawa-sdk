@@ -178,7 +178,6 @@ namespace urakawa.media
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
-            
         }
 
         /// <summary>
