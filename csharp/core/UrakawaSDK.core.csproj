@@ -140,6 +140,7 @@
     <Compile Include="data\DataProviderFactory.cs" />
     <Compile Include="data\DataProviderManager.cs" />
     <Compile Include="data\FileDataProvider.cs" />
+    <Compile Include="data\SequenceStream.cs" />
     <Compile Include="data\SubStream.cs" />
     <Compile Include="events\media\data\DataIsMissingEventArgs.cs" />
     <Compile Include="events\metadata\MetadataAttributeEventArgs.cs" />
@@ -283,7 +284,6 @@
     <Compile Include="media\data\utilities\Clip.cs" />
     <Compile Include="media\data\utilities\CollectManagedMediaTreeNodeVisitor.cs" />
     <Compile Include="media\data\audio\PCMFormatInfo.cs" />
-    <Compile Include="media\data\utilities\SequenceStream.cs" />
     <Compile Include="media\IContinuous.cs" />
     <Compile Include="media\ExternalTextMedia.cs" />
     <Compile Include="media\TextMedia.cs">
