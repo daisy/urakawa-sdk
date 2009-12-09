@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using urakawa.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.utilities;
 using urakawa.media.timing;

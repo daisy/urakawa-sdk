@@ -1,10 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
-using urakawa.data;
 
-namespace urakawa.media.data.utilities
+namespace urakawa.data
 {
     /// <summary>
     /// A <see cref="Stream"/> that supports reading from a sequence of source <see cref="Stream"/>s

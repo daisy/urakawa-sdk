@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Xml;
-using urakawa.core.visitor;
-using urakawa.events;
-using urakawa.exception;
+using urakawa.data;
 using urakawa.media;
 using urakawa.media.data.audio;
-using urakawa.media.data.utilities;
 using urakawa.media.timing;
-using urakawa.progress;
-using urakawa.property;
 using urakawa.property.channel;
-using urakawa.property.xml;
-using urakawa.xuk;
-using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 namespace urakawa.core
 {
