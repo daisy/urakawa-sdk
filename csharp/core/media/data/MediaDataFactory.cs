@@ -41,6 +41,7 @@ namespace urakawa.media.data
         }
 
         private Type mDefaultAudioMediaDataType = typeof(WavAudioMediaData);
+        private Type m_DefaultImageMediaDataType = typeof ( JpgImageMediaData);
 
         /// <summary>
         /// Gets or sets the default <see cref="AudioMediaData"/> <see cref="Type"/>
@@ -85,6 +86,36 @@ namespace urakawa.media.data
             }
         }
 
+        public Type DefaultImageMediaDataType
+            {
+            get
+                {
+                return m_DefaultImageMediaDataType;
+                }
+
+            set
+                {
+                if (value == null)
+                    {
+                    throw new MethodParameterIsNullException ( "The default ImageMediaData Type cannot be null" );
+                    }
+                if (!(typeof ( ImageMediaData).IsAssignableFrom ( value )))
+                    {
+                    throw new MethodParameterIsWrongTypeException ( "The default ImageMediaData Type must be a subclass of ImageMediaData" );
+                    }
+                if (value.IsAbstract)
+                    {
+                    throw new MethodParameterIsWrongTypeException ( "The default ImageMediaData Type cannot be an abstract class" );
+                    }
+                if (value.GetConstructor ( Type.EmptyTypes ) == null)
+                    {
+                    throw new MethodParameterIsWrongTypeException ( "The default ImageMediaData Type must have a default constructor" );
+                    }
+                m_DefaultImageMediaDataType = value;
+                }
+            }
+
+
         /// <summary>
         /// Creates a <see cref="AudioMediaData"/> of <see cref="DefaultAudioMediaDataType"/>
         /// </summary>
@@ -96,8 +127,8 @@ namespace urakawa.media.data
 
         public ImageMediaData CreateImageMediaData ()
             {
-            // to do: add default image type as jpg when derived classes for images are implemented
-            return Create ( typeof( ImageMediaData ))  as ImageMediaData;
+            return Create ( m_DefaultImageMediaDataType)  as ImageMediaData;
+            
             }
     }
 }

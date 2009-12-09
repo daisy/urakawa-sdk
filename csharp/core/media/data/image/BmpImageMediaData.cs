@@ -9,23 +9,30 @@ namespace urakawa.media.data.image
     public class BmpImageMediaData : ImageMediaData
         {
         private DataProvider m_ImageDataProvider;
-        private string m_ImageOriginalName;
-
-        protected override MediaData CopyProtected ()
+        
+protected override MediaData CopyProtected ()
             {
-            throw new NotImplementedException ();
+            ImageMediaData copyImageMediaData = Presentation.MediaDataFactory.Create<BmpImageMediaData> ();
+            copyImageMediaData.AddImage ( m_ImageDataProvider, OriginalFileName );
+            return copyImageMediaData;
             }
 
         protected override MediaData ExportProtected ( Presentation destPres )
             {
-            throw new NotImplementedException ();
+            PngImageMediaData expImgData = Presentation.MediaDataFactory.Create<PngImageMediaData> ();
+            expImgData.AddImage (
+                m_ImageDataProvider.Export ( destPres ),
+                OriginalFileName);
+            return expImgData;
             }
 
         public override IEnumerable<DataProvider> UsedDataProviders
             {
             get
                 {
-                throw new NotImplementedException ();
+                List<DataProvider> usedDP = new List<DataProvider> ( 1 );
+                usedDP[0] = m_ImageDataProvider;
+                return usedDP;
                 }
             }
 
@@ -56,7 +63,7 @@ namespace urakawa.media.data.image
                 }
 
             m_ImageDataProvider = dataProv;
-            base.ImageOriginalName = imgOriginalName;
+            base.OriginalFileName = imgOriginalName;
             }
 
 
