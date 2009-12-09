@@ -135,6 +135,12 @@
     <Compile Include="core\TreeNode_Image.cs" />
     <Compile Include="core\TreeNode_Text.cs" />
     <Compile Include="core\TreeNode_Xml.cs" />
+    <Compile Include="data\CloseNotifyingStream.cs" />
+    <Compile Include="data\DataProvider.cs" />
+    <Compile Include="data\DataProviderFactory.cs" />
+    <Compile Include="data\DataProviderManager.cs" />
+    <Compile Include="data\FileDataProvider.cs" />
+    <Compile Include="data\SubStream.cs" />
     <Compile Include="events\media\data\DataIsMissingEventArgs.cs" />
     <Compile Include="events\metadata\MetadataAttributeEventArgs.cs" />
     <Compile Include="events\progress\CancellableEventArgs.cs" />
@@ -261,7 +267,6 @@
     <Compile Include="events\undo\TransactionEndedEventArgs.cs" />
     <Compile Include="events\undo\TransactionStartedEventArgs.cs" />
     <Compile Include="events\undo\UndoRedoManagerEventArgs.cs" />
-    <Compile Include="media\data\utilities\CloseNotifyingStream.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
     <Compile Include="property\channel\ImageChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />
@@ -270,10 +275,6 @@
     <Compile Include="IValueEquatable.cs" />
     <Compile Include="media\data\audio\AudioMediaData.cs" />
     <Compile Include="media\data\audio\codec\WavAudioMediaData.cs" />
-    <Compile Include="media\data\DataProviderFactory.cs" />
-    <Compile Include="media\data\DataProviderManager.cs" />
-    <Compile Include="media\data\FileDataProvider.cs" />
-    <Compile Include="media\data\DataProvider.cs" />
     <Compile Include="media\data\IManaged.cs" />
     <Compile Include="media\data\audio\ManagedAudioMedia.cs" />
     <Compile Include="media\data\MediaData.cs" />
@@ -283,7 +284,6 @@
     <Compile Include="media\data\utilities\CollectManagedMediaTreeNodeVisitor.cs" />
     <Compile Include="media\data\audio\PCMFormatInfo.cs" />
     <Compile Include="media\data\utilities\SequenceStream.cs" />
-    <Compile Include="media\data\utilities\SubStream.cs" />
     <Compile Include="media\IContinuous.cs" />
     <Compile Include="media\ExternalTextMedia.cs" />
     <Compile Include="media\TextMedia.cs">

@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using AudioLib;
 using urakawa.core;
+using urakawa.data;
 using urakawa.media;
 using urakawa.media.data;
 using urakawa.media.data.audio;

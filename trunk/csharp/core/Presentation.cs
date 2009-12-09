@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.data;
 using urakawa.media.data.audio;
+using urakawa.media.data.image;
 using urakawa.media.timing;
 using urakawa.progress;
 using urakawa.property;
@@ -1221,17 +1223,32 @@ namespace urakawa
             ch = ChannelFactory.CreateImageChannel();
             ChannelsManager.RemoveManagedObject(ch);
             //
-            DataProvider dp = DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-            DataProviderManager.RemoveDataProvider(dp, true);
+            DataProvider dpAudio = DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpAudio, true);
+            //
+            DataProvider dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_BMP_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpImage, true);
+            //
+            dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_PNG_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpImage, true);
+            //
+            dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_JPG_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpImage, true);
             //
             CommandFactory.CreateCompositeCommand();
             //
-            MediaData md = MediaDataFactory.CreateAudioMediaData();
-            MediaDataManager.RemoveManagedObject(md);
+            MediaData mdImage = MediaDataFactory.CreateImageMediaData();
+            MediaDataManager.RemoveManagedObject(mdImage);
+            //
+            ManagedImageMedia manImgMedia = MediaFactory.CreateManagedImageMedia();
+            manImgMedia.MediaData = mdImage;
+            //
+            MediaData mdAudio = MediaDataFactory.CreateAudioMediaData();
+            MediaDataManager.RemoveManagedObject(mdAudio);
             //
             TreeNode treeNode = TreeNodeFactory.Create();
             ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
-            manMedia.MediaData = md;
+            manMedia.MediaData = mdAudio;
             CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, manMedia, Time.Zero, treeNode);
             CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
             TreeNodeAndStreamSelection selection = new TreeNodeAndStreamSelection();

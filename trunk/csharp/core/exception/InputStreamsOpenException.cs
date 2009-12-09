@@ -1,4 +1,5 @@
 using System;
+using urakawa.data;
 using urakawa.media.data;
 
 namespace urakawa.exception

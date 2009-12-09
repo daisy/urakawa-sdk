@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using urakawa.data;
 
 namespace urakawa.media.data.utilities
 {

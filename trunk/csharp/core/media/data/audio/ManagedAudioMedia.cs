@@ -123,7 +123,7 @@ namespace urakawa.media.data.audio
         /// <returns>The exported external audio media</returns>
         public new ManagedAudioMedia Export(Presentation destPres)
         {
-            return Export(destPres) as ManagedAudioMedia;
+            return ExportProtected(destPres) as ManagedAudioMedia;
         }
 
         /// <summary>
@@ -179,10 +179,10 @@ namespace urakawa.media.data.audio
         {
             base.XukInAttributes(source);
 
-            string uid = source.GetAttribute(XukStrings.AudioMediaDataUid);
+            string uid = source.GetAttribute(XukStrings.MediaDataUid);
             if (string.IsNullOrEmpty(uid))
             {
-                throw new exception.XukException("audioMediaDataUid attribute is missing from AudioMediaData");
+                throw new exception.XukException("MediaDataUid attribute is missing from AudioMediaData");
             }
             if (!Presentation.MediaDataManager.IsManagerOf(uid))
             {
@@ -213,7 +213,7 @@ namespace urakawa.media.data.audio
         {
             base.XukOutAttributes(destination, baseUri);
 
-            destination.WriteAttributeString(XukStrings.AudioMediaDataUid, AudioMediaData.Uid);
+            destination.WriteAttributeString(XukStrings.MediaDataUid, AudioMediaData.Uid);
             
         }
 
@@ -308,8 +308,9 @@ namespace urakawa.media.data.audio
                 if (!(value is AudioMediaData))
                 {
                     throw new exception.MethodParameterIsWrongTypeException(
-                        "The AudioMediaData of a ManagedAudioMedia must be a AudioMediaData");
+                        "The MediaData of a ManagedAudioMedia must be a AudioMediaData");
                 }
+
                 AudioMediaData = value as AudioMediaData;
             }
         }

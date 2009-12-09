@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.IO;
+using urakawa.data;
 using urakawa.events;
-using urakawa.events.media.data;
 
 namespace urakawa.media.data
 {
@@ -32,27 +29,27 @@ namespace urakawa.media.data
             if (d != null) d(this, args);
         }
 
-        /// <summary>
-        /// Event fired after the name of the <see cref="Media"/> has changed
-        /// </summary>
-        public event EventHandler<NameChangedEventArgs> NameChanged;
+        ///// <summary>
+        ///// Event fired after the name of the <see cref="Media"/> has changed
+        ///// </summary>
+        //public event EventHandler<NameChangedEventArgs> NameChanged;
 
-        /// <summary>
-        /// Fires the <see cref="NameChanged"/> event
-        /// </summary>
-        /// <param name="source">The source, that is the <see cref="MediaData"/> whoose name has changed</param>
-        /// <param name="newName">The new name</param>
-        /// <param name="prevName">The name prior to the change</param>
-        protected void NotifyNameChanged(MediaData source, string newName, string prevName)
-        {
-            EventHandler<NameChangedEventArgs> d = NameChanged;
-            if (d != null) d(this, new NameChangedEventArgs(source, newName, prevName));
-        }
+        ///// <summary>
+        ///// Fires the <see cref="NameChanged"/> event
+        ///// </summary>
+        ///// <param name="source">The source, that is the <see cref="MediaData"/> whoose name has changed</param>
+        ///// <param name="newName">The new name</param>
+        ///// <param name="prevName">The name prior to the change</param>
+        //protected void NotifyNameChanged(MediaData source, string newName, string prevName)
+        //{
+        //    EventHandler<NameChangedEventArgs> d = NameChanged;
+        //    if (d != null) d(this, new NameChangedEventArgs(source, newName, prevName));
+        //}
 
-        private void this_nameChanged(object sender, NameChangedEventArgs e)
-        {
-            NotifyChanged(e);
-        }
+        //private void this_nameChanged(object sender, NameChangedEventArgs e)
+        //{
+        //    NotifyChanged(e);
+        //}
 
         #endregion
 
@@ -61,7 +58,7 @@ namespace urakawa.media.data
         /// </summary>
         protected MediaData()
         {
-            this.NameChanged += new EventHandler<NameChangedEventArgs>(this_nameChanged);
+            //this.NameChanged += new EventHandler<NameChangedEventArgs>(this_nameChanged);
         }
 
         /// <summary>
@@ -75,26 +72,26 @@ namespace urakawa.media.data
         //    get { return Presentation.MediaDataManager.GetUidOfMediaData(this); }
         //}
 
-        private string mName = "";
+        //private string mName = "";
 
-        /// <summary>
-        /// Gets the name of <c>this</c>
-        /// </summary>
-        /// <returns>The name</returns>
-        public string Name
-        {
-            get { return mName; }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException("The name of an AudioMediaData can not be null");
-                }
-                string prevName = mName;
-                mName = value;
-                NotifyNameChanged(this, value, prevName);
-            }
-        }
+        ///// <summary>
+        ///// Gets the name of <c>this</c>
+        ///// </summary>
+        ///// <returns>The name</returns>
+        //public string Name
+        //{
+        //    get { return mName; }
+        //    set
+        //    {
+        //        if (value == null)
+        //        {
+        //            throw new exception.MethodParameterIsNullException("The name of an AudioMediaData can not be null");
+        //        }
+        //        string prevName = mName;
+        //        mName = value;
+        //        NotifyNameChanged(this, value, prevName);
+        //    }
+        //}
 
         /// <summary>
         /// Gets a <see cref="List{IDataProvider}"/> of the <see cref="DataProvider"/>s used by <c>this</c>
@@ -161,11 +158,11 @@ namespace urakawa.media.data
                 return false;
             }
 
-            if (Name != otherz.Name)
-            {
-                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
-                return false;
-            }
+            //if (Name != otherz.Name)
+            //{
+            //    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+            //    return false;
+            //}
             return true;
         }
 

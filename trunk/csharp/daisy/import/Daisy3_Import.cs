@@ -51,7 +51,11 @@ namespace urakawa.daisy.import
         private void initializeProject()
         {
             m_Project = new Project();
+#if (DEBUG)
+            m_Project.SetPrettyFormat(true);
+#else
             m_Project.SetPrettyFormat(false);
+#endif
 
             Presentation presentation = m_Project.AddNewPresentation();
 

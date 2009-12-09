@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using AudioLib;
+using urakawa.data;
 using urakawa.media.timing;
 
 namespace urakawa.media.data.audio
@@ -415,6 +416,13 @@ namespace urakawa.media.data.audio
             return CopyProtected() as AudioMediaData;
         }
 
+        protected abstract override MediaData ExportProtected(Presentation destPres);
+
+        public new AudioMediaData Export(Presentation destPres)
+        {
+            return ExportProtected(destPres) as AudioMediaData;
+        }
+
         /// <summary>
         /// Splits the audio media data at a given split point in time,
         /// <c>this</c> retaining the audio before the split point,
@@ -518,11 +526,13 @@ namespace urakawa.media.data.audio
             {
                 return false;
             }
+
             if (!PCMFormat.ValueEquals(otherz.PCMFormat))
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
+
             if (PCMFormat.Data.ConvertTimeToBytes(AudioDuration.TimeDeltaAsMillisecondDouble)
                 != otherz.PCMFormat.Data.ConvertTimeToBytes(otherz.AudioDuration.TimeDeltaAsMillisecondDouble))
             {
@@ -534,6 +544,7 @@ namespace urakawa.media.data.audio
             {
                 return false;
             }
+
             if (HasActualPcmData)
             {
                 Stream thisData = OpenPcmInputStream();

@@ -13,7 +13,9 @@ namespace urakawa.media
         {
             return XukStrings.MediaFactory;
         }
-        public MediaFactory(Presentation pres) : base(pres)
+
+        public MediaFactory(Presentation pres)
+            : base(pres)
         {
         }
 
@@ -36,13 +38,13 @@ namespace urakawa.media
         }
 
         /// <summary>
-    /// Creates a <see cref="ManagedImageMedia"/>
+        /// Creates a <see cref="ManagedImageMedia"/>
         /// </summary>
         /// <returns></returns>
-        public ManagedImageMedia CreateManagedImageMedia ()
-            {
-            return Create<ManagedImageMedia> ();
-            }
+        public ManagedImageMedia CreateManagedImageMedia()
+        {
+            return Create<ManagedImageMedia>();
+        }
 
         /// <summary>
         /// Creates a <see cref="ExternalImageMedia"/>
@@ -61,10 +63,12 @@ namespace urakawa.media
         {
             return Create<ExternalVideoMedia>();
         }
+
         public ExternalAudioMedia CreateExternalAudioMedia()
         {
             return Create<ExternalAudioMedia>();
         }
+
         public ExternalTextMedia CreateExternalTextMedia()
         {
             return Create<ExternalTextMedia>();

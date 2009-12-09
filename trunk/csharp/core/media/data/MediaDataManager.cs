@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Xml;
+using urakawa.data;
 using urakawa.media.data.audio;
 using urakawa.progress;
 using urakawa.xuk;
@@ -246,6 +248,26 @@ namespace urakawa.media.data
             }
             base.Clear();
         }
+
+        public List<DataProvider> UsedDataProviders
+        {
+            get
+            {
+                List<DataProvider> usedDataProviders = new List<DataProvider>();
+                foreach (MediaData md in ManagedObjects.ContentsAs_YieldEnumerable)
+                {
+                    foreach (DataProvider prov in md.UsedDataProviders)
+                    {
+                        if (!usedDataProviders.Contains(prov))
+                        {
+                            usedDataProviders.Add(prov);
+                        }
+                    }
+                }
+                return usedDataProviders;
+            }
+        }
+
 
         /// <summary>
         /// Reads the attributes of a MediaDataManager xuk element.
