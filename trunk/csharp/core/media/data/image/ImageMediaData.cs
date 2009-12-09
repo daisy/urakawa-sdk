@@ -11,7 +11,7 @@ namespace urakawa.media.data.image
 
         protected abstract override MediaData CopyProtected();
 
-        public string ImageOriginalName
+        public string OriginalFileName
             {
             get
                 {
