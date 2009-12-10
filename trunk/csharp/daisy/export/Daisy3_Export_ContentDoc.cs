@@ -218,6 +218,41 @@ namespace urakawa.daisy.export
                         {
                             XmlAttribute imgSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
                             if (imgSrcAttribute != null &&
+                                n.GetImageMedia () != null
+                                && n.GetImageMedia () is media.data.image.ManagedImageMedia)
+                                {
+                                media.data.image.ManagedImageMedia managedImage = (media.data.image.ManagedImageMedia )  n.GetImageMedia () ;
+                                string exportImageName = managedImage.ImageMediaData.OriginalRelativePath.Replace ( "\\", "_" );
+                                string destPath = Path.Combine ( m_OutputDirectory, exportImageName );
+
+                                if ( !File.Exists ( destPath ))
+                                    {
+                                    FileStream fs = null;
+                                    Stream imageStream = null;
+                                    try
+                                        {
+                                        fs = File.Create ( destPath );
+                                        imageStream = managedImage.ImageMediaData.OpenInputStream ();
+                                        copyStreamData ( imageStream, fs );
+
+                                        }
+                                    finally
+                                        {
+                                        if (fs != null) fs.Close ();
+                                        if (imageStream != null) imageStream.Close ();
+                                        }
+                                    }
+
+                                imgSrcAttribute.Value = exportImageName;
+
+                                if (!m_FilesList_Image.Contains ( exportImageName ))
+                                    {
+                                    m_FilesList_Image.Add ( exportImageName );
+                                    }
+                                
+                                }
+                            /*
+                            if (imgSrcAttribute != null &&
                                 (imgSrcAttribute.Value.StartsWith(m_Presentation.DataProviderManager.DataFileDirectory)))
                             {
                                 string imgFileName = Path.GetFileName(imgSrcAttribute.Value);
@@ -235,6 +270,7 @@ namespace urakawa.daisy.export
                                 else
                                     System.Diagnostics.Debug.Fail("source image not found", sourcePath);
                             }
+                             */ 
                         }
 
                         return true;
@@ -295,11 +331,34 @@ namespace urakawa.daisy.export
             return false;
         }
 
+        private void copyStreamData ( Stream source, Stream dest )
+            { //1
+            int BUFFER_SIZE = 1024* 1000 ;
+
+            if (source.Length <= BUFFER_SIZE)
+                { // 2
+                byte[] buffer = new byte[source.Length];
+                int read = source.Read ( buffer, 0, (int)source.Length );
+                dest.Write ( buffer, 0, read );
+                } //-2
+            else
+                { // 2
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int bytesRead = 0;
+                while ((bytesRead = source.Read ( buffer, 0, BUFFER_SIZE )) > 0)
+                    { //3
+                    dest.Write ( buffer, 0, bytesRead );
+                    } // -3
+
+                } //-2
+            } // -1
+
         //private bool ShouldCreateNextSmilFile(urakawa.core.TreeNode node)
         //{
         //    QualifiedName qName = node.GetXmlElementQName();
         //    return qName != null && qName.LocalName == "level1";
         //}
+
 
         /*
         private XmlDocument SaveCurrentSmilAndCreateNextSmilDocument ( XmlDocument smilDocument )

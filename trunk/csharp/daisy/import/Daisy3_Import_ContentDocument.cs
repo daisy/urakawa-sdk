@@ -192,6 +192,10 @@ namespace urakawa.daisy.import
                                 {
                                     string parentPath = Directory.GetParent(filePath).FullName;
                                     string imgSourceFullpath = Path.Combine(parentPath, relativePath);
+
+
+
+                                    /*
                                     string datafilePath = presentation.DataProviderManager.DataFileDirectoryFullPath;
                                     string imgDestFullpath = Path.Combine(datafilePath,
                                                                           Path.GetFileName(imgSourceFullpath));
@@ -205,14 +209,38 @@ namespace urakawa.daisy.import
                                         presentation.RootUri.MakeRelativeUri(new Uri(imgDestFullpath, UriKind.Absolute))
                                             .ToString();
                                     //string dirPath = Path.GetDirectoryName(presentation.RootUri.LocalPath);
-                                    //updatedSRC = presentation.DataProviderManager.DataFileDirectory + Path.DirectorySeparatorChar + Path.GetFileName(imgDestFullpath);
+                                    updatedSRC = presentation.DataProviderManager.DataFileDirectory + Path.DirectorySeparatorChar + Path.GetFileName(imgDestFullpath);
+                                    
 
-                                    ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty();
-                                    treeNode.AddProperty(chProp);
                                     ExternalImageMedia externalImage =
                                         presentation.MediaFactory.CreateExternalImageMedia();
+                                    urakawa.media.data.image.ImageMediaData jpgImage =  presentation.MediaDataFactory.CreateImageMediaData ();
+                                    if (jpgImage != null)
+                                        {
+                                        jpgImage.AddImage ( imgSourceFullpath );
+                                        System.Windows.Forms.MessageBox.Show ( "image is not null " + jpgImage.OriginalFileName);
+                                        }
+
+
                                     externalImage.Src = updatedSRC;
-                                    chProp.SetMedia(m_ImageChannel, externalImage);
+                                    */
+
+                                    updatedSRC = Path.GetFullPath ( imgSourceFullpath ).Replace (
+                                        Path.GetDirectoryName ( m_Book_FilePath ), "" );
+                                    if (updatedSRC.StartsWith ( "\\" ))
+                                        {
+                                        updatedSRC = updatedSRC.Remove ( 0, 1 );
+                                        }
+                                    
+
+                                    ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty ();
+                                    treeNode.AddProperty ( chProp );
+
+                                    urakawa.media.data.image.ImageMediaData jpgImage = presentation.MediaDataFactory.CreateImageMediaData ();
+                                    jpgImage.InitializeImage( imgSourceFullpath, updatedSRC );
+                                    media.data.image.ManagedImageMedia managedImage =  presentation.MediaFactory.CreateManagedImageMedia ();
+                                    managedImage.MediaData = jpgImage;
+                                    chProp.SetMedia(m_ImageChannel, managedImage);
                                 }
                             }
                         }

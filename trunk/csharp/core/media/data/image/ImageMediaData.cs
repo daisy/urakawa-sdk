@@ -75,7 +75,7 @@ namespace urakawa.media.data.image
         }
 
 
-        public void InitializeImage(string path)
+        public void InitializeImage(string path, string originalRelativePath)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -90,7 +90,7 @@ namespace urakawa.media.data.image
             DataProvider imgDataProvider = Presentation.DataProviderFactory.Create(MimeType);
             ((FileDataProvider)imgDataProvider).InitByCopyingExistingFile(path);
 
-            InitializeImage(imgDataProvider, Path.GetFileName(path));
+            InitializeImage(imgDataProvider, originalRelativePath);
         }
 
         public void InitializeImage(DataProvider dataProv, string imgOriginalName)
@@ -138,9 +138,21 @@ namespace urakawa.media.data.image
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-
             return true;
         }
+
+            public Stream OpenInputStream ()
+                {
+                if ( m_DataProvider == null )
+                    {
+                    throw new exception.IsNotInitializedException ("ImageMediaData is not initialized with an image!") ;
+                    }
+
+
+            return m_DataProvider.OpenInputStream () ;
+                }
+
+            
 
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
