@@ -214,6 +214,11 @@ namespace urakawa.xuk
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "PresentationFactory" : "presFct"); }
         }
 
+        public static string ExternalFileDataFactory
+            {
+            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "ExternalFileDataFactory" : "ExFlDtFct"); }
+            }
+
 
 
         #endregion
@@ -284,6 +289,11 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "UndoRedoManager" : "udoRdoMan"); }
         }
+
+        public static string ExternalFileDataManager
+            {
+            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "ExternalFileDataManager" : "ExFlDtMan"); }
+            }
 
 
 
@@ -649,6 +659,19 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "OriginalRelativePath" : "orgPth"); }
         }
+
+        public static string CSSExternalFileData
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "CssExternalFileData" : "CssExFl"); }
+                }
+
+        public static string DTDExternalFileData
+            {
+            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "DTDExternalFileData" : "DtdExFl"); }
+            }
+            
+
+
         #endregion
 
         #endregion
