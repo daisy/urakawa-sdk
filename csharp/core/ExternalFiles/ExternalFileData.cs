@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Xml;
 using urakawa.data;
 using urakawa.exception;
+using urakawa.xuk;
 
 namespace urakawa.ExternalFiles
     {
@@ -34,7 +36,7 @@ namespace urakawa.ExternalFiles
 
 
         private bool m_PreserveForOutputFile;
-        public bool PreserveForOutputFile
+        public bool IsPreservedForOutputFile
             {
             get
                 {
@@ -82,14 +84,14 @@ namespace urakawa.ExternalFiles
             ExternalFileData fileDataCopy = (ExternalFileData)Presentation.ExternalFilesDataFactory.Create ( GetType () );
             // We do not Copy the FileDataProvider,
             // because the file stream is read-only by design.
-            fileDataCopy.InitializeWithData ( m_DataProvider, OriginalRelativePath,PreserveForOutputFile );
+            fileDataCopy.InitializeWithData ( m_DataProvider, OriginalRelativePath,IsPreservedForOutputFile );
             return fileDataCopy;
             }
 
         protected ExternalFileData ExportProtected ( Presentation destPres )
             {
             ExternalFileData exportFileData = (ExternalFileData)Presentation.ExternalFilesDataFactory.Create ( GetType () );
-            exportFileData.InitializeWithData ( m_DataProvider.Export ( destPres ), OriginalRelativePath, PreserveForOutputFile );
+            exportFileData.InitializeWithData ( m_DataProvider.Export ( destPres ), OriginalRelativePath, IsPreservedForOutputFile );
             return exportFileData;
             }
 
@@ -204,7 +206,60 @@ namespace urakawa.ExternalFiles
             return m_DataProvider.OpenInputStream ();
             }
 
-        
+
+        protected override void XukOutAttributes ( XmlWriter destination, Uri baseUri )
+            {
+            base.XukOutAttributes ( destination, baseUri );
+
+            if (IsPreservedForOutputFile &&  String.IsNullOrEmpty ( OriginalRelativePath ))
+                {
+                throw new XukException ( "For preserving files for output, the OriginalRelativePath of an ExternalFileData cannot be null or empty !" );
+                }
+            if (OriginalRelativePath == null) OriginalRelativePath = "";
+
+            destination.WriteAttributeString ( XukStrings.OriginalRelativePath, OriginalRelativePath );
+            destination.WriteAttributeString ( XukStrings.IsPreservedForOutputFile, 
+                IsPreservedForOutputFile == true ? "true" : "false" );
+
+            if (DataProvider == null || String.IsNullOrEmpty ( DataProvider.Uid ))
+                {
+                throw new XukException ( "The DataProvider of an ExternalFileData cannot be null or empty !" );
+                }
+            destination.WriteAttributeString ( XukStrings.DataProvider, DataProvider.Uid );
+
+            
+            }
+
+        protected override void XukInAttributes ( XmlReader source )
+            {
+            base.XukInAttributes ( source );
+
+            string strPreserve = source.GetAttribute ( XukStrings.IsPreservedForOutputFile);
+            bool isPreserved = strPreserve == "true" ? true : false;
+            string path = source.GetAttribute ( XukStrings.OriginalRelativePath );
+            
+            if (isPreserved &&  String.IsNullOrEmpty ( path ))
+                {
+                throw new XukException ( "For preserved files, the OriginalRelativePath of an ExternalFileData cannot be null or empty !" );
+                }
+
+            string uid = source.GetAttribute ( XukStrings.DataProvider );
+            if (String.IsNullOrEmpty ( uid ))
+                {
+                throw new XukException ( "The DataProvider of an ExternalFileData cannot be null or empty !" );
+                }
+            DataProvider prov = Presentation.DataProviderManager.GetManagedObject ( uid );
+
+            if (prov == null)
+                {
+                throw new XukException (
+                        String.Format ( "DataProvider cannot be found {0}", uid ) );
+                }
+
+            InitializeWithData( prov, path , isPreserved);
+            }
+
+                
         
 
         }

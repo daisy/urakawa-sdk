@@ -669,8 +669,12 @@ namespace urakawa.xuk
             {
             get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "DTDExternalFileData" : "DtdExFl"); }
             }
-            
 
+        public static string IsPreservedForOutputFile
+            {
+            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "IsPreservedForOutputFile" : "PreOutFl"); }
+            }
+            
 
         #endregion
 
