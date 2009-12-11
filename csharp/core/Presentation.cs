@@ -20,6 +20,7 @@ using urakawa.undo;
 using urakawa.xuk;
 using urakawa.events;
 using urakawa.events.presentation;
+using urakawa.ExternalFiles ;
 
 namespace urakawa
 {
@@ -255,10 +256,12 @@ namespace urakawa
         private DataProviderFactory mDataProviderFactory;
         private CommandFactory mCommandFactory;
         private MetadataFactory mMetadataFactory;
+        private ExternalFileDataFactory m_ExternalFileDataFactory;
         //
         private UndoRedoManager mUndoRedoManager;
         private DataProviderManager mDataProviderManager;
         private MediaDataManager mMediaDataManager;
+        private ExternalFilesDataManager m_ExternalFileDataManager ;
         private ChannelsManager mChannelsManager;
         //
         private TreeNode mRootNode;
@@ -726,6 +729,31 @@ namespace urakawa
                 return mDataProviderFactory;
             }
         }
+
+        public ExternalFilesDataManager ExternalFilesDataManager
+            {
+            get
+                {
+                if (m_ExternalFileDataManager == null)
+                    {
+                    m_ExternalFileDataManager = new ExternalFilesDataManager ( this );
+                    }
+                return m_ExternalFileDataManager;
+                }
+            }
+
+        public ExternalFileDataFactory ExternalFilesDataFactory
+            {
+            get
+                {
+                if (m_ExternalFileDataFactory == null)
+                    {
+                    m_ExternalFileDataFactory = new ExternalFileDataFactory ( this );
+                    }
+                return m_ExternalFileDataFactory;
+                }
+            }
+
 
         #region Metadata
 
