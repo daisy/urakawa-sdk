@@ -77,6 +77,15 @@ namespace urakawa.data
         /// </summary>
         public const string TEXT_PLAIN_MIME_TYPE = "text/plain";
 
+        /// <summary>
+        /// MIME type for DTD
+        /// </summary>
+        public const string DTD_MIME_TYPE = "application/xml-dtd";
+
+        /// <summary>
+        /// MIME type for xml
+        /// </summary>
+        public const string XML_TEXT_MIME_TYPE = "text/xml";
 
         /// <summary>
         /// Gets the file extension for a given MIME type
@@ -114,6 +123,12 @@ namespace urakawa.data
                     break;
                 case TEXT_PLAIN_MIME_TYPE:
                     extension = ".txt";
+                    break;
+                case DTD_MIME_TYPE:
+                    extension = ".dtd";
+                    break;
+                case XML_TEXT_MIME_TYPE:
+                    extension = ".xml";
                     break;
                 default:
                     extension = ".bin";

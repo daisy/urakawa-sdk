@@ -2,22 +2,59 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using urakawa.data;
+using urakawa.exception;
 
 namespace urakawa.ExternalFiles
     {
     public abstract class ExternalFileData : WithPresentation
         {
 
-        DataProvider m_DataProvider;
+        
         //public ExternalFiles ()
             //{
 
             //}
-        public override string GetTypeNameFormatted ()
+
+        public abstract string MimeType { get; }
+
+        private DataProvider m_DataProvider;
+        public DataProvider DataProvider
             {
-            throw new NotImplementedException ();
+            get
+                {
+                return m_DataProvider;
+                }
+            private set
+                {
+                m_DataProvider = value;
+                }
             }
+
+
+        private bool m_PreserveForOutputFile;
+        public bool PreserveForOutputFile
+            {
+            get
+                {
+                return m_PreserveForOutputFile;
+                }
+            }
+
+        private string m_OriginalRelativePath;
+        public string OriginalRelativePath
+            {
+            get
+                {
+                return m_OriginalRelativePath;
+                }
+            private set
+                {
+                m_OriginalRelativePath = value;
+                }
+            }
+
 
         public IEnumerable<DataProvider> UsedDataProviders
             {
@@ -29,6 +66,146 @@ namespace urakawa.ExternalFiles
             }
 
 
+
+        public new ExternalFileData Copy ()
+            {
+            return CopyProtected () as ExternalFileData;
+            }
+
+        public new ExternalFileData Export ( Presentation destPres )
+            {
+            return ExportProtected ( destPres ) as ExternalFileData;
+            }
+
+        protected ExternalFileData CopyProtected ()
+            {
+            ExternalFileData fileDataCopy = (ExternalFileData)Presentation.ExternalFilesDataFactory.Create ( GetType () );
+            // We do not Copy the FileDataProvider,
+            // because the file stream is read-only by design.
+            fileDataCopy.InitializeWithData ( m_DataProvider, OriginalRelativePath,PreserveForOutputFile );
+            return fileDataCopy;
+            }
+
+        protected ExternalFileData ExportProtected ( Presentation destPres )
+            {
+            ExternalFileData exportFileData = (ExternalFileData)Presentation.ExternalFilesDataFactory.Create ( GetType () );
+            exportFileData.InitializeWithData ( m_DataProvider.Export ( destPres ), OriginalRelativePath, PreserveForOutputFile );
+            return exportFileData;
+            }
+
+
+        public void InitializeWithData ( string path, string originalRelativePath, bool preserveForOutput )
+            {
+            if (string.IsNullOrEmpty ( path ))
+                {
+                throw new MethodParameterIsNullException ( "The path of file can not be null" );
+                }
+
+            if (!File.Exists ( path ))
+                {
+                throw new FileNotFoundException ( "File not found at " + path );
+                }
+
+
+            if (preserveForOutput && string.IsNullOrEmpty ( originalRelativePath ))
+                {
+                throw new MethodParameterIsEmptyStringException ( "For preserving file for output, original name of file cannot be null!" );
+                }
+
+            
+            DataProvider externalFileDataProvider = Presentation.DataProviderFactory.Create ( MimeType );
+            ((FileDataProvider)externalFileDataProvider).InitByCopyingExistingFile ( path );
+
+            InitializeWithData( externalFileDataProvider, originalRelativePath,preserveForOutput );
+            }
+
+        public void InitializeWithData ( Stream dataStream, string originalRelativePath, bool preserveForOutput )
+            {
+            if ( dataStream == null)
+                {
+                throw new MethodParameterIsNullException ( "The dataStream parameter is null" );
+                }
+
+            if ( dataStream.Length == 0 )
+                {
+                throw new exception.InputStreamIsTooShortException ( "Input dataStream contains no data!" );
+                    }
+
+            if (preserveForOutput && string.IsNullOrEmpty ( originalRelativePath ))
+                {
+                throw new MethodParameterIsEmptyStringException ( "For preserving file for output, original name of file cannot be null!" );
+                }
+
+
+            DataProvider externalFileDataProvider = Presentation.DataProviderFactory.Create ( MimeType );
+            externalFileDataProvider.AppendData ( dataStream, dataStream.Length );
+            
+            InitializeWithData ( externalFileDataProvider, originalRelativePath, preserveForOutput );
+            }
+
+
+        public void InitializeWithData ( DataProvider dataProv, string originalRelativePath, bool preserveForOutput )
+            {
+            if (dataProv == null)
+                {
+                throw new MethodParameterIsNullException ( "The data provider can not be null" );
+                }
+
+            if (dataProv.MimeType != MimeType)
+                {
+                throw new OperationNotValidException ( "The mime type of the given DataProvider is not correct !" );
+                }
+
+            if (preserveForOutput && string.IsNullOrEmpty ( originalRelativePath ))
+                {
+                throw new MethodParameterIsEmptyStringException ( "For preserving file for output, original name of file cannot be null!" );
+                }
+
+            DataProvider = dataProv;
+            OriginalRelativePath = originalRelativePath;
+            m_PreserveForOutputFile = preserveForOutput;
+            }
+
+        public override bool ValueEquals ( WithPresentation other )
+            {
+            if (!base.ValueEquals ( other ))
+                {
+                return false;
+                }
+
+            ExternalFileData otherz = other as ExternalFileData ;
+            if (otherz == null)
+                {
+                return false;
+                }
+
+            if (OriginalRelativePath != otherz.OriginalRelativePath)
+                {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+                }
+
+            if (!DataProvider.ValueEquals ( otherz.DataProvider ))
+                {
+                //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                return false;
+                }
+            return true;
+            }
+
+        public Stream OpenInputStream ()
+            {
+            if (m_DataProvider == null)
+                {
+                throw new exception.IsNotInitializedException ( "ExternalFileData is not initialized with a file!" );
+                }
+
+
+            return m_DataProvider.OpenInputStream ();
+            }
+
         
+        
+
         }
     }

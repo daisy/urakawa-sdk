@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using urakawa.xuk;
 
 namespace urakawa.ExternalFiles
     {
@@ -9,7 +10,7 @@ namespace urakawa.ExternalFiles
         {
         public override string GetTypeNameFormatted ()
             {
-            throw new NotImplementedException ();
+            return XukStrings.ExternalFileDataFactory;
             }
 
 
@@ -21,7 +22,7 @@ namespace urakawa.ExternalFiles
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="instance">The <see cref="MediaData"/> instance to initialize</param>
+        /// <param name="instance">The <see cref="ExternalFileData"/> instance to initialize</param>
         /// <remarks>
         /// In derived factories, this method can be overridden in order to do additional initialization.
         /// In this case the developer must remember to call <c>base.InitializeInstance(instance)</c>
