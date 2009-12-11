@@ -236,10 +236,10 @@ namespace urakawa.daisy.import
                                     ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty ();
                                     treeNode.AddProperty ( chProp );
 
-                                    urakawa.media.data.image.ImageMediaData jpgImage = presentation.MediaDataFactory.CreateImageMediaData ();
-                                    jpgImage.InitializeImage( imgSourceFullpath, updatedSRC );
+                                    urakawa.media.data.image.ImageMediaData imageData = CreateImageMediaData ( presentation, Path.GetExtension ( imgSourceFullpath ) );
+                                    imageData.InitializeImage ( imgSourceFullpath, updatedSRC );
                                     media.data.image.ManagedImageMedia managedImage =  presentation.MediaFactory.CreateManagedImageMedia ();
-                                    managedImage.MediaData = jpgImage;
+                                    managedImage.MediaData = imageData;
                                     chProp.SetMedia(m_ImageChannel, managedImage);
                                 }
                             }
@@ -326,5 +326,31 @@ namespace urakawa.daisy.import
                     }
             }
         }
+
+        private media.data.image.ImageMediaData CreateImageMediaData ( Presentation presentation, string extension )
+            {
+            extension = extension.ToLower ();
+            switch (extension)
+                {
+            case ".jpg":
+            return presentation.MediaDataFactory.Create<media.data.image.codecs.JpgImageMediaData> ();
+            break;
+
+            case ".bmp":
+            return presentation.MediaDataFactory.Create<media.data.image.codecs.BmpImageMediaData> ();
+            break;
+
+            case ".png":
+            return presentation.MediaDataFactory.Create<media.data.image.codecs.PngImageMediaData> ();
+            break;
+
+            default:
+                {
+                return null;
+                break;
+                }
+                }
+            }
+
     }
 }
