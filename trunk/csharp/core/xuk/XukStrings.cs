@@ -662,17 +662,28 @@ namespace urakawa.xuk
 
         public static string CSSExternalFileData
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "CssExternalFileData" : "CssExFl"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "CssExternalFileData" : "cssExFl"); }
                 }
 
         public static string DTDExternalFileData
             {
-            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "DTDExternalFileData" : "DtdExFl"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "DTDExternalFileData" : "dtdExFl"); }
             }
+
+        public static string ExternalFileDatas
+            {
+            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "ExternalFileDatas" : "exFlDts"); }
+            }
+
+        public static string ExternalFileDataItem
+            {
+            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "ExternalFileDataItem" : "exFlDtItm"); }
+            }
+
 
         public static string IsPreservedForOutputFile
             {
-            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "IsPreservedForOutputFile" : "PreOutFl"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "IsPreservedForOutputFile" : "preOutFl"); }
             }
             
 

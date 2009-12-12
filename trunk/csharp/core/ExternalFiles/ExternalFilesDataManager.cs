@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.IO;
 using urakawa.xuk;
 using urakawa.data;
+using urakawa.progress;
+
 
 namespace urakawa.ExternalFiles
     {
-    public sealed class ExternalFilesDataManager:XukAbleManager<ExternalFileData>
+    public sealed class ExternalFilesDataManager : XukAbleManager<ExternalFileData>
         {
         public ExternalFilesDataManager ( Presentation pres )
             : base ( pres, "MEF" )
@@ -18,12 +22,12 @@ namespace urakawa.ExternalFiles
             return XukStrings.ExternalFileDataManager;
             }
 
-        public override bool CanAddManagedObject (ExternalFileData fileDataObject)
+        public override bool CanAddManagedObject ( ExternalFileData fileDataObject )
             {
             return true;
             }
 
-        
+
 
 
         /// <summary>
@@ -37,7 +41,7 @@ namespace urakawa.ExternalFiles
         /// <exception cref="exception.IsNotManagerOfException">
         /// Thrown when <paramref name="data"/> is not managed by <c>this</c>
         /// </exception>
-        public ExternalFileData CopyExternalFileData (ExternalFileData  data )
+        public ExternalFileData CopyExternalFileData ( ExternalFileData data )
             {
             if (data == null)
                 {
@@ -70,7 +74,7 @@ namespace urakawa.ExternalFiles
                                                                 "The ExternalFileData manager does not manage a ExternalFileData with UID {0}",
                                                                 uid ) );
                 }
-            return CopyExternalFileData( data );
+            return CopyExternalFileData ( data );
             }
 
 
@@ -82,7 +86,7 @@ namespace urakawa.ExternalFiles
             {
             foreach (ExternalFileData EFd in ManagedObjects.ContentsAs_ListCopy)
                 {
-                ManagedObjects.Remove ( EFd);
+                ManagedObjects.Remove ( EFd );
                 }
             base.Clear ();
             }
@@ -120,9 +124,205 @@ namespace urakawa.ExternalFiles
                 return false;
                 }
 
-            
+
             return true;
             }
+
+        protected override void XukOutAttributes ( XmlWriter destination, Uri baseUri )
+            {
+            base.XukOutAttributes ( destination, baseUri );
+
+            }
+
+        /// <summary>
+        /// Write the child elements of a ExternalFileDataManager element.
+        /// Mode specifically the <see cref="ExternalFileData"/> of <c>this</c> is written to a ExternalFileData element
+        /// </summary>
+        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
+        /// <param name="baseUri">
+        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+        /// if <c>null</c> absolute <see cref="Uri"/>s are written
+        /// </param>
+        /// <param name="handler">The handler for progress</param>
+        protected override void XukOutChildren ( XmlWriter destination, Uri baseUri, ProgressHandler handler )
+            {
+            if (Presentation.Project.IsPrettyFormat ())
+                {
+                destination.WriteStartElement ( XukStrings.ExternalFileDatas, XukNamespaceUri );
+                }
+
+            foreach (ExternalFileData exfd in ManagedObjects.ContentsAs_YieldEnumerable)
+                {
+                if (false && Presentation.Project.IsPrettyFormat ())
+                    {
+                    destination.WriteStartElement ( XukStrings.ExternalFileDataItem, XukNamespaceUri );
+                    }
+
+                exfd.XukOut ( destination, baseUri, handler );
+
+                if (false && Presentation.Project.IsPrettyFormat ())
+                    {
+                    destination.WriteEndElement ();
+                    }
+                }
+            if (Presentation.Project.IsPrettyFormat ())
+                {
+                destination.WriteEndElement ();
+                }
+
+            base.XukOutChildren ( destination, baseUri, handler );
+            }
+
+        protected override void XukInAttributes ( XmlReader source )
+            {
+            base.XukInAttributes ( source );
+
+            }
+
+
+
+        /// <param name="source">The source <see cref="XmlReader"/></param>
+        /// <param name="handler">The handler for progress</param>
+        protected override void XukInChild ( XmlReader source, ProgressHandler handler )
+            {
+            bool readItem = false;
+            if (source.NamespaceURI == XukNamespaceUri)
+                {
+                readItem = true;
+
+                if (source.LocalName == XukStrings.ExternalFileDatas)
+                    {
+                    XukInExternalFileDatas ( source, handler );
+                    }
+                else if (true || !Presentation.Project.IsPrettyFormat ())
+                    {
+                    XukInExternalFileData ( source, handler );
+                    }
+                else
+                    {
+                    readItem = false;
+                    }
+                }
+            if (!(readItem || source.IsEmptyElement))
+                {
+                source.ReadSubtree ().Close ();
+                }
+            }
+
+
+        private void XukInExternalFileData ( XmlReader source, ProgressHandler handler )
+            {
+            if (source.NodeType == XmlNodeType.Element)
+                {
+                ExternalFileData data = null;
+                data = Presentation.ExternalFilesDataFactory.Create ( source.LocalName, source.NamespaceURI );
+                if (data != null)
+                    {
+                    data.XukIn ( source, handler );
+
+                    if (string.IsNullOrEmpty ( data.Uid ))
+                        {
+                        throw new exception.XukException (
+                            "uid attribute is missing from mExternalFileDataItem attribute" );
+                        }
+                    if (IsManagerOf ( data.Uid ))
+                        {
+                        if (GetManagedObject ( data.Uid ) != data)
+                            {
+                            throw new exception.XukException (
+                                String.Format ( "Another ExternalFileData exists in the manager with uid {0}", data.Uid ) );
+                            }
+                        }
+                    else
+                        {
+                        SetUidOfManagedObject ( data, data.Uid );
+                        }
+
+                    }
+                else if (!source.IsEmptyElement)
+                    {
+                    source.ReadSubtree ().Close ();
+                    }
+                }
+            }
+
+
+        
+        private void XukInExternalFileDatas ( XmlReader source, ProgressHandler handler )
+            {
+            if (!source.IsEmptyElement)
+                {
+                while (source.Read ())
+                    {
+                    if (source.NodeType == XmlNodeType.Element)
+                        {
+                        if (source.LocalName == XukStrings.ExternalFileDataItem && source.NamespaceURI == XukNamespaceUri)
+                            {
+                            XukInExternalFileDataItem( source, handler );
+                            }
+                        else
+                            {
+                            XukInExternalFileData ( source, handler );
+                            }
+                        }
+                    else if (source.NodeType == XmlNodeType.EndElement)
+                        {
+                        break;
+                        }
+                    if (source.EOF) throw new exception.XukException ( "Unexpectedly reached EOF" );
+                    }
+                }
+            }
+          
+         
+        private void XukInExternalFileDataItem ( XmlReader source, ProgressHandler handler )
+            {
+            ExternalFileData data = null;
+            if (!source.IsEmptyElement)
+                {
+                string uid = source.GetAttribute ( XukStrings.Uid );
+
+                while (source.Read ())
+                    {
+                    if (source.NodeType == XmlNodeType.Element)
+                        {
+                        data = Presentation.ExternalFilesDataFactory.Create ( source.LocalName, source.NamespaceURI );
+                        if (data != null)
+                            {
+                            string uid_ = source.GetAttribute ( XukStrings.Uid );
+
+                            data.XukIn ( source, handler );
+
+                            if (string.IsNullOrEmpty ( uid_ ) && !string.IsNullOrEmpty ( uid ))
+                                {
+                                data.Uid = uid;
+                                }
+
+                            if (IsManagerOf ( data.Uid ))
+                                {
+                                if (GetManagedObject ( data.Uid ) != data)
+                                    {
+                                    throw new exception.XukException (
+                                        String.Format ( "Another ExternalFileData exists in the manager with uid {0}", data.Uid ) );
+                                    }
+                                }
+                            else
+                                {
+                                SetUidOfManagedObject ( data, data.Uid );
+                                }
+                            }
+
+                        }
+                    else if (source.NodeType == XmlNodeType.EndElement)
+                        {
+                        break;
+                        }
+                    if (source.EOF) throw new exception.XukException ( "Unexpectedly reached EOF" );
+                    }
+                }
+            }
+
+        
 
 
         }
