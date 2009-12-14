@@ -387,6 +387,33 @@ namespace urakawa
                     md.Delete();
                 }
             }
+
+            List<ExternalFileData> usedExternalFileData = new List<ExternalFileData> ();
+            foreach (ExternalFileData efd in this   .ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
+                {
+                if (!usedExternalFileData.Contains ( efd ))
+                    {
+                    usedExternalFileData.Add ( efd );
+                    }
+                }
+
+            foreach (ExternalFileData efd in ExternalFilesDataManager.ManagedObjects.ContentsAs_ListCopy)
+                {
+                if (usedExternalFileData.Contains ( efd ))
+                    {
+                    
+                    foreach (DataProvider dp in efd.UsedDataProviders)
+                        {
+                        if (!usedDataProviders.Contains ( dp )) usedDataProviders.Add ( dp );
+                        }
+                    }
+                else
+                    {
+                    efd.Delete ();
+                    }
+                }
+
+
             foreach (DataProvider dp in DataProviderManager.ManagedObjects.ContentsAs_ListCopy)
             {
                 if (!usedDataProviders.Contains(dp)) dp.Delete();
@@ -1067,14 +1094,22 @@ namespace urakawa
                 {
                         XukInMetadata(source, handler);
                  }
+                else if (source.LocalName == XukStrings.ExternalFileDataFactory)
+                    {
+                    ExternalFilesDataFactory.XukIn ( source, handler );
+                    }
+                else if (source.LocalName == XukStrings.ExternalFileDataManager)
+                    {
+                    ExternalFilesDataManager.XukIn ( source, handler );
+                    }
                 else if (source.LocalName == XukStrings.RootNode)
-                {
-                        XukInRootNode(source, handler);
-                }
+                    {
+                    XukInRootNode ( source, handler );
+                    }
                 else
-                {
-                        readItem = false;
-                }
+                    {
+                    readItem = false;
+                    }
             }
             if (!readItem) base.XukInChild(source, handler);
         }
@@ -1135,6 +1170,8 @@ namespace urakawa
 
             MetadataFactory.XukOut(destination, baseUri, handler);
 
+            this.ExternalFilesDataFactory.XukOut ( destination, baseUri, handler );
+
 
 
             ChannelsManager.XukOut(destination, baseUri, handler);
@@ -1147,6 +1184,7 @@ namespace urakawa
 
             UndoRedoManager.XukOut(destination, baseUri, handler);
 
+            this.ExternalFilesDataManager.XukOut ( destination, baseUri, handler );
 
 
             destination.WriteStartElement(XukStrings.Metadatas, XukNamespaceUri);
