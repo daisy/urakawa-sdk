@@ -195,6 +195,11 @@ namespace urakawa.ExternalFiles
             return true;
             }
 
+        public virtual void Delete ()
+            {
+            Presentation.ExternalFilesDataManager.RemoveManagedObject ( this );
+            }
+
         public Stream OpenInputStream ()
             {
             if (m_DataProvider == null)
