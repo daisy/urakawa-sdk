@@ -141,10 +141,16 @@ namespace urakawa.daisy.import
                             string strInternalDTD = ExtractInternalDTD(((XmlDocument)xmlNode).DocumentType);
                             if (strInternalDTD != null)
                             {
+                            
+                                string internalDTDFilePath = Path.Combine ( presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd" );
                                 File.WriteAllText(
-                                    Path.Combine(presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd"),
-                                    strInternalDTD);
-                            }
+                                internalDTDFilePath,
+                                strInternalDTD);
+                                
+                                ExternalFiles.ExternalFileData dtdEfd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData> ();
+                                dtdEfd.InitializeWithData ( internalDTDFilePath, "DTBookLocalDTD.dtd", false );
+                                
+                                }
 
                             parseContentDocument(bodyElement, parentTreeNode, filePath);
                         }

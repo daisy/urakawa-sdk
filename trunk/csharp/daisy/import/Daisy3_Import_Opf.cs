@@ -159,6 +159,10 @@ namespace urakawa.daisy.import
                 {
                     ncxPath = attrHref.Value;
                 }
+                    else if (attrMediaType.Value == "text/css")
+                    {
+                    AddExternalFilesToXuk ( m_Project.Presentations.Get ( 0 ), attrHref.Value );
+                    }
                 else if (attrMediaType.Value == "image/jpeg"
                     || attrMediaType.Value == "audio/mpeg"
                     || attrMediaType.Value == "text/css"
@@ -171,5 +175,36 @@ namespace urakawa.daisy.import
                 }
             }
         }
+
+        private void AddExternalFilesToXuk ( Presentation presentation, string relPath )
+            {
+            string fileFullPath = Path.Combine ( Path.GetDirectoryName ( m_Book_FilePath ),
+                relPath ) ;
+
+            string extension = Path.GetExtension ( fileFullPath ).ToLower () ;
+
+            ExternalFiles.ExternalFileData externalData = null;
+
+            switch (extension)
+                {
+            case ".css":
+            externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData> ();
+            break;
+
+            case ".dtd":
+            externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData> ();
+            break;
+
+            default:
+            break;
+                }
+            if (externalData != null)
+                {
+                externalData.InitializeWithData ( fileFullPath, relPath, true );
+                }
+
+
+            }
+
     }
 }

@@ -24,13 +24,23 @@ namespace urakawa.daisy.export
             //    if (strInternalDTD.Trim() == "") strInternalDTD = null;
             //}
 
-            string dtdFilePath = Path.Combine(m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
-                                              "DTBookLocalDTD.dtd");
+            //string dtdFilePath = Path.Combine(m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
+                                              //"DTBookLocalDTD.dtd");
             string strInternalDTD = null;
-            if (File.Exists(dtdFilePath))
-            {
-                strInternalDTD = File.ReadAllText(dtdFilePath);
-            }
+            foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
+                {
+                if (efd.OriginalRelativePath == "DTBookLocalDTD.dtd")
+                    {
+                    StreamReader sr = new StreamReader ( efd.OpenInputStream () );
+                    strInternalDTD = sr.ReadToEnd ();
+                    break;
+                    }
+                }
+            
+            //if (File.Exists(dtdFilePath))
+            //{
+                //strInternalDTD = File.ReadAllText(dtdFilePath);
+            //}
 
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD); 
 
