@@ -28,6 +28,7 @@ namespace urakawa.daisy.export
         private List<string> m_FilesList_Smil; //xmils files list generated in createNcx function
         private List<string> m_FilesList_Audio; // list of audio files generated in create ncx function.
         private List<string> m_FilesList_Image; // list of images, populated in create content document function
+        private List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
         private TimeSpan m_TotalTime;
 
         /// <summary>
@@ -97,6 +98,7 @@ namespace urakawa.daisy.export
             // the following functions must be called in this order.
             CreateDTBookDocument();
             CreateNcxAndSmilDocuments();
+            CreateExternalFiles ();
             CreateOpfDocument();
 
             m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
