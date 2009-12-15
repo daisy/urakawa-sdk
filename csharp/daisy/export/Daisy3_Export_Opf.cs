@@ -22,11 +22,33 @@ namespace urakawa.daisy.export
             const string mediaType_Image_Jpg = "image/jpeg";
             const string mediaType_Image_Png = "image/png";
             const string mediaType_Resource = "application/x-dtbresource+xml";
+            const string mediaType_Css = "text/css";
+            const string mediaType_Transform = "text/xsl" ;
 
             // add all files to manifest
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), mediaType_Dtbook);
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Opf, GetNextID(ID_OpfPrefix), mediaType_Opf);
+
+            // add external files to manifest
+            foreach (string externalFileName in m_FilesList_ExternalFiles)
+                {
+                string strID = GetNextID ( ID_OpfPrefix );
+                switch (Path.GetExtension ( externalFileName ).ToLower ())
+                    {
+                case ".css":
+                AddFilenameToManifest ( opfDocument, manifestNode, externalFileName, strID, mediaType_Css);
+                break;
+                case ".xslt":
+                AddFilenameToManifest ( opfDocument, manifestNode, externalFileName, strID, mediaType_Transform );
+                break;
+
+                default:
+                break;
+                    }
+                
+
+                }
 
             // add smil files to manifest
             List<string> smilIDListInPlayOrder = new List<string>();
@@ -242,6 +264,31 @@ namespace urakawa.daisy.export
 
             return document;
         }
+        
+        private void CreateExternalFiles ()
+            {
+            foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
+                {
+                if (efd.IsPreservedForOutputFile)
+                    {
+                    string filePath = Path.Combine ( m_OutputDirectory, efd.OriginalRelativePath ) ;
+                    FileStream newFileStream = File.Create ( filePath );
+                    Stream efdStream = efd.OpenInputStream ();
+                    try
+                        {
+                        copyStreamData ( efdStream , newFileStream );
+                        m_FilesList_ExternalFiles.Add ( efd.OriginalRelativePath );
+                        }
+                    finally
+                        {
+                        newFileStream.Close ();
+                        efdStream.Close ();
+                        newFileStream = null;
+                        efdStream = null;
+                        }
+                    }
+                }
+            }
 
     }
 }

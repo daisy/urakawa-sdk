@@ -29,7 +29,7 @@ namespace urakawa.daisy.export
             string strInternalDTD = null;
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
                 {
-                if (efd.OriginalRelativePath == "DTBookLocalDTD.dtd")
+                if (efd.OriginalRelativePath == "DTBookLocalDTD.dtd" && !efd.IsPreservedForOutputFile)
                     {
                     StreamReader sr = new StreamReader ( efd.OpenInputStream () );
                     strInternalDTD = sr.ReadToEnd ();
@@ -49,6 +49,7 @@ namespace urakawa.daisy.export
             List<XmlAttribute> referencingAttributesList = new List<XmlAttribute>();
 
             m_FilesList_Image = new List<string>();
+            m_FilesList_ExternalFiles = new List<string> ();
 
             // add metadata
             XmlNode headNode = XmlDocumentHelper.GetFirstChildElementWithName(DTBookDocument, true, "head", null); //DTBookDocument.GetElementsByTagName("head")[0]
@@ -343,7 +344,7 @@ namespace urakawa.daisy.export
 
         private void copyStreamData ( Stream source, Stream dest )
             { //1
-            int BUFFER_SIZE = 1024* 1000 ;
+            int BUFFER_SIZE = 1024* 1024 ;
 
             if (source.Length <= BUFFER_SIZE)
                 { // 2
