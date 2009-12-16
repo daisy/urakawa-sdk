@@ -21,9 +21,11 @@ namespace urakawa.daisy.export
             const string mediaType_Dtbook = "application/x-dtbook+xml";
             const string mediaType_Image_Jpg = "image/jpeg";
             const string mediaType_Image_Png = "image/png";
+            const string mediaType_Image_Svg =  "image/svg+xml";
             const string mediaType_Resource = "application/x-dtbresource+xml";
             const string mediaType_Css = "text/css";
             const string mediaType_Transform = "text/xsl" ;
+            const string mediaType_DTD = "application/xml-dtd";
 
             // add all files to manifest
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
@@ -39,10 +41,14 @@ namespace urakawa.daisy.export
                 case ".css":
                 AddFilenameToManifest ( opfDocument, manifestNode, externalFileName, strID, mediaType_Css);
                 break;
+
                 case ".xslt":
-                AddFilenameToManifest ( opfDocument, manifestNode, externalFileName, strID, mediaType_Transform );
+                //AddFilenameToManifest ( opfDocument, manifestNode, externalFileName, strID, mediaType_Transform ); // commented for now because DAISY 3.0 specs says nothing explicit about this.
                 break;
 
+                case ".dtd":
+                AddFilenameToManifest ( opfDocument, manifestNode, externalFileName, strID, mediaType_DTD);
+                break;
                 default:
                 break;
                     }
