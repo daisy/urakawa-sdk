@@ -26,14 +26,22 @@ namespace urakawa.daisy.export
 
             //string dtdFilePath = Path.Combine(m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
                                               //"DTBookLocalDTD.dtd");
+        ExternalFiles.CSSExternalFileData cssFileData = null;
             string strInternalDTD = null;
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
                 {
-                if (efd.OriginalRelativePath == "DTBookLocalDTD.dtd" && !efd.IsPreservedForOutputFile)
+                if (efd is ExternalFiles.CSSExternalFileData &&
+                    efd.OriginalRelativePath == "DTBookLocalDTD.dtd" && !efd.IsPreservedForOutputFile
+                    && strInternalDTD == null)
                     {
                     StreamReader sr = new StreamReader ( efd.OpenInputStream () );
                     strInternalDTD = sr.ReadToEnd ();
-                    break;
+                    
+                    }
+                else if (efd is ExternalFiles.CSSExternalFileData)
+                    {
+                    cssFileData = (ExternalFiles.CSSExternalFileData)efd;
+                    System.Windows.Forms.MessageBox.Show ( cssFileData.OriginalRelativePath );
                     }
                 }
             
@@ -42,7 +50,13 @@ namespace urakawa.daisy.export
                 //strInternalDTD = File.ReadAllText(dtdFilePath);
             //}
 
-            XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD); 
+            XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD);
+            if (cssFileData != null)
+                {
+                DTBookDocument.PrependChild(
+                DTBookDocument.CreateProcessingInstruction ( "xml-stylesheet", "type=\"text/css\" href=\"" +  cssFileData.OriginalRelativePath + "\"" ) ) ;
+
+                }
 
             m_ListOfLevels = new List<TreeNode>();
             Dictionary<string, string> old_New_IDMap = new Dictionary<string, string>();
