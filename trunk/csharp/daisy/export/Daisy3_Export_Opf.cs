@@ -43,7 +43,7 @@ namespace urakawa.daisy.export
                 break;
 
                 case ".xslt":
-                //AddFilenameToManifest ( opfDocument, manifestNode, externalFileName, strID, mediaType_Transform ); // commented for now because DAISY 3.0 specs says nothing explicit about this.
+                AddFilenameToManifest ( opfDocument, manifestNode, externalFileName, strID, mediaType_Transform ); 
                 break;
 
                 case ".dtd":

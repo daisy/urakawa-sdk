@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using urakawa.xuk;
-using urakawa.data;
 
+using urakawa.data;
+using urakawa.xuk;
 namespace urakawa.ExternalFiles
     {
-    public class CSSExternalFileData:ExternalFileData
+    public class XSLTExternalFileData:ExternalFileData
         {
+
 
         public override string MimeType
             {
@@ -20,7 +21,7 @@ namespace urakawa.ExternalFiles
 
         public override string GetTypeNameFormatted ()
             {
-            return XukStrings.CSSExternalFileData;
+            return XukStrings.XSLTExternalFileData ;
             }
 
         }
