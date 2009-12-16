@@ -6,6 +6,7 @@ using System.Xml;
 using urakawa.media;
 using urakawa.metadata;
 using urakawa.core;
+using urakawa.ExternalFiles;
 
 namespace urakawa.daisy.export
 {
@@ -26,7 +27,7 @@ namespace urakawa.daisy.export
 
             //string dtdFilePath = Path.Combine(m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
                                               //"DTBookLocalDTD.dtd");
-        ExternalFiles.CSSExternalFileData cssFileData = null;
+        List<ExternalFileData> list_ExternalStyleSheets = new List<ExternalFileData> ();
             string strInternalDTD = null;
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
                 {
@@ -38,10 +39,10 @@ namespace urakawa.daisy.export
                     strInternalDTD = sr.ReadToEnd ();
                     
                     }
-                else if (efd is ExternalFiles.CSSExternalFileData)
+                else if (efd is ExternalFiles.CSSExternalFileData    ||   efd is XSLTExternalFileData)
                     {
-                    cssFileData = (ExternalFiles.CSSExternalFileData)efd;
-                    System.Windows.Forms.MessageBox.Show ( cssFileData.OriginalRelativePath );
+                    list_ExternalStyleSheets.Add ( efd );
+                    
                     }
                 }
             
@@ -50,14 +51,8 @@ namespace urakawa.daisy.export
                 //strInternalDTD = File.ReadAllText(dtdFilePath);
             //}
 
-            XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD);
-            if (cssFileData != null)
-                {
-                DTBookDocument.PrependChild(
-                DTBookDocument.CreateProcessingInstruction ( "xml-stylesheet", "type=\"text/css\" href=\"" +  cssFileData.OriginalRelativePath + "\"" ) ) ;
-
-                }
-
+            XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
+            
             m_ListOfLevels = new List<TreeNode>();
             Dictionary<string, string> old_New_IDMap = new Dictionary<string, string>();
             List<XmlAttribute> referencingAttributesList = new List<XmlAttribute>();

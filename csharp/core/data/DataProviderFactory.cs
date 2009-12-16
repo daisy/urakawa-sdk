@@ -73,6 +73,11 @@ namespace urakawa.data
         public const string STYLE_CSS_MIME_TYPE = "text/css";
 
         /// <summary>
+        /// MIME type for (XSLT)
+        /// </summary>
+        public const string STYLE_XSLT_MIME_TYPE = "text/xsl" ;
+
+        /// <summary>
         /// MIME type for plain text
         /// </summary>
         public const string TEXT_PLAIN_MIME_TYPE = "text/plain";
@@ -120,6 +125,9 @@ namespace urakawa.data
                     break;
                 case STYLE_CSS_MIME_TYPE:
                     extension = ".css";
+                    break;
+                case STYLE_XSLT_MIME_TYPE:
+                    extension = ".xsl";
                     break;
                 case TEXT_PLAIN_MIME_TYPE:
                     extension = ".txt";

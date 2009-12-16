@@ -7,7 +7,7 @@ namespace urakawa.daisy
 {
     public static class XmlDocumentHelper
     {
-        public static XmlDocument CreateStub_DTBDocument(string language, string strInternalDTD)
+        public static XmlDocument CreateStub_DTBDocument(string language, string strInternalDTD, List<ExternalFiles.ExternalFileData> list_ExternalStyleSheets)
         {
             XmlDocument DTBDocument = new XmlDocument();
             DTBDocument.XmlResolver = null;
@@ -17,6 +17,24 @@ namespace urakawa.daisy
                 "-//NISO//DTD dtbook 2005-3//EN",
                 "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd",
                 strInternalDTD));
+
+            if (list_ExternalStyleSheets.Count > 0 )
+                {
+                foreach (ExternalFiles.ExternalFileData efd in list_ExternalStyleSheets)
+                    {
+                    if (efd is ExternalFiles.CSSExternalFileData)
+                        {
+                        DTBDocument.AppendChild(
+                        DTBDocument.CreateProcessingInstruction ( "xml-stylesheet", "type=\"text/css\" href=\"" + efd.OriginalRelativePath + "\"" ) );
+                        }
+                    else if (efd is ExternalFiles.XSLTExternalFileData)
+                        {
+                        DTBDocument.AppendChild (
+                        DTBDocument.CreateProcessingInstruction ( "xml-stylesheet", "type=\"text/xsl\" href=\"" + efd.OriginalRelativePath + "\"" ) );
+                        }
+                    }
+                }
+
 
             XmlNode DTBNode = DTBDocument.CreateElement(null,
                 "dtbook",

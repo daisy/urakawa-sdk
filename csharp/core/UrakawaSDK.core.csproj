@@ -207,6 +207,7 @@
     <Compile Include="ExternalFiles\ExternalFileData.cs" />
     <Compile Include="ExternalFiles\ExternalFileDataFactory.cs" />
     <Compile Include="ExternalFiles\ExternalFilesDataManager.cs" />
+    <Compile Include="ExternalFiles\XSLTExternalFileData.cs" />
     <Compile Include="GenericWithPresentationFactory.cs" />
     <Compile Include="GenericXukAbleFactory.cs" />
     <Compile Include="media\data\image\codecs\BmpImageMediaData.cs" />

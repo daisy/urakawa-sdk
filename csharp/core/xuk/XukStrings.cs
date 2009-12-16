@@ -665,6 +665,12 @@ namespace urakawa.xuk
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "CssExternalFileData" : "cssExFl"); }
                 }
 
+        public static string XSLTExternalFileData
+        {
+        get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "XsltExternalFileData" : "XsltExFl"); }
+                }
+        
+
         public static string DTDExternalFileData
             {
             get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "DTDExternalFileData" : "dtdExFl"); }
