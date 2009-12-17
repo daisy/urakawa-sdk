@@ -21,7 +21,7 @@ namespace urakawa.daisy.import
             settings.XmlResolver = new LocalXmlUrlResolver(true);
         
             settings.IgnoreComments = true;
-            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreProcessingInstructions = false;
             settings.IgnoreWhitespace = true;
 
             using (XmlReader xmlReader = XmlReader.Create(path, settings))
