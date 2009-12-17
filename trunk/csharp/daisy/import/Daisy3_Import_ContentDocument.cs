@@ -120,6 +120,13 @@ namespace urakawa.daisy.import
                     }
                 case XmlNodeType.Document:
                     {
+                    XmlDocument xmlDoc = ((XmlDocument)xmlNode);
+                    XmlNodeList styleSheetNodeList = xmlDoc.SelectNodes
+                                                  ( "/processing-instruction(\"xml-stylesheet\")" );
+                    if (styleSheetNodeList != null && styleSheetNodeList.Count > 0)
+                        {
+                        AddStyleSheetsToXuk ( styleSheetNodeList );
+                        }
                         //XmlNodeList listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("body");
                         //if (listOfBodies.Count == 0)
                         //{
@@ -357,6 +364,48 @@ namespace urakawa.daisy.import
                 }
                 }
             }
+
+        private void AddStyleSheetsToXuk ( XmlNodeList styleSheetNodesList )
+            {
+            Presentation presentation = m_Project.Presentations.Get ( 0 );
+            // first collect existing style sheet files objects to avoid duplicacy.
+            //List<string> existingFiles = new List<string> ();
+            
+            foreach (XmlNode xn in styleSheetNodesList)
+                {
+                XmlProcessingInstruction pi = (XmlProcessingInstruction)xn;
+                string[] styleStringArray = pi.Data.Split ( ' ' );
+                string relativePath = null;
+                foreach (string s in styleStringArray)
+                    {
+                    if (s.Contains ( "href" ))
+                        {
+                        relativePath  = s;
+                        relativePath = relativePath.Split ( '=' )[1];
+                        relativePath = relativePath.Trim ( new char[3] { '\'', '\"', ' ' } );
+                        break;
+                        }
+                    }
+                string styleSheetPath = Path.Combine (
+                    Path.GetDirectoryName ( m_Book_FilePath ),
+                    relativePath );
+
+                ExternalFiles.ExternalFileData efd = null ;
+                switch (Path.GetExtension ( relativePath ).ToLower ())
+                    {
+                case ".css":
+                efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData > () ;
+                break ;
+
+                case ".xslt":
+                efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData> () ;
+                break ;
+                    }
+                
+                if ( efd != null ) efd.InitializeWithData ( styleSheetPath, relativePath, true ) ;
+                }
+            }
+
 
     }
 }

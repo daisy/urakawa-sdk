@@ -187,9 +187,9 @@ namespace urakawa.daisy.import
 
             switch (extension)
                 {
-            case ".css":
-            externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData> ();
-            break;
+            //case ".css":
+            //externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData> ();
+            //break;
 
             case ".dtd":
             externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData> ();
