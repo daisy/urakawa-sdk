@@ -275,7 +275,7 @@ namespace urakawa.daisy.export
             {
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
                 {
-                if (efd.IsPreservedForOutputFile)
+                if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains(efd.OriginalRelativePath) )
                     {
                     string filePath = Path.Combine ( m_OutputDirectory, efd.OriginalRelativePath ) ;
                     FileStream newFileStream = File.Create ( filePath );

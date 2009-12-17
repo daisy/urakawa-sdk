@@ -27,6 +27,8 @@ namespace urakawa.daisy.export
 
             //string dtdFilePath = Path.Combine(m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
                                               //"DTBookLocalDTD.dtd");
+        m_FilesList_Image = new List<string> ();
+        m_FilesList_ExternalFiles = new List<string> ();
         List<ExternalFileData> list_ExternalStyleSheets = new List<ExternalFileData> ();
             string strInternalDTD = null;
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
@@ -52,13 +54,13 @@ namespace urakawa.daisy.export
             //}
 
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
-            
+            if ( list_ExternalStyleSheets != null )  ExportStyleSheets ( list_ExternalStyleSheets );
+
             m_ListOfLevels = new List<TreeNode>();
             Dictionary<string, string> old_New_IDMap = new Dictionary<string, string>();
             List<XmlAttribute> referencingAttributesList = new List<XmlAttribute>();
 
-            m_FilesList_Image = new List<string>();
-            m_FilesList_ExternalFiles = new List<string> ();
+            
 
             // add metadata
             XmlNode headNode = XmlDocumentHelper.GetFirstChildElementWithName(DTBookDocument, true, "head", null); //DTBookDocument.GetElementsByTagName("head")[0]
@@ -350,6 +352,39 @@ namespace urakawa.daisy.export
             }
             return false;
         }
+
+        private void ExportStyleSheets ( List<ExternalFileData> list_ExternalStyleSheets )
+            {
+            if (list_ExternalStyleSheets == null || 
+                (list_ExternalStyleSheets != null && list_ExternalStyleSheets.Count == 0))
+                {
+                return;
+                }
+
+            foreach (ExternalFileData efd in list_ExternalStyleSheets)
+                {
+                if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains ( efd.OriginalRelativePath ))
+                    {
+                    string filePath = Path.Combine ( m_OutputDirectory, efd.OriginalRelativePath );
+                    FileStream newFileStream = File.Create ( filePath );
+                    Stream efdStream = efd.OpenInputStream ();
+                    try
+                        {
+                        copyStreamData ( efdStream, newFileStream );
+                        m_FilesList_ExternalFiles.Add ( efd.OriginalRelativePath );
+
+                        }
+                    finally
+                        {
+                        newFileStream.Close ();
+                        efdStream.Close ();
+                        newFileStream = null;
+                        efdStream = null;
+                        }
+                    }
+                }
+            }
+
 
         private void copyStreamData ( Stream source, Stream dest )
             { //1
