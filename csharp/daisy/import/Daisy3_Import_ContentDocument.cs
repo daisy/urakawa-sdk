@@ -148,16 +148,18 @@ namespace urakawa.daisy.import
                             string strInternalDTD = ExtractInternalDTD(((XmlDocument)xmlNode).DocumentType);
                             if (strInternalDTD != null)
                             {
+                            byte[] bytesArray = System.Text.Encoding.UTF8.GetBytes ( strInternalDTD );
+                            MemoryStream ms = new MemoryStream (bytesArray);
+                                
                             
-                                string internalDTDFilePath = Path.Combine ( presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd" );
-                                File.WriteAllText(
-                                internalDTDFilePath,
-                                strInternalDTD);
+                                //string internalDTDFilePath = Path.Combine ( presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd" );
+                                //File.WriteAllText(
+                                //internalDTDFilePath,
+                                //strInternalDTD);
                                 
-                                ExternalFiles.ExternalFileData dtdEfd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData> ();
-                                dtdEfd.InitializeWithData ( internalDTDFilePath, "DTBookLocalDTD.dtd", false );
-                                
-                                }
+                            ExternalFiles.ExternalFileData dtdEfd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData> ();
+                            dtdEfd.InitializeWithData ( ms, "DTBookLocalDTD.dtd", false );
+                            }
 
                             parseContentDocument(bodyElement, parentTreeNode, filePath);
                         }
@@ -364,6 +366,8 @@ namespace urakawa.daisy.import
                 }
                 }
             }
+
+        
 
         private void AddStyleSheetsToXuk ( XmlNodeList styleSheetNodesList )
             {

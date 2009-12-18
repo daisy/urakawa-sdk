@@ -33,7 +33,7 @@ namespace urakawa.daisy.export
             string strInternalDTD = null;
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
                 {
-                if (efd is ExternalFiles.CSSExternalFileData &&
+                if (efd is ExternalFiles.DTDExternalFileData&&
                     efd.OriginalRelativePath == "DTBookLocalDTD.dtd" && !efd.IsPreservedForOutputFile
                     && strInternalDTD == null)
                     {
