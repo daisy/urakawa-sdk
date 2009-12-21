@@ -61,12 +61,14 @@ namespace urakawa.daisy.import
             private bool m_EnableHttpCaching;
             private ICredentials m_Credentials;
             private Dictionary<string, string> m_EmbeddedEntities;
+            private string m_DownloadedDTDDirectoryPath;
 
             //resolve resources from cache (if possible) when m_EnableHttpCaching is set to true
             //resolve resources from source when enableHttpcaching is set to false 
             public LocalXmlUrlResolver(bool enableHttpCaching)
             {
                 m_EnableHttpCaching = enableHttpCaching;
+                m_DownloadedDTDDirectoryPath = Path.GetDirectoryName ( System.Reflection.Assembly.GetExecutingAssembly ().Location ) + Path.DirectorySeparatorChar + "Downloaded-DTDs";
 
                 m_EmbeddedEntities = new Dictionary<String, String>();
 
@@ -138,6 +140,14 @@ namespace urakawa.daisy.import
                     return localStream;
                 }
 
+                // if dtd is not found in packaged files, search in downloaded dtds
+                string localDTDFullPath = Path.Combine ( m_DownloadedDTDDirectoryPath,
+                    Path.GetFileName ( absoluteUri.AbsolutePath ));
+                if (File.Exists ( localDTDFullPath ))
+                    {
+                    return new FileStream ( localDTDFullPath, FileMode.Open, FileAccess.Read );
+                    }
+
                 //resolve resources from cache (if possible)
                 if (absoluteUri.Scheme == "http" && m_EnableHttpCaching && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream)))
                 {
@@ -148,7 +158,10 @@ namespace urakawa.daisy.import
                         webReq.Credentials = m_Credentials;
                     }
                     WebResponse resp = webReq.GetResponse();
-                    return resp.GetResponseStream();
+                    Stream webStream = resp.GetResponseStream ();
+                    // create local DTD file from webStream
+                    CreateLocalDTDFileFromWebStream ( absoluteUri.AbsolutePath, webStream );
+                    return webStream ;
                 }
 
                 // No need to look for a local file that does not exist.
@@ -183,6 +196,52 @@ namespace urakawa.daisy.import
 
                 return null;
             }
+            
+            private void CreateLocalDTDFileFromWebStream (string strWebDTDPath, Stream webStream  )
+                {
+                if (!Directory.Exists ( m_DownloadedDTDDirectoryPath ))
+                    {
+                    Directory.CreateDirectory ( m_DownloadedDTDDirectoryPath );
+                    }
+                string localDTDFilePath = Path.Combine ( m_DownloadedDTDDirectoryPath,
+                    Path.GetFileName ( strWebDTDPath ) );
+                FileStream fs = null;
+                try
+                    {
+                    fs = File.Create ( localDTDFilePath );
+                    copyStreamData ( webStream, fs, 1024 );
+                    }
+                finally
+                    {
+                    if (fs != null)
+                        {
+                        fs.Close ();
+                        fs = null;
+                        }
+                    }
+                }
+
+            public void copyStreamData ( Stream source, Stream dest, int BUFFER_SIZE )
+                { //1
+                
+                if (source.Length <= BUFFER_SIZE)
+                    { // 2
+                    byte[] buffer = new byte[source.Length];
+                    int read = source.Read ( buffer, 0, (int)source.Length );
+                    dest.Write ( buffer, 0, read );
+                    } //-2
+                else
+                    { // 2
+                    byte[] buffer = new byte[BUFFER_SIZE];
+                    int bytesRead = 0;
+                    while ((bytesRead = source.Read ( buffer, 0, BUFFER_SIZE )) > 0)
+                        { //3
+                        dest.Write ( buffer, 0, bytesRead );
+                        } // -3
+
+                    } //-2
+                } // -1
+
         }
     }
 }
