@@ -152,10 +152,10 @@ namespace urakawa.daisy.import
                 }
 
                 // No need to look for a local file that does not exist.
-                if (absoluteUri.Scheme == "file" && !File.Exists(absoluteUri.LocalPath))
-                {
-                    return null;
-                }
+                //if (absoluteUri.Scheme == "file" && !File.Exists(absoluteUri.LocalPath))
+                //{
+                    //return null;
+                //}
 
                 //otherwise use the default behavior of the XmlUrlResolver class (resolve resources from source)
                 return base.GetEntity(absoluteUri, role, ofObjectToReturn);
