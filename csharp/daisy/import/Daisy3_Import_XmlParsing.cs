@@ -211,6 +211,7 @@ namespace urakawa.daisy.import
                     fs = File.Create ( localDTDFilePath );
                     copyStreamData ( webStream, fs, 1024 );
                     }
+                
                 finally
                     {
                     if (fs != null)
@@ -218,13 +219,14 @@ namespace urakawa.daisy.import
                         fs.Close ();
                         fs = null;
                         }
+                    
                     }
                 }
 
             public void copyStreamData ( Stream source, Stream dest, int BUFFER_SIZE )
                 { //1
                 
-                if (source.Length <= BUFFER_SIZE)
+                if (source.CanSeek &&  source.Length <= BUFFER_SIZE )
                     { // 2
                     byte[] buffer = new byte[source.Length];
                     int read = source.Read ( buffer, 0, (int)source.Length );
