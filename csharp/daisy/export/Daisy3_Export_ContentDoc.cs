@@ -249,8 +249,11 @@ namespace urakawa.daisy.export
 
                                 if ( !File.Exists ( destPath ))
                                     {
+                                    managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile ( destPath, false );
+                                    /*
                                     FileStream fs = null;
                                     Stream imageStream = null;
+
                                     try
                                         {
                                         fs = File.Create ( destPath );
@@ -263,6 +266,7 @@ namespace urakawa.daisy.export
                                         if (fs != null) fs.Close ();
                                         if (imageStream != null) imageStream.Close ();
                                         }
+                                     */ 
                                     }
 
                                 imgSrcAttribute.Value = exportImageName;
@@ -366,6 +370,9 @@ namespace urakawa.daisy.export
                 if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains ( efd.OriginalRelativePath ))
                     {
                     string filePath = Path.Combine ( m_OutputDirectory, efd.OriginalRelativePath );
+                    efd.DataProvider.ExportDataStreamToFile ( filePath, true );
+                    m_FilesList_ExternalFiles.Add ( efd.OriginalRelativePath );
+                    /*
                     FileStream newFileStream = File.Create ( filePath );
                     Stream efdStream = efd.OpenInputStream ();
                     try
@@ -381,11 +388,12 @@ namespace urakawa.daisy.export
                         newFileStream = null;
                         efdStream = null;
                         }
+                     */ 
                     }
                 }
             }
 
-
+        /*
         private void copyStreamData ( Stream source, Stream dest )
             { //1
             int BUFFER_SIZE = 1024* 1024 ;
@@ -407,7 +415,7 @@ namespace urakawa.daisy.export
 
                 } //-2
             } // -1
-
+        */
         //private bool ShouldCreateNextSmilFile(urakawa.core.TreeNode node)
         //{
         //    QualifiedName qName = node.GetXmlElementQName();
