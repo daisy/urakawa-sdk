@@ -166,6 +166,61 @@ namespace urakawa.data
         public abstract DataProvider Export(Presentation destPres);
 
         /// <summary>
+        /// Writes data from data provider stream to a file external to project
+        /// </summary>
+        /// <param name="exportFilePath"></param>
+        /// <param name="canOverwrite"></param>
+        public virtual void ExportDataStreamToFile ( string exportFilePath, bool canOverwrite )
+            {
+            
+            if (exportFilePath== null)
+                {
+                throw new exception.MethodParameterIsNullException ( "external file path cannot be null" );
+                }
+
+            if (File.Exists ( exportFilePath ) && !canOverwrite )
+                {
+                throw new System.Exception ( "Export file with same name already exists" );
+                }
+
+            Stream source = OpenInputStream ();
+
+            if (source.Length == 0)
+                {
+                source.Close ();
+                throw new exception.InputStreamIsTooShortException ("The data provider has no data to export to external file");
+                }
+
+            FileStream exportFileStream = File.Create ( exportFilePath );
+            int BUFFER_SIZE = 1024 * 1024;
+            try
+                {
+                if (source.Length <= BUFFER_SIZE)
+                    {
+                    byte[] buffer = new byte[source.Length];
+                    int read = source.Read ( buffer, 0, (int)source.Length );
+                    exportFileStream.Write ( buffer, 0, read );
+                    }
+                else
+                    {
+                    byte[] buffer = new byte[BUFFER_SIZE];
+                    int bytesRead = 0;
+                    while ((bytesRead = source.Read ( buffer, 0, BUFFER_SIZE )) > 0)
+                        {
+                        exportFileStream.Write ( buffer, 0, bytesRead );
+                        }
+
+                    }
+                }
+            finally
+                {
+                if (exportFileStream != null) exportFileStream.Close ();
+                if (source != null) source.Close ();
+                }
+            }
+
+
+        /// <summary>
         /// Gets or sets the MIME type of the media stored in the data provider
         /// </summary>
         /// <exception cref="IsNotInitializedException">
