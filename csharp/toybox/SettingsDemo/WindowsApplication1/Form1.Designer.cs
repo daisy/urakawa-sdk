@@ -49,7 +49,7 @@ namespace SettingsDemo
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(188, 133);
+            this.textBox2.Location = new System.Drawing.Point(204, 133);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(100, 20);
             this.textBox2.TabIndex = 3;
@@ -59,30 +59,30 @@ namespace SettingsDemo
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(34, 74);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(112, 13);
+            this.label2.Size = new System.Drawing.Size(134, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "UserSettingsTextBox1";
+            this.label2.Text = "UserSettingsTextForClass1";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(34, 133);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(112, 13);
+            this.label3.Size = new System.Drawing.Size(134, 13);
             this.label3.TabIndex = 5;
-            this.label3.Text = "UserSettingsTextBox2";
+            this.label3.Text = "UserSettingsTextForClass2";
             // 
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBox1.Location = new System.Drawing.Point(188, 74);
+            this.textBox1.Location = new System.Drawing.Point(204, 74);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(100, 20);
             this.textBox1.TabIndex = 1;
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(188, 189);
+            this.textBox3.Location = new System.Drawing.Point(204, 189);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(100, 20);
             this.textBox3.TabIndex = 6;
@@ -92,9 +92,9 @@ namespace SettingsDemo
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(34, 192);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(132, 13);
+            this.label4.Size = new System.Drawing.Size(164, 13);
             this.label4.TabIndex = 7;
-            this.label4.Text = "ApplicationSettingstextBox";
+            this.label4.Text = "ApplicationSettingsTextForClass1";
             // 
             // Form1
             // 
