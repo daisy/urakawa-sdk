@@ -14,6 +14,21 @@ namespace NewClass2
             set { m_TextUserSettings2 = value; }
         }
 
+        public System.Drawing.Size FormSize
+            {
+            get
+                {
+                return NewSettings2.Default.formSize;
+                }
+            set
+                {
+                if (value != null)
+                    {
+                    NewSettings2.Default.formSize = value;
+                    }
+                }
+            }
+
         public Class2()
         { m_TextUserSettings2 = NewSettings2.Default.UserSettingsString2; }
 

@@ -5,5 +5,8 @@
     <Setting Name="UserSettingsString2" Type="System.String" Scope="User">
       <Value Profile="(Default)">string2</Value>
     </Setting>
+    <Setting Name="formSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">800, 600</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
