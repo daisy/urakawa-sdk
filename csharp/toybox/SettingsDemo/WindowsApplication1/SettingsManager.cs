@@ -21,16 +21,17 @@ namespace WindowsApplication1
             get { return mClass2; }
             set { mClass2 = value; }
             }
-
+        private SettingsDemo.Form1 m_Form = new SettingsDemo.Form1();
 
         private Form m_MainForm;
 
         public SettingsManager (Form mainForm)
             {
             m_MainForm = mainForm;
-            }
 
-        public string UserSettingsText_Class1
+            }
+    
+       /* public string UserSettingsText_Class1
             {
             get 
                 {
@@ -55,8 +56,33 @@ namespace WindowsApplication1
                     // set in main form class
                     }
                 }
+            }*/
+        public System.Drawing.Size FormSize
+        {
+            get
+            {
+                if (mClass2 != null)
+                {
+                    return mClass2.FormSize;
+                }
+                else
+                {
+                    // return from main form, returning null till main form is incomplete
+                    return m_Form.mSize;
+                }
+            }
+            set
+            {
+                if (mClass2 != null)
+                {
+                    mClass2.FormSize = value;
+                }
+                else // assign to main form property
+                {
+                    m_Form.mSize = value;
+                }
             }
 
-
+        }
         }
     }

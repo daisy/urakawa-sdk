@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using WindowsApplication1.Properties;
 
 namespace SettingsDemo
 {
@@ -12,14 +13,25 @@ namespace SettingsDemo
     {
         private NewClass1.Class1 mClass1 = new NewClass1.Class1();
         private NewClass2.Class2 mClass2 = new NewClass2.Class2();
+        private WindowsApplication1.SettingsManager mSetMgr;
 
         public Form1()
         {
-            InitializeComponent();             
+            InitializeComponent();
+            mSetMgr = new WindowsApplication1.SettingsManager(this);
         }
+      public System.Drawing.Size mSize 
+      {
+          get { return Settings.Default.FormSize; }
+          set { Settings.Default.FormSize = value; }
 
+      }
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (Settings.Default.FormSize != null)
+            {
+                this.Size = mSetMgr.FormSize;
+            }
             // Set the text in various text boxes
 
             textBox1.Text = mClass1.UserSettingText1;    //text from class1 for saving user setting
@@ -30,6 +42,15 @@ namespace SettingsDemo
              
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                mSetMgr.FormSize = this.Size;
+            }
+            else
+            {
+                mSetMgr.FormSize = this.RestoreBounds.Size;
+            }
+            
             // Copy the text to the settings
             mClass1.UserSettingText1 = textBox1.Text;        
             mClass2.UserSettingText2 = textBox2.Text;        
