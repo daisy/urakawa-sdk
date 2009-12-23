@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NewClass2.Properties" GeneratedClassName="NewSettings2">
   <Profiles />
   <Settings>
-    <Setting Name="Class2Text" Type="System.String" Scope="User">
+    <Setting Name="UserSettingsString2" Type="System.String" Scope="User">
       <Value Profile="(Default)">string2</Value>
     </Setting>
   </Settings>

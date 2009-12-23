@@ -2,34 +2,33 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NewClass.Properties;
-using System.Windows.Forms;
 
 namespace NewClass1
 {
     public class Class1
     {
-        private string tb1;  
-        private string tb3;
+        private string m_TextUserSettings1;
+        private string m_TextAppSettings;
 
-        public string text1 
+        public string UserSettingText1
         {
-            get { return tb1; }
-            set { tb1 = value;  }
+            get { return m_TextUserSettings1; }
+            set { m_TextUserSettings1 = value; }
         }
-        public string text3
+        public string AppSettingText
         {
-            get { return tb3; }
-            set { tb3 = value; }
+            get { return m_TextAppSettings; }
+            set { m_TextAppSettings = value; }
         }
 
         public Class1()
         {
-            tb1 = NewSettings.Default.Class1Text;
-            tb3 = NewSettings.Default.AppText;
+            m_TextUserSettings1 = NewSettings.Default.UserSettingsString1;
+            m_TextAppSettings = NewSettings.Default.AppSettingsString;
         }
         public void Save()
         {
-            NewSettings.Default.Class1Text = this.tb1;
+            NewSettings.Default.UserSettingsString1 = this.m_TextUserSettings1;
             NewSettings.Default.Save();
         }
     }

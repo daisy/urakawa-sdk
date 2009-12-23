@@ -2,11 +2,11 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NewClass.Properties" GeneratedClassName="NewSettings">
   <Profiles />
   <Settings>
-    <Setting Name="Class1Text" Type="System.String" Scope="User">
+    <Setting Name="UserSettingsString1" Type="System.String" Scope="User">
       <Value Profile="(Default)">string1</Value>
     </Setting>
-    <Setting Name="AppText" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">ApplicationSetting</Value>
+    <Setting Name="AppSettingsString" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ApplicationSettings</Value>
     </Setting>
   </Settings>
 </SettingsFile>

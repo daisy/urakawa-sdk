@@ -22,18 +22,18 @@ namespace SettingsDemo
         {
             // Set the text in various text boxes
 
-            textBox1.Text = mClass1.text1;    //text from class1 for saving user setting
-            textBox2.Text = mClass2.text2;    //text from class2 for saving user setting
-            textBox3.Text = mClass1.text3;    // text from class1 for saving application setting
+            textBox1.Text = mClass1.UserSettingText1;    //text from class1 for saving user setting
+            textBox2.Text = mClass2.UserSettingText2;    //text from class2 for saving user setting
+            textBox3.Text = mClass1.AppSettingText;    // text from class1 for saving application setting
         }
 
              
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Copy the text to the settings
-            mClass1.text1 = textBox1.Text;        
-            mClass2.text2 = textBox2.Text;        
-            mClass1.text3 = textBox3.Text;        
+            mClass1.UserSettingText1 = textBox1.Text;        
+            mClass2.UserSettingText2 = textBox2.Text;        
+            mClass1.AppSettingText = textBox3.Text;        
            
             // Save the settings
             mClass1.Save();

@@ -7,19 +7,19 @@ namespace NewClass2
 {
     public class Class2
     {
-        private string tb2;
-        public string text2 
-        { 
-            get { return tb2; }
-            set { tb2 = value; }
+        private string m_TextUserSettings2;
+        public string UserSettingText2
+        {
+            get { return m_TextUserSettings2; }
+            set { m_TextUserSettings2 = value; }
         }
 
         public Class2()
-        { tb2 = NewSettings2.Default.Class2Text; }
-        
+        { m_TextUserSettings2 = NewSettings2.Default.UserSettingsString2; }
+
         public void Save()
         {
-            NewSettings2.Default.Class2Text = this.tb2;
+            NewSettings2.Default.UserSettingsString2 = this.m_TextUserSettings2;
             Properties.NewSettings2.Default.Save();
         }
     }

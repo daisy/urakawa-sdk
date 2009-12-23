@@ -26,21 +26,21 @@ namespace NewClass.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("string1")]
-        public string Class1Text {
+        public string UserSettingsString1 {
             get {
-                return ((string)(this["Class1Text"]));
+                return ((string)(this["UserSettingsString1"]));
             }
             set {
-                this["Class1Text"] = value;
+                this["UserSettingsString1"] = value;
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ApplicationSetting")]
-        public string AppText {
+        [global::System.Configuration.DefaultSettingValueAttribute("ApplicationSettings")]
+        public string AppSettingsString {
             get {
-                return ((string)(this["AppText"]));
+                return ((string)(this["AppSettingsString"]));
             }
         }
     }

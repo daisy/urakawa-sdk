@@ -26,12 +26,12 @@ namespace NewClass2.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("string2")]
-        public string Class2Text {
+        public string UserSettingsString2 {
             get {
-                return ((string)(this["Class2Text"]));
+                return ((string)(this["UserSettingsString2"]));
             }
             set {
-                this["Class2Text"] = value;
+                this["UserSettingsString2"] = value;
             }
         }
     }
