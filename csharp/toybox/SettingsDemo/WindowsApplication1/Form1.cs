@@ -18,7 +18,7 @@ namespace SettingsDemo
         public Form1()
         {
             InitializeComponent();
-            mSetMgr = new WindowsApplication1.SettingsManager(this);
+            
         }
       public System.Drawing.Size mSize 
       {
@@ -28,6 +28,9 @@ namespace SettingsDemo
       }
         private void Form1_Load(object sender, EventArgs e)
         {
+        mSetMgr = new WindowsApplication1.SettingsManager ( this );
+        mSetMgr.Instance_Class1 = mClass1;
+        mSetMgr.Instance_Class2 = mClass2;
             if (Settings.Default.FormSize != null)
             {
                 this.Size = mSetMgr.FormSize;
