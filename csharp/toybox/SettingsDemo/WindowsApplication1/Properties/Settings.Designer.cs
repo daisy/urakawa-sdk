@@ -26,12 +26,12 @@ namespace WindowsApplication1.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
-        public global::System.Drawing.Size FormSize {
+        public global::System.Drawing.Size WindowSize {
             get {
-                return ((global::System.Drawing.Size)(this["FormSize"]));
+                return ((global::System.Drawing.Size)(this["WindowSize"]));
             }
             set {
-                this["FormSize"] = value;
+                this["WindowSize"] = value;
             }
         }
     }

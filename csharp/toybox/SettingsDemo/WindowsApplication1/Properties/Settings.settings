@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WindowsApplication1.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="FormSize" Type="System.Drawing.Size" Scope="User">
+    <Setting Name="WindowSize" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">0, 0</Value>
     </Setting>
   </Settings>
