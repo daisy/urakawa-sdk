@@ -7,11 +7,10 @@ namespace NewClass2
 {
     public class Class2
     {
-        private string m_TextUserSettings2;
         public string UserSettingText2
         {
-            get { return m_TextUserSettings2; }
-            set { m_TextUserSettings2 = value; }
+            get { return NewSettings2.Default.UserSettingsString2; }
+            set { NewSettings2.Default.UserSettingsString2 = value; }
         }
 
         public System.Drawing.Size FormSize
@@ -29,12 +28,8 @@ namespace NewClass2
                 }
             }
 
-        public Class2()
-        { m_TextUserSettings2 = NewSettings2.Default.UserSettingsString2; }
-
         public void Save()
         {
-            NewSettings2.Default.UserSettingsString2 = this.m_TextUserSettings2;
             Properties.NewSettings2.Default.Save();
         }
     }

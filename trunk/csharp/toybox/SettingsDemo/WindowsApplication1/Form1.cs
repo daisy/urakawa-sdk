@@ -22,8 +22,8 @@ namespace SettingsDemo
         }
       public System.Drawing.Size mSize 
       {
-          get { return Settings.Default.FormSize; }
-          set { Settings.Default.FormSize = value; }
+          get { return Settings.Default.WindowSize; }
+          set { Settings.Default.WindowSize = value; }
 
       }
         private void Form1_Load(object sender, EventArgs e)
@@ -31,7 +31,7 @@ namespace SettingsDemo
         mSetMgr = new WindowsApplication1.SettingsManager ( this );
         mSetMgr.Instance_Class1 = mClass1;
         mSetMgr.Instance_Class2 = mClass2;
-            if (Settings.Default.FormSize != null)
+            if (Settings.Default.WindowSize != null)
             {
                 this.Size = mSetMgr.FormSize;
             }
@@ -56,8 +56,7 @@ namespace SettingsDemo
             
             // Copy the text to the settings
             mClass1.UserSettingText1 = textBox1.Text;        
-            mClass2.UserSettingText2 = textBox2.Text;        
-            mClass1.AppSettingText = textBox3.Text;        
+            mClass2.UserSettingText2 = textBox2.Text;                     
            
             // Save the settings
             mClass1.Save();

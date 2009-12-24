@@ -7,28 +7,18 @@ namespace NewClass1
 {
     public class Class1
     {
-        private string m_TextUserSettings1;
-        private string m_TextAppSettings;
-
         public string UserSettingText1
         {
-            get { return m_TextUserSettings1; }
-            set { m_TextUserSettings1 = value; }
+            get { return NewSettings.Default.UserSettingsString1; }
+            set { NewSettings.Default.UserSettingsString1 = value; }
         }
         public string AppSettingText
         {
-            get { return m_TextAppSettings; }
-            set { m_TextAppSettings = value; }
+            get { return NewSettings.Default.AppSettingsString; ; }
         }
 
-        public Class1()
-        {
-            m_TextUserSettings1 = NewSettings.Default.UserSettingsString1;
-            m_TextAppSettings = NewSettings.Default.AppSettingsString;
-        }
         public void Save()
         {
-            NewSettings.Default.UserSettingsString1 = this.m_TextUserSettings1;
             NewSettings.Default.Save();
         }
     }
