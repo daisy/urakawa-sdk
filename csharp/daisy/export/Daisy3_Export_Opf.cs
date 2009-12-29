@@ -280,22 +280,7 @@ namespace urakawa.daisy.export
                     string filePath = Path.Combine ( m_OutputDirectory, efd.OriginalRelativePath ) ;
                     efd.DataProvider.ExportDataStreamToFile ( filePath, true );
                     m_FilesList_ExternalFiles.Add ( efd.OriginalRelativePath );
-                    /*
-                    FileStream newFileStream = File.Create ( filePath );
-                    Stream efdStream = efd.OpenInputStream ();
-                    try
-                        {
-                        copyStreamData ( efdStream , newFileStream );
-                        
-                        }
-                    finally
-                        {
-                        newFileStream.Close ();
-                        efdStream.Close ();
-                        newFileStream = null;
-                        efdStream = null;
-                        }
-                     */ 
+                    
                     }
                 }
             }

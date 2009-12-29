@@ -48,11 +48,6 @@ namespace urakawa.daisy.export
                     }
                 }
             
-            //if (File.Exists(dtdFilePath))
-            //{
-                //strInternalDTD = File.ReadAllText(dtdFilePath);
-            //}
-
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
             if ( list_ExternalStyleSheets != null )  ExportStyleSheets ( list_ExternalStyleSheets );
 
@@ -250,23 +245,7 @@ namespace urakawa.daisy.export
                                 if ( !File.Exists ( destPath ))
                                     {
                                     managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile ( destPath, false );
-                                    /*
-                                    FileStream fs = null;
-                                    Stream imageStream = null;
-
-                                    try
-                                        {
-                                        fs = File.Create ( destPath );
-                                        imageStream = managedImage.ImageMediaData.OpenInputStream ();
-                                        copyStreamData ( imageStream, fs );
-
-                                        }
-                                    finally
-                                        {
-                                        if (fs != null) fs.Close ();
-                                        if (imageStream != null) imageStream.Close ();
-                                        }
-                                     */ 
+                                    
                                     }
 
                                 imgSrcAttribute.Value = exportImageName;
@@ -372,56 +351,10 @@ namespace urakawa.daisy.export
                     string filePath = Path.Combine ( m_OutputDirectory, efd.OriginalRelativePath );
                     efd.DataProvider.ExportDataStreamToFile ( filePath, true );
                     m_FilesList_ExternalFiles.Add ( efd.OriginalRelativePath );
-                    /*
-                    FileStream newFileStream = File.Create ( filePath );
-                    Stream efdStream = efd.OpenInputStream ();
-                    try
-                        {
-                        copyStreamData ( efdStream, newFileStream );
-                        m_FilesList_ExternalFiles.Add ( efd.OriginalRelativePath );
-
-                        }
-                    finally
-                        {
-                        newFileStream.Close ();
-                        efdStream.Close ();
-                        newFileStream = null;
-                        efdStream = null;
-                        }
-                     */ 
+                    
                     }
                 }
             }
-
-        /*
-        private void copyStreamData ( Stream source, Stream dest )
-            { //1
-            int BUFFER_SIZE = 1024* 1024 ;
-
-            if (source.Length <= BUFFER_SIZE)
-                { // 2
-                byte[] buffer = new byte[source.Length];
-                int read = source.Read ( buffer, 0, (int)source.Length );
-                dest.Write ( buffer, 0, read );
-                } //-2
-            else
-                { // 2
-                byte[] buffer = new byte[BUFFER_SIZE];
-                int bytesRead = 0;
-                while ((bytesRead = source.Read ( buffer, 0, BUFFER_SIZE )) > 0)
-                    { //3
-                    dest.Write ( buffer, 0, bytesRead );
-                    } // -3
-
-                } //-2
-            } // -1
-        */
-        //private bool ShouldCreateNextSmilFile(urakawa.core.TreeNode node)
-        //{
-        //    QualifiedName qName = node.GetXmlElementQName();
-        //    return qName != null && qName.LocalName == "level1";
-        //}
-
 
         /*
         private XmlDocument SaveCurrentSmilAndCreateNextSmilDocument ( XmlDocument smilDocument )
