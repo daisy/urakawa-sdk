@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Net;
 using System.Net.Cache;
 using System.Xml;
@@ -62,12 +63,16 @@ namespace urakawa.daisy.import
             private ICredentials m_Credentials;
             private Dictionary<string, string> m_EmbeddedEntities;
             private string m_DownloadedDTDDirectoryPath;
+            private string m_DownloadedDTDDirectoryName = "Tobi-Downloaded-DTDs" ;
+            private System.IO.IsolatedStorage.IsolatedStorageFile m_IsolatedArea = System.IO.IsolatedStorage.IsolatedStorageFile.GetMachineStoreForApplication ();
 
             //resolve resources from cache (if possible) when m_EnableHttpCaching is set to true
             //resolve resources from source when enableHttpcaching is set to false 
             public LocalXmlUrlResolver(bool enableHttpCaching)
             {
                 m_EnableHttpCaching = enableHttpCaching;
+                
+                //System.Windows.Forms.MessageBox.Show ( isolatedArea.GetDirectoryNames ("*.*)[0]  );
                 m_DownloadedDTDDirectoryPath = Path.GetDirectoryName ( System.Reflection.Assembly.GetExecutingAssembly ().Location ) + Path.DirectorySeparatorChar + "Downloaded-DTDs";
 
                 m_EmbeddedEntities = new Dictionary<String, String>();
@@ -100,6 +105,7 @@ namespace urakawa.daisy.import
                 m_EmbeddedEntities.Add("//NISO//DTD%20dtbsmil%202005-2//EN", "DTDs.Resources.dtbsmil-2005-2.dtd");
                 m_EmbeddedEntities.Add("//ISBN%200-9673008-1-9//DTD%20OEB%201.2%20Package//EN", "DTDs.Resources.oebpkg12.dtd");
                 m_EmbeddedEntities.Add("//NISO//DTD%20dtbsmil%202005-1//EN", "DTDs.Resources.dtbsmil-2005-1.dtd");
+  
             }
 
             public override Uri ResolveUri(Uri baseUri, string relativeUri)
@@ -139,13 +145,25 @@ namespace urakawa.daisy.import
                 {
                     return localStream;
                 }
-
+                
                 // if dtd is not found in packaged files, search in downloaded dtds
+                /*
                 string localDTDFullPath = Path.Combine ( m_DownloadedDTDDirectoryPath,
                     Path.GetFileName ( absoluteUri.AbsolutePath ));
                 if (File.Exists ( localDTDFullPath ))
                     {
                     return new FileStream ( localDTDFullPath, FileMode.Open, FileAccess.Read );
+                    }
+                */
+                if (m_IsolatedArea.GetFileNames ( Path.GetFileName ( absoluteUri.AbsolutePath ) ).Length > 0)
+                    {
+                    
+                    IsolatedStorageFileStream storageStream =
+                      new IsolatedStorageFileStream ( Path.GetFileName ( absoluteUri.AbsolutePath ),
+                      FileMode.Open, m_IsolatedArea);
+                    
+                        return storageStream;
+                        
                     }
 
                 //resolve resources from cache (if possible)
@@ -208,7 +226,10 @@ namespace urakawa.daisy.import
                 FileStream fs = null;
                 try
                     {
-                    fs = File.Create ( localDTDFilePath );
+                    
+                    //fs = File.Create ( localDTDFilePath );
+                    fs = new IsolatedStorageFileStream ( Path.GetFileName ( strWebDTDPath ),
+  FileMode.Create, m_IsolatedArea );
                     copyStreamData ( webStream, fs, 1024 );
                     }
                 
