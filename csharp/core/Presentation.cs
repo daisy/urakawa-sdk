@@ -9,6 +9,7 @@ using urakawa.core;
 using urakawa.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
+using urakawa.media.data.utilities;
 using urakawa.media.timing;
 using urakawa.progress;
 using urakawa.property;
@@ -347,8 +348,7 @@ namespace urakawa
         /// </summary>
         public void Cleanup()
         {
-            media.data.utilities.CollectManagedMediaTreeNodeVisitor collectorVisitor
-                = new media.data.utilities.CollectManagedMediaTreeNodeVisitor();
+            CollectManagedMediaTreeNodeVisitor collectorVisitor = new CollectManagedMediaTreeNodeVisitor();
             if (RootNode != null)
             {
                 RootNode.AcceptDepthFirst(collectorVisitor);

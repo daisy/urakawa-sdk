@@ -183,7 +183,7 @@ namespace urakawa.media
                 client.UseDefaultCredentials = true;
 				} catch (System.NotImplementedException e) {
 					// Ignore (otherwise Mono does not pass the unit-tests)
-					Debug.Write("WebClient.UseDefaultCredentials not implemented (using Mono ?)");
+					Console.WriteLine("WebClient.UseDefaultCredentials not implemented (using Mono ?)");
 				}
                 return GetText(client);
             }

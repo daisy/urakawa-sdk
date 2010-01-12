@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using urakawa.core;
 using urakawa.media;
+using urakawa.media.data.image.codec;
 using urakawa.property.channel;
 using urakawa.property.xml;
 
@@ -242,7 +243,7 @@ namespace urakawa.daisy.import
 
                                     updatedSRC = Path.GetFullPath ( imgSourceFullpath ).Replace (
                                         Path.GetDirectoryName ( m_Book_FilePath ), "" );
-                                    if (updatedSRC.StartsWith ( "\\" ))
+                                    if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
                                         {
                                         updatedSRC = updatedSRC.Remove ( 0, 1 );
                                         }
@@ -348,15 +349,15 @@ namespace urakawa.daisy.import
             switch (extension)
                 {
             case ".jpg":
-            return presentation.MediaDataFactory.Create<media.data.image.codecs.JpgImageMediaData> ();
+            return presentation.MediaDataFactory.Create<JpgImageMediaData> ();
             break;
 
             case ".bmp":
-            return presentation.MediaDataFactory.Create<media.data.image.codecs.BmpImageMediaData> ();
+            return presentation.MediaDataFactory.Create<BmpImageMediaData> ();
             break;
 
             case ".png":
-            return presentation.MediaDataFactory.Create<media.data.image.codecs.PngImageMediaData> ();
+            return presentation.MediaDataFactory.Create<PngImageMediaData> ();
             break;
 
             default:

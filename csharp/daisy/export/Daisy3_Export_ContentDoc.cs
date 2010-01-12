@@ -239,7 +239,7 @@ namespace urakawa.daisy.export
                                 && n.GetImageMedia () is media.data.image.ManagedImageMedia)
                                 {
                                 media.data.image.ManagedImageMedia managedImage = (media.data.image.ManagedImageMedia )  n.GetImageMedia () ;
-                                string exportImageName = managedImage.ImageMediaData.OriginalRelativePath.Replace ( "\\", "_" );
+                                string exportImageName = managedImage.ImageMediaData.OriginalRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
                                 string destPath = Path.Combine ( m_OutputDirectory, exportImageName );
 
                                 if ( !File.Exists ( destPath ))

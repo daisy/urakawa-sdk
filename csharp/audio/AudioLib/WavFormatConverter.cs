@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
-
+using javazoom.jl.decoder;
 using NAudio.Wave;
 
 namespace AudioLib
@@ -10,7 +8,6 @@ namespace AudioLib
     public class WavFormatConverter : IWavFormatConverter
     {
         private bool m_OverwriteOutputFiles;
-
         public bool OverwriteOutputFiles
         {
             get { return m_OverwriteOutputFiles; }
@@ -22,7 +19,7 @@ namespace AudioLib
             OverwriteOutputFiles = overwriteOutputFiles;
         }
 
-        public string ConvertSampleRate(string sourceFile, string destinationDirectory,int destChannels ,int destSanplingRate, int destBitDepth)
+        public string ConvertSampleRate(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth)
         {
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path");
@@ -34,18 +31,18 @@ namespace AudioLib
             WaveStream sourceStream = null;
             WaveFormatConversionStream conversionStream = null;
             try
-                {
-                WaveFormat destFormat = new WaveFormat ( (int)destSanplingRate,
+            {
+                WaveFormat destFormat = new WaveFormat((int)destSamplingRate,
                                                                    destBitDepth,
                                                                    destChannels);
-                sourceStream = new WaveFileReader ( sourceFile );
+                sourceStream = new WaveFileReader(sourceFile);
 
-                conversionStream = new WaveFormatConversionStream ( destFormat, sourceStream );
-                
-                destinationFilePath = GenerateOutputFileFullname ( sourceFile, destinationDirectory, destChannels, destSanplingRate,destBitDepth);
-                WaveFileWriter.CreateWaveFile ( destinationFilePath, conversionStream );
-                }
-                        finally
+                conversionStream = new WaveFormatConversionStream(destFormat, sourceStream);
+
+                destinationFilePath = GenerateOutputFileFullname(sourceFile, destinationDirectory, destChannels, destSamplingRate, destBitDepth);
+                WaveFileWriter.CreateWaveFile(destinationFilePath, conversionStream);
+            }
+            finally
             {
                 if (conversionStream != null)
                 {
@@ -60,7 +57,182 @@ namespace AudioLib
             return destinationFilePath;
         }
 
-        private string GenerateOutputFileFullname(string sourceFile, string destinationDirectory, int destChannels, int destSamplingRate, int destBitDepth)
+        public string UnCompressMp3File(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth)
+        {
+            if (!File.Exists(sourceFile))
+                throw new FileNotFoundException("Invalid source file path");
+
+            if (!Directory.Exists(destinationDirectory))
+                throw new FileNotFoundException("Invalid destination directory");
+            
+            Stream mp3Stream = File.Open(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            Bitstream mp3BitStream = new Bitstream(new BackStream(mp3Stream, 1024 * 10));
+            Header mp3Frame = mp3BitStream.readFrame();
+
+            AudioLibPCMFormat mp3PcmFormat = new AudioLibPCMFormat(
+                (ushort)(mp3Frame.mode() == Header.SINGLE_CHANNEL ? 1 : 2),
+                (uint)mp3Frame.frequency(),
+                16);
+
+            string destinationFilePath = GenerateOutputFileFullname(
+                sourceFile + ".wav",
+                destinationDirectory,
+                mp3PcmFormat.NumberOfChannels,
+                mp3PcmFormat.SampleRate,
+                mp3PcmFormat.BitDepth);
+
+            FileStream wavFileStream = new FileStream(destinationFilePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+
+            ulong wavFilRiffHeaderLength = mp3PcmFormat.RiffHeaderWrite(wavFileStream, 0);
+
+            long wavFileStreamStart = wavFileStream.Position;
+
+            Decoder decoder = new Decoder();
+            ObufferStreamWrapper outputBuffer = new ObufferStreamWrapper(wavFileStream, mp3PcmFormat.NumberOfChannels);
+            decoder.OutputBuffer = outputBuffer;
+
+            while (true)
+            {
+                Header header = mp3BitStream.readFrame();
+                if (header == null)
+                {
+                    break;
+                }
+
+                try
+                {
+                    Obuffer decoderOutput = decoder.decodeFrame(header, mp3BitStream);
+                }
+                catch
+                {
+                    mp3BitStream.closeFrame();
+                    continue;
+                }
+                mp3BitStream.closeFrame();
+            }
+
+            mp3Stream.Close();
+
+            long wavFileStreamEnd = wavFileStream.Position;
+
+            if ((ulong)wavFileStreamEnd == wavFilRiffHeaderLength)
+            {
+                wavFileStream.Close();
+                File.Delete(destinationFilePath);
+                return null;
+            }
+
+            wavFileStream.Position = 0;
+            mp3PcmFormat.RiffHeaderWrite(wavFileStream, (uint)(wavFileStreamEnd - wavFileStreamStart));
+
+            wavFileStream.Close();
+
+            if (mp3PcmFormat.NumberOfChannels != destChannels
+                || mp3PcmFormat.SampleRate != destSamplingRate
+                || mp3PcmFormat.BitDepth != destBitDepth)
+            {
+                string newDestinationFilePath = ConvertSampleRate(destinationFilePath, destinationDirectory, destChannels, destSamplingRate, destBitDepth);
+                if (File.Exists(destinationFilePath))
+                {
+                    File.Delete(destinationFilePath);
+                }
+                return newDestinationFilePath;
+            }
+            return destinationFilePath;
+
+            /*
+            bool exceptionError = false;
+            using (Mp3FileReader mp3Reader = new Mp3FileReader(sourceFile))
+            {
+                using (WaveStream pcmStream = WaveFormatConversionStream.CreatePcmStream(mp3Reader))
+                {
+                    //pcmFormat = new PCMFormatInfo((ushort)pcmStream.WaveFormat.Channels,
+                                                            //(uint)pcmStream.WaveFormat.SampleRate,
+                                                            //(ushort)pcmStream.WaveFormat.BitsPerSample);
+                channels = pcmStream.WaveFormat.Channels;
+                sampleRate = pcmStream.WaveFormat.SampleRate;
+                bitDepth = pcmStream.WaveFormat.BitsPerSample;
+                    destinationFilePath = GenerateOutputFileFullname ( sourceFile + ".wav", destinationDirectory, pcmStream.WaveFormat.Channels, pcmStream.WaveFormat.SampleRate, pcmStream.WaveFormat.BitsPerSample );
+                    using (WaveFileWriter writer = new WaveFileWriter(destinationFilePath, pcmStream.WaveFormat))
+                    {
+                        const int BUFFER_SIZE = 1024 * 8; // 8 KB MAX BUFFER  
+                        byte[] buffer = new byte[BUFFER_SIZE];
+                        int byteRead;
+                        try
+                        {
+                            writer.Flush();
+                            while ((byteRead = pcmStream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                writer.WriteData(buffer, 0, byteRead);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            pcmStream.Close();
+                            writer.Close();
+                            //pcmFormat = null;
+                            exceptionError = true;
+                        }
+                    }
+                }
+            }
+
+            //if (pcmFormat == null)
+            if ( exceptionError )
+            {
+                // in case of exception, delete incomplete file just created
+            if (File.Exists ( destinationFilePath ))
+                {
+                File.Delete ( destinationFilePath );
+                }
+*/
+        }
+
+        public string UnCompressWavFile(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth)
+        {
+            throw new System.NotImplementedException();
+
+            // following code fails at ACM codec, so commented for now.
+            /*
+            if (!File.Exists(sourceFile))
+                throw new FileNotFoundException("Invalid source file path");
+
+            if (!Directory.Exists(destinationDirectory))
+                throw new FileNotFoundException("Invalid destination directory");
+
+            string destinationFilePath = null;
+            WaveStream sourceStream = null;
+            WaveFormatConversionStream conversionStream = null;
+            try
+                {
+                WaveFormat destFormat = new WaveFormat ( (int)destinationPCMFormat.SampleRate,
+                                                                   destinationPCMFormat.BitDepth,
+                                                                   destinationPCMFormat.NumberOfChannels );
+                sourceStream = new WaveFileReader ( sourceFile );
+
+                WaveStream intermediateStream = WaveFormatConversionStream.CreatePcmStream ( sourceStream );
+                conversionStream = new WaveFormatConversionStream ( destFormat, intermediateStream);
+
+                destinationFilePath = GenerateOutputFileFullname ( sourceFile, destinationDirectory, destinationPCMFormat );
+                WaveFileWriter.CreateWaveFile ( destinationFilePath, conversionStream );
+                }
+                        finally
+                {
+                if (conversionStream != null)
+                    {
+                    conversionStream.Close ();
+                    }
+                if (sourceStream != null)
+                    {
+                    sourceStream.Close ();
+                    }
+                }
+            return destinationFilePath;
+             */
+        }
+
+        private string GenerateOutputFileFullname(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth)
         {
             //FileInfo sourceFileInfo = new FileInfo(sourceFile);
             //string sourceFileName = sourceFileInfo.Name.Replace(sourceFileInfo.Extension, "");
@@ -113,180 +285,55 @@ namespace AudioLib
 
             return destFile;
         }
+    }
 
-        /// <exception cref="NotImplementedException">NOT IMPLEMENTED !</exception>
-        public int ProgressInfo
+    internal class ObufferStreamWrapper : Obuffer
+    {
+        BinaryWriter m_WrappedStreamBinaryWriter;
+        private short[] m_SamplesBuffer;
+        private short[] m_SamplesBufferPointer;
+        private int m_NumberOfChannels;
+
+        public ObufferStreamWrapper(Stream outputStream, int numberOfChannels)
         {
-            get
+            m_WrappedStreamBinaryWriter = new BinaryWriter(outputStream);
+            m_NumberOfChannels = numberOfChannels;
+
+            m_SamplesBuffer = new short[OBUFFERSIZE];
+            m_SamplesBufferPointer = new short[MAXCHANNELS];
+
+            clear_buffer();
+        }
+
+        public override void append(int channel, short value)
+        {
+            m_SamplesBuffer[m_SamplesBufferPointer[channel]] = value;
+            m_SamplesBufferPointer[channel] += (short)m_NumberOfChannels;
+        }
+
+        public override void write_buffer(int val)
+        {
+            for (int sample = 0; sample < m_SamplesBufferPointer[0]; sample++)
             {
-                throw new NotImplementedException();
+                m_WrappedStreamBinaryWriter.Write(m_SamplesBuffer[sample]);
+            }
+
+            clear_buffer();
+        }
+
+        public override void close()
+        {
+            m_WrappedStreamBinaryWriter.Close();
+        }
+
+        public override void clear_buffer()
+        {
+            for (int i = 0; i < m_NumberOfChannels; ++i)
+            {
+                m_SamplesBufferPointer[i] = (short)i;
             }
         }
 
-        /// <exception cref="NotImplementedException">NOT IMPLEMENTED !</exception>
-        public string UnCompressWavFile ( string sourceFile, string destinationDirectory, int destChannels, int destSanplingRate, int destBitDepth )
-        {
-        throw new System.NotImplementedException ();
-
-            // following code fails at ACM codec, so commented for now.
-            /*
-            if (!File.Exists(sourceFile))
-                throw new FileNotFoundException("Invalid source file path");
-
-            if (!Directory.Exists(destinationDirectory))
-                throw new FileNotFoundException("Invalid destination directory");
-
-            string destinationFilePath = null;
-            WaveStream sourceStream = null;
-            WaveFormatConversionStream conversionStream = null;
-            try
-                {
-                WaveFormat destFormat = new WaveFormat ( (int)destinationPCMFormat.SampleRate,
-                                                                   destinationPCMFormat.BitDepth,
-                                                                   destinationPCMFormat.NumberOfChannels );
-                sourceStream = new WaveFileReader ( sourceFile );
-
-                WaveStream intermediateStream = WaveFormatConversionStream.CreatePcmStream ( sourceStream );
-                conversionStream = new WaveFormatConversionStream ( destFormat, intermediateStream);
-
-                destinationFilePath = GenerateOutputFileFullname ( sourceFile, destinationDirectory, destinationPCMFormat );
-                WaveFileWriter.CreateWaveFile ( destinationFilePath, conversionStream );
-                }
-                        finally
-                {
-                if (conversionStream != null)
-                    {
-                    conversionStream.Close ();
-                    }
-                if (sourceStream != null)
-                    {
-                    sourceStream.Close ();
-                    }
-                }
-            return destinationFilePath;
-             */ 
-                    }
-
-        /// <exception cref="NotImplementedException">NOT IMPLEMENTED !</exception>
-        public string UnCompressMp3File(string sourceFile, string destinationDirectory, int destChannels, int destSamplingRate, int destBitDepth)
-        {
-            if (!File.Exists(sourceFile))
-                throw new FileNotFoundException("Invalid source file path");
-
-            if (!Directory.Exists(destinationDirectory))
-                throw new FileNotFoundException("Invalid destination directory");
-
-            string destinationFilePath = null;
-            //PCMFormatInfo pcmFormat = null;
-            int channels = 0;
-            int sampleRate = 0;
-            int bitDepth = 0;
-            /*
-            bool exceptionError = false;
-            using (Mp3FileReader mp3Reader = new Mp3FileReader(sourceFile))
-            {
-                using (WaveStream pcmStream = WaveFormatConversionStream.CreatePcmStream(mp3Reader))
-                {
-                    //pcmFormat = new PCMFormatInfo((ushort)pcmStream.WaveFormat.Channels,
-                                                            //(uint)pcmStream.WaveFormat.SampleRate,
-                                                            //(ushort)pcmStream.WaveFormat.BitsPerSample);
-                channels = pcmStream.WaveFormat.Channels;
-                sampleRate = pcmStream.WaveFormat.SampleRate;
-                bitDepth = pcmStream.WaveFormat.BitsPerSample;
-                    destinationFilePath = GenerateOutputFileFullname ( sourceFile + ".wav", destinationDirectory, pcmStream.WaveFormat.Channels, pcmStream.WaveFormat.SampleRate, pcmStream.WaveFormat.BitsPerSample );
-                    using (WaveFileWriter writer = new WaveFileWriter(destinationFilePath, pcmStream.WaveFormat))
-                    {
-                        const int BUFFER_SIZE = 1024 * 8; // 8 KB MAX BUFFER  
-                        byte[] buffer = new byte[BUFFER_SIZE];
-                        int byteRead;
-                        try
-                        {
-                            writer.Flush();
-                            while ((byteRead = pcmStream.Read(buffer, 0, buffer.Length)) > 0)
-                            {
-                                writer.WriteData(buffer, 0, byteRead);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            pcmStream.Close();
-                            writer.Close();
-                            //pcmFormat = null;
-                            exceptionError = true;
-                        }
-                    }
-                }
-            }
-
-            //if (pcmFormat == null)
-            if ( exceptionError )
-            {
-                // in case of exception, delete incomplete file just created
-            if (File.Exists ( destinationFilePath ))
-                {
-                File.Delete ( destinationFilePath );
-                }
-*/
-                Stream fileStream = File.Open(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
-                if (fileStream != null)
-                {
-                    int totalBytesWritten = 0;
-                    using (NLayerMp3Stream mp3Stream = new NLayerMp3Stream(fileStream))
-                    {
-                        //pcmFormat = new PCMFormatInfo((ushort)mp3Stream.WaveFormat.Channels,
-                                                      //(uint)mp3Stream.WaveFormat.SampleRate,
-                                                      //(ushort)mp3Stream.WaveFormat.BitsPerSample);
-                    channels = mp3Stream.WaveFormat.Channels;
-                    sampleRate = mp3Stream.WaveFormat.SampleRate;
-                    bitDepth = mp3Stream.WaveFormat.BitsPerSample;
-                        destinationFilePath = GenerateOutputFileFullname ( sourceFile + ".wav", destinationDirectory, mp3Stream.WaveFormat.Channels, mp3Stream.WaveFormat.SampleRate, mp3Stream.WaveFormat.BitsPerSample );
-                        using (WaveFileWriter writer = new WaveFileWriter(destinationFilePath, mp3Stream.WaveFormat))
-                        {
-                            int buffSize = mp3Stream.GetReadSize(4000);
-                            //const int BUFFER_SIZE = 1024 * 8; // 8 KB MAX BUFFER  
-                            byte[] buffer = new byte[buffSize];
-                            try
-                            {
-                                int byteRead;
-                                writer.Flush();
-                                while ((byteRead = mp3Stream.Read(buffer, 0, buffer.Length)) > 0)
-                                {
-                                    writer.WriteData(buffer, 0, byteRead);
-                                    totalBytesWritten += byteRead;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                writer.Close();
-                                return null;
-                            }
-                        }
-                    }
-                    if (totalBytesWritten == 0)
-                    {
-                        return null;
-                    }
-                }
-                else
-                {
-                    return null;
-                }
-            //}
-
-            //if (!pcmFormat.IsCompatibleWith(destinationPCMFormat))
-            if ( channels != destChannels
-                || sampleRate != destSamplingRate 
-                || bitDepth != destBitDepth )
-            {
-                string newDestinationFilePath =  ConvertSampleRate(destinationFilePath, destinationDirectory, destChannels, destSamplingRate, destBitDepth);
-                if (File.Exists ( destinationFilePath ))
-                    {
-                    File.Delete ( destinationFilePath );
-                    }
-                return newDestinationFilePath;
-            }
-            return destinationFilePath;
-        }
-
+        public override void set_stop_flag() { }
     }
 }

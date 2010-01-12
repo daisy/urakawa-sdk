@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.IO;
 
-namespace urakawa.media.data.utilities
+namespace AudioLib
 {
     /// <summary>
     /// MPEG Layer flags
@@ -94,7 +92,7 @@ namespace urakawa.media.data.utilities
         private MpegVersion mpegVersion;
         private MpegLayer layer;
         private ChannelMode channelMode;
-        
+
         /// <summary>Reads an MP3Frame from a stream</summary>
         /// <remarks>http://mpgedit.org/mpgedit/mpeg_format/mpeghdr.htm 
         /// has some good info</remarks>
@@ -134,7 +132,7 @@ namespace urakawa.media.data.utilities
 
                 bool padding = (headerBytes[2] & 0x02) == 0x02;
                 bool privateBit = (headerBytes[2] & 0x01) == 0x01;
-                channelMode = (ChannelMode) ((headerBytes[3] & 0xC0) >> 6);
+                channelMode = (ChannelMode)((headerBytes[3] & 0xC0) >> 6);
                 int channelExtension = (headerBytes[3] & 0x30) >> 4;
                 bool copyright = (headerBytes[3] & 0x08) == 0x80;
                 bool original = (headerBytes[3] & 0x04) == 0x80;
@@ -219,6 +217,5 @@ namespace urakawa.media.data.utilities
         {
             get { return channelMode; }
         }
-
     }
 }
