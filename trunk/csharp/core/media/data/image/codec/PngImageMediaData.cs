@@ -1,6 +1,6 @@
 ﻿using urakawa.data;
 
-namespace urakawa.media.data.image.codecs
+namespace urakawa.media.data.image.codec
 {
     public class PngImageMediaData : ImageMediaData
     {
@@ -15,3 +15,5 @@ namespace urakawa.media.data.image.codecs
         }
     }
 }
+
+

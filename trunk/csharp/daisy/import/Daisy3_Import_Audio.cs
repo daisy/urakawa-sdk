@@ -7,10 +7,8 @@ using AudioLib;
 using urakawa.core;
 using urakawa.data;
 using urakawa.media;
-using urakawa.media.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
-using urakawa.media.data.utilities;
 using urakawa.media.timing;
 using urakawa.property.channel;
 
@@ -47,7 +45,7 @@ namespace urakawa.daisy.import
             foreach (string smilPath in spineOfSmilFiles)
             {
                 string fullSmilPath = Path.Combine(dirPath, smilPath);
-                Console.WriteLine ("smil file to be parsed: " + Path.GetFileName(smilPath ))  ;
+                Console.WriteLine("smil file to be parsed: " + Path.GetFileName(smilPath));
                 parseSmil(fullSmilPath);
 
             }
@@ -219,15 +217,15 @@ namespace urakawa.daisy.import
                                 string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullWavPath);
 
                                 dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-                                Console.WriteLine ( "Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullWavPath) + " = " + dataProv.DataFileRelativePath );
+                                Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullWavPath) + " = " + dataProv.DataFileRelativePath);
                                 dataProv.InitByMovingExistingFile(newfullWavPath);
                                 m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
-                                
+
                             }
                             else // use original wav file by copying it to data directory
                             {
                                 dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-                                Console.WriteLine ( "Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullWavPath) + " = " + dataProv.DataFileRelativePath );
+                                Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullWavPath) + " = " + dataProv.DataFileRelativePath);
                                 dataProv.InitByCopyingExistingFile(fullWavPath);
                                 m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
                             }
@@ -263,7 +261,7 @@ namespace urakawa.daisy.import
                 else
                 {
                     dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-                    Console.WriteLine ( "Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullMp3PathOriginal) + " = " + dataProv.DataFileRelativePath );
+                    Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullMp3PathOriginal) + " = " + dataProv.DataFileRelativePath);
                     dataProv.InitByMovingExistingFile(newfullWavPath);
                     m_OriginalAudioFile_FileDataProviderMap.Add(fullMp3PathOriginal, dataProv);
                 }
@@ -315,7 +313,7 @@ namespace urakawa.daisy.import
                         ((ExternalAudioMedia)media).ClipBegin =
                             new Time(0);
                         string str = "bad time string: " + audioAttrClipBegin.Value;
-                        Console.Write(str);
+                        Console.WriteLine(str);
                         Debug.Fail(str);
                     }
                 }
@@ -324,7 +322,7 @@ namespace urakawa.daisy.import
                 {
                     try
                     {
-                        ((ExternalAudioMedia) media).ClipEnd =
+                        ((ExternalAudioMedia)media).ClipEnd =
                             Time.ParseTimeString(audioAttrClipEnd.Value);
                     }
                     catch (FormatException e)
@@ -332,7 +330,7 @@ namespace urakawa.daisy.import
                         ((ExternalAudioMedia)media).ClipEnd =
                             new Time(0);
                         string str = "bad time string: " + audioAttrClipEnd.Value;
-                        Console.Write(str);
+                        Console.WriteLine(str);
                         Debug.Fail(str);
                     }
                 }
@@ -401,7 +399,7 @@ namespace urakawa.daisy.import
                 {
                     clipB = new Time(0);
                     string str = "bad time string: " + audioAttrClipBegin.Value;
-                    Console.Write(str);
+                    Console.WriteLine(str);
                     Debug.Fail(str);
                 }
             }
@@ -416,7 +414,7 @@ namespace urakawa.daisy.import
                 {
                     clipE = new Time(0);
                     string str = "bad time string: " + audioAttrClipEnd.Value;
-                    Console.Write(str);
+                    Console.WriteLine(str);
                     Debug.Fail(str);
                 }
             }

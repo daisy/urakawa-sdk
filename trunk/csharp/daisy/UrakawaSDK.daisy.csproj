@@ -56,6 +56,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -71,6 +72,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="import\AudioFormatConvertorSession.cs" />
     <Compile Include="XmlDocumentHelper.cs" />
     <Compile Include="export\Daisy3_Export.cs" />
     <Compile Include="export\Daisy3_Export_ContentDoc.cs" />

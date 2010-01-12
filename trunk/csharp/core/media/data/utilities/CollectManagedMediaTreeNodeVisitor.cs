@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.property.channel;

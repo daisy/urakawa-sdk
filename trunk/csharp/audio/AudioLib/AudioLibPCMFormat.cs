@@ -9,7 +9,6 @@ namespace AudioLib
     /// </summary> 
     public class AudioLibPCMFormat
     {
-
         public AudioLibPCMFormat()
             : this(1, 44100, 16)
         {

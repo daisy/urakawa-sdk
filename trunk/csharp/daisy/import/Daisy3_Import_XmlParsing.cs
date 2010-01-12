@@ -35,7 +35,7 @@ namespace urakawa.daisy.import
                 }
                 catch (Exception e)
                 {
-                    Console.Write(e.Message);
+                    Console.WriteLine(e.Message);
 
                     // No message box: use debugging instead (inspect stack trace, watch values)
                     //MessageBox.Show(e.ToString());
