@@ -325,13 +325,24 @@ namespace urakawa.daisy.export
             if (nodeLocalName == "noteref"
                 || nodeLocalName == "annoref")
             {
-                attributesList.Add((XmlAttribute)node.Attributes.GetNamedItem("idref"));
-                return true;
+                if (node.Attributes.GetNamedItem("idref") != null ) 
+                    {
+                    attributesList.Add((XmlAttribute)node.Attributes.GetNamedItem("idref"));
+                    return true;
+                    }
+                else
+                    {
+                    System.Diagnostics.Debug.Fail (node.Name + " Should have idref attribute!") ;
+                    }
+                
             }
             else if (nodeLocalName == "a")
             {
-                attributesList.Add((XmlAttribute)node.Attributes.GetNamedItem("href"));
+                if ( node.Attributes.GetNamedItem("href") != null ) 
+                    {
+                    attributesList.Add((XmlAttribute)node.Attributes.GetNamedItem("href"));
                 return true;
+                    }
             }
             return false;
         }
