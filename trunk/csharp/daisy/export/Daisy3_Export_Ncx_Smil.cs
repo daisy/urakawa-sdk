@@ -200,7 +200,7 @@ namespace urakawa.daisy.export
 
                 if (externalAudio != null ||
                     (n.GetTextMedia() != null
-                    && special_UrakawaNode != null && (IsEscapableNode(special_UrakawaNode) || (special_UrakawaNode.GetXmlProperty() != null && special_UrakawaNode.GetXmlProperty().LocalName.ToLower() == "doctitle"))
+                    && special_UrakawaNode != null && (IsEscapableNode(special_UrakawaNode) || IsSkippableNode(special_UrakawaNode) ||  (special_UrakawaNode.GetXmlProperty() != null && special_UrakawaNode.GetXmlProperty().LocalName.ToLower() == "doctitle"))
                     && m_TreeNode_XmlNodeMap[n].Attributes != null))
                 {
                     // continue ahead 
@@ -359,11 +359,14 @@ namespace urakawa.daisy.export
                     txtNode.AppendChild(
                         ncxDocument.CreateTextNode(strPageValue));
 
-                    XmlNode audioNodeNcx = ncxDocument.CreateElement(null, "audio", pageListNode.NamespaceURI);
-                    navLabelNode.AppendChild(audioNodeNcx);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString());
-                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString());
-                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "src", Path.GetFileName(externalAudio.Src));
+                    if (externalAudio != null)
+                        {
+                        XmlNode audioNodeNcx = ncxDocument.CreateElement ( null, "audio", pageListNode.NamespaceURI );
+                        navLabelNode.AppendChild ( audioNodeNcx );
+                        XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipBegin", externalAudio.ClipBegin.TimeAsTimeSpan.ToString () );
+                        XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipEnd", externalAudio.ClipEnd.TimeAsTimeSpan.ToString () );
+                        XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "src", Path.GetFileName ( externalAudio.Src ) );
+                        }
 
                     XmlNode contentNode = ncxDocument.CreateElement(null, "content", pageListNode.NamespaceURI);
                     pageTargetNode.AppendChild(contentNode);
