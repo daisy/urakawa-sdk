@@ -201,7 +201,7 @@ namespace urakawa.daisy.export
                 if (externalAudio != null ||
                     (n.GetTextMedia() != null
                     && special_UrakawaNode != null && (IsEscapableNode(special_UrakawaNode) || IsSkippableNode(special_UrakawaNode) ||  (special_UrakawaNode.GetXmlProperty() != null && special_UrakawaNode.GetXmlProperty().LocalName.ToLower() == "doctitle"))
-                    && m_TreeNode_XmlNodeMap[n].Attributes != null))
+                    && ( m_TreeNode_XmlNodeMap[n].Attributes != null   ||   m_TreeNode_XmlNodeMap[n.Parent].Attributes!= null)))
                 {
                     // continue ahead 
                 }
@@ -293,7 +293,7 @@ namespace urakawa.daisy.export
 
                 XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id", GetNextID(ID_SmilPrefix));
-                string dtbookID = m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value;
+                string dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null ? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "id" ).Value : m_TreeNode_XmlNodeMap[n.Parent].Attributes.GetNamedItem ( "id" ).Value;
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src", m_Filename_Content + "#" + dtbookID);
                 parNode.AppendChild(SmilTextNode);
                 if (externalAudio != null)
