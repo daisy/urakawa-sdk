@@ -1,6 +1,6 @@
 ﻿using urakawa.core;
 
-namespace urakawa.publish
+namespace urakawa.daisy.export.visitor
 {
     public class PublishFlattenedManagedAudioVisitor : AbstractPublishFlattenedManagedAudioVisitor
     {

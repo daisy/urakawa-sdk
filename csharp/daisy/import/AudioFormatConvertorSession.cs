@@ -116,10 +116,10 @@ namespace urakawa.daisy.import
             {
                 case AudioFileType.WavUncompressed:
                 case AudioFileType.WavCompressed:
-                    IWavFormatConverter formatConverter1 = new WavFormatConverter(true);
+                    WavFormatConverter formatConverter1 = new WavFormatConverter(true);
                     return formatConverter1.ConvertSampleRate(SourceFilePath, destinationDirectory, destinationFormatInfo.Data.NumberOfChannels, destinationFormatInfo.Data.SampleRate, destinationFormatInfo.Data.BitDepth);
                 case AudioFileType.Mp3:
-                    IWavFormatConverter formatConverter2 = new WavFormatConverter(true);
+                    WavFormatConverter formatConverter2 = new WavFormatConverter(true);
                     return formatConverter2.UnCompressMp3File(SourceFilePath, destinationDirectory, destinationFormatInfo.Data.NumberOfChannels, destinationFormatInfo.Data.SampleRate, destinationFormatInfo.Data.BitDepth);
                 default:
                     throw new Exception("Source file format not supported");

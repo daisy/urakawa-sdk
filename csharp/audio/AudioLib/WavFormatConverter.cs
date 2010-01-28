@@ -5,7 +5,7 @@ using NAudio.Wave;
 
 namespace AudioLib
 {
-    public class WavFormatConverter : IWavFormatConverter
+    public class WavFormatConverter
     {
         private bool m_OverwriteOutputFiles;
         public bool OverwriteOutputFiles
@@ -56,6 +56,11 @@ namespace AudioLib
 
             return destinationFilePath;
         }
+
+        //public string EncodeWavFileToMp3(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth, uint bitRate)
+        //{
+            
+        //}
 
         public string UnCompressMp3File(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth)
         {

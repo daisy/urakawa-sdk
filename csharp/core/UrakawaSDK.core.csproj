@@ -312,11 +312,6 @@
     <Compile Include="Presentation.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="publish\AbstractBasePublishAudioVisitor.cs" />
-    <Compile Include="publish\AbstractPublishFlattenedManagedAudioVisitor.cs" />
-    <Compile Include="publish\AbstractPublishManagedAudioVisitor.cs" />
-    <Compile Include="publish\PublishFlattenedManagedAudioVisitor.cs" />
-    <Compile Include="publish\PublishManagedAudioVisitor.cs" />
     <Compile Include="core\TreeNode.cs" />
     <Compile Include="core\TreeNodeFactory.cs" />
     <Compile Include="core\ITreeNodeReadOnlyMethods.cs" />

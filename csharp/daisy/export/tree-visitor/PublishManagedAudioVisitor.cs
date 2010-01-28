@@ -1,6 +1,6 @@
 using urakawa.core;
 
-namespace urakawa.publish
+namespace urakawa.daisy.export.visitor
 {
     /// <summary>
     /// Concrete implementation of the <see cref="AbstractPublishManagedAudioVisitor"/>
