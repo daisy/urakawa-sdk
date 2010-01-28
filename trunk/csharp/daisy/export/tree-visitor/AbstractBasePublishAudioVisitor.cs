@@ -4,7 +4,7 @@ using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.property.channel;
 
-namespace urakawa.publish
+namespace urakawa.daisy.export.visitor
 {
     public abstract class AbstractBasePublishAudioVisitor : ITreeNodeVisitor
     {

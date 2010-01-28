@@ -74,7 +74,6 @@
     <Compile Include="AudioPlayer.cs" />
     <Compile Include="AudioRecorder.cs" />
     <Compile Include="CalculationFunctions.cs" />
-    <Compile Include="IWavFormatConverter.cs" />
     <Compile Include="AudioLibPCMFormat.cs" />
     <Compile Include="Mp3Frame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

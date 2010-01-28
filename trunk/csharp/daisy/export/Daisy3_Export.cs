@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.core;
-using urakawa.publish;
+using urakawa.daisy.export.visitor;
 using urakawa.property.channel;
 using urakawa.media;
 using urakawa.xuk;

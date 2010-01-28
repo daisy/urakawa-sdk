@@ -8,7 +8,7 @@ using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
 
-namespace urakawa.publish
+namespace urakawa.daisy.export.visitor
 {
     public abstract class AbstractPublishFlattenedManagedAudioVisitor : AbstractBasePublishAudioVisitor
     {
@@ -133,8 +133,7 @@ namespace urakawa.publish
                             long manMediaStreamPosBefore = manMediaStream.Position;
                             long extMediaStreamPosBefore = extMediaStream.Position;
 
-                            Debug.Assert(AudioLibPCMFormat.CompareStreamData(manMediaStream, extMediaStream,
-                                                                             (int)manMediaStream.Length));
+                            //Debug.Assert(AudioLibPCMFormat.CompareStreamData(manMediaStream, extMediaStream, (int)manMediaStream.Length));
 
                             Debug.Assert(manMediaStream.Position == manMediaStreamPosBefore + manMediaStream.Length);
                             Debug.Assert(extMediaStream.Position == extMediaStreamPosBefore + manMediaStream.Length);

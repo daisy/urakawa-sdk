@@ -6,7 +6,7 @@ using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
 
-namespace urakawa.publish
+namespace urakawa.daisy.export.visitor
 {
     public abstract class AbstractPublishManagedAudioVisitor : AbstractBasePublishAudioVisitor
     {
