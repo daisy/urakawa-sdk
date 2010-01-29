@@ -121,5 +121,19 @@ namespace urakawa.daisy.export.visitor
                 mDestinationDirectory = value;
             }
         }
+
+        private bool m_EncodePublishedAudioFilesToMp3 = false;
+        public bool EncodePublishedAudioFilesToMp3
+            {
+            get
+                {
+                return m_EncodePublishedAudioFilesToMp3;
+                }
+            set
+                {
+                m_EncodePublishedAudioFilesToMp3 = value;
+                }
+            }
+
     }
 }

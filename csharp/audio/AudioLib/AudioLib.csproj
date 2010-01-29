@@ -123,6 +123,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="lame.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Events\Player\" />
     <Folder Include="Events\Recorder\" />
     <Folder Include="Events\VuMeter\" />
