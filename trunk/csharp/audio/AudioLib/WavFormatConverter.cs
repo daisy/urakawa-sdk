@@ -2,10 +2,11 @@ using System;
 using System.IO;
 using javazoom.jl.decoder;
 using NAudio.Wave;
+using System.Diagnostics;
 
 namespace AudioLib
 {
-    public class WavFormatConverter
+    public class WavFormatConverter 
     {
         private bool m_OverwriteOutputFiles;
         public bool OverwriteOutputFiles
@@ -56,11 +57,6 @@ namespace AudioLib
 
             return destinationFilePath;
         }
-
-        //public string EncodeWavFileToMp3(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth, uint bitRate)
-        //{
-            
-        //}
 
         public string UnCompressMp3File(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth)
         {
@@ -237,6 +233,44 @@ namespace AudioLib
              */
         }
 
+
+        public string CompressWavToMp3 ( string sourceFile, string destinationFile, ushort destChannels, uint destSamplingRate, ushort destBitDepth, ushort bitRate_mp3Output )
+            {
+            string LameWorkingDir = Path.GetDirectoryName (
+                System.Reflection.Assembly.GetExecutingAssembly ().Location);
+            //string outputFilePath = Path.Combine (
+                //Path.GetDirectoryName ( sourceFile ),
+                //Path.GetFileNameWithoutExtension ( sourceFile ) + ".mp3" );
+
+            string channelsArg = destChannels == 1 ? "m" : "s";
+            //string argumentString = "-b " + bitRate_mp3Output.ToString ()  + " --cbr --resample default -m m \"" + sourceFile + "\" \"" + destinationFile + "\"";
+            string argumentString = "-b " + bitRate_mp3Output.ToString () + " --cbr -m " + channelsArg +  " \"" + sourceFile + "\" \"" + destinationFile + "\"";
+
+            System.Diagnostics.ProcessStartInfo process_Lame = new System.Diagnostics.ProcessStartInfo ();
+
+            process_Lame.FileName = Path.Combine ( LameWorkingDir, "lame.exe" );
+
+            process_Lame.Arguments = argumentString;
+
+            process_Lame.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            //System.Windows.Forms.MessageBox.Show ( process_Lame.FileName );
+            //System.Windows.Forms.MessageBox.Show ( process_Lame.Arguments );
+            System.Diagnostics.Process p = System.Diagnostics.Process.Start ( process_Lame );
+
+
+            p.WaitForExit ();
+
+            if ( File.Exists (destinationFile ))
+                {
+            return destinationFile;
+                }
+            else{
+                return null ;
+                }
+            }
+
+
+
         private string GenerateOutputFileFullname(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth)
         {
             //FileInfo sourceFileInfo = new FileInfo(sourceFile);
@@ -340,5 +374,7 @@ namespace AudioLib
         }
 
         public override void set_stop_flag() { }
+
+
     }
 }
