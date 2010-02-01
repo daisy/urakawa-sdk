@@ -135,5 +135,33 @@ namespace urakawa.daisy.export.visitor
                 }
             }
 
+
+        private ushort m_BitRate_Mp3 = 64;
+        public ushort BitRate_Mp3
+            {
+            get
+                {
+                return m_BitRate_Mp3;
+                }
+            set
+                {
+                if (value == 32 ||
+                    value == 48 ||
+                    value == 64 ||
+                    value == 128 ||
+                    value == 256 ||
+                    value == 310)
+                    {
+                    m_BitRate_Mp3 = value;
+                    }
+                else
+                    {
+                    throw new System.Exception ( " bit rate not supported! " );
+                    }
+
+                }
+            }
+
+
     }
 }
