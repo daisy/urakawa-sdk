@@ -153,7 +153,19 @@ namespace urakawa.daisy.export
             //AddMetadata_Generator(opfDocument, x_metadataNode);
 
             AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totalTime", m_TotalTime.ToString());
+
+            if (m_Presentation.GetMetadata ( "dtb:multimediaType" ).Count == 0)
+                {
+                AddMetadataAsAttributes ( opfDocument, x_metadataNode, "dtb:multimediaType", "audioFullText" );
+                }
+
+            if (m_Presentation.GetMetadata ( "dtb:multimediaContent" ).Count == 0)
+                {
+                AddMetadataAsAttributes ( opfDocument, x_metadataNode, "dtb:multimediaContent", "audio,text" );
+                }
+
             AddMetadataAsInnerText(opfDocument, dc_metadataNode, "dc:format", "ANSI/NISO Z39.86-2005");
+
 
             foreach (Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
