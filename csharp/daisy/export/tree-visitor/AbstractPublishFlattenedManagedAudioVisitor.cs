@@ -197,7 +197,7 @@ namespace urakawa.daisy.export.visitor
             string destinationFilePath = Path.Combine ( base.DestinationDirectory.LocalPath,
                 Path.GetFileNameWithoutExtension ( sourceFilePath ) + ".mp3" );
 
-            string mp3FilePath = formatConverter.CompressWavToMp3 ( sourceFilePath, destinationFilePath, audioFormat.Data.NumberOfChannels, audioFormat.Data.SampleRate, audioFormat.Data.BitDepth, 64 );
+            string mp3FilePath = formatConverter.CompressWavToMp3 ( sourceFilePath, destinationFilePath, audioFormat.Data.NumberOfChannels, audioFormat.Data.SampleRate, audioFormat.Data.BitDepth, BitRate_Mp3);
 
             foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
                 {
