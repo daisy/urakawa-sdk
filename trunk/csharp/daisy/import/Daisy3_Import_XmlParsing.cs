@@ -5,8 +5,6 @@ using System.IO.IsolatedStorage;
 using System.Net;
 using System.Net.Cache;
 using System.Xml;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace urakawa.daisy.import
 {
@@ -20,7 +18,7 @@ namespace urakawa.daisy.import
             settings.ValidationType = ValidationType.None;
             settings.ConformanceLevel = ConformanceLevel.Auto;
             settings.XmlResolver = new LocalXmlUrlResolver(true);
-        
+
             settings.IgnoreComments = true;
             settings.IgnoreProcessingInstructions = false;
             settings.IgnoreWhitespace = true;
@@ -59,21 +57,23 @@ namespace urakawa.daisy.import
 
         public class LocalXmlUrlResolver : XmlUrlResolver
         {
-            private bool m_EnableHttpCaching;
             private ICredentials m_Credentials;
-            private Dictionary<string, string> m_EmbeddedEntities;
-            private string m_DownloadedDTDDirectoryPath;
-            private string m_DownloadedDTDDirectoryName = "Tobi-Downloaded-DTDs" ;
-            private System.IO.IsolatedStorage.IsolatedStorageFile m_IsolatedArea = System.IO.IsolatedStorage.IsolatedStorageFile.GetMachineStoreForApplication ();
 
-            //resolve resources from cache (if possible) when m_EnableHttpCaching is set to true
-            //resolve resources from source when enableHttpcaching is set to false 
+            private readonly Dictionary<string, string> m_EmbeddedEntities;
+
+            private readonly bool m_EnableHttpCaching;
+
+            //private readonly string m_DownloadedDTDDirectoryPath;
+            //private const string m_DownloadedDTDDirectoryName = "Downloaded-DTDs";
+
+            private readonly IsolatedStorageFile m_IsolatedArea = IsolatedStorageFile.GetMachineStoreForApplication();
+
             public LocalXmlUrlResolver(bool enableHttpCaching)
             {
                 m_EnableHttpCaching = enableHttpCaching;
-                
+
                 //System.Windows.Forms.MessageBox.Show ( isolatedArea.GetDirectoryNames ("*.*)[0]  );
-                m_DownloadedDTDDirectoryPath = Path.GetDirectoryName ( System.Reflection.Assembly.GetExecutingAssembly ().Location ) + Path.DirectorySeparatorChar + "Downloaded-DTDs";
+                //m_DownloadedDTDDirectoryPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + Path.DirectorySeparatorChar + m_DownloadedDTDDirectoryName;
 
                 m_EmbeddedEntities = new Dictionary<String, String>();
 
@@ -105,7 +105,6 @@ namespace urakawa.daisy.import
                 m_EmbeddedEntities.Add("//NISO//DTD%20dtbsmil%202005-2//EN", "DTDs.Resources.dtbsmil-2005-2.dtd");
                 m_EmbeddedEntities.Add("//ISBN%200-9673008-1-9//DTD%20OEB%201.2%20Package//EN", "DTDs.Resources.oebpkg12.dtd");
                 m_EmbeddedEntities.Add("//NISO//DTD%20dtbsmil%202005-1//EN", "DTDs.Resources.dtbsmil-2005-1.dtd");
-  
             }
 
             public override Uri ResolveUri(Uri baseUri, string relativeUri)
@@ -139,13 +138,18 @@ namespace urakawa.daisy.import
                     throw new ArgumentNullException("absoluteUri");
                 }
 
+                if (ofObjectToReturn != null && ofObjectToReturn != typeof(Stream))
+                {
+                    return null;
+                }
+
                 // Resolve local known entities
                 Stream localStream = mapUri(absoluteUri);
                 if (localStream != null)
                 {
                     return localStream;
                 }
-                
+
                 // if dtd is not found in packaged files, search in downloaded dtds
                 /*
                 string localDTDFullPath = Path.Combine ( m_DownloadedDTDDirectoryPath,
@@ -155,19 +159,17 @@ namespace urakawa.daisy.import
                     return new FileStream ( localDTDFullPath, FileMode.Open, FileAccess.Read );
                     }
                 */
-                if (m_IsolatedArea.GetFileNames ( Path.GetFileName ( absoluteUri.AbsolutePath ) ).Length > 0)
-                    {
-                    
+
+                if (m_IsolatedArea.GetFileNames(Path.GetFileName(absoluteUri.AbsolutePath)).Length > 0)
+                {
                     IsolatedStorageFileStream storageStream =
-                      new IsolatedStorageFileStream ( Path.GetFileName ( absoluteUri.AbsolutePath ),
-                      FileMode.Open, m_IsolatedArea);
-                    
-                        return storageStream;
-                        
-                    }
+                      new IsolatedStorageFileStream(Path.GetFileName(absoluteUri.AbsolutePath), FileMode.Open, m_IsolatedArea);
+
+                    return storageStream;
+                }
 
                 //resolve resources from cache (if possible)
-                if (absoluteUri.Scheme == "http" && m_EnableHttpCaching && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream)))
+                if (absoluteUri.Scheme == "http" && m_EnableHttpCaching)
                 {
                     WebRequest webReq = WebRequest.Create(absoluteUri);
                     webReq.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Default);
@@ -176,16 +178,16 @@ namespace urakawa.daisy.import
                         webReq.Credentials = m_Credentials;
                     }
                     WebResponse resp = webReq.GetResponse();
-                    Stream webStream = resp.GetResponseStream ();
+                    Stream webStream = resp.GetResponseStream();
                     // create local DTD file from webStream
-                    CreateLocalDTDFileFromWebStream ( absoluteUri.AbsolutePath, webStream );
-                    return webStream ;
+                    CreateLocalDTDFileFromWebStream(absoluteUri.AbsolutePath, webStream);
+                    return webStream;
                 }
 
                 // No need to look for a local file that does not exist.
                 //if (absoluteUri.Scheme == "file" && !File.Exists(absoluteUri.LocalPath))
                 //{
-                    //return null;
+                //return null;
                 //}
 
                 //otherwise use the default behavior of the XmlUrlResolver class (resolve resources from source)
@@ -214,57 +216,50 @@ namespace urakawa.daisy.import
 
                 return null;
             }
-            
-            private void CreateLocalDTDFileFromWebStream (string strWebDTDPath, Stream webStream  )
-                {
-                if (!Directory.Exists ( m_DownloadedDTDDirectoryPath ))
-                    {
-                    Directory.CreateDirectory ( m_DownloadedDTDDirectoryPath );
-                    }
-                string localDTDFilePath = Path.Combine ( m_DownloadedDTDDirectoryPath,
-                    Path.GetFileName ( strWebDTDPath ) );
+
+            private void CreateLocalDTDFileFromWebStream(string strWebDTDPath, Stream webStream)
+            {
+                //if (!Directory.Exists(m_DownloadedDTDDirectoryPath))
+                //{
+                //    Directory.CreateDirectory(m_DownloadedDTDDirectoryPath);
+                //}
+                //string localDTDFilePath = Path.Combine(m_DownloadedDTDDirectoryPath, Path.GetFileName(strWebDTDPath));
+
                 FileStream fs = null;
                 try
-                    {
-                    
+                {
                     //fs = File.Create ( localDTDFilePath );
-                    fs = new IsolatedStorageFileStream ( Path.GetFileName ( strWebDTDPath ),
-  FileMode.Create, m_IsolatedArea );
-                    copyStreamData ( webStream, fs, 1024 );
-                    }
-                
+
+                    fs = new IsolatedStorageFileStream(Path.GetFileName(strWebDTDPath), FileMode.Create, m_IsolatedArea);
+                    copyStreamData(webStream, fs, 1024);
+                }
                 finally
-                    {
+                {
                     if (fs != null)
-                        {
-                        fs.Close ();
-                        fs = null;
-                        }
-                    
+                    {
+                        fs.Close();
                     }
                 }
+            }
 
-            public void copyStreamData ( Stream source, Stream dest, int BUFFER_SIZE )
-                { //1
-                
-                if (source.CanSeek &&  source.Length <= BUFFER_SIZE )
-                    { // 2
+            public void copyStreamData(Stream source, Stream dest, int BUFFER_SIZE)
+            { //1
+                if (source.CanSeek && source.Length <= BUFFER_SIZE)
+                { // 2
                     byte[] buffer = new byte[source.Length];
-                    int read = source.Read ( buffer, 0, (int)source.Length );
-                    dest.Write ( buffer, 0, read );
-                    } //-2
+                    int read = source.Read(buffer, 0, (int)source.Length);
+                    dest.Write(buffer, 0, read);
+                } //-2
                 else
-                    { // 2
+                { // 2
                     byte[] buffer = new byte[BUFFER_SIZE];
                     int bytesRead = 0;
-                    while ((bytesRead = source.Read ( buffer, 0, BUFFER_SIZE )) > 0)
-                        { //3
-                        dest.Write ( buffer, 0, bytesRead );
-                        } // -3
-
-                    } //-2
-                } // -1
-
+                    while ((bytesRead = source.Read(buffer, 0, BUFFER_SIZE)) > 0)
+                    { //3
+                        dest.Write(buffer, 0, bytesRead);
+                    } // -3
+                } //-2
+            } // -1
         }
     }
 }
