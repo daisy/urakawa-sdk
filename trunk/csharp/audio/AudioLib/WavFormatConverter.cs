@@ -234,7 +234,7 @@ namespace AudioLib
         }
 
 
-        public string CompressWavToMp3 ( string sourceFile, string destinationFile, ushort destChannels, uint destSamplingRate, ushort destBitDepth, ushort bitRate_mp3Output )
+        public bool CompressWavToMp3 ( string sourceFile, string destinationFile, ushort destChannels, uint destSamplingRate, ushort destBitDepth, ushort bitRate_mp3Output )
             {
             string LameWorkingDir = Path.GetDirectoryName (
                 System.Reflection.Assembly.GetExecutingAssembly ().Location);
@@ -262,10 +262,11 @@ namespace AudioLib
 
             if ( File.Exists (destinationFile ))
                 {
-            return destinationFile;
+                return true;
                 }
-            else{
-                return null ;
+            else
+                {
+                return false;
                 }
             }
 

@@ -197,17 +197,19 @@ namespace urakawa.daisy.export.visitor
             string destinationFilePath = Path.Combine ( base.DestinationDirectory.LocalPath,
                 Path.GetFileNameWithoutExtension ( sourceFilePath ) + ".mp3" );
 
-            string mp3FilePath = formatConverter.CompressWavToMp3 ( sourceFilePath, destinationFilePath, audioFormat.Data.NumberOfChannels, audioFormat.Data.SampleRate, audioFormat.Data.BitDepth, BitRate_Mp3);
-
-            foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
+            if (formatConverter.CompressWavToMp3 ( sourceFilePath, destinationFilePath, audioFormat.Data.NumberOfChannels, audioFormat.Data.SampleRate, audioFormat.Data.BitDepth, BitRate_Mp3 ))
                 {
-                if (ext != null)
+                foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
                     {
-                    ext.Src = ext.Src.Replace ( ".wav", ".mp3" ); 
+                    if (ext != null)
+                        {
+                        ext.Src = ext.Src.Replace ( ".wav", ".mp3" );
+                        }
                     }
+
+                File.Delete ( sourceFilePath );
                 }
             m_ExternalAudioMediaList.Clear ();
-            File.Delete ( sourceFilePath );
             }
 
         private TreeNode m_RootNode = null;
