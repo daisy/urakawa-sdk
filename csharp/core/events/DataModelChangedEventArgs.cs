@@ -31,7 +31,7 @@ namespace urakawa.events
         public override string ToString()
         {
             string res = String.Format(
-                "{0}\n\tSourceObject={1}",
+                "{0}" + Environment.NewLine + "\tSourceObject={1}",
                 base.ToString(),
                 SourceObject);
 
@@ -40,7 +40,7 @@ namespace urakawa.events
                 Object o = prop.GetValue(this, null);
                 if (!Object.ReferenceEquals(SourceObject, o))
                 {
-                    res += String.Format("\n\t{0}={1}", prop.Name, o);
+                    res += String.Format(Environment.NewLine + "\t{0}={1}", prop.Name, o);
                 }
             }
             foreach (FieldInfo field in GetType().GetFields())
@@ -48,7 +48,7 @@ namespace urakawa.events
                 Object o = field.GetValue(this);
                 if (!Object.ReferenceEquals(SourceObject, o))
                 {
-                    res += String.Format("\n\t{0}={1}", field.Name, o);
+                    res += String.Format(Environment.NewLine + "\t{0}={1}", field.Name, o);
                 }
             }
             return res;
