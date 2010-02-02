@@ -13,25 +13,25 @@ namespace urakawa.daisy.export.visitor
             mCurrentAudioFileNumber = 0;
         }
 
-        private const int BUFFER_SIZE = 6 * 1024 * 1024; // 6 MB
-        protected void copyStreamData(Stream source, Stream dest)
-        {
-            if (source.Length <= BUFFER_SIZE)
-            {
-                byte[] buffer = new byte[source.Length];
-                int read = source.Read(buffer, 0, (int)source.Length);
-                dest.Write(buffer, 0, read);
-            }
-            else
-            {
-                byte[] buffer = new byte[BUFFER_SIZE];
-                int bytesRead = 0;
-                while ((bytesRead = source.Read(buffer, 0, BUFFER_SIZE)) > 0)
-                {
-                    dest.Write(buffer, 0, bytesRead);
-                }
-            }
-        }
+        //private const int BUFFER_SIZE = 6 * 1024 * 1024; // 6 MB
+        //protected void copyStreamData(Stream source, Stream dest)
+        //{
+        //    if (source.Length <= BUFFER_SIZE)
+        //    {
+        //        byte[] buffer = new byte[source.Length];
+        //        int read = source.Read(buffer, 0, (int)source.Length);
+        //        dest.Write(buffer, 0, read);
+        //    }
+        //    else
+        //    {
+        //        byte[] buffer = new byte[BUFFER_SIZE];
+        //        int bytesRead = 0;
+        //        while ((bytesRead = source.Read(buffer, 0, BUFFER_SIZE)) > 0)
+        //        {
+        //            dest.Write(buffer, 0, bytesRead);
+        //        }
+        //    }
+        //}
 
         protected int mCurrentAudioFileNumber;
         public int CurrentAudioFileNumber

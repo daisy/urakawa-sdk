@@ -287,7 +287,8 @@ namespace urakawa.daisy.export.visitor
             }
             try
             {
-                copyStreamData(audioPcmStream, m_TransientWavFileStream);
+                const uint BUFFER_SIZE = 1024 * 1024 * 3; // 3 MB MAX BUFFER
+                StreamUtils.Copy(audioPcmStream, (ulong)audioPcmStream.Length, m_TransientWavFileStream, BUFFER_SIZE);
             }
             catch
             {
@@ -383,7 +384,8 @@ namespace urakawa.daisy.export.visitor
             {
                 ulong riffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(wavFileStream, (uint)audioPcmStream.Length);
 
-                copyStreamData(audioPcmStream, wavFileStream);
+                const uint BUFFER_SIZE = 1024 * 1024 * 6; // 6 MB MAX BUFFER
+                StreamUtils.Copy(audioPcmStream, (ulong)audioPcmStream.Length, wavFileStream, BUFFER_SIZE);
             }
             finally
             {

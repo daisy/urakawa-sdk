@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using AudioLib;
 using urakawa.core;
 using urakawa.property.channel;
 using urakawa.media;
@@ -102,7 +103,8 @@ namespace urakawa.daisy.export.visitor
                     Stream stream = amd.OpenPcmInputStream();
                     try
                     {
-                        copyStreamData(stream, mCurrentAudioFileStream);
+                        const uint BUFFER_SIZE = 1024 * 1024 * 3; // 3 MB MAX BUFFER
+                        StreamUtils.Copy(stream, (ulong)stream.Length, mCurrentAudioFileStream, BUFFER_SIZE);
                     }
                     finally
                     {
