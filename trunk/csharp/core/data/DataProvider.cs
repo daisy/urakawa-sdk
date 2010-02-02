@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using urakawa.exception;
 using urakawa.xuk;
 
@@ -17,7 +18,7 @@ namespace urakawa.data
         private void Reset()
         {
             mMimeType = null;
-           
+
         }
 
         /// <summary>
@@ -64,43 +65,45 @@ namespace urakawa.data
             {
                 provOutputStream.Seek(0, SeekOrigin.End);
 
-                const int BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER  
-                if (count <= BUFFER_SIZE)
-                {
-                    byte[] buffer = new byte[count];
-                    int bytesRead = data.Read(buffer, 0, (int)count);
-                    if (bytesRead > 0)
-                    {
-                        provOutputStream.Write(buffer, 0, bytesRead);
-                    }
-                    else
-                    {
-                        throw new exception.InputStreamIsTooShortException(
-                            String.Format("Can not read {0:0} bytes from the given data Stream",
-                                          count));
-                    }
-                }
-                else
-                {
-                    int bytesRead = 0;
-                    int totalBytesWritten = 0;
-                    byte[] buffer = new byte[BUFFER_SIZE];
+                const uint BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER
+                StreamUtils.Copy(data, (ulong)count, provOutputStream, BUFFER_SIZE);
 
-                    while ((bytesRead = data.Read(buffer, 0, BUFFER_SIZE)) > 0)
-                    {
-                        if ((totalBytesWritten + bytesRead) > count)
-                        {
-                            int bytesToWrite = (int)(count - totalBytesWritten);
-                            provOutputStream.Write(buffer, 0, bytesToWrite);
-                            totalBytesWritten += bytesToWrite;
-                        }
-                        else
-                        {
-                            provOutputStream.Write(buffer, 0, bytesRead);
-                            totalBytesWritten += bytesRead;
-                        }
-                    }
-                }
+                //if (count <= BUFFER_SIZE)
+                //{
+                //    byte[] buffer = new byte[count];
+                //    int bytesRead = data.Read(buffer, 0, (int)count);
+                //    if (bytesRead > 0)
+                //    {
+                //        provOutputStream.Write(buffer, 0, bytesRead);
+                //    }
+                //    else
+                //    {
+                //        throw new exception.InputStreamIsTooShortException(
+                //            String.Format("Can not read {0:0} bytes from the given data Stream",
+                //                          count));
+                //    }
+                //}
+                //else
+                //{
+                //    int bytesRead = 0;
+                //    int totalBytesWritten = 0;
+                //    byte[] buffer = new byte[BUFFER_SIZE];
+
+                //    while ((bytesRead = data.Read(buffer, 0, (int)BUFFER_SIZE)) > 0)
+                //    {
+                //        if ((totalBytesWritten + bytesRead) > count)
+                //        {
+                //            int bytesToWrite = (int)(count - totalBytesWritten);
+                //            provOutputStream.Write(buffer, 0, bytesToWrite);
+                //            totalBytesWritten += bytesToWrite;
+                //        }
+                //        else
+                //        {
+                //            provOutputStream.Write(buffer, 0, bytesRead);
+                //            totalBytesWritten += bytesRead;
+                //        }
+                //    }
+                //}
             }
             finally
             {
@@ -170,54 +173,56 @@ namespace urakawa.data
         /// </summary>
         /// <param name="exportFilePath"></param>
         /// <param name="canOverwrite"></param>
-        public virtual void ExportDataStreamToFile ( string exportFilePath, bool canOverwrite )
+        public virtual void ExportDataStreamToFile(string exportFilePath, bool canOverwrite)
+        {
+            if (exportFilePath == null)
             {
-            
-            if (exportFilePath== null)
-                {
-                throw new exception.MethodParameterIsNullException ( "external file path cannot be null" );
-                }
+                throw new exception.MethodParameterIsNullException("external file path cannot be null");
+            }
 
-            if (File.Exists ( exportFilePath ) && !canOverwrite )
-                {
-                throw new System.Exception ( "Export file with same name already exists" );
-                }
+            if (File.Exists(exportFilePath) && !canOverwrite)
+            {
+                throw new System.Exception("Export file with same name already exists");
+            }
 
-            Stream source = OpenInputStream ();
+            Stream source = OpenInputStream();
 
             if (source.Length == 0)
-                {
-                source.Close ();
-                throw new exception.InputStreamIsTooShortException ("The data provider has no data to export to external file");
-                }
-
-            FileStream exportFileStream = File.Create ( exportFilePath );
-            int BUFFER_SIZE = 1024 * 1024;
-            try
-                {
-                if (source.Length <= BUFFER_SIZE)
-                    {
-                    byte[] buffer = new byte[source.Length];
-                    int read = source.Read ( buffer, 0, (int)source.Length );
-                    exportFileStream.Write ( buffer, 0, read );
-                    }
-                else
-                    {
-                    byte[] buffer = new byte[BUFFER_SIZE];
-                    int bytesRead = 0;
-                    while ((bytesRead = source.Read ( buffer, 0, BUFFER_SIZE )) > 0)
-                        {
-                        exportFileStream.Write ( buffer, 0, bytesRead );
-                        }
-
-                    }
-                }
-            finally
-                {
-                if (exportFileStream != null) exportFileStream.Close ();
-                if (source != null) source.Close ();
-                }
+            {
+                source.Close();
+                throw new exception.InputStreamIsTooShortException("The data provider has no data to export to external file");
             }
+
+            FileStream exportFileStream = File.Create(exportFilePath);
+
+            try
+            {
+                const uint BUFFER_SIZE = 1024 * 1024; // 1 MB MAX BUFFER
+                StreamUtils.Copy(source, (ulong)source.Length, exportFileStream, BUFFER_SIZE);
+
+                //if (source.Length <= BUFFER_SIZE)
+                //{
+                //    byte[] buffer = new byte[source.Length];
+                //    int read = source.Read(buffer, 0, (int)source.Length);
+                //    exportFileStream.Write(buffer, 0, read);
+                //}
+                //else
+                //{
+                //    byte[] buffer = new byte[BUFFER_SIZE];
+                //    int bytesRead = 0;
+                //    while ((bytesRead = source.Read(buffer, 0, BUFFER_SIZE)) > 0)
+                //    {
+                //        exportFileStream.Write(buffer, 0, bytesRead);
+                //    }
+
+                //}
+            }
+            finally
+            {
+                exportFileStream.Close();
+                source.Close();
+            }
+        }
 
 
         /// <summary>
@@ -267,7 +272,7 @@ namespace urakawa.data
             base.XukInAttributes(source);
 
             MimeType = source.GetAttribute(XukStrings.MimeType) ?? "";
-            
+
         }
 
         /// <summary>
@@ -283,7 +288,7 @@ namespace urakawa.data
             base.XukOutAttributes(destination, baseUri);
 
             destination.WriteAttributeString(XukStrings.MimeType, MimeType);
-            
+
         }
 
         #endregion

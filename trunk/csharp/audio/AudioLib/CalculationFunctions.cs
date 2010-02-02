@@ -1,7 +1,50 @@
 using System;
+using System.IO;
 
 namespace AudioLib
 {
+    public static class StreamUtils
+    {
+        public static uint Copy(Stream from, ulong fromNumberOfBytes, Stream to, uint buffer_size)
+        {
+            if (fromNumberOfBytes <= buffer_size)
+            {
+                byte[] buffer = new byte[fromNumberOfBytes];
+                int bytesRead = from.Read(buffer, 0, (int)fromNumberOfBytes);
+                if (bytesRead > 0)
+                {
+                    to.Write(buffer, 0, bytesRead);
+                    return (uint)bytesRead;
+                }
+
+                return 0;
+            }
+            else
+            {
+                int bytesRead = 0;
+                int totalBytesWritten = 0;
+                byte[] buffer = new byte[buffer_size];
+
+                while ((bytesRead = from.Read(buffer, 0, (int)buffer_size)) > 0)
+                {
+                    if ((ulong)(totalBytesWritten + bytesRead) > fromNumberOfBytes)
+                    {
+                        int bytesToWrite = (int)(fromNumberOfBytes - (ulong)totalBytesWritten);
+                        to.Write(buffer, 0, bytesToWrite);
+                        totalBytesWritten += bytesToWrite;
+                    }
+                    else
+                    {
+                        to.Write(buffer, 0, bytesRead);
+                        totalBytesWritten += bytesRead;
+                    }
+                }
+
+                return (uint)totalBytesWritten;
+            }
+        }
+    }
+
     public class CalculationFunctions
     {
         public static long ConvertToDecimal(int[] Ar)

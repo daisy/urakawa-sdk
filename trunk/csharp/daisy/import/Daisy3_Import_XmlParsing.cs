@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Net;
 using System.Net.Cache;
 using System.Xml;
+using AudioLib;
 
 namespace urakawa.daisy.import
 {
@@ -235,8 +237,12 @@ namespace urakawa.daisy.import
 
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
+                        //ulong size = store.CurrentSize;
+                        //ulong size = store.MaximumSize;
                         fs = new IsolatedStorageFileStream(Path.GetFileName(strWebDTDPath), FileMode.Create, FileAccess.Write, FileShare.None, store);
-                        copyStreamData(webStream, fs, 1024);
+
+                        const uint BUFFER_SIZE = 1024; // 1 KB MAX BUFFER
+                        StreamUtils.Copy(webStream, (ulong)webStream.Length, fs, BUFFER_SIZE);
                     }
                 }
                 finally
@@ -248,24 +254,24 @@ namespace urakawa.daisy.import
                 }
             }
 
-            public void copyStreamData(Stream source, Stream dest, int BUFFER_SIZE)
-            { //1
-                if (source.CanSeek && source.Length <= BUFFER_SIZE)
-                { // 2
-                    byte[] buffer = new byte[source.Length];
-                    int read = source.Read(buffer, 0, (int)source.Length);
-                    dest.Write(buffer, 0, read);
-                } //-2
-                else
-                { // 2
-                    byte[] buffer = new byte[BUFFER_SIZE];
-                    int bytesRead = 0;
-                    while ((bytesRead = source.Read(buffer, 0, BUFFER_SIZE)) > 0)
-                    { //3
-                        dest.Write(buffer, 0, bytesRead);
-                    } // -3
-                } //-2
-            } // -1
+            //public void copyStreamData(Stream source, Stream dest, int BUFFER_SIZE)
+            //{ //1
+            //    if (source.CanSeek && source.Length <= BUFFER_SIZE)
+            //    { // 2
+            //        byte[] buffer = new byte[source.Length];
+            //        int read = source.Read(buffer, 0, (int)source.Length);
+            //        dest.Write(buffer, 0, read);
+            //    } //-2
+            //    else
+            //    { // 2
+            //        byte[] buffer = new byte[BUFFER_SIZE];
+            //        int bytesRead = 0;
+            //        while ((bytesRead = source.Read(buffer, 0, BUFFER_SIZE)) > 0)
+            //        { //3
+            //            dest.Write(buffer, 0, bytesRead);
+            //        } // -3
+            //    } //-2
+            //} // -1
         }
     }
 }
