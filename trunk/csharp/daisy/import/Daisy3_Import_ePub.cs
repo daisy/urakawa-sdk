@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace urakawa.daisy.import
@@ -13,7 +14,7 @@ namespace urakawa.daisy.import
         private void unzipEPubAndParseOpf()
         {
             ZipInputStream zipInputStream = new ZipInputStream(File.OpenRead(m_Book_FilePath));
-           
+
             /*string directoryName = Path.GetTempPath();
             if (!directoryName.EndsWith("" + Path.DirectorySeparatorChar))
             {
@@ -31,30 +32,34 @@ namespace urakawa.daisy.import
             {
                 string zipEntryName = Path.GetFileName(zipEntry.Name);
                 if (!String.IsNullOrEmpty(zipEntryName)) // || zipEntryName.IndexOf(".ini") >= 0
-                {                
-                // string unzippedFilePath = Path.Combine(unzipDirectory, zipEntryName);
-                string unzippedFilePath = unzipDirectory + Path.DirectorySeparatorChar + zipEntry.Name;
-                string unzippedFileDir = Path.GetDirectoryName(unzippedFilePath);
-                if (!Directory.Exists(unzippedFileDir))
                 {
-                    Directory.CreateDirectory(unzippedFileDir);
-                }
-
-                FileStream fileStream = File.Create(unzippedFilePath);
-                byte[] data = new byte[2 * 1024]; // 2 KB buffer
-                int bytesRead = 0;
-                try
-                {
-                    while ((bytesRead = zipInputStream.Read(data, 0, data.Length)) > 0)
+                    // string unzippedFilePath = Path.Combine(unzipDirectory, zipEntryName);
+                    string unzippedFilePath = unzipDirectory + Path.DirectorySeparatorChar + zipEntry.Name;
+                    string unzippedFileDir = Path.GetDirectoryName(unzippedFilePath);
+                    if (!Directory.Exists(unzippedFileDir))
                     {
-                        fileStream.Write(data, 0, bytesRead);
+                        Directory.CreateDirectory(unzippedFileDir);
+                    }
+
+                    FileStream fileStream = File.Create(unzippedFilePath);
+
+                    //byte[] data = new byte[2 * 1024]; // 2 KB buffer
+                    //int bytesRead = 0;
+                    try
+                    {
+                        const uint BUFFER_SIZE = 1024 * 2; // 2 KB MAX BUFFER
+                        StreamUtils.Copy(zipInputStream, (ulong)zipInputStream.Length, fileStream, BUFFER_SIZE);
+
+                        //while ((bytesRead = zipInputStream.Read(data, 0, data.Length)) > 0)
+                        //{
+                        //    fileStream.Write(data, 0, bytesRead);
+                        //}
+                    }
+                    finally
+                    {
+                        fileStream.Close();
                     }
                 }
-                finally
-                {
-                    fileStream.Close();
-                }
-            }
             }
             zipInputStream.Close();
 
@@ -68,6 +73,6 @@ namespace urakawa.daisy.import
                 parseOpf(opfXmlDoc);
                 break;
             }
-        }      
+        }
     }
 }
