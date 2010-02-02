@@ -66,8 +66,6 @@ namespace urakawa.daisy.import
             //private readonly string m_DownloadedDTDDirectoryPath;
             //private const string m_DownloadedDTDDirectoryName = "Downloaded-DTDs";
 
-            private readonly IsolatedStorageFile m_IsolatedArea = IsolatedStorageFile.GetMachineStoreForApplication();
-
             public LocalXmlUrlResolver(bool enableHttpCaching)
             {
                 m_EnableHttpCaching = enableHttpCaching;
@@ -160,12 +158,17 @@ namespace urakawa.daisy.import
                     }
                 */
 
-                if (m_IsolatedArea.GetFileNames(Path.GetFileName(absoluteUri.AbsolutePath)).Length > 0)
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    IsolatedStorageFileStream storageStream =
-                      new IsolatedStorageFileStream(Path.GetFileName(absoluteUri.AbsolutePath), FileMode.Open, m_IsolatedArea);
+                    string path = Path.GetFileName(absoluteUri.AbsolutePath);
 
-                    return storageStream;
+                    if (store.GetFileNames(path).Length > 0)
+                    {
+                        IsolatedStorageFileStream storageStream =
+                            new IsolatedStorageFileStream(path, FileMode.Open, FileAccess.Read, FileShare.None, store);
+
+                        return storageStream;
+                    }
                 }
 
                 //resolve resources from cache (if possible)
@@ -230,8 +233,11 @@ namespace urakawa.daisy.import
                 {
                     //fs = File.Create ( localDTDFilePath );
 
-                    fs = new IsolatedStorageFileStream(Path.GetFileName(strWebDTDPath), FileMode.Create, m_IsolatedArea);
-                    copyStreamData(webStream, fs, 1024);
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        fs = new IsolatedStorageFileStream(Path.GetFileName(strWebDTDPath), FileMode.Create, FileAccess.Write, FileShare.None, store);
+                        copyStreamData(webStream, fs, 1024);
+                    }
                 }
                 finally
                 {
