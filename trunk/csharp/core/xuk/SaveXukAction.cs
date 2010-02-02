@@ -31,7 +31,7 @@ namespace urakawa.xuk
             settings.Encoding = Encoding.UTF8;
 
             settings.NewLineHandling = NewLineHandling.Replace;
-            settings.NewLineChars = "\n";
+            settings.NewLineChars = Environment.NewLine;
 
             if (!mSourceXukAble.IsPrettyFormat())
             {

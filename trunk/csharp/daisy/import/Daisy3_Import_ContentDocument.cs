@@ -18,7 +18,7 @@ namespace urakawa.daisy.import
 
         private string trimXmlTextInnerSpaces(string str)
         {
-            string[] whiteSpaces = new string[] { " ", "" + '\t', "\r\n" };
+            string[] whiteSpaces = new string[] { " ", "" + '\t', "\r\n", Environment.NewLine };
             string[] strSplit = str.Split(whiteSpaces, StringSplitOptions.RemoveEmptyEntries);
             return String.Join(" ", strSplit);
         }
@@ -121,12 +121,12 @@ namespace urakawa.daisy.import
                     }
                 case XmlNodeType.Document:
                     {
-                    XmlDocument xmlDoc = ((XmlDocument)xmlNode);
-                    XmlNodeList styleSheetNodeList = xmlDoc.SelectNodes
-                                                  ( "/processing-instruction(\"xml-stylesheet\")" );
-                    if (styleSheetNodeList != null && styleSheetNodeList.Count > 0)
+                        XmlDocument xmlDoc = ((XmlDocument)xmlNode);
+                        XmlNodeList styleSheetNodeList = xmlDoc.SelectNodes
+                                                      ("/processing-instruction(\"xml-stylesheet\")");
+                        if (styleSheetNodeList != null && styleSheetNodeList.Count > 0)
                         {
-                        AddStyleSheetsToXuk ( styleSheetNodeList );
+                            AddStyleSheetsToXuk(styleSheetNodeList);
                         }
                         //XmlNodeList listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("body");
                         //if (listOfBodies.Count == 0)
@@ -149,17 +149,17 @@ namespace urakawa.daisy.import
                             string strInternalDTD = ExtractInternalDTD(((XmlDocument)xmlNode).DocumentType);
                             if (strInternalDTD != null)
                             {
-                            byte[] bytesArray = System.Text.Encoding.UTF8.GetBytes ( strInternalDTD );
-                            MemoryStream ms = new MemoryStream (bytesArray);
-                                
-                            
+                                byte[] bytesArray = System.Text.Encoding.UTF8.GetBytes(strInternalDTD);
+                                MemoryStream ms = new MemoryStream(bytesArray);
+
+
                                 //string internalDTDFilePath = Path.Combine ( presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd" );
                                 //File.WriteAllText(
                                 //internalDTDFilePath,
                                 //strInternalDTD);
-                                
-                            ExternalFiles.ExternalFileData dtdEfd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData> ();
-                            dtdEfd.InitializeWithData ( ms, "DTBookLocalDTD.dtd", false );
+
+                                ExternalFiles.ExternalFileData dtdEfd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData>();
+                                dtdEfd.InitializeWithData(ms, "DTBookLocalDTD.dtd", false);
                             }
 
                             parseContentDocument(bodyElement, parentTreeNode, filePath);
@@ -241,20 +241,20 @@ namespace urakawa.daisy.import
                                     externalImage.Src = updatedSRC;
                                     */
 
-                                    updatedSRC = Path.GetFullPath ( imgSourceFullpath ).Replace (
-                                        Path.GetDirectoryName ( m_Book_FilePath ), "" );
+                                    updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
+                                        Path.GetDirectoryName(m_Book_FilePath), "");
                                     if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
-                                        {
-                                        updatedSRC = updatedSRC.Remove ( 0, 1 );
-                                        }
-                                    
+                                    {
+                                        updatedSRC = updatedSRC.Remove(0, 1);
+                                    }
 
-                                    ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty ();
-                                    treeNode.AddProperty ( chProp );
 
-                                    urakawa.media.data.image.ImageMediaData imageData = CreateImageMediaData ( presentation, Path.GetExtension ( imgSourceFullpath ) );
-                                    imageData.InitializeImage ( imgSourceFullpath, updatedSRC );
-                                    media.data.image.ManagedImageMedia managedImage =  presentation.MediaFactory.CreateManagedImageMedia ();
+                                    ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty();
+                                    treeNode.AddProperty(chProp);
+
+                                    urakawa.media.data.image.ImageMediaData imageData = CreateImageMediaData(presentation, Path.GetExtension(imgSourceFullpath));
+                                    imageData.InitializeImage(imgSourceFullpath, updatedSRC);
+                                    media.data.image.ManagedImageMedia managedImage = presentation.MediaFactory.CreateManagedImageMedia();
                                     managedImage.MediaData = imageData;
                                     chProp.SetMedia(m_ImageChannel, managedImage);
                                 }
@@ -343,73 +343,73 @@ namespace urakawa.daisy.import
             }
         }
 
-        private media.data.image.ImageMediaData CreateImageMediaData ( Presentation presentation, string extension )
-            {
-            extension = extension.ToLower ();
+        private media.data.image.ImageMediaData CreateImageMediaData(Presentation presentation, string extension)
+        {
+            extension = extension.ToLower();
             switch (extension)
-                {
-            case ".jpg":
-            return presentation.MediaDataFactory.Create<JpgImageMediaData> ();
-            break;
-
-            case ".bmp":
-            return presentation.MediaDataFactory.Create<BmpImageMediaData> ();
-            break;
-
-            case ".png":
-            return presentation.MediaDataFactory.Create<PngImageMediaData> ();
-            break;
-
-            default:
-                {
-                return null;
-                break;
-                }
-                }
-            }
-
-        
-
-        private void AddStyleSheetsToXuk ( XmlNodeList styleSheetNodesList )
             {
-            Presentation presentation = m_Project.Presentations.Get ( 0 );
+                case ".jpg":
+                    return presentation.MediaDataFactory.Create<JpgImageMediaData>();
+                    break;
+
+                case ".bmp":
+                    return presentation.MediaDataFactory.Create<BmpImageMediaData>();
+                    break;
+
+                case ".png":
+                    return presentation.MediaDataFactory.Create<PngImageMediaData>();
+                    break;
+
+                default:
+                    {
+                        return null;
+                        break;
+                    }
+            }
+        }
+
+
+
+        private void AddStyleSheetsToXuk(XmlNodeList styleSheetNodesList)
+        {
+            Presentation presentation = m_Project.Presentations.Get(0);
             // first collect existing style sheet files objects to avoid duplicacy.
             //List<string> existingFiles = new List<string> ();
-            
+
             foreach (XmlNode xn in styleSheetNodesList)
-                {
+            {
                 XmlProcessingInstruction pi = (XmlProcessingInstruction)xn;
-                string[] styleStringArray = pi.Data.Split ( ' ' );
+                string[] styleStringArray = pi.Data.Split(' ');
                 string relativePath = null;
                 foreach (string s in styleStringArray)
+                {
+                    if (s.Contains("href"))
                     {
-                    if (s.Contains ( "href" ))
-                        {
-                        relativePath  = s;
-                        relativePath = relativePath.Split ( '=' )[1];
-                        relativePath = relativePath.Trim ( new char[3] { '\'', '\"', ' ' } );
+                        relativePath = s;
+                        relativePath = relativePath.Split('=')[1];
+                        relativePath = relativePath.Trim(new char[3] { '\'', '\"', ' ' });
                         break;
-                        }
                     }
-                string styleSheetPath = Path.Combine (
-                    Path.GetDirectoryName ( m_Book_FilePath ),
-                    relativePath );
-
-                ExternalFiles.ExternalFileData efd = null ;
-                switch (Path.GetExtension ( relativePath ).ToLower ())
-                    {
-                case ".css":
-                efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData > () ;
-                break ;
-
-                case ".xslt":
-                efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData> () ;
-                break ;
-                    }
-                
-                if ( efd != null ) efd.InitializeWithData ( styleSheetPath, relativePath, true ) ;
                 }
+                string styleSheetPath = Path.Combine(
+                    Path.GetDirectoryName(m_Book_FilePath),
+                    relativePath);
+
+                ExternalFiles.ExternalFileData efd = null;
+                switch (Path.GetExtension(relativePath).ToLower())
+                {
+                    case ".css":
+                        efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
+                        break;
+
+                    case ".xslt":
+                        efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
+                        break;
+                }
+
+                if (efd != null) efd.InitializeWithData(styleSheetPath, relativePath, true);
             }
+        }
 
 
     }
