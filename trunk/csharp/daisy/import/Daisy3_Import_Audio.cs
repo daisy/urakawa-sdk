@@ -170,7 +170,7 @@ namespace urakawa.daisy.import
             Presentation presentation = m_Project.Presentations.Get(0);
             Media media = null;
 
-            if (audioAttrSrc.Value.EndsWith("wav"))
+            if (audioAttrSrc.Value.ToLower().EndsWith("wav"))
             {
                 string dirPathBook = Path.GetDirectoryName(m_Book_FilePath);
                 FileDataProvider dataProv = null;
@@ -242,7 +242,7 @@ namespace urakawa.daisy.import
                 //media = addAudioWav ( fullWavPath, deleteSrcAfterCompletion, audioAttrClipBegin, audioAttrClipEnd );
 
             }
-            else if (audioAttrSrc.Value.EndsWith("mp3"))
+            else if (audioAttrSrc.Value.ToLower().EndsWith("mp3"))
             {
                 string fullMp3PathOriginal = Path.Combine(dirPath, audioAttrSrc.Value);
                 if (!File.Exists(fullMp3PathOriginal))
@@ -445,7 +445,15 @@ namespace urakawa.daisy.import
 
             //FileDataProvider dataProv = m_Src_FileDataProviderMap[fullWavPath];
             //System.Windows.Forms.MessageBox.Show ( clipB.ToString () + " : " + clipE.ToString () ) ;
-            mediaData.AppendPcmData(dataProv, clipB, clipE);
+            try
+            {
+                mediaData.AppendPcmData(dataProv, clipB, clipE);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Bad clips ?! " + clipB + " / " + clipE);
+                return null;
+            }
 
             media = presentation.MediaFactory.CreateManagedAudioMedia();
             ((ManagedAudioMedia)media).AudioMediaData = mediaData;
