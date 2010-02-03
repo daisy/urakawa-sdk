@@ -193,22 +193,28 @@ namespace urakawa.daisy.export.visitor
             ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
             PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true);
-            string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
+            string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath ;
             string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
                 Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
 
-            if (formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, audioFormat.Data.NumberOfChannels, audioFormat.Data.SampleRate, audioFormat.Data.BitDepth, BitRate_Mp3))
-            {
-                foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
+            if (formatConverter.CompressWavToMp3 ( sourceFilePath, destinationFilePath, audioFormat.Data.NumberOfChannels, audioFormat.Data.SampleRate, audioFormat.Data.BitDepth, BitRate_Mp3 ))
                 {
-                    if (ext != null)
+                foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
                     {
-                        ext.Src = ext.Src.Replace(".wav", ".mp3");
+                    if (ext != null)
+                        {
+                        ext.Src = ext.Src.Substring ( ext.Src.Length - 4, 3 ) + "mp3";
+                        }
                     }
+
+                File.Delete ( sourceFilePath );
+                }
+            else
+                {
+                // append error messages
+                base.ErrorMessages = base.ErrorMessages + "Error in encoding " + Path.GetFileName ( sourceFilePath ) + "\n" ;
                 }
 
-                File.Delete(sourceFilePath);
-            }
             m_ExternalAudioMediaList.Clear();
         }
 

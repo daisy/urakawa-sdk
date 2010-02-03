@@ -11,6 +11,7 @@ namespace urakawa.daisy.export.visitor
         protected AbstractBasePublishAudioVisitor()
         {
             mCurrentAudioFileNumber = 0;
+            m_ErrorMessages = null;
         }
 
         //private const int BUFFER_SIZE = 6 * 1024 * 1024; // 6 MB
@@ -160,6 +161,19 @@ namespace urakawa.daisy.export.visitor
                 }
             }
 
+
+        private string m_ErrorMessages = null;
+        public string ErrorMessages
+            {
+            get
+                {
+                return m_ErrorMessages;
+                }
+            protected set
+                {
+                m_ErrorMessages = value;
+                }
+            }
 
     }
 }
