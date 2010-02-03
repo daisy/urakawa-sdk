@@ -233,9 +233,14 @@ namespace AudioLib
              */
         }
 
-
         public bool CompressWavToMp3 ( string sourceFile, string destinationFile, ushort destChannels, uint destSamplingRate, ushort destBitDepth, ushort bitRate_mp3Output )
             {
+            if (!File.Exists ( sourceFile ))
+                throw new FileNotFoundException ( "Invalid source file path" );
+
+            if (!File.Exists ( destinationFile ))
+                throw new FileNotFoundException ( "Invalid destination file path" );
+
             string LameWorkingDir = Path.GetDirectoryName (
                 System.Reflection.Assembly.GetExecutingAssembly ().Location);
             //string outputFilePath = Path.Combine (
