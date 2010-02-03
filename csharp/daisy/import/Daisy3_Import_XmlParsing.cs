@@ -1,12 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.IsolatedStorage;
 using System.Net;
 using System.Net.Cache;
 using System.Xml;
 using AudioLib;
+using urakawa.ExternalFiles;
+
+#if USE_ISOLATED_STORAGE
+using System.IO.IsolatedStorage;
+#endif //USE_ISOLATED_STORAGE
 
 namespace urakawa.daisy.import
 {
@@ -61,50 +64,12 @@ namespace urakawa.daisy.import
         {
             private ICredentials m_Credentials;
 
-            private readonly Dictionary<string, string> m_EmbeddedEntities;
-
             private readonly bool m_EnableHttpCaching;
-
-            //private readonly string m_DownloadedDTDDirectoryPath;
-            //private const string m_DownloadedDTDDirectoryName = "Downloaded-DTDs";
+            private const string m_DtdStoreDirName = "Downloaded-DTDs";
 
             public LocalXmlUrlResolver(bool enableHttpCaching)
             {
                 m_EnableHttpCaching = enableHttpCaching;
-
-                //System.Windows.Forms.MessageBox.Show ( isolatedArea.GetDirectoryNames ("*.*)[0]  );
-                //m_DownloadedDTDDirectoryPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + Path.DirectorySeparatorChar + m_DownloadedDTDDirectoryName;
-
-                m_EmbeddedEntities = new Dictionary<String, String>();
-
-                // -//W3C//DTD XHTML 1.0 Transitional//EN
-                // http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd
-
-                m_EmbeddedEntities.Add("dtbook110.dtd", "DTDs.Resources.dtbook110.dtd");
-
-                m_EmbeddedEntities.Add("xhtml-lat1.ent", "DTDs.Resources.xhtml-lat1.ent");
-                m_EmbeddedEntities.Add("xhtml-symbol.ent", "DTDs.Resources.xhtml-symbol.ent");
-                m_EmbeddedEntities.Add("xhtml-special.ent", "DTDs.Resources.xhtml-special.ent");
-
-                m_EmbeddedEntities.Add("HTMLlat1", "DTDs.Resources.xhtml-lat1.ent");
-                m_EmbeddedEntities.Add("HTMLsymbol", "DTDs.Resources.xhtml-symbol.ent");
-                m_EmbeddedEntities.Add("HTMLspecial", "DTDs.Resources.xhtml-special.ent");
-
-                m_EmbeddedEntities.Add("//W3C//ENTITIES%20Latin%201%20for%20XHTML//EN", "DTDs.Resources.xhtml-lat1.ent");
-                m_EmbeddedEntities.Add("//W3C//ENTITIES%20Symbols%20for%20XHTML//EN", "DTDs.Resources.xhtml-symbol.ent");
-                m_EmbeddedEntities.Add("//W3C//ENTITIES%20Special%20for%20XHTML//EN", "DTDs.Resources.xhtml-special.ent");
-
-                m_EmbeddedEntities.Add("//W3C//DTD%20XHTML%201.0%20Transitional//EN", "DTDs.Resources.xhtml1-transitional.dtd");
-                m_EmbeddedEntities.Add("//W3C//DTD%20XHTML%201.1//EN", "DTDs.Resources.xhtml11.dtd");
-                m_EmbeddedEntities.Add("//NISO//DTD%20ncx%202005-1//EN", "DTDs.Resources.ncx-2005-1.dtd");
-                m_EmbeddedEntities.Add("//W3C//DTD%20XHTML%201.1%20plus%20MathML%202.0%20plus%20SVG%201.1//EN", "DTDs.Resources.xhtml-math-svg-flat.dtd");
-                m_EmbeddedEntities.Add("//NISO//DTD%20dtbook%202005-1//EN", "DTDs.Resources.dtbook-2005-1.dtd");
-                m_EmbeddedEntities.Add("//NISO//DTD%20dtbook%202005-2//EN", "DTDs.Resources.dtbook-2005-2.dtd");
-                m_EmbeddedEntities.Add("//NISO//DTD%20dtbook%202005-3//EN", "DTDs.Resources.dtbook-2005-3.dtd");
-                m_EmbeddedEntities.Add("//W3C//ENTITIES%20MathML%202.0%20Qualified%20Names%201.0//EN", "DTDs.Resources.mathml2.dtd");
-                m_EmbeddedEntities.Add("//NISO//DTD%20dtbsmil%202005-2//EN", "DTDs.Resources.dtbsmil-2005-2.dtd");
-                m_EmbeddedEntities.Add("//ISBN%200-9673008-1-9//DTD%20OEB%201.2%20Package//EN", "DTDs.Resources.oebpkg12.dtd");
-                m_EmbeddedEntities.Add("//NISO//DTD%20dtbsmil%202005-1//EN", "DTDs.Resources.dtbsmil-2005-1.dtd");
             }
 
             public override Uri ResolveUri(Uri baseUri, string relativeUri)
@@ -160,18 +125,31 @@ namespace urakawa.daisy.import
                     }
                 */
 
+                string filename = Path.GetFileName(absoluteUri.AbsolutePath);
+
+#if USE_ISOLATED_STORAGE
+
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    string path = Path.GetFileName(absoluteUri.AbsolutePath);
-
-                    if (store.GetFileNames(path).Length > 0)
+                    if (store.GetFileNames(filename).Length > 0)
                     {
                         IsolatedStorageFileStream storageStream =
-                            new IsolatedStorageFileStream(path, FileMode.Open, FileAccess.Read, FileShare.None, store);
+                            new IsolatedStorageFileStream(filename, FileMode.Open, FileAccess.Read, FileShare.None, store);
 
                         return storageStream;
                     }
                 }
+
+                // NOTE: we could actually use the same code as below, which gives more control over the subdirectory and doesn't have any size limits:
+#else
+                string path = ExternalFilesDataManager.STORAGE_FOLDER_PATH + Path.DirectorySeparatorChar + m_DtdStoreDirName + Path.DirectorySeparatorChar + filename;
+                if (File.Exists(path))
+                {
+                    Stream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
+                    return stream;
+                }
+#endif //USE_ISOLATED_STORAGE
+
 
                 //resolve resources from cache (if possible)
                 if (absoluteUri.Scheme == "http" && m_EnableHttpCaching)
@@ -209,12 +187,12 @@ namespace urakawa.daisy.import
                 //}
 
                 Stream dtdStream = null;
-                foreach (String key in m_EmbeddedEntities.Keys)
+                foreach (String key in DTDs.DTDs.ENTITIES_MAPPING.Keys)
                 {
                     if (absoluteUri.AbsolutePath.Contains(key))
                     {
-                        dtdStream = DTDs.DTDs.Fetch(m_EmbeddedEntities[key]);
-                        Console.WriteLine("XML Entity Resolver [" + m_EmbeddedEntities[key] + "]: " + (dtdStream != null ? dtdStream.Length + " bytes resource. " : "resource not found ?? ") + " ( " + absoluteUri + " )");
+                        dtdStream = DTDs.DTDs.Fetch(DTDs.DTDs.ENTITIES_MAPPING[key]);
+                        Console.WriteLine("XML Entity Resolver [" + DTDs.DTDs.ENTITIES_MAPPING[key] + "]: " + (dtdStream != null ? dtdStream.Length + " bytes resource. " : "resource not found ?? ") + " ( " + absoluteUri + " )");
                         return dtdStream;
                     }
                 }
@@ -224,26 +202,30 @@ namespace urakawa.daisy.import
 
             private void CreateLocalDTDFileFromWebStream(string strWebDTDPath, Stream webStream)
             {
-                //if (!Directory.Exists(m_DownloadedDTDDirectoryPath))
-                //{
-                //    Directory.CreateDirectory(m_DownloadedDTDDirectoryPath);
-                //}
-                //string localDTDFilePath = Path.Combine(m_DownloadedDTDDirectoryPath, Path.GetFileName(strWebDTDPath));
-
                 FileStream fs = null;
                 try
                 {
-                    //fs = File.Create ( localDTDFilePath );
+#if USE_ISOLATED_STORAGE
 
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        //ulong size = store.CurrentSize;
-                        //ulong size = store.MaximumSize;
                         fs = new IsolatedStorageFileStream(Path.GetFileName(strWebDTDPath), FileMode.Create, FileAccess.Write, FileShare.None, store);
-
-                        const uint BUFFER_SIZE = 1024; // 1 KB MAX BUFFER
-                        StreamUtils.Copy(webStream, (ulong)webStream.Length, fs, BUFFER_SIZE);
                     }
+
+                    // NOTE: we could actually use the same code as below, which gives more control over the subdirectory and doesn't have any size limits:
+#else
+                    string dirpath = ExternalFilesDataManager.STORAGE_FOLDER_PATH + Path.DirectorySeparatorChar + m_DtdStoreDirName;
+                    if (!Directory.Exists(dirpath))
+                    {
+                        Directory.CreateDirectory(dirpath);
+                    }
+
+                    string filepath = Path.Combine(dirpath, Path.GetFileName(strWebDTDPath));
+                    fs = File.Create(filepath);
+#endif //USE_ISOLATED_STORAGE
+
+                    const uint BUFFER_SIZE = 1024; // 1 KB MAX BUFFER
+                    StreamUtils.Copy(webStream, (ulong)webStream.Length, fs, BUFFER_SIZE);
                 }
                 finally
                 {
