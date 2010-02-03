@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace urakawa.media.timing
 {
@@ -136,22 +137,76 @@ namespace urakawa.media.timing
         {
             try
             {
+                if (!str.Contains(":"))
+                {
+                    int dotIndex = str.IndexOf('.');
+                    if (dotIndex < 0)
+                    {
+                        double val;
+                        if (Double.TryParse(str, out val))
+                        {
+                            return new Time(TimeSpan.FromSeconds(val));
+                        }
+                    }
+                    else
+                    {
+                        var secondsStr = str.Substring(0, dotIndex);
+                        double seconds;
+                        TimeSpan secondsSpan = TimeSpan.Zero;
+                        if (Double.TryParse(secondsStr, out seconds))
+                        {
+                            secondsSpan = TimeSpan.FromSeconds(seconds);
+                            var millisecondsStr = str.Substring(dotIndex + 1);
+                            double milliseconds;
+                            TimeSpan millisecondsSpan = TimeSpan.Zero;
+                            if (Double.TryParse(millisecondsStr, out milliseconds))
+                            {
+                                millisecondsSpan = TimeSpan.FromMilliseconds(milliseconds);
+
+                                return new Time(secondsSpan.Add(millisecondsSpan));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                            Debugger.Break();
+#endif //DEBUG
+                // swallow, move to code below
+            }
+
+            try
+            {
                 return new Time(TimeSpan.Parse(str));
             }
-            catch (FormatException e1)
+            catch (Exception e1)
             {
-                //Console.Write("!! ==> bad time string: " + str);
-
                 try
                 {
-                    return new Time(TimeSpan.Parse("0:" + str));
+                    return new Time(TimeSpan.Parse("00:00:00:" + str));
                 }
-                catch (FormatException e2)
+                catch (Exception e2)
                 {
-                    //Console.Write("!! ==> bad time string: [" + "0:" + str + "]");
-
-                    throw new exception.TimeStringRepresentationIsInvalidException(
-                        String.Format("The string \"{0}\" is not a valid string representation of a Time", str), e2);
+                    try
+                    {
+                        return new Time(TimeSpan.Parse("00:00:" + str));
+                    }
+                    catch (Exception e3)
+                    {
+                        try
+                        {
+                            return new Time(TimeSpan.Parse("00:" + str));
+                        }
+                        catch (Exception e4)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif //DEBUG
+                            throw e4;
+                        }
+                    }
                 }
             }
         }
