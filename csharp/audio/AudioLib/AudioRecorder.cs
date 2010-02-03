@@ -332,7 +332,7 @@ namespace AudioLib
             m_CircularBufferRefreshThread.Start();
 
 
-            Console.WriteLine("Recorder notify thread start.");
+            //Console.WriteLine("Recorder notify thread start.");
 
             //m_PreviousTotalRecordedBytes = 0;
             //m_CircularBufferNotificationEventCheckTimer.Start();
@@ -364,7 +364,7 @@ namespace AudioLib
                 {
                     if (m_CircularBuffer == null || !m_CircularBuffer.Capturing || CurrentState == State.Stopped)
                     {
-                        Console.WriteLine("circularBufferRefreshThreadMethod EXIT while");
+                        //Console.WriteLine("circularBufferRefreshThreadMethod EXIT while");
                         break;
                     }
                     else
@@ -378,7 +378,7 @@ namespace AudioLib
                 }
             }
 
-            Console.WriteLine("Recorder notify thread exit.");
+            //Console.WriteLine("Recorder notify thread exit.");
         }
 
         private int circularBufferTransferData()
@@ -399,8 +399,7 @@ namespace AudioLib
 
             if (circularBufferBytesAvailableForReading <= 0)
             {
-                Console.WriteLine(
-                    string.Format("circularBufferTransferData: no more bytes to fetch {0}", circularBufferBytesAvailableForReading));
+                //Console.WriteLine(string.Format("circularBufferTransferData: no more bytes to fetch {0}", circularBufferBytesAvailableForReading));
                 return circularBufferBytesAvailableForReading;
             }
 
@@ -455,9 +454,7 @@ namespace AudioLib
 
             if (m_PcmDataBuffer.Length != incomingPcmData.Length)
             {
-                Console.WriteLine(
-                    string.Format(">>>>> Resizing buffer: m_PcmDataBuffer = {0}, incomingPcmData = {1}",
-                                  m_PcmDataBuffer.Length, incomingPcmData.Length));
+                //Console.WriteLine(string.Format(">>>>> Resizing buffer: m_PcmDataBuffer = {0}, incomingPcmData = {1}",m_PcmDataBuffer.Length, incomingPcmData.Length));
 
                 Array.Resize(ref m_PcmDataBuffer, incomingPcmData.Length);
             }
@@ -506,8 +503,7 @@ namespace AudioLib
             do
             {
                 remainingBytesToRead = circularBufferTransferData();
-                Console.WriteLine(
-                    string.Format("circularBufferTransferData: fetched remaining bytes: {0}", remainingBytesToRead));
+                //Console.WriteLine(string.Format("circularBufferTransferData: fetched remaining bytes: {0}", remainingBytesToRead));
             } while (remainingBytesToRead > 0);
 
             if (m_RecordingFileWriter != null)

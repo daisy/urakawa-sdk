@@ -133,70 +133,177 @@ namespace urakawa.media.timing
             return ParseTimeString(stringRepresentation);
         }
 
+        private static void checkDigit(char current, string str, int index)
+        {
+            if (current < '0' || current > '9')
+            {
+                throw new exception.TimeStringRepresentationIsInvalidException(
+                    string.Format("The character '{0}' at position {1} in string \"{2}\" is not a valid digit !", current,
+                                  index, str));
+            }
+        }
+
+        private static void throwBadChar(char current, string str, int index)
+        {
+            throw new exception.TimeStringRepresentationIsInvalidException(
+                      string.Format("The character '{0}' at position {1} in string \"{2}\" is not a valid character !", current,
+                                    index, str));
+        }
+
+        private static char advanceChar(string str, ref int index)
+        {
+            return index == (str.Length - 1) ? '\0' : str[++index];
+        }
+
+        private static int parseDigits(string str, ref int index)
+        {
+            char current = str[index];
+
+            checkDigit(current, str, index);
+
+            int value = 0;
+            do
+            {
+                value = value * 10 + (current - '0');
+
+                current = advanceChar(str, ref index);
+            } while (current >= '0' && current <= '9');
+
+            return value;
+        }
+
+        private static double parseFraction(string str, ref int index)
+        {
+            char current = str[index];
+
+            checkDigit(current, str, index);
+
+            double value = 0;
+            double weight = 0.1;
+            do
+            {
+                value += weight * (current - '0');
+                weight *= 0.1;
+
+                current = advanceChar(str, ref index);
+
+            } while (current >= '0' && current <= '9');
+
+            return value;
+        }
+
+        private static double parseUnit(string str, ref int index)
+        {
+            char current = str[index];
+
+            if (current == 'h')
+            {
+                current = advanceChar(str, ref index);
+                return 3600;
+            }
+            else if (current == 'm')
+            {
+                current = advanceChar(str, ref index);
+                if (current == 'i')
+                {
+                    current = advanceChar(str, ref index);
+                    if (current != 'n')
+                    {
+                        throwBadChar(current, str, index);
+                    }
+                    current = advanceChar(str, ref index);
+                    return 60;
+                }
+                else if (current == 's')
+                {
+                    current = advanceChar(str, ref index);
+                    return 0.001;
+                }
+                else
+                {
+                    throwBadChar(current, str, index);
+                }
+            }
+            else if (current == 's')
+            {
+                current = advanceChar(str, ref index);
+            }
+            return 1;
+        }
+
+        private static double parseClockValue(string str)
+        {
+            int index = 0; // we scan the string from left to right
+
+            int d1 = parseDigits(str, ref index);
+            char current = str[index];
+
+            double offset;
+            if (current == ':')
+            {
+                current = advanceChar(str, ref index); // skip ':' separator
+
+                int d2 = parseDigits(str, ref index);
+                current = str[index];
+
+                if (current == ':')
+                {
+                    current = advanceChar(str, ref index); // skip ':' separator
+
+                    int d3 = parseDigits(str, ref index);
+                    current = str[index];
+
+                    offset = d1 * 3600 + d2 * 60 + d3;
+                }
+                else
+                {
+                    offset = d1 * 60 + d2;
+                }
+                if (current == '.')
+                {
+                    current = advanceChar(str, ref index); // skip '.' separator
+
+                    offset += parseFraction(str, ref index);
+                    current = str[index];
+                }
+            }
+            else if (current == '.')
+            {
+                current = advanceChar(str, ref index); // skip '.' separator
+                
+                double val = parseFraction(str, ref index) + d1;
+                current = str[index];
+
+                offset = val * parseUnit(str, ref index);
+                current = str[index];
+            }
+            else
+            {
+                offset = d1 * parseUnit(str, ref index);
+                current = str[index];
+            }
+            return offset;
+        }
+
+
+        // See http://www.w3.org/TR/SMIL3/smil-timing.html#Timing-ClockValueSyntax
+        // See http://svn.apache.org/viewvc/xmlgraphics/batik/trunk/sources/org/apache/batik/parser/TimingParser.java?view=co
+        // See http://svn.apache.org/viewvc/xmlgraphics/batik/trunk/sources/org/apache/batik/parser/AbstractParser.java?view=co
         public static Time ParseTimeString(string str)
         {
             try
             {
-                if (!str.Contains(":"))
-                {
-                    int dotIndex = str.IndexOf('.');
-                    if (dotIndex < 0)
-                    {
-                        double val;
-                        if (Double.TryParse(str, out val))
-                        {
-                            return new Time(TimeSpan.FromSeconds(val));
-                        }
-                    }
-                    else
-                    {
-                        var secondsStr = str.Substring(0, dotIndex);
-                        double seconds;
-                        TimeSpan secondsSpan = TimeSpan.Zero;
-                        if (Double.TryParse(secondsStr, out seconds))
-                        {
-                            secondsSpan = TimeSpan.FromSeconds(seconds);
-                            var millisecondsStr = str.Substring(dotIndex + 1);
-                            double milliseconds;
-                            TimeSpan millisecondsSpan = TimeSpan.Zero;
-                            if (Double.TryParse(millisecondsStr, out milliseconds))
-                            {
-                                millisecondsSpan = TimeSpan.FromMilliseconds(milliseconds);
-
-                                return new Time(secondsSpan.Add(millisecondsSpan));
-                            }
-                        }
-                    }
-                }
+                double s = parseClockValue(str);
+                return new Time(TimeSpan.FromSeconds(s));
             }
             catch (Exception e)
             {
 #if DEBUG
                 Debugger.Break();
 #endif //DEBUG
-                // swallow, move to code below
+
+                return new Time(TimeSpan.Parse(str));
             }
-
-            TimeSpan result = TimeSpan.Zero;
-            if (TimeSpan.TryParse(str, out result))
-            {
-                return new Time(result);
-            }
-
-            //00:00:00.000
-            //HH:MM:SS.mmm
-
-            if (TimeSpan.TryParse("00:" + str, out result))
-            {
-                return new Time(result);
-            }
-
-            if (TimeSpan.TryParse("00:00:" + str, out result))
-            {
-                return new Time(result);
-            }
-
-            return new Time(TimeSpan.Parse(str));
         }
 
         #region Time Members
