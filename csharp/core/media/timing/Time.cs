@@ -172,43 +172,31 @@ namespace urakawa.media.timing
             catch (Exception e)
             {
 #if DEBUG
-                            Debugger.Break();
+                Debugger.Break();
 #endif //DEBUG
                 // swallow, move to code below
             }
 
-            try
+            TimeSpan result = TimeSpan.Zero;
+            if (TimeSpan.TryParse(str, out result))
             {
-                return new Time(TimeSpan.Parse(str));
+                return new Time(result);
             }
-            catch (Exception e1)
+
+            //00:00:00.000
+            //HH:MM:SS.mmm
+
+            if (TimeSpan.TryParse("00:" + str, out result))
             {
-                try
-                {
-                    return new Time(TimeSpan.Parse("00:00:00:" + str));
-                }
-                catch (Exception e2)
-                {
-                    try
-                    {
-                        return new Time(TimeSpan.Parse("00:00:" + str));
-                    }
-                    catch (Exception e3)
-                    {
-                        try
-                        {
-                            return new Time(TimeSpan.Parse("00:" + str));
-                        }
-                        catch (Exception e4)
-                        {
-#if DEBUG
-                            Debugger.Break();
-#endif //DEBUG
-                            throw e4;
-                        }
-                    }
-                }
+                return new Time(result);
             }
+
+            if (TimeSpan.TryParse("00:00:" + str, out result))
+            {
+                return new Time(result);
+            }
+
+            return new Time(TimeSpan.Parse(str));
         }
 
         #region Time Members
