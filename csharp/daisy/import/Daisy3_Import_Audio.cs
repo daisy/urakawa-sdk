@@ -42,12 +42,22 @@ namespace urakawa.daisy.import
 
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);
 
+            m_Progress_Current = 10;
+            if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( m_Progress_Current, "Importing smil files and audio files" ) );
+
             foreach (string smilPath in spineOfSmilFiles)
             {
                 string fullSmilPath = Path.Combine(dirPath, smilPath);
                 Console.WriteLine("smil file to be parsed: " + Path.GetFileName(smilPath));
                 parseSmil(fullSmilPath);
 
+                m_Progress_Current += 80 / spineOfSmilFiles.Count;
+                if ( NotifyProgressChangeEvent != null ) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( m_Progress_Current, "Importing smil files and audio files" ) );
+                if (RequestCancellation)
+                    {
+                    if (NotifyOperationCancelled != null) NotifyOperationCancelled ( this, new System.ComponentModel.RunWorkerCompletedEventArgs ( "Operation cancelled", null, true ) );
+                    return;
+                    }
             }
 
             //m_AudioConversionSession.DeleteSessionAudioFiles();
