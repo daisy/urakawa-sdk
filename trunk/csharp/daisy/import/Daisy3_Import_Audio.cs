@@ -43,7 +43,7 @@ namespace urakawa.daisy.import
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);
 
             m_Progress_Current = 10;
-            if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( m_Progress_Current, "Importing smil files and audio files" ) );
+            if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent(this, new System.ComponentModel.ProgressChangedEventArgs(m_Progress_Current, "Importing smil files and audio files"));
 
             foreach (string smilPath in spineOfSmilFiles)
             {
@@ -52,12 +52,12 @@ namespace urakawa.daisy.import
                 parseSmil(fullSmilPath);
 
                 m_Progress_Current += 80 / spineOfSmilFiles.Count;
-                if ( NotifyProgressChangeEvent != null ) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( m_Progress_Current, "Importing smil files and audio files" ) );
+                if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent(this, new System.ComponentModel.ProgressChangedEventArgs(m_Progress_Current, "Importing smil files and audio files"));
                 if (RequestCancellation)
-                    {
-                    if (NotifyOperationCancelled != null) NotifyOperationCancelled ( this, new System.ComponentModel.RunWorkerCompletedEventArgs ( "Operation cancelled", null, true ) );
+                {
+                    if (NotifyOperationCancelled != null) NotifyOperationCancelled(this, new System.ComponentModel.RunWorkerCompletedEventArgs("Operation cancelled", null, true));
                     return;
-                    }
+                }
             }
 
             //m_AudioConversionSession.DeleteSessionAudioFiles();
@@ -308,19 +308,21 @@ namespace urakawa.daisy.import
 
             if (media == null)
             {
+                Time timeClipBegin = null;
+
                 media = presentation.MediaFactory.CreateExternalAudioMedia();
                 ((ExternalAudioMedia)media).Src = audioAttrSrc.Value;
                 if (audioAttrClipBegin != null &&
                     !string.IsNullOrEmpty(audioAttrClipBegin.Value))
                 {
-                    Time timeClipBegin = new Time(0);
+                    timeClipBegin = new Time(0);
                     try
                     {
                         timeClipBegin = Time.ParseTimeString(audioAttrClipBegin.Value);
                     }
                     catch (Exception ex)
                     {
-                        string str = "bad time string: " + audioAttrClipBegin.Value;
+                        string str = "CLIP BEGIN TIME PARSE FAIL: " + audioAttrClipBegin.Value;
                         Console.WriteLine(str);
                         Debug.Fail(str);
                     }
@@ -336,7 +338,7 @@ namespace urakawa.daisy.import
                     }
                     catch (Exception ex)
                     {
-                        string str = "bad time string: " + audioAttrClipEnd.Value;
+                        string str = "CLIP END TIME PARSE FAIL: " + audioAttrClipEnd.Value;
                         Console.WriteLine(str);
                         Debug.Fail(str);
                     }
@@ -349,7 +351,7 @@ namespace urakawa.daisy.import
                         }
                         catch (Exception ex)
                         {
-                            string str = "bad clip-end time: " + audioAttrClipEnd.Value + " / " + timeClipEnd + " (clip-begin: " + ((ExternalAudioMedia)media).ClipBegin + ")";
+                            string str = "CLIP TIME ERROR (end < begin): " + timeClipBegin + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + timeClipEnd + " (" + audioAttrClipEnd.Value + ")";
                             Console.WriteLine(str);
                             //Debug.Fail(str);
                         }
@@ -419,7 +421,7 @@ namespace urakawa.daisy.import
                 catch (Exception ex)
                 {
                     clipB = new Time(0);
-                    string str = "bad time string: " + audioAttrClipBegin.Value;
+                    string str = "CLIP BEGIN TIME PARSE FAIL: " + audioAttrClipBegin.Value;
                     Console.WriteLine(str);
                     Debug.Fail(str);
                 }
@@ -434,7 +436,7 @@ namespace urakawa.daisy.import
                 catch (Exception ex)
                 {
                     clipE = new Time(0);
-                    string str = "bad time string: " + audioAttrClipEnd.Value;
+                    string str = "CLIP END TIME PARSE FAIL: " + audioAttrClipEnd.Value;
                     Console.WriteLine(str);
                     Debug.Fail(str);
                 }
@@ -461,7 +463,7 @@ namespace urakawa.daisy.import
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Bad clips ?! " + clipB + " / " + clipE);
+                Console.WriteLine("CLIP TIME ERROR (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
                 return null;
             }
 
