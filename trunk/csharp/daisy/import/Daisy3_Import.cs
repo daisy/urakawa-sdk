@@ -12,6 +12,24 @@ namespace urakawa.daisy.import
         private readonly string m_outDirectory;
         private string m_Book_FilePath;
 
+        public event System.ComponentModel.ProgressChangedEventHandler NotifyProgressChangeEvent;
+        public event System.ComponentModel.RunWorkerCompletedEventHandler NotifyOperationCancelled;
+        private int m_Progress_Current;
+
+
+        private bool m_RequestCancellation;
+        public bool RequestCancellation
+            {
+            get
+                {
+                return m_RequestCancellation;
+                }
+            set
+                {
+                m_RequestCancellation = value;
+                }
+            }
+
         private string m_Xuk_FilePath;
         public string XukPath
         {
@@ -71,6 +89,8 @@ namespace urakawa.daisy.import
             m_ImageChannel = presentation.ChannelFactory.CreateImageChannel();
             m_ImageChannel.Name = "Our Image Channel";
 
+            if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( 1, "Initializing" ) );
+             
             /*string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
            if (Directory.Exists(dataPath))
            {
@@ -145,6 +165,8 @@ namespace urakawa.daisy.import
                         identifiers[0].IsMarkedAsPrimaryIdentifier = true;
                 }
             }
+            m_Progress_Current = 100;
+            if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( 100, "Import complete" ) );
         }
 
         private core.TreeNode getTreeNodeWithXmlElementId(string id)
