@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Collections.Generic ;
+using System.Collections.Generic;
 using AudioLib;
 using urakawa.core;
 using urakawa.property.channel;
@@ -13,7 +13,7 @@ namespace urakawa.daisy.export.visitor
 {
     public abstract class AbstractPublishFlattenedManagedAudioVisitor : AbstractBasePublishAudioVisitor
     {
-        private List<ExternalAudioMedia> m_ExternalAudioMediaList = new List<ExternalAudioMedia> ();
+        private List<ExternalAudioMedia> m_ExternalAudioMediaList = new List<ExternalAudioMedia>();
 
         public void VerifyTree(TreeNode rootNode)
         {
@@ -183,34 +183,34 @@ namespace urakawa.daisy.export.visitor
             m_TransientWavFileStreamRiffOffset = 0;
 
             if (base.EncodePublishedAudioFilesToMp3 && m_ExternalAudioMediaList.Count > 0)
-                {
-                EncodeTransientFileToMp3 ();
-                }
+            {
+                EncodeTransientFileToMp3();
+            }
         }
 
-        private void EncodeTransientFileToMp3 ()
-            {
+        private void EncodeTransientFileToMp3()
+        {
             ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
-            PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat ;
-            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter ( true );
-            string sourceFilePath = base.GetCurrentAudioFileUri ().LocalPath;
-            string destinationFilePath = Path.Combine ( base.DestinationDirectory.LocalPath,
-                Path.GetFileNameWithoutExtension ( sourceFilePath ) + ".mp3" );
+            PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
+            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true);
+            string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
+            string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
+                Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
 
-            if (formatConverter.CompressWavToMp3 ( sourceFilePath, destinationFilePath, audioFormat.Data.NumberOfChannels, audioFormat.Data.SampleRate, audioFormat.Data.BitDepth, BitRate_Mp3 ))
-                {
+            if (formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, audioFormat.Data.NumberOfChannels, audioFormat.Data.SampleRate, audioFormat.Data.BitDepth, BitRate_Mp3))
+            {
                 foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
-                    {
+                {
                     if (ext != null)
-                        {
-                        ext.Src = ext.Src.Replace ( ".wav", ".mp3" );
-                        }
+                    {
+                        ext.Src = ext.Src.Replace(".wav", ".mp3");
                     }
-
-                File.Delete ( sourceFilePath );
                 }
-            m_ExternalAudioMediaList.Clear ();
+
+                File.Delete(sourceFilePath);
             }
+            m_ExternalAudioMediaList.Clear();
+        }
 
         private TreeNode m_RootNode = null;
 
@@ -315,10 +315,10 @@ namespace urakawa.daisy.export.visitor
 
             ExternalAudioMedia extAudioMedia = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
 
-            if (EncodePublishedAudioFilesToMp3    &&    !m_ExternalAudioMediaList.Contains ( extAudioMedia ))
-                {
-                m_ExternalAudioMediaList.Add ( extAudioMedia );
-                }
+            if (EncodePublishedAudioFilesToMp3 && !m_ExternalAudioMediaList.Contains(extAudioMedia))
+            {
+                m_ExternalAudioMediaList.Add(extAudioMedia);
+            }
 
             extAudioMedia.Language = node.Presentation.Language;
             extAudioMedia.Src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
@@ -400,10 +400,10 @@ namespace urakawa.daisy.export.visitor
 
                 ExternalAudioMedia extAudioMedia = marker.m_TreeNode.Presentation.MediaFactory.Create<ExternalAudioMedia>();
 
-                if (EncodePublishedAudioFilesToMp3    &&    !m_ExternalAudioMediaList.Contains ( extAudioMedia ))
-                    {
-                    m_ExternalAudioMediaList.Add ( extAudioMedia );
-                    }
+                if (EncodePublishedAudioFilesToMp3 && !m_ExternalAudioMediaList.Contains(extAudioMedia))
+                {
+                    m_ExternalAudioMediaList.Add(extAudioMedia);
+                }
                 extAudioMedia.Language = marker.m_TreeNode.Presentation.Language;
                 extAudioMedia.Src = marker.m_TreeNode.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
 
