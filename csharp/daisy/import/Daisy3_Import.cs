@@ -14,8 +14,22 @@ namespace urakawa.daisy.import
 
         public event System.ComponentModel.ProgressChangedEventHandler NotifyProgressChangeEvent;
         public event System.ComponentModel.RunWorkerCompletedEventHandler NotifyOperationCancelled;
+        
+        private int m_ProgressMax = 100;
         private int m_Progress_Current;
 
+        public int Progress_Current
+            {
+            get
+                {
+                return m_Progress_Current;
+                }
+            private set
+                {
+                m_Progress_Current = value * 100 / m_ProgressMax;
+                if (m_ProgressMax > 100) m_ProgressMax = 100;
+                }
+            }
 
         private bool m_RequestCancellation;
         public bool RequestCancellation
@@ -114,19 +128,23 @@ namespace urakawa.daisy.import
             {
                 case ".opf":
                     {
+                    m_ProgressMax = 100;
                         XmlDocument opfXmlDoc = readXmlDocument(m_Book_FilePath);
                         parseOpf(opfXmlDoc);
                         break;
                     }
                 case ".xml":
                     {
+                    m_ProgressMax = 10;
                         XmlDocument contentXmlDoc = readXmlDocument(m_Book_FilePath);
                         parseMetadata(contentXmlDoc);
+                        if (RequestCancellation) break;
                         parseContentDocument(contentXmlDoc, null, m_Book_FilePath);
                         break;
                     }
                 case ".epub":
                     {
+                    m_ProgressMax = 100;
                         unzipEPubAndParseOpf();
                         break;
                     }
@@ -134,6 +152,12 @@ namespace urakawa.daisy.import
                     break;
             }
 
+            // if operation is cancelled trigger cancelled event
+            if (RequestCancellation)
+                {
+                if (NotifyOperationCancelled != null) NotifyOperationCancelled ( this, new System.ComponentModel.RunWorkerCompletedEventArgs ( "Cancelled", null, true ) );
+                return;
+                }
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
             {
                 Metadata meta = addMetadata("dc:Identifier", m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);

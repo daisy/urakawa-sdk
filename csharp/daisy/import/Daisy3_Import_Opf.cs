@@ -38,6 +38,13 @@ namespace urakawa.daisy.import
                 XmlDocument dtbookXmlDoc = readXmlDocument(fullDtbookPath);
                 parseMetadata(dtbookXmlDoc);
                 parseContentDocument(dtbookXmlDoc, null, fullDtbookPath);
+                Progress_Current = 5;
+                if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( Progress_Current, "Parsed content doc" ) );
+
+                if (RequestCancellation)
+                    {
+                    return;
+                    }
             }
 
             if (false && ncxPath != null) //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
