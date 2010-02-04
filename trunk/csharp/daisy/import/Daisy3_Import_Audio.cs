@@ -53,11 +53,8 @@ namespace urakawa.daisy.import
 
                 m_Progress_Current += 80 / spineOfSmilFiles.Count;
                 if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent(this, new System.ComponentModel.ProgressChangedEventArgs(m_Progress_Current, "Importing smil files and audio files"));
-                if (RequestCancellation)
-                {
-                    if (NotifyOperationCancelled != null) NotifyOperationCancelled(this, new System.ComponentModel.RunWorkerCompletedEventArgs("Operation cancelled", null, true));
-                    return;
-                }
+                if (RequestCancellation) return;
+                
             }
 
             //m_AudioConversionSession.DeleteSessionAudioFiles();

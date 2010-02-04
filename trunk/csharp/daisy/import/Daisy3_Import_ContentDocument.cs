@@ -49,6 +49,11 @@ namespace urakawa.daisy.import
             bool first = true;
             foreach (string docPath in spineOfContentDocuments)
             {
+            Progress_Current += (int)4 / spineOfContentDocuments.Count;
+            if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( Progress_Current, "Importing content files" ) );
+
+            if (RequestCancellation) return;
+
                 string fullDocPath = Path.Combine(dirPath, docPath);
                 XmlDocument xmlDoc = readXmlDocument(fullDocPath);
 
