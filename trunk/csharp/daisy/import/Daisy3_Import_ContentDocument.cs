@@ -49,15 +49,17 @@ namespace urakawa.daisy.import
             bool first = true;
             foreach (string docPath in spineOfContentDocuments)
             {
-            Progress_Current += (int)4 / spineOfContentDocuments.Count;
-            if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( Progress_Current, "Importing content files" ) );
-
-            if (RequestCancellation) return;
+                if (RequestCancellation) return;
 
                 string fullDocPath = Path.Combine(dirPath, docPath);
                 XmlDocument xmlDoc = readXmlDocument(fullDocPath);
 
+
+                if (RequestCancellation) return;
+                reportProgress(-1, "Parsing metadata: [" + docPath + "]");
                 parseMetadata(xmlDoc);
+
+                reportProgress(-1, "Parsing content: [" + docPath + "]");
 
                 //XmlNodeList listOfBodies = xmlDoc.GetElementsByTagName("body");
                 //if (listOfBodies.Count == 0)
@@ -116,6 +118,8 @@ namespace urakawa.daisy.import
 
         private void parseContentDocument(XmlNode xmlNode, TreeNode parentTreeNode, string filePath)
         {
+            if (RequestCancellation) return;
+
             XmlNodeType xmlType = xmlNode.NodeType;
             switch (xmlType)
             {
@@ -302,6 +306,7 @@ namespace urakawa.daisy.import
                             }
                         }
 
+                        if (RequestCancellation) return;
                         foreach (XmlNode childXmlNode in xmlNode.ChildNodes)
                         {
                             parseContentDocument(childXmlNode, treeNode, filePath);
@@ -377,6 +382,8 @@ namespace urakawa.daisy.import
 
         private void AddStyleSheetsToXuk(XmlNodeList styleSheetNodesList)
         {
+            if (RequestCancellation) return;
+
             Presentation presentation = m_Project.Presentations.Get(0);
             // first collect existing style sheet files objects to avoid duplicacy.
             //List<string> existingFiles = new List<string> ();
@@ -415,7 +422,5 @@ namespace urakawa.daisy.import
                 if (efd != null) efd.InitializeWithData(styleSheetPath, relativePath, true);
             }
         }
-
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Xml;
 using urakawa.metadata;
@@ -12,37 +13,33 @@ namespace urakawa.daisy.import
         private readonly string m_outDirectory;
         private string m_Book_FilePath;
 
-        public event System.ComponentModel.ProgressChangedEventHandler NotifyProgressChangeEvent;
-        public event System.ComponentModel.RunWorkerCompletedEventHandler NotifyOperationCancelled;
-        
-        private int m_ProgressMax = 100;
-        private int m_Progress_Current;
+        public event ProgressChangedEventHandler ProgressChangedEvent;
+        private void reportProgress(int percent, string msg)
+        {
+            reportSubProgress(-1, null);
+            if (ProgressChangedEvent != null)
+                ProgressChangedEvent(this, new ProgressChangedEventArgs(percent, msg));
+        }
 
-        public int Progress_Current
-            {
-            get
-                {
-                return m_Progress_Current;
-                }
-            private set
-                {
-                m_Progress_Current = value * 100 / m_ProgressMax;
-                if (m_ProgressMax > 100) m_ProgressMax = 100;
-                }
-            }
+        public event ProgressChangedEventHandler SubProgressChangedEvent;
+        private void reportSubProgress(int percent, string msg)
+        {
+            if (SubProgressChangedEvent != null)
+                SubProgressChangedEvent(this, new ProgressChangedEventArgs(percent, msg));
+        }
 
         private bool m_RequestCancellation;
         public bool RequestCancellation
-            {
+        {
             get
-                {
+            {
                 return m_RequestCancellation;
-                }
-            set
-                {
-                m_RequestCancellation = value;
-                }
             }
+            set
+            {
+                m_RequestCancellation = value;
+            }
+        }
 
         private string m_Xuk_FilePath;
         public string XukPath
@@ -58,6 +55,8 @@ namespace urakawa.daisy.import
 
         protected Daisy3_Import(string bookfile, string outDir)
         {
+            reportProgress(10, "Initializing import...");
+
             m_PackageUniqueIdAttr = null;
             m_Book_FilePath = bookfile;
             m_outDirectory = outDir;
@@ -69,16 +68,38 @@ namespace urakawa.daisy.import
             {
                 Directory.CreateDirectory(m_outDirectory);
             }
-            initializeProject();
-            transformBook();
 
-            m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
-            m_Project.SaveXuk(new Uri(m_Xuk_FilePath));
+            reportProgress(50, "Initializing import...");
+
+            if (RequestCancellation) return;
+            initializeProject();
+
+            reportProgress(100, "Import initialized.");
         }
 
         public Daisy3_Import(string bookfile)
             : this(bookfile, Path.GetDirectoryName(bookfile)) //Directory.GetParent(bookfile).FullName)
         { }
+
+        public void DoImport()
+        {
+            if (RequestCancellation) return;
+            transformBook();
+
+            reportProgress(-1, "Saving XUK...");
+
+            if (RequestCancellation) return;
+            m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
+            m_Project.SaveXuk(new Uri(m_Xuk_FilePath));
+
+            reportProgress(100, "XUK Saved.");
+
+            if (RequestCancellation)
+            {
+                m_Xuk_FilePath = null;
+                m_Project = null;
+            }
+        }
 
         private void initializeProject()
         {
@@ -103,8 +124,6 @@ namespace urakawa.daisy.import
             m_ImageChannel = presentation.ChannelFactory.CreateImageChannel();
             m_ImageChannel.Name = "Our Image Channel";
 
-            if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( 1, "Initializing" ) );
-             
             /*string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
            if (Directory.Exists(dataPath))
            {
@@ -123,41 +142,46 @@ namespace urakawa.daisy.import
                 return;
             }
 
-            string fileExt = m_Book_FilePath.Substring(indexOfDot).ToLower () ;
+            if (RequestCancellation) return;
+            string fileExt = m_Book_FilePath.Substring(indexOfDot).ToLower();
             switch (fileExt)
             {
                 case ".opf":
                     {
-                    m_ProgressMax = 100;
                         XmlDocument opfXmlDoc = readXmlDocument(m_Book_FilePath);
+
+                        if (RequestCancellation) break;
+                        reportProgress(-1, "Parsing OPF: [" + Path.GetFileName(m_Book_FilePath) + "]");
                         parseOpf(opfXmlDoc);
+                        
                         break;
                     }
                 case ".xml":
                     {
-                    m_ProgressMax = 10;
                         XmlDocument contentXmlDoc = readXmlDocument(m_Book_FilePath);
-                        parseMetadata(contentXmlDoc);
+
                         if (RequestCancellation) break;
+                        reportProgress(-1, "Parsing metadata: [" + Path.GetFileName(m_Book_FilePath) + "]");
+                        parseMetadata(contentXmlDoc);
+                        
+                        if (RequestCancellation) break;
+                        reportProgress(-1, "Parsing content: [" + Path.GetFileName(m_Book_FilePath) + "]");
                         parseContentDocument(contentXmlDoc, null, m_Book_FilePath);
+                        
                         break;
                     }
                 case ".epub":
                     {
-                    m_ProgressMax = 100;
                         unzipEPubAndParseOpf();
+
                         break;
                     }
                 default:
                     break;
             }
 
-            // if operation is cancelled trigger cancelled event
-            if (RequestCancellation)
-                {
-                if (NotifyOperationCancelled != null) NotifyOperationCancelled ( this, new System.ComponentModel.RunWorkerCompletedEventArgs ( "Cancelled", null, true ) );
-                return;
-                }
+            if (RequestCancellation) return;
+
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
             {
                 Metadata meta = addMetadata("dc:Identifier", m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);
@@ -185,12 +209,14 @@ namespace urakawa.daisy.import
                     }
 
                     //if there is only one identifier, then make it the publication UID
-                    if (identifiers.Count == 1) 
+                    if (identifiers.Count == 1)
                         identifiers[0].IsMarkedAsPrimaryIdentifier = true;
                 }
             }
-            m_Progress_Current = 100;
-            if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( 100, "Import complete" ) );
+
+            if (RequestCancellation) return;
+
+            reportProgress(100, "Transform complete");
         }
 
         private core.TreeNode getTreeNodeWithXmlElementId(string id)

@@ -28,6 +28,7 @@ namespace urakawa.daisy.import
 
         private void parseSmiles(List<string> spineOfSmilFiles)
         {
+            if (RequestCancellation) return;
 
             if (spineOfSmilFiles == null || spineOfSmilFiles.Count <= 0)
             {
@@ -39,22 +40,21 @@ namespace urakawa.daisy.import
             m_AudioConversionSession = new AudioFormatConvertorSession(m_Project.Presentations.Get(0));
             m_OriginalAudioFile_FileDataProviderMap.Clear();
 
-
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);
 
-            m_Progress_Current = 10;
-            if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent(this, new System.ComponentModel.ProgressChangedEventArgs(m_Progress_Current, "Importing smil files and audio files"));
-
+            int nSmil = 0;
             foreach (string smilPath in spineOfSmilFiles)
             {
+                if (RequestCancellation) return;
+
+                nSmil++;
+                reportProgress(100 * nSmil / spineOfSmilFiles.Count,
+                    string.Format("Parsing SMIL file [{2}] {0} / {1}...", nSmil, spineOfSmilFiles.Count, smilPath));
+
                 string fullSmilPath = Path.Combine(dirPath, smilPath);
                 Console.WriteLine("smil file to be parsed: " + Path.GetFileName(smilPath));
-                parseSmil(fullSmilPath);
 
-                m_Progress_Current += 80 / spineOfSmilFiles.Count;
-                if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent(this, new System.ComponentModel.ProgressChangedEventArgs(m_Progress_Current, "Importing smil files and audio files"));
-                if (RequestCancellation) return;
-                
+                parseSmil(fullSmilPath);
             }
 
             //m_AudioConversionSession.DeleteSessionAudioFiles();
@@ -63,8 +63,10 @@ namespace urakawa.daisy.import
 
         private void parseSmil(string fullSmilPath)
         {
+            if (RequestCancellation) return;
             XmlDocument smilXmlDoc = readXmlDocument(fullSmilPath);
-
+            
+            if (RequestCancellation) return;
             //we skip SMIL metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
             //parseMetadata(smilXmlDoc);
 
@@ -73,6 +75,9 @@ namespace urakawa.daisy.import
             //{
             //    return;
             //}
+
+            //reportProgress(-1, "Parsing SMIL: [" + Path.GetFileName(fullSmilPath) + "]");
+
             foreach (XmlNode textNode in XmlDocumentHelper.GetChildrenElementsWithName(smilXmlDoc, true, "text", null, false))
             {
                 XmlAttributeCollection textNodeAttrs = textNode.Attributes;
@@ -119,6 +124,8 @@ namespace urakawa.daisy.import
                 XmlNodeList textPeers = parent.ChildNodes;
                 foreach (XmlNode textPeerNode in textPeers)
                 {
+                    if (RequestCancellation) return;
+
                     if (textPeerNode.NodeType != XmlNodeType.Element)
                     {
                         continue;
@@ -158,6 +165,8 @@ namespace urakawa.daisy.import
 
         private void addAudio(TreeNode treeNode, XmlNode xmlNode, bool isSequence, string fullSmilPath)
         {
+            if (RequestCancellation) return;
+
             string dirPath = Path.GetDirectoryName(fullSmilPath);
 
             XmlAttributeCollection audioAttrs = xmlNode.Attributes;
@@ -184,7 +193,7 @@ namespace urakawa.daisy.import
                 string fullWavPathOriginal = Path.Combine(dirPathBook, audioAttrSrc.Value);
                 if (!File.Exists(fullWavPathOriginal))
                 {
-                    System.Diagnostics.Debug.Fail("File not found: {0}", fullWavPathOriginal);
+                    Debug.Fail("File not found: {0}", fullWavPathOriginal);
                     media = null;
                 }
                 else
@@ -208,7 +217,8 @@ namespace urakawa.daisy.import
                             wavStream = File.Open(fullWavPath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                             pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
-
+                            
+                            if (RequestCancellation) return;
 
                             //if (m_firstTimePCMFormat)
                             //{
@@ -221,20 +231,27 @@ namespace urakawa.daisy.import
                                 wavStream.Close();
                                 wavStream = null;
 
+                                reportSubProgress(-1, "Converting audio: [" + Path.GetFileName(fullWavPath) + "]");
                                 string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullWavPath);
+
+                                if (RequestCancellation) return;
 
                                 dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
                                 Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullWavPath) + " = " + dataProv.DataFileRelativePath);
                                 dataProv.InitByMovingExistingFile(newfullWavPath);
                                 m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
 
+                                if (RequestCancellation) return;
                             }
                             else // use original wav file by copying it to data directory
                             {
                                 dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
                                 Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullWavPath) + " = " + dataProv.DataFileRelativePath);
+                                reportSubProgress(-1, "Copying audio: [" + Path.GetFileName(fullWavPath) + "]");
                                 dataProv.InitByCopyingExistingFile(fullWavPath);
                                 m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
+
+                                if (RequestCancellation) return;
                             }
                         }
                         finally
@@ -245,6 +262,8 @@ namespace urakawa.daisy.import
 
                 } // FileDataProvider  key check ends
 
+                if (RequestCancellation) return;
+
                 media = addAudioWav(dataProv, audioAttrClipBegin, audioAttrClipEnd);
                 //media = addAudioWav ( fullWavPath, deleteSrcAfterCompletion, audioAttrClipBegin, audioAttrClipEnd );
 
@@ -254,11 +273,15 @@ namespace urakawa.daisy.import
                 string fullMp3PathOriginal = Path.Combine(dirPath, audioAttrSrc.Value);
                 if (!File.Exists(fullMp3PathOriginal))
                 {
-                    System.Diagnostics.Debug.Fail("File not found: {0}", fullMp3PathOriginal);
+                    Debug.Fail("File not found: {0}", fullMp3PathOriginal);
                     return;
                 }
 
+                if (RequestCancellation) return;
+                reportSubProgress(-1, "Decoding audio: [" + Path.GetFileName(fullMp3PathOriginal) + "]");
                 string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullMp3PathOriginal);
+
+                if (RequestCancellation) return;
 
                 FileDataProvider dataProv = null;
                 if (m_OriginalAudioFile_FileDataProviderMap.ContainsKey(fullMp3PathOriginal))
@@ -271,6 +294,8 @@ namespace urakawa.daisy.import
                     Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullMp3PathOriginal) + " = " + dataProv.DataFileRelativePath);
                     dataProv.InitByMovingExistingFile(newfullWavPath);
                     m_OriginalAudioFile_FileDataProviderMap.Add(fullMp3PathOriginal, dataProv);
+
+                    if (RequestCancellation) return;
                 }
 
                 if (newfullWavPath != null)
@@ -296,12 +321,15 @@ namespace urakawa.daisy.import
                     //    }
                     //}
 
+                    if (RequestCancellation) return;
 
                     //media = addAudioWav(newfullWavPath, true, audioAttrClipBegin, audioAttrClipEnd);
                     media = addAudioWav(dataProv, audioAttrClipBegin, audioAttrClipEnd);
                 }
                 //}
             }
+
+            if (RequestCancellation) return;
 
             if (media == null)
             {
@@ -355,6 +383,8 @@ namespace urakawa.daisy.import
                     }
                 }
             }
+            
+            if (RequestCancellation) return;
 
             if (media != null)
             {
@@ -384,13 +414,12 @@ namespace urakawa.daisy.import
             }
             else
             {
-                System.Diagnostics.Debug.Fail("Media could not be created !");
+                Debug.Fail("Media could not be created !");
             }
         }
 
         private string GenerateFileFullPath(string directoryPath)
         {
-
             for (int i = 0; i < 900000; i++)
             {
                 string fullPath = Path.Combine(directoryPath, i.ToString());
@@ -405,6 +434,8 @@ namespace urakawa.daisy.import
 
         private Media addAudioWav(FileDataProvider dataProv, XmlNode audioAttrClipBegin, XmlNode audioAttrClipEnd)
         {
+            if (RequestCancellation) return null;
+
             Time clipB = Time.Zero;
             Time clipE = Time.MaxValue;
 
@@ -463,6 +494,8 @@ namespace urakawa.daisy.import
                 Console.WriteLine("CLIP TIME ERROR (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
                 return null;
             }
+
+            if (RequestCancellation) return null;
 
             media = presentation.MediaFactory.CreateManagedAudioMedia();
             ((ManagedAudioMedia)media).AudioMediaData = mediaData;

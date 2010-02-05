@@ -198,7 +198,7 @@ namespace urakawa.data
             try
             {
                 const uint BUFFER_SIZE = 1024 * 1024; // 1 MB MAX BUFFER
-                StreamUtils.Copy(source, (ulong)source.Length, exportFileStream, BUFFER_SIZE);
+                StreamUtils.Copy(source, 0, exportFileStream, BUFFER_SIZE);
 
                 //if (source.Length <= BUFFER_SIZE)
                 //{

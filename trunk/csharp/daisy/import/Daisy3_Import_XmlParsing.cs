@@ -17,6 +17,8 @@ namespace urakawa.daisy.import
     {
         private XmlDocument readXmlDocument(string path)
         {
+            reportSubProgress(-1, "Reading XML document [" + Path.GetFileName(path) + "]...");
+
             XmlReaderSettings settings = new XmlReaderSettings();
 
             settings.ProhibitDtd = false;
@@ -56,6 +58,7 @@ namespace urakawa.daisy.import
                     xmlReader.Close();
                 }
 
+                reportSubProgress(100, "XML document loaded [" + path + "].");
                 return xmldoc;
             }
         }
@@ -162,9 +165,13 @@ namespace urakawa.daisy.import
                     }
                     WebResponse resp = webReq.GetResponse();
                     Stream webStream = resp.GetResponseStream();
-                    // create local DTD file from webStream
-                    CreateLocalDTDFileFromWebStream(absoluteUri.AbsolutePath, webStream);
-                    return webStream;
+                    
+                    string localpath = CreateLocalDTDFileFromWebStream(absoluteUri.AbsolutePath, webStream);
+
+                    //webStream.Close();
+                    resp.Close();
+
+                    return File.Open(localpath, FileMode.Open, FileAccess.Read, FileShare.Read);
                 }
 
                 // No need to look for a local file that does not exist.
@@ -200,7 +207,7 @@ namespace urakawa.daisy.import
                 return null;
             }
 
-            private void CreateLocalDTDFileFromWebStream(string strWebDTDPath, Stream webStream)
+            private string CreateLocalDTDFileFromWebStream(string strWebDTDPath, Stream webStream)
             {
                 FileStream fs = null;
                 try
@@ -225,7 +232,9 @@ namespace urakawa.daisy.import
 #endif //USE_ISOLATED_STORAGE
 
                     const uint BUFFER_SIZE = 1024; // 1 KB MAX BUFFER
-                    StreamUtils.Copy(webStream, (ulong)webStream.Length, fs, BUFFER_SIZE);
+                    StreamUtils.Copy(webStream, 0, fs, BUFFER_SIZE);
+
+                    return filepath;
                 }
                 finally
                 {

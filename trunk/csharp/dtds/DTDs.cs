@@ -58,12 +58,21 @@ namespace DTDs
             ENTITIES_MAPPING.Add("//W3C//ENTITIES%20Symbols%20for%20XHTML//EN", "DTDs.Resources.xhtml-symbol.ent");
             ENTITIES_MAPPING.Add("//W3C//ENTITIES%20Special%20for%20XHTML//EN", "DTDs.Resources.xhtml-special.ent");
 
+            ENTITIES_MAPPING.Add("xhtml1-transitional.dtd", "DTDs.Resources.xhtml1-transitional.dtd");
             ENTITIES_MAPPING.Add("//W3C//DTD%20XHTML%201.0%20Transitional//EN", "DTDs.Resources.xhtml1-transitional.dtd");
+
+            ENTITIES_MAPPING.Add("xhtml11.dtd", "DTDs.Resources.xhtml11.dtd");
             ENTITIES_MAPPING.Add("//W3C//DTD%20XHTML%201.1//EN", "DTDs.Resources.xhtml11.dtd");
-            
+
+            ENTITIES_MAPPING.Add("xhtml-math-svg-flat.dtd", "DTDs.Resources.xhtml-math-svg-flat.dtd");
             ENTITIES_MAPPING.Add("//W3C//DTD%20XHTML%201.1%20plus%20MathML%202.0%20plus%20SVG%201.1//EN", "DTDs.Resources.xhtml-math-svg-flat.dtd");
 
-            ENTITIES_MAPPING.Add("//W3C//ENTITIES%20MathML%202.0%20Qualified%20Names%201.0//EN", "DTDs.Resources.mathml2.dtd");
+            ENTITIES_MAPPING.Add("mathml2.dtd", "DTDs.Resources.mathml2.dtd");
+            ENTITIES_MAPPING.Add("//W3C//DTD%20MathML%202.0//EN", "DTDs.Resources.mathml2.dtd");
+
+            ENTITIES_MAPPING.Add("mathml2-qname-1.mod", "DTDs.Resources.mathml2-qname-1.mod");
+            ENTITIES_MAPPING.Add("//W3C//ENTITIES%20MathML%202.0%20Qualified%20Names%201.0//EN", "DTDs.Resources.mathml2-qname-1.mod");
+            
         }
 
         private static Assembly m_Assembly = Assembly.GetExecutingAssembly();
