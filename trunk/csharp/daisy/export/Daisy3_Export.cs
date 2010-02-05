@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Xml;
 using urakawa.core;
 using urakawa.daisy.export.visitor;
@@ -30,6 +31,35 @@ namespace urakawa.daisy.export
         private List<string> m_FilesList_Image; // list of images, populated in create content document function
         private List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
         private TimeSpan m_TotalTime;
+
+        public event ProgressChangedEventHandler ProgressChangedEvent;
+        private void reportProgress ( int percent, string msg )
+            {
+            reportSubProgress ( -1, null );
+            if (ProgressChangedEvent != null)
+                ProgressChangedEvent ( this, new ProgressChangedEventArgs ( percent, msg ) );
+            }
+
+        public event ProgressChangedEventHandler SubProgressChangedEvent;
+        private void reportSubProgress ( int percent, string msg )
+            {
+            if (SubProgressChangedEvent != null)
+                SubProgressChangedEvent ( this, new ProgressChangedEventArgs ( percent, msg ) );
+            }
+
+        private bool m_RequestCancellation;
+        public bool RequestCancellation
+            {
+            get
+                {
+                return m_RequestCancellation;
+                }
+            set
+                {
+                m_RequestCancellation = value;
+                }
+            }
+
 
         /// <summary>
         /// initializes instance with presentation and list of element names for which navList will be created, 
@@ -61,11 +91,11 @@ namespace urakawa.daisy.export
                 m_NavListElementNamesList.Add("note");
             }
 
-            export();
+            //export();
         }
 
 
-        private void export()
+        public void StartExport()
         {
             //if (m_Presentation.RootNode.GetDurationOfManagedAudioMediaFlattened().TimeDeltaAsMillisecondLong == 0)
             //{
