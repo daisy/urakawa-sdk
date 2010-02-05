@@ -182,6 +182,7 @@ namespace urakawa.daisy.export.visitor
             m_TransientWavFileStream = null;
             m_TransientWavFileStreamRiffOffset = 0;
 
+            if (RequestCancellation) return;
             if (base.EncodePublishedAudioFilesToMp3 && m_ExternalAudioMediaList.Count > 0)
             {
                 EncodeTransientFileToMp3();
@@ -233,6 +234,12 @@ namespace urakawa.daisy.export.visitor
             {
                 return false;
             }
+
+            if (RequestCancellation)
+                {
+                checkTransientWavFileAndClose ( node );
+                return false;
+                }
 
             if (TreeNodeTriggersNewAudioFile(node))
             {
@@ -291,6 +298,12 @@ namespace urakawa.daisy.export.visitor
                 Debug.Fail("This should never happen !!");
                 return false;
             }
+            if (RequestCancellation)
+                {
+                checkTransientWavFileAndClose ( node );
+                return false;
+                }
+
             try
             {
                 const uint BUFFER_SIZE = 1024 * 1024 * 3; // 3 MB MAX BUFFER
@@ -355,6 +368,11 @@ namespace urakawa.daisy.export.visitor
                 checkTransientWavFileAndClose(node);
             }
 
+            if (RequestCancellation)
+                {
+                checkTransientWavFileAndClose ( node );
+                return ;
+                }
             if (TreeNodeMustBeSkipped(node))
             {
                 return;
@@ -386,6 +404,12 @@ namespace urakawa.daisy.export.visitor
 
             Stream audioPcmStream = sm.GetValueOrDefault().m_Stream;
 
+            if (RequestCancellation)
+                {
+                checkTransientWavFileAndClose (node);
+                return;
+                }
+
             try
             {
                 ulong riffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(wavFileStream, (uint)audioPcmStream.Length);
@@ -398,6 +422,12 @@ namespace urakawa.daisy.export.visitor
                 audioPcmStream.Close();
                 wavFileStream.Close();
             }
+
+            if (RequestCancellation)
+                {
+                checkTransientWavFileAndClose (node);
+                return;
+                }
 
             long bytesBegin = 0;
             foreach (TreeNodeAndStreamDataLength marker in sm.GetValueOrDefault().m_SubStreamMarkers)

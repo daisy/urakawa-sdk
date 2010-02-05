@@ -56,6 +56,8 @@ namespace urakawa.daisy.export
                 urakawaNode.AcceptDepthFirst(
             delegate(urakawa.core.TreeNode n)
             {
+            if (RequestCancellation) return false;
+
                 QualifiedName currentQName = n.GetXmlElementQName();
 
                 if (IsHeadingNode(n))
@@ -456,9 +458,7 @@ namespace urakawa.daisy.export
                         //urakawa.core.TreeNode n = textAudioNodesList[0];
                         CreateDocTitle(ncxDocument, ncxRootNode, n);
                         IsNcxNativeNodeAdded = true;
-                        /*
-
-                         */
+                        
                     }
                     else if (currentHeadingTreeNode != null)
                     {
@@ -479,9 +479,7 @@ namespace urakawa.daisy.export
 
                         // -- start copying from here to function
 
-                        /*
-                    
-                         */
+                        
                         navPointNode = CreateNavPointWithoutContentNode(ncxDocument, urakawaNode, currentHeadingTreeNode, n, treeNode_NavNodeMap);
                         playOrderList_Sorted.Add(navPointNode);
 
@@ -527,7 +525,7 @@ namespace urakawa.daisy.export
                 }
                 Seq_SpecialNode = null;
 
-
+                if (RequestCancellation) return;
                 // add metadata to smil document and write to file.
                 if (smilDocument != null)
                 {
@@ -576,9 +574,21 @@ namespace urakawa.daisy.export
                 }
             }
 
+            if (RequestCancellation)
+                {
+                m_DTBDocument = null;
+                ncxDocument = null;
+                return;
+                }
             XmlDocumentHelper.WriteXmlDocumentToFile(m_DTBDocument,
               Path.Combine(m_OutputDirectory, m_Filename_Content));
 
+            if (RequestCancellation)
+                {
+                m_DTBDocument = null;
+                ncxDocument = null;
+                return;
+                }
             // write ncs document to file
             m_TotalTime = smilElapseTime;
             AddMetadata_Ncx(ncxDocument, totalPageCount.ToString(), maxNormalPageNumber.ToString(), maxDepth.ToString(), ncxCustomTestList);
