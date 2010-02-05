@@ -10,6 +10,7 @@ namespace urakawa.daisy.export
 
         private void CreateOpfDocument()
         {
+        if (RequestCancellation) return;
             XmlDocument opfDocument = CreateStub_OpfDocument();
 
             XmlNode manifestNode = XmlDocumentHelper.GetFirstChildElementWithName(opfDocument, true, "manifest", null); //opfDocument.GetElementsByTagName("manifest")[0];
@@ -56,6 +57,7 @@ namespace urakawa.daisy.export
 
                 }
 
+            if (RequestCancellation) return;
             // add smil files to manifest
             List<string> smilIDListInPlayOrder = new List<string>();
 
@@ -65,6 +67,8 @@ namespace urakawa.daisy.export
                 AddFilenameToManifest(opfDocument, manifestNode, smilFileName, strID, mediaType_Smil);
                 smilIDListInPlayOrder.Add(strID);
             }
+
+            if (RequestCancellation) return;
 
             foreach (string audioFileName in m_FilesList_Audio)
             {
@@ -79,6 +83,8 @@ namespace urakawa.daisy.export
                     AddFilenameToManifest(opfDocument, manifestNode, audioFileName, strID, mediaType_Mpg);
                 }
             }
+
+            if (RequestCancellation) return;
 
             foreach (string imageFileName in m_FilesList_Image)
             {
@@ -103,6 +109,7 @@ namespace urakawa.daisy.export
             string resourceAudio_Filename_fullPath = Path.Combine(sourceDirectoryPath, resourceAudio_Filename);
             if (File.Exists(ResourceRes_Filename_fullPath) && File.Exists(resourceAudio_Filename_fullPath))
             {
+            if (RequestCancellation) return;
                 File.Copy(ResourceRes_Filename_fullPath, Path.Combine(m_OutputDirectory, ResourceRes_Filename), true);
                 File.Copy(resourceAudio_Filename_fullPath, Path.Combine(m_OutputDirectory, resourceAudio_Filename), true);
 
@@ -122,7 +129,14 @@ namespace urakawa.daisy.export
 
             }
 
+            if (RequestCancellation) return;
             AddMetadata_Opf(opfDocument);
+
+            if (RequestCancellation)
+                {
+                opfDocument = null;
+                return;
+                }
             XmlDocumentHelper.WriteXmlDocumentToFile(opfDocument,
                 Path.Combine(m_OutputDirectory, m_Filename_Opf));
         }

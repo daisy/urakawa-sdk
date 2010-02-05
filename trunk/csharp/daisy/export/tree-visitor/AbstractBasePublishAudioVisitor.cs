@@ -8,6 +8,20 @@ namespace urakawa.daisy.export.visitor
 {
     public abstract class AbstractBasePublishAudioVisitor : ITreeNodeVisitor
     {
+        private bool m_RequestCancellation;
+            
+            public bool RequestCancellation
+            {
+            get
+                {
+                return m_RequestCancellation;
+                }
+            set
+                {
+                m_RequestCancellation = value;
+                }
+            }
+
         protected AbstractBasePublishAudioVisitor()
         {
             mCurrentAudioFileNumber = 0;

@@ -15,6 +15,7 @@ namespace urakawa.daisy.export
     public partial class Daisy3_Export
     {
         private Presentation m_Presentation;
+        private PublishFlattenedManagedAudioVisitor m_PublishVisitor = null;
         private string m_OutputDirectory;
         private List<string> m_NavListElementNamesList;
         private const string PUBLISH_AUDIO_CHANNEL_NAME = "Temporary External Audio Medias (Publish Visitor)";
@@ -57,6 +58,7 @@ namespace urakawa.daisy.export
             set
                 {
                 m_RequestCancellation = value;
+                if (m_PublishVisitor != null) m_PublishVisitor.RequestCancellation = value;
                 }
             }
 
@@ -69,6 +71,7 @@ namespace urakawa.daisy.export
         /// <param name="navListElementNamesList"></param>
         public Daisy3_Export(Presentation presentation, string exportDirectory, List<string> navListElementNamesList)
         {
+        RequestCancellation = false;
             if (!Directory.Exists(exportDirectory))
             {
                 Directory.CreateDirectory(exportDirectory);
@@ -97,42 +100,55 @@ namespace urakawa.daisy.export
 
         public void StartExport()
         {
-            //if (m_Presentation.RootNode.GetDurationOfManagedAudioMediaFlattened().TimeDeltaAsMillisecondLong == 0)
-            //{
-            //    System.Diagnostics.Debug.Fail("no audio found", "No audio node found in the project being exported");
-            //}
-
+        if (RequestCancellation) return;
+            
             m_ID_Counter = 0;
 
             //TreeNodeTestDelegate triggerDelegate  = delegate(urakawa.core.TreeNode node) { return node.GetManagedAudioMedia () != null ; };
             TreeNodeTestDelegate triggerDelegate = doesTreeNodeTriggerNewSmil;
             TreeNodeTestDelegate skipDelegate = delegate { return false; };
 
-            PublishFlattenedManagedAudioVisitor publishVisitor = new PublishFlattenedManagedAudioVisitor(triggerDelegate, skipDelegate);
+            m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(triggerDelegate, skipDelegate);
 
-            publishVisitor.DestinationDirectory = new Uri(m_OutputDirectory, UriKind.Absolute);
+            m_PublishVisitor.DestinationDirectory = new Uri(m_OutputDirectory, UriKind.Absolute);
 
-            publishVisitor.SourceChannel = m_Presentation.ChannelsManager.GetOrCreateAudioChannel();
+            m_PublishVisitor.SourceChannel = m_Presentation.ChannelsManager.GetOrCreateAudioChannel();
 
             Channel publishChannel = m_Presentation.ChannelFactory.CreateAudioChannel();
             publishChannel.Name = PUBLISH_AUDIO_CHANNEL_NAME;
-            publishVisitor.DestinationChannel = publishChannel;
+            m_PublishVisitor.DestinationChannel = publishChannel;
 
-            m_Presentation.RootNode.AcceptDepthFirst(publishVisitor);
+            m_Presentation.RootNode.AcceptDepthFirst(m_PublishVisitor);
 
+            if (RequestCancellation_RemovePublishChannel(publishChannel) ) return;
 #if DEBUG
-            publishVisitor.VerifyTree(m_Presentation.RootNode);
+            m_PublishVisitor.VerifyTree(m_Presentation.RootNode);
+            m_PublishVisitor = null;
+            if (RequestCancellation_RemovePublishChannel ( publishChannel )) return;
             //Debugger.Break();
 #endif //DEBUG
 
             // the following functions must be called in this order.
             CreateDTBookDocument();
+            if (RequestCancellation_RemovePublishChannel ( publishChannel )) return;
             CreateNcxAndSmilDocuments();
+            if (RequestCancellation_RemovePublishChannel ( publishChannel )) return;
             CreateExternalFiles ();
+            if (RequestCancellation_RemovePublishChannel ( publishChannel )) return;
             CreateOpfDocument();
 
             m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
         }
+
+        private bool RequestCancellation_RemovePublishChannel ( Channel publishChannel )
+            {
+            if (RequestCancellation)
+                {
+                m_Presentation.ChannelsManager.RemoveManagedObject ( publishChannel );
+                return true;
+                }
+            return false;
+            }
 
         private bool doesTreeNodeTriggerNewSmil(TreeNode node)
         {

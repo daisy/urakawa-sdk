@@ -25,14 +25,15 @@ namespace urakawa.daisy.export
             //    if (strInternalDTD.Trim() == "") strInternalDTD = null;
             //}
 
-            //string dtdFilePath = Path.Combine(m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
-                                              //"DTBookLocalDTD.dtd");
+            
         m_FilesList_Image = new List<string> ();
         m_FilesList_ExternalFiles = new List<string> ();
         List<ExternalFileData> list_ExternalStyleSheets = new List<ExternalFileData> ();
             string strInternalDTD = null;
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
                 {
+                if (RequestCancellation) return;
+
                 if (efd is ExternalFiles.DTDExternalFileData&&
                     efd.OriginalRelativePath == "DTBookLocalDTD.dtd" && !efd.IsPreservedForOutputFile
                     && strInternalDTD == null)
@@ -47,7 +48,8 @@ namespace urakawa.daisy.export
                     
                     }
                 }
-            
+
+            if (RequestCancellation) return;
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
             if ( list_ExternalStyleSheets != null )  ExportStyleSheets ( list_ExternalStyleSheets );
 
@@ -110,6 +112,7 @@ namespace urakawa.daisy.export
             rNode.AcceptDepthFirst(
                     delegate(TreeNode n)
                     {
+                    if (RequestCancellation) return false;
                         // add to list of levels if xml property has level string
                         //QualifiedName qName = n.GetXmlElementQName();
                         //if (qName != null &&
@@ -244,6 +247,7 @@ namespace urakawa.daisy.export
 
                                 if ( !File.Exists ( destPath ))
                                     {
+                                    if (RequestCancellation) return false;
                                     managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile ( destPath, false );
                                     
                                     }
@@ -256,32 +260,14 @@ namespace urakawa.daisy.export
                                     }
                                 
                                 }
-                            /*
-                            if (imgSrcAttribute != null &&
-                                (imgSrcAttribute.Value.StartsWith(m_Presentation.DataProviderManager.DataFileDirectory)))
-                            {
-                                string imgFileName = Path.GetFileName(imgSrcAttribute.Value);
-                                string sourcePath = Path.Combine(m_Presentation.DataProviderManager.DataFileDirectoryFullPath,
-                                    Uri.UnescapeDataString(imgFileName));
-                                string destPath = Path.Combine(m_OutputDirectory, Uri.UnescapeDataString(imgFileName));
-                                if (File.Exists(sourcePath))
-                                {
-                                    if (!File.Exists(destPath)) File.Copy(sourcePath, destPath);
-                                    imgSrcAttribute.Value = imgFileName;
-
-                                    if (!m_FilesList_Image.Contains(imgFileName))
-                                        m_FilesList_Image.Add(imgFileName);
-                                }
-                                else
-                                    System.Diagnostics.Debug.Fail("source image not found", sourcePath);
-                            }
-                             */ 
+                            
                         }
 
                         return true;
                     },
                     delegate(urakawa.core.TreeNode n) { });
 
+            if (RequestCancellation) return;
             // set references to new ids
             foreach (XmlAttribute attr in referencingAttributesList)
             {
