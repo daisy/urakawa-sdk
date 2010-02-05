@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.IsolatedStorage;
+using System.Reflection;
 using System.Xml;
 using System.IO;
 using urakawa.xuk;

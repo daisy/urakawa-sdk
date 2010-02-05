@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
+using urakawa.xuk;
 
 namespace urakawa.daisy.import
 {
@@ -17,15 +18,21 @@ namespace urakawa.daisy.import
         private void reportProgress(int percent, string msg)
         {
             reportSubProgress(-1, null);
-            if (ProgressChangedEvent != null)
-                ProgressChangedEvent(this, new ProgressChangedEventArgs(percent, msg));
+            ProgressChangedEventHandler d = ProgressChangedEvent;
+            if (d != null)
+            {
+                d(this, new ProgressChangedEventArgs(percent, msg));
+            }
         }
 
         public event ProgressChangedEventHandler SubProgressChangedEvent;
         private void reportSubProgress(int percent, string msg)
         {
-            if (SubProgressChangedEvent != null)
-                SubProgressChangedEvent(this, new ProgressChangedEventArgs(percent, msg));
+            ProgressChangedEventHandler d = SubProgressChangedEvent;
+            if (d != null)
+            {
+                d(this, new ProgressChangedEventArgs(percent, msg));
+            }
         }
 
         private bool m_RequestCancellation;
@@ -90,9 +97,39 @@ namespace urakawa.daisy.import
 
             if (RequestCancellation) return;
             m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
-            m_Project.SaveXuk(new Uri(m_Xuk_FilePath));
 
-            reportProgress(100, "XUK Saved.");
+            //m_Project.SaveXuk(new Uri(m_Xuk_FilePath));
+
+
+            var action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath))
+            {
+                ShortDescription = "Saving XUK file...",
+                LongDescription = "Serializing the document object model from the Urakawa SDK as XML content into a XUK file..."
+            };
+
+            action.Progress += (sender, e) =>
+            {
+                double val = e.Current;
+                double max = e.Total;
+                
+                var percent = -1;
+                if (val != max)
+                {
+                    percent = (int) ((val/max)*100);
+                }
+
+                reportProgress(percent, action.ShortDescription);
+                reportSubProgress(-1, action.LongDescription);
+
+                if (RequestCancellation)
+                {
+                    e.Cancel();
+                }
+            };
+            action.Finished += (sender, e) => reportProgress(100, "XUK Saved.");
+            action.Cancelled += (sender, e) => reportProgress(0, "Cancelled XUK Saving.");
+
+            action.Execute();
 
             if (RequestCancellation)
             {
