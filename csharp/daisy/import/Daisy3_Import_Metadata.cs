@@ -16,26 +16,35 @@ namespace urakawa.daisy.import
 
         private void parseMetadata_ElementInnerTextAll(XmlDocument xmlDoc)
         {
+            if (RequestCancellation) return;
+
             foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsWithName(xmlDoc, true, "metadata", null, false))
             {
+                if (RequestCancellation) return;
                 parseMetadata_ElementInnerText(node);
             }
 
+            if (RequestCancellation) return;
             foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsWithName(xmlDoc, true, "dc-metadata", null, false))
             {
+                if (RequestCancellation) return;
                 parseMetadata_ElementInnerText(node);
             }
 
+            if (RequestCancellation) return;
             foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsWithName(xmlDoc, true, "x-metadata", null, false))
             {
+                if (RequestCancellation) return;
                 parseMetadata_ElementInnerText(node);
             }
         }
 
         private void parseMetadata_NameContentAll(XmlDocument xmlDoc)
         {
+            if (RequestCancellation) return;
             foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsWithName(xmlDoc, true, "meta", null, false))
             {
+                if (RequestCancellation) return;
                 parseMetadata_NameContent(node);
             }
         }
@@ -44,6 +53,8 @@ namespace urakawa.daisy.import
         {
             foreach (XmlNode mdNode in metadataContainer.ChildNodes)
             {
+                if (RequestCancellation) return;
+
                 //string lowerCaseName = mdNode.Name.ToLower();
                 string lowerCaseLocalName = mdNode.LocalName.ToLower();
 
@@ -62,6 +73,8 @@ namespace urakawa.daisy.import
 
         private void handleMetaDataOptionalAttrs(Metadata meta, XmlNode node)
         {
+            if (RequestCancellation) return;
+
             if (meta != null)
             {
                 for (int i = 0; i < node.Attributes.Count; i++)
@@ -111,6 +124,8 @@ namespace urakawa.daisy.import
 
         private void handleMetaData(XmlNode mdNode, string name, string content, string id)
         {
+            if (RequestCancellation) return;
+
             if (isUniqueIdName(name))
             {
                 if (m_PackageUniqueIdAttr != null
@@ -126,6 +141,8 @@ namespace urakawa.daisy.import
                     Presentation presentation = m_Project.Presentations.Get(0);
                     foreach (Metadata md in presentation.Metadatas.ContentsAs_ListCopy)
                     {
+                        if (RequestCancellation) return;
+
                         if (isUniqueIdName(md.NameContentAttribute.Name)
                             && md.NameContentAttribute.Value == m_PublicationUniqueIdentifier)
                         {
@@ -170,6 +187,8 @@ namespace urakawa.daisy.import
 
         private void parseMetadata_NameContent(XmlNode metaDataNode)
         {
+            if (RequestCancellation) return;
+
             if (metaDataNode.NodeType != XmlNodeType.Element || metaDataNode.LocalName != "meta")
             {
                 return;

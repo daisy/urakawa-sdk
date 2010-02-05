@@ -7,7 +7,15 @@ namespace AudioLib
     {
         public static uint Copy(Stream from, ulong fromNumberOfBytes, Stream to, uint buffer_size)
         {
-            if (fromNumberOfBytes <= buffer_size)
+            if (fromNumberOfBytes == 0)
+            {
+                if (from.CanSeek)
+                {
+                    fromNumberOfBytes = (ulong) from.Length;
+                }
+            }
+
+            if (fromNumberOfBytes > 0 && fromNumberOfBytes <= buffer_size)
             {
                 byte[] buffer = new byte[fromNumberOfBytes];
                 int bytesRead = from.Read(buffer, 0, (int)fromNumberOfBytes);
@@ -27,17 +35,19 @@ namespace AudioLib
 
                 while ((bytesRead = from.Read(buffer, 0, (int)buffer_size)) > 0)
                 {
-                    if ((ulong)(totalBytesWritten + bytesRead) > fromNumberOfBytes)
+                    if (fromNumberOfBytes > 0 && (ulong)(totalBytesWritten + bytesRead) > fromNumberOfBytes)
                     {
                         int bytesToWrite = (int)(fromNumberOfBytes - (ulong)totalBytesWritten);
-                        to.Write(buffer, 0, bytesToWrite);
-                        totalBytesWritten += bytesToWrite;
+                        if (bytesToWrite > 0)
+                        {
+                            to.Write(buffer, 0, bytesToWrite);
+                            totalBytesWritten += bytesToWrite;
+                        }
+                        break;
                     }
-                    else
-                    {
-                        to.Write(buffer, 0, bytesRead);
-                        totalBytesWritten += bytesRead;
-                    }
+
+                    to.Write(buffer, 0, bytesRead);
+                    totalBytesWritten += bytesRead;
                 }
 
                 return (uint)totalBytesWritten;

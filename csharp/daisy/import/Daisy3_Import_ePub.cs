@@ -13,6 +13,8 @@ namespace urakawa.daisy.import
     {
         private void unzipEPubAndParseOpf()
         {
+            if (RequestCancellation) return;
+
             ZipInputStream zipInputStream = new ZipInputStream(File.OpenRead(m_Book_FilePath));
 
             /*string directoryName = Path.GetTempPath();
@@ -30,6 +32,8 @@ namespace urakawa.daisy.import
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.GetNextEntry()) != null)
             {
+                if (RequestCancellation) return;
+
                 string zipEntryName = Path.GetFileName(zipEntry.Name);
                 if (!String.IsNullOrEmpty(zipEntryName)) // || zipEntryName.IndexOf(".ini") >= 0
                 {
@@ -48,7 +52,7 @@ namespace urakawa.daisy.import
                     try
                     {
                         const uint BUFFER_SIZE = 1024 * 2; // 2 KB MAX BUFFER
-                        StreamUtils.Copy(zipInputStream, (ulong)zipInputStream.Length, fileStream, BUFFER_SIZE);
+                        StreamUtils.Copy(zipInputStream, 0, fileStream, BUFFER_SIZE);
 
                         //while ((bytesRead = zipInputStream.Read(data, 0, data.Length)) > 0)
                         //{
@@ -68,9 +72,15 @@ namespace urakawa.daisy.import
 
             foreach (FileInfo fileInfo in opfFiles)
             {
+                if (RequestCancellation) return;
+
                 m_Book_FilePath = Path.Combine(unzipDirectory, fileInfo.FullName);
                 XmlDocument opfXmlDoc = readXmlDocument(m_Book_FilePath);
+
+                if (RequestCancellation) return;
+                reportProgress(-1, "Parsing OPF: [" + fileInfo.FullName + "]");
                 parseOpf(opfXmlDoc);
+
                 break;
             }
         }

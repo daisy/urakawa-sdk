@@ -117,6 +117,9 @@
     <EmbeddedResource Include="Resources\oeb12.ent" />
     <EmbeddedResource Include="Resources\oebpkg101.dtd" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\mathml2-qname-1.mod" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

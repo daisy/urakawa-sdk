@@ -23,6 +23,7 @@ namespace urakawa.daisy.import
                 }
             }
 
+            if (RequestCancellation) return;
             parseMetadata(opfXmlDoc);
 
             List<string> spine;
@@ -30,30 +31,36 @@ namespace urakawa.daisy.import
             string dtbookPath;
             string ncxPath;
 
+            if (RequestCancellation) return;
             parseOpfManifest(opfXmlDoc, out spine, out spineMimeType, out dtbookPath, out ncxPath);
 
             if (dtbookPath != null)
             {
+                if (RequestCancellation) return;
                 string fullDtbookPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), dtbookPath);
                 XmlDocument dtbookXmlDoc = readXmlDocument(fullDtbookPath);
-                parseMetadata(dtbookXmlDoc);
-                parseContentDocument(dtbookXmlDoc, null, fullDtbookPath);
-                Progress_Current = 5;
-                if (NotifyProgressChangeEvent != null) NotifyProgressChangeEvent ( this, new System.ComponentModel.ProgressChangedEventArgs ( Progress_Current, "Parsed content doc" ) );
 
-                if (RequestCancellation)
-                    {
-                    return;
-                    }
+                if (RequestCancellation) return;
+                reportProgress(-1, "Parsing metadata: [" + dtbookPath + "]");
+                parseMetadata(dtbookXmlDoc);
+
+                if (RequestCancellation) return;
+                reportProgress(-1, "Parsing content: [" + dtbookPath + "]");
+                parseContentDocument(dtbookXmlDoc, null, fullDtbookPath);
             }
 
             if (false && ncxPath != null) //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
             {
+                if (RequestCancellation) return;
                 string fullNcxPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), ncxPath);
                 XmlDocument ncxXmlDoc = readXmlDocument(fullNcxPath);
+
+                if (RequestCancellation) return;
+                reportProgress(-1, "Parsing metadata: [" + ncxPath + "]");
                 parseMetadata(ncxXmlDoc);
             }
 
+            if (RequestCancellation) return;
             switch (spineMimeType)
             {
                 case "application/smil":
@@ -87,6 +94,8 @@ namespace urakawa.daisy.import
                 XmlNodeList listOfSpineItemNodes = spineNodeRoot.ChildNodes;
                 foreach (XmlNode spineItemNode in listOfSpineItemNodes)
                 {
+                    if (RequestCancellation) return;
+
                     if (spineItemNode.NodeType != XmlNodeType.Element
                         || spineItemNode.LocalName != "itemref")
                     {
@@ -108,7 +117,6 @@ namespace urakawa.daisy.import
             }
 
             XmlNode manifNodeRoot = XmlDocumentHelper.GetFirstChildElementWithName(opfXmlDoc, true, "manifest", null);
-
             if (manifNodeRoot == null)
             {
                 return;
@@ -118,6 +126,8 @@ namespace urakawa.daisy.import
 
             foreach (XmlNode manifItemNode in listOfManifestItemNodes)
             {
+                if (RequestCancellation) return;
+
                 if (manifItemNode.NodeType != XmlNodeType.Element
                     || manifItemNode.LocalName != "item")
                 {
@@ -166,52 +176,51 @@ namespace urakawa.daisy.import
                 {
                     ncxPath = attrHref.Value;
                 }
-                    else if (attrMediaType.Value == "text/css")
-                    {
-                    AddExternalFilesToXuk ( m_Project.Presentations.Get ( 0 ), attrHref.Value );
-                    }
+                else if (attrMediaType.Value == "text/css")
+                {
+                    AddExternalFilesToXuk(m_Project.Presentations.Get(0), attrHref.Value);
+                }
                 else if (attrMediaType.Value == "image/jpeg"
-                    || attrMediaType.Value == "audio/mpeg"
-                    || attrMediaType.Value == "text/css"
-                    || attrMediaType.Value == "text/xml"
-                    || attrMediaType.Value == "application/vnd.adobe.page-template+xml"
-                    || attrMediaType.Value == "application/oebps-page-map+xml"
-                    || attrMediaType.Value == "application/x-dtbresource+xml")
+                || attrMediaType.Value == "audio/mpeg"
+                || attrMediaType.Value == "text/css"
+                || attrMediaType.Value == "text/xml"
+                || attrMediaType.Value == "application/vnd.adobe.page-template+xml"
+                || attrMediaType.Value == "application/oebps-page-map+xml"
+                || attrMediaType.Value == "application/x-dtbresource+xml")
                 {
                     // Ignore
                 }
             }
         }
 
-        private void AddExternalFilesToXuk ( Presentation presentation, string relPath )
-            {
-            string fileFullPath = Path.Combine ( Path.GetDirectoryName ( m_Book_FilePath ),
-                relPath ) ;
+        private void AddExternalFilesToXuk(Presentation presentation, string relPath)
+        {
+            if (RequestCancellation) return;
 
-            string extension = Path.GetExtension ( fileFullPath ).ToLower () ;
+            string fileFullPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath),
+                relPath);
+
+            string extension = Path.GetExtension(fileFullPath).ToLower();
 
             ExternalFiles.ExternalFileData externalData = null;
 
             switch (extension)
-                {
-            //case ".css":
-            //externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData> ();
-            //break;
+            {
+                //case ".css":
+                //externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData> ();
+                //break;
 
-            case ".dtd":
-            externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData> ();
-            break;
+                case ".dtd":
+                    externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData>();
+                    break;
 
-            default:
-            break;
-                }
-            if (externalData != null)
-                {
-                externalData.InitializeWithData ( fileFullPath, relPath, true );
-                }
-
-
+                default:
+                    break;
             }
-
+            if (externalData != null)
+            {
+                externalData.InitializeWithData(fileFullPath, relPath, true);
+            }
+        }
     }
 }

@@ -104,7 +104,7 @@ namespace urakawa.daisy.export.visitor
                     try
                     {
                         const uint BUFFER_SIZE = 1024 * 1024 * 3; // 3 MB MAX BUFFER
-                        StreamUtils.Copy(stream, (ulong)stream.Length, mCurrentAudioFileStream, BUFFER_SIZE);
+                        StreamUtils.Copy(stream, 0, mCurrentAudioFileStream, BUFFER_SIZE);
                     }
                     finally
                     {
