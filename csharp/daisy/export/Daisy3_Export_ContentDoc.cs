@@ -124,6 +124,7 @@ namespace urakawa.daisy.export
                         if (doesTreeNodeTriggerNewSmil(n))
                         {
                             m_ListOfLevels.Add(n);
+                            reportSubProgress ( -1, "Creating DTBook.xml file" );
                         }
 
 

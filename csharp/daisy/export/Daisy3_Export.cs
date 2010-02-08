@@ -100,15 +100,17 @@ namespace urakawa.daisy.export
 
         public void StartExport()
         {
-        if (RequestCancellation) return;
+        RequestCancellation = false;
+
             
             m_ID_Counter = 0;
-
+            if (RequestCancellation) return;
             //TreeNodeTestDelegate triggerDelegate  = delegate(urakawa.core.TreeNode node) { return node.GetManagedAudioMedia () != null ; };
             TreeNodeTestDelegate triggerDelegate = doesTreeNodeTriggerNewSmil;
             TreeNodeTestDelegate skipDelegate = delegate { return false; };
 
             m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(triggerDelegate, skipDelegate);
+            m_PublishVisitor.ProgressChangedEvent += new ProgressChangedEventHandler ( ReportAudioPublishProgress );
 
             m_PublishVisitor.DestinationDirectory = new Uri(m_OutputDirectory, UriKind.Absolute);
 
@@ -119,11 +121,18 @@ namespace urakawa.daisy.export
             m_PublishVisitor.DestinationChannel = publishChannel;
 
             m_Presentation.RootNode.AcceptDepthFirst(m_PublishVisitor);
-
-            if (RequestCancellation_RemovePublishChannel(publishChannel) ) return;
+            
+            if (RequestCancellation_RemovePublishChannel ( publishChannel ))
+                {
+                m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler ( ReportAudioPublishProgress );
+                return;
+                }
 #if DEBUG
             m_PublishVisitor.VerifyTree(m_Presentation.RootNode);
+            m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler ( ReportAudioPublishProgress );
             m_PublishVisitor = null;
+
+            
             if (RequestCancellation_RemovePublishChannel ( publishChannel )) return;
             //Debugger.Break();
 #endif //DEBUG
@@ -148,6 +157,12 @@ namespace urakawa.daisy.export
                 return true;
                 }
             return false;
+            }
+        private int m_ProgressPercentage;
+        private void ReportAudioPublishProgress ( object sender, ProgressChangedEventArgs e )
+            {
+            m_ProgressPercentage = Convert.ToInt32( e.ProgressPercentage * 0.85 ) ;
+            reportProgress ( m_ProgressPercentage, (string) e.UserState);
             }
 
         private bool doesTreeNodeTriggerNewSmil(TreeNode node)

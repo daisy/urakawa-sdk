@@ -10,6 +10,8 @@ namespace urakawa.daisy.export
 
         private void CreateOpfDocument()
         {
+        m_ProgressPercentage = 98;
+        reportProgress ( m_ProgressPercentage, "All files created" );
         if (RequestCancellation) return;
             XmlDocument opfDocument = CreateStub_OpfDocument();
 
@@ -155,6 +157,8 @@ namespace urakawa.daisy.export
         private void AddMetadata_Generator(XmlDocument doc, XmlNode parentNode)
         {
             AddMetadataAsAttributes(doc, parentNode, "dtb:generator", "Tobi and the Urakawa SDK: the open-source DAISY multimedia authoring toolkit");
+            m_ProgressPercentage = 100;
+            reportProgress ( m_ProgressPercentage, "All files created" );
         }
 
         private void AddMetadata_Opf(XmlDocument opfDocument)
@@ -301,6 +305,7 @@ namespace urakawa.daisy.export
             {
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
                 {
+                reportSubProgress ( -1, "creating external files like .css, .dtd etc." );
                 if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains(efd.OriginalRelativePath) )
                     {
                     string filePath = Path.Combine ( m_OutputDirectory, efd.OriginalRelativePath ) ;
