@@ -311,6 +311,7 @@ namespace urakawa.daisy.export.visitor
             {
                 const uint BUFFER_SIZE = 1024 * 1024 * 3; // 3 MB MAX BUFFER
                 StreamUtils.Copy(audioPcmStream, 0, m_TransientWavFileStream, BUFFER_SIZE);
+                
             }
             catch
             {

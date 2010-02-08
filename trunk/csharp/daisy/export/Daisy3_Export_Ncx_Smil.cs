@@ -33,6 +33,8 @@ namespace urakawa.daisy.export
             TimeSpan smilElapseTime = new TimeSpan();
             List<string> ncxCustomTestList = new List<string>();
             List<urakawa.core.TreeNode> specialParentNodesAddedToNavList = new List<urakawa.core.TreeNode>();
+            m_ProgressPercentage += 3;
+            reportProgress ( m_ProgressPercentage, "Creating smil and ncx files" );
 
             foreach (urakawa.core.TreeNode urakawaNode in m_ListOfLevels)
             {
@@ -127,6 +129,8 @@ namespace urakawa.daisy.export
                     mainSeq = XmlDocumentHelper.GetFirstChildElementWithName(smilDocument, true, "body", null).FirstChild;
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, mainSeq, "id", GetNextID(ID_SmilPrefix));
                     smilFileName = GetNextSmilFileName;
+                    m_ProgressPercentage += Convert.ToInt32 ( (m_SmilFileNameCounter / m_ListOfLevels.Count ) * 100 * .09 ) ;
+                    reportProgress ( m_ProgressPercentage, "Creating smil and ncx files" );
                 }
 
 
