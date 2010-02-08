@@ -143,9 +143,8 @@ namespace urakawa.daisy.import
             m_Project.SetPrettyFormat(false);
 #endif
 
-            Presentation presentation = m_Project.AddNewPresentation();
+            Presentation presentation = m_Project.AddNewPresentation(new Uri(m_outDirectory));
 
-            presentation.RootUri = new Uri(m_outDirectory);
             presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
             m_textChannel = presentation.ChannelFactory.CreateTextChannel();
