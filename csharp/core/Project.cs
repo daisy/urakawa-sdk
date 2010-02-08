@@ -283,10 +283,11 @@ namespace urakawa
         /// Adds a newly created <see cref="Presentation"/> to the <see cref="Project"/>, 
         /// as returned by <c>this.PresentationFactory.Create()</c>
         /// </summary>
+        /// <param name="uri"></param>
         /// <returns>The newly created and added <see cref="Presentation"/></returns>
-        public Presentation AddNewPresentation()
+        public Presentation AddNewPresentation(Uri uri)
         {
-            Presentation newPres = PresentationFactory.Create(this);
+            Presentation newPres = PresentationFactory.Create(this, uri);
 
             mPresentations.Insert(mPresentations.Count, newPres);
 

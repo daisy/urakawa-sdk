@@ -1,3 +1,4 @@
+using System;
 using urakawa.xuk;
 
 namespace urakawa
@@ -16,10 +17,11 @@ namespace urakawa
         /// Creates a <see cref="Presentation"/> of default type (that is <see cref="Presentation"/>
         /// </summary>
         /// <returns>The created <see cref="Presentation"/></returns>
-        public virtual Presentation Create(Project proj)
+        public virtual Presentation Create(Project proj, Uri uri)
         {
             Presentation pres = Create<Presentation>();
             pres.Project = proj;
+            pres.RootUri = uri;
 
             if (pres.IsPrettyFormat())
             {
