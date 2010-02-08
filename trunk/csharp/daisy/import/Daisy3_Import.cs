@@ -60,7 +60,7 @@ namespace urakawa.daisy.import
             get { return m_Project; }
         }
 
-        protected Daisy3_Import(string bookfile, string outDir)
+        public Daisy3_Import(string bookfile, string outDir)
         {
             reportProgress(10, "Initializing import...");
 
@@ -83,10 +83,6 @@ namespace urakawa.daisy.import
 
             reportProgress(100, "Import initialized.");
         }
-
-        public Daisy3_Import(string bookfile)
-            : this(bookfile, Path.GetDirectoryName(bookfile)) //Directory.GetParent(bookfile).FullName)
-        { }
 
         public void DoImport()
         {
