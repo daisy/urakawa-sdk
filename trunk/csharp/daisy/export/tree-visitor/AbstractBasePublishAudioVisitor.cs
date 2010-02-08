@@ -3,11 +3,14 @@ using System.IO;
 using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.property.channel;
+using System.ComponentModel;
 
 namespace urakawa.daisy.export.visitor
 {
     public abstract class AbstractBasePublishAudioVisitor : ITreeNodeVisitor
     {
+        protected double m_TimeElapsed = 0;
+        protected double m_TotalTime = 0;
         private bool m_RequestCancellation;
             
             public bool RequestCancellation
@@ -22,10 +25,20 @@ namespace urakawa.daisy.export.visitor
                 }
             }
 
+            public event ProgressChangedEventHandler ProgressChangedEvent;
+           protected  void reportProgress ( int percent, string msg )
+                {
+                //reportSubProgress ( -1, null );
+                if (ProgressChangedEvent != null)
+                    ProgressChangedEvent ( this, new ProgressChangedEventArgs ( percent, msg ) );
+                }
+
+
         protected AbstractBasePublishAudioVisitor()
         {
             mCurrentAudioFileNumber = 0;
             m_ErrorMessages = null;
+            m_TimeElapsed = 0 ;
         }
 
         //private const int BUFFER_SIZE = 6 * 1024 * 1024; // 6 MB

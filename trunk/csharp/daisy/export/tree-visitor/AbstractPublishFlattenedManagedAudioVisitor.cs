@@ -14,6 +14,8 @@ namespace urakawa.daisy.export.visitor
     public abstract class AbstractPublishFlattenedManagedAudioVisitor : AbstractBasePublishAudioVisitor
     {
         private List<ExternalAudioMedia> m_ExternalAudioMediaList = new List<ExternalAudioMedia>();
+        
+        
 
         public void VerifyTree(TreeNode rootNode)
         {
@@ -228,6 +230,7 @@ namespace urakawa.daisy.export.visitor
             if (m_RootNode == null)
             {
                 m_RootNode = node;
+                m_TotalTime = m_RootNode.GetDurationOfManagedAudioMediaFlattened ().TimeDeltaAsMillisecondDouble ;
             }
 
             if (TreeNodeMustBeSkipped(node))
@@ -331,6 +334,14 @@ namespace urakawa.daisy.export.visitor
             }
 
             long bytesEnd = m_TransientWavFileStream.Position - (long)m_TransientWavFileStreamRiffOffset;
+
+            
+            if (m_RootNode != null && node.GetAudioSequenceMedia () != null )
+                {
+                m_TimeElapsed += node.GetAudioSequenceMedia ().GetDurationOfManagedAudioMedia ().TimeDeltaAsMillisecondDouble;
+                int progressPercentage = Convert.ToInt32 ( (m_TimeElapsed * 90 ) / m_TotalTime );
+                reportProgress ( progressPercentage, "Creating audio files" );
+                }
 
             ExternalAudioMedia extAudioMedia = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
 
