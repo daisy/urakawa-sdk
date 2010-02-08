@@ -230,7 +230,7 @@ namespace urakawa.daisy.export.visitor
             if (m_RootNode == null)
             {
                 m_RootNode = node;
-                m_TotalTime = m_RootNode.GetDurationOfManagedAudioMediaFlattened ().TimeDeltaAsMillisecondDouble ;
+                
             }
 
             if (TreeNodeMustBeSkipped(node))
@@ -336,13 +336,17 @@ namespace urakawa.daisy.export.visitor
             long bytesEnd = m_TransientWavFileStream.Position - (long)m_TransientWavFileStreamRiffOffset;
 
             
-            if (m_RootNode != null && node.GetAudioSequenceMedia () != null )
+            if (manAudioMedia != null || seqAudioMedia != null)
                 {
-                m_TimeElapsed += node.GetAudioSequenceMedia ().GetDurationOfManagedAudioMedia ().TimeDeltaAsMillisecondDouble;
-                int progressPercentage = Convert.ToInt32 ( (m_TimeElapsed * 90 ) / m_TotalTime );
-                reportProgress ( progressPercentage, "Creating audio files" );
-                }
+                if (m_TotalTime == 0) m_TotalTime = node.Root.GetDurationOfManagedAudioMediaFlattened ().TimeDeltaAsMillisecondDouble;
 
+                m_TimeElapsed += manAudioMedia != null? manAudioMedia.Duration.TimeDeltaAsMillisecondDouble:
+                    seqAudioMedia.GetDurationOfManagedAudioMedia().TimeDeltaAsMillisecondDouble;
+                int progressPercentage = Convert.ToInt32 ( (m_TimeElapsed * 100 ) / m_TotalTime );
+                reportProgress ( progressPercentage, "Creating audio files" );
+                Console.WriteLine ( "progress percent " + progressPercentage );
+                }
+            
             ExternalAudioMedia extAudioMedia = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
 
             if (EncodePublishedAudioFilesToMp3 && !m_ExternalAudioMediaList.Contains(extAudioMedia))

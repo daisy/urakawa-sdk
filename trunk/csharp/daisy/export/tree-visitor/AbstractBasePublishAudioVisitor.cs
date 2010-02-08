@@ -28,10 +28,20 @@ namespace urakawa.daisy.export.visitor
             public event ProgressChangedEventHandler ProgressChangedEvent;
            protected  void reportProgress ( int percent, string msg )
                 {
-                //reportSubProgress ( -1, null );
+                reportSubProgress ( -1, null );
                 if (ProgressChangedEvent != null)
                     ProgressChangedEvent ( this, new ProgressChangedEventArgs ( percent, msg ) );
                 }
+
+           public event ProgressChangedEventHandler SubProgressChangedEvent;
+           private void reportSubProgress ( int percent, string msg )
+               {
+               ProgressChangedEventHandler d = SubProgressChangedEvent;
+               if (d != null)
+                   {
+                   d ( this, new ProgressChangedEventArgs ( percent, msg ) );
+                   }
+               }
 
 
         protected AbstractBasePublishAudioVisitor()
