@@ -310,8 +310,9 @@ namespace urakawa.daisy.export.visitor
             try
             {
                 const uint BUFFER_SIZE = 1024 * 1024 * 3; // 3 MB MAX BUFFER
-                StreamUtils.Copy(audioPcmStream, 0, m_TransientWavFileStream, BUFFER_SIZE);
+                uint streamCount =  StreamUtils.Copy(audioPcmStream, 0, m_TransientWavFileStream, BUFFER_SIZE);
                 
+                //System.Windows.Forms.MessageBox.Show ( audioPcmStream.Length.ToString () + " : " +  m_TransientWavFileStream.Length.ToString () + " : " + streamCount.ToString () );
             }
             catch
             {
@@ -382,6 +383,8 @@ namespace urakawa.daisy.export.visitor
             {
                 m_RootNode = null;
                 checkTransientWavFileAndClose(node);
+                m_TimeElapsed = 0;
+                m_TotalTime = 0;
             }
 
             if (RequestCancellation)
