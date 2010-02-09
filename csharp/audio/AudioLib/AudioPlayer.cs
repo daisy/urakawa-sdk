@@ -411,6 +411,8 @@ namespace AudioLib
             bufferDescription.GlobalFocus = true;
 
             m_CircularBuffer = new SecondaryBuffer(bufferDescription, OutputDevice.Device);
+
+            FastPlayFactor = FastPlayFactor; // reset
         }
 
 
