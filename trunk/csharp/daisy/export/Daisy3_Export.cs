@@ -128,7 +128,7 @@ namespace urakawa.daisy.export
                 return;
                 }
 #if DEBUG
-            m_PublishVisitor.VerifyTree(m_Presentation.RootNode);
+             if ( !m_PublishVisitor.EncodePublishedAudioFilesToMp3 ) m_PublishVisitor.VerifyTree(m_Presentation.RootNode);
             m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler ( ReportAudioPublishProgress );
             m_PublishVisitor = null;
 
