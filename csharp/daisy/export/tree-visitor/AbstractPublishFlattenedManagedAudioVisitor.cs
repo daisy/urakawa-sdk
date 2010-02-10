@@ -88,6 +88,11 @@ namespace urakawa.daisy.export.visitor
                             ancestorExtAudioFile = extMedia.Uri.LocalPath;
                         }
 
+                        if (Path.GetExtension ( ancestorExtAudioFile ).ToLower () != ".wav")
+                            {
+                            Debug.Fail ( "Verification can only be done if external media do not point to wav file!" );
+                            }
+
                         Stream extMediaStream = new FileStream(ancestorExtAudioFile, FileMode.Open, FileAccess.Read,
                                                                FileShare.None);
 
