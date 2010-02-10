@@ -140,8 +140,8 @@ namespace urakawa.daisy.export.visitor
 
                             //Debug.Assert(AudioLibPCMFormat.CompareStreamData(manMediaStream, extMediaStream, (int)manMediaStream.Length));
 
-                            Debug.Assert(manMediaStream.Position == manMediaStreamPosBefore + manMediaStream.Length);
-                            Debug.Assert(extMediaStream.Position == extMediaStreamPosBefore + manMediaStream.Length);
+                            //Debug.Assert(manMediaStream.Position == manMediaStreamPosBefore + manMediaStream.Length);
+                            //Debug.Assert(extMediaStream.Position == extMediaStreamPosBefore + manMediaStream.Length);
                         }
                         finally
                         {
