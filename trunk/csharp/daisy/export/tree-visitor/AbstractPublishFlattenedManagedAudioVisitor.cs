@@ -14,8 +14,333 @@ namespace urakawa.daisy.export.visitor
     public abstract class AbstractPublishFlattenedManagedAudioVisitor : AbstractBasePublishAudioVisitor
     {
         private List<ExternalAudioMedia> m_ExternalAudioMediaList = new List<ExternalAudioMedia>();
-        
-        
+
+        private Stream m_TransientWavFileStream = null;
+        private ulong m_TransientWavFileStreamRiffOffset = 0;
+
+        private void checkTransientWavFileAndClose(TreeNode node)
+        {
+            if (m_TransientWavFileStream == null)
+            {
+                return;
+            }
+
+            ulong bytesPcmTotal = (ulong)m_TransientWavFileStream.Position - m_TransientWavFileStreamRiffOffset;
+            m_TransientWavFileStream.Position = 0;
+            m_TransientWavFileStreamRiffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(m_TransientWavFileStream, (uint)bytesPcmTotal);
+
+            m_TransientWavFileStream.Close();
+            m_TransientWavFileStream = null;
+            m_TransientWavFileStreamRiffOffset = 0;
+
+            if (RequestCancellation) return;
+            if (base.EncodePublishedAudioFilesToMp3 && m_ExternalAudioMediaList.Count > 0)
+            {
+                EncodeTransientFileToMp3();
+            }
+        }
+
+        private void EncodeTransientFileToMp3()
+        {
+            ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
+            PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
+            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true);
+            string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
+            string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
+                Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
+
+            if (formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, audioFormat.Data.NumberOfChannels, audioFormat.Data.SampleRate, audioFormat.Data.BitDepth, BitRate_Mp3))
+            {
+                foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
+                {
+                    if (ext != null)
+                    {
+                        ext.Src = ext.Src.Substring(ext.Src.Length - 4, 3) + "mp3";
+                    }
+                }
+
+                File.Delete(sourceFilePath);
+            }
+            else
+            {
+                // append error messages
+                base.ErrorMessages = base.ErrorMessages + "Error in encoding " + Path.GetFileName(sourceFilePath) + "\n";
+            }
+
+            m_ExternalAudioMediaList.Clear();
+        }
+
+        private TreeNode m_RootNode = null;
+
+        #region ITreeNodeVisitor Members
+
+        public override bool PreVisit(TreeNode node)
+        {
+            if (m_RootNode == null)
+            {
+                m_RootNode = node;
+
+            }
+
+            if (TreeNodeMustBeSkipped(node))
+            {
+                return false;
+            }
+
+            if (RequestCancellation)
+            {
+                checkTransientWavFileAndClose(node);
+                return false;
+            }
+
+            if (TreeNodeTriggersNewAudioFile(node))
+            {
+                checkTransientWavFileAndClose(node);
+                // REMOVED, because doesn't support nested TreeNode matches ! return false; // skips children, see postVisit
+            }
+
+            if (!node.HasChannelsProperty)
+            {
+                return true;
+            }
+
+            if (!node.Presentation.MediaDataManager.EnforceSinglePCMFormat)
+            {
+                Debug.Fail("! EnforceSinglePCMFormat ???");
+                throw new Exception("! EnforceSinglePCMFormat ???");
+            }
+
+            Media media = node.GetManagedAudioMediaOrSequenceMedia();
+            if (media == null)
+            {
+                return true;
+            }
+
+            ManagedAudioMedia manAudioMedia = node.GetManagedAudioMedia();
+            if (manAudioMedia != null && !manAudioMedia.HasActualAudioMediaData)
+            {
+                return true;
+            }
+
+            if (m_TransientWavFileStream == null)
+            {
+                mCurrentAudioFileNumber++;
+                Uri waveFileUri = GetCurrentAudioFileUri();
+                m_TransientWavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write,
+                                                          FileShare.None);
+
+                m_TransientWavFileStreamRiffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(m_TransientWavFileStream, 0);
+            }
+
+            long bytesBegin = m_TransientWavFileStream.Position - (long)m_TransientWavFileStreamRiffOffset;
+
+            SequenceMedia seqAudioMedia = node.GetManagedAudioSequenceMedia();
+
+            Stream audioPcmStream = null;
+            if (manAudioMedia != null)
+            {
+                audioPcmStream = manAudioMedia.AudioMediaData.OpenPcmInputStream();
+            }
+            else if (seqAudioMedia != null)
+            {
+                audioPcmStream = seqAudioMedia.OpenPcmInputStreamOfManagedAudioMedia();
+            }
+            else
+            {
+                Debug.Fail("This should never happen !!");
+                return false;
+            }
+            if (RequestCancellation)
+            {
+                checkTransientWavFileAndClose(node);
+                return false;
+            }
+
+            try
+            {
+                const uint BUFFER_SIZE = 1024 * 1024 * 3; // 3 MB MAX BUFFER
+                uint streamCount = StreamUtils.Copy(audioPcmStream, 0, m_TransientWavFileStream, BUFFER_SIZE);
+
+                //System.Windows.Forms.MessageBox.Show ( audioPcmStream.Length.ToString () + " : " +  m_TransientWavFileStream.Length.ToString () + " : " + streamCount.ToString () );
+            }
+            catch
+            {
+                m_TransientWavFileStream.Close();
+                m_TransientWavFileStream = null;
+                m_TransientWavFileStreamRiffOffset = 0;
+
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+            finally
+            {
+                audioPcmStream.Close();
+            }
+
+            if (m_TransientWavFileStream == null)
+            {
+                Debug.Fail("Stream copy error !!");
+                return false;
+            }
+
+            long bytesEnd = m_TransientWavFileStream.Position - (long)m_TransientWavFileStreamRiffOffset;
+
+            string src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
+
+            if (manAudioMedia != null || seqAudioMedia != null)
+            {
+                if (m_TotalTime == 0) m_TotalTime = node.Root.GetDurationOfManagedAudioMediaFlattened().TimeDeltaAsMillisecondDouble;
+
+                m_TimeElapsed += manAudioMedia != null ? manAudioMedia.Duration.TimeDeltaAsMillisecondDouble :
+                    seqAudioMedia.GetDurationOfManagedAudioMedia().TimeDeltaAsMillisecondDouble;
+                int progressPercentage = Convert.ToInt32((m_TimeElapsed * 100) / m_TotalTime);
+                reportProgress(progressPercentage, "Creating audio file [" + Path.GetFileName(src) + "]");
+                Console.WriteLine("progress percent " + progressPercentage);
+            }
+
+            ExternalAudioMedia extAudioMedia = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
+
+            if (EncodePublishedAudioFilesToMp3 && !m_ExternalAudioMediaList.Contains(extAudioMedia))
+            {
+                m_ExternalAudioMediaList.Add(extAudioMedia);
+            }
+
+            extAudioMedia.Language = node.Presentation.Language;
+            extAudioMedia.Src = src;
+
+            double timeBegin =
+                node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesBegin);
+            double timeEnd =
+                node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesEnd);
+            extAudioMedia.ClipBegin = new Time(timeBegin);
+            extAudioMedia.ClipEnd = new Time(timeEnd);
+
+            ChannelsProperty chProp = node.GetProperty<ChannelsProperty>();
+            if (chProp.GetMedia(DestinationChannel) != null)
+            {
+                chProp.SetMedia(DestinationChannel, null);
+                Debug.Fail("This should never happen !!");
+            }
+            chProp.SetMedia(DestinationChannel, extAudioMedia);
+
+            return false;
+        }
+
+        public override void PostVisit(TreeNode node)
+        {
+            if (m_RootNode == node)
+            {
+                m_RootNode = null;
+                checkTransientWavFileAndClose(node);
+                m_TimeElapsed = 0;
+                m_TotalTime = 0;
+            }
+
+            if (RequestCancellation)
+            {
+                checkTransientWavFileAndClose(node);
+                return;
+            }
+            if (TreeNodeMustBeSkipped(node))
+            {
+                return;
+            }
+
+            if (!TreeNodeTriggersNewAudioFile(node))
+            {
+                return;
+            }
+
+            // REMOVED, because doesn't support nested TreeNode matches !
+            return;
+
+            if (!node.Presentation.MediaDataManager.EnforceSinglePCMFormat)
+            {
+                Debug.Fail("! EnforceSinglePCMFormat ???");
+                throw new Exception("! EnforceSinglePCMFormat ???");
+            }
+
+            StreamWithMarkers? sm = node.OpenPcmInputStreamOfManagedAudioMediaFlattened();
+            if (sm == null)
+            {
+                return;
+            }
+
+            mCurrentAudioFileNumber++;
+            Uri waveFileUri = GetCurrentAudioFileUri();
+            Stream wavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
+
+            Stream audioPcmStream = sm.GetValueOrDefault().m_Stream;
+
+            if (RequestCancellation)
+            {
+                checkTransientWavFileAndClose(node);
+                return;
+            }
+
+            try
+            {
+                ulong riffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(wavFileStream, (uint)audioPcmStream.Length);
+
+                const uint BUFFER_SIZE = 1024 * 1024 * 6; // 6 MB MAX BUFFER
+                StreamUtils.Copy(audioPcmStream, 0, wavFileStream, BUFFER_SIZE);
+            }
+            finally
+            {
+                audioPcmStream.Close();
+                wavFileStream.Close();
+            }
+
+            if (RequestCancellation)
+            {
+                checkTransientWavFileAndClose(node);
+                return;
+            }
+
+            long bytesBegin = 0;
+            foreach (TreeNodeAndStreamDataLength marker in sm.GetValueOrDefault().m_SubStreamMarkers)
+            {
+                //long bytesEnd = bytesBegin + marker.m_LocalStreamDataLength;
+
+                ExternalAudioMedia extAudioMedia = marker.m_TreeNode.Presentation.MediaFactory.Create<ExternalAudioMedia>();
+
+                if (EncodePublishedAudioFilesToMp3 && !m_ExternalAudioMediaList.Contains(extAudioMedia))
+                {
+                    m_ExternalAudioMediaList.Add(extAudioMedia);
+                }
+                extAudioMedia.Language = marker.m_TreeNode.Presentation.Language;
+                extAudioMedia.Src = marker.m_TreeNode.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
+
+                double timeBegin =
+                    marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesBegin);
+                extAudioMedia.ClipBegin = new Time(timeBegin);
+
+                //double timeEnd =
+                //    marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesEnd);
+                //extAudioMedia.ClipEnd = new Time(timeEnd);
+
+                TimeDelta durationFromRiffHeader = new TimeDelta(marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(marker.m_LocalStreamDataLength));
+                extAudioMedia.ClipEnd = extAudioMedia.ClipBegin.AddTimeDelta(durationFromRiffHeader);
+
+
+                ChannelsProperty chProp = marker.m_TreeNode.GetOrCreateChannelsProperty();
+
+                if (chProp.GetMedia(DestinationChannel) != null)
+                {
+                    chProp.SetMedia(DestinationChannel, null);
+                    Debug.Fail("This should never happen !!");
+                }
+                chProp.SetMedia(DestinationChannel, extAudioMedia);
+
+                bytesBegin += marker.m_LocalStreamDataLength;
+            }
+        }
+
+        #endregion
+
+
+
 
         public void VerifyTree(TreeNode rootNode)
         {
@@ -88,10 +413,10 @@ namespace urakawa.daisy.export.visitor
                             ancestorExtAudioFile = extMedia.Uri.LocalPath;
                         }
 
-                        if (Path.GetExtension ( ancestorExtAudioFile ).ToLower () != ".wav")
-                            {
-                            Debug.Fail ( "Verification can only be done if external media do not point to wav file!" );
-                            }
+                        if (Path.GetExtension(ancestorExtAudioFile).ToLower() != ".wav")
+                        {
+                            Debug.Fail("Verification can only be done if external media do not point to wav file!");
+                        }
 
                         Stream extMediaStream = new FileStream(ancestorExtAudioFile, FileMode.Open, FileAccess.Read,
                                                                FileShare.None);
@@ -170,328 +495,5 @@ namespace urakawa.daisy.export.visitor
                 verifyTree(child, ancestorHasAudio, ancestorExtAudioFile);
             }
         }
-
-        private Stream m_TransientWavFileStream = null;
-        private ulong m_TransientWavFileStreamRiffOffset = 0;
-
-        private void checkTransientWavFileAndClose(TreeNode node)
-        {
-            if (m_TransientWavFileStream == null)
-            {
-                return;
-            }
-
-            ulong bytesPcmTotal = (ulong)m_TransientWavFileStream.Position - m_TransientWavFileStreamRiffOffset;
-            m_TransientWavFileStream.Position = 0;
-            m_TransientWavFileStreamRiffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(m_TransientWavFileStream, (uint)bytesPcmTotal);
-
-            m_TransientWavFileStream.Close();
-            m_TransientWavFileStream = null;
-            m_TransientWavFileStreamRiffOffset = 0;
-
-            if (RequestCancellation) return;
-            if (base.EncodePublishedAudioFilesToMp3 && m_ExternalAudioMediaList.Count > 0)
-            {
-                EncodeTransientFileToMp3();
-            }
-        }
-
-        private void EncodeTransientFileToMp3()
-        {
-            ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
-            PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
-            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true);
-            string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath ;
-            string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
-                Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
-
-            if (formatConverter.CompressWavToMp3 ( sourceFilePath, destinationFilePath, audioFormat.Data.NumberOfChannels, audioFormat.Data.SampleRate, audioFormat.Data.BitDepth, BitRate_Mp3 ))
-                {
-                foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
-                    {
-                    if (ext != null)
-                        {
-                        ext.Src = ext.Src.Substring ( ext.Src.Length - 4, 3 ) + "mp3";
-                        }
-                    }
-
-                File.Delete ( sourceFilePath );
-                }
-            else
-                {
-                // append error messages
-                base.ErrorMessages = base.ErrorMessages + "Error in encoding " + Path.GetFileName ( sourceFilePath ) + "\n" ;
-                }
-
-            m_ExternalAudioMediaList.Clear();
-        }
-
-        private TreeNode m_RootNode = null;
-
-        #region ITreeNodeVisitor Members
-
-        public override bool PreVisit(TreeNode node)
-        {
-            if (m_RootNode == null)
-            {
-                m_RootNode = node;
-                
-            }
-
-            if (TreeNodeMustBeSkipped(node))
-            {
-                return false;
-            }
-
-            if (RequestCancellation)
-                {
-                checkTransientWavFileAndClose ( node );
-                return false;
-                }
-
-            if (TreeNodeTriggersNewAudioFile(node))
-            {
-                checkTransientWavFileAndClose(node);
-                // REMOVED, because doesn't support nested TreeNode matches ! return false; // skips children, see postVisit
-            }
-
-            if (!node.HasChannelsProperty)
-            {
-                return true;
-            }
-
-            if (!node.Presentation.MediaDataManager.EnforceSinglePCMFormat)
-            {
-                Debug.Fail("! EnforceSinglePCMFormat ???");
-                throw new Exception("! EnforceSinglePCMFormat ???");
-            }
-
-            Media media = node.GetManagedAudioMediaOrSequenceMedia();
-            if (media == null)
-            {
-                return true;
-            }
-
-            ManagedAudioMedia manAudioMedia = node.GetManagedAudioMedia();
-            if (manAudioMedia != null && !manAudioMedia.HasActualAudioMediaData)
-            {
-                return true;
-            }
-
-            if (m_TransientWavFileStream == null)
-            {
-                mCurrentAudioFileNumber++;
-                Uri waveFileUri = GetCurrentAudioFileUri();
-                m_TransientWavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write,
-                                                          FileShare.None);
-
-                m_TransientWavFileStreamRiffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(m_TransientWavFileStream, 0);
-            }
-
-            long bytesBegin = m_TransientWavFileStream.Position - (long)m_TransientWavFileStreamRiffOffset;
-
-            SequenceMedia seqAudioMedia = node.GetManagedAudioSequenceMedia();
-
-            Stream audioPcmStream = null;
-            if (manAudioMedia != null)
-            {
-                audioPcmStream = manAudioMedia.AudioMediaData.OpenPcmInputStream();
-            }
-            else if (seqAudioMedia != null)
-            {
-                audioPcmStream = seqAudioMedia.OpenPcmInputStreamOfManagedAudioMedia();
-            }
-            else
-            {
-                Debug.Fail("This should never happen !!");
-                return false;
-            }
-            if (RequestCancellation)
-                {
-                checkTransientWavFileAndClose ( node );
-                return false;
-                }
-
-            try
-            {
-                const uint BUFFER_SIZE = 1024 * 1024 * 3; // 3 MB MAX BUFFER
-                uint streamCount =  StreamUtils.Copy(audioPcmStream, 0, m_TransientWavFileStream, BUFFER_SIZE);
-                
-                //System.Windows.Forms.MessageBox.Show ( audioPcmStream.Length.ToString () + " : " +  m_TransientWavFileStream.Length.ToString () + " : " + streamCount.ToString () );
-            }
-            catch
-            {
-                m_TransientWavFileStream.Close();
-                m_TransientWavFileStream = null;
-                m_TransientWavFileStreamRiffOffset = 0;
-
-#if DEBUG
-                Debugger.Break();
-#endif
-            }
-            finally
-            {
-                audioPcmStream.Close();
-            }
-
-            if (m_TransientWavFileStream == null)
-            {
-                Debug.Fail("Stream copy error !!");
-                return false;
-            }
-
-            long bytesEnd = m_TransientWavFileStream.Position - (long)m_TransientWavFileStreamRiffOffset;
-
-            
-            if (manAudioMedia != null || seqAudioMedia != null)
-                {
-                if (m_TotalTime == 0) m_TotalTime = node.Root.GetDurationOfManagedAudioMediaFlattened ().TimeDeltaAsMillisecondDouble;
-
-                m_TimeElapsed += manAudioMedia != null? manAudioMedia.Duration.TimeDeltaAsMillisecondDouble:
-                    seqAudioMedia.GetDurationOfManagedAudioMedia().TimeDeltaAsMillisecondDouble;
-                int progressPercentage = Convert.ToInt32 ( (m_TimeElapsed * 100 ) / m_TotalTime );
-                reportProgress ( progressPercentage, "Creating audio files" );
-                Console.WriteLine ( "progress percent " + progressPercentage );
-                }
-            
-            ExternalAudioMedia extAudioMedia = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
-
-            if (EncodePublishedAudioFilesToMp3 && !m_ExternalAudioMediaList.Contains(extAudioMedia))
-            {
-                m_ExternalAudioMediaList.Add(extAudioMedia);
-            }
-
-            extAudioMedia.Language = node.Presentation.Language;
-            extAudioMedia.Src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
-
-            double timeBegin =
-                node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesBegin);
-            double timeEnd =
-                node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesEnd);
-            extAudioMedia.ClipBegin = new Time(timeBegin);
-            extAudioMedia.ClipEnd = new Time(timeEnd);
-
-            ChannelsProperty chProp = node.GetProperty<ChannelsProperty>();
-            if (chProp.GetMedia(DestinationChannel) != null)
-            {
-                chProp.SetMedia(DestinationChannel, null);
-                Debug.Fail("This should never happen !!");
-            }
-            chProp.SetMedia(DestinationChannel, extAudioMedia);
-
-            return false;
-        }
-
-        public override void PostVisit(TreeNode node)
-        {
-            if (m_RootNode == node)
-            {
-                m_RootNode = null;
-                checkTransientWavFileAndClose(node);
-                m_TimeElapsed = 0;
-                m_TotalTime = 0;
-            }
-
-            if (RequestCancellation)
-                {
-                checkTransientWavFileAndClose ( node );
-                return ;
-                }
-            if (TreeNodeMustBeSkipped(node))
-            {
-                return;
-            }
-
-            if (!TreeNodeTriggersNewAudioFile(node))
-            {
-                return;
-            }
-
-            // REMOVED, because doesn't support nested TreeNode matches !
-            return;
-
-            if (!node.Presentation.MediaDataManager.EnforceSinglePCMFormat)
-            {
-                Debug.Fail("! EnforceSinglePCMFormat ???");
-                throw new Exception("! EnforceSinglePCMFormat ???");
-            }
-
-            StreamWithMarkers? sm = node.OpenPcmInputStreamOfManagedAudioMediaFlattened();
-            if (sm == null)
-            {
-                return;
-            }
-
-            mCurrentAudioFileNumber++;
-            Uri waveFileUri = GetCurrentAudioFileUri();
-            Stream wavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
-
-            Stream audioPcmStream = sm.GetValueOrDefault().m_Stream;
-
-            if (RequestCancellation)
-                {
-                checkTransientWavFileAndClose (node);
-                return;
-                }
-
-            try
-            {
-                ulong riffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(wavFileStream, (uint)audioPcmStream.Length);
-
-                const uint BUFFER_SIZE = 1024 * 1024 * 6; // 6 MB MAX BUFFER
-                StreamUtils.Copy(audioPcmStream, 0, wavFileStream, BUFFER_SIZE);
-            }
-            finally
-            {
-                audioPcmStream.Close();
-                wavFileStream.Close();
-            }
-
-            if (RequestCancellation)
-                {
-                checkTransientWavFileAndClose (node);
-                return;
-                }
-
-            long bytesBegin = 0;
-            foreach (TreeNodeAndStreamDataLength marker in sm.GetValueOrDefault().m_SubStreamMarkers)
-            {
-                //long bytesEnd = bytesBegin + marker.m_LocalStreamDataLength;
-
-                ExternalAudioMedia extAudioMedia = marker.m_TreeNode.Presentation.MediaFactory.Create<ExternalAudioMedia>();
-
-                if (EncodePublishedAudioFilesToMp3 && !m_ExternalAudioMediaList.Contains(extAudioMedia))
-                {
-                    m_ExternalAudioMediaList.Add(extAudioMedia);
-                }
-                extAudioMedia.Language = marker.m_TreeNode.Presentation.Language;
-                extAudioMedia.Src = marker.m_TreeNode.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
-
-                double timeBegin =
-                    marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesBegin);
-                extAudioMedia.ClipBegin = new Time(timeBegin);
-
-                //double timeEnd =
-                //    marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesEnd);
-                //extAudioMedia.ClipEnd = new Time(timeEnd);
-
-                TimeDelta durationFromRiffHeader = new TimeDelta(marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(marker.m_LocalStreamDataLength));
-                extAudioMedia.ClipEnd = extAudioMedia.ClipBegin.AddTimeDelta(durationFromRiffHeader);
-
-
-                ChannelsProperty chProp = marker.m_TreeNode.GetOrCreateChannelsProperty();
-
-                if (chProp.GetMedia(DestinationChannel) != null)
-                {
-                    chProp.SetMedia(DestinationChannel, null);
-                    Debug.Fail("This should never happen !!");
-                }
-                chProp.SetMedia(DestinationChannel, extAudioMedia);
-
-                bytesBegin += marker.m_LocalStreamDataLength;
-            }
-        }
-
-        #endregion
     }
 }

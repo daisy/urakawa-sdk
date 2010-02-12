@@ -3,36 +3,13 @@ using System.IO;
 using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.property.channel;
-using System.ComponentModel;
 
 namespace urakawa.daisy.export.visitor
 {
-    public abstract class AbstractBasePublishAudioVisitor : ITreeNodeVisitor
+    public abstract class AbstractBasePublishAudioVisitor : DualCancellableProgressReporter, ITreeNodeVisitor
     {
         protected double m_TimeElapsed = 0;
         protected double m_TotalTime = 0;
-        private bool m_RequestCancellation;
-
-        public bool RequestCancellation
-        {
-            get
-            {
-                return m_RequestCancellation;
-            }
-            set
-            {
-                m_RequestCancellation = value;
-            }
-        }
-
-        public event ProgressChangedEventHandler ProgressChangedEvent;
-        protected void reportProgress(int percent, string msg)
-        {
-            //reportSubProgress ( -1, null );
-            if (ProgressChangedEvent != null)
-                ProgressChangedEvent(this, new ProgressChangedEventArgs(percent, msg));
-        }
-
 
         protected AbstractBasePublishAudioVisitor()
         {
