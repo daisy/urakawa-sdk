@@ -33,6 +33,7 @@ namespace urakawa.daisy.export
         private List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
         private TimeSpan m_TotalTime;
 
+        private readonly bool m_encodeToMp3;
 
         /// <summary>
         /// initializes instance with presentation and list of element names for which navList will be created, 
@@ -40,8 +41,10 @@ namespace urakawa.daisy.export
         /// </summary>
         /// <param name="presentation"></param>
         /// <param name="navListElementNamesList"></param>
-        public Daisy3_Export(Presentation presentation, string exportDirectory, List<string> navListElementNamesList)
+        public Daisy3_Export(Presentation presentation, string exportDirectory, List<string> navListElementNamesList, bool encodeToMp3)
         {
+            m_encodeToMp3 = encodeToMp3;
+
             RequestCancellation = false;
             if (!Directory.Exists(exportDirectory))
             {
@@ -81,6 +84,9 @@ namespace urakawa.daisy.export
             TreeNodeTestDelegate skipDelegate = delegate { return false; };
 
             m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(triggerDelegate, skipDelegate);
+
+            m_PublishVisitor.EncodePublishedAudioFilesToMp3 = m_encodeToMp3;
+
             m_PublishVisitor.ProgressChangedEvent += new ProgressChangedEventHandler(ReportAudioPublishProgress);
 
             m_PublishVisitor.DestinationDirectory = new Uri(m_OutputDirectory, UriKind.Absolute);
