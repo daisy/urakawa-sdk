@@ -10,9 +10,9 @@ namespace urakawa.daisy.export
 
         private void CreateOpfDocument()
         {
-        m_ProgressPercentage = 98;
-        reportProgress ( m_ProgressPercentage, "All files created" );
-        if (RequestCancellation) return;
+            m_ProgressPercentage = 98;
+            reportProgress(m_ProgressPercentage, "All files created");
+            if (RequestCancellation) return;
             XmlDocument opfDocument = CreateStub_OpfDocument();
 
             XmlNode manifestNode = XmlDocumentHelper.GetFirstChildElementWithName(opfDocument, true, "manifest", null); //opfDocument.GetElementsByTagName("manifest")[0];
@@ -24,10 +24,10 @@ namespace urakawa.daisy.export
             const string mediaType_Dtbook = "application/x-dtbook+xml";
             const string mediaType_Image_Jpg = "image/jpeg";
             const string mediaType_Image_Png = "image/png";
-            const string mediaType_Image_Svg =  "image/svg+xml";
+            const string mediaType_Image_Svg = "image/svg+xml";
             const string mediaType_Resource = "application/x-dtbresource+xml";
             const string mediaType_Css = "text/css";
-            const string mediaType_Transform = "text/xsl" ;
+            const string mediaType_Transform = "text/xsl";
             const string mediaType_DTD = "application/xml-dtd";
 
             // add all files to manifest
@@ -37,27 +37,27 @@ namespace urakawa.daisy.export
 
             // add external files to manifest
             foreach (string externalFileName in m_FilesList_ExternalFiles)
+            {
+                string strID = GetNextID(ID_OpfPrefix);
+                switch (Path.GetExtension(externalFileName).ToLower())
                 {
-                string strID = GetNextID ( ID_OpfPrefix );
-                switch (Path.GetExtension ( externalFileName ).ToLower ())
-                    {
-                case ".css":
-                AddFilenameToManifest ( opfDocument, manifestNode, externalFileName, strID, mediaType_Css);
-                break;
+                    case ".css":
+                        AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, mediaType_Css);
+                        break;
 
-                case ".xslt":
-                AddFilenameToManifest ( opfDocument, manifestNode, externalFileName, strID, mediaType_Transform ); 
-                break;
+                    case ".xslt":
+                        AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, mediaType_Transform);
+                        break;
 
-                case ".dtd":
-                AddFilenameToManifest ( opfDocument, manifestNode, externalFileName, strID, mediaType_DTD);
-                break;
-                default:
-                break;
-                    }
-                
-
+                    case ".dtd":
+                        AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, mediaType_DTD);
+                        break;
+                    default:
+                        break;
                 }
+
+
+            }
 
             if (RequestCancellation) return;
             // add smil files to manifest
@@ -111,7 +111,7 @@ namespace urakawa.daisy.export
             string resourceAudio_Filename_fullPath = Path.Combine(sourceDirectoryPath, resourceAudio_Filename);
             if (File.Exists(ResourceRes_Filename_fullPath) && File.Exists(resourceAudio_Filename_fullPath))
             {
-            if (RequestCancellation) return;
+                if (RequestCancellation) return;
                 File.Copy(ResourceRes_Filename_fullPath, Path.Combine(m_OutputDirectory, ResourceRes_Filename), true);
                 File.Copy(resourceAudio_Filename_fullPath, Path.Combine(m_OutputDirectory, resourceAudio_Filename), true);
 
@@ -135,10 +135,10 @@ namespace urakawa.daisy.export
             AddMetadata_Opf(opfDocument);
 
             if (RequestCancellation)
-                {
+            {
                 opfDocument = null;
                 return;
-                }
+            }
             XmlDocumentHelper.WriteXmlDocumentToFile(opfDocument,
                 Path.Combine(m_OutputDirectory, m_Filename_Opf));
         }
@@ -158,7 +158,7 @@ namespace urakawa.daisy.export
         {
             AddMetadataAsAttributes(doc, parentNode, "dtb:generator", "Tobi and the Urakawa SDK: the open-source DAISY multimedia authoring toolkit");
             m_ProgressPercentage = 100;
-            reportProgress ( m_ProgressPercentage, "All files created" );
+            reportProgress(m_ProgressPercentage, "All files created");
         }
 
         private void AddMetadata_Opf(XmlDocument opfDocument)
@@ -172,15 +172,15 @@ namespace urakawa.daisy.export
 
             AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totalTime", m_TotalTime.ToString());
 
-            if (m_Presentation.GetMetadata ( "dtb:multimediaType" ).Count == 0)
-                {
-                AddMetadataAsAttributes ( opfDocument, x_metadataNode, "dtb:multimediaType", "audioFullText" );
-                }
+            if (m_Presentation.GetMetadata("dtb:multimediaType").Count == 0)
+            {
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaType", "audioFullText");
+            }
 
-            if (m_Presentation.GetMetadata ( "dtb:multimediaContent" ).Count == 0)
-                {
-                AddMetadataAsAttributes ( opfDocument, x_metadataNode, "dtb:multimediaContent", "audio,text" );
-                }
+            if (m_Presentation.GetMetadata("dtb:multimediaContent").Count == 0)
+            {
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaContent", "audio,text");
+            }
 
             AddMetadataAsInnerText(opfDocument, dc_metadataNode, "dc:format", "ANSI/NISO Z39.86-2005");
 
@@ -300,21 +300,20 @@ namespace urakawa.daisy.export
 
             return document;
         }
-        
-        private void CreateExternalFiles ()
-            {
+
+        private void CreateExternalFiles()
+        {
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
+            {
+                reportSubProgress(-1, "creating external files like .css, .dtd etc.");
+                if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains(efd.OriginalRelativePath))
                 {
-                reportSubProgress ( -1, "creating external files like .css, .dtd etc." );
-                if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains(efd.OriginalRelativePath) )
-                    {
-                    string filePath = Path.Combine ( m_OutputDirectory, efd.OriginalRelativePath ) ;
-                    efd.DataProvider.ExportDataStreamToFile ( filePath, true );
-                    m_FilesList_ExternalFiles.Add ( efd.OriginalRelativePath );
-                    
-                    }
+                    string filePath = Path.Combine(m_OutputDirectory, efd.OriginalRelativePath);
+                    efd.DataProvider.ExportDataStreamToFile(filePath, true);
+                    m_FilesList_ExternalFiles.Add(efd.OriginalRelativePath);
+
                 }
             }
-
+        }
     }
 }
