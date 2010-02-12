@@ -9,44 +9,11 @@ using urakawa.xuk;
 
 namespace urakawa.daisy.import
 {
-    public partial class Daisy3_Import
+    public partial class Daisy3_Import : DualCancellableProgressReporter
     {
         private readonly string m_outDirectory;
         private string m_Book_FilePath;
 
-        public event ProgressChangedEventHandler ProgressChangedEvent;
-        private void reportProgress(int percent, string msg)
-        {
-            reportSubProgress(-1, null);
-            ProgressChangedEventHandler d = ProgressChangedEvent;
-            if (d != null)
-            {
-                d(this, new ProgressChangedEventArgs(percent, msg));
-            }
-        }
-
-        public event ProgressChangedEventHandler SubProgressChangedEvent;
-        private void reportSubProgress(int percent, string msg)
-        {
-            ProgressChangedEventHandler d = SubProgressChangedEvent;
-            if (d != null)
-            {
-                d(this, new ProgressChangedEventArgs(percent, msg));
-            }
-        }
-
-        private bool m_RequestCancellation;
-        public bool RequestCancellation
-        {
-            get
-            {
-                return m_RequestCancellation;
-            }
-            set
-            {
-                m_RequestCancellation = value;
-            }
-        }
 
         private string m_Xuk_FilePath;
         public string XukPath
@@ -84,7 +51,7 @@ namespace urakawa.daisy.import
             reportProgress(100, "Import initialized.");
         }
 
-        public void DoImport()
+        public override void DoWork()
         {
             if (RequestCancellation) return;
             transformBook();

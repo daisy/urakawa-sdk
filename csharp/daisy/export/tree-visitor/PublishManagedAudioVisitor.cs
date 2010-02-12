@@ -1,3 +1,4 @@
+using System;
 using urakawa.core;
 
 namespace urakawa.daisy.export.visitor
@@ -55,6 +56,11 @@ namespace urakawa.daisy.export.visitor
         {
             if (mTreeNodeMustBeSkippedDelegate != null) return mTreeNodeMustBeSkippedDelegate(node);
             return false;
+        }
+
+        public override void DoWork()
+        {
+            throw new NotImplementedException();
         }
     }
 

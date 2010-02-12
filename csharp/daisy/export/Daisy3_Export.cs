@@ -12,7 +12,7 @@ using urakawa.xuk;
 
 namespace urakawa.daisy.export
 {
-    public partial class Daisy3_Export
+    public partial class Daisy3_Export : DualCancellableProgressReporter
     {
         private Presentation m_Presentation;
         private PublishFlattenedManagedAudioVisitor m_PublishVisitor = null;
@@ -32,35 +32,6 @@ namespace urakawa.daisy.export
         private List<string> m_FilesList_Image; // list of images, populated in create content document function
         private List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
         private TimeSpan m_TotalTime;
-
-        public event ProgressChangedEventHandler ProgressChangedEvent;
-        private void reportProgress(int percent, string msg)
-        {
-            reportSubProgress(-1, null);
-            if (ProgressChangedEvent != null)
-                ProgressChangedEvent(this, new ProgressChangedEventArgs(percent, msg));
-        }
-
-        public event ProgressChangedEventHandler SubProgressChangedEvent;
-        private void reportSubProgress(int percent, string msg)
-        {
-            if (SubProgressChangedEvent != null)
-                SubProgressChangedEvent(this, new ProgressChangedEventArgs(percent, msg));
-        }
-
-        private bool m_RequestCancellation;
-        public bool RequestCancellation
-        {
-            get
-            {
-                return m_RequestCancellation;
-            }
-            set
-            {
-                m_RequestCancellation = value;
-                if (m_PublishVisitor != null) m_PublishVisitor.RequestCancellation = value;
-            }
-        }
 
 
         /// <summary>
@@ -98,7 +69,7 @@ namespace urakawa.daisy.export
         }
 
 
-        public void StartExport()
+        public override void DoWork()
         {
             RequestCancellation = false;
 
@@ -120,29 +91,31 @@ namespace urakawa.daisy.export
             publishChannel.Name = PUBLISH_AUDIO_CHANNEL_NAME;
             m_PublishVisitor.DestinationChannel = publishChannel;
 
+            AddSubCancellable(m_PublishVisitor);
             m_Presentation.RootNode.AcceptDepthFirst(m_PublishVisitor);
+            RemoveSubCancellable(m_PublishVisitor);
 
-            if (RequestCancellation_RemovePublishChannel(publishChannel))
-            {
-                m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler(ReportAudioPublishProgress);
-                return;
-            }
+            m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler(ReportAudioPublishProgress);
+
 #if DEBUG
-             if ( !m_PublishVisitor.EncodePublishedAudioFilesToMp3 ) m_PublishVisitor.VerifyTree(m_Presentation.RootNode);
-            m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler ( ReportAudioPublishProgress );
-            m_PublishVisitor = null;
+             if ( !m_PublishVisitor.EncodePublishedAudioFilesToMp3 )
+                    m_PublishVisitor.VerifyTree(m_Presentation.RootNode);
 
-            
-            if (RequestCancellation_RemovePublishChannel ( publishChannel )) return;
             //Debugger.Break();
 #endif //DEBUG
 
-            // the following functions must be called in this order.
+            m_PublishVisitor = null;
+            GC.Collect();
+
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
             CreateDTBookDocument();
+
             if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
             CreateNcxAndSmilDocuments();
+
             if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
             CreateExternalFiles();
+            
             if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
             CreateOpfDocument();
 

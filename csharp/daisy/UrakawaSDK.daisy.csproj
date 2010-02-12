@@ -78,6 +78,7 @@
     <Compile Include="export\tree-visitor\AbstractPublishManagedAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\PublishFlattenedManagedAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\PublishManagedAudioVisitor.cs" />
+    <Compile Include="IDualCancellableProgressReporter.cs" />
     <Compile Include="import\AudioFormatConvertorSession.cs" />
     <Compile Include="UrakawaSDK.daisy.Lang.Designer.cs">
       <AutoGen>True</AutoGen>
