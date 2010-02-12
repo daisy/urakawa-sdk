@@ -79,6 +79,11 @@
     <Compile Include="export\tree-visitor\PublishFlattenedManagedAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\PublishManagedAudioVisitor.cs" />
     <Compile Include="import\AudioFormatConvertorSession.cs" />
+    <Compile Include="UrakawaSDK.daisy.Lang.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UrakawaSDK.daisy.Lang.resx</DependentUpon>
+    </Compile>
     <Compile Include="XmlDocumentHelper.cs" />
     <Compile Include="export\Daisy3_Export.cs" />
     <Compile Include="export\Daisy3_Export_ContentDoc.cs" />
@@ -132,6 +137,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UrakawaSDK.daisy.Lang.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UrakawaSDK.daisy.Lang.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

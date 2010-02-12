@@ -345,6 +345,11 @@
     <Compile Include="command\CompositeCommand.cs" />
     <Compile Include="command\Command.cs" />
     <Compile Include="undo\UndoRedoManager.cs" />
+    <Compile Include="UrakawaSDK.core.Lang.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UrakawaSDK.core.Lang.resx</DependentUpon>
+    </Compile>
     <Compile Include="WithPresentation.cs" />
     <Compile Include="XukAbleManager.cs" />
     <Compile Include="xuk\OpenXukAction.cs" />
@@ -384,6 +389,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UrakawaSDK.core.Lang.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UrakawaSDK.core.Lang.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="datax\" />

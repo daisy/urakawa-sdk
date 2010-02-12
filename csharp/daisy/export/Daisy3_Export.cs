@@ -34,33 +34,33 @@ namespace urakawa.daisy.export
         private TimeSpan m_TotalTime;
 
         public event ProgressChangedEventHandler ProgressChangedEvent;
-        private void reportProgress ( int percent, string msg )
-            {
-            reportSubProgress ( -1, null );
+        private void reportProgress(int percent, string msg)
+        {
+            reportSubProgress(-1, null);
             if (ProgressChangedEvent != null)
-                ProgressChangedEvent ( this, new ProgressChangedEventArgs ( percent, msg ) );
-            }
+                ProgressChangedEvent(this, new ProgressChangedEventArgs(percent, msg));
+        }
 
         public event ProgressChangedEventHandler SubProgressChangedEvent;
-        private void reportSubProgress ( int percent, string msg )
-            {
+        private void reportSubProgress(int percent, string msg)
+        {
             if (SubProgressChangedEvent != null)
-                SubProgressChangedEvent ( this, new ProgressChangedEventArgs ( percent, msg ) );
-            }
+                SubProgressChangedEvent(this, new ProgressChangedEventArgs(percent, msg));
+        }
 
         private bool m_RequestCancellation;
         public bool RequestCancellation
-            {
+        {
             get
-                {
+            {
                 return m_RequestCancellation;
-                }
+            }
             set
-                {
+            {
                 m_RequestCancellation = value;
                 if (m_PublishVisitor != null) m_PublishVisitor.RequestCancellation = value;
-                }
             }
+        }
 
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace urakawa.daisy.export
         /// <param name="navListElementNamesList"></param>
         public Daisy3_Export(Presentation presentation, string exportDirectory, List<string> navListElementNamesList)
         {
-        RequestCancellation = false;
+            RequestCancellation = false;
             if (!Directory.Exists(exportDirectory))
             {
                 Directory.CreateDirectory(exportDirectory);
@@ -100,9 +100,9 @@ namespace urakawa.daisy.export
 
         public void StartExport()
         {
-        RequestCancellation = false;
+            RequestCancellation = false;
 
-            
+
             m_ID_Counter = 0;
             if (RequestCancellation) return;
             //TreeNodeTestDelegate triggerDelegate  = delegate(urakawa.core.TreeNode node) { return node.GetManagedAudioMedia () != null ; };
@@ -110,7 +110,7 @@ namespace urakawa.daisy.export
             TreeNodeTestDelegate skipDelegate = delegate { return false; };
 
             m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(triggerDelegate, skipDelegate);
-            m_PublishVisitor.ProgressChangedEvent += new ProgressChangedEventHandler ( ReportAudioPublishProgress );
+            m_PublishVisitor.ProgressChangedEvent += new ProgressChangedEventHandler(ReportAudioPublishProgress);
 
             m_PublishVisitor.DestinationDirectory = new Uri(m_OutputDirectory, UriKind.Absolute);
 
@@ -121,12 +121,12 @@ namespace urakawa.daisy.export
             m_PublishVisitor.DestinationChannel = publishChannel;
 
             m_Presentation.RootNode.AcceptDepthFirst(m_PublishVisitor);
-            
-            if (RequestCancellation_RemovePublishChannel ( publishChannel ))
-                {
-                m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler ( ReportAudioPublishProgress );
+
+            if (RequestCancellation_RemovePublishChannel(publishChannel))
+            {
+                m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler(ReportAudioPublishProgress);
                 return;
-                }
+            }
 #if DEBUG
              if ( !m_PublishVisitor.EncodePublishedAudioFilesToMp3 ) m_PublishVisitor.VerifyTree(m_Presentation.RootNode);
             m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler ( ReportAudioPublishProgress );
@@ -139,31 +139,31 @@ namespace urakawa.daisy.export
 
             // the following functions must be called in this order.
             CreateDTBookDocument();
-            if (RequestCancellation_RemovePublishChannel ( publishChannel )) return;
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
             CreateNcxAndSmilDocuments();
-            if (RequestCancellation_RemovePublishChannel ( publishChannel )) return;
-            CreateExternalFiles ();
-            if (RequestCancellation_RemovePublishChannel ( publishChannel )) return;
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+            CreateExternalFiles();
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
             CreateOpfDocument();
 
             m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
         }
 
-        private bool RequestCancellation_RemovePublishChannel ( Channel publishChannel )
-            {
+        private bool RequestCancellation_RemovePublishChannel(Channel publishChannel)
+        {
             if (RequestCancellation)
-                {
-                m_Presentation.ChannelsManager.RemoveManagedObject ( publishChannel );
-                return true;
-                }
-            return false;
-            }
-        private int m_ProgressPercentage;
-        private void ReportAudioPublishProgress ( object sender, ProgressChangedEventArgs e )
             {
-            m_ProgressPercentage = Convert.ToInt32( e.ProgressPercentage * 0.85 ) ;
-            reportProgress ( m_ProgressPercentage, (string) e.UserState);
+                m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
+                return true;
             }
+            return false;
+        }
+        private int m_ProgressPercentage;
+        private void ReportAudioPublishProgress(object sender, ProgressChangedEventArgs e)
+        {
+            m_ProgressPercentage = Convert.ToInt32(e.ProgressPercentage * 0.85);
+            reportProgress(m_ProgressPercentage, (string)e.UserState);
+        }
 
         private bool doesTreeNodeTriggerNewSmil(TreeNode node)
         {

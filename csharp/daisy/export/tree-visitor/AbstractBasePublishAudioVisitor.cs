@@ -12,33 +12,33 @@ namespace urakawa.daisy.export.visitor
         protected double m_TimeElapsed = 0;
         protected double m_TotalTime = 0;
         private bool m_RequestCancellation;
-            
-            public bool RequestCancellation
-            {
-            get
-                {
-                return m_RequestCancellation;
-                }
-            set
-                {
-                m_RequestCancellation = value;
-                }
-            }
 
-            public event ProgressChangedEventHandler ProgressChangedEvent;
-           protected  void reportProgress ( int percent, string msg )
-                {
-                //reportSubProgress ( -1, null );
-                if (ProgressChangedEvent != null)
-                    ProgressChangedEvent ( this, new ProgressChangedEventArgs ( percent, msg ) );
-                }
-   
+        public bool RequestCancellation
+        {
+            get
+            {
+                return m_RequestCancellation;
+            }
+            set
+            {
+                m_RequestCancellation = value;
+            }
+        }
+
+        public event ProgressChangedEventHandler ProgressChangedEvent;
+        protected void reportProgress(int percent, string msg)
+        {
+            //reportSubProgress ( -1, null );
+            if (ProgressChangedEvent != null)
+                ProgressChangedEvent(this, new ProgressChangedEventArgs(percent, msg));
+        }
+
 
         protected AbstractBasePublishAudioVisitor()
         {
             mCurrentAudioFileNumber = 0;
             m_ErrorMessages = null;
-            m_TimeElapsed = 0 ;
+            m_TimeElapsed = 0;
         }
 
         //private const int BUFFER_SIZE = 6 * 1024 * 1024; // 6 MB
@@ -106,7 +106,7 @@ namespace urakawa.daisy.export.visitor
                 mSourceChannel = value;
             }
         }
-        
+
         private Channel mDestinationChannel;
         public Channel DestinationChannel
         {
@@ -126,7 +126,7 @@ namespace urakawa.daisy.export.visitor
                 mDestinationChannel = value;
             }
         }
-        
+
         private Uri mDestinationDirectory;
         public Uri DestinationDirectory
         {
@@ -152,55 +152,55 @@ namespace urakawa.daisy.export.visitor
 
         private bool m_EncodePublishedAudioFilesToMp3 = false;
         public bool EncodePublishedAudioFilesToMp3
-            {
+        {
             get
-                {
+            {
                 return m_EncodePublishedAudioFilesToMp3;
-                }
-            set
-                {
-                m_EncodePublishedAudioFilesToMp3 = value;
-                }
             }
+            set
+            {
+                m_EncodePublishedAudioFilesToMp3 = value;
+            }
+        }
 
 
         private ushort m_BitRate_Mp3 = 64;
         public ushort BitRate_Mp3
-            {
+        {
             get
-                {
+            {
                 return m_BitRate_Mp3;
-                }
+            }
             set
-                {
+            {
                 if (value == 32 || value == 40 || value == 48 || value == 56 || value == 64 || value == 80 || value == 96 ||
                     value == 112 || value == 128 || value == 160 || value == 196 ||
-                    value == 224 || value == 256 || 
-                    value == 320 )
-                    {
+                    value == 224 || value == 256 ||
+                    value == 320)
+                {
                     m_BitRate_Mp3 = value;
-                    }
-                else
-                    {
-                    throw new System.Exception ( " bit rate not supported! " );
-                    }
-
                 }
+                else
+                {
+                    throw new System.Exception(" bit rate not supported! ");
+                }
+
             }
+        }
 
 
         private string m_ErrorMessages = null;
         public string ErrorMessages
-            {
+        {
             get
-                {
+            {
                 return m_ErrorMessages;
-                }
-            protected set
-                {
-                m_ErrorMessages = value;
-                }
             }
+            protected set
+            {
+                m_ErrorMessages = value;
+            }
+        }
 
     }
 }
