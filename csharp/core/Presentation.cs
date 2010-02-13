@@ -21,7 +21,7 @@ using urakawa.undo;
 using urakawa.xuk;
 using urakawa.events;
 using urakawa.events.presentation;
-using urakawa.ExternalFiles ;
+using urakawa.ExternalFiles;
 
 namespace urakawa
 {
@@ -74,7 +74,7 @@ namespace urakawa
         {
             Project.SetPrettyFormat(pretty);
         }
-       
+
         public void RefreshFactoryQNames()
         {
             Project.PresentationFactory.RefreshQNames();
@@ -262,7 +262,7 @@ namespace urakawa
         private UndoRedoManager mUndoRedoManager;
         private DataProviderManager mDataProviderManager;
         private MediaDataManager mMediaDataManager;
-        private ExternalFilesDataManager m_ExternalFileDataManager ;
+        private ExternalFilesDataManager m_ExternalFileDataManager;
         private ChannelsManager mChannelsManager;
         //
         private TreeNode mRootNode;
@@ -271,7 +271,7 @@ namespace urakawa
         private string mLanguage;
 
         private ObjectListProvider<Metadata> mMetadata;
-        public ObjectListProvider<Metadata>  Metadatas
+        public ObjectListProvider<Metadata> Metadatas
         {
             get
             {
@@ -345,14 +345,11 @@ namespace urakawa
         /// <summary>
         /// Removes any <see cref="MediaData"/> and <see cref="DataProvider"/>s that are not used by any <see cref="TreeNode"/> in the document tree
         /// or by any <see cref="Command"/> in the <see cref="undo.UndoRedoManager"/> stacks (undo/redo/transaction).
+        /// or by ExternalFileData
         /// </summary>
         public void Cleanup()
         {
-            CollectManagedMediaTreeNodeVisitor collectorVisitor = new CollectManagedMediaTreeNodeVisitor();
-            if (RootNode != null)
-            {
-                RootNode.AcceptDepthFirst(collectorVisitor);
-            }
+            // We collect references of MediaData used in the UndoRedoManager
             List<MediaData> usedMediaData = new List<MediaData>();
             foreach (MediaData md in UndoRedoManager.UsedMediaData)
             {
@@ -361,6 +358,13 @@ namespace urakawa
                     usedMediaData.Add(md);
                 }
             }
+
+            // We collect references of MediaData used in the tree of TreeNodes
+            CollectManagedMediaTreeNodeVisitor collectorVisitor = new CollectManagedMediaTreeNodeVisitor();
+            if (RootNode != null)
+            {
+                RootNode.AcceptDepthFirst(collectorVisitor);
+            }
             foreach (IManaged mm in collectorVisitor.CollectedMedia)
             {
                 if (mm.MediaData != null && !usedMediaData.Contains(mm.MediaData))
@@ -368,14 +372,20 @@ namespace urakawa
                     usedMediaData.Add(mm.MediaData);
                 }
             }
+
+            // 
             List<DataProvider> usedDataProviders = new List<DataProvider>();
+
+            // We eliminate MediaData registered in the MediaDataManager that is unused
+            // (not in the list of collected MediaData so far)
+            // and we collect references of DataProviders used by the MediaData collected so far
             foreach (MediaData md in MediaDataManager.ManagedObjects.ContentsAs_ListCopy)
             {
                 if (usedMediaData.Contains(md))
                 {
                     if (md is media.data.audio.codec.WavAudioMediaData)
                     {
-                        ((media.data.audio.codec.WavAudioMediaData) md).ForceSingleDataProvider();
+                        ((media.data.audio.codec.WavAudioMediaData)md).ForceSingleDataProvider();
                     }
                     foreach (DataProvider dp in md.UsedDataProviders)
                     {
@@ -388,32 +398,17 @@ namespace urakawa
                 }
             }
 
-            List<ExternalFileData> usedExternalFileData = new List<ExternalFileData> ();
-            foreach (ExternalFileData efd in this   .ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
+            // We collect references of DataProviders used by the registered ExternalFileData
+            foreach (ExternalFileData efd in ExternalFilesDataManager.ManagedObjects.ContentsAs_YieldEnumerable)
+            {
+                foreach (DataProvider dp in efd.UsedDataProviders)
                 {
-                if (!usedExternalFileData.Contains ( efd ))
-                    {
-                    usedExternalFileData.Add ( efd );
-                    }
+                    if (!usedDataProviders.Contains(dp)) usedDataProviders.Add(dp);
                 }
+            }
 
-            foreach (ExternalFileData efd in ExternalFilesDataManager.ManagedObjects.ContentsAs_ListCopy)
-                {
-                if (usedExternalFileData.Contains ( efd ))
-                    {
-                    
-                    foreach (DataProvider dp in efd.UsedDataProviders)
-                        {
-                        if (!usedDataProviders.Contains ( dp )) usedDataProviders.Add ( dp );
-                        }
-                    }
-                else
-                    {
-                    efd.Delete ();
-                    }
-                }
-
-
+            // We eliminate DataProviders that are unused
+            // (i.e. not in our list of collected used DataProviders so far)
             foreach (DataProvider dp in DataProviderManager.ManagedObjects.ContentsAs_ListCopy)
             {
                 if (!usedDataProviders.Contains(dp)) dp.Delete();
@@ -612,7 +607,7 @@ namespace urakawa
             {
                 if (prop is ChannelsProperty)
                 {
-                    ChannelsProperty chProp = (ChannelsProperty) prop;
+                    ChannelsProperty chProp = (ChannelsProperty)prop;
                     foreach (Channel ch in chProp.UsedChannels)
                     {
                         res.Add(chProp.GetMedia(ch));
@@ -758,28 +753,28 @@ namespace urakawa
         }
 
         public ExternalFilesDataManager ExternalFilesDataManager
-            {
+        {
             get
-                {
+            {
                 if (m_ExternalFileDataManager == null)
-                    {
-                    m_ExternalFileDataManager = new ExternalFilesDataManager ( this );
-                    }
-                return m_ExternalFileDataManager;
+                {
+                    m_ExternalFileDataManager = new ExternalFilesDataManager(this);
                 }
+                return m_ExternalFileDataManager;
             }
+        }
 
         public ExternalFileDataFactory ExternalFilesDataFactory
-            {
+        {
             get
-                {
+            {
                 if (m_ExternalFileDataFactory == null)
-                    {
-                    m_ExternalFileDataFactory = new ExternalFileDataFactory ( this );
-                    }
-                return m_ExternalFileDataFactory;
+                {
+                    m_ExternalFileDataFactory = new ExternalFileDataFactory(this);
                 }
+                return m_ExternalFileDataFactory;
             }
+        }
 
 
         #region Metadata
@@ -855,7 +850,7 @@ namespace urakawa
             mRootNodeInitialized = false;
             mRootUri = null;
             mLanguage = null;
-            
+
             foreach (Metadata md in mMetadata.ContentsAs_ListCopy)
             {
                 mMetadata.Remove(md);
@@ -1056,60 +1051,60 @@ namespace urakawa
                 }
                 else if (source.LocalName == XukStrings.ChannelsManager)
                 {
-                        ChannelsManager.XukIn(source,handler);
+                    ChannelsManager.XukIn(source, handler);
                 }
                 else if (source.LocalName == XukStrings.MediaFactory)
                 {
-                        MediaFactory.XukIn(source, handler);
+                    MediaFactory.XukIn(source, handler);
                 }
                 else if (source.LocalName == XukStrings.MediaDataFactory)
                 {
-                        MediaDataFactory.XukIn(source, handler);
+                    MediaDataFactory.XukIn(source, handler);
                 }
                 else if (source.LocalName == XukStrings.MediaDataManager)
                 {
-                        MediaDataManager.XukIn(source, handler);
+                    MediaDataManager.XukIn(source, handler);
                 }
                 else if (source.LocalName == XukStrings.DataProviderFactory)
                 {
-                        DataProviderFactory.XukIn(source, handler);
+                    DataProviderFactory.XukIn(source, handler);
                 }
                 else if (source.LocalName == XukStrings.DataProviderManager)
                 {
-                        DataProviderManager.XukIn(source, handler);
+                    DataProviderManager.XukIn(source, handler);
                 }
                 else if (source.LocalName == XukStrings.CommandFactory)
                 {
-                        CommandFactory.XukIn(source, handler);
-                  }
+                    CommandFactory.XukIn(source, handler);
+                }
                 else if (source.LocalName == XukStrings.UndoRedoManager)
                 {
-                        UndoRedoManager.XukIn(source, handler);
-                   }
+                    UndoRedoManager.XukIn(source, handler);
+                }
                 else if (source.LocalName == XukStrings.MetadataFactory)
                 {
-                        MetadataFactory.XukIn(source, handler);
-                 }
+                    MetadataFactory.XukIn(source, handler);
+                }
                 else if (source.LocalName == XukStrings.Metadatas)
                 {
-                        XukInMetadata(source, handler);
-                 }
+                    XukInMetadata(source, handler);
+                }
                 else if (source.LocalName == XukStrings.ExternalFileDataFactory)
-                    {
-                    ExternalFilesDataFactory.XukIn ( source, handler );
-                    }
+                {
+                    ExternalFilesDataFactory.XukIn(source, handler);
+                }
                 else if (source.LocalName == XukStrings.ExternalFileDataManager)
-                    {
-                    ExternalFilesDataManager.XukIn ( source, handler );
-                    }
+                {
+                    ExternalFilesDataManager.XukIn(source, handler);
+                }
                 else if (source.LocalName == XukStrings.RootNode)
-                    {
-                    XukInRootNode ( source, handler );
-                    }
+                {
+                    XukInRootNode(source, handler);
+                }
                 else
-                    {
+                {
                     readItem = false;
-                    }
+                }
             }
             if (!readItem) base.XukInChild(source, handler);
         }
@@ -1170,7 +1165,7 @@ namespace urakawa
 
             MetadataFactory.XukOut(destination, baseUri, handler);
 
-            this.ExternalFilesDataFactory.XukOut ( destination, baseUri, handler );
+            this.ExternalFilesDataFactory.XukOut(destination, baseUri, handler);
 
 
 
@@ -1184,7 +1179,7 @@ namespace urakawa
 
             UndoRedoManager.XukOut(destination, baseUri, handler);
 
-            this.ExternalFilesDataManager.XukOut ( destination, baseUri, handler );
+            this.ExternalFilesDataManager.XukOut(destination, baseUri, handler);
 
 
             destination.WriteStartElement(XukStrings.Metadatas, XukNamespaceUri);
