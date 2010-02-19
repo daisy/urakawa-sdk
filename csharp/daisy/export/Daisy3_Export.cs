@@ -140,7 +140,8 @@ namespace urakawa.daisy.export
         private int m_ProgressPercentage;
         private void ReportAudioPublishProgress(object sender, ProgressChangedEventArgs e)
         {
-            m_ProgressPercentage = Convert.ToInt32(e.ProgressPercentage * 0.85);
+            //m_ProgressPercentage = Convert.ToInt32(e.ProgressPercentage * 0.85);
+        m_ProgressPercentage = Convert.ToInt32 ( e.ProgressPercentage  );
             reportProgress(m_ProgressPercentage, (string)e.UserState);
         }
 

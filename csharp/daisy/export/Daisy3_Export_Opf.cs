@@ -10,7 +10,7 @@ namespace urakawa.daisy.export
 
         private void CreateOpfDocument()
         {
-            m_ProgressPercentage = 98;
+            m_ProgressPercentage = 90;
             reportProgress(m_ProgressPercentage, "All files created");
             if (RequestCancellation) return;
             XmlDocument opfDocument = CreateStub_OpfDocument();
