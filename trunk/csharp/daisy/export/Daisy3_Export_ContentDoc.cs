@@ -50,6 +50,9 @@ namespace urakawa.daisy.export
                 }
 
             if (RequestCancellation) return;
+
+            m_ProgressPercentage = 0;
+            reportProgress ( 0, "Creating DTBook.xml file" );
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
             if ( list_ExternalStyleSheets != null )  ExportStyleSheets ( list_ExternalStyleSheets );
 
