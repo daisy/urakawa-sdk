@@ -197,7 +197,14 @@ namespace urakawa.daisy.export.visitor
                 m_TimeElapsed += manAudioMedia != null ? manAudioMedia.Duration.TimeDeltaAsMillisecondDouble :
                     seqAudioMedia.GetDurationOfManagedAudioMedia().TimeDeltaAsMillisecondDouble;
                 m_ProgressPercentage = Convert.ToInt32((m_TimeElapsed * 100) / m_TotalTime);
-                reportProgress(m_ProgressPercentage, "Creating audio file [" + Path.GetFileName(src) + "]");
+                string sizeInfo = "";
+                if (!EncodePublishedAudioFilesToMp3)
+                    {
+                    int elapsedSizeInMB =  (int)  node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes ( m_TimeElapsed ) / (1024 * 1024);
+                    int totalSizeInMB = (int) node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes ( m_TotalTime) / (1024 * 1024);
+                    sizeInfo = " Created " + elapsedSizeInMB.ToString () + " MB of " + totalSizeInMB.ToString () + " MB" ;
+                    }
+                reportProgress(m_ProgressPercentage, "Creating audio file [" + Path.GetFileName(src) + "]" + sizeInfo);
                 Console.WriteLine("progress percent " + m_ProgressPercentage);
             }
 
