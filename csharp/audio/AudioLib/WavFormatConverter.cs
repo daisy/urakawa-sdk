@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace AudioLib
 {
-    public class WavFormatConverter 
+    public class WavFormatConverter
     {
         private bool m_OverwriteOutputFiles;
         public bool OverwriteOutputFiles
@@ -65,7 +65,7 @@ namespace AudioLib
 
             if (!Directory.Exists(destinationDirectory))
                 throw new FileNotFoundException("Invalid destination directory");
-            
+
             Stream mp3Stream = File.Open(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
 
             Bitstream mp3BitStream = new Bitstream(new BackStream(mp3Stream, 1024 * 10));
@@ -233,46 +233,44 @@ namespace AudioLib
              */
         }
 
-        public bool CompressWavToMp3 ( string sourceFile, string destinationFile, ushort destChannels, uint destSamplingRate, ushort destBitDepth, ushort bitRate_mp3Output )
-            {
-            if (!File.Exists ( sourceFile ))
-                throw new FileNotFoundException ( "Invalid source file path" );
+        public bool CompressWavToMp3(string sourceFile, string destinationFile, ushort destChannels, uint destSamplingRate, ushort destBitDepth, ushort bitRate_mp3Output)
+        {
+            if (!File.Exists(sourceFile))
+                throw new FileNotFoundException("Invalid source file path");
 
-            
 
-            string LameWorkingDir = Path.GetDirectoryName (
-                System.Reflection.Assembly.GetExecutingAssembly ().Location);
+
+            string LameWorkingDir = Path.GetDirectoryName(
+                System.Reflection.Assembly.GetExecutingAssembly().Location);
             //string outputFilePath = Path.Combine (
-                //Path.GetDirectoryName ( sourceFile ),
-                //Path.GetFileNameWithoutExtension ( sourceFile ) + ".mp3" );
+            //Path.GetDirectoryName ( sourceFile ),
+            //Path.GetFileNameWithoutExtension ( sourceFile ) + ".mp3" );
 
             string channelsArg = destChannels == 1 ? "m" : "s";
             //string argumentString = "-b " + bitRate_mp3Output.ToString ()  + " --cbr --resample default -m m \"" + sourceFile + "\" \"" + destinationFile + "\"";
-            string argumentString = "-b " + bitRate_mp3Output.ToString () + " --cbr -m " + channelsArg +  " \"" + sourceFile + "\" \"" + destinationFile + "\"";
+            string argumentString = "-b " + bitRate_mp3Output.ToString() + " --cbr -m " + channelsArg + " \"" + sourceFile + "\" \"" + destinationFile + "\"";
 
-            System.Diagnostics.ProcessStartInfo process_Lame = new System.Diagnostics.ProcessStartInfo ();
+            ProcessStartInfo process_Lame = new ProcessStartInfo();
 
-            process_Lame.FileName = Path.Combine ( LameWorkingDir, "lame.exe" );
+            process_Lame.FileName = Path.Combine(LameWorkingDir, "lame.exe");
 
             process_Lame.Arguments = argumentString;
 
-            process_Lame.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            process_Lame.WindowStyle = ProcessWindowStyle.Hidden;
             //System.Windows.Forms.MessageBox.Show ( process_Lame.FileName );
             //System.Windows.Forms.MessageBox.Show ( process_Lame.Arguments );
-            System.Diagnostics.Process p = System.Diagnostics.Process.Start ( process_Lame );
+            Process p = Process.Start(process_Lame);
 
 
-            p.WaitForExit ();
+            p.WaitForExit();
 
-            if ( File.Exists (destinationFile ))
-                {
+            if (File.Exists(destinationFile))
+            {
                 return true;
-                }
-            else
-                {
-                return false;
-                }
             }
+
+            return false;
+        }
 
 
 
@@ -379,7 +377,5 @@ namespace AudioLib
         }
 
         public override void set_stop_flag() { }
-
-
     }
 }
