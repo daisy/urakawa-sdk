@@ -41,7 +41,7 @@ namespace urakawa.data
 
         /// <summary>
         /// Gets the path of the file storing the data of the instance, realtive to the path of data file directory
-        /// of the owning <see cref="urakawa.media.data.DataProviderManager"/>
+        /// of the owning <see cref="DataProviderManager"/>
         /// </summary>
         public string DataFileRelativePath
         {
