@@ -18,6 +18,9 @@ namespace urakawa.xuk
 
         private static Stream GetStreamFromUri(Uri src)
         {
+            if (!src.IsFile)
+                throw new exception.XukException("The XUK URI must point to a local file!");
+
             return new FileStream(src.LocalPath, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
         private void initializeXmlReader(Stream stream)
@@ -226,6 +229,10 @@ namespace urakawa.xuk
             catch (exception.ProgressCancelledException)
             {
                 canceled = true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
             finally
             {

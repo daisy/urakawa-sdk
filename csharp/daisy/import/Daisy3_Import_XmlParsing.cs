@@ -155,7 +155,9 @@ namespace urakawa.daisy.import
 
 
                 //resolve resources from cache (if possible)
-                if (absoluteUri.Scheme == "http" && m_EnableHttpCaching)
+                if (m_EnableHttpCaching &&
+                    (absoluteUri.Scheme.ToLower() == Uri.UriSchemeHttp || absoluteUri.Scheme.ToLower() == Uri.UriSchemeHttps) //absoluteUri.IsUnc?
+                    )
                 {
                     WebRequest webReq = WebRequest.Create(absoluteUri);
                     webReq.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Default);
