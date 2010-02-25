@@ -285,9 +285,9 @@ namespace urakawa
         /// </summary>
         /// <param name="uri"></param>
         /// <returns>The newly created and added <see cref="Presentation"/></returns>
-        public Presentation AddNewPresentation(Uri uri)
+        public Presentation AddNewPresentation(Uri uri, string dataFolderPrefix)
         {
-            Presentation newPres = PresentationFactory.Create(this, uri);
+            Presentation newPres = PresentationFactory.Create(this, uri, dataFolderPrefix);
 
             mPresentations.Insert(mPresentations.Count, newPres);
 
