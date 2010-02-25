@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Xml;
 using urakawa.metadata;
@@ -110,18 +109,18 @@ namespace urakawa.daisy.import
             m_Project.SetPrettyFormat(false);
 #endif
 
-            Presentation presentation = m_Project.AddNewPresentation(new Uri(m_outDirectory));
+            Presentation presentation = m_Project.AddNewPresentation(new Uri(m_outDirectory), Path.GetFileName(m_Book_FilePath));
 
             presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
             m_textChannel = presentation.ChannelFactory.CreateTextChannel();
-            m_textChannel.Name = "Our Text Channel";
+            m_textChannel.Name = "The Text Channel";
 
             m_audioChannel = presentation.ChannelFactory.CreateAudioChannel();
-            m_audioChannel.Name = "Our Audio Channel";
+            m_audioChannel.Name = "The Audio Channel";
 
             m_ImageChannel = presentation.ChannelFactory.CreateImageChannel();
-            m_ImageChannel.Name = "Our Image Channel";
+            m_ImageChannel.Name = "The Image Channel";
 
             /*string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
            if (Directory.Exists(dataPath))

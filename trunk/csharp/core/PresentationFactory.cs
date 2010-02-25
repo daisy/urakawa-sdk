@@ -17,11 +17,14 @@ namespace urakawa
         /// Creates a <see cref="Presentation"/> of default type (that is <see cref="Presentation"/>
         /// </summary>
         /// <returns>The created <see cref="Presentation"/></returns>
-        public virtual Presentation Create(Project proj, Uri uri)
+        public virtual Presentation Create(Project proj, Uri uri, string dataFolderPrefix)
         {
             Presentation pres = Create<Presentation>();
             pres.Project = proj;
             pres.RootUri = uri;
+
+            if (!String.IsNullOrEmpty(dataFolderPrefix))
+                pres.DataProviderManager.DataFileDirectory = dataFolderPrefix + "___" + pres.DataProviderManager.DataFileDirectory;
 
             if (pres.IsPrettyFormat())
             {
