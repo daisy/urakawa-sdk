@@ -259,6 +259,10 @@ namespace urakawa
         private MetadataFactory mMetadataFactory;
         private ExternalFileDataFactory m_ExternalFileDataFactory;
         //
+        // use this to bypass XUK parsing/serialization of the UndoRedoManager
+        // (to avoid issues with our current XukAble Commands implementation)
+        private bool m_IgnoreUndoRedoStack = true;
+
         private UndoRedoManager mUndoRedoManager;
         private DataProviderManager mDataProviderManager;
         private MediaDataManager mMediaDataManager;
@@ -1079,7 +1083,8 @@ namespace urakawa
                 }
                 else if (source.LocalName == XukStrings.UndoRedoManager)
                 {
-                    UndoRedoManager.XukIn(source, handler);
+                    if (!m_IgnoreUndoRedoStack)
+                        UndoRedoManager.XukIn(source, handler);
                 }
                 else if (source.LocalName == XukStrings.MetadataFactory)
                 {
@@ -1175,9 +1180,8 @@ namespace urakawa
 
             MediaDataManager.XukOut(destination, baseUri, handler);
 
-
-
-            UndoRedoManager.XukOut(destination, baseUri, handler);
+            if (!m_IgnoreUndoRedoStack)
+                UndoRedoManager.XukOut(destination, baseUri, handler);
 
             this.ExternalFilesDataManager.XukOut(destination, baseUri, handler);
 
@@ -1277,8 +1281,6 @@ namespace urakawa
         {
             Channel ch = ChannelFactory.Create();
             ChannelsManager.RemoveManagedObject(ch);
-            ch = ChannelFactory.CreateAudioChannel();
-            ChannelsManager.RemoveManagedObject(ch);
             ch = ChannelFactory.CreateTextChannel();
             ChannelsManager.RemoveManagedObject(ch);
             ch = ChannelFactory.CreateImageChannel();
@@ -1305,16 +1307,25 @@ namespace urakawa
             manImgMedia.MediaData = mdImage;
             //
             MediaData mdAudio = MediaDataFactory.CreateAudioMediaData();
-            MediaDataManager.RemoveManagedObject(mdAudio);
             //
             TreeNode treeNode = TreeNodeFactory.Create();
             ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
             manMedia.MediaData = mdAudio;
             CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, manMedia, Time.Zero, treeNode);
             CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
+            ChannelsProperty prop = treeNode.GetOrCreateChannelsProperty();
+            Channel audioChannel = ChannelFactory.CreateAudioChannel();
+            prop.SetMedia(audioChannel, manMedia);
             TreeNodeAndStreamSelection selection = new TreeNodeAndStreamSelection();
             selection.m_TreeNode = treeNode;
-            CommandFactory.CreateTreeNodeAudioStreamDeleteCommand(selection);
+            selection.m_LocalStreamLeftMark = -1;
+            selection.m_LocalStreamRightMark = -1;
+            TreeNodeAudioStreamDeleteCommand cmd = CommandFactory.CreateTreeNodeAudioStreamDeleteCommand(selection, treeNode);
+            ManagedAudioMedia audioMedia = treeNode.GetManagedAudioMedia();
+            ChannelsManager.RemoveManagedObject(audioChannel);
+            MediaDataManager.RemoveManagedObject(cmd.DeletedManagedAudioMedia.AudioMediaData);
+            //
+            MediaDataManager.RemoveManagedObject(mdAudio);
             //
             Metadata meta = MetadataFactory.CreateMetadata();
             meta.NameContentAttribute = new MetadataAttribute();

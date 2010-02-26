@@ -32,10 +32,10 @@ namespace urakawa.commands
             return command;
         }
 
-        public TreeNodeAudioStreamDeleteCommand CreateTreeNodeAudioStreamDeleteCommand(TreeNodeAndStreamSelection selection)
+        public TreeNodeAudioStreamDeleteCommand CreateTreeNodeAudioStreamDeleteCommand(TreeNodeAndStreamSelection selection, TreeNode currentTreeNode)
         {
             TreeNodeAudioStreamDeleteCommand command = Create<TreeNodeAudioStreamDeleteCommand>();
-            command.Init(selection);
+            command.Init(selection, currentTreeNode);
             return command;
         }
 
