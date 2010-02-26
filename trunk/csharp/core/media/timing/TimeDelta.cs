@@ -139,6 +139,11 @@ namespace urakawa.media.timing
             return new TimeDelta(mTimeDelta += other.TimeDeltaAsTimeSpan);
         }
 
+        public TimeDelta SubstractTimeDelta(TimeDelta other)
+        {
+            return new TimeDelta(mTimeDelta -= other.TimeDeltaAsTimeSpan);
+        }
+
         /// <summary>
         /// Determines is <c>this</c> is less than a given other <see cref="TimeDelta"/>.
         /// </summary>

@@ -114,7 +114,7 @@ namespace urakawa.commands
             ManagedAudioMediaTarget = managedAudioMediaTarget;
 
             m_UsedMediaData.Add(ManagedAudioMediaSource.AudioMediaData);
-            m_UsedMediaData.Add(ManagedAudioMediaTarget.AudioMediaData);
+            //m_UsedMediaData.Add(ManagedAudioMediaTarget.AudioMediaData); belongs to TreeNode, so no need to preserve it explicitely
 
             ShortDescription = "Insert new audio";
             LongDescription = "Insert WaveAudioMediaData from a source ManagedAudioMedia into a target ManagedAudioMedia";
