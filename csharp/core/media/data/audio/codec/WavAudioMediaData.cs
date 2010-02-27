@@ -220,7 +220,7 @@ namespace urakawa.media.data.audio.codec
         /// <seealso cref="OpenPcmInputStream(urakawa.media.timing.Time,urakawa.media.timing.Time)"/>
         public Stream OpenPcmInputStream(Time subClipBegin)
         {
-            return OpenPcmInputStream(subClipBegin, Time.Zero.AddTimeDelta(Duration));
+            return OpenPcmInputStream(subClipBegin, Time.Zero.AddTimeDelta(Duration)); 
         }
 
         /// <summary>
@@ -254,21 +254,25 @@ namespace urakawa.media.data.audio.codec
             if (
                 subClipBegin.IsLessThan(Time.Zero)
                 || subClipEnd.IsLessThan(subClipBegin)
-                || subClipBegin.AddTimeDelta(Duration).IsLessThan(subClipEnd))
+                || subClipEnd.IsGreaterThan(Time.Zero.AddTimeDelta(Duration))
+                )
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The interval [subClipBegin;subClipEnd] must be non-empty and contained in [0;GetDuration()]");
             }
-            Stream raw = DataProvider.OpenInputStream();
 
+            Stream raw = DataProvider.OpenInputStream();
             uint dataLength;
             AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(raw, out dataLength);
-
             Time rawEndTime = Time.Zero.AddTimeDelta(new TimeDelta(format.ConvertBytesToTime(dataLength)));
+
+            //Time rawEndTime = Time.Zero.AddTimeDelta(MediaDuration); // We don't call this to avoid unnecessary I/O (Strem.Open() twice)
+            
             if (
                 ClipBegin.IsLessThan(Time.Zero)
                 || ClipBegin.IsGreaterThan(ClipEnd)
-                || ClipEnd.IsGreaterThan(rawEndTime))
+                || ClipEnd.IsGreaterThan(rawEndTime)
+                )
             {
                 string msg = String.Format(
                     "WavClip [{0};{1}] is empty or not within the underlying wave data stream ([0;{2}])",
@@ -848,7 +852,9 @@ namespace urakawa.media.data.audio.codec
                     //Some of the current clip is before the range and some is after
                     TimeDelta beforePartDur = curBeginTime.GetTimeDelta(clipBegin);
                     TimeDelta beyondPartDur = curEndTime.GetTimeDelta(clipEnd);
-                    Stream beyondAS = curClip.OpenPcmInputStream(curClip.ClipEnd.SubtractTimeDelta(beyondPartDur));
+                    Time timePointRelativeToClipBeginOfWavClip = curClip.ClipEnd.SubtractTimeDelta(beyondPartDur);
+                    timePointRelativeToClipBeginOfWavClip = timePointRelativeToClipBeginOfWavClip.SubtractTime(curClip.ClipBegin);
+                    Stream beyondAS = curClip.OpenPcmInputStream(timePointRelativeToClipBeginOfWavClip);
                     WavClip beyondPartClip;
                     try
                     {
@@ -877,6 +883,7 @@ namespace urakawa.media.data.audio.codec
                     curClip.ClipBegin = curClip.ClipEnd.SubtractTimeDelta(beyondPartDur);
                     newClipList.Add(curClip);
                 }
+
                 curBeginTime = curEndTime;
             }
             mWavClips = newClipList;
