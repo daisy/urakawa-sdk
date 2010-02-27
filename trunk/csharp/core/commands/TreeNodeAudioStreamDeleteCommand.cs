@@ -114,7 +114,7 @@ namespace urakawa.commands
             bool leftOk = false;
             if (SelectionData.m_LocalStreamLeftMark != -1)
             {
-                long lower = - mediaData.PCMFormat.Data.BlockAlign;
+                long lower = -mediaData.PCMFormat.Data.BlockAlign;
                 long upper = mediaData.PCMFormat.Data.BlockAlign;
 
                 leftOk = SelectionData.m_LocalStreamLeftMark >= lower &&
@@ -253,11 +253,12 @@ namespace urakawa.commands
 
         public override void UnExecute()
         {
-            Time timeEnd = SelectionData.m_LocalStreamRightMark == -1
-                  ? Time.Zero
-                  : new Time(DeletedManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(SelectionData.m_LocalStreamRightMark));
-            
-            if (timeBeginEndEqualClipDuration(DeletionTimeBegin, timeEnd, DeletedManagedAudioMedia.AudioMediaData))
+            //Time timeEnd = SelectionData.m_LocalStreamRightMark == -1
+            //      ? Time.Zero
+            //      : new Time(DeletedManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(SelectionData.m_LocalStreamRightMark));
+
+            //if (timeBeginEndEqualClipDuration(DeletionTimeBegin, timeEnd, DeletedManagedAudioMedia.AudioMediaData))
+            if (SelectionData.m_TreeNode.GetAudioMedia() == null)
             {
                 Debug.Assert(ChannelOfDeletedMedia != null);
 
