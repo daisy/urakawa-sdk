@@ -83,47 +83,6 @@ namespace urakawa.commands
             get { return m_TreeNode; }
         }
 
-
-        private bool timeBeginEndEqualClipDuration(Time timeBegin, Time timeEnd, AudioMediaData mediaData)
-        {
-            bool equal = timeBegin.IsEqualTo(Time.Zero)
-                         &&
-                         (
-                             timeEnd.IsEqualTo(Time.Zero)
-                             || timeEnd.GetTimeDelta(timeBegin).IsEqualTo(mediaData.AudioDuration)
-                         );
-
-            if (equal) return true;
-
-            bool rightOk = false;
-            if (SelectionData.m_LocalStreamRightMark != -1)
-            {
-                double durMs = mediaData.AudioDuration.TimeDeltaAsMillisecondDouble;
-                long durBytes = mediaData.PCMFormat.Data.ConvertTimeToBytes(durMs);
-
-                double frameSizeBlockAlignMs = // just for information
-                    mediaData.PCMFormat.Data.ConvertBytesToTime(mediaData.PCMFormat.Data.BlockAlign);
-
-                long lower = durBytes - mediaData.PCMFormat.Data.BlockAlign;
-                long upper = durBytes + mediaData.PCMFormat.Data.BlockAlign;
-
-                rightOk = SelectionData.m_LocalStreamRightMark >= lower &&
-                                         SelectionData.m_LocalStreamRightMark <= upper;
-            }
-
-            bool leftOk = false;
-            if (SelectionData.m_LocalStreamLeftMark != -1)
-            {
-                long lower = -mediaData.PCMFormat.Data.BlockAlign;
-                long upper = mediaData.PCMFormat.Data.BlockAlign;
-
-                leftOk = SelectionData.m_LocalStreamLeftMark >= lower &&
-                                         SelectionData.m_LocalStreamLeftMark <= upper;
-            }
-
-            return leftOk && rightOk;
-        }
-
         public void Init(TreeNodeAndStreamSelection selection, TreeNode currentTreeNode)
         {
             if (selection.m_TreeNode == null)
@@ -142,101 +101,29 @@ namespace urakawa.commands
             ShortDescription = "Delete audio portion";
             LongDescription = "Delete a portion of audio for a given treenode";
 
+            DeletedManagedAudioMedia = selection.ExtractManagedAudioMedia();
 
-            Media audioMedia = SelectionData.m_TreeNode.GetManagedAudioMediaOrSequenceMedia();
-            if (audioMedia == null)
+            if (DeletedManagedAudioMedia != null)
             {
-                Debug.Fail("This should never happen !");
-                throw new Exception("TreeNode doesn't have managed audio media ?!");
-            }
-            else if (audioMedia is SequenceMedia)
-            {
-                Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
-                throw new NotImplementedException("TODO: implement support for SequenceMedia of ManagedAudioMedia in audio delete functionality !");
-
-                //var seqManAudioMedia = (SequenceMedia)audioMedia;
-
-                //double timeOffset = 0;
-                //long sumData = 0;
-                //long sumDataPrev = 0;
-                //foreach (Media media in seqManAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
-                //{
-                //    var manangedMediaSeqItem = (ManagedAudioMedia)media;
-                //    if (!manangedMediaSeqItem.HasActualAudioMediaData)
-                //    {
-                //        continue;
-                //    }
-
-                //    AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
-                //    sumData += audioData.PCMFormat.Data.ConvertTimeToBytes(audioData.AudioDuration.TimeDeltaAsMillisecondDouble);
-                //    if (SelectionData.m_LocalStreamLeftMark < sumData)
-                //    {
-                //        timeOffset = audioData.PCMFormat.Data.ConvertBytesToTime(SelectionData.m_LocalStreamLeftMark - sumDataPrev);
-
-                //        break;
-                //    }
-                //    sumDataPrev = sumData;
-                //}
-            }
-            else if (audioMedia is ManagedAudioMedia)
-            {
-                AudioMediaData mediaData = ((ManagedAudioMedia)audioMedia).AudioMediaData;
-                if (mediaData == null)
+                ChannelsProperty chProp = m_TreeNode.GetChannelsProperty();
+                foreach (Channel ch in chProp.UsedChannels)
                 {
-                    Debug.Fail("This should never happen !");
-                    throw new Exception("ManagedAudioMedia has empty MediaData ?!");
+                    if (DeletedManagedAudioMedia == chProp.GetMedia(ch))
+                    {
+                        ChannelOfDeletedMedia = ch;
+                        break;
+                    }
                 }
 
-                Time timeBegin = SelectionData.m_LocalStreamLeftMark == -1
+                DeletionTimeBegin = SelectionData.m_LocalStreamLeftMark == -1
                     ? Time.Zero
-                    : new Time(mediaData.PCMFormat.Data.ConvertBytesToTime(SelectionData.m_LocalStreamLeftMark));
-
-                Time timeEnd = SelectionData.m_LocalStreamRightMark == -1
-                    ? Time.Zero
-                    : new Time(mediaData.PCMFormat.Data.ConvertBytesToTime(SelectionData.m_LocalStreamRightMark));
-
-                if (timeBeginEndEqualClipDuration(timeBegin, timeEnd, mediaData))
-                {
-                    DeletedManagedAudioMedia = ((ManagedAudioMedia)audioMedia).Copy();
-
-                    ChannelsProperty chProp = SelectionData.m_TreeNode.GetChannelsProperty();
-                    foreach (Channel ch in chProp.UsedChannels)
-                    {
-                        if (audioMedia == chProp.GetMedia(ch))
-                        {
-                            ChannelOfDeletedMedia = ch;
-                            break;
-                        }
-                    }
-
-                    Debug.Assert(ChannelOfDeletedMedia != null);
-                }
-                else
-                {
-                    ManagedAudioMedia managedAudioMediaBackup = SelectionData.m_TreeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
-                    var mediaDataBackup = (WavAudioMediaData)SelectionData.m_TreeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
-                    managedAudioMediaBackup.AudioMediaData = mediaDataBackup;
-
-                    Stream streamToBackup = timeEnd.IsEqualTo(Time.Zero)
-                                                ? mediaData.OpenPcmInputStream(timeBegin)
-                                                : mediaData.OpenPcmInputStream(timeBegin, timeEnd);
-
-                    try
-                    {
-                        //TimeDelta timeDelta = mediaData.AudioDuration.SubstractTimeDelta(new TimeDelta(timeBegin.TimeAsMillisecondFloat));
-                        mediaDataBackup.AppendPcmData(streamToBackup, null);
-                    }
-                    finally
-                    {
-                        streamToBackup.Close();
-                    }
-
-                    DeletedManagedAudioMedia = managedAudioMediaBackup;
-                }
-
-                DeletionTimeBegin = timeBegin;
+                    : new Time(DeletedManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(SelectionData.m_LocalStreamLeftMark));
 
                 m_UsedMediaData.Add(DeletedManagedAudioMedia.AudioMediaData);
+            }
+            else
+            {
+                throw new NullReferenceException("DeletedManagedAudioMedia");
             }
         }
 
@@ -259,14 +146,14 @@ namespace urakawa.commands
                 ? Time.Zero
                 : new Time(mediaData.PCMFormat.Data.ConvertBytesToTime(SelectionData.m_LocalStreamRightMark));
 
-            if (timeBeginEndEqualClipDuration(DeletionTimeBegin, timeEnd, mediaData))
+            if (SelectionData.TimeBeginEndEqualClipDuration(DeletionTimeBegin, timeEnd, mediaData))
             {
                 Debug.Assert(ChannelOfDeletedMedia != null);
 
                 ChannelsProperty chProp = SelectionData.m_TreeNode.GetChannelsProperty();
                 chProp.SetMedia(ChannelOfDeletedMedia, null);
             }
-            else if (timeBeginEndEqualClipDuration(new Time(0), timeEnd, mediaData))
+            else if (SelectionData.TimeBeginEndEqualClipDuration(new Time(0), timeEnd, mediaData))
             {
                 mediaData.RemovePcmData(DeletionTimeBegin);
             }

@@ -136,6 +136,14 @@ namespace AudioLib
         }
 
 
+        public bool AreBytePositionsApproximatelyEqual(long bytePos1, long bytePos2)
+        {
+            // just for information
+            //double frameSizeBlockAlignMs = ConvertBytesToTime(BlockAlign);
+
+            return bytePos1 >= (bytePos2 - BlockAlign) && bytePos1 <= (bytePos2 + BlockAlign);
+        }
+
         /// <summary>
         /// Compares the data in two data streams for equality
         /// </summary>

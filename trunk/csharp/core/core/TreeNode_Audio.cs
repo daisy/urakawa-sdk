@@ -1,18 +1,133 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using urakawa.data;
 using urakawa.media;
 using urakawa.media.data.audio;
+using urakawa.media.data.audio.codec;
 using urakawa.media.timing;
 using urakawa.property.channel;
 
 namespace urakawa.core
 {
-    public struct TreeNodeAndStreamSelection
+    public class TreeNodeAndStreamSelection
     {
         public TreeNode m_TreeNode;
         public long m_LocalStreamLeftMark;
         public long m_LocalStreamRightMark;
+
+        public bool TimeBeginEndEqualClipDuration(Time timeBegin, Time timeEnd, AudioMediaData mediaData)
+        {
+            bool equal = timeBegin.IsEqualTo(Time.Zero)
+                         &&
+                         (
+                             timeEnd.IsEqualTo(Time.Zero)
+                             || timeEnd.GetTimeDelta(timeBegin).IsEqualTo(mediaData.AudioDuration)
+                         );
+
+            if (equal) return true;
+
+            bool rightOk = false;
+            if (m_LocalStreamRightMark != -1)
+            {
+                long timeBytes = mediaData.PCMFormat.Data.ConvertTimeToBytes(mediaData.AudioDuration.TimeDeltaAsMillisecondDouble);
+                rightOk = mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamRightMark, timeBytes);
+            }
+
+            bool leftOk = false;
+            if (m_LocalStreamLeftMark != -1)
+            {
+                leftOk = mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamLeftMark, 0);
+            }
+
+            return leftOk && rightOk;
+        }
+
+        public ManagedAudioMedia ExtractManagedAudioMedia()
+        {
+            Media audioMedia = m_TreeNode.GetManagedAudioMediaOrSequenceMedia();
+            if (audioMedia == null)
+            {
+                Debug.Fail("This should never happen !");
+                throw new Exception("TreeNode doesn't have managed audio media ?!");
+            }
+            else if (audioMedia is SequenceMedia)
+            {
+                Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
+                throw new NotImplementedException("TODO: implement support for SequenceMedia of ManagedAudioMedia in audio delete functionality !");
+
+                //var seqManAudioMedia = (SequenceMedia)audioMedia;
+
+                //double timeOffset = 0;
+                //long sumData = 0;
+                //long sumDataPrev = 0;
+                //foreach (Media media in seqManAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
+                //{
+                //    var manangedMediaSeqItem = (ManagedAudioMedia)media;
+                //    if (!manangedMediaSeqItem.HasActualAudioMediaData)
+                //    {
+                //        continue;
+                //    }
+
+                //    AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
+                //    sumData += audioData.PCMFormat.Data.ConvertTimeToBytes(audioData.AudioDuration.TimeDeltaAsMillisecondDouble);
+                //    if (SelectionData.m_LocalStreamLeftMark < sumData)
+                //    {
+                //        timeOffset = audioData.PCMFormat.Data.ConvertBytesToTime(SelectionData.m_LocalStreamLeftMark - sumDataPrev);
+
+                //        break;
+                //    }
+                //    sumDataPrev = sumData;
+                //}
+            }
+            else if (audioMedia is ManagedAudioMedia)
+            {
+                AudioMediaData mediaData = ((ManagedAudioMedia)audioMedia).AudioMediaData;
+                if (mediaData == null)
+                {
+                    Debug.Fail("This should never happen !");
+                    throw new Exception("ManagedAudioMedia has empty MediaData ?!");
+                }
+
+                Time timeBegin = m_LocalStreamLeftMark == -1
+                    ? Time.Zero
+                    : new Time(mediaData.PCMFormat.Data.ConvertBytesToTime(m_LocalStreamLeftMark));
+
+                Time timeEnd = m_LocalStreamRightMark == -1
+                    ? Time.Zero
+                    : new Time(mediaData.PCMFormat.Data.ConvertBytesToTime(m_LocalStreamRightMark));
+
+                if (TimeBeginEndEqualClipDuration(timeBegin, timeEnd, mediaData))
+                {
+                    return ((ManagedAudioMedia)audioMedia).Copy();
+                }
+                else
+                {
+                    ManagedAudioMedia managedAudioMediaBackup = m_TreeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
+                    var mediaDataBackup = (WavAudioMediaData)m_TreeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
+                    managedAudioMediaBackup.AudioMediaData = mediaDataBackup;
+
+                    Stream streamToBackup = timeEnd.IsEqualTo(Time.Zero)
+                                                ? mediaData.OpenPcmInputStream(timeBegin)
+                                                : mediaData.OpenPcmInputStream(timeBegin, timeEnd);
+
+                    try
+                    {
+                        //TimeDelta timeDelta = mediaData.AudioDuration.SubstractTimeDelta(new TimeDelta(timeBegin.TimeAsMillisecondFloat));
+                        mediaDataBackup.AppendPcmData(streamToBackup, null);
+                    }
+                    finally
+                    {
+                        streamToBackup.Close();
+                    }
+
+                    return managedAudioMediaBackup;
+                }
+            }
+
+            return null;
+        }
     }
 
     public struct TreeNodeAndStreamDataLength

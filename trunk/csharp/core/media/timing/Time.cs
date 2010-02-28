@@ -57,7 +57,7 @@ namespace urakawa.media.timing
         /// <param name="val">The given number of milliseconds</param>
         public Time(double val)
         {
-            TimeAsMillisecondFloat = val;
+            TimeAsMillisecondDouble = val;
         }
 
         /// <summary>
@@ -358,7 +358,7 @@ namespace urakawa.media.timing
             }
             else
             {
-                double msDiff = TimeAsMillisecondFloat - t.TimeAsMillisecondFloat;
+                double msDiff = TimeAsMillisecondDouble - t.TimeAsMillisecondDouble;
                 if (msDiff < 0) msDiff = -msDiff;
                 return new TimeDelta(msDiff);
             }
@@ -370,7 +370,7 @@ namespace urakawa.media.timing
         /// <returns>The number of milliseconds</returns>
         public long TimeAsMillisecondLong
         {
-            get { return (long)Math.Round(TimeAsMillisecondFloat); }
+            get { return (long)Math.Round(TimeAsMillisecondDouble); }
             set { TimeAsTimeSpan = TimeSpan.FromTicks(value * TimeSpan.TicksPerMillisecond); }
         }
 
@@ -378,7 +378,7 @@ namespace urakawa.media.timing
         /// Gets or sets the <see cref="Time"/> as a floating point millisecond value
         /// </summary>
         /// <returns>The foaling point millisecond value</returns>
-        public double TimeAsMillisecondFloat
+        public double TimeAsMillisecondDouble
         {
             get { return ((double)mTime.Ticks) / ((double)TimeSpan.TicksPerMillisecond); }
             set { TimeAsTimeSpan = TimeSpan.FromTicks((long)(value * TimeSpan.TicksPerMillisecond)); }
@@ -444,7 +444,7 @@ namespace urakawa.media.timing
             }
             else
             {
-                res = (TimeAsMillisecondFloat > otherTime.TimeAsMillisecondFloat);
+                res = (TimeAsMillisecondDouble > otherTime.TimeAsMillisecondDouble);
             }
             return res;
         }

@@ -476,7 +476,7 @@ namespace urakawa.daisy.export.visitor
                             }
 
                             extMediaStream.Position +=
-                                pcmInfo.ConvertTimeToBytes(extMedia.ClipBegin.TimeAsMillisecondFloat);
+                                pcmInfo.ConvertTimeToBytes(extMedia.ClipBegin.TimeAsMillisecondDouble);
 
                             long manMediaStreamPosBefore = manMediaStream.Position;
                             long extMediaStreamPosBefore = extMediaStream.Position;
