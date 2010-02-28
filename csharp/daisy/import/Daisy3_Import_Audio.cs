@@ -65,7 +65,7 @@ namespace urakawa.daisy.import
         {
             if (RequestCancellation) return;
             XmlDocument smilXmlDoc = readXmlDocument(fullSmilPath);
-            
+
             if (RequestCancellation) return;
             //we skip SMIL metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
             //parseMetadata(smilXmlDoc);
@@ -157,6 +157,40 @@ namespace urakawa.daisy.import
                                 addAudio(textTreeNode, seqChild, true, fullSmilPath);
                             }
                         }
+
+                        SequenceMedia seqManAudioMedia = textTreeNode.GetManagedAudioSequenceMedia();
+                        if (seqManAudioMedia == null)
+                        {
+                            Debug.Fail("This should never happen !");
+                            break;
+                        }
+
+                        ManagedAudioMedia managedAudioMedia = textTreeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
+                        WavAudioMediaData mediaData = (WavAudioMediaData)textTreeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
+                        managedAudioMedia.AudioMediaData = mediaData;
+
+                        foreach (Media seqChild in seqManAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
+                        {
+                            ManagedAudioMedia seqManMedia = (ManagedAudioMedia)seqChild;
+
+                            Stream stream = seqManMedia.AudioMediaData.OpenPcmInputStream();
+                            try
+                            {
+                                mediaData.AppendPcmData(stream, null);
+                            }
+                            finally
+                            {
+                                stream.Close();
+                            }
+
+                            seqManMedia.AudioMediaData.Delete(); // doesn't actually removes the FileDataProviders (need to call Presentation.Cleanup())
+                            //textTreeNode.Presentation.DataProviderManager.RemoveDataProvider();
+                        }
+
+                        ChannelsProperty chProp = textTreeNode.GetChannelsProperty();
+                        chProp.SetMedia(m_audioChannel, null);
+                        chProp.SetMedia(m_audioChannel, managedAudioMedia);
+
                         break;
                     }
                 }
@@ -217,7 +251,7 @@ namespace urakawa.daisy.import
                             wavStream = File.Open(fullWavPath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                             pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
-                            
+
                             if (RequestCancellation) return;
 
                             //if (m_firstTimePCMFormat)
@@ -333,6 +367,8 @@ namespace urakawa.daisy.import
 
             if (media == null)
             {
+                Debug.Fail("Creating ExternalAudioMedia ??");
+
                 Time timeClipBegin = null;
 
                 media = presentation.MediaFactory.CreateExternalAudioMedia();
@@ -383,7 +419,7 @@ namespace urakawa.daisy.import
                     }
                 }
             }
-            
+
             if (RequestCancellation) return;
 
             if (media != null)
