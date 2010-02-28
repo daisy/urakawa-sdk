@@ -287,9 +287,9 @@ namespace urakawa.media.data.audio.codec
             Time rawClipBegin = ClipBegin.AddTime(subClipBegin);
             Time rawClipEnd = ClipBegin.AddTime(subClipEnd);
 
-            long beginPos = raw.Position + format.ConvertTimeToBytes(rawClipBegin.TimeAsMillisecondFloat);
+            long beginPos = raw.Position + format.ConvertTimeToBytes(rawClipBegin.TimeAsMillisecondDouble);
 
-            long endPos = raw.Position + format.ConvertTimeToBytes(rawClipEnd.TimeAsMillisecondFloat);
+            long endPos = raw.Position + format.ConvertTimeToBytes(rawClipEnd.TimeAsMillisecondDouble);
 
             return new SubStream(
                 raw,

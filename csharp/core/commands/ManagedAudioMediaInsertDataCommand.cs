@@ -132,15 +132,40 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            TimeDelta duration = ManagedAudioMediaSource.Duration;
-            Stream stream = ManagedAudioMediaSource.AudioMediaData.OpenPcmInputStream();
-            try
+            long timeInsertBytes =
+                ManagedAudioMediaTarget.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
+                    TimeInsert.TimeAsMillisecondDouble);
+
+            long durationBytes = ManagedAudioMediaTarget.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
+                    ManagedAudioMediaTarget.Duration.TimeDeltaAsMillisecondDouble);
+
+            if (TimeInsert.IsEqualTo(Time.Zero.AddTimeDelta(ManagedAudioMediaTarget.Duration))
+                ||
+                ManagedAudioMediaTarget.AudioMediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(timeInsertBytes, durationBytes))
             {
-                ManagedAudioMediaTarget.AudioMediaData.InsertPcmData(stream, TimeInsert, duration);
+                TimeDelta duration = ManagedAudioMediaSource.Duration;
+                Stream stream = ManagedAudioMediaSource.AudioMediaData.OpenPcmInputStream();
+                try
+                {
+                    ManagedAudioMediaTarget.AudioMediaData.AppendPcmData(stream, duration);
+                }
+                finally
+                {
+                    stream.Close();
+                }
             }
-            finally
+            else
             {
-                stream.Close();
+                TimeDelta duration = ManagedAudioMediaSource.Duration;
+                Stream stream = ManagedAudioMediaSource.AudioMediaData.OpenPcmInputStream();
+                try
+                {
+                    ManagedAudioMediaTarget.AudioMediaData.InsertPcmData(stream, TimeInsert, duration);
+                }
+                finally
+                {
+                    stream.Close();
+                }
             }
         }
 
