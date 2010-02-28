@@ -145,6 +145,8 @@ namespace urakawa.daisy.export.visitor
             }
             else if (seqAudioMedia != null)
             {
+                Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
+
                 audioPcmStream = seqAudioMedia.OpenPcmInputStreamOfManagedAudioMedia();
             }
             else
@@ -444,6 +446,8 @@ namespace urakawa.daisy.export.visitor
                         }
                         else
                         {
+                            Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
+
                             Debug.Assert(seqMedia != null);
                             Debug.Assert(!seqMedia.AllowMultipleTypes);
                             Debug.Assert(seqMedia.ChildMedias.Count > 0);

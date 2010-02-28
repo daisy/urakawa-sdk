@@ -151,7 +151,32 @@ namespace urakawa.commands
             }
             else if (audioMedia is SequenceMedia)
             {
+                Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
                 throw new NotImplementedException("TODO: implement support for SequenceMedia of ManagedAudioMedia in audio delete functionality !");
+
+                //var seqManAudioMedia = (SequenceMedia)audioMedia;
+
+                //double timeOffset = 0;
+                //long sumData = 0;
+                //long sumDataPrev = 0;
+                //foreach (Media media in seqManAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
+                //{
+                //    var manangedMediaSeqItem = (ManagedAudioMedia)media;
+                //    if (!manangedMediaSeqItem.HasActualAudioMediaData)
+                //    {
+                //        continue;
+                //    }
+
+                //    AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
+                //    sumData += audioData.PCMFormat.Data.ConvertTimeToBytes(audioData.AudioDuration.TimeDeltaAsMillisecondDouble);
+                //    if (SelectionData.m_LocalStreamLeftMark < sumData)
+                //    {
+                //        timeOffset = audioData.PCMFormat.Data.ConvertBytesToTime(SelectionData.m_LocalStreamLeftMark - sumDataPrev);
+
+                //        break;
+                //    }
+                //    sumDataPrev = sumData;
+                //}
             }
             else if (audioMedia is ManagedAudioMedia)
             {
