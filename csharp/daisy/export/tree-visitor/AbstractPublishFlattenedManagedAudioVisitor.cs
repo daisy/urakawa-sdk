@@ -50,7 +50,7 @@ namespace urakawa.daisy.export.visitor
                 Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
 
             reportProgress ( m_ProgressPercentage, "Creating mp3 file [" + Path.GetFileName ( destinationFilePath ) + "]" );
-            if (formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, audioFormat.Data.NumberOfChannels, audioFormat.Data.SampleRate, audioFormat.Data.BitDepth, BitRate_Mp3))
+            if (formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, audioFormat.Data, BitRate_Mp3))
             {
                 foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
                 {

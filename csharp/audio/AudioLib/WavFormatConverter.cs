@@ -20,7 +20,7 @@ namespace AudioLib
             OverwriteOutputFiles = overwriteOutputFiles;
         }
 
-        public string ConvertSampleRate(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth)
+        public string ConvertSampleRate(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat)
         {
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path");
@@ -33,14 +33,14 @@ namespace AudioLib
             WaveFormatConversionStream conversionStream = null;
             try
             {
-                WaveFormat destFormat = new WaveFormat((int)destSamplingRate,
-                                                                   destBitDepth,
-                                                                   destChannels);
+                WaveFormat destFormat = new WaveFormat((int)pcmFormat.SampleRate,
+                                                                   pcmFormat.BitDepth,
+                                                                   pcmFormat.NumberOfChannels);
                 sourceStream = new WaveFileReader(sourceFile);
 
                 conversionStream = new WaveFormatConversionStream(destFormat, sourceStream);
 
-                destinationFilePath = GenerateOutputFileFullname(sourceFile, destinationDirectory, destChannels, destSamplingRate, destBitDepth);
+                destinationFilePath = GenerateOutputFileFullname(sourceFile, destinationDirectory, pcmFormat);
                 WaveFileWriter.CreateWaveFile(destinationFilePath, conversionStream);
             }
             finally
@@ -58,7 +58,7 @@ namespace AudioLib
             return destinationFilePath;
         }
 
-        public string UnCompressMp3File(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth)
+        public string UnCompressMp3File(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat)
         {
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path");
@@ -79,9 +79,7 @@ namespace AudioLib
             string destinationFilePath = GenerateOutputFileFullname(
                 sourceFile + ".wav",
                 destinationDirectory,
-                mp3PcmFormat.NumberOfChannels,
-                mp3PcmFormat.SampleRate,
-                mp3PcmFormat.BitDepth);
+                mp3PcmFormat);
 
             FileStream wavFileStream = new FileStream(destinationFilePath, FileMode.Create, FileAccess.Write, FileShare.Read);
 
@@ -128,12 +126,16 @@ namespace AudioLib
             mp3PcmFormat.RiffHeaderWrite(wavFileStream, (uint)(wavFileStreamEnd - wavFileStreamStart));
 
             wavFileStream.Close();
+            
+            //ushort destChannels, uint destSamplingRate, ushort destBitDepth
+            //.NumberOfChannels, destinationFormatInfo.Data.SampleRate, destinationFormatInfo.Data.BitDepth
 
-            if (mp3PcmFormat.NumberOfChannels != destChannels
-                || mp3PcmFormat.SampleRate != destSamplingRate
-                || mp3PcmFormat.BitDepth != destBitDepth)
+
+            if (pcmFormat != null 
+                &&
+                !mp3PcmFormat.IsCompatibleWith(pcmFormat))
             {
-                string newDestinationFilePath = ConvertSampleRate(destinationFilePath, destinationDirectory, destChannels, destSamplingRate, destBitDepth);
+                string newDestinationFilePath = ConvertSampleRate(destinationFilePath, destinationDirectory, pcmFormat);
                 if (File.Exists(destinationFilePath))
                 {
                     File.Delete(destinationFilePath);
@@ -190,7 +192,7 @@ namespace AudioLib
 */
         }
 
-        public string UnCompressWavFile(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth)
+        public string UnCompressWavFile(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat)
         {
             throw new System.NotImplementedException();
 
@@ -233,7 +235,7 @@ namespace AudioLib
              */
         }
 
-        public bool CompressWavToMp3(string sourceFile, string destinationFile, ushort destChannels, uint destSamplingRate, ushort destBitDepth, ushort bitRate_mp3Output)
+        public bool CompressWavToMp3(string sourceFile, string destinationFile, AudioLibPCMFormat pcmFormat, ushort bitRate_mp3Output)
         {
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path");
@@ -246,7 +248,7 @@ namespace AudioLib
             //Path.GetDirectoryName ( sourceFile ),
             //Path.GetFileNameWithoutExtension ( sourceFile ) + ".mp3" );
 
-            string channelsArg = destChannels == 1 ? "m" : "s";
+            string channelsArg = pcmFormat.NumberOfChannels == 1 ? "m" : "s";
             //string argumentString = "-b " + bitRate_mp3Output.ToString ()  + " --cbr --resample default -m m \"" + sourceFile + "\" \"" + destinationFile + "\"";
             string argumentString = "-b " + bitRate_mp3Output.ToString() + " --cbr -m " + channelsArg + " \"" + sourceFile + "\" \"" + destinationFile + "\"";
 
@@ -274,7 +276,7 @@ namespace AudioLib
 
 
 
-        private string GenerateOutputFileFullname(string sourceFile, string destinationDirectory, ushort destChannels, uint destSamplingRate, ushort destBitDepth)
+        private string GenerateOutputFileFullname(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat)
         {
             //FileInfo sourceFileInfo = new FileInfo(sourceFile);
             //string sourceFileName = sourceFileInfo.Name.Replace(sourceFileInfo.Extension, "");
@@ -282,7 +284,7 @@ namespace AudioLib
             string sourceFileName = Path.GetFileNameWithoutExtension(sourceFile);
             string sourceFileExt = Path.GetExtension(sourceFile);
 
-            string channels = (destChannels == 1 ? "Mono" : (destChannels == 2 ? "Stereo" : destChannels.ToString()));
+            string channels = (pcmFormat.NumberOfChannels == 1 ? "Mono" : (pcmFormat.NumberOfChannels == 2 ? "Stereo" : pcmFormat.NumberOfChannels.ToString()));
 
             string destFile = null;
 
@@ -291,11 +293,11 @@ namespace AudioLib
                 destFile = Path.Combine(destinationDirectory,
                                            sourceFileName
                                            + "_"
-                                           + destBitDepth
+                                           + pcmFormat.BitDepth
                                            + "-"
                                            + channels
                                            + "-"
-                                           + destSamplingRate
+                                           + pcmFormat.SampleRate
                                            + sourceFileExt);
             }
             else
@@ -315,11 +317,11 @@ namespace AudioLib
                     destFile = Path.Combine(destinationDirectory,
                                         sourceFileName
                                         + "_"
-                                        + destBitDepth
+                                        + pcmFormat.BitDepth
                                         + "-"
                                         + channels
                                         + "-"
-                                        + destSamplingRate
+                                        + pcmFormat.SampleRate
                                         + randomStr
                                         + sourceFileExt);
                 } while (File.Exists(destFile));
