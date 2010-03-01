@@ -595,61 +595,61 @@ namespace urakawa
             }
         }
 
-        /// <summary>
-        /// Gets a list of the <see cref="Media"/> used by a given <see cref="TreeNode"/>. 
-        /// </summary>
-        /// <param name="node">The node</param>
-        /// <returns>The list</returns>
-        /// <remarks>
-        /// An <see cref="Media"/> is considered to be used by a <see cref="TreeNode"/> if the media
-        /// is linked to the node via. a <see cref="ChannelsProperty"/>
-        /// </remarks>
-        protected virtual List<Media> GetMediaUsedByTreeNode(TreeNode node)
-        {
-            List<Media> res = new List<Media>();
-            foreach (Property prop in node.Properties.ContentsAs_YieldEnumerable)
-            {
-                if (prop is ChannelsProperty)
-                {
-                    ChannelsProperty chProp = (ChannelsProperty)prop;
-                    foreach (Channel ch in chProp.UsedChannels)
-                    {
-                        res.Add(chProp.GetMedia(ch));
-                    }
-                }
-            }
-            return res;
-        }
+        ///// <summary>
+        ///// Gets a list of the <see cref="Media"/> used by a given <see cref="TreeNode"/>. 
+        ///// </summary>
+        ///// <param name="node">The node</param>
+        ///// <returns>The list</returns>
+        ///// <remarks>
+        ///// An <see cref="Media"/> is considered to be used by a <see cref="TreeNode"/> if the media
+        ///// is linked to the node via. a <see cref="ChannelsProperty"/>
+        ///// </remarks>
+        //protected virtual List<Media> GetMediaUsedByTreeNode(TreeNode node)
+        //{
+        //    List<Media> res = new List<Media>();
+        //    foreach (Property prop in node.Properties.ContentsAs_YieldEnumerable)
+        //    {
+        //        if (prop is ChannelsProperty)
+        //        {
+        //            ChannelsProperty chProp = (ChannelsProperty)prop;
+        //            foreach (Channel ch in chProp.UsedChannels)
+        //            {
+        //                res.Add(chProp.GetMedia(ch));
+        //            }
+        //        }
+        //    }
+        //    return res;
+        //}
 
-        /// <summary>
-        /// Gets the list of <see cref="Media"/> used by the <see cref="TreeNode"/> tree of the presentation. 
-        /// Remark that a 
-        /// </summary>
-        /// <returns>The list</returns>
-        public List<Media> UsedMedia
-        {
-            get
-            {
-                List<Media> res = new List<Media>();
-                if (RootNode != null)
-                {
-                    CollectUsedMedia(RootNode, res);
-                }
-                return res;
-            }
-        }
+        ///// <summary>
+        ///// Gets the list of <see cref="Media"/> used by the <see cref="TreeNode"/> tree of the presentation. 
+        ///// Remark that a 
+        ///// </summary>
+        ///// <returns>The list</returns>
+        //public List<Media> UsedMedia
+        //{
+        //    get
+        //    {
+        //        List<Media> res = new List<Media>();
+        //        if (RootNode != null)
+        //        {
+        //            CollectUsedMedia(RootNode, res);
+        //        }
+        //        return res;
+        //    }
+        //}
 
-        private void CollectUsedMedia(TreeNode node, ICollection<Media> collectedMedia)
-        {
-            foreach (Media m in GetMediaUsedByTreeNode(node))
-            {
-                if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
-            }
-            for (int i = 0; i < node.Children.Count; i++)
-            {
-                CollectUsedMedia(node.Children.Get(i), collectedMedia);
-            }
-        }
+        //private void CollectUsedMedia(TreeNode node, ICollection<Media> collectedMedia)
+        //{
+        //    foreach (Media m in GetMediaUsedByTreeNode(node))
+        //    {
+        //        if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
+        //    }
+        //    for (int i = 0; i < node.Children.Count; i++)
+        //    {
+        //        CollectUsedMedia(node.Children.Get(i), collectedMedia);
+        //    }
+        //}
 
         /// <summary>
         /// Gets the <see cref="ChannelFactory"/> of <c>this</c>
@@ -1311,19 +1311,18 @@ namespace urakawa
             TreeNode treeNode = TreeNodeFactory.Create();
             ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
             manMedia.MediaData = mdAudio;
-            CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, manMedia, Time.Zero, treeNode);
-            CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
-            ChannelsProperty prop = treeNode.GetOrCreateChannelsProperty();
+            ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
             Channel audioChannel = ChannelFactory.CreateAudioChannel();
-            prop.SetMedia(audioChannel, manMedia);
+            chProp.SetMedia(audioChannel, manMedia);
+            CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, Time.Zero, treeNode);
+            CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
             TreeNodeAndStreamSelection selection = new TreeNodeAndStreamSelection();
             selection.m_TreeNode = treeNode;
             selection.m_LocalStreamLeftMark = -1;
             selection.m_LocalStreamRightMark = -1;
             TreeNodeAudioStreamDeleteCommand cmd = CommandFactory.CreateTreeNodeAudioStreamDeleteCommand(selection, treeNode);
-            ManagedAudioMedia audioMedia = treeNode.GetManagedAudioMedia();
             ChannelsManager.RemoveManagedObject(audioChannel);
-            MediaDataManager.RemoveManagedObject(cmd.DeletedManagedAudioMedia.AudioMediaData);
+            MediaDataManager.RemoveManagedObject(cmd.OriginalManagedAudioMedia.AudioMediaData);
             //
             MediaDataManager.RemoveManagedObject(mdAudio);
             //

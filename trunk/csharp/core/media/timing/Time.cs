@@ -421,6 +421,7 @@ namespace urakawa.media.timing
             return new Time(mTime - other.TimeDeltaAsTimeSpan);
         }
 
+        public static readonly bool COMPARE_RESOLUTION_ONE_MS = true;
 
         /// <summary>
         /// Determines <c>this</c> is greater than a given other <see cref="Time"/>
@@ -437,16 +438,22 @@ namespace urakawa.media.timing
                 throw new exception.MethodParameterIsNullException(
                     "Can not compare to a null Time");
             }
-            bool res;
-            if (otherTime is Time)
-            {
-                res = (mTime > ((Time)otherTime).mTime);
-            }
-            else
-            {
-                res = (TimeAsMillisecondDouble > otherTime.TimeAsMillisecondDouble);
-            }
-            return res;
+
+            if (COMPARE_RESOLUTION_ONE_MS)
+                return Math.Truncate(TimeAsMillisecondDouble)
+                        > Math.Truncate(otherTime.TimeAsMillisecondDouble);
+            return TimeAsMillisecondDouble > otherTime.TimeAsMillisecondDouble;
+
+            //bool res;
+            //if (otherTime is Time)
+            //{
+            //    res = (mTime > ((Time)otherTime).mTime);
+            //}
+            //else
+            //{
+            //    res = (TimeAsMillisecondDouble > otherTime.TimeAsMillisecondDouble);
+            //}
+            //return res;
         }
 
 
