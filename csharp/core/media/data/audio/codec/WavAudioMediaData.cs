@@ -240,7 +240,7 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The clip end can not be before clip begin");
             }
-            if (clipEnd.IsGreaterThan(Time.Zero.AddTimeDelta(AudioDuration)))
+            if (clipEnd.IsGreaterThan(new Time(AudioDuration.TimeDeltaAsTimeSpan)))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The clip end can not beyond the end of the audio content");
@@ -264,7 +264,7 @@ namespace urakawa.media.data.audio.codec
             {
                 WavClip curClip = mWavClips[i];
                 TimeDelta currentClipDuration = curClip.Duration;
-                Time newElapsedTime = elapsedTime.AddTimeDelta(currentClipDuration);
+                Time newElapsedTime = new Time(elapsedTime.TimeAsTimeSpan + currentClipDuration.TimeDeltaAsTimeSpan);
                 if (newElapsedTime.IsLessThan(clipBegin))
                 {
                     //Do nothing - the current clip and the [clipBegin;clipEnd] are disjunkt
@@ -276,14 +276,14 @@ namespace urakawa.media.data.audio.codec
                         //Add part of current clip between clipBegin and newElapsedTime 
                         //(ie. after clipBegin, since newElapsedTime is at the end of the clip)
                         resStreams.Add(curClip.OpenPcmInputStream(
-                                           Time.Zero.AddTimeDelta(clipBegin.GetTimeDelta(elapsedTime))));
+                                           new Time(clipBegin.GetTimeDelta(elapsedTime).TimeDeltaAsTimeSpan)));
                     }
                     else
                     {
                         //Add part of current clip between clipBegin and clipEnd
                         resStreams.Add(curClip.OpenPcmInputStream(
-                                           Time.Zero.AddTimeDelta(clipBegin.GetTimeDelta(elapsedTime)),
-                                           Time.Zero.AddTimeDelta(clipEnd.GetTimeDelta(elapsedTime))));
+                                           new Time(clipBegin.GetTimeDelta(elapsedTime).TimeDeltaAsTimeSpan),
+                                           new Time(clipEnd.GetTimeDelta(elapsedTime).TimeDeltaAsTimeSpan)));
                     }
                 }
                 else if (elapsedTime.IsLessThan(clipEnd))
@@ -301,7 +301,7 @@ namespace urakawa.media.data.audio.codec
                         //(ie. before clipEnd since elapsedTime is at the beginning of the clip)
                         resStreams.Add(curClip.OpenPcmInputStream(
                                            Time.Zero,
-                                           Time.Zero.AddTimeDelta(clipEnd.GetTimeDelta(elapsedTime))));
+                                           new Time(clipEnd.GetTimeDelta(elapsedTime).TimeDeltaAsTimeSpan)));
                     }
                 }
                 else
@@ -348,7 +348,7 @@ namespace urakawa.media.data.audio.codec
             WavClip newSingleWavClip = new WavClip(fileDataProvider);
             mWavClips.Add(newSingleWavClip);
 
-            NotifyAudioDataInserted(this, Time.Zero.AddTimeDelta(AudioDuration), newSingleWavClip.MediaDuration);
+            NotifyAudioDataInserted(this, new Time(AudioDuration.TimeDeltaAsTimeSpan), newSingleWavClip.MediaDuration);
         }
 
         public override void AppendPcmData(DataProvider fileDataProvider, Time clipBegin, Time clipEnd)
@@ -364,7 +364,7 @@ namespace urakawa.media.data.audio.codec
             newSingleWavClip.ClipEnd = clipEnd;
             mWavClips.Add(newSingleWavClip);
 
-            NotifyAudioDataInserted(this, Time.Zero.AddTimeDelta(AudioDuration), newSingleWavClip.ClipEnd.GetTimeDelta(newSingleWavClip.ClipBegin));
+            NotifyAudioDataInserted(this, new Time(AudioDuration.TimeDeltaAsTimeSpan), newSingleWavClip.ClipEnd.GetTimeDelta(newSingleWavClip.ClipBegin));
         }
 
         protected void InsertPcmData(WavClip newInsClip, Time insertPoint, TimeDelta duration)
@@ -376,7 +376,7 @@ namespace urakawa.media.data.audio.codec
                     "The given insert point is negative");
             }
 
-            Time endTime = Time.Zero.AddTimeDelta(AudioDuration);
+            Time endTime = new Time(AudioDuration.TimeDeltaAsTimeSpan);
             if (insertPoint.IsGreaterThan(endTime))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
@@ -400,13 +400,13 @@ namespace urakawa.media.data.audio.codec
                     mWavClips.Insert(clipIndex, newInsClip);
                     break;
                 }
-                if (insPt.IsLessThan(elapsedTime.AddTimeDelta(curClip.Duration)))
+                if (insPt.IsLessThan(new Time(elapsedTime.TimeAsTimeSpan + curClip.Duration.TimeDeltaAsTimeSpan)))
                 {
                     //If the insert point is between the beginning and end of the current clip, 
                     //Replace the current clip with three clips containing 
                     //the audio in the current clip before the insert point,
                     //the audio to be inserted and the audio in the current clip after the insert point respectively
-                    Time insPtInCurClip = Time.Zero.AddTimeDelta(insPt.GetTimeDelta(elapsedTime));
+                    Time insPtInCurClip = new Time(insPt.GetTimeDelta(elapsedTime).TimeDeltaAsTimeSpan);
                     WavClip curClipBeforeIns, curClipAfterIns;
                     Stream audioDataStream = curClip.OpenPcmInputStream(Time.Zero, insPtInCurClip);
                     try
@@ -430,7 +430,7 @@ namespace urakawa.media.data.audio.codec
                     mWavClips.InsertRange(clipIndex, new WavClip[] { curClipBeforeIns, newInsClip, curClipAfterIns });
                     break;
                 }
-                elapsedTime = elapsedTime.AddTimeDelta(curClip.Duration);
+                elapsedTime.AddTimeDelta(curClip.Duration);
                 clipIndex++;
             }
             NotifyAudioDataInserted(this, insertPoint, duration);
@@ -456,7 +456,7 @@ namespace urakawa.media.data.audio.codec
                 else
                 {
                     Stream stream = wavClip.OpenPcmInputStream(Time.Zero,
-                                                               wavClip.ClipBegin.AddTimeDelta(remainingAvailableDuration));
+                        new Time(wavClip.ClipBegin.TimeAsTimeSpan + remainingAvailableDuration.TimeDeltaAsTimeSpan));
                     try
                     {
                         InsertPcmData(stream, movingInsertPoint, remainingAvailableDuration);
@@ -530,13 +530,13 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.MethodParameterIsNullException("Clip begin or clip end can not be null");
             }
 
-            long oneMS = PCMFormat.Data.ConvertTimeToBytes(1);
-            double timeBlockAlign = PCMFormat.Data.ConvertBytesToTime(PCMFormat.Data.BlockAlign);
+            //long oneMS = PCMFormat.Data.ConvertTimeToBytes(1);
+            //double timeBlockAlign = PCMFormat.Data.ConvertBytesToTime(PCMFormat.Data.BlockAlign);
 
             if (
                 clipBegin.IsLessThan(Time.Zero)
                 || clipBegin.IsGreaterThan(clipEnd)
-                || clipEnd.IsGreaterThan(Time.Zero.AddTimeDelta(AudioDuration)))
+                || clipEnd.IsGreaterThan(new Time(AudioDuration.TimeDeltaAsTimeSpan)))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0}",
@@ -547,7 +547,7 @@ namespace urakawa.media.data.audio.codec
             List<WavClip> newClipList = new List<WavClip>();
             foreach (WavClip curClip in mWavClips)
             {
-                Time curEndTime = curBeginTime.AddTimeDelta(curClip.Duration);
+                Time curEndTime = new Time(curBeginTime.TimeAsTimeSpan + curClip.Duration.TimeDeltaAsTimeSpan);
                 if ((!curEndTime.IsGreaterThan(clipBegin)) || (!curBeginTime.IsLessThan(clipEnd)))
                 {
                     //The current clip is before or beyond the range to remove - 
@@ -559,8 +559,8 @@ namespace urakawa.media.data.audio.codec
                     //Some of the current clip is before the range and some is after
                     TimeDelta beforePartDur = curBeginTime.GetTimeDelta(clipBegin);
                     TimeDelta beyondPartDur = curEndTime.GetTimeDelta(clipEnd);
-                    Time timePointRelativeToClipBeginOfWavClip = curClip.ClipEnd.SubtractTimeDelta(beyondPartDur);
-                    timePointRelativeToClipBeginOfWavClip = timePointRelativeToClipBeginOfWavClip.SubtractTime(curClip.ClipBegin);
+                    Time timePointRelativeToClipBeginOfWavClip = new Time(
+                        curClip.Duration.TimeDeltaAsTimeSpan - beyondPartDur.TimeDeltaAsTimeSpan);
                     Stream beyondAS = curClip.OpenPcmInputStream(timePointRelativeToClipBeginOfWavClip);
                     WavClip beyondPartClip;
                     try
@@ -572,7 +572,7 @@ namespace urakawa.media.data.audio.codec
                         beyondAS.Close();
                     }
 
-                    curClip.ClipEnd = curClip.ClipBegin.AddTimeDelta(beforePartDur);
+                    curClip.ClipEnd = new Time(curClip.ClipBegin.TimeAsTimeSpan + beforePartDur.TimeDeltaAsTimeSpan);
                     newClipList.Add(curClip);
                     newClipList.Add(beyondPartClip);
                 }
@@ -580,14 +580,14 @@ namespace urakawa.media.data.audio.codec
                 {
                     //Some of the current clip is before the range to remove, none is beyond
                     TimeDelta beforePartDur = curBeginTime.GetTimeDelta(clipBegin);
-                    curClip.ClipEnd = curClip.ClipBegin.AddTimeDelta(beforePartDur);
+                    curClip.ClipEnd = new Time(curClip.ClipBegin.TimeAsTimeSpan + beforePartDur.TimeDeltaAsTimeSpan);
                     newClipList.Add(curClip);
                 }
                 else if (curBeginTime.IsLessThan(clipEnd) && curEndTime.IsGreaterThan(clipEnd))
                 {
                     //Some of the current clip is beyond the range to remove, none is before
                     TimeDelta beyondPartDur = curEndTime.GetTimeDelta(clipEnd);
-                    curClip.ClipBegin = curClip.ClipEnd.SubtractTimeDelta(beyondPartDur);
+                    curClip.ClipBegin = new Time(curClip.ClipEnd.TimeAsTimeSpan - beyondPartDur.TimeDeltaAsTimeSpan);
                     newClipList.Add(curClip);
                 }
 
@@ -832,7 +832,7 @@ namespace urakawa.media.data.audio.codec
                     throw new exception.InvalidDataFormatException(
                         "Can not merge this with a WavAudioMediaData with incompatible audio data");
                 }
-                Time thisInsertPoint = Time.Zero.AddTimeDelta(AudioDuration);
+                Time thisInsertPoint = new Time(AudioDuration.TimeDeltaAsTimeSpan);
                 WavAudioMediaData otherWav = (WavAudioMediaData)other;
                 mWavClips.AddRange(otherWav.mWavClips);
                 TimeDelta dur = otherWav.AudioDuration;
@@ -870,7 +870,7 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The split point can not be negative");
             }
-            if (splitPoint.IsGreaterThan(Time.Zero.AddTimeDelta(AudioDuration)))
+            if (splitPoint.IsGreaterThan(new Time(AudioDuration.TimeDeltaAsTimeSpan)))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     String.Format(
@@ -887,7 +887,7 @@ namespace urakawa.media.data.audio.codec
             }
             oWAMD.PCMFormat = PCMFormat;
 
-            TimeDelta dur = Time.Zero.AddTimeDelta(AudioDuration).GetTimeDelta(splitPoint);
+            TimeDelta dur = new Time(AudioDuration.TimeDeltaAsTimeSpan).GetTimeDelta(splitPoint);
 
             Time elapsed = Time.Zero;
             List<WavClip> clips = new List<WavClip>(mWavClips);
@@ -896,7 +896,7 @@ namespace urakawa.media.data.audio.codec
             for (int i = 0; i < clips.Count; i++)
             {
                 WavClip curClip = clips[i];
-                Time endCurClip = elapsed.AddTimeDelta(curClip.Duration);
+                Time endCurClip = new Time(elapsed.TimeAsTimeSpan + curClip.Duration.TimeDeltaAsTimeSpan);
                 if (splitPoint.IsLessThanOrEqualTo(elapsed))
                 {
                     oWAMD.mWavClips.Add(curClip);
@@ -907,8 +907,11 @@ namespace urakawa.media.data.audio.codec
                         curClip.DataProvider,
                         curClip.ClipBegin,
                         curClip.IsClipEndTiedToEOM ? null : curClip.ClipEnd);
-                    curClip.ClipEnd = curClip.ClipBegin.AddTime(splitPoint.SubtractTime(elapsed));
-                    secondPartClip.ClipBegin = curClip.ClipEnd;
+
+                    curClip.ClipEnd = new Time(
+                        curClip.ClipBegin.TimeAsTimeSpan + splitPoint.TimeAsTimeSpan - elapsed.TimeAsTimeSpan);
+
+                    secondPartClip.ClipBegin = curClip.ClipEnd.Copy();
                     mWavClips.Add(curClip);
                     oWAMD.mWavClips.Add(secondPartClip);
                 }
@@ -916,7 +919,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     mWavClips.Add(curClip);
                 }
-                elapsed = elapsed.AddTimeDelta(curClip.Duration);
+                elapsed.AddTimeDelta(curClip.Duration);
             }
             NotifyAudioDataRemoved(this, splitPoint, dur);
             oWAMD.NotifyAudioDataInserted(oWAMD, Time.Zero, dur);
