@@ -84,7 +84,7 @@ namespace urakawa.daisy.export.visitor
 
                     if (mCurrentAudioFileStream == null ||
                         (mCurrentAudioFilePCMFormat != null &&
-                        !mCurrentAudioFilePCMFormat.ValueEquals(amd.PCMFormat)))
+                        !mCurrentAudioFilePCMFormat.Data.IsCompatibleWith(amd.PCMFormat.Data)))
                     {
                         createNextAudioFile();
                     }

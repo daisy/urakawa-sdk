@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using urakawa.data;
 using urakawa.media.timing;
 using urakawa.progress;
@@ -55,10 +56,10 @@ namespace urakawa.media.data.audio.codec
             if (!base.IsPCMFormatChangeOk(newFormat, out failReason)) return false;
             if (mWavClips.Count > 0)
             {
-                if (!PCMFormat.ValueEquals(newFormat))
+                if (!PCMFormat.Data.IsCompatibleWith(newFormat.Data))
                 {
                     failReason =
-                        "Cannot change the PCMFormat of the WavAudioMediaData after audio dat has been added to it";
+                        "Cannot change the PCMFormat of the WavAudioMediaData after audio data has been added to it";
                     return false;
                 }
             }
@@ -337,6 +338,53 @@ namespace urakawa.media.data.audio.codec
             //NotifyAudioDataInserted(this, insertPoint, duration);
         }
 
+        private void checkPcmFormat(WavClip clip)
+        {
+            if (!Presentation.MediaDataManager.EnforceSinglePCMFormat)
+            {
+                return;
+            }
+
+            if (!clip.PcmFormat.IsCompatibleWith(PCMFormat.Data))
+            {
+                throw new exception.InvalidDataFormatException(
+                    String.Format("RIFF WAV file has incompatible PCM format"));
+            }
+
+            ////Stream stream = newSingleWavClip.OpenPcmInputStream(); // Skips the RIFF header !
+            //Stream stream = clip.DataProvider.OpenInputStream();
+            //try
+            //{
+            //    checkPcmFormat(stream);
+            //}
+            //finally
+            //{
+            //    stream.Close();
+            //}
+        }
+
+        //private void checkPcmFormat(Stream stream)
+        //{
+        //    if (!Presentation.MediaDataManager.EnforceSinglePCMFormat)
+        //    {
+        //        return;
+        //    }
+
+        //    uint dataLength;
+        //    AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(stream, out dataLength);
+
+        //    //if (dataLength <= 0)
+        //    //{
+        //    //    dataLength = (uint)(stream.Length - stream.Position);
+        //    //}
+
+        //    if (!format.IsCompatibleWith(PCMFormat.Data))
+        //    {
+        //        throw new exception.InvalidDataFormatException(
+        //            String.Format("RIFF WAV file has incompatible PCM format"));
+        //    }
+        //}
+
         public override void AppendPcmData(DataProvider fileDataProvider)
         {
             if (fileDataProvider.MimeType != DataProviderFactory.AUDIO_WAV_MIME_TYPE)
@@ -347,6 +395,8 @@ namespace urakawa.media.data.audio.codec
 
             WavClip newSingleWavClip = new WavClip(fileDataProvider);
             mWavClips.Add(newSingleWavClip);
+
+            checkPcmFormat(newSingleWavClip);
 
             NotifyAudioDataInserted(this, new Time(AudioDuration.TimeDeltaAsTimeSpan), newSingleWavClip.MediaDuration);
         }
@@ -363,6 +413,8 @@ namespace urakawa.media.data.audio.codec
             newSingleWavClip.ClipBegin = clipBegin;
             newSingleWavClip.ClipEnd = clipEnd;
             mWavClips.Add(newSingleWavClip);
+
+            checkPcmFormat(newSingleWavClip);
 
             NotifyAudioDataInserted(this, new Time(AudioDuration.TimeDeltaAsTimeSpan), newSingleWavClip.ClipEnd.GetTimeDelta(newSingleWavClip.ClipBegin));
         }
@@ -382,6 +434,9 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The given insert point is beyond the end of the WavAudioMediaData");
             }
+
+
+            checkPcmFormat(newInsClip);
 
             if (insertPoint.IsEqualTo(endTime))
             {

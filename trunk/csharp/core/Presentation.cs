@@ -1311,20 +1311,41 @@ namespace urakawa
             TreeNode treeNode = TreeNodeFactory.Create();
             ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
             manMedia.MediaData = mdAudio;
+            TreeNodeSetManagedAudioMediaCommand cmd1 = CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
+            foreach (var mediaData in cmd1.UsedMediaData)
+            {
+                Debug.Assert(mediaData == cmd1.ManagedAudioMedia.AudioMediaData);
+                Debug.Assert(mediaData == mdAudio);
+                MediaDataManager.RemoveManagedObject(mediaData);   
+            }
+            //
             ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
             Channel audioChannel = ChannelFactory.CreateAudioChannel();
             chProp.SetMedia(audioChannel, manMedia);
-            CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia, Time.Zero, treeNode);
-            CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
+            ManagedAudioMedia manMedia2 = MediaFactory.CreateManagedAudioMedia();
+            manMedia2.MediaData = mdAudio.Copy();
+            ManagedAudioMediaInsertDataCommand cmd2 = CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia2, Time.Zero, treeNode);
+            foreach (var mediaData in cmd2.UsedMediaData)
+            {
+                Debug.Assert(mediaData == cmd2.OriginalManagedAudioMedia.AudioMediaData
+                    || mediaData == cmd2.ManagedAudioMediaSource.AudioMediaData);
+                //Debug.Assert(mediaData == mdAudio);
+                MediaDataManager.RemoveManagedObject(mediaData);
+            }
+            //
             TreeNodeAndStreamSelection selection = new TreeNodeAndStreamSelection();
             selection.m_TreeNode = treeNode;
             selection.m_LocalStreamLeftMark = -1;
             selection.m_LocalStreamRightMark = -1;
-            TreeNodeAudioStreamDeleteCommand cmd = CommandFactory.CreateTreeNodeAudioStreamDeleteCommand(selection, treeNode);
-            ChannelsManager.RemoveManagedObject(audioChannel);
-            MediaDataManager.RemoveManagedObject(cmd.OriginalManagedAudioMedia.AudioMediaData);
+            TreeNodeAudioStreamDeleteCommand cmd3 = CommandFactory.CreateTreeNodeAudioStreamDeleteCommand(selection, treeNode);
+            foreach (var mediaData in cmd3.UsedMediaData)
+            {
+                Debug.Assert(mediaData == cmd3.OriginalManagedAudioMedia.AudioMediaData);
+                //Debug.Assert(mediaData == mdAudio);
+                MediaDataManager.RemoveManagedObject(mediaData);
+            }
             //
-            MediaDataManager.RemoveManagedObject(mdAudio);
+            ChannelsManager.RemoveManagedObject(audioChannel);
             //
             Metadata meta = MetadataFactory.CreateMetadata();
             meta.NameContentAttribute = new MetadataAttribute();

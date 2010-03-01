@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using AudioLib;
 using urakawa.data;
@@ -145,18 +146,32 @@ namespace urakawa.media.data.audio.codec
                     Stream raw = DataProvider.OpenInputStream();
 
                     uint dataLength;
-                    AudioLibPCMFormat format;
                     try
                     {
-                        format = AudioLibPCMFormat.RiffHeaderParse(raw, out dataLength);
+                        cachedPcmFormat = AudioLibPCMFormat.RiffHeaderParse(raw, out dataLength);
                     }
                     finally
                     {
                         raw.Close();
                     }
-                    cachedDuration = new TimeDelta(format.ConvertBytesToTime(dataLength));
+                    cachedDuration = new TimeDelta(cachedPcmFormat.ConvertBytesToTime(dataLength));
                 }
                 return cachedDuration;
+            }
+        }
+
+        private AudioLibPCMFormat cachedPcmFormat;
+        public AudioLibPCMFormat PcmFormat
+        {
+            get
+            {
+                if (cachedPcmFormat == null)
+                {
+                    TimeDelta timeDelta = MediaDuration;
+                    Debug.Assert(cachedDuration != null);
+                    Debug.Assert(cachedPcmFormat != null);
+                }
+                return cachedPcmFormat;
             }
         }
 
