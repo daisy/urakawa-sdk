@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using urakawa.command;
@@ -7,8 +8,10 @@ using urakawa.core;
 using urakawa.exception;
 using urakawa.media.data;
 using urakawa.media.data.audio;
+using urakawa.media.data.audio.codec;
 using urakawa.media.timing;
 using urakawa.progress;
+using urakawa.property.channel;
 using urakawa.xuk;
 
 namespace urakawa.commands
@@ -50,18 +53,21 @@ namespace urakawa.commands
             private set { m_CurrentTreeNode = value; }
             get { return m_CurrentTreeNode; }
         }
-        private ManagedAudioMedia m_ManagedAudioMediaTarget;
-        public ManagedAudioMedia ManagedAudioMediaTarget
+
+        private ManagedAudioMedia m_OriginalManagedAudioMedia;
+        public ManagedAudioMedia OriginalManagedAudioMedia
         {
-            private set { m_ManagedAudioMediaTarget = value; }
-            get { return m_ManagedAudioMediaTarget; }
+            private set { m_OriginalManagedAudioMedia = value; }
+            get { return m_OriginalManagedAudioMedia; }
         }
+
         private ManagedAudioMedia m_ManagedAudioMediaSource;
         public ManagedAudioMedia ManagedAudioMediaSource
         {
             private set { m_ManagedAudioMediaSource = value; }
             get { return m_ManagedAudioMediaSource; }
         }
+
         private Time m_TimeInsert;
         public Time TimeInsert
         {
@@ -69,7 +75,7 @@ namespace urakawa.commands
             get { return m_TimeInsert; }
         }
 
-        public void Init(TreeNode treeNode, ManagedAudioMedia managedAudioMediaTarget, ManagedAudioMedia managedAudioMediaSource, Time insertTime, TreeNode currentTreeNode)
+        public void Init(TreeNode treeNode, ManagedAudioMedia managedAudioMediaSource, Time insertTime, TreeNode currentTreeNode)
         {
             if (treeNode == null)
             {
@@ -84,24 +90,27 @@ namespace urakawa.commands
             {
                 throw new ArgumentNullException("insertTime");
             }
-            if (managedAudioMediaTarget == null)
-            {
-                throw new ArgumentNullException("managedAudioMediaTarget");
-            }
             if (managedAudioMediaSource == null)
             {
                 throw new ArgumentNullException("managedAudioMediaSource");
             }
-            if (managedAudioMediaTarget.Presentation != managedAudioMediaSource.Presentation)
+
+            ManagedAudioMedia manMedia = treeNode.GetManagedAudioMedia();
+
+            if (manMedia == null)
+            {
+                throw new ArgumentNullException("manMedia");
+            }
+            if (manMedia.Presentation != managedAudioMediaSource.Presentation)
             {
                 throw new NodeInDifferentPresentationException("TreeNode vs ManagedAudioMedia");
             }
-            if (managedAudioMediaTarget.Presentation != Presentation)
+            if (manMedia.Presentation != Presentation)
             {
                 throw new NodeInDifferentPresentationException("TreeNode vs ManagedAudioMedia");
             }
 
-            if (!managedAudioMediaSource.HasActualAudioMediaData || !managedAudioMediaTarget.HasActualAudioMediaData)
+            if (!managedAudioMediaSource.HasActualAudioMediaData || !manMedia.HasActualAudioMediaData)
             {
                 throw new ArgumentException("HasActualAudioMediaData");
             }
@@ -111,8 +120,10 @@ namespace urakawa.commands
             TimeInsert = insertTime;
 
             ManagedAudioMediaSource = managedAudioMediaSource;
-            ManagedAudioMediaTarget = managedAudioMediaTarget;
 
+            OriginalManagedAudioMedia = manMedia.Copy();
+
+            m_UsedMediaData.Add(OriginalManagedAudioMedia.AudioMediaData);
             m_UsedMediaData.Add(ManagedAudioMediaSource.AudioMediaData);
             //m_UsedMediaData.Add(ManagedAudioMediaTarget.AudioMediaData); belongs to TreeNode, so no need to preserve it explicitely
 
@@ -132,47 +143,69 @@ namespace urakawa.commands
 
         public override void Execute()
         {
+            ManagedAudioMedia manMedia = TreeNode.GetManagedAudioMedia();
+
             long timeInsertBytes =
-                ManagedAudioMediaTarget.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
+                manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
                     TimeInsert.TimeAsMillisecondDouble);
 
-            long durationBytes = ManagedAudioMediaTarget.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
-                    ManagedAudioMediaTarget.Duration.TimeDeltaAsMillisecondDouble);
+            long durationBytes = manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
+                    manMedia.Duration.TimeDeltaAsMillisecondDouble);
 
-            if (TimeInsert.IsEqualTo(Time.Zero.AddTimeDelta(ManagedAudioMediaTarget.Duration))
+            if (TimeInsert.IsEqualTo(Time.Zero.AddTimeDelta(manMedia.Duration))
                 ||
-                ManagedAudioMediaTarget.AudioMediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(timeInsertBytes, durationBytes))
+                manMedia.AudioMediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(timeInsertBytes, durationBytes))
             {
-                TimeDelta duration = ManagedAudioMediaSource.Duration;
-                Stream stream = ManagedAudioMediaSource.AudioMediaData.OpenPcmInputStream();
-                try
-                {
-                    ManagedAudioMediaTarget.AudioMediaData.AppendPcmData(stream, duration);
-                }
-                finally
-                {
-                    stream.Close();
-                }
+                manMedia.AudioMediaData.MergeWith(ManagedAudioMediaSource.AudioMediaData.Copy());
+
+                //TimeDelta duration = ManagedAudioMediaSource.Duration;
+                //Stream stream = ManagedAudioMediaSource.AudioMediaData.OpenPcmInputStream();
+                //try
+                //{
+                //    manMedia.AudioMediaData.AppendPcmData(stream, duration);
+                //}
+                //finally
+                //{
+                //    stream.Close();
+                //}
             }
             else
             {
                 TimeDelta duration = ManagedAudioMediaSource.Duration;
-                Stream stream = ManagedAudioMediaSource.AudioMediaData.OpenPcmInputStream();
-                try
-                {
-                    ManagedAudioMediaTarget.AudioMediaData.InsertPcmData(stream, TimeInsert, duration);
-                }
-                finally
-                {
-                    stream.Close();
-                }
+
+                ((WavAudioMediaData)manMedia.AudioMediaData).InsertPcmData(
+                    (WavAudioMediaData)ManagedAudioMediaSource.AudioMediaData, TimeInsert, duration);
+
+                //Stream stream = ManagedAudioMediaSource.AudioMediaData.OpenPcmInputStream();
+                //try
+                //{
+                //    manMedia.AudioMediaData.InsertPcmData(stream, TimeInsert, duration);
+                //}
+                //finally
+                //{
+                //    stream.Close();
+                //}
             }
         }
 
         public override void UnExecute()
         {
-            TimeDelta duration = ManagedAudioMediaSource.Duration;
-            ManagedAudioMediaTarget.AudioMediaData.RemovePcmData(TimeInsert, TimeInsert.AddTimeDelta(duration));
+            ManagedAudioMedia manMedia = TreeNode.GetManagedAudioMedia();
+            ChannelsProperty chProp = TreeNode.GetChannelsProperty();
+            Channel channel = null;
+            foreach (Channel ch in chProp.UsedChannels)
+            {
+                if (manMedia == chProp.GetMedia(ch))
+                {
+                    channel = ch;
+                    break;
+                }
+            }
+            chProp.SetMedia(channel, null);
+            chProp.SetMedia(channel, OriginalManagedAudioMedia.Copy());
+
+            //TimeDelta duration = ManagedAudioMediaSource.Duration;
+            //ManagedAudioMediaTarget.AudioMediaData.RemovePcmData(TimeInsert, TimeInsert.AddTimeDelta(duration));
         }
 
         private List<MediaData> m_UsedMediaData = new List<MediaData>();

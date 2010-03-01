@@ -38,7 +38,7 @@ namespace urakawa.media.data.audio.codec
         {
             return XukStrings.WavAudioMediaData;
         }
-        
+
         /// <summary>
         /// Stores the <see cref="WavClip"/>s of <c>this</c>
         /// </summary>
@@ -367,14 +367,7 @@ namespace urakawa.media.data.audio.codec
             NotifyAudioDataInserted(this, Time.Zero.AddTimeDelta(AudioDuration), newSingleWavClip.ClipEnd.GetTimeDelta(newSingleWavClip.ClipBegin));
         }
 
-        /// <summary>
-        /// Inserts audio of a given duration from a given source PCM data <see cref="Stream"/> to the wav audio media data
-        /// at a given point
-        /// </summary>
-        /// <param name="pcmData">The source PCM data stream</param>
-        /// <param name="insertPoint">The insert point</param>
-        /// <param name="duration">The duration of the aduio to append</param>
-        public override void InsertPcmData(Stream pcmData, Time insertPoint, TimeDelta duration)
+        protected void InsertPcmData(WavClip newInsClip, Time insertPoint, TimeDelta duration)
         {
             Time insPt = insertPoint.Copy();
             if (insPt.IsLessThan(Time.Zero))
@@ -382,13 +375,14 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The given insert point is negative");
             }
-            WavClip newInsClip = new WavClip(CreateDataProviderFromRawPCMStream(pcmData, duration));
+
             Time endTime = Time.Zero.AddTimeDelta(AudioDuration);
             if (insertPoint.IsGreaterThan(endTime))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The given insert point is beyond the end of the WavAudioMediaData");
             }
+
             if (insertPoint.IsEqualTo(endTime))
             {
                 mWavClips.Add(newInsClip);
@@ -442,6 +436,53 @@ namespace urakawa.media.data.audio.codec
             NotifyAudioDataInserted(this, insertPoint, duration);
         }
 
+        public void InsertPcmData(WavAudioMediaData mediaData, Time insertPoint, TimeDelta duration)
+        {
+            Time movingInsertPoint = insertPoint.Copy();
+            TimeDelta remainingAvailableDuration = duration.Copy();
+            foreach (var wavClip in mediaData.mWavClips)
+            {
+                TimeDelta wavClipDur = wavClip.Duration;
+
+                if (wavClipDur.IsLessThan(remainingAvailableDuration)
+                    || wavClipDur.IsEqualTo(remainingAvailableDuration))
+                {
+                    InsertPcmData(wavClip.Copy(), movingInsertPoint, wavClipDur);
+                    movingInsertPoint.AddTimeDelta(wavClipDur);
+                    remainingAvailableDuration.SubstractTimeDelta(wavClipDur);
+
+                    if (remainingAvailableDuration.IsEqualTo(TimeDelta.Zero)) break;
+                }
+                else
+                {
+                    Stream stream = wavClip.OpenPcmInputStream(Time.Zero,
+                                                               wavClip.ClipBegin.AddTimeDelta(remainingAvailableDuration));
+                    try
+                    {
+                        InsertPcmData(stream, movingInsertPoint, remainingAvailableDuration);
+                    }
+                    finally
+                    {
+                        stream.Close();
+                    }
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Inserts audio of a given duration from a given source PCM data <see cref="Stream"/> to the wav audio media data
+        /// at a given point
+        /// </summary>
+        /// <param name="pcmData">The source PCM data stream</param>
+        /// <param name="insertPoint">The insert point</param>
+        /// <param name="duration">The duration of the aduio to append</param>
+        public override void InsertPcmData(Stream pcmData, Time insertPoint, TimeDelta duration)
+        {
+            WavClip newInsClip = new WavClip(CreateDataProviderFromRawPCMStream(pcmData, duration));
+            InsertPcmData(newInsClip, insertPoint, duration);
+        }
+
         /// <summary>
         /// Gets the intrinsic duration of the audio data
         /// </summary>
@@ -488,6 +529,10 @@ namespace urakawa.media.data.audio.codec
             {
                 throw new exception.MethodParameterIsNullException("Clip begin or clip end can not be null");
             }
+
+            long oneMS = PCMFormat.Data.ConvertTimeToBytes(1);
+            double timeBlockAlign = PCMFormat.Data.ConvertBytesToTime(PCMFormat.Data.BlockAlign);
+
             if (
                 clipBegin.IsLessThan(Time.Zero)
                 || clipBegin.IsGreaterThan(clipEnd)

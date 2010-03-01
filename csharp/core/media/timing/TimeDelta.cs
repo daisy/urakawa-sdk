@@ -158,7 +158,14 @@ namespace urakawa.media.timing
         {
             if (other == null)
                 throw new exception.MethodParameterIsNullException("Can not compare with a null TimeDelta");
-            return (mTimeDelta < other.mTimeDelta);
+
+            if (Time.COMPARE_RESOLUTION_ONE_MS)
+                return Math.Truncate(TimeDeltaAsMillisecondDouble)
+                    < Math.Truncate(other.TimeDeltaAsMillisecondDouble);
+            return TimeDeltaAsMillisecondDouble < other.TimeDeltaAsMillisecondDouble;
+
+
+            //return (mTimeDelta < other.mTimeDelta);
         }
 
         /// <summary>
