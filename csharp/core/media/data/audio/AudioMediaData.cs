@@ -107,16 +107,16 @@ namespace urakawa.media.data.audio
         protected virtual bool IsPCMFormatChangeOk(PCMFormatInfo newFormat, out string failReason)
         {
             failReason = "";
-            if (Presentation.MediaDataManager.EnforceSinglePCMFormat)
+
+            if (Presentation.MediaDataManager.EnforceSinglePCMFormat
+                && !Presentation.MediaDataManager.DefaultPCMFormat.Data.IsCompatibleWith(newFormat.Data))
             {
-                if (!Presentation.MediaDataManager.DefaultPCMFormat.ValueEquals(newFormat))
-                {
-                    failReason =
-                        "When the MediaDataManager enforces a single PCM Format, "
-                        + "the PCM Format of the AudioMediaData must match the default defined by the manager";
-                    return false;
-                }
+                failReason =
+                    "When the MediaDataManager enforces a single PCM Format, "
+                    + "the PCM Format of the AudioMediaData must match the default defined by the manager";
+                return false;
             }
+
             return true;
         }
 
@@ -326,7 +326,7 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration of the audio to replace</param>
         public void ReplacePcmData(Stream pcmData, Time replacePoint, TimeDelta duration)
         {
-            RemovePcmData(replacePoint, new Time(replacePoint.TimeAsTimeSpan+duration.TimeDeltaAsTimeSpan));
+            RemovePcmData(replacePoint, new Time(replacePoint.TimeAsTimeSpan + duration.TimeDeltaAsTimeSpan));
             InsertPcmData(pcmData, replacePoint, duration);
         }
 

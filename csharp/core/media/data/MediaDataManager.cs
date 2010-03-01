@@ -19,24 +19,22 @@ namespace urakawa.media.data
             return XukStrings.MediaDataManager;
         }
 
-        public MediaDataManager(Presentation pres) : base(pres, "MD")
+        public MediaDataManager(Presentation pres)
+            : base(pres, "MD")
         {
             mEnforceSinglePCMFormat = true;
         }
 
-        private bool mEnforceSinglePCMFormat;
 
         private bool isNewDefaultPCMFormatOk(PCMFormatInfo newDefault)
         {
             foreach (MediaData md in ManagedObjects.ContentsAs_YieldEnumerable)
             {
                 AudioMediaData amd = md as AudioMediaData;
-                if (amd != null)
+                if (amd != null
+                    && !amd.PCMFormat.Data.IsCompatibleWith(newDefault.Data))
                 {
-                    if (!amd.PCMFormat.ValueEquals(newDefault))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
             return true;
@@ -67,14 +65,11 @@ namespace urakawa.media.data
                 }
                 if (!value.ValueEquals(mDefaultPCMFormat))
                 {
-                    if (EnforceSinglePCMFormat)
+                    if (EnforceSinglePCMFormat && !isNewDefaultPCMFormatOk(value))
                     {
-                        if (!isNewDefaultPCMFormatOk(value))
-                        {
-                            throw new exception.InvalidDataFormatException(
-                                "Cannot change the default PCMFormat, since single PCM format is enforced by the DataProviderManager "
-                                + "and since at least one AudioMediaData is currently managed");
-                        }
+                        throw new exception.InvalidDataFormatException(
+                            "Cannot change the default PCMFormat, since single PCM format is enforced by the DataProviderManager "
+                            + "and since at least one AudioMediaData is currently managed");
                     }
                     mDefaultPCMFormat = value;
                 }
@@ -150,6 +145,7 @@ namespace urakawa.media.data
         //    DefaultPCMFormat = newDefault;
         //}
 
+        private bool mEnforceSinglePCMFormat;
         /// <summary>
         /// Gets a <see cref="bool"/> indicating if a single 
         /// PCMFormat is enforced for all managed <see cref="audio.AudioMediaData"/>
@@ -175,17 +171,16 @@ namespace urakawa.media.data
 
         public override bool CanAddManagedObject(MediaData data)
         {
-            if (EnforceSinglePCMFormat)
+            if (data is AudioMediaData)
             {
-                if (data is AudioMediaData)
+                AudioMediaData amdata = (AudioMediaData)data;
+                if (EnforceSinglePCMFormat
+                    && !amdata.PCMFormat.Data.IsCompatibleWith(DefaultPCMFormat.Data))
                 {
-                    AudioMediaData amdata = (AudioMediaData)data;
-                    if (!amdata.PCMFormat.ValueEquals(DefaultPCMFormat))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
+
             return true;
         }
 
@@ -242,7 +237,7 @@ namespace urakawa.media.data
         /// </summary>
         protected override void Clear()
         {
-            foreach(MediaData md in ManagedObjects.ContentsAs_ListCopy)
+            foreach (MediaData md in ManagedObjects.ContentsAs_ListCopy)
             {
                 ManagedObjects.Remove(md);
             }
@@ -375,8 +370,8 @@ namespace urakawa.media.data
                         {
                             XukInMediaData(source, handler);
                         }
-                    
-                    //else if (!source.IsEmptyElement)
+
+                        //else if (!source.IsEmptyElement)
                         //{
                         //    source.ReadSubtree().Close();
                         //}
@@ -489,7 +484,7 @@ namespace urakawa.media.data
             base.XukOutAttributes(destination, baseUri);
 
             destination.WriteAttributeString(XukStrings.enforceSinglePCMFormat, EnforceSinglePCMFormat ? "true" : "false");
-            
+
         }
 
         /// <summary>
