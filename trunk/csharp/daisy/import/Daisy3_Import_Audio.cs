@@ -37,7 +37,10 @@ namespace urakawa.daisy.import
 
             //m_firstTimePCMFormat = true;
 
-            m_AudioConversionSession = new AudioFormatConvertorSession(m_Project.Presentations.Get(0));
+            m_AudioConversionSession = new AudioFormatConvertorSession(AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
+                //m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath,
+                m_Project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat);
+
             m_OriginalAudioFile_FileDataProviderMap.Clear();
 
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);
@@ -270,6 +273,8 @@ namespace urakawa.daisy.import
 
                                 if (RequestCancellation) return;
 
+
+
                                 dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
                                 Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullWavPath) + " = " + dataProv.DataFileRelativePath);
                                 dataProv.InitByMovingExistingFile(newfullWavPath);
@@ -312,7 +317,12 @@ namespace urakawa.daisy.import
                 }
 
                 if (RequestCancellation) return;
+                
                 reportSubProgress(-1, "Decoding audio: [" + Path.GetFileName(fullMp3PathOriginal) + "]");
+
+                // At first look, this conversion seems redundant if the m_OriginalAudioFile_FileDataProviderMap already contains the fullMp3PathOriginal,
+                // but this is ok because the m_AudioConversionSession won't convert again if already done (i.e. maintains its own mapping)
+                // so this is just to get the newfullWavPath for later use down here...
                 string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullMp3PathOriginal);
 
                 if (RequestCancellation) return;

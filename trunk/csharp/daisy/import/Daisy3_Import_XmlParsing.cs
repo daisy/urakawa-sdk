@@ -145,7 +145,9 @@ namespace urakawa.daisy.import
 
                 // NOTE: we could actually use the same code as below, which gives more control over the subdirectory and doesn't have any size limits:
 #else
-                string path = ExternalFilesDataManager.STORAGE_FOLDER_PATH + Path.DirectorySeparatorChar + m_DtdStoreDirName + Path.DirectorySeparatorChar + filename;
+                string path = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, m_DtdStoreDirName);
+                path = Path.Combine(path, filename);
+                
                 if (File.Exists(path))
                 {
                     Stream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
@@ -223,7 +225,8 @@ namespace urakawa.daisy.import
 
                     // NOTE: we could actually use the same code as below, which gives more control over the subdirectory and doesn't have any size limits:
 #else
-                    string dirpath = ExternalFilesDataManager.STORAGE_FOLDER_PATH + Path.DirectorySeparatorChar + m_DtdStoreDirName;
+                    string dirpath = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, m_DtdStoreDirName);
+                
                     if (!Directory.Exists(dirpath))
                     {
                         Directory.CreateDirectory(dirpath);

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using AudioLib;
 using urakawa.data;
+using urakawa.ExternalFiles;
 using urakawa.media.data.audio;
 
 namespace urakawa.daisy.import
@@ -13,14 +15,28 @@ namespace urakawa.daisy.import
     /// </summary>
     public class AudioFormatConvertorSession
     {
-        private Dictionary<string, string> m_FilePathsMap; // maps source files to converted files
-        Presentation m_Presentation;
-
-
-        public AudioFormatConvertorSession(Presentation presentation)
+        public static readonly string TEMP_AUDIO_DIRECTORY = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH,
+                                                                          "Temporary-Audio");
+        static AudioFormatConvertorSession()
         {
+            if (!Directory.Exists(TEMP_AUDIO_DIRECTORY))
+            {
+                Directory.CreateDirectory(TEMP_AUDIO_DIRECTORY);
+            }
+        }
+
+        private readonly Dictionary<string, string> m_FilePathsMap; // maps source files to converted files
+        private readonly string m_destinationDirectory;
+        private readonly PCMFormatInfo m_destinationFormatInfo;
+
+        public AudioFormatConvertorSession(string destinationDirectory, PCMFormatInfo destinationFormatInfo)
+        {
+            if (destinationDirectory == null) throw new ArgumentNullException("destinationDirectory");
+            m_destinationDirectory = destinationDirectory;
+
+            m_destinationFormatInfo = destinationFormatInfo;
+
             m_FilePathsMap = new Dictionary<string, string>();
-            m_Presentation = presentation;
         }
 
         /// <summary>
@@ -36,10 +52,18 @@ namespace urakawa.daisy.import
 
             if (m_FilePathsMap.ContainsKey(sourceFilePath))
             {
-                return m_FilePathsMap[sourceFilePath];
+                string fullPath = m_FilePathsMap[sourceFilePath];
+                if (File.Exists(fullPath))
+                    return fullPath; // this should always be the case, unless the files have been removed from "outside" (i.e. user deleting the audio temporary directory while a session is alive)
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                m_FilePathsMap.Remove(sourceFilePath);
             }
 
-            string convertedFilePath = ConvertToDefaultFormat(sourceFilePath, m_Presentation.DataProviderManager.DataFileDirectoryFullPath, m_Presentation.MediaDataManager.DefaultPCMFormat.Copy());
+            string convertedFilePath = ConvertToDefaultFormat(sourceFilePath,
+                m_destinationDirectory,
+                m_destinationFormatInfo == null ? null : m_destinationFormatInfo.Copy());
 
             if (File.Exists(convertedFilePath))
             {
@@ -53,42 +77,42 @@ namespace urakawa.daisy.import
         /// <summary>
         /// Deletes audio files created during this session, do not deletes the file which is being referenced in presentation
         /// </summary>
-        public void DeleteSessionAudioFiles()
-        {
-            List<string> presentationFilePaths = new List<string>();
+        //public void DeleteSessionAudioFiles()
+        //{
+        //    List<string> presentationFilePaths = new List<string>();
 
-            foreach (FileDataProvider f in m_Presentation.DataProviderManager.ManagedFileDataProviders)
-            {
-                presentationFilePaths.Add(f.DataFileFullPath);
-            }
+        //    foreach (FileDataProvider f in m_Presentation.DataProviderManager.ManagedFileDataProviders)
+        //    {
+        //        presentationFilePaths.Add(f.DataFileFullPath);
+        //    }
 
-            string[] keysArray = new string[m_FilePathsMap.Keys.Count];
-            m_FilePathsMap.Keys.CopyTo(keysArray, 0);
+        //    string[] keysArray = new string[m_FilePathsMap.Keys.Count];
+        //    m_FilePathsMap.Keys.CopyTo(keysArray, 0);
 
-            for (int i = 0; i < keysArray.Length; i++)
-            {
-                string path = m_FilePathsMap[keysArray[i]];
-                if (!presentationFilePaths.Contains(path))
-                {
-                    if (File.Exists(path))
-                    {
-                        File.Delete(path);
-                    }
-                    m_FilePathsMap.Remove(keysArray[i]);
-                }
-            }
-        }
+        //    for (int i = 0; i < keysArray.Length; i++)
+        //    {
+        //        string path = m_FilePathsMap[keysArray[i]];
+        //        if (!presentationFilePaths.Contains(path))
+        //        {
+        //            if (File.Exists(path))
+        //            {
+        //                File.Delete(path);
+        //            }
+        //            m_FilePathsMap.Remove(keysArray[i]);
+        //        }
+        //    }
+        //}
 
-        public void RelocateDestinationFilePath(string originalPath, string newPath)
-        {
-            foreach (string srcFilePath in m_FilePathsMap.Keys)
-            {
-                if (m_FilePathsMap[srcFilePath] == originalPath)
-                {
-                    m_FilePathsMap[srcFilePath] = newPath;
-                }
-            }
-        }
+        //public void RelocateDestinationFilePath(string originalPath, string newPath)
+        //{
+        //    foreach (string srcFilePath in m_FilePathsMap.Keys)
+        //    {
+        //        if (m_FilePathsMap[srcFilePath] == originalPath)
+        //        {
+        //            m_FilePathsMap[srcFilePath] = newPath;
+        //        }
+        //    }
+        //}
 
 
         /// <summary>
@@ -103,9 +127,6 @@ namespace urakawa.daisy.import
             if (!File.Exists(SourceFilePath))
                 throw new FileNotFoundException(SourceFilePath);
 
-            if (destinationFormatInfo == null)
-                throw new ArgumentNullException("PCM format");
-
             if (!Directory.Exists(destinationDirectory))
             {
                 Directory.CreateDirectory(destinationDirectory);
@@ -116,11 +137,21 @@ namespace urakawa.daisy.import
             {
                 case AudioFileType.WavUncompressed:
                 case AudioFileType.WavCompressed:
-                    WavFormatConverter formatConverter1 = new WavFormatConverter(true);
-                    return formatConverter1.ConvertSampleRate(SourceFilePath, destinationDirectory, destinationFormatInfo.Data.NumberOfChannels, destinationFormatInfo.Data.SampleRate, destinationFormatInfo.Data.BitDepth);
+                    {
+                        if (destinationFormatInfo == null)
+                            throw new ArgumentNullException("destinationFormatInfo");
+
+                        WavFormatConverter formatConverter1 = new WavFormatConverter(true);
+                        return formatConverter1.ConvertSampleRate(SourceFilePath, destinationDirectory,
+                                                                  destinationFormatInfo.Data);
+                    }
                 case AudioFileType.Mp3:
-                    WavFormatConverter formatConverter2 = new WavFormatConverter(true);
-                    return formatConverter2.UnCompressMp3File(SourceFilePath, destinationDirectory, destinationFormatInfo.Data.NumberOfChannels, destinationFormatInfo.Data.SampleRate, destinationFormatInfo.Data.BitDepth);
+                    {
+                        WavFormatConverter formatConverter2 = new WavFormatConverter(true);
+                        return formatConverter2.UnCompressMp3File(SourceFilePath, destinationDirectory,
+                            destinationFormatInfo != null ? destinationFormatInfo.Data : null);
+                    }
+
                 default:
                     throw new Exception("Source file format not supported");
             }
