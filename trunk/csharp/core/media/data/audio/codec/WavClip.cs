@@ -47,7 +47,7 @@ namespace urakawa.media.data.audio.codec
         {
             get
             {
-                if (mClipEnd == null) return Time.Zero.AddTimeDelta(MediaDuration);
+                if (mClipEnd == null) return new Time(MediaDuration.TimeDeltaAsTimeSpan);
                 return mClipEnd.Copy();
             }
             set
@@ -215,7 +215,7 @@ namespace urakawa.media.data.audio.codec
         /// <seealso cref="OpenPcmInputStream(urakawa.media.timing.Time,urakawa.media.timing.Time)"/>
         public Stream OpenPcmInputStream(Time subClipBegin)
         {
-            return OpenPcmInputStream(subClipBegin, Time.Zero.AddTimeDelta(Duration));
+            return OpenPcmInputStream(subClipBegin, new Time(Duration.TimeDeltaAsTimeSpan));
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace urakawa.media.data.audio.codec
             if (
                 subClipBegin.IsLessThan(Time.Zero)
                 || subClipEnd.IsLessThan(subClipBegin)
-                || subClipEnd.IsGreaterThan(Time.Zero.AddTimeDelta(Duration))
+                || subClipEnd.IsGreaterThan(new Time(Duration.TimeDeltaAsTimeSpan))
                 )
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
@@ -259,7 +259,7 @@ namespace urakawa.media.data.audio.codec
             Stream raw = DataProvider.OpenInputStream();
             uint dataLength;
             AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(raw, out dataLength);
-            Time rawEndTime = Time.Zero.AddTimeDelta(new TimeDelta(format.ConvertBytesToTime(dataLength)));
+            Time rawEndTime = new Time(format.ConvertBytesToTime(dataLength));
 
             //Time rawEndTime = Time.Zero.AddTimeDelta(MediaDuration); // We don't call this to avoid unnecessary I/O (Strem.Open() twice)
 
@@ -284,8 +284,8 @@ namespace urakawa.media.data.audio.codec
                 raw.Position, raw.Length - raw.Position); 
             }
             */
-            Time rawClipBegin = ClipBegin.AddTime(subClipBegin);
-            Time rawClipEnd = ClipBegin.AddTime(subClipEnd);
+            Time rawClipBegin = new Time(ClipBegin.TimeAsTimeSpan + subClipBegin.TimeAsTimeSpan);
+            Time rawClipEnd = new Time(ClipBegin.TimeAsTimeSpan + subClipEnd.TimeAsTimeSpan);
 
             long beginPos = raw.Position + format.ConvertTimeToBytes(rawClipBegin.TimeAsMillisecondDouble);
 

@@ -7,6 +7,28 @@ namespace urakawa.media.timing
     /// </summary>
     public class TimeDelta
     {
+        public static bool operator ==(TimeDelta a, TimeDelta b)
+        {
+            // If both are null, or both are same instance, return true.
+            if (ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
+            // If one is null, but not both, return false.
+            if (((object)a == null) || ((object)b == null))
+            {
+                return false;
+            }
+
+            return a.IsEqualTo(b);
+        }
+
+        public static bool operator !=(TimeDelta a, TimeDelta b)
+        {
+            return !(a == b);
+        }
+
         /// <summary>
         /// Gets a <see cref="TimeDelta"/> representing zero (00:00:00.000000)
         /// </summary>
@@ -134,14 +156,14 @@ namespace urakawa.media.timing
         /// Adds another <see cref="TimeDelta"/> to <c>this</c>
         /// </summary>
         /// <param name="other">The other <see cref="TimeDelta"/></param>
-        public TimeDelta AddTimeDelta(TimeDelta other)
+        public void AddTimeDelta(TimeDelta other)
         {
-            return new TimeDelta(mTimeDelta += other.TimeDeltaAsTimeSpan);
+            mTimeDelta += other.TimeDeltaAsTimeSpan;
         }
 
-        public TimeDelta SubstractTimeDelta(TimeDelta other)
+        public void SubstractTimeDelta(TimeDelta other)
         {
-            return new TimeDelta(mTimeDelta -= other.TimeDeltaAsTimeSpan);
+            mTimeDelta -= other.TimeDeltaAsTimeSpan;
         }
 
         /// <summary>

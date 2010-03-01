@@ -183,7 +183,7 @@ namespace urakawa.media.data.audio
         /// </remarks>
         public Stream OpenPcmInputStream(Time clipBegin)
         {
-            return OpenPcmInputStream(clipBegin, Time.Zero.AddTimeDelta(AudioDuration));
+            return OpenPcmInputStream(clipBegin, new Time(AudioDuration.TimeDeltaAsTimeSpan));
         }
 
         /// <summary>
@@ -326,7 +326,7 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration of the audio to replace</param>
         public void ReplacePcmData(Stream pcmData, Time replacePoint, TimeDelta duration)
         {
-            RemovePcmData(replacePoint, replacePoint.AddTimeDelta(duration));
+            RemovePcmData(replacePoint, new Time(replacePoint.TimeAsTimeSpan+duration.TimeDeltaAsTimeSpan));
             InsertPcmData(pcmData, replacePoint, duration);
         }
 
@@ -383,7 +383,7 @@ namespace urakawa.media.data.audio
         /// <param name="clipBegin">The clip begin</param>
         public virtual void RemovePcmData(Time clipBegin)
         {
-            RemovePcmData(clipBegin, Time.Zero.AddTimeDelta(AudioDuration));
+            RemovePcmData(clipBegin, new Time(AudioDuration.TimeDeltaAsTimeSpan));
         }
 
         /// <summary>
@@ -448,7 +448,7 @@ namespace urakawa.media.data.audio
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The split point can not be negative");
             }
-            if (splitPoint.IsGreaterThan(Time.Zero.AddTimeDelta(AudioDuration)))
+            if (splitPoint.IsGreaterThan(new Time(AudioDuration.TimeDeltaAsTimeSpan)))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The split point can not be beyond the end of the AudioMediaData");
@@ -460,8 +460,8 @@ namespace urakawa.media.data.audio
                                                                          "The MediaDataFactory can not create a AudioMediaData matching Xuk QName {1}:{0}",
                                                                          XukLocalName, XukNamespaceUri));
             }
-            AudioMediaData secondPartAMD = (AudioMediaData) md;
-            TimeDelta spDur = Time.Zero.AddTimeDelta(AudioDuration).GetTimeDelta(splitPoint);
+            AudioMediaData secondPartAMD = (AudioMediaData)md;
+            TimeDelta spDur = new Time(AudioDuration.TimeDeltaAsTimeSpan).GetTimeDelta(splitPoint);
             Stream secondPartAudioStream = OpenPcmInputStream(splitPoint);
             try
             {

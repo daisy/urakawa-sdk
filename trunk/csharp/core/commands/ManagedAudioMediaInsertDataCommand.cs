@@ -152,7 +152,7 @@ namespace urakawa.commands
             long durationBytes = manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
                     manMedia.Duration.TimeDeltaAsMillisecondDouble);
 
-            if (TimeInsert.IsEqualTo(Time.Zero.AddTimeDelta(manMedia.Duration))
+            if (TimeInsert.IsEqualTo(new Time(manMedia.Duration.TimeDeltaAsTimeSpan))
                 ||
                 manMedia.AudioMediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(timeInsertBytes, durationBytes))
             {

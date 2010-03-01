@@ -332,7 +332,7 @@ namespace urakawa.daisy.export.visitor
                 //extAudioMedia.ClipEnd = new Time(timeEnd);
 
                 TimeDelta durationFromRiffHeader = new TimeDelta(marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(marker.m_LocalStreamDataLength));
-                extAudioMedia.ClipEnd = extAudioMedia.ClipBegin.AddTimeDelta(durationFromRiffHeader);
+                extAudioMedia.ClipEnd = new Time(extAudioMedia.ClipBegin.TimeAsTimeSpan+durationFromRiffHeader.TimeDeltaAsTimeSpan);
 
 
                 ChannelsProperty chProp = marker.m_TreeNode.GetOrCreateChannelsProperty();

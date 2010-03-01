@@ -8,6 +8,28 @@ namespace urakawa.media.timing
     /// </summary>
     public class Time
     {
+        public static bool operator ==(Time a, Time b)
+        {
+            // If both are null, or both are same instance, return true.
+            if (ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
+            // If one is null, but not both, return false.
+            if (((object)a == null) || ((object)b == null))
+            {
+                return false;
+            }
+
+            return a.IsEqualTo(b);
+        }
+
+        public static bool operator !=(Time a, Time b)
+        {
+            return !(a == b);
+        }
+
         /// <summary>
         /// Gets a <see cref="Time"/> representing 00:00:00.000
         /// </summary>
@@ -389,36 +411,36 @@ namespace urakawa.media.timing
         /// Adds another <see cref="Time"/> to the current <see cref="Time"/>
         /// </summary>
         /// <param name="other">The other <see cref="Time"/></param>
-        public Time AddTime(Time other)
+        public void AddTime(Time other)
         {
-            return new Time(mTime + other.TimeAsTimeSpan);
+            mTime += other.TimeAsTimeSpan;
         }
 
         /// <summary>
         /// Adds a <see cref="TimeDelta"/> to the current <see cref="Time"/>
         /// </summary>
         /// <param name="other">The <see cref="TimeDelta"/> to add</param>
-        public Time AddTimeDelta(TimeDelta other)
+        public void AddTimeDelta(TimeDelta other)
         {
-            return new Time(mTime + other.TimeDeltaAsTimeSpan);
+            mTime += other.TimeDeltaAsTimeSpan;
         }
 
         /// <summary>
         /// Subtracts a <see cref="Time"/> from the current <see cref="Time"/>
         /// </summary>
         /// <param name="other">The <see cref="Time"/> to add</param>
-        public Time SubtractTime(Time other)
+        public void SubtractTime(Time other)
         {
-            return new Time(mTime - other.TimeAsTimeSpan);
+            mTime -= other.TimeAsTimeSpan;
         }
 
         /// <summary>
         /// Subtracts a <see cref="TimeDelta"/> from the current <see cref="Time"/>
         /// </summary>
         /// <param name="other">The <see cref="TimeDelta"/> to add</param>
-        public Time SubtractTimeDelta(TimeDelta other)
+        public void SubtractTimeDelta(TimeDelta other)
         {
-            return new Time(mTime - other.TimeDeltaAsTimeSpan);
+            mTime -= other.TimeDeltaAsTimeSpan;
         }
 
         public static readonly bool COMPARE_RESOLUTION_ONE_MS = true;

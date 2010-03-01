@@ -42,7 +42,7 @@ namespace urakawa.media.data.audio
         /// <returns>The copy</returns>
         public ManagedAudioMedia Copy(Time clipBegin)
         {
-            return Copy(clipBegin, Time.Zero.AddTimeDelta(Duration));
+            return Copy(clipBegin, new Time(Duration.TimeDeltaAsTimeSpan));
         }
 
 
