@@ -39,6 +39,22 @@ namespace urakawa.daisy.import
             m_FilePathsMap = new Dictionary<string, string>();
         }
 
+        public void RelocateDestinationFilePath(string originalPath, string newPath)
+        {
+            var keys = new List<string>(m_FilePathsMap.Count);
+            foreach (string key in m_FilePathsMap.Keys)
+            {
+                keys.Add(key);
+            }
+            foreach (string key in keys)
+            {
+                if (m_FilePathsMap[key] == originalPath)
+                {
+                    m_FilePathsMap[key] = newPath;
+                }
+            }
+        }
+
         /// <summary>
         /// checks if wav file or mp3 file has already been converted in the same session, if it is already converted, returns file path of converted file
         /// else convert to wav file with default project format and stores it in data directory of project.
@@ -103,16 +119,6 @@ namespace urakawa.daisy.import
         //    }
         //}
 
-        //public void RelocateDestinationFilePath(string originalPath, string newPath)
-        //{
-        //    foreach (string srcFilePath in m_FilePathsMap.Keys)
-        //    {
-        //        if (m_FilePathsMap[srcFilePath] == originalPath)
-        //        {
-        //            m_FilePathsMap[srcFilePath] = newPath;
-        //        }
-        //    }
-        //}
 
 
         /// <summary>
