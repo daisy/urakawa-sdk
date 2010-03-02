@@ -278,6 +278,9 @@ namespace urakawa.daisy.import
                                 dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
                                 Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullWavPath) + " = " + dataProv.DataFileRelativePath);
                                 dataProv.InitByMovingExistingFile(newfullWavPath);
+
+                                m_AudioConversionSession.RelocateDestinationFilePath(newfullWavPath, dataProv.DataFileFullPath);
+
                                 m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
 
                                 if (RequestCancellation) return;
@@ -337,6 +340,9 @@ namespace urakawa.daisy.import
                     dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
                     Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullMp3PathOriginal) + " = " + dataProv.DataFileRelativePath);
                     dataProv.InitByMovingExistingFile(newfullWavPath);
+
+                    m_AudioConversionSession.RelocateDestinationFilePath(newfullWavPath, dataProv.DataFileFullPath);
+
                     m_OriginalAudioFile_FileDataProviderMap.Add(fullMp3PathOriginal, dataProv);
 
                     if (RequestCancellation) return;
