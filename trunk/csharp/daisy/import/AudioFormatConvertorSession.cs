@@ -144,12 +144,9 @@ namespace urakawa.daisy.import
                 case AudioFileType.WavUncompressed:
                 case AudioFileType.WavCompressed:
                     {
-                        if (destinationFormatInfo == null)
-                            throw new ArgumentNullException("destinationFormatInfo");
-
                         WavFormatConverter formatConverter1 = new WavFormatConverter(true);
                         return formatConverter1.ConvertSampleRate(SourceFilePath, destinationDirectory,
-                                                                  destinationFormatInfo.Data);
+                            destinationFormatInfo != null ? destinationFormatInfo.Data : new AudioLibPCMFormat());
                     }
                 case AudioFileType.Mp3:
                     {
