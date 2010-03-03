@@ -28,7 +28,7 @@ namespace urakawa.daisy.import
 
         public Daisy3_Import(string bookfile, string outDir)
         {
-            reportProgress(10, "Initializing import...");
+            reportProgress(10, "Initializing import...");                               // TODO LOCALIZE InitializeImport
 
             m_PackageUniqueIdAttr = null;
             m_Book_FilePath = bookfile;
@@ -42,12 +42,12 @@ namespace urakawa.daisy.import
                 Directory.CreateDirectory(m_outDirectory);
             }
 
-            reportProgress(50, "Initializing import...");
+            reportProgress(50, "Initializing import...");                                // TODO LOCALIZE Key already added
 
             if (RequestCancellation) return;
             initializeProject();
 
-            reportProgress(100, "Import initialized.");
+            reportProgress(100, "Import initialized.");                                  // TODO LOCALIZE ImportInitialized
         }
 
         public override void DoWork()
@@ -55,7 +55,7 @@ namespace urakawa.daisy.import
             if (RequestCancellation) return;
             transformBook();
 
-            reportProgress(-1, "Saving XUK...");
+            reportProgress(-1, "Saving XUK...");                                          // TODO LOCALIZE SaveXuk
 
             if (RequestCancellation) return;
             m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
@@ -65,8 +65,8 @@ namespace urakawa.daisy.import
 
             var action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath))
             {
-                ShortDescription = "Saving XUK file...",
-                LongDescription = "Serializing the document object model from the Urakawa SDK as XML content into a XUK file..."
+                ShortDescription = "Saving XUK file...",                                  // TODO LOCALIZE SavingXUKFile
+                LongDescription = "Serializing the document object model from the Urakawa SDK as XML content into a XUK file..."               // TODO LOCALIZE SerializeDOMIntoXUKFile
             };
 
             action.Progress += (sender, e) =>
@@ -88,8 +88,8 @@ namespace urakawa.daisy.import
                     e.Cancel();
                 }
             };
-            action.Finished += (sender, e) => reportProgress(100, "XUK Saved.");
-            action.Cancelled += (sender, e) => reportProgress(0, "Cancelled XUK Saving.");
+            action.Finished += (sender, e) => reportProgress(100, "XUK Saved.");                   // TODO LOCALIZE XUKSaved
+            action.Cancelled += (sender, e) => reportProgress(0, "Cancelled XUK Saving.");         // TODO LOCALIZE CancelledXUKSaving
 
             action.Execute();
 
@@ -149,7 +149,7 @@ namespace urakawa.daisy.import
                         XmlDocument opfXmlDoc = readXmlDocument(m_Book_FilePath);
 
                         if (RequestCancellation) break;
-                        reportProgress(-1, "Parsing OPF: [" + Path.GetFileName(m_Book_FilePath) + "]");
+                        reportProgress(-1, "Parsing OPF: [" + Path.GetFileName(m_Book_FilePath) + "]");              // TODO LOCALIZE ParsingOPF
                         parseOpf(opfXmlDoc);
                         
                         break;
@@ -159,11 +159,11 @@ namespace urakawa.daisy.import
                         XmlDocument contentXmlDoc = readXmlDocument(m_Book_FilePath);
 
                         if (RequestCancellation) break;
-                        reportProgress(-1, "Parsing metadata: [" + Path.GetFileName(m_Book_FilePath) + "]");
+                        reportProgress(-1, "Parsing metadata: [" + Path.GetFileName(m_Book_FilePath) + "]");         // TODO LOCALIZE ParsingMetadata
                         parseMetadata(contentXmlDoc);
                         
                         if (RequestCancellation) break;
-                        reportProgress(-1, "Parsing content: [" + Path.GetFileName(m_Book_FilePath) + "]");
+                        reportProgress(-1, "Parsing content: [" + Path.GetFileName(m_Book_FilePath) + "]");          // TODO LOCALIZE ParsingContent
                         parseContentDocument(contentXmlDoc, null, m_Book_FilePath);
                         
                         break;
@@ -214,7 +214,7 @@ namespace urakawa.daisy.import
 
             if (RequestCancellation) return;
 
-            reportProgress(100, "Transform complete");
+            reportProgress(100, "Transform complete");                                    // TODO LOCALIZE TransformComplete
         }
 
         private core.TreeNode getTreeNodeWithXmlElementId(string id)

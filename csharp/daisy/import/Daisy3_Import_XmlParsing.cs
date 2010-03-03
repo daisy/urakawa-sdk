@@ -16,8 +16,8 @@ namespace urakawa.daisy.import
     public partial class Daisy3_Import
     {
         private XmlDocument readXmlDocument(string path)
-        {
-            reportSubProgress(-1, "Reading XML document [" + Path.GetFileName(path) + "]...");
+        {   
+            reportSubProgress(-1, "Reading XML document [" + Path.GetFileName(path) + "]...");                 // TODO LOCALIZE ReadXMLDoc
 
             XmlReaderSettings settings = new XmlReaderSettings();
 
@@ -58,7 +58,7 @@ namespace urakawa.daisy.import
                     xmlReader.Close();
                 }
 
-                reportSubProgress(100, "XML document loaded [" + path + "].");
+                reportSubProgress(100, "XML document loaded [" + path + "].");            // TODO LOCALIZE XmlDocLoaded
                 return xmldoc;
             }
         }
@@ -68,7 +68,7 @@ namespace urakawa.daisy.import
             private ICredentials m_Credentials;
 
             private readonly bool m_EnableHttpCaching;
-            private const string m_DtdStoreDirName = "Downloaded-DTDs";
+            private const string m_DtdStoreDirName = "Downloaded-DTDs";                    // TODO LOCALIZE DtdStoreDirName
 
             public LocalXmlUrlResolver(bool enableHttpCaching)
             {

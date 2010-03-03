@@ -49,7 +49,7 @@ namespace urakawa.daisy.export.visitor
             string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
                 Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
 
-            reportProgress ( m_ProgressPercentage, "Creating mp3 file [" + Path.GetFileName ( destinationFilePath ) + "]" );
+            reportProgress ( m_ProgressPercentage, "Creating mp3 file [" + Path.GetFileName ( destinationFilePath ) + "]" );               // TODO LOCALIZE CreateMP3File
             if (formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, audioFormat.Data, BitRate_Mp3))
             {
                 foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
@@ -65,7 +65,7 @@ namespace urakawa.daisy.export.visitor
             else
             {
                 // append error messages
-                base.ErrorMessages = base.ErrorMessages + "Error in encoding " + Path.GetFileName(sourceFilePath) + "\n";
+                base.ErrorMessages = base.ErrorMessages + "Error in encoding " + Path.GetFileName(sourceFilePath) + "\n";      // TODO LOCALIZE ErrorInEncoding
             }
 
             m_ExternalAudioMediaList.Clear();

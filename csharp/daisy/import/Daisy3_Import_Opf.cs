@@ -41,11 +41,11 @@ namespace urakawa.daisy.import
                 XmlDocument dtbookXmlDoc = readXmlDocument(fullDtbookPath);
 
                 if (RequestCancellation) return;
-                reportProgress(-1, "Parsing metadata: [" + dtbookPath + "]");
+                reportProgress(-1, "Parsing metadata: [" + dtbookPath + "]");                     // TODO LOCALIZE Key already added
                 parseMetadata(dtbookXmlDoc);
 
                 if (RequestCancellation) return;
-                reportProgress(-1, "Parsing content: [" + dtbookPath + "]");
+                reportProgress(-1, "Parsing content: [" + dtbookPath + "]");                      // TODO LOCALIZE Key already added
                 parseContentDocument(dtbookXmlDoc, null, fullDtbookPath);
             }
 
