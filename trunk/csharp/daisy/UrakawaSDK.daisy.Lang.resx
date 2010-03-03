@@ -150,9 +150,6 @@
   <data name="DecodingAudio" xml:space="preserve">
     <value>Decoding audio: [{0}]</value>
   </data>
-  <data name="DtdStoreDirName" xml:space="preserve">
-    <value>Downloaded-DTDs</value>
-  </data>
   <data name="ErrorInEncoding" xml:space="preserve">
     <value>Error in encoding {0}\n</value>
   </data>

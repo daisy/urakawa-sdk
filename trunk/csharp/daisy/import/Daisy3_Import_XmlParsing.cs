@@ -68,7 +68,7 @@ namespace urakawa.daisy.import
             private ICredentials m_Credentials;
 
             private readonly bool m_EnableHttpCaching;
-            private const string m_DtdStoreDirName = "Downloaded-DTDs";                    // TODO LOCALIZE DtdStoreDirName
+            private const string m_DtdStoreDirName = "Downloaded-DTDs";                    
 
             public LocalXmlUrlResolver(bool enableHttpCaching)
             {
