@@ -52,7 +52,7 @@ namespace urakawa.daisy.export
             if (RequestCancellation) return;
 
             m_ProgressPercentage = 0;
-            reportProgress ( 0, "Creating DTBook.xml file" );
+            reportProgress ( 0, "Creating DTBook.xml file" );                                  // TODO LOCALIZE CreatingXMLFile
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
             if ( list_ExternalStyleSheets != null )  ExportStyleSheets ( list_ExternalStyleSheets );
 
@@ -127,7 +127,7 @@ namespace urakawa.daisy.export
                         if (doesTreeNodeTriggerNewSmil(n))
                         {
                             m_ListOfLevels.Add(n);
-                            reportSubProgress ( -1, "Creating DTBook.xml file" );
+                            reportSubProgress ( -1, "Creating DTBook.xml file" );             // TODO LOCALIZE Key already added
                         }
 
 
