@@ -160,15 +160,6 @@ namespace urakawa.daisy {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downloaded-DTDs.
-        /// </summary>
-        public static string DtdStoreDirName {
-            get {
-                return ResourceManager.GetString("DtdStoreDirName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Error in encoding {0}\n.
         /// </summary>
         public static string ErrorInEncoding {
