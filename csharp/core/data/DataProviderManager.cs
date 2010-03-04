@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using urakawa.progress;
@@ -24,17 +25,17 @@ namespace urakawa.data
             m_CompareByteStreamsDuringValueEqual = true;
         }
 
-        public void AllowCopyDataOnUriChanged(bool enable)
-        {
-            if (enable)
-            {
-                Presentation.RootUriChanged += Presentation_rootUriChanged;
-            }
-            else
-            {
-                Presentation.RootUriChanged -= Presentation_rootUriChanged;
-            }
-        }
+        //public void AllowCopyDataOnUriChanged(bool enable)
+        //{
+        //    if (enable)
+        //    {
+        //        Presentation.RootUriChanged += Presentation_rootUriChanged;
+        //    }
+        //    else
+        //    {
+        //        Presentation.RootUriChanged -= Presentation_rootUriChanged;
+        //    }
+        //}
 
         private List<string> mXukedInFilDataProviderPaths = new List<string>();
         private string mDataFileDirectory;
@@ -84,101 +85,110 @@ namespace urakawa.data
         /// If the DataFileDirectory has not been explicitly initialized using the <see cref="DataFileDirectory"/> setter,
         /// retrieving <see cref="DataFileDirectory"/> will assing it the default value "Data"</remarks>
 
-        //{
-        //    get
-        //    {
-        //        if (mDataFileDirectory == null) mDataFileDirectory = "Data";
-        //        return mDataFileDirectory;
-        //    }
-        //set
-        //{
-        //    if (value == null)
-        //    {
-        //        throw new exception.MethodParameterIsNullException(
-        //            "The DataFileDirectory can not be null");
-        //    }
-        //    if (mDataFileDirectory != null)
-        //    {
-        //        throw new exception.IsAlreadyInitializedException(
-        //            "The DataProviderManager has already been initialized with a DataFileDirectory");
-        //    }
-        //    Uri tmp;
-        //    if (!Uri.TryCreate(value, UriKind.Relative, out tmp))
-        //    {
-        //        throw new exception.InvalidUriException(String.Format(
-        //                                                    "DataFileDirectory must be a relative Uri, '{0}' is not",
-        //                                                    value));
-        //    }
+        ////{
+        ////    get
+        ////    {
+        ////        if (mDataFileDirectory == null) mDataFileDirectory = "Data";
+        ////        return mDataFileDirectory;
+        ////    }
+        ////set
+        ////{
+        ////    if (value == null)
+        ////    {
+        ////        throw new exception.MethodParameterIsNullException(
+        ////            "The DataFileDirectory can not be null");
+        ////    }
+        ////    if (mDataFileDirectory != null)
+        ////    {
+        ////        throw new exception.IsAlreadyInitializedException(
+        ////            "The DataProviderManager has already been initialized with a DataFileDirectory");
+        ////    }
+        ////    Uri tmp;
+        ////    if (!Uri.TryCreate(value, UriKind.Relative, out tmp))
+        ////    {
+        ////        throw new exception.InvalidUriException(String.Format(
+        ////                                                    "DataFileDirectory must be a relative Uri, '{0}' is not",
+        ////                                                    value));
+        ////    }
 
-        //    if (!Directory.Exists(value))
+        ////    if (!Directory.Exists(value))
+        ////    {
+        ////        Directory.CreateDirectory(value);
+        ////    }
+        ////    mDataFileDirectory = value;
+        ////}
+        ////}
+
+        ///// <summary>
+        ///// Moves the data file directory of the manager
+        ///// </summary>
+        ///// <param name="newDataFileDir">The new data file direcotry</param>
+        ///// <param name="deleteSource">A <see cref="bool"/> indicating if the source/old data files shlould be deleted</param>
+        ///// <param name="overwriteDestDir">A <see cref="bool"/> indicating if the new data directory should be overwritten</param>
+        //public void MoveDataFiles(string newDataFileDir, bool deleteSource, bool overwriteDestDir)
+        //{
+        //    if (Path.IsPathRooted(newDataFileDir))
         //    {
-        //        Directory.CreateDirectory(value);
+        //        throw new exception.MethodParameterIsOutOfBoundsException(
+        //            "The data file directory path must be relative");
         //    }
-        //    mDataFileDirectory = value;
-        //}
+        //    string oldPath = DataFileDirectoryFullPath;
+        //    mDataFileDirectory = newDataFileDir;
+        //    string newPath = DataFileDirectoryFullPath;
+        //    try
+        //    {
+        //        if (Directory.Exists(newPath))
+        //        {
+        //            if (overwriteDestDir)
+        //            {
+        //                Directory.Delete(newPath);
+        //            }
+        //            else
+        //            {
+        //                throw new exception.OperationNotValidException(
+        //                    String.Format("Directory {0} already exists", newPath));
+        //            }
+        //        }
+        //        CopyDataFiles(oldPath, newPath);
+        //        if (deleteSource && Directory.Exists(oldPath))
+        //        {
+        //            Directory.Delete(oldPath);
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new exception.OperationNotValidException(
+        //            String.Format("Could not move data files to {0}: {1}", newPath, e.Message),
+        //            e);
+        //    }
         //}
 
-        /// <summary>
-        /// Moves the data file directory of the manager
-        /// </summary>
-        /// <param name="newDataFileDir">The new data file direcotry</param>
-        /// <param name="deleteSource">A <see cref="bool"/> indicating if the source/old data files shlould be deleted</param>
-        /// <param name="overwriteDestDir">A <see cref="bool"/> indicating if the new data directory should be overwritten</param>
-        public void MoveDataFiles(string newDataFileDir, bool deleteSource, bool overwriteDestDir)
+        public string CopyFileDataProvidersToDataFolderWithPrefix(string parentFolderPath, string prefixforSubDataFolder)
         {
-            if (Path.IsPathRooted(newDataFileDir))
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    "The data file directory path must be relative");
-            }
-            string oldPath = DataFileDirectoryFullPath;
-            mDataFileDirectory = newDataFileDir;
-            string newPath = DataFileDirectoryFullPath;
-            try
-            {
-                if (Directory.Exists(newPath))
-                {
-                    if (overwriteDestDir)
-                    {
-                        Directory.Delete(newPath);
-                    }
-                    else
-                    {
-                        throw new exception.OperationNotValidException(
-                            String.Format("Directory {0} already exists", newPath));
-                    }
-                }
-                CopyDataFiles(oldPath, newPath);
-                if (deleteSource && Directory.Exists(oldPath))
-                {
-                    Directory.Delete(oldPath);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new exception.OperationNotValidException(
-                    String.Format("Could not move data files to {0}: {1}", newPath, e.Message),
-                    e);
-            }
+            string fullDataFolderPath = Path.Combine(parentFolderPath,
+                                                     prefixforSubDataFolder + "___" + DefaultDataFileDirectory);
+
+            CopyFileDataProvidersToDataFolder(fullDataFolderPath);
+
+            return fullDataFolderPath;
         }
 
-        private void CopyDataFiles(string source, string dest)
+
+        public void CopyFileDataProvidersToDataFolder(string fullDataFolderPath)
         {
-            if (!Directory.Exists(dest))
+            if (!Directory.Exists(fullDataFolderPath))
             {
-                Directory.CreateDirectory(dest);
+                Directory.CreateDirectory(fullDataFolderPath);
             }
 
             foreach (FileDataProvider fdp in ManagedFileDataProviders)
             {
-                string pathSource = Path.Combine(source, fdp.DataFileRelativePath);
+                string pathSource = Path.Combine(DataFileDirectoryFullPath, fdp.DataFileRelativePath);
                 if (!File.Exists(pathSource))
                 {
-                    throw new exception.DataMissingException(String.Format(
-                                                                 "Error while copying data files from {0} to {1}: Data file {2} does not exist in the source",
-                                                                 source, dest, fdp.DataFileRelativePath));
+                    throw new exception.DataMissingException(String.Format("File does not exist: {0}", pathSource));
                 }
-                string pathDest = Path.Combine(dest, fdp.DataFileRelativePath);
+                string pathDest = Path.Combine(fullDataFolderPath, fdp.DataFileRelativePath);
                 if (!File.Exists(pathDest))
                 {
                     File.Copy(pathSource, pathDest);
@@ -221,7 +231,7 @@ namespace urakawa.data
         }
 
         private const string DefaultDataFileDirectory = "Data";
-        
+
         // it's only public because XukIn needs it !
         // TODO: several Presentations with the same Data folder will conflict within a single Project !!
         public string DataFileDirectory = DefaultDataFileDirectory;
@@ -278,10 +288,18 @@ namespace urakawa.data
             while (true)
             {
                 res = Path.ChangeExtension(Path.GetRandomFileName(), extension);
+
+                string fullPath = Path.Combine(DataFileDirectoryFullPath, res);
+                if (File.Exists(fullPath)) continue;
+
                 foreach (FileDataProvider prov in ManagedFileDataProviders)
                 {
                     if (!prov.IsDataFileInitialized) continue;
-                    if (res.ToLower() == prov.DataFileRelativePath.ToLower()) continue;
+                    if (prov.DataFileRelativePath.ToLower() == res.ToLower())
+                    {
+                        Debug.Fail("This situation should have been caught by the File.EXist() test above !");
+                        continue;
+                    }
                 }
                 break;
             }
@@ -313,17 +331,17 @@ namespace urakawa.data
 
         #region IDataProviderManager Members
 
-        private void Presentation_rootUriChanged(Object o, events.presentation.RootUriChangedEventArgs e)
-        {
-            if (e.PreviousUri != null)
-            {
-                string prevDataDirFullPath = getDataFileDirectoryFullPath(e.PreviousUri);
-                if (Directory.Exists(prevDataDirFullPath))
-                {
-                    CopyDataFiles(prevDataDirFullPath, DataFileDirectoryFullPath);
-                }
-            }
-        }
+        //private void Presentation_rootUriChanged(Object o, events.presentation.RootUriChangedEventArgs e)
+        //{
+        //    if (e.PreviousUri != null)
+        //    {
+        //        string prevDataDirFullPath = getDataFileDirectoryFullPath(e.PreviousUri);
+        //        if (Directory.Exists(prevDataDirFullPath))
+        //        {
+        //            CopyDataFiles(prevDataDirFullPath, DataFileDirectoryFullPath);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Detaches one of the <see cref="DataProvider"/>s managed by the manager
@@ -495,6 +513,12 @@ namespace urakawa.data
                                                                  "Another FileDataProvider using data file {0} has already been Xukked in",
                                                                  fdProv.DataFileRelativePath.ToLower()));
                         }
+
+                        if (!File.Exists(fdProv.DataFileFullPath))
+                        {
+                            Presentation.DataProviderManager.RemoveManagedObject(fdProv);
+                            return;
+                        }
                         mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
                     }
 
@@ -549,6 +573,12 @@ namespace urakawa.data
                                     throw new exception.XukException(String.Format(
                                                                          "Another FileDataProvider using data file {0} has already been Xukked in",
                                                                          fdProv.DataFileRelativePath.ToLower()));
+                                }
+
+                                if (!File.Exists(fdProv.DataFileFullPath))
+                                {
+                                    Presentation.DataProviderManager.RemoveManagedObject(fdProv);
+                                    return;
                                 }
                                 mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
                             }

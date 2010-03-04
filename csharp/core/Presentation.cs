@@ -49,7 +49,8 @@ namespace urakawa
 
                 if (!DataProviderManager.IsManagerOf(newId)
                     && !ChannelsManager.IsManagerOf(newId)
-                    && !MediaDataManager.IsManagerOf(newId))
+                    && !MediaDataManager.IsManagerOf(newId)
+                    && !ExternalFilesDataManager.IsManagerOf(newId))
                 {
                     return newId;
                 }

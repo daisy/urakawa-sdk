@@ -191,13 +191,13 @@ namespace urakawa.media.data.image
             {
                 throw new XukException("The DataProvider of an ImageMediaData cannot be null or empty !");
             }
-            DataProvider prov = Presentation.DataProviderManager.GetManagedObject(uid);
-
-            if (prov == null)
+            
+            if (!Presentation.DataProviderManager.IsManagerOf(uid))
             {
-                throw new XukException(
+                throw new IsNotManagerOfException(
                         String.Format("DataProvider cannot be found {0}", uid));
             }
+            DataProvider prov = Presentation.DataProviderManager.GetManagedObject(uid);
 
             InitializeImage(prov, path);
         }

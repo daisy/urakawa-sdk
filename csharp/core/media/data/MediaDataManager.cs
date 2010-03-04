@@ -219,13 +219,13 @@ namespace urakawa.media.data
         /// </exception>
         public MediaData CopyMediaData(string uid)
         {
-            MediaData data = GetManagedObject(uid);
-            if (data == null)
+            if (!IsManagerOf(uid))
             {
                 throw new exception.IsNotManagerOfException(String.Format(
                                                                 "The media data manager does not manage a media data with UID {0}",
                                                                 uid));
             }
+            MediaData data = GetManagedObject(uid);
             return CopyMediaData(data);
         }
 
