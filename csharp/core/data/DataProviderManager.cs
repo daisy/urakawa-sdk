@@ -214,9 +214,17 @@ namespace urakawa.data
             return localPath;
         }
 
+
+        public void SetDataFileDirectoryWithPrefix(string dataFolderPrefix)
+        {
+            DataFileDirectory = dataFolderPrefix + "___" + DefaultDataFileDirectory;
+        }
+
+        private const string DefaultDataFileDirectory = "Data";
+        
         // it's only public because XukIn needs it !
         // TODO: several Presentations with the same Data folder will conflict within a single Project !!
-        public string DataFileDirectory = "Data";
+        public string DataFileDirectory = DefaultDataFileDirectory;
 
         /// <summary>
         /// Gets the full path of the data file directory and creates it. 
@@ -651,7 +659,7 @@ namespace urakawa.data
                 return false;
             }
 
-            if (otherManager.DataFileDirectory != DataFileDirectory) return false;
+            //if (otherManager.DataFileDirectory != DataFileDirectory) return false;
 
             return true;
         }

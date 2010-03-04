@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml;
 using urakawa.command;
 using urakawa.progress;
 using urakawa.media.data;
-using urakawa.events;
 using urakawa.events.undo;
 using urakawa.xuk;
 
@@ -15,6 +15,33 @@ namespace urakawa.undo
     /// </summary>
     public sealed class UndoRedoManager : XukAble, IUsingMediaData //IChangeNotifier
     {
+        class DummyCommand : Command{
+            public override string GetTypeNameFormatted()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override bool CanExecute
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public override void Execute()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void UnExecute()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override bool CanUnExecute
+            {
+                get { throw new NotImplementedException(); }
+            }
+        }
+
         public override string GetTypeNameFormatted()
         {
             return XukStrings.UndoRedoManager;
@@ -40,6 +67,9 @@ namespace urakawa.undo
             mUndoStack = new Stack<Command>();
             mRedoStack = new Stack<Command>();
             mActiveTransactions = new Stack<CompositeCommand>();
+
+            m_DirtyMarkerDummyCommand = new DummyCommand();
+            m_DirtyMarkerCommand = m_DirtyMarkerDummyCommand;
 
             //TransactionStarted += this_transactionStarted;
             //TransactionEnded += this_transactionEnded;
@@ -190,6 +220,25 @@ namespace urakawa.undo
         private Stack<Command> mRedoStack; // stack of commands to redo
         private Stack<CompositeCommand> mActiveTransactions;
 
+        private readonly Command m_DirtyMarkerDummyCommand;
+
+        private Command m_DirtyMarkerCommand;
+
+        public void SetDirtyMarker()
+        {
+            if (mUndoStack.Count == 0) m_DirtyMarkerCommand = m_DirtyMarkerDummyCommand;
+            else m_DirtyMarkerCommand = mUndoStack.Peek();
+        }
+
+        public bool IsOnDirtyMarker()
+        {
+            if (mUndoStack.Count == 0)
+            {
+                return m_DirtyMarkerCommand == m_DirtyMarkerDummyCommand;
+            }
+            return mUndoStack.Peek() == m_DirtyMarkerCommand;
+        }
+
         /// <summary>
         /// Gets a list of all <see cref="MediaData"/> used by the undo/redo manager associated <see cref="Command"/>s,
         /// here a <see cref="Command"/> is considered associated with the manager if it is in the undo or redo stacks 
@@ -319,6 +368,11 @@ namespace urakawa.undo
                 if (command.CanUnExecute)
                 {
                     mUndoStack.Push(command);
+
+                    if (mRedoStack.Contains(m_DirtyMarkerCommand))
+                    {
+                        m_DirtyMarkerCommand = null;
+                    }
                     mRedoStack.Clear();
                 }
                 else
@@ -446,7 +500,16 @@ namespace urakawa.undo
                 throw new exception.UndoRedoTransactionHasNotEndedException(
                     "Can not flush command while a transaction is active");
             }
+            if (mUndoStack.Contains(m_DirtyMarkerCommand))
+            {
+                m_DirtyMarkerCommand = null;
+            }
             mUndoStack.Clear();
+
+            if (mRedoStack.Contains(m_DirtyMarkerCommand))
+            {
+                m_DirtyMarkerCommand = null;
+            }
             mRedoStack.Clear();
         }
 
@@ -563,5 +626,6 @@ namespace urakawa.undo
         }
 
         #endregion
+
     }
 }
