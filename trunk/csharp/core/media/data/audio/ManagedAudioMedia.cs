@@ -190,6 +190,12 @@ namespace urakawa.media.data.audio
                                                      "The MediaDataManager does not mamage a AudioMediaData with uid {0}",
                                                      uid));
             }
+            if (!Presentation.MediaDataManager.IsManagerOf(uid))
+            {
+                throw new exception.IsNotManagerOfException(
+                        String.Format("MediaData cannot be found {0}", uid));
+            }
+
             MediaData md = Presentation.MediaDataManager.GetManagedObject(uid);
             if (!(md is AudioMediaData))
             {

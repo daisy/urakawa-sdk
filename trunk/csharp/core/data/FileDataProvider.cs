@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using urakawa.xuk;
@@ -435,16 +436,15 @@ namespace urakawa.data
             }
             mDataFileRelativePath = val;
 
-            /*
-            if (!File.Exists(getDataFileFullPath()))
+            if (!File.Exists(DataFileFullPath))
             {
-                throw new exception.DataMissingException(
-                    String.Format("The data file {0} does not exist", DataFileFullPath));
+                Debug.Fail(String.Format("The data file [{0}] does not exist", DataFileFullPath));
+                //throw new exception.DataMissingException();
             }
-            */
-
-            HasBeenInitialized = true; //Assume that the data file exists
-
+            else
+            {
+                HasBeenInitialized = true; //Assume that the data file exists    
+            }
         }
 
         /// <summary>

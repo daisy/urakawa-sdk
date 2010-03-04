@@ -98,13 +98,13 @@ namespace urakawa.ExternalFiles
         /// </exception>
         public ExternalFileData CopyExternalFileData(string uid)
         {
-            ExternalFileData data = GetManagedObject(uid);
-            if (data == null)
+            if (!IsManagerOf(uid))
             {
                 throw new exception.IsNotManagerOfException(String.Format(
                                                                 "The ExternalFileData manager does not manage a ExternalFileData with UID {0}",
                                                                 uid));
             }
+            ExternalFileData data = GetManagedObject(uid);
             return CopyExternalFileData(data);
         }
 

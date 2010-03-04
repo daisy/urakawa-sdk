@@ -340,12 +340,12 @@ namespace urakawa.property.channel
                     Media newMedia = Presentation.MediaFactory.Create(source.LocalName, source.NamespaceURI);
                     if (newMedia != null)
                     {
-                        Channel channel = Presentation.ChannelsManager.GetManagedObject(channelRef);
-                        if (channel == null)
+                        if (!Presentation.ChannelsManager.IsManagerOf(channelRef))
                         {
-                            throw new exception.XukException(
+                            throw new exception.IsNotManagerOfException(
                                 String.Format("Found no channel with uid {0}", channelRef));
                         }
+                        Channel channel = Presentation.ChannelsManager.GetManagedObject(channelRef);
                         newMedia.XukIn(source, handler);
                         SetMedia(channel, newMedia);
                     }
