@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml;
+using AudioLib;
 using urakawa.core;
 using urakawa.daisy.export.visitor;
 using urakawa.property.channel;
@@ -87,8 +88,6 @@ namespace urakawa.daisy.export
 
             m_PublishVisitor.EncodePublishedAudioFilesToMp3 = m_encodeToMp3;
 
-            m_PublishVisitor.ProgressChangedEvent += new ProgressChangedEventHandler(ReportAudioPublishProgress);
-
             m_PublishVisitor.DestinationDirectory = new Uri(m_OutputDirectory, UriKind.Absolute);
 
             m_PublishVisitor.SourceChannel = m_Presentation.ChannelsManager.GetOrCreateAudioChannel();
@@ -96,6 +95,8 @@ namespace urakawa.daisy.export
             Channel publishChannel = m_Presentation.ChannelFactory.CreateAudioChannel();
             publishChannel.Name = PUBLISH_AUDIO_CHANNEL_NAME;
             m_PublishVisitor.DestinationChannel = publishChannel;
+
+            m_PublishVisitor.ProgressChangedEvent += new ProgressChangedEventHandler(ReportAudioPublishProgress);
 
             AddSubCancellable(m_PublishVisitor);
             m_Presentation.RootNode.AcceptDepthFirst(m_PublishVisitor);
@@ -142,7 +143,7 @@ namespace urakawa.daisy.export
         {
             //m_ProgressPercentage = Convert.ToInt32(e.ProgressPercentage * 0.85);
         m_ProgressPercentage = Convert.ToInt32 ( e.ProgressPercentage  );
-            reportProgress(m_ProgressPercentage, (string)e.UserState);
+//            reportProgress(m_ProgressPercentage, (string)e.UserState);
         }
 
         private bool doesTreeNodeTriggerNewSmil(TreeNode node)

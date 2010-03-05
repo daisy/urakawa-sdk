@@ -375,20 +375,20 @@ namespace urakawa.data
             set { m_CompareByteStreamsDuringValueEqual = value; }
         }
 
-        /// <summary>
-        /// Remove all <see cref="DataProvider"/> that are managed by the manager
-        /// </summary>
-        /// <param name="delete">A <see cref="bool"/> indicating if the removed data providers should be deleted</param>
-        public void RemoveUnusedDataProviders(List<DataProvider> usedDataProviders, bool delete)
-        {
-            foreach (DataProvider prov in ManagedObjects.ContentsAs_YieldEnumerable)
-            {
-                if (!usedDataProviders.Contains(prov))
-                {
-                    RemoveDataProvider(prov, delete);
-                }
-            }
-        }
+        ///// <summary>
+        ///// Remove all <see cref="DataProvider"/> that are managed by the manager
+        ///// </summary>
+        ///// <param name="delete">A <see cref="bool"/> indicating if the removed data providers should be deleted</param>
+        //public void RemoveUnusedDataProviders(List<DataProvider> usedDataProviders, bool delete)
+        //{
+        //    foreach (DataProvider prov in ManagedObjects.ContentsAs_YieldEnumerable)
+        //    {
+        //        if (!usedDataProviders.Contains(prov))
+        //        {
+        //            RemoveDataProvider(prov, delete);
+        //        }
+        //    }
+        //}
 
         #endregion
 
