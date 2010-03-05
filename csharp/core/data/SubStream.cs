@@ -12,6 +12,7 @@ namespace urakawa.data
         private Stream mSource;
         private long mStartPosition;
         private long mLength;
+        private readonly string m_OptionalInfo;
 
         /// <summary>
         /// Constructor setting the source <see cref="Stream"/> as well as the start position and count
@@ -20,8 +21,10 @@ namespace urakawa.data
         /// <param name="source">The source <see cref="Stream"/></param>
         /// <param name="start">The start position of the sub-chunk</param>
         /// <param name="len">The count of the sub-chunk</param>
-        public SubStream(Stream source, long start, long len)
+        public SubStream(Stream source, long start, long len, string optionalInfo)
         {
+            m_OptionalInfo = optionalInfo;
+
             if (source == null)
             {
                 throw new exception.MethodParameterIsNullException("The source stream can not be null");
