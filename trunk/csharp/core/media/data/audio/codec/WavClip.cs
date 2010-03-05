@@ -141,7 +141,7 @@ namespace urakawa.media.data.audio.codec
             }
             mDataProvider = clipDataProvider;
             ClipBegin = clipBegin.Copy();
-            ClipEnd = clipEnd.Copy();
+            ClipEnd = clipEnd ?? clipEnd.Copy();
         }
 
         private TimeDelta cachedDuration = null;
