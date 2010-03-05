@@ -13,7 +13,7 @@ namespace urakawa.data
         private long mStartPosition;
         private long mLength;
         private readonly string m_OptionalInfo;
-
+        public string OptionalInfo { get { return m_OptionalInfo; } }
         /// <summary>
         /// Constructor setting the source <see cref="Stream"/> as well as the start position and count
         /// of the sub-chunk specifying the <see cref="SubStream"/>
@@ -145,7 +145,7 @@ namespace urakawa.data
             }
             else if (count > Length - Position)
             {
-                count = (int) (Length - Position);
+                count = (int)(Length - Position);
             }
             return mSource.Read(buffer, offset, count);
         }
