@@ -197,10 +197,10 @@ namespace urakawa.daisy.export.visitor
 
             if (manAudioMedia != null || seqAudioMedia != null)
             {
-                if (m_TotalTime == 0) m_TotalTime = node.Root.GetDurationOfManagedAudioMediaFlattened().TimeDeltaAsMillisecondDouble;
+                if (m_TotalTime == 0) m_TotalTime = node.Root.GetDurationOfManagedAudioMediaFlattened().AsMilliseconds;
 
-                m_TimeElapsed += manAudioMedia != null ? manAudioMedia.Duration.TimeDeltaAsMillisecondDouble :
-                    seqAudioMedia.GetDurationOfManagedAudioMedia().TimeDeltaAsMillisecondDouble;
+                m_TimeElapsed += manAudioMedia != null ? manAudioMedia.Duration.AsMilliseconds :
+                    seqAudioMedia.GetDurationOfManagedAudioMedia().AsMilliseconds;
                 m_ProgressPercentage = Convert.ToInt32((m_TimeElapsed * 100) / m_TotalTime);
                 
                 reportProgress(m_ProgressPercentage, "Creating audio file [" + Path.GetFileName(src) + "]" + GetSizeInfo (node));
@@ -350,8 +350,8 @@ namespace urakawa.daisy.export.visitor
                 //    marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesEnd);
                 //extAudioMedia.ClipEnd = new Time(timeEnd);
 
-                TimeDelta durationFromRiffHeader = new TimeDelta(marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(marker.m_LocalStreamDataLength));
-                extAudioMedia.ClipEnd = new Time(extAudioMedia.ClipBegin.TimeAsTimeSpan+durationFromRiffHeader.TimeDeltaAsTimeSpan);
+                Time durationFromRiffHeader = new Time(marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(marker.m_LocalStreamDataLength));
+                extAudioMedia.ClipEnd = new Time(extAudioMedia.ClipBegin.AsTimeSpan+durationFromRiffHeader.AsTimeSpan);
 
 
                 ChannelsProperty chProp = marker.m_TreeNode.GetOrCreateChannelsProperty();
@@ -495,7 +495,7 @@ namespace urakawa.daisy.export.visitor
                             }
 
                             extMediaStream.Position +=
-                                pcmInfo.ConvertTimeToBytes(extMedia.ClipBegin.TimeAsMillisecondDouble);
+                                pcmInfo.ConvertTimeToBytes(extMedia.ClipBegin.AsMilliseconds);
 
                             long manMediaStreamPosBefore = manMediaStream.Position;
                             long extMediaStreamPosBefore = extMediaStream.Position;

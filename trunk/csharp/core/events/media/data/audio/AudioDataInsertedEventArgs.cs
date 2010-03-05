@@ -18,7 +18,7 @@ namespace urakawa.events.media.data.audio
         /// <param name="source">The source <see cref="AudioMediaData"/> of the event</param>
         /// <param name="insPoint">The insertion point at which the audio data was inserted</param>
         /// <param name="dur">The duration of the data that was inserted</param>
-        public AudioDataInsertedEventArgs(AudioMediaData source, Time insPoint, TimeDelta dur)
+        public AudioDataInsertedEventArgs(AudioMediaData source, Time insPoint, Time dur)
             : base(source)
         {
             InsertPoint = insPoint.Copy();
@@ -33,6 +33,6 @@ namespace urakawa.events.media.data.audio
         /// <summary>
         /// The duration of the data that was inserted
         /// </summary>
-        public readonly TimeDelta Duration;
+        public readonly Time Duration;
     }
 }

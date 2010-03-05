@@ -93,10 +93,10 @@ namespace urakawa.daisy.export.visitor
                         writeInitialHeader(amd.PCMFormat);
                     }
 
-                    TimeDelta durationFromRiffHeader = amd.AudioDuration;
+                    Time durationFromRiffHeader = amd.AudioDuration;
 
                     Time clipBegin = new Time(mCurrentAudioFilePCMFormat.Data.ConvertBytesToTime(mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength));
-                    Time clipEnd = new Time(clipBegin.TimeAsTimeSpan + durationFromRiffHeader.TimeDeltaAsTimeSpan);
+                    Time clipEnd = new Time(clipBegin.AsTimeSpan + durationFromRiffHeader.AsTimeSpan);
 
                     //BinaryReader rd = new BinaryReader(stream);
 

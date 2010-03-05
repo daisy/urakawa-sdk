@@ -147,18 +147,18 @@ namespace urakawa.commands
 
             long timeInsertBytes =
                 manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
-                    TimeInsert.TimeAsMillisecondDouble);
+                    TimeInsert.AsMilliseconds);
 
             long durationBytes = manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
-                    manMedia.Duration.TimeDeltaAsMillisecondDouble);
+                    manMedia.Duration.AsMilliseconds);
 
-            if (TimeInsert.IsEqualTo(new Time(manMedia.Duration.TimeDeltaAsTimeSpan))
+            if (TimeInsert.IsEqualTo(new Time(manMedia.Duration.AsTimeSpan))
                 ||
                 manMedia.AudioMediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(timeInsertBytes, durationBytes))
             {
                 manMedia.AudioMediaData.MergeWith(ManagedAudioMediaSource.AudioMediaData.Copy());
 
-                //TimeDelta duration = ManagedAudioMediaSource.Duration;
+                //Time duration = ManagedAudioMediaSource.Duration;
                 //Stream stream = ManagedAudioMediaSource.AudioMediaData.OpenPcmInputStream();
                 //try
                 //{
@@ -171,7 +171,7 @@ namespace urakawa.commands
             }
             else
             {
-                TimeDelta duration = ManagedAudioMediaSource.Duration;
+                Time duration = ManagedAudioMediaSource.Duration;
 
                 ((WavAudioMediaData)manMedia.AudioMediaData).InsertPcmData(
                     (WavAudioMediaData)ManagedAudioMediaSource.AudioMediaData, TimeInsert, duration);
@@ -204,8 +204,8 @@ namespace urakawa.commands
             chProp.SetMedia(channel, null);
             chProp.SetMedia(channel, OriginalManagedAudioMedia.Copy());
 
-            //TimeDelta duration = ManagedAudioMediaSource.Duration;
-            //ManagedAudioMediaTarget.AudioMediaData.RemovePcmData(TimeInsert, TimeInsert.AddTimeDelta(duration));
+            //Time duration = ManagedAudioMediaSource.Duration;
+            //ManagedAudioMediaTarget.AudioMediaData.RemovePcmData(TimeInsert, TimeInsert.Add(duration));
         }
 
         private List<MediaData> m_UsedMediaData = new List<MediaData>();

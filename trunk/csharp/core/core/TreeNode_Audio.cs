@@ -23,7 +23,7 @@ namespace urakawa.core
                          &&
                          (
                              timeEnd.IsEqualTo(Time.Zero)
-                             || timeEnd.GetTimeDelta(timeBegin).IsEqualTo(mediaData.AudioDuration)
+                             || timeEnd.GetDifference(timeBegin).IsEqualTo(mediaData.AudioDuration)
                          );
 
             if (equal) return true;
@@ -31,7 +31,7 @@ namespace urakawa.core
             bool rightOk = false;
             if (m_LocalStreamRightMark != -1)
             {
-                long timeBytes = mediaData.PCMFormat.Data.ConvertTimeToBytes(mediaData.AudioDuration.TimeDeltaAsMillisecondDouble);
+                long timeBytes = mediaData.PCMFormat.Data.ConvertTimeToBytes(mediaData.AudioDuration.AsMilliseconds);
                 rightOk = mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamRightMark, timeBytes);
             }
 
@@ -71,7 +71,7 @@ namespace urakawa.core
                 //    }
 
                 //    AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
-                //    sumData += audioData.PCMFormat.Data.ConvertTimeToBytes(audioData.AudioDuration.TimeDeltaAsMillisecondDouble);
+                //    sumData += audioData.PCMFormat.Data.ConvertTimeToBytes(audioData.AudioDuration.AsMilliseconds);
                 //    if (SelectionData.m_LocalStreamLeftMark < sumData)
                 //    {
                 //        timeOffset = audioData.PCMFormat.Data.ConvertBytesToTime(SelectionData.m_LocalStreamLeftMark - sumDataPrev);
@@ -116,7 +116,7 @@ namespace urakawa.core
                     //                            : mediaData.OpenPcmInputStream(timeBegin, timeEnd);
                     //try
                     //{
-                    //    //TimeDelta timeDelta = mediaData.AudioDuration.SubstractTimeDelta(new TimeDelta(timeBegin.TimeAsMillisecondFloat));
+                    //    //Time timeDelta = mediaData.AudioDuration.Substract(new Time(timeBegin.TimeAsMillisecondFloat));
                     //    mediaDataBackup.AppendPcmData(streamToBackup, null);
                     //}
                     //finally
@@ -356,7 +356,7 @@ namespace urakawa.core
             return GetMediaInChannel<AudioChannel>();
         }
 
-        public TimeDelta GetDurationOfManagedAudioMediaFlattened()
+        public Time GetDurationOfManagedAudioMediaFlattened()
         {
             ManagedAudioMedia audioMedia = GetManagedAudioMedia();
             if (audioMedia != null && audioMedia.HasActualAudioMediaData)
@@ -367,24 +367,24 @@ namespace urakawa.core
             SequenceMedia seq = GetManagedAudioSequenceMedia();
             if (seq != null)
             {
-                TimeDelta durSeq = seq.GetDurationOfManagedAudioMedia();
+                Time durSeq = seq.GetDurationOfManagedAudioMedia();
                 if (durSeq != null)
                 {
                     return durSeq;
                 }
             }
 
-            TimeDelta dur = new TimeDelta();
+            Time dur = new Time();
             for (int index = 0; index < mChildren.Count; index++)
             {
                 TreeNode node = mChildren.Get(index);
-                TimeDelta childDur = node.GetDurationOfManagedAudioMediaFlattened();
+                Time childDur = node.GetDurationOfManagedAudioMediaFlattened();
                 if (childDur != null)
                 {
-                    dur.AddTimeDelta(childDur);
+                    dur.Add(childDur);
                 }
             }
-            if (dur.TimeDeltaAsMillisecondDouble <= 0)
+            if (dur.AsMilliseconds <= 0)
             {
                 return null;
             }

@@ -26,7 +26,7 @@ namespace urakawa.core
         SequenceMedia GetManagedAudioSequenceMedia();
         SequenceMedia GetAudioSequenceMedia();
         Media GetMediaInAudioChannel();
-        TimeDelta GetDurationOfManagedAudioMediaFlattened();
+        Time GetDurationOfManagedAudioMediaFlattened();
         bool IsAfter(TreeNode node);
         bool IsBefore(TreeNode node);
 

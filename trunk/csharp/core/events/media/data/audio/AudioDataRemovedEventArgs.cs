@@ -18,7 +18,7 @@ namespace urakawa.events.media.data.audio
         /// <param name="source">The source <see cref="AudioMediaData"/> of the event</param>
         /// <param name="fromPoint">The point from which the audio data was removed</param>
         /// <param name="dur">The duration of the audio data that was removed</param>
-        public AudioDataRemovedEventArgs(AudioMediaData source, Time fromPoint, TimeDelta dur) : base(source)
+        public AudioDataRemovedEventArgs(AudioMediaData source, Time fromPoint, Time dur) : base(source)
         {
             RemovedFromPoint = fromPoint.Copy();
             Duration = dur.Copy();
@@ -32,6 +32,6 @@ namespace urakawa.events.media.data.audio
         /// <summary>
         /// The duration of the audio data that was removed
         /// </summary>
-        public readonly TimeDelta Duration;
+        public readonly Time Duration;
     }
 }

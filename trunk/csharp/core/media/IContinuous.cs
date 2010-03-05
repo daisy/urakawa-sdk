@@ -12,7 +12,7 @@ namespace urakawa.media
         /// Gets the duration of the media
         /// </summary>
         /// <returns>The duration</returns>
-        TimeDelta Duration { get; }
+        Time Duration { get; }
 
         /// <summary>
         /// Splits the continuous media at a given split point, leaving the instance with the part before the split point

@@ -212,6 +212,8 @@
     <Compile Include="media\data\image\codec\PngImageMediaData.cs" />
     <Compile Include="media\data\image\ImageMediaData.cs" />
     <Compile Include="media\data\image\ManagedImageMedia.cs" />
+    <Compile Include="media\timing\Time_Compare.cs" />
+    <Compile Include="media\timing\Time_String.cs" />
     <Compile Include="metadata\daisy\SupportedMetadata_Z39862005.cs" />
     <Compile Include="metadata\MetadataAttribute.cs" />
     <Compile Include="metadata\MetadataDefinition.cs" />
@@ -329,7 +331,6 @@
     <Compile Include="media\MediaFactory.cs" />
     <Compile Include="media\SequenceMedia.cs" />
     <Compile Include="media\timing\Time.cs" />
-    <Compile Include="media\timing\TimeDelta.cs" />
     <Compile Include="media\ExternalVideoMedia.cs" />
     <Compile Include="navigation\AbstractFilterNavigator.cs" />
     <Compile Include="navigation\INavigator.cs" />

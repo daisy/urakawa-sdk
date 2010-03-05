@@ -479,21 +479,21 @@ namespace urakawa.media
             return strSeq;
         }
 
-        public TimeDelta GetDurationOfManagedAudioMedia()
+        public Time GetDurationOfManagedAudioMedia()
         {
             if (AllowMultipleTypes)
             {
                 return null;
             }
 
-            TimeDelta dur = new TimeDelta();
+            Time dur = new Time();
             foreach (Media media in mSequence.ContentsAs_YieldEnumerable)
             {
                 if (media is ManagedAudioMedia)
                 {
                     if (((ManagedAudioMedia)media).HasActualAudioMediaData)
                     {
-                        dur.AddTimeDelta(((ManagedAudioMedia)media).Duration);
+                        dur.Add(((ManagedAudioMedia)media).Duration);
                     }
                 }
                 else
