@@ -35,47 +35,6 @@ namespace urakawa.media.data.audio
             MediaDataChanged += this_MediaDataChanged;
         }
 
-        /// <summary>
-        /// Gets a 'copy' of <c>this</c>, including only the audio after the given clip begin time
-        /// </summary>
-        /// <param name="clipBegin">The given clip begin time</param>
-        /// <returns>The copy</returns>
-        public ManagedAudioMedia Copy(Time clipBegin)
-        {
-            return Copy(clipBegin, new Time(Duration.TimeDeltaAsTimeSpan));
-        }
-
-
-        /// <summary>
-        /// Gets a 'copy' of <c>this</c>, including only the audio between the given clip begin and end times
-        /// </summary>
-        /// <param name="clipBegin">The given clip begin time</param>
-        /// <param name="clipEnd">The given clip end time</param>
-        /// <returns>The copy</returns>
-        public ManagedAudioMedia Copy(Time clipBegin, Time clipEnd)
-        {
-            ManagedAudioMedia copyMAM = Presentation.MediaFactory.Create<ManagedAudioMedia>();
-
-            if (!HasActualAudioMediaData)
-            {
-                return copyMAM;
-            }
-
-            Stream pcm = AudioMediaData.OpenPcmInputStream(clipBegin, clipEnd);
-            try
-            {
-                AudioMediaData data = Presentation.MediaDataFactory.Create(typeof(AudioMediaData)) as AudioMediaData;
-                data.PCMFormat = AudioMediaData.PCMFormat;
-                data.AppendPcmData(pcm, null);
-                copyMAM.AudioMediaData = data;
-                return copyMAM;
-            }
-            finally
-            {
-                pcm.Close();
-            }
-        }
-
         #region Media Members
 
         /// <summary>
