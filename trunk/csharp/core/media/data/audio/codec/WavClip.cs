@@ -22,7 +22,7 @@ namespace urakawa.media.data.audio.codec
         /// </returns>
         public Time ClipBegin
         {
-            get { return mClipBegin.Copy(); }
+            get { return mClipBegin; }
             set
             {
                 if (value == null)
@@ -39,7 +39,7 @@ namespace urakawa.media.data.audio.codec
                     throw new exception.MethodParameterIsOutOfBoundsException(
                         "The new clip begin is beyond the current clip end");
                 }
-                mClipBegin = value.Copy();
+                mClipBegin = value;
             }
         }
 
@@ -53,8 +53,11 @@ namespace urakawa.media.data.audio.codec
         {
             get
             {
-                if (mClipEnd == null) return new Time(MediaDuration.TimeDeltaAsTimeSpan);
-                return mClipEnd.Copy();
+                if (mClipEnd == null)
+                {
+                    mClipEnd = new Time(MediaDuration.TimeDeltaAsTimeSpan);
+                }
+                return mClipEnd;
             }
             set
             {
@@ -74,7 +77,7 @@ namespace urakawa.media.data.audio.codec
                         throw new exception.MethodParameterIsOutOfBoundsException(
                             "The new clip end time is greater than the duration of the underlying media");
                     }
-                    mClipEnd = value.Copy();
+                    mClipEnd = value;
                 }
             }
         }
