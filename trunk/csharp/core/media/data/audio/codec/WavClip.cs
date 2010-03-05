@@ -29,6 +29,11 @@ namespace urakawa.media.data.audio.codec
                 {
                     throw new exception.MethodParameterIsNullException("Clip begin of a WavClip can not be null");
                 }
+                if (value.IsLessThan(Time.Zero))
+                {
+                    throw new exception.MethodParameterIsOutOfBoundsException(
+                        "The new clip begin is less than zero");
+                }
                 if (value.IsGreaterThan(ClipEnd))
                 {
                     throw new exception.MethodParameterIsOutOfBoundsException(
@@ -63,6 +68,11 @@ namespace urakawa.media.data.audio.codec
                     {
                         throw new exception.MethodParameterIsOutOfBoundsException(
                             "The new clip end time is before current clip begin");
+                    }
+                    if (value.IsGreaterThan(new Time(MediaDuration.TimeDeltaAsTimeSpan)))
+                    {
+                        throw new exception.MethodParameterIsOutOfBoundsException(
+                            "The new clip end time is greater than the duration of the underlying media");
                     }
                     mClipEnd = value.Copy();
                 }
@@ -186,7 +196,11 @@ namespace urakawa.media.data.audio.codec
             //TODO: Check that sharing DataProvider with the copy is not a problem
             // REMARK: FileDataProviders: once created, binary content (including RIFF header) is never changed.
             // therefore, OPEN-only FileStream access should work concurrently (i.e. FileShare.Read)
-            return new WavClip(DataProvider, ClipBegin.Copy(), clipEnd);
+            WavClip newClip = new WavClip(DataProvider, ClipBegin.Copy(), clipEnd);
+            newClip.cachedDuration = cachedDuration.Copy();
+            newClip.cachedPcmFormat = new AudioLibPCMFormat();
+            newClip.cachedPcmFormat.CopyValues(cachedPcmFormat);
+            return newClip;
         }
 
         /// <summary>

@@ -105,22 +105,24 @@ namespace urakawa.core
                 else
                 {
                     ManagedAudioMedia managedAudioMediaBackup = m_TreeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
-                    var mediaDataBackup = (WavAudioMediaData)m_TreeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
+
+                    //var mediaDataBackup = (WavAudioMediaData)m_TreeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
+
+                    var mediaDataBackup = ((WavAudioMediaData)mediaData).Copy(timeBegin, timeEnd);
                     managedAudioMediaBackup.AudioMediaData = mediaDataBackup;
 
-                    Stream streamToBackup = timeEnd.IsEqualTo(Time.Zero)
-                                                ? mediaData.OpenPcmInputStream(timeBegin)
-                                                : mediaData.OpenPcmInputStream(timeBegin, timeEnd);
-
-                    try
-                    {
-                        //TimeDelta timeDelta = mediaData.AudioDuration.SubstractTimeDelta(new TimeDelta(timeBegin.TimeAsMillisecondFloat));
-                        mediaDataBackup.AppendPcmData(streamToBackup, null);
-                    }
-                    finally
-                    {
-                        streamToBackup.Close();
-                    }
+                    //Stream streamToBackup = timeEnd.IsEqualTo(Time.Zero)
+                    //                            ? mediaData.OpenPcmInputStream(timeBegin)
+                    //                            : mediaData.OpenPcmInputStream(timeBegin, timeEnd);
+                    //try
+                    //{
+                    //    //TimeDelta timeDelta = mediaData.AudioDuration.SubstractTimeDelta(new TimeDelta(timeBegin.TimeAsMillisecondFloat));
+                    //    mediaDataBackup.AppendPcmData(streamToBackup, null);
+                    //}
+                    //finally
+                    //{
+                    //    streamToBackup.Close();
+                    //}
 
                     return managedAudioMediaBackup;
                 }
