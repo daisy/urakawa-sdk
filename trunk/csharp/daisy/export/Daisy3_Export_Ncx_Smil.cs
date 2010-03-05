@@ -131,7 +131,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, mainSeq, "id", GetNextID(ID_SmilPrefix));
                     smilFileName = GetNextSmilFileName;
                     m_ProgressPercentage += Convert.ToInt32 ( (m_SmilFileNameCounter / m_ListOfLevels.Count ) * 100 * 0.7) ;
-                    reportProgress ( m_ProgressPercentage, UrakawaSDK_daisy_Lang.CreatingSmilFiles + m_SmilFileNameCounter.ToString () + "//" + m_ListOfLevels.Count.ToString() );         
+                    reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreatingSmilFiles, m_SmilFileNameCounter, m_ListOfLevels.Count));         
                 }
 
 
