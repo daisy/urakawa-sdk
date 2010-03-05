@@ -81,14 +81,16 @@ namespace AudioLib
         private Stream m_CurrentAudioStream;
         private double m_CurrentAudioDuration;
 
-        public void EnsurePlaybackStreamIsDead()
+        public bool EnsurePlaybackStreamIsDead()
         {
             if (CurrentState == State.NotReady)
             {
-                return;
+                return false;
             }
 
-            if (m_CurrentAudioStream != null)
+            bool I_Closed_The_Stream = m_CurrentAudioStream != null;
+
+            if (I_Closed_The_Stream)
             {
                 m_CurrentAudioStream.Close();
                 m_CurrentAudioStream = null;
@@ -97,6 +99,8 @@ namespace AudioLib
             m_CurrentAudioPCMFormat = null;
             m_CurrentAudioDuration = 0;
             m_CurrentAudioStreamProvider = null;
+
+            return I_Closed_The_Stream;
         }
 
         private Thread m_CircularBufferRefreshThread;

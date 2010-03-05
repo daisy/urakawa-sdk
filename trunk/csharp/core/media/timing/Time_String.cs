@@ -52,11 +52,12 @@ namespace urakawa.media.timing
                 (time.Milliseconds != 0 ? time.Milliseconds + "ms" : "");
         }
 
+        // milliseconds
         private static double Parse(string stringRepresentation)
         {
             try
             {
-                return parseClockValue(stringRepresentation);
+                return parseClockValue(stringRepresentation) * 1000;
             }
             catch (Exception e)
             {
@@ -166,6 +167,7 @@ namespace urakawa.media.timing
             return 1;
         }
 
+        // seconds
         private static double parseClockValue(string str)
         {
             int index = 0; // we scan the string from left to right
