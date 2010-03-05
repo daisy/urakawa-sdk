@@ -64,7 +64,7 @@ namespace urakawa.media
         /// Gets the duration of the media
         /// </summary>
         /// <returns>The duration</returns>
-        public abstract TimeDelta Duration { get; }
+        public abstract Time Duration { get; }
 
         IContinuous IContinuous.Split(Time splitPoint)
         {

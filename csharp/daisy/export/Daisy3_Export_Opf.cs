@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
+using urakawa.media.timing;
 using urakawa.metadata;
 
 namespace urakawa.daisy.export
@@ -170,7 +171,7 @@ namespace urakawa.daisy.export
 
             //AddMetadata_Generator(opfDocument, x_metadataNode);
 
-            AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totalTime", m_TotalTime.ToString());
+            AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totalTime", Time.Format_Standard(m_TotalTime));
 
             if (m_Presentation.GetMetadata("dtb:multimediaType").Count == 0)
             {

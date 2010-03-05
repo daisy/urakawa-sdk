@@ -1,591 +1,86 @@
 using System;
-using System.Diagnostics;
 
 namespace urakawa.media.timing
 {
-    /// <summary>
-    /// The Time object represents a timestamp.  
-    /// </summary>
-    public class Time
+    public partial class Time
     {
-        public static bool operator ==(Time a, Time b)
-        {
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(a, b))
-            {
-                return true;
-            }
-
-            // If one is null, but not both, return false.
-            if (((object)a == null) || ((object)b == null))
-            {
-                return false;
-            }
-
-            return a.IsEqualTo(b);
-        }
-
-        public static bool operator !=(Time a, Time b)
-        {
-            return !(a == b);
-        }
-
-        /// <summary>
-        /// Gets a <see cref="Time"/> representing 00:00:00.000
-        /// </summary>
         public static Time Zero
         {
             get { return new Time(); }
         }
 
-        /// <summary>
-        /// Gets the largest possible value for <see cref="Time"/>
-        /// </summary>
         public static Time MaxValue
         {
             get { return new Time(TimeSpan.MaxValue); }
         }
 
-        /// <summary>
-        /// Gets the smallest possible value for <see cref="Time"/>
-        /// </summary>
         public static Time MinValue
         {
             get { return new Time(TimeSpan.MinValue); }
         }
 
-        private TimeSpan mTime;
+        private TimeSpan m_TimeSpan;
 
-        /// <summary>
-        /// Default constructor initializing the instance to 0
-        /// </summary>
         public Time()
         {
-            mTime = TimeSpan.Zero;
+            m_TimeSpan = TimeSpan.Zero;
         }
 
-        /// <summary>
-        /// Constructor initializing the instance with a given number of milliseconds
-        /// </summary>
-        /// <param name="val">The given number of milliseconds</param>
-        public Time(long val)
+        public Time(double milliseconds)
         {
-            TimeAsMillisecondLong = val;
+            AsMilliseconds = milliseconds;
         }
 
-        /// <summary>
-        /// Constructor initializing the instance with a given number of milliseconds
-        /// </summary>
-        /// <param name="val">The given number of milliseconds</param>
-        public Time(double val)
+        public Time(TimeSpan timeSpan)
         {
-            TimeAsMillisecondDouble = val;
+            AsTimeSpan = new TimeSpan(timeSpan.Ticks);
         }
 
-        /// <summary>
-        /// Constructor initializing the instance with a given <see cref="TimeSpan"/>
-        /// value
-        /// </summary>
-        /// <param name="val">The given <see cref="TimeSpan"/> value</param>
-        public Time(TimeSpan val)
+        public Time(string stringRepresentation)
         {
-            TimeAsTimeSpan = val;
+            AsMilliseconds = Parse(stringRepresentation);
         }
 
-        /// <summary>
-        /// Constructor initializing the instance with a given <see cref="string"/>
-        /// representation of time.
-        /// <see cref="ToString"/> member method of a description of the format 
-        /// of the string representation.
-        /// </summary>
-        /// <param name="val">The <see cref="string"/> representation</param>
-        public Time(string val)
-        {
-            TimeAsTimeSpan = Time.Parse(val).mTime;
-        }
-
-        /// <summary>
-        /// Returns the <see cref="TimeSpan"/> equivalent of the instance
-        /// </summary>
-        /// <returns>The <see cref="TimeSpan"/> equivalent</returns>
-        public TimeSpan TimeAsTimeSpan
-        {
-            get { return mTime; }
-            set { mTime = value; }
-        }
-
-        /// <summary>
-        /// Gets a string representation of the <see cref="Time"/>
-        /// </summary>
-        /// <returns>The string representation</returns>
-        /// <remarks>
-        /// The format of the string representation [-][d.]hh:mm:ss[.f],
-        /// where d is a number of days, hh is two-digit hours between 00 and 23,
-        /// mm is two-digit minutes between 00 and 59, 
-        /// ss is two-digit seconds between 00 and 59 
-        /// and where f is the second fraction with between 1 and 7 digits
-        /// </remarks>
-        public override string ToString()
-        {
-            return mTime.ToString();
-        }
-
-        //private static string FormatTimeSpan_Npt(TimeSpan time)
-        //{
-        //    double dTime = Math.Round(time.TotalSeconds, 3, MidpointRounding.ToEven);
-        //    return "npt=" + dTime.ToString() + "s";
-        //}
-
-        public static string Format_Standard(TimeSpan time)
-        {
-            if (time.CompareTo(TimeSpan.Zero) == 0)
-            {
-                return "0";
-            }
-            if (time.Hours != 0)
-            {
-                return string.Format("{0:00}:{1:00}:{2:00}.{3:000}", time.Hours, time.Minutes,
-                                     time.Seconds, time.Milliseconds);
-            }
-            if (time.Minutes != 0)
-            {
-                return string.Format("{0:00}:{1:00}.{2:000}", time.Minutes,
-                                     time.Seconds, time.Milliseconds);
-            }
-            return string.Format("{0:00}.{1:000}",
-                                     time.Seconds, time.Milliseconds);
-        }
-
-        public static string Format_H_MN_S_MS(TimeSpan time)
-        {
-            if (time.CompareTo(TimeSpan.Zero) == 0)
-            {
-                return "0s";
-            }
-            return
-                (time.Hours != 0 ? time.Hours + "h " : "") +
-                (time.Minutes != 0 ? time.Minutes + "mn " : "") +
-                (time.Seconds != 0 ? time.Seconds + "s " : "") +
-                (time.Milliseconds != 0 ? time.Milliseconds + "ms" : "");
-        }
-
-        /// <summary>
-        /// Parses a string representation of a <see cref="Time"/>. 
-        /// See <see cref="ToString"/> for a description of the format of the string representation
-        /// </summary>
-        /// <param name="stringRepresentation">The string representation</param>
-        /// <returns>The parsed <see cref="Time"/></returns>
-        /// <exception cref="exception.TimeStringRepresentationIsInvalidException">
-        /// Thrown then the given string representation is not valid
-        /// </exception>
-        public static Time Parse(string stringRepresentation)
-        {
-            if (stringRepresentation == null)
-            {
-                throw new exception.MethodParameterIsNullException(
-                    "Can not parse a null string");
-            }
-            if (stringRepresentation == String.Empty)
-            {
-                throw new exception.MethodParameterIsEmptyStringException(
-                    "Can not parse an empty string");
-            }
-
-            return ParseTimeString(stringRepresentation);
-        }
-
-        private static void checkDigit(char current, string str, int index)
-        {
-            if (current < '0' || current > '9')
-            {
-                throw new exception.TimeStringRepresentationIsInvalidException(
-                    string.Format("The character '{0}' at position {1} in string \"{2}\" is not a valid digit !", current,
-                                  index, str));
-            }
-        }
-
-        private static void throwBadChar(char current, string str, int index)
-        {
-            throw new exception.TimeStringRepresentationIsInvalidException(
-                      string.Format("The character '{0}' at position {1} in string \"{2}\" is not a valid character !", current,
-                                    index, str));
-        }
-
-        private static char advanceChar(string str, ref int index)
-        {
-            return index == (str.Length - 1) ? '\0' : str[++index];
-        }
-
-        private static int parseDigits(string str, ref int index)
-        {
-            char current = str[index];
-
-            checkDigit(current, str, index);
-
-            int value = 0;
-            do
-            {
-                value = value * 10 + (current - '0');
-
-                current = advanceChar(str, ref index);
-            } while (current >= '0' && current <= '9');
-
-            return value;
-        }
-
-        private static double parseFraction(string str, ref int index)
-        {
-            char current = str[index];
-
-            checkDigit(current, str, index);
-
-            double value = 0;
-            double weight = 0.1;
-            do
-            {
-                value += weight * (current - '0');
-                weight *= 0.1;
-
-                current = advanceChar(str, ref index);
-
-            } while (current >= '0' && current <= '9');
-
-            return value;
-        }
-
-        private static double parseUnit(string str, ref int index)
-        {
-            char current = str[index];
-
-            if (current == 'h')
-            {
-                current = advanceChar(str, ref index);
-                return 3600;
-            }
-            else if (current == 'm')
-            {
-                current = advanceChar(str, ref index);
-                if (current == 'i')
-                {
-                    current = advanceChar(str, ref index);
-                    if (current != 'n')
-                    {
-                        throwBadChar(current, str, index);
-                    }
-                    current = advanceChar(str, ref index);
-                    return 60;
-                }
-                else if (current == 's')
-                {
-                    current = advanceChar(str, ref index);
-                    return 0.001;
-                }
-                else
-                {
-                    throwBadChar(current, str, index);
-                }
-            }
-            else if (current == 's')
-            {
-                current = advanceChar(str, ref index);
-            }
-            return 1;
-        }
-
-        private static double parseClockValue(string str)
-        {
-            int index = 0; // we scan the string from left to right
-
-            int d1 = parseDigits(str, ref index);
-            char current = str[index];
-
-            double offset;
-            if (current == ':')
-            {
-                current = advanceChar(str, ref index); // skip ':' separator
-
-                int d2 = parseDigits(str, ref index);
-                current = str[index];
-
-                if (current == ':')
-                {
-                    current = advanceChar(str, ref index); // skip ':' separator
-
-                    int d3 = parseDigits(str, ref index);
-                    current = str[index];
-
-                    offset = d1 * 3600 + d2 * 60 + d3;
-                }
-                else
-                {
-                    offset = d1 * 60 + d2;
-                }
-                if (current == '.')
-                {
-                    current = advanceChar(str, ref index); // skip '.' separator
-
-                    offset += parseFraction(str, ref index);
-                    current = str[index];
-                }
-            }
-            else if (current == '.')
-            {
-                current = advanceChar(str, ref index); // skip '.' separator
-                
-                double val = parseFraction(str, ref index) + d1;
-                current = str[index];
-
-                offset = val * parseUnit(str, ref index);
-                current = str[index];
-            }
-            else
-            {
-                offset = d1 * parseUnit(str, ref index);
-                current = str[index];
-            }
-            return offset;
-        }
-
-
-        // See http://www.w3.org/TR/SMIL3/smil-timing.html#Timing-ClockValueSyntax
-        // See http://svn.apache.org/viewvc/xmlgraphics/batik/trunk/sources/org/apache/batik/parser/TimingParser.java?view=co
-        // See http://svn.apache.org/viewvc/xmlgraphics/batik/trunk/sources/org/apache/batik/parser/AbstractParser.java?view=co
-        public static Time ParseTimeString(string str)
-        {
-            try
-            {
-                double s = parseClockValue(str);
-                return new Time(TimeSpan.FromMilliseconds(1000*s));
-            }
-            catch (Exception e)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif //DEBUG
-
-                return new Time(TimeSpan.Parse(str));
-            }
-        }
-
-        #region Time Members
-
-        /// <summary>
-        /// Determines if the instance represents a negative time value
-        /// </summary>
-        /// <returns><c>true</c> if negative, <c>false</c> else</returns>
-        public bool IsNegativeTimeOffset
-        {
-            get { return (mTime < TimeSpan.Zero); }
-        }
-
-        /// <summary>
-        /// Creates a copy of the <see cref="Time"/> instance
-        /// </summary>
-        /// <returns>The copy</returns>
         public Time Copy()
         {
-            return new Time(mTime);
+            return new Time(m_TimeSpan);
         }
 
-        /// <summary>
-        /// Gets the (absolute) <see cref="TimeDelta"/> between a given <see cref="Time"/> and <c>this</c>,
-        /// that is <c>this-<paramref localName="t"/></c>
-        /// </summary>
-        /// <param name="t">The given <see cref="Time"/></param>
-        /// <returns>
-        /// The difference as an <see cref="TimeDelta"/>
-        /// </returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="t"/> is <c>null</c>
-        /// </exception>
-        public TimeDelta GetTimeDelta(Time t)
+        public TimeSpan AsTimeSpan
         {
-            if (t == null)
-            {
-                throw new exception.MethodParameterIsNullException(
-                    "The time with which to compare can not be null");
-            }
-            if (t is Time)
-            {
-                Time otherTime = (Time)t;
-                if (mTime > otherTime.mTime)
-                {
-                    return new TimeDelta(mTime.Subtract(otherTime.mTime));
-                }
-                else
-                {
-                    return new TimeDelta(otherTime.mTime.Subtract(mTime));
-                }
-            }
-            else
-            {
-                double msDiff = TimeAsMillisecondDouble - t.TimeAsMillisecondDouble;
-                if (msDiff < 0) msDiff = -msDiff;
-                return new TimeDelta(msDiff);
-            }
+            get { return new TimeSpan(m_TimeSpan.Ticks); }
+            private set { m_TimeSpan = new TimeSpan(value.Ticks); }
         }
 
-        /// <summary>
-        /// Gets or sets the best approximation of the <see cref="Time"/> in whole milliseconds
-        /// </summary>
-        /// <returns>The number of milliseconds</returns>
-        public long TimeAsMillisecondLong
+        public double AsMilliseconds
         {
-            get { return (long)Math.Round(TimeAsMillisecondDouble); }
-            set { TimeAsTimeSpan = TimeSpan.FromTicks(value * TimeSpan.TicksPerMillisecond); }
+            get { return m_TimeSpan.Ticks / ((double)TimeSpan.TicksPerMillisecond); }
+            private set { AsTimeSpan = TimeSpan.FromTicks((long)(value * TimeSpan.TicksPerMillisecond)); }
         }
 
-        /// <summary>
-        /// Gets or sets the <see cref="Time"/> as a floating point millisecond value
-        /// </summary>
-        /// <returns>The foaling point millisecond value</returns>
-        public double TimeAsMillisecondDouble
+
+        public void Add(Time other)
         {
-            get { return ((double)mTime.Ticks) / ((double)TimeSpan.TicksPerMillisecond); }
-            set { TimeAsTimeSpan = TimeSpan.FromTicks((long)(value * TimeSpan.TicksPerMillisecond)); }
+            //mTime = mTime.Add(other.AsTimeSpan);
+            m_TimeSpan += other.AsTimeSpan;
         }
 
-
-        /// <summary>
-        /// Adds another <see cref="Time"/> to the current <see cref="Time"/>
-        /// </summary>
-        /// <param name="other">The other <see cref="Time"/></param>
-        public void AddTime(Time other)
+        public void Substract(Time time)
         {
-            //mTime = mTime.Add(other.TimeAsTimeSpan);
-            mTime += other.TimeAsTimeSpan;
+            //mTime = mTime.Subtract(other.AsTimeSpan);
+            m_TimeSpan -= time.AsTimeSpan;
         }
 
-        /// <summary>
-        /// Adds a <see cref="TimeDelta"/> to the current <see cref="Time"/>
-        /// </summary>
-        /// <param name="other">The <see cref="TimeDelta"/> to add</param>
-        public void AddTimeDelta(TimeDelta other)
-        {
-            //mTime = mTime.Add(other.TimeDeltaAsTimeSpan);
-            mTime += other.TimeDeltaAsTimeSpan;
-        }
+        //public void Add(Time other)
+        //{
+        //    //mTime = mTime.Add(other.AsTimeSpan);
+        //    m_TimeSpan += other.AsTimeSpan;
+        //}
 
-        /// <summary>
-        /// Subtracts a <see cref="Time"/> from the current <see cref="Time"/>
-        /// </summary>
-        /// <param name="other">The <see cref="Time"/> to add</param>
-        public void SubtractTime(Time other)
-        {
-            //mTime = mTime.Subtract(other.TimeAsTimeSpan);
-            mTime -= other.TimeAsTimeSpan;
-        }
-
-        /// <summary>
-        /// Subtracts a <see cref="TimeDelta"/> from the current <see cref="Time"/>
-        /// </summary>
-        /// <param name="other">The <see cref="TimeDelta"/> to add</param>
-        public void SubtractTimeDelta(TimeDelta other)
-        {
-            //mTime = mTime.Subtract(other.TimeDeltaAsTimeSpan);
-            mTime -= other.TimeDeltaAsTimeSpan;
-        }
-
-        public static readonly bool COMPARE_RESOLUTION_ONE_MS = true;
-
-        /// <summary>
-        /// Determines <c>this</c> is greater than a given other <see cref="Time"/>
-        /// </summary>
-        /// <param name="otherTime">The other <see cref="Time"/></param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="otherTime"/> is <c>null</c>
-        /// </exception>
-        public bool IsGreaterThan(Time otherTime)
-        {
-            if (otherTime == null)
-            {
-                throw new exception.MethodParameterIsNullException(
-                    "Can not compare to a null Time");
-            }
-
-            if (COMPARE_RESOLUTION_ONE_MS)
-                return Math.Truncate(TimeAsMillisecondDouble)
-                        > Math.Truncate(otherTime.TimeAsMillisecondDouble);
-            return TimeAsMillisecondDouble > otherTime.TimeAsMillisecondDouble;
-
-            //bool res;
-            //if (otherTime is Time)
-            //{
-            //    res = (mTime > ((Time)otherTime).mTime);
-            //}
-            //else
-            //{
-            //    res = (TimeAsMillisecondDouble > otherTime.TimeAsMillisecondDouble);
-            //}
-            //return res;
-        }
-
-
-        /// <summary>
-        /// Determines <c>this</c> is less than a given other <see cref="Time"/>
-        /// </summary>
-        /// <param name="otherTime">The other <see cref="Time"/></param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="otherTime"/> is <c>null</c>
-        /// </exception>
-        public bool IsLessThan(Time otherTime)
-        {
-            if (otherTime == null)
-            {
-                throw new exception.MethodParameterIsNullException(
-                    "Can not compare to a null Time");
-            }
-            return otherTime.IsGreaterThan(this);
-        }
-
-        /// <summary>
-        /// Determines <c>this</c> is equal to a given other <see cref="Time"/>
-        /// </summary>
-        /// <param name="otherTime">The other <see cref="Time"/></param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="otherTime"/> is <c>null</c>
-        /// </exception>
-        public bool IsEqualTo(Time otherTime)
-        {
-            if (IsGreaterThan(otherTime)) return false;
-            if (otherTime.IsGreaterThan(this)) return false;
-            return true;
-        }
-
-        /// <summary>
-        /// Determines <c>this</c> is greater than or equal to a given other <see cref="Time"/>
-        /// </summary>
-        /// <param name="otherTime">The other <see cref="Time"/></param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="otherTime"/> is <c>null</c>
-        /// </exception>
-        public bool IsGreaterThanOrEqualTo(Time otherTime)
-        {
-            return !IsLessThan(otherTime);
-        }
-
-        /// <summary>
-        /// Determines <c>this</c> is less than or equal to a given other <see cref="Time"/>
-        /// </summary>
-        /// <param name="otherTime">The other <see cref="Time"/></param>
-        /// <returns>A <see cref="bool"/> indicating the result</returns>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref localName="otherTime"/> is <c>null</c>
-        /// </exception>
-        public bool IsLessThanOrEqualTo(Time otherTime)
-        {
-            if (otherTime == null)
-            {
-                throw new exception.MethodParameterIsNullException(
-                    "Can not compare to a null Time");
-            }
-            return otherTime.IsGreaterThanOrEqualTo(this);
-        }
-
-        #endregion
+        //public void Subtract(Time timeDelta)
+        //{
+        //    //mTime = mTime.Subtract(other.AsTimeSpan);
+        //    m_TimeSpan -= timeDelta.AsTimeSpan;
+        //}
     }
 }

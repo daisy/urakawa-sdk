@@ -173,7 +173,7 @@ namespace urakawa.media
                     String.Format("clipEnd attribute is missing or has invalid value: {0}", e.Message),
                     e);
             }
-            if (cbTime.IsNegativeTimeOffset)
+            if (cbTime.IsNegative)
             {
                 ClipBegin = cbTime;
                 ClipEnd = ceTime;
@@ -222,10 +222,10 @@ namespace urakawa.media
         /// <summary>
         /// Gets the duration of <c>this</c>
         /// </summary>
-        /// <returns>A <see cref="TimeDelta"/> representing the duration</returns>
-        public override TimeDelta Duration
+        /// <returns>A <see cref="Time"/> representing the duration</returns>
+        public override Time Duration
         {
-            get { return ClipEnd.GetTimeDelta(ClipBegin); }
+            get { return ClipEnd.GetDifference(ClipBegin); }
         }
 
         /// <summary>

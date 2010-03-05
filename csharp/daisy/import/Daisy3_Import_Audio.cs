@@ -398,7 +398,7 @@ namespace urakawa.daisy.import
                     timeClipBegin = new Time(0);
                     try
                     {
-                        timeClipBegin = Time.ParseTimeString(audioAttrClipBegin.Value);
+                        timeClipBegin = new Time(audioAttrClipBegin.Value);
                     }
                     catch (Exception ex)
                     {
@@ -414,7 +414,7 @@ namespace urakawa.daisy.import
                     Time timeClipEnd = null;
                     try
                     {
-                        timeClipEnd = Time.ParseTimeString(audioAttrClipEnd.Value);
+                        timeClipEnd = new Time(audioAttrClipEnd.Value);
                     }
                     catch (Exception ex)
                     {
@@ -499,7 +499,7 @@ namespace urakawa.daisy.import
             {
                 try
                 {
-                    clipB = Time.ParseTimeString(audioAttrClipBegin.Value);
+                    clipB = new Time(audioAttrClipBegin.Value);
                 }
                 catch (Exception ex)
                 {
@@ -514,7 +514,7 @@ namespace urakawa.daisy.import
             {
                 try
                 {
-                    clipE = Time.ParseTimeString(audioAttrClipEnd.Value);
+                    clipE = new Time(audioAttrClipEnd.Value);
                 }
                 catch (Exception ex)
                 {
@@ -573,10 +573,10 @@ namespace urakawa.daisy.import
                     //    m_firstTimePCMFormat = false;
                     //}
 
-                    TimeDelta clipDuration = new TimeDelta(pcmInfo.ConvertBytesToTime(dataLength));
+                    Time clipDuration = new Time(pcmInfo.ConvertBytesToTime(dataLength));
                     if (!clipB.IsEqualTo(Time.Zero) || !clipE.IsEqualTo(Time.MaxValue))
                     {
-                        clipDuration = clipE.GetTimeDelta(clipB);
+                        clipDuration = clipE.GetTime(clipB);
                     }
                     else
                     {

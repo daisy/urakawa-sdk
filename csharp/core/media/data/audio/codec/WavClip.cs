@@ -55,7 +55,7 @@ namespace urakawa.media.data.audio.codec
             {
                 if (mClipEnd == null)
                 {
-                    mClipEnd = new Time(MediaDuration.TimeDeltaAsTimeSpan);
+                    mClipEnd = new Time(MediaDuration.AsTimeSpan);
                 }
                 return mClipEnd;
             }
@@ -72,7 +72,7 @@ namespace urakawa.media.data.audio.codec
                         throw new exception.MethodParameterIsOutOfBoundsException(
                             "The new clip end time is before current clip begin");
                     }
-                    if (value.IsGreaterThan(new Time(MediaDuration.TimeDeltaAsTimeSpan)))
+                    if (value.IsGreaterThan(new Time(MediaDuration.AsTimeSpan)))
                     {
                         throw new exception.MethodParameterIsOutOfBoundsException(
                             "The new clip end time is greater than the duration of the underlying media");
@@ -96,17 +96,17 @@ namespace urakawa.media.data.audio.codec
         /// <summary>
         /// Gets the duration of the clip
         /// </summary>
-        /// <returns>The duration of as a <see cref="TimeDelta"/></returns>
-        public TimeDelta Duration
+        /// <returns>The duration of as a <see cref="Time"/></returns>
+        public Time Duration
         {
-            get { return ClipEnd.GetTimeDelta(ClipBegin); }
+            get { return ClipEnd.GetDifference(ClipBegin); }
         }
 
         /// <summary>
         /// Gets the duration of the underlying media
         /// </summary>
         /// <returns>The duration of the underlying media</returns>
-        public abstract TimeDelta MediaDuration { get; }
+        public abstract Time MediaDuration { get; }
     }
 
     /// <summary>
@@ -144,13 +144,13 @@ namespace urakawa.media.data.audio.codec
             ClipEnd = clipEnd == null ? null : clipEnd.Copy();
         }
 
-        private TimeDelta cachedDuration = null;
+        private Time cachedDuration = null;
 
         /// <summary>
         /// Gets the duration of the underlying RIFF wav file 
         /// </summary>
         /// <returns>The duration</returns>
-        public override TimeDelta MediaDuration
+        public override Time MediaDuration
         {
             get
             {
@@ -167,7 +167,7 @@ namespace urakawa.media.data.audio.codec
                     {
                         raw.Close();
                     }
-                    cachedDuration = new TimeDelta(cachedPcmFormat.ConvertBytesToTime(dataLength));
+                    cachedDuration = new Time(cachedPcmFormat.ConvertBytesToTime(dataLength));
                 }
                 return cachedDuration;
             }
@@ -180,7 +180,7 @@ namespace urakawa.media.data.audio.codec
             {
                 if (cachedPcmFormat == null)
                 {
-                    TimeDelta timeDelta = MediaDuration;
+                    Time timeDelta = MediaDuration;
                     Debug.Assert(cachedDuration != null);
                     Debug.Assert(cachedPcmFormat != null);
                 }
@@ -251,7 +251,7 @@ namespace urakawa.media.data.audio.codec
         /// <seealso cref="OpenPcmInputStream(urakawa.media.timing.Time,urakawa.media.timing.Time)"/>
         public Stream OpenPcmInputStream(Time subClipBegin)
         {
-            return OpenPcmInputStream(subClipBegin, new Time(Duration.TimeDeltaAsTimeSpan));
+            return OpenPcmInputStream(subClipBegin, new Time(Duration.AsTimeSpan));
         }
 
         /// <summary>
@@ -285,7 +285,7 @@ namespace urakawa.media.data.audio.codec
             if (
                 subClipBegin.IsLessThan(Time.Zero)
                 || subClipEnd.IsLessThan(subClipBegin)
-                || subClipEnd.IsGreaterThan(new Time(Duration.TimeDeltaAsTimeSpan))
+                || subClipEnd.IsGreaterThan(new Time(Duration.AsTimeSpan))
                 )
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
@@ -297,7 +297,7 @@ namespace urakawa.media.data.audio.codec
             AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(raw, out dataLength);
             Time rawEndTime = new Time(format.ConvertBytesToTime(dataLength));
 
-            //Time rawEndTime = Time.Zero.AddTimeDelta(MediaDuration); // We don't call this to avoid unnecessary I/O (Strem.Open() twice)
+            //Time rawEndTime = Time.Zero.Add(MediaDuration); // We don't call this to avoid unnecessary I/O (Strem.Open() twice)
 
             if (
                 ClipBegin.IsLessThan(Time.Zero)
@@ -311,8 +311,8 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.InvalidDataFormatException(msg);
             }
             /*
-            TimeDelta clipDuration = Duration;
-            if (subClipBegin.IsEqualTo(Time.Zero) && subClipEnd.IsEqualTo(Time.Zero.AddTimeDelta(clipDuration)))
+            Time clipDuration = Duration;
+            if (subClipBegin.IsEqualTo(Time.Zero) && subClipEnd.IsEqualTo(Time.Zero.Add(clipDuration)))
             {
                 // Stream.Position is at the end of the RIFF header, we need to bring it back to the begining
                 return new SubStream(
@@ -320,12 +320,12 @@ namespace urakawa.media.data.audio.codec
                 raw.Position, raw.Length - raw.Position); 
             }
             */
-            Time rawClipBegin = new Time(ClipBegin.TimeAsTimeSpan + subClipBegin.TimeAsTimeSpan);
-            Time rawClipEnd = new Time(ClipBegin.TimeAsTimeSpan + subClipEnd.TimeAsTimeSpan);
+            Time rawClipBegin = new Time(ClipBegin.AsTimeSpan + subClipBegin.AsTimeSpan);
+            Time rawClipEnd = new Time(ClipBegin.AsTimeSpan + subClipEnd.AsTimeSpan);
 
-            long beginPos = raw.Position + format.ConvertTimeToBytes(rawClipBegin.TimeAsMillisecondDouble);
+            long beginPos = raw.Position + format.ConvertTimeToBytes(rawClipBegin.AsMilliseconds);
 
-            long endPos = raw.Position + format.ConvertTimeToBytes(rawClipEnd.TimeAsMillisecondDouble);
+            long endPos = raw.Position + format.ConvertTimeToBytes(rawClipEnd.AsMilliseconds);
 
             return new SubStream(
                 raw,

@@ -190,7 +190,7 @@ namespace urakawa.media.data.audio
         /// Gets the duration of <c>this</c>, that is the duration of the underlying <see cref="audio.AudioMediaData"/>
         /// </summary>
         /// <returns>The duration</returns>
-        public override TimeDelta Duration
+        public override Time Duration
         {
             get
             {
@@ -198,7 +198,7 @@ namespace urakawa.media.data.audio
                 {
                     return AudioMediaData.AudioDuration;
                 }
-                return new TimeDelta(0);
+                return new Time(0);
             }
         }
 

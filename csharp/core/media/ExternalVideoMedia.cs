@@ -57,7 +57,7 @@ namespace urakawa.media
         {
             ExternalVideoMedia copy = (ExternalVideoMedia)base.CopyProtected();
             copy.Src = Src;
-            if (ClipBegin.IsNegativeTimeOffset)
+            if (ClipBegin.IsNegative)
             {
                 copy.ClipBegin = ClipBegin.Copy();
                 copy.ClipEnd = ClipEnd.Copy();
@@ -82,7 +82,7 @@ namespace urakawa.media
         {
             ExternalVideoMedia exported = (ExternalVideoMedia)base.ExportProtected(destPres);
             exported.Src = Src;
-            if (ClipBegin.IsNegativeTimeOffset)
+            if (ClipBegin.IsNegative)
             {
                 exported.ClipBegin = ClipBegin.Copy();
                 exported.ClipEnd = ClipEnd.Copy();
@@ -142,7 +142,7 @@ namespace urakawa.media
             {
                 Time ceTime = new Time(ce);
                 Time cbTime = new Time(cb);
-                if (cbTime.IsNegativeTimeOffset)
+                if (cbTime.IsNegative)
                 {
                     ClipBegin = cbTime;
                     ClipEnd = ceTime;
@@ -230,9 +230,9 @@ namespace urakawa.media
         /// Gets the duration of <c>this</c>
         /// </summary>
         /// <returns>The duration</returns>
-        public override TimeDelta Duration
+        public override Time Duration
         {
-            get { return ClipEnd.GetTimeDelta(ClipBegin); }
+            get { return ClipEnd.GetDifference(ClipBegin); }
         }
 
         /// <summary>
