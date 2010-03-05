@@ -56,10 +56,10 @@ namespace urakawa.daisy.import
 
 
                 if (RequestCancellation) return;
-                reportProgress(-1, "Parsing metadata: [" + docPath + "]");                 // TODO LOCALIZE Key already added
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, docPath));
                 parseMetadata(xmlDoc);
 
-                reportProgress(-1, "Parsing content: [" + docPath + "]");                  // TODO LOCALIZE Key already added
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, docPath)); 
 
                 //XmlNodeList listOfBodies = xmlDoc.GetElementsByTagName("body");
                 //if (listOfBodies.Count == 0)

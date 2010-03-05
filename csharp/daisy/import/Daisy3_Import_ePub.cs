@@ -78,7 +78,7 @@ namespace urakawa.daisy.import
                 XmlDocument opfXmlDoc = readXmlDocument(m_Book_FilePath);
 
                 if (RequestCancellation) return;
-                reportProgress(-1, "Parsing OPF: [" + fileInfo.FullName + "]");             // TODO LOCALIZE Key already added
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingOPF, fileInfo.FullName));            
                 parseOpf(opfXmlDoc);
 
                 break;

@@ -63,15 +63,6 @@ namespace urakawa.daisy {
         /// <summary>
         ///   Looks up a localized string similar to All files created.
         /// </summary>
-        public static string AllFilesCeated {
-            get {
-                return ResourceManager.GetString("AllFilesCeated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All files created.
-        /// </summary>
         public static string AllFilesCreated {
             get {
                 return ResourceManager.GetString("AllFilesCreated", resourceCulture);
@@ -106,7 +97,7 @@ namespace urakawa.daisy {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating mp3 file [{0}].
+        ///   Looks up a localized string similar to Creating mp3 file [{0}]{1}.
         /// </summary>
         public static string CreateMP3File {
             get {

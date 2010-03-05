@@ -16,8 +16,8 @@ namespace urakawa.daisy.import
     public partial class Daisy3_Import
     {
         private XmlDocument readXmlDocument(string path)
-        {   
-            reportSubProgress(-1, "Reading XML document [" + Path.GetFileName(path) + "]...");                 // TODO LOCALIZE ReadXMLDoc
+        {
+            reportSubProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ReadXMLDoc, Path.GetFileName(path)));           
 
             XmlReaderSettings settings = new XmlReaderSettings();
 
@@ -58,7 +58,7 @@ namespace urakawa.daisy.import
                     xmlReader.Close();
                 }
 
-                reportSubProgress(100, "XML document loaded [" + path + "].");            // TODO LOCALIZE XmlDocLoaded
+                reportSubProgress(100, String.Format(UrakawaSDK_daisy_Lang.XmlDocLoaded, path));         
                 return xmldoc;
             }
         }
