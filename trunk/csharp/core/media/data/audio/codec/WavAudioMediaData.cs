@@ -116,7 +116,11 @@ namespace urakawa.media.data.audio.codec
         /// </remarks>
         public void ForceSingleDataProvider()
         {
-            if (mWavClips.Count == 1) return;
+            // Wrong ! even single clips need to be extracted from the file they are using, 
+            // which is potentially a tiny clip on a very large file,
+            // so that they use their own exclusive file (from 0 to duration)
+            // and so that the old one can be deleted.
+            //if (mWavClips.Count == 1) return;
 
             WavClip newSingleClip;
 
@@ -493,25 +497,34 @@ namespace urakawa.media.data.audio.codec
                     //the audio in the current clip before the insert point,
                     //the audio to be inserted and the audio in the current clip after the insert point respectively
                     Time insPtInCurClip = new Time(insPt.GetTimeDelta(elapsedTime).TimeDeltaAsTimeSpan);
-                    WavClip curClipBeforeIns, curClipAfterIns;
-                    Stream audioDataStream = curClip.OpenPcmInputStream(Time.Zero, insPtInCurClip);
-                    try
-                    {
-                        curClipBeforeIns = new WavClip(CreateDataProviderFromRawPCMStream(audioDataStream, null));
-                    }
-                    finally
-                    {
-                        audioDataStream.Close();
-                    }
-                    audioDataStream = curClip.OpenPcmInputStream(insPtInCurClip);
-                    try
-                    {
-                        curClipAfterIns = new WavClip(CreateDataProviderFromRawPCMStream(audioDataStream, null));
-                    }
-                    finally
-                    {
-                        audioDataStream.Close();
-                    }
+
+                    WavClip curClipBeforeIns = curClip.Copy();
+                    curClipBeforeIns.ClipEnd = curClipBeforeIns.ClipBegin.Copy();
+                    curClipBeforeIns.ClipEnd.AddTime(insPtInCurClip);
+
+                    //Stream audioDataStream = curClip.OpenPcmInputStream(Time.Zero, insPtInCurClip);
+                    //try
+                    //{
+                    //    curClipBeforeIns = new WavClip(CreateDataProviderFromRawPCMStream(audioDataStream, null));
+                    //}
+                    //finally
+                    //{
+                    //    audioDataStream.Close();
+                    //}
+
+                    WavClip curClipAfterIns = curClip.Copy();
+                    curClipAfterIns.ClipBegin.AddTime(insPtInCurClip);
+
+                    //audioDataStream = curClip.OpenPcmInputStream(insPtInCurClip);
+                    //try
+                    //{
+                    //    curClipAfterIns = new WavClip(CreateDataProviderFromRawPCMStream(audioDataStream, null));
+                    //}
+                    //finally
+                    //{
+                    //    audioDataStream.Close();
+                    //}
+
                     mWavClips.RemoveAt(clipIndex);
                     mWavClips.InsertRange(clipIndex, new WavClip[] { curClipBeforeIns, newInsClip, curClipAfterIns });
                     break;
@@ -537,20 +550,27 @@ namespace urakawa.media.data.audio.codec
                     movingInsertPoint.AddTimeDelta(wavClipDur);
                     remainingAvailableDuration.SubstractTimeDelta(wavClipDur);
 
-                    if (remainingAvailableDuration.IsEqualTo(TimeDelta.Zero)) break;
+                    if (remainingAvailableDuration.IsLessThan(TimeDelta.Zero)
+                    || remainingAvailableDuration.IsEqualTo(TimeDelta.Zero)) break;
                 }
                 else
                 {
-                    Stream stream = wavClip.OpenPcmInputStream(Time.Zero,
-                        new Time(wavClip.ClipBegin.TimeAsTimeSpan + remainingAvailableDuration.TimeDeltaAsTimeSpan));
-                    try
-                    {
-                        InsertPcmData(stream, movingInsertPoint, remainingAvailableDuration);
-                    }
-                    finally
-                    {
-                        stream.Close();
-                    }
+                    WavClip smallerClip = wavClip.Copy();
+                    smallerClip.ClipEnd = smallerClip.ClipBegin.Copy();
+                    smallerClip.ClipEnd.AddTimeDelta(remainingAvailableDuration);
+
+                    InsertPcmData(smallerClip, movingInsertPoint, remainingAvailableDuration);
+
+                    //Stream stream = wavClip.OpenPcmInputStream(Time.Zero,
+                    //    new Time(wavClip.ClipBegin.TimeAsTimeSpan + remainingAvailableDuration.TimeDeltaAsTimeSpan));
+                    //try
+                    //{
+                    //    InsertPcmData(stream, movingInsertPoint, remainingAvailableDuration);
+                    //}
+                    //finally
+                    //{
+                    //    stream.Close();
+                    //}
                     break;
                 }
             }
@@ -661,13 +681,14 @@ namespace urakawa.media.data.audio.codec
                     //    beyondAS.Close();
                     //}
 
-                    curClip.ClipEnd = new Time(curClip.ClipBegin.TimeAsTimeSpan + beforePartDur.TimeDeltaAsTimeSpan);
-                    newClipList.Add(curClip);
-
                     WavClip beyondPartClip = curClip.Copy();
                     Time copyEnd = beyondPartClip.ClipEnd.Copy();
                     copyEnd.SubtractTimeDelta(beyondPartDur);
                     beyondPartClip.ClipBegin = copyEnd;
+
+                    curClip.ClipEnd = new Time(curClip.ClipBegin.TimeAsTimeSpan + beforePartDur.TimeDeltaAsTimeSpan);
+                    
+                    newClipList.Add(curClip);
                     newClipList.Add(beyondPartClip);
                 }
                 else if (curBeginTime.IsLessThan(clipBegin) && curEndTime.IsGreaterThan(clipBegin))

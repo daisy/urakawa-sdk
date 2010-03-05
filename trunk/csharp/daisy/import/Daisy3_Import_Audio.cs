@@ -177,18 +177,20 @@ namespace urakawa.daisy.import
                         {
                             ManagedAudioMedia seqManMedia = (ManagedAudioMedia)seqChild;
 
-                            Stream stream = seqManMedia.AudioMediaData.OpenPcmInputStream();
-                            try
-                            {
-                                mediaData.AppendPcmData(stream, null);
-                            }
-                            finally
-                            {
-                                stream.Close();
-                            }
+                            mediaData.MergeWith(seqManMedia.AudioMediaData);
 
-                            seqManMedia.AudioMediaData.Delete(); // doesn't actually removes the FileDataProviders (need to call Presentation.Cleanup())
-                            //textTreeNode.Presentation.DataProviderManager.RemoveDataProvider();
+                            //Stream stream = seqManMedia.AudioMediaData.OpenPcmInputStream();
+                            //try
+                            //{
+                            //    mediaData.AppendPcmData(stream, null);
+                            //}
+                            //finally
+                            //{
+                            //    stream.Close();
+                            //}
+
+                            //seqManMedia.AudioMediaData.Delete(); // doesn't actually removes the FileDataProviders (need to call Presentation.Cleanup())
+                            ////textTreeNode.Presentation.DataProviderManager.RemoveDataProvider();
                         }
 
                         ChannelsProperty chProp = textTreeNode.GetChannelsProperty();
