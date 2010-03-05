@@ -459,7 +459,10 @@ namespace urakawa.data
         {
             base.XukOutAttributes(destination, baseUri);
 
-            CheckDataFile(); //Ensure that data file exist even if no data has yet been written to it.
+            // We can't check the data file because in some cases like Save As,
+            // the audio data only gets copied *after* the XUK
+            //CheckDataFile(); //Ensure that data file exist even if no data has yet been written to it.
+
             destination.WriteAttributeString(XukStrings.DataFileRelativePath, DataFileRelativePath);
 
             if (!Presentation.Project.IsPrettyFormat())

@@ -136,6 +136,37 @@ namespace urakawa.media.data.audio.codec
         #region AudioMediaData
 
 
+        public WavAudioMediaData Copy(Time timeBegin, Time timeEnd)
+        {
+            if (timeBegin == null || timeEnd == null)
+            {
+                throw new exception.MethodParameterIsNullException("Clip begin or clip end can not be null");
+            }
+
+            if (
+                timeBegin.IsLessThan(Time.Zero)
+                || timeBegin.IsGreaterThan(timeEnd)
+                || timeEnd.IsGreaterThan(new Time(AudioDuration.TimeDeltaAsTimeSpan)))
+            {
+                throw new exception.MethodParameterIsOutOfBoundsException(
+                    String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0}",
+                                  AudioDuration));
+            }
+            var copy = Copy();
+
+            if (timeEnd.IsGreaterThan(Time.Zero))
+            {
+                copy.RemovePcmData(timeEnd, new Time(copy.AudioDuration.TimeDeltaAsTimeSpan));
+            }
+
+            if (timeBegin.IsGreaterThan(Time.Zero))
+            {
+                copy.RemovePcmData(Time.Zero, timeBegin);
+            }
+
+            return copy;
+        }
+
         /// <summary>
         /// Creates a copy of <c>this</c>, including copies of all <see cref="DataProvider"/>s used by <c>this</c>
         /// </summary>
@@ -573,6 +604,7 @@ namespace urakawa.media.data.audio.codec
             }
         }
 
+
         /// <summary>
         /// Removes the audio between given clip begin and end points
         /// </summary>
@@ -614,21 +646,28 @@ namespace urakawa.media.data.audio.codec
                     //Some of the current clip is before the range and some is after
                     TimeDelta beforePartDur = curBeginTime.GetTimeDelta(clipBegin);
                     TimeDelta beyondPartDur = curEndTime.GetTimeDelta(clipEnd);
-                    Time timePointRelativeToClipBeginOfWavClip = new Time(
-                        curClip.Duration.TimeDeltaAsTimeSpan - beyondPartDur.TimeDeltaAsTimeSpan);
-                    Stream beyondAS = curClip.OpenPcmInputStream(timePointRelativeToClipBeginOfWavClip);
-                    WavClip beyondPartClip;
-                    try
-                    {
-                        beyondPartClip = new WavClip(CreateDataProviderFromRawPCMStream(beyondAS, null));
-                    }
-                    finally
-                    {
-                        beyondAS.Close();
-                    }
+
+
+                    //Time timePointRelativeToClipBeginOfWavClip = new Time(
+                    //    curClip.Duration.TimeDeltaAsTimeSpan - beyondPartDur.TimeDeltaAsTimeSpan);
+                    //Stream beyondAS = curClip.OpenPcmInputStream(timePointRelativeToClipBeginOfWavClip);
+                    //WavClip beyondPartClip;
+                    //try
+                    //{
+                    //    beyondPartClip = new WavClip(CreateDataProviderFromRawPCMStream(beyondAS, null));
+                    //}
+                    //finally
+                    //{
+                    //    beyondAS.Close();
+                    //}
 
                     curClip.ClipEnd = new Time(curClip.ClipBegin.TimeAsTimeSpan + beforePartDur.TimeDeltaAsTimeSpan);
                     newClipList.Add(curClip);
+
+                    WavClip beyondPartClip = curClip.Copy();
+                    Time copyEnd = beyondPartClip.ClipEnd.Copy();
+                    copyEnd.SubtractTimeDelta(beyondPartDur);
+                    beyondPartClip.ClipBegin = copyEnd;
                     newClipList.Add(beyondPartClip);
                 }
                 else if (curBeginTime.IsLessThan(clipBegin) && curEndTime.IsGreaterThan(clipBegin))
