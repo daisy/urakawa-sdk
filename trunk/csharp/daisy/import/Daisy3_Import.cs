@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.xuk;
@@ -42,6 +43,8 @@ namespace urakawa.daisy.import
                 Directory.CreateDirectory(m_outDirectory);
             }
 
+            m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
+
             reportProgress(50, UrakawaSDK_daisy_Lang.InitializeImport);                             
 
             if (RequestCancellation) return;
@@ -58,7 +61,6 @@ namespace urakawa.daisy.import
             reportProgress(-1, UrakawaSDK_daisy_Lang.SaveXUK);                                       
 
             if (RequestCancellation) return;
-            m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
 
             //m_Project.SaveXuk(new Uri(m_Xuk_FilePath));
 

@@ -366,6 +366,39 @@ namespace urakawa.data
             }
         }
 
+        public void DeleteByMovingToFolder(string fullPathToDeletedDataFolder)
+        {
+            lock (m_lock)
+            {
+                if (mOpenOutputStream != null)
+                {
+                    throw new exception.OutputStreamOpenException(
+                        "Cannot delete the FileDataProvider while an output Stream is still open");
+                }
+                if (mOpenInputStreams.Count > 0)
+                {
+                    throw new exception.InputStreamsOpenException(
+                        "Cannot delete the FileDataProvider while one or more input Streams are still open");
+                }
+                if (File.Exists(DataFileFullPath))
+                {
+                    var fileName = Path.GetFileName(DataFileFullPath);
+                    var filePathDest = Path.Combine(fullPathToDeletedDataFolder, fileName);
+                    try
+                    {
+                        File.Move(DataFileFullPath, filePathDest);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new exception.OperationNotValidException(String.Format(
+                                                                           "Could not delete data file {0}: {1}",
+                                                                           DataFileFullPath, e.Message), e);
+                    }
+                }
+                Presentation.DataProviderManager.RemoveDataProvider(this, false);
+            }
+        }
+
         /// <summary>
         /// Copies the file data provider including the data 
         /// </summary>
@@ -508,5 +541,6 @@ namespace urakawa.data
 
 
         #endregion
+
     }
 }

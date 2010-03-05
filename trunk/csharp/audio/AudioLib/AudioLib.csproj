@@ -76,6 +76,7 @@
     <Compile Include="AudioRecorder.cs" />
     <Compile Include="CalculationFunctions.cs" />
     <Compile Include="AudioLibPCMFormat.cs" />
+    <Compile Include="IDualCancellableProgressReporter.cs" />
     <Compile Include="Mp3Frame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VuMeter.cs" />

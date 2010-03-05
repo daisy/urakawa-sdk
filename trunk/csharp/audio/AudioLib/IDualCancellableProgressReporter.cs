@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace urakawa.daisy
+namespace AudioLib
 {
     public interface IDualCancellableProgressReporter
     {
@@ -82,6 +81,8 @@ namespace urakawa.daisy
             {
                 m_subCancellables.Add(other);
             }
+
+            other.ProgressChangedEvent += OnSubCancellableProgressChanged;
         }
 
         public void RemoveSubCancellable(IDualCancellableProgressReporter other)
@@ -90,6 +91,13 @@ namespace urakawa.daisy
             {
                 m_subCancellables.Remove(other);
             }
+
+            other.ProgressChangedEvent -= OnSubCancellableProgressChanged;
+        }
+
+        private void OnSubCancellableProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            reportProgress(e.ProgressPercentage, (string)e.UserState);
         }
 
         public abstract void DoWork();
