@@ -30,9 +30,7 @@ namespace urakawa.data
         /// </summary>
         public void Cleanup()
         {
-            string collecting = "Collecting used data ...";
-
-            reportProgress(-1, collecting);
+            reportProgress(-1, "Analyzing multimedia objects ...");
 
             const int progressStep = 10;
             int progress = progressStep;
