@@ -323,7 +323,8 @@ namespace urakawa.media.data.audio.codec
             return new SubStream(
                 raw,
                 beginPos,
-                endPos - beginPos);
+                endPos - beginPos,
+                DataProvider is FileDataProvider ? ((FileDataProvider)DataProvider).DataFileFullPath : null);
         }
 
         #region IValueEquatable<WavClip> Members
