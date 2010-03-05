@@ -163,39 +163,6 @@ namespace urakawa.data
         //    }
         //}
 
-        public string CopyFileDataProvidersToDataFolderWithPrefix(string parentFolderPath, string prefixforSubDataFolder)
-        {
-            string fullDataFolderPath = Path.Combine(parentFolderPath,
-                                                     prefixforSubDataFolder + "___" + DefaultDataFileDirectory);
-
-            CopyFileDataProvidersToDataFolder(fullDataFolderPath);
-
-            return fullDataFolderPath;
-        }
-
-
-        public void CopyFileDataProvidersToDataFolder(string fullDataFolderPath)
-        {
-            if (!Directory.Exists(fullDataFolderPath))
-            {
-                Directory.CreateDirectory(fullDataFolderPath);
-            }
-
-            foreach (FileDataProvider fdp in ManagedFileDataProviders)
-            {
-                string pathSource = Path.Combine(DataFileDirectoryFullPath, fdp.DataFileRelativePath);
-                if (!File.Exists(pathSource))
-                {
-                    throw new exception.DataMissingException(String.Format("File does not exist: {0}", pathSource));
-                }
-                string pathDest = Path.Combine(fullDataFolderPath, fdp.DataFileRelativePath);
-                if (!File.Exists(pathDest))
-                {
-                    File.Copy(pathSource, pathDest);
-                }
-            }
-        }
-
         private string getDataFileDirectoryFullPath(Uri baseUri)
         {
             if (!baseUri.IsFile)
@@ -230,7 +197,7 @@ namespace urakawa.data
             DataFileDirectory = dataFolderPrefix + "___" + DefaultDataFileDirectory;
         }
 
-        private const string DefaultDataFileDirectory = "Data";
+        public const string DefaultDataFileDirectory = "Data";
 
         // it's only public because XukIn needs it !
         // TODO: several Presentations with the same Data folder will conflict within a single Project !!
