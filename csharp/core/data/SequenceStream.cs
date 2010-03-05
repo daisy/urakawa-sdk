@@ -13,6 +13,18 @@ namespace urakawa.data
         private List<Stream> mSources;
         private int mCurrentIndex;
 
+        public IEnumerable<Stream> ChildStreams
+        {
+            get
+            {
+                foreach (var stream in mSources)
+                {
+                    yield return stream;
+                }
+            }
+        }
+        
+
         /// <summary>
         /// Constructor supplying the sequence of source <see cref="Stream"/>s
         /// </summary>
