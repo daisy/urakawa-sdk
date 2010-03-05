@@ -11,7 +11,7 @@ namespace urakawa.daisy.export
         private void CreateOpfDocument()
         {
             m_ProgressPercentage = 90;
-            reportProgress(m_ProgressPercentage, "All files created");                           // TODO LOCALIZE AllFilesCreated
+            reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.AllFilesCreated);
             if (RequestCancellation) return;
             XmlDocument opfDocument = CreateStub_OpfDocument();
 
@@ -158,7 +158,7 @@ namespace urakawa.daisy.export
         {
             AddMetadataAsAttributes(doc, parentNode, "dtb:generator", "Tobi and the Urakawa SDK: the open-source DAISY multimedia authoring toolkit");
             m_ProgressPercentage = 100;
-            reportProgress(m_ProgressPercentage, "All files created");                                       // TODO LOCALIZE AllFilesCreated
+            reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.AllFilesCreated);                                       
         }
 
         private void AddMetadata_Opf(XmlDocument opfDocument)
@@ -305,7 +305,7 @@ namespace urakawa.daisy.export
         {
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
             {
-                reportSubProgress(-1, "creating external files like .css, .dtd etc.");                 // TODO LOCALIZE CreatingExternalFiles
+                reportSubProgress(-1, UrakawaSDK_daisy_Lang.CreatingExternalFiles);
                 if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains(efd.OriginalRelativePath))
                 {
                     string filePath = Path.Combine(m_OutputDirectory, efd.OriginalRelativePath);
