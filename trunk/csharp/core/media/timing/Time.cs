@@ -130,6 +130,45 @@ namespace urakawa.media.timing
             return mTime.ToString();
         }
 
+        //private static string FormatTimeSpan_Npt(TimeSpan time)
+        //{
+        //    double dTime = Math.Round(time.TotalSeconds, 3, MidpointRounding.ToEven);
+        //    return "npt=" + dTime.ToString() + "s";
+        //}
+
+        public static string Format_Standard(TimeSpan time)
+        {
+            if (time.CompareTo(TimeSpan.Zero) == 0)
+            {
+                return "0";
+            }
+            if (time.Hours != 0)
+            {
+                return string.Format("{0:00}:{1:00}:{2:00}.{3:000}", time.Hours, time.Minutes,
+                                     time.Seconds, time.Milliseconds);
+            }
+            if (time.Minutes != 0)
+            {
+                return string.Format("{0:00}:{1:00}.{2:000}", time.Minutes,
+                                     time.Seconds, time.Milliseconds);
+            }
+            return string.Format("{0:00}.{1:000}",
+                                     time.Seconds, time.Milliseconds);
+        }
+
+        public static string Format_H_MN_S_MS(TimeSpan time)
+        {
+            if (time.CompareTo(TimeSpan.Zero) == 0)
+            {
+                return "0s";
+            }
+            return
+                (time.Hours != 0 ? time.Hours + "h " : "") +
+                (time.Minutes != 0 ? time.Minutes + "mn " : "") +
+                (time.Seconds != 0 ? time.Seconds + "s " : "") +
+                (time.Milliseconds != 0 ? time.Milliseconds + "ms" : "");
+        }
+
         /// <summary>
         /// Parses a string representation of a <see cref="Time"/>. 
         /// See <see cref="ToString"/> for a description of the format of the string representation
@@ -316,7 +355,7 @@ namespace urakawa.media.timing
             try
             {
                 double s = parseClockValue(str);
-                return new Time(TimeSpan.FromSeconds(s));
+                return new Time(TimeSpan.FromMilliseconds(1000*s));
             }
             catch (Exception e)
             {
