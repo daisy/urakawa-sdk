@@ -137,8 +137,8 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.MethodParameterIsNullException("The data provider of a WavClip can not be null");
             }
             mDataProvider = clipDataProvider;
-            ClipBegin = clipBegin;
-            ClipEnd = clipEnd;
+            ClipBegin = clipBegin.Copy();
+            ClipEnd = clipEnd.Copy();
         }
 
         private TimeDelta cachedDuration = null;
@@ -196,7 +196,7 @@ namespace urakawa.media.data.audio.codec
             //TODO: Check that sharing DataProvider with the copy is not a problem
             // REMARK: FileDataProviders: once created, binary content (including RIFF header) is never changed.
             // therefore, OPEN-only FileStream access should work concurrently (i.e. FileShare.Read)
-            WavClip newClip = new WavClip(DataProvider, ClipBegin.Copy(), clipEnd);
+            WavClip newClip = new WavClip(DataProvider, ClipBegin, clipEnd);
             newClip.cachedDuration = cachedDuration.Copy();
             newClip.cachedPcmFormat = new AudioLibPCMFormat();
             newClip.cachedPcmFormat.CopyValues(cachedPcmFormat);
@@ -212,7 +212,11 @@ namespace urakawa.media.data.audio.codec
         {
             Time clipEnd = null;
             if (!IsClipEndTiedToEOM) clipEnd = ClipEnd.Copy();
-            return new WavClip(DataProvider.Export(destPres), ClipBegin.Copy(), clipEnd);
+            WavClip newClip = new WavClip(DataProvider.Export(destPres), ClipBegin, clipEnd);
+            newClip.cachedDuration = cachedDuration.Copy();
+            newClip.cachedPcmFormat = new AudioLibPCMFormat();
+            newClip.cachedPcmFormat.CopyValues(cachedPcmFormat);
+            return newClip;
         }
 
         private DataProvider mDataProvider;

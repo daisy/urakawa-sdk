@@ -158,11 +158,13 @@ namespace urakawa.media.timing
         /// <param name="other">The other <see cref="TimeDelta"/></param>
         public void AddTimeDelta(TimeDelta other)
         {
+            //mTimeDelta = mTimeDelta.Add(other.TimeDeltaAsTimeSpan);
             mTimeDelta += other.TimeDeltaAsTimeSpan;
         }
 
         public void SubstractTimeDelta(TimeDelta other)
         {
+            //mTimeDelta = mTimeDelta.Subtract(other.TimeDeltaAsTimeSpan);
             mTimeDelta -= other.TimeDeltaAsTimeSpan;
         }
 

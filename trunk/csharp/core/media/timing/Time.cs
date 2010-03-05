@@ -413,6 +413,7 @@ namespace urakawa.media.timing
         /// <param name="other">The other <see cref="Time"/></param>
         public void AddTime(Time other)
         {
+            //mTime = mTime.Add(other.TimeAsTimeSpan);
             mTime += other.TimeAsTimeSpan;
         }
 
@@ -422,6 +423,7 @@ namespace urakawa.media.timing
         /// <param name="other">The <see cref="TimeDelta"/> to add</param>
         public void AddTimeDelta(TimeDelta other)
         {
+            //mTime = mTime.Add(other.TimeDeltaAsTimeSpan);
             mTime += other.TimeDeltaAsTimeSpan;
         }
 
@@ -431,6 +433,7 @@ namespace urakawa.media.timing
         /// <param name="other">The <see cref="Time"/> to add</param>
         public void SubtractTime(Time other)
         {
+            //mTime = mTime.Subtract(other.TimeAsTimeSpan);
             mTime -= other.TimeAsTimeSpan;
         }
 
@@ -440,6 +443,7 @@ namespace urakawa.media.timing
         /// <param name="other">The <see cref="TimeDelta"/> to add</param>
         public void SubtractTimeDelta(TimeDelta other)
         {
+            //mTime = mTime.Subtract(other.TimeDeltaAsTimeSpan);
             mTime -= other.TimeDeltaAsTimeSpan;
         }
 
