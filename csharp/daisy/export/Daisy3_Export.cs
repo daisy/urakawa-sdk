@@ -80,6 +80,15 @@ namespace urakawa.daisy.export
 
             m_ID_Counter = 0;
             if (RequestCancellation) return;
+
+            // if publish channel exists remove it.
+            List<Channel> previousChannelsList = m_Presentation.ChannelsManager.GetChannelsByName ( PUBLISH_AUDIO_CHANNEL_NAME );
+
+            foreach (Channel previousChannel in previousChannelsList)
+                {
+                m_Presentation.ChannelsManager.RemoveManagedObject ( previousChannel);
+                }
+
             //TreeNodeTestDelegate triggerDelegate  = delegate(urakawa.core.TreeNode node) { return node.GetManagedAudioMedia () != null ; };
             TreeNodeTestDelegate triggerDelegate = doesTreeNodeTriggerNewSmil;
             TreeNodeTestDelegate skipDelegate = delegate { return false; };
