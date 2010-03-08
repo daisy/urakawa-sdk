@@ -252,19 +252,45 @@ namespace AudioLib
             //string argumentString = "-b " + bitRate_mp3Output.ToString ()  + " --cbr --resample default -m m \"" + sourceFile + "\" \"" + destinationFile + "\"";
             string argumentString = "-b " + bitRate_mp3Output.ToString() + " --cbr -m " + channelsArg + " \"" + sourceFile + "\" \"" + destinationFile + "\"";
 
-            ProcessStartInfo process_Lame = new ProcessStartInfo();
+            var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = Path.Combine(LameWorkingDir, "lame.exe"),
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    Arguments = argumentString
+                }
+            };
+            process.Start();
+            process.WaitForExit();
 
-            process_Lame.FileName = Path.Combine(LameWorkingDir, "lame.exe");
-
-            process_Lame.Arguments = argumentString;
-
-            process_Lame.WindowStyle = ProcessWindowStyle.Hidden;
-            //System.Windows.Forms.MessageBox.Show ( process_Lame.FileName );
-            //System.Windows.Forms.MessageBox.Show ( process_Lame.Arguments );
-            Process p = Process.Start(process_Lame);
-
-
-            p.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                StreamReader stdErr = process.StandardError;
+                if (!stdErr.EndOfStream)
+                {
+                    string toLog = stdErr.ReadToEnd();
+                    if (!string.IsNullOrEmpty(toLog))
+                    {
+                        Console.WriteLine(toLog);
+                    }
+                }
+            }
+            else
+            {
+                StreamReader stdOut = process.StandardOutput;
+                if (!stdOut.EndOfStream)
+                {
+                    string toLog = stdOut.ReadToEnd();
+                    if (!string.IsNullOrEmpty(toLog))
+                    {
+                        Console.WriteLine(toLog);
+                    }
+                }
+            }
 
             if (File.Exists(destinationFile))
             {
@@ -272,6 +298,18 @@ namespace AudioLib
             }
 
             return false;
+
+            //ProcessStartInfo process_Lame = new ProcessStartInfo();
+
+            //process_Lame.FileName = Path.Combine(LameWorkingDir, "lame.exe");
+
+            //process_Lame.Arguments = argumentString;
+
+            //process_Lame.WindowStyle = ProcessWindowStyle.Hidden;
+            ////System.Windows.Forms.MessageBox.Show ( process_Lame.FileName );
+            ////System.Windows.Forms.MessageBox.Show ( process_Lame.Arguments );
+            //Process p = Process.Start(process_Lame);
+            //p.WaitForExit();
         }
 
 

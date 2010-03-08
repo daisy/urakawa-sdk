@@ -50,7 +50,7 @@ namespace AudioLib
 
                 lock (m_subCancellables)
                 {
-                    foreach (var cancellable in m_subCancellables)
+                    foreach (IDualCancellableProgressReporter cancellable in m_subCancellables)
                     {
                         if (cancellable.RequestCancellation)
                             return true;
@@ -65,7 +65,7 @@ namespace AudioLib
 
                 lock (m_subCancellables)
                 {
-                    foreach (var cancellable in m_subCancellables)
+                    foreach (IDualCancellableProgressReporter cancellable in m_subCancellables)
                     {
                         cancellable.RequestCancellation = value;
                     }
