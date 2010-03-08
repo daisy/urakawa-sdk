@@ -1,8 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.DirectX.DirectSound;
 using System.Threading;
+
+#if USE_SLIMDX
+using SlimDX.DirectSound;
+using SlimDX.Multimedia;
+#else
+using Microsoft.DirectX.DirectSound;
+#endif
 
 namespace AudioLib
 {
@@ -18,8 +24,9 @@ namespace AudioLib
 
         private Thread m_CircularBufferRefreshThread;
 
+#if !USE_SLIMDX
         private Notify m_Notify;
-
+#endif
         private long m_TotalRecordedBytes;
 
 
@@ -165,8 +172,11 @@ namespace AudioLib
                 {
                     return m_InputDevices;
                 }
-
+#if USE_SLIMDX
+                DeviceCollection devices = DirectSoundCapture.GetDevices(); // new DeviceCollection();
+#else
                 CaptureDevicesCollection devices = new CaptureDevicesCollection();
+#endif
                 m_InputDevices = new List<InputDevice>(devices.Count);
                 foreach (DeviceInformation info in devices)
                 {
@@ -265,8 +275,11 @@ namespace AudioLib
             waveFormat.SamplesPerSecond = (int)RecordingPCMFormat.SampleRate;
             waveFormat.BitsPerSample = (short)RecordingPCMFormat.BitDepth;
             waveFormat.AverageBytesPerSecond = (int)RecordingPCMFormat.SampleRate * RecordingPCMFormat.BlockAlign;
+#if USE_SLIMDX
+            waveFormat.BlockAlignment = (short)RecordingPCMFormat.BlockAlign;
+#else
             waveFormat.BlockAlign = (short)RecordingPCMFormat.BlockAlign;
-
+#endif
             uint byteRate = RecordingPCMFormat.SampleRate * RecordingPCMFormat.BlockAlign;
 
             int pcmDataBufferSize = (int)(byteRate * REFRESH_INTERVAL_MS / 1000.0);
@@ -279,20 +292,35 @@ namespace AudioLib
             CaptureBufferDescription bufferDescription = new CaptureBufferDescription();
             bufferDescription.BufferBytes = circularBufferSize;
             bufferDescription.Format = waveFormat;
-
+#if USE_SLIMDX
+            bufferDescription.WaveMapped = false;
+            m_CircularBuffer = new CaptureBuffer(InputDevice.Capture, bufferDescription);
+#else
             m_CircularBuffer = new CaptureBuffer(bufferDescription, InputDevice.Capture);
+#endif
 
             m_CircularBufferNotificationEvent = new AutoResetEvent(false);
 
+#if USE_SLIMDX
+            NotificationPosition[] m_BufferPositionNotify = new NotificationPosition[NOTIFICATIONS];
+#else
             BufferPositionNotify[] m_BufferPositionNotify = new BufferPositionNotify[NOTIFICATIONS];
+#endif
             for (int i = 0; i < NOTIFICATIONS; i++)
             {
                 m_BufferPositionNotify[i].Offset = (pcmDataBufferSize * i) + pcmDataBufferSize - 1;
+#if USE_SLIMDX
+                m_BufferPositionNotify[i].Event = m_CircularBufferNotificationEvent;
+#else
                 m_BufferPositionNotify[i].EventNotifyHandle = m_CircularBufferNotificationEvent.SafeWaitHandle.DangerousGetHandle();
+#endif
             }
-
+#if USE_SLIMDX
+            m_CircularBuffer.SetNotificationPositions(m_BufferPositionNotify);
+#else
             m_Notify = new Notify(m_CircularBuffer);
             m_Notify.SetNotificationPositions(m_BufferPositionNotify, NOTIFICATIONS);
+#endif
 
             m_CircularBufferReadPositon = 0;
             m_RecordingFileWriter = null;
@@ -381,21 +409,37 @@ namespace AudioLib
             //Console.WriteLine("Recorder notify thread exit.");
         }
 
+#if USE_SLIMDX
+        private byte[] incomingPcmData;
+#endif
+
         private int circularBufferTransferData()
         {
+#if USE_SLIMDX
+            int circularBufferCapturePosition = m_CircularBuffer.CurrentCapturePosition;
+            int readPosition = m_CircularBuffer.CurrentReadPosition;
+
+#else
             int circularBufferCapturePosition;
             int readPosition;
             m_CircularBuffer.GetCurrentPosition(out circularBufferCapturePosition, out readPosition);
-
+#endif
+            int sizeBytes =
+#if USE_SLIMDX
+ m_CircularBuffer.SizeInBytes
+#else
+ m_CircularBuffer.Caps.BufferBytes
+#endif
+;
 
             int circularBufferBytesAvailableForReading = (circularBufferCapturePosition == m_CircularBufferReadPositon ? 0
                                     : (circularBufferCapturePosition < m_CircularBufferReadPositon
-                              ? circularBufferCapturePosition + (m_CircularBuffer.Caps.BufferBytes - m_CircularBufferReadPositon)
+                              ? circularBufferCapturePosition + (sizeBytes - m_CircularBufferReadPositon)
                               : circularBufferCapturePosition - m_CircularBufferReadPositon));
 
-            circularBufferBytesAvailableForReading -= (circularBufferBytesAvailableForReading % (m_CircularBuffer.Caps.BufferBytes / NOTIFICATIONS));
+            circularBufferBytesAvailableForReading -= (circularBufferBytesAvailableForReading % (sizeBytes / NOTIFICATIONS));
 
-            int circularBufferBytesAvailableForCapturing = m_CircularBuffer.Caps.BufferBytes - circularBufferBytesAvailableForReading;
+            int circularBufferBytesAvailableForCapturing = sizeBytes - circularBufferBytesAvailableForReading;
 
             if (circularBufferBytesAvailableForReading <= 0)
             {
@@ -414,9 +458,25 @@ namespace AudioLib
             //    continue;
             //}
 
+#if USE_SLIMDX
+            if (incomingPcmData == null)
+            {
+                incomingPcmData = new byte[circularBufferBytesAvailableForReading];
+            }
+            else if (incomingPcmData.Length != circularBufferBytesAvailableForReading)
+            {
+                Array.Resize(ref incomingPcmData, circularBufferBytesAvailableForReading);
+            }
+            m_CircularBuffer.Read(incomingPcmData, 0, circularBufferBytesAvailableForReading, m_CircularBufferReadPositon);
+
+            //byte[] incomingPcmData = SlimDX_IntermediaryTransferBuffer;
+#else
             byte[] incomingPcmData =
                 (byte[])
-                m_CircularBuffer.Read(m_CircularBufferReadPositon, typeof(byte), LockFlag.None, circularBufferBytesAvailableForReading);
+                m_CircularBuffer.Read(m_CircularBufferReadPositon, typeof(byte),
+                LockFlag.None,
+                circularBufferBytesAvailableForReading);
+#endif
 
             /*
              * 
@@ -435,7 +495,7 @@ namespace AudioLib
             m_TotalRecordedBytes += incomingPcmData.Length;
 
             m_CircularBufferReadPositon += incomingPcmData.Length;
-            m_CircularBufferReadPositon %= m_CircularBuffer.Caps.BufferBytes;
+            m_CircularBufferReadPositon %= sizeBytes;
 
             if (CurrentState == State.Recording)
             {
@@ -526,15 +586,17 @@ namespace AudioLib
                     stream.Close();
                 }
 
-                if (fileInfo.Length == (long) m_RecordedFileRiffHeaderSize) // no PCM data, just RIFF header
+                if (fileInfo.Length == (long)m_RecordedFileRiffHeaderSize) // no PCM data, just RIFF header
                 {
                     File.Delete(m_RecordedFilePath);
                     m_RecordedFilePath = null;
                 }
             }
 
+#if !USE_SLIMDX
             m_Notify.Dispose();
             m_Notify = null;
+#endif
 
             m_CircularBuffer.Dispose();
             m_CircularBuffer = null;
