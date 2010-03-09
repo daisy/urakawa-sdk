@@ -1,3 +1,5 @@
+//#define DUPLICATE_PCM_BUFFER
+
 using System;
 using System.Diagnostics;
 
@@ -38,13 +40,16 @@ namespace AudioLib
                 Debug.Fail("This should never happen !!!?");
                 return;
             }
-
+#if DUPLICATE_PCM_BUFFER
             if (m_PcmDataBuffer == null || m_PcmDataBuffer.Length != e.PcmDataBuffer.Length)
             {
                 Console.WriteLine("*** creating m_Player buffer");
                 m_PcmDataBuffer = new byte[e.PcmDataBuffer.Length];
             }
             Array.Copy(e.PcmDataBuffer, m_PcmDataBuffer, e.PcmDataBuffer.Length);
+#else
+            m_PcmDataBuffer = e.PcmDataBuffer;
+#endif
 
             double[] peakDb = computePeakDb(m_Player.CurrentAudioPCMFormat);
 
@@ -79,13 +84,16 @@ namespace AudioLib
                 Debug.Fail("This should never happen !!!?");
                 return;
             }
-
+#if DUPLICATE_PCM_BUFFER
             if (m_PcmDataBuffer == null || m_PcmDataBuffer.Length != e.PcmDataBuffer.Length)
             {
                 Console.WriteLine("*** creating m_Recorder buffer");
                 m_PcmDataBuffer = new byte[e.PcmDataBuffer.Length];
             }
             Array.Copy(e.PcmDataBuffer, m_PcmDataBuffer, e.PcmDataBuffer.Length);
+#else
+            m_PcmDataBuffer = e.PcmDataBuffer;
+#endif
 
             double[] peakDb = computePeakDb(m_Recorder.RecordingPCMFormat);
 
