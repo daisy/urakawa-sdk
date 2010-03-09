@@ -1,6 +1,6 @@
 using System;
+using AudioLib;
 using urakawa.command;
-using urakawa.events.command;
 using urakawa.events.progress;
 
 namespace urakawa.progress
@@ -8,28 +8,28 @@ namespace urakawa.progress
     /// <summary>
     /// An <see cref="IAction"/> that also handles progress
     /// </summary>
-    public abstract class ProgressAction : ProgressHandler, IAction
+    public abstract class ProgressAction : DualCancellableProgressReporter, IProgressHandler, IAction
     {
         /// <summary>
         /// Indicates if a request has been made to cancel the action
         /// </summary>
-        protected bool mHasCancelBeenRequested = false;
+        //protected bool mHasCancelBeenRequested = false;
 
         ///<summary>
         /// Gets a <see cref="bool"/> indicating if a request has been made to cancel the action
         ///</summary>
-        public bool HasCancelBeenRequested
-        {
-            get { return mHasCancelBeenRequested; }
-        }
+        //public bool HasCancelBeenRequested
+        //{
+        //    get { return mHasCancelBeenRequested; }
+        //}
 
         /// <summary>
         /// Request that the action be cancelled
         /// </summary>
-        public void RequestCancel()
-        {
-            mHasCancelBeenRequested = true;
-        }
+        //public void RequestCancel()
+        //{
+        //    mHasCancelBeenRequested = true;
+        //}
 
         #region Implementation of ProgressHandler
 

@@ -95,7 +95,7 @@ namespace urakawa.commands
             base.XukInAttributes(source);
         }
 
-        protected override void XukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             //nothing new here
             base.XukInChild(source, handler);
@@ -107,7 +107,7 @@ namespace urakawa.commands
             base.XukOutAttributes(destination, baseUri);
         }
 
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             //nothing new here
             base.XukOutChildren(destination, baseUri, handler);

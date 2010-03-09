@@ -285,7 +285,7 @@ namespace urakawa
         }
 
 
-        public void XukIn(XmlReader source, ProgressHandler handler, Project project)
+        public void XukIn(XmlReader source, IProgressHandler handler, Project project)
         {
             mProject = project;
             XukIn(source, handler);
@@ -821,7 +821,7 @@ namespace urakawa
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="xukAble">The instance to read</param>
         /// <param name="handler">The handler for progress</param>
-        protected static void XukInXukAbleFromChild(XmlReader source, IXukAble xukAble, ProgressHandler handler)
+        protected static void XukInXukAbleFromChild(XmlReader source, IXukAble xukAble, IProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -847,7 +847,7 @@ namespace urakawa
             }
         }
 
-        private void XukInMetadata(XmlReader source, ProgressHandler handler)
+        private void XukInMetadata(XmlReader source, IProgressHandler handler)
         {
             if (source.IsEmptyElement) return;
             while (source.Read())
@@ -884,7 +884,7 @@ namespace urakawa
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
         /// <remarks>The read is considered succesful even if no valid root node is found</remarks>
-        protected void XukInRootNode(XmlReader source, ProgressHandler handler)
+        protected void XukInRootNode(XmlReader source, IProgressHandler handler)
         {
             RootNode = null;
             if (!source.IsEmptyElement)
@@ -963,7 +963,7 @@ namespace urakawa
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == XukNamespaceUri)
@@ -1077,7 +1077,7 @@ namespace urakawa
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
 

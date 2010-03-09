@@ -534,7 +534,7 @@ namespace urakawa.undo
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
 
@@ -566,7 +566,7 @@ namespace urakawa.undo
             }
         }
 
-        private void XukInCommandStack<T>(XmlReader source, Stack<T> stack, ProgressHandler handler) where T : Command
+        private void XukInCommandStack<T>(XmlReader source, Stack<T> stack, IProgressHandler handler) where T : Command
         {
             if (!source.IsEmptyElement)
             {
@@ -602,7 +602,7 @@ namespace urakawa.undo
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             destination.WriteStartElement(XukStrings.UndoStack, XukNamespaceUri);
             foreach (Command cmd in mUndoStack)

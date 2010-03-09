@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Xml;
 using urakawa.command;
+using urakawa.events.progress;
 using urakawa.progress;
 
 namespace urakawa.xuk
@@ -11,6 +12,11 @@ namespace urakawa.xuk
     ///</summary>
     public class OpenXukAction : ProgressAction
     {
+        public override void DoWork()
+        {
+            Execute();
+        }
+
         private Uri mSourceUri;
         private Stream mSourceStream;
         private XmlReader mXmlReader;
@@ -53,19 +59,19 @@ namespace urakawa.xuk
         /// <param name="sourceUri">The <see cref="Uri"/> of the source (can be null)</param>
         /// <param name="xukAble">The destination <see cref="IXukAble"/> (cannot be null)</param>
         /// <param name="sourceStream">The source <see cref="Stream"/> (cannot be null)</param>
-        public OpenXukAction(IXukAble xukAble, Uri sourceUri, Stream sourceStream)
-        {
-            if (sourceStream == null)
-                throw new exception.MethodParameterIsNullException(
-                    "The source Stream of the OpenXukAction cannot be null");
-            if (xukAble == null)
-                throw new exception.MethodParameterIsNullException(
-                    "The destination IXukAble of the OpenXukAction cannot be null");
-            mSourceUri = sourceUri;
-            mDestXukAble = xukAble;
-            mSourceStream = sourceStream;
-            initializeXmlReader(mSourceStream);
-        }
+        //public OpenXukAction(IXukAble xukAble, Uri sourceUri, Stream sourceStream)
+        //{
+        //    if (sourceStream == null)
+        //        throw new exception.MethodParameterIsNullException(
+        //            "The source Stream of the OpenXukAction cannot be null");
+        //    if (xukAble == null)
+        //        throw new exception.MethodParameterIsNullException(
+        //            "The destination IXukAble of the OpenXukAction cannot be null");
+        //    mSourceUri = sourceUri;
+        //    mDestXukAble = xukAble;
+        //    mSourceStream = sourceStream;
+        //    initializeXmlReader(mSourceStream);
+        //}
 
         /// <summary>
         /// Constructor (DO NOT USE ! THE STREAM IS NULL. USE THE STREAM-BASED CTOR instead)
@@ -73,25 +79,24 @@ namespace urakawa.xuk
         /// <param name="sourceUri">The <see cref="Uri"/> of the source (can be null)</param>
         /// <param name="xukAble">The destination <see cref="IXukAble"/> (cannot be null)</param>
         /// <param name="reader">The source <see cref="XmlReader"/> (cannot be null)</param>
-        public OpenXukAction(IXukAble xukAble, Uri sourceUri, XmlReader reader)
-        {
-            if (reader == null)
-                throw new exception.MethodParameterIsNullException(
-                    "The source XmlReader of the OpenXukAction cannot be null");
-            if (xukAble == null)
-                throw new exception.MethodParameterIsNullException(
-                    "The destination IXukAble of the OpenXukAction cannot be null");
-            mSourceUri = sourceUri;
-            mDestXukAble = xukAble;
-            mXmlReader = reader;
-            XmlTextReader txtReader = reader as XmlTextReader;
-            if (txtReader != null)
-            {
-                //TODO: where can we get the underlying stream ??
-                //mSourceStream = txtReader.BaseStream;
-            }
-        }
-
+        //public OpenXukAction(IXukAble xukAble, Uri sourceUri, XmlReader reader)
+        //{
+        //    if (reader == null)
+        //        throw new exception.MethodParameterIsNullException(
+        //            "The source XmlReader of the OpenXukAction cannot be null");
+        //    if (xukAble == null)
+        //        throw new exception.MethodParameterIsNullException(
+        //            "The destination IXukAble of the OpenXukAction cannot be null");
+        //    mSourceUri = sourceUri;
+        //    mDestXukAble = xukAble;
+        //    mXmlReader = reader;
+        //    XmlTextReader txtReader = reader as XmlTextReader;
+        //    if (txtReader != null)
+        //    {
+        //        //TODO: where can we get the underlying stream ??
+        //        //mSourceStream = txtReader.BaseStream;
+        //    }
+        //}
 
         /// <summary>
         /// Constructor
@@ -109,6 +114,36 @@ namespace urakawa.xuk
 
             mSourceUri = sourceUri;
             mDestXukAble = xukAble;
+
+            int currentPercentage = 0;
+            EventHandler<ProgressEventArgs> progressing = (sender, e) =>
+            {
+                double val = e.Current;
+                double max = e.Total;
+                var percent = (int)((val / max) * 100);
+
+                if (percent != currentPercentage)
+                {
+                    currentPercentage = percent;
+                    reportProgress(currentPercentage, LongDescription);
+                    //backWorker.ReportProgress(currentPercentage);
+                }
+
+                if (RequestCancellation)
+                {
+                    e.Cancel();
+                }
+            };
+            Progress += progressing;
+            Finished += (sender, e) =>
+            {
+                Progress -= progressing;
+            };
+            Cancelled += (sender, e) =>
+            {
+                Progress -= progressing;
+            };
+
             mSourceStream = GetStreamFromUri(mSourceUri);
             initializeXmlReader(mSourceStream);
         }
@@ -159,8 +194,8 @@ namespace urakawa.xuk
         /// <exception cref="urakawa.exception.CannotExecuteException">Thrown when the command cannot be reversed.</exception>
         public override void Execute()
         {
-            mHasCancelBeenRequested = false;
-            Progress += OpenXukAction_progress;
+            //mHasCancelBeenRequested = false;
+            //Progress += OpenXukAction_progress;
 
             bool canceled = false;
             try
@@ -236,7 +271,7 @@ namespace urakawa.xuk
             }
             finally
             {
-                Progress -= OpenXukAction_progress;
+                //Progress -= OpenXukAction_progress;
 
                 closeInput();
 
@@ -245,10 +280,10 @@ namespace urakawa.xuk
             }
         }
 
-        private void OpenXukAction_progress(object sender, urakawa.events.progress.ProgressEventArgs e)
-        {
-            if (mHasCancelBeenRequested) e.Cancel();
-        }
+        //private void OpenXukAction_progress(object sender, urakawa.events.progress.ProgressEventArgs e)
+        //{
+        //    if (mHasCancelBeenRequested) e.Cancel();
+        //}
 
         private string m_ShortDescription = "Parsing XUK...";
         /// <summary>

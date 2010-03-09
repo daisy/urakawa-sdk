@@ -18,7 +18,7 @@ namespace urakawa.xuk
         /// </summary>
         /// <param name="source">The XmlReader to read from</param>
         /// <param name="handler">The handler for progress</param>
-        void XukIn(XmlReader source, ProgressHandler handler);
+        void XukIn(XmlReader source, IProgressHandler handler);
 
         /// <summary>
         /// The implementation of XukOut is expected to write a tag for the object it is called on.
@@ -30,7 +30,7 @@ namespace urakawa.xuk
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        void XukOut(XmlWriter destination, Uri baseUri, ProgressHandler handler);
+        void XukOut(XmlWriter destination, Uri baseUri, IProgressHandler handler);
 
         /// <summary>
         /// Gets the local localName part of the QName identifying the type of the instance

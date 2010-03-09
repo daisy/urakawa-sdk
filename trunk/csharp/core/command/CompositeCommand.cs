@@ -278,7 +278,7 @@ namespace urakawa.command
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == XukNamespaceUri)
@@ -293,7 +293,7 @@ namespace urakawa.command
             if (!readItem) base.XukInChild(source, handler);
         }
 
-        private void XukInCommands(XmlReader source, ProgressHandler handler)
+        private void XukInCommands(XmlReader source, IProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -330,7 +330,7 @@ namespace urakawa.command
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             destination.WriteStartElement(XukStrings.Commands, XukNamespaceUri);
             foreach (Command cmd in mCommands.ContentsAs_YieldEnumerable)
