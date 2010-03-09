@@ -180,7 +180,7 @@ namespace urakawa.metadata
         }
 
 
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
 
@@ -202,7 +202,7 @@ namespace urakawa.metadata
                 }
             }
         }
-        protected override void XukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == XukNamespaceUri)
@@ -232,7 +232,7 @@ namespace urakawa.metadata
         }
 
         private bool m_firstXukInAttribute;
-        protected virtual void XukInMetadataAttribute(XmlReader source, ProgressHandler handler)
+        protected virtual void XukInMetadataAttribute(XmlReader source, IProgressHandler handler)
         {
             if (source.LocalName == XukStrings.MetadataAttribute && source.NamespaceURI == XukNamespaceUri)
             {
@@ -255,7 +255,7 @@ namespace urakawa.metadata
             }
         }
 
-        private void XukInMetadataOtherAttributes(XmlReader source, ProgressHandler handler)
+        private void XukInMetadataOtherAttributes(XmlReader source, IProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {

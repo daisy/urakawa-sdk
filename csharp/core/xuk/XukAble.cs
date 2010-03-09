@@ -57,7 +57,7 @@ namespace urakawa.xuk
         /// </summary>
         /// <param name="source">The XmlReader to read from</param>
         /// <param name="handler">The handler for progress</param>
-        public void XukIn(XmlReader source, ProgressHandler handler)
+        public void XukIn(XmlReader source, IProgressHandler handler)
         {
             if (source == null)
             {
@@ -132,7 +132,7 @@ namespace urakawa.xuk
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler of progress</param>
-        protected virtual void XukInChild(XmlReader source, ProgressHandler handler)
+        protected virtual void XukInChild(XmlReader source, IProgressHandler handler)
         {
             if (source.NodeType == XmlNodeType.Element && !source.IsEmptyElement) source.ReadSubtree().Close(); //Read past unknown child 
         }
@@ -146,7 +146,7 @@ namespace urakawa.xuk
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        public void XukOut(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        public void XukOut(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             if (destination == null)
             {
@@ -209,7 +209,7 @@ namespace urakawa.xuk
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
         }
 

@@ -6,7 +6,7 @@ namespace urakawa.progress
     /// <summary>
     /// Handles progress
     /// </summary>
-    public interface ProgressHandler
+    public interface IProgressHandler
     {
         /// <summary>
         /// Event fired to indicate progress

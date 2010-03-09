@@ -10,7 +10,7 @@ namespace urakawa
     /// <typeparam name="T">The base <see cref="Type"/> of instances created by the factory</typeparam>
     public abstract class GenericWithPresentationFactory<T> : GenericXukAbleFactory<T> where T : WithPresentation
     {
-        protected override void XukInChild(XmlReader source, progress.ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, progress.IProgressHandler handler)
         {
             if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XukNamespaceUri)
             {
@@ -24,7 +24,7 @@ namespace urakawa
             //we're replacing the super class method completely
             //base.XukInChild(source, handler);
         }
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, progress.ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, progress.IProgressHandler handler)
         {
             if (Presentation.Project.IsPrettyFormat())
             {

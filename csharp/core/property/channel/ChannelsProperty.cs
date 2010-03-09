@@ -269,7 +269,7 @@ namespace urakawa.property.channel
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == XukNamespaceUri)
@@ -299,7 +299,7 @@ namespace urakawa.property.channel
         /// </summary>
         /// <param name="source"></param>
         /// <param name="handler">The handler for progress</param>
-        private void XukInChannelMappings(XmlReader source, ProgressHandler handler)
+        private void XukInChannelMappings(XmlReader source, IProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -330,7 +330,7 @@ namespace urakawa.property.channel
         /// </summary>
         /// <param name="source"></param>
         /// <param name="handler">The handler for progress</param>
-        private void XukInChannelMapping(XmlReader source, ProgressHandler handler)
+        private void XukInChannelMapping(XmlReader source, IProgressHandler handler)
         {
             string channelRef = source.GetAttribute(XukStrings.Channel);
             while (source.Read())
@@ -372,7 +372,7 @@ namespace urakawa.property.channel
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
 

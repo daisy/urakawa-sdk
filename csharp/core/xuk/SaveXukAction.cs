@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using urakawa.command;
+using urakawa.events.progress;
 using urakawa.progress;
 
 namespace urakawa.xuk
@@ -12,6 +13,11 @@ namespace urakawa.xuk
     ///</summary>
     public class SaveXukAction : ProgressAction
     {
+        public override void DoWork()
+        {
+            Execute();
+        }
+
         private Uri mDestUri;
         private Stream mDestStream;
         private XmlWriter mXmlWriter;
@@ -100,7 +106,9 @@ namespace urakawa.xuk
         /// <param name="xukAble">The source <see cref="IXukAble"/>(cannot be null)</param>
         public SaveXukAction(Project proj, IXukAble xukAble, Uri destUri)
         {
-            m_Project = proj;
+            if (proj == null)
+                throw new exception.MethodParameterIsNullException(
+                    "The source Project of the SaveXukAction cannot be null");
             if (destUri == null)
                 throw new exception.MethodParameterIsNullException(
                     "The destination URI of the SaveXukAction cannot be null");
@@ -108,8 +116,39 @@ namespace urakawa.xuk
                 throw new exception.MethodParameterIsNullException(
                     "The source XukAble of the SaveXukAction cannot be null");
 
+            m_Project = proj;
             mDestUri = destUri;
             mSourceXukAble = xukAble;
+
+            int currentPercentage = 0;
+            EventHandler<ProgressEventArgs> progressing = (sender, e) =>
+            {
+                double val = e.Current;
+                double max = e.Total;
+                var percent = (int)((val / max) * 100);
+
+                if (percent != currentPercentage)
+                {
+                    currentPercentage = percent;
+                    reportProgress(currentPercentage, LongDescription);
+                    //backWorker.ReportProgress(currentPercentage);
+                }
+
+                if (RequestCancellation)
+                {
+                    e.Cancel();
+                }
+            };
+            Progress += progressing;
+            Finished += (sender, e) =>
+            {
+                Progress -= progressing;
+            };
+            Cancelled += (sender, e) =>
+            {
+                Progress -= progressing;
+            };
+
             mDestStream = GetStreamFromUri(mDestUri);
             initializeXmlWriter(mDestStream);
         }
@@ -161,8 +200,8 @@ namespace urakawa.xuk
         /// <exception cref="urakawa.exception.CannotExecuteException">Thrown when the command cannot be reversed.</exception>
         public override void Execute()
         {
-            mHasCancelBeenRequested = false;
-            Progress += SaveXukAction_progress;
+            //mHasCancelBeenRequested = false;
+            //Progress += SaveXukAction_progress;
             bool canceled = false;
             try
             {
@@ -197,7 +236,7 @@ namespace urakawa.xuk
             }
             finally
             {
-                Progress -= SaveXukAction_progress;
+                //Progress -= SaveXukAction_progress;
 
                 closeOutput();
 
@@ -206,10 +245,10 @@ namespace urakawa.xuk
             }
         }
 
-        private void SaveXukAction_progress(object sender, urakawa.events.progress.ProgressEventArgs e)
-        {
-            if (mHasCancelBeenRequested) e.Cancel();
-        }
+        //private void SaveXukAction_progress(object sender, urakawa.events.progress.ProgressEventArgs e)
+        //{
+        //    if (mHasCancelBeenRequested) e.Cancel();
+        //}
 
         private string m_ShortDescription = "Serializing XUK...";
         /// <summary>

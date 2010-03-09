@@ -293,7 +293,7 @@ namespace urakawa.core
             base.Clear();
         }
 
-        private void XukInProperties(XmlReader source, ProgressHandler handler)
+        private void XukInProperties(XmlReader source, IProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -321,7 +321,7 @@ namespace urakawa.core
                 }
             }
         }
-        private void XukInChildNode(XmlReader source, ProgressHandler handler)
+        private void XukInChildNode(XmlReader source, IProgressHandler handler)
         {
             TreeNode newChild = Presentation.TreeNodeFactory.Create(source.LocalName, source.NamespaceURI);
             if (newChild != null)
@@ -335,7 +335,7 @@ namespace urakawa.core
                 source.ReadSubtree().Close();
             }
         }
-        private void XukInChildren(XmlReader source, ProgressHandler handler)
+        private void XukInChildren(XmlReader source, IProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -359,7 +359,7 @@ namespace urakawa.core
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == XukNamespaceUri)
@@ -394,7 +394,7 @@ namespace urakawa.core
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
 

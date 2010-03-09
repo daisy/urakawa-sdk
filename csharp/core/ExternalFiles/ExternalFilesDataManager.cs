@@ -175,7 +175,7 @@ namespace urakawa.ExternalFiles
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             if (Presentation.Project.IsPrettyFormat())
             {
@@ -214,7 +214,7 @@ namespace urakawa.ExternalFiles
 
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == XukNamespaceUri)
@@ -241,7 +241,7 @@ namespace urakawa.ExternalFiles
         }
 
 
-        private void XukInExternalFileData(XmlReader source, ProgressHandler handler)
+        private void XukInExternalFileData(XmlReader source, IProgressHandler handler)
         {
             if (source.NodeType == XmlNodeType.Element)
             {
@@ -279,7 +279,7 @@ namespace urakawa.ExternalFiles
 
 
 
-        private void XukInExternalFileDatas(XmlReader source, ProgressHandler handler)
+        private void XukInExternalFileDatas(XmlReader source, IProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -306,7 +306,7 @@ namespace urakawa.ExternalFiles
         }
 
 
-        private void XukInExternalFileDataItem(XmlReader source, ProgressHandler handler)
+        private void XukInExternalFileDataItem(XmlReader source, IProgressHandler handler)
         {
             ExternalFileData data = null;
             if (!source.IsEmptyElement)

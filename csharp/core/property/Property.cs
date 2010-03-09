@@ -134,7 +134,7 @@ namespace urakawa.property
             return exportedProp;
         }
 
-        public void XukIn(XmlReader source, ProgressHandler handler, TreeNode node)
+        public void XukIn(XmlReader source, IProgressHandler handler, TreeNode node)
         {
             mOwner = node;
             XukIn(source, handler);

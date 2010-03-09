@@ -377,7 +377,7 @@ namespace urakawa.property.xml
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == XukNamespaceUri)
@@ -407,7 +407,7 @@ namespace urakawa.property.xml
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected virtual void XukInXmlAttribute(XmlReader source, ProgressHandler handler)
+        protected virtual void XukInXmlAttribute(XmlReader source, IProgressHandler handler)
         {
             if (source.LocalName == XukStrings.XmlAttribute && source.NamespaceURI == XukNamespaceUri)
             {
@@ -421,7 +421,7 @@ namespace urakawa.property.xml
             }
         }
 
-        private void XukInXmlAttributes(XmlReader source, ProgressHandler handler)
+        private void XukInXmlAttributes(XmlReader source, IProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -466,7 +466,7 @@ namespace urakawa.property.xml
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
 
