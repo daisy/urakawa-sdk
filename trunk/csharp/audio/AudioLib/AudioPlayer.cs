@@ -56,8 +56,9 @@ namespace AudioLib
                 State oldState = m_State;
                 m_State = value;
 
-                if (StateChanged != null)
-                    StateChanged(this, new StateChangedEventArgs(oldState));
+                var del = StateChanged;
+                if (del != null)
+                    del(this, new StateChangedEventArgs(oldState));
             }
         }
 
@@ -663,8 +664,8 @@ namespace AudioLib
                     m_CurrentBytePosition = m_PlaybackStartPosition + m_TotalBytesPlayed;
                 }
 
-
-                if (PcmDataBufferAvailable != null
+                var del_ = PcmDataBufferAvailable;
+                if (del_ != null
                     && m_PcmDataBuffer.Length <= circularBufferBytesAvailableForPlaying)
                 {
 #if USE_SLIMDX
@@ -678,7 +679,7 @@ namespace AudioLib
                     Array array = m_CircularBuffer.Read(circularBufferPlayPosition, typeof(byte), LockFlag.None, m_PcmDataBuffer.Length);
                     Array.Copy(array, m_PcmDataBuffer, m_PcmDataBuffer.Length);
                     m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                    PcmDataBufferAvailable(this, m_PcmDataBufferAvailableEventArgs);
+                    del_(this, m_PcmDataBufferAvailableEventArgs);
 #endif
                 }
 
@@ -788,8 +789,9 @@ namespace AudioLib
             m_CircularBufferRefreshThread = null;
             stopPlayback();
 
-            if (AudioPlaybackFinished != null)
-                AudioPlaybackFinished(this, new AudioPlaybackFinishEventArgs());
+            var del = AudioPlaybackFinished;
+            if (del != null)
+                del(this, new AudioPlaybackFinishEventArgs());
 
             //Console.WriteLine("Player refresh thread exit.");
         }

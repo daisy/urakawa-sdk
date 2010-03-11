@@ -53,10 +53,11 @@ namespace AudioLib
 
             double[] peakDb = computePeakDb(m_Player.CurrentAudioPCMFormat);
 
-            if (PeakMeterUpdated != null)
+            var del_ = PeakMeterUpdated;
+            if (del_ != null)
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
-                PeakMeterUpdated(this, m_PeakMeterUpdateEventArgs);
+                del_(this, m_PeakMeterUpdateEventArgs);
             }
 
             int index = 0;
@@ -67,11 +68,12 @@ namespace AudioLib
                 {
                     continue;
                 }
-                if (PeakMeterOverloaded != null)
+                var del = PeakMeterOverloaded;
+                if (del != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
                     m_PeakOverloadEventArgs.Time = m_Player.CurrentTime;
-                    PeakMeterOverloaded(this, m_PeakOverloadEventArgs);
+                    del(this, m_PeakOverloadEventArgs);
                 }
             }
         }
@@ -97,10 +99,11 @@ namespace AudioLib
 
             double[] peakDb = computePeakDb(m_Recorder.RecordingPCMFormat);
 
-            if (PeakMeterUpdated != null)
+            var del_ = PeakMeterUpdated;
+            if (del_ != null)
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
-                PeakMeterUpdated(this, m_PeakMeterUpdateEventArgs);
+                del_(this, m_PeakMeterUpdateEventArgs);
             }
 
             int index = 0;
@@ -111,11 +114,12 @@ namespace AudioLib
                 {
                     continue;
                 }
-                if (PeakMeterOverloaded != null)
+                var del = PeakMeterOverloaded;
+                if (del != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
                     m_PeakOverloadEventArgs.Time = m_Recorder.CurrentDuration;
-                    PeakMeterOverloaded(this, m_PeakOverloadEventArgs);
+                    del(this, m_PeakOverloadEventArgs);
                 }
             }
         }

@@ -66,8 +66,9 @@ namespace AudioLib
                 m_PreviousState = m_State;
                 m_State = value;
 
-                if (StateChanged != null)
-                    StateChanged(this, new StateChangedEventArgs(m_PreviousState));
+                var del = StateChanged;
+                if (del != null)
+                    del(this, new StateChangedEventArgs(m_PreviousState));
             }
         }
 
@@ -521,10 +522,11 @@ namespace AudioLib
 
             Array.Copy(incomingPcmData, m_PcmDataBuffer, m_PcmDataBuffer.Length);
 
-            if (PcmDataBufferAvailable != null)
+            var del = PcmDataBufferAvailable;
+            if (del != null)
             {
                 m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                PcmDataBufferAvailable(this, m_PcmDataBufferAvailableEventArgs);
+                del(this, m_PcmDataBufferAvailableEventArgs);
             }
 
             return circularBufferBytesAvailableForReading;
