@@ -221,25 +221,26 @@ namespace urakawa.daisy
             XmlAttribute attr = null;
             if (name.Contains(":"))
             {
-                string[] splitArray = name.Split(':');
+                attr = xmlDoc.CreateAttribute(name, strNamespace);
+                //string[] splitArray = name.Split(':');
 
-                XmlNode parentNode = xmlDoc.DocumentElement;
+                //XmlNode parentNode = xmlDoc.DocumentElement;
 
-                string parentAttributeName = "xmlns:" + splitArray[0];
+                //string parentAttributeName = "xmlns:" + splitArray[0];
 
-                if (parentNode != null
-                    && parentNode.Attributes != null
-                    && parentNode.Attributes.GetNamedItem(parentAttributeName) != null
-                    && parentNode.Attributes.GetNamedItem(parentAttributeName).Value == strNamespace)
-                {
-                    //System.Console.WriteLine ( parentNode.Name );
-                    // do nothing
-                }
-                else if (parentNode != null)
-                {
-                    CreateAppendXmlAttribute(xmlDoc, parentNode, parentAttributeName, strNamespace);
-                }
-                attr = xmlDoc.CreateAttribute(name, "SYSTEM");
+                //if (parentNode != null
+                //    && parentNode.Attributes != null
+                //    && parentNode.Attributes.GetNamedItem(parentAttributeName) != null
+                //    && parentNode.Attributes.GetNamedItem(parentAttributeName).Value == strNamespace)
+                //{
+                //    //System.Console.WriteLine ( parentNode.Name );
+                //    // do nothing
+                //}
+                //else if (parentNode != null)
+                //{
+                //    CreateAppendXmlAttribute(xmlDoc, parentNode, parentAttributeName, strNamespace);
+                //}
+                //attr = xmlDoc.CreateAttribute(name, "SYSTEM");
             }
             else
             {

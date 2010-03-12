@@ -57,7 +57,7 @@ namespace urakawa.xuk
         /// </summary>
         /// <param name="source">The XmlReader to read from</param>
         /// <param name="handler">The handler for progress</param>
-        public void XukIn(XmlReader source, IProgressHandler handler)
+        public virtual void XukIn(XmlReader source, IProgressHandler handler)
         {
             if (source == null)
             {
@@ -146,7 +146,7 @@ namespace urakawa.xuk
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        public void XukOut(XmlWriter destination, Uri baseUri, IProgressHandler handler)
+        public virtual void XukOut(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             if (destination == null)
             {
