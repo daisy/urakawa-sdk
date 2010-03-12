@@ -293,6 +293,12 @@ namespace urakawa.core
             base.Clear();
         }
 
+        public override void XukIn(XmlReader source, IProgressHandler handler)
+        {
+            Presentation.m_XukedInTreeNodes++;
+            base.XukIn(source, handler);
+        }
+
         private void XukInProperties(XmlReader source, IProgressHandler handler)
         {
             if (!source.IsEmptyElement)

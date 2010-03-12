@@ -727,6 +727,12 @@ namespace urakawa
             }
         }
 
+        internal long m_XukedInTreeNodes;
+        public long XukedInTreeNodes
+        {
+            get { return m_XukedInTreeNodes; }
+        }
+
 
         /// <summary>
         /// Gets a <see cref="List{Metadata}"/> of all <see cref="Metadata"/>
@@ -1032,6 +1038,7 @@ namespace urakawa
                 }
                 else if (source.LocalName == XukStrings.RootNode)
                 {
+                    m_XukedInTreeNodes = 0;
                     XukInRootNode(source, handler);
                 }
                 else
@@ -1244,7 +1251,7 @@ namespace urakawa
             {
                 Debug.Assert(mediaData == cmd1.ManagedAudioMedia.AudioMediaData);
                 Debug.Assert(mediaData == mdAudio);
-                MediaDataManager.RemoveManagedObject(mediaData);   
+                MediaDataManager.RemoveManagedObject(mediaData);
             }
             //
             ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();

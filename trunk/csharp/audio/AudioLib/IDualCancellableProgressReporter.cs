@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace AudioLib
@@ -15,6 +16,7 @@ namespace AudioLib
         void RemoveSubCancellable(IDualCancellableProgressReporter other);
 
         void DoWork();
+        void SetDoEventsMethod(Action action);
     }
 
     public abstract class DualCancellableProgressReporter : IDualCancellableProgressReporter
@@ -33,6 +35,8 @@ namespace AudioLib
         public event ProgressChangedEventHandler SubProgressChangedEvent;
         public void reportSubProgress(int percent, string msg)
         {
+            if (m_DoEventsMethod != null) m_DoEventsMethod();
+
             ProgressChangedEventHandler d = SubProgressChangedEvent;
             if (d != null)
             {
@@ -101,5 +105,11 @@ namespace AudioLib
         }
 
         public abstract void DoWork();
+
+        protected Action m_DoEventsMethod;
+        public void SetDoEventsMethod(Action action)
+        {
+            m_DoEventsMethod = action;
+        }
     }
 }
