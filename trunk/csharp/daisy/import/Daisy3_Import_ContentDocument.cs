@@ -59,7 +59,7 @@ namespace urakawa.daisy.import
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, docPath));
                 parseMetadata(xmlDoc);
 
-                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, docPath)); 
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, docPath));
 
                 //XmlNodeList listOfBodies = xmlDoc.GetElementsByTagName("body");
                 //if (listOfBodies.Count == 0)
@@ -289,9 +289,25 @@ namespace urakawa.daisy.import
                             for (int i = 0; i < attributeCol.Count; i++)
                             {
                                 XmlNode attr = attributeCol.Item(i);
-                                if (attr.LocalName != "smilref" && attr.Name != "xmlns:xsi" && attr.Name != "xml:space")
+                                if (attr.LocalName != "smilref") // && attr.Name != "xmlns:xsi" && attr.Name != "xml:space"
                                 {
-                                    if (updatedSRC != null && attr.LocalName == "src")
+                                    if (attr.Name.Contains(":"))
+                                    {
+                                        string[] splitArray = attr.Name.Split(':');
+
+                                        if (splitArray[0] == "xmlns")
+                                        {
+                                            if (xmlNode.LocalName == "book" || treeNode.Parent == null)
+                                            {
+                                                xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
+                                        }
+                                    }
+                                    else if (updatedSRC != null && attr.LocalName == "src")
                                     {
                                         xmlProp.SetAttribute(attr.LocalName, "", updatedSRC);
                                     }

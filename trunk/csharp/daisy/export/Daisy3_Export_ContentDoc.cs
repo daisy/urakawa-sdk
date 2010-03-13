@@ -25,42 +25,42 @@ namespace urakawa.daisy.export
             //    if (strInternalDTD.Trim() == "") strInternalDTD = null;
             //}
 
-            
-        m_FilesList_Image = new List<string> ();
-        m_FilesList_ExternalFiles = new List<string> ();
-        List<ExternalFileData> list_ExternalStyleSheets = new List<ExternalFileData> ();
+
+            m_FilesList_Image = new List<string>();
+            m_FilesList_ExternalFiles = new List<string>();
+            List<ExternalFileData> list_ExternalStyleSheets = new List<ExternalFileData>();
             string strInternalDTD = null;
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
-                {
+            {
                 if (RequestCancellation) return;
 
-                if (efd is ExternalFiles.DTDExternalFileData&&
+                if (efd is ExternalFiles.DTDExternalFileData &&
                     efd.OriginalRelativePath == "DTBookLocalDTD.dtd" && !efd.IsPreservedForOutputFile
                     && strInternalDTD == null)
-                    {
-                    StreamReader sr = new StreamReader ( efd.OpenInputStream () );
-                    strInternalDTD = sr.ReadToEnd ();
-                    
-                    }
-                else if (efd is ExternalFiles.CSSExternalFileData    ||   efd is XSLTExternalFileData)
-                    {
-                    list_ExternalStyleSheets.Add ( efd );
-                    
-                    }
+                {
+                    StreamReader sr = new StreamReader(efd.OpenInputStream());
+                    strInternalDTD = sr.ReadToEnd();
+
                 }
+                else if (efd is ExternalFiles.CSSExternalFileData || efd is XSLTExternalFileData)
+                {
+                    list_ExternalStyleSheets.Add(efd);
+
+                }
+            }
 
             if (RequestCancellation) return;
 
             m_ProgressPercentage = 0;
             reportProgress(0, UrakawaSDK_daisy_Lang.CreatingXMLFile);
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
-            if ( list_ExternalStyleSheets != null )  ExportStyleSheets ( list_ExternalStyleSheets );
+            if (list_ExternalStyleSheets != null) ExportStyleSheets(list_ExternalStyleSheets);
 
             m_ListOfLevels = new List<TreeNode>();
             Dictionary<string, string> old_New_IDMap = new Dictionary<string, string>();
             List<XmlAttribute> referencingAttributesList = new List<XmlAttribute>();
 
-            
+
 
             // add metadata
             XmlNode headNode = XmlDocumentHelper.GetFirstChildElementWithName(DTBookDocument, true, "head", null); //DTBookDocument.GetElementsByTagName("head")[0]
@@ -115,7 +115,7 @@ namespace urakawa.daisy.export
             rNode.AcceptDepthFirst(
                     delegate(TreeNode n)
                     {
-                    if (RequestCancellation) return false;
+                        if (RequestCancellation) return false;
                         // add to list of levels if xml property has level string
                         //QualifiedName qName = n.GetXmlElementQName();
                         //if (qName != null &&
@@ -127,13 +127,11 @@ namespace urakawa.daisy.export
                         if (doesTreeNodeTriggerNewSmil(n))
                         {
                             m_ListOfLevels.Add(n);
-                            reportSubProgress ( -1, UrakawaSDK_daisy_Lang.CreatingXMLFile );            
+                            reportSubProgress(-1, UrakawaSDK_daisy_Lang.CreatingXMLFile);
                         }
 
 
                         property.xml.XmlProperty xmlProp = n.GetProperty<property.xml.XmlProperty>();
-
-                        if (xmlProp != null && xmlProp.LocalName == "book") return true;
 
                         if (xmlProp == null)
                         {
@@ -173,7 +171,10 @@ namespace urakawa.daisy.export
                         //string elementName = name.Contains(":") ? name.Split(':')[1] : name;
                         //currentXmlNode = DTBookDocument.CreateElement(prefix, elementName, bookNode.NamespaceURI);
 
-                        currentXmlNode = DTBookDocument.CreateElement(null, xmlProp.LocalName, (string.IsNullOrEmpty(xmlProp.NamespaceUri) ? bookNode.NamespaceURI : xmlProp.NamespaceUri));
+                        if (xmlProp.LocalName == "book")
+                            currentXmlNode = bookNode;
+                        else
+                            currentXmlNode = DTBookDocument.CreateElement(null, xmlProp.LocalName, (string.IsNullOrEmpty(xmlProp.NamespaceUri) ? bookNode.NamespaceURI : xmlProp.NamespaceUri));
 
                         // add attributes
                         if (xmlProp.Attributes != null && xmlProp.Attributes.Count > 0)
@@ -205,12 +206,14 @@ namespace urakawa.daisy.export
                                 {
                                     XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument,
                                     currentXmlNode,
-                                    xmlProp.Attributes[i].LocalName, 
+                                    xmlProp.Attributes[i].LocalName,
                                     xmlProp.Attributes[i].Value,
-                                    xmlProp.Attributes[i].NamespaceUri );
+                                    xmlProp.Attributes[i].NamespaceUri);
                                 }
                             } // for loop ends
                         } // attribute nodes created
+
+                        if (xmlProp.LocalName == "book") return true;
 
                         // add id attribute in case it do not exists and it is required
                         if (currentXmlNode.Attributes.GetNamedItem("id") == null && IsIDRequired(currentXmlNode.LocalName))
@@ -242,29 +245,29 @@ namespace urakawa.daisy.export
                         {
                             XmlAttribute imgSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
                             if (imgSrcAttribute != null &&
-                                n.GetImageMedia () != null
-                                && n.GetImageMedia () is media.data.image.ManagedImageMedia)
-                                {
-                                media.data.image.ManagedImageMedia managedImage = (media.data.image.ManagedImageMedia )  n.GetImageMedia () ;
+                                n.GetImageMedia() != null
+                                && n.GetImageMedia() is media.data.image.ManagedImageMedia)
+                            {
+                                media.data.image.ManagedImageMedia managedImage = (media.data.image.ManagedImageMedia)n.GetImageMedia();
                                 string exportImageName = managedImage.ImageMediaData.OriginalRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
-                                string destPath = Path.Combine ( m_OutputDirectory, exportImageName );
+                                string destPath = Path.Combine(m_OutputDirectory, exportImageName);
 
-                                if ( !File.Exists ( destPath ))
-                                    {
+                                if (!File.Exists(destPath))
+                                {
                                     if (RequestCancellation) return false;
-                                    managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile ( destPath, false );
-                                    
-                                    }
+                                    managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
+
+                                }
 
                                 imgSrcAttribute.Value = exportImageName;
 
-                                if (!m_FilesList_Image.Contains ( exportImageName ))
-                                    {
-                                    m_FilesList_Image.Add ( exportImageName );
-                                    }
-                                
+                                if (!m_FilesList_Image.Contains(exportImageName))
+                                {
+                                    m_FilesList_Image.Add(exportImageName);
                                 }
-                            
+
+                            }
+
                         }
 
                         return true;
@@ -315,47 +318,47 @@ namespace urakawa.daisy.export
             if (nodeLocalName == "noteref"
                 || nodeLocalName == "annoref")
             {
-                if (node.Attributes.GetNamedItem("idref") != null ) 
-                    {
+                if (node.Attributes.GetNamedItem("idref") != null)
+                {
                     attributesList.Add((XmlAttribute)node.Attributes.GetNamedItem("idref"));
                     return true;
-                    }
+                }
                 else
-                    {
-                    System.Diagnostics.Debug.Fail (node.Name + " Should have idref attribute!") ;
-                    }
-                
+                {
+                    System.Diagnostics.Debug.Fail(node.Name + " Should have idref attribute!");
+                }
+
             }
             else if (nodeLocalName == "a")
             {
-                if ( node.Attributes.GetNamedItem("href") != null ) 
-                    {
+                if (node.Attributes.GetNamedItem("href") != null)
+                {
                     attributesList.Add((XmlAttribute)node.Attributes.GetNamedItem("href"));
-                return true;
-                    }
+                    return true;
+                }
             }
             return false;
         }
 
-        private void ExportStyleSheets ( List<ExternalFileData> list_ExternalStyleSheets )
-            {
-            if (list_ExternalStyleSheets == null || 
+        private void ExportStyleSheets(List<ExternalFileData> list_ExternalStyleSheets)
+        {
+            if (list_ExternalStyleSheets == null ||
                 (list_ExternalStyleSheets != null && list_ExternalStyleSheets.Count == 0))
-                {
+            {
                 return;
-                }
+            }
 
             foreach (ExternalFileData efd in list_ExternalStyleSheets)
+            {
+                if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains(efd.OriginalRelativePath))
                 {
-                if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains ( efd.OriginalRelativePath ))
-                    {
-                    string filePath = Path.Combine ( m_OutputDirectory, efd.OriginalRelativePath );
-                    efd.DataProvider.ExportDataStreamToFile ( filePath, true );
-                    m_FilesList_ExternalFiles.Add ( efd.OriginalRelativePath );
-                    
-                    }
+                    string filePath = Path.Combine(m_OutputDirectory, efd.OriginalRelativePath);
+                    efd.DataProvider.ExportDataStreamToFile(filePath, true);
+                    m_FilesList_ExternalFiles.Add(efd.OriginalRelativePath);
+
                 }
             }
+        }
 
         /*
         private XmlDocument SaveCurrentSmilAndCreateNextSmilDocument ( XmlDocument smilDocument )

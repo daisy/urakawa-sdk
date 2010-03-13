@@ -221,8 +221,25 @@ namespace urakawa.daisy
             XmlAttribute attr = null;
             if (name.Contains(":"))
             {
-                attr = xmlDoc.CreateAttribute(name, strNamespace);
-                //string[] splitArray = name.Split(':');
+                string[] splitArray = name.Split(':');
+
+                if (splitArray[0] == "xmlns")
+                {
+                    string nsURI = node.GetNamespaceOfPrefix(splitArray[1]);
+                    if (string.IsNullOrEmpty(nsURI))
+                    {
+                        attr = xmlDoc.CreateAttribute(name, strNamespace);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    attr = xmlDoc.CreateAttribute(name, strNamespace);
+                }
+
 
                 //XmlNode parentNode = xmlDoc.DocumentElement;
 
