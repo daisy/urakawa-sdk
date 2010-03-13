@@ -350,8 +350,9 @@ namespace urakawa.daisy.export
 
                     if (strTypeVal == "normal")
                     {
-                        int tmp = int.Parse(strPageValue);
-                        if (maxNormalPageNumber < tmp) maxNormalPageNumber = tmp;
+                        int tmp;
+                        bool success = int.TryParse(strPageValue, out tmp);
+                        if (success && maxNormalPageNumber < tmp) maxNormalPageNumber = tmp;
                     }
                     if (strTypeVal != "special")
                     {
