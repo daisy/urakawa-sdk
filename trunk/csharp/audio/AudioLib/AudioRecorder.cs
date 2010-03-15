@@ -169,15 +169,16 @@ namespace AudioLib
         {
             get
             {
-                if (m_InputDevices != null)
-                {
-                    return m_InputDevices;
-                }
+                //if (m_InputDevices != null)
+                //{
+                    //return m_InputDevices;
+                //}
 #if USE_SLIMDX
                 DeviceCollection devices = DirectSoundCapture.GetDevices(); // new DeviceCollection();
 #else
                 CaptureDevicesCollection devices = new CaptureDevicesCollection();
 #endif
+                
                 m_InputDevices = new List<InputDevice>(devices.Count);
                 foreach (DeviceInformation info in devices)
                 {
