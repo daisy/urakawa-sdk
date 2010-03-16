@@ -1,6 +1,7 @@
 #if USE_SLIMDX
 using SlimDX.DirectSound;
 #else
+using System;
 using Microsoft.DirectX.DirectSound;
 #endif
 
@@ -20,6 +21,15 @@ namespace AudioLib
         protected AudioDevice(DeviceInformation devInfo) { mDevInfo = devInfo; }
 
         public override string ToString() { return Name; }
+
+        public static bool operator ==(AudioDevice d1, AudioDevice d2)
+        {
+            return object.ReferenceEquals(d1, d2);
+        }
+        public static bool operator !=(AudioDevice d1, AudioDevice d2)
+        {
+            return !object.ReferenceEquals(d1, d2);
+        }
     }
 
     public class OutputDevice : AudioDevice
