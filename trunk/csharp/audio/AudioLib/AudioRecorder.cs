@@ -134,7 +134,7 @@ namespace AudioLib
         }
 
 
-        public void SetDevice(string name)
+        public void SetInputDevice(string name)
         {
             List<InputDevice> devices = InputDevices;
             InputDevice found = devices.Find(delegate(InputDevice d) { return d.Name == name; });
@@ -164,28 +164,21 @@ namespace AudioLib
             }
         }
 
-        private List<InputDevice> m_InputDevices;
         public List<InputDevice> InputDevices
         {
             get
             {
-                //if (m_InputDevices != null)
-                //{
-                    //return m_InputDevices;
-                //}
 #if USE_SLIMDX
                 DeviceCollection devices = DirectSoundCapture.GetDevices(); // new DeviceCollection();
 #else
                 CaptureDevicesCollection devices = new CaptureDevicesCollection();
 #endif
-                
-                m_InputDevices = new List<InputDevice>(devices.Count);
+                List<InputDevice> inputDevices = new List<InputDevice>(devices.Count);
                 foreach (DeviceInformation info in devices)
                 {
-                    m_InputDevices.Add(new InputDevice(info));
+                    inputDevices.Add(new InputDevice(info));
                 }
-
-                return m_InputDevices;
+                return inputDevices;
             }
         }
 

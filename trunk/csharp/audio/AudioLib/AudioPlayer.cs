@@ -165,27 +165,20 @@ namespace AudioLib
             }
         }
 
-        private List<OutputDevice> m_OutputDevices;
         public List<OutputDevice> OutputDevices
         {
             get
             {
-                //if (m_OutputDevices != null)
-                //{
-                    //return m_OutputDevices;
-                //}
-            List<OutputDevice> outputDevices = null;
 #if USE_SLIMDX
                 DeviceCollection devices = DirectSound.GetDevices(); // new DeviceCollection();
 #else
                 DevicesCollection devices = new DevicesCollection();
 #endif
-                outputDevices = new List<OutputDevice>(devices.Count);
+                List<OutputDevice> outputDevices = new List<OutputDevice>(devices.Count);
                 foreach (DeviceInformation info in devices)
                 {
                     outputDevices.Add(new OutputDevice(info));
                 }
-                
                 return outputDevices;
             }
         }
