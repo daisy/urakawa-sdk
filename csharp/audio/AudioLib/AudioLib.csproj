@@ -76,6 +76,9 @@
     <Compile Include="AudioRecorder.cs" />
     <Compile Include="CalculationFunctions.cs" />
     <Compile Include="AudioLibPCMFormat.cs" />
+    <Compile Include="DeviceChangeMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="IDualCancellableProgressReporter.cs" />
     <Compile Include="Mp3Frame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -133,6 +136,9 @@
     <EmbeddedResource Include="AudioLib.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AudioLib.Lang.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeviceChangeMonitor.resx">
+      <DependentUpon>DeviceChangeMonitor.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
