@@ -202,8 +202,8 @@ namespace urakawa.daisy.export.visitor
                 m_TimeElapsed += manAudioMedia != null ? manAudioMedia.Duration.AsMilliseconds :
                     seqAudioMedia.GetDurationOfManagedAudioMedia().AsMilliseconds;
                 m_ProgressPercentage = Convert.ToInt32((m_TimeElapsed * 100) / m_TotalTime);
-                
-                reportProgress(m_ProgressPercentage, "Creating audio file [" + Path.GetFileName(src) + "]" + GetSizeInfo (node));
+
+                reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName(src), GetSizeInfo(node)));   // TODO LOCALIZE CreatingAudioFile
                 Console.WriteLine("progress percent " + m_ProgressPercentage);
             }
 
@@ -244,12 +244,12 @@ namespace urakawa.daisy.export.visitor
                 string sizeInfo = "";
                 if (EncodePublishedAudioFilesToMp3 && m_EncodingFileCompressionRatio > 1)
                     {
-                    sizeInfo = " Created " + (elapsedSizeInMB / m_EncodingFileCompressionRatio).ToString () + " MB of " + (totalSizeInMB / m_EncodingFileCompressionRatio).ToString () + " MB";
+                        sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, elapsedSizeInMB / m_EncodingFileCompressionRatio, totalSizeInMB / m_EncodingFileCompressionRatio);  // TODO LOCALIZE TreeNode_SizeInfo
                     }
                 else if (!EncodePublishedAudioFilesToMp3) 
                     {
 
-                    sizeInfo = " Created " + elapsedSizeInMB.ToString () + " MB of " + totalSizeInMB.ToString () + " MB";
+                        sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, elapsedSizeInMB, totalSizeInMB);  // TODO LOCALIZE TreeNode_SizeInfo Key already added
                     }
                 return sizeInfo;
                 

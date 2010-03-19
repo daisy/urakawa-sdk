@@ -115,6 +115,15 @@ namespace urakawa.daisy {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creating audio file [{0}]{1}.
+        /// </summary>
+        public static string CreatingAudioFile {
+            get {
+                return ResourceManager.GetString("CreatingAudioFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to creating external files like .css, .dtd etc..
         /// </summary>
         public static string CreatingExternalFiles {
@@ -255,6 +264,15 @@ namespace urakawa.daisy {
         public static string TransformComplete {
             get {
                 return ResourceManager.GetString("TransformComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created {0} MB of {1} MB.
+        /// </summary>
+        public static string TreeNode_SizeInfo {
+            get {
+                return ResourceManager.GetString("TreeNode_SizeInfo", resourceCulture);
             }
         }
         

@@ -189,4 +189,10 @@
   <data name="XUKSaved" xml:space="preserve">
     <value>XUK Saved.</value>
   </data>
+  <data name="CreatingAudioFile" xml:space="preserve">
+    <value>Creating audio file [{0}]{1}</value>
+  </data>
+  <data name="TreeNode_SizeInfo" xml:space="preserve">
+    <value>Created {0} MB of {1} MB</value>
+  </data>
 </root>
