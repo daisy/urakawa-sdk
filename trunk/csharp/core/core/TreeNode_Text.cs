@@ -1,6 +1,8 @@
 ﻿using System;
 using urakawa.media;
 using urakawa.property.channel;
+using urakawa.property.xml;
+using urakawa.xuk;
 
 namespace urakawa.core
 {
@@ -30,7 +32,7 @@ namespace urakawa.core
             }
             return null;
         }
-        public TreeNode GetLastDescendantWithText()
+        public TreeNode GetLastDescendantWithText(bool acceptAltText)
         {
             if (mChildren.Count == 0)
             {
@@ -41,13 +43,13 @@ namespace urakawa.core
             {
                 TreeNode child = Children.Get(i);
 
-                string str = child.GetTextMediaFlattened(false);
+                string str = child.GetTextMediaFlattened(false, acceptAltText);
                 if (!string.IsNullOrEmpty(str))
                 {
                     return child;
                 }
 
-                TreeNode childIn = child.GetLastDescendantWithText();
+                TreeNode childIn = child.GetLastDescendantWithText(acceptAltText);
                 if (childIn != null)
                 {
                     return childIn;
@@ -56,7 +58,7 @@ namespace urakawa.core
             return null;
         }
 
-        public TreeNode GetFirstDescendantWithText()
+        public TreeNode GetFirstDescendantWithText(bool acceptAltText)
         {
             if (mChildren.Count == 0)
             {
@@ -65,13 +67,13 @@ namespace urakawa.core
 
             foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
             {
-                string str = child.GetTextMediaFlattened(false);
+                string str = child.GetTextMediaFlattened(false, acceptAltText);
                 if (!string.IsNullOrEmpty(str))
                 {
                     return child;
                 }
 
-                TreeNode childIn = child.GetFirstDescendantWithText();
+                TreeNode childIn = child.GetFirstDescendantWithText(acceptAltText);
                 if (childIn != null)
                 {
                     return childIn;
@@ -80,12 +82,12 @@ namespace urakawa.core
             return null;
         }
 
-        public TreeNode GetPreviousSiblingWithText()
+        public TreeNode GetPreviousSiblingWithText(bool acceptAltText)
         {
-            return GetPreviousSiblingWithText(null);
+            return GetPreviousSiblingWithText(null, acceptAltText);
         }
 
-        public TreeNode GetPreviousSiblingWithText(TreeNode upLimit)
+        private TreeNode GetPreviousSiblingWithText(TreeNode upLimit, bool acceptAltText)
         {
             if (Parent == null)
             {
@@ -94,13 +96,13 @@ namespace urakawa.core
             TreeNode next = this;
             while ((next = next.PreviousSibling) != null)
             {
-                string str = next.GetTextMediaFlattened(false);
+                string str = next.GetTextMediaFlattened(false, acceptAltText);
                 if (!string.IsNullOrEmpty(str))
                 {
                     return next;
                 }
 
-                TreeNode nextIn = next.GetLastDescendantWithText();
+                TreeNode nextIn = next.GetLastDescendantWithText(acceptAltText);
                 if (nextIn != null)
                 {
                     return nextIn;
@@ -109,17 +111,17 @@ namespace urakawa.core
 
             if (upLimit == null || upLimit != Parent)
             {
-                return Parent.GetPreviousSiblingWithText(upLimit);
+                return Parent.GetPreviousSiblingWithText(upLimit, acceptAltText);
             }
             return null;
         }
 
-        public TreeNode GetNextSiblingWithText()
+        public TreeNode GetNextSiblingWithText(bool acceptAltText)
         {
-            return GetNextSiblingWithText(null);
+            return GetNextSiblingWithText(null, acceptAltText);
         }
 
-        public TreeNode GetNextSiblingWithText(TreeNode upLimit)
+        private TreeNode GetNextSiblingWithText(TreeNode upLimit, bool acceptAltText)
         {
             if (Parent == null)
             {
@@ -128,13 +130,13 @@ namespace urakawa.core
             TreeNode next = this;
             while ((next = next.NextSibling) != null)
             {
-                string str = next.GetTextMediaFlattened(false);
+                string str = next.GetTextMediaFlattened(false, acceptAltText);
                 if (!string.IsNullOrEmpty(str))
                 {
                     return next;
                 }
 
-                TreeNode nextIn = next.GetFirstDescendantWithText();
+                TreeNode nextIn = next.GetFirstDescendantWithText(acceptAltText);
                 if (nextIn != null)
                 {
                     return nextIn;
@@ -143,17 +145,17 @@ namespace urakawa.core
 
             if (upLimit == null || upLimit != Parent)
             {
-                return Parent.GetNextSiblingWithText(upLimit);
+                return Parent.GetNextSiblingWithText(upLimit, acceptAltText);
             }
             return null;
         }
 
-        public string GetTextMediaFlattened()
+        public string GetTextMediaFlattened(bool acceptAltText)
         {
-            return GetTextMediaFlattened(true);
+            return GetTextMediaFlattened(true, acceptAltText);
         }
 
-        private string GetTextMediaFlattened(bool deep)
+        private string GetTextMediaFlattened(bool deep, bool acceptAltText)
         {
             AbstractTextMedia textMedia = GetTextMedia();
             if (textMedia != null)
@@ -173,6 +175,23 @@ namespace urakawa.core
                     return strText;
                 }
             }
+            if (acceptAltText)
+            {
+                QualifiedName qName = GetXmlElementQName();
+                string imgAlt = null;
+                if (qName != null && qName.LocalName.ToLower() == "img")
+                {
+                    XmlAttribute xmlAttr = GetXmlProperty().GetAttribute("alt");
+                    if (xmlAttr != null)
+                    {
+                        imgAlt = xmlAttr.Value;
+                    }
+                }
+                if (!String.IsNullOrEmpty(imgAlt))
+                {
+                    return imgAlt;
+                }
+            }
 
             if (!deep)
             {
@@ -183,7 +202,7 @@ namespace urakawa.core
             for (int index = 0; index < mChildren.Count; index++)
             {
                 TreeNode node = mChildren.Get(index);
-                str += node.GetTextMediaFlattened();
+                str += node.GetTextMediaFlattened(true, acceptAltText);
             }
             if (str.Length == 0)
             {

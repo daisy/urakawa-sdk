@@ -22,8 +22,8 @@ namespace urakawa.core
         {
             QualifiedName qname = GetXmlElementQName();
             String str = (qname != null ? qname.LocalName : "");
-            str += "///";
-            str += GetTextMediaFlattened();
+            str += " /// ";
+            str += GetTextMediaFlattened(true);
             return str;
         }
         public bool HasXmlProperty
