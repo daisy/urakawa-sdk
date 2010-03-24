@@ -31,20 +31,22 @@ namespace urakawa.core
         bool IsBefore(TreeNode node);
 
         TreeNode Root { get; }
-        string GetTextMediaFlattened();
+        
         StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened();
         Media GetManagedAudioMediaOrSequenceMedia();
         StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMedia();
         TreeNode GetNextSiblingWithManagedAudio();
 
-        TreeNode GetFirstDescendantWithText();
-        TreeNode GetLastDescendantWithText();
+        string GetTextMediaFlattened(bool acceptAltText);
 
-        TreeNode GetPreviousSiblingWithText();
-        TreeNode GetPreviousSiblingWithText(TreeNode upLimit);
+        TreeNode GetFirstDescendantWithText(bool acceptAltText);
+        TreeNode GetLastDescendantWithText(bool acceptAltText);
 
-        TreeNode GetNextSiblingWithText();
-        TreeNode GetNextSiblingWithText(TreeNode upLimit);
+        TreeNode GetPreviousSiblingWithText(bool acceptAltText);
+        //TreeNode GetPreviousSiblingWithText(TreeNode upLimit, bool acceptAltText);
+
+        TreeNode GetNextSiblingWithText(bool acceptAltText);
+        //TreeNode GetNextSiblingWithText(TreeNode upLimit, bool acceptAltText);
         
         TreeNode GetFirstDescendantWithManagedAudio();
         TreeNode GetFirstAncestorWithManagedAudio();
