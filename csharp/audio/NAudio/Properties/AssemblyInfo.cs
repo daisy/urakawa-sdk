@@ -10,9 +10,18 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Mark Heath")]
 [assembly: AssemblyProduct("NAudio")]
-[assembly: AssemblyCopyright("© 2001-2008 Mark Heath")]
+[assembly: AssemblyCopyright("© 2001-2009 Mark Heath")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+
+[assembly: InternalsVisibleTo("NAudioTests")]
+// Setting ComVisible to false makes the types in this assembly not visible 
+// to COM components.  If you need to access a type in this assembly from 
+// COM, set the ComVisible attribute to true on that type.
+[assembly: ComVisible(false)]
+
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("e82fa7f0-f952-4d93-b7b0-392bbf53b2a4")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -23,11 +32,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("1.3.5.0")]
-[assembly: AssemblyFileVersion("1.3.5.0")]
-
-[assembly: ComVisibleAttribute(false)]
-
-#if !NET_3_5 // NET_4_0 || BOOTSTRAP_NET_4_0
-//[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
-#endif
+[assembly: AssemblyVersion("1.3.9.0")]
+[assembly: AssemblyFileVersion("1.3.9.0")]
