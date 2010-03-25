@@ -13,6 +13,23 @@ namespace urakawa.command
     /// </summary>
     public class CompositeCommand : Command
     {
+        public List<T> GetChildCommandsAllType<T>() where T : Command
+        {
+            var list = new List<T>();
+            foreach (var childCmd in ChildCommands.ContentsAs_YieldEnumerable)
+            {
+                if (childCmd is T)
+                {
+                    list.Add((T)childCmd);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return list;
+        }
+
         public ObjectListProvider<Command> ChildCommands
         {
             get
