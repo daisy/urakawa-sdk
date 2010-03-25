@@ -152,10 +152,12 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.MethodParameterIsNullException("Clip begin or clip end can not be null");
             }
 
+
             if (
                 timeBegin.IsLessThan(Time.Zero)
-                || timeBegin.IsGreaterThan(timeEnd)
-                || timeEnd.IsGreaterThan(new Time(AudioDuration.AsTimeSpan)))
+                || timeEnd.IsLessThan(Time.Zero)
+                || (timeEnd.IsGreaterThan(Time.Zero) && timeBegin.IsGreaterThan(timeEnd))
+                || timeEnd.IsGreaterThan(AudioDuration))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0}",
@@ -163,9 +165,9 @@ namespace urakawa.media.data.audio.codec
             }
             var copy = Copy();
 
-            if (timeEnd.IsGreaterThan(Time.Zero))
+            if (timeEnd.IsGreaterThan(Time.Zero) && timeEnd.IsLessThan(AudioDuration))
             {
-                copy.RemovePcmData(timeEnd, new Time(copy.AudioDuration.AsTimeSpan));
+                copy.RemovePcmData(timeEnd, AudioDuration);
             }
 
             if (timeBegin.IsGreaterThan(Time.Zero))
