@@ -108,21 +108,21 @@ namespace urakawa.command
             if (d != null) d(this, new UnExecutedEventArgs(this));
         }
 
-        /// <summary>
-        /// Event fired after the <see cref="CompositeCommand"/> has changed. 
-        /// The event fire before any change specific event 
-        /// </summary>
-        //public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
+        ///// <summary>
+        ///// Event fired after the <see cref="CompositeCommand"/> has changed. 
+        ///// The event fire before any change specific event 
+        ///// </summary>
+        ////public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
 
-        /// <summary>
-        /// Fires the <see cref="Changed"/> event 
-        /// </summary>
-        /// <param name="args">The arguments of the event</param>
-        //protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
-        //{
-        //    EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
-        //    if (d != null) d(this, args);
-        //}
+        ///// <summary>
+        ///// Fires the <see cref="Changed"/> event 
+        ///// </summary>
+        ///// <param name="args">The arguments of the event</param>
+        ////protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
+        ////{
+        ////    EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
+        ////    if (d != null) d(this, args);
+        ////}
         #endregion
 
         /// <summary>

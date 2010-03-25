@@ -186,6 +186,31 @@ namespace urakawa.core
             return null;
         }
 
+        public TreeNode GetPreviousSiblingWithManagedAudio()
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            TreeNode previous = this;
+            while ((previous = previous.PreviousSibling) != null)
+            {
+                Media manMedia = previous.GetManagedAudioMediaOrSequenceMedia();
+                if (manMedia != null)
+                {
+                    return previous;
+                }
+
+                TreeNode previousIn = previous.GetFirstDescendantWithManagedAudio();
+                if (previousIn != null)
+                {
+                    return previousIn;
+                }
+            }
+
+            return Parent.GetPreviousSiblingWithManagedAudio();
+        }
+
         public TreeNode GetNextSiblingWithManagedAudio()
         {
             if (Parent == null)

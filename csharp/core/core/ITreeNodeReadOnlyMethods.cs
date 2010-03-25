@@ -36,6 +36,7 @@ namespace urakawa.core
         Media GetManagedAudioMediaOrSequenceMedia();
         StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMedia();
         TreeNode GetNextSiblingWithManagedAudio();
+        TreeNode GetPreviousSiblingWithManagedAudio();
 
         string GetTextMediaFlattened(bool acceptAltText);
 
