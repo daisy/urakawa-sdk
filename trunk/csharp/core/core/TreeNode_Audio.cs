@@ -29,17 +29,17 @@ namespace urakawa.core
             if (equal) return true;
 
             bool rightOk = false;
-            if (m_LocalStreamRightMark != -1)
+            if (m_LocalStreamRightMark == -1)
+            {
+                rightOk = true;
+            }
+            else
             {
                 long timeBytes = mediaData.PCMFormat.Data.ConvertTimeToBytes(mediaData.AudioDuration.AsMilliseconds);
                 rightOk = mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamRightMark, timeBytes);
             }
 
-            bool leftOk = false;
-            if (m_LocalStreamLeftMark != -1)
-            {
-                leftOk = mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamLeftMark, 0);
-            }
+            bool leftOk = m_LocalStreamLeftMark == -1 || mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamLeftMark, 0);
 
             return leftOk && rightOk;
         }
