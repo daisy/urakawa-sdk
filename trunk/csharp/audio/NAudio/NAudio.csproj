@@ -94,6 +94,7 @@
     <Compile Include="WaveFilter.cs" />
     <Compile Include="WaveFormat.cs" />
     <Compile Include="WaveFormatConversionStream.cs" />
+    <Compile Include="WaveFormatCustomMarshaler.cs" />
     <Compile Include="WaveFormatEncoding.cs" />
     <Compile Include="WaveFormatExtensible.cs" />
     <Compile Include="WaveFormatExtraData.cs" />
