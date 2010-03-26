@@ -280,17 +280,17 @@ namespace AudioLib
             Play(currentAudioStreamProvider, pcmInfo.ConvertBytesToTime(duration), pcmInfo, from, to);
         }
 
-        public void PlayTime(StreamProviderDelegate currentAudioStreamProvider,
-                            double duration, AudioLibPCMFormat pcmInfo,
-                            double from, double to)
-        {
-            if (pcmInfo == null)
-            {
-                throw new ArgumentNullException("PCM format cannot be null !");
-            }
+        //public void PlayTime(StreamProviderDelegate currentAudioStreamProvider,
+        //                    double duration, AudioLibPCMFormat pcmInfo,
+        //                    double from, double to)
+        //{
+        //    if (pcmInfo == null)
+        //    {
+        //        throw new ArgumentNullException("PCM format cannot be null !");
+        //    }
 
-            Play(currentAudioStreamProvider, duration, pcmInfo, pcmInfo.ConvertTimeToBytes(from), pcmInfo.ConvertTimeToBytes(to));
-        }
+        //    Play(currentAudioStreamProvider, duration, pcmInfo, pcmInfo.ConvertTimeToBytes(from), pcmInfo.ConvertTimeToBytes(to));
+        //}
 
         public void Pause()
         {
