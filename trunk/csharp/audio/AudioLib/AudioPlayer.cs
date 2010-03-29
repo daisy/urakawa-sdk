@@ -36,7 +36,12 @@ namespace AudioLib
         /// Paused: playback was paused and can be resumed.
         /// Stopped: player is idle.
         /// </summary>
-        public enum State { NotReady, Stopped, Playing, Paused };
+        public enum State { NotReady, Stopped,
+        Playing
+#if PAUSE_FEATURE_ENABLED
+, Paused 
+#endif //PAUSE_FEATURE_ENABLED
+        };
 
         private State m_State;
         public State CurrentState
@@ -129,8 +134,6 @@ namespace AudioLib
 
         private long m_PlaybackStartPosition;
         private long m_PlaybackEndPosition;
-
-        private long m_ResumeStartPosition;
 
         public void SetOutputDevice(Control handle, OutputDevice device)
         {
@@ -292,6 +295,9 @@ namespace AudioLib
         //    Play(currentAudioStreamProvider, duration, pcmInfo, pcmInfo.ConvertTimeToBytes(from), pcmInfo.ConvertTimeToBytes(to));
         //}
 
+#if PAUSE_FEATURE_ENABLED
+        private long m_ResumeStartPosition;
+
         public void Pause()
         {
             if (CurrentState == State.NotReady)
@@ -325,6 +331,7 @@ namespace AudioLib
 
             startPlayback(m_ResumeStartPosition, m_PlaybackEndPosition);
         }
+#endif //PAUSE_FEATURE_ENABLED
 
         public void Stop()
         {
@@ -368,11 +375,13 @@ namespace AudioLib
             {
                 return 0;
             }
-
+            
+#if PAUSE_FEATURE_ENABLED
             if (CurrentState == State.Paused)
             {
                 return m_ResumeStartPosition;
-            }
+            }   
+#endif //PAUSE_FEATURE_ENABLED
 
             if (CurrentState == State.Stopped)
             {
