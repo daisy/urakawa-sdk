@@ -27,7 +27,7 @@ namespace urakawa.command
                     return null;
                 }
             }
-            return list;
+            return list.Count == 0 ? null : list;
         }
 
         public ObjectListProvider<Command> ChildCommands
