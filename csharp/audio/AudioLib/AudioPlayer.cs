@@ -121,6 +121,7 @@ namespace AudioLib
             return I_Closed_The_Stream;
         }
 
+        //private bool m_CircularBufferRefreshThreadIsAlive = false;
         private Thread m_CircularBufferRefreshThread;
 #if USE_SLIMDX
         private SecondarySoundBuffer m_CircularBuffer;
@@ -557,6 +558,8 @@ namespace AudioLib
 
         private void circularBufferRefreshThreadMethod()
         {
+            //m_CircularBufferRefreshThreadIsAlive = true;
+
             int previousCircularBufferFrequence = m_CircularBuffer.Frequency;
 
             while (true)
@@ -789,6 +792,7 @@ namespace AudioLib
 
             CurrentState = State.Stopped;
 
+            //m_CircularBufferRefreshThreadIsAlive = false;
             m_CircularBufferRefreshThread = null;
             stopPlayback();
 
@@ -804,10 +808,15 @@ namespace AudioLib
         {
             m_CircularBuffer.Stop();
 
-            if (m_CircularBufferRefreshThread != null && m_CircularBufferRefreshThread.IsAlive)
+            if (m_CircularBufferRefreshThread != null
+                && (m_CircularBufferRefreshThread.IsAlive
+                // NO NEED FOR AN EXTRA CHECK, AS THE THREAD POINTER IS RESET TO NULL
+                //|| m_CircularBufferRefreshThreadIsAlive
+                ))
             {
                 m_CircularBufferRefreshThread.Abort();
                 m_CircularBufferRefreshThread = null;
+                //m_CircularBufferRefreshThreadIsAlive = false;
                 //Console.WriteLine("Player refresh thread abort.");
             }
 
