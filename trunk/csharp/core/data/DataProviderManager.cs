@@ -390,7 +390,9 @@ namespace urakawa.data
                 throw new exception.XukException(
                     "dataFileDirectoryPath attribute is missing from DataProviderManager element");
             }
-            DataFileDirectory = dataFileDirectoryPath;
+
+            //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
+            DataFileDirectory = Uri.UnescapeDataString(dataFileDirectoryPath);
         }
 
         /// <summary>
@@ -598,8 +600,8 @@ namespace urakawa.data
 
             Uri presBaseUri = Presentation.RootUri;
             Uri dfdUri = new Uri(presBaseUri, DataFileDirectory);
-            destination.WriteAttributeString(XukStrings.DataFileDirectoryPath, presBaseUri.MakeRelativeUri(dfdUri).ToString());
-
+            string str = presBaseUri.MakeRelativeUri(dfdUri).ToString();
+            destination.WriteAttributeString(XukStrings.DataFileDirectoryPath, str);
         }
 
         /// <summary>
