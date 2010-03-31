@@ -97,7 +97,7 @@ namespace urakawa.daisy {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating mp3 file [{0}]{1}.
+        ///   Looks up a localized string similar to Creating mp3 file [{0}] {1}.
         /// </summary>
         public static string CreateMP3File {
             get {

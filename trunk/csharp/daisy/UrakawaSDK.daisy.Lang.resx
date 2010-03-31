@@ -130,7 +130,7 @@
     <value>Copying audio: [{0}]</value>
   </data>
   <data name="CreateMP3File" xml:space="preserve">
-    <value>Creating mp3 file [{0}]{1}</value>
+    <value>Creating mp3 file [{0}] {1}</value>
   </data>
   <data name="CreateSmilAndNcxFiles" xml:space="preserve">
     <value>Creating smil and ncx files</value>
