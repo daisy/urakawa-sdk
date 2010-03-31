@@ -50,11 +50,11 @@ namespace urakawa.daisy.export.visitor
             string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
                 Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
 
-            reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(destinationFilePath), GetSizeInfo(m_RootNode)));      
+            reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(destinationFilePath), GetSizeInfo(m_RootNode)));
             if (formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, audioFormat.Data, BitRate_Mp3))
             {
-                m_EncodingFileCompressionRatio = (new FileInfo ( sourceFilePath ).Length ) / (new FileInfo ( destinationFilePath).Length ) ;
-                
+                m_EncodingFileCompressionRatio = (new FileInfo(sourceFilePath).Length) / (new FileInfo(destinationFilePath).Length);
+
                 foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
                 {
                     if (ext != null)
@@ -68,7 +68,7 @@ namespace urakawa.daisy.export.visitor
             else
             {
                 // append error messages
-                base.ErrorMessages = base.ErrorMessages + String.Format(UrakawaSDK_daisy_Lang.ErrorInEncoding, Path.GetFileName(sourceFilePath));    
+                base.ErrorMessages = base.ErrorMessages + String.Format(UrakawaSDK_daisy_Lang.ErrorInEncoding, Path.GetFileName(sourceFilePath));
             }
 
             m_ExternalAudioMediaList.Clear();
@@ -204,7 +204,7 @@ namespace urakawa.daisy.export.visitor
                 m_ProgressPercentage = Convert.ToInt32((m_TimeElapsed * 100) / m_TotalTime);
 
                 reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName(src), GetSizeInfo(node)));   // TODO LOCALIZE CreatingAudioFile
-                Console.WriteLine("progress percent " + m_ProgressPercentage);
+                //Console.WriteLine("progress percent " + m_ProgressPercentage);
             }
 
             ExternalAudioMedia extAudioMedia = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
@@ -235,27 +235,27 @@ namespace urakawa.daisy.export.visitor
             return false;
         }
 
-        private string GetSizeInfo( TreeNode node )
-            {
+        private string GetSizeInfo(TreeNode node)
+        {
             if (node == null) return "";
 
-                int elapsedSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes ( m_TimeElapsed ) / (1024 * 1024);
-                int totalSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes ( m_TotalTime ) / (1024 * 1024);
-                string sizeInfo = "";
-                if (EncodePublishedAudioFilesToMp3 && m_EncodingFileCompressionRatio > 1)
-                    {
-                        sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, elapsedSizeInMB / m_EncodingFileCompressionRatio, totalSizeInMB / m_EncodingFileCompressionRatio);  // TODO LOCALIZE TreeNode_SizeInfo
-                    }
-                else if (!EncodePublishedAudioFilesToMp3) 
-                    {
+            int elapsedSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TimeElapsed) / (1024 * 1024);
+            int totalSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TotalTime) / (1024 * 1024);
+            string sizeInfo = "";
+            if (EncodePublishedAudioFilesToMp3 && m_EncodingFileCompressionRatio > 1)
+            {
+                sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, elapsedSizeInMB / m_EncodingFileCompressionRatio, totalSizeInMB / m_EncodingFileCompressionRatio);  // TODO LOCALIZE TreeNode_SizeInfo
+            }
+            else if (!EncodePublishedAudioFilesToMp3)
+            {
 
-                        sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, elapsedSizeInMB, totalSizeInMB);  // TODO LOCALIZE TreeNode_SizeInfo Key already added
-                    }
-                return sizeInfo;
-                
-                    }
-                
-        
+                sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, elapsedSizeInMB, totalSizeInMB);  // TODO LOCALIZE TreeNode_SizeInfo Key already added
+            }
+            return sizeInfo;
+
+        }
+
+
 
         public override void PostVisit(TreeNode node)
         {
@@ -351,7 +351,7 @@ namespace urakawa.daisy.export.visitor
                 //extAudioMedia.ClipEnd = new Time(timeEnd);
 
                 Time durationFromRiffHeader = new Time(marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(marker.m_LocalStreamDataLength));
-                extAudioMedia.ClipEnd = new Time(extAudioMedia.ClipBegin.AsTimeSpan+durationFromRiffHeader.AsTimeSpan);
+                extAudioMedia.ClipEnd = new Time(extAudioMedia.ClipBegin.AsTimeSpan + durationFromRiffHeader.AsTimeSpan);
 
 
                 ChannelsProperty chProp = marker.m_TreeNode.GetOrCreateChannelsProperty();

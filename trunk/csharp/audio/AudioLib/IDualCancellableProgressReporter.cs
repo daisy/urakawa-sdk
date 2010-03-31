@@ -87,6 +87,7 @@ namespace AudioLib
             }
 
             other.ProgressChangedEvent += OnSubCancellableProgressChanged;
+            other.SubProgressChangedEvent += OnSubCancellableSubProgressChanged;
         }
 
         public void RemoveSubCancellable(IDualCancellableProgressReporter other)
@@ -97,11 +98,17 @@ namespace AudioLib
             }
 
             other.ProgressChangedEvent -= OnSubCancellableProgressChanged;
+            other.SubProgressChangedEvent -= OnSubCancellableSubProgressChanged;
         }
 
         private void OnSubCancellableProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             reportProgress(e.ProgressPercentage, (string)e.UserState);
+        }
+
+        private void OnSubCancellableSubProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            reportSubProgress(e.ProgressPercentage, (string)e.UserState);
         }
 
         public abstract void DoWork();
