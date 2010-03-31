@@ -109,19 +109,21 @@ namespace urakawa.daisy.export
 
             AddSubCancellable(m_PublishVisitor);
             m_Presentation.RootNode.AcceptDepthFirst(m_PublishVisitor);
+
+#if DEBUG
+            if (!m_PublishVisitor.EncodePublishedAudioFilesToMp3)
+                m_PublishVisitor.VerifyTree(m_Presentation.RootNode);
+
+            //Debugger.Break();
+#endif //DEBUG
             RemoveSubCancellable(m_PublishVisitor);
 
             m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler(ReportAudioPublishProgress);
 
-#if DEBUG
-             if ( !m_PublishVisitor.EncodePublishedAudioFilesToMp3 )
-                    m_PublishVisitor.VerifyTree(m_Presentation.RootNode);
-
-            //Debugger.Break();
-#endif //DEBUG
 
             m_PublishVisitor = null;
             GC.Collect();
+            GC.WaitForFullGCComplete();
 
             if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
             CreateDTBookDocument();
