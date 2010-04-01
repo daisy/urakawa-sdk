@@ -122,7 +122,10 @@ namespace AudioLib
         }
 
         //private bool m_CircularBufferRefreshThreadIsAlive = false;
+
+        private readonly Object LOCK = new object();
         private Thread m_CircularBufferRefreshThread;
+
 #if USE_SLIMDX
         private SecondarySoundBuffer m_CircularBuffer;
 #else
@@ -346,8 +349,6 @@ namespace AudioLib
                 return;
             }
 
-            CurrentState = State.Stopped;
-
             stopPlayback();
         }
 
@@ -539,11 +540,46 @@ namespace AudioLib
                 return;
             }
 
-            m_CircularBufferRefreshThread = new Thread(new ThreadStart(circularBufferRefreshThreadMethod));
-            m_CircularBufferRefreshThread.Name = "Player Refresh Thread";
-            m_CircularBufferRefreshThread.Priority = ThreadPriority.Highest;
-            m_CircularBufferRefreshThread.IsBackground = true;
-            m_CircularBufferRefreshThread.Start();
+            ThreadStart threadDelegate = delegate()
+            {
+                try
+                {
+                    circularBufferRefreshThreadMethod();
+                }
+                catch (ThreadAbortException ex)
+                {
+                    //
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
+                finally
+                {
+                    //Console.WriteLine("Player refresh thread exiting....");
+
+                    CurrentState = State.Stopped;
+                    
+                    lock (LOCK)
+                    {
+                        //m_CircularBufferRefreshThreadIsAlive = false;
+                        m_CircularBufferRefreshThread = null;
+                    }
+
+                    stopPlayback();
+
+                    //Console.WriteLine("Player refresh thread exit.");
+                }
+            };
+            lock (LOCK)
+            {
+                m_CircularBufferRefreshThread = new Thread(threadDelegate);
+                m_CircularBufferRefreshThread.Name = "Player Refresh Thread";
+                m_CircularBufferRefreshThread.Priority = ThreadPriority.Highest;
+                m_CircularBufferRefreshThread.IsBackground = true;
+                m_CircularBufferRefreshThread.Start();
+            }
 
 
             //Console.WriteLine("Player refresh thread start.");
@@ -578,6 +614,17 @@ namespace AudioLib
                 }
 #endif
 
+#if USE_SLIMDX
+                if (m_CircularBuffer.Status == BufferStatus.BufferTerminated)
+                {
+                    return;
+                }
+#else
+                if (m_CircularBuffer.Status.Terminated)
+                {
+                    return;
+                }
+#endif
                 if (m_PredictedByteIncrement < 0
                     || m_CircularBuffer.Frequency != previousCircularBufferFrequence)
                 {
@@ -788,19 +835,9 @@ namespace AudioLib
                 }
             }
 
-            //Console.WriteLine("Player refresh thread exiting....");
-
-            CurrentState = State.Stopped;
-
-            //m_CircularBufferRefreshThreadIsAlive = false;
-            m_CircularBufferRefreshThread = null;
-            stopPlayback();
-
             var del = AudioPlaybackFinished;
             if (del != null)
                 del(this, new AudioPlaybackFinishEventArgs());
-
-            //Console.WriteLine("Player refresh thread exit.");
         }
 
 
@@ -808,18 +845,24 @@ namespace AudioLib
         {
             m_CircularBuffer.Stop();
 
-            if (m_CircularBufferRefreshThread != null
-                && (m_CircularBufferRefreshThread.IsAlive
-                // NO NEED FOR AN EXTRA CHECK, AS THE THREAD POINTER IS RESET TO NULL
-                //|| m_CircularBufferRefreshThreadIsAlive
-                ))
+            lock (LOCK)
             {
-                m_CircularBufferRefreshThread.Abort();
-                m_CircularBufferRefreshThread = null;
-                //m_CircularBufferRefreshThreadIsAlive = false;
-                //Console.WriteLine("Player refresh thread abort.");
+                if (m_CircularBufferRefreshThread != null)
+                {
+                    m_CircularBufferRefreshThread.Abort();
+                }
             }
-
+            int count = 0;
+            while (m_CircularBufferRefreshThread != null
+                //&& (m_CircularBufferRefreshThread.IsAlive
+                //// NO NEED FOR AN EXTRA CHECK, AS THE THREAD POINTER IS RESET TO NULL
+                ////|| m_CircularBufferRefreshThreadIsAlive
+                //)
+                )
+            {
+                Console.WriteLine(@"///// m_CircularBufferRefreshThread != null: " + count++);
+                Thread.Sleep(20);
+            }
             if (!m_KeepStreamAlive)
             {
                 EnsurePlaybackStreamIsDead();
