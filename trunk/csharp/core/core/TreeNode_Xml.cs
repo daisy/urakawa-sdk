@@ -26,6 +26,99 @@ namespace urakawa.core
             str += GetTextMediaFlattened(true);
             return str;
         }
+
+
+        public TreeNode GetFirstAncestorWithXmlElement(string localName)
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+
+            QualifiedName qName = Parent.GetXmlElementQName();
+            if (qName != null && qName.LocalName == localName)
+            {
+                return Parent;
+            }
+
+            return Parent.GetFirstAncestorWithXmlElement(localName);
+        }
+
+        public TreeNode GetFirstDescendantWithXmlElement(string localName)
+        {
+            if (mChildren.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
+            {
+                QualifiedName qName = child.GetXmlElementQName();
+                if (qName != null && qName.LocalName == localName)
+                {
+                    return child;
+                }
+
+                TreeNode childIn = child.GetFirstDescendantWithXmlElement(localName);
+                if (childIn != null)
+                {
+                    return childIn;
+                }
+            }
+            return null;
+        }
+
+        public TreeNode GetPreviousSiblingWithXmlElement(string localName)
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            TreeNode previous = this;
+            while ((previous = previous.PreviousSibling) != null)
+            {
+                QualifiedName qName = previous.GetXmlElementQName();
+                if (qName != null && qName.LocalName == localName)
+                {
+                    return previous;
+                }
+
+                TreeNode previousIn = previous.GetFirstDescendantWithXmlElement(localName);
+                if (previousIn != null)
+                {
+                    return previousIn;
+                }
+            }
+
+            return Parent.GetPreviousSiblingWithXmlElement(localName);
+        }
+
+        public TreeNode GetNextSiblingWithXmlElement(string localName)
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            TreeNode next = this;
+            while ((next = next.NextSibling) != null)
+            {
+                QualifiedName qName = next.GetXmlElementQName();
+                if (qName != null && qName.LocalName == localName)
+                {
+                    return next;
+                }
+
+                TreeNode nextIn = next.GetFirstDescendantWithXmlElement(localName);
+                if (nextIn != null)
+                {
+                    return nextIn;
+                }
+            }
+
+            return Parent.GetNextSiblingWithXmlElement(localName);
+        }
+
+
         public bool HasXmlProperty
         {
             get { return GetProperty<XmlProperty>() != null; }
