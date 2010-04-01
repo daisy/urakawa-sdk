@@ -376,7 +376,7 @@ namespace AudioLib
             {
                 m_CircularBufferRefreshThread = new Thread(threadDelegate);
                 m_CircularBufferRefreshThread.Name = "Recorder Notify Thread";
-                m_CircularBufferRefreshThread.Priority = ThreadPriority.Highest;
+                m_CircularBufferRefreshThread.Priority = ThreadPriority.AboveNormal;
                 m_CircularBufferRefreshThread.IsBackground = true;
 
 
