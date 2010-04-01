@@ -22,6 +22,8 @@ namespace AudioLib
         private int m_CircularBufferReadPositon;
         private AutoResetEvent m_CircularBufferNotificationEvent;
 
+
+        private readonly Object LOCK_THREAD_INSTANCE = new object();
         private Thread m_CircularBufferRefreshThread;
 
 #if !USE_SLIMDX
@@ -342,17 +344,48 @@ namespace AudioLib
                 }
             }
 
-            m_CircularBufferRefreshThread = new Thread(new ThreadStart(circularBufferRefreshThreadMethod));
-            m_CircularBufferRefreshThread.Name = "Recorder Notify Thread";
-            m_CircularBufferRefreshThread.Priority = ThreadPriority.Highest;
-            m_CircularBufferRefreshThread.IsBackground = true;
+            ThreadStart threadDelegate = delegate()
+            {
+                try
+                {
+                    circularBufferRefreshThreadMethod();
+                }
+                catch (ThreadAbortException ex)
+                {
+                    //
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
+                finally
+                {
+                    lock (LOCK_THREAD_INSTANCE)
+                    {
+                        m_CircularBufferRefreshThread = null;
+                    }
+                }
+                lock (LOCK_THREAD_INSTANCE)
+                {
+                    m_CircularBufferRefreshThread = null;
+                }
+            };
+
+            lock (LOCK_THREAD_INSTANCE)
+            {
+                m_CircularBufferRefreshThread = new Thread(threadDelegate);
+                m_CircularBufferRefreshThread.Name = "Recorder Notify Thread";
+                m_CircularBufferRefreshThread.Priority = ThreadPriority.Highest;
+                m_CircularBufferRefreshThread.IsBackground = true;
 
 
-            CurrentState = (recordingToFile ? State.Recording : State.Monitoring);
+                CurrentState = (recordingToFile ? State.Recording : State.Monitoring);
 
-            m_CircularBuffer.Start(true);
+                m_CircularBuffer.Start(true);
 
-            m_CircularBufferRefreshThread.Start();
+                m_CircularBufferRefreshThread.Start();
+            }
 
 
             //Console.WriteLine("Recorder notify thread start.");
@@ -553,7 +586,44 @@ namespace AudioLib
             m_CircularBufferNotificationEvent.Set();
             m_CircularBufferNotificationEvent.Close();
 
-            m_CircularBufferRefreshThread = null;
+            lock (LOCK_THREAD_INSTANCE)
+            {
+                if (m_CircularBufferRefreshThread != null)
+                {
+                    m_CircularBufferRefreshThread.Abort();
+                }
+            }
+            int count = 0;
+            while (m_CircularBufferRefreshThread != null
+                //&& (m_CircularBufferRefreshThread.IsAlive
+                //// NO NEED FOR AN EXTRA CHECK, AS THE THREAD POINTER IS RESET TO NULL
+                ////|| m_CircularBufferRefreshThreadIsAlive
+                //)
+                )
+            {
+                if (count % 5 == 0)
+                {
+                    Console.WriteLine(@"///// RECORDER m_CircularBufferRefreshThread.Abort(): " + count++);
+                    lock (LOCK)
+                    {
+                        if (m_CircularBufferRefreshThread != null)
+                        {
+                            m_CircularBufferRefreshThread.Abort();
+                        }
+                    }
+                }
+                Console.WriteLine(@"///// RECORDER m_CircularBufferRefreshThread != null: " + count++);
+                Thread.Sleep(20);
+
+                if (count > 15)
+                {
+                    lock (LOCK_THREAD_INSTANCE)
+                    {
+                        m_CircularBufferRefreshThread = null;
+                    }
+                    break;
+                }
+            }
 
             int remainingBytesToRead = 0;
             do
@@ -599,8 +669,12 @@ namespace AudioLib
 
             CurrentState = State.Stopped;
 
-            if (wasRecording && AudioRecordingFinished != null)
-                AudioRecordingFinished(this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
+            if (wasRecording)
+            {
+                var del = AudioRecordingFinished;
+                if (del != null)
+                    del(this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
+            }
         }
     }
 }

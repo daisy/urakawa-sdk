@@ -36,8 +36,10 @@ namespace AudioLib
         /// Paused: playback was paused and can be resumed.
         /// Stopped: player is idle.
         /// </summary>
-        public enum State { NotReady, Stopped,
-        Playing
+        public enum State
+        {
+            NotReady, Stopped,
+            Playing
 #if PAUSE_FEATURE_ENABLED
 , Paused 
 #endif //PAUSE_FEATURE_ENABLED
@@ -377,7 +379,7 @@ namespace AudioLib
             {
                 return 0;
             }
-            
+
 #if PAUSE_FEATURE_ENABLED
             if (CurrentState == State.Paused)
             {
@@ -557,21 +559,29 @@ namespace AudioLib
                 }
                 finally
                 {
-                    //Console.WriteLine("Player refresh thread exiting....");
-
                     CurrentState = State.Stopped;
-                    
+
                     lock (LOCK)
                     {
-                        //m_CircularBufferRefreshThreadIsAlive = false;
                         m_CircularBufferRefreshThread = null;
                     }
 
                     stopPlayback();
-
-                    //Console.WriteLine("Player refresh thread exit.");
                 }
+
+                //Console.WriteLine("Player refresh thread exiting....");
+
+                CurrentState = State.Stopped;
+
+                lock (LOCK)
+                {
+                    //m_CircularBufferRefreshThreadIsAlive = false;
+                    m_CircularBufferRefreshThread = null;
+                }
+
+                //Console.WriteLine("Player refresh thread exit.");
             };
+            Debug.Assert(m_CircularBufferRefreshThread == null);
             lock (LOCK)
             {
                 m_CircularBufferRefreshThread = new Thread(threadDelegate);
@@ -835,6 +845,8 @@ namespace AudioLib
                 }
             }
 
+            CurrentState = State.Stopped;
+
             var del = AudioPlaybackFinished;
             if (del != null)
                 del(this, new AudioPlaybackFinishEventArgs());
@@ -860,8 +872,31 @@ namespace AudioLib
                 //)
                 )
             {
-                Console.WriteLine(@"///// m_CircularBufferRefreshThread != null: " + count++);
+                if (count % 5 == 0)
+                {
+                    Console.WriteLine(@"///// PLAYER m_CircularBufferRefreshThread.Abort(): " + count++);
+                    lock (LOCK)
+                    {
+                        if (m_CircularBufferRefreshThread != null)
+                        {
+                            m_CircularBufferRefreshThread.Abort();
+                        }
+                    }
+                }
+                Console.WriteLine(@"///// PLAYER m_CircularBufferRefreshThread != null: " + count++);
                 Thread.Sleep(20);
+
+                if (count > 15)
+                {
+                    CurrentState = State.Stopped;
+
+                    lock (LOCK)
+                    {
+                        m_CircularBufferRefreshThread = null;
+                    }
+
+                    break;
+                }
             }
             if (!m_KeepStreamAlive)
             {
