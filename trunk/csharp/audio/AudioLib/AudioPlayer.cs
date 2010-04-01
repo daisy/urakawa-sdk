@@ -586,7 +586,7 @@ namespace AudioLib
             {
                 m_CircularBufferRefreshThread = new Thread(threadDelegate);
                 m_CircularBufferRefreshThread.Name = "Player Refresh Thread";
-                m_CircularBufferRefreshThread.Priority = ThreadPriority.Highest;
+                m_CircularBufferRefreshThread.Priority = ThreadPriority.Normal;
                 m_CircularBufferRefreshThread.IsBackground = true;
                 m_CircularBufferRefreshThread.Start();
             }
