@@ -213,6 +213,36 @@ namespace urakawa.daisy.import
                         identifiers[0].IsMarkedAsPrimaryIdentifier = true;
                 }
             }
+            
+            //add any missing required metadata entries
+            IEnumerable<Metadata> metadatas =
+                m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable;
+            foreach (MetadataDefinition metadataDefinition in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
+            {
+                if (!metadataDefinition.IsReadOnly && metadataDefinition.Occurrence == MetadataOccurrence.Required)
+                {
+                    bool found = false;
+                    foreach (Metadata m in metadatas)
+                    {
+                        if (m.NameContentAttribute.Name.ToLower() == metadataDefinition.Name.ToLower())
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        Metadata metadata = m_Project.Presentations.Get(0).MetadataFactory.CreateMetadata();
+                        metadata.NameContentAttribute = new MetadataAttribute();
+                        metadata.NameContentAttribute.Name = metadataDefinition.Name;
+                        metadata.NameContentAttribute.Value = SupportedMetadata_Z39862005.MagicStringEmpty;
+                        m_Project.Presentations.Get(0).Metadatas.Insert
+                            (m_Project.Presentations.Get(0).Metadatas.Count, metadata);
+                    }
+                    
+                }
+            }
+            
 
             if (RequestCancellation) return;
 
