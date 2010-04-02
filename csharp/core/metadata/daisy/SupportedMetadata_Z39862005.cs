@@ -10,7 +10,8 @@ namespace urakawa.metadata.daisy
         private static readonly MetadataDefinition m_UnrecognizedItem;
         private static readonly List<string> m_IdentifierSynonyms;
         private static readonly List<MetadataDefinition> m_MetadataDefinitions;
-
+        public static readonly string MagicStringEmpty = "[EMPTY]";
+        
         static SupportedMetadata_Z39862005()
         {
             m_IdentifierSynonyms = new List<string>();
