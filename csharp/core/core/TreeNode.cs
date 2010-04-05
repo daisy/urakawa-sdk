@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using urakawa.core.visitor;
 using urakawa.events;
+using urakawa.events.core;
 using urakawa.exception;
 using urakawa.progress;
 using urakawa.property;
@@ -15,6 +16,52 @@ namespace urakawa.core
     /// </summary>
     public partial class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IChangeNotifier
     {
+        protected override void XukInAttributes(XmlReader source)
+        {
+            base.XukInAttributes(source);
+
+            string attr = source.GetAttribute(XukStrings.IsMarked);
+            if (attr == "true" || attr == "1")
+            {
+                IsMarked = true;
+            }
+            else
+            {
+                IsMarked = false;
+            }
+        }
+
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
+        {
+            base.XukOutAttributes(destination, baseUri);
+
+            destination.WriteAttributeString(XukStrings.enforceSinglePCMFormat, IsMarked ? "true" : "false");
+        }
+        public event EventHandler<DataModelChangedEventArgs> IsMarkedChanged;
+
+        private bool m_IsMarked;
+        public bool IsMarked
+        {
+            get { return m_IsMarked; }
+            set
+            {
+                if (value == m_IsMarked)
+                {
+                    return;
+                }
+                m_IsMarked = value;
+
+                IsMarkedChangedEventArgs ev = new IsMarkedChangedEventArgs(this);
+                EventHandler<DataModelChangedEventArgs> d = IsMarkedChanged;
+                if (d != null)
+                {
+                    d.Invoke(this, ev);
+                    //SAME AS : d(this, ev);
+                }
+                NotifyChanged(ev);
+            }
+        }
+
         private TreeNode MeetFirst(TreeNode node1, TreeNode node2)
         {
             if (this == node1) return node1;
@@ -34,6 +81,7 @@ namespace urakawa.core
         {
             return XukStrings.TreeNode;
         }
+
         #region Event related members
 
         /// <summary>

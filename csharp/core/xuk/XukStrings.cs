@@ -111,6 +111,10 @@ namespace urakawa.xuk
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "enforceSinglePCMFormat" : "frceSglePCM"); }
         }
 
+        public static string IsMarked
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "IsMarked" : "mrkd"); }
+        }
 
         public static string PCMFormat
         {
@@ -226,6 +230,11 @@ namespace urakawa.xuk
 
         #region commands
 
+
+        public static string TreeNodeSetIsMarkedCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TreeNodeSetIsMarkedCommand" : "nodSetMrkCmd"); }
+        }
 
         public static string TreeNodeSetManagedAudioMediaCommand
         {
