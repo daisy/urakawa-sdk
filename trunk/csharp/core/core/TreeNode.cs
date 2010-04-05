@@ -35,7 +35,10 @@ namespace urakawa.core
         {
             base.XukOutAttributes(destination, baseUri);
 
-            destination.WriteAttributeString(XukStrings.enforceSinglePCMFormat, IsMarked ? "true" : "false");
+            if (IsMarked)
+            {
+                destination.WriteAttributeString(XukStrings.IsMarked, "true");
+            }
         }
         public event EventHandler<DataModelChangedEventArgs> IsMarkedChanged;
 
