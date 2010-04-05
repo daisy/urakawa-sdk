@@ -73,5 +73,12 @@ namespace urakawa.commands
             command.Init(metadata, id);
             return command;
         }
+
+        public TreeNodeSetIsMarkedCommand CreateTreeNodeSetIsMarkedCommand(TreeNode treeNode, bool isMarked)
+        {
+            TreeNodeSetIsMarkedCommand command = Create<TreeNodeSetIsMarkedCommand>();
+            command.Init(treeNode, isMarked);
+            return command;
+        }
     }
 }

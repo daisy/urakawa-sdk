@@ -1288,10 +1288,13 @@ namespace urakawa
             meta.NameContentAttribute.NamespaceUri = "dummy namespace";
             meta.NameContentAttribute.Value = "dummy content";
             //
+            CommandFactory.CreateTreeNodeSetIsMarkedCommand(treeNode, false);
+            //
             CommandFactory.CreateMetadataAddCommand(meta);
             CommandFactory.CreateMetadataRemoveCommand(meta);
             CommandFactory.CreateMetadataSetContentCommand(meta, "dummy");
             CommandFactory.CreateMetadataSetNameCommand(meta, "dummy");
+            CommandFactory.CreateMetadataSetIdCommand(meta, false);
             //
             MediaFactory.CreateExternalImageMedia();
             MediaFactory.CreateExternalVideoMedia();
