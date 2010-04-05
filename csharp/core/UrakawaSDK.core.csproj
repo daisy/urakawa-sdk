@@ -122,6 +122,7 @@
     <Compile Include="commands\MetadataSetIdCommand.cs" />
     <Compile Include="commands\MetadataSetNameCommand.cs" />
     <Compile Include="commands\TreeNodeAudioStreamDeleteCommand.cs" />
+    <Compile Include="commands\TreeNodeSetIsMarkedCommand.cs" />
     <Compile Include="commands\TreeNodeSetManagedAudioMediaCommand.cs" />
     <Compile Include="command\IAction.cs" />
     <Compile Include="command\IUndoableAction.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="data\FileDataProvider.cs" />
     <Compile Include="data\SequenceStream.cs" />
     <Compile Include="data\SubStream.cs" />
+    <Compile Include="events\core\IsMarkedChangedEventArgs.cs" />
     <Compile Include="events\media\data\DataIsMissingEventArgs.cs" />
     <Compile Include="events\metadata\MetadataAttributeEventArgs.cs" />
     <Compile Include="events\progress\CancellableEventArgs.cs" />
