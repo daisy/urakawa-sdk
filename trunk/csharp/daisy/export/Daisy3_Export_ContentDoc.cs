@@ -133,7 +133,7 @@ namespace urakawa.daisy.export
                         }
 
 
-                        if (n.GetXmlElementQName ().LocalName == "note" || n.GetXmlElementQName ().LocalName == "annotation")
+                        if (n.GetXmlElementQName () != null  && (n.GetXmlElementQName ().LocalName == "note" || n.GetXmlElementQName ().LocalName == "annotation") )
                             {
                             m_NotesNodeList.Add ( n );
                             }
