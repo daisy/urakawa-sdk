@@ -13,6 +13,8 @@ namespace urakawa.daisy.export
     public partial class Daisy3_Export
     {
         private XmlDocument m_DTBDocument;
+        private List<urakawa.core.TreeNode> m_NotesNodeList = new List<TreeNode> ();
+
         // to do regenerate ids
         private void CreateDTBookDocument()
         {
@@ -130,6 +132,11 @@ namespace urakawa.daisy.export
                             reportSubProgress(-1, UrakawaSDK_daisy_Lang.CreatingXMLFile);
                         }
 
+
+                        if (n.GetXmlElementQName ().LocalName == "note" || n.GetXmlElementQName ().LocalName == "annotation")
+                            {
+                            m_NotesNodeList.Add ( n );
+                            }
 
                         property.xml.XmlProperty xmlProp = n.GetProperty<property.xml.XmlProperty>();
 
