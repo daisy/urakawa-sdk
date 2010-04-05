@@ -15,7 +15,8 @@ namespace urakawa.undo
     /// </summary>
     public sealed class UndoRedoManager : XukAble, IUsingMediaData //IChangeNotifier
     {
-        class DummyCommand : Command{
+        class DummyCommand : Command
+        {
             public override string GetTypeNameFormatted()
             {
                 throw new NotImplementedException();
@@ -459,6 +460,15 @@ namespace urakawa.undo
                 }
             }
             NotifyTransactionEnded(command);
+
+            //if (command.ChildCommands.Count == 0)
+            //{
+            //    NotifyTransactionCancelled(command);
+            //}
+            //else
+            //{
+            //    NotifyTransactionEnded(command);
+            //}
         }
 
         /// <summary>
@@ -547,8 +557,8 @@ namespace urakawa.undo
                 }
                 else if (source.LocalName == XukStrings.RedoStack)
                 {
-                        XukInCommandStack(source, mRedoStack, handler);
-                 }
+                    XukInCommandStack(source, mRedoStack, handler);
+                }
                 else if (source.LocalName == XukStrings.ActiveTransactions)
                 {
                     XukInCommandStack(source, mActiveTransactions, handler);
@@ -579,7 +589,7 @@ namespace urakawa.undo
                         {
                             throw new exception.XukException(
                                 String.Format("Could not create a {2} matching XUK QName {1}:{0}", source.LocalName,
-                                              source.NamespaceURI, typeof (T).Name));
+                                              source.NamespaceURI, typeof(T).Name));
                         }
                         cmd.XukIn(source, handler);
                         stack.Push((T)cmd);
