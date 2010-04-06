@@ -366,10 +366,10 @@ namespace AudioLib
                         m_CircularBufferRefreshThread = null;
                     }
                 }
-                lock (LOCK_THREAD_INSTANCE)
-                {
-                    m_CircularBufferRefreshThread = null;
-                }
+                //lock (LOCK_THREAD_INSTANCE)
+                //{
+                //    m_CircularBufferRefreshThread = null;
+                //}
             };
 
             lock (LOCK_THREAD_INSTANCE)
