@@ -571,13 +571,13 @@ namespace AudioLib
 
                 //Console.WriteLine("Player refresh thread exiting....");
 
-                CurrentState = State.Stopped;
+                //CurrentState = State.Stopped;
 
-                lock (LOCK)
-                {
-                    //m_CircularBufferRefreshThreadIsAlive = false;
-                    m_CircularBufferRefreshThread = null;
-                }
+                //lock (LOCK)
+                //{
+                //    //m_CircularBufferRefreshThreadIsAlive = false;
+                //    m_CircularBufferRefreshThread = null;
+                //}
 
                 //Console.WriteLine("Player refresh thread exit.");
             };
