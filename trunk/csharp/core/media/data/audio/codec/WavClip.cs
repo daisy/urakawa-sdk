@@ -180,7 +180,8 @@ namespace urakawa.media.data.audio.codec
             {
                 if (cachedPcmFormat == null)
                 {
-                    Time timeDelta = MediaDuration;
+                    Time timeDelta = MediaDuration; // this sets cachedPcmFormat
+                    
                     Debug.Assert(cachedDuration != null);
                     Debug.Assert(cachedPcmFormat != null);
                 }
