@@ -106,6 +106,21 @@ namespace urakawa
                 }
             }
         }
+        public IEnumerable<T> ContentsAs_YieldEnumerableReversed
+        {
+            get
+            {
+                lock (LOCK)
+                {
+                    for (int i = m_objects.Count - 1; i >= 0; i--)
+                    {
+                        yield return m_objects[i];
+                    }
+
+                    yield break;
+                }
+            }
+        }
 
         public IEnumerable ContentsAs_ArrayListReadOnlyWrapper
         {
