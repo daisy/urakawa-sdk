@@ -210,10 +210,16 @@ namespace urakawa.daisy.import
 
                     //if there is only one identifier, then make it the publication UID
                     if (identifiers.Count == 1)
+                    {
                         identifiers[0].IsMarkedAsPrimaryIdentifier = true;
+
+                        //if dtb:uid is our only identifier, rename it dc:identifier
+                        if (identifiers[0].NameContentAttribute.Name == "dtb:uid")
+                            identifiers[0].NameContentAttribute.Name = "dc:Identifier";
+                    }
                 }
             }
-            
+
             //add any missing required metadata entries
             IEnumerable<Metadata> metadatas =
                 m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable;
@@ -242,6 +248,7 @@ namespace urakawa.daisy.import
                     
                 }
             }
+
             
 
             if (RequestCancellation) return;
