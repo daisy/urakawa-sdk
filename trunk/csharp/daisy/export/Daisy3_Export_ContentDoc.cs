@@ -183,11 +183,16 @@ namespace urakawa.daisy.export
                         else
                             currentXmlNode = DTBookDocument.CreateElement(null, xmlProp.LocalName, (string.IsNullOrEmpty(xmlProp.NamespaceUri) ? bookNode.NamespaceURI : xmlProp.NamespaceUri));
 
+                        string prefix = null;
                         // add attributes
                         if (xmlProp.Attributes != null && xmlProp.Attributes.Count > 0)
                         {
                             for (int i = 0; i < xmlProp.Attributes.Count; i++)
                             {
+                            if (xmlProp.Attributes[i].LocalName.Contains ( ":" ))
+                                {
+                                prefix = xmlProp.Attributes[i].LocalName.Split ( ':' )[0];
+                                }
                                 //todo: check ID attribute, normalize with fresh new list of IDs
                                 // (warning: be careful maintaining ID REFS, such as idref attributes for annotation/annoref and prodnote/noteref
                                 // (be careful because idref contain URIs with hash character),
@@ -237,7 +242,12 @@ namespace urakawa.daisy.export
 
                             Debug.Assert(n.Children.Count == 0);
                         }
-
+                        if (!string.IsNullOrEmpty ( prefix )
+                            &&   string.IsNullOrEmpty( currentXmlNode.Prefix)
+                            && string.IsNullOrEmpty( DTBookDocument.DocumentElement.GetNamespaceOfPrefix(prefix ) ) )
+                            {
+                            XmlDocumentHelper.CreateAppendXmlAttribute ( DTBookDocument, DTBookDocument.DocumentElement, "xmlns:" + prefix, currentXmlNode.GetNamespaceOfPrefix ( prefix ) );
+                            }
                         // add current node to its parent
                         m_TreeNode_XmlNodeMap[n.Parent].AppendChild(currentXmlNode);
 
