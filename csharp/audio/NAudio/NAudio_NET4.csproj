@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NAudio</RootNamespace>
+    <AssemblyName>NAudio</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Debug\NAudio.XML</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AcmDriver.cs" />
+    <Compile Include="AcmDriverDetails.cs" />
+    <Compile Include="AcmDriverDetailsSupportFlags.cs" />
+    <Compile Include="AcmDriverEnumFlags.cs" />
+    <Compile Include="AcmFormat.cs" />
+    <Compile Include="AcmFormatChoose.cs" />
+    <Compile Include="AcmFormatChooseStyleFlags.cs" />
+    <Compile Include="AcmFormatDetails.cs" />
+    <Compile Include="AcmFormatEnumFlags.cs" />
+    <Compile Include="AcmFormatSuggestFlags.cs" />
+    <Compile Include="AcmFormatTag.cs" />
+    <Compile Include="AcmFormatTagDetails.cs" />
+    <Compile Include="AcmInterop.cs" />
+    <Compile Include="AcmMetrics.cs" />
+    <Compile Include="AcmStream.cs" />
+    <Compile Include="AcmStreamConvertFlags.cs" />
+    <Compile Include="AcmStreamHeader.cs" />
+    <Compile Include="AcmStreamHeaderStatusFlags.cs" />
+    <Compile Include="AcmStreamHeaderStruct.cs" />
+    <Compile Include="AcmStreamOpenFlags.cs" />
+    <Compile Include="AcmStreamSizeFlags.cs" />
+    <Compile Include="AdpcmWaveFormat.cs" />
+    <Compile Include="AudioMediaSubtypes.cs" />
+    <Compile Include="IWaveProvider.cs" />
+    <Compile Include="MmException.cs" />
+    <Compile Include="MmResult.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RiffChunk.cs" />
+    <Compile Include="WaveFileReader.cs" />
+    <Compile Include="WaveFileWriter.cs" />
+    <Compile Include="WaveFilter.cs" />
+    <Compile Include="WaveFormat.cs" />
+    <Compile Include="WaveFormatConversionStream.cs" />
+    <Compile Include="WaveFormatCustomMarshaler.cs" />
+    <Compile Include="WaveFormatEncoding.cs" />
+    <Compile Include="WaveFormatExtensible.cs" />
+    <Compile Include="WaveFormatExtraData.cs" />
+    <Compile Include="WaveHeader.cs" />
+    <Compile Include="WaveHeaderFlags.cs" />
+    <Compile Include="WaveInCapabilities.cs" />
+    <Compile Include="WaveInterop.cs" />
+    <Compile Include="WaveOutCapabilities.cs" />
+    <Compile Include="WaveOutSupport.cs" />
+    <Compile Include="WaveStream.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Changes.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.VisualBasic.PowerPacks.10.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft Visual Basic PowerPacks 10.0</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
