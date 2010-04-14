@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security;
 using System.Windows.Forms;
 using System.Threading;
 using System.Collections.Generic;
@@ -19,6 +20,9 @@ namespace AudioLib
     // http://daisy.trac.cvsdude.com/urakawa-sdk/changeset/1488#file0
     // Just in case we need to restore some functionality:
     // http://daisy.trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/audio/AudioLib/AudioPlayer.cs?rev=1487
+//#if NET40
+//    [SecuritySafeCritical]
+//#endif
     public class AudioPlayer
     {
         private readonly bool m_KeepStreamAlive;
