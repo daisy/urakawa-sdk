@@ -59,7 +59,7 @@ namespace urakawa.daisy.export.visitor
                 {
                     if (ext != null)
                     {
-                        ext.Src = ext.Src.Substring(ext.Src.Length - 4, 3) + "mp3";
+                    ext.Src = ext.Src.Replace ( ".wav", ".mp3" );
                     }
                 }
 
