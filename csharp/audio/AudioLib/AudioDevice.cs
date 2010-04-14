@@ -2,6 +2,7 @@
 using SlimDX.DirectSound;
 #else
 using System;
+using System.Security;
 using Microsoft.DirectX.DirectSound;
 #endif
 
@@ -10,6 +11,9 @@ namespace AudioLib
     /// <summary>
     /// Small wrapper around DirectX devices to make it a little more friendly.
     /// </summary>
+//#if NET40
+//    [SecuritySafeCritical]
+//#endif
     public abstract class AudioDevice
     {
         private DeviceInformation mDevInfo;
@@ -32,6 +36,9 @@ namespace AudioLib
         }
     }
 
+//#if NET40
+//    [SecuritySafeCritical]
+//#endif
     public class OutputDevice : AudioDevice
     {
 #if USE_SLIMDX
@@ -63,6 +70,9 @@ namespace AudioLib
 #endif
     }
 
+//#if NET40
+//    [SecuritySafeCritical]
+//#endif
     public class InputDevice : AudioDevice
     {
 #if USE_SLIMDX

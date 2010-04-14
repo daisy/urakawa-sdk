@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security;
 using System.Threading;
 
 #if USE_SLIMDX
@@ -12,6 +13,9 @@ using Microsoft.DirectX.DirectSound;
 
 namespace AudioLib
 {
+//#if NET40
+//    [SecuritySafeCritical]
+//#endif
     public class AudioRecorder
     {
         private const int NOTIFICATIONS = 16;
