@@ -238,7 +238,7 @@ namespace AudioLib
         public bool CompressWavToMp3(string sourceFile, string destinationFile, AudioLibPCMFormat pcmFormat, ushort bitRate_mp3Output)
         {
             if (!File.Exists(sourceFile))
-                throw new FileNotFoundException("Invalid source file path");
+                throw new FileNotFoundException("Invalid source file path " + sourceFile);
 
 
 
@@ -257,9 +257,9 @@ namespace AudioLib
                 StartInfo =
                 {
                     FileName = Path.Combine(LameWorkingDir, "lame.exe"),
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
+                    RedirectStandardError = false,
+                    RedirectStandardOutput = false,
+                    UseShellExecute = true,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     Arguments = argumentString
                 }
@@ -267,7 +267,7 @@ namespace AudioLib
             process.Start();
             process.WaitForExit();
 
-            if (process.ExitCode != 0)
+            if (!process.StartInfo.UseShellExecute &&  process.ExitCode != 0)
             {
                 StreamReader stdErr = process.StandardError;
                 if (!stdErr.EndOfStream)
@@ -279,7 +279,7 @@ namespace AudioLib
                     }
                 }
             }
-            else
+            else if ( !process.StartInfo .UseShellExecute )
             {
                 StreamReader stdOut = process.StandardOutput;
                 if (!stdOut.EndOfStream)
