@@ -244,12 +244,14 @@ namespace urakawa.daisy.export.visitor
             string sizeInfo = "";
             if (EncodePublishedAudioFilesToMp3 && m_EncodingFileCompressionRatio > 1)
             {
-                sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, elapsedSizeInMB / m_EncodingFileCompressionRatio, totalSizeInMB / m_EncodingFileCompressionRatio);  // TODO LOCALIZE TreeNode_SizeInfo
+                sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, 
+                    Math.Round( (decimal) (elapsedSizeInMB / m_EncodingFileCompressionRatio ), 4, MidpointRounding.ToEven ), 
+                    Math.Round ( (decimal) ( totalSizeInMB / m_EncodingFileCompressionRatio ), 4 , MidpointRounding.ToEven ));
             }
             else if (!EncodePublishedAudioFilesToMp3)
             {
 
-                sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, elapsedSizeInMB, totalSizeInMB);  // TODO LOCALIZE TreeNode_SizeInfo Key already added
+                sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo,Math.Round((decimal)  elapsedSizeInMB, 5, MidpointRounding.ToEven ), Math.Round( (decimal) totalSizeInMB, 5, MidpointRounding.ToEven) );  
             }
             return sizeInfo;
 
