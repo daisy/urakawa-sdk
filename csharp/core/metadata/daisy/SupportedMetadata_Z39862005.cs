@@ -9,6 +9,7 @@ namespace urakawa.metadata.daisy
 
         private static readonly MetadataDefinition m_UnrecognizedItem;
         private static readonly List<string> m_IdentifierSynonyms;
+        private static readonly List<string> m_TitleSynonyms;
         private static readonly List<MetadataDefinition> m_MetadataDefinitions;
         public static readonly string MagicStringEmpty = "[EMPTY]";
         
@@ -16,6 +17,8 @@ namespace urakawa.metadata.daisy
         {
             m_IdentifierSynonyms = new List<string>();
             m_IdentifierSynonyms.Add("dtb:uid");
+            m_TitleSynonyms = new List<string>();
+            m_TitleSynonyms.Add("dtb:title");
 
             m_UnrecognizedItem = new MetadataDefinition(
                         "",
@@ -33,7 +36,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Required,
                            false,
                            true,
-                           "Date of publication of the DTB. ",
+                           "Date of publication of the DTB",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                             "dtb:sourceDate",
@@ -41,7 +44,7 @@ namespace urakawa.metadata.daisy
                             MetadataOccurrence.Recommended,
                             false,
                             false,
-                            "Date of publication of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived.",
+                            "Date of publication of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
                             null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                             "dtb:producedDate",
@@ -49,7 +52,7 @@ namespace urakawa.metadata.daisy
                             MetadataOccurrence.Optional,
                             false,
                             false,
-                            "Date of first generation of the complete DTB, i.e. Production completion date.",
+                            "Date of first generation of the complete DTB, i.e. Production completion date",
                             null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dtb:revisionDate",
@@ -57,7 +60,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Optional,
                            false,
                            false,
-                           "Date associated with the specific dtb:revision.",
+                           "Date associated with the specific dtb:revision",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Title",
@@ -65,15 +68,15 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Required,
                            false,
                            true,
-                           "The title of the DTB, including any subtitles.",
-                           null));
+                           "The title of the DTB, including any subtitles",
+                           new List<string>(m_TitleSynonyms)));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Publisher",
                            MetadataDataType.String,
                            MetadataOccurrence.Required,
                            false,
                            true,
-                           "The agency responsible for making the DTB available.",
+                           "The agency responsible for making the DTB available",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Language",
@@ -81,7 +84,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Required,
                            false,
                            true,
-                           "Language of the content of the publication.",
+                           "Language of the content of the publication",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Identifier",
@@ -89,7 +92,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Required,
                            false,
                            true,
-                           "A string or number identifying the DTB.",
+                           "A string or number identifying the DTB",
                            new List<string>(m_IdentifierSynonyms)));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Creator",
@@ -97,7 +100,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Recommended,
                            false,
                            true,
-                           "Names of primary author or creator of the intellectual content of the publication.",
+                           "Names of primary author or creator of the intellectual content of the publication",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Subject",
@@ -105,7 +108,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Recommended,
                            false,
                            true,
-                           "The topic of the content of the publication.",
+                           "The topic of the content of the publication",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Description",
@@ -113,7 +116,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Optional,
                            false,
                            true,
-                           "Plain text describing the publication's content.",
+                           "Plain text describing the publication's content",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Contributor",
@@ -121,7 +124,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Optional,
                            false,
                            true,
-                           "A party whose contribution to the publication is secondary to those named in dc:Creator.",
+                           "A party whose contribution to the publication is secondary to those named in dc:Creator",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Source",
@@ -137,7 +140,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Optional,
                            false,
                            true,
-                           "A reference to a related resource.",
+                           "A reference to a related resource",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Coverage",
@@ -145,7 +148,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Optional,
                            false,
                            true,
-                           "The extent or scope of the content of the resource.",
+                           "The extent or scope of the content of the resource",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Rights",
@@ -153,7 +156,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Optional,
                            false,
                            true,
-                           "Information about rights held in and over the DTB.",
+                           "Information about rights held in and over the DTB",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dtb:sourceEdition",
@@ -161,7 +164,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Recommended,
                            false,
                            false,
-                           "A string describing the edition of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived.",
+                           "A string describing the edition of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dtb:sourcePublisher",
@@ -169,7 +172,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Recommended,
                            false,
                            false,
-                           "The agency responsible for making available the resource (e.g., a print original, ebook, etc.) from which the DTB is derived.",
+                           "The agency responsible for making available the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dtb:sourceRights",
@@ -177,7 +180,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Recommended,
                            false,
                            false,
-                           "Information about rights held in and over the resource (e.g., a print original, ebook, etc.) from which the DTB is derived.",
+                           "Information about rights held in and over the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dtb:sourceTitle",
@@ -185,7 +188,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Optional,
                            false,
                            false,
-                           "The title of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived. To be used only if different from dc:Title.",
+                           "The title of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived. To be used only if different from dc:Title",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dtb:narrator",
@@ -193,7 +196,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Recommended,
                            false,
                            true,
-                           "Name of the person whose recorded voice is embodied in the DTB.",
+                           "Name of the person whose recorded voice is embodied in the DTB",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dtb:producer",
@@ -201,7 +204,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Optional,
                            false,
                            true,
-                           "Name of the organization/production unit that created the DTB.",
+                           "Name of the organization/production unit that created the DTB",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dtb:revisionDescription",
@@ -226,7 +229,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Optional,
                            false,
                            false,
-                           "The version of the extension to the core Z39.86 specification.",
+                           "The version of the extension to the core Z39.86 specification",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "DTBook-XSLTFallback",
@@ -245,7 +248,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Required,
                            true,
                            true,
-                           "The standard or specification to which the DTB was produced.",
+                           "The standard or specification to which the DTB was produced",
                            null));
 
             //audioOnly, audioNCX, audioPartText, audioFullText, textPartAudio, textNCX
@@ -255,7 +258,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Required,
                            true,
                            false,
-                           "One of the six types of DTB defined in the Structure Guidelines.",
+                           "One of the six types of DTB defined in the Structure Guidelines",
                            null));
              //audio, text, and image
             m_MetadataDefinitions.Add(new MetadataDefinition(
@@ -264,7 +267,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Required,
                            true,
                            false,
-                           "Summary of the general types of media used in the content of this DTB.",
+                           "Summary of the general types of media used in the content of this DTB",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dtb:totalTime",
@@ -272,7 +275,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Required,
                            true,
                            false,
-                           "Total playing time of all SMIL files comprising the content of the DTB.",
+                           "Total playing time of all SMIL files comprising the content of the DTB",
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
                            "dc:Type",
@@ -280,7 +283,7 @@ namespace urakawa.metadata.daisy
                            MetadataOccurrence.Optional,
                            true,
                            true,
-                           "The nature of the content of the DTB (recommended are Dublin Core keywords \"audio\", \"text\", and \"image\").",
+                           "The nature of the content of the DTB (recommended are Dublin Core keywords \"audio\", \"text\", and \"image\")",
                            null));
             //MP4-AAC, MP3, WAV
             m_MetadataDefinitions.Add(new MetadataDefinition(
@@ -289,7 +292,7 @@ namespace urakawa.metadata.daisy
                             MetadataOccurrence.Recommended,
                             true,
                             true,
-                            "The format in which the audio files in the DTB file set are written.",
+                            "The format in which the audio files in the DTB file set are written",
                             null));
 
             DefinitionSet = new MetadataDefinitionSet();
