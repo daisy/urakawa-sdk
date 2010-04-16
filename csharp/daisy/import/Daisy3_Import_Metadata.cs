@@ -303,58 +303,61 @@ namespace urakawa.daisy.import
         private void checkMetadataSynonyms(MetadataDefinition metadataDefinition)
         {
             //does this item exist?
-            Metadata metadata = findMetadataByName(metadataDefinition.Name);
+            List<Metadata> primaryNameMetadata = findMetadataByName(metadataDefinition.Name);
             
-            List<Metadata> synonymMetadatas = new List<Metadata>();
+            List<Metadata> allSynonyms = new List<Metadata>();
 
             if (metadataDefinition.Synonyms == null) return;
             foreach (string synonym in metadataDefinition.Synonyms)
             {
-                Metadata synonymMetadata = findMetadataByName(synonym);
-                if (synonymMetadata != null)
-                    synonymMetadatas.Add(synonymMetadata);
+                List<Metadata> matchesForOneSynonym = findMetadataByName(synonym);
+                if (matchesForOneSynonym.Count > 0)
+                    allSynonyms.AddRange(matchesForOneSynonym);
 
             }
 
-            //if there is no direct match for metadataDefinition but one synonym exists?
-            if (metadata == null)
+            //if there is no direct match for metadataDefinition but at least one synonym exists?
+            if (primaryNameMetadata.Count == 0)
             {
-                if (synonymMetadatas.Count >= 1)
+                if (allSynonyms.Count >= 1)
                 {
                     //promote the first synonym
-                    synonymMetadatas[0].NameContentAttribute.Name = metadataDefinition.Name;
+                    allSynonyms[0].NameContentAttribute.Name = metadataDefinition.Name;
                 }
             }
             else
             {
-                //delete synonyms with identical values
-                foreach (Metadata synonymMetadata in synonymMetadatas)
+                //delete synonyms with identical values to the primary metadata name
+                foreach (Metadata synonymMetadata in allSynonyms)
                 {
-                    if (synonymMetadata.NameContentAttribute.Value.ToLower() == 
-                        metadata.NameContentAttribute.Value.ToLower())
+                    foreach (Metadata primaryMetadata in primaryNameMetadata)
                     {
-                        m_Project.Presentations.Get(0).Metadatas.Remove(synonymMetadata);
+                        if (synonymMetadata.NameContentAttribute.Value.ToLower() ==
+                            primaryMetadata.NameContentAttribute.Value.ToLower())
+                        {
+                            m_Project.Presentations.Get(0).Metadatas.Remove(synonymMetadata);
+                            break;
+                        }
                     }
                 }
             }
             
         }
 
-        //find a metadata item by name (case-insensitive)
-        //returns null if not found
-        private Metadata findMetadataByName(string name)
+        //find all metadata items with the given name (case-insensitive)
+        //returns an empty list if not found
+        private List<Metadata> findMetadataByName(string name)
         {
             IEnumerable<Metadata> metadatas =
                 m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable;
             
             IEnumerator<Metadata> enumerator = metadatas.GetEnumerator();
-            Metadata found = null;
+            List<Metadata> found = new List<Metadata>();
             while(enumerator.MoveNext())
             {
                 if (enumerator.Current.NameContentAttribute.Name.ToLower() == name.ToLower())
                 {
-                    found = enumerator.Current;
-                    break;
+                    found.Add(enumerator.Current);
                 }
             }
             return found;
