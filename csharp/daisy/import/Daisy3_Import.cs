@@ -182,6 +182,9 @@ namespace urakawa.daisy.import
 
             if (RequestCancellation) return;
 
+            metadataPostProcessing();
+
+            /*
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
             {
                 Metadata meta = addMetadata("dc:Identifier", m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);
@@ -249,7 +252,7 @@ namespace urakawa.daisy.import
                 }
             }
 
-            
+            */
 
             if (RequestCancellation) return;
 

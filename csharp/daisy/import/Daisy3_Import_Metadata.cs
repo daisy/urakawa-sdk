@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
 using urakawa.metadata;
@@ -280,5 +281,155 @@ namespace urakawa.daisy.import
             }
             return false;
         }
+
+
+        //after import is complete, process metadata to ensure lack of redundancy 
+        //and also see that all required items are present
+        private void metadataPostProcessing()
+        {
+            ensureCorrectMetadataIdentifier();
+            checkAllMetadataSynonyms();
+            addMissingRequiredMetadata();
+        }
+
+        private void checkAllMetadataSynonyms()
+        {
+            foreach (MetadataDefinition metadataDefinition in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
+            {
+                checkMetadataSynonyms(metadataDefinition);
+            }
+        }
+
+        private void checkMetadataSynonyms(MetadataDefinition metadataDefinition)
+        {
+            //does this item exist?
+            Metadata metadata = findMetadataByName(metadataDefinition.Name);
+            
+            List<Metadata> synonymMetadatas = new List<Metadata>();
+
+            if (metadataDefinition.Synonyms == null) return;
+            foreach (string synonym in metadataDefinition.Synonyms)
+            {
+                Metadata synonymMetadata = findMetadataByName(synonym);
+                if (synonymMetadata != null)
+                    synonymMetadatas.Add(synonymMetadata);
+
+            }
+
+            //if there is no direct match for metadataDefinition but one synonym exists?
+            if (metadata == null)
+            {
+                if (synonymMetadatas.Count >= 1)
+                {
+                    //promote the first synonym
+                    synonymMetadatas[0].NameContentAttribute.Name = metadataDefinition.Name;
+                }
+            }
+            else
+            {
+                //delete synonyms with identical values
+                foreach (Metadata synonymMetadata in synonymMetadatas)
+                {
+                    if (synonymMetadata.NameContentAttribute.Value.ToLower() == 
+                        metadata.NameContentAttribute.Value.ToLower())
+                    {
+                        m_Project.Presentations.Get(0).Metadatas.Remove(synonymMetadata);
+                    }
+                }
+            }
+            
+        }
+
+        //find a metadata item by name (case-insensitive)
+        //returns null if not found
+        private Metadata findMetadataByName(string name)
+        {
+            IEnumerable<Metadata> metadatas =
+                m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable;
+            
+            IEnumerator<Metadata> enumerator = metadatas.GetEnumerator();
+            Metadata found = null;
+            while(enumerator.MoveNext())
+            {
+                if (enumerator.Current.NameContentAttribute.Name.ToLower() == name.ToLower())
+                {
+                    found = enumerator.Current;
+                    break;
+                }
+            }
+            return found;
+        }
+
+        private void ensureCorrectMetadataIdentifier()
+        {
+            if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
+            {
+                Metadata meta = addMetadata("dc:Identifier", m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);
+                meta.IsMarkedAsPrimaryIdentifier = true;
+            }
+            //if no unique publication identifier could be determined, see how many identifiers there are
+            //if there is only one, then make that the unique publication identifier
+            else
+            {
+                if (m_Project.Presentations.Count > 0)
+                {
+                    List<Metadata> identifiers = new List<Metadata>();
+
+                    foreach (Metadata md in m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable)
+                    {
+                        //get this metadata's definition (and search synonyms too)
+                        MetadataDefinition definition = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(
+                            md.NameContentAttribute.Name, true);
+
+                        //if this is a dc:identifier, then add it to our list
+                        if (definition.Name == "dc:Identifier") identifiers.Add(md);
+                    }
+
+                    //if there is only one identifier, then make it the publication UID
+                    if (identifiers.Count == 1)
+                    {
+                        identifiers[0].IsMarkedAsPrimaryIdentifier = true;
+
+                        //if dtb:uid is our only identifier, rename it dc:identifier
+                        /*if (identifiers[0].NameContentAttribute.Name == "dtb:uid")
+                            identifiers[0].NameContentAttribute.Name = "dc:Identifier";*/
+                    }
+                }
+            }
+
+
+        }
+        private void addMissingRequiredMetadata()
+        {
+            //add any missing required metadata entries
+            IEnumerable<Metadata> metadatas =
+                m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable;
+            foreach (MetadataDefinition metadataDefinition in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
+            {
+                if (!metadataDefinition.IsReadOnly && metadataDefinition.Occurrence == MetadataOccurrence.Required)
+                {
+                    bool found = false;
+                    foreach (Metadata m in metadatas)
+                    {
+                        if (m.NameContentAttribute.Name.ToLower() == metadataDefinition.Name.ToLower())
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        Metadata metadata = m_Project.Presentations.Get(0).MetadataFactory.CreateMetadata();
+                        metadata.NameContentAttribute = new MetadataAttribute();
+                        metadata.NameContentAttribute.Name = metadataDefinition.Name;
+                        metadata.NameContentAttribute.Value = SupportedMetadata_Z39862005.MagicStringEmpty;
+                        m_Project.Presentations.Get(0).Metadatas.Insert
+                            (m_Project.Presentations.Get(0).Metadatas.Count, metadata);
+                    }
+
+                }
+            }
+        }
+
     }
 }
