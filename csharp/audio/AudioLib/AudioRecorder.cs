@@ -13,9 +13,9 @@ using Microsoft.DirectX.DirectSound;
 
 namespace AudioLib
 {
-//#if NET40
-//    [SecuritySafeCritical]
-//#endif
+    //#if NET40
+    //    [SecuritySafeCritical]
+    //#endif
     public class AudioRecorder
     {
         private const int NOTIFICATIONS = 16;
@@ -432,6 +432,13 @@ namespace AudioLib
                         circularBufferTransferData();
                     }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    //Console.WriteLine(@"circularBufferRefreshThreadMethod EXCEPTION: " + ex.Message);
+                    break;
+                }
                 finally
                 {
                     Monitor.Exit(LOCK);
@@ -590,13 +597,14 @@ namespace AudioLib
             m_CircularBufferNotificationEvent.Set();
             m_CircularBufferNotificationEvent.Close();
 
-            lock (LOCK_THREAD_INSTANCE)
-            {
-                if (m_CircularBufferRefreshThread != null)
-                {
-                    m_CircularBufferRefreshThread.Abort();
-                }
-            }
+            //lock (LOCK_THREAD_INSTANCE)
+            //{
+            //    if (m_CircularBufferRefreshThread != null)
+            //    {
+            //        m_CircularBufferRefreshThread.Abort();
+            //    }
+            //}
+
             int count = 0;
             while (m_CircularBufferRefreshThread != null
                 //&& (m_CircularBufferRefreshThread.IsAlive
@@ -605,17 +613,18 @@ namespace AudioLib
                 //)
                 )
             {
-                if (count % 5 == 0)
-                {
-                    Console.WriteLine(@"///// RECORDER m_CircularBufferRefreshThread.Abort(): " + count++);
-                    lock (LOCK)
-                    {
-                        if (m_CircularBufferRefreshThread != null)
-                        {
-                            m_CircularBufferRefreshThread.Abort();
-                        }
-                    }
-                }
+                //if (count % 5 == 0)
+                //{
+                //    Console.WriteLine(@"///// RECORDER m_CircularBufferRefreshThread.Abort(): " + count++);
+                //    lock (LOCK_THREAD_INSTANCE)
+                //    {
+                //        if (m_CircularBufferRefreshThread != null)
+                //        {
+                //            m_CircularBufferRefreshThread.Abort();
+                //        }
+                //    }
+                //}
+
                 Console.WriteLine(@"///// RECORDER m_CircularBufferRefreshThread != null: " + count++);
                 Thread.Sleep(20);
 
@@ -623,6 +632,10 @@ namespace AudioLib
                 {
                     lock (LOCK_THREAD_INSTANCE)
                     {
+                        if (m_CircularBufferRefreshThread != null)
+                        {
+                            m_CircularBufferRefreshThread.Join(100);
+                        }
                         m_CircularBufferRefreshThread = null;
                     }
                     break;
@@ -632,7 +645,17 @@ namespace AudioLib
             int remainingBytesToRead = 0;
             do
             {
-                remainingBytesToRead = circularBufferTransferData();
+                try
+                {
+                    remainingBytesToRead = circularBufferTransferData();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    break;
+                }
+
                 //Console.WriteLine(string.Format("circularBufferTransferData: fetched remaining bytes: {0}", remainingBytesToRead));
             } while (remainingBytesToRead > 0);
 
