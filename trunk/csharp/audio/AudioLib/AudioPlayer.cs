@@ -634,7 +634,9 @@ namespace AudioLib
                     return;
                 }
 #else
-                if (m_CircularBuffer.Status.Terminated)
+                if (m_CircularBuffer.Status.Terminated
+                    || !m_CircularBuffer.Status.Playing
+                    || !m_CircularBuffer.Status.Looping)
                 {
                     return;
                 }
@@ -861,13 +863,13 @@ namespace AudioLib
         {
             m_CircularBuffer.Stop();
 
-            lock (LOCK)
-            {
-                if (m_CircularBufferRefreshThread != null)
-                {
-                    m_CircularBufferRefreshThread.Abort();
-                }
-            }
+            //lock (LOCK)
+            //{
+            //    if (m_CircularBufferRefreshThread != null)
+            //    {
+            //        m_CircularBufferRefreshThread.Abort();
+            //    }
+            //}
             int count = 0;
             while (m_CircularBufferRefreshThread != null
                 //&& (m_CircularBufferRefreshThread.IsAlive
@@ -876,17 +878,17 @@ namespace AudioLib
                 //)
                 )
             {
-                if (count % 5 == 0)
-                {
-                    Console.WriteLine(@"///// PLAYER m_CircularBufferRefreshThread.Abort(): " + count++);
-                    lock (LOCK)
-                    {
-                        if (m_CircularBufferRefreshThread != null)
-                        {
-                            m_CircularBufferRefreshThread.Abort();
-                        }
-                    }
-                }
+                //if (count % 5 == 0)
+                //{
+                //    Console.WriteLine(@"///// PLAYER m_CircularBufferRefreshThread.Abort(): " + count++);
+                //    lock (LOCK)
+                //    {
+                //        if (m_CircularBufferRefreshThread != null)
+                //        {
+                //            m_CircularBufferRefreshThread.Abort();
+                //        }
+                //    }
+                //}
                 Console.WriteLine(@"///// PLAYER m_CircularBufferRefreshThread != null: " + count++);
                 Thread.Sleep(20);
 
@@ -896,9 +898,12 @@ namespace AudioLib
 
                     lock (LOCK)
                     {
+                        if (m_CircularBufferRefreshThread != null)
+                        {
+                            m_CircularBufferRefreshThread.Join(100);
+                        }
                         m_CircularBufferRefreshThread = null;
                     }
-
                     break;
                 }
             }
