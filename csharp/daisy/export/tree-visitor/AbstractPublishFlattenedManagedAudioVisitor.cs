@@ -293,7 +293,7 @@ namespace urakawa.daisy.export.visitor
                 throw new Exception("! EnforceSinglePCMFormat ???");
             }
 
-            StreamWithMarkers? sm = node.OpenPcmInputStreamOfManagedAudioMediaFlattened();
+            StreamWithMarkers? sm = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(null);
             if (sm == null)
             {
                 return;
