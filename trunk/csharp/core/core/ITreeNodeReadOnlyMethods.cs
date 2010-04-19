@@ -10,6 +10,8 @@ using urakawa.xuk;
 
 namespace urakawa.core
 {
+    public delegate void DelegateAudioPcmStreamFound(long length);
+
     /// <summary>
     /// Provides the read-only tree methods of a <see cref="TreeNode"/>
     /// </summary>
@@ -31,8 +33,8 @@ namespace urakawa.core
         bool IsBefore(TreeNode node);
 
         TreeNode Root { get; }
-        
-        StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened();
+
+        StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del);
         Media GetManagedAudioMediaOrSequenceMedia();
         StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMedia();
         TreeNode GetNextSiblingWithManagedAudio();

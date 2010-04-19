@@ -269,11 +269,15 @@ namespace urakawa.core
             return null;
         }
 
-        public StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened()
+        public StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del)
         {
             StreamWithMarkers? val = OpenPcmInputStreamOfManagedAudioMedia();
             if (val != null)
             {
+                if (del != null)
+                {
+                    del.Invoke(val.GetValueOrDefault().m_Stream.Length);
+                }
                 return val;
             }
 
@@ -282,7 +286,7 @@ namespace urakawa.core
             for (int index = 0; index < mChildren.Count; index++)
             {
                 TreeNode node = mChildren.Get(index);
-                StreamWithMarkers? childVal = node.OpenPcmInputStreamOfManagedAudioMediaFlattened();
+                StreamWithMarkers? childVal = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(del);
                 if (childVal != null)
                 {
                     listStreamsWithMarkers.Add(childVal.GetValueOrDefault());
