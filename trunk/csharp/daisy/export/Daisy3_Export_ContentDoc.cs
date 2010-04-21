@@ -244,7 +244,8 @@ namespace urakawa.daisy.export
                         }
                         if (!string.IsNullOrEmpty ( prefix )
                             &&   string.IsNullOrEmpty( currentXmlNode.Prefix)
-                            && string.IsNullOrEmpty( DTBookDocument.DocumentElement.GetNamespaceOfPrefix(prefix ) ) )
+                            && string.IsNullOrEmpty( DTBookDocument.DocumentElement.GetNamespaceOfPrefix(prefix ) )
+                            &&    string.IsNullOrEmpty( bookNode.GetNamespaceOfPrefix(prefix ) ))
                             {
                             XmlDocumentHelper.CreateAppendXmlAttribute ( DTBookDocument, DTBookDocument.DocumentElement, "xmlns:" + prefix, currentXmlNode.GetNamespaceOfPrefix ( prefix ) );
                             }
