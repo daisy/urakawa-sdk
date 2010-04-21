@@ -435,19 +435,22 @@ namespace urakawa.daisy.import
                     Path.GetDirectoryName(m_Book_FilePath),
                     relativePath);
 
-                ExternalFiles.ExternalFileData efd = null;
-                switch (Path.GetExtension(relativePath).ToLower())
-                {
+                if (File.Exists ( styleSheetPath ))
+                    {
+                    ExternalFiles.ExternalFileData efd = null;
+                    switch (Path.GetExtension ( relativePath ).ToLower ())
+                        {
                     case ".css":
-                        efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
-                        break;
+                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData> ();
+                    break;
 
                     case ".xslt":
-                        efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
-                        break;
-                }
+                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData> ();
+                    break;
+                        }
 
-                if (efd != null) efd.InitializeWithData(styleSheetPath, relativePath, true);
+                    if (efd != null) efd.InitializeWithData ( styleSheetPath, relativePath, true );
+                    }
             }
         }
     }
