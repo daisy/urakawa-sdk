@@ -126,12 +126,12 @@ namespace AudioLib
             mp3PcmFormat.RiffHeaderWrite(wavFileStream, (uint)(wavFileStreamEnd - wavFileStreamStart));
 
             wavFileStream.Close();
-            
+
             //ushort destChannels, uint destSamplingRate, ushort destBitDepth
             //.NumberOfChannels, destinationFormatInfo.Data.SampleRate, destinationFormatInfo.Data.BitDepth
 
 
-            if (pcmFormat != null 
+            if (pcmFormat != null
                 &&
                 !mp3PcmFormat.IsCompatibleWith(pcmFormat))
             {
@@ -267,7 +267,7 @@ namespace AudioLib
             process.Start();
             process.WaitForExit();
 
-            if (!process.StartInfo.UseShellExecute &&  process.ExitCode != 0)
+            if (!process.StartInfo.UseShellExecute && process.ExitCode != 0)
             {
                 StreamReader stdErr = process.StandardError;
                 if (!stdErr.EndOfStream)
@@ -279,7 +279,7 @@ namespace AudioLib
                     }
                 }
             }
-            else if ( !process.StartInfo .UseShellExecute )
+            else if (!process.StartInfo.UseShellExecute)
             {
                 StreamReader stdOut = process.StandardOutput;
                 if (!stdOut.EndOfStream)

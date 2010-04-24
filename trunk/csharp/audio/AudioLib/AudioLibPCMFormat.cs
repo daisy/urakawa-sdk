@@ -132,7 +132,9 @@ namespace AudioLib
         private static double ConvertBytesToTime(long bytes, uint samplingRate, ushort frameSize)
         {
             bytes -= bytes % frameSize;
-            return (1000.0 * bytes) / (samplingRate * frameSize); //Convert.ToDouble
+            double time = (1000.0 * bytes) / (samplingRate * frameSize); //Convert.ToDouble
+            time = Math.Round(time);
+            return time;
         }
 
 
@@ -142,6 +144,17 @@ namespace AudioLib
             //double frameSizeBlockAlignMs = ConvertBytesToTime(BlockAlign);
 
             return bytePos1 >= (bytePos2 - BlockAlign) && bytePos1 <= (bytePos2 + BlockAlign);
+        }
+
+        public bool AreMillisecondTimesApproximatelyEqual(double time1, double time2)
+        {
+            // just for information
+            //double frameSizeBlockAlignMs = ConvertBytesToTime(BlockAlign);
+
+            long bytePos1 = ConvertTimeToBytes(time1);
+            long bytePos2 = ConvertTimeToBytes(time2);
+
+            return AreBytePositionsApproximatelyEqual(bytePos1, bytePos2);
         }
 
         /// <summary>
