@@ -146,6 +146,29 @@ namespace urakawa.core
 
     public partial class TreeNode
     {
+        public bool HasOrInheritsAudio()
+        {
+            ManagedAudioMedia media = GetManagedAudioMedia();
+            if (media != null)
+            {
+                return true;
+            }
+
+            SequenceMedia seqManagedAudioMedia = GetManagedAudioSequenceMedia();
+            if (seqManagedAudioMedia != null)
+            {
+                return true;
+            }
+
+            TreeNode ancerstor = GetFirstAncestorWithManagedAudio();
+            if (ancerstor != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public TreeNode GetFirstAncestorWithManagedAudio()
         {
             if (Parent == null)

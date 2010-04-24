@@ -53,6 +53,8 @@ namespace urakawa.core
         
         TreeNode GetFirstDescendantWithManagedAudio();
         TreeNode GetFirstAncestorWithManagedAudio();
+        
+        bool HasOrInheritsAudio();
 
         TreeNode GetFirstChildWithXmlElementName(string elemName);
 
