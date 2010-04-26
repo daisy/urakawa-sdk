@@ -103,7 +103,7 @@ namespace AudioLib
         public delegate Stream StreamProviderDelegate();
         private StreamProviderDelegate m_CurrentAudioStreamProvider;
         private Stream m_CurrentAudioStream;
-        private double m_CurrentAudioDuration;
+        private long m_CurrentAudioDurationInLocalUnits;
 
         public bool EnsurePlaybackStreamIsDead()
         {
@@ -121,7 +121,7 @@ namespace AudioLib
             }
 
             m_CurrentAudioPCMFormat = null;
-            m_CurrentAudioDuration = 0;
+            m_CurrentAudioDurationInLocalUnits = 0;
             m_CurrentAudioStreamProvider = null;
 
             return I_Closed_The_Stream;
@@ -220,8 +220,8 @@ namespace AudioLib
 
 
         private void Play(StreamProviderDelegate currentAudioStreamProvider,
-                            double duration, AudioLibPCMFormat pcmInfo,
-                            long from, long to)
+                            long durationInLocalUnits, AudioLibPCMFormat pcmInfo,
+                            long bytesFrom, long bytesTo)
         {
             if (pcmInfo == null)
             {
@@ -232,7 +232,7 @@ namespace AudioLib
             {
                 throw new ArgumentNullException("Stream cannot be null !");
             }
-            if (duration <= 0)
+            if (durationInLocalUnits <= 0)
             {
                 throw new ArgumentOutOfRangeException("Duration cannot be <= 0 !");
             }
@@ -251,23 +251,23 @@ namespace AudioLib
             m_CurrentAudioStreamProvider = currentAudioStreamProvider;
             m_CurrentAudioStream = m_CurrentAudioStreamProvider();
             m_CurrentAudioPCMFormat = pcmInfo;
-            m_CurrentAudioDuration = duration;
+            m_CurrentAudioDurationInLocalUnits = durationInLocalUnits;
 
             long startPosition = 0;
-            if (from > 0)
+            if (bytesFrom > 0)
             {
-                startPosition = from;
+                startPosition = bytesFrom;
                 startPosition -= startPosition % m_CurrentAudioPCMFormat.BlockAlign;
             }
 
             long endPosition = 0;
-            if (to > 0)
+            if (bytesTo > 0)
             {
-                endPosition = to;
+                endPosition = bytesTo;
                 endPosition -= endPosition % m_CurrentAudioPCMFormat.BlockAlign;
             }
 
-            long max = pcmInfo.ConvertTimeToBytes(duration);
+            long max = pcmInfo.ConvertTimeToBytes(durationInLocalUnits);
 
             if (startPosition >= 0 &&
                 (endPosition == 0 || startPosition < endPosition) &&
@@ -358,13 +358,13 @@ namespace AudioLib
             stopPlayback();
         }
 
-        public double CurrentTime
+        public long CurrentTimeInLocalUnit
         {
             get
             {
                 if (CurrentState == State.NotReady)
                 {
-                    return -1.0;
+                    return -1;
                 }
 
                 if (m_CurrentAudioPCMFormat == null)
@@ -477,7 +477,7 @@ namespace AudioLib
             initializeBuffers();
 
             m_PlaybackStartPosition = startPosition;
-            m_PlaybackEndPosition = endPosition == 0 ? m_CurrentAudioPCMFormat.ConvertTimeToBytes(m_CurrentAudioDuration) : endPosition;
+            m_PlaybackEndPosition = endPosition == 0 ? m_CurrentAudioPCMFormat.ConvertTimeToBytes(m_CurrentAudioDurationInLocalUnits) : endPosition;
 
             m_CircularBufferWritePosition = 0;
 
@@ -511,7 +511,7 @@ namespace AudioLib
                 Array.Resize(ref SlimDX_IntermediaryTransferBuffer, initialFullBufferBytes);
             }
             int read = m_CurrentAudioStream.Read(SlimDX_IntermediaryTransferBuffer, 0, initialFullBufferBytes);
-            Debug.Assert(initialFullBufferBytes == read);
+            DebugFix.Assert(initialFullBufferBytes == read);
             m_CircularBuffer.Write(SlimDX_IntermediaryTransferBuffer, 0, initialFullBufferBytes, m_CircularBufferWritePosition, LockFlags.None);
 #else
             m_CircularBuffer.Write(0, m_CurrentAudioStream, initialFullBufferBytes, LockFlag.None);
@@ -585,7 +585,7 @@ namespace AudioLib
 
                 //Console.WriteLine("Player refresh thread exit.");
             };
-            Debug.Assert(m_CircularBufferRefreshThread == null);
+            DebugFix.Assert(m_CircularBufferRefreshThread == null);
             lock (LOCK)
             {
                 m_CircularBufferRefreshThread = new Thread(threadDelegate);
@@ -816,7 +816,7 @@ namespace AudioLib
 
                     //Console.WriteLine(String.Format("m_CircularBufferWritePosition: [{0} / toCopy {1}]", m_CircularBufferWritePosition, toCopy));
 
-                    Debug.Assert(m_CurrentAudioStream.Position + bytesToTransferToCircularBuffer <= m_PlaybackEndPosition);
+                    DebugFix.Assert(m_CurrentAudioStream.Position + bytesToTransferToCircularBuffer <= m_PlaybackEndPosition);
 
 #if USE_SLIMDX
                     if (SlimDX_IntermediaryTransferBuffer == null)
@@ -828,7 +828,7 @@ namespace AudioLib
                         Array.Resize(ref SlimDX_IntermediaryTransferBuffer, (int)bytesToTransferToCircularBuffer);
                     }
                     int read = m_CurrentAudioStream.Read(SlimDX_IntermediaryTransferBuffer, 0, (int)bytesToTransferToCircularBuffer);
-                    Debug.Assert(bytesToTransferToCircularBuffer == read);
+                    DebugFix.Assert(bytesToTransferToCircularBuffer == read);
                     m_CircularBuffer.Write(SlimDX_IntermediaryTransferBuffer, 0, (int)bytesToTransferToCircularBuffer, m_CircularBufferWritePosition, LockFlags.None);
 #else
                     m_CircularBuffer.Write(m_CircularBufferWritePosition, m_CurrentAudioStream, (int)bytesToTransferToCircularBuffer, LockFlag.None);

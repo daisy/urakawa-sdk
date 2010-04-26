@@ -84,7 +84,7 @@ namespace urakawa.media.data.audio.codec
             }
             else
             {
-                dataLength = (uint)PCMFormat.Data.ConvertTimeToBytes(duration.AsMilliseconds);
+                dataLength = (uint)PCMFormat.Data.ConvertTimeToBytes(duration.AsLocalUnits);
             }
 
             Stream nsdps = newSingleDataProvider.OpenOutputStream();

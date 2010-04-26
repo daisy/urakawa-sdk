@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using AudioLib;
 
 namespace urakawa.media.timing
 {
@@ -10,6 +11,8 @@ namespace urakawa.media.timing
     {
         public override string ToString()
         {
+            // seven significant decimal digits for the millisecond fractional part
+            // Use Format_Standard() when exporting to DAISY fileset (clip-begin/end time values in SMIL files)
             return m_TimeSpan.ToString();
         }
 
@@ -18,6 +21,11 @@ namespace urakawa.media.timing
         //    double dTime = Math.Round(time.TotalSeconds, 3, MidpointRounding.ToEven);
         //    return "npt=" + dTime.ToString() + "s";
         //}
+
+        public string Format_Standard()
+        {
+            return Format_Standard(AsTimeSpan);
+        }
 
         public static string Format_Standard(TimeSpan time)
         {
@@ -39,6 +47,11 @@ namespace urakawa.media.timing
                                      time.Seconds, time.Milliseconds);
         }
 
+        public string Format_H_MN_S_MS()
+        {
+            return Format_H_MN_S_MS(AsTimeSpan);
+        }
+
         public static string Format_H_MN_S_MS(TimeSpan time)
         {
             if (time.CompareTo(TimeSpan.Zero) == 0)
@@ -52,12 +65,13 @@ namespace urakawa.media.timing
                 (time.Milliseconds != 0 ? time.Milliseconds + "ms" : "");
         }
 
-        // milliseconds
-        private static double Parse(string stringRepresentation)
+        private static double ParseToMilliseconds(string stringRepresentation)
         {
             try
             {
-                return parseClockValue(stringRepresentation) * 1000;
+                double timeMillisecondsDecimal = 1000.0 * parseClockValueToSeconds(stringRepresentation);
+
+                return timeMillisecondsDecimal;
             }
             catch (Exception e)
             {
@@ -65,7 +79,8 @@ namespace urakawa.media.timing
                 Debugger.Break();
 #endif //DEBUG
 
-                return TimeSpan.Parse(stringRepresentation).TotalMilliseconds;
+                double timeMillisecondsDecimal = TimeSpan.Parse(stringRepresentation).TotalMilliseconds;
+                return timeMillisecondsDecimal;
             }
         }
 
@@ -116,10 +131,11 @@ namespace urakawa.media.timing
 
             double value = 0;
             double weight = 0.1;
+            int decimalPlace = 1;
             do
             {
                 value += weight * (current - '0');
-                weight *= 0.1;
+                weight = Math.Round(weight * 0.1, ++decimalPlace, MidpointRounding.AwayFromZero);
 
                 current = advanceChar(str, ref index);
 
@@ -167,8 +183,7 @@ namespace urakawa.media.timing
             return 1;
         }
 
-        // seconds
-        private static double parseClockValue(string str)
+        private static double parseClockValueToSeconds(string str)
         {
             int index = 0; // we scan the string from left to right
 
@@ -219,6 +234,8 @@ namespace urakawa.media.timing
                 offset = d1 * parseUnit(str, ref index);
                 current = str[index];
             }
+            // May be imprecise due to machine/compiler-dependent double rouding errors. i.e. 0.1 * 0.1 can be 0.0100000002 !!
+            // Solution: on the caller side, use Math.Round(VALUE, DECIMAL PLACES, MIDPOINT STRATEGY)
             return offset;
         }
     }

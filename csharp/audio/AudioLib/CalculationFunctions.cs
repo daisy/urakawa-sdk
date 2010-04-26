@@ -1,8 +1,24 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace AudioLib
 {
+    public static class DebugFix
+    {
+        [Conditional("DEBUG")]
+        public static void Assert(bool condition)
+        {
+#if DEBUG
+            if (!condition)
+            {
+                bool PLACE_BREAKPOINT_HERE_IF_NEEDED = condition;
+                //Debugger.Break();
+            }
+#endif
+        }
+    }
+
     public static class StreamUtils
     {
         public static uint Copy(Stream from, ulong fromNumberOfBytes, Stream to, uint buffer_size)
@@ -11,7 +27,7 @@ namespace AudioLib
             {
                 if (from.CanSeek)
                 {
-                    fromNumberOfBytes = (ulong) from.Length;
+                    fromNumberOfBytes = (ulong)from.Length;
                 }
             }
 

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Xml;
 using System.Collections.Generic;
+using AudioLib;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
@@ -1249,8 +1250,8 @@ namespace urakawa
             TreeNodeSetManagedAudioMediaCommand cmd1 = CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
             foreach (var mediaData in cmd1.UsedMediaData)
             {
-                Debug.Assert(mediaData == cmd1.ManagedAudioMedia.AudioMediaData);
-                Debug.Assert(mediaData == mdAudio);
+                DebugFix.Assert(mediaData == cmd1.ManagedAudioMedia.AudioMediaData);
+                DebugFix.Assert(mediaData == mdAudio);
                 MediaDataManager.RemoveManagedObject(mediaData);
             }
             //
@@ -1262,9 +1263,9 @@ namespace urakawa
             ManagedAudioMediaInsertDataCommand cmd2 = CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia2, Time.Zero, treeNode);
             foreach (var mediaData in cmd2.UsedMediaData)
             {
-                Debug.Assert(mediaData == cmd2.OriginalManagedAudioMedia.AudioMediaData
+                DebugFix.Assert(mediaData == cmd2.OriginalManagedAudioMedia.AudioMediaData
                     || mediaData == cmd2.ManagedAudioMediaSource.AudioMediaData);
-                //Debug.Assert(mediaData == mdAudio);
+                //DebugFix.Assert(mediaData == mdAudio);
                 MediaDataManager.RemoveManagedObject(mediaData);
             }
             //
@@ -1275,8 +1276,8 @@ namespace urakawa
             TreeNodeAudioStreamDeleteCommand cmd3 = CommandFactory.CreateTreeNodeAudioStreamDeleteCommand(selection, treeNode);
             foreach (var mediaData in cmd3.UsedMediaData)
             {
-                Debug.Assert(mediaData == cmd3.OriginalManagedAudioMedia.AudioMediaData);
-                //Debug.Assert(mediaData == mdAudio);
+                DebugFix.Assert(mediaData == cmd3.OriginalManagedAudioMedia.AudioMediaData);
+                //DebugFix.Assert(mediaData == mdAudio);
                 MediaDataManager.RemoveManagedObject(mediaData);
             }
             //
@@ -1308,9 +1309,9 @@ namespace urakawa
             PropertyFactory.CreateXmlProperty();
             //
 
-            Debug.Assert(DataProviderManager.ManagedObjects.Count == 0);
-            Debug.Assert(ChannelsManager.ManagedObjects.Count == 0);
-            Debug.Assert(MediaDataManager.ManagedObjects.Count == 0);
+            DebugFix.Assert(DataProviderManager.ManagedObjects.Count == 0);
+            DebugFix.Assert(ChannelsManager.ManagedObjects.Count == 0);
+            DebugFix.Assert(MediaDataManager.ManagedObjects.Count == 0);
         }
     }
 }
