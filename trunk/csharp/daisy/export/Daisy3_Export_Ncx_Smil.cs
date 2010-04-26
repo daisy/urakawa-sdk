@@ -104,7 +104,7 @@ namespace urakawa.daisy.export
                 QualifiedName qName1 = currentHeadingTreeNode != null ? currentHeadingTreeNode.GetXmlElementQName() : null;
                 bool isDoctitle_1 = (qName1 != null && qName1.LocalName == "doctitle");
 
-                if (!IsNcxNativeNodeAdded && currentHeadingTreeNode != null && (currentHeadingTreeNode.GetDurationOfManagedAudioMediaFlattened() == null || currentHeadingTreeNode.GetDurationOfManagedAudioMediaFlattened().AsMilliseconds == 0))
+                if (!IsNcxNativeNodeAdded && currentHeadingTreeNode != null && (currentHeadingTreeNode.GetDurationOfManagedAudioMediaFlattened() == null || currentHeadingTreeNode.GetDurationOfManagedAudioMediaFlattened().AsLocalUnits == 0))
                 {
                     if (isDoctitle_1)
                     {
@@ -117,7 +117,7 @@ namespace urakawa.daisy.export
 
 
                 urakawa.media.timing.Time urakawaNodeDur = urakawaNode.GetDurationOfManagedAudioMediaFlattened();
-                if (currentHeadingTreeNode == null && urakawaNodeDur != null && urakawaNodeDur.AsMilliseconds == 0)
+                if (currentHeadingTreeNode == null && urakawaNodeDur != null && urakawaNodeDur.AsLocalUnits == 0)
                 {
                     return true;
                     // carry on processing following lines. and in case this is not true, skip all the following lines
@@ -1154,7 +1154,7 @@ namespace urakawa.daisy.export
                 
 
                 urakawa.media.timing.Time urakawaNodeDur = urakawaNode.GetDurationOfManagedAudioMediaFlattened ();
-                if (currentHeadingTreeNode == null && urakawaNodeDur != null && urakawaNodeDur.AsMilliseconds == 0)
+                if (currentHeadingTreeNode == null && urakawaNodeDur != null && urakawaNodeDur.AsLocalUnits == 0)
                     {
                     return true;
                     // carry on processing following lines. and in case this is not true, skip all the following lines

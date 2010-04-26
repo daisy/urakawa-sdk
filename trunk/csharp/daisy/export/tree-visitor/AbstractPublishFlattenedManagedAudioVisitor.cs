@@ -197,11 +197,11 @@ namespace urakawa.daisy.export.visitor
 
             if (manAudioMedia != null || seqAudioMedia != null)
             {
-                if (m_TotalTime == 0) m_TotalTime = node.Root.GetDurationOfManagedAudioMediaFlattened().AsMilliseconds;
+                if (m_TotalTimeInLocalUnits == 0) m_TotalTimeInLocalUnits = node.Root.GetDurationOfManagedAudioMediaFlattened().AsLocalUnits;
 
-                m_TimeElapsed += manAudioMedia != null ? manAudioMedia.Duration.AsMilliseconds :
-                    seqAudioMedia.GetDurationOfManagedAudioMedia().AsMilliseconds;
-                m_ProgressPercentage = Convert.ToInt32((m_TimeElapsed * 100) / m_TotalTime);
+                m_TimeElapsedInLocalUnits += manAudioMedia != null ? manAudioMedia.Duration.AsLocalUnits :
+                    seqAudioMedia.GetDurationOfManagedAudioMedia().AsLocalUnits;
+                m_ProgressPercentage = Convert.ToInt32((m_TimeElapsedInLocalUnits * 100) / m_TotalTimeInLocalUnits);
 
                 reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName(src), GetSizeInfo(node)));   // TODO LOCALIZE CreatingAudioFile
                 //Console.WriteLine("progress percent " + m_ProgressPercentage);
@@ -217,9 +217,9 @@ namespace urakawa.daisy.export.visitor
             extAudioMedia.Language = node.Presentation.Language;
             extAudioMedia.Src = src;
 
-            double timeBegin =
+            long timeBegin =
                 node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesBegin);
-            double timeEnd =
+            long timeEnd =
                 node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesEnd);
             extAudioMedia.ClipBegin = new Time(timeBegin);
             extAudioMedia.ClipEnd = new Time(timeEnd);
@@ -239,8 +239,8 @@ namespace urakawa.daisy.export.visitor
         {
             if (node == null) return "";
 
-            int elapsedSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TimeElapsed) / (1024 * 1024);
-            int totalSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TotalTime) / (1024 * 1024);
+            int elapsedSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TimeElapsedInLocalUnits) / (1024 * 1024);
+            int totalSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TotalTimeInLocalUnits) / (1024 * 1024);
             string sizeInfo = "";
             if (EncodePublishedAudioFilesToMp3 && m_EncodingFileCompressionRatio > 1)
             {
@@ -265,8 +265,8 @@ namespace urakawa.daisy.export.visitor
             {
                 m_RootNode = null;
                 checkTransientWavFileAndClose(node);
-                m_TimeElapsed = 0;
-                m_TotalTime = 0;
+                m_TimeElapsedInLocalUnits = 0;
+                m_TotalTimeInLocalUnits = 0;
             }
 
             if (RequestCancellation)
@@ -344,7 +344,7 @@ namespace urakawa.daisy.export.visitor
                 extAudioMedia.Language = marker.m_TreeNode.Presentation.Language;
                 extAudioMedia.Src = marker.m_TreeNode.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
 
-                double timeBegin =
+                long timeBegin =
                     marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesBegin);
                 extAudioMedia.ClipBegin = new Time(timeBegin);
 
@@ -382,9 +382,9 @@ namespace urakawa.daisy.export.visitor
                 throw new Exception("The verification routine for the 'publish visitor' only works when the SourceChannel is the default audio channel of the Presentation !");
             }
 
-            Debug.Assert(m_RootNode == null);
-            Debug.Assert(m_TransientWavFileStream == null);
-            Debug.Assert(m_TransientWavFileStreamRiffOffset == 0);
+            DebugFix.Assert(m_RootNode == null);
+            DebugFix.Assert(m_TransientWavFileStream == null);
+            DebugFix.Assert(m_TransientWavFileStreamRiffOffset == 0);
 
             verifyTree(rootNode, false, null);
         }
@@ -405,7 +405,7 @@ namespace urakawa.daisy.export.visitor
 
             if (ancestorHasAudio)
             {
-                Debug.Assert(manSeqMedia == null);
+                DebugFix.Assert(manSeqMedia == null);
             }
 
             if (node.HasChannelsProperty)
@@ -415,13 +415,13 @@ namespace urakawa.daisy.export.visitor
 
                 if (ancestorHasAudio)
                 {
-                    Debug.Assert(media == null);
+                    DebugFix.Assert(media == null);
                 }
 
                 if (media != null)
                 {
-                    Debug.Assert(media is ExternalAudioMedia);
-                    Debug.Assert(manSeqMedia != null);
+                    DebugFix.Assert(media is ExternalAudioMedia);
+                    DebugFix.Assert(manSeqMedia != null);
 
                     if (!ancestorHasAudio)
                     {
@@ -437,7 +437,7 @@ namespace urakawa.daisy.export.visitor
                             }
                             else
                             {
-                                Debug.Assert(ancestorExtAudioFile == extMedia.Uri.LocalPath);
+                                DebugFix.Assert(ancestorExtAudioFile == extMedia.Uri.LocalPath);
                             }
                         }
                         else
@@ -462,8 +462,8 @@ namespace urakawa.daisy.export.visitor
 
                         if (manMedia != null)
                         {
-                            Debug.Assert(seqMedia == null);
-                            Debug.Assert(manMedia.HasActualAudioMediaData);
+                            DebugFix.Assert(seqMedia == null);
+                            DebugFix.Assert(manMedia.HasActualAudioMediaData);
 
                             manMediaStream = manMedia.AudioMediaData.OpenPcmInputStream();
                         }
@@ -471,10 +471,10 @@ namespace urakawa.daisy.export.visitor
                         {
                             Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
 
-                            Debug.Assert(seqMedia != null);
-                            Debug.Assert(!seqMedia.AllowMultipleTypes);
-                            Debug.Assert(seqMedia.ChildMedias.Count > 0);
-                            Debug.Assert(seqMedia.ChildMedias.Get(0) is ManagedAudioMedia);
+                            DebugFix.Assert(seqMedia != null);
+                            DebugFix.Assert(!seqMedia.AllowMultipleTypes);
+                            DebugFix.Assert(seqMedia.ChildMedias.Count > 0);
+                            DebugFix.Assert(seqMedia.ChildMedias.Get(0) is ManagedAudioMedia);
 
                             manMediaStream = seqMedia.OpenPcmInputStreamOfManagedAudioMedia();
                         }
@@ -485,29 +485,29 @@ namespace urakawa.daisy.export.visitor
                             AudioLibPCMFormat pcmInfo = AudioLibPCMFormat.RiffHeaderParse(extMediaStream,
                                                                                           out extMediaPcmLength);
 
-                            Debug.Assert(extMediaPcmLength == extMediaStream.Length - extMediaStream.Position);
+                            DebugFix.Assert(extMediaPcmLength == extMediaStream.Length - extMediaStream.Position);
 
                             if (manMedia != null)
                             {
-                                Debug.Assert(pcmInfo.IsCompatibleWith(manMedia.AudioMediaData.PCMFormat.Data));
+                                DebugFix.Assert(pcmInfo.IsCompatibleWith(manMedia.AudioMediaData.PCMFormat.Data));
                             }
                             if (seqMedia != null)
                             {
-                                Debug.Assert(
+                                DebugFix.Assert(
                                     pcmInfo.IsCompatibleWith(
                                         ((ManagedAudioMedia)seqMedia.ChildMedias.Get(0)).AudioMediaData.PCMFormat.Data));
                             }
 
                             extMediaStream.Position +=
-                                pcmInfo.ConvertTimeToBytes(extMedia.ClipBegin.AsMilliseconds);
+                                pcmInfo.ConvertTimeToBytes(extMedia.ClipBegin.AsLocalUnits);
 
                             long manMediaStreamPosBefore = manMediaStream.Position;
                             long extMediaStreamPosBefore = extMediaStream.Position;
 
-                            //Debug.Assert(AudioLibPCMFormat.CompareStreamData(manMediaStream, extMediaStream, (int)manMediaStream.Length));
+                            //DebugFix.Assert(AudioLibPCMFormat.CompareStreamData(manMediaStream, extMediaStream, (int)manMediaStream.Length));
 
-                            //Debug.Assert(manMediaStream.Position == manMediaStreamPosBefore + manMediaStream.Length);
-                            //Debug.Assert(extMediaStream.Position == extMediaStreamPosBefore + manMediaStream.Length);
+                            //DebugFix.Assert(manMediaStream.Position == manMediaStreamPosBefore + manMediaStream.Length);
+                            //DebugFix.Assert(extMediaStream.Position == extMediaStreamPosBefore + manMediaStream.Length);
                         }
                         finally
                         {
@@ -518,12 +518,12 @@ namespace urakawa.daisy.export.visitor
                 }
                 else
                 {
-                    Debug.Assert(manSeqMedia == null);
+                    DebugFix.Assert(manSeqMedia == null);
                 }
             }
             else
             {
-                Debug.Assert(manSeqMedia == null);
+                DebugFix.Assert(manSeqMedia == null);
             }
 
             foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)

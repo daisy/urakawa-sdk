@@ -216,7 +216,7 @@ namespace AudioLib
             }
         }
 
-        public double CurrentDuration
+        public long CurrentDurationInLocalUnits
         {
             get
             {

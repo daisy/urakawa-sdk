@@ -33,14 +33,9 @@ namespace urakawa.media.timing
             return true;
         }
 
-        public static readonly bool COMPARE_RESOLUTION_ONE_MS = true;
-
         public bool IsGreaterThan(Time time)
         {
-            if (COMPARE_RESOLUTION_ONE_MS)
-                return Math.Truncate(AsMilliseconds) > Math.Truncate(time.AsMilliseconds);
-
-            return AsMilliseconds > time.AsMilliseconds;
+            return AsLocalUnits > time.AsLocalUnits;
         }
 
         public bool IsLessThan(Time time)

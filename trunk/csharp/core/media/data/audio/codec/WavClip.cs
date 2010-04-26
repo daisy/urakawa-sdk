@@ -144,7 +144,7 @@ namespace urakawa.media.data.audio.codec
             ClipEnd = clipEnd == null ? null : clipEnd.Copy();
         }
 
-        private Time cachedDuration = null;
+        private Time m_cachedDuration = null;
 
         /// <summary>
         /// Gets the duration of the underlying RIFF wav file 
@@ -154,38 +154,38 @@ namespace urakawa.media.data.audio.codec
         {
             get
             {
-                if (cachedDuration == null)
+                if (m_cachedDuration == null)
                 {
                     Stream raw = DataProvider.OpenInputStream();
 
                     uint dataLength;
                     try
                     {
-                        cachedPcmFormat = AudioLibPCMFormat.RiffHeaderParse(raw, out dataLength);
+                        m_cachedPcmFormat = AudioLibPCMFormat.RiffHeaderParse(raw, out dataLength);
                     }
                     finally
                     {
                         raw.Close();
                     }
-                    cachedDuration = new Time(cachedPcmFormat.ConvertBytesToTime(dataLength));
+                    m_cachedDuration = new Time(m_cachedPcmFormat.ConvertBytesToTime(dataLength));
                 }
-                return cachedDuration;
+                return m_cachedDuration;
             }
         }
 
-        private AudioLibPCMFormat cachedPcmFormat;
+        private AudioLibPCMFormat m_cachedPcmFormat;
         public AudioLibPCMFormat PcmFormat
         {
             get
             {
-                if (cachedPcmFormat == null)
+                if (m_cachedPcmFormat == null)
                 {
                     Time timeDelta = MediaDuration; // this sets cachedPcmFormat
                     
-                    Debug.Assert(cachedDuration != null);
-                    Debug.Assert(cachedPcmFormat != null);
+                    DebugFix.Assert(m_cachedDuration != null);
+                    DebugFix.Assert(m_cachedPcmFormat != null);
                 }
-                return cachedPcmFormat;
+                return m_cachedPcmFormat;
             }
         }
 
@@ -201,9 +201,9 @@ namespace urakawa.media.data.audio.codec
             // REMARK: FileDataProviders: once created, binary content (including RIFF header) is never changed.
             // therefore, OPEN-only FileStream access should work concurrently (i.e. FileShare.Read)
             WavClip newClip = new WavClip(DataProvider, ClipBegin, clipEnd);
-            newClip.cachedDuration = cachedDuration.Copy();
-            newClip.cachedPcmFormat = new AudioLibPCMFormat();
-            newClip.cachedPcmFormat.CopyValues(cachedPcmFormat);
+            newClip.m_cachedDuration = m_cachedDuration.Copy();
+            newClip.m_cachedPcmFormat = new AudioLibPCMFormat();
+            newClip.m_cachedPcmFormat.CopyValues(m_cachedPcmFormat);
             return newClip;
         }
 
@@ -217,9 +217,9 @@ namespace urakawa.media.data.audio.codec
             Time clipEnd = null;
             if (!IsClipEndTiedToEOM) clipEnd = ClipEnd.Copy();
             WavClip newClip = new WavClip(DataProvider.Export(destPres), ClipBegin, clipEnd);
-            newClip.cachedDuration = cachedDuration.Copy();
-            newClip.cachedPcmFormat = new AudioLibPCMFormat();
-            newClip.cachedPcmFormat.CopyValues(cachedPcmFormat);
+            newClip.m_cachedDuration = m_cachedDuration.Copy();
+            newClip.m_cachedPcmFormat = new AudioLibPCMFormat();
+            newClip.m_cachedPcmFormat.CopyValues(m_cachedPcmFormat);
             return newClip;
         }
 
@@ -324,9 +324,9 @@ namespace urakawa.media.data.audio.codec
             Time rawClipBegin = new Time(ClipBegin.AsTimeSpan + subClipBegin.AsTimeSpan);
             Time rawClipEnd = new Time(ClipBegin.AsTimeSpan + subClipEnd.AsTimeSpan);
 
-            long beginPos = raw.Position + format.ConvertTimeToBytes(rawClipBegin.AsMilliseconds);
+            long beginPos = raw.Position + format.ConvertTimeToBytes(rawClipBegin.AsLocalUnits);
 
-            long endPos = raw.Position + format.ConvertTimeToBytes(rawClipEnd.AsMilliseconds);
+            long endPos = raw.Position + format.ConvertTimeToBytes(rawClipEnd.AsLocalUnits);
 
             return new SubStream(
                 raw,

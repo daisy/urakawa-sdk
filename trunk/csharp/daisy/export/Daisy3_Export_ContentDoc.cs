@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using urakawa.media;
 using urakawa.metadata;
 using urakawa.core;
@@ -240,7 +241,7 @@ namespace urakawa.daisy.export
                             XmlNode textNode = DTBookDocument.CreateTextNode(txt);
                             currentXmlNode.AppendChild(textNode);
 
-                            Debug.Assert(n.Children.Count == 0);
+                            DebugFix.Assert(n.Children.Count == 0);
                         }
                         if (!string.IsNullOrEmpty ( prefix )
                             &&   string.IsNullOrEmpty( currentXmlNode.Prefix)

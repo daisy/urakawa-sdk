@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using AudioLib;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 
@@ -133,8 +134,8 @@ namespace urakawa.daisy.import
                     && id != null
                     && id == m_PackageUniqueIdAttr.Value)
                 {
-                    Debug.Assert(String.IsNullOrEmpty(m_PublicationUniqueIdentifier),
-                        String.Format("The Publication's Unique Identifier is specified several times !! OLD: [{0}], NEW: [{1}]", m_PublicationUniqueIdentifier, content));
+                    DebugFix.Assert(String.IsNullOrEmpty(m_PublicationUniqueIdentifier));
+                    //String.Format("The Publication's Unique Identifier is specified several times !! OLD: [{0}], NEW: [{1}]", m_PublicationUniqueIdentifier, content)
 
                     m_PublicationUniqueIdentifier = content;
                     m_PublicationUniqueIdentifierNode = mdNode;

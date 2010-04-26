@@ -35,11 +35,14 @@ namespace urakawa.core
             }
             else
             {
-                long timeBytes = mediaData.PCMFormat.Data.ConvertTimeToBytes(mediaData.AudioDuration.AsMilliseconds);
-                rightOk = mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamRightMark, timeBytes);
+                long timeBytes = mediaData.PCMFormat.Data.ConvertTimeToBytes(mediaData.AudioDuration.AsLocalUnits);
+                //rightOk = mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamRightMark, timeBytes);
+                rightOk = m_LocalStreamRightMark == timeBytes;
             }
 
-            bool leftOk = m_LocalStreamLeftMark == -1 || mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamLeftMark, 0);
+            bool leftOk = m_LocalStreamLeftMark == -1
+                || m_LocalStreamLeftMark == 0;
+                //|| mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamLeftMark, 0);
 
             return leftOk && rightOk;
         }
@@ -436,7 +439,7 @@ namespace urakawa.core
                     dur.Add(childDur);
                 }
             }
-            if (dur.AsMilliseconds <= 0)
+            if (dur.AsLocalUnits <= 0)
             {
                 return null;
             }

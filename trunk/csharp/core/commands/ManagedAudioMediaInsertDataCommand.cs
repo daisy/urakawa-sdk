@@ -146,15 +146,14 @@ namespace urakawa.commands
             ManagedAudioMedia manMedia = TreeNode.GetManagedAudioMedia();
 
             long timeInsertBytes =
-                manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
-                    TimeInsert.AsMilliseconds);
+                manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(TimeInsert.AsLocalUnits);
 
-            long durationBytes = manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
-                    manMedia.Duration.AsMilliseconds);
+            long durationBytes = manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(manMedia.Duration.AsLocalUnits);
 
             if (TimeInsert.IsEqualTo(new Time(manMedia.Duration.AsTimeSpan))
                 ||
-                manMedia.AudioMediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(timeInsertBytes, durationBytes))
+                timeInsertBytes == durationBytes)
+                //manMedia.AudioMediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(timeInsertBytes, durationBytes))
             {
                 manMedia.AudioMediaData.MergeWith(ManagedAudioMediaSource.AudioMediaData.Copy());
 

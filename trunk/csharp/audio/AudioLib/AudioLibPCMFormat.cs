@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -112,50 +113,128 @@ namespace AudioLib
             BitDepth = pcmFormat.BitDepth;
         }
 
-        public long ConvertTimeToBytes(double time)
+        // 1 ==> milliseconds
+        // 1000 ==> microseconds
+        // 1.000.000 ==> nanoseconds
+        public static readonly long TIME_UNIT = 1000000;
+        public static readonly bool USE_ROUND_NOT_TRUNCATE = true;
+
+        public long ConvertTimeToBytes(long timeInLocalUnits)
         {
-            return ConvertTimeToBytes(time, SampleRate, BlockAlign);
+            return ConvertTimeToBytes(timeInLocalUnits, SampleRate, BlockAlign
+#if DEBUG
+, true
+#endif
+);
         }
 
-        private static long ConvertTimeToBytes(double time, uint samplingRate, ushort frameSize)
+        private static long ConvertTimeToBytes(long timeInLocalUnits, uint samplingRate, ushort frameSize
+#if DEBUG
+, bool checkRoundtrip
+#endif
+)
         {
-            long bytes = Convert.ToInt64((time * samplingRate * frameSize) / 1000.0);
-            bytes -= bytes % frameSize;
-            return bytes;
+            // ROUND: Convert.ToInt64(value)
+            // TRUNCATE: (long)value
+
+            double timeMillisecondsDecimal = (double)timeInLocalUnits / TIME_UNIT;
+
+            int decimalPlaces = TIME_UNIT == 1 ? 0 : TIME_UNIT == 1000 ? 3 : TIME_UNIT == 1000000 ? 6 : 7;
+            DebugFix.Assert(decimalPlaces != 7);
+            timeMillisecondsDecimal = Math.Round(timeMillisecondsDecimal, decimalPlaces, MidpointRounding.AwayFromZero);
+
+            double bytesDecimal = samplingRate * frameSize * timeMillisecondsDecimal / 1000;
+            long bytesIntegral = (long)(USE_ROUND_NOT_TRUNCATE ? Math.Round(bytesDecimal) : Math.Truncate(bytesDecimal));
+
+            // checking whether we are loosing fractions
+            //////DebugFix.Assert(bytesDecimal == (double)bytesIntegral);
+
+            long bytesIntegralAligned = bytesIntegral - (bytesIntegral % frameSize); // block align
+
+            ////DebugFix.Assert(bytesIntegralAligned == bytesIntegral);
+
+#if DEBUG
+            if (checkRoundtrip)
+            {
+                //long bytesForOneUnit = ConvertTimeToBytes(1, samplingRate, frameSize, false);
+                long timeInLocalUnitsForBlockAlign = ConvertBytesToTime(frameSize, samplingRate, frameSize, false);
+
+                long timeRoundTrip = ConvertBytesToTime(bytesIntegralAligned, samplingRate, frameSize, false);
+                DebugFix.Assert(Math.Abs(timeRoundTrip - timeInLocalUnits) <= timeInLocalUnitsForBlockAlign);
+            }
+#endif
+
+            return bytesIntegralAligned;
         }
 
-        public double ConvertBytesToTime(long bytes)
+        public long ConvertBytesToTime(long bytes)
         {
-            return ConvertBytesToTime(bytes, SampleRate, BlockAlign);
+            return ConvertBytesToTime(bytes, SampleRate, BlockAlign
+#if DEBUG
+, true
+#endif
+);
         }
 
-        private static double ConvertBytesToTime(long bytes, uint samplingRate, ushort frameSize)
+        private static long ConvertBytesToTime(long bytes, uint samplingRate, ushort frameSize
+#if DEBUG
+, bool checkRoundtrip
+#endif
+)
         {
-            bytes -= bytes % frameSize;
-            double time = (1000.0 * bytes) / (samplingRate * frameSize); //Convert.ToDouble
-            time = Math.Round(time);
-            return time;
+            // ROUND: Convert.ToInt64(value)
+            // TRUNCATE: (long)value
+
+            long bytesAligned = bytes - (bytes % frameSize); // block align
+
+            DebugFix.Assert(bytesAligned == bytes);
+
+            double timeMillisecondsDecimal = 1000.0 * bytesAligned / (samplingRate * frameSize);
+
+            int decimalPlaces = TIME_UNIT == 1 ? 0 : TIME_UNIT == 1000 ? 3 : TIME_UNIT == 1000000 ? 6 : 7;
+            DebugFix.Assert(decimalPlaces != 7);
+            timeMillisecondsDecimal = Math.Round(timeMillisecondsDecimal, decimalPlaces, MidpointRounding.AwayFromZero);
+
+            double timeInLocalUnitsDecimal = timeMillisecondsDecimal * TIME_UNIT;
+
+            long timeInLocalUnitsIntegral = (long)(USE_ROUND_NOT_TRUNCATE ? Math.Round(timeInLocalUnitsDecimal) : Math.Truncate(timeInLocalUnitsDecimal));
+
+            // checking whether we are loosing fractions
+            //////DebugFix.Assert(timeInLocalUnitsDecimal == (double)timeInLocalUnitsIntegral);
+
+#if DEBUG
+            if (checkRoundtrip)
+            {
+                long bytesRoundTrip = ConvertTimeToBytes(timeInLocalUnitsIntegral, samplingRate, frameSize, false);
+                DebugFix.Assert(Math.Abs(bytesRoundTrip - bytesAligned) <= frameSize);
+            }
+#endif
+            return timeInLocalUnitsIntegral;
         }
 
-
-        public bool AreBytePositionsApproximatelyEqual(long bytePos1, long bytePos2)
+        public long AdjustByteToBlockAlignFrameSize(long bytes)
         {
-            // just for information
-            //double frameSizeBlockAlignMs = ConvertBytesToTime(BlockAlign);
-
-            return bytePos1 >= (bytePos2 - BlockAlign) && bytePos1 <= (bytePos2 + BlockAlign);
+            return bytes - (bytes % BlockAlign);
         }
 
-        public bool AreMillisecondTimesApproximatelyEqual(double time1, double time2)
-        {
-            // just for information
-            //double frameSizeBlockAlignMs = ConvertBytesToTime(BlockAlign);
+        //public bool AreBytePositionsApproximatelyEqual(long bytePos1, long bytePos2)
+        //{
+        //    // just for information
+        //    //double frameSizeBlockAlignMs = ConvertBytesToTime(BlockAlign);
 
-            long bytePos1 = ConvertTimeToBytes(time1);
-            long bytePos2 = ConvertTimeToBytes(time2);
+        //    return bytePos1 >= (bytePos2 - BlockAlign) && bytePos1 <= (bytePos2 + BlockAlign);
+        //}
 
-            return AreBytePositionsApproximatelyEqual(bytePos1, bytePos2);
-        }
+        //public bool AreMillisecondTimesApproximatelyEqual(double time1, double time2)
+        //{
+        //    // just for information
+        //    //double frameSizeBlockAlignMs = ConvertBytesToTime(BlockAlign);
+
+        //    long bytePos1 = ConvertTimeToBytes(time1);
+        //    long bytePos2 = ConvertTimeToBytes(time2);
+
+        //    return AreBytePositionsApproximatelyEqual(bytePos1, bytePos2);
+        //}
 
         /// <summary>
         /// Compares the data in two data streams for equality
@@ -195,7 +274,7 @@ namespace AudioLib
         /// </exception>
         public static AudioLibPCMFormat RiffHeaderParse(Stream input, out uint dataLength)
         {
-            System.Diagnostics.Debug.Assert(input.Position == 0);
+            DebugFix.Assert(input.Position == 0);
 
             dataLength = 0;
 
@@ -311,7 +390,7 @@ namespace AudioLib
                                 uint extraBytes = rd.ReadUInt16();
                                 if (extraBytes > 0)
                                 {
-                                    System.Diagnostics.Debug.Assert(extraFormatBytes == extraBytes);
+                                    DebugFix.Assert(extraFormatBytes == extraBytes);
 
                                     // Skip (we ignore the extra information in this chunk field)
                                     rd.ReadBytes((int)extraBytes);

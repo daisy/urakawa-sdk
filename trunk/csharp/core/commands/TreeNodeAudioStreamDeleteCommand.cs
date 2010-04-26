@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using AudioLib;
 using urakawa.command;
 using urakawa.core;
 using urakawa.media.data;
@@ -98,7 +99,7 @@ namespace urakawa.commands
             OriginalManagedAudioMedia = manMedia.Copy();
             m_UsedMediaData.Add(OriginalManagedAudioMedia.AudioMediaData);
 
-            Debug.Assert(manMedia.Duration.IsEqualTo(OriginalManagedAudioMedia.Duration));
+            DebugFix.Assert(manMedia.Duration.IsEqualTo(OriginalManagedAudioMedia.Duration));
 
             ChannelsProperty chProp = SelectionData.m_TreeNode.GetChannelsProperty();
             foreach (Channel ch in chProp.UsedChannels)
@@ -109,7 +110,7 @@ namespace urakawa.commands
                     break;
                 }
             }
-            Debug.Assert(ChannelOfOriginalMedia != null);
+            DebugFix.Assert(ChannelOfOriginalMedia != null);
         }
 
         public override bool CanExecute

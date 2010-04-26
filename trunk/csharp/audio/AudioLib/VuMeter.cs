@@ -72,7 +72,7 @@ namespace AudioLib
                 if (del != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
-                    m_PeakOverloadEventArgs.Time = m_Player.CurrentTime;
+                    m_PeakOverloadEventArgs.Time = m_Player.CurrentTimeInLocalUnit;
                     del(this, m_PeakOverloadEventArgs);
                 }
             }
@@ -118,7 +118,7 @@ namespace AudioLib
                 if (del != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
-                    m_PeakOverloadEventArgs.Time = m_Recorder.CurrentDuration;
+                    m_PeakOverloadEventArgs.Time = m_Recorder.CurrentDurationInLocalUnits;
                     del(this, m_PeakOverloadEventArgs);
                 }
             }

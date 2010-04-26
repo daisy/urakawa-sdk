@@ -9,14 +9,14 @@ namespace urakawa.daisy.export.visitor
 {
     public abstract class AbstractBasePublishAudioVisitor : DualCancellableProgressReporter, ITreeNodeVisitor
     {
-        protected double m_TimeElapsed = 0;
-        protected double m_TotalTime = 0;
+        protected long m_TimeElapsedInLocalUnits = 0;
+        protected long m_TotalTimeInLocalUnits = 0;
 
         protected AbstractBasePublishAudioVisitor()
         {
             mCurrentAudioFileNumber = 0;
             m_ErrorMessages = null;
-            m_TimeElapsed = 0;
+            m_TimeElapsedInLocalUnits = 0;
         }
 
         //private const int BUFFER_SIZE = 6 * 1024 * 1024; // 6 MB

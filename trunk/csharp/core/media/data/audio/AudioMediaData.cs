@@ -213,7 +213,7 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration of the audio to add</param>
         public virtual void AppendPcmData(Stream pcmData, Time duration)
         {
-            InsertPcmData(pcmData, new Time(AudioDuration.AsMilliseconds), duration);
+            InsertPcmData(pcmData, new Time(AudioDuration.AsLocalUnits), duration);
         }
 
         public abstract void AppendPcmData(DataProvider fileDataProvider);
@@ -533,8 +533,8 @@ namespace urakawa.media.data.audio
                 return false;
             }
 
-            if (PCMFormat.Data.ConvertTimeToBytes(AudioDuration.AsMilliseconds)
-                != otherz.PCMFormat.Data.ConvertTimeToBytes(otherz.AudioDuration.AsMilliseconds))
+            if (PCMFormat.Data.ConvertTimeToBytes(AudioDuration.AsLocalUnits)
+                != otherz.PCMFormat.Data.ConvertTimeToBytes(otherz.AudioDuration.AsLocalUnits))
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
