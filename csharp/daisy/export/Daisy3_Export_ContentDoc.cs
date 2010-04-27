@@ -16,6 +16,8 @@ namespace urakawa.daisy.export
         private XmlDocument m_DTBDocument;
         private List<urakawa.core.TreeNode> m_NotesNodeList = new List<TreeNode> ();
 
+        private string m_TempImageId = null;
+
         // to do regenerate ids
         private void CreateDTBookDocument()
         {
@@ -227,12 +229,26 @@ namespace urakawa.daisy.export
                         } // attribute nodes created
 
                         if (xmlProp.LocalName == "book") return true;
-
-                        // add id attribute in case it do not exists and it is required
-                        if (currentXmlNode.Attributes.GetNamedItem("id") == null && IsIDRequired(currentXmlNode.LocalName))
+                        if (xmlProp.LocalName == "imggroup") m_TempImageId = null;
+                        if (xmlProp.LocalName == "caption" && !string.IsNullOrEmpty(m_TempImageId))
                         {
-                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, currentXmlNode, "id", GetNextID(ID_DTBPrefix));
+                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, currentXmlNode, "imgref", m_TempImageId);
                         }
+                        // add id attribute in case it do not exists and it is required
+                        if (IsIDRequired(currentXmlNode.LocalName))
+                        {
+                            if (currentXmlNode.Attributes.GetNamedItem("id") == null)
+                            {
+                                string id = GetNextID(ID_DTBPrefix);
+                                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, currentXmlNode, "id", id);
+                            }
+                            else if (xmlProp.LocalName == "img")
+                            {
+                                string id = currentXmlNode.Attributes.GetNamedItem("id").Value;
+                                m_TempImageId = id;
+                            }
+                        }
+                        
                         // add text from text property
 
                         string txt = n.GetTextMedia() != null ? n.GetTextMedia().Text : null;
