@@ -216,7 +216,7 @@ namespace AudioLib
             }
         }
 
-        public long CurrentDurationInLocalUnits
+        public long CurrentDurationBytePosition
         {
             get
             {
@@ -230,7 +230,7 @@ namespace AudioLib
                     return 0;
                 }
 
-                return RecordingPCMFormat.ConvertBytesToTime(m_TotalRecordedBytes);
+                return m_TotalRecordedBytes;
             }
         }
 

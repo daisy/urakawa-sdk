@@ -217,15 +217,15 @@ namespace AudioLib
             return bytes - (bytes % BlockAlign);
         }
 
-        public bool BytesAreEqualWithBlockAlignTolerance(long bytes1, long bytes2)
-        {
-            return Math.Abs(bytes1 - bytes2) <= BlockAlign;
-        }
-        public bool TimesAreEqualWithBlockAlignTolerance(long time1, long time2)
-        {
-            long timeInLocalUnitsForBlockAlign = ConvertBytesToTime(BlockAlign);
-            return Math.Abs(time1 - time2) <= timeInLocalUnitsForBlockAlign;
-        }
+        //public bool BytesAreEqualWithBlockAlignTolerance(long bytes1, long bytes2)
+        //{
+        //    return Math.Abs(bytes1 - bytes2) <= BlockAlign;
+        //}
+        //public bool TimesAreEqualWithBlockAlignTolerance(long time1, long time2)
+        //{
+        //    long timeInLocalUnitsForBlockAlign = ConvertBytesToTime(BlockAlign);
+        //    return Math.Abs(time1 - time2) <= timeInLocalUnitsForBlockAlign;
+        //}
         public bool BytesAreEqualWithOneMillisecondTolerance(long bytes1, long bytes2)
         {
             long oneMillisecondsInLocalUnits = 1 * TIME_UNIT;

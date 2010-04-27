@@ -84,7 +84,7 @@ namespace urakawa.media.timing
                 long timeAsLocalUnitsIntegral = (long)(AudioLibPCMFormat.USE_ROUND_NOT_TRUNCATE ? Math.Round(timeAsLocalUnitsDecimal) : Math.Truncate(timeAsLocalUnitsDecimal));
 
                 // checking whether we are loosing fractions of milliseconds
-                DebugFix.Assert(timeAsLocalUnitsDecimal == (double)timeAsLocalUnitsIntegral);
+                //////DebugFix.Assert(timeAsLocalUnitsDecimal == (double)timeAsLocalUnitsIntegral);
 
                 return timeAsLocalUnitsIntegral;
             }

@@ -1260,7 +1260,7 @@ namespace urakawa
             chProp.SetMedia(audioChannel, manMedia);
             ManagedAudioMedia manMedia2 = MediaFactory.CreateManagedAudioMedia();
             manMedia2.MediaData = mdAudio.Copy();
-            ManagedAudioMediaInsertDataCommand cmd2 = CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia2, Time.Zero, treeNode);
+            ManagedAudioMediaInsertDataCommand cmd2 = CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia2, 0, treeNode);
             foreach (var mediaData in cmd2.UsedMediaData)
             {
                 DebugFix.Assert(mediaData == cmd2.OriginalManagedAudioMedia.AudioMediaData
