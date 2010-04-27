@@ -70,6 +70,19 @@ namespace urakawa.media.timing
         {
             get
             {
+                if (m_TimeSpan == TimeSpan.MaxValue)
+                {
+                    return long.MaxValue;
+                }
+                if (m_TimeSpan == TimeSpan.MaxValue)
+                {
+                    return long.MinValue;
+                }
+                if (m_TimeSpan == TimeSpan.Zero)
+                {
+                    return 0;
+                }
+
                 // ROUND: Convert.ToInt64(value)
                 // TRUNCATE: (long)value
 
@@ -90,6 +103,22 @@ namespace urakawa.media.timing
             }
             private set
             {
+                if (value == long.MaxValue)
+                {
+                    AsTimeSpan = TimeSpan.MaxValue;
+                    return;
+                }
+                if (value == long.MinValue)
+                {
+                    AsTimeSpan = TimeSpan.MinValue;
+                    return;
+                }
+                if (value == 0)
+                {
+                    AsTimeSpan = TimeSpan.Zero;
+                    return;
+                }
+
                 double timeMillisecondsDecimal = (double)value / TIME_UNIT;
 
                 int decimalPlaces = TIME_UNIT == 1 ? 0 : TIME_UNIT == 1000 ? 3 : TIME_UNIT == 1000000 ? 6 : 7;

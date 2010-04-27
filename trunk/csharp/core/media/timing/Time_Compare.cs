@@ -36,7 +36,8 @@ namespace urakawa.media.timing
 
         public bool IsGreaterThan(Time time)
         {
-            return AsLocalUnits > time.AsLocalUnits;
+            return AsTimeSpan.CompareTo(time.AsTimeSpan) > 0;
+            //return AsLocalUnits > time.AsLocalUnits;
         }
 
         public bool IsLessThan(Time time)
