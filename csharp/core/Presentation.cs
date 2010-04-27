@@ -88,6 +88,7 @@ namespace urakawa
             MetadataFactory.RefreshQNames();
             PropertyFactory.RefreshQNames();
             TreeNodeFactory.RefreshQNames();
+            ExternalFilesDataFactory.RefreshQNames();
         }
 
         #region Event related members
@@ -1106,7 +1107,7 @@ namespace urakawa
 
             MetadataFactory.XukOut(destination, baseUri, handler);
 
-            this.ExternalFilesDataFactory.XukOut(destination, baseUri, handler);
+            ExternalFilesDataFactory.XukOut(destination, baseUri, handler);
 
 
 
@@ -1116,11 +1117,7 @@ namespace urakawa
 
             MediaDataManager.XukOut(destination, baseUri, handler);
 
-            if (!m_IgnoreUndoRedoStack)
-                UndoRedoManager.XukOut(destination, baseUri, handler);
-
-            this.ExternalFilesDataManager.XukOut(destination, baseUri, handler);
-
+            ExternalFilesDataManager.XukOut(destination, baseUri, handler);
 
             destination.WriteStartElement(XukStrings.Metadatas, XukNamespaceUri);
             foreach (Metadata md in mMetadata.ContentsAs_YieldEnumerable)
@@ -1128,6 +1125,10 @@ namespace urakawa
                 md.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
+
+
+            if (!m_IgnoreUndoRedoStack)
+                UndoRedoManager.XukOut(destination, baseUri, handler);
 
             destination.WriteStartElement(XukStrings.RootNode, XukNamespaceUri);
             RootNode.XukOut(destination, baseUri, handler);

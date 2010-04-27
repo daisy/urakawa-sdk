@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using urakawa.xuk;
+﻿using urakawa.xuk;
 
 namespace urakawa.ExternalFiles
-    {
+{
     public class ExternalFileDataFactory : GenericWithPresentationFactory<ExternalFileData>
+    {
+        public override string GetTypeNameFormatted()
         {
-        public override string GetTypeNameFormatted ()
-            {
             return XukStrings.ExternalFileDataFactory;
-            }
+        }
 
-
-        public ExternalFileDataFactory  ( Presentation pres )
+        public ExternalFileDataFactory(Presentation pres)
             : base(pres)
         {
         }
@@ -32,11 +27,5 @@ namespace urakawa.ExternalFiles
             base.InitializeInstance(instance);
             Presentation.ExternalFilesDataManager.AddManagedObject(instance);
         }
-
-        
-
-
-
-
-        }
     }
+}
