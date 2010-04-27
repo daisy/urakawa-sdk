@@ -27,12 +27,6 @@ namespace urakawa.media.timing
             return !(a == b);
         }
 
-        public bool IsEqualTo_WithBlockAlignTolerance(Time otherTime, AudioLibPCMFormat pcmFormat)
-        {
-            long timeInLocalUnitsForBlockAlign = pcmFormat.ConvertBytesToTime(pcmFormat.BlockAlign);
-            return Math.Abs(AsLocalUnits - otherTime.AsLocalUnits) <= timeInLocalUnitsForBlockAlign;
-        }
-
         public bool IsEqualTo(Time otherTime)
         {
             if (IsGreaterThan(otherTime)) return false;
