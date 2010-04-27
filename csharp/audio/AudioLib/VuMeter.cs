@@ -12,7 +12,7 @@ namespace AudioLib
     // http://daisy.trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/audio/AudioLib/VuMeter.cs?rev=1485
     public class VuMeter
     {
-        private readonly PeakOverloadEventArgs m_PeakOverloadEventArgs = new PeakOverloadEventArgs(1, 0);
+        private readonly PeakOverloadEventArgs m_PeakOverloadEventArgs = new PeakOverloadEventArgs(1); //, 0);
         public event PeakOverloadHandler PeakMeterOverloaded;
 
         private readonly PeakMeterUpdateEventArgs m_PeakMeterUpdateEventArgs = new PeakMeterUpdateEventArgs(new double[] { -1, -1 });
@@ -72,7 +72,7 @@ namespace AudioLib
                 if (del != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
-                    m_PeakOverloadEventArgs.Time = m_Player.CurrentTimeInLocalUnit;
+                    //m_PeakOverloadEventArgs.Time = m_Player.CurrentTimeInLocalUnit;
                     del(this, m_PeakOverloadEventArgs);
                 }
             }
@@ -118,7 +118,7 @@ namespace AudioLib
                 if (del != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
-                    m_PeakOverloadEventArgs.Time = m_Recorder.CurrentDurationInLocalUnits;
+                    //m_PeakOverloadEventArgs.Time = m_Recorder.CurrentDurationInLocalUnits;
                     del(this, m_PeakOverloadEventArgs);
                 }
             }
@@ -187,23 +187,23 @@ namespace AudioLib
                 }
             }
 
-            private double m_Time;  //in milliseconds
-            public double Time
-            {
-                get
-                {
-                    return m_Time;
-                }
-                set
-                {
-                    m_Time = value;
-                }
-            }
+            //private double m_Time;
+            //public double Time
+            //{
+            //    get
+            //    {
+            //        return m_Time;
+            //    }
+            //    set
+            //    {
+            //        m_Time = value;
+            //    }
+            //}
 
-            public PeakOverloadEventArgs(int channel, double time)
+            public PeakOverloadEventArgs(int channel) // double time
             {
                 m_Channel = channel;
-                m_Time = time;
+                //m_Time = time;
             }
         }
 

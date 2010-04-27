@@ -358,7 +358,7 @@ namespace AudioLib
             stopPlayback();
         }
 
-        public long CurrentTimeInLocalUnit
+        public long CurrentBytePosition
         {
             get
             {
@@ -372,7 +372,7 @@ namespace AudioLib
                     return 0; // Play was never called, or the stream was closed completely
                 }
 
-                return m_CurrentAudioPCMFormat.ConvertBytesToTime(getCurrentBytePosition());
+                return m_CurrentAudioPCMFormat.AdjustByteToBlockAlignFrameSize(getCurrentBytePosition());
             }
         }
 

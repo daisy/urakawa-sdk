@@ -68,14 +68,14 @@ namespace urakawa.commands
             get { return m_ManagedAudioMediaSource; }
         }
 
-        private Time m_TimeInsert;
-        public Time TimeInsert
+        private long m_BytePositionInsert;
+        public long BytePositionInsert
         {
-            private set { m_TimeInsert = value; }
-            get { return m_TimeInsert; }
+            private set { m_BytePositionInsert = value; }
+            get { return m_BytePositionInsert; }
         }
 
-        public void Init(TreeNode treeNode, ManagedAudioMedia managedAudioMediaSource, Time insertTime, TreeNode currentTreeNode)
+        public void Init(TreeNode treeNode, ManagedAudioMedia managedAudioMediaSource, long bytePositionInsert, TreeNode currentTreeNode)
         {
             if (treeNode == null)
             {
@@ -85,10 +85,10 @@ namespace urakawa.commands
             {
                 throw new ArgumentNullException("treeNode");
             }
-            
-            if (insertTime == null)
+
+            if (bytePositionInsert == -1)
             {
-                throw new ArgumentNullException("insertTime");
+                throw new ArgumentNullException("bytePositionInsert");
             }
             if (managedAudioMediaSource == null)
             {
@@ -117,7 +117,7 @@ namespace urakawa.commands
 
             TreeNode = treeNode;
             CurrentTreeNode = currentTreeNode;
-            TimeInsert = insertTime;
+            BytePositionInsert = bytePositionInsert;
 
             ManagedAudioMediaSource = managedAudioMediaSource;
 
@@ -145,9 +145,6 @@ namespace urakawa.commands
         {
             ManagedAudioMedia manMedia = TreeNode.GetManagedAudioMedia();
 
-            long timeInsertBytes =
-                manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(TimeInsert.AsLocalUnits);
-
             long durationBytes = manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(manMedia.Duration.AsLocalUnits);
 
             if (
@@ -155,8 +152,8 @@ namespace urakawa.commands
                 //|| timeInsertBytes == durationBytes
                 //|| manMedia.AudioMediaData.PCMFormat.Data.BytesAreEqualWithBlockAlignTolerance(timeInsertBytes, durationBytes)
                 //|| manMedia.AudioMediaData.PCMFormat.Data.TimesAreEqualWithBlockAlignTolerance(manMedia.Duration.AsLocalUnits, TimeInsert.AsLocalUnits)
-                manMedia.AudioMediaData.PCMFormat.Data.BytesAreEqualWithOneMillisecondTolerance(timeInsertBytes, durationBytes)
-                || manMedia.AudioMediaData.PCMFormat.Data.TimesAreEqualWithOneMillisecondTolerance(manMedia.Duration.AsLocalUnits, TimeInsert.AsLocalUnits)
+                manMedia.AudioMediaData.PCMFormat.Data.BytesAreEqualWithOneMillisecondTolerance(BytePositionInsert, durationBytes)
+                //|| manMedia.AudioMediaData.PCMFormat.Data.TimesAreEqualWithOneMillisecondTolerance(manMedia.Duration.AsLocalUnits, BytePositionInsert.AsLocalUnits)
                 )
             {
                 manMedia.AudioMediaData.MergeWith(ManagedAudioMediaSource.AudioMediaData.Copy());
@@ -177,7 +174,9 @@ namespace urakawa.commands
                 Time duration = ManagedAudioMediaSource.Duration;
 
                 ((WavAudioMediaData)manMedia.AudioMediaData).InsertPcmData(
-                    (WavAudioMediaData)ManagedAudioMediaSource.AudioMediaData, TimeInsert, duration);
+                    (WavAudioMediaData)ManagedAudioMediaSource.AudioMediaData,
+                    new Time(manMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(BytePositionInsert)), 
+                    duration);
 
                 //Stream stream = ManagedAudioMediaSource.AudioMediaData.OpenPcmInputStream();
                 //try
