@@ -150,11 +150,14 @@ namespace urakawa.commands
 
             long durationBytes = manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(manMedia.Duration.AsLocalUnits);
 
-            if (TimeInsert.IsEqualTo(manMedia.Duration)
-                ||
-                timeInsertBytes == durationBytes
-                || TimeInsert.IsEqualTo_WithBlockAlignTolerance(manMedia.Duration, manMedia.AudioMediaData.PCMFormat.Data))
-                //manMedia.AudioMediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(timeInsertBytes, durationBytes))
+            if (
+                //TimeInsert.IsEqualTo(manMedia.Duration)
+                //|| timeInsertBytes == durationBytes
+                //|| manMedia.AudioMediaData.PCMFormat.Data.BytesAreEqualWithBlockAlignTolerance(timeInsertBytes, durationBytes)
+                //|| manMedia.AudioMediaData.PCMFormat.Data.TimesAreEqualWithBlockAlignTolerance(manMedia.Duration.AsLocalUnits, TimeInsert.AsLocalUnits)
+                manMedia.AudioMediaData.PCMFormat.Data.BytesAreEqualWithOneMillisecondTolerance(timeInsertBytes, durationBytes)
+                || manMedia.AudioMediaData.PCMFormat.Data.TimesAreEqualWithOneMillisecondTolerance(manMedia.Duration.AsLocalUnits, TimeInsert.AsLocalUnits)
+                )
             {
                 manMedia.AudioMediaData.MergeWith(ManagedAudioMediaSource.AudioMediaData.Copy());
 

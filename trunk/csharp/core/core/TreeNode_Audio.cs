@@ -19,11 +19,15 @@ namespace urakawa.core
 
         public bool TimeBeginEndEqualClipDuration(Time timeBegin, Time timeEnd, AudioMediaData mediaData)
         {
-            bool equal = timeBegin.IsEqualTo(Time.Zero)
+            bool equal = (
+                //timeBegin.IsEqualTo(Time.Zero)
+                mediaData.PCMFormat.Data.TimesAreEqualWithOneMillisecondTolerance(timeBegin.AsLocalUnits, Time.Zero.AsLocalUnits)
+                )
                          &&
                          (
-                             timeEnd.IsEqualTo(Time.Zero)
-                             || timeEnd.GetDifference(timeBegin).IsEqualTo(mediaData.AudioDuration)
+                             //timeEnd.IsEqualTo(Time.Zero)
+                             mediaData.PCMFormat.Data.TimesAreEqualWithOneMillisecondTolerance(timeEnd.AsLocalUnits, Time.Zero.AsLocalUnits)
+                             || mediaData.PCMFormat.Data.TimesAreEqualWithOneMillisecondTolerance(timeEnd.GetDifference(timeBegin).AsLocalUnits, mediaData.AudioDuration.AsLocalUnits)
                          );
 
             if (equal) return true;
@@ -36,13 +40,15 @@ namespace urakawa.core
             else
             {
                 long timeBytes = mediaData.PCMFormat.Data.ConvertTimeToBytes(mediaData.AudioDuration.AsLocalUnits);
-                //rightOk = mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamRightMark, timeBytes);
-                rightOk = m_LocalStreamRightMark == timeBytes;
+                rightOk = //m_LocalStreamRightMark == timeBytes
+                    mediaData.PCMFormat.Data.BytesAreEqualWithOneMillisecondTolerance(m_LocalStreamRightMark, timeBytes)
+                    ;
             }
 
             bool leftOk = m_LocalStreamLeftMark == -1
-                || m_LocalStreamLeftMark == 0;
-                //|| mediaData.PCMFormat.Data.AreBytePositionsApproximatelyEqual(m_LocalStreamLeftMark, 0);
+                //|| m_LocalStreamLeftMark == 0
+                || mediaData.PCMFormat.Data.BytesAreEqualWithOneMillisecondTolerance(0, m_LocalStreamLeftMark)
+                ;
 
             return leftOk && rightOk;
         }

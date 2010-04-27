@@ -619,7 +619,7 @@ namespace urakawa.media.data.audio.codec
         /// <param name="clipBegin">The given clip begin point</param>
         public override void RemovePcmData(Time clipBegin)
         {
-            if (clipBegin == Time.Zero)
+            if (clipBegin.IsEqualTo(Time.Zero))
             {
                 Time prevDur = AudioDuration;
                 mWavClips.Clear();

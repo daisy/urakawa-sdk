@@ -217,6 +217,27 @@ namespace AudioLib
             return bytes - (bytes % BlockAlign);
         }
 
+        public bool BytesAreEqualWithBlockAlignTolerance(long bytes1, long bytes2)
+        {
+            return Math.Abs(bytes1 - bytes2) <= BlockAlign;
+        }
+        public bool TimesAreEqualWithBlockAlignTolerance(long time1, long time2)
+        {
+            long timeInLocalUnitsForBlockAlign = ConvertBytesToTime(BlockAlign);
+            return Math.Abs(time1 - time2) <= timeInLocalUnitsForBlockAlign;
+        }
+        public bool BytesAreEqualWithOneMillisecondTolerance(long bytes1, long bytes2)
+        {
+            long oneMillisecondsInLocalUnits = 1 * TIME_UNIT;
+            long bytesForOneMillisecond = ConvertTimeToBytes(oneMillisecondsInLocalUnits);
+            return Math.Abs(bytes1 - bytes2) <= bytesForOneMillisecond;
+        }
+        public bool TimesAreEqualWithOneMillisecondTolerance(long timeInLocalUnits1, long timeInLocalUnits2)
+        {
+            long oneMillisecondsInLocalUnits = 1 * TIME_UNIT;
+            return Math.Abs(timeInLocalUnits1 - timeInLocalUnits2) <= oneMillisecondsInLocalUnits;
+        }
+
         //public bool AreBytePositionsApproximatelyEqual(long bytePos1, long bytePos2)
         //{
         //    // just for information
