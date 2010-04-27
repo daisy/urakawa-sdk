@@ -315,8 +315,8 @@ namespace urakawa.daisy.export
                 if (externalAudio != null)
                 {
                     XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin", externalAudio.ClipBegin.AsTimeSpan.ToString());
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd", externalAudio.ClipEnd.AsTimeSpan.ToString());
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin", externalAudio.ClipBegin.Format_Standard());
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd", externalAudio.ClipEnd.Format_Standard());
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src", Path.GetFileName(externalAudio.Src));
                     parNode.AppendChild(audioNode);
 
@@ -380,8 +380,8 @@ namespace urakawa.daisy.export
                         {
                         XmlNode audioNodeNcx = ncxDocument.CreateElement ( null, "audio", pageListNode.NamespaceURI );
                         navLabelNode.AppendChild ( audioNodeNcx );
-                        XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipBegin", externalAudio.ClipBegin.AsTimeSpan.ToString () );
-                        XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipEnd", externalAudio.ClipEnd.AsTimeSpan.ToString () );
+                        XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipBegin", externalAudio.ClipBegin.Format_Standard () );
+                        XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipEnd", externalAudio.ClipEnd.Format_Standard () );
                         XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "src", Path.GetFileName ( externalAudio.Src ) );
                         }
 
@@ -455,8 +455,8 @@ namespace urakawa.daisy.export
                         {
                         XmlNode audioNodeNcx = ncxDocument.CreateElement ( null, "audio", navTargetNode.NamespaceURI );
                         navLabelNode.AppendChild ( audioNodeNcx );
-                        XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipBegin", externalAudio.ClipBegin.AsTimeSpan.ToString () );
-                        XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipEnd", externalAudio.ClipEnd.AsTimeSpan.ToString () );
+                        XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipBegin", externalAudio.ClipBegin.Format_Standard () );
+                        XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "clipEnd", externalAudio.ClipEnd.Format_Standard () );
                         XmlDocumentHelper.CreateAppendXmlAttribute ( ncxDocument, audioNodeNcx, "src", Path.GetFileName ( externalAudio.Src ) );
                         }
 
@@ -702,8 +702,8 @@ namespace urakawa.daisy.export
                 // create audio node
                 XmlNode docAudioNode = ncxDocument.CreateElement(null, "audio", docNode.NamespaceURI);
                 docNode.AppendChild(docAudioNode);
-                XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, docAudioNode, "clipBegin", externalAudio.ClipBegin.AsTimeSpan.ToString());
-                XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, docAudioNode, "clipEnd", externalAudio.ClipEnd.AsTimeSpan.ToString());
+                XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, docAudioNode, "clipBegin", externalAudio.ClipBegin.Format_Standard());
+                XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, docAudioNode, "clipEnd", externalAudio.ClipEnd.Format_Standard());
                 XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, docAudioNode, "src", Path.GetFileName(externalAudio.Src));
             }
             return docNode;
@@ -769,8 +769,8 @@ namespace urakawa.daisy.export
             // create audio node
             XmlNode audioNode = ncxDocument.CreateElement(null, "audio", navMapNode.NamespaceURI);
             navLabel.AppendChild(audioNode);
-            XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNode, "clipBegin", externalAudio.ClipBegin.AsTimeSpan.ToString());
-            XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNode, "clipEnd", externalAudio.ClipEnd.AsTimeSpan.ToString());
+            XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNode, "clipBegin", externalAudio.ClipBegin.Format_Standard());
+            XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNode, "clipEnd", externalAudio.ClipEnd.Format_Standard());
             XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNode, "src", Path.GetFileName(externalAudio.Src));
 
             return navPointNode;
@@ -1332,8 +1332,8 @@ namespace urakawa.daisy.export
                 if (externalAudio != null)
                     {//2
                     XmlNode audioNode = smilDocument.CreateElement ( null, "audio", mainSeq.NamespaceURI );
-                    XmlDocumentHelper.CreateAppendXmlAttribute ( smilDocument, audioNode, "clipBegin", externalAudio.ClipBegin.AsTimeSpan.ToString () );
-                    XmlDocumentHelper.CreateAppendXmlAttribute ( smilDocument, audioNode, "clipEnd", externalAudio.ClipEnd.AsTimeSpan.ToString () );
+                    XmlDocumentHelper.CreateAppendXmlAttribute ( smilDocument, audioNode, "clipBegin", externalAudio.ClipBegin.Format_Standard () );
+                    XmlDocumentHelper.CreateAppendXmlAttribute ( smilDocument, audioNode, "clipEnd", externalAudio.ClipEnd.Format_Standard () );
                     XmlDocumentHelper.CreateAppendXmlAttribute ( smilDocument, audioNode, "src", Path.GetFileName ( externalAudio.Src ) );
                     parNode.AppendChild ( audioNode );
 

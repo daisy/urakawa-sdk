@@ -289,7 +289,8 @@ namespace urakawa.daisy.import
                             for (int i = 0; i < attributeCol.Count; i++)
                             {
                                 XmlNode attr = attributeCol.Item(i);
-                                if (attr.LocalName != "smilref") // && attr.Name != "xmlns:xsi" && attr.Name != "xml:space"
+                                if (attr.LocalName != "smilref"
+                                    && attr.LocalName != "imgref") // && attr.Name != "xmlns:xsi" && attr.Name != "xml:space"
                                 {
                                     if (attr.Name.Contains(":"))
                                     {
