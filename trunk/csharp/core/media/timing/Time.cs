@@ -52,8 +52,15 @@ namespace urakawa.media.timing
             timeMillisecondsDecimal = Math.Round(timeMillisecondsDecimal, decimalPlaces, MidpointRounding.AwayFromZero);
 
 #if DEBUG
-            TimeSpan timeSpan = TimeSpan.Parse(stringRepresentation);
-            DebugFix.Assert(timeSpan.TotalMilliseconds == timeMillisecondsDecimal);
+            try
+            {
+                TimeSpan timeSpan = TimeSpan.Parse(stringRepresentation);
+                DebugFix.Assert(timeSpan.TotalMilliseconds == timeMillisecondsDecimal);
+            }
+            catch(FormatException ex)
+            {
+                ; // we can safely ignore 
+            }
 #endif //DEBUG
 
 
