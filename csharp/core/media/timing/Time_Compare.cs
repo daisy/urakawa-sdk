@@ -1,4 +1,5 @@
 ﻿using System;
+using AudioLib;
 
 namespace urakawa.media.timing
 {
@@ -24,6 +25,12 @@ namespace urakawa.media.timing
         public static bool operator !=(Time a, Time b)
         {
             return !(a == b);
+        }
+
+        public bool IsEqualTo_WithBlockAlignTolerance(Time otherTime, AudioLibPCMFormat pcmFormat)
+        {
+            long timeInLocalUnitsForBlockAlign = pcmFormat.ConvertBytesToTime(pcmFormat.BlockAlign);
+            return Math.Abs(AsLocalUnits - otherTime.AsLocalUnits) <= timeInLocalUnitsForBlockAlign;
         }
 
         public bool IsEqualTo(Time otherTime)

@@ -308,12 +308,13 @@ namespace AudioLib
 
                 // Ensures the given size fits within the actual stream
                 wavEndPos = input.Position + chunkSize;
-                if (wavEndPos > input.Length)
-                {
-                    throw new ArgumentOutOfRangeException(String.Format(
-                                                             "The WAVE PCM chunk does not fit in the input Stream (expected chunk end position is {0:0}, Stream count is {1:0})",
-                                                             wavEndPos, input.Length));
-                }
+                DebugFix.Assert(!(wavEndPos > input.Length));
+                //if (wavEndPos > input.Length)
+                //{
+                //    throw new ArgumentOutOfRangeException(String.Format(
+                //                                             "The WAVE PCM chunk does not fit in the input Stream (expected chunk end position is {0:0}, Stream count is {1:0})",
+                //                                             wavEndPos, input.Length));
+                //}
             }
             //RIFF Type (4 bytes)
             {
