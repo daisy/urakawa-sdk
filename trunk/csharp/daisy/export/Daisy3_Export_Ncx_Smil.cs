@@ -1185,7 +1185,7 @@ namespace urakawa.daisy.export
                     // specific handling of IDs for notes for allowing predetermined refered IDs
                     if (special_UrakawaNode.GetXmlElementQName ().LocalName == "note" || special_UrakawaNode.GetXmlElementQName ().LocalName == "annotation")
                         {//3
-                        strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "id" ).Value;
+                        strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem ( "id" ).Value+ "_1" ;
                         }//-3
                     else
                         {//3
