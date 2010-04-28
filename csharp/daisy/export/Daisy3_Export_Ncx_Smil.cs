@@ -527,6 +527,13 @@ namespace urakawa.daisy.export
                         isBranchingActive = false;  
 
                     }
+                if (n.GetXmlElementQName () != null && n.GetXmlElementQName ().LocalName == "sent"
+                        && special_UrakawaNode != null && (special_UrakawaNode.GetXmlElementQName ().LocalName == "note" || special_UrakawaNode.GetXmlElementQName ().LocalName == "annotation" ))
+                    {
+                    
+                    return false;
+                    }
+
                 return true;
             },
                     delegate(urakawa.core.TreeNode n) { });
@@ -1348,7 +1355,12 @@ namespace urakawa.daisy.export
                     
                     
                     //}//-1
-            
+                if (n.GetXmlElementQName () != null && n.GetXmlElementQName ().LocalName == "sent")
+                    {
+                    return false;
+                    }            
+
+
                 return true;
                 },
                     delegate ( urakawa.core.TreeNode n ) { } );
