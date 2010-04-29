@@ -7,6 +7,7 @@ using System.Xml;
 using AudioLib;
 using urakawa.core;
 using urakawa.daisy.export.visitor;
+using urakawa.media.timing;
 using urakawa.property.channel;
 using urakawa.media;
 using urakawa.xuk;
@@ -32,7 +33,7 @@ namespace urakawa.daisy.export
         private List<string> m_FilesList_Audio; // list of audio files generated in create ncx function.
         private List<string> m_FilesList_Image; // list of images, populated in create content document function
         private List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
-        private TimeSpan m_TotalTime;
+        private Time m_TotalTime;
 
         private readonly bool m_encodeToMp3;
 

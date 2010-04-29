@@ -171,7 +171,7 @@ namespace urakawa.daisy.export
 
             //AddMetadata_Generator(opfDocument, x_metadataNode);
 
-            AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totalTime", Time.Format_Standard(m_TotalTime));
+            AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totalTime", FormatTimeString(m_TotalTime));
 
             if (m_Presentation.GetMetadata("dtb:multimediaType").Count == 0)
             {
