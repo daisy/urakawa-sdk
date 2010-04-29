@@ -27,6 +27,16 @@ namespace urakawa.media.timing
             return Format_Standard(AsTimeSpan);
         }
 
+        public string Format_StandardExpanded()
+        {
+            return Format_StandardExpanded(AsTimeSpan);
+        }
+
+        public static string Format_StandardExpanded(TimeSpan time)
+        {
+            return time.ToString();
+        }
+
         public static string Format_Standard(TimeSpan time)
         {
             if (time.CompareTo(TimeSpan.Zero) == 0)
@@ -35,7 +45,7 @@ namespace urakawa.media.timing
             }
             if (time.Hours != 0)
             {
-                return string.Format("{0:00}:{1:00}:{2:00}.{3:000}", time.Hours, time.Minutes,
+                return string.Format(time.Hours > 99 ? "{0:000}" : "{0:00}" + ":{1:00}:{2:00}.{3:000}", time.Hours, time.Minutes,
                                      time.Seconds, time.Milliseconds);
             }
             if (time.Minutes != 0)
