@@ -45,16 +45,13 @@ namespace urakawa.media.timing
             }
             if (time.Hours != 0)
             {
-                return string.Format(time.Hours > 99 ? "{0:000}" : "{0:00}" + ":{1:00}:{2:00}.{3:000}", time.Hours, time.Minutes,
-                                     time.Seconds, time.Milliseconds);
+                return string.Format(time.Hours > 99 ? "{0:000}" : "{0:00}" + ":{1:00}:{2:00}.{3:000}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds);
             }
             if (time.Minutes != 0)
             {
-                return string.Format("{0:00}:{1:00}.{2:000}", time.Minutes,
-                                     time.Seconds, time.Milliseconds);
+                return string.Format("{0:00}:{1:00}.{2:000}", time.Minutes, time.Seconds, time.Milliseconds);
             }
-            return string.Format("{0:00}.{1:000}",
-                                     time.Seconds, time.Milliseconds);
+            return string.Format("{0:00}.{1:000}", time.Seconds, time.Milliseconds);
         }
 
         public string Format_H_MN_S_MS()
