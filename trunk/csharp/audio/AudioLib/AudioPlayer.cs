@@ -20,9 +20,9 @@ namespace AudioLib
     // http://daisy.trac.cvsdude.com/urakawa-sdk/changeset/1488#file0
     // Just in case we need to restore some functionality:
     // http://daisy.trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/audio/AudioLib/AudioPlayer.cs?rev=1487
-//#if NET40
-//    [SecuritySafeCritical]
-//#endif
+    //#if NET40
+    //    [SecuritySafeCritical]
+    //#endif
     public class AudioPlayer
     {
         private readonly bool m_KeepStreamAlive;
@@ -103,7 +103,7 @@ namespace AudioLib
         public delegate Stream StreamProviderDelegate();
         private StreamProviderDelegate m_CurrentAudioStreamProvider;
         private Stream m_CurrentAudioStream;
-        private long m_CurrentAudioDurationInLocalUnits;
+        private long m_CurrentAudioDataLength;
 
         public bool EnsurePlaybackStreamIsDead()
         {
@@ -121,7 +121,7 @@ namespace AudioLib
             }
 
             m_CurrentAudioPCMFormat = null;
-            m_CurrentAudioDurationInLocalUnits = 0;
+            m_CurrentAudioDataLength = 0;
             m_CurrentAudioStreamProvider = null;
 
             return I_Closed_The_Stream;
@@ -218,9 +218,8 @@ namespace AudioLib
             get { return m_CurrentAudioPCMFormat; }
         }
 
-
-        private void Play(StreamProviderDelegate currentAudioStreamProvider,
-                            long durationInLocalUnits, AudioLibPCMFormat pcmInfo,
+        public void PlayBytes(StreamProviderDelegate currentAudioStreamProvider,
+                            long dataLength, AudioLibPCMFormat pcmInfo,
                             long bytesFrom, long bytesTo)
         {
             if (pcmInfo == null)
@@ -232,7 +231,7 @@ namespace AudioLib
             {
                 throw new ArgumentNullException("Stream cannot be null !");
             }
-            if (durationInLocalUnits <= 0)
+            if (dataLength <= 0)
             {
                 throw new ArgumentOutOfRangeException("Duration cannot be <= 0 !");
             }
@@ -251,27 +250,46 @@ namespace AudioLib
             m_CurrentAudioStreamProvider = currentAudioStreamProvider;
             m_CurrentAudioStream = m_CurrentAudioStreamProvider();
             m_CurrentAudioPCMFormat = pcmInfo;
-            m_CurrentAudioDurationInLocalUnits = durationInLocalUnits;
+            m_CurrentAudioDataLength = dataLength;
+
+
 
             long startPosition = 0;
             if (bytesFrom > 0)
             {
-                startPosition = bytesFrom;
-                startPosition -= startPosition % m_CurrentAudioPCMFormat.BlockAlign;
+                startPosition = m_CurrentAudioPCMFormat.AdjustByteToBlockAlignFrameSize(bytesFrom);
             }
 
             long endPosition = 0;
             if (bytesTo > 0)
             {
-                endPosition = bytesTo;
-                endPosition -= endPosition % m_CurrentAudioPCMFormat.BlockAlign;
+                endPosition = m_CurrentAudioPCMFormat.AdjustByteToBlockAlignFrameSize(bytesTo);
             }
 
-            long max = pcmInfo.ConvertTimeToBytes(durationInLocalUnits);
+            if (m_CurrentAudioPCMFormat.BytesAreEqualWithOneMillisecondTolerance(startPosition, 0))
+            {
+                startPosition = 0;
+            }
+
+            if (m_CurrentAudioPCMFormat.BytesAreEqualWithOneMillisecondTolerance(endPosition, dataLength))
+            {
+                endPosition = dataLength;
+            }
+
+            if (m_CurrentAudioPCMFormat.BytesAreEqualWithOneMillisecondTolerance(endPosition, 0))
+            {
+                endPosition = 0;
+            }
+
+            if (endPosition != 0
+                && m_CurrentAudioPCMFormat.BytesAreEqualWithOneMillisecondTolerance(endPosition, startPosition))
+            {
+                return;
+            }
 
             if (startPosition >= 0 &&
                 (endPosition == 0 || startPosition < endPosition) &&
-                endPosition <= max)
+                endPosition <= dataLength)
             {
                 startPlayback(startPosition, endPosition);
             }
@@ -279,18 +297,6 @@ namespace AudioLib
             {
                 throw new Exception("Start/end positions out of bounds of audio asset.");
             }
-        }
-
-        public void PlayBytes(StreamProviderDelegate currentAudioStreamProvider,
-                            long duration, AudioLibPCMFormat pcmInfo,
-                            long from, long to)
-        {
-            if (pcmInfo == null)
-            {
-                throw new ArgumentNullException("PCM format cannot be null !");
-            }
-
-            Play(currentAudioStreamProvider, pcmInfo.ConvertBytesToTime(duration), pcmInfo, from, to);
         }
 
         //public void PlayTime(StreamProviderDelegate currentAudioStreamProvider,
@@ -477,7 +483,9 @@ namespace AudioLib
             initializeBuffers();
 
             m_PlaybackStartPosition = startPosition;
-            m_PlaybackEndPosition = endPosition == 0 ? m_CurrentAudioPCMFormat.ConvertTimeToBytes(m_CurrentAudioDurationInLocalUnits) : endPosition;
+            m_PlaybackEndPosition = endPosition == 0
+                ? m_CurrentAudioDataLength
+                : endPosition;
 
             m_CircularBufferWritePosition = 0;
 
