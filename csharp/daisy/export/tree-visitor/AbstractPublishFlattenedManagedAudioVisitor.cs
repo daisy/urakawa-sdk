@@ -203,7 +203,14 @@ namespace urakawa.daisy.export.visitor
                     seqAudioMedia.GetDurationOfManagedAudioMedia().AsLocalUnits;
                 m_ProgressPercentage = Convert.ToInt32((m_TimeElapsedInLocalUnits * 100) / m_TotalTimeInLocalUnits);
 
-                reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName(src), GetSizeInfo(node)));   // TODO LOCALIZE CreatingAudioFile
+                if (EncodePublishedAudioFilesToMp3)
+                    {
+                    reportProgress ( m_ProgressPercentage, String.Format ( UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName ( src ).Replace(".wav", ".mp3"), GetSizeInfo ( node ) ) );   
+                    }
+                else
+                    {
+                    reportProgress ( m_ProgressPercentage, String.Format ( UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName ( src ), GetSizeInfo ( node ) ) );   
+                    }
                 //Console.WriteLine("progress percent " + m_ProgressPercentage);
             }
 
