@@ -116,6 +116,7 @@ namespace urakawa.daisy.export
 
             m_TreeNode_XmlNodeMap.Add(rNode, bookNode);
             XmlNode currentXmlNode = null;
+            bool isHeadingNodeAvailable = true;
 
             rNode.AcceptDepthFirst(
                     delegate(TreeNode n)
@@ -131,11 +132,20 @@ namespace urakawa.daisy.export
 
                         if (doesTreeNodeTriggerNewSmil(n))
                         {
+                        if (!isHeadingNodeAvailable && m_ListOfLevels.Count > 1)
+                            {
+                            m_ListOfLevels.RemoveAt ( m_ListOfLevels.Count - 1 );
+                            //System.Windows.Forms.MessageBox.Show ( "removing :" + m_ListOfLevels.Count.ToString () );
+                            }
                             m_ListOfLevels.Add(n);
+                            isHeadingNodeAvailable = false;
                             reportSubProgress(-1, UrakawaSDK_daisy_Lang.CreatingXMLFile);
                         }
 
-
+                        if (IsHeadingNode ( n ))
+                            {
+                            isHeadingNodeAvailable = true;
+                            }
                         if (n.GetXmlElementQName () != null  && (n.GetXmlElementQName ().LocalName == "note" || n.GetXmlElementQName ().LocalName == "annotation") )
                             {
                             m_NotesNodeList.Add ( n );
@@ -259,10 +269,10 @@ namespace urakawa.daisy.export
 
                             DebugFix.Assert(n.Children.Count == 0);
                         }
-                        if (!string.IsNullOrEmpty ( prefix )
+                        if (!string.IsNullOrEmpty ( prefix)
                             &&   string.IsNullOrEmpty( currentXmlNode.Prefix)
-                            && string.IsNullOrEmpty( DTBookDocument.DocumentElement.GetNamespaceOfPrefix(prefix ) )
-                            &&    string.IsNullOrEmpty( bookNode.GetNamespaceOfPrefix(prefix ) ))
+                            && string.IsNullOrEmpty( DTBookDocument.DocumentElement.GetNamespaceOfPrefix(prefix ))
+                            &&    string.IsNullOrEmpty( bookNode.GetNamespaceOfPrefix(prefix ) ) )
                             {
                             XmlDocumentHelper.CreateAppendXmlAttribute ( DTBookDocument, DTBookDocument.DocumentElement, "xmlns:" + prefix, currentXmlNode.GetNamespaceOfPrefix ( prefix ) );
                             }

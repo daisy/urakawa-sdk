@@ -42,7 +42,10 @@ namespace urakawa.daisy.export
             reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.CreateSmilAndNcxFiles);
 
             foreach (urakawa.core.TreeNode urakawaNode in m_ListOfLevels)
+            //for ( int nodeCounter = 0 ; nodeCounter < m_ListOfLevels.Count ; nodeCounter++ )
             {
+            //urakawa.core.TreeNode urakawaNode  = m_ListOfLevels[nodeCounter] ;
+
                 bool IsNcxNativeNodeAdded = false;
                 XmlDocument smilDocument = null;
                 string smilFileName = null;
@@ -79,9 +82,13 @@ namespace urakawa.daisy.export
                 if (currentQName != null &&
                         currentQName.LocalName != urakawaNode.GetXmlElementQName().LocalName
                         && doesTreeNodeTriggerNewSmil(n))
-                {
-                    return false;
-                }
+                        {
+                            if (m_ListOfLevels.IndexOf ( n ) > m_ListOfLevels.IndexOf ( urakawaNode ))
+                            {
+                    
+                            return false;
+                            }
+                        }
 
                 if ((IsHeadingNode(n) || IsEscapableNode(n) || IsSkippableNode(n))
                     && (special_UrakawaNode != n))
