@@ -139,21 +139,34 @@ namespace AudioLib
             }
         }
 
+        private readonly Object LOCK_DEVICES = new object();
+        public void ClearDeviceCache()
+        {
+            lock (LOCK_DEVICES)
+            {
+                m_CachedInputDevices = null;
+            }
+        }
 
         public void SetInputDevice(string name)
         {
-            if (InputDevice != null && InputDevice.Name == name && !InputDevice.Capture.Disposed)
+            lock (LOCK_DEVICES)
             {
-                return;
-            }
-
-            if (m_CachedInputDevices != null)
-            {
-                InputDevice foundCached = m_CachedInputDevices.Find(delegate(InputDevice d) { return d.Name == name; });
-                if (foundCached != null && !foundCached.Capture.Disposed)
+                if (m_CachedInputDevices != null
+                    && InputDevice != null && InputDevice.Name == name && !InputDevice.Capture.Disposed)
                 {
-                    InputDevice = foundCached;
                     return;
+                }
+
+                if (m_CachedInputDevices != null)
+                {
+                    InputDevice foundCached =
+                        m_CachedInputDevices.Find(delegate(InputDevice d) { return d.Name == name; });
+                    if (foundCached != null && !foundCached.Capture.Disposed)
+                    {
+                        InputDevice = foundCached;
+                        return;
+                    }
                 }
             }
 
@@ -190,18 +203,22 @@ namespace AudioLib
         {
             get
             {
-#if USE_SLIMDX
-                DeviceCollection devices = DirectSoundCapture.GetDevices(); // new DeviceCollection();
-#else
-                CaptureDevicesCollection devices = new CaptureDevicesCollection();
-#endif
-                List<InputDevice> inputDevices = new List<InputDevice>(devices.Count);
-                foreach (DeviceInformation info in devices)
+                lock (LOCK_DEVICES)
                 {
-                    inputDevices.Add(new InputDevice(info));
+#if USE_SLIMDX
+                DeviceCollection devices = DirectSoundCapture.GetDevices();
+                    // new DeviceCollection();
+#else
+                    CaptureDevicesCollection devices = new CaptureDevicesCollection();
+#endif
+                    List<InputDevice> inputDevices = new List<InputDevice>(devices.Count);
+                    foreach (DeviceInformation info in devices)
+                    {
+                        inputDevices.Add(new InputDevice(info));
+                    }
+                    m_CachedInputDevices = inputDevices;
+                    return inputDevices;
                 }
-                m_CachedInputDevices = inputDevices;
-                return inputDevices;
             }
         }
 
