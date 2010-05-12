@@ -248,9 +248,16 @@ namespace AudioLib
             //Path.GetDirectoryName ( sourceFile ),
             //Path.GetFileNameWithoutExtension ( sourceFile ) + ".mp3" );
 
+            string sampleRate = String.Format("{0}", pcmFormat.SampleRate); //Math.Round(pcmFormat.SampleRate / 1000.0, 3));
+            sampleRate = sampleRate.Substring(0, 2) + '.' + sampleRate.Substring(2, 3);
+
             string channelsArg = pcmFormat.NumberOfChannels == 1 ? "m" : "s";
             //string argumentString = "-b " + bitRate_mp3Output.ToString ()  + " --cbr --resample default -m m \"" + sourceFile + "\" \"" + destinationFile + "\"";
-            string argumentString = "-b " + bitRate_mp3Output.ToString() + " --cbr -m " + channelsArg + " \"" + sourceFile + "\" \"" + destinationFile + "\"";
+            string argumentString = "-b " + bitRate_mp3Output.ToString()
+                + " --cbr"
+                + " --resample " + sampleRate
+                + " -m " + channelsArg
+                + " \"" + sourceFile + "\" \"" + destinationFile + "\"";
 
             var process = new Process
             {

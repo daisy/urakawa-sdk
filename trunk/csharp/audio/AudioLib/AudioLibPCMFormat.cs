@@ -5,6 +5,13 @@ using System.Text;
 
 namespace AudioLib
 {
+    public enum SampleRate : ushort
+    {
+        Hz11025 = 11025,
+        Hz22050 = 22050,
+        Hz44100 = 44100,
+    }
+
     /// <summary>
     /// Class for holding information about no. of channels, sampling rate and bit depth for PCM file or stream.
     /// </summary> 

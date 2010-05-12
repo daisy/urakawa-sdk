@@ -35,23 +35,70 @@ namespace urakawa.daisy.export.visitor
             m_TransientWavFileStreamRiffOffset = 0;
 
             if (RequestCancellation) return;
-            if (base.EncodePublishedAudioFilesToMp3 && m_ExternalAudioMediaList.Count > 0)
+            if (m_ExternalAudioMediaList.Count > 0)
             {
-                EncodeTransientFileToMp3();
+                if (base.EncodePublishedAudioFilesToMp3)
+                {
+                    EncodeTransientFileToMp3();
+                }
+                else if ((ushort)base.EncodePublishedAudioFilesSampleRate
+                    != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate)
+                {
+                    EncodeTransientFileResample();
+                }
             }
+        }
+
+        private void EncodeTransientFileResample()
+        {
+            string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
+            //string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath, Path.GetFileNameWithoutExtension(sourceFilePath) + "_" + base.EncodePublishedAudioFilesSampleRate + ".wav");
+
+            reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.ConvertingAudio,sourceFilePath));
+
+            ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
+            PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
+
+            AudioLibPCMFormat pcmFormat = audioFormat.Data;
+            pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
+
+            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true);
+            string destinationFilePath = formatConverter.ConvertSampleRate(sourceFilePath, base.DestinationDirectory.LocalPath, pcmFormat);
+
+            string sourceName = Path.GetFileNameWithoutExtension(sourceFilePath);
+            string destName = Path.GetFileNameWithoutExtension(destinationFilePath);
+
+            foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
+            {
+                if (ext != null)
+                {
+                    ext.Src = ext.Src.Replace(sourceName, destName);
+                }
+            }
+
+            File.Delete(sourceFilePath);
+            m_ExternalAudioMediaList.Clear();
         }
 
         private void EncodeTransientFileToMp3()
         {
             ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
-            PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
+
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true);
             string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
             string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
                 Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
 
             reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(destinationFilePath), GetSizeInfo(m_RootNode)));
-            if (formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, audioFormat.Data, BitRate_Mp3))
+
+            PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
+            AudioLibPCMFormat pcmFormat = audioFormat.Data;
+            if ((ushort)base.EncodePublishedAudioFilesSampleRate != pcmFormat.SampleRate)
+            {
+                pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
+            }
+
+            if (formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat, BitRate_Mp3))
             {
                 m_EncodingFileCompressionRatio = (new FileInfo(sourceFilePath).Length) / (new FileInfo(destinationFilePath).Length);
 
@@ -59,7 +106,7 @@ namespace urakawa.daisy.export.visitor
                 {
                     if (ext != null)
                     {
-                    ext.Src = ext.Src.Replace ( ".wav", ".mp3" );
+                        ext.Src = ext.Src.Replace(".wav", ".mp3");
                     }
                 }
 
@@ -204,19 +251,24 @@ namespace urakawa.daisy.export.visitor
                 m_ProgressPercentage = Convert.ToInt32((m_TimeElapsedInLocalUnits * 100) / m_TotalTimeInLocalUnits);
 
                 if (EncodePublishedAudioFilesToMp3)
-                    {
-                    reportProgress ( m_ProgressPercentage, String.Format ( UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName ( src ).Replace(".wav", ".mp3"), GetSizeInfo ( node ) ) );   
-                    }
+                {
+                    reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName(src).Replace(".wav", ".mp3"), GetSizeInfo(node)));
+                }
                 else
-                    {
-                    reportProgress ( m_ProgressPercentage, String.Format ( UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName ( src ), GetSizeInfo ( node ) ) );   
-                    }
+                {
+                    reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName(src), GetSizeInfo(node)));
+                }
                 //Console.WriteLine("progress percent " + m_ProgressPercentage);
             }
 
             ExternalAudioMedia extAudioMedia = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
-
-            if (EncodePublishedAudioFilesToMp3 && !m_ExternalAudioMediaList.Contains(extAudioMedia))
+            
+            if ((EncodePublishedAudioFilesToMp3
+                ||
+                (ushort)EncodePublishedAudioFilesSampleRate
+                    != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate)
+                
+                && !m_ExternalAudioMediaList.Contains(extAudioMedia))
             {
                 m_ExternalAudioMediaList.Add(extAudioMedia);
             }
@@ -251,14 +303,14 @@ namespace urakawa.daisy.export.visitor
             string sizeInfo = "";
             if (EncodePublishedAudioFilesToMp3 && m_EncodingFileCompressionRatio > 1)
             {
-                sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, 
-                    Math.Round( (decimal) (elapsedSizeInMB / m_EncodingFileCompressionRatio ), 4, MidpointRounding.ToEven ), 
-                    Math.Round ( (decimal) ( totalSizeInMB / m_EncodingFileCompressionRatio ), 4 , MidpointRounding.ToEven ));
+                sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo,
+                    Math.Round((decimal)(elapsedSizeInMB / m_EncodingFileCompressionRatio), 4, MidpointRounding.ToEven),
+                    Math.Round((decimal)(totalSizeInMB / m_EncodingFileCompressionRatio), 4, MidpointRounding.ToEven));
             }
             else if (!EncodePublishedAudioFilesToMp3)
             {
 
-                sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo,Math.Round((decimal)  elapsedSizeInMB, 5, MidpointRounding.ToEven ), Math.Round( (decimal) totalSizeInMB, 5, MidpointRounding.ToEven) );  
+                sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, Math.Round((decimal)elapsedSizeInMB, 5, MidpointRounding.ToEven), Math.Round((decimal)totalSizeInMB, 5, MidpointRounding.ToEven));
             }
             return sizeInfo;
 
@@ -344,7 +396,12 @@ namespace urakawa.daisy.export.visitor
 
                 ExternalAudioMedia extAudioMedia = marker.m_TreeNode.Presentation.MediaFactory.Create<ExternalAudioMedia>();
 
-                if (EncodePublishedAudioFilesToMp3 && !m_ExternalAudioMediaList.Contains(extAudioMedia))
+                if ((EncodePublishedAudioFilesToMp3
+                ||
+                (ushort)EncodePublishedAudioFilesSampleRate
+                    != marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate)
+                
+                    && !m_ExternalAudioMediaList.Contains(extAudioMedia))
                 {
                     m_ExternalAudioMediaList.Add(extAudioMedia);
                 }

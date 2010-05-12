@@ -54,7 +54,7 @@ namespace urakawa.media.data
                 {
                     mDefaultPCMFormat = new PCMFormatInfo();
                 }
-                return mDefaultPCMFormat;
+                return mDefaultPCMFormat.Copy();
             }
             set
             {
@@ -71,7 +71,7 @@ namespace urakawa.media.data
                             "Cannot change the default PCMFormat, since single PCM format is enforced by the DataProviderManager "
                             + "and since at least one AudioMediaData is currently managed");
                     }
-                    mDefaultPCMFormat = value;
+                    mDefaultPCMFormat = value.Copy();
                 }
             }
         }

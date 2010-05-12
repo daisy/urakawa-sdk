@@ -140,6 +140,18 @@ namespace urakawa.daisy.export.visitor
                 m_EncodePublishedAudioFilesToMp3 = value;
             }
         }
+        private SampleRate m_EncodePublishedAudioFilesSampleRate = SampleRate.Hz44100;
+        public SampleRate EncodePublishedAudioFilesSampleRate
+        {
+            get
+            {
+                return m_EncodePublishedAudioFilesSampleRate;
+            }
+            set
+            {
+                m_EncodePublishedAudioFilesSampleRate = value;
+            }
+        }
 
 
         private ushort m_BitRate_Mp3 = 64;
