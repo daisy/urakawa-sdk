@@ -142,6 +142,21 @@ namespace AudioLib
 
         public void SetInputDevice(string name)
         {
+            if (InputDevice != null && InputDevice.Name == name && !InputDevice.Capture.Disposed)
+            {
+                return;
+            }
+
+            if (m_CachedInputDevices != null)
+            {
+                InputDevice foundCached = m_CachedInputDevices.Find(delegate(InputDevice d) { return d.Name == name; });
+                if (foundCached != null && !foundCached.Capture.Disposed)
+                {
+                    InputDevice = foundCached;
+                    return;
+                }
+            }
+
             List<InputDevice> devices = InputDevices;
             InputDevice found = devices.Find(delegate(InputDevice d) { return d.Name == name; });
             if (found != null)
@@ -170,6 +185,7 @@ namespace AudioLib
             }
         }
 
+        private List<InputDevice> m_CachedInputDevices;
         public List<InputDevice> InputDevices
         {
             get
@@ -184,6 +200,7 @@ namespace AudioLib
                 {
                     inputDevices.Add(new InputDevice(info));
                 }
+                m_CachedInputDevices = inputDevices;
                 return inputDevices;
             }
         }
