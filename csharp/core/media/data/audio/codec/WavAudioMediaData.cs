@@ -195,7 +195,7 @@ namespace urakawa.media.data.audio.codec
         protected override MediaData CopyProtected()
         {
             WavAudioMediaData copy = Presentation.MediaDataFactory.Create<WavAudioMediaData>();
-            copy.PCMFormat = PCMFormat;
+            copy.PCMFormat = PCMFormat.Copy();
             foreach (WavClip clip in mWavClips)
             {
                 copy.mWavClips.Add(clip.Copy());
@@ -211,7 +211,7 @@ namespace urakawa.media.data.audio.codec
         protected override MediaData ExportProtected(Presentation destPres)
         {
             WavAudioMediaData expWAMD = destPres.MediaDataFactory.Create<WavAudioMediaData>();
-            expWAMD.PCMFormat = PCMFormat;
+            expWAMD.PCMFormat = PCMFormat.Copy();
             foreach (WavClip clip in mWavClips)
             {
                 expWAMD.mWavClips.Add(clip.Export(destPres));
@@ -1007,7 +1007,7 @@ namespace urakawa.media.data.audio.codec
                                                                          "Thrown if the MediaDataFactory can not create a WacAudioMediaData matching Xuk QName {1}:{0}",
                                                                          XukLocalName, XukNamespaceUri));
             }
-            oWAMD.PCMFormat = PCMFormat;
+            oWAMD.PCMFormat = PCMFormat.Copy();
 
             Time dur = new Time(AudioDuration.AsTimeSpan).GetDifference(splitPoint);
 

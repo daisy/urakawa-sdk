@@ -36,6 +36,7 @@ namespace urakawa.daisy.export
         private Time m_TotalTime;
 
         private readonly bool m_encodeToMp3;
+        private readonly SampleRate m_sampleRate;
 
         /// <summary>
         /// initializes instance with presentation and list of element names for which navList will be created, 
@@ -43,9 +44,10 @@ namespace urakawa.daisy.export
         /// </summary>
         /// <param name="presentation"></param>
         /// <param name="navListElementNamesList"></param>
-        public Daisy3_Export(Presentation presentation, string exportDirectory, List<string> navListElementNamesList, bool encodeToMp3)
+        public Daisy3_Export(Presentation presentation, string exportDirectory, List<string> navListElementNamesList, bool encodeToMp3, SampleRate sampleRate)
         {
             m_encodeToMp3 = encodeToMp3;
+            m_sampleRate = sampleRate;
 
             RequestCancellation = false;
             if (!Directory.Exists(exportDirectory))
@@ -97,6 +99,7 @@ namespace urakawa.daisy.export
             m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(triggerDelegate, skipDelegate);
 
             m_PublishVisitor.EncodePublishedAudioFilesToMp3 = m_encodeToMp3;
+            m_PublishVisitor.EncodePublishedAudioFilesSampleRate = m_sampleRate;
 
             m_PublishVisitor.DestinationDirectory = new Uri(m_OutputDirectory, UriKind.Absolute);
 
