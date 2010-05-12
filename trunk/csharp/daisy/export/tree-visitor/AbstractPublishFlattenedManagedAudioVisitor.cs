@@ -37,14 +37,21 @@ namespace urakawa.daisy.export.visitor
             if (RequestCancellation) return;
             if (m_ExternalAudioMediaList.Count > 0)
             {
-                if (base.EncodePublishedAudioFilesToMp3)
-                {
-                    EncodeTransientFileToMp3();
-                }
-                else if ((ushort)base.EncodePublishedAudioFilesSampleRate
+                if ((ushort)base.EncodePublishedAudioFilesSampleRate
                     != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate)
                 {
-                    EncodeTransientFileResample();
+                    if (base.EncodePublishedAudioFilesToMp3)
+                    {
+                        EncodeTransientFileToMp3();
+                    }
+                    else
+                    {
+                        EncodeTransientFileResample();
+                    }
+                }
+                else if (base.EncodePublishedAudioFilesToMp3)
+                {
+                    EncodeTransientFileToMp3();
                 }
             }
         }

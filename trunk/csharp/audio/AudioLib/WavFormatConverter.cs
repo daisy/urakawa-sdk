@@ -248,6 +248,11 @@ namespace AudioLib
             //Path.GetDirectoryName ( sourceFile ),
             //Path.GetFileNameWithoutExtension ( sourceFile ) + ".mp3" );
 
+            if (pcmFormat.SampleRate < 22050)
+            {
+                bitRate_mp3Output = 32;
+            }
+
             string sampleRate = String.Format("{0}", pcmFormat.SampleRate); //Math.Round(pcmFormat.SampleRate / 1000.0, 3));
             sampleRate = sampleRate.Substring(0, 2) + '.' + sampleRate.Substring(2, 3);
 
