@@ -105,6 +105,11 @@
     <Compile Include="WaveOutCapabilities.cs" />
     <Compile Include="WaveOutSupport.cs" />
     <Compile Include="WaveStream.cs" />
+<Compile Include="XingHeader.cs" />
+<Compile Include="Mp3FileReader.cs" />
+   <Compile Include="Mp3Frame.cs" />
+   <Compile Include="Mp3WaveFormat.cs" />
+<Compile Include="Id3v2Tag.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Changes.xml" />

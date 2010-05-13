@@ -58,6 +58,17 @@ namespace AudioLib
             return destinationFilePath;
         }
 
+        private static void Mp3ToWav(string mp3File, string outputFile)
+        {
+            using (Mp3FileReader reader = new Mp3FileReader(mp3File))
+            {
+                using (WaveStream pcmStream = WaveFormatConversionStream.CreatePcmStream(reader))
+                {
+                    WaveFileWriter.CreateWaveFile(outputFile, pcmStream);
+                }
+            }
+        }
+
         public string UnCompressMp3File(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat)
         {
             if (!File.Exists(sourceFile))
