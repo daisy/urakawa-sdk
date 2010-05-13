@@ -231,6 +231,11 @@ namespace urakawa.xuk
         #region commands
 
 
+        public static string TreeNodeChangeTextCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TreeNodeChangeTextCommand" : "nodChTxtCmd"); }
+        }
+
         public static string TreeNodeSetIsMarkedCommand
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TreeNodeSetIsMarkedCommand" : "nodSetMrkCmd"); }

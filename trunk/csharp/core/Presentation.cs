@@ -1292,6 +1292,14 @@ namespace urakawa
             //
             CommandFactory.CreateTreeNodeSetIsMarkedCommand(treeNode, false);
             //
+            ChannelsProperty chPropTxt = treeNode.GetOrCreateChannelsProperty();
+            Channel textChannel = ChannelFactory.CreateTextChannel();
+            TextMedia txtMedia = MediaFactory.CreateTextMedia();
+            txtMedia.Text = "ping";
+            chPropTxt.SetMedia(textChannel, txtMedia);
+            CommandFactory.CreateTreeNodeChangeTextCommand(treeNode, "pong");
+            ChannelsManager.RemoveManagedObject(textChannel);
+            //
             CommandFactory.CreateMetadataAddCommand(meta);
             CommandFactory.CreateMetadataRemoveCommand(meta);
             CommandFactory.CreateMetadataSetContentCommand(meta, "dummy");
@@ -1304,7 +1312,6 @@ namespace urakawa
             MediaFactory.CreateExternalAudioMedia();
             //
             MediaFactory.CreateSequenceMedia();
-            MediaFactory.CreateTextMedia();
             //
             PropertyFactory.CreateChannelsProperty();
             PropertyFactory.CreateXmlProperty();
