@@ -59,8 +59,8 @@ namespace AudioLib
 
                     string msg = Path.GetFileName(sourceFile) + " => " + Path.GetFileName(destinationFilePath); //"Resampling WAV audio...";
                     reportProgress(-1, msg);
-                    Stopwatch watch = new Stopwatch();
-                    watch.Start();
+                    //Stopwatch watch = new Stopwatch();
+                    //watch.Start();
                     while ((byteRead = conversionStream.Read(buffer, 0, buffer.Length)) > 0)
                     {
                         if (RequestCancellation)
@@ -73,14 +73,14 @@ namespace AudioLib
                             return null;
                         }
 
-                        if (watch.ElapsedMilliseconds >= 500)
-                        {
+                        //if (watch.ElapsedMilliseconds >= 500)
+                        //{
                             int percent = (int)(100.0 * sourceStream.Position/sourceStream.Length);
                             reportProgress(percent, msg); // + sourceStream.Position + "/" + sourceStream.Length);
-                            watch.Stop();
-                            watch.Reset();
-                            watch.Start();
-                        }
+                        //    watch.Stop();
+                        //    watch.Reset();
+                        //    watch.Start();
+                        //}
 
                         writer.WriteData(buffer, 0, byteRead);
                     }
@@ -130,8 +130,8 @@ namespace AudioLib
 
             string msg = Path.GetFileName(mp3FilePath) + " => " + Path.GetFileName(wavFilePath); // "Decoding MP3 to WAV audio (CSharp Lib)..."
             reportProgress(-1, msg);
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
+            //Stopwatch watch = new Stopwatch();
+            //watch.Start();
             while (true)
             {
                 if (RequestCancellation)
@@ -145,14 +145,14 @@ namespace AudioLib
                     return null;
                 }
 
-                if (watch.ElapsedMilliseconds >= 1000)
-                {
+                //if (watch.ElapsedMilliseconds >= 1000)
+                //{
                     int percent = (int)(100.0 * mp3Stream.Position / mp3Stream.Length);
                     reportProgress(percent, msg); // + mp3Stream.Position + "/" + mp3Stream.Length);
-                    watch.Stop();
-                    watch.Reset();
-                    watch.Start();
-                }
+                //    watch.Stop();
+                //    watch.Reset();
+                //    watch.Start();
+                //}
 
                 Header header = mp3BitStream.readFrame();
                 if (header == null)
@@ -224,8 +224,8 @@ namespace AudioLib
 
                         string msg = Path.GetFileName(mp3FilePath) + " => " + Path.GetFileName(wavFilePath); //"Decoding MP3 to WAV audio (ACM Codec) ..."
                         reportProgress(-1, msg);
-                        Stopwatch watch = new Stopwatch();
-                        watch.Start();
+                        //Stopwatch watch = new Stopwatch();
+                        //watch.Start();
                         while ((byteRead = pcmStream.Read(buffer, 0, buffer.Length)) > 0)
                         {
                             if (RequestCancellation)
@@ -238,14 +238,14 @@ namespace AudioLib
                                 return null;
                             }
 
-                            if (watch.ElapsedMilliseconds >= 1000)
-                            {
+                            //if (watch.ElapsedMilliseconds >= 1000)
+                            //{
                                 int percent = (int)(100.0 * reader.Position / reader.Length);
                                 reportProgress(percent, msg); // + reader.Position + "/" + reader.Length);
-                                watch.Stop();
-                                watch.Reset();
-                                watch.Start();
-                            }
+                            //    watch.Stop();
+                            //    watch.Reset();
+                            //    watch.Start();
+                            //}
 
                             writer.WriteData(buffer, 0, byteRead);
                         }

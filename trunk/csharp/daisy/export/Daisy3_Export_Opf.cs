@@ -306,7 +306,7 @@ namespace urakawa.daisy.export
         {
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
             {
-                reportSubProgress(-1, UrakawaSDK_daisy_Lang.CreatingExternalFiles);
+                reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingExternalFiles);
                 if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains(efd.OriginalRelativePath))
                 {
                     string filePath = Path.Combine(m_OutputDirectory, efd.OriginalRelativePath);

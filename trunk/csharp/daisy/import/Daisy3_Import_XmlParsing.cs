@@ -17,7 +17,7 @@ namespace urakawa.daisy.import
     {
         private XmlDocument readXmlDocument(string path)
         {
-            reportSubProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ReadXMLDoc, Path.GetFileName(path)));           
+            reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ReadXMLDoc, Path.GetFileName(path)));
 
             XmlReaderSettings settings = new XmlReaderSettings();
 
@@ -58,7 +58,7 @@ namespace urakawa.daisy.import
                     xmlReader.Close();
                 }
 
-                reportSubProgress(100, String.Format(UrakawaSDK_daisy_Lang.XmlDocLoaded, path));         
+                reportProgress(100, String.Format(UrakawaSDK_daisy_Lang.XmlDocLoaded, path));
                 return xmldoc;
             }
         }
@@ -68,7 +68,7 @@ namespace urakawa.daisy.import
             private ICredentials m_Credentials;
 
             private readonly bool m_EnableHttpCaching;
-            private const string m_DtdStoreDirName = "Downloaded-DTDs";                    
+            private const string m_DtdStoreDirName = "Downloaded-DTDs";
 
             public LocalXmlUrlResolver(bool enableHttpCaching)
             {
@@ -147,7 +147,7 @@ namespace urakawa.daisy.import
 #else
                 string path = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, m_DtdStoreDirName);
                 path = Path.Combine(path, filename);
-                
+
                 if (File.Exists(path))
                 {
                     Stream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
@@ -169,7 +169,7 @@ namespace urakawa.daisy.import
                     }
                     WebResponse resp = webReq.GetResponse();
                     Stream webStream = resp.GetResponseStream();
-                    
+
                     string localpath = CreateLocalDTDFileFromWebStream(absoluteUri.AbsolutePath, webStream);
 
                     //webStream.Close();
@@ -233,7 +233,7 @@ namespace urakawa.daisy.import
                     // NOTE: we could actually use the same code as below, which gives more control over the subdirectory and doesn't have any size limits:
 #else
                     string dirpath = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, m_DtdStoreDirName);
-                
+
                     if (!Directory.Exists(dirpath))
                     {
                         Directory.CreateDirectory(dirpath);

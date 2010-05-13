@@ -55,7 +55,7 @@ namespace urakawa.daisy.import
 
                 nSmil++;
                 reportProgress(100 * nSmil / spineOfSmilFiles.Count,
-                    string.Format(UrakawaSDK_daisy_Lang.ParsingSmilFile, nSmil, spineOfSmilFiles.Count, smilPath));        
+                    string.Format(UrakawaSDK_daisy_Lang.ParsingSmilFile, nSmil, spineOfSmilFiles.Count, smilPath));
 
                 string fullSmilPath = Path.Combine(dirPath, smilPath);
                 Console.WriteLine("smil file to be parsed: " + Path.GetFileName(smilPath));
@@ -274,7 +274,7 @@ namespace urakawa.daisy.import
                                 wavStream.Close();
                                 wavStream = null;
 
-                                reportSubProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ConvertingAudio, Path.GetFileName(fullWavPath)));             
+                                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ConvertingAudio, Path.GetFileName(fullWavPath)));
                                 string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullWavPath);
 
                                 if (RequestCancellation) return;
@@ -295,7 +295,7 @@ namespace urakawa.daisy.import
                             {
                                 dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
                                 Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullWavPath) + " = " + dataProv.DataFileRelativePath);
-                                reportSubProgress(-1, String.Format(UrakawaSDK_daisy_Lang.CopyingAudio, Path.GetFileName(fullWavPath)));                         
+                                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.CopyingAudio, Path.GetFileName(fullWavPath)));
                                 dataProv.InitByCopyingExistingFile(fullWavPath);
                                 m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
 
@@ -327,7 +327,7 @@ namespace urakawa.daisy.import
 
                 if (RequestCancellation) return;
 
-                reportSubProgress(-1, String.Format(UrakawaSDK_daisy_Lang.DecodingAudio, Path.GetFileName(fullMp3PathOriginal)));                     
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.DecodingAudio, Path.GetFileName(fullMp3PathOriginal)));
 
                 // At first look, this conversion seems redundant if the m_OriginalAudioFile_FileDataProviderMap already contains the fullMp3PathOriginal,
                 // but this is ok because the m_AudioConversionSession won't convert again if already done (i.e. maintains its own mapping)
@@ -421,7 +421,7 @@ namespace urakawa.daisy.import
                     }
                     catch (Exception ex)
                     {
-                        string str = "CLIP END TIME PARSE FAIL: " + audioAttrClipEnd.Value;                
+                        string str = "CLIP END TIME PARSE FAIL: " + audioAttrClipEnd.Value;
                         Console.WriteLine(str);
                         Debug.Fail(str);
                     }
