@@ -13,8 +13,12 @@ namespace urakawa.daisy.import
     ///  class to maintain session for importing files of format different from default format of project
     /// will reduce re conversion of files already converted in the same session
     /// </summary>
-    public class AudioFormatConvertorSession
+    public class AudioFormatConvertorSession : DualCancellableProgressReporter
     {
+        public override void DoWork()
+        {
+        }
+
         public static readonly string TEMP_AUDIO_DIRECTORY = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH,
                                                                           "Temporary-Audio");
         static AudioFormatConvertorSession()
@@ -85,6 +89,8 @@ namespace urakawa.daisy.import
                 m_destinationFormatInfo == null ? null : m_destinationFormatInfo.Copy(),
                 m_SkipACM);
 
+            if (RequestCancellation) return null;
+
             if (File.Exists(convertedFilePath))
             {
                 m_FilePathsMap.Add(sourceFilePath, convertedFilePath);
@@ -132,7 +138,7 @@ namespace urakawa.daisy.import
         /// <param name="destinationDirectory"></param>
         /// <param name="destinationFormatInfo"></param>
         /// <returns> full file path of converted file  </returns>
-        private static string ConvertToDefaultFormat(string SourceFilePath, string destinationDirectory, PCMFormatInfo destinationFormatInfo, bool skipACM)
+        private string ConvertToDefaultFormat(string SourceFilePath, string destinationDirectory, PCMFormatInfo destinationFormatInfo, bool skipACM)
         {
             if (!File.Exists(SourceFilePath))
                 throw new FileNotFoundException(SourceFilePath);
@@ -149,14 +155,42 @@ namespace urakawa.daisy.import
                 case AudioFileType.WavCompressed:
                     {
                         WavFormatConverter formatConverter1 = new WavFormatConverter(true, skipACM);
-                        return formatConverter1.ConvertSampleRate(SourceFilePath, destinationDirectory,
-                            destinationFormatInfo != null ? destinationFormatInfo.Data : new AudioLibPCMFormat());
+
+                        AddSubCancellable(formatConverter1);
+
+                        string result = null;
+                        try
+                        {
+                            result = formatConverter1.ConvertSampleRate(SourceFilePath, destinationDirectory,
+                                                                        destinationFormatInfo != null
+                                                                            ? destinationFormatInfo.Data
+                                                                            : new AudioLibPCMFormat());
+                        }
+                        finally
+                        {
+                            RemoveSubCancellable(formatConverter1);
+                        }
+
+                        return result;
                     }
                 case AudioFileType.Mp3:
                     {
                         WavFormatConverter formatConverter2 = new WavFormatConverter(true, skipACM);
-                        return formatConverter2.UnCompressMp3File(SourceFilePath, destinationDirectory,
+                        
+                        AddSubCancellable(formatConverter2);
+
+                        string result = null;
+                        try
+                        {
+                            result =  formatConverter2.UnCompressMp3File(SourceFilePath, destinationDirectory,
                             destinationFormatInfo != null ? destinationFormatInfo.Data : null);
+                        }
+                        finally
+                        {
+                            RemoveSubCancellable(formatConverter2);
+                        }
+
+                        return result;
                     }
 
                 default:

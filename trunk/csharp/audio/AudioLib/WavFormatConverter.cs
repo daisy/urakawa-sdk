@@ -6,8 +6,12 @@ using System.Diagnostics;
 
 namespace AudioLib
 {
-    public class WavFormatConverter
+    public class WavFormatConverter : DualCancellableProgressReporter
     {
+        public override void DoWork()
+        {
+        }
+
         private bool m_OverwriteOutputFiles;
         public bool OverwriteOutputFiles
         {
@@ -42,7 +46,45 @@ namespace AudioLib
                 conversionStream = new WaveFormatConversionStream(destFormat, sourceStream);
 
                 destinationFilePath = GenerateOutputFileFullname(sourceFile, destinationDirectory, pcmFormat);
-                WaveFileWriter.CreateWaveFile(destinationFilePath, conversionStream);
+                
+                //WaveFileWriter.CreateWaveFile(destinationFilePath, conversionStream);
+                using (WaveFileWriter writer = new WaveFileWriter(destinationFilePath, conversionStream.WaveFormat))
+                {
+                    //const int BUFFER_SIZE = 1024 * 8; // 8 KB MAX BUFFER
+                    int BUFFER_SIZE = (int)pcmFormat.ConvertTimeToBytes(1500 * AudioLibPCMFormat.TIME_UNIT);
+                    //int debug = pcmStream.GetReadSize(4000);
+                    byte[] buffer = new byte[BUFFER_SIZE];
+                    int byteRead;
+                    writer.Flush();
+
+                    string msg = Path.GetFileName(sourceFile) + " => " + Path.GetFileName(destinationFilePath); //"Resampling WAV audio...";
+                    reportProgress(-1, msg);
+                    Stopwatch watch = new Stopwatch();
+                    watch.Start();
+                    while ((byteRead = conversionStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        if (RequestCancellation)
+                        {
+                            writer.Close();
+                            if (File.Exists(destinationFilePath))
+                            {
+                                File.Delete(destinationFilePath);
+                            }
+                            return null;
+                        }
+
+                        if (watch.ElapsedMilliseconds >= 500)
+                        {
+                            int percent = (int)(100.0 * sourceStream.Position/sourceStream.Length);
+                            reportProgress(percent, msg); // + sourceStream.Position + "/" + sourceStream.Length);
+                            watch.Stop();
+                            watch.Reset();
+                            watch.Start();
+                        }
+
+                        writer.WriteData(buffer, 0, byteRead);
+                    }
+                }
             }
             finally
             {
@@ -86,8 +128,32 @@ namespace AudioLib
             ObufferStreamWrapper outputBuffer = new ObufferStreamWrapper(wavFileStream, mp3PcmFormat.NumberOfChannels);
             decoder.OutputBuffer = outputBuffer;
 
+            string msg = Path.GetFileName(mp3FilePath) + " => " + Path.GetFileName(wavFilePath); // "Decoding MP3 to WAV audio (CSharp Lib)..."
+            reportProgress(-1, msg);
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
             while (true)
             {
+                if (RequestCancellation)
+                {
+                    mp3Stream.Close();
+                    wavFileStream.Close();
+                    if (File.Exists(wavFilePath))
+                    {
+                        File.Delete(wavFilePath);
+                    }
+                    return null;
+                }
+
+                if (watch.ElapsedMilliseconds >= 1000)
+                {
+                    int percent = (int)(100.0 * mp3Stream.Position / mp3Stream.Length);
+                    reportProgress(percent, msg); // + mp3Stream.Position + "/" + mp3Stream.Length);
+                    watch.Stop();
+                    watch.Reset();
+                    watch.Start();
+                }
+
                 Header header = mp3BitStream.readFrame();
                 if (header == null)
                 {
@@ -113,7 +179,10 @@ namespace AudioLib
             if ((ulong)wavFileStreamEnd == wavFilRiffHeaderLength)
             {
                 wavFileStream.Close();
-                File.Delete(wavFilePath);
+                if (File.Exists(wavFilePath))
+                {
+                    File.Delete(wavFilePath);
+                }
                 return null;
             }
 
@@ -147,13 +216,37 @@ namespace AudioLib
                     using (WaveFileWriter writer = new WaveFileWriter(wavFilePath, pcmStream.WaveFormat))
                     {
                         //const int BUFFER_SIZE = 1024 * 8; // 8 KB MAX BUFFER
-                        int BUFFER_SIZE = (int)mp3PcmFormat.ConvertTimeToBytes(1000 * AudioLibPCMFormat.TIME_UNIT);
+                        int BUFFER_SIZE = (int)mp3PcmFormat.ConvertTimeToBytes(1500 * AudioLibPCMFormat.TIME_UNIT);
                         //int debug = pcmStream.GetReadSize(4000);
                         byte[] buffer = new byte[BUFFER_SIZE];
                         int byteRead;
                         writer.Flush();
+
+                        string msg = Path.GetFileName(mp3FilePath) + " => " + Path.GetFileName(wavFilePath); //"Decoding MP3 to WAV audio (ACM Codec) ..."
+                        reportProgress(-1, msg);
+                        Stopwatch watch = new Stopwatch();
+                        watch.Start();
                         while ((byteRead = pcmStream.Read(buffer, 0, buffer.Length)) > 0)
                         {
+                            if (RequestCancellation)
+                            {
+                                writer.Close();
+                                if (File.Exists(wavFilePath))
+                                {
+                                    File.Delete(wavFilePath);
+                                }
+                                return null;
+                            }
+
+                            if (watch.ElapsedMilliseconds >= 1000)
+                            {
+                                int percent = (int)(100.0 * reader.Position / reader.Length);
+                                reportProgress(percent, msg); // + reader.Position + "/" + reader.Length);
+                                watch.Stop();
+                                watch.Reset();
+                                watch.Start();
+                            }
+
                             writer.WriteData(buffer, 0, byteRead);
                         }
                     }
@@ -225,12 +318,16 @@ namespace AudioLib
                     Console.WriteLine(ex.StackTrace);
                 }
             }
+            if (RequestCancellation)
+            {
+                return null;
+            }
             if (mp3PcmFormat == null || m_SkipACM)
             {
                 mp3PcmFormat = Mp3ToWav_Mp3Sharp(sourceFile, destinationDirectory, out destinationFile);
             }
-
-            if (mp3PcmFormat == null)
+            
+            if (mp3PcmFormat == null || RequestCancellation)
             {
                 if (File.Exists(destinationFile))
                 {
@@ -246,9 +343,14 @@ namespace AudioLib
                 !mp3PcmFormat.IsCompatibleWith(pcmFormat))
             {
                 string newDestinationFilePath = ConvertSampleRate(destinationFile, destinationDirectory, pcmFormat);
+                
                 if (File.Exists(destinationFile))
                 {
                     File.Delete(destinationFile);
+                }
+                if (RequestCancellation)
+                {
+                    return null;
                 }
                 return newDestinationFilePath;
             }

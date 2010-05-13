@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using AudioLib;
-using urakawa.metadata;
-using urakawa.metadata.daisy;
 using urakawa.xuk;
 
 namespace urakawa.daisy.import
