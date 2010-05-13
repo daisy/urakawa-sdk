@@ -40,7 +40,7 @@ namespace urakawa.data
                 Directory.CreateDirectory(fullDataFolderPath);
             }
 
-            reportProgress(-1, "Copying multimedia objects ...");
+            reportProgress(-1, Path.GetFileName(fullDataFolderPath));
 
             int index = 0;
             const int progressStep = 10;
@@ -54,7 +54,7 @@ namespace urakawa.data
 
                 //progress += progressStep;
                 //if (progress > 100) progress = progressStep;
-                reportProgress(progress, string.Format("Copying [{1}] ({0})", index, fdp.DataFileRelativePath));
+                reportProgress(progress, string.Format("[{1}] ({0})", index, fdp.DataFileRelativePath));
 
 
                 if (RequestCancellation) return;

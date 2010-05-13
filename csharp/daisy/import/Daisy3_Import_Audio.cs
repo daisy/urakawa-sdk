@@ -42,6 +42,7 @@ namespace urakawa.daisy.import
                 m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath,
                 m_Project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat,
                 m_SkipACM);
+            AddSubCancellable(m_AudioConversionSession);
 
             m_OriginalAudioFile_FileDataProviderMap.Clear();
 
@@ -62,6 +63,7 @@ namespace urakawa.daisy.import
                 parseSmil(fullSmilPath);
             }
 
+            RemoveSubCancellable(m_AudioConversionSession);
             //m_AudioConversionSession.DeleteSessionAudioFiles();
             m_AudioConversionSession = null;
         }

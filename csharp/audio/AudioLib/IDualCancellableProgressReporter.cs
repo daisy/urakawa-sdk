@@ -81,11 +81,11 @@ namespace AudioLib
 
         public void AddSubCancellable(IDualCancellableProgressReporter other)
         {
+            other.RequestCancellation = RequestCancellation;
             lock (m_subCancellables)
             {
                 m_subCancellables.Add(other);
             }
-
             other.ProgressChangedEvent += OnSubCancellableProgressChanged;
             other.SubProgressChangedEvent += OnSubCancellableSubProgressChanged;
         }
