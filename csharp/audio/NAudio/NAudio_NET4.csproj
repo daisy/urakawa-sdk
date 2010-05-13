@@ -36,7 +36,8 @@
     <OutputPath>bin\DebugNET4\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel><NoWarn>1591</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\DebugNET4\NAudio.XML</DocumentationFile>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,14 +48,14 @@
     <OutputPath>bin\ReleaseNET4\</OutputPath>
     <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel><NoWarn>1591</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
-      
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -84,9 +85,13 @@
     <Compile Include="AcmStreamSizeFlags.cs" />
     <Compile Include="AdpcmWaveFormat.cs" />
     <Compile Include="AudioMediaSubtypes.cs" />
+    <Compile Include="Id3v2Tag.cs" />
     <Compile Include="IWaveProvider.cs" />
     <Compile Include="MmException.cs" />
     <Compile Include="MmResult.cs" />
+    <Compile Include="Mp3FileReader.cs" />
+    <Compile Include="Mp3Frame.cs" />
+    <Compile Include="Mp3WaveFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RiffChunk.cs" />
     <Compile Include="WaveFileReader.cs" />
@@ -105,6 +110,7 @@
     <Compile Include="WaveOutCapabilities.cs" />
     <Compile Include="WaveOutSupport.cs" />
     <Compile Include="WaveStream.cs" />
+    <Compile Include="XingHeader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Changes.xml" />
