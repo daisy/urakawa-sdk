@@ -25,6 +25,8 @@ namespace AudioLib
             m_SkipACM = skipACM;
         }
 
+        private const uint PROGRESS_INTERVAL_MS = 500;
+
         public string ConvertSampleRate(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat)
         {
             if (!File.Exists(sourceFile))
@@ -36,6 +38,7 @@ namespace AudioLib
             string destinationFilePath = null;
             WaveStream sourceStream = null;
             WaveFormatConversionStream conversionStream = null;
+            Stopwatch watch = new Stopwatch();
             try
             {
                 WaveFormat destFormat = new WaveFormat((int)pcmFormat.SampleRate,
@@ -46,7 +49,7 @@ namespace AudioLib
                 conversionStream = new WaveFormatConversionStream(destFormat, sourceStream);
 
                 destinationFilePath = GenerateOutputFileFullname(sourceFile, destinationDirectory, pcmFormat);
-                
+
                 //WaveFileWriter.CreateWaveFile(destinationFilePath, conversionStream);
                 using (WaveFileWriter writer = new WaveFileWriter(destinationFilePath, conversionStream.WaveFormat))
                 {
@@ -57,10 +60,9 @@ namespace AudioLib
                     int byteRead;
                     writer.Flush();
 
-                    string msg = Path.GetFileName(sourceFile) + " => " + Path.GetFileName(destinationFilePath); //"Resampling WAV audio...";
+                    string msg = Path.GetFileName(sourceFile) + " / " + Path.GetFileName(destinationFilePath); //"Resampling WAV audio...";
                     reportProgress(-1, msg);
-                    //Stopwatch watch = new Stopwatch();
-                    //watch.Start();
+                    watch.Start();
                     while ((byteRead = conversionStream.Read(buffer, 0, buffer.Length)) > 0)
                     {
                         if (RequestCancellation)
@@ -73,14 +75,16 @@ namespace AudioLib
                             return null;
                         }
 
-                        //if (watch.ElapsedMilliseconds >= 500)
-                        //{
-                            int percent = (int)(100.0 * sourceStream.Position/sourceStream.Length);
+                        if (watch.ElapsedMilliseconds >= PROGRESS_INTERVAL_MS)
+                        {
+                            watch.Stop();
+
+                            int percent = (int)(100.0 * sourceStream.Position / sourceStream.Length);
                             reportProgress(percent, msg); // + sourceStream.Position + "/" + sourceStream.Length);
-                        //    watch.Stop();
-                        //    watch.Reset();
-                        //    watch.Start();
-                        //}
+                            
+                            watch.Reset();
+                            watch.Start();
+                        }
 
                         writer.WriteData(buffer, 0, byteRead);
                     }
@@ -88,6 +92,8 @@ namespace AudioLib
             }
             finally
             {
+                watch.Stop();
+
                 if (conversionStream != null)
                 {
                     conversionStream.Close();
@@ -128,48 +134,57 @@ namespace AudioLib
             ObufferStreamWrapper outputBuffer = new ObufferStreamWrapper(wavFileStream, mp3PcmFormat.NumberOfChannels);
             decoder.OutputBuffer = outputBuffer;
 
-            string msg = Path.GetFileName(mp3FilePath) + " => " + Path.GetFileName(wavFilePath); // "Decoding MP3 to WAV audio (CSharp Lib)..."
+            string msg = Path.GetFileName(mp3FilePath) + " / " + Path.GetFileName(wavFilePath); // "Decoding MP3 to WAV audio (CSharp Lib)..."
             reportProgress(-1, msg);
-            //Stopwatch watch = new Stopwatch();
-            //watch.Start();
-            while (true)
+            Stopwatch watch = new Stopwatch();
+            try
             {
-                if (RequestCancellation)
+                watch.Start();
+                while (true)
                 {
-                    mp3Stream.Close();
-                    wavFileStream.Close();
-                    if (File.Exists(wavFilePath))
+                    if (RequestCancellation)
                     {
-                        File.Delete(wavFilePath);
+                        mp3Stream.Close();
+                        wavFileStream.Close();
+                        if (File.Exists(wavFilePath))
+                        {
+                            File.Delete(wavFilePath);
+                        }
+                        return null;
                     }
-                    return null;
-                }
 
-                //if (watch.ElapsedMilliseconds >= 1000)
-                //{
-                    int percent = (int)(100.0 * mp3Stream.Position / mp3Stream.Length);
-                    reportProgress(percent, msg); // + mp3Stream.Position + "/" + mp3Stream.Length);
-                //    watch.Stop();
-                //    watch.Reset();
-                //    watch.Start();
-                //}
+                    if (watch.ElapsedMilliseconds >= PROGRESS_INTERVAL_MS)
+                    {
+                        watch.Stop();
 
-                Header header = mp3BitStream.readFrame();
-                if (header == null)
-                {
-                    break;
-                }
+                        int percent = (int)(100.0 * mp3Stream.Position / mp3Stream.Length);
+                        reportProgress(percent, msg); // + mp3Stream.Position + "/" + mp3Stream.Length);
+                        
+                        watch.Reset();
+                        watch.Start();
+                    }
 
-                try
-                {
-                    Obuffer decoderOutput = decoder.decodeFrame(header, mp3BitStream);
-                }
-                catch
-                {
+                    Header header = mp3BitStream.readFrame();
+                    if (header == null)
+                    {
+                        break;
+                    }
+
+                    try
+                    {
+                        Obuffer decoderOutput = decoder.decodeFrame(header, mp3BitStream);
+                    }
+                    catch
+                    {
+                        mp3BitStream.closeFrame();
+                        continue;
+                    }
                     mp3BitStream.closeFrame();
-                    continue;
                 }
-                mp3BitStream.closeFrame();
+            }
+            finally
+            {
+                watch.Stop();
             }
 
             mp3Stream.Close();
@@ -222,32 +237,41 @@ namespace AudioLib
                         int byteRead;
                         writer.Flush();
 
-                        string msg = Path.GetFileName(mp3FilePath) + " => " + Path.GetFileName(wavFilePath); //"Decoding MP3 to WAV audio (ACM Codec) ..."
+                        string msg = Path.GetFileName(mp3FilePath) + " / " + Path.GetFileName(wavFilePath); //"Decoding MP3 to WAV audio (ACM Codec) ..."
                         reportProgress(-1, msg);
-                        //Stopwatch watch = new Stopwatch();
-                        //watch.Start();
-                        while ((byteRead = pcmStream.Read(buffer, 0, buffer.Length)) > 0)
+                        Stopwatch watch = new Stopwatch();
+                        try
                         {
-                            if (RequestCancellation)
+                            watch.Start();
+                            while ((byteRead = pcmStream.Read(buffer, 0, buffer.Length)) > 0)
                             {
-                                writer.Close();
-                                if (File.Exists(wavFilePath))
+                                if (RequestCancellation)
                                 {
-                                    File.Delete(wavFilePath);
+                                    writer.Close();
+                                    if (File.Exists(wavFilePath))
+                                    {
+                                        File.Delete(wavFilePath);
+                                    }
+                                    return null;
                                 }
-                                return null;
+
+                                if (watch.ElapsedMilliseconds >= PROGRESS_INTERVAL_MS)
+                                {
+                                    watch.Stop();
+
+                                    int percent = (int)(100.0 * reader.Position / reader.Length);
+                                    reportProgress(percent, msg); // + reader.Position + "/" + reader.Length);
+                                    
+                                    watch.Reset();
+                                    watch.Start();
+                                }
+
+                                writer.WriteData(buffer, 0, byteRead);
                             }
-
-                            //if (watch.ElapsedMilliseconds >= 1000)
-                            //{
-                                int percent = (int)(100.0 * reader.Position / reader.Length);
-                                reportProgress(percent, msg); // + reader.Position + "/" + reader.Length);
-                            //    watch.Stop();
-                            //    watch.Reset();
-                            //    watch.Start();
-                            //}
-
-                            writer.WriteData(buffer, 0, byteRead);
+                        }
+                        finally
+                        {
+                            watch.Stop();
                         }
                     }
                 }
@@ -326,7 +350,7 @@ namespace AudioLib
             {
                 mp3PcmFormat = Mp3ToWav_Mp3Sharp(sourceFile, destinationDirectory, out destinationFile);
             }
-            
+
             if (mp3PcmFormat == null || RequestCancellation)
             {
                 if (File.Exists(destinationFile))
@@ -343,7 +367,7 @@ namespace AudioLib
                 !mp3PcmFormat.IsCompatibleWith(pcmFormat))
             {
                 string newDestinationFilePath = ConvertSampleRate(destinationFile, destinationDirectory, pcmFormat);
-                
+
                 if (File.Exists(destinationFile))
                 {
                     File.Delete(destinationFile);

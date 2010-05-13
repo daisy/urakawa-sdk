@@ -17,7 +17,7 @@ namespace urakawa.daisy.import
     {
         private XmlDocument readXmlDocument(string path)
         {
-            reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ReadXMLDoc, Path.GetFileName(path)));
+            //reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ReadXMLDoc, Path.GetFileName(path)));
 
             XmlReaderSettings settings = new XmlReaderSettings();
 
@@ -58,7 +58,7 @@ namespace urakawa.daisy.import
                     xmlReader.Close();
                 }
 
-                reportProgress(100, String.Format(UrakawaSDK_daisy_Lang.XmlDocLoaded, path));
+                //reportProgress(100, String.Format(UrakawaSDK_daisy_Lang.XmlDocLoaded, path));
                 return xmldoc;
             }
         }

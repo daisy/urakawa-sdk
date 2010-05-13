@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using AudioLib;
 using urakawa.command;
 using urakawa.events.progress;
@@ -45,20 +46,35 @@ namespace urakawa.progress
         /// <param name="tot">A <see cref="long"/> in which the estimated total progress is returned</param>
         protected abstract void GetCurrentProgress(out long cur, out long tot);
 
+        private Stopwatch m_stopWatch = null;
+
         /// <summary>
         /// Notifies the handler of progress
         /// </summary>
         /// <returns>A <see cref="bool"/> indicating if the progress was cancelled</returns>
         public virtual bool NotifyProgress()
         {
-            EventHandler<ProgressEventArgs> d = Progress;
-            if (d != null)
+            if (m_stopWatch == null || m_stopWatch.ElapsedMilliseconds > 300)
             {
-                long c, t;
-                GetCurrentProgress(out c, out t);
-                ProgressEventArgs e = new ProgressEventArgs(c, t);
-                d(this, e);
-                if (e.IsCancelled) return true;
+                if (m_stopWatch != null)
+                {
+                    m_stopWatch.Stop();
+                }
+                EventHandler<ProgressEventArgs> d = Progress;
+                if (d != null)
+                {
+                    long c, t;
+                    GetCurrentProgress(out c, out t);
+                    ProgressEventArgs e = new ProgressEventArgs(c, t);
+                    d(this, e);
+                    if (e.IsCancelled) return true;
+                }
+                if (m_stopWatch == null)
+                {
+                    m_stopWatch = new Stopwatch();
+                }
+                m_stopWatch.Reset();
+                m_stopWatch.Start();
             }
             return false;
         }
@@ -73,6 +89,10 @@ namespace urakawa.progress
         /// </summary>
         public void NotifyFinished()
         {
+            if (m_stopWatch != null)
+            {
+                m_stopWatch.Stop();
+            }
             EventHandler<FinishedEventArgs> d = Finished;
             if (d != null) d(this, new FinishedEventArgs());
         }
@@ -87,6 +107,10 @@ namespace urakawa.progress
         ///</summary>
         public void NotifyCancelled()
         {
+            if (m_stopWatch != null)
+            {
+                m_stopWatch.Stop();
+            }
             EventHandler<CancelledEventArgs> d = Cancelled;
             if (d != null) d(this, new CancelledEventArgs());
         }
@@ -102,11 +126,6 @@ namespace urakawa.progress
         public abstract bool CanExecute { get; }
 
         /// <summary>
-        /// Get a long uman-readable description of the command
-        /// </summary>
-        public abstract string LongDescription { get; set; }
-
-        /// <summary>
         /// Execute the command.
         /// </summary>
         /// <exception cref="urakawa.exception.CannotExecuteException">Thrown when the command cannot be reversed.</exception>
@@ -116,6 +135,11 @@ namespace urakawa.progress
         /// Gets a short humanly readable description of the command
         /// </summary>
         public abstract string ShortDescription { get; set; }
+        /// <summary>
+        /// Get a long uman-readable description of the command
+        /// </summary>
+        public abstract string LongDescription { get; set; }
+
 
         #endregion
     }

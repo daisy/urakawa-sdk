@@ -113,12 +113,12 @@ namespace urakawa.daisy.export
             publishChannel.Name = PUBLISH_AUDIO_CHANNEL_NAME;
             m_PublishVisitor.DestinationChannel = publishChannel;
 
-            m_PublishVisitor.ProgressChangedEvent += new ProgressChangedEventHandler(ReportAudioPublishProgress);
+            //m_PublishVisitor.ProgressChangedEvent += new ProgressChangedEventHandler(ReportAudioPublishProgress);
 
             AddSubCancellable(m_PublishVisitor);
             m_Presentation.RootNode.AcceptDepthFirst(m_PublishVisitor);
 
-#if DEBUG
+#if DEBUG_TREE
             if (!m_PublishVisitor.EncodePublishedAudioFilesToMp3)
                 m_PublishVisitor.VerifyTree(m_Presentation.RootNode);
 
@@ -126,7 +126,7 @@ namespace urakawa.daisy.export
 #endif //DEBUG
             RemoveSubCancellable(m_PublishVisitor);
 
-            m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler(ReportAudioPublishProgress);
+            //m_PublishVisitor.ProgressChangedEvent -= new ProgressChangedEventHandler(ReportAudioPublishProgress);
 
 
             m_PublishVisitor = null;
@@ -157,13 +157,13 @@ namespace urakawa.daisy.export
             }
             return false;
         }
-        private int m_ProgressPercentage;
-        private void ReportAudioPublishProgress(object sender, ProgressChangedEventArgs e)
-        {
-            //m_ProgressPercentage = Convert.ToInt32(e.ProgressPercentage * 0.85);
-        m_ProgressPercentage = Convert.ToInt32 ( e.ProgressPercentage  );
-//            reportProgress(m_ProgressPercentage, (string)e.UserState);
-        }
+//        private int m_ProgressPercentage;
+//        private void ReportAudioPublishProgress(object sender, ProgressChangedEventArgs e)
+//        {
+//            //m_ProgressPercentage = Convert.ToInt32(e.ProgressPercentage * 0.85);
+//        m_ProgressPercentage = Convert.ToInt32 ( e.ProgressPercentage  );
+////            reportProgress(m_ProgressPercentage, (string)e.UserState);
+//        }
 
         private bool doesTreeNodeTriggerNewSmil(TreeNode node)
         {

@@ -130,7 +130,7 @@ namespace urakawa.xuk
                 if (percent != currentPercentage)
                 {
                     currentPercentage = percent;
-                    reportProgress(currentPercentage, LongDescription);
+                    reportProgress(currentPercentage, val + " / " + max);
                     //backWorker.ReportProgress(currentPercentage);
                 }
 

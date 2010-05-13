@@ -45,8 +45,6 @@ namespace urakawa.daisy.import
 
             m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
 
-            reportProgress(50, UrakawaSDK_daisy_Lang.InitializeImport);                             
-
             if (RequestCancellation) return;
             initializeProject();
 
@@ -82,7 +80,7 @@ namespace urakawa.daisy.import
                     percent = (int) ((val/max)*100);
                 }
 
-                reportProgress(percent, action.ShortDescription);
+                reportProgress(percent, val + "/" + max);
                 //reportProgress(-1, action.LongDescription);
 
                 if (RequestCancellation)
