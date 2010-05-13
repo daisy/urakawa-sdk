@@ -83,7 +83,7 @@ namespace urakawa.daisy.import
                 }
 
                 reportProgress(percent, action.ShortDescription);
-                reportSubProgress(-1, action.LongDescription);
+                //reportProgress(-1, action.LongDescription);
 
                 if (RequestCancellation)
                 {

@@ -139,7 +139,7 @@ namespace urakawa.daisy.export
                             }
                             m_ListOfLevels.Add(n);
                             isHeadingNodeAvailable = false;
-                            reportSubProgress(-1, UrakawaSDK_daisy_Lang.CreatingXMLFile);
+                            reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingXMLFile);
                         }
 
                         if (IsHeadingNode ( n ))

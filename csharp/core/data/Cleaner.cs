@@ -41,7 +41,7 @@ namespace urakawa.data
             {
                 progress += progressStep;
                 if (progress > 100) progress = progressStep;
-                reportSubProgress(progress, "...");
+                reportProgress(progress, "...");
 
                 if (RequestCancellation) return;
 
@@ -51,7 +51,7 @@ namespace urakawa.data
                 }
             }
 
-            reportSubProgress(-1, "...");
+            reportProgress(-1, "...");
 
             if (RequestCancellation) return;
 
@@ -72,7 +72,7 @@ namespace urakawa.data
             {
                 index++;
                 progress = 100 * index / list3.Count;
-                reportSubProgress(progress, "...");
+                reportProgress(progress, "...");
 
                 if (RequestCancellation) return;
 
@@ -96,7 +96,7 @@ namespace urakawa.data
             {
                 index++;
                 progress = 100 * index / list.Count;
-                reportSubProgress(progress, "...");
+                reportProgress(progress, "...");
 
                 if (RequestCancellation) return;
 
@@ -104,7 +104,7 @@ namespace urakawa.data
                 {
                     if (md is media.data.audio.codec.WavAudioMediaData)
                     {
-                        reportSubProgress(progress, "...");
+                        reportProgress(progress, "...");
 
                         ((media.data.audio.codec.WavAudioMediaData)md).ForceSingleDataProvider();
                     }
@@ -142,7 +142,7 @@ namespace urakawa.data
             {
                 progress = 100 * index / list2.Count;
                 string info = dp is FileDataProvider ? ((FileDataProvider)dp).DataFileRelativePath : "";
-                reportSubProgress(progress, info);
+                reportProgress(progress, info);
 
                 if (RequestCancellation) return;
 
