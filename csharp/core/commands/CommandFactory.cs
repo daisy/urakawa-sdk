@@ -80,5 +80,12 @@ namespace urakawa.commands
             command.Init(treeNode, isMarked);
             return command;
         }
+
+        public TreeNodeChangeTextCommand CreateTreeNodeChangeTextCommand(TreeNode treeNode, string text)
+        {
+            TreeNodeChangeTextCommand command = Create<TreeNodeChangeTextCommand>();
+            command.Init(treeNode, text);
+            return command;
+        }
     }
 }
