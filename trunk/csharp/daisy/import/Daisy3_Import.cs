@@ -27,8 +27,11 @@ namespace urakawa.daisy.import
             get { return m_Project; }
         }
 
-        public Daisy3_Import(string bookfile, string outDir)
+        private readonly bool m_SkipACM;
+        public Daisy3_Import(string bookfile, string outDir, bool skipACM)
         {
+            m_SkipACM = skipACM;
+
             reportProgress(10, UrakawaSDK_daisy_Lang.InitializeImport);                               
 
             m_PackageUniqueIdAttr = null;

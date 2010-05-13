@@ -29,12 +29,15 @@ namespace urakawa.daisy.import
         private readonly string m_destinationDirectory;
         private readonly PCMFormatInfo m_destinationFormatInfo;
 
-        public AudioFormatConvertorSession(string destinationDirectory, PCMFormatInfo destinationFormatInfo)
+        private readonly bool m_SkipACM;
+        public AudioFormatConvertorSession(string destinationDirectory, PCMFormatInfo destinationFormatInfo, bool skipACM)
         {
             if (destinationDirectory == null) throw new ArgumentNullException("destinationDirectory");
             m_destinationDirectory = destinationDirectory;
 
             m_destinationFormatInfo = destinationFormatInfo;
+
+            m_SkipACM = skipACM;
 
             m_FilePathsMap = new Dictionary<string, string>();
         }
@@ -79,7 +82,8 @@ namespace urakawa.daisy.import
 
             string convertedFilePath = ConvertToDefaultFormat(sourceFilePath,
                 m_destinationDirectory,
-                m_destinationFormatInfo == null ? null : m_destinationFormatInfo.Copy());
+                m_destinationFormatInfo == null ? null : m_destinationFormatInfo.Copy(),
+                m_SkipACM);
 
             if (File.Exists(convertedFilePath))
             {
@@ -128,7 +132,7 @@ namespace urakawa.daisy.import
         /// <param name="destinationDirectory"></param>
         /// <param name="destinationFormatInfo"></param>
         /// <returns> full file path of converted file  </returns>
-        private static string ConvertToDefaultFormat(string SourceFilePath, string destinationDirectory, PCMFormatInfo destinationFormatInfo)
+        private static string ConvertToDefaultFormat(string SourceFilePath, string destinationDirectory, PCMFormatInfo destinationFormatInfo, bool skipACM)
         {
             if (!File.Exists(SourceFilePath))
                 throw new FileNotFoundException(SourceFilePath);
@@ -144,13 +148,13 @@ namespace urakawa.daisy.import
                 case AudioFileType.WavUncompressed:
                 case AudioFileType.WavCompressed:
                     {
-                        WavFormatConverter formatConverter1 = new WavFormatConverter(true);
+                        WavFormatConverter formatConverter1 = new WavFormatConverter(true, skipACM);
                         return formatConverter1.ConvertSampleRate(SourceFilePath, destinationDirectory,
                             destinationFormatInfo != null ? destinationFormatInfo.Data : new AudioLibPCMFormat());
                     }
                 case AudioFileType.Mp3:
                     {
-                        WavFormatConverter formatConverter2 = new WavFormatConverter(true);
+                        WavFormatConverter formatConverter2 = new WavFormatConverter(true, skipACM);
                         return formatConverter2.UnCompressMp3File(SourceFilePath, destinationDirectory,
                             destinationFormatInfo != null ? destinationFormatInfo.Data : null);
                     }
