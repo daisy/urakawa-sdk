@@ -127,7 +127,18 @@ namespace urakawa.daisy.export.visitor
                 mDestinationDirectory = value;
             }
         }
-
+        private bool m_SkipACM = false;
+        public bool DisableAcmCodecs
+        {
+            get
+            {
+                return m_SkipACM;
+            }
+            set
+            {
+                m_SkipACM = value;
+            }
+        }
         private bool m_EncodePublishedAudioFilesToMp3 = false;
         public bool EncodePublishedAudioFilesToMp3
         {

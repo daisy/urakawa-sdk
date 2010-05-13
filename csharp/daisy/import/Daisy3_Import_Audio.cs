@@ -40,7 +40,8 @@ namespace urakawa.daisy.import
             m_AudioConversionSession = new AudioFormatConvertorSession(
                 //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
                 m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath,
-                m_Project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat);
+                m_Project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat,
+                m_SkipACM);
 
             m_OriginalAudioFile_FileDataProviderMap.Clear();
 

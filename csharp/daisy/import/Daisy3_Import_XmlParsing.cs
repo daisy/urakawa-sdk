@@ -185,7 +185,14 @@ namespace urakawa.daisy.import
                 //}
 
                 //otherwise use the default behavior of the XmlUrlResolver class (resolve resources from source)
-                return base.GetEntity(absoluteUri, role, ofObjectToReturn);
+                try
+                {
+                    return base.GetEntity(absoluteUri, role, ofObjectToReturn);
+                }
+                catch
+                {
+                    return null;
+                }
             }
 
             public Stream mapUri(Uri absoluteUri)

@@ -172,7 +172,7 @@ namespace NAudio.Wave
                     // TODO: save leftovers
                     Array.Copy(conversionStream.DestBuffer, 0, array, bytesRead + offset, toCopy);
                     bytesRead += toCopy;
-                    if (silenceBytes > 0)
+                    if (silenceBytes > 0 && silenceBytes < bytesRead)
                     {
                         // clear out the final bit
                         Array.Clear(array, bytesRead - silenceBytes, silenceBytes);

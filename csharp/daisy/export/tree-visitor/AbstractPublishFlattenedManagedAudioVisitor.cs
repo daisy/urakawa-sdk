@@ -69,7 +69,7 @@ namespace urakawa.daisy.export.visitor
             AudioLibPCMFormat pcmFormat = audioFormat.Data;
             pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
 
-            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true);
+            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, DisableAcmCodecs);
             string destinationFilePath = formatConverter.ConvertSampleRate(sourceFilePath, base.DestinationDirectory.LocalPath, pcmFormat);
 
             string sourceName = Path.GetFileNameWithoutExtension(sourceFilePath);
@@ -91,7 +91,7 @@ namespace urakawa.daisy.export.visitor
         {
             ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
 
-            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true);
+            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, DisableAcmCodecs);
             string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
             string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
                 Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
