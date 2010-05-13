@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using AudioLib;
 
@@ -45,17 +46,25 @@ namespace urakawa.data
             int index = 0;
             const int progressStep = 10;
             int progress = progressStep;
-
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             var list = new List<FileDataProvider>(m_Presentation.DataProviderManager.ManagedFileDataProviders);
             foreach (FileDataProvider fdp in list)
             {
                 index++;
                 progress = 100 * index / list.Count;
 
-                //progress += progressStep;
-                //if (progress > 100) progress = progressStep;
-                reportProgress(progress, string.Format("[{1}] ({0})", index, fdp.DataFileRelativePath));
+                if (stopWatch.ElapsedMilliseconds > 500)
+                {
+                    stopWatch.Stop();
 
+                    //progress += progressStep;
+                    //if (progress > 100) progress = progressStep;
+                    reportProgress(progress, string.Format("{1}/{2} ({0})", fdp.DataFileRelativePath, index, list.Count));
+
+                    stopWatch.Reset();
+                    stopWatch.Start();
+                }
 
                 if (RequestCancellation) return;
 

@@ -11,8 +11,8 @@ namespace urakawa.daisy.export
 
         private void CreateOpfDocument()
         {
-            m_ProgressPercentage = 90;
-            reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.AllFilesCreated);
+            //m_ProgressPercentage = 90;
+            //reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.AllFilesCreated);
             if (RequestCancellation) return;
             XmlDocument opfDocument = CreateStub_OpfDocument();
 
@@ -158,8 +158,8 @@ namespace urakawa.daisy.export
         private void AddMetadata_Generator(XmlDocument doc, XmlNode parentNode)
         {
             AddMetadataAsAttributes(doc, parentNode, "dtb:generator", "Tobi and the Urakawa SDK: the open-source DAISY multimedia authoring toolkit");
-            m_ProgressPercentage = 100;
-            reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.AllFilesCreated);                                       
+            //m_ProgressPercentage = 100;
+            //reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.AllFilesCreated);                                       
         }
 
         private void AddMetadata_Opf(XmlDocument opfDocument)

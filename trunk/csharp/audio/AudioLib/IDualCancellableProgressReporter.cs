@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace AudioLib
 {
@@ -15,20 +16,36 @@ namespace AudioLib
         void AddSubCancellable(IDualCancellableProgressReporter other);
         void RemoveSubCancellable(IDualCancellableProgressReporter other);
 
+        void RunTask();
         void DoWork();
         void SetDoEventsMethod(Action action);
     }
 
     public abstract class DualCancellableProgressReporter : IDualCancellableProgressReporter
     {
+        private Stopwatch m_stopWatch = null;
+
         public event ProgressChangedEventHandler ProgressChangedEvent;
         public void reportProgress(int percent, string msg)
         {
-            reportSubProgress(-1, null);
-            ProgressChangedEventHandler d = ProgressChangedEvent;
-            if (d != null)
+            if (m_stopWatch == null || m_stopWatch.ElapsedMilliseconds > 300)
             {
-                d(this, new ProgressChangedEventArgs(percent, msg));
+                if (m_stopWatch != null)
+                {
+                    m_stopWatch.Stop();
+                }
+                reportSubProgress(-1, null);
+                ProgressChangedEventHandler d = ProgressChangedEvent;
+                if (d != null)
+                {
+                    d(this, new ProgressChangedEventArgs(percent, string.IsNullOrEmpty(msg) ? null : msg));
+                }
+                if (m_stopWatch == null)
+                {
+                    m_stopWatch = new Stopwatch();
+                }
+                m_stopWatch.Reset();
+                m_stopWatch.Start();
             }
         }
 
@@ -109,6 +126,21 @@ namespace AudioLib
         private void OnSubCancellableSubProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             reportSubProgress(e.ProgressPercentage, (string)e.UserState);
+        }
+
+        public void RunTask()
+        {
+            try
+            {
+                DoWork();
+            }
+            finally
+            {
+                if (m_stopWatch != null)
+                {
+                    m_stopWatch.Stop();
+                }
+            }
         }
 
         public abstract void DoWork();

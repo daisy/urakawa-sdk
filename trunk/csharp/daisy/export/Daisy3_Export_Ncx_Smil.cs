@@ -38,8 +38,8 @@ namespace urakawa.daisy.export
             Time smilElapseTime = new Time();
             List<string> ncxCustomTestList = new List<string>();
             List<urakawa.core.TreeNode> specialParentNodesAddedToNavList = new List<urakawa.core.TreeNode>();
-            m_ProgressPercentage = 20;
-            reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.CreateSmilAndNcxFiles);
+            //m_ProgressPercentage = 20;
+            reportProgress(-1, UrakawaSDK_daisy_Lang.CreateSmilAndNcxFiles);
 
             foreach (urakawa.core.TreeNode urakawaNode in m_ListOfLevels)
             //for ( int nodeCounter = 0 ; nodeCounter < m_ListOfLevels.Count ; nodeCounter++ )
@@ -145,8 +145,8 @@ namespace urakawa.daisy.export
                     mainSeq = XmlDocumentHelper.GetFirstChildElementWithName(smilDocument, true, "body", null).FirstChild;
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, mainSeq, "id", GetNextID(ID_SmilPrefix));
                     smilFileName = GetNextSmilFileName;
-                    m_ProgressPercentage += Convert.ToInt32((m_SmilFileNameCounter / m_ListOfLevels.Count) * 100 * 0.7);
-                    reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreatingSmilFiles, m_SmilFileNameCounter, m_ListOfLevels.Count));
+                    //m_ProgressPercentage += Convert.ToInt32((m_SmilFileNameCounter / m_ListOfLevels.Count) * 100 * 0.7);
+                    //reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreatingSmilFiles, m_SmilFileNameCounter, m_ListOfLevels.Count));
                 }
 
 
@@ -1109,8 +1109,8 @@ namespace urakawa.daisy.export
             //Time smilElapseTime = new Time();
             //List<string> ncxCustomTestList = new List<string> ();
             //List<urakawa.core.TreeNode> specialParentNodesAddedToNavList = new List<urakawa.core.TreeNode>();
-            m_ProgressPercentage = 20;
-            reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.CreateSmilAndNcxFiles);
+            //m_ProgressPercentage = 20;
+            reportProgress(-1, UrakawaSDK_daisy_Lang.CreateSmilAndNcxFiles);
 
 
 

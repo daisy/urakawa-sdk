@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using AudioLib;
 using urakawa.command;
 using urakawa.core;
@@ -30,7 +31,7 @@ namespace urakawa.data
         /// </summary>
         public void Cleanup()
         {
-            reportProgress(-1, "...");
+            //reportProgress(-1, "...");
 
             const int progressStep = 10;
             int progress = progressStep;
@@ -39,9 +40,9 @@ namespace urakawa.data
             List<MediaData> usedMediaData = new List<MediaData>();
             foreach (MediaData md in m_Presentation.UndoRedoManager.UsedMediaData)
             {
-                progress += progressStep;
-                if (progress > 100) progress = progressStep;
-                reportProgress(progress, "...");
+                //progress += progressStep;
+                //if (progress > 100) progress = progressStep;
+                //reportProgress(progress, "[2]...");
 
                 if (RequestCancellation) return;
 
@@ -51,7 +52,7 @@ namespace urakawa.data
                 }
             }
 
-            reportProgress(-1, "...");
+            //reportProgress(-1, "[3]...");
 
             if (RequestCancellation) return;
 
@@ -72,7 +73,7 @@ namespace urakawa.data
             {
                 index++;
                 progress = 100 * index / list3.Count;
-                reportProgress(progress, "...");
+                //reportProgress(progress, "[4]...");
 
                 if (RequestCancellation) return;
 
@@ -89,14 +90,15 @@ namespace urakawa.data
             // We eliminate MediaData registered in the MediaDataManager that is unused
             // (not in the list of collected MediaData so far)
             // and we collect references of DataProviders used by the MediaData collected so far
-
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             index = 0;
             var list = m_Presentation.MediaDataManager.ManagedObjects.ContentsAs_ListCopy;
             foreach (MediaData md in list)
             {
                 index++;
                 progress = 100 * index / list.Count;
-                reportProgress(progress, "...");
+                //reportProgress(progress, "[5]...");
 
                 if (RequestCancellation) return;
 
@@ -104,7 +106,13 @@ namespace urakawa.data
                 {
                     if (md is media.data.audio.codec.WavAudioMediaData)
                     {
-                        reportProgress(progress, "...");
+                        if (stopWatch.ElapsedMilliseconds > 500)
+                        {
+                            stopWatch.Stop();
+                            reportProgress(progress, index + " / " + list.Count);
+                            stopWatch.Reset();
+                            stopWatch.Start();
+                        }
 
                         ((media.data.audio.codec.WavAudioMediaData)md).ForceSingleDataProvider();
                     }
@@ -121,6 +129,7 @@ namespace urakawa.data
                     md.Delete();
                 }
             }
+            stopWatch.Stop();
 
             // We collect references of DataProviders used by the registered ExternalFileData
             foreach (ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_YieldEnumerable)
@@ -129,7 +138,10 @@ namespace urakawa.data
                 {
                     if (RequestCancellation) return;
 
-                    if (!usedDataProviders.Contains(dp)) usedDataProviders.Add(dp);
+                    if (!usedDataProviders.Contains(dp))
+                    {
+                        usedDataProviders.Add(dp);
+                    }
                 }
             }
 
@@ -142,7 +154,7 @@ namespace urakawa.data
             {
                 progress = 100 * index / list2.Count;
                 string info = dp is FileDataProvider ? ((FileDataProvider)dp).DataFileRelativePath : "";
-                reportProgress(progress, info);
+                //reportProgress(progress, info);
 
                 if (RequestCancellation) return;
 
@@ -153,7 +165,9 @@ namespace urakawa.data
                         ((FileDataProvider)dp).DeleteByMovingToFolder(m_FullPathToDeletedDataFolder);
                     }
                     else
+                    {
                         dp.Delete();
+                    }
                 }
             }
         }

@@ -139,7 +139,7 @@
     <value>creating external files like .css, .dtd etc.</value>
   </data>
   <data name="CreatingSmilFiles" xml:space="preserve">
-    <value>Creating smil files{0}//{1}</value>
+    <value>Creating smil files {0} / {1}</value>
   </data>
   <data name="CreatingXMLFile" xml:space="preserve">
     <value>Creating DTBook.xml file</value>
@@ -148,7 +148,8 @@
     <value>Decoding audio: [{0}]</value>
   </data>
   <data name="ErrorInEncoding" xml:space="preserve">
-    <value>Error in encoding {0}\n</value>
+    <value>Error in encoding {0}
+</value>
   </data>
   <data name="ImportInitialized" xml:space="preserve">
     <value>Import initialized.</value>

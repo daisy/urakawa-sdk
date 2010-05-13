@@ -14,7 +14,7 @@ namespace urakawa.daisy.export
     public partial class Daisy3_Export
     {
         private XmlDocument m_DTBDocument;
-        private List<urakawa.core.TreeNode> m_NotesNodeList = new List<TreeNode> ();
+        private List<urakawa.core.TreeNode> m_NotesNodeList = new List<TreeNode>();
 
         private string m_TempImageId = null;
 
@@ -56,8 +56,8 @@ namespace urakawa.daisy.export
 
             if (RequestCancellation) return;
 
-            m_ProgressPercentage = 0;
-            reportProgress(0, UrakawaSDK_daisy_Lang.CreatingXMLFile);
+            //m_ProgressPercentage = 0;
+            reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingXMLFile);
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
             if (list_ExternalStyleSheets != null) ExportStyleSheets(list_ExternalStyleSheets);
 
@@ -132,24 +132,24 @@ namespace urakawa.daisy.export
 
                         if (doesTreeNodeTriggerNewSmil(n))
                         {
-                        if (!isHeadingNodeAvailable && m_ListOfLevels.Count > 1)
+                            if (!isHeadingNodeAvailable && m_ListOfLevels.Count > 1)
                             {
-                            m_ListOfLevels.RemoveAt ( m_ListOfLevels.Count - 1 );
-                            //System.Windows.Forms.MessageBox.Show ( "removing :" + m_ListOfLevels.Count.ToString () );
+                                m_ListOfLevels.RemoveAt(m_ListOfLevels.Count - 1);
+                                //System.Windows.Forms.MessageBox.Show ( "removing :" + m_ListOfLevels.Count.ToString () );
                             }
                             m_ListOfLevels.Add(n);
                             isHeadingNodeAvailable = false;
                             reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingXMLFile);
                         }
 
-                        if (IsHeadingNode ( n ))
-                            {
+                        if (IsHeadingNode(n))
+                        {
                             isHeadingNodeAvailable = true;
-                            }
-                        if (n.GetXmlElementQName () != null  && (n.GetXmlElementQName ().LocalName == "note" || n.GetXmlElementQName ().LocalName == "annotation") )
-                            {
-                            m_NotesNodeList.Add ( n );
-                            }
+                        }
+                        if (n.GetXmlElementQName() != null && (n.GetXmlElementQName().LocalName == "note" || n.GetXmlElementQName().LocalName == "annotation"))
+                        {
+                            m_NotesNodeList.Add(n);
+                        }
 
                         property.xml.XmlProperty xmlProp = n.GetProperty<property.xml.XmlProperty>();
 
@@ -202,9 +202,9 @@ namespace urakawa.daisy.export
                         {
                             for (int i = 0; i < xmlProp.Attributes.Count; i++)
                             {
-                            if (xmlProp.Attributes[i].LocalName.Contains ( ":" ))
+                                if (xmlProp.Attributes[i].LocalName.Contains(":"))
                                 {
-                                prefix = xmlProp.Attributes[i].LocalName.Split ( ':' )[0];
+                                    prefix = xmlProp.Attributes[i].LocalName.Split(':')[0];
                                 }
                                 //todo: check ID attribute, normalize with fresh new list of IDs
                                 // (warning: be careful maintaining ID REFS, such as idref attributes for annotation/annoref and prodnote/noteref
@@ -258,7 +258,7 @@ namespace urakawa.daisy.export
                                 m_TempImageId = id;
                             }
                         }
-                        
+
                         // add text from text property
 
                         string txt = n.GetTextMedia() != null ? n.GetTextMedia().Text : null;
@@ -269,13 +269,13 @@ namespace urakawa.daisy.export
 
                             DebugFix.Assert(n.Children.Count == 0);
                         }
-                        if (!string.IsNullOrEmpty ( prefix)
-                            &&   string.IsNullOrEmpty( currentXmlNode.Prefix)
-                            && string.IsNullOrEmpty( DTBookDocument.DocumentElement.GetNamespaceOfPrefix(prefix ))
-                            &&    string.IsNullOrEmpty( bookNode.GetNamespaceOfPrefix(prefix ) ) )
-                            {
-                            XmlDocumentHelper.CreateAppendXmlAttribute ( DTBookDocument, DTBookDocument.DocumentElement, "xmlns:" + prefix, currentXmlNode.GetNamespaceOfPrefix ( prefix ) );
-                            }
+                        if (!string.IsNullOrEmpty(prefix)
+                            && string.IsNullOrEmpty(currentXmlNode.Prefix)
+                            && string.IsNullOrEmpty(DTBookDocument.DocumentElement.GetNamespaceOfPrefix(prefix))
+                            && string.IsNullOrEmpty(bookNode.GetNamespaceOfPrefix(prefix)))
+                        {
+                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, DTBookDocument.DocumentElement, "xmlns:" + prefix, currentXmlNode.GetNamespaceOfPrefix(prefix));
+                        }
                         // add current node to its parent
                         m_TreeNode_XmlNodeMap[n.Parent].AppendChild(currentXmlNode);
 
