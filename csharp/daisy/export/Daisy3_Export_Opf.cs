@@ -3,6 +3,7 @@ using System.Xml;
 using System.IO;
 using urakawa.media.timing;
 using urakawa.metadata;
+using urakawa.xuk;
 
 namespace urakawa.daisy.export
 {
@@ -140,8 +141,7 @@ namespace urakawa.daisy.export
                 opfDocument = null;
                 return;
             }
-            XmlDocumentHelper.WriteXmlDocumentToFile(opfDocument,
-                Path.Combine(m_OutputDirectory, m_Filename_Opf));
+            SaveXukAction.WriteXmlDocument(opfDocument, Path.Combine(m_OutputDirectory, m_Filename_Opf));
         }
 
         private XmlNode AddFilenameToManifest(XmlDocument opfDocument, XmlNode manifestNode, string filename, string strID, string mediaType)

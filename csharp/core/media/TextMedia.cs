@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Xml;
 using urakawa.progress;
 using urakawa.xuk;
@@ -104,7 +105,7 @@ namespace urakawa.media
         /// <returns>The exported external text media</returns>
         protected override Media ExportProtected(Presentation destPres)
         {
-            TextMedia exported = (TextMedia) base.ExportProtected(destPres);
+            TextMedia exported = (TextMedia)base.ExportProtected(destPres);
             exported.Text = Text;
             return exported;
         }
@@ -139,7 +140,8 @@ namespace urakawa.media
                         subtreeReader.Read();
                         try
                         {
-                            Text = subtreeReader.ReadElementContentAsString();
+                            string text = subtreeReader.ReadElementContentAsString();
+                            Text = text == "" || text == SPACE ? " " : text;
                         }
                         finally
                         {
@@ -151,7 +153,8 @@ namespace urakawa.media
             }
             else
             {
-                Text = source.ReadString();
+                string text = source.ReadString();
+                Text = text == "" || text == SPACE ? " " : text;
             }
             base.XukInChild(source, handler);
         }
@@ -171,13 +174,15 @@ namespace urakawa.media
             {
                 destination.WriteStartElement(XukStrings.Text, XukNamespaceUri);
             }
-            destination.WriteString(Text);
+            destination.WriteString(Text == " " ? SPACE : Text);
             if (IsPrettyFormat())
             {
                 destination.WriteEndElement();
             }
             base.XukOutChildren(destination, baseUri, handler);
         }
+
+        private const string SPACE = "&#160;"; //"_*SPACE*_";
 
         #endregion
 

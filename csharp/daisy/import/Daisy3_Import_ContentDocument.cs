@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
+using AudioLib;
 using urakawa.core;
 using urakawa.media;
 using urakawa.media.data.image.codec;
 using urakawa.property.channel;
 using urakawa.property.xml;
+using urakawa.xuk;
 
 namespace urakawa.daisy.import
 {
@@ -21,18 +24,8 @@ namespace urakawa.daisy.import
             string[] whiteSpaces = new string[] { " ", "" + '\t', "\r\n", Environment.NewLine };
             string[] strSplit = str.Split(whiteSpaces, StringSplitOptions.RemoveEmptyEntries);
             return String.Join(" ", strSplit);
-        }
 
-        private string trimXmlText(string str)
-        {
-            string strTrimmed = str.Trim();
-            //string strTrimmed_ = trimInnerSpaces(strTrimmed);
-            string strTrimmed_ = Regex.Replace(strTrimmed, @"\s+", " ");
-            if (strTrimmed_.Length == strTrimmed.Length && strTrimmed.Length == str.Length)
-            {
-                return str;
-            }
-            return " " + strTrimmed_ + " ";
+            //string strMultipleWhiteSpacesCollapsedToOneSpace = Regex.Replace(str, @"\s+", " ");
         }
 
         private void parseContentDocuments(List<string> spineOfContentDocuments)
@@ -52,7 +45,7 @@ namespace urakawa.daisy.import
                 if (RequestCancellation) return;
 
                 string fullDocPath = Path.Combine(dirPath, docPath);
-                XmlDocument xmlDoc = readXmlDocument(fullDocPath);
+                XmlDocument xmlDoc = OpenXukAction.ParseXmlDocument(fullDocPath, true);
 
 
                 if (RequestCancellation) return;
@@ -342,16 +335,83 @@ namespace urakawa.daisy.import
                         }
                         break;
                     }
+                case XmlNodeType.Whitespace:
+                case XmlNodeType.CDATA:
+                case XmlNodeType.SignificantWhitespace:
                 case XmlNodeType.Text:
                     {
                         Presentation presentation = m_Project.Presentations.Get(0);
 
-                        string text = trimXmlText(xmlNode.Value);
+                        if (xmlType == XmlNodeType.Whitespace)
+                        {
+                            bool onlySpaces = true;
+                            for (int i = 0; i < xmlNode.Value.Length; i++)
+                            {
+                                if (xmlNode.Value[i] != ' ')
+                                {
+                                    onlySpaces = false;
+                                    break;
+                                }
+                            }
+                            if (!onlySpaces)
+                            {
+                                break;
+                            }
+                            //else
+                            //{
+                            //    int l = xmlNode.Value.Length;
+                            //}
+                        }
+//#if DEBUG
+//                        if (xmlType == XmlNodeType.CDATA)
+//                        {
+//                            int debug = 1;
+//                        }
+
+//                        if (xmlType == XmlNodeType.SignificantWhitespace)
+//                        {
+//                            int debug = 1;
+//                        }
+//#endif
+                        //string text = xmlNode.Value.Trim();
+                        string text = Regex.Replace(xmlNode.Value, @"\s+", " ");
+
+                        Debug.Assert(!string.IsNullOrEmpty(text));
+
+//#if DEBUG
+//                        if (text.Length != xmlNode.Value.Length)
+//                        {
+//                            int debug = 1;
+//                            //Debugger.Break();
+//                        }
+
+//                        if (string.IsNullOrEmpty(text))
+//                        {
+//                            int debug = 1;
+//                        }
+//                        if (xmlType != XmlNodeType.Whitespace && text == " ")
+//                        {
+//                            int debug = 1;
+//                        }
+//                        if (text == "DAISY")
+//                        {
+//                            int debug = 1;
+//                        }
+//                        if (text == "XML")
+//                        {
+//                            int debug = 1;
+//                        }
+//#endif
+                        if (string.IsNullOrEmpty(text))
+                        {
+                            break;
+                        }
                         TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
                         textMedia.Text = text;
 
                         ChannelsProperty cProp = presentation.PropertyFactory.CreateChannelsProperty();
                         cProp.SetMedia(m_textChannel, textMedia);
+
 
                         int counter = 0;
                         foreach (XmlNode childXmlNode in xmlNode.ParentNode.ChildNodes)
@@ -436,22 +496,22 @@ namespace urakawa.daisy.import
                     Path.GetDirectoryName(m_Book_FilePath),
                     relativePath);
 
-                if (File.Exists ( styleSheetPath ))
-                    {
+                if (File.Exists(styleSheetPath))
+                {
                     ExternalFiles.ExternalFileData efd = null;
-                    switch (Path.GetExtension ( relativePath ).ToLower ())
-                        {
-                    case ".css":
-                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData> ();
-                    break;
+                    switch (Path.GetExtension(relativePath).ToLower())
+                    {
+                        case ".css":
+                            efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
+                            break;
 
-                    case ".xslt":
-                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData> ();
-                    break;
-                        }
-
-                    if (efd != null) efd.InitializeWithData ( styleSheetPath, relativePath, true );
+                        case ".xslt":
+                            efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
+                            break;
                     }
+
+                    if (efd != null) efd.InitializeWithData(styleSheetPath, relativePath, true);
+                }
             }
         }
     }

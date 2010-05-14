@@ -578,8 +578,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, mainSeqNode, "fill", "remove");
                     AddMetadata_Smil(smilDocument, FormatTimeString(smilElapseTime), currentSmilCustomTestList);
 
-                    XmlDocumentHelper.WriteXmlDocumentToFile(smilDocument,
-                        Path.Combine(m_OutputDirectory, smilFileName));
+                    SaveXukAction.WriteXmlDocument(smilDocument, Path.Combine(m_OutputDirectory, smilFileName));
 
                     smilElapseTime.Add(durationOfCurrentSmil);
                     m_FilesList_Smil.Add(smilFileName);
@@ -623,8 +622,7 @@ namespace urakawa.daisy.export
                 ncxDocument = null;
                 return;
             }
-            XmlDocumentHelper.WriteXmlDocumentToFile(m_DTBDocument,
-              Path.Combine(m_OutputDirectory, m_Filename_Content));
+            SaveXukAction.WriteXmlDocument(m_DTBDocument, Path.Combine(m_OutputDirectory, m_Filename_Content));
 
             if (RequestCancellation)
             {
@@ -635,8 +633,7 @@ namespace urakawa.daisy.export
             // write ncs document to file
             m_TotalTime = new Time(smilElapseTime.AsTimeSpan);
             AddMetadata_Ncx(ncxDocument, totalPageCount.ToString(), maxNormalPageNumber.ToString(), maxDepth.ToString(), ncxCustomTestList);
-            XmlDocumentHelper.WriteXmlDocumentToFile(ncxDocument,
-                Path.Combine(m_OutputDirectory, m_Filename_Ncx));
+            SaveXukAction.WriteXmlDocument(ncxDocument, Path.Combine(m_OutputDirectory, m_Filename_Ncx));
         }
 
         private bool IsHeadingNode(urakawa.core.TreeNode node)
