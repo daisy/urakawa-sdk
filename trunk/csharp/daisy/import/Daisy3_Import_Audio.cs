@@ -11,6 +11,7 @@ using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
 using urakawa.media.timing;
 using urakawa.property.channel;
+using urakawa.xuk;
 
 namespace urakawa.daisy.import
 {
@@ -71,7 +72,7 @@ namespace urakawa.daisy.import
         private void parseSmil(string fullSmilPath)
         {
             if (RequestCancellation) return;
-            XmlDocument smilXmlDoc = readXmlDocument(fullSmilPath);
+            XmlDocument smilXmlDoc = OpenXukAction.ParseXmlDocument(fullSmilPath, false);
 
             if (RequestCancellation) return;
             //we skip SMIL metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)

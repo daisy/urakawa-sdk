@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -13,6 +14,72 @@ namespace urakawa.xuk
     ///</summary>
     public class SaveXukAction : ProgressAction
     {
+        public static XmlWriterSettings GetDefaultXmlWriterConfiguration(bool pretty)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+
+            settings.Encoding = Encoding.UTF8;
+
+            settings.NewLineHandling = NewLineHandling.Replace;
+            settings.NewLineChars = Environment.NewLine;
+
+            if (!pretty)
+            {
+                settings.Indent = false;
+                settings.NewLineOnAttributes = false;
+            }
+            else
+            {
+                settings.Indent = true;
+                settings.IndentChars = "\t";
+                settings.NewLineOnAttributes = true;
+            }
+
+            return settings;
+        }
+
+        public static void WriteXmlDocument(XmlDocument xmlDoc, string path)
+        {
+            const bool pretty = true;
+
+            xmlDoc.PreserveWhitespace = false;
+            xmlDoc.XmlResolver = null;
+
+            XmlWriterSettings settings = GetDefaultXmlWriterConfiguration(pretty);
+
+            using (XmlWriter xmlWriter = XmlWriter.Create(path, settings))
+            {
+                if (pretty && xmlWriter is XmlTextWriter)
+                {
+                    ((XmlTextWriter)xmlWriter).Formatting = Formatting.Indented;
+                }
+
+                try
+                {
+                    xmlDoc.Save(xmlWriter);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+
+                    // No message box: use debugging instead (inspect stack trace, watch values)
+                    //MessageBox.Show(e.ToString());
+
+                    // The Fail() method is better:
+                    //System.Diagnostics.Debug.Fail(e.Message);
+
+                    //Or you can explicitely break:
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+                finally
+                {
+                    xmlWriter.Close();
+                }
+            }
+        }
+
         public override void DoWork()
         {
             Execute();
@@ -24,34 +91,6 @@ namespace urakawa.xuk
         private readonly IXukAble mSourceXukAble;
         private Project m_Project;
 
-        private static Stream GetStreamFromUri(Uri src)
-        {
-            FileStream fs = new FileStream(src.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
-            return fs;
-        }
-
-        private void initializeXmlWriter(Stream stream)
-        {
-            XmlWriterSettings settings = new XmlWriterSettings();
-
-            settings.Encoding = Encoding.UTF8;
-
-            settings.NewLineHandling = NewLineHandling.Replace;
-            settings.NewLineChars = Environment.NewLine;
-
-            if (!mSourceXukAble.IsPrettyFormat())
-            {
-                settings.Indent = false;
-                settings.NewLineOnAttributes = false;
-            }
-            else
-            {
-                settings.Indent = true;
-                settings.IndentChars = "\t";
-                settings.NewLineOnAttributes = true;
-            }
-            mXmlWriter = XmlWriter.Create(stream, settings);
-        }
 
         /// <summary>
         /// Constructor
@@ -95,7 +134,9 @@ namespace urakawa.xuk
             mDestUri = destUri;
             mSourceXukAble = xukAble;
             mDestStream = destStream;
-            initializeXmlWriter(mDestStream);
+
+            XmlWriterSettings settings = GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
+            mXmlWriter = XmlWriter.Create(mDestStream, settings);
         }
 
 
@@ -149,8 +190,10 @@ namespace urakawa.xuk
                 Progress -= progressing;
             };
 
-            mDestStream = GetStreamFromUri(mDestUri);
-            initializeXmlWriter(mDestStream);
+            mDestStream = new FileStream(mDestUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
+
+            XmlWriterSettings settings = GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
+            mXmlWriter = XmlWriter.Create(mDestStream, settings);
         }
 
         private void closeOutput()
@@ -222,8 +265,10 @@ namespace urakawa.xuk
                             "xsi",
                             "noNamespaceSchemaLocation",
                             "http://www.w3.org/2001/XMLSchema-instance",
-                            String.Format("{0} {1}", m_Project.XukNamespaceUri + (m_Project.XukNamespaceUri.EndsWith("/") ? "" : "/"),
-                                          XukAble.XUK_XSD_PATH));
+                            String.Format("{0}{1}",
+                            m_Project.XukNamespaceUri
+                            + (m_Project.XukNamespaceUri.EndsWith("/") ? "" : "/"),
+                            XukAble.XUK_XSD_PATH));
                     }
                 }
                 mSourceXukAble.XukOut(mXmlWriter, mDestUri, this);

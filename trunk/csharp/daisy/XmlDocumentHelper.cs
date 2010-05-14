@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using urakawa.xuk;
 
 namespace urakawa.daisy
 {
@@ -185,28 +186,29 @@ namespace urakawa.daisy
             yield break;
         }
 
-        public static void WriteXmlDocumentToFile(XmlDocument xmlDoc, string path)
-        {
-            if (!File.Exists(path))
-            {
-                File.Create(path).Close();
-            }
-
-            XmlTextWriter writer = null;
-            try
-            {
-                writer = new XmlTextWriter(path, null);
-                writer.Formatting = Formatting.Indented;
-                xmlDoc.Save(writer);
-            }
-            finally
-            {
-                if (writer != null)
-                {
-                    writer.Close();
-                }
-            }
-        }
+        //public static void WriteXmlDocumentToFile(XmlDocument xmlDoc, string path)
+        //{
+        //    //SEE 
+        //    //SaveXukAction.WriteXmlDocument(xmlDoc, path);
+        //    //if (!File.Exists(path))
+        //    //{
+        //    //    File.Create(path).Close();
+        //    //}
+        //    //XmlTextWriter writer = null;
+        //    //try
+        //    //{
+        //    //    writer = new XmlTextWriter(path, null);
+        //    //    writer.Formatting = Formatting.Indented;
+        //    //    xmlDoc.Save(writer);
+        //    //}
+        //    //finally
+        //    //{
+        //    //    if (writer != null)
+        //    //    {
+        //    //        writer.Close();
+        //    //    }
+        //    //}
+        //}
 
         public static XmlAttribute CreateAppendXmlAttribute(XmlDocument xmlDoc, XmlNode node, string name, string val)
         {

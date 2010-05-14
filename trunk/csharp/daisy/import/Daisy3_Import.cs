@@ -146,7 +146,7 @@ namespace urakawa.daisy.import
             {
                 case ".opf":
                     {
-                        XmlDocument opfXmlDoc = readXmlDocument(m_Book_FilePath);
+                        XmlDocument opfXmlDoc = OpenXukAction.ParseXmlDocument(m_Book_FilePath, false);
 
                         if (RequestCancellation) break;
                         reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingOPF, Path.GetFileName(m_Book_FilePath)));  
@@ -156,7 +156,7 @@ namespace urakawa.daisy.import
                     }
                 case ".xml":
                     {
-                        XmlDocument contentXmlDoc = readXmlDocument(m_Book_FilePath);
+                        XmlDocument contentXmlDoc = OpenXukAction.ParseXmlDocument(m_Book_FilePath, true);
 
                         if (RequestCancellation) break;
                         reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, Path.GetFileName(m_Book_FilePath)));  

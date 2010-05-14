@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using urakawa.xuk;
 
 namespace urakawa.daisy.import
 {
@@ -38,7 +39,7 @@ namespace urakawa.daisy.import
             {
                 if (RequestCancellation) return;
                 string fullDtbookPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), dtbookPath);
-                XmlDocument dtbookXmlDoc = readXmlDocument(fullDtbookPath);
+                XmlDocument dtbookXmlDoc = OpenXukAction.ParseXmlDocument(fullDtbookPath, true);
 
                 if (RequestCancellation) return;
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, dtbookPath)); 
@@ -53,7 +54,7 @@ namespace urakawa.daisy.import
             {
                 if (RequestCancellation) return;
                 string fullNcxPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), ncxPath);
-                XmlDocument ncxXmlDoc = readXmlDocument(fullNcxPath);
+                XmlDocument ncxXmlDoc = OpenXukAction.ParseXmlDocument(fullNcxPath, false);
 
                 if (RequestCancellation) return;
                 reportProgress(-1, "Parsing metadata: [" + ncxPath + "]");
