@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml;
 using urakawa.command;
 using urakawa.core;
-using urakawa.media;
 using urakawa.media.data;
 using urakawa.progress;
 using urakawa.xuk;
@@ -69,21 +69,73 @@ namespace urakawa.commands
             }
             NewText = newTxt;
 
-            AbstractTextMedia media = TreeNode.GetTextMedia();
-            if (media == null)
+            string txt = GetText(TreeNode);
+            if (string.IsNullOrEmpty(txt))
             {
-                throw new ArgumentNullException("TreeNode.GetTextMedia()");
+                throw new ArgumentNullException("GetText(TreeNode)");
             }
-            if (string.IsNullOrEmpty(media.Text))
-            {
-                throw new ArgumentNullException("TreeNode.GetTextMedia().Text");
-            }
-            OldText = media.Text;
-            
+            OldText = txt;
+
             //m_UsedMediaData.Add(NOTHING);
 
             ShortDescription = "Change TreeNode Text";
             LongDescription = "Change the text of a TreeNode";
+        }
+
+        public static string GetText(TreeNode node)
+        {
+            var textMedia = node.GetTextMedia();
+            if (textMedia != null)
+            {
+                return textMedia.Text;
+            }
+            else
+            {
+                QualifiedName qname = node.GetXmlElementQName();
+                if (qname != null && qname.LocalName.ToLower() == "img")
+                {
+                    var xmlAttr = node.GetXmlProperty().GetAttribute("alt");
+                    if (xmlAttr != null)
+                    {
+                        return xmlAttr.Value;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static void SetText(TreeNode node, string txt)
+        {
+            var textMedia = node.GetTextMedia();
+            if (textMedia != null)
+            {
+                textMedia.Text = txt;
+                return;
+            }
+            else
+            {
+                QualifiedName qname = node.GetXmlElementQName();
+                if (qname != null && qname.LocalName.ToLower() == "img")
+                {
+                    var xmlAttr = node.GetXmlProperty().GetAttribute("alt");
+                    if (xmlAttr != null)
+                    {
+                        xmlAttr.Value = txt;
+                        return;
+                    }
+                }
+            }
+            Debug.Fail("WTF ??");
+        }
+
+        public override void Execute()
+        {
+            SetText(TreeNode, NewText);
+        }
+
+        public override void UnExecute()
+        {
+            SetText(TreeNode, OldText);
         }
 
         public override bool CanExecute
@@ -95,19 +147,6 @@ namespace urakawa.commands
         {
             get { return true; }
         }
-
-        public override void Execute()
-        {
-            AbstractTextMedia media = TreeNode.GetTextMedia();
-            media.Text = NewText;
-        }
-
-        public override void UnExecute()
-        {
-            AbstractTextMedia media = TreeNode.GetTextMedia();
-            media.Text = OldText;
-        }
-
         private List<MediaData> m_UsedMediaData = new List<MediaData>();
         public override IEnumerable<MediaData> UsedMediaData
         {
@@ -141,6 +180,7 @@ namespace urakawa.commands
             base.XukOutChildren(destination, baseUri, handler);
         }
     }
+
     public class TreeNodeSetIsMarkedCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
