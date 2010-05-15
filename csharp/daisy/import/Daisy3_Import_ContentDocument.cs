@@ -362,46 +362,38 @@ namespace urakawa.daisy.import
                             //    int l = xmlNode.Value.Length;
                             //}
                         }
-//#if DEBUG
-//                        if (xmlType == XmlNodeType.CDATA)
-//                        {
-//                            int debug = 1;
-//                        }
+#if DEBUG
+                        if (xmlType == XmlNodeType.CDATA)
+                        {
+                            Debugger.Break();
+                        }
 
-//                        if (xmlType == XmlNodeType.SignificantWhitespace)
-//                        {
-//                            int debug = 1;
-//                        }
-//#endif
+                        if (xmlType == XmlNodeType.SignificantWhitespace)
+                        {
+                            Debugger.Break();
+                        }
+#endif
                         //string text = xmlNode.Value.Trim();
                         string text = Regex.Replace(xmlNode.Value, @"\s+", " ");
 
                         Debug.Assert(!string.IsNullOrEmpty(text));
 
-//#if DEBUG
-//                        if (text.Length != xmlNode.Value.Length)
-//                        {
-//                            int debug = 1;
-//                            //Debugger.Break();
-//                        }
+#if DEBUG
+                        if (text.Length != xmlNode.Value.Length)
+                        {
+                            int debug = 1;
+                            //Debugger.Break();
+                        }
 
-//                        if (string.IsNullOrEmpty(text))
-//                        {
-//                            int debug = 1;
-//                        }
-//                        if (xmlType != XmlNodeType.Whitespace && text == " ")
-//                        {
-//                            int debug = 1;
-//                        }
-//                        if (text == "DAISY")
-//                        {
-//                            int debug = 1;
-//                        }
-//                        if (text == "XML")
-//                        {
-//                            int debug = 1;
-//                        }
-//#endif
+                        if (string.IsNullOrEmpty(text))
+                        {
+                            Debugger.Break();
+                        }
+                        if (xmlType != XmlNodeType.Whitespace && text == " ")
+                        {
+                            Debugger.Break();
+                        }
+#endif
                         if (string.IsNullOrEmpty(text))
                         {
                             break;
@@ -417,7 +409,11 @@ namespace urakawa.daisy.import
                         foreach (XmlNode childXmlNode in xmlNode.ParentNode.ChildNodes)
                         {
                             XmlNodeType childXmlType = childXmlNode.NodeType;
-                            if (childXmlType == XmlNodeType.Text || childXmlType == XmlNodeType.Element)
+                            if (childXmlType == XmlNodeType.Text
+                                || childXmlType == XmlNodeType.Element
+                                || childXmlType == XmlNodeType.Whitespace
+                                || childXmlType == XmlNodeType.SignificantWhitespace
+                                || childXmlType == XmlNodeType.CDATA)
                             {
                                 counter++;
                             }
