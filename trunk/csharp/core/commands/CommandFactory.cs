@@ -1,7 +1,6 @@
 ﻿using urakawa.command;
 using urakawa.core;
 using urakawa.media.data.audio;
-using urakawa.media.timing;
 using urakawa.xuk;
 using urakawa.metadata;
 
@@ -17,11 +16,10 @@ namespace urakawa.commands
         {
         }
 
-        public TreeNodeSetManagedAudioMediaCommand CreateTreeNodeSetManagedAudioMediaCommand(
-                                    TreeNode treeNode, ManagedAudioMedia managedMedia)
+        public TreeNodeSetManagedAudioMediaCommand CreateTreeNodeSetManagedAudioMediaCommand(TreeNode treeNode, ManagedAudioMedia managedMedia, TreeNode currentTreeNode)
         {
             TreeNodeSetManagedAudioMediaCommand command = Create<TreeNodeSetManagedAudioMediaCommand>();
-            command.Init(treeNode, managedMedia);
+            command.Init(treeNode, managedMedia, currentTreeNode);
             return command;
         }
 
