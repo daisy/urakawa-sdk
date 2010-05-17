@@ -391,7 +391,8 @@ namespace urakawa.daisy.import
                         }
                         if (xmlType != XmlNodeType.Whitespace && text == " ")
                         {
-                            Debugger.Break();
+                            int debug = 1;
+                            //Debugger.Break();
                         }
 #endif
                         if (string.IsNullOrEmpty(text))

@@ -1248,7 +1248,7 @@ namespace urakawa
             TreeNode treeNode = TreeNodeFactory.Create();
             ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
             manMedia.MediaData = mdAudio;
-            TreeNodeSetManagedAudioMediaCommand cmd1 = CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
+            TreeNodeSetManagedAudioMediaCommand cmd1 = CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia, treeNode);
             foreach (var mediaData in cmd1.UsedMediaData)
             {
                 DebugFix.Assert(mediaData == cmd1.ManagedAudioMedia.AudioMediaData);
