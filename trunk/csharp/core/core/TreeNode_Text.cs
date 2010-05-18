@@ -164,7 +164,7 @@ namespace urakawa.core
                 {
                     return null;
                 }
-                return textMedia.Text;
+                return textMedia.Text + " ";
             }
             SequenceMedia seq = GetTextSequenceMedia();
             if (seq != null)
