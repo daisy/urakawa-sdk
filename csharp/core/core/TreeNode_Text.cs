@@ -8,6 +8,96 @@ namespace urakawa.core
 {
     public partial class TreeNode
     {
+        public static bool TextIsPunctuation(char text)
+        {
+            return text == ' ' || text == '.' || text == ',' || text == '?' || text == '!' || text == '"' || text == '\'' ||
+                   text == '(' || text == ')' || text == '{' || text == '}' || text == '[' || text == ']';
+        }
+
+        public static bool TextOnlyContainsPunctuation(string text)
+        {
+            CharEnumerator enumtor = text.GetEnumerator();
+            while (enumtor.MoveNext())
+            {
+                if (!TextIsPunctuation(enumtor.Current))
+                    return false;
+            }
+            return true; // includes empty "text" (when space is trimmed on caller's side)
+        }
+
+        public static TreeNode EnsureTreeNodeHasNoSignificantTextOnlySiblings(TreeNode rootBoundary, TreeNode proposed)
+        {
+            if (rootBoundary == null
+                || proposed != null
+                && !(rootBoundary == proposed || proposed.IsDescendantOf(rootBoundary)))
+            {
+                return null;
+            }
+
+            if (proposed == null)
+            {
+                proposed = rootBoundary.GetFirstDescendantWithText(true);
+                if (proposed == null)
+                {
+                    return null;
+                }
+
+                while (proposed != null && (proposed.GetXmlElementQName() == null
+                    || TextOnlyContainsPunctuation(proposed.GetText(true).Trim())
+                    ))
+                {
+                    proposed = proposed.GetNextSiblingWithText(true);
+                }
+
+                if (proposed == null)
+                {
+                    return null;
+                }
+            }
+
+            //if (rootBoundary == proposed)
+            //{
+            //    return rootBoundary;
+            //}
+
+            if (proposed.Parent == null)
+            {
+                return proposed;
+            }
+
+
+            bool atLeastOneSiblingIsSignificantTextOnly = false;
+
+            foreach (var child in proposed.Parent.Children.ContentsAs_YieldEnumerable)
+            {
+                if (child == proposed)
+                {
+                    //
+                }
+                if (child.GetXmlElementQName() != null)
+                {
+                    continue;
+                }
+                string text = child.GetTextFlattened(true);
+                if (!string.IsNullOrEmpty(text))
+                {
+                    text = text.Trim();
+                    if (TextOnlyContainsPunctuation(text))
+                    {
+                        continue; // we ignore insignificant punctuation
+                    }
+
+                    atLeastOneSiblingIsSignificantTextOnly = true;
+                }
+            }
+            if (!atLeastOneSiblingIsSignificantTextOnly)
+            {
+                return proposed;
+            }
+
+            return EnsureTreeNodeHasNoSignificantTextOnlySiblings(rootBoundary, proposed.Parent);
+        }
+
         public Media GetMediaInTextChannel()
         {
             return GetMediaInChannel<TextChannel>();
@@ -150,9 +240,14 @@ namespace urakawa.core
             return null;
         }
 
-        public string GetTextMediaFlattened(bool acceptAltText)
+        public string GetTextFlattened(bool acceptAltText)
         {
             return GetTextMediaFlattened(true, acceptAltText);
+        }
+
+        public string GetText(bool acceptAltText)
+        {
+            return GetTextMediaFlattened(false, acceptAltText);
         }
 
         private string GetTextMediaFlattened(bool deep, bool acceptAltText)

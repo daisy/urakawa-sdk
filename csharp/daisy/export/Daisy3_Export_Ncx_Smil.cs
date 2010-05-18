@@ -363,7 +363,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "playOrder", "");
                     string strTypeVal = n.GetXmlProperty().GetAttribute("page").Value;
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "type", strTypeVal);
-                    string strPageValue = n.GetTextMediaFlattened(true);
+                    string strPageValue = n.GetTextFlattened(true);
                     ++totalPageCount;
 
                     playOrderList_Sorted.Add(pageTargetNode);
@@ -459,7 +459,7 @@ namespace urakawa.daisy.export
                     XmlNode txtNode = ncxDocument.CreateElement(null, "text", navTargetNode.NamespaceURI);
                     navLabelNode.AppendChild(txtNode);
                     txtNode.AppendChild(
-                        ncxDocument.CreateTextNode(n.GetTextMediaFlattened(true)));
+                        ncxDocument.CreateTextNode(n.GetTextFlattened(true)));
 
                     // create audio node only if external audio media is not null
                     if (externalAudio != null)
@@ -696,7 +696,7 @@ namespace urakawa.daisy.export
 
         private XmlNode CreateDocTitle(XmlDocument ncxDocument, XmlNode ncxRootNode, urakawa.core.TreeNode n)
         {
-            string txtMedia = n.GetTextMediaFlattened(true);
+            string txtMedia = n.GetTextFlattened(true);
             urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
             XmlNode docNode = ncxDocument.CreateElement(null,
@@ -728,7 +728,7 @@ namespace urakawa.daisy.export
         private XmlNode CreateNavPointWithoutContentNode(XmlDocument ncxDocument, urakawa.core.TreeNode urakawaNode, urakawa.core.TreeNode currentHeadingTreeNode, urakawa.core.TreeNode n, Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap)
         {
             XmlNode navMapNode = ncxDocument.GetElementsByTagName("navMap")[0];
-            string txtMedia = n.GetTextMediaFlattened(true);
+            string txtMedia = n.GetTextFlattened(true);
             urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
             // first create navPoints

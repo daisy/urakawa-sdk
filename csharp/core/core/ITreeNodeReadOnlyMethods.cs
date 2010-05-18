@@ -40,7 +40,8 @@ namespace urakawa.core
         TreeNode GetNextSiblingWithManagedAudio();
         TreeNode GetPreviousSiblingWithManagedAudio();
 
-        string GetTextMediaFlattened(bool acceptAltText);
+        string GetTextFlattened(bool acceptAltText);
+        string GetText(bool acceptAltText);
 
         TreeNode GetFirstDescendantWithText(bool acceptAltText);
         TreeNode GetLastDescendantWithText(bool acceptAltText);
