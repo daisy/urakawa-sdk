@@ -2,6 +2,7 @@
 using System.IO;
 using System.Xml;
 using AudioLib;
+using urakawa.media.data.audio;
 using urakawa.xuk;
 
 namespace urakawa.daisy.import
@@ -25,9 +26,11 @@ namespace urakawa.daisy.import
         }
 
         private readonly bool m_SkipACM;
-        public Daisy3_Import(string bookfile, string outDir, bool skipACM)
+        private readonly SampleRate m_audioProjectSampleRate;
+        public Daisy3_Import(string bookfile, string outDir, bool skipACM, SampleRate audioProjectSampleRate)
         {
             m_SkipACM = skipACM;
+            m_audioProjectSampleRate = audioProjectSampleRate;
 
             reportProgress(10, UrakawaSDK_daisy_Lang.InitializeImport);                               
 
@@ -110,6 +113,10 @@ namespace urakawa.daisy.import
 #endif
 
             Presentation presentation = m_Project.AddNewPresentation(new Uri(m_outDirectory), Path.GetFileName(m_Book_FilePath));
+
+            PCMFormatInfo pcmFormat = presentation.MediaDataManager.DefaultPCMFormat.Copy();
+            pcmFormat.Data.SampleRate = (ushort) m_audioProjectSampleRate;
+            presentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
 
             presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 

@@ -39,7 +39,12 @@ namespace urakawa.core
                 proposed = rootBoundary.GetFirstDescendantWithText(true);
                 if (proposed == null)
                 {
-                    return null;
+                    string text = rootBoundary.GetText(true);
+                    if (string.IsNullOrEmpty(text) || TextOnlyContainsPunctuation(text.Trim()))
+                    {
+                        return null;
+                    }
+                    proposed = rootBoundary;
                 }
 
                 while (proposed != null && (proposed.GetXmlElementQName() == null
