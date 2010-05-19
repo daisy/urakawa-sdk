@@ -340,7 +340,7 @@ namespace urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unrecognized metadata item.
+        ///   Looks up a localized string similar to A custom metadata item.
         /// </summary>
         public static string Metadata_desc_unrecognized {
             get {
