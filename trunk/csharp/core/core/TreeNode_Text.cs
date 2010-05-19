@@ -27,9 +27,21 @@ namespace urakawa.core
 
         public static TreeNode EnsureTreeNodeHasNoSignificantTextOnlySiblings(TreeNode rootBoundary, TreeNode proposed)
         {
-            if (rootBoundary == null
-                || proposed != null
-                && !(rootBoundary == proposed || proposed.IsDescendantOf(rootBoundary)))
+            if (rootBoundary == null)
+            {
+                return null;
+            }
+
+        checkProposed:
+
+            if (proposed != null
+                && rootBoundary == proposed)
+            {
+                return rootBoundary;
+            }
+
+            if (proposed != null
+                && !proposed.IsDescendantOf(rootBoundary))
             {
                 return null;
             }
@@ -58,6 +70,8 @@ namespace urakawa.core
                 {
                     return null;
                 }
+
+                goto checkProposed;
             }
 
             //if (rootBoundary == proposed)
