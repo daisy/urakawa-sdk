@@ -9,6 +9,8 @@ namespace urakawa.daisy.export
 {
     partial class Daisy3_Export
     {
+        List<string> m_DtbAllowedInXMetadata = new List<string>();
+        List<string> m_AllowedInDcMetadata = new List<string>();
 
         private void CreateOpfDocument()
         {
@@ -31,6 +33,38 @@ namespace urakawa.daisy.export
             const string mediaType_Css = "text/css";
             const string mediaType_Transform = "text/xsl";
             const string mediaType_DTD = "application/xml-dtd";
+
+            m_AllowedInDcMetadata.Add("dc:title");
+            m_AllowedInDcMetadata.Add("dc:creator");
+            m_AllowedInDcMetadata.Add("dc:subject");
+            m_AllowedInDcMetadata.Add("dc:description");
+            m_AllowedInDcMetadata.Add("dc:publisher");
+            m_AllowedInDcMetadata.Add("dc:contributor");
+            m_AllowedInDcMetadata.Add("dc:date");
+            m_AllowedInDcMetadata.Add("dc:type");
+            m_AllowedInDcMetadata.Add("dc:format");
+            m_AllowedInDcMetadata.Add("dc:identifier");
+            m_AllowedInDcMetadata.Add("dc:source");
+            m_AllowedInDcMetadata.Add("dc:language");
+            m_AllowedInDcMetadata.Add("dc:relation");
+            m_AllowedInDcMetadata.Add("dc:coverage");
+            m_AllowedInDcMetadata.Add("dc:rights");
+
+            m_DtbAllowedInXMetadata.Add("dtb:sourcedate");
+            m_DtbAllowedInXMetadata.Add("dtb:sourceedition");
+            m_DtbAllowedInXMetadata.Add("dtb:sourcepublisher");
+            m_DtbAllowedInXMetadata.Add("dtb:sourcerights");
+            m_DtbAllowedInXMetadata.Add("dtb:sourcetitle");
+            m_DtbAllowedInXMetadata.Add("dtb:multimediatype");
+            m_DtbAllowedInXMetadata.Add("dtb:multimediacontent");
+            m_DtbAllowedInXMetadata.Add("dtb:narrator");
+            m_DtbAllowedInXMetadata.Add("dtb:producer");
+            m_DtbAllowedInXMetadata.Add("dtb:produceddate");
+            m_DtbAllowedInXMetadata.Add("dtb:revision");
+            m_DtbAllowedInXMetadata.Add("dtb:revisiondate");
+            m_DtbAllowedInXMetadata.Add("dtb:revisiondescription");
+            m_DtbAllowedInXMetadata.Add("dtb:totaltime");
+            m_DtbAllowedInXMetadata.Add("dtb:audioformat");
 
             // add all files to manifest
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
@@ -190,24 +224,42 @@ namespace urakawa.daisy.export
             {
                 if (mdId == m
                     || m.NameContentAttribute.Name.ToLower() == "dtb:totaltime"
-                    || m.NameContentAttribute.Name.ToLower() == "dc:format") continue;
+                    || m.NameContentAttribute.Name.ToLower() == "dc:format"
+                    || m.NameContentAttribute.Name.ToLower() == "dtb:multimediatype"
+                    || m.NameContentAttribute.Name.ToLower() == "dtb:multimediacontent") 
+                    continue;
 
                 XmlNode metadataNodeCreated = null;
-                if (m.NameContentAttribute.Name.StartsWith("dc:"))
+                //if (m.NameContentAttribute.Name.StartsWith("dc:"))
+                if (m_AllowedInDcMetadata.Contains(m.NameContentAttribute.Name.ToLower()))
                 {
                     metadataNodeCreated = AddMetadataAsInnerText(opfDocument, dc_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
+                    // add other metadata attributes if any
+                    foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_YieldEnumerable)
+                    {
+                        if (ma.Name == "id") continue;
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metadataNodeCreated, ma.Name, ma.Value);
+                    }
                 }
-                else
+                //else
+                //items in x-metadata may start with dtb: ONLY if they are in the list of allowed dtb:* items
+                //OR, items in x-metadata may be anything else (non-dtb:*).
+                else if (
+                    (m.NameContentAttribute.Name.ToLower().StartsWith("dtb:") 
+                    && m_DtbAllowedInXMetadata.Contains(m.NameContentAttribute.Name.ToLower()))
+                || !m.NameContentAttribute.Name.ToLower().StartsWith("dtb:")
+                    )
                 {
                     metadataNodeCreated = AddMetadataAsAttributes(opfDocument, x_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
+                    // add other metadata attributes if any
+                    foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_YieldEnumerable)
+                    {
+                        if (ma.Name == "id") continue;
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metadataNodeCreated, ma.Name, ma.Value);
+                    }
                 }
-                // add other metadata attributes if any
-                foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_YieldEnumerable)
-                {
-                    if (ma.Name == "id") continue;
-
-                    XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metadataNodeCreated, ma.Name, ma.Value);
-                }
+                
+                 
 
             } // end of metadata for each loop
 
