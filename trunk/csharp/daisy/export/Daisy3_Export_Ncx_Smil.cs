@@ -38,6 +38,8 @@ namespace urakawa.daisy.export
             Time smilElapseTime = new Time();
             List<string> ncxCustomTestList = new List<string>();
             List<urakawa.core.TreeNode> specialParentNodesAddedToNavList = new List<urakawa.core.TreeNode>();
+            bool isDocTitleAdded = false;
+
             //m_ProgressPercentage = 20;
             reportProgress(-1, UrakawaSDK_daisy_Lang.CreateSmilAndNcxFiles);
 
@@ -120,8 +122,12 @@ namespace urakawa.daisy.export
                     if (isDoctitle_1)
                     {
                         //urakawa.core.TreeNode n = textAudioNodesList[0];
-                        CreateDocTitle(ncxDocument, ncxRootNode, n);
+                    if (!isDocTitleAdded)
+                        {
+                        CreateDocTitle ( ncxDocument, ncxRootNode, n );
+                        isDocTitleAdded = true;
                         IsNcxNativeNodeAdded = true;
+                        }
                     }
                 }
 
@@ -479,12 +485,15 @@ namespace urakawa.daisy.export
 
                 if (!IsNcxNativeNodeAdded)
                 {
-                    if (isDoctitle_)
+                    if (isDoctitle_ && !isDocTitleAdded)
                     {
                         //urakawa.core.TreeNode n = textAudioNodesList[0];
-                        CreateDocTitle(ncxDocument, ncxRootNode, n);
+                    
+                    
+                        CreateDocTitle ( ncxDocument, ncxRootNode, n );
+                        isDocTitleAdded = true;
                         IsNcxNativeNodeAdded = true;
-
+                        
                     }
                     else if (currentHeadingTreeNode != null)
                     {
