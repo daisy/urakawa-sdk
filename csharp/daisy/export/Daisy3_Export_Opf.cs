@@ -207,12 +207,12 @@ namespace urakawa.daisy.export
 
             AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totalTime", FormatTimeString(m_TotalTime));
 
-            if (m_Presentation.GetMetadata("dtb:multimediaType").Count == 0)
+            if (true || m_Presentation.GetMetadata("dtb:multimediaType").Count == 0)
             {
                 AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaType", "audioFullText");
             }
 
-            if (m_Presentation.GetMetadata("dtb:multimediaContent").Count == 0)
+            if (true || m_Presentation.GetMetadata("dtb:multimediaContent").Count == 0)
             {
                 AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaContent", "audio,text");
             }
@@ -222,16 +222,17 @@ namespace urakawa.daisy.export
 
             foreach (Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
             {
+                string lowerName = m.NameContentAttribute.Name.ToLower();
                 if (mdId == m
-                    || m.NameContentAttribute.Name.ToLower() == "dtb:totaltime"
-                    || m.NameContentAttribute.Name.ToLower() == "dc:format"
-                    || m.NameContentAttribute.Name.ToLower() == "dtb:multimediatype"
-                    || m.NameContentAttribute.Name.ToLower() == "dtb:multimediacontent") 
+                    || lowerName == "dtb:totaltime"
+                    || lowerName == "dc:format"
+                    || lowerName == "dtb:multimediatype"
+                    || lowerName == "dtb:multimediacontent") 
                     continue;
 
                 XmlNode metadataNodeCreated = null;
                 //if (m.NameContentAttribute.Name.StartsWith("dc:"))
-                if (m_AllowedInDcMetadata.Contains(m.NameContentAttribute.Name.ToLower()))
+                if (m_AllowedInDcMetadata.Contains(lowerName))
                 {
                     metadataNodeCreated = AddMetadataAsInnerText(opfDocument, dc_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
                     // add other metadata attributes if any
@@ -245,9 +246,8 @@ namespace urakawa.daisy.export
                 //items in x-metadata may start with dtb: ONLY if they are in the list of allowed dtb:* items
                 //OR, items in x-metadata may be anything else (non-dtb:*).
                 else if (
-                    (m.NameContentAttribute.Name.ToLower().StartsWith("dtb:") 
-                    && m_DtbAllowedInXMetadata.Contains(m.NameContentAttribute.Name.ToLower()))
-                || !m.NameContentAttribute.Name.ToLower().StartsWith("dtb:")
+                    (lowerName.StartsWith("dtb:") && m_DtbAllowedInXMetadata.Contains(lowerName))
+                    || !lowerName.StartsWith("dtb:")
                     )
                 {
                     metadataNodeCreated = AddMetadataAsAttributes(opfDocument, x_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
@@ -259,8 +259,6 @@ namespace urakawa.daisy.export
                     }
                 }
                 
-                 
-
             } // end of metadata for each loop
 
 
