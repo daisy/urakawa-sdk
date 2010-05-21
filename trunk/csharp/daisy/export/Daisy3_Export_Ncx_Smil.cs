@@ -363,7 +363,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "playOrder", "");
                     string strTypeVal = n.GetXmlProperty().GetAttribute("page").Value;
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "type", strTypeVal);
-                    string strPageValue = n.GetTextFlattened(true);
+                    string strPageValue = n.GetTextFlattened(true).Trim(' ');
                     ++totalPageCount;
 
                     playOrderList_Sorted.Add(pageTargetNode);
