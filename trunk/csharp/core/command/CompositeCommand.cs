@@ -174,7 +174,7 @@ namespace urakawa.command
         /// exception is passed as the inner exception of the thrown exception.</exception>
         public override void UnExecute()
         {
-            if (mCommands.Count == 0) throw new exception.CannotUndoException("Composite command is empty.");
+            if (mCommands.Count == 0) return; // throw new exception.CannotUndoException("Composite command is empty.");
             try
             {
                 for (int i = mCommands.Count - 1; i >= 0; --i) mCommands.Get(i).UnExecute();
@@ -197,7 +197,7 @@ namespace urakawa.command
         /// exception is passed as the inner exception of the thrown exception.</exception>
         public override void Execute()
         {
-            if (mCommands.Count == 0) throw new exception.CannotRedoException("Composite command is empty.");
+            if (mCommands.Count == 0) return; // throw new exception.CannotRedoException("Composite command is empty.");
             try
             {
                 foreach (Command command in mCommands.ContentsAs_YieldEnumerable) command.Execute();

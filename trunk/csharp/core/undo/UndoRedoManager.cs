@@ -483,11 +483,15 @@ namespace urakawa.undo
                 throw new exception.UndoRedoTransactionIsNotStartedException(
                     "Can not end transaction while no is active");
             }
+
             CompositeCommand command = mActiveTransactions.Pop();
-            if (command.ChildCommands.Count > 0)
-            {
-                command.UnExecute();
-            }
+            command.UnExecute();
+
+            //CompositeCommand command = mActiveTransactions.Pop();
+            //if (command.ChildCommands.Count > 0)
+            //{
+            //    command.UnExecute();
+            //}
             NotifyTransactionCancelled(command);
         }
 
