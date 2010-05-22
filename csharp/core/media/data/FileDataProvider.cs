@@ -117,6 +117,39 @@ namespace urakawa.media.data
             return Path.Combine(mManager.getDataFileDirectoryFullPath(), mDataFileRelativePath);
         }
 
+        public void InitByMovingExistingFile ( string path )
+            {
+            if (!File.Exists ( path ))
+                {
+                throw new exception.DataMissingException (
+                    String.Format ( "The data file {0} does not exist", path ) );
+                }
+
+            if (File.Exists ( getDataFileFullPath () ))
+                {
+                throw new exception.OperationNotValidException (
+                    String.Format ( "The data file {0} already exists", getDataFileFullPath () ) );
+                }
+
+            foreach (data.IDataProvider dp in mManager.getListOfManagedFileDataProviders ())
+                {
+                if (dp is FileDataProvider)
+                    {
+                    FileDataProvider fdp = (FileDataProvider)dp;
+                    if (fdp.getDataFileFullPath () == path)
+                        {
+                        throw new exception.OperationNotValidException (
+                            String.Format ( "The data file {0} is already managed", path ) );
+                        }
+                    }
+                }
+
+            
+            File.Move ( path, getDataFileFullPath() );
+
+            hasBeenInitialized  = true;
+            }
+
         #region IDataProvider Members
 
         private bool hasBeenInitialized = false;
