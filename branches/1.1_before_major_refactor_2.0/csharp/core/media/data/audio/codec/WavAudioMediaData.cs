@@ -553,6 +553,47 @@ namespace urakawa.media.data.audio.codec
 			notifyAudioDataInserted(this, insertPoint, duration);
 		}
 
+    public override void AppendPcmData ( IDataProvider fileDataProvider )
+        {
+        if (fileDataProvider.getMimeType () != FileDataProviderFactory.AUDIO_WAV_MIME_TYPE)
+            {
+            throw new exception.OperationNotValidException (
+                "The mime type of the given DataProvider is not WAV !" );
+            }
+
+        WavClip newSingleWavClip = new WavClip ( fileDataProvider );
+        mWavClips.Add ( newSingleWavClip );
+
+        checkPcmFormat ( newSingleWavClip );
+
+        notifyAudioDataInserted  ( this, new Time ( getAudioDuration().getTimeDeltaAsMilliseconds() ), newSingleWavClip.getMediaDuration() );
+        }
+
+    public override void AppendPcmData ( IDataProvider fileDataProvider, Time clipBegin, Time clipEnd )
+        {
+        if (fileDataProvider.getMimeType () != FileDataProviderFactory.AUDIO_WAV_MIME_TYPE)
+            {
+            throw new exception.OperationNotValidException (
+                "The mime type of the given DataProvider is not WAV !" );
+            }
+
+        WavClip newSingleWavClip = new WavClip ( fileDataProvider );
+        newSingleWavClip.setClipBegin (clipBegin.copy() );
+        newSingleWavClip.setClipEnd( clipEnd.copy() );
+        mWavClips.Add ( newSingleWavClip );
+
+        checkPcmFormat ( newSingleWavClip );
+
+        notifyAudioDataInserted ( this, new Time ( getAudioDuration().getTimeDeltaAsMilliseconds ()) , newSingleWavClip.getClipEnd ().getTimeDelta( newSingleWavClip.getClipBegin () ) );
+        }
+
+        private void checkPcmFormat ( WavClip clip )
+            {
+                if (!getMediaDataManager ().getEnforceSinglePCMFormat ())
+                {
+                return;
+                }
+            }
 
 		/// <summary>
 		/// Inserts audio of a given duration from a given source PCM data <see cref="Stream"/> to the wav audio media data

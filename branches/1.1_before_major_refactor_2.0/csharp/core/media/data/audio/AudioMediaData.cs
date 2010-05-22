@@ -331,6 +331,10 @@ namespace urakawa.media.data.audio
 			}
 		}
 
+        public abstract void AppendPcmData ( IDataProvider fileDataProvider );
+
+        public abstract void AppendPcmData ( IDataProvider fileDataProvider, Time clipBegin, Time clipEnd );
+
 
 		/// <summary>
 		/// Inserts audio data of a given duration at a given insert point
