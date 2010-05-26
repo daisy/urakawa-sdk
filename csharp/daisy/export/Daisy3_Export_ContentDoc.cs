@@ -8,6 +8,7 @@ using urakawa.media;
 using urakawa.metadata;
 using urakawa.core;
 using urakawa.ExternalFiles;
+using urakawa.xuk;
 
 namespace urakawa.daisy.export
 {
@@ -16,7 +17,7 @@ namespace urakawa.daisy.export
         private XmlDocument m_DTBDocument;
         private List<urakawa.core.TreeNode> m_NotesNodeList = new List<TreeNode>();
 
-        private string m_TempImageId = null;
+        private List<string> m_TempImageId = null;
 
         // to do regenerate ids
         private void CreateDTBookDocument()
@@ -239,10 +240,23 @@ namespace urakawa.daisy.export
                         } // attribute nodes created
 
                         if (xmlProp.LocalName == "book") return true;
-                        if (xmlProp.LocalName == "imggroup") m_TempImageId = null;
-                        if (xmlProp.LocalName == "caption" && !string.IsNullOrEmpty(m_TempImageId))
+                        if (xmlProp.LocalName == "imggroup")
                         {
-                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, currentXmlNode, "imgref", m_TempImageId);
+                            m_TempImageId = new List<string>(1);
+                        }
+                        if (m_TempImageId != null // !string.IsNullOrEmpty(m_TempImageId)
+                            && (xmlProp.LocalName == "caption" || xmlProp.LocalName == "prodnote"))
+                        {
+                            string imgIds = "";
+                            foreach (var imgId in m_TempImageId)
+                            {
+                                imgIds += imgId + " ";
+                            }
+                            imgIds = imgIds.Trim();
+                            if (!string.IsNullOrEmpty(imgIds))
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, currentXmlNode, "imgref", imgIds);
+                            }
                         }
                         // add id attribute in case it do not exists and it is required
                         if (IsIDRequired(currentXmlNode.LocalName))
@@ -252,10 +266,11 @@ namespace urakawa.daisy.export
                                 string id = GetNextID(ID_DTBPrefix);
                                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, currentXmlNode, "id", id);
                             }
-                            else if (xmlProp.LocalName == "img")
+
+                            if (xmlProp.LocalName == "img" && m_TempImageId != null)
                             {
                                 string id = currentXmlNode.Attributes.GetNamedItem("id").Value;
-                                m_TempImageId = id;
+                                m_TempImageId.Add(id);
                             }
                         }
 
@@ -317,7 +332,15 @@ namespace urakawa.daisy.export
 
                         return true;
                     },
-                    delegate(urakawa.core.TreeNode n) { });
+                    delegate(urakawa.core.TreeNode n)
+                    {
+                        property.xml.XmlProperty xmlProp = n.GetProperty<property.xml.XmlProperty>();
+                        //QualifiedName qName = n.GetXmlElementQName();
+                        if (xmlProp != null && xmlProp.LocalName == "imggroup")
+                        {
+                            m_TempImageId = null;
+                        }
+                    });
 
             if (RequestCancellation) return;
             // set references to new ids
