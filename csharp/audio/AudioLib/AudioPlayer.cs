@@ -145,20 +145,6 @@ namespace AudioLib
         private long m_PlaybackStartPosition;
         private long m_PlaybackEndPosition;
 
-        public void SetOutputDevice(Control handle, OutputDevice device)
-        {
-            if (handle != null)
-            {
-#if USE_SLIMDX
-                device.Device.SetCooperativeLevel(handle.Handle, CooperativeLevel.Priority);
-#else
-                device.Device.SetCooperativeLevel(handle, CooperativeLevel.Priority);
-#endif
-            }
-
-            OutputDevice = device;
-        }
-
         private readonly Object LOCK_DEVICES = new object();
         public void ClearDeviceCache()
         {
@@ -184,14 +170,18 @@ namespace AudioLib
                         m_CachedOutputDevices.Find(delegate(OutputDevice d) { return d.Name == name; });
                     if (foundCached != null && !foundCached.Device.Disposed)
                     {
-                        OutputDevice = foundCached;
+                        SetOutputDevice(handle, foundCached);
                         return;
                     }
                 }
             }
 
             List<OutputDevice> devices = OutputDevices;
-            OutputDevice found = devices.Find(delegate(OutputDevice d) { return d.Name == name; });
+            OutputDevice found = null;
+            lock (LOCK_DEVICES)
+            {
+                found = devices.Find(delegate(OutputDevice d) { return d.Name == name; });
+            }
             if (found != null)
             {
                 SetOutputDevice(handle, found);
@@ -229,6 +219,20 @@ namespace AudioLib
                     return outputDevices;
                 }
             }
+        }
+
+        private void SetOutputDevice(Control handle, OutputDevice device)
+        {
+            if (handle != null)
+            {
+#if USE_SLIMDX
+                device.Device.SetCooperativeLevel(handle.Handle, CooperativeLevel.Priority);
+#else
+                device.Device.SetCooperativeLevel(handle, CooperativeLevel.Priority);
+#endif
+            }
+
+            OutputDevice = device;
         }
 
         private OutputDevice m_OutputDevice;
