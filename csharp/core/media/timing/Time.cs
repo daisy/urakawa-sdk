@@ -81,7 +81,7 @@ namespace urakawa.media.timing
                 {
                     return long.MaxValue;
                 }
-                if (m_TimeSpan == TimeSpan.MaxValue)
+                if (m_TimeSpan == TimeSpan.MinValue)
                 {
                     return long.MinValue;
                 }
