@@ -574,8 +574,9 @@ namespace AudioLib
             {
                 if (m_RecordingFileWriter == null)
                 {
-                    FileInfo fi = new FileInfo(m_RecordedFilePath);
-                    m_RecordingFileWriter = new BinaryWriter(File.OpenWrite(fi.FullName));
+                    //FileInfo fi = new FileInfo(m_RecordedFilePath);
+                    //fi.FullName
+                    m_RecordingFileWriter = new BinaryWriter(File.OpenWrite(m_RecordedFilePath));
                 }
 
                 m_RecordingFileWriter.BaseStream.Position = m_TotalRecordedBytes +
@@ -697,14 +698,16 @@ namespace AudioLib
             {
                 m_RecordingFileWriter.Close();
 
-                FileInfo fileInfo = new FileInfo(m_RecordedFilePath);
+                //FileInfo fileInfo = new FileInfo(m_RecordedFilePath);
                 Stream stream = File.OpenWrite(m_RecordedFilePath);
+                long length = 0;
                 try
                 {
+                    length = stream.Length;
                     // overriding the existing RIFF header, this time with correct data length
                     m_RecordedFileRiffHeaderSize = RecordingPCMFormat.RiffHeaderWrite(stream,
                                                             (uint)
-                                                            (fileInfo.Length -
+                                                            (length -
                                                              (long)
                                                              m_RecordedFileRiffHeaderSize));
                 }
@@ -713,7 +716,7 @@ namespace AudioLib
                     stream.Close();
                 }
 
-                if (fileInfo.Length == (long)m_RecordedFileRiffHeaderSize) // no PCM data, just RIFF header
+                if (length <= (long)m_RecordedFileRiffHeaderSize) // no PCM data, just RIFF header
                 {
                     File.Delete(m_RecordedFilePath);
                     m_RecordedFilePath = null;
