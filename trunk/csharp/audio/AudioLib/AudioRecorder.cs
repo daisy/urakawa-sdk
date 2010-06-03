@@ -214,7 +214,19 @@ namespace AudioLib
                     List<InputDevice> inputDevices = new List<InputDevice>(devices.Count);
                     foreach (DeviceInformation info in devices)
                     {
-                        inputDevices.Add(new InputDevice(info));
+                        Console.WriteLine(info.ModuleName);
+                        Console.WriteLine(info.Description);
+                        Console.WriteLine(info.DriverGuid);
+                        try
+                        {
+                            inputDevices.Add(new InputDevice(info));
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine(ex.StackTrace);
+                            continue;
+                        }
                     }
                     m_CachedInputDevices = inputDevices;
                     return inputDevices;
