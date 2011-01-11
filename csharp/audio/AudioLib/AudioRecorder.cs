@@ -72,9 +72,10 @@ namespace AudioLib
                 m_PreviousState = m_State;
                 m_State = value;
 
-                var del = StateChanged;
-                if (del != null)
-                    del(this, new StateChangedEventArgs(m_PreviousState));
+                if ( StateChanged != null) StateChanged(this, new StateChangedEventArgs(m_PreviousState) ) ;
+                //var del = StateChanged;
+                //if (del != null)
+                    //del(this, new StateChangedEventArgs(m_PreviousState));
             }
         }
 
@@ -607,12 +608,18 @@ namespace AudioLib
 
             Array.Copy(incomingPcmData, m_PcmDataBuffer, m_PcmDataBuffer.Length);
 
-            var del = PcmDataBufferAvailable;
-            if (del != null)
+            if ( PcmDataBufferAvailable != null ) 
             {
                 m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                del(this, m_PcmDataBufferAvailableEventArgs);
+                PcmDataBufferAvailable (this, m_PcmDataBufferAvailableEventArgs);
+                
             }
+            //var del = PcmDataBufferAvailable;
+            //if (del != null)
+            //{
+                //m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
+                //del(this, m_PcmDataBufferAvailableEventArgs);
+            //}
 
             return circularBufferBytesAvailableForReading;
         }
@@ -747,9 +754,10 @@ namespace AudioLib
 
             if (wasRecording)
             {
-                var del = AudioRecordingFinished;
-                if (del != null)
-                    del(this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
+                if (AudioRecordingFinished != null) AudioRecordingFinished(this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
+                //var del = AudioRecordingFinished;
+                //if (del != null)
+                    //del(this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
             }
         }
     }

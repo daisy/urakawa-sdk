@@ -454,24 +454,29 @@ namespace AudioLib
                 + " -m " + channelsArg
                 + " \"" + sourceFile + "\" \"" + destinationFile + "\"";
 
-            var process = new Process
-            {
-                StartInfo =
-                {
-                    FileName = Path.Combine(LameWorkingDir, "lame.exe"),
-                    RedirectStandardError = false,
-                    RedirectStandardOutput = false,
-                    UseShellExecute = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = argumentString
-                }
-            };
-            process.Start();
-            process.WaitForExit();
+            Process mp3encodeProcess = new Process () ;
+            
+                mp3encodeProcess.StartInfo.FileName =Path.Combine(LameWorkingDir, "lame.exe") ;
+                mp3encodeProcess.StartInfo.RedirectStandardOutput = false;
+                mp3encodeProcess.StartInfo.UseShellExecute = true;
+                mp3encodeProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                mp3encodeProcess.StartInfo.Arguments = argumentString;
+                //{
+                    //FileName = Path.Combine(LameWorkingDir, "lame.exe"),
+                  
+            //RedirectStandardError = false,
+                    //RedirectStandardOutput = false,
+                    //UseShellExecute = true,
+                    //WindowStyle = ProcessWindowStyle.Hidden,
+                    //Arguments = argumentString
+                //}
+            //};
+            mp3encodeProcess.Start();
+            mp3encodeProcess.WaitForExit();
 
-            if (!process.StartInfo.UseShellExecute && process.ExitCode != 0)
+            if (!mp3encodeProcess.StartInfo.UseShellExecute && mp3encodeProcess.ExitCode != 0)
             {
-                StreamReader stdErr = process.StandardError;
+                StreamReader stdErr = mp3encodeProcess.StandardError;
                 if (!stdErr.EndOfStream)
                 {
                     string toLog = stdErr.ReadToEnd();
@@ -481,9 +486,9 @@ namespace AudioLib
                     }
                 }
             }
-            else if (!process.StartInfo.UseShellExecute)
+            else if (!mp3encodeProcess.StartInfo.UseShellExecute)
             {
-                StreamReader stdOut = process.StandardOutput;
+                StreamReader stdOut = mp3encodeProcess.StandardOutput;
                 if (!stdOut.EndOfStream)
                 {
                     string toLog = stdOut.ReadToEnd();

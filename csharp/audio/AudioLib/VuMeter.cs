@@ -53,12 +53,17 @@ namespace AudioLib
 
             double[] peakDb = computePeakDb(m_Player.CurrentAudioPCMFormat);
 
-            var del_ = PeakMeterUpdated;
-            if (del_ != null)
+            if (PeakMeterUpdated  != null)
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
-                del_(this, m_PeakMeterUpdateEventArgs);
+                PeakMeterUpdated (this, m_PeakMeterUpdateEventArgs);
             }
+            //var del_ = PeakMeterUpdated;
+            //if (del_ != null)
+            //{
+                //m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
+                //del_(this, m_PeakMeterUpdateEventArgs);
+            //}
 
             int index = 0;
             foreach (double peak in peakDb)
@@ -68,13 +73,20 @@ namespace AudioLib
                 {
                     continue;
                 }
-                var del = PeakMeterOverloaded;
-                if (del != null)
+
+                if (PeakMeterOverloaded  != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
-                    //m_PeakOverloadEventArgs.Time = m_Player.CurrentTimeInLocalUnit;
-                    del(this, m_PeakOverloadEventArgs);
+                    
+                    PeakMeterOverloaded (this, m_PeakOverloadEventArgs);
                 }
+                //var del = PeakMeterOverloaded;
+                //if (del != null)
+                //{
+                    //m_PeakOverloadEventArgs.Channel = index;
+                    //m_PeakOverloadEventArgs.Time = m_Player.CurrentTimeInLocalUnit;
+                    //del(this, m_PeakOverloadEventArgs);
+                //}
             }
         }
 
@@ -99,12 +111,17 @@ namespace AudioLib
 
             double[] peakDb = computePeakDb(m_Recorder.RecordingPCMFormat);
 
-            var del_ = PeakMeterUpdated;
-            if (del_ != null)
+            if (PeakMeterUpdated  != null)
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
-                del_(this, m_PeakMeterUpdateEventArgs);
+                PeakMeterUpdated (this, m_PeakMeterUpdateEventArgs);
             }
+            //var del_ = PeakMeterUpdated;
+            //if (del_ != null)
+            //{
+                //m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
+                //del_(this, m_PeakMeterUpdateEventArgs);
+            //}
 
             int index = 0;
             foreach (double peak in peakDb)
@@ -114,13 +131,20 @@ namespace AudioLib
                 {
                     continue;
                 }
-                var del = PeakMeterOverloaded;
-                if (del != null)
+
+                if (PeakMeterOverloaded  != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
-                    //m_PeakOverloadEventArgs.Time = m_Recorder.CurrentDurationInLocalUnits;
-                    del(this, m_PeakOverloadEventArgs);
+
+                    PeakMeterOverloaded (this, m_PeakOverloadEventArgs);
                 }
+                //var del = PeakMeterOverloaded;
+                //if (del != null)
+                //{
+                    //m_PeakOverloadEventArgs.Channel = index;
+                    //m_PeakOverloadEventArgs.Time = m_Recorder.CurrentDurationInLocalUnits;
+                    //del(this, m_PeakOverloadEventArgs);
+                //}
             }
         }
 
