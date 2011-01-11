@@ -67,9 +67,11 @@ namespace AudioLib
                 State oldState = m_State;
                 m_State = value;
 
-                var del = StateChanged;
-                if (del != null)
-                    del(this, new StateChangedEventArgs(oldState));
+                if (StateChanged  != null)
+                    StateChanged (this, new StateChangedEventArgs(oldState));
+                //var del = StateChanged;
+                //if (del != null)
+                    //del(this, new StateChangedEventArgs(oldState));
             }
         }
 
@@ -792,8 +794,8 @@ namespace AudioLib
                     m_CurrentBytePosition = m_PlaybackStartPosition + m_TotalBytesPlayed;
                 }
 
-                var del_ = PcmDataBufferAvailable;
-                if (del_ != null
+
+                if (PcmDataBufferAvailable  != null
                     && m_PcmDataBuffer.Length <= circularBufferBytesAvailableForPlaying)
                 {
 #if USE_SLIMDX
@@ -807,9 +809,27 @@ namespace AudioLib
                     Array array = m_CircularBuffer.Read(circularBufferPlayPosition, typeof(byte), LockFlag.None, m_PcmDataBuffer.Length);
                     Array.Copy(array, m_PcmDataBuffer, m_PcmDataBuffer.Length);
                     m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                    del_(this, m_PcmDataBufferAvailableEventArgs);
+                    PcmDataBufferAvailable (this, m_PcmDataBufferAvailableEventArgs);
 #endif
                 }
+                //var del_ = PcmDataBufferAvailable;
+                //if (del_ != null
+                    //&& m_PcmDataBuffer.Length <= circularBufferBytesAvailableForPlaying)
+                //{
+//#if USE_SLIMDX
+                    //if (SlimDX_IntermediaryTransferBuffer != null)
+                    //{
+                        //Array.Copy(SlimDX_IntermediaryTransferBuffer, m_PcmDataBuffer, Math.Min(m_PcmDataBuffer.Length, SlimDX_IntermediaryTransferBuffer.Length));
+                        //m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
+                        //PcmDataBufferAvailable(this, m_PcmDataBufferAvailableEventArgs);
+                    //}
+//#else
+                    //Array array = m_CircularBuffer.Read(circularBufferPlayPosition, typeof(byte), LockFlag.None, m_PcmDataBuffer.Length);
+                    //Array.Copy(array, m_PcmDataBuffer, m_PcmDataBuffer.Length);
+                    //m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
+                    //del_(this, m_PcmDataBufferAvailableEventArgs);
+//#endif
+                //}
 
                 if (circularBufferBytesAvailableForWriting <= 0)
                 {
@@ -912,9 +932,11 @@ namespace AudioLib
 
             CurrentState = State.Stopped;
 
-            var del = AudioPlaybackFinished;
-            if (del != null)
-                del(this, new AudioPlaybackFinishEventArgs());
+            if (AudioPlaybackFinished  != null)
+                AudioPlaybackFinished (this, new AudioPlaybackFinishEventArgs());
+            //var del = AudioPlaybackFinished;
+            //if (del != null)
+                //del(this, new AudioPlaybackFinishEventArgs());
         }
 
 
