@@ -71,8 +71,8 @@ namespace AudioLib
 
                 m_PreviousState = m_State;
                 m_State = value;
-
-                if ( StateChanged != null) StateChanged(this, new StateChangedEventArgs(m_PreviousState) ) ;
+                StateChangedHandler del = StateChanged;
+                if ( del != null) del(this, new StateChangedEventArgs(m_PreviousState) ) ;
                 //var del = StateChanged;
                 //if (del != null)
                     //del(this, new StateChangedEventArgs(m_PreviousState));
@@ -608,10 +608,11 @@ namespace AudioLib
 
             Array.Copy(incomingPcmData, m_PcmDataBuffer, m_PcmDataBuffer.Length);
 
-            if ( PcmDataBufferAvailable != null ) 
+            PcmDataBufferAvailableHandler del = PcmDataBufferAvailable;
+            if ( del != null ) 
             {
                 m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                PcmDataBufferAvailable (this, m_PcmDataBufferAvailableEventArgs);
+                del (this, m_PcmDataBufferAvailableEventArgs);
                 
             }
             //var del = PcmDataBufferAvailable;
@@ -754,7 +755,8 @@ namespace AudioLib
 
             if (wasRecording)
             {
-                if (AudioRecordingFinished != null) AudioRecordingFinished(this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
+                AudioRecordingFinishHandler del = AudioRecordingFinished;
+                if (del != null) del (this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
                 //var del = AudioRecordingFinished;
                 //if (del != null)
                     //del(this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));

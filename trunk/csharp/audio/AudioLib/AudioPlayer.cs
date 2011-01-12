@@ -67,8 +67,9 @@ namespace AudioLib
                 State oldState = m_State;
                 m_State = value;
 
-                if (StateChanged  != null)
-                    StateChanged (this, new StateChangedEventArgs(oldState));
+                StateChangedHandler del = StateChanged;
+                if (del != null)
+                    del (this, new StateChangedEventArgs(oldState));
                 //var del = StateChanged;
                 //if (del != null)
                     //del(this, new StateChangedEventArgs(oldState));
@@ -795,7 +796,8 @@ namespace AudioLib
                 }
 
 
-                if (PcmDataBufferAvailable  != null
+                PcmDataBufferAvailableHandler del = PcmDataBufferAvailable;
+                if (del != null
                     && m_PcmDataBuffer.Length <= circularBufferBytesAvailableForPlaying)
                 {
 #if USE_SLIMDX
@@ -803,13 +805,13 @@ namespace AudioLib
                     {
                         Array.Copy(SlimDX_IntermediaryTransferBuffer, m_PcmDataBuffer, Math.Min(m_PcmDataBuffer.Length, SlimDX_IntermediaryTransferBuffer.Length));
                         m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                        PcmDataBufferAvailable(this, m_PcmDataBufferAvailableEventArgs);
+                        del  (this, m_PcmDataBufferAvailableEventArgs);
                     }
 #else
                     Array array = m_CircularBuffer.Read(circularBufferPlayPosition, typeof(byte), LockFlag.None, m_PcmDataBuffer.Length);
                     Array.Copy(array, m_PcmDataBuffer, m_PcmDataBuffer.Length);
                     m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                    PcmDataBufferAvailable (this, m_PcmDataBufferAvailableEventArgs);
+                    del (this, m_PcmDataBufferAvailableEventArgs);
 #endif
                 }
                 //var del_ = PcmDataBufferAvailable;
@@ -932,8 +934,9 @@ namespace AudioLib
 
             CurrentState = State.Stopped;
 
-            if (AudioPlaybackFinished  != null)
-                AudioPlaybackFinished (this, new AudioPlaybackFinishEventArgs());
+            AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
+            if (delFinished  != null)
+                delFinished (this, new AudioPlaybackFinishEventArgs());
             //var del = AudioPlaybackFinished;
             //if (del != null)
                 //del(this, new AudioPlaybackFinishEventArgs());
