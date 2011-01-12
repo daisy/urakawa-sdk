@@ -15,8 +15,9 @@ namespace urakawa.command
     {
         public List<T> GetChildCommandsAllType<T>() where T : Command
         {
-            var list = new List<T>();
-            foreach (var childCmd in ChildCommands.ContentsAs_YieldEnumerable)
+            //var list = new List<T>();
+            List<T> list = new List<T>();
+            foreach (T childCmd in ChildCommands.ContentsAs_YieldEnumerable)
             {
                 if (childCmd is T)
                 {

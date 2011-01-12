@@ -34,7 +34,8 @@ namespace urakawa.metadata
         {
             get
             {
-                foreach (var attr in OtherAttributes.ContentsAs_YieldEnumerable)
+                //foreach (var attr in OtherAttributes.ContentsAs_YieldEnumerable)
+                foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_YieldEnumerable)
                 {
                     if (attr.Name == "id")
                     {
@@ -50,7 +51,8 @@ namespace urakawa.metadata
                 if (value)
                 {
                     bool foundID = false;
-                    foreach (var attr in OtherAttributes.ContentsAs_YieldEnumerable)
+                    //foreach (var attr in OtherAttributes.ContentsAs_YieldEnumerable)
+                    foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_YieldEnumerable)
                     {
                         if (attr.Name == "id")
                         {
@@ -68,7 +70,7 @@ namespace urakawa.metadata
                 }
                 else
                 {
-                    foreach (var attr in OtherAttributes.ContentsAs_ListCopy)
+                    foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_ListCopy)
                     {
                         if (attr.Name == "id")
                         {

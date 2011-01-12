@@ -84,7 +84,8 @@ namespace urakawa.commands
 
         public static string GetText(TreeNode node)
         {
-            var textMedia = node.GetTextMedia();
+            //var textMedia = node.GetTextMedia();
+            media.AbstractTextMedia textMedia = node.GetTextMedia();
             if (textMedia != null)
             {
                 return textMedia.Text;
@@ -94,7 +95,8 @@ namespace urakawa.commands
                 QualifiedName qname = node.GetXmlElementQName();
                 if (qname != null && qname.LocalName.ToLower() == "img")
                 {
-                    var xmlAttr = node.GetXmlProperty().GetAttribute("alt");
+                    //var xmlAttr = node.GetXmlProperty().GetAttribute("alt");
+                    property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute("alt");
                     if (xmlAttr != null)
                     {
                         return xmlAttr.Value;
@@ -106,7 +108,8 @@ namespace urakawa.commands
 
         private static void SetText(TreeNode node, string txt)
         {
-            var textMedia = node.GetTextMedia();
+            //var textMedia = node.GetTextMedia();
+            media.AbstractTextMedia textMedia = node.GetTextMedia();
             if (textMedia != null)
             {
                 textMedia.Text = txt;
@@ -117,7 +120,8 @@ namespace urakawa.commands
                 QualifiedName qname = node.GetXmlElementQName();
                 if (qname != null && qname.LocalName.ToLower() == "img")
                 {
-                    var xmlAttr = node.GetXmlProperty().GetAttribute("alt");
+                    //var xmlAttr = node.GetXmlProperty().GetAttribute("alt");
+                    urakawa.property.xml.XmlAttribute  xmlAttr = node.GetXmlProperty().GetAttribute("alt");
                     if (xmlAttr != null)
                     {
                         xmlAttr.Value = txt;

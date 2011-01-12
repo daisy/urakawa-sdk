@@ -238,8 +238,10 @@ namespace urakawa
         {
             if (t == null) throw new MethodParameterIsNullException("Cannot create an instnce of a null Type");
             ConstructorInfo ci = t.GetConstructor(new Type[] { });
+            Console.WriteLine ( "creating" );
             if (ci != null)
             {
+            Console.WriteLine ( "is not null" );
                 if (!ci.IsPublic) return null;
                 T res = ci.Invoke(new object[] { }) as T;
                 if (res != null)
