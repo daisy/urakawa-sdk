@@ -387,6 +387,10 @@ namespace urakawa.xuk
                     reportProgress(currentPercentage, val + " / " + max);
                     //backWorker.ReportProgress(currentPercentage);
                 }
+                if (RequestCancellation)
+                {
+                    e.Cancel();
+                }
             };
                 
             Progress += progressing;
