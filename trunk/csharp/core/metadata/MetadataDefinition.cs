@@ -192,7 +192,9 @@ namespace urakawa.metadata
             foreach (MetadataDefinition definition in definitions)
             {
                 Metadata exists = alreadyUsedMetadata.Find(
-                    item => item.NameContentAttribute.Name.ToLower() == definition.Name.ToLower());
+                     delegate (Metadata item)  {return item.NameContentAttribute.Name.ToLower() == definition.Name.ToLower(); } );
+                //dotnet2
+                    //item => item.NameContentAttribute.Name.ToLower() == definition.Name.ToLower());
 
                 if (exists == null)
                 {

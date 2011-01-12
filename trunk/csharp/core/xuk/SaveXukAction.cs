@@ -162,6 +162,7 @@ namespace urakawa.xuk
             mSourceXukAble = xukAble;
 
             int currentPercentage = 0;
+            /*
             EventHandler<ProgressEventArgs> progressing = (sender, e) =>
             {
                 double val = e.Current;
@@ -180,12 +181,45 @@ namespace urakawa.xuk
                     e.Cancel();
                 }
             };
+             */
+            //dotnet2
+            EventHandler<ProgressEventArgs> progressing = delegate (object sender,ProgressEventArgs e) 
+            {
+                double val = e.Current;
+                double max = e.Total;
+                //var percent = (int)((val / max) * 100);
+                int percent = (int)((val / max) * 100);
+
+                if (percent != currentPercentage)
+                {
+                    currentPercentage = percent;
+                    reportProgress(currentPercentage, val + " / " + max);
+                    //backWorker.ReportProgress(currentPercentage);
+                }
+
+                if (RequestCancellation)
+                {
+                    e.Cancel();
+                }
+            };
             Progress += progressing;
-            Finished += (sender, e) =>
+            //Finished += (sender, e) =>
+            //{
+                //Progress -= progressing;
+            //};
+
+            //dotnet2
+            Finished += delegate (object sender,FinishedEventArgs e) 
             {
                 Progress -= progressing;
             };
-            Cancelled += (sender, e) =>
+            //Cancelled += (sender, e) =>
+            //{
+                //Progress -= progressing;
+            //};
+
+            //dotnet2
+            Cancelled += delegate (object sender,CancelledEventArgs e) 
             {
                 Progress -= progressing;
             };
