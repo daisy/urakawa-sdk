@@ -32,7 +32,8 @@ namespace urakawa.xuk
         {
             if ((baseUri == null) || (!baseUri.IsAbsoluteUri && (baseUri.OriginalString.Length == 0)))
             {
-                var uri = new Uri(relativeUri, UriKind.RelativeOrAbsolute);
+                //var uri = new Uri(relativeUri, UriKind.RelativeOrAbsolute);
+                Uri uri = new Uri(relativeUri, UriKind.RelativeOrAbsolute);
                 if (!uri.IsAbsoluteUri && (uri.OriginalString.Length > 0))
                 {
                     uri = new Uri(Path.GetFullPath(relativeUri));
@@ -377,7 +378,8 @@ namespace urakawa.xuk
             {
                 double val = e.Current;
                 double max = e.Total;
-                var percent = (int)((val / max) * 100);
+                //var percent = (int)((val / max) * 100);
+                int percent = (int)((val / max) * 100);
 
                 if (percent != currentPercentage)
                 {
@@ -385,12 +387,8 @@ namespace urakawa.xuk
                     reportProgress(currentPercentage, val + " / " + max);
                     //backWorker.ReportProgress(currentPercentage);
                 }
-
-                if (RequestCancellation)
-                {
-                    e.Cancel();
-                }
             };
+                
             Progress += progressing;
             Finished += (sender, e) =>
             {

@@ -309,7 +309,7 @@ namespace urakawa.media
                     throw new exception.MethodParameterIsOutOfBoundsException(
                         "ClipBegin is a negative time offset");
                 }
-                if (value.IsGreaterThan(ClipEnd))
+                if (value.IsGreaterThan(ClipEnd)  && ClipEnd != null)
                 {
                     throw new exception.MethodParameterIsOutOfBoundsException(
                         "ClipBegin can not be after ClipEnd");

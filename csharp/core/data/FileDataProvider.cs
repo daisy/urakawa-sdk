@@ -382,8 +382,8 @@ namespace urakawa.data
                 }
                 if (File.Exists(DataFileFullPath))
                 {
-                    var fileName = Path.GetFileName(DataFileFullPath);
-                    var filePathDest = Path.Combine(fullPathToDeletedDataFolder, fileName);
+                    string fileName = Path.GetFileName(DataFileFullPath);
+                    string filePathDest = Path.Combine(fullPathToDeletedDataFolder, fileName);
                     try
                     {
                         File.Move(DataFileFullPath, filePathDest);
