@@ -53,10 +53,11 @@ namespace AudioLib
 
             double[] peakDb = computePeakDb(m_Player.CurrentAudioPCMFormat);
 
-            if (PeakMeterUpdated  != null)
+            PeakMeterUpdateHandler del = PeakMeterUpdated;
+            if (del != null)
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
-                PeakMeterUpdated (this, m_PeakMeterUpdateEventArgs);
+                del (this, m_PeakMeterUpdateEventArgs);
             }
             //var del_ = PeakMeterUpdated;
             //if (del_ != null)
@@ -74,11 +75,12 @@ namespace AudioLib
                     continue;
                 }
 
-                if (PeakMeterOverloaded  != null)
+                PeakOverloadHandler delOverload = PeakMeterOverloaded;
+                if (del != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
-                    
-                    PeakMeterOverloaded (this, m_PeakOverloadEventArgs);
+
+                    delOverload (this, m_PeakOverloadEventArgs);
                 }
                 //var del = PeakMeterOverloaded;
                 //if (del != null)
@@ -111,10 +113,11 @@ namespace AudioLib
 
             double[] peakDb = computePeakDb(m_Recorder.RecordingPCMFormat);
 
-            if (PeakMeterUpdated  != null)
+            PeakMeterUpdateHandler del = PeakMeterUpdated;
+            if (del != null)
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
-                PeakMeterUpdated (this, m_PeakMeterUpdateEventArgs);
+                del (this, m_PeakMeterUpdateEventArgs);
             }
             //var del_ = PeakMeterUpdated;
             //if (del_ != null)
