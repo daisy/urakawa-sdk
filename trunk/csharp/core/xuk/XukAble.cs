@@ -36,6 +36,13 @@ namespace urakawa.xuk
 
         #region IXUKAble members
 
+        private QualifiedName m_MissingTypeOriginalXukedName = null;
+        public QualifiedName MissingTypeOriginalXukedName
+        {
+            set { m_MissingTypeOriginalXukedName = value; }
+            get { return m_MissingTypeOriginalXukedName; }
+        }
+
         private string m_Uid = null;
         public virtual string Uid
         {
@@ -163,7 +170,14 @@ namespace urakawa.xuk
             }
             try
             {
-                destination.WriteStartElement(XukLocalName, XukNamespaceUri);
+                if (MissingTypeOriginalXukedName != null)
+                {
+                    destination.WriteStartElement(MissingTypeOriginalXukedName.LocalName, MissingTypeOriginalXukedName.NamespaceUri);
+                }
+                else
+                {
+                    destination.WriteStartElement(XukLocalName, XukNamespaceUri);
+                }
                 XukOutAttributes(destination, baseUri);
                 XukOutChildren(destination, baseUri, handler);
                 destination.WriteEndElement();
