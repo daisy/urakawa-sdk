@@ -88,9 +88,13 @@ namespace urakawa
         {
             foreach (TypeAndQNames tq in mRegisteredTypeAndQNames)
             {
-                tq.QName = GetXukQualifiedName(tq.Type);
+                if (tq.Type != null)
+                {
+                    tq.QName = GetXukQualifiedName(tq.Type);
+                }
 
-                if (tq.BaseQName != null)
+                if (tq.BaseQName != null
+                    && tq.Type != null && tq.Type.BaseType != null)
                 {
                     tq.BaseQName = GetXukQualifiedName(tq.Type.BaseType);
                 }
@@ -102,15 +106,29 @@ namespace urakawa
                 {
                     KeyValuePair<string, TypeAndQNames> pair = enu.Current;
                     TypeAndQNames tq = new TypeAndQNames();
-                    tq.QName = GetXukQualifiedName(pair.Value.Type);
-                    tq.Type = pair.Value.Type;
-                    tq.ClassName = pair.Value.Type.FullName;
-                    tq.AssemblyName = pair.Value.Type.Assembly.GetName();
-                    if (pair.Value.BaseQName != null)
+                    if (pair.Value.Type != null)
                     {
-                        tq.BaseQName = GetXukQualifiedName(pair.Value.Type.BaseType);
+                        tq.QName = GetXukQualifiedName(pair.Value.Type);
+                        tq.Type = pair.Value.Type;
+                        tq.ClassName = pair.Value.Type.FullName;
+                        tq.AssemblyName = pair.Value.Type.Assembly.GetName();
+                        if (pair.Value.BaseQName != null)
+                        {
+                            tq.BaseQName = GetXukQualifiedName(pair.Value.Type.BaseType);
+                        }
                     }
-                    newDict.Add(GetXukQualifiedName(pair.Value.Type).FullyQualifiedName, tq);
+                    else
+                    {
+                        tq.QName = new QualifiedName(pair.Value.QName.LocalName, pair.Value.QName.NamespaceUri);
+                        tq.Type = null;
+                        tq.ClassName = pair.Value.ClassName;
+                        tq.AssemblyName = pair.Value.AssemblyName;
+                        if (pair.Value.BaseQName != null)
+                        {
+                            tq.BaseQName = new QualifiedName(pair.Value.BaseQName.LocalName, pair.Value.BaseQName.NamespaceUri);
+                        }
+                    }
+                    newDict.Add(tq.QName.FullyQualifiedName, tq);
                 }
                 mRegisteredTypeAndQNamesByQualifiedName.Clear();
                 mRegisteredTypeAndQNamesByQualifiedName = newDict;
@@ -123,15 +141,19 @@ namespace urakawa
                 {
                     KeyValuePair<Type, TypeAndQNames> pair = enu.Current;
                     TypeAndQNames tq = new TypeAndQNames();
-                    tq.QName = GetXukQualifiedName(pair.Value.Type);
-                    tq.Type = pair.Value.Type;
-                    tq.ClassName = pair.Value.Type.FullName;
-                    tq.AssemblyName = pair.Value.Type.Assembly.GetName();
-                    if (pair.Value.BaseQName != null)
+
+                    if (pair.Value.Type != null)
                     {
-                        tq.BaseQName = GetXukQualifiedName(pair.Value.Type.BaseType);
+                        tq.QName = GetXukQualifiedName(pair.Value.Type);
+                        tq.Type = pair.Value.Type;
+                        tq.ClassName = pair.Value.Type.FullName;
+                        tq.AssemblyName = pair.Value.Type.Assembly.GetName();
+                        if (pair.Value.BaseQName != null)
+                        {
+                            tq.BaseQName = GetXukQualifiedName(pair.Value.Type.BaseType);
+                        }
+                        newDict.Add(pair.Value.Type, tq);
                     }
-                    newDict.Add(pair.Value.Type, tq);
                 }
                 mRegisteredTypeAndQNamesByType.Clear();
                 mRegisteredTypeAndQNamesByType = newDict;
@@ -182,7 +204,10 @@ namespace urakawa
             if (mRegisteredTypeAndQNamesByQualifiedName.ContainsKey(qname))
             {
                 TypeAndQNames t = mRegisteredTypeAndQNamesByQualifiedName[qname];
-                if (t.Type != null) return t.Type;
+                if (t.Type != null)
+                {
+                    return t.Type;
+                }
                 return LookupType(t.BaseQName);
             }
             return null;
@@ -267,7 +292,14 @@ namespace urakawa
             string qname = String.Format("{0}:{1}", xukNS, xukLN);
             Type t = LookupType(qname);
             if (t == null) return null;
-            return Create(t);
+            T obj = Create(t);
+            TypeAndQNames tt = mRegisteredTypeAndQNamesByQualifiedName[qname];
+            if (tt.Type == null)
+            {
+                // not real type of qname => type of first available ancestor in the type inheritance chain.
+                obj.MissingTypeOriginalXukedName = tt.QName;
+            }
+            return obj;
         }
 
         protected void XukOutRegisteredTypes(XmlWriter destination, Uri baseUri, progress.IProgressHandler handler)
