@@ -406,9 +406,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UrakawaSDK.core.Lang.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="xuk\Obi-to-XUK2.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="datax\" />
