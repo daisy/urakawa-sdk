@@ -5,14 +5,12 @@
     exclude-result-prefixes="xs" version="2.0">
     <xsl:output method="xml" indent="yes" omit-xml-declaration="no" version="1.0"/>
     <!-- xsl:strip-space elements="*"/ -->
-
     <!-- xsl:template match="text()[not(normalize-space())]"/ -->
     <xsl:template match="text()"/>
 
     <xsl:template match="/">
         <xsl:apply-templates/>
     </xsl:template>
-
     <xsl:template match="oldXuk:Xuk">
         <Xuk>
             <xsl:namespace name="xsi">
@@ -25,7 +23,6 @@
             <xsl:apply-templates/>
         </Xuk>
     </xsl:template>
-
     <xsl:template match="oldXuk:Project">
         <Project>
             <PresentationFactory>
@@ -242,8 +239,6 @@
             <xsl:apply-templates/>
         </Presentation>
     </xsl:template>
-
-
     <xsl:template match="oldXuk:mRootNode">
         <RootNode>
             <xsl:apply-templates/>
@@ -266,21 +261,71 @@
     </xsl:template>
     <xsl:template match="oldXuk:mProperties">
         <Properties>
+            <xsl:choose>
+                <xsl:when test="../name() = 'root'">
+                    <XmlProperty LocalName="book"/>
+                </xsl:when>
+                <xsl:when test="../name() = 'section'">
+                    <XmlProperty LocalName="level"/>
+                </xsl:when>
+                <xsl:when test="../name() = 'phrase'">
+                    <XmlProperty LocalName="sent"/>
+                </xsl:when>
+                <xsl:otherwise> </xsl:otherwise>
+            </xsl:choose>
             <xsl:apply-templates/>
         </Properties>
     </xsl:template>
     <xsl:template match="oldXuk:mChildren">
         <Children>
+            <xsl:choose>
+                <xsl:when test="../name() = 'section'">
+                    <TreeNode>
+                        <Properties>
+                            <ChannelsProperty>
+                                <ChannelMappings>
+                                    <ChannelMapping Channel="CHID0001">
+                                        <TextMedia>
+                                            <xsl:value-of
+                                                select="../oldXuk:mProperties/oldXuk:ChannelsProperty/oldXuk:mChannelMappings/oldXuk:mChannelMapping/oldXuk:TextMedia/oldXuk:mText"
+                                            />
+                                        </TextMedia>
+                                    </ChannelMapping>
+                                </ChannelMappings>
+                            </ChannelsProperty>
+                        </Properties>
+                        <Children/>
+                    </TreeNode>
+                </xsl:when>
+                <xsl:otherwise> </xsl:otherwise>
+            </xsl:choose>
             <xsl:apply-templates/>
         </Children>
     </xsl:template>
     <xsl:template match="oldXuk:ChannelsProperty">
-        <ChannelsProperty>
-            <xsl:apply-templates/>
-        </ChannelsProperty>
+        <xsl:choose>
+            <xsl:when test="../../name() = 'section'"> </xsl:when>
+            <xsl:otherwise>
+                <ChannelsProperty>
+                    <xsl:apply-templates/>
+                </ChannelsProperty>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="oldXuk:mChannelMappings">
         <ChannelMappings>
+            <xsl:choose>
+                <xsl:when test="../../../name() = 'phrase'">
+                    <ChannelMapping Channel="CHID0001">
+                        <TextMedia> Phrase <xsl:text> </xsl:text>
+                            <xsl:value-of
+                                select="oldXuk:mChannelMapping/oldXuk:ManagedAudioMedia/@audioMediaDataUid"
+                            />
+                        </TextMedia>
+                    </ChannelMapping>
+                </xsl:when>
+                <xsl:otherwise> </xsl:otherwise>
+            </xsl:choose>
             <xsl:apply-templates/>
         </ChannelMappings>
     </xsl:template>
@@ -387,7 +432,6 @@
             </xsl:choose>
         </WavClip>
     </xsl:template>
-
     <xsl:template match="oldXuk:mDataProviderManager">
         <xsl:apply-templates/>
     </xsl:template>
