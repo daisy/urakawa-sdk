@@ -354,6 +354,30 @@
                         </Properties>
                         <Children/>
                     </TreeNode>
+                    <xsl:choose>
+                        <xsl:when test="count(./*) = 1">
+                            <TreeNode>
+                                <Properties>
+                                    <XmlProperty>
+                                        <xsl:attribute name="LocalName">
+                                            <xsl:text>p</xsl:text>
+                                        </xsl:attribute>
+                                    </XmlProperty>
+                                    <ChannelsProperty>
+                                        <ChannelMappings>
+                                            <ChannelMapping Channel="CHID0001">
+                                                <TextMedia>
+                                                  <Text> </Text>
+                                                </TextMedia>
+                                            </ChannelMapping>
+                                        </ChannelMappings>
+                                    </ChannelsProperty>
+                                </Properties>
+                                <Children/>
+                            </TreeNode>
+                        </xsl:when>
+                        <xsl:otherwise> </xsl:otherwise>
+                    </xsl:choose>
                     <xsl:apply-templates/>
                 </xsl:when>
                 <xsl:when test="../name() = 'phrase'">
