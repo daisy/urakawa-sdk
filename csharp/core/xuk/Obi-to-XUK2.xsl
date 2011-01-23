@@ -244,20 +244,41 @@
             <xsl:apply-templates/>
         </RootNode>
     </xsl:template>
-    <xsl:template match="obi:root">
-        <root>
+    <!-- xsl:template match="obi:root">
+        <TreeNode>
             <xsl:apply-templates/>
-        </root>
+        </TreeNode>
     </xsl:template>
     <xsl:template match="obi:section">
-        <section>
+        <TreeNode>
             <xsl:apply-templates/>
-        </section>
+        </TreeNode>
     </xsl:template>
     <xsl:template match="obi:phrase">
-        <phrase>
+        <TreeNode>
             <xsl:apply-templates/>
-        </phrase>
+        </TreeNode>
+    </xsl:template -->
+    <xsl:template match="obi:root">
+        <obi:root>
+            <xsl:apply-templates/>
+        </obi:root>
+    </xsl:template>
+    <xsl:template match="obi:section">
+        <obi:section>
+            <xsl:apply-templates/>
+        </obi:section>
+    </xsl:template>
+    <xsl:template match="obi:phrase">
+        <xsl:choose>
+            <xsl:when test="./@kind = 'Heading'"> </xsl:when>
+            <xsl:when test="./(count(./preceding-sibling::*) + 1) = 1"> </xsl:when>
+            <xsl:otherwise>
+                <obi:phrase>
+                    <xsl:apply-templates/>
+                </obi:phrase>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="oldXuk:mProperties">
         <Properties>
@@ -269,7 +290,28 @@
                     <XmlProperty LocalName="level"/>
                 </xsl:when>
                 <xsl:when test="../name() = 'phrase'">
-                    <XmlProperty LocalName="sent"/>
+                    <xsl:choose>
+                        <xsl:when test="../@kind = 'Page'">
+                            <XmlProperty LocalName="pagenum">
+                                <XmlAttributes>
+                                    <XmlAttribute LocalName="page">
+                                        <xsl:attribute name="Value">
+                                            <xsl:value-of select="../@pageKind"/>
+                                        </xsl:attribute>
+                                    </XmlAttribute>
+                                    <XmlAttribute LocalName="id">
+                                        <xsl:attribute name="Value">
+                                            <xsl:text>Page_</xsl:text>
+                                            <xsl:value-of select="../@page"/>
+                                        </xsl:attribute>
+                                    </XmlAttribute>
+                                </XmlAttributes>
+                            </XmlProperty>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <XmlProperty LocalName="p"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:when>
                 <xsl:otherwise> </xsl:otherwise>
             </xsl:choose>
@@ -282,24 +324,87 @@
                 <xsl:when test="../name() = 'section'">
                     <TreeNode>
                         <Properties>
+                            <XmlProperty>
+                                <xsl:attribute name="LocalName">
+                                    <xsl:text>hd</xsl:text>
+                                </xsl:attribute>
+                            </XmlProperty>
                             <ChannelsProperty>
                                 <ChannelMappings>
                                     <ChannelMapping Channel="CHID0001">
                                         <TextMedia>
-                                            <xsl:value-of
-                                                select="../oldXuk:mProperties/oldXuk:ChannelsProperty/oldXuk:mChannelMappings/oldXuk:mChannelMapping/oldXuk:TextMedia/oldXuk:mText"
-                                            />
+                                            <Text>
+                                                <xsl:value-of
+                                                  select="../oldXuk:mProperties/oldXuk:ChannelsProperty/oldXuk:mChannelMappings/oldXuk:mChannelMapping/oldXuk:TextMedia/oldXuk:mText"
+                                                />
+                                            </Text>
                                         </TextMedia>
+                                    </ChannelMapping>
+                                    <ChannelMapping Channel="CHID0000">
+                                        <ManagedAudioMedia>
+                                            <xsl:attribute name="MediaDataUid">
+                                                <xsl:value-of
+                                                  select="../oldXuk:mChildren/obi:phrase[@kind='Heading' or (count(./preceding-sibling::*)+1)=1]/oldXuk:mProperties/oldXuk:ChannelsProperty/oldXuk:mChannelMappings/oldXuk:mChannelMapping/oldXuk:ManagedAudioMedia/@audioMediaDataUid"
+                                                />
+                                            </xsl:attribute>
+                                        </ManagedAudioMedia>
                                     </ChannelMapping>
                                 </ChannelMappings>
                             </ChannelsProperty>
                         </Properties>
                         <Children/>
                     </TreeNode>
+                    <xsl:apply-templates/>
+                </xsl:when>
+                <xsl:when test="../name() = 'phrase'">
+                    <xsl:apply-templates/>
+                </xsl:when>
+                <xsl:when test="../name() = 'root'">
+                    <TreeNode>
+                        <Properties>
+                            <XmlProperty>
+                                <xsl:attribute name="LocalName">
+                                    <xsl:text>frontmatter</xsl:text>
+                                </xsl:attribute>
+                            </XmlProperty>
+                        </Properties>
+                        <Children>
+                            <TreeNode>
+                                <Properties>
+                                    <XmlProperty LocalName="doctitle"/>
+                                    <ChannelsProperty>
+                                        <ChannelMappings>
+                                            <ChannelMapping Channel="CHID0001">
+                                                <TextMedia>
+                                                  <Text>Doc Title</Text>
+                                                </TextMedia>
+                                            </ChannelMapping>
+                                        </ChannelMappings>
+                                    </ChannelsProperty>
+                                </Properties>
+                                <Children/>
+                            </TreeNode>
+                            <TreeNode>
+                                <Properties>
+                                    <XmlProperty LocalName="docauthor"/>
+                                    <ChannelsProperty>
+                                        <ChannelMappings>
+                                            <ChannelMapping Channel="CHID0001">
+                                                <TextMedia>
+                                                  <Text>Doc Author</Text>
+                                                </TextMedia>
+                                            </ChannelMapping>
+                                        </ChannelMappings>
+                                    </ChannelsProperty>
+                                </Properties>
+                                <Children/>
+                            </TreeNode>
+                            <xsl:apply-templates/>
+                        </Children>
+                    </TreeNode>
                 </xsl:when>
                 <xsl:otherwise> </xsl:otherwise>
             </xsl:choose>
-            <xsl:apply-templates/>
         </Children>
     </xsl:template>
     <xsl:template match="oldXuk:ChannelsProperty">
@@ -317,10 +422,21 @@
             <xsl:choose>
                 <xsl:when test="../../../name() = 'phrase'">
                     <ChannelMapping Channel="CHID0001">
-                        <TextMedia> Phrase <xsl:text> </xsl:text>
-                            <xsl:value-of
-                                select="oldXuk:mChannelMapping/oldXuk:ManagedAudioMedia/@audioMediaDataUid"
-                            />
+                        <TextMedia>
+                            <xsl:choose>
+                                <xsl:when test="../../../@kind = 'Page'">
+                                    <Text>
+                                        <xsl:value-of select="../../../@pageText"/>
+                                    </Text>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <Text>Phrase <xsl:text> </xsl:text>
+                                        <xsl:value-of
+                                            select="oldXuk:mChannelMapping/oldXuk:ManagedAudioMedia/@audioMediaDataUid"
+                                        />
+                                    </Text>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </TextMedia>
                     </ChannelMapping>
                 </xsl:when>
