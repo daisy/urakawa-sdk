@@ -1319,7 +1319,14 @@ namespace urakawa
             PropertyFactory.CreateChannelsProperty();
             PropertyFactory.CreateXmlProperty();
             //
-
+            CSSExternalFileData exFileDataCSS = ExternalFilesDataFactory.Create<CSSExternalFileData>();
+            ExternalFilesDataManager.RemoveManagedObject(exFileDataCSS);
+            XSLTExternalFileData exFileDataXSLT = ExternalFilesDataFactory.Create<XSLTExternalFileData>();
+            ExternalFilesDataManager.RemoveManagedObject(exFileDataXSLT);
+            DTDExternalFileData exFileDataDTD = ExternalFilesDataFactory.Create<DTDExternalFileData>();
+            ExternalFilesDataManager.RemoveManagedObject(exFileDataDTD);
+            //
+            DebugFix.Assert(ExternalFilesDataManager.ManagedObjects.Count == 0);
             DebugFix.Assert(DataProviderManager.ManagedObjects.Count == 0);
             DebugFix.Assert(ChannelsManager.ManagedObjects.Count == 0);
             DebugFix.Assert(MediaDataManager.ManagedObjects.Count == 0);
