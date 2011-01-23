@@ -236,37 +236,131 @@
                     <ImageChannel Uid="CHID0002" Name="The Image Channel"/>
                 </Channels>
             </ChannelsManager>
-            <DataProviderManager DataFileDirectoryPath="___Data">
-                <DataProviders/>
-            </DataProviderManager>
             <ExternalFileDataManager>
                 <ExternalFileDatas/>
             </ExternalFileDataManager>
             <xsl:apply-templates/>
         </Presentation>
     </xsl:template>
+
+
+    <xsl:template match="oldXuk:mRootNode">
+        <RootNode>
+            <xsl:apply-templates/>
+        </RootNode>
+    </xsl:template>
+    <xsl:template match="obi:root">
+        <root>
+            <xsl:apply-templates/>
+        </root>
+    </xsl:template>
+    <xsl:template match="obi:section">
+        <section>
+            <xsl:apply-templates/>
+        </section>
+    </xsl:template>
+    <xsl:template match="obi:phrase">
+        <phrase>
+            <xsl:apply-templates/>
+        </phrase>
+    </xsl:template>
+    <xsl:template match="oldXuk:mProperties">
+        <Properties>
+            <xsl:apply-templates/>
+        </Properties>
+    </xsl:template>
+    <xsl:template match="oldXuk:mChildren">
+        <Children>
+            <xsl:apply-templates/>
+        </Children>
+    </xsl:template>
+    <xsl:template match="oldXuk:ChannelsProperty">
+        <ChannelsProperty>
+            <xsl:apply-templates/>
+        </ChannelsProperty>
+    </xsl:template>
+    <xsl:template match="oldXuk:mChannelMappings">
+        <ChannelMappings>
+            <xsl:apply-templates/>
+        </ChannelMappings>
+    </xsl:template>
+    <xsl:template match="oldXuk:mChannelMapping">
+        <ChannelMapping>
+            <xsl:attribute name="Channel">
+                <xsl:value-of select="@channel"/>
+            </xsl:attribute>
+            <xsl:apply-templates/>
+        </ChannelMapping>
+    </xsl:template>
+    <xsl:template match="oldXuk:TextMedia">
+        <TextMedia>
+            <xsl:apply-templates/>
+        </TextMedia>
+    </xsl:template>
+    <xsl:template match="oldXuk:mText">
+        <Text>
+            <xsl:value-of select="text()"/>
+        </Text>
+    </xsl:template>
+    <xsl:template match="oldXuk:ManagedAudioMedia">
+        <ManagedAudioMedia>
+            <xsl:attribute name="MediaDataUid">
+                <xsl:value-of select="@audioMediaDataUid"/>
+            </xsl:attribute>
+            <xsl:apply-templates/>
+        </ManagedAudioMedia>
+    </xsl:template>
+    <xsl:template match="oldXuk:XmlProperty">
+        <XmlProperty>
+            <xsl:attribute name="LocalName">
+                <xsl:value-of select="@localName"/>
+            </xsl:attribute>
+            <xsl:attribute name="NamespaceUri">
+                <xsl:value-of select="@namespaceUri"/>
+            </xsl:attribute>
+            <xsl:apply-templates/>
+        </XmlProperty>
+    </xsl:template>
+    <xsl:template match="oldXuk:mXmlAttributes">
+        <XmlAttributes>
+            <xsl:apply-templates/>
+        </XmlAttributes>
+    </xsl:template>
+    <xsl:template match="oldXuk:XmlAttribute">
+        <XmlAttribute>
+            <xsl:attribute name="LocalName">
+                <xsl:value-of select="@localName"/>
+            </xsl:attribute>
+            <xsl:attribute name="Value">
+                <xsl:value-of select="@Value"/>
+            </xsl:attribute>
+            <xsl:attribute name="NamespaceUri">
+                <xsl:value-of select="@namespaceUri"/>
+            </xsl:attribute>
+            <xsl:apply-templates/>
+        </XmlAttribute>
+    </xsl:template>
+
     <xsl:template match="oldXuk:mMediaData">
         <MediaDatas>
             <xsl:apply-templates/>
         </MediaDatas>
     </xsl:template>
     <xsl:template match="oldXuk:mMediaDataItem">
-        <MediaData>
-            <xsl:attribute name="Uid">
-                <xsl:value-of select="@uid"/>
-            </xsl:attribute>
-            <xsl:apply-templates/>
-        </MediaData>
+        <xsl:apply-templates/>
     </xsl:template>
     <xsl:template match="oldXuk:WavAudioMediaData">
         <WavAudioMediaData>
+            <xsl:attribute name="Uid">
+                <xsl:value-of select="../@uid"/>
+            </xsl:attribute>
             <xsl:apply-templates/>
         </WavAudioMediaData>
     </xsl:template>
     <xsl:template match="oldXuk:mPCMFormat">
-        <PCMFormat>
+        <!-- PCMFormat>
             <xsl:apply-templates/>
-        </PCMFormat>
+        </PCMFormat -->
     </xsl:template>
     <xsl:template match="oldXuk:mWavClips">
         <WavClips>
@@ -278,15 +372,54 @@
             <xsl:attribute name="DataProvider">
                 <xsl:value-of select="@dataProvider"/>
             </xsl:attribute>
-            <xsl:attribute name="ClipBegin">
-                <xsl:value-of select="@clipBegin"/>
-            </xsl:attribute>
-            <xsl:attribute name="ClipEnd">
-                <xsl:value-of select="@clipEnd"/>
-            </xsl:attribute>
+            <xsl:if test="@clipBegin">
+                <xsl:attribute name="ClipBegin">
+                    <xsl:value-of select="@clipBegin"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:choose>
+                <xsl:when test="@clipEnd">
+                    <xsl:attribute name="ClipEnd">
+                        <xsl:value-of select="@clipEnd"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise> </xsl:otherwise>
+            </xsl:choose>
         </WavClip>
     </xsl:template>
 
+    <xsl:template match="oldXuk:mDataProviderManager">
+        <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="oldXuk:FileDataProviderManager">
+        <DataProviderManager>
+            <xsl:attribute name="DataFileDirectoryPath">
+                <xsl:value-of select="@dataFileDirectoryPath"/>
+            </xsl:attribute>
+            <xsl:apply-templates/>
+        </DataProviderManager>
+    </xsl:template>
+    <xsl:template match="oldXuk:mDataProviders">
+        <DataProviders>
+            <xsl:apply-templates/>
+        </DataProviders>
+    </xsl:template>
+    <xsl:template match="oldXuk:mDataProviderItem">
+        <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="oldXuk:FileDataProvider">
+        <FileDataProvider>
+            <xsl:attribute name="Uid">
+                <xsl:value-of select="../@uid"/>
+            </xsl:attribute>
+            <xsl:attribute name="DataFileRelativePath">
+                <xsl:value-of select="@dataFileRelativePath"/>
+            </xsl:attribute>
+            <xsl:attribute name="MimeType">
+                <xsl:value-of select="@mimeType"/>
+            </xsl:attribute>
+        </FileDataProvider>
+    </xsl:template>
     <xsl:template match="oldXuk:mMediaDataManager">
         <xsl:apply-templates/>
     </xsl:template>
