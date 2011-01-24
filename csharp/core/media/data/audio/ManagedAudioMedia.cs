@@ -353,28 +353,6 @@ namespace urakawa.media.data.audio
             NotifyChanged(e);
         }
 
-
-        /// <summary>
-        /// Merges <c>this</c> with a given other <see cref="ManagedAudioMedia"/>,
-        /// appending the audio data of the other <see cref="ManagedAudioMedia"/> to <c>this</c>,
-        /// leaving the other <see cref="ManagedAudioMedia"/> without audio data
-        /// </summary>
-        /// <param name="other">The given other managed audio media</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="other"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="exception.InvalidDataFormatException">
-        /// Thrown when the PCM format of <c>this</c> is not compatible with that of <paramref name="other"/>
-        /// </exception>
-        public void MergeWith(ManagedAudioMedia other)
-        {
-            if (other == null)
-            {
-                throw new exception.MethodParameterIsNullException("Can not merge with a null ManagedAudioMedia");
-            }
-            AudioMediaData.MergeWith(other.AudioMediaData);
-        }
-
         #region IValueEquatable<Media> Members
 
         public override bool ValueEquals(WithPresentation other)
