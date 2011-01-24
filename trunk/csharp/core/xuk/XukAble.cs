@@ -297,10 +297,6 @@ namespace urakawa.xuk
             string name = t.Name;
 
             PropertyInfo info = typeof(XukStrings).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
-            if (info == null)
-            {
-                info = t.GetProperty("XukString", BindingFlags.Static | BindingFlags.Public);
-            }
             if (info != null)
             {
                 if (info.PropertyType == typeof(string))
@@ -308,6 +304,18 @@ namespace urakawa.xuk
                     return (info.GetValue(null, null) as string) ?? name;
                 }
             }
+            else
+            {
+                FieldInfo info2 = t.GetField("XukString", BindingFlags.Static | BindingFlags.Public);
+                if (info2 != null)
+                {
+                    if (info2.FieldType == typeof(string))
+                    {
+                        return (info2.GetValue(null) as string) ?? name;
+                    }
+                }
+            }
+
             System.Diagnostics.Debug.Fail("Type name not found ??");
             return name;
         }
