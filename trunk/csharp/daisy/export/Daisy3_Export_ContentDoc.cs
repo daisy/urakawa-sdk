@@ -248,7 +248,7 @@ namespace urakawa.daisy.export
                             && (xmlProp.LocalName == "caption" || xmlProp.LocalName == "prodnote"))
                         {
                             string imgIds = "";
-                            foreach (var imgId in m_TempImageId)
+                            foreach (string imgId in m_TempImageId)
                             {
                                 imgIds += imgId + " ";
                             }

@@ -176,7 +176,7 @@ namespace NAudio.Wave
                 WaveFormat format;
                 long dataChunkPosition;
                 int dataChunkLenght;
-                var chunks = new List<RiffChunk>();
+                List<RiffChunk> chunks = new List<RiffChunk>();
 
                 WaveFileReader.ReadWaveHeader(input, out format, out dataChunkPosition, out dataChunkLenght, chunks);
                

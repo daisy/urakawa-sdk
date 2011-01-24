@@ -48,7 +48,7 @@ namespace urakawa.daisy.import
 
         public void RelocateDestinationFilePath(string originalPath, string newPath)
         {
-            var keys = new List<string>(m_FilePathsMap.Count);
+            List<string> keys = new List<string>(m_FilePathsMap.Count);
             foreach (string key in m_FilePathsMap.Keys)
             {
                 keys.Add(key);
