@@ -489,6 +489,9 @@ namespace urakawa.media.data.audio
         /// </exception>
         public virtual void MergeWith(AudioMediaData other)
         {
+            throw new NotImplementedException("AudioMediaData.MergeWith() should never be called ! (WavAudioMediaData instead)");
+
+
             if (other == null)
             {
                 throw new exception.MethodParameterIsNullException("Can not merge with a null AudioMediaData");
