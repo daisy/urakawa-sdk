@@ -68,7 +68,7 @@ namespace urakawa.daisy.import
             }
             zipInputStream.Close();
 
-            var dirInfo = new DirectoryInfo(unzipDirectory);
+            DirectoryInfo dirInfo = new DirectoryInfo(unzipDirectory);
             FileInfo[] opfFiles = dirInfo.GetFiles("*.opf ", SearchOption.AllDirectories);
 
             foreach (FileInfo fileInfo in opfFiles)

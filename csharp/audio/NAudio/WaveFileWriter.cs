@@ -165,7 +165,7 @@ namespace NAudio.Wave
             }
             else if (WaveFormat.BitsPerSample == 24)
             {
-                var value = BitConverter.GetBytes((Int32)(Int32.MaxValue * sample));
+                byte[] value = BitConverter.GetBytes((Int32)(Int32.MaxValue * sample));
                 value24[0] = value[1];
                 value24[1] = value[2];
                 value24[2] = value[3];

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Xml;
 using AudioLib;
+using urakawa.events.progress;
 using urakawa.media.data.audio;
 using urakawa.xuk;
 
@@ -66,18 +67,18 @@ namespace urakawa.daisy.import
             //m_Project.SaveXuk(new Uri(m_Xuk_FilePath));
 
 
-            var action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath))
-            {
-                ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile,                               
-                LongDescription = UrakawaSDK_daisy_Lang.SerializeDOMIntoXUKFile             
-            };
+            SaveXukAction action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath));
+            action.ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile;
+            action.LongDescription = UrakawaSDK_daisy_Lang.SerializeDOMIntoXUKFile  ;
 
-            action.Progress += (sender, e) =>
-            {
+            action.Progress +=new EventHandler<urakawa.events.progress.ProgressEventArgs>(
+                delegate ( object sender, ProgressEventArgs e )
+                    {
+                        
                 double val = e.Current;
                 double max = e.Total;
                 
-                var percent = -1;
+                int percent = -1;
                 if (val != max)
                 {
                     percent = (int) ((val/max)*100);
@@ -90,9 +91,22 @@ namespace urakawa.daisy.import
                 {
                     e.Cancel();
                 }
-            };
-            action.Finished += (sender, e) => reportProgress(100, UrakawaSDK_daisy_Lang.XUKSaved);                 
-            action.Cancelled += (sender, e) => reportProgress(0, UrakawaSDK_daisy_Lang.CancelledXUKSaving);        
+                    }
+                );
+
+
+            action.Finished +=new EventHandler<FinishedEventArgs>(
+                delegate ( object sender, FinishedEventArgs e )
+                    {
+                        reportProgress(100, UrakawaSDK_daisy_Lang.XUKSaved);                 
+                    }
+                );
+action.Cancelled +=new EventHandler<CancelledEventArgs>(
+    delegate (object sender, CancelledEventArgs e)
+        {
+            reportProgress(0, UrakawaSDK_daisy_Lang.CancelledXUKSaving);       
+        }
+    );
 
             action.Execute();
 
