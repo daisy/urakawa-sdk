@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using urakawa.data;
 using urakawa.media.timing;
 using urakawa.progress;
@@ -1002,7 +1003,7 @@ namespace urakawa.media.data.audio.codec
                         splitPoint, AudioDuration));
             }
             WavAudioMediaData oWAMD =
-                Presentation.MediaDataFactory.Create(GetType()) as WavAudioMediaData;
+                Presentation.MediaDataFactory.Create<WavAudioMediaData>();
             if (oWAMD == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -1011,21 +1012,24 @@ namespace urakawa.media.data.audio.codec
             }
             oWAMD.PCMFormat = PCMFormat.Copy();
 
-            Time dur = new Time(AudioDuration.AsTimeSpan).GetDifference(splitPoint);
+            Time originalDuration = AudioDuration;
+            Time newClipDuration = new Time(AudioDuration.AsTimeSpan).GetDifference(splitPoint);
 
-            Time elapsed = Time.Zero;
+            Time curClip_Begin = Time.Zero;
             List<WavClip> clips = new List<WavClip>(mWavClips);
             mWavClips.Clear();
             oWAMD.mWavClips.Clear();
             for (int i = 0; i < clips.Count; i++)
             {
                 WavClip curClip = clips[i];
-                Time endCurClip = new Time(elapsed.AsTimeSpan + curClip.Duration.AsTimeSpan);
-                if (splitPoint.IsLessThanOrEqualTo(elapsed))
+                Time savedCurClipDuration = curClip.Duration;
+
+                Time curClip_End = new Time(curClip_Begin.AsTimeSpan + curClip.Duration.AsTimeSpan);
+                if (splitPoint.IsLessThanOrEqualTo(curClip_Begin))
                 {
                     oWAMD.mWavClips.Add(curClip);
                 }
-                else if (splitPoint.IsLessThan(endCurClip))
+                else if (splitPoint.IsLessThan(curClip_End))
                 {
                     WavClip secondPartClip = new WavClip(
                         curClip.DataProvider,
@@ -1033,7 +1037,7 @@ namespace urakawa.media.data.audio.codec
                         curClip.IsClipEndTiedToEOM ? null : curClip.ClipEnd);
 
                     curClip.ClipEnd = new Time(
-                        curClip.ClipBegin.AsTimeSpan + splitPoint.AsTimeSpan - elapsed.AsTimeSpan);
+                        curClip.ClipBegin.AsTimeSpan + (splitPoint.AsTimeSpan - curClip_Begin.AsTimeSpan));
 
                     secondPartClip.ClipBegin = curClip.ClipEnd.Copy();
                     mWavClips.Add(curClip);
@@ -1043,10 +1047,14 @@ namespace urakawa.media.data.audio.codec
                 {
                     mWavClips.Add(curClip);
                 }
-                elapsed.Add(curClip.Duration);
+                curClip_Begin.Add(savedCurClipDuration);
             }
-            NotifyAudioDataRemoved(this, splitPoint, dur);
-            oWAMD.NotifyAudioDataInserted(oWAMD, Time.Zero, dur);
+            NotifyAudioDataRemoved(this, splitPoint, newClipDuration);
+            oWAMD.NotifyAudioDataInserted(oWAMD, Time.Zero, newClipDuration);
+
+            DebugFix.Assert(newClipDuration.AsLocalUnits == oWAMD.AudioDuration.AsLocalUnits);
+            DebugFix.Assert((this.AudioDuration.AsLocalUnits + oWAMD.AudioDuration.AsLocalUnits) == originalDuration.AsLocalUnits);
+            
             return oWAMD;
         }
     }
