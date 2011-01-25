@@ -172,7 +172,7 @@ namespace urakawa.media
         {
             if (IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.Text, XukNamespaceUri);
+                destination.WriteStartElement(XukStrings.Text, XukAble.XUK_NS);
             }
             destination.WriteString(Text == " " ? SPACE : Text);
             if (IsPrettyFormat())

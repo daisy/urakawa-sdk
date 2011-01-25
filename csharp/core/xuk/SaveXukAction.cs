@@ -283,7 +283,7 @@ namespace urakawa.xuk
             try
             {
                 mXmlWriter.WriteStartDocument();
-                mXmlWriter.WriteStartElement(XukStrings.Xuk, m_Project.XukNamespaceUri);
+                mXmlWriter.WriteStartElement(XukStrings.Xuk, XukAble.XUK_NS);
                 if (XukAble.XUK_XSD_PATH != String.Empty)
                 {
                     if (m_Project.XukNamespaceUri == String.Empty)

@@ -617,13 +617,13 @@ namespace urakawa.data
         {
             if (Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.DataProviders, XukNamespaceUri);
+                destination.WriteStartElement(XukStrings.DataProviders, XukAble.XUK_NS);
             }
             foreach (DataProvider prov in ManagedObjects.ContentsAs_YieldEnumerable)
             {
                 if (false && Presentation.Project.IsPrettyFormat())
                 {
-                    destination.WriteStartElement(XukStrings.DataProviderItem, XukNamespaceUri);
+                    destination.WriteStartElement(XukStrings.DataProviderItem, XukAble.XUK_NS);
                     //destination.WriteAttributeString(XukStrings.Uid, prov.Uid);
                 }
 

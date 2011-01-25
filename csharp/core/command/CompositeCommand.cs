@@ -350,7 +350,7 @@ namespace urakawa.command
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
-            destination.WriteStartElement(XukStrings.Commands, XukNamespaceUri);
+            destination.WriteStartElement(XukStrings.Commands, XukAble.XUK_NS);
             foreach (Command cmd in mCommands.ContentsAs_YieldEnumerable)
             {
                 cmd.XukOut(destination, baseUri, handler);

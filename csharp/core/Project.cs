@@ -383,7 +383,7 @@ namespace urakawa
         {
             base.XukOutChildren(destination, baseUri, handler);
             PresentationFactory.XukOut(destination, baseUri, handler);
-            destination.WriteStartElement(XukStrings.Presentations, XukNamespaceUri);
+            destination.WriteStartElement(XukStrings.Presentations, XukAble.XUK_NS);
             foreach (Presentation pres in mPresentations.ContentsAs_YieldEnumerable)
             {
                 pres.DataProviderManager.RegenerateUids();

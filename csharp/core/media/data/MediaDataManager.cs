@@ -499,20 +499,20 @@ namespace urakawa.media.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
-            destination.WriteStartElement(XukStrings.DefaultPCMFormat, XukNamespaceUri);
+            destination.WriteStartElement(XukStrings.DefaultPCMFormat, XukAble.XUK_NS);
             DefaultPCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
             if (Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.MediaDatas, XukNamespaceUri);
+                destination.WriteStartElement(XukStrings.MediaDatas, XukAble.XUK_NS);
             }
             //foreach (string uid in mMediaDataDictionary.Keys)
             foreach (MediaData md in ManagedObjects.ContentsAs_YieldEnumerable)
             {
                 if (false && Presentation.Project.IsPrettyFormat())
                 {
-                    destination.WriteStartElement(XukStrings.MediaDataItem, XukNamespaceUri);
+                    destination.WriteStartElement(XukStrings.MediaDataItem, XukAble.XUK_NS);
                     //destination.WriteAttributeString(XukStrings.Uid, uid);
                 }
 

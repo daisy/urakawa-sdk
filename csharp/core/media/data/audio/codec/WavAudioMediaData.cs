@@ -907,11 +907,11 @@ namespace urakawa.media.data.audio.codec
             }
             if (Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.WavClips, XukNamespaceUri);
+                destination.WriteStartElement(XukStrings.WavClips, XukAble.XUK_NS);
             }
             foreach (WavClip clip in mWavClips)
             {
-                destination.WriteStartElement(XukStrings.WavClip, XukNamespaceUri);
+                destination.WriteStartElement(XukStrings.WavClip, XukAble.XUK_NS);
                 destination.WriteAttributeString(XukStrings.DataProvider, clip.DataProvider.Uid);
                 if (!clip.ClipBegin.IsEqualTo(Time.Zero))
                 {

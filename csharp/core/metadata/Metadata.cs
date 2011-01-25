@@ -192,7 +192,7 @@ namespace urakawa.metadata
             {
                 if (IsPrettyFormat())
                 {
-                    destination.WriteStartElement(XukStrings.MetadataOtherAttributes, XukNamespaceUri);
+                    destination.WriteStartElement(XukStrings.MetadataOtherAttributes, XukAble.XUK_NS);
                 }
                 foreach (MetadataAttribute a in OtherAttributes.ContentsAs_YieldEnumerable)
                 {

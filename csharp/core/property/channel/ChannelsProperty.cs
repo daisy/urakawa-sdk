@@ -378,11 +378,11 @@ namespace urakawa.property.channel
 
             if (IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.ChannelMappings, XukNamespaceUri);
+                destination.WriteStartElement(XukStrings.ChannelMappings, XukAble.XUK_NS);
             }
             foreach (Channel channel in UsedChannels)
             {
-                destination.WriteStartElement(XukStrings.ChannelMapping, XukNamespaceUri);
+                destination.WriteStartElement(XukStrings.ChannelMapping, XukAble.XUK_NS);
                 destination.WriteAttributeString(XukStrings.Channel, channel.Uid);
                 Media media = GetMedia(channel);
                 if (media == null)

@@ -1119,7 +1119,7 @@ namespace urakawa
 
             ExternalFilesDataManager.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement(XukStrings.Metadatas, XukNamespaceUri);
+            destination.WriteStartElement(XukStrings.Metadatas, XukAble.XUK_NS);
             foreach (Metadata md in mMetadata.ContentsAs_YieldEnumerable)
             {
                 md.XukOut(destination, baseUri, handler);
@@ -1130,7 +1130,7 @@ namespace urakawa
             if (!m_IgnoreUndoRedoStack)
                 UndoRedoManager.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement(XukStrings.RootNode, XukNamespaceUri);
+            destination.WriteStartElement(XukStrings.RootNode, XukAble.XUK_NS);
             RootNode.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
