@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Xml;
 using urakawa.exception;
@@ -144,6 +145,21 @@ namespace urakawa.xuk
             if (source.NodeType == XmlNodeType.Element && !source.IsEmptyElement) source.ReadSubtree().Close(); //Read past unknown child 
         }
 
+        private static int m_NamespacePrefixIndex = 0;
+        private static readonly Dictionary<string, string> m_NamespacePrefixMap = new Dictionary<string, string>();
+        private static string GetNamespacePrefix(string namespaceUri)
+        {
+            if (m_NamespacePrefixMap.ContainsKey(namespaceUri))
+            {
+                return m_NamespacePrefixMap[namespaceUri];
+            }
+
+            m_NamespacePrefixIndex++;
+            string prefix = "ns" + m_NamespacePrefixIndex;
+            m_NamespacePrefixMap.Add(namespaceUri, prefix);
+            return prefix;
+        }
+
         /// <summary>
         /// Write a XukAble element to a XUK file representing the <see cref="XukAble"/> instance
         /// </summary>
@@ -172,11 +188,27 @@ namespace urakawa.xuk
             {
                 if (MissingTypeOriginalXukedName != null)
                 {
-                    destination.WriteStartElement(MissingTypeOriginalXukedName.LocalName, MissingTypeOriginalXukedName.NamespaceUri);
+                    if (MissingTypeOriginalXukedName.NamespaceUri == XukAble.XUK_NS)
+                    {
+                        destination.WriteStartElement(MissingTypeOriginalXukedName.LocalName, MissingTypeOriginalXukedName.NamespaceUri);
+                    }
+                    else
+                    {
+                        string prefix = GetNamespacePrefix(MissingTypeOriginalXukedName.NamespaceUri);
+                        destination.WriteStartElement(prefix, MissingTypeOriginalXukedName.LocalName, MissingTypeOriginalXukedName.NamespaceUri);
+                    }
                 }
                 else
                 {
-                    destination.WriteStartElement(XukLocalName, XukNamespaceUri);
+                    if (XukNamespaceUri == XukAble.XUK_NS)
+                    {
+                        destination.WriteStartElement(XukLocalName, XukNamespaceUri);
+                    }
+                    else
+                    {
+                        string prefix = GetNamespacePrefix(XukNamespaceUri);
+                        destination.WriteStartElement(prefix, XukLocalName, XukNamespaceUri);
+                    }
                 }
                 XukOutAttributes(destination, baseUri);
                 XukOutChildren(destination, baseUri, handler);
