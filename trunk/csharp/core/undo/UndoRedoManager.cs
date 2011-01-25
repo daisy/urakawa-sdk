@@ -618,13 +618,13 @@ namespace urakawa.undo
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
-            destination.WriteStartElement(XukStrings.UndoStack, XukNamespaceUri);
+            destination.WriteStartElement(XukStrings.UndoStack, XukAble.XUK_NS);
             foreach (Command cmd in mUndoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            destination.WriteStartElement(XukStrings.RedoStack, XukNamespaceUri);
+            destination.WriteStartElement(XukStrings.RedoStack, XukAble.XUK_NS);
             foreach (Command cmd in mRedoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);

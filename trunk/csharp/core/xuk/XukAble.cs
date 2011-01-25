@@ -252,8 +252,8 @@ namespace urakawa.xuk
         {
             get
             {
-                return XUK_NS;
-                //return GetXukNamespaceUri(GetType());
+                //return XUK_NS;
+                return GetXukNamespaceUri(GetType());
             }
         }
 

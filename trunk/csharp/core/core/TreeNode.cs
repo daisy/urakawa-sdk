@@ -455,7 +455,7 @@ namespace urakawa.core
         {
             base.XukOutChildren(destination, baseUri, handler);
 
-            destination.WriteStartElement(XukStrings.Properties, XukNamespaceUri);
+            destination.WriteStartElement(XukStrings.Properties, XukAble.XUK_NS);
             foreach (Property prop in Properties.ContentsAs_YieldEnumerable)
             {
                 prop.XukOut(destination, baseUri, handler);
@@ -464,7 +464,7 @@ namespace urakawa.core
 
             if (IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.Children, XukNamespaceUri);
+                destination.WriteStartElement(XukStrings.Children, XukAble.XUK_NS);
             }
             for (int i = 0; i < Children.Count; i++)
             {

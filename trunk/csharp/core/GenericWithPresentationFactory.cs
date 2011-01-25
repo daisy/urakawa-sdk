@@ -28,7 +28,7 @@ namespace urakawa
         {
             if (Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.RegisteredTypes, XukNamespaceUri);
+                destination.WriteStartElement(XukStrings.RegisteredTypes, XukAble.XUK_NS);
             }
 
             XukOutRegisteredTypes(destination, baseUri, handler);

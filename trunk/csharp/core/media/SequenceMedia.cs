@@ -405,7 +405,7 @@ namespace urakawa.media
         {
             if (mSequence.Count > 0)
             {
-                destination.WriteStartElement(XukStrings.Sequence, XukNamespaceUri);
+                destination.WriteStartElement(XukStrings.Sequence, XukAble.XUK_NS);
                 for (int i = 0; i < mSequence.Count; i++)
                 {
                     mSequence.Get(i).XukOut(destination, baseUri, handler);

@@ -177,14 +177,14 @@ namespace urakawa.ExternalFiles
         {
             if (Presentation.Project.IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.ExternalFileDatas, XukNamespaceUri);
+                destination.WriteStartElement(XukStrings.ExternalFileDatas, XukAble.XUK_NS);
             }
 
             foreach (ExternalFileData exfd in ManagedObjects.ContentsAs_YieldEnumerable)
             {
                 if (false && Presentation.Project.IsPrettyFormat())
                 {
-                    destination.WriteStartElement(XukStrings.ExternalFileDataItem, XukNamespaceUri);
+                    destination.WriteStartElement(XukStrings.ExternalFileDataItem, XukAble.XUK_NS);
                 }
 
                 exfd.XukOut(destination, baseUri, handler);

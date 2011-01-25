@@ -475,7 +475,7 @@ namespace urakawa.property.xml
             {
                 if (IsPrettyFormat())
                 {
-                    destination.WriteStartElement(XukStrings.XmlAttributes, XukNamespaceUri);
+                    destination.WriteStartElement(XukStrings.XmlAttributes, XukAble.XUK_NS);
                 }
                 foreach (XmlAttribute a in attrs)
                 {
