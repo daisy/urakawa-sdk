@@ -200,7 +200,6 @@ namespace urakawa.data
         public const string DefaultDataFileDirectory = "Data";
 
         // it's only public because XukIn needs it !
-        // TODO: several Presentations with the same Data folder will conflict within a single Project !!
         public string DataFileDirectory = DefaultDataFileDirectory;
 
         /// <summary>
