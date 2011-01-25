@@ -438,6 +438,8 @@ namespace urakawa.media.data.audio
         /// </exception>
         public virtual AudioMediaData Split(Time splitPoint)
         {
+            //throw new NotImplementedException("AudioMediaData.Split() should never be called ! (WavAudioMediaData instead)");
+
             if (splitPoint == null)
             {
                 throw new exception.MethodParameterIsNullException(
@@ -489,8 +491,7 @@ namespace urakawa.media.data.audio
         /// </exception>
         public virtual void MergeWith(AudioMediaData other)
         {
-            throw new NotImplementedException("AudioMediaData.MergeWith() should never be called ! (WavAudioMediaData instead)");
-
+            //throw new NotImplementedException("AudioMediaData.MergeWith() should never be called ! (WavAudioMediaData instead)");
 
             if (other == null)
             {
