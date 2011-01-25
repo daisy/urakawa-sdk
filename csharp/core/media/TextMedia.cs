@@ -132,7 +132,7 @@ namespace urakawa.media
         {
             if (IsPrettyFormat())
             {
-                if (source.LocalName == XukStrings.Text && source.NamespaceURI == XukNamespaceUri)
+                if (source.LocalName == XukStrings.Text && source.NamespaceURI == XukAble.XUK_NS)
                 {
                     if (!source.IsEmptyElement)
                     {

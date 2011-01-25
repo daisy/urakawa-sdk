@@ -740,7 +740,7 @@ namespace urakawa.media.data.audio.codec
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukNamespaceUri)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.WavClips)
@@ -771,7 +771,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.PCMFormatInfo && source.NamespaceURI == XukNamespaceUri)
+                        if (source.LocalName == XukStrings.PCMFormatInfo && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             PCMFormatInfo newInfo = new PCMFormatInfo();
                             newInfo.XukIn(source, handler);
@@ -799,7 +799,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.WavClip && source.NamespaceURI == XukNamespaceUri)
+                        if (source.LocalName == XukStrings.WavClip && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             XukInWavClip(source);
                         }

@@ -974,7 +974,7 @@ namespace urakawa
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukNamespaceUri)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.TreeNodeFactory)

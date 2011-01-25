@@ -403,7 +403,7 @@ namespace urakawa.data
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukNamespaceUri)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.DataProviders)
@@ -436,7 +436,7 @@ namespace urakawa.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.DataProviderItem && source.NamespaceURI == XukNamespaceUri)
+                        if (source.LocalName == XukStrings.DataProviderItem && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             XukInDataProviderItem(source, handler);
                         }

@@ -356,7 +356,7 @@ namespace urakawa
         /// <param name="handler">The handler of progress</param>
         protected override void XukInChild(XmlReader source, progress.IProgressHandler handler)
         {
-            if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XukNamespaceUri)
+            if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XukAble.XUK_NS)
             {
                 XukInRegisteredTypes(source, handler);
                 return;
@@ -366,7 +366,7 @@ namespace urakawa
 
         protected void XukInRegisteredType(XmlReader source)
         {
-            if (source.LocalName == XukStrings.Type && source.NamespaceURI == XukNamespaceUri)
+            if (source.LocalName == XukStrings.Type && source.NamespaceURI == XukAble.XUK_NS)
             {
                 TypeAndQNames tq = new TypeAndQNames();
                 tq.ReadFromXmlReader(source);

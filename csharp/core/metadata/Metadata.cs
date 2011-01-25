@@ -207,7 +207,7 @@ namespace urakawa.metadata
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukNamespaceUri)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 if (m_firstXukInAttribute && source.LocalName == XukStrings.MetadataAttribute)
@@ -236,7 +236,7 @@ namespace urakawa.metadata
         private bool m_firstXukInAttribute;
         protected virtual void XukInMetadataAttribute(XmlReader source, IProgressHandler handler)
         {
-            if (source.LocalName == XukStrings.MetadataAttribute && source.NamespaceURI == XukNamespaceUri)
+            if (source.LocalName == XukStrings.MetadataAttribute && source.NamespaceURI == XukAble.XUK_NS)
             {
                 MetadataAttribute attr = new MetadataAttribute();
                 attr.XukIn(source, handler);

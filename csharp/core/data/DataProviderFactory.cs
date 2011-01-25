@@ -244,7 +244,7 @@ namespace urakawa.data
         /// </exception>
         public DataProvider Create(string mimeType, string xukLocalName, string xukNamespaceUri)
         {
-            DataProvider newProv = Create(xukLocalName, XukNamespaceUri);
+            DataProvider newProv = Create(xukLocalName, xukNamespaceUri);
             if (newProv!=null) newProv.MimeType = mimeType;
             return newProv;
         }
