@@ -383,8 +383,13 @@ namespace urakawa.core
             TreeNode newChild = Presentation.TreeNodeFactory.Create(source.LocalName, source.NamespaceURI);
             if (newChild != null)
             {
+                newChild.mParent = this;
+
                 newChild.XukIn(source, handler);
+
+                newChild.mParent = null;
                 AppendChild(newChild);
+                //Insert(newChild, mChildren.Count);
             }
             else if (!source.IsEmptyElement)
             {
