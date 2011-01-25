@@ -135,7 +135,7 @@ namespace urakawa.property.channel
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukNamespaceUri)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.Channels)
@@ -168,7 +168,7 @@ namespace urakawa.property.channel
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.ChannelItem && source.NamespaceURI == XukNamespaceUri)
+                        if (source.LocalName == XukStrings.ChannelItem && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             XukInChannelItem(source, handler);
                         }

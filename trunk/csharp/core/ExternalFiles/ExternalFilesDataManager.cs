@@ -215,7 +215,7 @@ namespace urakawa.ExternalFiles
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukNamespaceUri)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
 
@@ -285,7 +285,7 @@ namespace urakawa.ExternalFiles
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.ExternalFileDataItem && source.NamespaceURI == XukNamespaceUri)
+                        if (source.LocalName == XukStrings.ExternalFileDataItem && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             XukInExternalFileDataItem(source, handler);
                         }

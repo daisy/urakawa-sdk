@@ -380,7 +380,7 @@ namespace urakawa.property.xml
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == XukNamespaceUri)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 if (IsPrettyFormat() && source.LocalName == XukStrings.XmlAttributes)
@@ -409,7 +409,7 @@ namespace urakawa.property.xml
         /// <param name="handler">The handler for progress</param>
         protected virtual void XukInXmlAttribute(XmlReader source, IProgressHandler handler)
         {
-            if (source.LocalName == XukStrings.XmlAttribute && source.NamespaceURI == XukNamespaceUri)
+            if (source.LocalName == XukStrings.XmlAttribute && source.NamespaceURI == XukAble.XUK_NS)
             {
                 XmlAttribute attr = new XmlAttribute();
                 attr.XukIn(source, handler);

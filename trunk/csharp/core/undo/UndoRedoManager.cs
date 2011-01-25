@@ -552,7 +552,7 @@ namespace urakawa.undo
         {
             bool readItem = false;
 
-            if (source.NamespaceURI == XukNamespaceUri)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 if (source.LocalName == XukStrings.UndoStack)

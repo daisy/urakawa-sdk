@@ -12,7 +12,7 @@ namespace urakawa
     {
         protected override void XukInChild(XmlReader source, progress.IProgressHandler handler)
         {
-            if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XukNamespaceUri)
+            if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XukAble.XUK_NS)
             {
                 XukInRegisteredTypes(source, handler);
             }
