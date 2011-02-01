@@ -16,28 +16,28 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export : DualCancellableProgressReporter
     {
-        private Presentation m_Presentation;
+        protected Presentation m_Presentation;
         private PublishFlattenedManagedAudioVisitor m_PublishVisitor = null;
-        private string m_OutputDirectory;
-        private List<string> m_NavListElementNamesList;
+        protected string m_OutputDirectory;
+        protected List<string> m_NavListElementNamesList;
         private const string PUBLISH_AUDIO_CHANNEL_NAME = "Temporary External Audio Medias (Publish Visitor)";
 
-        private const string m_Filename_Content = "dtbook.xml";
-        private const string m_Filename_Ncx = "navigation.ncx";
-        private const string m_Filename_Opf = "package.opf";
+        protected const string m_Filename_Content = "dtbook.xml";
+        protected const string m_Filename_Ncx = "navigation.ncx";
+        protected const string m_Filename_Opf = "package.opf";
 
-        private Dictionary<TreeNode, XmlNode> m_TreeNode_XmlNodeMap; // dictionary created in create content document function, used in create ncx and smil function
-        private List<TreeNode> m_ListOfLevels; // list of level anddoctitle, docauthor nodes collected in createContentDoc function, for creating equivalent navPoints in create NCX funtion 
+        protected Dictionary<TreeNode, XmlNode> m_TreeNode_XmlNodeMap; // dictionary created in create content document function, used in create ncx and smil function
+        protected List<TreeNode> m_ListOfLevels; // list of level anddoctitle, docauthor nodes collected in createContentDoc function, for creating equivalent navPoints in create NCX funtion 
 
-        private List<string> m_FilesList_Smil; //xmils files list generated in createNcx function
-        private List<string> m_FilesList_Audio; // list of audio files generated in create ncx function.
-        private List<string> m_FilesList_Image; // list of images, populated in create content document function
-        private List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
-        private Time m_TotalTime;
+        protected List<string> m_FilesList_Smil; //xmils files list generated in createNcx function
+        protected List<string> m_FilesList_Audio; // list of audio files generated in create ncx function.
+        protected List<string> m_FilesList_Image; // list of images, populated in create content document function
+        protected List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
+        protected Time m_TotalTime;
 
-        private readonly bool m_SkipACM;
-        private readonly bool m_encodeToMp3;
-        private readonly SampleRate m_sampleRate;
+        protected readonly bool m_SkipACM;
+        protected readonly bool m_encodeToMp3;
+        protected readonly SampleRate m_sampleRate;
         
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace urakawa.daisy.export
             return qName != null && qName.LocalName.StartsWith("level");
         }
 
-        private ExternalAudioMedia GetExternalAudioMedia(TreeNode node)
+        protected ExternalAudioMedia GetExternalAudioMedia(TreeNode node)
         {
             List<Channel> channelsList = m_Presentation.ChannelsManager.GetChannelsByName(PUBLISH_AUDIO_CHANNEL_NAME);
             if (channelsList == null || channelsList.Count == 0)
@@ -189,13 +189,13 @@ namespace urakawa.daisy.export
             return (ExternalAudioMedia)mediaProperty.GetMedia(publishChannel);
         }
 
-        private const string ID_DTBPrefix = "dtb_";
-        private const string ID_SmilPrefix = "sm_";
-        private const string ID_NcxPrefix = "ncx_";
-        private const string ID_OpfPrefix = "opf_";
-        private long m_ID_Counter;
+        protected const string ID_DTBPrefix = "dtb_";
+        protected const string ID_SmilPrefix = "sm_";
+        protected const string ID_NcxPrefix = "ncx_";
+        protected const string ID_OpfPrefix = "opf_";
+        protected long m_ID_Counter;
 
-        private string GetNextID(string prefix)
+        protected string GetNextID(string prefix)
         {
             string strNumericFrag = (++m_ID_Counter).ToString();
             return prefix + strNumericFrag;
