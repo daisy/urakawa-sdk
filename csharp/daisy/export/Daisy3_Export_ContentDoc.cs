@@ -32,8 +32,7 @@ namespace urakawa.daisy.export
             //}
 
 
-            m_FilesList_Image = new List<string>();
-            m_FilesList_ExternalFiles = new List<string>();
+            
             List<ExternalFileData> list_ExternalStyleSheets = new List<ExternalFileData>();
             string strInternalDTD = null;
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)

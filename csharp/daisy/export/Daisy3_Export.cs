@@ -81,6 +81,8 @@ namespace urakawa.daisy.export
 
         public override void DoWork()
         {
+            m_FilesList_Image = new List<string>();
+            m_FilesList_ExternalFiles = new List<string>();
             RequestCancellation = false;
 
 
