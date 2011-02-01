@@ -20,7 +20,7 @@ namespace urakawa.daisy.export
         private List<string> m_TempImageId = null;
 
         // to do regenerate ids
-        private void CreateDTBookDocument()
+        protected virtual void CreateDTBookDocument()
         {
             // check if there is preserved internal DTD 
             //string[] dtbFilesList = Directory.GetFiles(m_Presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd", SearchOption.AllDirectories);

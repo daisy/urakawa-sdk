@@ -13,15 +13,15 @@ namespace urakawa.daisy.export
     {
         //DAISY3Export_Ncx
 
-        private string FormatTimeString(Time time)
+        protected string FormatTimeString(Time time)
         {
             return time.Format_StandardExpanded();
         }
 
-        private uint m_SmilFileNameCounter;
+        protected uint m_SmilFileNameCounter;
 
         // to do create IDs
-        private void CreateNcxAndSmilDocuments()
+        protected virtual void CreateNcxAndSmilDocuments()
         {
             XmlDocument ncxDocument = CreateStub_NcxDocument();
 
@@ -819,7 +819,7 @@ namespace urakawa.daisy.export
             return parentNode;
         }
 
-        private int GetDepthOfNavPointNode(XmlDocument doc, XmlNode navPointNode)
+        protected int GetDepthOfNavPointNode(XmlDocument doc, XmlNode navPointNode)
         {
             XmlNode parent = navPointNode.ParentNode;
 
@@ -932,7 +932,7 @@ namespace urakawa.daisy.export
                                 }) != null;
         }
 
-        private void AddMetadata_Ncx(XmlDocument ncxDocument, string strTotalPages, string strMaxNormalPage, string strDepth, List<string> ncxCustomTestList)
+        protected void AddMetadata_Ncx(XmlDocument ncxDocument, string strTotalPages, string strMaxNormalPage, string strDepth, List<string> ncxCustomTestList)
         {
             XmlNode headNode = XmlDocumentHelper.GetFirstChildElementWithName(ncxDocument, true, "head", null); //ncxDocument.GetElementsByTagName("head")[0];
 
@@ -972,7 +972,7 @@ namespace urakawa.daisy.export
 
         }
 
-        private void AddMetadata_Smil(XmlDocument smilDocument, string strElapsedTime, List<string> currentSmilCustomTestList)
+        protected void AddMetadata_Smil(XmlDocument smilDocument, string strElapsedTime, List<string> currentSmilCustomTestList)
         {
             XmlNode headNode = XmlDocumentHelper.GetFirstChildElementWithName(smilDocument, true, "head", null); //smilDocument.GetElementsByTagName("head")[0];
 
@@ -1035,7 +1035,7 @@ namespace urakawa.daisy.export
             return null;
         }
 
-        private string GetNextSmilFileName
+        protected string GetNextSmilFileName
         {
             get
             {
@@ -1045,7 +1045,7 @@ namespace urakawa.daisy.export
         }
 
 
-        private XmlDocument CreateStub_NcxDocument()
+        protected XmlDocument CreateStub_NcxDocument()
         {
             XmlDocument NcxDocument = new XmlDocument();
             NcxDocument.XmlResolver = null;
@@ -1076,7 +1076,7 @@ namespace urakawa.daisy.export
             return NcxDocument;
         }
 
-        private XmlDocument CreateStub_SmilDocument()
+        protected XmlDocument CreateStub_SmilDocument()
         {
             XmlDocument smilDocument = new XmlDocument();
             smilDocument.XmlResolver = null;
