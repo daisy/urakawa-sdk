@@ -35,6 +35,9 @@ namespace urakawa.daisy.export
         protected List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
         protected Time m_TotalTime;
 
+        protected TreeNodeTestDelegate triggerDelegate ;
+protected TreeNodeTestDelegate skipDelegate ;
+        
         protected readonly bool m_SkipACM;
         protected readonly bool m_encodeToMp3;
         protected readonly SampleRate m_sampleRate;
@@ -75,9 +78,13 @@ namespace urakawa.daisy.export
                 m_NavListElementNamesList.Add("note");
             }
 
-            //export();
         }
 
+        public virtual void ConfigureAudioFileDelegates ()
+        {   
+            TreeNodeTestDelegate triggerDelegate = doesTreeNodeTriggerNewSmil;
+            TreeNodeTestDelegate skipDelegate = delegate { return false; };
+        }
 
         public override void DoWork()
         {
@@ -97,9 +104,10 @@ namespace urakawa.daisy.export
                 m_Presentation.ChannelsManager.RemoveManagedObject ( previousChannel);
                 }
 
-            //TreeNodeTestDelegate triggerDelegate  = delegate(urakawa.core.TreeNode node) { return node.GetManagedAudioMedia () != null ; };
-            TreeNodeTestDelegate triggerDelegate = doesTreeNodeTriggerNewSmil;
-            TreeNodeTestDelegate skipDelegate = delegate { return false; };
+            ////TreeNodeTestDelegate triggerDelegate  = delegate(urakawa.core.TreeNode node) { return node.GetManagedAudioMedia () != null ; };
+            //TreeNodeTestDelegate triggerDelegate = doesTreeNodeTriggerNewSmil;
+            //TreeNodeTestDelegate skipDelegate = delegate { return false; };
+                ConfigureAudioFileDelegates();
 
             m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(triggerDelegate, skipDelegate);
 
