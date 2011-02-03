@@ -22,7 +22,7 @@ namespace urakawa.daisy.export
         protected List<string> m_NavListElementNamesList;
         private const string PUBLISH_AUDIO_CHANNEL_NAME = "Temporary External Audio Medias (Publish Visitor)";
 
-        protected const string m_Filename_Content = "dtbook.xml";
+        protected string m_Filename_Content = "dtbook.xml";
         protected const string m_Filename_Ncx = "navigation.ncx";
         protected const string m_Filename_Opf = "package.opf";
 
@@ -167,7 +167,7 @@ namespace urakawa.daisy.export
 ////            reportProgress(m_ProgressPercentage, (string)e.UserState);
 //        }
 
-        private bool doesTreeNodeTriggerNewSmil(TreeNode node)
+        protected virtual bool doesTreeNodeTriggerNewSmil(TreeNode node)
         {
             QualifiedName qName = node.GetXmlElementQName();
             return qName != null && qName.LocalName.StartsWith("level");
