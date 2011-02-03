@@ -68,7 +68,7 @@ namespace urakawa.daisy.export
 
             // add all files to manifest
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
-            AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), mediaType_Dtbook);
+            if (m_Filename_Content != null )  AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), mediaType_Dtbook);
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Opf, GetNextID(ID_OpfPrefix), mediaType_Opf);
 
             // add external files to manifest
@@ -209,12 +209,12 @@ namespace urakawa.daisy.export
 
             if (true || m_Presentation.GetMetadata("dtb:multimediaType").Count == 0)
             {
-                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaType", "audioFullText");
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaType",m_Filename_Content != null? "audioFullText" : "audioNCX");
             }
 
             if (true || m_Presentation.GetMetadata("dtb:multimediaContent").Count == 0)
             {
-                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaContent", "audio,text");
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaContent",m_Filename_Content != null? "audio,text" : "audio");
             }
 
             AddMetadataAsInnerText(opfDocument, dc_metadataNode, "dc:format", "ANSI/NISO Z39.86-2005");
