@@ -41,6 +41,7 @@ protected TreeNodeTestDelegate skipDelegate ;
         protected readonly bool m_SkipACM;
         protected readonly bool m_encodeToMp3;
         protected readonly SampleRate m_sampleRate;
+        protected int m_BitRate_Mp3;
         
 
         /// <summary>
@@ -80,6 +81,12 @@ protected TreeNodeTestDelegate skipDelegate ;
 
         }
 
+        public virtual int BitRate_Mp3
+        {
+            get { return m_BitRate_Mp3; }
+            set { m_BitRate_Mp3 = value; }
+        }
+
         public virtual void ConfigureAudioFileDelegates ()
         {   
             TreeNodeTestDelegate triggerDelegate = doesTreeNodeTriggerNewSmil;
@@ -112,6 +119,7 @@ protected TreeNodeTestDelegate skipDelegate ;
             m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(triggerDelegate, skipDelegate);
 
             m_PublishVisitor.EncodePublishedAudioFilesToMp3 = m_encodeToMp3;
+            if (m_encodeToMp3 && m_BitRate_Mp3 >= 32) m_PublishVisitor.BitRate_Mp3 = (ushort) m_BitRate_Mp3;
             m_PublishVisitor.EncodePublishedAudioFilesSampleRate = m_sampleRate;
             m_PublishVisitor.DisableAcmCodecs = m_SkipACM;
 
