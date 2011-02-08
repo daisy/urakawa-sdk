@@ -34,6 +34,17 @@ namespace urakawa.media.timing
 
         public static string Format_StandardExpanded(TimeSpan time)
         {
+            if (time.Days >= 1)
+            {
+                string[] timeStringArray = time.ToString().Split(':');
+                string strTIME = time.TotalHours.ToString().Split('.')[0];
+                for (int i = 1; i < timeStringArray.Length; i++)
+                {
+                    strTIME += ":" + timeStringArray[i];
+                }
+                return strTIME;
+            }
+
             return time.ToString();
         }
 
