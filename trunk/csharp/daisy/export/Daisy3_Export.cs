@@ -39,9 +39,9 @@ namespace urakawa.daisy.export
 protected TreeNodeTestDelegate skipDelegate ;
         
         protected readonly bool m_SkipACM;
-        protected readonly bool m_encodeToMp3;
+        private readonly bool m_encodeToMp3;
         protected readonly SampleRate m_sampleRate;
-        protected int m_BitRate_Mp3;
+        private int m_BitRate_Mp3;
         
 
         /// <summary>
@@ -81,7 +81,7 @@ protected TreeNodeTestDelegate skipDelegate ;
 
         }
 
-        public virtual int BitRate_Mp3
+        public int BitRate_Mp3
         {
             get { return m_BitRate_Mp3; }
             set { m_BitRate_Mp3 = value; }
