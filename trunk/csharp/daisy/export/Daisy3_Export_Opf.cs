@@ -214,7 +214,7 @@ namespace urakawa.daisy.export
 
             if (true || m_Presentation.GetMetadata("dtb:multimediaContent").Count == 0)
             {
-                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaContent",m_Filename_Content != null? "audio,text" : "audio");
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaContent","audio,text" );
             }
 
             AddMetadataAsInnerText(opfDocument, dc_metadataNode, "dc:format", "ANSI/NISO Z39.86-2005");
