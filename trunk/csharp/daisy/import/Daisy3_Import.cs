@@ -12,7 +12,7 @@ namespace urakawa.daisy.import
     {
         private readonly string m_outDirectory;
         private string m_Book_FilePath;
-
+        private bool m_IsAudioNCX;
 
         private string m_Xuk_FilePath;
         public string XukPath
@@ -48,6 +48,7 @@ namespace urakawa.daisy.import
             }
 
             m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
+            m_IsAudioNCX = false;
 
             if (RequestCancellation) return;
             initializeProject();
