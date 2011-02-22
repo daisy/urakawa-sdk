@@ -50,8 +50,10 @@ namespace urakawa.daisy.import
                 parseContentDocument(dtbookXmlDoc, null, fullDtbookPath);
             }
 
-            if (false && ncxPath != null) //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
+            //if (false && ncxPath != null) //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
+            if (string.IsNullOrEmpty(dtbookPath) && !string.IsNullOrEmpty(ncxPath)) 
             {
+                m_IsAudioNCX = true;
                 if (RequestCancellation) return;
                 string fullNcxPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), ncxPath);
                 XmlDocument ncxXmlDoc = OpenXukAction.ParseXmlDocument(fullNcxPath, false);
@@ -59,6 +61,7 @@ namespace urakawa.daisy.import
                 if (RequestCancellation) return;
                 reportProgress(-1, "Parsing metadata: [" + ncxPath + "]");
                 parseMetadata(ncxXmlDoc);
+                ParseNCXDocument(ncxXmlDoc);
             }
 
             if (RequestCancellation) return;
