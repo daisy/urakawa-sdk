@@ -39,6 +39,25 @@ namespace urakawa.daisy.import
 
             
             ParseNCXNodes(presentation, navMap, treeNode);
+            CollectPagesFromPageList(navMap);
+        }
+
+        private Dictionary<string, XmlNode> m_PageReferencesMapDictionaryForNCX;
+        private void CollectPagesFromPageList(XmlNode navMap)
+        {
+            m_PageReferencesMapDictionaryForNCX  = new Dictionary<string, XmlNode>();
+            //XmlNode pageListNode =  XmlDocumentHelper.GetFirstChildElementWithName(navMap, true, "pageList", navMap.NamespaceURI);
+            XmlNode pageListNode = navMap.OwnerDocument.GetElementsByTagName("pageList")[0];
+            if (pageListNode != null)
+            {
+                
+                foreach (XmlNode pageTargetNode in XmlDocumentHelper.GetChildrenElementsWithName(pageListNode, true, "pageTarget", navMap.NamespaceURI, false))
+                {
+                    XmlNode contentNode = XmlDocumentHelper.GetFirstChildElementWithName(pageTargetNode, true, "content", pageTargetNode.NamespaceURI);
+                    m_PageReferencesMapDictionaryForNCX.Add(contentNode.Attributes.GetNamedItem("src").Value , pageTargetNode);
+                    
+                }
+            }
         }
 
         private void ParseNCXNodes(Presentation presentation, XmlNode node, TreeNode tNode)
@@ -102,8 +121,17 @@ namespace urakawa.daisy.import
 
             //reportProgress(-1, "Parsing SMIL: [" + Path.GetFileName(fullSmilPath) + "]");
             TreeNode navPointTreeNode = null;
-            foreach (XmlNode parNode in XmlDocumentHelper.GetChildrenElementsWithName(smilXmlDoc, true, "par", null, false))
-            {
+
+            XmlNamespaceManager firstDocNSManager = new XmlNamespaceManager(smilXmlDoc.NameTable);
+            firstDocNSManager.AddNamespace("firstNS",
+                smilXmlDoc.DocumentElement.NamespaceURI);
+            bool isPageInProcess = false;
+
+            XmlNodeList smilNodeList = smilXmlDoc.DocumentElement.SelectNodes(".//firstNS:seq | .//firstNS:par",
+                        firstDocNSManager);
+            //foreach (XmlNode parNode in XmlDocumentHelper.GetChildrenElementsWithName(smilXmlDoc, true, "par", null, false))
+            foreach (XmlNode parNode in smilNodeList)
+            {   
                 XmlAttributeCollection parNodeAttrs = parNode.Attributes;
                 if (parNodeAttrs == null || parNodeAttrs.Count == 0)
                 {
@@ -134,6 +162,8 @@ namespace urakawa.daisy.import
                     
                 }
                 if (navPointTreeNode == null) continue;
+                
+
                 TreeNode audioWrapperNode = navPointTreeNode.Presentation.TreeNodeFactory.Create();
                 //audioWrapperNode.AddProperty(cProp);
                 navPointTreeNode.AppendChild(audioWrapperNode);
@@ -141,6 +171,37 @@ namespace urakawa.daisy.import
                 XmlProperty xmlProp = navPointTreeNode.Presentation.PropertyFactory.CreateXmlProperty();
                 audioWrapperNode.AddProperty(xmlProp);
                 xmlProp.LocalName = "phrase" + ":" + navPointTreeNode.GetTextFlattened(false);
+                // check for page
+                if (parNode.Attributes.GetNamedItem("customTest") != null && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum")
+                {
+                    isPageInProcess = true ;
+                }
+                    //System.Windows.Forms.MessageBox.Show(parNode.LocalName);
+                    string pageRefInSmil = Path.GetFileName(fullSmilPath) + "#" + parNode.Attributes.GetNamedItem("id").Value;
+                    
+                    if (m_PageReferencesMapDictionaryForNCX.ContainsKey(pageRefInSmil) && isPageInProcess)
+                    {
+                        isPageInProcess = false ;
+                        XmlNode pageTargetNode = m_PageReferencesMapDictionaryForNCX[pageRefInSmil];
+                        TextMedia textMedia = navPointTreeNode.Presentation.MediaFactory.CreateTextMedia();
+                        textMedia.Text = XmlDocumentHelper.GetFirstChildElementWithName(pageTargetNode, true, "text", pageTargetNode.NamespaceURI).InnerText;
+                        ChannelsProperty cProp = navPointTreeNode.Presentation.PropertyFactory.CreateChannelsProperty();
+                        cProp.SetMedia(m_textChannel, textMedia);
+                        audioWrapperNode.AddProperty(cProp);
+                        System.Xml.XmlAttributeCollection pageAttributes = pageTargetNode.Attributes;
+                        if (pageAttributes != null)
+                        {
+                            
+                            foreach (System.Xml.XmlAttribute attr in pageAttributes)
+                            {
+                                xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
+                            }
+                        }
+
+                    }
+                
+
+
                 AbstractAudioMedia textTreeNodeAudio = navPointTreeNode.GetAudioMedia();
                 if (textTreeNodeAudio != null)
                 {
