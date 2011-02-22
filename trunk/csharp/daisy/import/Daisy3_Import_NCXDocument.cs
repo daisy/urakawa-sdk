@@ -90,6 +90,10 @@ namespace urakawa.daisy.import
                     txtWrapperNode.AddProperty(cProp);
                     treeNode.AppendChild(txtWrapperNode);
 
+                    XmlProperty TextNodeXmlProp = presentation.PropertyFactory.CreateXmlProperty();
+                    txtWrapperNode.AddProperty(TextNodeXmlProp);
+                    TextNodeXmlProp.LocalName = "hd";
+
                     XmlNode contentNode = XmlDocumentHelper.GetFirstChildElementWithName(node, true, "content", node.NamespaceURI);
                     m_SmilRefToNavPointTreeNodeMap.Add(contentNode.Attributes.GetNamedItem("src").Value, treeNode);
                 }
