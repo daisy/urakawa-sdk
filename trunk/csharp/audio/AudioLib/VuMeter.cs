@@ -1,4 +1,4 @@
-//#define DUPLICATE_PCM_BUFFER
+//#define CLONE_PCM_BUFFER
 
 using System;
 using System.Diagnostics;
@@ -12,6 +12,32 @@ namespace AudioLib
     // http://daisy.trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/audio/AudioLib/VuMeter.cs?rev=1485
     public class VuMeter
     {
+        //TODO: implement low/high boundaries !!
+        private double m_LBound = -36;
+        public enum NoiseLevelSelection { High, Low, Medium } ;
+        private NoiseLevelSelection m_NoiseLevel;
+        public NoiseLevelSelection NoiseLevel
+        {
+            get { return m_NoiseLevel; }
+            set
+            {
+                m_NoiseLevel = value;
+
+                if (value == NoiseLevelSelection.Low)
+                {
+                    m_LBound = -37.5;
+                }
+                else if (value == NoiseLevelSelection.Medium)
+                {
+                    m_LBound = -36;
+                }
+                else if (value == NoiseLevelSelection.High)
+                {
+                    m_LBound = -33.5;
+                }
+            }
+        }
+
         private readonly PeakOverloadEventArgs m_PeakOverloadEventArgs = new PeakOverloadEventArgs(1); //, 0);
         public event PeakOverloadHandler PeakMeterOverloaded;
 
@@ -40,7 +66,7 @@ namespace AudioLib
                 Debug.Fail("This should never happen !!!?");
                 return;
             }
-#if DUPLICATE_PCM_BUFFER
+#if CLONE_PCM_BUFFER
             if (m_PcmDataBuffer == null || m_PcmDataBuffer.Length != e.PcmDataBuffer.Length)
             {
                 Console.WriteLine("*** creating m_Player buffer");
@@ -100,7 +126,7 @@ namespace AudioLib
                 Debug.Fail("This should never happen !!!?");
                 return;
             }
-#if DUPLICATE_PCM_BUFFER
+#if CLONE_PCM_BUFFER
             if (m_PcmDataBuffer == null || m_PcmDataBuffer.Length != e.PcmDataBuffer.Length)
             {
                 Console.WriteLine("*** creating m_Recorder buffer");
@@ -151,6 +177,11 @@ namespace AudioLib
             }
         }
 
+        public double[] LastPeakDb
+        {
+            get { return m_PeakDb; }
+        }
+
         private double[] m_PeakDb; //to avoid re-allocating the buffer when not necessary
         private double[] computePeakDb(AudioLibPCMFormat pcmFormat)
         {
@@ -158,6 +189,24 @@ namespace AudioLib
             {
                 Console.WriteLine("*** creating PeakDbValue buffer");
                 m_PeakDb = new double[pcmFormat.NumberOfChannels];
+            }
+
+            bool allZeros = true;
+            for (int i = 0; i < m_PcmDataBuffer.Length; i++)
+            {
+                if (m_PcmDataBuffer[i] != 0)
+                {
+                    allZeros = false;
+                    break;
+                }
+            }
+            if (allZeros)
+            {
+                for (int i = 0; i < m_PeakDb.Length; i++)
+                {
+                    m_PeakDb[i] = Double.PositiveInfinity;
+                }
+                return m_PeakDb;
             }
 
             double full = Math.Pow(2, pcmFormat.BitDepth);

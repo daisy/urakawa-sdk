@@ -25,6 +25,12 @@ namespace AudioLib
     //#endif
     public class AudioPlayer
     {
+        public int PlaybackFwdRwdRate
+        {
+            get { return 0; }
+            set { ; } 
+        }
+
         private readonly bool m_KeepStreamAlive;
         public AudioPlayer(bool keepStreamAlive)
         {
@@ -367,6 +373,23 @@ namespace AudioLib
 
 #if PAUSE_FEATURE_ENABLED
         private long m_ResumeStartPosition;
+
+        public void Pause(long bytePos)
+        {
+            if (CurrentState == State.NotReady)
+            {
+                return;
+            }
+
+            if (CurrentState == State.Playing)
+            {
+                stopPlayback();
+            }
+
+            m_ResumeStartPosition = bytePos;
+
+            CurrentState = State.Paused;
+        }
 
         public void Pause()
         {
@@ -945,6 +968,18 @@ namespace AudioLib
 
         private void stopPlayback()
         {
+            PcmDataBufferAvailableHandler del = PcmDataBufferAvailable;
+            if (del != null)
+            {
+                for (int i = 0 ; i < m_PcmDataBuffer.Length; i++)
+                {
+                    m_PcmDataBuffer[i] = 0;
+                }
+                m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
+                del(this, m_PcmDataBufferAvailableEventArgs);
+            }
+
+
             m_CircularBuffer.Stop();
 
             //lock (LOCK)
