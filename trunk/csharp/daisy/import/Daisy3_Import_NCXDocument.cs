@@ -159,22 +159,35 @@ namespace urakawa.daisy.import
                 //{
                     //continue;
                 //}
+                TreeNode audioWrapperNode = null;
+                // for now we are assuming the first phrase as heading phrase. this need refinement such that phrase anywhere in section can be imported as heading
                 if (m_SmilRefToNavPointTreeNodeMap.ContainsKey(ncxContentSRC))
                 {
                     navPointTreeNode = m_SmilRefToNavPointTreeNodeMap[ncxContentSRC];
                     //System.Windows.Forms.MessageBox.Show(ncxContentSRC + " section:" + navPointTreeNode.GetXmlElementQName().LocalName + " : " + Path.GetFileName( fullSmilPath ) );
-                    
+                    foreach (TreeNode txtNode in navPointTreeNode.Children.ContentsAs_YieldEnumerable)
+                    {
+                        if (txtNode.GetTextMedia() != null)
+                        {
+                            audioWrapperNode = txtNode;
+                            break;
+                        }
+                    }
+
                 }
-                if (navPointTreeNode == null) continue;
-                
-
-                TreeNode audioWrapperNode = navPointTreeNode.Presentation.TreeNodeFactory.Create();
-                //audioWrapperNode.AddProperty(cProp);
-                navPointTreeNode.AppendChild(audioWrapperNode);
-
+                else
+                {
+                    if (navPointTreeNode == null) continue;
+                    audioWrapperNode = navPointTreeNode.Presentation.TreeNodeFactory.Create();
+                    //audioWrapperNode.AddProperty(cProp);
+                    navPointTreeNode.AppendChild(audioWrapperNode);
+                }
                 XmlProperty xmlProp = navPointTreeNode.Presentation.PropertyFactory.CreateXmlProperty();
-                audioWrapperNode.AddProperty(xmlProp);
-                xmlProp.LocalName = "phrase" + ":" + navPointTreeNode.GetTextFlattened(false);
+                    audioWrapperNode.AddProperty(xmlProp);
+                    xmlProp.LocalName = "phrase"; // +":" + navPointTreeNode.GetTextFlattened(false);
+                
+                if (navPointTreeNode == null) continue;
+
                 // check for page
                 if (parNode.Attributes.GetNamedItem("customTest") != null && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum")
                 {
