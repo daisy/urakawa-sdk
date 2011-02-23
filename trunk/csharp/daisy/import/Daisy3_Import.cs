@@ -10,7 +10,7 @@ namespace urakawa.daisy.import
 {
     public partial class Daisy3_Import : DualCancellableProgressReporter
     {
-        private readonly string m_outDirectory;
+        protected readonly string m_outDirectory;
         private string m_Book_FilePath;
         private bool m_IsAudioNCX;
 
@@ -18,16 +18,18 @@ namespace urakawa.daisy.import
         public string XukPath
         {
             get { return m_Xuk_FilePath; }
+            protected set { m_Xuk_FilePath = value;  }
         }
 
         private Project m_Project;
         public Project Project
         {
             get { return m_Project; }
+            protected set { m_Project = value; }
         }
 
         private readonly bool m_SkipACM;
-        private readonly SampleRate m_audioProjectSampleRate;
+        protected readonly SampleRate m_audioProjectSampleRate;
         public Daisy3_Import(string bookfile, string outDir, bool skipACM, SampleRate audioProjectSampleRate)
         {
             m_SkipACM = skipACM;

@@ -16,8 +16,8 @@ namespace urakawa.daisy.import
 {
     public partial class Daisy3_Import
     {
-        private Channel m_ImageChannel;
-        private TextChannel m_textChannel;
+        protected Channel m_ImageChannel;
+        protected TextChannel m_textChannel;
 
         private string trimXmlTextInnerSpaces(string str)
         {

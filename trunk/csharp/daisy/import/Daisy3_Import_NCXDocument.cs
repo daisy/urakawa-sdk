@@ -33,9 +33,18 @@ namespace urakawa.daisy.import
             xmlProp.LocalName = "book";
             presentation.PropertyFactory.DefaultXmlNamespaceUri = navMap.NamespaceURI;
             xmlProp.NamespaceUri = presentation.PropertyFactory.DefaultXmlNamespaceUri;
-            TreeNode treeNode = presentation.TreeNodeFactory.Create();
+            TreeNode treeNode = null;
+            if (presentation.RootNode == null)
+            {
+                treeNode = presentation.TreeNodeFactory.Create();
+                presentation.RootNode = treeNode;
+            }
+            else
+            {
+                treeNode = presentation.RootNode;
+            }
             treeNode.AddProperty(xmlProp);
-            presentation.RootNode = treeNode;
+            
 
             
             ParseNCXNodes(presentation, navMap, treeNode);

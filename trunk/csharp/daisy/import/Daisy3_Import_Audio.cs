@@ -17,7 +17,7 @@ namespace urakawa.daisy.import
 {
     public partial class Daisy3_Import
     {
-        private AudioChannel m_audioChannel;
+        protected AudioChannel m_audioChannel;
         private AudioFormatConvertorSession m_AudioConversionSession;
         private Dictionary<string, FileDataProvider> m_OriginalAudioFile_FileDataProviderMap = new Dictionary<string, FileDataProvider>(); // maps original audio file refered by smil to FileDataProvider of sdk.
 
