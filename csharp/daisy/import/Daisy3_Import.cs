@@ -118,7 +118,7 @@ action.Cancelled +=new EventHandler<CancelledEventArgs>(
             }
         }
 
-        private void initializeProject()
+        protected virtual void initializeProject()
         {
             m_Project = new Project();
 #if (DEBUG)
