@@ -437,7 +437,7 @@ namespace AudioLib
             {
                 return;
             }
-
+            CurrentState = State.Stopped;
             stopPlayback();
         }
 
@@ -648,7 +648,7 @@ namespace AudioLib
                 }
                 finally
                 {
-                    CurrentState = State.Stopped;
+                    if ( CurrentState != State.Paused )  CurrentState = State.Stopped;
 
                     lock (LOCK)
                     {
@@ -1013,7 +1013,7 @@ namespace AudioLib
 
                 if (count > 15)
                 {
-                    CurrentState = State.Stopped;
+                    //CurrentState = State.Stopped;
 
                     lock (LOCK)
                     {
