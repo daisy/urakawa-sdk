@@ -37,6 +37,7 @@ namespace AudioLib
             m_KeepStreamAlive = keepStreamAlive;
 
             CurrentState = State.NotReady;
+            m_AllowBackToBackPlayback = false;
         }
 
         /// <summary>
@@ -108,6 +109,34 @@ namespace AudioLib
                 }
             }
         }
+
+        private bool m_AllowBackToBackPlayback;
+        private System.Windows.Forms.Timer m_MonitoringTimer;
+        public bool AllowBackToBackPlayback
+        {
+            get { return m_AllowBackToBackPlayback; }
+            set
+            {
+                if (value)
+                {
+                    if (m_MonitoringTimer == null) m_MonitoringTimer = new System.Windows.Forms.Timer();
+                    m_MonitoringTimer.Tick += new EventHandler(m_MonitoringTimer_Tick);
+                    m_MonitoringTimer.Interval = 250;
+                    m_MonitoringTimer.Enabled = false;
+                }
+                else if ( m_MonitoringTimer != null )
+                {
+                    m_MonitoringTimer.Enabled = false;
+                    m_MonitoringTimer.Tick -= new EventHandler(m_MonitoringTimer_Tick);
+                    m_MonitoringTimer.Dispose();
+                    m_MonitoringTimer = null;
+                    
+                }
+                m_AllowBackToBackPlayback = value;
+            }
+        }
+
+
 
         public delegate Stream StreamProviderDelegate();
         private StreamProviderDelegate m_CurrentAudioStreamProvider;
@@ -609,7 +638,7 @@ namespace AudioLib
             m_CurrentBytePosition = m_PlaybackStartPosition;
 
             CurrentState = State.Playing;
-
+            if (AllowBackToBackPlayback && m_MonitoringTimer != null) m_MonitoringTimer.Start();
             try
             {
                 m_CircularBuffer.Play(0,
@@ -957,12 +986,34 @@ namespace AudioLib
 
             CurrentState = State.Stopped;
 
-            AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
-            if (delFinished  != null)
-                delFinished (this, new AudioPlaybackFinishEventArgs());
+            if (!m_AllowBackToBackPlayback)
+            {
+                AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
+                if (delFinished != null)
+                    delFinished(this, new AudioPlaybackFinishEventArgs());
+            }
+            else
+            {
+                m_FinishedPlayingCurrentStream = true;
+            }
             //var del = AudioPlaybackFinished;
             //if (del != null)
                 //del(this, new AudioPlaybackFinishEventArgs());
+        }
+
+        private bool m_FinishedPlayingCurrentStream = false;
+        private void m_MonitoringTimer_Tick(object sender, EventArgs e)
+        {
+            Console.WriteLine("monitoring ");
+            if (AllowBackToBackPlayback &&  m_FinishedPlayingCurrentStream)
+            {
+                if (m_MonitoringTimer != null) m_MonitoringTimer.Stop();
+                m_FinishedPlayingCurrentStream = false;
+                AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
+                if (delFinished != null)
+                    delFinished(this, new AudioPlaybackFinishEventArgs());
+                
+            }
         }
 
 
