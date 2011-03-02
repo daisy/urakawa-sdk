@@ -25,12 +25,7 @@ namespace AudioLib
     //#endif
     public class AudioPlayer
     {
-        public int PlaybackFwdRwdRate
-        {
-            get { return 0; }
-            set { ; } 
-        }
-
+        
         private readonly bool m_KeepStreamAlive;
         public AudioPlayer(bool keepStreamAlive)
         {
@@ -38,6 +33,8 @@ namespace AudioLib
 
             CurrentState = State.NotReady;
             m_AllowBackToBackPlayback = false;
+            mPreviewTimer.Tick += new EventHandler(PreviewTimer_Tick);
+            mPreviewTimer.Enabled = false;
         }
 
         /// <summary>
@@ -75,7 +72,7 @@ namespace AudioLib
                 m_State = value;
 
                 StateChangedHandler del = StateChanged;
-                if (del != null)
+                if (del != null && mEventsEnabled)
                     del (this, new StateChangedEventArgs(oldState));
                 //var del = StateChanged;
                 //if (del != null)
@@ -989,7 +986,7 @@ namespace AudioLib
             if (!m_AllowBackToBackPlayback)
             {
                 AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
-                if (delFinished != null)
+                if (delFinished != null && mEventsEnabled)
                     delFinished(this, new AudioPlaybackFinishEventArgs());
             }
             else
@@ -1010,7 +1007,7 @@ namespace AudioLib
                 if (m_MonitoringTimer != null) m_MonitoringTimer.Stop();
                 m_FinishedPlayingCurrentStream = false;
                 AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
-                if (delFinished != null)
+                if (delFinished != null && mEventsEnabled)
                     delFinished(this, new AudioPlaybackFinishEventArgs());
                 
             }
@@ -1082,6 +1079,201 @@ namespace AudioLib
                 EnsurePlaybackStreamIsDead();
             }
         }
+
+        System.Windows.Forms.Timer mPreviewTimer = new System.Windows.Forms.Timer () ; // timer for playing chunks at interval during Forward/Rewind 
+
+        private int mFwdRwdRate; // holds skip time multiplier for forward / rewind mode , value is 0 for normal playback,  positive  for FastForward and negetive  for Rewind
+
+        /// <summary>
+        /// Forward / Rewind rate.
+        /// 0 for normal playback
+        /// negative integer for Rewind
+        /// positive integer for FastForward
+        /// </summary>
+        public int PlaybackFwdRwdRate
+        {
+            get { return mFwdRwdRate; }
+            set { SetPlaybackMode(value); }
+        }
+
+
+        /// <summary>
+        /// Set a new playback mode i.e. one of Normal, FastForward, Rewind 
+        /// </summary>
+        /// <param name="mode">The new mode.</param>
+        private void SetPlaybackMode(int rate)
+        {
+            if (rate != mFwdRwdRate)
+            {
+                if (CurrentState == State.Playing )
+                {
+                    long restartPos = CurrentBytePosition;
+                    stopPlayback();
+                    m_State = State.Paused;
+                    mFwdRwdRate = rate;
+
+                    //InitPlay(mCurrentAudio, restartPos, 0);
+                    //startPlayback(restartPos, m_CurrentAudioStream.Length );
+                    if (mFwdRwdRate > 0)
+                    {
+                        FastForward(restartPos);
+                    }
+                    else if (mFwdRwdRate < 0)
+                    {
+                        if (restartPos == 0) restartPos = m_CurrentAudioStream.Length;
+                        Rewind(restartPos);
+                    }
+                }
+                else if (CurrentState == State.Paused || CurrentState == State.Stopped)
+                {
+                    mFwdRwdRate = rate;
+                }
+            }
+        }
+        private bool mEventsEnabled = true;
+        private long m_lChunkStartPosition = 0; // position for starting chunk play in forward/Rewind
+        private bool mIsFwdRwd ;                // flag indicating forward or rewind playback is going on
+
+        //  FastForward , Rewind playback modes
+        /// <summary>
+        ///  Starts playing small chunks of audio while jumping backward in audio asset
+        /// <see cref=""/>
+        /// </summary>
+        /// <param name="lStartPosition"></param>
+        private void Rewind(long lStartPosition)
+        {
+            // let's play backward!
+            if (mFwdRwdRate != 0)
+            {
+                CurrentState = State.Playing;
+                m_lChunkStartPosition = lStartPosition;
+                mEventsEnabled = false;
+                mIsFwdRwd = true;
+                mPreviewTimer.Interval = 50;
+                mPreviewTimer.Start();
+
+            }
+        }
+
+
+        /// <summary>
+        ///  Starts playing small chunks while jumping forward in audio asset
+        /// <see cref=""/>
+        /// </summary>
+        /// <param name="lStartPosition"></param>
+        private void FastForward(long lStartPosition)
+        {
+
+            // let's play forward!
+            if (mFwdRwdRate != 0)
+            {
+                CurrentState = State.Playing;
+                m_lChunkStartPosition = lStartPosition;
+                mEventsEnabled = false;
+                mIsFwdRwd = true;
+                mPreviewTimer.Interval = 50;
+                mPreviewTimer.Start();
+            }
+        }
+
+
+
+        ///Preview timer tick function
+        private void PreviewTimer_Tick(object sender, EventArgs e)
+        { //1
+
+            double StepInMs = Math.Abs(4000 * mFwdRwdRate);
+            //long lStepInBytes = CalculationFunctions.ConvertTimeToByte(StepInMs, (int)mCurrentAudio.getPCMFormat().getSampleRate(), mCurrentAudio.getPCMFormat().getBlockAlign());
+            long lStepInBytes = m_CurrentAudioPCMFormat.ConvertTimeToBytes(Convert.ToInt64 (StepInMs*1000 ));
+            int PlayChunkLength = 1200;
+            //long lPlayChunkLength = CalculationFunctions.ConvertTimeToByte(PlayChunkLength, (int)mCurrentAudio.getPCMFormat().getSampleRate(), mCurrentAudio.getPCMFormat().getBlockAlign());
+            long lPlayChunkLength = m_CurrentAudioPCMFormat.AdjustByteToBlockAlignFrameSize (PlayChunkLength) ;
+            mPreviewTimer.Interval = PlayChunkLength + 50;
+
+            long PlayStartPos = 0;
+            long PlayEndPos = 0;
+            if (mFwdRwdRate > 0)
+            { //2
+                //if ((mCurrentAudio.getPCMLength() - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
+                if ((m_CurrentAudioStream.Length - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
+                { //3
+                    if (m_lChunkStartPosition > 0)
+                    {
+                        m_lChunkStartPosition += lStepInBytes;
+                    }
+                    else
+                        //m_lChunkStartPosition = mFrameSize;
+                        m_lChunkStartPosition = m_CurrentAudioPCMFormat.BlockAlign;
+
+                    PlayStartPos = m_lChunkStartPosition;
+                    PlayEndPos = m_lChunkStartPosition + lPlayChunkLength;
+                    //PlayAssetStream(PlayStartPos, PlayEndPos);
+                    startPlayback(PlayStartPos, PlayEndPos);
+
+                    if (m_lChunkStartPosition > m_CurrentAudioStream.Length )
+                        m_lChunkStartPosition = m_CurrentAudioStream.Length;
+                } //-3
+                else
+                { //3
+                    Stop();
+                    AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
+                    if (mEventsEnabled
+                        && AudioPlaybackFinished != null)
+                    {   
+                            delFinished(this, new AudioPlaybackFinishEventArgs());
+                        //EndOfAudioAsset(this, new Events.Audio.Player.EndOfAudioAssetEventArgs());
+                    }
+
+                } //-3
+            } //-2
+            else if (mFwdRwdRate < 0)
+            { //2
+                //if (m_lChunkStartPosition > (lStepInBytes ) && lPlayChunkLength <= m_Asset.getPCMLength () )
+                if (m_lChunkStartPosition > 0)
+                { //3
+                    if (m_lChunkStartPosition < m_CurrentAudioStream.Length)
+                        m_lChunkStartPosition -= lStepInBytes;
+                    else
+                        m_lChunkStartPosition = m_CurrentAudioStream.Length- lPlayChunkLength;
+
+                    PlayStartPos = m_lChunkStartPosition;
+                    PlayEndPos = m_lChunkStartPosition + lPlayChunkLength;
+                    //PlayAssetStream(PlayStartPos, PlayEndPos);
+                    startPlayback(PlayStartPos, PlayEndPos);
+                    if (m_lChunkStartPosition < 0)
+                        m_lChunkStartPosition = 0;
+                } //-3
+                else
+                {
+                    Stop();
+                    AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
+                    if (mEventsEnabled
+                        && AudioPlaybackFinished != null)
+                    {
+                        delFinished(this, new AudioPlaybackFinishEventArgs());
+                        //EndOfAudioAsset(this, new Events.Audio.Player.EndOfAudioAssetEventArgs());
+                    }
+                }
+            } //-2
+        } //-1
+
+
+        /// <summary>
+        /// Stop rewinding or forwarding, including the preview timer.
+        /// </summary>
+        private void StopForwardRewind()
+        {
+            if (mFwdRwdRate != 0 || mPreviewTimer.Enabled)
+            {
+                mPreviewTimer.Enabled = false;
+                //m_FwdRwdRate = 0 ;
+                m_lChunkStartPosition = 0;
+                mIsFwdRwd = false;
+                mEventsEnabled = true;
+            }
+        }
+
+
 
         public event AudioPlaybackFinishHandler AudioPlaybackFinished;
         public delegate void AudioPlaybackFinishHandler(object sender, AudioPlaybackFinishEventArgs e);
