@@ -377,7 +377,22 @@ namespace AudioLib
                 (endPosition == 0 || startPosition < endPosition) &&
                 endPosition <= dataLength)
             {
-                startPlayback(startPosition, endPosition);
+                if (mFwdRwdRate == 0)
+                {
+                    startPlayback(startPosition, endPosition);
+                    Console.WriteLine("starting playback ");
+                }
+                else if (mFwdRwdRate > 0)
+                {
+                    FastForward(startPosition);
+                    Console.WriteLine("fast forward ");
+                }
+                else if (mFwdRwdRate < 0)
+                {
+                    if (startPosition == 0) startPosition  = m_CurrentAudioStream.Length;
+                    Rewind(startPosition);
+                    Console.WriteLine("Rewind ");
+                }
             }
             else
             {
@@ -1117,6 +1132,7 @@ namespace AudioLib
 
                     //InitPlay(mCurrentAudio, restartPos, 0);
                     //startPlayback(restartPos, m_CurrentAudioStream.Length );
+                    //startPlayback(restartPos, m_CurrentAudioDataLength);
                     if (mFwdRwdRate > 0)
                     {
                         FastForward(restartPos);
@@ -1196,14 +1212,17 @@ namespace AudioLib
             Console.WriteLine("play chunk length " + PlayChunkLength + " : " + lPlayChunkLength);
             //lPlayChunkLength = m_CurrentAudioPCMFormat.AdjustByteToBlockAlignFrameSize (PlayChunkLength) ;
             mPreviewTimer.Interval = PlayChunkLength + 50;
+            Console.WriteLine("mPreviewTimer.Interval " + mPreviewTimer.Interval);
             //System.Media.SystemSounds.Asterisk.Play();
             long PlayStartPos = 0;
             long PlayEndPos = 0;
             if (mFwdRwdRate > 0)
             { //2
+                Console.WriteLine("rate is above 0");
                 //if ((mCurrentAudio.getPCMLength() - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
                 Console.WriteLine("m_CurrentAudioStream.Length " + m_CurrentAudioStream.Length + ", lStepInBytes :" + lStepInBytes + ",  m_lChunkStartPosition :" + m_lChunkStartPosition + ", lPlayChunkLength :" + lPlayChunkLength );
-                if ((m_CurrentAudioStream.Length - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
+                if (m_CurrentAudioDataLength < lPlayChunkLength) lPlayChunkLength = m_CurrentAudioDataLength;
+                if ((m_CurrentAudioDataLength - (m_lChunkStartPosition)) >= lPlayChunkLength)
                 { //3
                     if (m_lChunkStartPosition > 0)
                     {
