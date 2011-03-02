@@ -419,6 +419,7 @@ namespace AudioLib
 
         public void Pause()
         {
+            StopForwardRewind();
             if (CurrentState == State.NotReady)
             {
                 return;
@@ -454,6 +455,7 @@ namespace AudioLib
 
         public void Stop()
         {
+            StopForwardRewind();
             if (CurrentState == State.NotReady)
             {
                 return;
@@ -1016,6 +1018,7 @@ namespace AudioLib
 
         private void stopPlayback()
         {
+            
             PcmDataBufferAvailableHandler del = PcmDataBufferAvailable;
             if (del != null)
             {
@@ -1145,9 +1148,10 @@ namespace AudioLib
             // let's play backward!
             if (mFwdRwdRate != 0)
             {
-                CurrentState = State.Playing;
+                
                 m_lChunkStartPosition = lStartPosition;
                 mEventsEnabled = false;
+                
                 mIsFwdRwd = true;
                 mPreviewTimer.Interval = 50;
                 mPreviewTimer.Start();
@@ -1167,9 +1171,10 @@ namespace AudioLib
             // let's play forward!
             if (mFwdRwdRate != 0)
             {
-                CurrentState = State.Playing;
+                
                 m_lChunkStartPosition = lStartPosition;
                 mEventsEnabled = false;
+                
                 mIsFwdRwd = true;
                 mPreviewTimer.Interval = 50;
                 mPreviewTimer.Start();
@@ -1184,22 +1189,27 @@ namespace AudioLib
 
             double StepInMs = Math.Abs(4000 * mFwdRwdRate);
             //long lStepInBytes = CalculationFunctions.ConvertTimeToByte(StepInMs, (int)mCurrentAudio.getPCMFormat().getSampleRate(), mCurrentAudio.getPCMFormat().getBlockAlign());
-            long lStepInBytes = m_CurrentAudioPCMFormat.ConvertTimeToBytes(Convert.ToInt64 (StepInMs*1000 ));
+            long lStepInBytes = m_CurrentAudioPCMFormat.ConvertTimeToBytes(Convert.ToInt64 (StepInMs* AudioLibPCMFormat.TIME_UNIT  ));
             int PlayChunkLength = 1200;
             //long lPlayChunkLength = CalculationFunctions.ConvertTimeToByte(PlayChunkLength, (int)mCurrentAudio.getPCMFormat().getSampleRate(), mCurrentAudio.getPCMFormat().getBlockAlign());
-            long lPlayChunkLength = m_CurrentAudioPCMFormat.AdjustByteToBlockAlignFrameSize (PlayChunkLength) ;
+            long lPlayChunkLength = m_CurrentAudioPCMFormat.ConvertTimeToBytes (Convert.ToInt64( PlayChunkLength * AudioLibPCMFormat.TIME_UNIT  ));
+            Console.WriteLine("play chunk length " + PlayChunkLength + " : " + lPlayChunkLength);
+            //lPlayChunkLength = m_CurrentAudioPCMFormat.AdjustByteToBlockAlignFrameSize (PlayChunkLength) ;
             mPreviewTimer.Interval = PlayChunkLength + 50;
-
+            //System.Media.SystemSounds.Asterisk.Play();
             long PlayStartPos = 0;
             long PlayEndPos = 0;
             if (mFwdRwdRate > 0)
             { //2
                 //if ((mCurrentAudio.getPCMLength() - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
+                Console.WriteLine("m_CurrentAudioStream.Length " + m_CurrentAudioStream.Length + ", lStepInBytes :" + lStepInBytes + ",  m_lChunkStartPosition :" + m_lChunkStartPosition + ", lPlayChunkLength :" + lPlayChunkLength );
                 if ((m_CurrentAudioStream.Length - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
                 { //3
                     if (m_lChunkStartPosition > 0)
                     {
+                        Console.WriteLine("m_lChunkStartPosition  , step in bytes : " + m_lChunkStartPosition + " : " + lStepInBytes);
                         m_lChunkStartPosition += lStepInBytes;
+                        
                     }
                     else
                         //m_lChunkStartPosition = mFrameSize;
@@ -1208,8 +1218,17 @@ namespace AudioLib
                     PlayStartPos = m_lChunkStartPosition;
                     PlayEndPos = m_lChunkStartPosition + lPlayChunkLength;
                     //PlayAssetStream(PlayStartPos, PlayEndPos);
-                    startPlayback(PlayStartPos, PlayEndPos);
-
+                    Console.WriteLine("play pos " + PlayStartPos + " : " + PlayEndPos);
+                    //mEventsEnabled = true;
+                    if (CurrentState == State.Playing)
+                    {
+                        //stopPlayback();
+                        //m_State = State.Paused;
+                    }
+                    if (CurrentState != State.Playing) startPlayback(PlayStartPos, PlayEndPos);
+                    
+                    //mEventsEnabled = false;
+                    Console.WriteLine(CurrentState);
                     if (m_lChunkStartPosition > m_CurrentAudioStream.Length )
                         m_lChunkStartPosition = m_CurrentAudioStream.Length;
                 } //-3
