@@ -1018,7 +1018,7 @@ namespace AudioLib
         private bool m_FinishedPlayingCurrentStream = false;
         private void m_MonitoringTimer_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine("monitoring ");
+            //Console.WriteLine("monitoring ");
             if (AllowBackToBackPlayback &&  m_FinishedPlayingCurrentStream)
             {
                 if (m_MonitoringTimer != null) m_MonitoringTimer.Stop();
@@ -1209,6 +1209,13 @@ namespace AudioLib
             int PlayChunkLength = 1200;
             //long lPlayChunkLength = CalculationFunctions.ConvertTimeToByte(PlayChunkLength, (int)mCurrentAudio.getPCMFormat().getSampleRate(), mCurrentAudio.getPCMFormat().getBlockAlign());
             long lPlayChunkLength = m_CurrentAudioPCMFormat.ConvertTimeToBytes (Convert.ToInt64( PlayChunkLength * AudioLibPCMFormat.TIME_UNIT  ));
+            if (m_CurrentAudioDataLength < lPlayChunkLength)
+            {
+                lPlayChunkLength = m_CurrentAudioDataLength;
+                PlayChunkLength = Convert.ToInt32 (m_CurrentAudioPCMFormat.ConvertBytesToTime(lPlayChunkLength) / AudioLibPCMFormat.TIME_UNIT);
+                
+            }
+            
             Console.WriteLine("play chunk length " + PlayChunkLength + " : " + lPlayChunkLength);
             //lPlayChunkLength = m_CurrentAudioPCMFormat.AdjustByteToBlockAlignFrameSize (PlayChunkLength) ;
             mPreviewTimer.Interval = PlayChunkLength + 50;
@@ -1221,7 +1228,7 @@ namespace AudioLib
                 Console.WriteLine("rate is above 0");
                 //if ((mCurrentAudio.getPCMLength() - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
                 Console.WriteLine("m_CurrentAudioStream.Length " + m_CurrentAudioStream.Length + ", lStepInBytes :" + lStepInBytes + ",  m_lChunkStartPosition :" + m_lChunkStartPosition + ", lPlayChunkLength :" + lPlayChunkLength );
-                if (m_CurrentAudioDataLength < lPlayChunkLength) lPlayChunkLength = m_CurrentAudioDataLength;
+                
                 if ((m_CurrentAudioDataLength - (m_lChunkStartPosition)) >= lPlayChunkLength)
                 { //3
                     if (m_lChunkStartPosition > 0)
