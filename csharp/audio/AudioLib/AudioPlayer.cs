@@ -1274,12 +1274,16 @@ namespace AudioLib
             else if (mFwdRwdRate < 0)
             { //2
                 //if (m_lChunkStartPosition > (lStepInBytes ) && lPlayChunkLength <= m_Asset.getPCMLength () )
+                Console.WriteLine("rewind " + m_lChunkStartPosition);
                 if (m_lChunkStartPosition > 0)
                 { //3
                     if (m_lChunkStartPosition < m_CurrentAudioStream.Length)
+                    {
                         m_lChunkStartPosition -= lStepInBytes;
+                        if (m_lChunkStartPosition < lPlayChunkLength) m_lChunkStartPosition = 0;
+                    }
                     else
-                        m_lChunkStartPosition = m_CurrentAudioStream.Length- lPlayChunkLength;
+                        m_lChunkStartPosition = m_CurrentAudioStream.Length - lPlayChunkLength;
 
                     PlayStartPos = m_lChunkStartPosition;
                     PlayEndPos = m_lChunkStartPosition + lPlayChunkLength;
