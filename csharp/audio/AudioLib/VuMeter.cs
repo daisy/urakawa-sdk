@@ -44,6 +44,7 @@ namespace AudioLib
 
         private readonly PeakMeterUpdateEventArgs m_PeakMeterUpdateEventArgs = new PeakMeterUpdateEventArgs(new double[] { -1, -1 });
         public event PeakMeterUpdateHandler PeakMeterUpdated;
+        public ResetHandler ResetEvent;
 
         private AudioPlayer m_Player;
         private AudioRecorder m_Recorder;
@@ -57,6 +58,8 @@ namespace AudioLib
 
             m_Player.PcmDataBufferAvailable += new AudioPlayer.PcmDataBufferAvailableHandler(OnPcmDataBufferAvailable_Player);
             m_Recorder.PcmDataBufferAvailable += new AudioRecorder.PcmDataBufferAvailableHandler(OnPcmDataBufferAvailable_Recorder);
+            m_Player.StateChanged += new AudioPlayer.StateChangedHandler(StateChanged);
+            m_Recorder.StateChanged += new AudioRecorder.StateChangedHandler(StateChanged);
         }
 
         public void OnPcmDataBufferAvailable_Player(object sender, AudioPlayer.PcmDataBufferAvailableEventArgs e)
@@ -81,16 +84,17 @@ namespace AudioLib
             double[] peakDb = computePeakDb(m_Player.CurrentAudioPCMFormat);
 
             PeakMeterUpdateHandler del = PeakMeterUpdated;
-            if (del != null)
+            if (del != null
+                && m_Player.CurrentState == AudioPlayer.State.Playing )
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
-                del (this, m_PeakMeterUpdateEventArgs);
+                del(this, m_PeakMeterUpdateEventArgs);
             }
             //var del_ = PeakMeterUpdated;
             //if (del_ != null)
             //{
-                //m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
-                //del_(this, m_PeakMeterUpdateEventArgs);
+            //m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
+            //del_(this, m_PeakMeterUpdateEventArgs);
             //}
 
             int index = 0;
@@ -107,14 +111,14 @@ namespace AudioLib
                 {
                     m_PeakOverloadEventArgs.Channel = index;
 
-                    delOverload (this, m_PeakOverloadEventArgs);
+                    delOverload(this, m_PeakOverloadEventArgs);
                 }
                 //var del = PeakMeterOverloaded;
                 //if (del != null)
                 //{
-                    //m_PeakOverloadEventArgs.Channel = index;
-                    //m_PeakOverloadEventArgs.Time = m_Player.CurrentTimeInLocalUnit;
-                    //del(this, m_PeakOverloadEventArgs);
+                //m_PeakOverloadEventArgs.Channel = index;
+                //m_PeakOverloadEventArgs.Time = m_Player.CurrentTimeInLocalUnit;
+                //del(this, m_PeakOverloadEventArgs);
                 //}
             }
         }
@@ -141,16 +145,17 @@ namespace AudioLib
             double[] peakDb = computePeakDb(m_Recorder.RecordingPCMFormat);
 
             PeakMeterUpdateHandler del = PeakMeterUpdated;
-            if (del != null)
+            if (del != null
+                && (m_Recorder.CurrentState == AudioRecorder.State.Monitoring || m_Recorder.CurrentState == AudioRecorder.State.Recording))
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
-                del (this, m_PeakMeterUpdateEventArgs);
+                del(this, m_PeakMeterUpdateEventArgs);
             }
             //var del_ = PeakMeterUpdated;
             //if (del_ != null)
             //{
-                //m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
-                //del_(this, m_PeakMeterUpdateEventArgs);
+            //m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
+            //del_(this, m_PeakMeterUpdateEventArgs);
             //}
 
             int index = 0;
@@ -162,20 +167,29 @@ namespace AudioLib
                     continue;
                 }
 
-                if (PeakMeterOverloaded  != null)
+                if (PeakMeterOverloaded != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
 
-                    PeakMeterOverloaded (this, m_PeakOverloadEventArgs);
+                    PeakMeterOverloaded(this, m_PeakOverloadEventArgs);
                 }
                 //var del = PeakMeterOverloaded;
                 //if (del != null)
                 //{
-                    //m_PeakOverloadEventArgs.Channel = index;
-                    //m_PeakOverloadEventArgs.Time = m_Recorder.CurrentDurationInLocalUnits;
-                    //del(this, m_PeakOverloadEventArgs);
+                //m_PeakOverloadEventArgs.Channel = index;
+                //m_PeakOverloadEventArgs.Time = m_Recorder.CurrentDurationInLocalUnits;
+                //del(this, m_PeakOverloadEventArgs);
                 //}
             }
+        }
+
+        private void StateChanged(object sender,EventArgs e)
+        {
+            m_PeakDb  = null;
+            if ( m_PcmDataBuffer != null )  m_PcmDataBuffer = new byte[m_PcmDataBuffer.Length];
+            m_AverageValue = new double[2];
+            ResetHandler del = ResetEvent;
+                if (del != null) del ( this, new ResetEventArgs ()) ;
         }
 
         public double[] LastPeakDb
@@ -222,8 +236,8 @@ namespace AudioLib
                     double val = 0;
                     for (int byteOffsetInSample = 0; byteOffsetInSample < bytesPerSample; byteOffsetInSample++)
                     {
-                        int arrayIndex = byteOffsetOfFrame + (channelIndex*bytesPerSample) + byteOffsetInSample;
-                        
+                        int arrayIndex = byteOffsetOfFrame + (channelIndex * bytesPerSample) + byteOffsetInSample;
+
                         val += Math.Pow(2, 8 * byteOffsetInSample) * m_PcmDataBuffer[arrayIndex];
                     }
 
@@ -250,6 +264,7 @@ namespace AudioLib
         // text meter code
         public event LevelTooLowHandler LevelTooLowEvent;
         public event LevelGoodHandler LevelGoodEvent;
+
 
         private double[] m_AverageValue; // array to hold average or RMS value
         public double[] AverageAmplitudeDBValue { get { return m_AverageValue; } }
@@ -280,15 +295,15 @@ namespace AudioLib
             if (tempCount >= 4) tempCount = 0;
             m_AverageValue[0] = (TempArray[0] + TempArray[1] + TempArray[2]) / 3;
             m_AverageValue[1] = right;
-            
+
             DetectLowAmplitude();
         }
 
         int[] AmplitudeValue1()
         {
-            int channels =(int) AudioPCMFormat.NumberOfChannels;
-            int blockAlign =(int)  AudioPCMFormat.BlockAlign;
-            int samplingRate = (int) AudioPCMFormat.SampleRate;
+            int channels = (int)AudioPCMFormat.NumberOfChannels;
+            int blockAlign = (int)AudioPCMFormat.BlockAlign;
+            int samplingRate = (int)AudioPCMFormat.SampleRate;
             // average value to return
             int[] arAveragePeaks = new int[2];
             long Left = 0;
@@ -321,8 +336,8 @@ namespace AudioLib
 
         private int[] GetSpeechFragmentPeak(uint FragmentSize, uint StartIndex)
         {
-            int channels =(int) AudioPCMFormat.NumberOfChannels;
-            int blockAlign = (int) AudioPCMFormat.BlockAlign;
+            int channels = (int)AudioPCMFormat.NumberOfChannels;
+            int blockAlign = (int)AudioPCMFormat.BlockAlign;
             int[] arPeakVal = new int[2];
             arPeakVal[0] = 0;
             arPeakVal[1] = 0;
@@ -499,7 +514,7 @@ namespace AudioLib
 
         private void DetectLowAmplitude()
         {
-            int channels  = AudioPCMFormat.NumberOfChannels;
+            int channels = AudioPCMFormat.NumberOfChannels;
 
 
             double AmplitudeValue;
@@ -695,6 +710,11 @@ namespace AudioLib
                     return mBytePositionEndOfRange;
                 }
             }
+        }
+
+        public delegate void ResetHandler(object sender, ResetEventArgs e);
+        public class ResetEventArgs : EventArgs
+        {
         }
 
     }
