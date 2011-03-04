@@ -84,8 +84,7 @@ namespace AudioLib
             double[] peakDb = computePeakDb(m_Player.CurrentAudioPCMFormat);
 
             PeakMeterUpdateHandler del = PeakMeterUpdated;
-            if (del != null
-                && m_Player.CurrentState == AudioPlayer.State.Playing )
+            if ( m_Player.CurrentState == AudioPlayer.State.Playing    &&     del != null )
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
                 del(this, m_PeakMeterUpdateEventArgs);
@@ -107,10 +106,10 @@ namespace AudioLib
                 }
 
                 PeakOverloadHandler delOverload = PeakMeterOverloaded;
-                if (del != null)
+                if (m_Player.CurrentState == AudioPlayer.State.Playing && del != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
-
+                    
                     delOverload(this, m_PeakOverloadEventArgs);
                 }
                 //var del = PeakMeterOverloaded;
@@ -145,8 +144,9 @@ namespace AudioLib
             double[] peakDb = computePeakDb(m_Recorder.RecordingPCMFormat);
 
             PeakMeterUpdateHandler del = PeakMeterUpdated;
-            if (del != null
-                && (m_Recorder.CurrentState == AudioRecorder.State.Monitoring || m_Recorder.CurrentState == AudioRecorder.State.Recording))
+            
+               if ( (m_Recorder.CurrentState == AudioRecorder.State.Monitoring || m_Recorder.CurrentState == AudioRecorder.State.Recording)
+                   && del != null)
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
                 del(this, m_PeakMeterUpdateEventArgs);
