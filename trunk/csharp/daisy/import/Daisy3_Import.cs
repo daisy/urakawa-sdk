@@ -53,7 +53,7 @@ namespace urakawa.daisy.import
             m_IsAudioNCX = false;
 
             if (RequestCancellation) return;
-            initializeProject();
+            //initializeProject();
 
             reportProgress(100, UrakawaSDK_daisy_Lang.ImportInitialized);                                 
         }
@@ -61,6 +61,7 @@ namespace urakawa.daisy.import
         public override void DoWork()
         {
             if (RequestCancellation) return;
+            initializeProject(); //initialization moved from constructor to allow derived class to implement project construction
             transformBook();
 
             reportProgress(-1, UrakawaSDK_daisy_Lang.SaveXUK);                                       
