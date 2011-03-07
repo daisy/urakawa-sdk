@@ -216,17 +216,20 @@ namespace urakawa.daisy.import
                     }
                     */
                 }
-                else
+                else if (XmlDocumentHelper.GetFirstChildElementWithName(parNode, false, "audio", null) != null)
                 {
                     if (navPointTreeNode == null) continue;
-                    audioWrapperNode =  CreateTreeNodeForAudioNode(navPointTreeNode, false);
+                    audioWrapperNode = CreateTreeNodeForAudioNode(navPointTreeNode, false);
                     /*
                     audioWrapperNode = navPointTreeNode.Presentation.TreeNodeFactory.Create();
                     //audioWrapperNode.AddProperty(cProp);
                     navPointTreeNode.AppendChild(audioWrapperNode);
-                     */ 
+                     */
                 }
-                
+                else
+                {
+                    continue;
+                }
                 XmlProperty xmlProp = navPointTreeNode.Presentation.PropertyFactory.CreateXmlProperty();
                     audioWrapperNode.AddProperty(xmlProp);
                     xmlProp.LocalName = "phrase"; // +":" + navPointTreeNode.GetTextFlattened(false);
@@ -289,7 +292,7 @@ namespace urakawa.daisy.import
                     //continue;
                 //}
                 //XmlNodeList textPeers = parent.ChildNodes;
-                foreach (XmlNode textPeerNode in XmlDocumentHelper.GetChildrenElementsWithName(smilXmlDoc, true, "audio", null, false))
+                foreach (XmlNode textPeerNode in XmlDocumentHelper.GetChildrenElementsWithName(parNode, true, "audio", null, false))
                 {
                     if (RequestCancellation) return;
 
