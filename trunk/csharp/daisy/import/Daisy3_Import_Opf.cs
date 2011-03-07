@@ -35,7 +35,7 @@ namespace urakawa.daisy.import
             if (RequestCancellation) return;
             parseOpfManifest(opfXmlDoc, out spine, out spineMimeType, out dtbookPath, out ncxPath);
 
-            if (dtbookPath != null)
+            if (dtbookPath != null && !AudioNCXImport)
             {
                 if (RequestCancellation) return;
                 string fullDtbookPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), dtbookPath);
@@ -51,7 +51,8 @@ namespace urakawa.daisy.import
             }
 
             //if (false && ncxPath != null) //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
-            if (string.IsNullOrEmpty(dtbookPath) && !string.IsNullOrEmpty(ncxPath)) 
+            if ((string.IsNullOrEmpty(dtbookPath) && !string.IsNullOrEmpty(ncxPath)) 
+                ||    AudioNCXImport )
             {
                 m_IsAudioNCX = true;
                 if (RequestCancellation) return;
