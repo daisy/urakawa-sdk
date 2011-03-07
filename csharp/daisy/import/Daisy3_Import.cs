@@ -12,7 +12,7 @@ namespace urakawa.daisy.import
     {
         protected readonly string m_outDirectory;
         private string m_Book_FilePath;
-        private bool m_IsAudioNCX;
+        
 
         private string m_Xuk_FilePath;
         public string XukPath
@@ -26,6 +26,13 @@ namespace urakawa.daisy.import
         {
             get { return m_Project; }
             protected set { m_Project = value; }
+        }
+
+        private bool m_IsAudioNCX;
+        public bool AudioNCXImport
+        {
+            get { return m_IsAudioNCX; }
+            set { m_IsAudioNCX = value; }
         }
 
         private readonly bool m_SkipACM;
