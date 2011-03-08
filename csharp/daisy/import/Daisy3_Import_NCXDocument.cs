@@ -168,7 +168,9 @@ namespace urakawa.daisy.import
             XmlNamespaceManager firstDocNSManager = new XmlNamespaceManager(smilXmlDoc.NameTable);
             firstDocNSManager.AddNamespace("firstNS",
                 smilXmlDoc.DocumentElement.NamespaceURI);
+            bool isHeading = false;
             bool isPageInProcess = false;
+            TreeNode audioWrapperNode = null;
 
             XmlNodeList smilNodeList = smilXmlDoc.DocumentElement.SelectNodes(".//firstNS:seq | .//firstNS:par",
                         firstDocNSManager);
@@ -198,13 +200,14 @@ namespace urakawa.daisy.import
                 //{
                     //continue;
                 //}
-                TreeNode audioWrapperNode = null;
+                
                 // for now we are assuming the first phrase as heading phrase. this need refinement such that phrase anywhere in section can be imported as heading
                 if (m_SmilRefToNavPointTreeNodeMap.ContainsKey(ncxContentSRC))
                 {
                     navPointTreeNode = m_SmilRefToNavPointTreeNodeMap[ncxContentSRC];
                     //System.Windows.Forms.MessageBox.Show(ncxContentSRC + " section:" + navPointTreeNode.GetXmlElementQName().LocalName + " : " + Path.GetFileName( fullSmilPath ) );
-                    audioWrapperNode =  CreateTreeNodeForAudioNode(navPointTreeNode, true);
+                    //: audioWrapperNode =  CreateTreeNodeForAudioNode(navPointTreeNode, true);
+                    isHeading = true;
                     /*
                     foreach (TreeNode txtNode in navPointTreeNode.Children.ContentsAs_YieldEnumerable)
                     {
@@ -216,41 +219,29 @@ namespace urakawa.daisy.import
                     }
                     */
                 }
-                else if (XmlDocumentHelper.GetFirstChildElementWithName(parNode, false, "audio", null) != null)
+                else if (parNode.Attributes.GetNamedItem("customTest") != null && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum")
                 {
+                    isPageInProcess = true;
                     if (navPointTreeNode == null) continue;
-                    audioWrapperNode = CreateTreeNodeForAudioNode(navPointTreeNode, false);
+                    //:audioWrapperNode = CreateTreeNodeForAudioNode(navPointTreeNode, false);
                     /*
                     audioWrapperNode = navPointTreeNode.Presentation.TreeNodeFactory.Create();
                     //audioWrapperNode.AddProperty(cProp);
                     navPointTreeNode.AppendChild(audioWrapperNode);
                      */
                 }
-                else
-                {
-                    continue;
-                }
-                XmlProperty xmlProp = navPointTreeNode.Presentation.PropertyFactory.CreateXmlProperty();
-                    audioWrapperNode.AddProperty(xmlProp);
-                    xmlProp.LocalName = "phrase"; // +":" + navPointTreeNode.GetTextFlattened(false);
+                
                 
                  
                 if (navPointTreeNode == null) continue;
 
                 // check for page
-                if (parNode.Attributes.GetNamedItem("customTest") != null && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum")
-                {
-                    isPageInProcess = true ;
-                }
+                //if (parNode.Attributes.GetNamedItem("customTest") != null && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum")
+                //{
+                    //isPageInProcess = true ;
+                //}
                     //System.Windows.Forms.MessageBox.Show(parNode.LocalName);
-                    string pageRefInSmil = Path.GetFileName(fullSmilPath) + "#" + parNode.Attributes.GetNamedItem("id").Value;
                     
-                    if (m_PageReferencesMapDictionaryForNCX.ContainsKey(pageRefInSmil) && isPageInProcess)
-                    {
-                        isPageInProcess = false ;
-                        XmlNode pageTargetNode = m_PageReferencesMapDictionaryForNCX[pageRefInSmil];
-
-                        AddPagePropertiesToAudioNode(audioWrapperNode, pageTargetNode);
                         /*
                         TextMedia textMedia = navPointTreeNode.Presentation.MediaFactory.CreateTextMedia();
                         textMedia.Text = XmlDocumentHelper.GetFirstChildElementWithName(pageTargetNode, true, "text", pageTargetNode.NamespaceURI).InnerText;
@@ -267,7 +258,7 @@ namespace urakawa.daisy.import
                             }
                         }
                         */
-                    }
+                    
                 
 
 
@@ -296,10 +287,27 @@ namespace urakawa.daisy.import
                 {
                     if (RequestCancellation) return;
 
+                    if (XmlDocumentHelper.GetFirstChildElementWithName(parNode, false, "audio", null) == null) continue;
                     if (textPeerNode.NodeType != XmlNodeType.Element)
                     {
                         continue;
                     }
+                    audioWrapperNode = CreateTreeNodeForAudioNode(navPointTreeNode, isHeading);
+                    XmlProperty xmlProp = navPointTreeNode.Presentation.PropertyFactory.CreateXmlProperty();
+                    audioWrapperNode.AddProperty(xmlProp);
+                    xmlProp.LocalName = "phrase"; // +":" + navPointTreeNode.GetTextFlattened(false);
+                
+                    string pageRefInSmil = Path.GetFileName(fullSmilPath) + "#" + parNode.Attributes.GetNamedItem("id").Value;
+
+                    if (m_PageReferencesMapDictionaryForNCX.ContainsKey(pageRefInSmil) && isPageInProcess)
+                    {
+                        isPageInProcess = false;
+                        XmlNode pageTargetNode = m_PageReferencesMapDictionaryForNCX[pageRefInSmil];
+
+                        AddPagePropertiesToAudioNode(audioWrapperNode, pageTargetNode);
+                    }
+                    isHeading = false;
+
                     if (textPeerNode.LocalName == "audio")
                     {   
                         addAudio(audioWrapperNode, textPeerNode, false, fullSmilPath);
