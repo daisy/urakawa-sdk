@@ -188,18 +188,8 @@ namespace urakawa.daisy.import
                 {
                     continue;
                 }
-                //int index = textNodeAttrSrc.Value.LastIndexOf('#');
-                //if (index == textNodeAttrSrc.Value.Length - 1)
-                //{
-                    //m_SmilRefToNavPointTreeNodeM//return;
-                //}
+                
                 string ncxContentSRC = Path.GetFileName(fullSmilPath) + "#" + parNodeID.Value;
-                //string srcFragmentId = textNodeAttrSrc.Value.Substring(index + 1);
-                //TreeNode textTreeNode = getTreeNodeWithXmlElementId(srcFragmentId);
-                //if (textTreeNode == null)
-                //{
-                    //continue;
-                //}
                 
                 // for now we are assuming the first phrase as heading phrase. this need refinement such that phrase anywhere in section can be imported as heading
                 if (m_SmilRefToNavPointTreeNodeMap.ContainsKey(ncxContentSRC))
@@ -208,27 +198,14 @@ namespace urakawa.daisy.import
                     //System.Windows.Forms.MessageBox.Show(ncxContentSRC + " section:" + navPointTreeNode.GetXmlElementQName().LocalName + " : " + Path.GetFileName( fullSmilPath ) );
                     //: audioWrapperNode =  CreateTreeNodeForAudioNode(navPointTreeNode, true);
                     isHeading = true;
-                    /*
-                    foreach (TreeNode txtNode in navPointTreeNode.Children.ContentsAs_YieldEnumerable)
-                    {
-                        if (txtNode.GetTextMedia() != null)
-                        {
-                            audioWrapperNode = txtNode;
-                            break;
-                        }
-                    }
-                    */
+                    
                 }
                 else if (parNode.Attributes.GetNamedItem("customTest") != null && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum")
                 {
                     isPageInProcess = true;
                     if (navPointTreeNode == null) continue;
                     //:audioWrapperNode = CreateTreeNodeForAudioNode(navPointTreeNode, false);
-                    /*
-                    audioWrapperNode = navPointTreeNode.Presentation.TreeNodeFactory.Create();
-                    //audioWrapperNode.AddProperty(cProp);
-                    navPointTreeNode.AppendChild(audioWrapperNode);
-                     */
+                    
                 }
                 
                 
@@ -242,46 +219,14 @@ namespace urakawa.daisy.import
                 //}
                     //System.Windows.Forms.MessageBox.Show(parNode.LocalName);
                     
-                        /*
-                        TextMedia textMedia = navPointTreeNode.Presentation.MediaFactory.CreateTextMedia();
-                        textMedia.Text = XmlDocumentHelper.GetFirstChildElementWithName(pageTargetNode, true, "text", pageTargetNode.NamespaceURI).InnerText;
-                        ChannelsProperty cProp = navPointTreeNode.Presentation.PropertyFactory.CreateChannelsProperty();
-                        cProp.SetMedia(m_textChannel, textMedia);
-                        audioWrapperNode.AddProperty(cProp);
-                        System.Xml.XmlAttributeCollection pageAttributes = pageTargetNode.Attributes;
-                        if (pageAttributes != null)
-                        {
-                            
-                            foreach (System.Xml.XmlAttribute attr in pageAttributes)
-                            {
-                                xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
-                            }
-                        }
-                        */
-                    
-                
-
-
                 AbstractAudioMedia textTreeNodeAudio = navPointTreeNode.GetAudioMedia();
                 if (textTreeNodeAudio != null)
                 {
                     //Ignore.
                     continue;
                 }
-                //XmlNode parent = parNode.ParentNode;
-                //if (parent != null && parent.LocalName == "a")
-                //{
-                    //parent = parent.ParentNode;
-                //}
-                //if (parent == null)
-                //{
-                    //continue;
-                //}
-                //if (parent.LocalName != "par")
-                //{
-                    //System.Diagnostics.Debug.Fail("Text node in SMIL has no parallel time container as parent ! {0}", parent.Name);
-                    //continue;
-                //}
+                
+                
                 //XmlNodeList textPeers = parent.ChildNodes;
                 foreach (XmlNode textPeerNode in XmlDocumentHelper.GetChildrenElementsWithName(parNode, true, "audio", null, false))
                 {
