@@ -20,6 +20,7 @@ namespace urakawa.daisy.import
     {
 
         private Dictionary<string, TreeNode> m_SmilRefToNavPointTreeNodeMap;
+        protected Dictionary<XmlNode, TreeNode> m_SmilXmlNodeToTreeNodeMap;
 
         public void ParseNCXDocument(XmlDocument ncxDocument)
         {
@@ -153,6 +154,7 @@ namespace urakawa.daisy.import
             XmlDocument smilXmlDoc = OpenXukAction.ParseXmlDocument(fullSmilPath, false);
 
             if (RequestCancellation) return;
+            m_SmilXmlNodeToTreeNodeMap = new Dictionary<XmlNode, TreeNode>();
             //we skip SMIL metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
             //parseMetadata(smilXmlDoc);
 
@@ -227,17 +229,20 @@ namespace urakawa.daisy.import
                 }
                 
                 
-                //XmlNodeList textPeers = parent.ChildNodes;
-                foreach (XmlNode textPeerNode in XmlDocumentHelper.GetChildrenElementsWithName(parNode, true, "audio", null, false))
+                XmlNodeList textPeers = parNode.ChildNodes;
+                foreach (XmlNode textPeerNode in textPeers)
+                //foreach (XmlNode textPeerNode in XmlDocumentHelper.GetChildrenElementsWithName(parNode, true, "audio", null, false))
                 {
                     if (RequestCancellation) return;
 
-                    if (XmlDocumentHelper.GetFirstChildElementWithName(parNode, false, "audio", null) == null) continue;
+                    //if (XmlDocumentHelper.GetFirstChildElementWithName(parNode, false, "audio", null) == null) continue;
                     if (textPeerNode.NodeType != XmlNodeType.Element)
                     {
                         continue;
                     }
-                    audioWrapperNode = CreateTreeNodeForAudioNode(navPointTreeNode, isHeading);
+                    if (textPeerNode.LocalName == "audio")
+                    {   
+                    audioWrapperNode = CreateTreeNodeForAudioNode(navPointTreeNode, isHeading, textPeerNode);
                     XmlProperty xmlProp = navPointTreeNode.Presentation.PropertyFactory.CreateXmlProperty();
                     audioWrapperNode.AddProperty(xmlProp);
                     xmlProp.LocalName = "phrase"; // +":" + navPointTreeNode.GetTextFlattened(false);
@@ -253,13 +258,13 @@ namespace urakawa.daisy.import
                     }
                     isHeading = false;
 
-                    if (textPeerNode.LocalName == "audio")
-                    {   
+                    
                         addAudio(audioWrapperNode, textPeerNode, false, fullSmilPath);
                         break;
                     }
                     else if (textPeerNode.LocalName == "a")
                     {
+
                         XmlNodeList aChildren = textPeerNode.ChildNodes;
                         foreach (XmlNode aChild in aChildren)
                         {
@@ -270,59 +275,49 @@ namespace urakawa.daisy.import
                             }
                         }
                     }
-                    else if (textPeerNode.LocalName == "seq")
+                    else if (textPeerNode.LocalName == "seq" || textPeerNode.LocalName == "par")
                     {
+                        if (audioWrapperNode != null) m_SmilXmlNodeToTreeNodeMap.Add(textPeerNode, audioWrapperNode);
+                  /*      
                         XmlNodeList seqChildren = textPeerNode.ChildNodes;
                         foreach (XmlNode seqChild in seqChildren)
-                        {
+                        //1{
                             if (seqChild.LocalName == "audio")
-                            {
+                            {//2
                                 addAudio(audioWrapperNode, seqChild, true, fullSmilPath);
-                            }
-                        }
-
+                            }//-2
+                        }//-1
+                        
                         SequenceMedia seqManAudioMedia = audioWrapperNode.GetManagedAudioSequenceMedia();
                         if (seqManAudioMedia == null)
-                        {
+                        {//1
                             //Debug.Fail("This should never happen !");
                             break;
-                        }
+                        }//-1
 
                         ManagedAudioMedia managedAudioMedia = audioWrapperNode.Presentation.MediaFactory.CreateManagedAudioMedia();
                         AudioMediaData mediaData = audioWrapperNode.Presentation.MediaDataFactory.CreateAudioMediaData();
                         managedAudioMedia.AudioMediaData = mediaData;
 
                         foreach (Media seqChild in seqManAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
-                        {
+                        {//1
                             ManagedAudioMedia seqManMedia = (ManagedAudioMedia)seqChild;
-
                             mediaData.MergeWith(seqManMedia.AudioMediaData);
-
-                            //Stream stream = seqManMedia.AudioMediaData.OpenPcmInputStream();
-                            //try
-                            //{
-                            //    mediaData.AppendPcmData(stream, null);
-                            //}
-                            //finally
-                            //{
-                            //    stream.Close();
-                            //}
-
-                            //seqManMedia.AudioMediaData.Delete(); // doesn't actually removes the FileDataProviders (need to call Presentation.Cleanup())
-                            ////textTreeNode.Presentation.DataProviderManager.RemoveDataProvider();
-                        }
-
+                        }//-1
+                         
                         ChannelsProperty chProp = audioWrapperNode.GetChannelsProperty();
                         chProp.SetMedia(m_audioChannel, null);
                         chProp.SetMedia(m_audioChannel, managedAudioMedia);
-
+                */    
                         break;
+                          
                     }
+                
                 }
             }
         }
 
-        protected virtual TreeNode CreateTreeNodeForAudioNode(TreeNode navPointTreeNode ,  bool isHeadingNode)
+        protected virtual TreeNode CreateTreeNodeForAudioNode(TreeNode navPointTreeNode ,  bool isHeadingNode, XmlNode smilNode)
         {
             TreeNode audioWrapperNode = null;
             if (isHeadingNode)
@@ -340,8 +335,16 @@ namespace urakawa.daisy.import
             {
                 if (navPointTreeNode == null) return null;
                 audioWrapperNode = navPointTreeNode.Presentation.TreeNodeFactory.Create();
-                
-                navPointTreeNode.AppendChild(audioWrapperNode);
+
+                if (smilNode == null || !m_SmilXmlNodeToTreeNodeMap.ContainsKey(smilNode))
+                {
+                    navPointTreeNode.AppendChild(audioWrapperNode);
+                }
+                else
+                {
+                    navPointTreeNode.InsertAfter(audioWrapperNode, m_SmilXmlNodeToTreeNodeMap[smilNode]);
+                    m_SmilXmlNodeToTreeNodeMap[smilNode] = audioWrapperNode;
+                }
             }
             //XmlProperty xmlProp = navPointTreeNode.Presentation.PropertyFactory.CreateXmlProperty();
             //audioWrapperNode.AddProperty(xmlProp);
