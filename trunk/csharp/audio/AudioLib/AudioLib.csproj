@@ -59,6 +59,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\WINDOWS\Microsoft.NET\Managed DirectX\v9.02.2904\Microsoft.DirectX.DirectSound.dll</HintPath>
     </Reference>
+    <Reference Include="Mp3Sharp, Version=1.4.3391.3051, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\mp3sharp\bin\Debug\Mp3Sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio, Version=1.3.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\NAudio\bin\Release\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -84,18 +92,9 @@
     <Compile Include="IDualCancellableProgressReporter.cs" />
     <Compile Include="Mp3Frame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VuMeter.cs" />
+    <Compile Include="VuMeter_BasicComputation.cs" />
+    <Compile Include="VuMeter_VolumeLevelAlerts.cs" />
     <Compile Include="WavFormatConverter.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\mp3-sharp\Mp3Sharp.csproj">
-      <Project>{834CAB58-648D-47CC-AC6F-D01C08C809A4}</Project>
-      <Name>Mp3Sharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NAudio\NAudio.csproj">
-      <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
-      <Name>NAudio</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
