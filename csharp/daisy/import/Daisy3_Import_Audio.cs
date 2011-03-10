@@ -553,16 +553,42 @@ namespace urakawa.daisy.import
 
             //FileDataProvider dataProv = m_Src_FileDataProviderMap[fullWavPath];
             //System.Windows.Forms.MessageBox.Show ( clipB.ToString () + " : " + clipE.ToString () ) ;
+            bool isClipEndError = false;
             try
             {
                 mediaData.AppendPcmData(dataProv, clipB, clipE);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("CLIP TIME ERROR (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
-                return null;
+                if (ex is exception.MethodParameterIsOutOfBoundsException && clipB != null && clipE != null && clipB.IsLessThanOrEqualTo(clipE))
+                {
+                    isClipEndError = true;
+                }
+                else
+                {
+                    Console.WriteLine("CLIP TIME ERROR (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
+                    return null;
+                }
             }
 
+            if (isClipEndError)
+            {
+                // reduce clip end by 1 millisecond for rounding off tolerance
+                Console.WriteLine ("Error encountered: reducing original clip by 1ms" + clipE ) ;
+                clipE.Substract(new Time(AudioLibPCMFormat.TIME_UNIT));
+                Console.WriteLine ("new clip " + clipE ) ;
+                try
+                {
+                    mediaData.AppendPcmData(dataProv, clipB, clipE);
+                    isClipEndError = false;
+                }
+                catch (Exception ex)
+                {
+                    isClipEndError = true;
+                    Console.WriteLine("CLIP TIME ERROR (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
+                    return null;
+                }
+            }
             if (RequestCancellation) return null;
 
             media = presentation.MediaFactory.CreateManagedAudioMedia();
