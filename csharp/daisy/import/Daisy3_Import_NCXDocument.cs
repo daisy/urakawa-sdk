@@ -81,41 +81,19 @@ namespace urakawa.daisy.import
             //else
             //{
                 //System.Windows.Forms.MessageBox.Show("working " + node.LocalName);
+            TreeNode treeNode = null;
                 if (node.LocalName == "navPoint")
                 {
-                    TreeNode treeNode = CreateTreeNodeForNavPoint(tNode, node);
-                    /*
-                    TreeNode treeNode = presentation.TreeNodeFactory.Create();
-                    tNode.AppendChild(treeNode);
-                    XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
-                    treeNode.AddProperty(xmlProp);
-                    XmlNode textNode = XmlDocumentHelper.GetFirstChildElementWithName(node, true, "text", node.NamespaceURI);
-                    xmlProp.LocalName = "level";//+":" + textNode.InnerText;
-                    // create urakawa tree node
+                    treeNode = CreateTreeNodeForNavPoint(tNode, node);
                     
-                    TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
-                    textMedia.Text = textNode.InnerText;
-
-                    ChannelsProperty cProp = presentation.PropertyFactory.CreateChannelsProperty();
-                    cProp.SetMedia(m_textChannel, textMedia);
-
-                    TreeNode txtWrapperNode = presentation.TreeNodeFactory.Create();
-                    txtWrapperNode.AddProperty(cProp);
-                    treeNode.AppendChild(txtWrapperNode);
-
-                    XmlProperty TextNodeXmlProp = presentation.PropertyFactory.CreateXmlProperty();
-                    txtWrapperNode.AddProperty(TextNodeXmlProp);
-                    TextNodeXmlProp.LocalName = "hd";
-
-                     */
                     XmlNode contentNode = XmlDocumentHelper.GetFirstChildElementWithName(node, true, "content", node.NamespaceURI);
                     m_SmilRefToNavPointTreeNodeMap.Add(contentNode.Attributes.GetNamedItem("src").Value, treeNode);
                 }
             
                 if (node.ChildNodes == null || node.ChildNodes.Count == 0) return;
                 foreach (XmlNode n in node.ChildNodes)
-                {   
-                    ParseNCXNodes(presentation, n, tNode);
+                {
+                    ParseNCXNodes(presentation, n, treeNode!= null? treeNode: tNode);
                 }
             //}
         }
@@ -215,12 +193,7 @@ namespace urakawa.daisy.import
                 
                  
                 if (navPointTreeNode == null) continue;
-
-                // check for page
-                //if (parNode.Attributes.GetNamedItem("customTest") != null && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum")
-                //{
-                    //isPageInProcess = true ;
-                //}
+                
                     //System.Windows.Forms.MessageBox.Show(parNode.LocalName);
                     
                 AbstractAudioMedia textTreeNodeAudio = navPointTreeNode.GetAudioMedia();
