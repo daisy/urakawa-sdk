@@ -20,6 +20,7 @@ namespace urakawa.daisy.import
     {
 
         private Dictionary<string, TreeNode> m_SmilRefToNavPointTreeNodeMap;
+        private Dictionary<string, XmlNode> m_PageReferencesMapDictionaryForNCX;
         protected Dictionary<XmlNode, TreeNode> m_SmilXmlNodeToTreeNodeMap;
 
         public void ParseNCXDocument(XmlDocument ncxDocument)
@@ -52,7 +53,7 @@ namespace urakawa.daisy.import
             CollectPagesFromPageList(navMap);
         }
 
-        private Dictionary<string, XmlNode> m_PageReferencesMapDictionaryForNCX;
+        
         private void CollectPagesFromPageList(XmlNode navMap)
         {
             m_PageReferencesMapDictionaryForNCX  = new Dictionary<string, XmlNode>();
@@ -202,7 +203,8 @@ namespace urakawa.daisy.import
                     isHeading = true;
                     
                 }
-                else if (parNode.Attributes.GetNamedItem("customTest") != null && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum")
+                else if (m_PageReferencesMapDictionaryForNCX.ContainsKey(ncxContentSRC)
+                    ||    (parNode.Attributes.GetNamedItem("customTest") != null && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum"))
                 {
                     isPageInProcess = true;
                     if (navPointTreeNode == null) continue;
