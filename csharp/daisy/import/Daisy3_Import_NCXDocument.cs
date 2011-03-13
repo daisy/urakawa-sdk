@@ -114,19 +114,19 @@ namespace urakawa.daisy.import
                     xmlProp.LocalName = "level";//+":" + textNode.InnerText;
                     // create urakawa tree node
                     
-                    TextMedia textMedia = parentNode.Presentation.MediaFactory.CreateTextMedia();
-                    textMedia.Text = textNode.InnerText;
+                    //TextMedia textMedia = parentNode.Presentation.MediaFactory.CreateTextMedia();
+                    //textMedia.Text = textNode.InnerText;
 
-                    ChannelsProperty cProp = parentNode.Presentation.PropertyFactory.CreateChannelsProperty();
-                    cProp.SetMedia(m_textChannel, textMedia);
+                    //ChannelsProperty cProp = parentNode.Presentation.PropertyFactory.CreateChannelsProperty();
+                    //cProp.SetMedia(m_textChannel, textMedia);
             
-                    TreeNode txtWrapperNode = parentNode.Presentation.TreeNodeFactory.Create();
-                    txtWrapperNode.AddProperty(cProp);
-                    treeNode.AppendChild(txtWrapperNode);
+                    //TreeNode txtWrapperNode = parentNode.Presentation.TreeNodeFactory.Create();
+                    //txtWrapperNode.AddProperty(cProp);
+                    //treeNode.AppendChild(txtWrapperNode);
 
-                    XmlProperty TextNodeXmlProp = parentNode.Presentation.PropertyFactory.CreateXmlProperty();
-                    txtWrapperNode.AddProperty(TextNodeXmlProp);
-                    TextNodeXmlProp.LocalName = "hd";
+                    //XmlProperty TextNodeXmlProp = parentNode.Presentation.PropertyFactory.CreateXmlProperty();
+                    //txtWrapperNode.AddProperty(TextNodeXmlProp);
+                    //TextNodeXmlProp.LocalName = "hd";
             
                     return treeNode;
         }
@@ -184,10 +184,11 @@ namespace urakawa.daisy.import
                     navPointTreeNode = m_SmilRefToNavPointTreeNodeMap[ncxContentSRC];
                     //System.Windows.Forms.MessageBox.Show(ncxContentSRC + " section:" + navPointTreeNode.GetXmlElementQName().LocalName + " : " + Path.GetFileName( fullSmilPath ) );
                     //: audioWrapperNode =  CreateTreeNodeForAudioNode(navPointTreeNode, true);
-                    isHeading = true;
+                    //isHeading = true;
                     
                 }
-                else if (m_PageReferencesMapDictionaryForNCX.ContainsKey(ncxContentSRC)
+                //else if (m_PageReferencesMapDictionaryForNCX.ContainsKey(ncxContentSRC)
+                if (m_PageReferencesMapDictionaryForNCX.ContainsKey(ncxContentSRC)
                     ||    (parNode.Attributes.GetNamedItem("customTest") != null && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum"))
                 {
                     isPageInProcess = true;
@@ -345,6 +346,7 @@ namespace urakawa.daisy.import
             if (pageAttributes != null)
             {
                 XmlProperty xmlProp = audioWrapperNode.GetXmlProperty();
+                xmlProp.LocalName = "pagenum";
                 foreach (System.Xml.XmlAttribute attr in pageAttributes)
                 {
                     xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
@@ -356,7 +358,7 @@ namespace urakawa.daisy.import
 
         protected virtual TreeNode CheckAndAssignForHeadingAudio(TreeNode navPointTreeNode, TreeNode phraseTreeNode, XmlNode audioXmlNode)
         {
-            /*
+            
             XmlNode navLabelXmlNode = m_NavPointNode_NavLabelMap[navPointTreeNode];
             XmlNode headingAudio = XmlDocumentHelper.GetFirstChildElementWithName(navLabelXmlNode, true, "audio", navLabelXmlNode.NamespaceURI);
             XmlNode textNode  = XmlDocumentHelper.GetFirstChildElementWithName(navLabelXmlNode, true, "text", navLabelXmlNode.NamespaceURI);
@@ -367,13 +369,14 @@ namespace urakawa.daisy.import
             double audioClipBegin = Math.Abs ((new urakawa.media.timing.Time(audioXmlNode.Attributes.GetNamedItem("clipBegin").Value)).AsTimeSpan.TotalMilliseconds);
             double audioClipEnd = Math.Abs ((new urakawa.media.timing.Time(audioXmlNode.Attributes.GetNamedItem("clipEnd").Value)).AsTimeSpan.TotalMilliseconds);
 
-            if (headingClipBegin == audioClipBegin
-                && headingClipEnd == audioClipEnd)
+            if (headingAudio.Attributes.GetNamedItem("src").Value == audioXmlNode.Attributes.GetNamedItem("src").Value
+                && Math.Abs(headingClipBegin - audioClipBegin) <= 1
+                && Math.Abs(headingClipEnd - audioClipEnd) <= 1)
             {
-                TextMedia textMedia = parentNode.Presentation.MediaFactory.CreateTextMedia();
+                TextMedia textMedia = navPointTreeNode.Presentation.MediaFactory.CreateTextMedia();
                 textMedia.Text = textNode.InnerText;
 
-                ChannelsProperty cProp = parentNode.Presentation.PropertyFactory.CreateChannelsProperty();
+                ChannelsProperty cProp = navPointTreeNode.Presentation.PropertyFactory.CreateChannelsProperty();
                 cProp.SetMedia(m_textChannel, textMedia);
 
                 //TreeNode txtWrapperNode = parentNode.Presentation.TreeNodeFactory.Create();
@@ -384,8 +387,8 @@ namespace urakawa.daisy.import
                 phraseTreeNode.AddProperty(TextNodeXmlProp);
                 TextNodeXmlProp.LocalName = "hd";
             }
-             */ 
-            return null;
+              
+            return phraseTreeNode;
         }
 
     }
