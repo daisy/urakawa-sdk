@@ -109,7 +109,7 @@ namespace urakawa.daisy.import
             return null;
         }
 
-        private void parseContentDocument(XmlNode xmlNode, TreeNode parentTreeNode, string filePath)
+        protected virtual void parseContentDocument(XmlNode xmlNode, TreeNode parentTreeNode, string filePath)
         {
             if (RequestCancellation) return;
 
