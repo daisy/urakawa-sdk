@@ -23,6 +23,8 @@ namespace urakawa.daisy.import
         protected Dictionary<TreeNode, XmlNode> m_NavPointNode_NavLabelMap;
         private Dictionary<string, XmlNode> m_PageReferencesMapDictionaryForNCX;
         protected Dictionary<XmlNode, TreeNode> m_SmilXmlNodeToTreeNodeMap;
+        protected XmlNode m_DocTitleXmlNode;
+        private bool m_IsDocTitleCreated = false;
 
         public void ParseNCXDocument(XmlDocument ncxDocument)
         {
@@ -48,9 +50,10 @@ namespace urakawa.daisy.import
                 treeNode = presentation.RootNode;
             }
             treeNode.AddProperty(xmlProp);
-            
 
-            
+            m_DocTitleXmlNode  = XmlDocumentHelper.GetFirstChildElementWithName(ncxDocument.DocumentElement, true, "docTitle", ncxDocument.DocumentElement.NamespaceURI);
+            m_IsDocTitleCreated = false;
+
             ParseNCXNodes(presentation, navMap, treeNode);
             CollectPagesFromPageList(navMap);
         }
@@ -107,11 +110,23 @@ namespace urakawa.daisy.import
         protected virtual TreeNode CreateTreeNodeForNavPoint(TreeNode parentNode, XmlNode navPoint )
         {
             TreeNode treeNode = parentNode.Presentation.TreeNodeFactory.Create();
-                    parentNode.AppendChild(treeNode);
-                    XmlProperty xmlProp = parentNode.Presentation.PropertyFactory.CreateXmlProperty();
-                    treeNode.AddProperty(xmlProp);
-                    XmlNode textNode = XmlDocumentHelper.GetFirstChildElementWithName(navPoint, true, "text", navPoint.NamespaceURI);
-                    xmlProp.LocalName = "level";//+":" + textNode.InnerText;
+            if (navPoint.LocalName == "navPoint")
+            {
+                parentNode.AppendChild(treeNode);
+                XmlProperty xmlProp = parentNode.Presentation.PropertyFactory.CreateXmlProperty();
+                treeNode.AddProperty(xmlProp);
+                //XmlNode textNode = XmlDocumentHelper.GetFirstChildElementWithName(navPoint, true, "text", navPoint.NamespaceURI);
+                xmlProp.LocalName = "level";//+":" + textNode.InnerText;
+            }
+            else if (navPoint.LocalName == "docTitle")
+            {
+                Presentation pres = Project.Presentations.Get(0) ;
+                pres.RootNode.Insert (treeNode,0);
+                XmlProperty xmlProp = pres.PropertyFactory.CreateXmlProperty();
+                treeNode.AddProperty(xmlProp);
+                //XmlNode textNode = XmlDocumentHelper.GetFirstChildElementWithName(navPoint, true, "text", navPoint.NamespaceURI);
+                xmlProp.LocalName = "doctitle";
+            }
                     // create urakawa tree node
                     
                     //TextMedia textMedia = parentNode.Presentation.MediaFactory.CreateTextMedia();
@@ -158,6 +173,7 @@ namespace urakawa.daisy.import
             bool isHeading = false;
             bool isPageInProcess = false;
             TreeNode audioWrapperNode = null;
+            
 
             XmlNodeList smilNodeList = smilXmlDoc.DocumentElement.SelectNodes(".//firstNS:seq | .//firstNS:par",
                         firstDocNSManager);
@@ -176,6 +192,7 @@ namespace urakawa.daisy.import
                     continue;
                 }
                 
+                
                 string ncxContentSRC = Path.GetFileName(fullSmilPath) + "#" + parNodeID.Value;
                 
                 // for now we are assuming the first phrase as heading phrase. this need refinement such that phrase anywhere in section can be imported as heading
@@ -185,6 +202,15 @@ namespace urakawa.daisy.import
                     //System.Windows.Forms.MessageBox.Show(ncxContentSRC + " section:" + navPointTreeNode.GetXmlElementQName().LocalName + " : " + Path.GetFileName( fullSmilPath ) );
                     //: audioWrapperNode =  CreateTreeNodeForAudioNode(navPointTreeNode, true);
                     //isHeading = true;
+                    
+                }
+
+                // handle doctitle if audio exists before first heading by adding doctitle node as first treenode
+                if (navPointTreeNode == null && !m_IsDocTitleCreated)
+                {
+                    m_IsDocTitleCreated = true;
+                    navPointTreeNode = CreateTreeNodeForNavPoint(m_Project.Presentations.Get(0).RootNode, m_DocTitleXmlNode);
+                    m_NavPointNode_NavLabelMap.Add(navPointTreeNode, m_DocTitleXmlNode);
                     
                 }
                 //else if (m_PageReferencesMapDictionaryForNCX.ContainsKey(ncxContentSRC)
