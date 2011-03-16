@@ -198,6 +198,7 @@ namespace urakawa.daisy.import
                 // for now we are assuming the first phrase as heading phrase. this need refinement such that phrase anywhere in section can be imported as heading
                 if (m_SmilRefToNavPointTreeNodeMap.ContainsKey(ncxContentSRC))
                 {
+                    m_IsDocTitleCreated = true;
                     navPointTreeNode = m_SmilRefToNavPointTreeNodeMap[ncxContentSRC];
                     //System.Windows.Forms.MessageBox.Show(ncxContentSRC + " section:" + navPointTreeNode.GetXmlElementQName().LocalName + " : " + Path.GetFileName( fullSmilPath ) );
                     //: audioWrapperNode =  CreateTreeNodeForAudioNode(navPointTreeNode, true);
@@ -206,7 +207,8 @@ namespace urakawa.daisy.import
                 }
 
                 // handle doctitle if audio exists before first heading by adding doctitle node as first treenode
-                if (navPointTreeNode == null && !m_IsDocTitleCreated)
+                if (navPointTreeNode == null && !m_IsDocTitleCreated
+                    &&    (XmlDocumentHelper.GetFirstChildElementWithName(parNode, false, "audio", null) != null    ||    XmlDocumentHelper.GetFirstChildElementWithName(parNode, false, "text", null) != null))
                 {
                     m_IsDocTitleCreated = true;
                     navPointTreeNode = CreateTreeNodeForNavPoint(m_Project.Presentations.Get(0).RootNode, m_DocTitleXmlNode);
