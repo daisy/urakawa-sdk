@@ -16,18 +16,23 @@ namespace AudioLib
         public static readonly double DEFAULT_GAP = 300.0;              // default gap for phrase detection
         public static readonly double DEFAULT_LEADING_SILENCE = 50.0;  // default leading silence
         public static readonly double DEFAULT_THRESHOLD = 280.0;
-
-        //private static  AudioMediaData m_AudioAsset;
         
         private static  readonly int m_FrequencyDivisor = 2000; // frequency inin hz to observe.
-        
-        
+        private static bool m_CancelOperation;
+
+        public static bool CancelOperation
+        {
+            get { return m_CancelOperation; }
+            set { m_CancelOperation = value; }
+        }
+
 
         // NewDetection
 
         // Detects the maximum size of noise level in a silent sample file
         public static long GetSilenceAmplitude (Stream assetStream, AudioLibPCMFormat audioPCMFormat)
         {
+            CancelOperation = false;
             //m_AudioAsset = RefAsset.AudioMediaData;
             BinaryReader brRef = new BinaryReader(assetStream);
 
@@ -59,7 +64,7 @@ namespace AudioLib
             // Experiment starts here
             double BlockTime = 25;
             double assetTimeInMS = audioPCMFormat.ConvertBytesToTime(assetStream.Length) / AudioLibPCMFormat.TIME_UNIT;
-            Console.WriteLine("assetTimeInMS " + assetTimeInMS);
+            //Console.WriteLine("assetTimeInMS " + assetTimeInMS);
             long Iterations = Convert.ToInt64(assetTimeInMS/ BlockTime);
             long SampleCount = Convert.ToInt64((int)audioPCMFormat.SampleRate/ (1000 / BlockTime));
 
@@ -79,10 +84,9 @@ namespace AudioLib
                 {
                     lLargest = lBlockSum;
                 }
+                if (CancelOperation) break;
             }
             long SilVal = Convert.ToInt64(lLargest);
-
-            // experiment ends here
 
             brRef.Close();
 
@@ -90,20 +94,38 @@ namespace AudioLib
 
         }
 
-
-        public static List<double> Apply(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold, double GapLength, double before)
+        /// <summary>
+        /// Detects phrases of the asset for which stream is provided and returns timing list of detected phrases in local units
+        /// accepts time parameters GapLength and before in local units
+        /// </summary>
+        /// <param name="assetStream"></param>
+        /// <param name="audioPCMFormat"></param>
+        /// <param name="threshold"></param>
+        /// <param name="GapLength"></param>
+        /// <param name="before"></param>
+        /// <returns></returns>
+        public static List<long> Apply(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold,long GapLength,long before)
         {
             //long lGapLength = ObiCalculationFunctions.ConvertTimeToByte(GapLength, (int)audio.AudioMediaData.PCMFormat.Data.SampleRate, audio.AudioMediaData.PCMFormat.Data.BlockAlign);
             //long lBefore = ObiCalculationFunctions.ConvertTimeToByte(before, (int)audio.AudioMediaData.PCMFormat.Data.SampleRate, audio.AudioMediaData.PCMFormat.Data.BlockAlign);
-            long lGapLength = audioPCMFormat.ConvertTimeToBytes((long) GapLength * AudioLibPCMFormat.TIME_UNIT );
-            long lBefore = audioPCMFormat.ConvertTimeToBytes((long) before * AudioLibPCMFormat.TIME_UNIT);
-            Console.WriteLine ("GapLength " + lGapLength  + " - " + "lBefore " + lBefore ) ;
-            return ApplyPhraseDetection(assetStream, audioPCMFormat , threshold, lGapLength, lBefore);
+            long gapLengthInBytes = audioPCMFormat.ConvertTimeToBytes((long) GapLength );
+            long beforeInBytes = audioPCMFormat.ConvertTimeToBytes((long) before );
+            //Console.WriteLine ("GapLength " + gapLengthInBytes  + " - " + "Before " + beforeInBytes ) ;
+            return ApplyPhraseDetection(assetStream, audioPCMFormat , threshold, gapLengthInBytes, beforeInBytes);
         }
 
-
-        private static  List<double> ApplyPhraseDetection(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold, double GapLength, double before)
+        /// <summary>
+        /// Detects phrases of the asset for which stream is provided and returns timing list of detected phrases in local units
+        /// </summary>
+        /// <param name="assetStream"></param>
+        /// <param name="audioPCMFormat"></param>
+        /// <param name="threshold"></param>
+        /// <param name="GapLength"></param>
+        /// <param name="before"></param>
+        /// <returns></returns>
+        private static  List<long> ApplyPhraseDetection(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold, double GapLength, double before)
         {
+            CancelOperation = false;
             //m_AudioAsset = ManagedAsset.AudioMediaData;
             double assetTimeInMS = audioPCMFormat.ConvertBytesToTime(assetStream.Length) / AudioLibPCMFormat.TIME_UNIT;
             GapLength = audioPCMFormat.AdjustByteToBlockAlignFrameSize((long) GapLength);
@@ -153,6 +175,7 @@ namespace AudioLib
             long Counter = 0;
             for (long j = 0; j < Iterations - 1; j++)
             {
+                if (CancelOperation) return null;
                 // decodes audio chunck inside block
                 //lCurrentSum = GetAverageSampleValue(br, SampleCount);
                 lCurrentSum = GetAvragePeakValue(br, SampleCount, audioPCMFormat);
@@ -197,7 +220,7 @@ namespace AudioLib
                                                     //(int) m_AudioAsset.PCMFormat.Data.SampleRate,
                             //(int) m_AudioAsset.PCMFormat.Data.BlockAlign);
                         long phraseMarkTime = audioPCMFormat.ConvertBytesToTime(Convert.ToInt64(errorCompensatingCoefficient * (j - Counter)) * SampleCount * audioPCMFormat.BlockAlign) / AudioLibPCMFormat.TIME_UNIT;
-                        Console.WriteLine("mark time :" + phraseMarkTime);
+                        //Console.WriteLine("mark time :" + phraseMarkTime);
                         detectedPhraseTimingList.Add ( phraseMarkTime - BeforePhraseInMS );
 
                         SpeechBlockCount = 0;
@@ -212,24 +235,21 @@ namespace AudioLib
             }
             br.Close();
 
-            //List<long> ReturnList = new List<long>();
+            List<long> detectedPhraseTimingsInTimeUnits = new List<long>();
 
             if (boolPhraseDetected == false)
             {
                 return null ;
             }
             else
-            {
-                return detectedPhraseTimingList;
-                //for (int i = 0; i < detectedPhraseTimingList.Count; i++)
-                //{
-                    //ReturnList.Add(Convert.ToInt64(detectedPhraseTimingList[i]));
-                //}
+            {   
+                for (int i = 0; i < detectedPhraseTimingList.Count; i++)
+                {
+                    detectedPhraseTimingsInTimeUnits.Add(Convert.ToInt64(detectedPhraseTimingList[i] * AudioLibPCMFormat.TIME_UNIT));
+                }
             }
 
-
-
-            //return ReturnList ;
+            return detectedPhraseTimingsInTimeUnits ;
         }
 
 
