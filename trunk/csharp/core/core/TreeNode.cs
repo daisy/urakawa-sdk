@@ -423,27 +423,25 @@ namespace urakawa.core
         /// <param name="handler">The handler for progress</param>
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
-            bool readItem = false;
-            if (source.NamespaceURI == XukAble.XUK_NS)
+            bool readItem = true;
+
+            if (source.NamespaceURI == XukAble.XUK_NS && source.LocalName == XukStrings.Properties)
             {
-                readItem = true;
-                if (source.LocalName == XukStrings.Properties)
-                {
-                    XukInProperties(source, handler);
-                }
-                else if (IsPrettyFormat() && source.LocalName == XukStrings.Children)
-                {
-                    XukInChildren(source, handler);
-                }
-                else if (!IsPrettyFormat())
-                {
-                    XukInChildNode(source, handler);
-                }
-                else
-                {
-                    readItem = false;
-                }
+                XukInProperties(source, handler);
             }
+            else if (IsPrettyFormat() && source.NamespaceURI == XukAble.XUK_NS && source.LocalName == XukStrings.Children)
+            {
+                XukInChildren(source, handler);
+            }
+            else if (!IsPrettyFormat())
+            {
+                XukInChildNode(source, handler);
+            }
+            else
+            {
+                readItem = false;
+            }
+
             if (!readItem) base.XukInChild(source, handler);
         }
 
