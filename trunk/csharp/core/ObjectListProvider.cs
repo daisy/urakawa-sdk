@@ -163,33 +163,33 @@ namespace urakawa
         //        }
         //    }
         //}
-        //public IEnumerable<T> ContentsAs_YieldEnumerableReversed
-        //{
-        //    get
-        //    {
-        //        if (m_useLock)
-        //        {
-        //            lock (LOCK)
-        //            {
-        //                for (int i = m_objects.Count - 1; i >= 0; i--)
-        //                {
-        //                    yield return m_objects[i];
-        //                }
+        public IEnumerable<T> ContentsAs_YieldEnumerableReversed
+        {
+            get
+            {
+                if (m_useLock)
+                {
+                    lock (LOCK)
+                    {
+                        for (int i = m_objects.Count - 1; i >= 0; i--)
+                        {
+                            yield return m_objects[i];
+                        }
 
-        //                yield break;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            for (int i = m_objects.Count - 1; i >= 0; i--)
-        //            {
-        //                yield return m_objects[i];
-        //            }
+                        yield break;
+                    }
+                }
+                else
+                {
+                    for (int i = m_objects.Count - 1; i >= 0; i--)
+                    {
+                        yield return m_objects[i];
+                    }
 
-        //            yield break;
-        //        }
-        //    }
-        //}
+                    yield break;
+                }
+            }
+        }
 
         public IEnumerable ContentsAs_ArrayListReadOnlyWrapper
         {
