@@ -623,7 +623,7 @@ namespace urakawa.daisy.export.visitor
                 DebugFix.Assert(manSeqMedia == null);
             }
 
-            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
+            foreach (TreeNode child in node.Children.ContentsAs_Enumerable)
             {
                 verifyTree(child, ancestorHasAudio, ancestorExtAudioFile);
             }

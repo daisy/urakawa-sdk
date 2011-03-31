@@ -242,7 +242,7 @@ namespace urakawa.daisy.import
             string lower = metaDataName.ToLower();
 
             Presentation presentation = m_Project.Presentations.Get(0);
-            foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
+            foreach (Metadata md in presentation.Metadatas.ContentsAs_Enumerable)
             {
                 if (md.NameContentAttribute.Name.ToLower() == lower
                     && md.NameContentAttribute.Value == metaDataContent)
@@ -258,7 +258,7 @@ namespace urakawa.daisy.import
             string lower = metaDataName.ToLower();
 
             Presentation presentation = m_Project.Presentations.Get(0);
-            foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
+            foreach (Metadata md in presentation.Metadatas.ContentsAs_Enumerable)
             {
                 if (md.NameContentAttribute.Name.ToLower() == lower)
                 {
@@ -272,7 +272,7 @@ namespace urakawa.daisy.import
         {
             Presentation presentation = m_Project.Presentations.Get(0);
 
-            foreach (Metadata md in presentation.Metadatas.ContentsAs_YieldEnumerable)
+            foreach (Metadata md in presentation.Metadatas.ContentsAs_Enumerable)
             {
                 if (isUniqueIdName(md.NameContentAttribute.Name)
                     && md.NameContentAttribute.Value == uid)
@@ -350,7 +350,7 @@ namespace urakawa.daisy.import
         private List<Metadata> findMetadataByName(string name)
         {
             IEnumerable<Metadata> metadatas =
-                m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable;
+                m_Project.Presentations.Get(0).Metadatas.ContentsAs_Enumerable;
             
             IEnumerator<Metadata> enumerator = metadatas.GetEnumerator();
             List<Metadata> found = new List<Metadata>();
@@ -379,7 +379,7 @@ namespace urakawa.daisy.import
                 {
                     List<Metadata> identifiers = new List<Metadata>();
 
-                    foreach (Metadata md in m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable)
+                    foreach (Metadata md in m_Project.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                     {
                         //get this metadata's definition (and search synonyms too)
                         MetadataDefinition definition = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(
@@ -407,7 +407,7 @@ namespace urakawa.daisy.import
         {
             //add any missing required metadata entries
             IEnumerable<Metadata> metadatas =
-                m_Project.Presentations.Get(0).Metadatas.ContentsAs_YieldEnumerable;
+                m_Project.Presentations.Get(0).Metadatas.ContentsAs_Enumerable;
             foreach (MetadataDefinition metadataDefinition in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
             {
                 if (!metadataDefinition.IsReadOnly && metadataDefinition.Occurrence == MetadataOccurrence.Required)

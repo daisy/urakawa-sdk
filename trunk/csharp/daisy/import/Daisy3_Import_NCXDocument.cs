@@ -333,7 +333,7 @@ namespace urakawa.daisy.import
             TreeNode audioWrapperNode = null;
             if (isHeadingNode)
             {
-                foreach (TreeNode txtNode in navPointTreeNode.Children.ContentsAs_YieldEnumerable)
+                foreach (TreeNode txtNode in navPointTreeNode.Children.ContentsAs_Enumerable)
                 {
                     if (txtNode.GetTextMedia() != null)
                     {

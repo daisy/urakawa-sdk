@@ -75,7 +75,7 @@ namespace urakawa.daisy.export
             AddMetadata_Generator(DTBookDocument, headNode);
 
             // todo: filter-out unecessary metadata for DTBOOK (e.g. dtb:multimediatype)
-            foreach (Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
+            foreach (Metadata m in m_Presentation.Metadatas.ContentsAs_Enumerable)
             {
                 if (mdId == m) continue;
 
@@ -97,7 +97,7 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, metaNode, "content", m.NameContentAttribute.Value);
 
                 // add metadata optional attributes if any
-                foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_YieldEnumerable)
+                foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_Enumerable)
                 {
                     if (ma.Name == "id") continue;
 

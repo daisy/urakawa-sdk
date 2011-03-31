@@ -840,11 +840,11 @@ namespace urakawa.daisy.export
         {
             Metadata mdUid = null;
             XmlNode metaNodeUid = null;
-            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
+            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_Enumerable)
             {
                 if (!isUniqueIdName(md.NameContentAttribute.Name)) continue;
 
-                foreach (MetadataAttribute mda in md.OtherAttributes.ContentsAs_YieldEnumerable)
+                foreach (MetadataAttribute mda in md.OtherAttributes.ContentsAs_Enumerable)
                 {
                     if (mda.Name != "id") continue;
 
@@ -871,7 +871,7 @@ namespace urakawa.daisy.export
                 if (mdUid != null)
                 {
                     // add metadata optional attributes if any
-                    foreach (MetadataAttribute ma in md.OtherAttributes.ContentsAs_YieldEnumerable)
+                    foreach (MetadataAttribute ma in md.OtherAttributes.ContentsAs_Enumerable)
                     {
                         if (ma.Name == "id") continue;
 
@@ -882,7 +882,7 @@ namespace urakawa.daisy.export
                 }
             }
 
-            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
+            foreach (Metadata md in m_Presentation.Metadatas.ContentsAs_Enumerable)
             {
                 if (!isUniqueIdName(md.NameContentAttribute.Name)) continue;
 
@@ -903,7 +903,7 @@ namespace urakawa.daisy.export
                 }
 
                 // add metadata optional attributes if any
-                foreach (MetadataAttribute ma in md.OtherAttributes.ContentsAs_YieldEnumerable)
+                foreach (MetadataAttribute ma in md.OtherAttributes.ContentsAs_Enumerable)
                 {
                     if (ma.Name == "id") continue;
 
