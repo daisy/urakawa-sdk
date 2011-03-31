@@ -33,10 +33,12 @@ namespace AudioLib
 
             CurrentState = State.NotReady;
 
+            //mPreviewTimer.Enabled = false;
+            mPreviewTimer.Stop();
+            mPreviewTimer.Interval = 50;
             mPreviewTimer.Tick += new EventHandler(PreviewTimer_Tick);
             //mPreviewTimer.Elapsed += new System.Timers.ElapsedEventHandler(PreviewTimer_Tick);
-            mPreviewTimer.Enabled = false;
-            mPreviewTimer.Interval = 50;
+            
             //mPreviewTimer.AutoReset = true;
         }
 
@@ -697,15 +699,32 @@ namespace AudioLib
                 }
                 finally
                 {
-                    if ( CurrentState != State.Paused )  CurrentState = State.Stopped;
 
-                    lock (LOCK)
+                    if (mPreviewTimer.Enabled)
                     {
-                        m_CircularBufferRefreshThread = null;
-                    }
+                        m_ResumeStartPosition = CurrentBytePosition;
 
-                    StopForwardRewind();
-                    stopPlayback();
+                        CurrentState = State.Paused; // before stopPlayback(), doesn't kill the stream provider
+                        
+                        lock (LOCK)
+                        {
+                            m_CircularBufferRefreshThread = null;
+                        }
+
+                        stopPlayback();
+                    }
+                    else
+                    {
+                        if (CurrentState != State.Paused) CurrentState = State.Stopped;
+
+                        lock (LOCK)
+                        {
+                            m_CircularBufferRefreshThread = null;
+                        }
+
+                        StopForwardRewind();
+                        stopPlayback();
+                    }
                 }
 
                 //Console.WriteLine("Player refresh thread exiting....");
