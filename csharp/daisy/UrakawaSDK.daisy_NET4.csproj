@@ -39,7 +39,8 @@
     <OutputPath>..\..\..\..\tobi\trunk\tobiapp\bin\DebugNET4\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel><NoWarn>1591</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
     <DocumentationFile>bin\DebugNET4\UrakawaSDK.daisy.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -48,7 +49,8 @@
     <OutputPath>bin\ReleaseNET4\</OutputPath>
     <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel><NoWarn>1591</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
     <DocumentationFile>
     </DocumentationFile>
   </PropertyGroup>
@@ -78,6 +80,7 @@
     <Compile Include="export\tree-visitor\PublishFlattenedManagedAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\PublishManagedAudioVisitor.cs" />
     <Compile Include="import\AudioFormatConvertorSession.cs" />
+    <Compile Include="import\Daisy3_Import_NCXDocument.cs" />
     <Compile Include="UrakawaSDK.daisy.Lang.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
