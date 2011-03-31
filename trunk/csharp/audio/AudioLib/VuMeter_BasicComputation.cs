@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace AudioLib
 {
@@ -58,7 +59,9 @@ namespace AudioLib
             m_PcmDataBuffer = e.PcmDataBuffer;
 #endif
 
+            m_computingPeakDb = true;
             double[] peakDb = computePeakDb(m_Player.CurrentAudioPCMFormat);
+            m_computingPeakDb = false;
 
             PeakMeterUpdateHandler del = PeakMeterUpdated;
             if ( m_Player.CurrentState == AudioPlayer.State.Playing    &&     del != null )
@@ -117,8 +120,9 @@ namespace AudioLib
 #else
             m_PcmDataBuffer = e.PcmDataBuffer;
 #endif
-
+            m_computingPeakDb = true;
             double[] peakDb = computePeakDb(m_Recorder.RecordingPCMFormat);
+            m_computingPeakDb = false;
 
             PeakMeterUpdateHandler del = PeakMeterUpdated;
             
@@ -162,6 +166,11 @@ namespace AudioLib
 
         private void StateChanged(object sender,EventArgs e)
         {
+            while (m_computingPeakDb)
+            {
+                Thread.Sleep(10);
+                Console.Write("m_computingPeakDb...");
+            }
             m_PeakDb  = null;
             if ( m_PcmDataBuffer != null )  m_PcmDataBuffer = new byte[m_PcmDataBuffer.Length];
             //m_PcmDataBuffer.Initialize(double.NegativeInfinity);
@@ -175,6 +184,7 @@ namespace AudioLib
             get { return m_PeakDb; }
         }
 
+        private bool m_computingPeakDb = false;
         private double[] m_PeakDb; //to avoid re-allocating the buffer when not necessary
         private double[] computePeakDb(AudioLibPCMFormat pcmFormat)
         {
@@ -184,23 +194,23 @@ namespace AudioLib
                 m_PeakDb = new double[pcmFormat.NumberOfChannels];
             }
 
-            bool allZeros = true;
-            for (int i = 0; i < m_PcmDataBuffer.Length; i++)
-            {
-                if (m_PcmDataBuffer[i] != 0)
-                {
-                    allZeros = false;
-                    break;
-                }
-            }
-            if (allZeros)
-            {
-                for (int i = 0; i < m_PeakDb.Length; i++)
-                {
-                    m_PeakDb[i] = Double.PositiveInfinity;
-                }
-                return m_PeakDb;
-            }
+            //bool allZeros = true;
+            //for (int i = 0; i < m_PcmDataBuffer.Length; i++)
+            //{
+            //    if (m_PcmDataBuffer[i] != 0)
+            //    {
+            //        allZeros = false;
+            //        break;
+            //    }
+            //}
+            //if (allZeros)
+            //{
+            //    for (int i = 0; i < m_PeakDb.Length; i++)
+            //    {
+            //        m_PeakDb[i] = Double.PositiveInfinity;
+            //    }
+            //    return m_PeakDb;
+            //}
 
             double full = Math.Pow(2, pcmFormat.BitDepth);
             double halfFull = full / 2;
