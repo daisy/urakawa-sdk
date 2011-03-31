@@ -41,6 +41,11 @@ namespace urakawa
 
         private readonly Object LOCK = new object();
 
+        private bool m_useLock = false;
+        public bool UseLock
+        {
+            get { return m_useLock; }
+        }
         private List<T> m_objects;
         private XukAble m_Owner;
 
@@ -48,9 +53,10 @@ namespace urakawa
 
         #region ctr
 
-        public ObjectListProvider(XukAble owner)
+        public ObjectListProvider(XukAble owner, bool useLock)
         {
             m_Owner = owner;
+            m_useLock = useLock;
             m_objects = new List<T>();
         }
 
@@ -62,7 +68,14 @@ namespace urakawa
         {
             get
             {
-                lock (LOCK)
+                if (m_useLock)
+                {
+                    lock (LOCK)
+                    {
+                        return new ReadOnlyCollection<T>(m_objects);
+                    }
+                }
+                else
                 {
                     return new ReadOnlyCollection<T>(m_objects);
                 }
@@ -73,7 +86,14 @@ namespace urakawa
         {
             get
             {
-                lock (LOCK)
+                if (m_useLock)
+                {
+                    lock (LOCK)
+                    {
+                        return m_objects.AsReadOnly();
+                    }
+                }
+                else
                 {
                     return m_objects.AsReadOnly();
                 }
@@ -84,49 +104,105 @@ namespace urakawa
         {
             get
             {
-                lock (LOCK)
+                if (m_useLock)
+                {
+                    lock (LOCK)
+                    {
+                        return new List<T>(m_objects);
+                    }
+                }
+                else
                 {
                     return new List<T>(m_objects);
                 }
             }
         }
 
-        public IEnumerable<T> ContentsAs_YieldEnumerable
+        public IEnumerable<T> ContentsAs_Enumerable
         {
             get
             {
-                lock (LOCK)
+                if (m_useLock)
                 {
-                    foreach (T obj in m_objects)
+                    lock (LOCK)
                     {
-                        yield return obj;
+                        return m_objects;
                     }
-
-                    yield break;
+                }
+                else
+                {
+                    return m_objects;
                 }
             }
         }
-        public IEnumerable<T> ContentsAs_YieldEnumerableReversed
-        {
-            get
-            {
-                lock (LOCK)
-                {
-                    for (int i = m_objects.Count - 1; i >= 0; i--)
-                    {
-                        yield return m_objects[i];
-                    }
 
-                    yield break;
-                }
-            }
-        }
+        //public IEnumerable<T> ContentsAs_YieldEnumerable
+        //{
+        //    get
+        //    {
+        //        if (m_useLock)
+        //        {
+        //            lock (LOCK)
+        //            {
+        //                foreach (T obj in m_objects)
+        //                {
+        //                    yield return obj;
+        //                }
+
+        //                yield break;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            foreach (T obj in m_objects)
+        //            {
+        //                yield return obj;
+        //            }
+
+        //            yield break;
+        //        }
+        //    }
+        //}
+        //public IEnumerable<T> ContentsAs_YieldEnumerableReversed
+        //{
+        //    get
+        //    {
+        //        if (m_useLock)
+        //        {
+        //            lock (LOCK)
+        //            {
+        //                for (int i = m_objects.Count - 1; i >= 0; i--)
+        //                {
+        //                    yield return m_objects[i];
+        //                }
+
+        //                yield break;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            for (int i = m_objects.Count - 1; i >= 0; i--)
+        //            {
+        //                yield return m_objects[i];
+        //            }
+
+        //            yield break;
+        //        }
+        //    }
+        //}
 
         public IEnumerable ContentsAs_ArrayListReadOnlyWrapper
         {
             get
             {
-                lock (LOCK)
+                if (m_useLock)
+                {
+                    lock (LOCK)
+                    {
+                        return ArrayList.ReadOnly(m_objects);
+                    }
+                }
+                else
                 {
                     return ArrayList.ReadOnly(m_objects);
                 }
@@ -141,7 +217,14 @@ namespace urakawa
         {
             get
             {
-                lock (LOCK)
+                if (m_useLock)
+                {
+                    lock (LOCK)
+                    {
+                        return m_objects.Count;
+                    }
+                }
+                else
                 {
                     return m_objects.Count;
                 }
@@ -150,7 +233,14 @@ namespace urakawa
 
         public T Get(int index)
         {
-            lock (LOCK)
+            if (m_useLock)
+            {
+                lock (LOCK)
+                {
+                    return m_objects[index];
+                }
+            }
+            else
             {
                 return m_objects[index];
             }
@@ -158,7 +248,14 @@ namespace urakawa
 
         public int IndexOf(T obj)
         {
-            lock (LOCK)
+            if (m_useLock)
+            {
+                lock (LOCK)
+                {
+                    return m_objects.IndexOf(obj);
+                }
+            }
+            else
             {
                 return m_objects.IndexOf(obj);
             }
@@ -194,7 +291,14 @@ namespace urakawa
 
         public void Insert(int index, T obj)
         {
-            lock (LOCK)
+            if (m_useLock)
+            {
+                lock (LOCK)
+                {
+                    m_objects.Insert(index, obj);
+                }
+            }
+            else
             {
                 m_objects.Insert(index, obj);
             }
@@ -204,7 +308,16 @@ namespace urakawa
         public void Remove(T obj)
         {
             int index = -1;
-            lock (LOCK)
+
+            if (m_useLock)
+            {
+                lock (LOCK)
+                {
+                    index = m_objects.IndexOf(obj);
+                    m_objects.Remove(obj);
+                }
+            }
+            else
             {
                 index = m_objects.IndexOf(obj);
                 m_objects.Remove(obj);

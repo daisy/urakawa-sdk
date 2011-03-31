@@ -28,7 +28,7 @@ namespace urakawa.media.data
 
         private bool isNewDefaultPCMFormatOk(PCMFormatInfo newDefault)
         {
-            foreach (MediaData md in ManagedObjects.ContentsAs_YieldEnumerable)
+            foreach (MediaData md in ManagedObjects.ContentsAs_Enumerable)
             {
                 AudioMediaData amd = md as AudioMediaData;
                 if (amd != null
@@ -249,7 +249,7 @@ namespace urakawa.media.data
             get
             {
                 List<DataProvider> usedDataProviders = new List<DataProvider>();
-                foreach (MediaData md in ManagedObjects.ContentsAs_YieldEnumerable)
+                foreach (MediaData md in ManagedObjects.ContentsAs_Enumerable)
                 {
                     foreach (DataProvider prov in md.UsedDataProviders)
                     {
@@ -507,7 +507,7 @@ namespace urakawa.media.data
                 destination.WriteStartElement(XukStrings.MediaDatas, XukAble.XUK_NS);
             }
             //foreach (string uid in mMediaDataDictionary.Keys)
-            foreach (MediaData md in ManagedObjects.ContentsAs_YieldEnumerable)
+            foreach (MediaData md in ManagedObjects.ContentsAs_Enumerable)
             {
                 if (false && Presentation.Project.IsPrettyFormat())
                 {

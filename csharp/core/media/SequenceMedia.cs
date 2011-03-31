@@ -55,7 +55,7 @@ namespace urakawa.media
         /// </exception>
         public SequenceMedia()
         {
-            mSequence = new ObjectListProvider<Media>(this);
+            mSequence = new ObjectListProvider<Media>(this, true);
             Reset();
         }
 
@@ -230,7 +230,7 @@ namespace urakawa.media
         protected override Media CopyProtected()
         {
             SequenceMedia newSeqMedia = (SequenceMedia)base.CopyProtected();
-            foreach (Media item in mSequence.ContentsAs_YieldEnumerable)
+            foreach (Media item in mSequence.ContentsAs_Enumerable)
             {
                 //newSeqMedia.mSequence.Add(item.Copy());
                 newSeqMedia.InsertItem(mSequence.Count, item.Copy());
@@ -256,7 +256,7 @@ namespace urakawa.media
         protected override Media ExportProtected(Presentation destPres)
         {
             SequenceMedia newSeqMedia = (SequenceMedia)base.ExportProtected(destPres);
-            foreach (Media item in mSequence.ContentsAs_YieldEnumerable)
+            foreach (Media item in mSequence.ContentsAs_Enumerable)
             {
                 //newSeqMedia.mSequence.Add(item.Export(destPres));
                 newSeqMedia.InsertItem(mSequence.Count, item.Export(destPres));
@@ -461,7 +461,7 @@ namespace urakawa.media
                 return null;
             }
             string strSeq = "";
-            foreach (Media media in mSequence.ContentsAs_YieldEnumerable)
+            foreach (Media media in mSequence.ContentsAs_Enumerable)
             {
                 if (media is AbstractTextMedia)
                 {
@@ -487,7 +487,7 @@ namespace urakawa.media
             }
 
             Time dur = new Time();
-            foreach (Media media in mSequence.ContentsAs_YieldEnumerable)
+            foreach (Media media in mSequence.ContentsAs_Enumerable)
             {
                 if (media is ManagedAudioMedia)
                 {
@@ -511,7 +511,7 @@ namespace urakawa.media
                 return null;
             }
             List<Stream> streams = new List<Stream>();
-            foreach (Media media in mSequence.ContentsAs_YieldEnumerable)
+            foreach (Media media in mSequence.ContentsAs_Enumerable)
             {
                 if (media is ManagedAudioMedia)
                 {

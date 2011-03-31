@@ -282,7 +282,7 @@ namespace urakawa.data
             get
             {
                 //List<FileDataProvider> res = new List<FileDataProvider>();
-                foreach (DataProvider prov in ManagedObjects.ContentsAs_YieldEnumerable)
+                foreach (DataProvider prov in ManagedObjects.ContentsAs_Enumerable)
                 {
                     if (prov is FileDataProvider)
                     {
@@ -618,7 +618,7 @@ namespace urakawa.data
             {
                 destination.WriteStartElement(XukStrings.DataProviders, XukAble.XUK_NS);
             }
-            foreach (DataProvider prov in ManagedObjects.ContentsAs_YieldEnumerable)
+            foreach (DataProvider prov in ManagedObjects.ContentsAs_Enumerable)
             {
                 if (false && Presentation.Project.IsPrettyFormat())
                 {

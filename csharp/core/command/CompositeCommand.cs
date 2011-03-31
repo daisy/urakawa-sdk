@@ -17,7 +17,7 @@ namespace urakawa.command
         {
             //var list = new List<T>();
             List<T> list = new List<T>();
-            foreach (T childCmd in ChildCommands.ContentsAs_YieldEnumerable)
+            foreach (T childCmd in ChildCommands.ContentsAs_Enumerable)
             {
                 if (childCmd is T)
                 {
@@ -113,7 +113,7 @@ namespace urakawa.command
         /// </summary>
         public CompositeCommand()
         {
-            mCommands = new ObjectListProvider<Command>(this);
+            mCommands = new ObjectListProvider<Command>(this, true);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace urakawa.command
             if (mCommands.Count == 0) return; // throw new exception.CannotRedoException("Composite command is empty.");
             try
             {
-                foreach (Command command in mCommands.ContentsAs_YieldEnumerable) command.Execute();
+                foreach (Command command in mCommands.ContentsAs_Enumerable) command.Execute();
             }
             catch (exception.CannotRedoException e)
             {
@@ -221,7 +221,7 @@ namespace urakawa.command
         {
             get
             {
-                foreach (Command cmd in mCommands.ContentsAs_YieldEnumerable)
+                foreach (Command cmd in mCommands.ContentsAs_Enumerable)
                 {
                     if (!cmd.CanUnExecute)
                     {
@@ -240,7 +240,7 @@ namespace urakawa.command
         {
             get
             {
-                foreach(Command cmd in mCommands.ContentsAs_YieldEnumerable)
+                foreach(Command cmd in mCommands.ContentsAs_Enumerable)
                 {
                     if (!cmd.CanExecute)
                     {
@@ -260,7 +260,7 @@ namespace urakawa.command
             get
             {
                 //List<MediaData> res = new List<MediaData>();
-                foreach (Command cmd in mCommands.ContentsAs_YieldEnumerable)
+                foreach (Command cmd in mCommands.ContentsAs_Enumerable)
                 {
                     foreach (MediaData md in cmd.UsedMediaData)
                     {
@@ -351,7 +351,7 @@ namespace urakawa.command
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             destination.WriteStartElement(XukStrings.Commands, XukAble.XUK_NS);
-            foreach (Command cmd in mCommands.ContentsAs_YieldEnumerable)
+            foreach (Command cmd in mCommands.ContentsAs_Enumerable)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }

@@ -202,7 +202,7 @@ namespace urakawa.core
                 return null;
             }
 
-            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
+            foreach (TreeNode child in Children.ContentsAs_Enumerable)
             {
                 Media manMedia = child.GetManagedAudioMediaOrSequenceMedia();
                 if (manMedia != null)
@@ -387,7 +387,7 @@ namespace urakawa.core
                 && seqAudioMedia.ChildMedias.Count > 0 && !seqAudioMedia.AllowMultipleTypes;
             if (isSeqValid)
             {
-                foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
+                foreach (Media media in seqAudioMedia.ChildMedias.ContentsAs_Enumerable)
                 {
                     if (!(media is ManagedAudioMedia))
                     {

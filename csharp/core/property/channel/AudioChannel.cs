@@ -26,7 +26,7 @@ namespace urakawa.property.channel
             if (m is AbstractAudioMedia) return true;
             if (m is SequenceMedia)
             {
-                foreach (Media sm in ((SequenceMedia)m).ChildMedias.ContentsAs_YieldEnumerable)
+                foreach (Media sm in ((SequenceMedia)m).ChildMedias.ContentsAs_Enumerable)
                 {
                     if (!(sm is AbstractAudioMedia)) return false;
                 }

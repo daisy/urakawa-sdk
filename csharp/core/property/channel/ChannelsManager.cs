@@ -40,7 +40,7 @@ namespace urakawa.property.channel
 
         public bool HasChannel<T>() where T : Channel, new()
         {
-            foreach (Channel ch in Presentation.ChannelsManager.ManagedObjects.ContentsAs_YieldEnumerable)
+            foreach (Channel ch in Presentation.ChannelsManager.ManagedObjects.ContentsAs_Enumerable)
             {
                 if (ch is T)
                 {
@@ -67,7 +67,7 @@ namespace urakawa.property.channel
         {
             T channel = null;
 
-            foreach (Channel ch in Presentation.ChannelsManager.ManagedObjects.ContentsAs_YieldEnumerable)
+            foreach (Channel ch in Presentation.ChannelsManager.ManagedObjects.ContentsAs_Enumerable)
             {
                 if (ch is T)
                 {
@@ -104,7 +104,7 @@ namespace urakawa.property.channel
         public List<Channel> GetChannelsByName(string channelName)
         {
             List<Channel> res = new List<Channel>();
-            foreach (Channel ch in ManagedObjects.ContentsAs_YieldEnumerable)
+            foreach (Channel ch in ManagedObjects.ContentsAs_Enumerable)
             {
                 if (ch.Name == channelName) res.Add(ch);
             }
@@ -297,7 +297,7 @@ namespace urakawa.property.channel
                 {
                     destination.WriteStartElement(XukStrings.Channels);
                 }
-                foreach (Channel ch in ManagedObjects.ContentsAs_YieldEnumerable)
+                foreach (Channel ch in ManagedObjects.ContentsAs_Enumerable)
                 {
                     if (false && Presentation.Project.IsPrettyFormat())
                     {

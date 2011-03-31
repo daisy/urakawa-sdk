@@ -31,7 +31,7 @@ namespace urakawa
             {
                 m_PrettyFormat = pretty;
                 //PresentationFactory.RefreshQNames();
-                foreach (Presentation pres in mPresentations.ContentsAs_YieldEnumerable)
+                foreach (Presentation pres in mPresentations.ContentsAs_Enumerable)
                 {
                     pres.RefreshFactoryQNames();
                 }
@@ -141,7 +141,7 @@ namespace urakawa
         public Project()
         {
             mXukStrings = new XukStrings(this);
-            mPresentations = new ObjectListProvider<Presentation>(this);
+            mPresentations = new ObjectListProvider<Presentation>(this, false);
             mPresentations.ObjectAdded += this_presentationAdded;
             mPresentations.ObjectRemoved += this_presentationRemoved;
         }
@@ -384,7 +384,7 @@ namespace urakawa
             base.XukOutChildren(destination, baseUri, handler);
             PresentationFactory.XukOut(destination, baseUri, handler);
             destination.WriteStartElement(XukStrings.Presentations, XukAble.XUK_NS);
-            foreach (Presentation pres in mPresentations.ContentsAs_YieldEnumerable)
+            foreach (Presentation pres in mPresentations.ContentsAs_Enumerable)
             {
                 pres.DataProviderManager.RegenerateUids();
                 pres.ChannelsManager.RegenerateUids();

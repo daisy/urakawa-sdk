@@ -35,7 +35,7 @@ namespace urakawa.media.data.utilities
         /// <returns><c>true</c></returns>
         public bool PreVisit(TreeNode node)
         {
-            foreach (property.Property prop in node.Properties.ContentsAs_YieldEnumerable)
+            foreach (property.Property prop in node.Properties.ContentsAs_Enumerable)
             {
                 if (prop is ChannelsProperty)
                 {

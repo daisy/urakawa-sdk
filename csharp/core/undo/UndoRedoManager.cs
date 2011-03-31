@@ -257,7 +257,7 @@ namespace urakawa.undo
 
                 foreach (CompositeCommand trans in mActiveTransactions)
                 {
-                    commands.AddRange(trans.ChildCommands.ContentsAs_YieldEnumerable);
+                    commands.AddRange(trans.ChildCommands.ContentsAs_Enumerable);
                 }
 
                 foreach (Command cmd in commands)
