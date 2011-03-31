@@ -120,13 +120,16 @@ namespace urakawa.media.data.audio.codec
             // which is potentially a tiny clip on a very large file,
             // so that they use their own exclusive file (from 0 to duration)
             // and so that the old one can be deleted.
-            if (mWavClips.Count == 1)
-            {
-                WavClip theChosenOne = mWavClips[0];
-                if (theChosenOne.ClipBegin.IsEqualTo(Time.Zero)
-                    && theChosenOne.ClipEnd.IsEqualTo(new Time(theChosenOne.Duration.AsTimeSpan)))
-                    return;
-            }
+            //if (mWavClips.Count == 1)
+            //{
+            //    WavClip theChosenOne = mWavClips[0];
+            //    if (theChosenOne.ClipBegin.IsEqualTo(Time.Zero)
+            //        && theChosenOne.ClipEnd.IsEqualTo(new Time(theChosenOne.Duration.AsTimeSpan)))
+            //    {
+            //        Debug.Fail("That's probably going to create problems ?");
+            //        return;
+            //    }
+            //}
 
             WavClip newSingleClip;
 
