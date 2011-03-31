@@ -15,7 +15,7 @@ namespace urakawa
         public XukAbleManager(Presentation pres, string uidPrefix)
         {
             Presentation = pres;
-            m_managedObjects = new ObjectListProvider<T>(this);
+            m_managedObjects = new ObjectListProvider<T>(this, false);
             m_UidPrefix = uidPrefix;
         }
 
@@ -27,30 +27,54 @@ namespace urakawa
             }
         }
 
+        
+        private void RegenerateUids_NO_LOCK()
+        {
+            ulong index = 0;
+
+            List<T> localList = m_managedObjects.ContentsAs_ListCopy;
+
+            foreach (T obj in localList)
+            {
+                m_managedObjects.Remove(obj);
+            }
+
+            foreach (T obj in localList)
+            {
+                string newUid = Presentation.GetNewUid(m_UidPrefix, ref index);
+                obj.Uid = newUid;
+                m_managedObjects.Insert(m_managedObjects.Count, obj);
+            }
+        }
 
         public void RegenerateUids()
         {
-            lock (LOCK)
+            if (m_managedObjects.UseLock)
             {
-                ulong index = 0;
-
-                List<T> localList = m_managedObjects.ContentsAs_ListCopy;
-
-                foreach (T obj in localList)
+                lock (LOCK)
                 {
-                    m_managedObjects.Remove(obj);
+                    RegenerateUids_NO_LOCK();
                 }
-
-                foreach (T obj in localList)
-                {
-                    string newUid = Presentation.GetNewUid(m_UidPrefix, ref index);
-                    obj.Uid = newUid;
-                    m_managedObjects.Insert(m_managedObjects.Count, obj);
-                }
+            }
+            else
+            {
+                RegenerateUids_NO_LOCK();
             }
         }
 
 
+
+        private T GetManagedObject_NO_LOCK(string uid)
+        {
+            foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
+            {
+                if (obj.Uid == uid) return obj;
+            }
+
+            throw new exception.IsNotManagerOfException(String.Format(
+                                                                     "The manager does not manage an object with uid {0}",
+                                                                     uid));
+        }
 
         public T GetManagedObject(string uid)
         {
@@ -58,16 +82,27 @@ namespace urakawa
             {
                 throw new exception.MethodParameterIsNullException("uid cannot be null or empty");
             }
-            lock (LOCK)
+            if (m_managedObjects.UseLock)
             {
-                foreach (T obj in m_managedObjects.ContentsAs_YieldEnumerable)
+                lock (LOCK)
                 {
-                    if (obj.Uid == uid) return obj;
+                    return GetManagedObject_NO_LOCK(uid);
                 }
             }
-            throw new exception.IsNotManagerOfException(String.Format(
-                                                                     "The manager does not manage an object with uid {0}",
-                                                                     uid));
+            else
+            {
+                return GetManagedObject_NO_LOCK(uid);
+            }
+        }
+
+        private string GetUidOfManagedObject_NO_LOCK(T obj)
+        {
+            foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
+            {
+                if (objz == obj) return objz.Uid;
+            }
+
+            throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
         }
 
         public string GetUidOfManagedObject(T obj)
@@ -76,15 +111,46 @@ namespace urakawa
             {
                 throw new exception.MethodParameterIsNullException("channel parameter is null");
             }
-            lock (LOCK)
+            if (m_managedObjects.UseLock)
             {
-                foreach (T objz in m_managedObjects.ContentsAs_YieldEnumerable)
+                lock (LOCK)
                 {
-                    if (objz == obj) return objz.Uid;
+                    return GetUidOfManagedObject_NO_LOCK(obj);
                 }
             }
-            throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
+            else
+            {
+                return GetUidOfManagedObject_NO_LOCK(obj);
+            }
         }
+
+
+        public void SetUidOfManagedObject_NO_LOCK(T obj, string uid)
+        {
+            string oldUid = null;
+            foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
+            {
+                if (objz.Uid == uid && objz != obj)
+                {
+                    throw new exception.ObjectIsAlreadyManagedException(
+                        String.Format("Another managed object exists with uid {0}", uid));
+                }
+                if (objz == obj)
+                {
+                    if (objz.Uid == obj.Uid)
+                    {
+                        return;
+                    }
+                    oldUid = objz.Uid;
+                }
+            }
+            if (string.IsNullOrEmpty(oldUid))
+            {
+                throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
+            }
+            obj.Uid = uid;
+        }
+
 
         public void SetUidOfManagedObject(T obj, string uid)
         {
@@ -97,54 +163,52 @@ namespace urakawa
             {
                 throw new exception.MethodParameterIsEmptyStringException("uid parameter cannot be null or empty string");
             }
-
-            lock (LOCK)
+            if (m_managedObjects.UseLock)
             {
-                string oldUid = null;
-                foreach (T objz in m_managedObjects.ContentsAs_YieldEnumerable)
+                lock (LOCK)
                 {
-                    if (objz.Uid == uid && objz != obj)
-                    {
-                        throw new exception.ObjectIsAlreadyManagedException(
-                            String.Format("Another managed object exists with uid {0}", uid));
-                    }
-                    if (objz == obj)
-                    {
-                        if (objz.Uid == obj.Uid)
-                        {
-                            return;
-                        }
-                        oldUid = objz.Uid;
-                    }
+                    SetUidOfManagedObject_NO_LOCK(obj, uid);
                 }
-                if (string.IsNullOrEmpty(oldUid))
-                {
-                    throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
-                }
-                obj.Uid = uid;
             }
+            else
+            {
+                SetUidOfManagedObject_NO_LOCK(obj, uid);
+            }
+        }
+        
+        private void RemoveManagedObject_NO_LOCK(T obj)
+        {
+            T objectToRemove = null;
+            foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
+            {
+                if (objz == obj)
+                {
+                    objectToRemove = obj;
+                    break;
+                }
+            }
+            if (objectToRemove != null)
+            {
+                m_managedObjects.Remove(objectToRemove);
+                return;
+            }
+
+            throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
         }
 
         public virtual void RemoveManagedObject(T obj)
         {
-            lock (LOCK)
+            if (m_managedObjects.UseLock)
             {
-                T objectToRemove = null;
-                foreach (T objz in m_managedObjects.ContentsAs_YieldEnumerable)
+                lock (LOCK)
                 {
-                    if (objz == obj)
-                    {
-                        objectToRemove = obj;
-                        break;
-                    }
-                }
-                if (objectToRemove != null)
-                {
-                    m_managedObjects.Remove(objectToRemove);
-                    return;
+                    RemoveManagedObject_NO_LOCK(obj);
                 }
             }
-            throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
+            else
+            {
+                RemoveManagedObject_NO_LOCK(obj);
+            }
         }
 
         public void AddManagedObject(T obj)
@@ -153,6 +217,31 @@ namespace urakawa
         }
 
         public abstract bool CanAddManagedObject(T managedObject);
+        private void AddManagedObject_NO_LOCK(T obj, string uid)
+        {
+            foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
+            {
+                if (obj == objz)
+                {
+                    throw new exception.ObjectIsAlreadyManagedException(
+                        "The given object is already managed by the Manager");
+                }
+                if (objz.Uid == uid)
+                {
+                    throw new exception.ObjectIsAlreadyManagedException(
+                        String.Format("Another managed object exists with uid {0}", uid));
+                }
+            }
+
+            if (!CanAddManagedObject(obj))
+            {
+                throw new CannotManageObjectException("the given object cannot be added to the Manager.");
+            }
+
+            obj.Uid = uid;
+            m_managedObjects.Insert(m_managedObjects.Count, obj);
+        }
+
         private void AddManagedObject(T obj, string uid)
         {
             if (obj == null)
@@ -163,42 +252,42 @@ namespace urakawa
             {
                 throw new exception.MethodParameterIsNullException("uid parameter cannot be null or empty");
             }
-            lock (LOCK)
+
+            if (m_managedObjects.UseLock)
             {
-                foreach (T objz in m_managedObjects.ContentsAs_YieldEnumerable)
+                lock (LOCK)
                 {
-                    if (obj == objz)
-                    {
-                        throw new exception.ObjectIsAlreadyManagedException(
-                            "The given object is already managed by the Manager");
-                    }
-                    if (objz.Uid == uid)
-                    {
-                        throw new exception.ObjectIsAlreadyManagedException(
-                           String.Format("Another managed object exists with uid {0}", uid));
-                    }
+                    AddManagedObject_NO_LOCK(obj, uid);
                 }
-
-                if (!CanAddManagedObject(obj))
-                {
-                    throw new CannotManageObjectException("the given object cannot be added to the Manager.");
-                }
-
-                obj.Uid = uid;
-                m_managedObjects.Insert(m_managedObjects.Count, obj);
+            }
+            else
+            {
+                AddManagedObject_NO_LOCK(obj, uid);
             }
         }
 
 
+        public bool IsManagerOf_NO_LOCK(string uid)
+        {
+            foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
+            {
+                if (obj.Uid == uid) return true;
+            }
+            return false;
+        }
+
         public bool IsManagerOf(string uid)
         {
-            lock (LOCK)
+            if (m_managedObjects.UseLock)
             {
-                foreach (T obj in m_managedObjects.ContentsAs_YieldEnumerable)
+                lock (LOCK)
                 {
-                    if (obj.Uid == uid) return true;
+                    return IsManagerOf_NO_LOCK(uid);
                 }
-                return false;
+            }
+            else
+            {
+                return IsManagerOf_NO_LOCK(uid);
             }
         }
 
@@ -223,7 +312,7 @@ namespace urakawa
                 return false;
             }
 
-            foreach (T obj in m_managedObjects.ContentsAs_YieldEnumerable)
+            foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
             {
                 if (!otherz.IsManagerOf(obj.Uid)) return false;
                 if (!otherz.GetManagedObject(obj.Uid).ValueEquals(obj)) return false;

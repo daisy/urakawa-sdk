@@ -134,7 +134,7 @@ namespace urakawa.data
             stopWatch.Stop();
 
             // We collect references of DataProviders used by the registered ExternalFileData
-            foreach (ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_YieldEnumerable)
+            foreach (ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
             {
                 foreach (DataProvider dp in efd.UsedDataProviders)
                 {

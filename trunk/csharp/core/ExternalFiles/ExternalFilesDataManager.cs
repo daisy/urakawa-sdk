@@ -125,7 +125,7 @@ namespace urakawa.ExternalFiles
             get
             {
                 List<DataProvider> usedDataProviders = new List<DataProvider>();
-                foreach (ExternalFileData eFD in ManagedObjects.ContentsAs_YieldEnumerable)
+                foreach (ExternalFileData eFD in ManagedObjects.ContentsAs_Enumerable)
                 {
                     foreach (DataProvider prov in eFD.UsedDataProviders)
                     {
@@ -180,7 +180,7 @@ namespace urakawa.ExternalFiles
                 destination.WriteStartElement(XukStrings.ExternalFileDatas, XukAble.XUK_NS);
             }
 
-            foreach (ExternalFileData exfd in ManagedObjects.ContentsAs_YieldEnumerable)
+            foreach (ExternalFileData exfd in ManagedObjects.ContentsAs_Enumerable)
             {
                 if (false && Presentation.Project.IsPrettyFormat())
                 {

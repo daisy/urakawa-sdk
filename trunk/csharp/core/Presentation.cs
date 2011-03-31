@@ -240,7 +240,7 @@ namespace urakawa
         /// </summary>
         public Presentation()
         {
-            mMetadata = new ObjectListProvider<Metadata>(this);
+            mMetadata = new ObjectListProvider<Metadata>(this, true);
             mRootNodeInitialized = false;
             LanguageChanged += this_languageChanged;
             RootUriChanged += this_rootUriChanged;
@@ -537,7 +537,7 @@ namespace urakawa
         //protected virtual List<Media> GetMediaUsedByTreeNode(TreeNode node)
         //{
         //    List<Media> res = new List<Media>();
-        //    foreach (Property prop in node.Properties.ContentsAs_YieldEnumerable)
+        //    foreach (Property prop in node.Properties.ContentsAs_Enumerable)
         //    {
         //        if (prop is ChannelsProperty)
         //        {
@@ -745,7 +745,7 @@ namespace urakawa
         public List<Metadata> GetMetadata(string name)
         {
             List<Metadata> list = new List<Metadata>();
-            foreach (Metadata md in mMetadata.ContentsAs_YieldEnumerable)
+            foreach (Metadata md in mMetadata.ContentsAs_Enumerable)
             {
                 if (md.NameContentAttribute.Name.ToLower() == name.ToLower()) list.Add(md);
             }
@@ -1120,7 +1120,7 @@ namespace urakawa
             ExternalFilesDataManager.XukOut(destination, baseUri, handler);
 
             destination.WriteStartElement(XukStrings.Metadatas, XukAble.XUK_NS);
-            foreach (Metadata md in mMetadata.ContentsAs_YieldEnumerable)
+            foreach (Metadata md in mMetadata.ContentsAs_Enumerable)
             {
                 md.XukOut(destination, baseUri, handler);
             }

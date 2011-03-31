@@ -92,7 +92,7 @@ namespace urakawa.data
                     String.Format("The data file {0} already exists", DataFileFullPath));
             }
 
-            foreach (DataProvider dp in Presentation.DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
+            foreach (DataProvider dp in Presentation.DataProviderManager.ManagedObjects.ContentsAs_Enumerable)
             {
                 if (dp is FileDataProvider)
                 {
@@ -131,7 +131,7 @@ namespace urakawa.data
                     String.Format("The data file {0} already exists", DataFileFullPath));
             }
 
-            foreach (DataProvider dp in Presentation.DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
+            foreach (DataProvider dp in Presentation.DataProviderManager.ManagedObjects.ContentsAs_Enumerable)
             {
                 if (dp is FileDataProvider)
                 {

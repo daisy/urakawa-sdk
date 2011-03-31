@@ -156,6 +156,16 @@ namespace urakawa.media.data.audio.codec
             {
                 if (m_cachedDuration == null)
                 {
+                    Object appData = DataProvider.AppData;
+
+                    if (appData != null)
+                    {
+                        if (appData is Time)
+                        {
+                            m_cachedDuration = (Time)appData;
+                            return m_cachedDuration;
+                        }
+                    }
                     Stream raw = DataProvider.OpenInputStream();
 
                     uint dataLength;
@@ -168,6 +178,11 @@ namespace urakawa.media.data.audio.codec
                         raw.Close();
                     }
                     m_cachedDuration = new Time(m_cachedPcmFormat.ConvertBytesToTime(dataLength));
+
+                    if (appData == null)
+                    {
+                        DataProvider.AppData = m_cachedDuration;
+                    }
                 }
                 return m_cachedDuration;
             }
@@ -181,7 +196,7 @@ namespace urakawa.media.data.audio.codec
                 if (m_cachedPcmFormat == null)
                 {
                     Time timeDelta = MediaDuration; // this sets cachedPcmFormat
-                    
+
                     DebugFix.Assert(m_cachedDuration != null);
                     DebugFix.Assert(m_cachedPcmFormat != null);
                 }

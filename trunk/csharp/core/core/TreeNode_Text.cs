@@ -88,7 +88,7 @@ namespace urakawa.core
             bool atLeastOneSiblingIsSignificantTextOnly = false;
 
             //foreach (var child in proposed.Parent.Children.ContentsAs_YieldEnumerable)
-            foreach (TreeNode child in proposed.Parent.Children.ContentsAs_YieldEnumerable)
+            foreach (TreeNode child in proposed.Parent.Children.ContentsAs_Enumerable)
             {
                 if (child == proposed)
                 {
@@ -175,7 +175,7 @@ namespace urakawa.core
                 return null;
             }
 
-            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
+            foreach (TreeNode child in Children.ContentsAs_Enumerable)
             {
                 string str = child.GetTextMediaFlattened(false, acceptAltText);
                 if (!string.IsNullOrEmpty(str))

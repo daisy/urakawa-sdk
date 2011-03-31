@@ -12,7 +12,7 @@ namespace urakawa.core
             {
                 T channel = null;
 
-                foreach (Channel ch in Presentation.ChannelsManager.ManagedObjects.ContentsAs_YieldEnumerable)
+                foreach (Channel ch in Presentation.ChannelsManager.ManagedObjects.ContentsAs_Enumerable)
                 {
                     if (ch is T)
                     {

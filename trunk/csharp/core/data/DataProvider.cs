@@ -13,6 +13,13 @@ namespace urakawa.data
     /// </summary>
     public abstract class DataProvider : WithPresentation
     {
+        private Object m_AppData = null;
+        public Object AppData
+        {
+            get { return m_AppData; }
+            set { m_AppData = value; }
+        }
+
         private string mMimeType;
 
         private void Reset()

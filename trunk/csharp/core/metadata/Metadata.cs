@@ -34,8 +34,8 @@ namespace urakawa.metadata
         {
             get
             {
-                //foreach (var attr in OtherAttributes.ContentsAs_YieldEnumerable)
-                foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_YieldEnumerable)
+                //foreach (var attr in OtherAttributes.ContentsAs_Enumerable)
+                foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_Enumerable)
                 {
                     if (attr.Name == "id")
                     {
@@ -44,15 +44,15 @@ namespace urakawa.metadata
                 }
                 return false;
 
-                //return OtherAttributes.ContentsAs_YieldEnumerable.Any(attr => attr.Name == "id");
+                //return OtherAttributes.ContentsAs_Enumerable.Any(attr => attr.Name == "id");
             }
             set
             {
                 if (value)
                 {
                     bool foundID = false;
-                    //foreach (var attr in OtherAttributes.ContentsAs_YieldEnumerable)
-                    foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_YieldEnumerable)
+                    //foreach (var attr in OtherAttributes.ContentsAs_Enumerable)
+                    foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_Enumerable)
                     {
                         if (attr.Name == "id")
                         {
@@ -172,7 +172,7 @@ namespace urakawa.metadata
             {
                 if (m_OtherAttributes == null)
                 {
-                    m_OtherAttributes = new ObjectListProvider<MetadataAttribute>(this);
+                    m_OtherAttributes = new ObjectListProvider<MetadataAttribute>(this, true);
 
                     m_OtherAttributes.ObjectAdded += new EventHandler<ObjectAddedEventArgs<MetadataAttribute>>(OnOtherAttributesObjectAdded);
                     m_OtherAttributes.ObjectRemoved += new EventHandler<ObjectRemovedEventArgs<MetadataAttribute>>(OnOtherAttributesObjectRemoved);
@@ -194,7 +194,7 @@ namespace urakawa.metadata
                 {
                     destination.WriteStartElement(XukStrings.MetadataOtherAttributes, XukAble.XUK_NS);
                 }
-                foreach (MetadataAttribute a in OtherAttributes.ContentsAs_YieldEnumerable)
+                foreach (MetadataAttribute a in OtherAttributes.ContentsAs_Enumerable)
                 {
                     a.XukOut(destination, baseUri, handler);
                 }
@@ -303,10 +303,10 @@ namespace urakawa.metadata
                 return false;
             }
 
-            foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_YieldEnumerable)
+            foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_Enumerable)
             {
                 bool oneIsEqual = false;
-                foreach (MetadataAttribute attrOther in otherz.OtherAttributes.ContentsAs_YieldEnumerable)
+                foreach (MetadataAttribute attrOther in otherz.OtherAttributes.ContentsAs_Enumerable)
                 {
                     if (attrOther.ValueEquals(attr))
                     {

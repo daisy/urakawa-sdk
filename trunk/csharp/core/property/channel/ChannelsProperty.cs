@@ -166,7 +166,7 @@ namespace urakawa.property.channel
             get
             {
                 //List<Channel> res = new List<Channel>();
-                foreach (Channel ch in Presentation.ChannelsManager.ManagedObjects.ContentsAs_YieldEnumerable)
+                foreach (Channel ch in Presentation.ChannelsManager.ManagedObjects.ContentsAs_Enumerable)
                 {
                     if (GetMedia(ch) != null)
                     {
@@ -244,7 +244,7 @@ namespace urakawa.property.channel
             foreach (Channel ch in UsedChannels)
             {
                 Channel exportDestCh = null;
-                foreach (Channel dCh in destPres.ChannelsManager.ManagedObjects.ContentsAs_YieldEnumerable)
+                foreach (Channel dCh in destPres.ChannelsManager.ManagedObjects.ContentsAs_Enumerable)
                 {
                     if (ch.IsEquivalentTo(dCh))
                     {

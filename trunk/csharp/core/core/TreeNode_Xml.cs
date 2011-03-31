@@ -51,7 +51,7 @@ namespace urakawa.core
                 return null;
             }
 
-            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
+            foreach (TreeNode child in Children.ContentsAs_Enumerable)
             {
                 QualifiedName qName = child.GetXmlElementQName();
                 if (qName != null && qName.LocalName == localName)

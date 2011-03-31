@@ -69,7 +69,7 @@ namespace urakawa.core
         {
             if (this == node1) return node1;
             if (this == node2) return node2;
-            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
+            foreach (TreeNode child in Children.ContentsAs_Enumerable)
             {
                 TreeNode met = child.MeetFirst(node1, node2);
                 if (met != null)
@@ -240,11 +240,11 @@ namespace urakawa.core
         /// </summary>
         public TreeNode()
         {
-            mChildren = new ObjectListProvider<TreeNode>(this);
+            mChildren = new ObjectListProvider<TreeNode>(this, false);
             mChildren.ObjectAdded += this_childAdded;
             mChildren.ObjectRemoved += this_childRemoved;
 
-            mProperties = new ObjectListProvider<Property>(this);
+            mProperties = new ObjectListProvider<Property>(this, false);
             mProperties.ObjectAdded += this_propertyAdded;
             mProperties.ObjectRemoved += this_propertyRemoved;
         }
@@ -459,7 +459,7 @@ namespace urakawa.core
             base.XukOutChildren(destination, baseUri, handler);
 
             destination.WriteStartElement(XukStrings.Properties, XukAble.XUK_NS);
-            foreach (Property prop in Properties.ContentsAs_YieldEnumerable)
+            foreach (Property prop in Properties.ContentsAs_Enumerable)
             {
                 prop.XukOut(destination, baseUri, handler);
             }
@@ -508,7 +508,7 @@ namespace urakawa.core
             get
             {
                 List<Type> res = new List<Type>();
-                foreach (Property p in Properties.ContentsAs_YieldEnumerable)
+                foreach (Property p in Properties.ContentsAs_Enumerable)
                 {
                     if (!res.Contains(p.GetType())) res.Add(p.GetType());
                 }
@@ -524,7 +524,7 @@ namespace urakawa.core
         public List<Property> GetProperties(Type t)
         {
             List<Property> res = new List<Property>();
-            foreach (Property p in Properties.ContentsAs_YieldEnumerable)
+            foreach (Property p in Properties.ContentsAs_Enumerable)
             {
                 if (p.GetType() == t) res.Add(p);
             }
@@ -582,7 +582,7 @@ namespace urakawa.core
         /// <returns>A <see cref="bool"/> indicating if this has any properties</returns>
         public bool HasProperties(Type t)
         {
-            foreach (Property p in Properties.ContentsAs_YieldEnumerable)
+            foreach (Property p in Properties.ContentsAs_Enumerable)
             {
                 if (p.GetType() == t) return true;
             }
@@ -667,7 +667,7 @@ namespace urakawa.core
         /// <param name="destinationNode">The destination <see cref="TreeNode"/></param>
         protected void CopyProperties(TreeNode destinationNode)
         {
-            foreach (Property prop in Properties.ContentsAs_YieldEnumerable)
+            foreach (Property prop in Properties.ContentsAs_Enumerable)
             {
                 destinationNode.AddProperty(prop.Copy());
             }
@@ -742,11 +742,11 @@ namespace urakawa.core
                     XukLocalName, XukNamespaceUri);
                 throw new exception.FactoryCannotCreateTypeException(msg);
             }
-            foreach (Property prop in Properties.ContentsAs_YieldEnumerable)
+            foreach (Property prop in Properties.ContentsAs_Enumerable)
             {
                 exportedNode.AddProperty(prop.Export(destPres));
             }
-            foreach (TreeNode child in Children.ContentsAs_YieldEnumerable)
+            foreach (TreeNode child in Children.ContentsAs_Enumerable)
             {
                 exportedNode.AppendChild(child.Export(destPres));
             }
