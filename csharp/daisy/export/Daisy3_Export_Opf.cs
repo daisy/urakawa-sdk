@@ -220,7 +220,7 @@ namespace urakawa.daisy.export
             AddMetadataAsInnerText(opfDocument, dc_metadataNode, "dc:format", "ANSI/NISO Z39.86-2005");
 
 
-            foreach (Metadata m in m_Presentation.Metadatas.ContentsAs_YieldEnumerable)
+            foreach (Metadata m in m_Presentation.Metadatas.ContentsAs_Enumerable)
             {
                 string lowerName = m.NameContentAttribute.Name.ToLower();
                 if (mdId == m
@@ -236,7 +236,7 @@ namespace urakawa.daisy.export
                 {
                     metadataNodeCreated = AddMetadataAsInnerText(opfDocument, dc_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
                     // add other metadata attributes if any
-                    foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_YieldEnumerable)
+                    foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_Enumerable)
                     {
                         if (ma.Name == "id") continue;
                         XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metadataNodeCreated, ma.Name, ma.Value);
@@ -252,7 +252,7 @@ namespace urakawa.daisy.export
                 {
                     metadataNodeCreated = AddMetadataAsAttributes(opfDocument, x_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
                     // add other metadata attributes if any
-                    foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_YieldEnumerable)
+                    foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_Enumerable)
                     {
                         if (ma.Name == "id") continue;
                         XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metadataNodeCreated, ma.Name, ma.Value);

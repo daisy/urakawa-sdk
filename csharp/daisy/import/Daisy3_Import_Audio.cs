@@ -186,7 +186,7 @@ namespace urakawa.daisy.import
                         AudioMediaData mediaData = textTreeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
                         managedAudioMedia.AudioMediaData = mediaData;
 
-                        foreach (Media seqChild in seqManAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
+                        foreach (Media seqChild in seqManAudioMedia.ChildMedias.ContentsAs_Enumerable)
                         {
                             ManagedAudioMedia seqManMedia = (ManagedAudioMedia)seqChild;
 
