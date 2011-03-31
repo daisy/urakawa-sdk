@@ -272,8 +272,16 @@ namespace AudioLib
             }
         }
 
+        private Control m_OutputDeviceControl = null;
+        public Control OutputDeviceControl
+        {
+            get { return m_OutputDeviceControl; }
+        }
+
         private void SetOutputDevice(Control handle, OutputDevice device)
         {
+            m_OutputDeviceControl = handle;
+
             if (handle != null)
             {
 #if USE_SLIMDX
@@ -683,10 +691,12 @@ namespace AudioLib
             }
 
             ThreadStart threadDelegate = delegate()
-            {
+                                             {
+
+                                                 bool endOfAudioStream = false;
                 try
                 {
-                    circularBufferRefreshThreadMethod();
+                    endOfAudioStream = circularBufferRefreshThreadMethod();
                 }
                 catch (ThreadAbortException ex)
                 {
@@ -699,13 +709,14 @@ namespace AudioLib
                 }
                 finally
                 {
-
                     if (mPreviewTimer.Enabled)
                     {
-                        m_ResumeStartPosition = CurrentBytePosition;
+                        if (endOfAudioStream || CurrentState == State.Playing)
+                        {
+                            m_ResumeStartPosition = CurrentBytePosition;
 
-                        CurrentState = State.Paused; // before stopPlayback(), doesn't kill the stream provider
-                        
+                            CurrentState = State.Paused; // before stopPlayback(), doesn't kill the stream provider
+                        }
                         lock (LOCK)
                         {
                             m_CircularBufferRefreshThread = null;
@@ -715,7 +726,11 @@ namespace AudioLib
                     }
                     else
                     {
-                        if (CurrentState != State.Paused) CurrentState = State.Stopped;
+                        if (endOfAudioStream || CurrentState == State.Playing)
+                        {
+                            CurrentState = State.Stopped;
+                        }
+                        //if (CurrentState != State.Paused) CurrentState = State.Stopped;
 
                         lock (LOCK)
                         {
@@ -724,6 +739,13 @@ namespace AudioLib
 
                         StopForwardRewind();
                         stopPlayback();
+
+                        if (endOfAudioStream)
+                        {
+                            AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
+                            if (delFinished != null && !mPreviewTimer.Enabled)
+                                delFinished(this, new AudioPlaybackFinishEventArgs());
+                        }
                     }
                 }
 
@@ -760,12 +782,12 @@ namespace AudioLib
         private int m_PreviousCircularBufferPlayPosition;
         private int m_TotalBytesPlayed;
 
-        private void circularBufferRefreshThreadMethod()
+        private bool circularBufferRefreshThreadMethod()
         {
             //m_CircularBufferRefreshThreadIsAlive = true;
 
             int previousCircularBufferFrequence = m_CircularBuffer.Frequency;
-
+            bool endOfAudioStream = false;
             while (true)
             {
                 Thread.Sleep(REFRESH_INTERVAL_MS);
@@ -792,7 +814,7 @@ namespace AudioLib
                     || !m_CircularBuffer.Status.Playing
                     || !m_CircularBuffer.Status.Looping)
                 {
-                    return;
+                    return endOfAudioStream;
                 }
 #endif
                 if (m_PredictedByteIncrement < 0
@@ -1024,12 +1046,13 @@ namespace AudioLib
                 }
             }
 
-            CurrentState = State.Stopped;
+            endOfAudioStream = true;
+            return endOfAudioStream;
 
-
-            AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
-            if (delFinished != null && !mPreviewTimer.Enabled)
-                delFinished(this, new AudioPlaybackFinishEventArgs());
+            //CurrentState = State.Stopped;
+            //AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
+            //if (delFinished != null && !mPreviewTimer.Enabled)
+            //    delFinished(this, new AudioPlaybackFinishEventArgs());
 
             //if (!m_AllowBackToBackPlayback)
             //{
