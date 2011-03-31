@@ -25,7 +25,7 @@ namespace AudioLib
     //#endif
     public class AudioPlayer
     {
-        
+
         private readonly bool m_KeepStreamAlive;
         public AudioPlayer(bool keepStreamAlive)
         {
@@ -38,7 +38,7 @@ namespace AudioLib
             mPreviewTimer.Interval = 50;
             mPreviewTimer.Tick += new EventHandler(PreviewTimer_Tick);
             //mPreviewTimer.Elapsed += new System.Timers.ElapsedEventHandler(PreviewTimer_Tick);
-            
+
             //mPreviewTimer.AutoReset = true;
         }
 
@@ -52,10 +52,7 @@ namespace AudioLib
         public enum State
         {
             NotReady, Stopped,
-            Playing
-#if PAUSE_FEATURE_ENABLED
-, Paused 
-#endif //PAUSE_FEATURE_ENABLED
+            Playing, Paused
         };
 
         private State m_State;
@@ -78,10 +75,10 @@ namespace AudioLib
 
                 StateChangedHandler del = StateChanged;
                 if (del != null && !mPreviewTimer.Enabled)
-                    del (this, new StateChangedEventArgs(oldState));
+                    del(this, new StateChangedEventArgs(oldState));
                 //var del = StateChanged;
                 //if (del != null)
-                    //del(this, new StateChangedEventArgs(oldState));
+                //del(this, new StateChangedEventArgs(oldState));
             }
         }
 
@@ -131,7 +128,7 @@ namespace AudioLib
         //            m_MonitoringTimer.Tick -= new EventHandler(m_MonitoringTimer_Tick);
         //            m_MonitoringTimer.Dispose();
         //            m_MonitoringTimer = null;
-                    
+
         //        }
         //        m_AllowBackToBackPlayback = value;
         //    }
@@ -401,7 +398,7 @@ namespace AudioLib
                 }
                 else if (mFwdRwdRate < 0)
                 {
-                    if (startPosition == 0) startPosition  = m_CurrentAudioStream.Length;
+                    if (startPosition == 0) startPosition = m_CurrentAudioStream.Length;
                     Rewind(startPosition);
                     Console.WriteLine("Rewind ");
                 }
@@ -424,7 +421,7 @@ namespace AudioLib
         //    Play(currentAudioStreamProvider, duration, pcmInfo, pcmInfo.ConvertTimeToBytes(from), pcmInfo.ConvertTimeToBytes(to));
         //}
 
-#if PAUSE_FEATURE_ENABLED
+
         private long m_ResumeStartPosition;
 
         public void Pause(long bytePos)
@@ -481,7 +478,6 @@ namespace AudioLib
 
             startPlayback(m_ResumeStartPosition, m_PlaybackEndPosition);
         }
-#endif //PAUSE_FEATURE_ENABLED
 
         public void Stop()
         {
@@ -525,12 +521,10 @@ namespace AudioLib
                 return 0;
             }
 
-#if PAUSE_FEATURE_ENABLED
             if (CurrentState == State.Paused)
             {
                 return m_ResumeStartPosition;
             }   
-#endif //PAUSE_FEATURE_ENABLED
 
             if (CurrentState == State.Stopped)
             {
@@ -694,73 +688,73 @@ namespace AudioLib
                                              {
 
                                                  bool endOfAudioStream = false;
-                try
-                {
-                    endOfAudioStream = circularBufferRefreshThreadMethod();
-                }
-                catch (ThreadAbortException ex)
-                {
-                    //
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                }
-                finally
-                {
-                    if (mPreviewTimer.Enabled)
-                    {
-                        if (endOfAudioStream || CurrentState == State.Playing)
-                        {
-                            m_ResumeStartPosition = CurrentBytePosition;
+                                                 try
+                                                 {
+                                                     endOfAudioStream = circularBufferRefreshThreadMethod();
+                                                 }
+                                                 catch (ThreadAbortException ex)
+                                                 {
+                                                     //
+                                                 }
+                                                 catch (Exception ex)
+                                                 {
+                                                     Console.WriteLine(ex.Message);
+                                                     Console.WriteLine(ex.StackTrace);
+                                                 }
+                                                 finally
+                                                 {
+                                                     if (mPreviewTimer.Enabled)
+                                                     {
+                                                         if (endOfAudioStream || CurrentState == State.Playing)
+                                                         {
+                                                             m_ResumeStartPosition = CurrentBytePosition;
 
-                            CurrentState = State.Paused; // before stopPlayback(), doesn't kill the stream provider
-                        }
-                        lock (LOCK)
-                        {
-                            m_CircularBufferRefreshThread = null;
-                        }
+                                                             CurrentState = State.Paused; // before stopPlayback(), doesn't kill the stream provider
+                                                         }
+                                                         lock (LOCK)
+                                                         {
+                                                             m_CircularBufferRefreshThread = null;
+                                                         }
 
-                        stopPlayback();
-                    }
-                    else
-                    {
-                        if (endOfAudioStream || CurrentState == State.Playing)
-                        {
-                            CurrentState = State.Stopped;
-                        }
-                        //if (CurrentState != State.Paused) CurrentState = State.Stopped;
+                                                         stopPlayback();
+                                                     }
+                                                     else
+                                                     {
+                                                         if (endOfAudioStream || CurrentState == State.Playing)
+                                                         {
+                                                             CurrentState = State.Stopped;
+                                                         }
+                                                         //if (CurrentState != State.Paused) CurrentState = State.Stopped;
 
-                        lock (LOCK)
-                        {
-                            m_CircularBufferRefreshThread = null;
-                        }
+                                                         lock (LOCK)
+                                                         {
+                                                             m_CircularBufferRefreshThread = null;
+                                                         }
 
-                        StopForwardRewind();
-                        stopPlayback();
+                                                         StopForwardRewind();
+                                                         stopPlayback();
 
-                        if (endOfAudioStream)
-                        {
-                            AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
-                            if (delFinished != null && !mPreviewTimer.Enabled)
-                                delFinished(this, new AudioPlaybackFinishEventArgs());
-                        }
-                    }
-                }
+                                                         if (endOfAudioStream)
+                                                         {
+                                                             AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
+                                                             if (delFinished != null && !mPreviewTimer.Enabled)
+                                                                 delFinished(this, new AudioPlaybackFinishEventArgs());
+                                                         }
+                                                     }
+                                                 }
 
-                //Console.WriteLine("Player refresh thread exiting....");
+                                                 //Console.WriteLine("Player refresh thread exiting....");
 
-                //CurrentState = State.Stopped;
+                                                 //CurrentState = State.Stopped;
 
-                //lock (LOCK)
-                //{
-                //    //m_CircularBufferRefreshThreadIsAlive = false;
-                //    m_CircularBufferRefreshThread = null;
-                //}
+                                                 //lock (LOCK)
+                                                 //{
+                                                 //    //m_CircularBufferRefreshThreadIsAlive = false;
+                                                 //    m_CircularBufferRefreshThread = null;
+                                                 //}
 
-                //Console.WriteLine("Player refresh thread exit.");
-            };
+                                                 //Console.WriteLine("Player refresh thread exit.");
+                                             };
             DebugFix.Assert(m_CircularBufferRefreshThread == null);
             lock (LOCK)
             {
@@ -925,26 +919,26 @@ namespace AudioLib
                     Array array = m_CircularBuffer.Read(circularBufferPlayPosition, typeof(byte), LockFlag.None, m_PcmDataBuffer.Length);
                     Array.Copy(array, m_PcmDataBuffer, m_PcmDataBuffer.Length);
                     m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                    del (this, m_PcmDataBufferAvailableEventArgs);
+                    del(this, m_PcmDataBufferAvailableEventArgs);
 #endif
                 }
                 //var del_ = PcmDataBufferAvailable;
                 //if (del_ != null
-                    //&& m_PcmDataBuffer.Length <= circularBufferBytesAvailableForPlaying)
+                //&& m_PcmDataBuffer.Length <= circularBufferBytesAvailableForPlaying)
                 //{
-//#if USE_SLIMDX
-                    //if (SlimDX_IntermediaryTransferBuffer != null)
-                    //{
-                        //Array.Copy(SlimDX_IntermediaryTransferBuffer, m_PcmDataBuffer, Math.Min(m_PcmDataBuffer.Length, SlimDX_IntermediaryTransferBuffer.Length));
-                        //m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                        //PcmDataBufferAvailable(this, m_PcmDataBufferAvailableEventArgs);
-                    //}
-//#else
-                    //Array array = m_CircularBuffer.Read(circularBufferPlayPosition, typeof(byte), LockFlag.None, m_PcmDataBuffer.Length);
-                    //Array.Copy(array, m_PcmDataBuffer, m_PcmDataBuffer.Length);
-                    //m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                    //del_(this, m_PcmDataBufferAvailableEventArgs);
-//#endif
+                //#if USE_SLIMDX
+                //if (SlimDX_IntermediaryTransferBuffer != null)
+                //{
+                //Array.Copy(SlimDX_IntermediaryTransferBuffer, m_PcmDataBuffer, Math.Min(m_PcmDataBuffer.Length, SlimDX_IntermediaryTransferBuffer.Length));
+                //m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
+                //PcmDataBufferAvailable(this, m_PcmDataBufferAvailableEventArgs);
+                //}
+                //#else
+                //Array array = m_CircularBuffer.Read(circularBufferPlayPosition, typeof(byte), LockFlag.None, m_PcmDataBuffer.Length);
+                //Array.Copy(array, m_PcmDataBuffer, m_PcmDataBuffer.Length);
+                //m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
+                //del_(this, m_PcmDataBufferAvailableEventArgs);
+                //#endif
                 //}
 
                 if (circularBufferBytesAvailableForWriting <= 0)
@@ -1077,14 +1071,14 @@ namespace AudioLib
         //        AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
         //        if (delFinished != null && mEventsEnabled)
         //            delFinished(this, new AudioPlaybackFinishEventArgs());
-                
+
         //    }
         //}
 
 
         private void stopPlayback()
         {
-            
+
             //PcmDataBufferAvailableHandler del = PcmDataBufferAvailable;
             //if (del != null)
             //{
@@ -1143,12 +1137,12 @@ namespace AudioLib
                     break;
                 }
             }
-#if PAUSE_FEATURE_ENABLED
+
             if (CurrentState == State.Paused)
             {
                 return;
             }
-#endif
+
             if (!m_KeepStreamAlive)
             {
                 EnsurePlaybackStreamIsDead();
@@ -1156,7 +1150,7 @@ namespace AudioLib
         }
 
         // timer for playing chunks at interval during Forward/Rewind 
-        System.Windows.Forms.Timer mPreviewTimer = new System.Windows.Forms.Timer () ;
+        System.Windows.Forms.Timer mPreviewTimer = new System.Windows.Forms.Timer();
         //System.Timers.Timer mPreviewTimer = new System.Timers.Timer();
 
         private int mFwdRwdRate; // holds skip time multiplier for forward / rewind mode , value is 0 for normal playback,  positive  for FastForward and negetive  for Rewind
@@ -1182,17 +1176,17 @@ namespace AudioLib
         {
             if (rate != mFwdRwdRate)
             {
-                if (CurrentState == State.Playing )
+                if (CurrentState == State.Playing)
                 {
-//            if (mFwdRwdRate != 0 || mPreviewTimer.Enabled)
-//            {
-//                //mPreviewTimer.Enabled = false;
-//                mPreviewTimer.Stop();
-//                //m_FwdRwdRate = 0 ;
-//                m_lChunkStartPosition = 0;
-////                mIsFwdRwd = false;
-//                mEventsEnabled = true;
-//            }
+                    //            if (mFwdRwdRate != 0 || mPreviewTimer.Enabled)
+                    //            {
+                    //                //mPreviewTimer.Enabled = false;
+                    //                mPreviewTimer.Stop();
+                    //                //m_FwdRwdRate = 0 ;
+                    //                m_lChunkStartPosition = 0;
+                    ////                mIsFwdRwd = false;
+                    //                mEventsEnabled = true;
+                    //            }
 
                     if (rate == 0)
                     {
@@ -1248,11 +1242,11 @@ namespace AudioLib
             // let's play backward!
             if (mFwdRwdRate != 0)
             {
-                
+
                 m_lChunkStartPosition = lStartPosition;
                 //mEventsEnabled = false;
-                
-//                mIsFwdRwd = true;
+
+                //                mIsFwdRwd = true;
                 mPreviewTimer.Interval = 50;
                 mPreviewTimer.Start();
 
@@ -1271,11 +1265,11 @@ namespace AudioLib
             // let's play forward!
             if (mFwdRwdRate != 0)
             {
-                
+
                 m_lChunkStartPosition = lStartPosition;
                 //mEventsEnabled = false;
-                
-//                mIsFwdRwd = true;
+
+                //                mIsFwdRwd = true;
                 mPreviewTimer.Interval = 50;
                 mPreviewTimer.Start();
             }
@@ -1292,17 +1286,17 @@ namespace AudioLib
 
             double StepInMs = Math.Abs(4000 * mFwdRwdRate);
             //long lStepInBytes = CalculationFunctions.ConvertTimeToByte(StepInMs, (int)mCurrentAudio.getPCMFormat().getSampleRate(), mCurrentAudio.getPCMFormat().getBlockAlign());
-            long lStepInBytes = m_CurrentAudioPCMFormat.ConvertTimeToBytes(Convert.ToInt64 (StepInMs* AudioLibPCMFormat.TIME_UNIT  ));
+            long lStepInBytes = m_CurrentAudioPCMFormat.ConvertTimeToBytes(Convert.ToInt64(StepInMs * AudioLibPCMFormat.TIME_UNIT));
             int PlayChunkLength = 1200;
             //long lPlayChunkLength = CalculationFunctions.ConvertTimeToByte(PlayChunkLength, (int)mCurrentAudio.getPCMFormat().getSampleRate(), mCurrentAudio.getPCMFormat().getBlockAlign());
-            long lPlayChunkLength = m_CurrentAudioPCMFormat.ConvertTimeToBytes (Convert.ToInt64( PlayChunkLength * AudioLibPCMFormat.TIME_UNIT  ));
+            long lPlayChunkLength = m_CurrentAudioPCMFormat.ConvertTimeToBytes(Convert.ToInt64(PlayChunkLength * AudioLibPCMFormat.TIME_UNIT));
             if (m_CurrentAudioDataLength < lPlayChunkLength)
             {
                 lPlayChunkLength = m_CurrentAudioDataLength;
-                PlayChunkLength = Convert.ToInt32 (m_CurrentAudioPCMFormat.ConvertBytesToTime(lPlayChunkLength) / AudioLibPCMFormat.TIME_UNIT);
-                
+                PlayChunkLength = Convert.ToInt32(m_CurrentAudioPCMFormat.ConvertBytesToTime(lPlayChunkLength) / AudioLibPCMFormat.TIME_UNIT);
+
             }
-            
+
             Console.WriteLine("play chunk length " + PlayChunkLength + " : " + lPlayChunkLength);
             //lPlayChunkLength = m_CurrentAudioPCMFormat.AdjustByteToBlockAlignFrameSize (PlayChunkLength) ;
             mPreviewTimer.Interval = PlayChunkLength + 50;
@@ -1314,15 +1308,15 @@ namespace AudioLib
             { //2
                 Console.WriteLine("rate is above 0");
                 //if ((mCurrentAudio.getPCMLength() - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
-                Console.WriteLine("m_CurrentAudioStream.Length " + m_CurrentAudioStream.Length + ", lStepInBytes :" + lStepInBytes + ",  m_lChunkStartPosition :" + m_lChunkStartPosition + ", lPlayChunkLength :" + lPlayChunkLength );
-                
+                Console.WriteLine("m_CurrentAudioStream.Length " + m_CurrentAudioStream.Length + ", lStepInBytes :" + lStepInBytes + ",  m_lChunkStartPosition :" + m_lChunkStartPosition + ", lPlayChunkLength :" + lPlayChunkLength);
+
                 if ((m_CurrentAudioDataLength - (m_lChunkStartPosition)) >= lPlayChunkLength)
                 { //3
                     if (m_lChunkStartPosition > 0)
                     {
                         Console.WriteLine("m_lChunkStartPosition  , step in bytes : " + m_lChunkStartPosition + " : " + lStepInBytes);
                         m_lChunkStartPosition += lStepInBytes;
-                        
+
                     }
                     else
                         //m_lChunkStartPosition = mFrameSize;
@@ -1339,10 +1333,10 @@ namespace AudioLib
                         //m_State = State.Paused;
                     }
                     if (CurrentState != State.Playing) startPlayback(PlayStartPos, PlayEndPos);
-                    
+
                     //mEventsEnabled = false;
                     Console.WriteLine(CurrentState);
-                    if (m_lChunkStartPosition > m_CurrentAudioStream.Length )
+                    if (m_lChunkStartPosition > m_CurrentAudioStream.Length)
                         m_lChunkStartPosition = m_CurrentAudioStream.Length;
                 } //-3
                 else
@@ -1351,8 +1345,8 @@ namespace AudioLib
                     AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
                     if (!mPreviewTimer.Enabled
                         && delFinished != null)
-                    {   
-                            delFinished(this, new AudioPlaybackFinishEventArgs());
+                    {
+                        delFinished(this, new AudioPlaybackFinishEventArgs());
                         //EndOfAudioAsset(this, new Events.Audio.Player.EndOfAudioAssetEventArgs());
                     }
 
@@ -1406,7 +1400,7 @@ namespace AudioLib
                 mPreviewTimer.Stop();
                 //m_FwdRwdRate = 0 ;
                 m_lChunkStartPosition = 0;
-//                mIsFwdRwd = false;
+                //                mIsFwdRwd = false;
                 //mEventsEnabled = true;
             }
         }
