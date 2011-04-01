@@ -27,7 +27,7 @@ namespace urakawa
             }
         }
 
-        
+
         private void RegenerateUids_NO_LOCK()
         {
             ulong index = 0;
@@ -105,24 +105,24 @@ namespace urakawa
             throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
         }
 
-        public string GetUidOfManagedObject(T obj)
-        {
-            if (obj == null)
-            {
-                throw new exception.MethodParameterIsNullException("channel parameter is null");
-            }
-            if (m_managedObjects.UseLock)
-            {
-                lock (LOCK)
-                {
-                    return GetUidOfManagedObject_NO_LOCK(obj);
-                }
-            }
-            else
-            {
-                return GetUidOfManagedObject_NO_LOCK(obj);
-            }
-        }
+        //public string GetUidOfManagedObject(T obj)
+        //{
+        //    if (obj == null)
+        //    {
+        //        throw new exception.MethodParameterIsNullException("channel parameter is null");
+        //    }
+        //    if (m_managedObjects.UseLock)
+        //    {
+        //        lock (LOCK)
+        //        {
+        //            return GetUidOfManagedObject_NO_LOCK(obj);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return GetUidOfManagedObject_NO_LOCK(obj);
+        //    }
+        //}
 
 
         public void SetUidOfManagedObject_NO_LOCK(T obj, string uid)
@@ -175,7 +175,7 @@ namespace urakawa
                 SetUidOfManagedObject_NO_LOCK(obj, uid);
             }
         }
-        
+
         private void RemoveManagedObject_NO_LOCK(T obj)
         {
             T objectToRemove = null;
@@ -217,19 +217,22 @@ namespace urakawa
         }
 
         public abstract bool CanAddManagedObject(T managedObject);
-        private void AddManagedObject_NO_LOCK(T obj, string uid)
+        private void AddManagedObject_NO_LOCK(T obj, string uid, bool safetyChecks)
         {
-            foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
+            if (safetyChecks)
             {
-                if (obj == objz)
+                foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
                 {
-                    throw new exception.ObjectIsAlreadyManagedException(
-                        "The given object is already managed by the Manager");
-                }
-                if (objz.Uid == uid)
-                {
-                    throw new exception.ObjectIsAlreadyManagedException(
-                        String.Format("Another managed object exists with uid {0}", uid));
+                    if (obj == objz)
+                    {
+                        throw new exception.ObjectIsAlreadyManagedException(
+                            "The given object is already managed by the Manager");
+                    }
+                    if (objz.Uid == uid)
+                    {
+                        throw new exception.ObjectIsAlreadyManagedException(
+                            String.Format("Another managed object exists with uid {0}", uid));
+                    }
                 }
             }
 
@@ -242,7 +245,7 @@ namespace urakawa
             m_managedObjects.Insert(m_managedObjects.Count, obj);
         }
 
-        private void AddManagedObject(T obj, string uid)
+        public void AddManagedObject(T obj, string uid)
         {
             if (obj == null)
             {
@@ -257,15 +260,37 @@ namespace urakawa
             {
                 lock (LOCK)
                 {
-                    AddManagedObject_NO_LOCK(obj, uid);
+                    AddManagedObject_NO_LOCK(obj, uid, true);
                 }
             }
             else
             {
-                AddManagedObject_NO_LOCK(obj, uid);
+                AddManagedObject_NO_LOCK(obj, uid, true);
             }
         }
+        public void AddManagedObject_NoSafetyChecks(T obj, string uid)
+        {
+            if (obj == null)
+            {
+                throw new exception.MethodParameterIsNullException("parameter is null");
+            }
+            if (string.IsNullOrEmpty(uid))
+            {
+                throw new exception.MethodParameterIsNullException("uid parameter cannot be null or empty");
+            }
 
+            if (m_managedObjects.UseLock)
+            {
+                lock (LOCK)
+                {
+                    AddManagedObject_NO_LOCK(obj, uid, false);
+                }
+            }
+            else
+            {
+                AddManagedObject_NO_LOCK(obj, uid, false);
+            }
+        }
 
         public bool IsManagerOf_NO_LOCK(string uid)
         {

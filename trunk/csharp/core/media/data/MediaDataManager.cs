@@ -219,12 +219,12 @@ namespace urakawa.media.data
         /// </exception>
         public MediaData CopyMediaData(string uid)
         {
-            if (!IsManagerOf(uid))
-            {
-                throw new exception.IsNotManagerOfException(String.Format(
-                                                                "The media data manager does not manage a media data with UID {0}",
-                                                                uid));
-            }
+            //if (!IsManagerOf(uid))
+            //{
+            //    throw new exception.IsNotManagerOfException(String.Format(
+            //                                                    "The media data manager does not manage a media data with UID {0}",
+            //                                                    uid));
+            //}
             MediaData data = GetManagedObject(uid);
             return CopyMediaData(data);
         }
@@ -390,30 +390,33 @@ namespace urakawa.media.data
             if (source.NodeType == XmlNodeType.Element)
             {
                 MediaData data = null;
-                data = Presentation.MediaDataFactory.Create(source.LocalName, source.NamespaceURI);
+                data = Presentation.MediaDataFactory.Create_SkipMediaDataManagerInitialization(source.LocalName, source.NamespaceURI);
                 if (data != null)
                 {
                     data.XukIn(source, handler);
-
-                    //string uid = source.GetAttribute(XukStrings.Uid);
 
                     if (string.IsNullOrEmpty(data.Uid))
                     {
                         throw new exception.XukException(
                             "uid attribute is missing from mMediaDataItem attribute");
                     }
-                    if (IsManagerOf(data.Uid))
-                    {
-                        if (GetManagedObject(data.Uid) != data)
-                        {
-                            throw new exception.XukException(
-                                String.Format("Another MediaData exists in the manager with uid {0}", data.Uid));
-                        }
-                    }
-                    else
-                    {
-                        SetUidOfManagedObject(data, data.Uid);
-                    }
+
+                    Presentation.MediaDataManager.AddManagedObject_NoSafetyChecks(data, data.Uid);
+                            
+                    //string uid = source.GetAttribute(XukStrings.Uid);
+
+                    //if (IsManagerOf(data.Uid))
+                    //{
+                    //    if (GetManagedObject(data.Uid) != data)
+                    //    {
+                    //        throw new exception.XukException(
+                    //            String.Format("Another MediaData exists in the manager with uid {0}", data.Uid));
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    SetUidOfManagedObject(data, data.Uid);
+                    //}
 
                 }
                 else if (!source.IsEmptyElement)
@@ -434,30 +437,31 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        data = Presentation.MediaDataFactory.Create(source.LocalName, source.NamespaceURI);
+                        data = Presentation.MediaDataFactory.Create_SkipMediaDataManagerInitialization(source.LocalName, source.NamespaceURI);
                         if (data != null)
                         {
-                            string uid_ = source.GetAttribute(XukStrings.Uid);
-
                             data.XukIn(source, handler);
+                            
+                            //string uid_ = source.GetAttribute(XukStrings.Uid);
 
-                            if (string.IsNullOrEmpty(uid_) && !string.IsNullOrEmpty(uid))
+                            if (string.IsNullOrEmpty(data.Uid) && !string.IsNullOrEmpty(uid))
                             {
                                 data.Uid = uid;
                             }
+                            Presentation.MediaDataManager.AddManagedObject_NoSafetyChecks(data, data.Uid);
 
-                            if (IsManagerOf(data.Uid))
-                            {
-                                if (GetManagedObject(data.Uid) != data)
-                                {
-                                    throw new exception.XukException(
-                                        String.Format("Another MediaData exists in the manager with uid {0}", data.Uid));
-                                }
-                            }
-                            else
-                            {
-                                SetUidOfManagedObject(data, data.Uid);
-                            }
+                            //if (IsManagerOf(data.Uid))
+                            //{
+                            //    if (GetManagedObject(data.Uid) != data)
+                            //    {
+                            //        throw new exception.XukException(
+                            //            String.Format("Another MediaData exists in the manager with uid {0}", data.Uid));
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    SetUidOfManagedObject(data, data.Uid);
+                            //}
                         }
 
                     }

@@ -28,9 +28,20 @@ namespace urakawa.data
         protected override void InitializeInstance(DataProvider instance)
         {
             base.InitializeInstance(instance);
+            if (m_skipDataProviderManagerInitialization)
+            {
+                m_skipDataProviderManagerInitialization = false;
+                return;
+            }
             Presentation.DataProviderManager.AddManagedObject(instance);
         }
 
+        private bool m_skipDataProviderManagerInitialization = false;
+        public DataProvider Create_SkipDataProviderManagerInitialization(string mimeType, string xukLN, string xukNS)
+        {
+            m_skipDataProviderManagerInitialization = true;
+            return Create(mimeType, xukLN, xukNS);
+        }
         /// <summary>
         /// MIME type for MPEG-4 AAC audio
         /// </summary>
