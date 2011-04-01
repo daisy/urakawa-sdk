@@ -252,11 +252,11 @@ namespace urakawa.ExternalFiles
                 throw new XukException("The DataProvider of an ExternalFileData cannot be null or empty !");
             }
 
-            if (!Presentation.DataProviderManager.IsManagerOf(uid))
-            {
-                throw new IsNotManagerOfException(
-                        String.Format("DataProvider cannot be found {0}", uid));
-            }
+            //if (!Presentation.DataProviderManager.IsManagerOf(uid))
+            //{
+            //    throw new IsNotManagerOfException(
+            //            String.Format("DataProvider cannot be found {0}", uid));
+            //}
             DataProvider prov = Presentation.DataProviderManager.GetManagedObject(uid);
 
             InitializeWithData(prov, path, isPreserved);

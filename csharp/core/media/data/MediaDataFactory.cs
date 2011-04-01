@@ -40,7 +40,20 @@ namespace urakawa.media.data
         protected override void InitializeInstance(MediaData instance)
         {
             base.InitializeInstance(instance);
+            if (m_skipMediaDataManagerInitialization)
+            {
+                m_skipMediaDataManagerInitialization = false;
+                return;
+            }
+            
             Presentation.MediaDataManager.AddManagedObject(instance);
+        }
+
+        private bool m_skipMediaDataManagerInitialization = false;
+        public MediaData Create_SkipMediaDataManagerInitialization(string xukLN, string xukNS)
+        {
+            m_skipMediaDataManagerInitialization = true;
+            return Create(xukLN, xukNS);
         }
 
         private Type mDefaultAudioMediaDataType = typeof(WavAudioMediaData);

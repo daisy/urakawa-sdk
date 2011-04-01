@@ -859,11 +859,11 @@ namespace urakawa.media.data.audio.codec
                 throw new exception.XukException("dataProvider attribute is missing from WavClip element");
             }
 
-            if (!Presentation.DataProviderManager.IsManagerOf(dataProviderUid))
-            {
-                throw new exception.IsNotManagerOfException(
-                        String.Format("DataProvider cannot be found {0}", dataProviderUid));
-            }
+            //if (!Presentation.DataProviderManager.IsManagerOf(dataProviderUid))
+            //{
+            //    throw new exception.IsNotManagerOfException(
+            //            String.Format("DataProvider cannot be found {0}", dataProviderUid));
+            //}
             DataProvider prov = Presentation.DataProviderManager.GetManagedObject(dataProviderUid);
 
             try

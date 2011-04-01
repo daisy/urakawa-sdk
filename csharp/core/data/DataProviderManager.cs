@@ -462,7 +462,7 @@ namespace urakawa.data
         {
             if (source.NodeType == XmlNodeType.Element)
             {
-                DataProvider prov = Presentation.DataProviderFactory.Create("", source.LocalName, source.NamespaceURI);
+                DataProvider prov = Presentation.DataProviderFactory.Create_SkipDataProviderManagerInitialization("", source.LocalName, source.NamespaceURI);
                 if (prov != null)
                 {
                     prov.XukIn(source, handler);
@@ -472,6 +472,21 @@ namespace urakawa.data
                     {
                         throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
                     }
+
+                    Presentation.DataProviderManager.AddManagedObject_NoSafetyChecks(prov, prov.Uid);
+                    //if (IsManagerOf(prov.Uid))
+                    //{
+                    //    if (GetManagedObject(prov.Uid) != prov)
+                    //    {
+                    //        throw new exception.XukException(
+                    //            String.Format("Another DataProvider exists in the manager with uid {0}", prov.Uid));
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    SetUidOfManagedObject(prov, prov.Uid);
+                    //}
+                        
                     if (prov is FileDataProvider)
                     {
                         FileDataProvider fdProv = (FileDataProvider)prov;
@@ -488,19 +503,6 @@ namespace urakawa.data
                             return;
                         }
                         mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
-                    }
-
-                    if (IsManagerOf(prov.Uid))
-                    {
-                        if (GetManagedObject(prov.Uid) != prov)
-                        {
-                            throw new exception.XukException(
-                                String.Format("Another DataProvider exists in the manager with uid {0}", prov.Uid));
-                        }
-                    }
-                    else
-                    {
-                        SetUidOfManagedObject(prov, prov.Uid);
                     }
                 }
                 else if (!source.IsEmptyElement)
@@ -521,7 +523,7 @@ namespace urakawa.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        DataProvider prov = Presentation.DataProviderFactory.Create("", source.LocalName, source.NamespaceURI);
+                        DataProvider prov = Presentation.DataProviderFactory.Create_SkipDataProviderManagerInitialization("", source.LocalName, source.NamespaceURI);
                         if (prov != null)
                         {
                             if (addedProvider)
@@ -530,9 +532,28 @@ namespace urakawa.data
                                     "Multiple DataProviders within the same mDataProviderItem is not supported");
                             }
 
-                            string uid_ = source.GetAttribute(XukStrings.Uid);
-
                             prov.XukIn(source, handler);
+
+                            //string uid_ = source.GetAttribute(XukStrings.Uid);
+                            if (string.IsNullOrEmpty(prov.Uid) && !string.IsNullOrEmpty(uid))
+                            {
+                                prov.Uid = uid;
+                            }
+
+                            Presentation.DataProviderManager.AddManagedObject_NoSafetyChecks(prov, prov.Uid);
+
+                            //if (IsManagerOf(prov.Uid))
+                            //{
+                            //    if (GetManagedObject(prov.Uid) != prov)
+                            //    {
+                            //        throw new exception.XukException(
+                            //            String.Format("Another DataProvider exists in the manager with uid {0}", prov.Uid));
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    SetUidOfManagedObject(prov, prov.Uid);
+                            //}
                             if (prov is FileDataProvider)
                             {
                                 FileDataProvider fdProv = (FileDataProvider)prov;
@@ -551,24 +572,6 @@ namespace urakawa.data
                                 mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
                             }
 
-                            if (string.IsNullOrEmpty(uid_) && !string.IsNullOrEmpty(uid))
-                            {
-                                prov.Uid = uid;
-                            }
-
-
-                            if (IsManagerOf(prov.Uid))
-                            {
-                                if (GetManagedObject(prov.Uid) != prov)
-                                {
-                                    throw new exception.XukException(
-                                        String.Format("Another DataProvider exists in the manager with uid {0}", prov.Uid));
-                                }
-                            }
-                            else
-                            {
-                                SetUidOfManagedObject(prov, prov.Uid);
-                            }
                             addedProvider = true;
                         }
                         else if (!source.IsEmptyElement)

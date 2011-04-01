@@ -203,12 +203,12 @@ namespace urakawa.media.data.image
             {
                 throw new exception.XukException("MediaDataUid attribute is missing from ImageMediaData");
             }
-            if (!Presentation.MediaDataManager.IsManagerOf(uid))
-            {
-                throw new exception.IsNotManagerOfException(String.Format(
-                                                     "The MediaDataManager does not mamage a ImageMediaData with uid {0}",
-                                                     uid));
-            }
+            //if (!Presentation.MediaDataManager.IsManagerOf(uid))
+            //{
+            //    throw new exception.IsNotManagerOfException(String.Format(
+            //                                         "The MediaDataManager does not mamage a ImageMediaData with uid {0}",
+            //                                         uid));
+            //}
             MediaData md = Presentation.MediaDataManager.GetManagedObject(uid);
             if (!(md is ImageMediaData))
             {
