@@ -46,7 +46,7 @@ namespace urakawa.daisy.export
             foreach (urakawa.core.TreeNode urakawaNode in m_ListOfLevels)
             //for ( int nodeCounter = 0 ; nodeCounter < m_ListOfLevels.Count ; nodeCounter++ )
             {
-            //urakawa.core.TreeNode urakawaNode  = m_ListOfLevels[nodeCounter] ;
+                //urakawa.core.TreeNode urakawaNode  = m_ListOfLevels[nodeCounter] ;
 
                 bool IsNcxNativeNodeAdded = false;
                 XmlDocument smilDocument = null;
@@ -84,13 +84,13 @@ namespace urakawa.daisy.export
                 if (currentQName != null &&
                         currentQName.LocalName != urakawaNode.GetXmlElementQName().LocalName
                         && doesTreeNodeTriggerNewSmil(n))
-                        {
-                            if (m_ListOfLevels.IndexOf ( n ) > m_ListOfLevels.IndexOf ( urakawaNode ))
-                            {
-                    
-                            return false;
-                            }
-                        }
+                {
+                    if (m_ListOfLevels.IndexOf(n) > m_ListOfLevels.IndexOf(urakawaNode))
+                    {
+
+                        return false;
+                    }
+                }
 
                 if ((IsHeadingNode(n) || IsEscapableNode(n) || IsSkippableNode(n))
                     && (special_UrakawaNode != n))
@@ -122,11 +122,11 @@ namespace urakawa.daisy.export
                     if (isDoctitle_1)
                     {
                         //urakawa.core.TreeNode n = textAudioNodesList[0];
-                    if (!isDocTitleAdded)
+                        if (!isDocTitleAdded)
                         {
-                        CreateDocTitle ( ncxDocument, ncxRootNode, n );
-                        isDocTitleAdded = true;
-                        IsNcxNativeNodeAdded = true;
+                            CreateDocTitle(ncxDocument, ncxRootNode, n);
+                            isDocTitleAdded = true;
+                            IsNcxNativeNodeAdded = true;
                         }
                     }
                 }
@@ -488,12 +488,12 @@ namespace urakawa.daisy.export
                     if (isDoctitle_ && !isDocTitleAdded)
                     {
                         //urakawa.core.TreeNode n = textAudioNodesList[0];
-                    
-                    
-                        CreateDocTitle ( ncxDocument, ncxRootNode, n );
+
+
+                        CreateDocTitle(ncxDocument, ncxRootNode, n);
                         isDocTitleAdded = true;
                         IsNcxNativeNodeAdded = true;
-                        
+
                     }
                     else if (currentHeadingTreeNode != null)
                     {
@@ -612,9 +612,12 @@ namespace urakawa.daisy.export
                 XmlNode referedContentNode = XmlDocumentHelper.GetFirstChildElementWithName(xn, false, "content", xn.NamespaceURI);
                 string contentNode_Src = referedContentNode.Attributes.GetNamedItem("src").Value;
 
-                if (playOrder_ReferenceMap.ContainsKey(contentNode_Src))
+                string str;
+                playOrder_ReferenceMap.TryGetValue(contentNode_Src, out str);
+
+                if (!string.IsNullOrEmpty(str)) //playOrder_ReferenceMap.ContainsKey(contentNode_Src))
                 {
-                    xn.Attributes.GetNamedItem("playOrder").Value = playOrder_ReferenceMap[contentNode_Src];
+                    xn.Attributes.GetNamedItem("playOrder").Value = str; //playOrder_ReferenceMap[contentNode_Src];
                 }
                 else
                 {
@@ -748,13 +751,16 @@ namespace urakawa.daisy.export
 
             urakawa.core.TreeNode parentNode = GetParentLevelNode(urakawaNode);
 
+            XmlNode obj;
+            treeNode_NavNodeMap.TryGetValue(parentNode, out obj);
+
             if (parentNode == null)
             {
                 navMapNode.AppendChild(navPointNode);
             }
-            else if (treeNode_NavNodeMap.ContainsKey(parentNode))
+            else if (obj != null) //treeNode_NavNodeMap.ContainsKey(parentNode))
             {
-                treeNode_NavNodeMap[parentNode].AppendChild(navPointNode);
+                obj.AppendChild(navPointNode); //treeNode_NavNodeMap[parentNode]
             }
             else // surch up for node
             {
@@ -762,10 +768,17 @@ namespace urakawa.daisy.export
                 while (parentNode != null && counter <= 6)
                 {
                     parentNode = GetParentLevelNode(parentNode);
-                    if (parentNode != null && treeNode_NavNodeMap.ContainsKey(parentNode))
+
+                    if (parentNode != null
+                        //&& treeNode_NavNodeMap.ContainsKey(parentNode)
+                        )
                     {
-                        treeNode_NavNodeMap[parentNode].AppendChild(navPointNode);
-                        break;
+                        treeNode_NavNodeMap.TryGetValue(parentNode, out obj);
+                        if (obj != null)
+                        {
+                            obj.AppendChild(navPointNode); //treeNode_NavNodeMap[parentNode]
+                            break;
+                        }
                     }
                     counter++;
                 }

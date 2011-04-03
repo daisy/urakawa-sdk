@@ -258,9 +258,12 @@ namespace urakawa.daisy.import
                     uint dataLength;
                     AudioLibPCMFormat pcmInfo = null;
 
-                    if (m_OriginalAudioFile_FileDataProviderMap.ContainsKey(fullWavPath))
+                    FileDataProvider obj;
+                    m_OriginalAudioFile_FileDataProviderMap.TryGetValue(fullWavPath, out obj);
+
+                    if (obj != null)  //m_OriginalAudioFile_FileDataProviderMap.ContainsKey(fullWavPath))
                     {
-                        dataProv = m_OriginalAudioFile_FileDataProviderMap[fullWavPath];
+                        dataProv = obj; // m_OriginalAudioFile_FileDataProviderMap[fullWavPath];
                     }
                     else // create FileDataProvider
                     {
@@ -346,10 +349,13 @@ namespace urakawa.daisy.import
 
                 if (RequestCancellation) return;
 
+                FileDataProvider obj;
+                m_OriginalAudioFile_FileDataProviderMap.TryGetValue(fullMp3PathOriginal, out obj);
+
                 FileDataProvider dataProv = null;
-                if (m_OriginalAudioFile_FileDataProviderMap.ContainsKey(fullMp3PathOriginal))
+                if (obj != null) //m_OriginalAudioFile_FileDataProviderMap.ContainsKey(fullMp3PathOriginal))
                 {
-                    dataProv = m_OriginalAudioFile_FileDataProviderMap[fullMp3PathOriginal];
+                    dataProv = obj; // m_OriginalAudioFile_FileDataProviderMap[fullMp3PathOriginal];
                 }
                 else
                 {

@@ -73,9 +73,12 @@ namespace urakawa.daisy.import
             if (!File.Exists(sourceFilePath))
                 throw new FileNotFoundException();
 
-            if (m_FilePathsMap.ContainsKey(sourceFilePath))
+            string str;
+            m_FilePathsMap.TryGetValue(sourceFilePath, out str);
+
+            if (!string.IsNullOrEmpty(str)) //m_FilePathsMap.ContainsKey(sourceFilePath))
             {
-                string fullPath = m_FilePathsMap[sourceFilePath];
+                string fullPath = str; // m_FilePathsMap[sourceFilePath];
                 if (File.Exists(fullPath))
                     return fullPath; // this should always be the case, unless the files have been removed from "outside" (i.e. user deleting the audio temporary directory while a session is alive)
 #if DEBUG
