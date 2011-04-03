@@ -355,6 +355,11 @@ namespace urakawa
                             pres.XukIn(source, handler, this);
                             pres.Project = this;
                             mPresentations.Insert(mPresentations.Count, pres);
+
+                            pres.ExternalFilesDataManager.RegenerateUids();
+                            pres.ChannelsManager.RegenerateUids();
+                            pres.MediaDataManager.RegenerateUids();
+                            pres.DataProviderManager.RegenerateUids();
                         }
                         else if (!source.IsEmptyElement)
                         {
@@ -386,6 +391,11 @@ namespace urakawa
             destination.WriteStartElement(XukStrings.Presentations, XukAble.XUK_NS);
             foreach (Presentation pres in mPresentations.ContentsAs_Enumerable)
             {
+                pres.ExternalFilesDataManager.RegenerateUids();
+                pres.ChannelsManager.RegenerateUids();
+                pres.MediaDataManager.RegenerateUids();
+                pres.DataProviderManager.RegenerateUids();
+
                 pres.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();

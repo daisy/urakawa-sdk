@@ -992,7 +992,6 @@ namespace urakawa
                 else if (source.LocalName == XukStrings.ChannelsManager)
                 {
                     ChannelsManager.XukIn(source, handler);
-                    ChannelsManager.RegenerateUids();
                 }
                 else if (source.LocalName == XukStrings.MediaFactory)
                 {
@@ -1005,7 +1004,6 @@ namespace urakawa
                 else if (source.LocalName == XukStrings.MediaDataManager)
                 {
                     MediaDataManager.XukIn(source, handler);
-                    MediaDataManager.RegenerateUids();
                 }
                 else if (source.LocalName == XukStrings.DataProviderFactory)
                 {
@@ -1014,7 +1012,6 @@ namespace urakawa
                 else if (source.LocalName == XukStrings.DataProviderManager)
                 {
                     DataProviderManager.XukIn(source, handler);
-                    DataProviderManager.RegenerateUids();
                 }
                 else if (source.LocalName == XukStrings.CommandFactory)
                 {
@@ -1040,7 +1037,6 @@ namespace urakawa
                 else if (source.LocalName == XukStrings.ExternalFileDataManager)
                 {
                     ExternalFilesDataManager.XukIn(source, handler);
-                    ExternalFilesDataManager.RegenerateUids();
                 }
                 else if (source.LocalName == XukStrings.RootNode)
                 {
@@ -1113,17 +1109,12 @@ namespace urakawa
 
             ExternalFilesDataFactory.XukOut(destination, baseUri, handler);
 
-
-            ChannelsManager.RegenerateUids();
             ChannelsManager.XukOut(destination, baseUri, handler);
 
-            DataProviderManager.RegenerateUids();
             DataProviderManager.XukOut(destination, baseUri, handler);
 
-            MediaDataManager.RegenerateUids();
             MediaDataManager.XukOut(destination, baseUri, handler);
 
-            ExternalFilesDataManager.RegenerateUids();
             ExternalFilesDataManager.XukOut(destination, baseUri, handler);
             
 
