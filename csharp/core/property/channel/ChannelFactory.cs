@@ -32,10 +32,21 @@ namespace urakawa.property.channel
         protected override void InitializeInstance(Channel instance)
         {
             base.InitializeInstance(instance);
+            if (m_skipManagerInitialization)
+            {
+                m_skipManagerInitialization = false;
+                return;
+            }
 
             Presentation.ChannelsManager.AddManagedObject(instance);
         }
 
+        private bool m_skipManagerInitialization = false;
+        public Channel Create_SkipManagerInitialization(string xukLN, string xukNS)
+        {
+            m_skipManagerInitialization = true;
+            return Create(xukLN, xukNS);
+        }
 
         /// <summary>
         /// Creates a <see cref="Channel"/> instance

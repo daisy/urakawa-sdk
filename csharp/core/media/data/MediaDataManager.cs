@@ -13,7 +13,6 @@ namespace urakawa.media.data
     /// </summary>
     public sealed class MediaDataManager : XukAbleManager<MediaData>
     {
-
         public override string GetTypeNameFormatted()
         {
             return XukStrings.MediaDataManager;
@@ -390,7 +389,7 @@ namespace urakawa.media.data
             if (source.NodeType == XmlNodeType.Element)
             {
                 MediaData data = null;
-                data = Presentation.MediaDataFactory.Create_SkipMediaDataManagerInitialization(source.LocalName, source.NamespaceURI);
+                data = Presentation.MediaDataFactory.Create_SkipManagerInitialization(source.LocalName, source.NamespaceURI);
                 if (data != null)
                 {
                     data.XukIn(source, handler);
@@ -437,7 +436,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        data = Presentation.MediaDataFactory.Create_SkipMediaDataManagerInitialization(source.LocalName, source.NamespaceURI);
+                        data = Presentation.MediaDataFactory.Create_SkipManagerInitialization(source.LocalName, source.NamespaceURI);
                         if (data != null)
                         {
                             data.XukIn(source, handler);

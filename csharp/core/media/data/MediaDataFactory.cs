@@ -40,19 +40,19 @@ namespace urakawa.media.data
         protected override void InitializeInstance(MediaData instance)
         {
             base.InitializeInstance(instance);
-            if (m_skipMediaDataManagerInitialization)
+            if (m_skipManagerInitialization)
             {
-                m_skipMediaDataManagerInitialization = false;
+                m_skipManagerInitialization = false;
                 return;
             }
             
             Presentation.MediaDataManager.AddManagedObject(instance);
         }
 
-        private bool m_skipMediaDataManagerInitialization = false;
-        public MediaData Create_SkipMediaDataManagerInitialization(string xukLN, string xukNS)
+        private bool m_skipManagerInitialization = false;
+        public MediaData Create_SkipManagerInitialization(string xukLN, string xukNS)
         {
-            m_skipMediaDataManagerInitialization = true;
+            m_skipManagerInitialization = true;
             return Create(xukLN, xukNS);
         }
 

@@ -25,7 +25,20 @@ namespace urakawa.ExternalFiles
         protected override void InitializeInstance(ExternalFileData instance)
         {
             base.InitializeInstance(instance);
+            if (m_skipManagerInitialization)
+            {
+                m_skipManagerInitialization = false;
+                return;
+            }
+
             Presentation.ExternalFilesDataManager.AddManagedObject(instance);
+        }
+
+        private bool m_skipManagerInitialization = false;
+        public ExternalFileData Create_SkipManagerInitialization(string xukLN, string xukNS)
+        {
+            m_skipManagerInitialization = true;
+            return Create(xukLN, xukNS);
         }
     }
 }

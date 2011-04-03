@@ -462,7 +462,7 @@ namespace urakawa.data
         {
             if (source.NodeType == XmlNodeType.Element)
             {
-                DataProvider prov = Presentation.DataProviderFactory.Create_SkipDataProviderManagerInitialization("", source.LocalName, source.NamespaceURI);
+                DataProvider prov = Presentation.DataProviderFactory.Create_SkipManagerInitialization("", source.LocalName, source.NamespaceURI);
                 if (prov != null)
                 {
                     prov.XukIn(source, handler);
@@ -523,7 +523,7 @@ namespace urakawa.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        DataProvider prov = Presentation.DataProviderFactory.Create_SkipDataProviderManagerInitialization("", source.LocalName, source.NamespaceURI);
+                        DataProvider prov = Presentation.DataProviderFactory.Create_SkipManagerInitialization("", source.LocalName, source.NamespaceURI);
                         if (prov != null)
                         {
                             if (addedProvider)
