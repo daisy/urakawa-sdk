@@ -28,18 +28,18 @@ namespace urakawa.data
         protected override void InitializeInstance(DataProvider instance)
         {
             base.InitializeInstance(instance);
-            if (m_skipDataProviderManagerInitialization)
+            if (m_skipManagerInitialization)
             {
-                m_skipDataProviderManagerInitialization = false;
+                m_skipManagerInitialization = false;
                 return;
             }
             Presentation.DataProviderManager.AddManagedObject(instance);
         }
 
-        private bool m_skipDataProviderManagerInitialization = false;
-        public DataProvider Create_SkipDataProviderManagerInitialization(string mimeType, string xukLN, string xukNS)
+        private bool m_skipManagerInitialization = false;
+        public DataProvider Create_SkipManagerInitialization(string mimeType, string xukLN, string xukNS)
         {
-            m_skipDataProviderManagerInitialization = true;
+            m_skipManagerInitialization = true;
             return Create(mimeType, xukLN, xukNS);
         }
         /// <summary>

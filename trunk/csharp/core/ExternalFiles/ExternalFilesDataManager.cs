@@ -43,7 +43,7 @@ namespace urakawa.ExternalFiles
 
 
         public ExternalFilesDataManager(Presentation pres)
-            : base(pres, "MEF")
+            : base(pres, "EF")
         {
         }
         public override string GetTypeNameFormatted()
@@ -244,7 +244,8 @@ namespace urakawa.ExternalFiles
             if (source.NodeType == XmlNodeType.Element)
             {
                 ExternalFileData data = null;
-                data = Presentation.ExternalFilesDataFactory.Create(source.LocalName, source.NamespaceURI);
+                
+                data = Presentation.ExternalFilesDataFactory.Create_SkipManagerInitialization(source.LocalName, source.NamespaceURI);
                 if (data != null)
                 {
                     data.XukIn(source, handler);
@@ -254,19 +255,21 @@ namespace urakawa.ExternalFiles
                         throw new exception.XukException(
                             "uid attribute is missing from mExternalFileDataItem attribute");
                     }
-                    if (IsManagerOf(data.Uid))
-                    {
-                        if (GetManagedObject(data.Uid) != data)
-                        {
-                            throw new exception.XukException(
-                                String.Format("Another ExternalFileData exists in the manager with uid {0}", data.Uid));
-                        }
-                    }
-                    else
-                    {
-                        SetUidOfManagedObject(data, data.Uid);
-                    }
 
+                    Presentation.ExternalFilesDataManager.AddManagedObject_NoSafetyChecks(data, data.Uid);
+                            
+                    //if (IsManagerOf(data.Uid))
+                    //{
+                    //    if (GetManagedObject(data.Uid) != data)
+                    //    {
+                    //        throw new exception.XukException(
+                    //            String.Format("Another ExternalFileData exists in the manager with uid {0}", data.Uid));
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    SetUidOfManagedObject(data, data.Uid);
+                    //}
                 }
                 else if (!source.IsEmptyElement)
                 {
@@ -315,7 +318,7 @@ namespace urakawa.ExternalFiles
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        data = Presentation.ExternalFilesDataFactory.Create(source.LocalName, source.NamespaceURI);
+                        data = Presentation.ExternalFilesDataFactory.Create_SkipManagerInitialization(source.LocalName, source.NamespaceURI);
                         if (data != null)
                         {
                             string uid_ = source.GetAttribute(XukStrings.Uid);
@@ -327,18 +330,26 @@ namespace urakawa.ExternalFiles
                                 data.Uid = uid;
                             }
 
-                            if (IsManagerOf(data.Uid))
+                            if (string.IsNullOrEmpty(data.Uid))
                             {
-                                if (GetManagedObject(data.Uid) != data)
-                                {
-                                    throw new exception.XukException(
-                                        String.Format("Another ExternalFileData exists in the manager with uid {0}", data.Uid));
-                                }
+                                throw new exception.XukException(
+                                    "uid attribute is missing from mExternalFileDataItem attribute");
                             }
-                            else
-                            {
-                                SetUidOfManagedObject(data, data.Uid);
-                            }
+
+                            Presentation.ExternalFilesDataManager.AddManagedObject_NoSafetyChecks(data, data.Uid);
+                            
+                            //if (IsManagerOf(data.Uid))
+                            //{
+                            //    if (GetManagedObject(data.Uid) != data)
+                            //    {
+                            //        throw new exception.XukException(
+                            //            String.Format("Another ExternalFileData exists in the manager with uid {0}", data.Uid));
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    SetUidOfManagedObject(data, data.Uid);
+                            //}
                         }
 
                     }

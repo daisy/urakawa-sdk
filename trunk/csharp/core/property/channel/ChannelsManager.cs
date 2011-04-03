@@ -194,8 +194,7 @@ namespace urakawa.property.channel
         {
             if (source.NodeType == XmlNodeType.Element)
             {
-
-                Channel newCh = Presentation.ChannelFactory.Create(source.LocalName, source.NamespaceURI);
+                Channel newCh = Presentation.ChannelFactory.Create_SkipManagerInitialization(source.LocalName, source.NamespaceURI);
                 if (newCh != null)
                 {
                     newCh.XukIn(source, handler);
@@ -205,18 +204,21 @@ namespace urakawa.property.channel
                     {
                         throw new exception.XukException("mChannelItem element has no uid attribute");
                     }
-                    if (IsManagerOf(newCh.Uid))
-                    {
-                        if (GetManagedObject(newCh.Uid) != newCh)
-                        {
-                            throw new exception.XukException(
-                                String.Format("Another MediaData exists in the manager with uid {0}", newCh.Uid));
-                        }
-                    }
-                    else
-                    {
-                        SetUidOfManagedObject(newCh, newCh.Uid);
-                    }
+                    
+                    Presentation.ChannelsManager.AddManagedObject_NoSafetyChecks(newCh, newCh.Uid);
+                            
+                    //if (IsManagerOf(newCh.Uid))
+                    //{
+                    //    if (GetManagedObject(newCh.Uid) != newCh)
+                    //    {
+                    //        throw new exception.XukException(
+                    //            String.Format("Another MediaData exists in the manager with uid {0}", newCh.Uid));
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    SetUidOfManagedObject(newCh, newCh.Uid);
+                    //}
                 }
                 else if (!source.IsEmptyElement)
                 {
@@ -236,7 +238,7 @@ namespace urakawa.property.channel
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        Channel newCh = Presentation.ChannelFactory.Create(source.LocalName, source.NamespaceURI);
+                        Channel newCh = Presentation.ChannelFactory.Create_SkipManagerInitialization(source.LocalName, source.NamespaceURI);
                         if (newCh != null)
                         {
                             string uid_ = source.GetAttribute(XukStrings.Uid);
@@ -247,19 +249,25 @@ namespace urakawa.property.channel
                             {
                                 newCh.Uid = uid;
                             }
+                            if (string.IsNullOrEmpty(newCh.Uid))
+                            {
+                                throw new exception.XukException("mChannelItem element has no uid attribute");
+                            }
 
-                            if (IsManagerOf(newCh.Uid))
-                            {
-                                if (GetManagedObject(newCh.Uid) != newCh)
-                                {
-                                    throw new exception.XukException(
-                                        String.Format("Another MediaData exists in the manager with uid {0}", newCh.Uid));
-                                }
-                            }
-                            else
-                            {
-                                SetUidOfManagedObject(newCh, newCh.Uid);
-                            }
+                            Presentation.ChannelsManager.AddManagedObject_NoSafetyChecks(newCh, newCh.Uid);
+                            
+                            //if (IsManagerOf(newCh.Uid))
+                            //{
+                            //    if (GetManagedObject(newCh.Uid) != newCh)
+                            //    {
+                            //        throw new exception.XukException(
+                            //            String.Format("Another MediaData exists in the manager with uid {0}", newCh.Uid));
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    SetUidOfManagedObject(newCh, newCh.Uid);
+                            //}
                             foundChannel = true;
                         }
                         else if (!source.IsEmptyElement)

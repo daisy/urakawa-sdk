@@ -40,26 +40,26 @@ namespace urakawa
     /// </summary>
     public class Presentation : XukAble, IValueEquatable<Presentation>, IChangeNotifier
     {
-        public string GetNewUid(string prefix, ref ulong startIndex)
-        {
-            string strFormat = prefix + "{0:00000}";
+        //public string GetNewUid(string prefix, ref ulong startIndex)
+        //{
+        //    string strFormat = prefix + "{0:00000}";
 
-            while (startIndex < UInt64.MaxValue)
-            {
-                string newId = String.Format(strFormat, startIndex);
+        //    while (startIndex < UInt64.MaxValue)
+        //    {
+        //        string newId = String.Format(strFormat, startIndex);
 
-                if (!DataProviderManager.IsManagerOf(newId)
-                    && !ChannelsManager.IsManagerOf(newId)
-                    && !MediaDataManager.IsManagerOf(newId)
-                    && !ExternalFilesDataManager.IsManagerOf(newId))
-                {
-                    return newId;
-                }
+        //        if (!DataProviderManager.IsManagerOf(newId)
+        //            && !ChannelsManager.IsManagerOf(newId)
+        //            && !MediaDataManager.IsManagerOf(newId)
+        //            && !ExternalFilesDataManager.IsManagerOf(newId))
+        //        {
+        //            return newId;
+        //        }
 
-                startIndex++;
-            }
-            throw new OverflowException("YOU HAVE WAY TOO MANY UIDs !!!");
-        }
+        //        startIndex++;
+        //    }
+        //    throw new OverflowException("YOU HAVE WAY TOO MANY UIDs !!!");
+        //}
 
         public override string GetTypeNameFormatted()
         {
@@ -992,6 +992,7 @@ namespace urakawa
                 else if (source.LocalName == XukStrings.ChannelsManager)
                 {
                     ChannelsManager.XukIn(source, handler);
+                    ChannelsManager.RegenerateUids();
                 }
                 else if (source.LocalName == XukStrings.MediaFactory)
                 {
@@ -1004,6 +1005,7 @@ namespace urakawa
                 else if (source.LocalName == XukStrings.MediaDataManager)
                 {
                     MediaDataManager.XukIn(source, handler);
+                    MediaDataManager.RegenerateUids();
                 }
                 else if (source.LocalName == XukStrings.DataProviderFactory)
                 {
@@ -1012,6 +1014,7 @@ namespace urakawa
                 else if (source.LocalName == XukStrings.DataProviderManager)
                 {
                     DataProviderManager.XukIn(source, handler);
+                    DataProviderManager.RegenerateUids();
                 }
                 else if (source.LocalName == XukStrings.CommandFactory)
                 {
@@ -1037,6 +1040,7 @@ namespace urakawa
                 else if (source.LocalName == XukStrings.ExternalFileDataManager)
                 {
                     ExternalFilesDataManager.XukIn(source, handler);
+                    ExternalFilesDataManager.RegenerateUids();
                 }
                 else if (source.LocalName == XukStrings.RootNode)
                 {
@@ -1110,14 +1114,18 @@ namespace urakawa
             ExternalFilesDataFactory.XukOut(destination, baseUri, handler);
 
 
-
+            ChannelsManager.RegenerateUids();
             ChannelsManager.XukOut(destination, baseUri, handler);
 
+            DataProviderManager.RegenerateUids();
             DataProviderManager.XukOut(destination, baseUri, handler);
 
+            MediaDataManager.RegenerateUids();
             MediaDataManager.XukOut(destination, baseUri, handler);
 
+            ExternalFilesDataManager.RegenerateUids();
             ExternalFilesDataManager.XukOut(destination, baseUri, handler);
+            
 
             destination.WriteStartElement(XukStrings.Metadatas, XukAble.XUK_NS);
             foreach (Metadata md in mMetadata.ContentsAs_Enumerable)
@@ -1133,7 +1141,6 @@ namespace urakawa
             destination.WriteStartElement(XukStrings.RootNode, XukAble.XUK_NS);
             RootNode.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
-
         }
 
         #endregion

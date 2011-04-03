@@ -386,10 +386,6 @@ namespace urakawa
             destination.WriteStartElement(XukStrings.Presentations, XukAble.XUK_NS);
             foreach (Presentation pres in mPresentations.ContentsAs_Enumerable)
             {
-                pres.DataProviderManager.RegenerateUids();
-                pres.ChannelsManager.RegenerateUids();
-                pres.MediaDataManager.RegenerateUids();
-
                 pres.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();

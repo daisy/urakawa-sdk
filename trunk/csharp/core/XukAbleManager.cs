@@ -9,7 +9,7 @@ namespace urakawa
         private readonly Object LOCK = new object();
         private ObjectListProvider<T> m_managedObjects;
 
-        private readonly string m_UidPrefix;
+        // Any UID on and after this index is free to use.
         private ulong m_UidIndex = 0;
 
         public XukAbleManager(Presentation pres, string uidPrefix)
@@ -17,6 +17,22 @@ namespace urakawa
             Presentation = pres;
             m_managedObjects = new ObjectListProvider<T>(this, false);
             m_UidPrefix = uidPrefix;
+            m_UidFormat = m_UidPrefix + "{0:00000}";
+        }
+
+        private readonly string m_UidPrefix;
+        public string UidPrefix
+        {
+            get { return m_UidPrefix; }
+        }
+
+        private readonly string m_UidFormat;
+        public string UidFormat
+        {
+            get
+            {
+                return m_UidFormat;
+            }
         }
 
         public ObjectListProvider<T> ManagedObjects
@@ -30,21 +46,28 @@ namespace urakawa
 
         private void RegenerateUids_NO_LOCK()
         {
-            ulong index = 0;
-
-            List<T> localList = m_managedObjects.ContentsAs_ListCopy;
-
-            foreach (T obj in localList)
+            m_UidIndex = 0;
+            foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
             {
-                m_managedObjects.Remove(obj);
+                obj.Uid = String.Format(UidFormat, m_UidIndex++);
             }
+            //{
+            //    ulong index = 0;
 
-            foreach (T obj in localList)
-            {
-                string newUid = Presentation.GetNewUid(m_UidPrefix, ref index);
-                obj.Uid = newUid;
-                m_managedObjects.Insert(m_managedObjects.Count, obj);
-            }
+            //    List<T> localList = m_managedObjects.ContentsAs_ListCopy;
+
+            //    foreach (T obj in localList)
+            //    {
+            //        m_managedObjects.Remove(obj);
+            //    }
+
+            //    foreach (T obj in localList)
+            //    {
+            //        string newUid = Presentation.GetNewUid(m_UidPrefix, ref index);
+            //        obj.Uid = newUid;
+            //        m_managedObjects.Insert(m_managedObjects.Count, obj);
+            //    }
+            //}
         }
 
         public void RegenerateUids()
@@ -213,7 +236,8 @@ namespace urakawa
 
         public void AddManagedObject(T obj)
         {
-            AddManagedObject(obj, Presentation.GetNewUid(m_UidPrefix, ref m_UidIndex));
+            //AddManagedObject(obj, Presentation.GetNewUid(m_UidPrefix, ref m_UidIndex));
+            AddManagedObject(obj, String.Format(UidFormat, m_UidIndex++));
         }
 
         public abstract bool CanAddManagedObject(T managedObject);
@@ -245,7 +269,7 @@ namespace urakawa
             m_managedObjects.Insert(m_managedObjects.Count, obj);
         }
 
-        public void AddManagedObject(T obj, string uid)
+        private void AddManagedObject(T obj, string uid)
         {
             if (obj == null)
             {

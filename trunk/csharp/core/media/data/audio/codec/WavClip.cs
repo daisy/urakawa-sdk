@@ -114,6 +114,17 @@ namespace urakawa.media.data.audio.codec
     /// </summary>
     public class WavClip : Clip, IValueEquatable<WavClip>
     {
+        struct PcmFormatAndTime
+        {
+            public AudioLibPCMFormat mFormat;
+            public Time mTime;
+
+            public PcmFormatAndTime( AudioLibPCMFormat format, Time time)
+            {
+                mFormat = format;
+                mTime = time;
+            }
+        }
         /// <summary>
         /// Constructor setting the <see cref="urakawa.data.DataProvider"/>, 
         /// clip begin and clip end will in this case be initialized to <c>null</c>,
@@ -160,9 +171,10 @@ namespace urakawa.media.data.audio.codec
 
                     if (appData != null)
                     {
-                        if (appData is Time)
+                        if (appData is PcmFormatAndTime)
                         {
-                            m_cachedDuration = (Time)appData;
+                            m_cachedDuration = ((PcmFormatAndTime)appData).mTime;
+                            m_cachedPcmFormat = ((PcmFormatAndTime)appData).mFormat;
                             return m_cachedDuration;
                         }
                     }
@@ -181,7 +193,7 @@ namespace urakawa.media.data.audio.codec
 
                     if (appData == null)
                     {
-                        DataProvider.AppData = m_cachedDuration;
+                        DataProvider.AppData = new PcmFormatAndTime(m_cachedPcmFormat, m_cachedDuration);
                     }
                 }
                 return m_cachedDuration;
