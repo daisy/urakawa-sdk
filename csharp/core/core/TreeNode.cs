@@ -16,6 +16,13 @@ namespace urakawa.core
     /// </summary>
     public partial class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IChangeNotifier
     {
+        private object m_Tag = null;
+        public object Tag
+        {
+            set { m_Tag = value; }
+            get { return m_Tag; }
+        }
+
         protected override void XukInAttributes(XmlReader source)
         {
             base.XukInAttributes(source);
