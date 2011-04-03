@@ -324,8 +324,12 @@ namespace urakawa.xuk
             return new QualifiedName(GetTypeNameFormatted(t), GetXukNamespaceUri(t));
         }
 
+        private static readonly Dictionary<Type, string> m_TypeNameMap = new Dictionary<Type, string>();
+
         private static string GetTypeNameFormatted(Type t)
         {
+            if (m_TypeNameMap.ContainsKey(t)) return m_TypeNameMap[t];
+
             string name = t.Name;
 
             PropertyInfo info = typeof(XukStrings).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
@@ -333,7 +337,9 @@ namespace urakawa.xuk
             {
                 if (info.PropertyType == typeof(string))
                 {
-                    return (info.GetValue(null, null) as string) ?? name;
+                    string n =  (info.GetValue(null, null) as string) ?? name;
+                    m_TypeNameMap.Add(t, n);
+                    return n;
                 }
             }
             else
@@ -343,7 +349,9 @@ namespace urakawa.xuk
                 {
                     if (info2.FieldType == typeof(string))
                     {
-                        return (info2.GetValue(null) as string) ?? name;
+                        string n = (info2.GetValue(null) as string) ?? name;
+                        m_TypeNameMap.Add(t, n);
+                        return n;
                     }
                 }
             }
@@ -351,6 +359,8 @@ namespace urakawa.xuk
             System.Diagnostics.Debug.Fail("Type name not found ??");
             return name;
         }
+
+        private static readonly Dictionary<Type, string> m_TypeNamespaceUriMap = new Dictionary<Type, string>();
 
         /// <summary>
         /// Gets the Xuk namespace uri of a <see cref="XukAble"/> <see cref="Type"/>,
@@ -366,12 +376,17 @@ namespace urakawa.xuk
                 throw new exception.MethodParameterIsWrongTypeException(
                     "Cannot get the XukNamespaceUri of a type that does not inherit XukAble");
             }
+
+            if (m_TypeNamespaceUriMap.ContainsKey(t)) return m_TypeNamespaceUriMap[t];
+
             FieldInfo fi = t.GetField("XUK_NS", BindingFlags.Static | BindingFlags.Public);
             if (fi != null)
             {
                 if (fi.FieldType == typeof(string))
                 {
-                    return (fi.GetValue(null) as string) ?? "";
+                    string uri = (fi.GetValue(null) as string) ?? "";
+                    m_TypeNamespaceUriMap.Add(t, uri);
+                    return uri;
                 }
             }
             return GetXukNamespaceUri(t.BaseType);
