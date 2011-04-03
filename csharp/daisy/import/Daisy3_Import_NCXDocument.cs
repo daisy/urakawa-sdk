@@ -356,17 +356,23 @@ namespace urakawa.daisy.import
                 if (navPointTreeNode == null) return null;
                 audioWrapperNode = navPointTreeNode.Presentation.TreeNodeFactory.Create();
 
-                TreeNode obj;
-                m_SmilXmlNodeToTreeNodeMap.TryGetValue(smilNode, out obj);
-
-                if (smilNode == null || obj == null) //!m_SmilXmlNodeToTreeNodeMap.ContainsKey(smilNode))
+                if (smilNode == null)
                 {
                     navPointTreeNode.AppendChild(audioWrapperNode);
                 }
                 else
                 {
-                    navPointTreeNode.InsertAfter(audioWrapperNode, obj); //m_SmilXmlNodeToTreeNodeMap[smilNode]);
-                    m_SmilXmlNodeToTreeNodeMap[smilNode] = audioWrapperNode;
+                    TreeNode obj;
+                    m_SmilXmlNodeToTreeNodeMap.TryGetValue(smilNode, out obj);
+                    if (obj == null) //!m_SmilXmlNodeToTreeNodeMap.ContainsKey(smilNode))
+                    {
+                        navPointTreeNode.AppendChild(audioWrapperNode);
+                    }
+                    else
+                    {
+                        navPointTreeNode.InsertAfter(audioWrapperNode, obj); //m_SmilXmlNodeToTreeNodeMap[smilNode]);
+                        m_SmilXmlNodeToTreeNodeMap[smilNode] = audioWrapperNode;
+                    }
                 }
             }
             //XmlProperty xmlProp = navPointTreeNode.Presentation.PropertyFactory.CreateXmlProperty();
