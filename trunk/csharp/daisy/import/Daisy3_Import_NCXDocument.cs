@@ -194,12 +194,15 @@ namespace urakawa.daisy.import
                 
                 
                 string ncxContentSRC = Path.GetFileName(fullSmilPath) + "#" + parNodeID.Value;
-                
-                // for now we are assuming the first phrase as heading phrase. this need refinement such that phrase anywhere in section can be imported as heading
-                if (m_SmilRefToNavPointTreeNodeMap.ContainsKey(ncxContentSRC))
+
+                TreeNode obj;
+                m_SmilRefToNavPointTreeNodeMap.TryGetValue(ncxContentSRC, out obj);
+
+                // for now we are assuming the first phrase as heading phrase. this need refinement such that phrase anywhere in section can be imported as heading)
+                if (obj != null) //m_SmilRefToNavPointTreeNodeMap.ContainsKey(ncxContentSRC))
                 {
                     m_IsDocTitleCreated = true;
-                    navPointTreeNode = m_SmilRefToNavPointTreeNodeMap[ncxContentSRC];
+                    navPointTreeNode = obj; // m_SmilRefToNavPointTreeNodeMap[ncxContentSRC];
                     //System.Windows.Forms.MessageBox.Show(ncxContentSRC + " section:" + navPointTreeNode.GetXmlElementQName().LocalName + " : " + Path.GetFileName( fullSmilPath ) );
                     //: audioWrapperNode =  CreateTreeNodeForAudioNode(navPointTreeNode, true);
                     //isHeading = true;
@@ -216,8 +219,10 @@ namespace urakawa.daisy.import
                     
                 }
                 //else if (m_PageReferencesMapDictionaryForNCX.ContainsKey(ncxContentSRC)
+
                 if (m_PageReferencesMapDictionaryForNCX.ContainsKey(ncxContentSRC)
-                    ||    (parNode.Attributes.GetNamedItem("customTest") != null && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum"))
+                    ||    (parNode.Attributes.GetNamedItem("customTest") != null
+                    && parNode.Attributes.GetNamedItem("customTest").Value == "pagenum"))
                 {
                     isPageInProcess = true;
                     if (navPointTreeNode == null) continue;
@@ -260,10 +265,14 @@ namespace urakawa.daisy.import
                 
                     string pageRefInSmil = Path.GetFileName(fullSmilPath) + "#" + parNode.Attributes.GetNamedItem("id").Value;
 
-                    if (m_PageReferencesMapDictionaryForNCX.ContainsKey(pageRefInSmil) && isPageInProcess)
+                    XmlNode xNode;
+                    m_PageReferencesMapDictionaryForNCX.TryGetValue(pageRefInSmil, out xNode);
+
+                    if (xNode != null //m_PageReferencesMapDictionaryForNCX.ContainsKey(pageRefInSmil)
+                        && isPageInProcess)
                     {
                         isPageInProcess = false;
-                        XmlNode pageTargetNode = m_PageReferencesMapDictionaryForNCX[pageRefInSmil];
+                        XmlNode pageTargetNode = xNode; //m_PageReferencesMapDictionaryForNCX[pageRefInSmil];
 
                         AddPagePropertiesToAudioNode(audioWrapperNode, pageTargetNode);
                     }
@@ -347,13 +356,16 @@ namespace urakawa.daisy.import
                 if (navPointTreeNode == null) return null;
                 audioWrapperNode = navPointTreeNode.Presentation.TreeNodeFactory.Create();
 
-                if (smilNode == null || !m_SmilXmlNodeToTreeNodeMap.ContainsKey(smilNode))
+                TreeNode obj;
+                m_SmilXmlNodeToTreeNodeMap.TryGetValue(smilNode, out obj);
+
+                if (smilNode == null || obj == null) //!m_SmilXmlNodeToTreeNodeMap.ContainsKey(smilNode))
                 {
                     navPointTreeNode.AppendChild(audioWrapperNode);
                 }
                 else
                 {
-                    navPointTreeNode.InsertAfter(audioWrapperNode, m_SmilXmlNodeToTreeNodeMap[smilNode]);
+                    navPointTreeNode.InsertAfter(audioWrapperNode, obj); //m_SmilXmlNodeToTreeNodeMap[smilNode]);
                     m_SmilXmlNodeToTreeNodeMap[smilNode] = audioWrapperNode;
                 }
             }

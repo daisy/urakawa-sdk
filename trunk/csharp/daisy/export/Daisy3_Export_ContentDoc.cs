@@ -350,9 +350,13 @@ namespace urakawa.daisy.export
                 {
                     strIDToFind = strIDToFind.Split('#')[1];
                 }
-                if (old_New_IDMap.ContainsKey(strIDToFind))
+
+                string str;
+                old_New_IDMap.TryGetValue(strIDToFind, out str);
+
+                if (!string.IsNullOrEmpty(str)) //old_New_IDMap.ContainsKey(strIDToFind))
                 {
-                    string id_New = old_New_IDMap[strIDToFind];
+                    string id_New = str; // old_New_IDMap[strIDToFind];
 
                     attr.Value = "#" + id_New;
                 }
