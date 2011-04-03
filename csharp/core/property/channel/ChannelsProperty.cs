@@ -110,8 +110,13 @@ namespace urakawa.property.channel
                 throw new exception.ChannelDoesNotExistException(
                     "The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
             }
-            if (!mMapChannelToMediaObject.ContainsKey(channel)) return null;
-            return (Media) mMapChannelToMediaObject[channel];
+
+            Media obj;
+            mMapChannelToMediaObject.TryGetValue(channel, out obj);
+            return obj;
+
+            //if (!mMapChannelToMediaObject.ContainsKey(channel)) return null;
+            //return (Media) mMapChannelToMediaObject[channel];
         }
 
         /// <summary>
@@ -152,7 +157,16 @@ namespace urakawa.property.channel
                 }
             }
             Media prevMedia = null;
-            if (mMapChannelToMediaObject.ContainsKey(channel)) prevMedia = mMapChannelToMediaObject[channel];
+
+            Media obj;
+            mMapChannelToMediaObject.TryGetValue(channel, out obj);
+            if (obj != null)
+            {
+                prevMedia = obj;
+            }
+
+            //if (mMapChannelToMediaObject.ContainsKey(channel)) prevMedia = mMapChannelToMediaObject[channel];
+
             mMapChannelToMediaObject[channel] = media;
             NotifyChannelMediaMapOccured(this, channel, media, prevMedia);
         }

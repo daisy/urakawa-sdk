@@ -149,10 +149,14 @@ namespace urakawa.xuk
         private static readonly Dictionary<string, string> m_NamespacePrefixMap = new Dictionary<string, string>();
         private static string GetNamespacePrefix(string namespaceUri)
         {
-            if (m_NamespacePrefixMap.ContainsKey(namespaceUri))
-            {
-                return m_NamespacePrefixMap[namespaceUri];
-            }
+            string str;
+            m_NamespacePrefixMap.TryGetValue(namespaceUri, out str);
+            if (!string.IsNullOrEmpty(str)) return str;
+
+            //if (m_NamespacePrefixMap.ContainsKey(namespaceUri))
+            //{
+            //    return m_NamespacePrefixMap[namespaceUri];
+            //}
 
             m_NamespacePrefixIndex++;
             string prefix = "ns" + m_NamespacePrefixIndex;
@@ -328,7 +332,11 @@ namespace urakawa.xuk
 
         private static string GetTypeNameFormatted(Type t)
         {
-            if (m_TypeNameMap.ContainsKey(t)) return m_TypeNameMap[t];
+            string str;
+            m_TypeNameMap.TryGetValue(t, out str);
+            if (!string.IsNullOrEmpty(str)) return str;
+
+            //if (m_TypeNameMap.ContainsKey(t)) return m_TypeNameMap[t];
 
             string name = t.Name;
 
@@ -377,7 +385,11 @@ namespace urakawa.xuk
                     "Cannot get the XukNamespaceUri of a type that does not inherit XukAble");
             }
 
-            if (m_TypeNamespaceUriMap.ContainsKey(t)) return m_TypeNamespaceUriMap[t];
+            string str;
+            m_TypeNamespaceUriMap.TryGetValue(t, out str);
+            if (!string.IsNullOrEmpty(str)) return str;
+            
+            //if (m_TypeNamespaceUriMap.ContainsKey(t)) return m_TypeNamespaceUriMap[t];
 
             FieldInfo fi = t.GetField("XUK_NS", BindingFlags.Static | BindingFlags.Public);
             if (fi != null)
