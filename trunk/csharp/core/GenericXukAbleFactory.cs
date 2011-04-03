@@ -186,7 +186,10 @@ namespace urakawa
             tq.Type = t;
             tq.ClassName = t.FullName;
             tq.AssemblyName = t.Assembly.GetName();
-            if (typeof(T).IsAssignableFrom(t.BaseType) && !mRegisteredTypeAndQNamesByType.ContainsKey(t.BaseType) && !t.BaseType.IsAbstract)
+            
+            if (typeof(T).IsAssignableFrom(t.BaseType)
+                && !mRegisteredTypeAndQNamesByType.ContainsKey(t.BaseType)
+                && !t.BaseType.IsAbstract)
             {
                 tq.BaseQName = RegisterType(t.BaseType).QName;
             }
@@ -194,16 +197,14 @@ namespace urakawa
             return tq;
         }
 
-        private bool IsRegistered(Type t)
-        {
-            return mRegisteredTypeAndQNamesByType.ContainsKey(t);
-        }
-
         private Type LookupType(string qname)
         {
-            if (mRegisteredTypeAndQNamesByQualifiedName.ContainsKey(qname))
+            TypeAndQNames obj;
+            mRegisteredTypeAndQNamesByQualifiedName.TryGetValue(qname, out obj);
+
+            if (obj != null) //mRegisteredTypeAndQNamesByQualifiedName.ContainsKey(qname))
             {
-                TypeAndQNames t = mRegisteredTypeAndQNamesByQualifiedName[qname];
+                TypeAndQNames t = obj; // mRegisteredTypeAndQNamesByQualifiedName[qname];
                 if (t.Type != null)
                 {
                     return t.Type;
@@ -243,7 +244,7 @@ namespace urakawa
             U res = new U();
             InitializeInstance(res);
             Type t = typeof(U);
-            if (!IsRegistered(t)) RegisterType(t);
+            if (!mRegisteredTypeAndQNamesByType.ContainsKey(t)) RegisterType(t);
             return res;
         }
 
@@ -270,7 +271,7 @@ namespace urakawa
                 if (res != null)
                 {
                     InitializeInstance(res);
-                    if (!IsRegistered(t)) RegisterType(t);
+                    if (!mRegisteredTypeAndQNamesByType.ContainsKey(t)) RegisterType(t);
                     return res;
                 }
             }

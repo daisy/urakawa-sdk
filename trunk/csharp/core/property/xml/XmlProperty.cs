@@ -179,9 +179,13 @@ namespace urakawa.property.xml
             }
             string key = String.Format("{1}:{0}", newAttribute.LocalName, newAttribute.NamespaceUri);
             string prevValue = null;
-            if (mAttributes.ContainsKey(key))
+
+            XmlAttribute obj;
+            mAttributes.TryGetValue(key, out obj);
+
+            if (obj != null ) //mAttributes.ContainsKey(key))
             {
-                XmlAttribute prevAttr = mAttributes[key];
+                XmlAttribute prevAttr = obj; // mAttributes[key];
                 prevValue = prevAttr.Value;
                 RemoveAttribute(prevAttr);
             }
@@ -270,11 +274,16 @@ namespace urakawa.property.xml
         public XmlAttribute GetAttribute(string localName, string namespaceUri)
         {
             string key = String.Format("{1}:{0}", localName, namespaceUri);
-            if (mAttributes.ContainsKey(key))
-            {
-                return mAttributes[key];
-            }
-            return null;
+            
+            XmlAttribute obj;
+            mAttributes.TryGetValue(key, out obj);
+            return obj;
+
+            //if (mAttributes.ContainsKey(key))
+            //{
+            //    return mAttributes[key];
+            //}
+            //return null;
         }
         public XmlAttribute GetAttribute(string localName)
         {
