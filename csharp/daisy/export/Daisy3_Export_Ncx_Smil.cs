@@ -751,41 +751,44 @@ namespace urakawa.daisy.export
 
             urakawa.core.TreeNode parentNode = GetParentLevelNode(urakawaNode);
 
-            XmlNode obj;
-            treeNode_NavNodeMap.TryGetValue(parentNode, out obj);
-
             if (parentNode == null)
             {
                 navMapNode.AppendChild(navPointNode);
             }
-            else if (obj != null) //treeNode_NavNodeMap.ContainsKey(parentNode))
+            else
             {
-                obj.AppendChild(navPointNode); //treeNode_NavNodeMap[parentNode]
-            }
-            else // surch up for node
-            {
-                int counter = 0;
-                while (parentNode != null && counter <= 6)
-                {
-                    parentNode = GetParentLevelNode(parentNode);
+                XmlNode obj;
+                treeNode_NavNodeMap.TryGetValue(parentNode, out obj);
 
-                    if (parentNode != null
-                        //&& treeNode_NavNodeMap.ContainsKey(parentNode)
-                        )
-                    {
-                        treeNode_NavNodeMap.TryGetValue(parentNode, out obj);
-                        if (obj != null)
-                        {
-                            obj.AppendChild(navPointNode); //treeNode_NavNodeMap[parentNode]
-                            break;
-                        }
-                    }
-                    counter++;
+                if (obj != null) //treeNode_NavNodeMap.ContainsKey(parentNode))
+                {
+                    obj.AppendChild(navPointNode); //treeNode_NavNodeMap[parentNode]
                 }
-
-                if (parentNode == null || counter > 7)
+                else // surch up for node
                 {
-                    navMapNode.AppendChild(navPointNode);
+                    int counter = 0;
+                    while (parentNode != null && counter <= 6)
+                    {
+                        parentNode = GetParentLevelNode(parentNode);
+
+                        if (parentNode != null
+                            //&& treeNode_NavNodeMap.ContainsKey(parentNode)
+                            )
+                        {
+                            treeNode_NavNodeMap.TryGetValue(parentNode, out obj);
+                            if (obj != null)
+                            {
+                                obj.AppendChild(navPointNode); //treeNode_NavNodeMap[parentNode]
+                                break;
+                            }
+                        }
+                        counter++;
+                    }
+
+                    if (parentNode == null || counter > 7)
+                    {
+                        navMapNode.AppendChild(navPointNode);
+                    }
                 }
             }
 
