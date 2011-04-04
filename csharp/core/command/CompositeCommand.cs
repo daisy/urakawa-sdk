@@ -17,7 +17,7 @@ namespace urakawa.command
         {
             //var list = new List<T>();
             List<T> list = new List<T>();
-            foreach (T childCmd in ChildCommands.ContentsAs_Enumerable)
+            foreach (Command childCmd in ChildCommands.ContentsAs_Enumerable)
             {
                 if (childCmd is T)
                 {
