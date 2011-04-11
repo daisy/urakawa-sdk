@@ -439,9 +439,10 @@ namespace AudioLib
 
             m_ResumeStartPosition = bytePos;
 
+            bool wasPlaying = CurrentState == State.Playing;
             CurrentState = State.Paused;
 
-            if ( CurrentState == State.Playing )  stopPlayback();
+            if (wasPlaying )  stopPlayback();
         }
 
         public void Pause()
