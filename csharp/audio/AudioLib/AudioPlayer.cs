@@ -432,16 +432,16 @@ namespace AudioLib
                 return;
             }
 
-            if (CurrentState != State.Playing)
-            {
-                return;
-            }
+            //if (CurrentState != State.Playing)
+            //{
+                //return;
+            //}
 
             m_ResumeStartPosition = bytePos;
 
             CurrentState = State.Paused;
 
-            stopPlayback();
+            if ( CurrentState == State.Playing )  stopPlayback();
         }
 
         public void Pause()
