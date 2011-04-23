@@ -386,17 +386,17 @@ namespace AudioLib
                 (endPosition == 0 || startPosition < endPosition) &&
                 endPosition <= dataLength)
             {
-                if (mFwdRwdRate == 0)
+                if (m_FwdRwdRate == 0)
                 {
                     startPlayback(startPosition, endPosition);
                     Console.WriteLine("starting playback ");
                 }
-                else if (mFwdRwdRate > 0)
+                else if (m_FwdRwdRate > 0)
                 {
                     FastForward(startPosition);
                     Console.WriteLine("fast forward ");
                 }
-                else if (mFwdRwdRate < 0)
+                else if (m_FwdRwdRate < 0)
                 {
                     if (startPosition == 0) startPosition = m_CurrentAudioStream.Length;
                     Rewind(startPosition);
@@ -426,7 +426,7 @@ namespace AudioLib
 
         public void Pause(long bytePos)
         {
-            StopForwardRewind();
+            
             if (CurrentState == State.NotReady)
             {
                 return;
@@ -439,7 +439,13 @@ namespace AudioLib
 
             m_ResumeStartPosition = bytePos;
 
-            bool wasPlaying = CurrentState == State.Playing;
+            bool wasPlaying = CurrentState == State.Playing || m_FwdRwdRate != 0;
+
+            if (m_FwdRwdRate != 0)
+            {
+                StopForwardRewind();
+                m_PlaybackEndPosition = m_CurrentAudioDataLength;
+            }
             CurrentState = State.Paused;
 
             if (wasPlaying )  stopPlayback();
@@ -447,15 +453,21 @@ namespace AudioLib
 
         public void Pause()
         {
-            StopForwardRewind();
+            
             if (CurrentState == State.NotReady)
             {
                 return;
             }
 
-            if (CurrentState != State.Playing)
+            if (CurrentState != State.Playing && m_FwdRwdRate == 0)
             {
                 return;
+            }
+
+            if (m_FwdRwdRate != 0)
+            {
+                StopForwardRewind();
+                m_PlaybackEndPosition = m_CurrentAudioDataLength;
             }
 
             m_ResumeStartPosition = getCurrentBytePosition();
@@ -1154,7 +1166,7 @@ namespace AudioLib
         System.Windows.Forms.Timer mPreviewTimer = new System.Windows.Forms.Timer();
         //System.Timers.Timer mPreviewTimer = new System.Timers.Timer();
 
-        private int mFwdRwdRate; // holds skip time multiplier for forward / rewind mode , value is 0 for normal playback,  positive  for FastForward and negetive  for Rewind
+        private int m_FwdRwdRate; // holds skip time multiplier for forward / rewind mode , value is 0 for normal playback,  positive  for FastForward and negetive  for Rewind
 
         /// <summary>
         /// Forward / Rewind rate.
@@ -1164,7 +1176,7 @@ namespace AudioLib
         /// </summary>
         public int PlaybackFwdRwdRate
         {
-            get { return mFwdRwdRate; }
+            get { return m_FwdRwdRate; }
             set { SetPlaybackMode(value); }
         }
 
@@ -1175,7 +1187,7 @@ namespace AudioLib
         /// <param name="mode">The new mode.</param>
         private void SetPlaybackMode(int rate)
         {
-            if (rate != mFwdRwdRate)
+            if (rate != m_FwdRwdRate)
             {
                 if (CurrentState == State.Playing)
                 {
@@ -1193,7 +1205,7 @@ namespace AudioLib
                     {
                         Pause();
                         //FastPlayFactor = 1;
-                        mFwdRwdRate = rate;
+                        m_FwdRwdRate = rate;
                         Thread.Sleep(10);
                         Resume();
                     }
@@ -1206,16 +1218,16 @@ namespace AudioLib
                         CurrentState = State.Paused; // before stopPlayback(), doesn't kill the stream provider
                         stopPlayback();
 
-                        mFwdRwdRate = rate;
+                        m_FwdRwdRate = rate;
 
                         //InitPlay(mCurrentAudio, restartPos, 0);
                         //startPlayback(restartPos, m_CurrentAudioStream.Length );
                         //startPlayback(restartPos, m_CurrentAudioDataLength);
-                        if (mFwdRwdRate > 0)
+                        if (m_FwdRwdRate > 0)
                         {
                             FastForward(restartPos);
                         }
-                        else if (mFwdRwdRate < 0)
+                        else if (m_FwdRwdRate < 0)
                         {
                             if (restartPos == 0) restartPos = m_CurrentAudioStream.Length;
                             Rewind(restartPos);
@@ -1224,7 +1236,7 @@ namespace AudioLib
                 }
                 else if (CurrentState == State.Paused || CurrentState == State.Stopped)
                 {
-                    mFwdRwdRate = rate;
+                    m_FwdRwdRate = rate;
                 }
             }
         }
@@ -1241,7 +1253,7 @@ namespace AudioLib
         private void Rewind(long lStartPosition)
         {
             // let's play backward!
-            if (mFwdRwdRate != 0)
+            if (m_FwdRwdRate != 0)
             {
 
                 m_lChunkStartPosition = lStartPosition;
@@ -1264,7 +1276,7 @@ namespace AudioLib
         {
 
             // let's play forward!
-            if (mFwdRwdRate != 0)
+            if (m_FwdRwdRate != 0)
             {
 
                 m_lChunkStartPosition = lStartPosition;
@@ -1285,7 +1297,7 @@ namespace AudioLib
             if (m_CurrentAudioPCMFormat == null)
                 return;
 
-            double StepInMs = Math.Abs(4000 * mFwdRwdRate);
+            double StepInMs = Math.Abs(4000 * m_FwdRwdRate);
             //long lStepInBytes = CalculationFunctions.ConvertTimeToByte(StepInMs, (int)mCurrentAudio.getPCMFormat().getSampleRate(), mCurrentAudio.getPCMFormat().getBlockAlign());
             long lStepInBytes = m_CurrentAudioPCMFormat.ConvertTimeToBytes(Convert.ToInt64(StepInMs * AudioLibPCMFormat.TIME_UNIT));
             int PlayChunkLength = 1200;
@@ -1305,7 +1317,7 @@ namespace AudioLib
             //System.Media.SystemSounds.Asterisk.Play();
             long PlayStartPos = 0;
             long PlayEndPos = 0;
-            if (mFwdRwdRate > 0)
+            if (m_FwdRwdRate > 0)
             { //2
                 Console.WriteLine("rate is above 0");
                 //if ((mCurrentAudio.getPCMLength() - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
@@ -1353,7 +1365,7 @@ namespace AudioLib
 
                 } //-3
             } //-2
-            else if (mFwdRwdRate < 0)
+            else if (m_FwdRwdRate < 0)
             { //2
                 //if (m_lChunkStartPosition > (lStepInBytes ) && lPlayChunkLength <= m_Asset.getPCMLength () )
                 Console.WriteLine("rewind " + m_lChunkStartPosition);
