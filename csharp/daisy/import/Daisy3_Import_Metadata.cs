@@ -441,7 +441,7 @@ namespace urakawa.daisy.import
 
         private void RemoveMetadataItemsToBeExcluded()
         {
-            if (m_MetadataItemsToExclude == null || m_MetadataItemsToExclude.Count == 0) return;
+            if (MetadataItemsToExclude == null || MetadataItemsToExclude.Count == 0) return;
             Presentation pres = m_Project.Presentations.Get(0);
             foreach (metadata.Metadata m in pres.Metadatas.ContentsAs_ListCopy)
             {
