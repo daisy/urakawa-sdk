@@ -189,9 +189,17 @@ namespace urakawa.daisy.export
             return itemNode;
         }
 
+        private readonly string m_GeneratorName_SDK = "the Urakawa SDK: the open-source DAISY multimedia authoring toolkit" ;
+        private string m_GeneratorName ;
+        public string GeneratorName 
+        { 
+            get { return string.IsNullOrEmpty(m_GeneratorName) ? m_GeneratorName= "Tobi & " + m_GeneratorName_SDK: m_GeneratorName ; }
+            set { m_GeneratorName = value + " & " + m_GeneratorName_SDK; }
+        }
+
         private void AddMetadata_Generator(XmlDocument doc, XmlNode parentNode)
         {
-            AddMetadataAsAttributes(doc, parentNode, "dtb:generator", "Tobi and the Urakawa SDK: the open-source DAISY multimedia authoring toolkit");
+            AddMetadataAsAttributes(doc, parentNode, "dtb:generator", GeneratorName);
             //m_ProgressPercentage = 100;
             //reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.AllFilesCreated);                                       
         }
