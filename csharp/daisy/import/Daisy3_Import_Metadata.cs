@@ -439,7 +439,7 @@ namespace urakawa.daisy.import
             }
         }
 
-        private void RemoveMetadataItemsToBeExcluded()
+        protected virtual void RemoveMetadataItemsToBeExcluded()
         {
             if (MetadataItemsToExclude == null || MetadataItemsToExclude.Count == 0) return;
             Presentation pres = m_Project.Presentations.Get(0);
@@ -452,5 +452,7 @@ namespace urakawa.daisy.import
                 }
             }
         }
+
+
     }
 }
