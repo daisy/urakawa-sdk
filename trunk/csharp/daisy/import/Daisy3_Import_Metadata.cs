@@ -10,10 +10,14 @@ namespace urakawa.daisy.import
 {
     public partial class Daisy3_Import
     {
+        private List<string> m_MetadataItemsToExclude = new List<string>();
+        protected virtual List<string> MetadataItemsToExclude { get { return m_MetadataItemsToExclude; } }
+
         private void parseMetadata(XmlDocument xmlDoc)
         {
             parseMetadata_NameContentAll(xmlDoc);
             parseMetadata_ElementInnerTextAll(xmlDoc);
+            RemoveMetadataItemsToBeExcluded();
         }
 
         private void parseMetadata_ElementInnerTextAll(XmlDocument xmlDoc)
@@ -435,5 +439,18 @@ namespace urakawa.daisy.import
             }
         }
 
+        private void RemoveMetadataItemsToBeExcluded()
+        {
+            if (m_MetadataItemsToExclude == null || m_MetadataItemsToExclude.Count == 0) return;
+            Presentation pres = m_Project.Presentations.Get(0);
+            foreach (metadata.Metadata m in pres.Metadatas.ContentsAs_ListCopy)
+            {
+                if (m != null && MetadataItemsToExclude.Contains(m.NameContentAttribute.Name))
+                {
+                    Console.WriteLine("removing metadata " + m.NameContentAttribute.Name);
+                    pres.Metadatas.Remove(m);
+                }
+            }
+        }
     }
 }
