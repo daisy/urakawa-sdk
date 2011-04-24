@@ -193,8 +193,8 @@ namespace urakawa.daisy.export
         private string m_GeneratorName ;
         public string GeneratorName 
         { 
-            get { return string.IsNullOrEmpty(m_GeneratorName) ? m_GeneratorName= "Tobi & " + m_GeneratorName_SDK: m_GeneratorName ; }
-            set { m_GeneratorName = value + " & " + m_GeneratorName_SDK; }
+            get { return string.IsNullOrEmpty(m_GeneratorName) ? m_GeneratorName= "Tobi and " + m_GeneratorName_SDK: m_GeneratorName ; }
+            set { m_GeneratorName = value + " and " + m_GeneratorName_SDK; }
         }
 
         private void AddMetadata_Generator(XmlDocument doc, XmlNode parentNode)
