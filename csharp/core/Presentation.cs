@@ -804,17 +804,19 @@ namespace urakawa
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
         {
-            string rootUri = source.GetAttribute(XukStrings.RootUri);
             Uri baseUri = new Uri(System.IO.Directory.GetCurrentDirectory());
-            if (source.BaseURI != "") baseUri = new Uri(baseUri, source.BaseURI);
-            if (rootUri == null)
-            {
-                RootUri = baseUri;
-            }
-            else
-            {
-                RootUri = new Uri(baseUri, rootUri);
-            }
+            if (!string.IsNullOrEmpty(source.BaseURI)) baseUri = new Uri(baseUri, source.BaseURI);
+            RootUri = new Uri(baseUri, "./");
+
+            //string rootUri = source.GetAttribute(XukStrings.RootUri);
+            //if (rootUri == null)
+            //{
+            //    RootUri = baseUri;
+            //}
+            //else
+            //{
+            //    RootUri = new Uri(baseUri, rootUri);
+            //}
             string lang = source.GetAttribute(XukStrings.Language);
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
@@ -1063,14 +1065,14 @@ namespace urakawa
         {
             base.XukOutAttributes(destination, baseUri);
 
-            if (baseUri == null)
-            {
-                destination.WriteAttributeString(XukStrings.RootUri, RootUri.AbsoluteUri);
-            }
-            else
-            {
-                destination.WriteAttributeString(XukStrings.RootUri, baseUri.MakeRelativeUri(RootUri).ToString());
-            }
+            //if (baseUri == null)
+            //{
+            //    destination.WriteAttributeString(XukStrings.RootUri, RootUri.AbsoluteUri);
+            //}
+            //else
+            //{
+            //    destination.WriteAttributeString(XukStrings.RootUri, baseUri.MakeRelativeUri(RootUri).ToString());
+            //}
             if (!String.IsNullOrEmpty(Language))
             {
                 destination.WriteAttributeString(XukStrings.Language, Language);
