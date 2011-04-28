@@ -20,7 +20,7 @@ namespace urakawa.daisy.import
         protected AudioChannel m_audioChannel;
         private AudioFormatConvertorSession m_AudioConversionSession;
         private Dictionary<string, FileDataProvider> m_OriginalAudioFile_FileDataProviderMap = new Dictionary<string, FileDataProvider>(); // maps original audio file refered by smil to FileDataProvider of sdk.
-
+        protected List<TreeNode> TreenodesWithoutManagedAudioMediaData ;
 
         //private bool m_firstTimePCMFormat;
 
@@ -46,6 +46,7 @@ namespace urakawa.daisy.import
             AddSubCancellable(m_AudioConversionSession);
 
             m_OriginalAudioFile_FileDataProviderMap.Clear();
+            TreenodesWithoutManagedAudioMediaData = new List<TreeNode>();
 
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);
 
@@ -405,6 +406,8 @@ namespace urakawa.daisy.import
 
             if (media == null)
             {
+                if (!TreenodesWithoutManagedAudioMediaData.Contains(treeNode))  TreenodesWithoutManagedAudioMediaData.Add(treeNode);
+                
                 Debug.Fail("Creating ExternalAudioMedia ??");
 
                 Time timeClipBegin = null;
