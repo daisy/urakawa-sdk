@@ -583,17 +583,9 @@ namespace urakawa.daisy.import
             if (isClipEndError)
             {
                 // reduce clip end by 1 millisecond for rounding off tolerance
-                Console.WriteLine ("Error encountered: reducing original clip by 1ms" + clipE ) ;
-                clipE.Substract(new Time(AudioLibPCMFormat.TIME_UNIT));
-                Console.WriteLine ("new clip " + clipE ) ;
-                try
+                isClipEndError =  addAudioWavWithEndOfFileTolerance(mediaData, dataProv, clipB, clipE);
+                if (isClipEndError)
                 {
-                    mediaData.AppendPcmData(dataProv, clipB, clipE);
-                    isClipEndError = false;
-                }
-                catch (Exception ex)
-                {
-                    isClipEndError = true;
                     Console.WriteLine("CLIP TIME ERROR (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
                     return null;
                 }
@@ -663,5 +655,28 @@ namespace urakawa.daisy.import
             */
             return media;
         }
+
+        protected virtual bool addAudioWavWithEndOfFileTolerance(WavAudioMediaData mediaData, FileDataProvider dataProv, Time clipB, Time clipE)
+        {
+            bool isClipEndError = false;
+            // reduce clip end by 1 millisecond for rounding off tolerance
+            Console.WriteLine("Error encountered: reducing original clip by 1ms" + clipE);
+            clipE.Substract(new Time(AudioLibPCMFormat.TIME_UNIT));
+            Console.WriteLine("new clip " + clipE);
+            try
+            {   
+                mediaData.AppendPcmData(dataProv, clipB, clipE);
+                isClipEndError = false;
+            }
+            catch (Exception ex)
+            {
+                isClipEndError = true;
+                Console.WriteLine("clip error after providing tolerance of 1ms also");
+                //return null;
+
+            }
+            return isClipEndError;
+        }
+
     }
 }
