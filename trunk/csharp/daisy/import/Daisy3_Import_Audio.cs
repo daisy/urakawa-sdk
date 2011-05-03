@@ -326,7 +326,7 @@ namespace urakawa.daisy.import
 
                 if (RequestCancellation) return;
 
-                media = addAudioWav(dataProv, audioAttrClipBegin, audioAttrClipEnd);
+                media = addAudioWav(dataProv, audioAttrClipBegin, audioAttrClipEnd, treeNode);
                 //media = addAudioWav ( fullWavPath, deleteSrcAfterCompletion, audioAttrClipBegin, audioAttrClipEnd );
 
             }
@@ -397,7 +397,7 @@ namespace urakawa.daisy.import
                     if (RequestCancellation) return;
 
                     //media = addAudioWav(newfullWavPath, true, audioAttrClipBegin, audioAttrClipEnd);
-                    media = addAudioWav(dataProv, audioAttrClipBegin, audioAttrClipEnd);
+                    media = addAudioWav(dataProv, audioAttrClipBegin, audioAttrClipEnd, treeNode);
                 }
                 //}
             }
@@ -509,7 +509,7 @@ namespace urakawa.daisy.import
             return null;
         }
 
-        private Media addAudioWav(FileDataProvider dataProv, XmlNode audioAttrClipBegin, XmlNode audioAttrClipEnd)
+        private Media addAudioWav(FileDataProvider dataProv, XmlNode audioAttrClipBegin, XmlNode audioAttrClipEnd, TreeNode treeNode)
         {
             if (RequestCancellation) return null;
 
@@ -583,7 +583,7 @@ namespace urakawa.daisy.import
             if (isClipEndError)
             {
                 // reduce clip end by 1 millisecond for rounding off tolerance
-                isClipEndError =  addAudioWavWithEndOfFileTolerance(mediaData, dataProv, clipB, clipE);
+                isClipEndError =  addAudioWavWithEndOfFileTolerance(mediaData, dataProv, clipB, clipE, treeNode);
                 if (isClipEndError)
                 {
                     Console.WriteLine("CLIP TIME ERROR (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
@@ -656,7 +656,7 @@ namespace urakawa.daisy.import
             return media;
         }
 
-        protected virtual bool addAudioWavWithEndOfFileTolerance(WavAudioMediaData mediaData, FileDataProvider dataProv, Time clipB, Time clipE)
+        protected virtual bool addAudioWavWithEndOfFileTolerance(WavAudioMediaData mediaData, FileDataProvider dataProv, Time clipB, Time clipE, TreeNode treeNode)
         {
             bool isClipEndError = false;
             // reduce clip end by 1 millisecond for rounding off tolerance
