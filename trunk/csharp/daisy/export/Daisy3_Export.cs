@@ -186,7 +186,7 @@ protected TreeNodeTestDelegate skipDelegate ;
             m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
         }
 
-        private bool RequestCancellation_RemovePublishChannel(Channel publishChannel)
+        protected bool RequestCancellation_RemovePublishChannel(Channel publishChannel)
         {
             if (RequestCancellation)
             {
