@@ -20,7 +20,7 @@ namespace urakawa.daisy.export
         private PublishFlattenedManagedAudioVisitor m_PublishVisitor = null;
         protected string m_OutputDirectory;
         protected List<string> m_NavListElementNamesList;
-        private const string PUBLISH_AUDIO_CHANNEL_NAME = "Temporary External Audio Medias (Publish Visitor)";
+        protected const string PUBLISH_AUDIO_CHANNEL_NAME = "Temporary External Audio Medias (Publish Visitor)";
 
         protected string m_Filename_Content = "dtbook.xml";
         protected const string m_Filename_Ncx = "navigation.ncx";
@@ -103,23 +103,49 @@ protected TreeNodeTestDelegate skipDelegate ;
             m_ID_Counter = 0;
             if (RequestCancellation) return;
 
+
+            Channel publishChannel = PublishAudioFiles ();
+            
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+            CreateDTBookDocument();
+
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+            CreateNcxAndSmilDocuments();
+
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+            CreateExternalFiles();
+            
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+            CreateOpfDocument();
+
+            //m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
+            RemovePublishChannel(publishChannel);
+        }
+
+        /// <summary>
+        /// Creates audio files for export, it is important to call  function RemovePublishChannel after all export operations are complete
+        /// </summary>
+        /// <returns></returns>
+        protected Channel PublishAudioFiles()
+        {
+
             // if publish channel exists remove it.
-            List<Channel> previousChannelsList = m_Presentation.ChannelsManager.GetChannelsByName ( PUBLISH_AUDIO_CHANNEL_NAME );
+            List<Channel> previousChannelsList = m_Presentation.ChannelsManager.GetChannelsByName(PUBLISH_AUDIO_CHANNEL_NAME);
 
             foreach (Channel previousChannel in previousChannelsList)
-                {
-                m_Presentation.ChannelsManager.RemoveManagedObject ( previousChannel);
-                }
+            {
+                m_Presentation.ChannelsManager.RemoveManagedObject(previousChannel);
+            }
 
             ////TreeNodeTestDelegate triggerDelegate  = delegate(urakawa.core.TreeNode node) { return node.GetManagedAudioMedia () != null ; };
             //TreeNodeTestDelegate triggerDelegate = doesTreeNodeTriggerNewSmil;
             //TreeNodeTestDelegate skipDelegate = delegate { return false; };
-                ConfigureAudioFileDelegates();
+            ConfigureAudioFileDelegates();
 
             m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(triggerDelegate, skipDelegate);
 
             m_PublishVisitor.EncodePublishedAudioFilesToMp3 = m_encodeToMp3;
-            if (m_encodeToMp3 && m_BitRate_Mp3 >= 32) m_PublishVisitor.BitRate_Mp3 = (ushort) m_BitRate_Mp3;
+            if (m_encodeToMp3 && m_BitRate_Mp3 >= 32) m_PublishVisitor.BitRate_Mp3 = (ushort)m_BitRate_Mp3;
             m_PublishVisitor.EncodePublishedAudioFilesSampleRate = m_sampleRate;
             m_PublishVisitor.DisableAcmCodecs = m_SkipACM;
 
@@ -151,18 +177,12 @@ protected TreeNodeTestDelegate skipDelegate ;
             GC.Collect();
             GC.WaitForFullGCComplete();
 
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateDTBookDocument();
+            //if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+            return publishChannel;
+        }
 
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateNcxAndSmilDocuments();
-
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateExternalFiles();
-            
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateOpfDocument();
-
+        protected void RemovePublishChannel (Channel publishChannel )
+        {
             m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
         }
 
