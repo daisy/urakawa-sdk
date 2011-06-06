@@ -100,6 +100,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DTDs, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dtds\bin\Debug\DTDs.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -276,6 +280,9 @@
     <Compile Include="events\undo\TransactionEndedEventArgs.cs" />
     <Compile Include="events\undo\TransactionStartedEventArgs.cs" />
     <Compile Include="events\undo\UndoRedoManagerEventArgs.cs" />
+    <Compile Include="property\alt\AlternateContent.cs" />
+    <Compile Include="property\alt\AlternateContentProperty.cs" />
+    <Compile Include="property\alt\AlternateContents.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
     <Compile Include="property\channel\ImageChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />
@@ -374,10 +381,6 @@
     <ProjectReference Include="..\audio\AudioLib\AudioLib.csproj">
       <Project>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</Project>
       <Name>AudioLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\dtds\DTDs.csproj">
-      <Project>{3393A6E2-BB27-4D53-ACAA-629723D51F5E}</Project>
-      <Name>DTDs</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

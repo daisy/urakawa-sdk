@@ -610,6 +610,10 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ChannelsProperty" : "cP"); }
         }
+        public static string AlternateContentProperty
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentProperty" : "ACP"); }
+        }
         public static string ManagedAudioMedia
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ManagedAudioMedia" : "mAu"); }
@@ -705,7 +709,8 @@ namespace urakawa.xuk
             {
             get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "IsPreservedForOutputFile" : "preOutFl"); }
             }
-            
+
+        
 
         #endregion
 
