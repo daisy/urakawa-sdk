@@ -614,6 +614,18 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentProperty" : "ACP"); }
         }
+        public static string AlternateContents
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContents" : "ACs"); }
+        }
+        public static string AlternateContent
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContent" : "AC"); }
+        }
+        public static string AlternateContentDescription
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AltContentDescription" : "ACDesc"); }
+        }
         public static string ManagedAudioMedia
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ManagedAudioMedia" : "mAu"); }
