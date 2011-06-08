@@ -96,9 +96,43 @@ namespace urakawa.property.alt
             {
                 XukInMetadata(source, handler);
             }
+            else if (source.LocalName == XukStrings.Medias)
+            {
+                XukInMedias(source, handler);
+            }
             else
             {
                 base.XukInChild(source, handler);
+            }
+        }
+
+        private void XukInMedias(XmlReader source, IProgressHandler handler)
+        {
+            if (source.IsEmptyElement) return;
+            while (source.Read())
+            {
+                if (source.NodeType == XmlNodeType.Element)
+                {
+                    Media newMedia = Presentation.MediaFactory.Create(source.LocalName, source.NamespaceURI);
+                    if (newMedia!= null)
+                    {
+                        newMedia.XukIn(source, handler);
+                        m_Medias.Insert(m_Medias.Count, newMedia);
+                    }
+                    else if (!source.IsEmptyElement)
+                    {
+                        //Read past unidentified element
+                        source.ReadSubtree().Close();
+                    }
+                }
+                else if (source.NodeType == XmlNodeType.EndElement)
+                {
+                    break;
+                }
+                if (source.EOF)
+                {
+                    throw new exception.XukException("Unexpectedly reached EOF");
+                }
             }
         }
 
