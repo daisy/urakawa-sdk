@@ -23,6 +23,7 @@ using urakawa.xuk;
 using urakawa.events;
 using urakawa.events.presentation;
 using urakawa.ExternalFiles;
+using urakawa.property.alt ;
 
 namespace urakawa
 {
@@ -261,6 +262,7 @@ namespace urakawa
         private CommandFactory mCommandFactory;
         private MetadataFactory mMetadataFactory;
         private ExternalFileDataFactory m_ExternalFileDataFactory;
+        private property.alt.AlternateContentFactory m_AlternateContentFactory;
         //
         // use this to bypass XUK parsing/serialization of the UndoRedoManager
         // (to avoid issues with our current XukAble Commands implementation)
@@ -431,6 +433,26 @@ namespace urakawa
                 return mPropertyFactory;
             }
         }
+
+        /// <summary>
+        /// Gets the <see cref="AlternateContentFactory"/> of <c>this</c>
+        /// </summary>
+        /// <returns>The <see cref="AlternateContentFactory"/> of the <see cref="Presentation"/></returns>
+        /// <remark>
+        /// The <see cref="AlternateContentFactory"/> of a <see cref="urakawa.Project"/> is initialized lazily
+        /// </remark>
+        public AlternateContentFactory AlternateContentFactory
+        {
+            get
+            {
+                if (m_AlternateContentFactory== null)
+                {
+                    m_AlternateContentFactory= new AlternateContentFactory(this);
+                }
+                return m_AlternateContentFactory;
+            }
+        }
+
 
         /// <summary>
         /// Gets the <see cref="UndoRedoManager"/> of <c>this</c>
@@ -1040,6 +1062,10 @@ namespace urakawa
                 {
                     ExternalFilesDataManager.XukIn(source, handler);
                 }
+                else if (source.LocalName == XukStrings.AlternateContentFactory)
+                {
+                    AlternateContentFactory.XukIn(source, handler);
+                }
                 else if (source.LocalName == XukStrings.RootNode)
                 {
                     m_XukedInTreeNodes = 0;
@@ -1118,7 +1144,8 @@ namespace urakawa
             MediaDataManager.XukOut(destination, baseUri, handler);
 
             ExternalFilesDataManager.XukOut(destination, baseUri, handler);
-            
+
+            AlternateContentFactory.XukOut(destination, baseUri, handler);
 
             destination.WriteStartElement(XukStrings.Metadatas, XukAble.XUK_NS);
             foreach (Metadata md in mMetadata.ContentsAs_Enumerable)

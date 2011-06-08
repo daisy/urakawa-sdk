@@ -13,5 +13,20 @@ namespace urakawa.property.alt
             return XukStrings.AlternateContentProperty;
         }
 
+        private AlternateContents m_AlternateContents;
+
+        public AlternateContentProperty()
+        {
+            m_AlternateContents = null;
+        }
+        
+        public void SetAlternateContents(AlternateContents contents)
+        {
+            if (contents == null) throw new exception.MethodParameterIsNullException ("Contents instance is null");
+
+            m_AlternateContents = contents;
+        }
+
+
     }
 }
