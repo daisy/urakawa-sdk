@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.property.channel;
+using urakawa.property.alt;
 
 namespace urakawa.media.data.utilities
 {
@@ -49,6 +50,23 @@ namespace urakawa.media.data.utilities
                         }
                     }
                 }
+                else if (prop is AlternateContentProperty)
+                {
+                    AlternateContentProperty altProp = (AlternateContentProperty)prop;
+                    if (altProp.AlternateContents == null) continue;
+                    foreach (AlternateContent ac in altProp.AlternateContents.AlternateContentItems.ContentsAs_Enumerable)
+                    {
+                        foreach (Media md in ac.AlternateMedias.ContentsAs_Enumerable)
+                        {
+                            if (md is IManaged)
+                            {
+                                IManaged mm= (IManaged) md;
+                                if (!mCollectedMedia.Contains(mm)) mCollectedMedia.Add(mm);
+                            }
+                        }
+                    }
+                }
+
             }
             return true;
         }
