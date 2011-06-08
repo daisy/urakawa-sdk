@@ -223,6 +223,10 @@ namespace urakawa.xuk
             get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "ExternalFileDataFactory" : "ExFlDtFct"); }
             }
 
+        public static string AlternateContentFactory
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentFactory" : "ACFct"); }
+        }
 
 
         #endregion
@@ -625,6 +629,10 @@ namespace urakawa.xuk
         public static string AlternateContentDescription
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AltContentDescription" : "ACDesc"); }
+        }
+        public static string AlternateContentItems
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentItems" : "ACI"); }
         }
         public static string ManagedAudioMedia
         {

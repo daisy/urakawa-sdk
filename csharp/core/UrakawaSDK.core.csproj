@@ -281,6 +281,7 @@
     <Compile Include="events\undo\TransactionStartedEventArgs.cs" />
     <Compile Include="events\undo\UndoRedoManagerEventArgs.cs" />
     <Compile Include="property\alt\AlternateContent.cs" />
+    <Compile Include="property\alt\AlternateContentFactory.cs" />
     <Compile Include="property\alt\AlternateContentProperty.cs" />
     <Compile Include="property\alt\AlternateContents.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
