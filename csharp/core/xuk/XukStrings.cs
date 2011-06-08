@@ -543,6 +543,11 @@ namespace urakawa.xuk
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MediaDataItem" : "medDtItm"); }
         }
 
+        public static string Medias
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "Medias" : "meds"); }
+        }
+
         #endregion
 
 
