@@ -259,7 +259,6 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TreeNodeAudioStreamDeleteCommand" : "nodAudDelCmd"); }
         }
-
         public static string MetadataAddCommand
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataAddCommand" : "metaAddCmd"); }
@@ -280,6 +279,25 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataSetIdCommand" : "metaSetIdCmd"); }
         }
+
+        public static string AlternateContentMetadataAddCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentMetadataAddCommand" : "ACMetaAddCmd"); }
+        }
+        public static string AlternateContentMetadataRemoveCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentMetadataRemoveCommand" : "ACMetaRemoveCmd"); }
+        }
+        public static string AlternateContentMetadataSetNameCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentMetadataSetNameCommand" : "ACMetaSetNameCmd"); }
+        }
+        public static string AlternateContentMetadataSetContentCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentMetadataSetContentCommand" : "ACMetaSetContentCmd"); }
+        }
+        
+        
         #endregion
 
         #region managers
