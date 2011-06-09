@@ -120,6 +120,10 @@
   <ItemGroup>
     <Content Include="App.ico" />
     <Content Include="events\EventsClassDiagram.png" />
+    <Compile Include="commands\AlternateContentMetadataAddCommand.cs" />
+    <Compile Include="commands\AlternateContentMetadataRemoveCommand.cs" />
+    <Compile Include="commands\AlternateContentMetadataSetContentCommand.cs" />
+    <Compile Include="commands\AlternateContentMetadataSetNameCommand.cs" />
     <Compile Include="commands\CommandFactory.cs" />
     <Compile Include="commands\ManagedAudioMediaInsertDataCommand.cs" />
     <Compile Include="commands\MetadataAddCommand.cs" />
