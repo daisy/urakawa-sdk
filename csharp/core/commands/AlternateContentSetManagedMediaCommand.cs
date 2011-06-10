@@ -6,6 +6,7 @@ using urakawa.core;
 using urakawa.exception;
 using urakawa.media.data;
 using urakawa.media.data.audio;
+using urakawa.media.data.image;
 using urakawa.progress;
 using urakawa.property.channel;
 using urakawa.xuk;
@@ -67,8 +68,14 @@ namespace urakawa.commands
             m_AlternateContent = altContent;
             ManagedMedia= managedMedia;
 
-            //m_UsedMediaData.Add(ManagedAudioMedia.AudioMediaData);
-
+            if (managedMedia is ManagedAudioMedia)
+            {
+                m_UsedMediaData.Add( ((ManagedAudioMedia)managedMedia).AudioMediaData);
+            }
+            else if (managedMedia is ManagedImageMedia)
+            {
+                m_UsedMediaData.Add(((ManagedImageMedia)managedMedia).ImageMediaData);
+            }
             ShortDescription = "Add new ManagedMedia";
             LongDescription = "Attach a ManagedMedia to a AlternateContent";
         }
