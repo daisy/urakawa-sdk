@@ -296,8 +296,16 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentMetadataSetContentCommand" : "ACMetaSetContentCmd"); }
         }
-        
-        
+
+        public static string TreeNodeAddAlternateContentCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TreeNodeAddAlternateContentCommand" : "nodAddACCmd"); }
+        }
+        public static string TreeNodeRemoveAlternateContentCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TreeNodeRemoveAlternateContentCommand" : "nodRemACCmd"); }
+        }
+
         #endregion
 
         #region managers

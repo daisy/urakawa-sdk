@@ -27,7 +27,15 @@ namespace urakawa.property.alt
             m_AlternateContents = contents;
         }
 
-        public AlternateContents AlternateContents { get { return m_AlternateContents; } }
+        public AlternateContents AlternateContents 
+        { 
+            get 
+            {
+                if (m_AlternateContents == null) m_AlternateContents = new AlternateContents();
+                    
+                return m_AlternateContents; 
+            } 
+        }
 
     }
 }
