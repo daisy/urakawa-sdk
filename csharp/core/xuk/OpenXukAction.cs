@@ -303,7 +303,11 @@ namespace urakawa.xuk
 
         public override void DoWork()
         {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             Execute();
+            stopWatch.Stop();
+            Console.WriteLine(@"......XUK-in milliseconds: " + stopWatch.ElapsedMilliseconds);
         }
 
         private Uri mSourceUri;

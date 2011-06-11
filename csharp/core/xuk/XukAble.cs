@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Xml;
 using urakawa.exception;
@@ -44,10 +45,149 @@ namespace urakawa.xuk
             get { return m_MissingTypeOriginalXukedName; }
         }
 
-        private string m_Uid = null;
-        public virtual string Uid
+
+
+        //public static ulong ComputeUidHash(string uid)
+        //{
+        //    int index = uid.IndexOfAny(m_digits);
+        //    if (index != -1)
+        //    {
+        //        ulong uidHash;
+        //        bool success = ulong.TryParse(uid.Substring(index), out uidHash);
+        //        if (success) return uidHash;
+        //    }
+
+        //    return ulong.MaxValue;
+        //}
+
+        // getter costs a lot of CPU time when called 10th of millions of time...so we use an unsafe public member :(
+        public int UidHash = int.MaxValue;
+       
+        private const uint zeroChar = (uint)'0';
+        private static char[] m_digitsNoZero = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        public static bool UsePrefixedIntUniqueHashCodes = true;
+        public static int GetHashCode(string uid)
         {
-            set { m_Uid = value; }
+            if (UsePrefixedIntUniqueHashCodes)
+            {
+                uint uidHash = 0;
+                int index = uid.IndexOfAny(m_digitsNoZero);
+                if (index != -1)
+                {
+                    bool success = true;
+                    uint factorTen = 1;
+                    for (int i = uid.Length - 1; i >= index; i--)
+                    {
+                        uint c = uid[i] - zeroChar;
+                        if (c < 0 || c > 9)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif //DEBUG
+                            success = false;
+                            break;
+                        }
+
+                        uidHash += factorTen * c;
+                        factorTen *= 10;
+                    }
+
+                    if (success)
+                    {
+                        return (int)uidHash;
+                    }
+
+                    //uint uidHash;
+                    //bool success = uint.TryParse(uid.Substring(index), out uidHash);
+                    //if (success)
+                    //{
+                    //    return (int)uidHash;
+                    //}
+                }
+                else
+                {
+                    index = uid.LastIndexOf('0');
+                    if (index == uid.Length - 1)
+                    {
+                        return 0;
+                    }
+
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                }
+
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+
+                UsePrefixedIntUniqueHashCodes = false;
+                return GetHashCode(uid);
+
+
+                //unsafe
+                //{
+                //    fixed (char* str = uid)
+                //    {
+                //        char* chPtr = str;
+                //        int num = 352654597;
+                //        int num2 = num;
+                //        int* numPtr = (int*)chPtr;
+                //        for (int i = uid.Length; i > 0; i -= 4)
+                //        {
+                //            num = (((num << 5) + num) + (num >> 27)) ^ numPtr[0];
+                //            if (i <= 2)
+                //            {
+                //                break;
+                //            }
+                //            num2 = (((num2 << 5) + num2) + (num2 >> 27)) ^ numPtr[1];
+                //            numPtr += 2;
+                //        }
+                //        return (num + (num2 * 1566083941));
+                //    }
+                //    fixed (char* str = ((char*)uid))
+                //    {
+                //        char* chPtr = str;
+                //        int num = 0x15051505;
+                //        int num2 = num;
+                //        int* numPtr = (int*)chPtr;
+                //        for (int i = uid.Length; i > 0; i -= 4)
+                //        {
+                //            num = (((num << 5) + num) + (num >> 0x1b)) ^ numPtr[0];
+                //            if (i <= 2)
+                //            {
+                //                break;
+                //            }
+                //            num2 = (((num2 << 5) + num2) + (num2 >> 0x1b)) ^ numPtr[1];
+                //            numPtr += 2;
+                //        }
+                //        return (num + (num2 * 0x5d588b65));
+                //    }
+                //}
+            }
+            else
+            {
+                return uid.GetHashCode();
+            }
+        }
+
+        private string m_Uid = null;
+        public string Uid
+        {
+            set
+            {
+                if (value != null)
+                {
+                    //m_Uid = string.Intern(value);
+                    m_Uid = value;
+                    UidHash = GetHashCode(m_Uid);
+                }
+                else
+                {
+                    m_Uid = null;
+                    UidHash = int.MaxValue;
+                }
+            }
             get { return m_Uid; }
         }
 
@@ -345,7 +485,7 @@ namespace urakawa.xuk
             {
                 if (info.PropertyType == typeof(string))
                 {
-                    string n =  (info.GetValue(null, null) as string) ?? name;
+                    string n = (info.GetValue(null, null) as string) ?? name;
                     m_TypeNameMap.Add(t, n);
                     return n;
                 }
@@ -388,7 +528,7 @@ namespace urakawa.xuk
             string str;
             m_TypeNamespaceUriMap.TryGetValue(t, out str);
             if (!string.IsNullOrEmpty(str)) return str;
-            
+
             //if (m_TypeNamespaceUriMap.ContainsKey(t)) return m_TypeNamespaceUriMap[t];
 
             FieldInfo fi = t.GetField("XUK_NS", BindingFlags.Static | BindingFlags.Public);

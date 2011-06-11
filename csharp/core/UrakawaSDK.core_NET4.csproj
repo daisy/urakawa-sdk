@@ -275,6 +275,10 @@
     <Compile Include="events\undo\TransactionEndedEventArgs.cs" />
     <Compile Include="events\undo\TransactionStartedEventArgs.cs" />
     <Compile Include="events\undo\UndoRedoManagerEventArgs.cs" />
+    <Compile Include="property\alt\AlternateContent.cs" />
+    <Compile Include="property\alt\AlternateContentFactory.cs" />
+    <Compile Include="property\alt\AlternateContentProperty.cs" />
+    <Compile Include="property\alt\AlternateContents.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
     <Compile Include="property\channel\ImageChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />
@@ -410,6 +414,7 @@
   <ItemGroup>
     <Folder Include="datax\" />
     <Folder Include="project\" />
+    <Folder Include="property\NewFolder1\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
