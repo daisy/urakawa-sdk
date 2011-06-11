@@ -119,7 +119,7 @@ action.Cancelled +=new EventHandler<CancelledEventArgs>(
         }
     );
 
-            action.Execute();
+            action.DoWork();
 
             if (RequestCancellation)
             {
