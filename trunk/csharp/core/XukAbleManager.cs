@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using urakawa.exception;
+using urakawa.xuk;
 
 namespace urakawa
 {
@@ -47,10 +49,25 @@ namespace urakawa
         private void RegenerateUids_NO_LOCK()
         {
             m_UidIndex = 0;
+            m_UidHashCollisions.Clear();
+
             foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
             {
                 obj.Uid = String.Format(UidFormat, m_UidIndex++);
             }
+
+            if (!XukAble.UsePrefixedIntUniqueHashCodes)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+
+                foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
+                {
+                    CheckUidHashCollision(obj);
+                }
+            }
+
             //{
             //    ulong index = 0;
 
@@ -85,21 +102,90 @@ namespace urakawa
             }
         }
 
-
-
-        private T GetManagedObject_NO_LOCK(string uid)
+        private List<int> m_UidHashCollisions = new List<int>(1);
+        private void CheckUidHashCollision(int uidHash)
         {
             foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
             {
-                if (obj.Uid == uid) return obj;
+                if (uidHash == obj.UidHash)
+                {
+                    if (!m_UidHashCollisions.Contains(uidHash))
+                    {
+                        m_UidHashCollisions.Add(uidHash);
+                    }
+                    return;
+                }
+            }
+        }
+        private void CheckUidHashCollision(XukAble xukAble)
+        {
+            foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
+            {
+                if (obj == xukAble) continue;
+
+                if (xukAble.UidHash == obj.UidHash)
+                {
+                    if (!m_UidHashCollisions.Contains(xukAble.UidHash))
+                    {
+                        m_UidHashCollisions.Add(xukAble.UidHash);
+                    }
+                    return;
+                }
+            }
+        }
+
+        private void CheckUidHashCollision_(int uidHash)
+        {
+            if (!m_UidHashCollisions.Contains(uidHash)) return;
+
+            uint nMatches = 0;
+            foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
+            {
+                if (objz.UidHash == uidHash)
+                {
+                    nMatches++;
+                }
+            }
+            if (nMatches <= 1)
+            {
+                m_UidHashCollisions.Remove(uidHash);
+            }
+        }
+
+        public bool UidEquals(XukAble xukAble, string uid, int uidHash)
+        {
+            if (!XukAble.UsePrefixedIntUniqueHashCodes && m_UidHashCollisions.Contains(xukAble.UidHash))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+
+                return xukAble.Uid == uid;
+            }
+
+            return xukAble.UidHash == uidHash;
+
+            //return (object.ReferenceEquals(xukAble.Uid, string.Intern(uid)));
+        }
+
+        private T GetManagedObject_NO_LOCK(string uid, int uidHash)
+        {
+            foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
+            {
+                if (UidEquals(obj, uid, uidHash)) return obj;
             }
 
             throw new exception.IsNotManagerOfException(String.Format(
                                                                      "The manager does not manage an object with uid {0}",
                                                                      uid));
         }
-
         public T GetManagedObject(string uid)
+        {
+            int uidHash = XukAble.GetHashCode(uid);
+            return GetManagedObject(uid, uidHash);
+        }
+
+        public T GetManagedObject(string uid, int uidHash)
         {
             if (string.IsNullOrEmpty(uid))
             {
@@ -109,24 +195,24 @@ namespace urakawa
             {
                 lock (LOCK)
                 {
-                    return GetManagedObject_NO_LOCK(uid);
+                    return GetManagedObject_NO_LOCK(uid, uidHash);
                 }
             }
             else
             {
-                return GetManagedObject_NO_LOCK(uid);
+                return GetManagedObject_NO_LOCK(uid, uidHash);
             }
         }
 
-        private string GetUidOfManagedObject_NO_LOCK(T obj)
-        {
-            foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
-            {
-                if (objz == obj) return objz.Uid;
-            }
+        //private string GetUidOfManagedObject_NO_LOCK(T obj)
+        //{
+        //    foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
+        //    {
+        //        if (objz == obj) return objz.Uid;
+        //    }
 
-            throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
-        }
+        //    throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
+        //}
 
         //public string GetUidOfManagedObject(T obj)
         //{
@@ -148,56 +234,56 @@ namespace urakawa
         //}
 
 
-        public void SetUidOfManagedObject_NO_LOCK(T obj, string uid)
-        {
-            string oldUid = null;
-            foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
-            {
-                if (objz.Uid == uid && objz != obj)
-                {
-                    throw new exception.ObjectIsAlreadyManagedException(
-                        String.Format("Another managed object exists with uid {0}", uid));
-                }
-                if (objz == obj)
-                {
-                    if (objz.Uid == obj.Uid)
-                    {
-                        return;
-                    }
-                    oldUid = objz.Uid;
-                }
-            }
-            if (string.IsNullOrEmpty(oldUid))
-            {
-                throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
-            }
-            obj.Uid = uid;
-        }
+        //public void SetUidOfManagedObject_NO_LOCK(T obj, string uid)
+        //{
+        //    foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
+        //    {
+        //        if (UidEquals(objz, uid) && objz != obj)
+        //        {
+        //            throw new exception.ObjectIsAlreadyManagedException(
+        //                String.Format("Another managed object exists with uid {0}", uid));
+        //        }
+        //        if (objz == obj)
+        //        {
+        //            if (UidEquals(objz, obj.Uid))
+        //            {
+        //                return;
+        //            }
+
+        //            CheckUidHashCollision_(obj.UidHash);
+        //            obj.Uid = uid;
+        //            CheckUidHashCollision(obj.UidHash);
+        //            return;
+        //        }
+        //    }
+
+        //    throw new exception.IsNotManagerOfException("The given object is not managed by this Manager");
+        //}
 
 
-        public void SetUidOfManagedObject(T obj, string uid)
-        {
-            if (obj == null)
-            {
-                throw new exception.MethodParameterIsNullException("channel parameter is null");
-            }
+        //public void SetUidOfManagedObject(T obj, string uid)
+        //{
+        //    if (obj == null)
+        //    {
+        //        throw new exception.MethodParameterIsNullException("channel parameter is null");
+        //    }
 
-            if (string.IsNullOrEmpty(uid))
-            {
-                throw new exception.MethodParameterIsEmptyStringException("uid parameter cannot be null or empty string");
-            }
-            if (m_managedObjects.UseLock)
-            {
-                lock (LOCK)
-                {
-                    SetUidOfManagedObject_NO_LOCK(obj, uid);
-                }
-            }
-            else
-            {
-                SetUidOfManagedObject_NO_LOCK(obj, uid);
-            }
-        }
+        //    if (string.IsNullOrEmpty(uid))
+        //    {
+        //        throw new exception.MethodParameterIsEmptyStringException("uid parameter cannot be null or empty string");
+        //    }
+        //    if (m_managedObjects.UseLock)
+        //    {
+        //        lock (LOCK)
+        //        {
+        //            SetUidOfManagedObject_NO_LOCK(obj, uid);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        SetUidOfManagedObject_NO_LOCK(obj, uid);
+        //    }
+        //}
 
         private void RemoveManagedObject_NO_LOCK(T obj)
         {
@@ -213,6 +299,15 @@ namespace urakawa
             if (objectToRemove != null)
             {
                 m_managedObjects.Remove(objectToRemove);
+
+                if (!XukAble.UsePrefixedIntUniqueHashCodes)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+
+                    CheckUidHashCollision_(objectToRemove.UidHash);
+                }
                 return;
             }
 
@@ -243,6 +338,16 @@ namespace urakawa
         public abstract bool CanAddManagedObject(T managedObject);
         private void AddManagedObject_NO_LOCK(T obj, string uid, bool safetyChecks)
         {
+            obj.Uid = uid;
+
+            if (!XukAble.UsePrefixedIntUniqueHashCodes)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                CheckUidHashCollision(obj.UidHash);
+            }
+
             if (safetyChecks)
             {
                 foreach (T objz in m_managedObjects.ContentsAs_Enumerable)
@@ -252,7 +357,7 @@ namespace urakawa
                         throw new exception.ObjectIsAlreadyManagedException(
                             "The given object is already managed by the Manager");
                     }
-                    if (objz.Uid == uid)
+                    if (UidEquals(objz, obj.Uid, obj.UidHash))
                     {
                         throw new exception.ObjectIsAlreadyManagedException(
                             String.Format("Another managed object exists with uid {0}", uid));
@@ -265,7 +370,6 @@ namespace urakawa
                 throw new CannotManageObjectException("the given object cannot be added to the Manager.");
             }
 
-            obj.Uid = uid;
             m_managedObjects.Insert(m_managedObjects.Count, obj);
         }
 
@@ -292,6 +396,7 @@ namespace urakawa
                 AddManagedObject_NO_LOCK(obj, uid, true);
             }
         }
+
         public void AddManagedObject_NoSafetyChecks(T obj, string uid)
         {
             if (obj == null)
@@ -316,27 +421,29 @@ namespace urakawa
             }
         }
 
-        public bool IsManagerOf_NO_LOCK(string uid)
+        public bool IsManagerOf_NO_LOCK(string uid, int uidHash)
         {
+            //int uidHash = XukAble.GetHashCode(uid);
+
             foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
             {
-                if (obj.Uid == uid) return true;
+                if (UidEquals(obj, uid, uidHash)) return true;
             }
             return false;
         }
 
-        public bool IsManagerOf(string uid)
+        public bool IsManagerOf(string uid, int uidHash)
         {
             if (m_managedObjects.UseLock)
             {
                 lock (LOCK)
                 {
-                    return IsManagerOf_NO_LOCK(uid);
+                    return IsManagerOf_NO_LOCK(uid, uidHash);
                 }
             }
             else
             {
-                return IsManagerOf_NO_LOCK(uid);
+                return IsManagerOf_NO_LOCK(uid, uidHash);
             }
         }
 
@@ -363,8 +470,8 @@ namespace urakawa
 
             foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
             {
-                if (!otherz.IsManagerOf(obj.Uid)) return false;
-                if (!otherz.GetManagedObject(obj.Uid).ValueEquals(obj)) return false;
+                if (!otherz.IsManagerOf(obj.Uid, obj.UidHash)) return false;
+                if (!otherz.GetManagedObject(obj.Uid, obj.UidHash).ValueEquals(obj)) return false;
             }
 
             return true;
