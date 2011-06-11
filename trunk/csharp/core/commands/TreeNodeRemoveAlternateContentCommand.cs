@@ -73,14 +73,16 @@ namespace urakawa.commands
         }
 
 
-        public override void Execute()
-        {
-            TreeNode.GetAlternateContentProperty().AlternateContents.RemoveAlternateContentItem(m_AlternateContent);
-        }
-
         public override void UnExecute()
         {
-            TreeNode.GetOrCreateAlternateContentProperty().AlternateContents.AddAlternateContentItem(m_AlternateContent);
+            AlternateContentProperty prop = TreeNode.GetOrCreateAlternateContentProperty();
+            prop.AlternateContents.Insert(prop.AlternateContents.Count, m_AlternateContent);
+        }
+
+        public override void Execute()
+        {
+            AlternateContentProperty prop = TreeNode.GetAlternateContentProperty();
+            prop.AlternateContents.Remove(m_AlternateContent);
         }
 
         public override bool CanExecute

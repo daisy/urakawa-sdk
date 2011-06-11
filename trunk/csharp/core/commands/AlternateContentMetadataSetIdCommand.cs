@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Xml;
 using urakawa.command;
-using urakawa.progress;
-using urakawa.xuk;
 using urakawa.metadata;
-
+using urakawa.progress;
 using urakawa.property.alt;
+using urakawa.xuk;
 
 namespace urakawa.commands
 {
-
-    public class AlternateContentMetadataAddCommand : Command
+    public class AlternateContentMetadataSetIdCommand : Command
     {
-        
         public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
@@ -20,7 +17,7 @@ namespace urakawa.commands
                 return false;
             }
 
-            AlternateContentMetadataAddCommand otherz = other as AlternateContentMetadataAddCommand;
+            AlternateContentMetadataSetIdCommand otherz = other as AlternateContentMetadataSetIdCommand;
             if (otherz == null)
             {
                 return false;
@@ -33,34 +30,34 @@ namespace urakawa.commands
 
         public override string GetTypeNameFormatted()
         {
-            return XukStrings.AlternateContentMetadataAddCommand;
+            return XukStrings.AlternateContentMetadataSetIdCommand;
         }
 
+        private bool m_OriginalId;
+        private bool m_NewId;
         private Metadata m_Metadata;
-        public Metadata Metadata
-        {
-            private set { m_Metadata = value; }
-            get { return m_Metadata; }
-        }
 
         private AlternateContentProperty m_AlternateContent;
         public AlternateContentProperty AlternateContent { get { return m_AlternateContent; } }
 
-        public void Init(AlternateContentProperty altContent, Metadata metadata)
+        public void Init(AlternateContentProperty altContent, Metadata metadata, bool id)
         {
+            if (altContent == null)
+            {
+                throw new ArgumentNullException("AltContent");
+            }
             if (metadata == null)
             {
                 throw new ArgumentNullException("metadata");
             }
-            if (altContent.Metadatas == null)
-            {
-                throw new ArgumentException("AlternateContent has null metadata");
-            }
-            Metadata = metadata;
+
+            m_Metadata = metadata;
+            m_OriginalId = m_Metadata.IsMarkedAsPrimaryIdentifier;
+            m_NewId = id;
             m_AlternateContent = altContent;
 
-            ShortDescription = "Add metadata";
-            LongDescription = "Add the Metadata object to the AlternateContent";
+            ShortDescription = "Set metadata ID marker";
+            LongDescription = "Set the marker that indicates whether a metadata is the unique identifier of the AlternateContent";
         }
 
         public override bool CanExecute
@@ -75,12 +72,12 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            m_AlternateContent.Metadatas.Insert(m_AlternateContent.Metadatas.Count, Metadata);
+            m_Metadata.IsMarkedAsPrimaryIdentifier = m_NewId;
         }
 
         public override void UnExecute()
         {
-            m_AlternateContent.Metadatas.Remove(Metadata);
+            m_Metadata.IsMarkedAsPrimaryIdentifier = m_OriginalId;
         }
 
 

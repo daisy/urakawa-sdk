@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using urakawa.xuk;
 
 namespace urakawa.property.alt
 {
-    public sealed class AlternateContentFactory: GenericWithPresentationFactory<AlternateContent>
+    public sealed class AlternateContentFactory : GenericWithPresentationFactory<AlternateContent>
     {
         public override string GetTypeNameFormatted()
         {
@@ -17,20 +13,15 @@ namespace urakawa.property.alt
             : base(pres)
         {
         }
-
-        public AlternateContent Create (string description)
+        
+        protected override void InitializeInstance(AlternateContent instance)
         {
-            
-            AlternateContent altContent = Create<AlternateContent> ();
-            altContent.Description = description;
-            return altContent;
+            base.InitializeInstance(instance);
         }
 
-        public AlternateContent Create()
+        public AlternateContent CreateAlternateContent()
         {
-
             return Create<AlternateContent>();
-            
         }
     }
 }

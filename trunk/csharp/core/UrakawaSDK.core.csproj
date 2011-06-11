@@ -123,8 +123,10 @@
     <Compile Include="commands\AlternateContentMetadataAddCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataRemoveCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataSetContentCommand.cs" />
+    <Compile Include="commands\AlternateContentMetadataSetIdCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataSetNameCommand.cs" />
     <Compile Include="commands\AlternateContentSetManagedMediaCommand.cs" />
+    <Compile Include="commands\AlternateContentSetRoleCommand.cs" />
     <Compile Include="commands\CommandFactory.cs" />
     <Compile Include="commands\ManagedAudioMediaInsertDataCommand.cs" />
     <Compile Include="commands\MetadataAddCommand.cs" />
@@ -290,7 +292,6 @@
     <Compile Include="property\alt\AlternateContent.cs" />
     <Compile Include="property\alt\AlternateContentFactory.cs" />
     <Compile Include="property\alt\AlternateContentProperty.cs" />
-    <Compile Include="property\alt\AlternateContents.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
     <Compile Include="property\channel\ImageChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />

@@ -1,6 +1,8 @@
 using System;
 using System.Xml;
+using urakawa.property.alt;
 using urakawa.property.channel;
+using urakawa.property.xml;
 using urakawa.xuk;
 
 namespace urakawa.property
@@ -31,9 +33,14 @@ namespace urakawa.property
         /// Creates an <see cref="urakawa.property.xml.XmlProperty"/> instance
         /// </summary>
         /// <returns>The created instance</returns>
-        public xml.XmlProperty CreateXmlProperty()
+        public XmlProperty CreateXmlProperty()
         {
-            return Create<xml.XmlProperty>();
+            return Create<XmlProperty>();
+        }
+
+        public AlternateContentProperty CreateAlternateContentProperty()
+        {
+            return Create<AlternateContentProperty>();
         }
 
         private string m_DefaultXmlNamespaceUri = null;

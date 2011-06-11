@@ -53,17 +53,11 @@ namespace urakawa.media.data.utilities
                 else if (prop is AlternateContentProperty)
                 {
                     AlternateContentProperty altProp = (AlternateContentProperty)prop;
-                    if (altProp.AlternateContents == null) continue;
-                    foreach (AlternateContent ac in altProp.AlternateContents.AlternateContentItems.ContentsAs_Enumerable)
+                    
+                    foreach (AlternateContent ac in altProp.AlternateContents.ContentsAs_Enumerable)
                     {
-                        foreach (Media md in ac.AlternateMedias.ContentsAs_Enumerable)
-                        {
-                            if (md is IManaged)
-                            {
-                                IManaged mm= (IManaged) md;
-                                if (!mCollectedMedia.Contains(mm)) mCollectedMedia.Add(mm);
-                            }
-                        }
+                        if (!mCollectedMedia.Contains(ac.Audio)) mCollectedMedia.Add(ac.Audio);
+                        if (!mCollectedMedia.Contains(ac.Image)) mCollectedMedia.Add(ac.Image);
                     }
                 }
 

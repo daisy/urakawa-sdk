@@ -1,77 +1,61 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
-
+using urakawa.media.data.audio;
+using urakawa.media.data.image;
 using urakawa.xuk;
 using urakawa.progress;
 using urakawa.media;
-using urakawa.media.data;
-using urakawa.metadata;
-using urakawa.exception;
 
 namespace urakawa.property.alt
 {
-    public class AlternateContent:WithPresentation
+    public class AlternateContent : WithPresentation
     {
-
-        public AlternateContent()
-        {
-            m_Medias = new ObjectListProvider<urakawa.media.Media>(this, true);
-            m_Description = null;
-            m_Metadata = new ObjectListProvider<Metadata>(this, true);
-        }
-
-        private ObjectListProvider <media.Media> m_Medias;
-        public ObjectListProvider<media.Media> AlternateMedias
-        {
-            get {return m_Medias; }
-        }
-
-
-
-        private string m_Description;
-        public string Description
-        {
-        get { return m_Description ; }
-            set { m_Description = value; }
-        }
-
         public override string GetTypeNameFormatted()
         {
             return XukStrings.AlternateContent;
         }
 
-        public void AddMedia(media.Media media)
-        {
-            if (media == null) throw new exception.MethodParameterIsNullException ("Null media cannot be inserted");
+        //public AlternateContent()
+        //{
+        //    m_Role = "urakawa:defaultRole";
 
-            if (media is media.data.audio.ManagedAudioMedia
-                || media is media.data.image.ManagedImageMedia
-                || media is media.TextMedia)
-            {
-                m_Medias.Insert(m_Medias.Count, media);
-            }
-            else
-            {
-                throw new exception.MethodParameterIsWrongTypeException("Unacceptable media type: " + media.GetType().ToString());
-            }
+        //    m_Text = Presentation.MediaFactory.CreateTextMedia();
+        //    m_Text.Text = "default description";
+        //}
+
+        //public override void XukIn(XmlReader source, IProgressHandler handler)
+        //{
+        //    m_Role = null;
+        //    m_Text = null;
+        //    base.XukIn(source, handler);
+        //}
+
+        private string m_Role;
+        public string Role
+        {
+            get { return m_Role; }
+            set { m_Role = value; }
         }
 
-        public void RemoveMedia(Media media)
+        private ManagedImageMedia m_Image;
+        public ManagedImageMedia Image
         {
-            if (media == null) throw new exception.MethodParameterIsNullException("Cannot remove null media");
-
-
-            if (!m_Medias.ContentsAs_ReadOnlyCollectionWrapper.Contains(media)) throw new exception.CannotExecuteException ("Media to remove is not in the alternate content");
-
-            m_Medias.Remove(media);
+            get { return m_Image; }
+            set { m_Image = value; }
         }
 
-        private ObjectListProvider<Metadata> m_Metadata;
-        public ObjectListProvider <Metadata> Metadatas
+        private TextMedia m_Text;
+        public TextMedia Text
         {
-            get { return m_Metadata; }
+            get { return m_Text; }
+            set { m_Text = value; }
+        }
+
+        private ManagedAudioMedia m_Audio;
+        public ManagedAudioMedia Audio
+        {
+            get { return m_Audio; }
+            set { m_Audio = value; }
         }
 
 
@@ -79,90 +63,64 @@ namespace urakawa.property.alt
         {
             base.XukInAttributes(source);
 
-            m_Description = source.GetAttribute(XukStrings.AlternateContentDescription);
-                        
+            string role = source.GetAttribute(XukStrings.AlternateContentRole);
+            if (!string.IsNullOrEmpty(role))
+            {
+                m_Role = role;
+            }
         }
+
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             base.XukOutAttributes(destination, baseUri);
 
-                destination.WriteAttributeString(XukStrings.AlternateContentDescription, m_Description);
-            
+            if (!string.IsNullOrEmpty(m_Role))
+            {
+                destination.WriteAttributeString(XukStrings.AlternateContentRole, m_Role);
+            }
         }
 
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
-            if (source.LocalName == XukStrings.Metadatas)
+            bool readItem = false;
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
-                XukInMetadata(source, handler);
-            }
-            else if (source.LocalName == XukStrings.Medias)
-            {
-                XukInMedias(source, handler);
-            }
-            else
-            {
-                base.XukInChild(source, handler);
-            }
-        }
-
-        private void XukInMedias(XmlReader source, IProgressHandler handler)
-        {
-            if (source.IsEmptyElement) return;
-            while (source.Read())
-            {
-                if (source.NodeType == XmlNodeType.Element)
+                readItem = true;
+                if (source.LocalName == XukStrings.TextMedia)
                 {
-                    Media newMedia = Presentation.MediaFactory.Create(source.LocalName, source.NamespaceURI);
-                    if (newMedia!= null)
+                    if (m_Text != null)
                     {
-                        newMedia.XukIn(source, handler);
-                        m_Medias.Insert(m_Medias.Count, newMedia);
+                        throw new exception.XukException("AlternateContent Text XukIn, already set !");
                     }
-                    else if (!source.IsEmptyElement)
+                    m_Text = Presentation.MediaFactory.CreateTextMedia();
+                    m_Text.XukIn(source, handler);
+                }
+                else if (source.LocalName == XukStrings.ManagedAudioMedia)
+                {
+                    if (m_Audio != null)
                     {
-                        //Read past unidentified element
-                        source.ReadSubtree().Close();
+                        throw new exception.XukException("AlternateContent Audio XukIn, already set !");
                     }
+                    m_Audio = Presentation.MediaFactory.CreateManagedAudioMedia();
+                    m_Audio.XukIn(source, handler);
                 }
-                else if (source.NodeType == XmlNodeType.EndElement)
+                else if (source.LocalName == XukStrings.ManagedImageMedia)
                 {
-                    break;
+                    if (m_Image != null)
+                    {
+                        throw new exception.XukException("AlternateContent Image XukIn, already set !");
+                    }
+                    m_Image = Presentation.MediaFactory.CreateManagedImageMedia();
+                    m_Image.XukIn(source, handler);
                 }
-                if (source.EOF)
+                else
                 {
-                    throw new exception.XukException("Unexpectedly reached EOF");
+                    readItem = false;
                 }
             }
-        }
-
-        private void XukInMetadata(XmlReader source, IProgressHandler handler)
-        {
-            if (source.IsEmptyElement) return;
-            while (source.Read())
+            if (!(readItem || source.IsEmptyElement))
             {
-                if (source.NodeType == XmlNodeType.Element)
-                {
-                    Metadata newMeta = Presentation.MetadataFactory.Create(source.LocalName, source.NamespaceURI);
-                    if (newMeta != null)
-                    {
-                        newMeta.XukIn(source, handler);
-                        m_Metadata.Insert(m_Metadata.Count, newMeta);
-                    }
-                    else if (!source.IsEmptyElement)
-                    {
-                        //Read past unidentified element
-                        source.ReadSubtree().Close();
-                    }
-                }
-                else if (source.NodeType == XmlNodeType.EndElement)
-                {
-                    break;
-                }
-                if (source.EOF)
-                {
-                    throw new exception.XukException("Unexpectedly reached EOF");
-                }
+                source.ReadSubtree().Close(); //Read past unknown child 
             }
         }
 
@@ -170,15 +128,20 @@ namespace urakawa.property.alt
         {
             base.XukOutChildren(destination, baseUri, handler);
 
-            destination.WriteStartElement(XukStrings.Metadatas, XukAble.XUK_NS);
-            foreach (Metadata md in m_Metadata.ContentsAs_Enumerable)
+            if (m_Text != null)
             {
-                md.XukOut(destination, baseUri, handler);
+                m_Text.XukOut(destination, baseUri, handler);
             }
-            destination.WriteEndElement();
 
+            if (m_Audio != null)
+            {
+                m_Audio.XukOut(destination, baseUri, handler);
+            }
+
+            if (m_Image != null)
+            {
+                m_Image.XukOut(destination, baseUri, handler);
+            }
         }
-
-
     }
 }

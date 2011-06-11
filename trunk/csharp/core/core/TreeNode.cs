@@ -7,6 +7,7 @@ using urakawa.events.core;
 using urakawa.exception;
 using urakawa.progress;
 using urakawa.property;
+using urakawa.property.alt;
 using urakawa.xuk;
 
 namespace urakawa.core
@@ -21,6 +22,19 @@ namespace urakawa.core
         {
             set { m_Tag = value; }
             get { return m_Tag; }
+        }
+
+        public bool HasAlternateContentProperty
+        {
+            get { return GetProperty<AlternateContentProperty>() != null; }
+        }
+        public AlternateContentProperty GetOrCreateAlternateContentProperty()
+        {
+            return GetOrCreateProperty<AlternateContentProperty>();
+        }
+        public AlternateContentProperty GetAlternateContentProperty()
+        {
+            return GetProperty<AlternateContentProperty>();
         }
 
         protected override void XukInAttributes(XmlReader source)

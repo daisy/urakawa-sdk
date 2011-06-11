@@ -132,17 +132,6 @@ namespace urakawa.core
             return GetProperty<XmlProperty>();
         }
 
-        public property.alt.AlternateContentProperty GetOrCreateAlternateContentProperty()
-        {
-            return GetOrCreateProperty<property.alt.AlternateContentProperty>();
-        }
-
-        public property.alt.AlternateContentProperty GetAlternateContentProperty()
-        {
-            return GetProperty<property.alt.AlternateContentProperty>();
-        }
-
-
         public TreeNode GetTreeNodeWithXmlElementId(string id)
         {
             if (GetXmlElementId() == id) return this;

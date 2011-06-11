@@ -1,17 +1,13 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Xml;
 using System.Collections.Generic;
 using AudioLib;
-using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
-using urakawa.media.data.utilities;
-using urakawa.media.timing;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
@@ -23,7 +19,7 @@ using urakawa.xuk;
 using urakawa.events;
 using urakawa.events.presentation;
 using urakawa.ExternalFiles;
-using urakawa.property.alt ;
+using urakawa.property.alt;
 
 namespace urakawa
 {
@@ -445,9 +441,9 @@ namespace urakawa
         {
             get
             {
-                if (m_AlternateContentFactory== null)
+                if (m_AlternateContentFactory == null)
                 {
-                    m_AlternateContentFactory= new AlternateContentFactory(this);
+                    m_AlternateContentFactory = new AlternateContentFactory(this);
                 }
                 return m_AlternateContentFactory;
             }
@@ -1345,6 +1341,19 @@ namespace urakawa
             //
             PropertyFactory.CreateChannelsProperty();
             PropertyFactory.CreateXmlProperty();
+            //
+            AlternateContent altContent = AlternateContentFactory.CreateAlternateContent();
+            AlternateContentProperty altContentProp = PropertyFactory.CreateAlternateContentProperty();
+            CommandFactory.CreateAlternateContentMetadataAddCommand(altContentProp, meta);
+            CommandFactory.CreateAlternateContentMetadataRemoveCommand(altContentProp, meta);
+            CommandFactory.CreateAlternateContentMetadataSetContentCommand(altContentProp, meta, "sample content");
+            CommandFactory.CreateAlternateContentMetadataSetIdCommand(altContentProp, meta, false);
+            CommandFactory.CreateAlternateContentMetadataSetNameCommand(altContentProp, meta, "sample name");
+            CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent, txtMedia);
+            CommandFactory.CreateAlternateContentSetRoleCommand(altContent, "urakawa:testRole");
+            CommandFactory.CreateTreeNodeAddAlternateContentCommand(treeNode, altContent);
+            CommandFactory.CreateTreeNodeRemoveAlternateContentCommand(treeNode, altContent);
+            //
             //
             CSSExternalFileData exFileDataCSS = ExternalFilesDataFactory.Create<CSSExternalFileData>();
             ExternalFilesDataManager.RemoveManagedObject(exFileDataCSS);

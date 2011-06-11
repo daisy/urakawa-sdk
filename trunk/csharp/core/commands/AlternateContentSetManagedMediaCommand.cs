@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.command;
-using urakawa.core;
-using urakawa.exception;
+using urakawa.media;
 using urakawa.media.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
 using urakawa.progress;
-using urakawa.property.channel;
 using urakawa.xuk;
 
 using urakawa.property.alt;
@@ -24,7 +22,7 @@ namespace urakawa.commands
                 return false;
             }
 
-            ManagedAudioMediaInsertDataCommand otherz = other as ManagedAudioMediaInsertDataCommand;
+            AlternateContentSetManagedMediaCommand otherz = other as AlternateContentSetManagedMediaCommand;
             if (otherz == null)
             {
                 return false;
@@ -36,7 +34,7 @@ namespace urakawa.commands
         }
         public override string GetTypeNameFormatted()
         {
-            return XukStrings.TreeNodeSetManagedAudioMediaCommand;
+            return XukStrings.AlternateContentSetManagedMediaCommand;
         }
 
         private AlternateContent m_AlternateContent;
@@ -45,36 +43,52 @@ namespace urakawa.commands
             private set { m_AlternateContent = value; }
             get { return m_AlternateContent; }
         }
-        
-        private media.Media m_ManagedMedia;
-        public media.Media ManagedMedia 
+
+        private Media m_Media;
+        public Media Media
         {
-            private set { m_ManagedMedia  = value; }
-            get { return m_ManagedMedia; }
+            private set { m_Media = value; }
+            get { return m_Media; }
+        }
+        private Media m_OldMedia;
+        public Media OldMedia
+        {
+            private set { m_OldMedia = value; }
+            get { return m_OldMedia; }
         }
 
-        public void Init(AlternateContent altContent, media.Media managedMedia)
+        public void Init(AlternateContent altContent, Media media)
         {
             if (altContent == null)
             {
                 throw new ArgumentNullException("altContent");
             }
-            
-            if (managedMedia == null)
+
+            if (media == null)
             {
-                throw new ArgumentNullException("managedMedia");
+                throw new ArgumentNullException("media");
             }
 
             m_AlternateContent = altContent;
-            ManagedMedia= managedMedia;
+            Media = media;
 
-            if (managedMedia is ManagedAudioMedia)
+            if (media is ManagedAudioMedia)
             {
-                m_UsedMediaData.Add( ((ManagedAudioMedia)managedMedia).AudioMediaData);
+                OldMedia = m_AlternateContent.Audio;
+                m_UsedMediaData.Add(((ManagedAudioMedia)media).AudioMediaData);
             }
-            else if (managedMedia is ManagedImageMedia)
+            else if (media is ManagedImageMedia)
             {
-                m_UsedMediaData.Add(((ManagedImageMedia)managedMedia).ImageMediaData);
+                OldMedia = m_AlternateContent.Image;
+                m_UsedMediaData.Add(((ManagedImageMedia)media).ImageMediaData);
+            }
+            else if (media is TextMedia)
+            {
+                OldMedia = m_AlternateContent.Text;
+            }
+            else
+            {
+                throw new ArgumentException("media should be ManagedAudioMedia, ManagedImageMedia, or TextMedia");
             }
             ShortDescription = "Add new ManagedMedia";
             LongDescription = "Attach a ManagedMedia to a AlternateContent";
@@ -92,16 +106,34 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            if (m_AlternateContent.AlternateMedias.ContentsAs_ListAsReadOnly.Contains(ManagedMedia))
+            if (Media is ManagedAudioMedia)
             {
-                throw new exception.CannotExecuteException("ManagedMedia already exists inAlternateContent");
+                m_AlternateContent.Audio = (ManagedAudioMedia)Media;
             }
-            m_AlternateContent.AlternateMedias.Insert(m_AlternateContent.AlternateMedias.Count, ManagedMedia);
+            else if (Media is ManagedImageMedia)
+            {
+                m_AlternateContent.Image = (ManagedImageMedia)Media;
+            }
+            else if (Media is TextMedia)
+            {
+                m_AlternateContent.Text = (TextMedia)Media;
+            }
         }
 
         public override void UnExecute()
         {
-            m_AlternateContent.AlternateMedias.Remove(ManagedMedia);
+            if (Media is ManagedAudioMedia)
+            {
+                m_AlternateContent.Audio = (ManagedAudioMedia)OldMedia;
+            }
+            else if (Media is ManagedImageMedia)
+            {
+                m_AlternateContent.Image = (ManagedImageMedia)OldMedia;
+            }
+            else if (Media is TextMedia)
+            {
+                m_AlternateContent.Text = (TextMedia)OldMedia;
+            }
         }
 
         private List<MediaData> m_UsedMediaData = new List<MediaData>();
