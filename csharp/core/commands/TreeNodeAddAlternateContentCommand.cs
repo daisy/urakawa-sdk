@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Xml;
 using urakawa.command;
 using urakawa.core;
@@ -75,12 +74,14 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            TreeNode.GetOrCreateAlternateContentProperty().AlternateContents.AddAlternateContentItem(m_AlternateContent);
+            AlternateContentProperty prop = TreeNode.GetOrCreateAlternateContentProperty();
+            prop.AlternateContents.Insert(prop.AlternateContents.Count, m_AlternateContent);
         }
 
         public override void UnExecute()
         {
-            TreeNode.GetAlternateContentProperty().AlternateContents.RemoveAlternateContentItem(m_AlternateContent);
+            AlternateContentProperty prop = TreeNode.GetAlternateContentProperty();
+            prop.AlternateContents.Remove(m_AlternateContent);
         }
 
         public override bool CanExecute

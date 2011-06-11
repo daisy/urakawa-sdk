@@ -1,18 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 using urakawa.command;
+using urakawa.media.data;
 using urakawa.progress;
-using urakawa.xuk;
-using urakawa.metadata;
-
 using urakawa.property.alt;
+using urakawa.xuk;
 
 namespace urakawa.commands
 {
-
-    public class AlternateContentMetadataAddCommand : Command
+    public class AlternateContentSetRoleCommand : Command
     {
-        
         public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
@@ -20,7 +18,7 @@ namespace urakawa.commands
                 return false;
             }
 
-            AlternateContentMetadataAddCommand otherz = other as AlternateContentMetadataAddCommand;
+            AlternateContentSetRoleCommand otherz = other as AlternateContentSetRoleCommand;
             if (otherz == null)
             {
                 return false;
@@ -30,37 +28,49 @@ namespace urakawa.commands
 
             return true;
         }
-
         public override string GetTypeNameFormatted()
         {
-            return XukStrings.AlternateContentMetadataAddCommand;
+            return XukStrings.AlternateContentSetRoleCommand;
         }
 
-        private Metadata m_Metadata;
-        public Metadata Metadata
+        private AlternateContent m_AlternateContent;
+        public AlternateContent AlternateContent
         {
-            private set { m_Metadata = value; }
-            get { return m_Metadata; }
+            private set { m_AlternateContent = value; }
+            get { return m_AlternateContent; }
         }
 
-        private AlternateContentProperty m_AlternateContent;
-        public AlternateContentProperty AlternateContent { get { return m_AlternateContent; } }
-
-        public void Init(AlternateContentProperty altContent, Metadata metadata)
+        private string m_Role;
+        public string Role
         {
-            if (metadata == null)
+            private set { m_Role = value; }
+            get { return m_Role; }
+        }
+        private string m_OldRole;
+        public string OldRole
+        {
+            private set { m_OldRole = value; }
+            get { return m_OldRole; }
+        }
+
+        public void Init(AlternateContent altContent, string role)
+        {
+            if (altContent == null)
             {
-                throw new ArgumentNullException("metadata");
+                throw new ArgumentNullException("altContent");
             }
-            if (altContent.Metadatas == null)
+
+            if (string.IsNullOrEmpty(role))
             {
-                throw new ArgumentException("AlternateContent has null metadata");
+                throw new ArgumentNullException("role");
             }
-            Metadata = metadata;
+
             m_AlternateContent = altContent;
+            Role = role;
+            OldRole = m_AlternateContent.Role;
 
-            ShortDescription = "Add metadata";
-            LongDescription = "Add the Metadata object to the AlternateContent";
+            ShortDescription = "Set role";
+            LongDescription = "Set the role of an AlternateContent";
         }
 
         public override bool CanExecute
@@ -75,14 +85,22 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            m_AlternateContent.Metadatas.Insert(m_AlternateContent.Metadatas.Count, Metadata);
+            m_AlternateContent.Role = Role;
         }
 
         public override void UnExecute()
         {
-            m_AlternateContent.Metadatas.Remove(Metadata);
+            m_AlternateContent.Role = OldRole;
         }
 
+        private List<MediaData> m_UsedMediaData = new List<MediaData>();
+        public override IEnumerable<MediaData> UsedMediaData
+        {
+            get
+            {
+                return m_UsedMediaData;
+            }
+        }
 
         protected override void XukInAttributes(XmlReader source)
         {

@@ -43,10 +43,10 @@ namespace urakawa.commands
             get { return m_Metadata; }
         }
 
-        private AlternateContent m_AlternateContent;
-        public AlternateContent AlternateContent { get { return m_AlternateContent; } }
+        private AlternateContentProperty m_AlternateContent;
+        public AlternateContentProperty AlternateContent { get { return m_AlternateContent; } }
 
-        public void Init(AlternateContent altContent, Metadata metadata)
+        public void Init(AlternateContentProperty altContent, Metadata metadata)
         {
             if (metadata == null)
             {
