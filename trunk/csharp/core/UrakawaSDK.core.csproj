@@ -292,6 +292,8 @@
     <Compile Include="property\alt\AlternateContent.cs" />
     <Compile Include="property\alt\AlternateContentFactory.cs" />
     <Compile Include="property\alt\AlternateContentProperty.cs" />
+    <Compile Include="property\alt\Description.cs" />
+    <Compile Include="property\alt\DescriptionAttribute.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
     <Compile Include="property\channel\ImageChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />
