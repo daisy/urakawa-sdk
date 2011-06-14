@@ -676,6 +676,22 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentRole" : "AcRole"); }
         }
+        public static string Description
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "Description" : "Desc"); }
+        }
+        public static string DescriptionName
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "DescriptionName" : "DescName"); }
+        }
+        public static string DescriptionAttribute
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "DescriptionAttribute" : "DescAttr"); }
+        }
+        public static string DescriptionAttributes
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "DescriptionAttributes" : "DescAttrs"); }
+        }
 
         public static string ManagedAudioMedia
         {
