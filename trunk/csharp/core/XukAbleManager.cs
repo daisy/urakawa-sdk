@@ -49,13 +49,17 @@ namespace urakawa
         private void RegenerateUids_NO_LOCK()
         {
             m_UidIndex = 0;
+
+#if !UidStringComparisonNoHashCodeOptimization
             m_UidHashCollisions.Clear();
+#endif //UidStringComparisonNoHashCodeOptimization
 
             foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
             {
                 obj.Uid = String.Format(UidFormat, m_UidIndex++);
             }
 
+#if !UidStringComparisonNoHashCodeOptimization
             if (!XukAble.UsePrefixedIntUniqueHashCodes)
             {
 #if DEBUG
@@ -67,6 +71,8 @@ namespace urakawa
                     CheckUidHashCollision(obj);
                 }
             }
+#endif //UidStringComparisonNoHashCodeOptimization
+
 
             //{
             //    ulong index = 0;
@@ -102,6 +108,8 @@ namespace urakawa
             }
         }
 
+#if !UidStringComparisonNoHashCodeOptimization
+
         private List<int> m_UidHashCollisions = new List<int>(1);
         private void CheckUidHashCollision(int uidHash)
         {
@@ -117,6 +125,7 @@ namespace urakawa
                 }
             }
         }
+
         private void CheckUidHashCollision(XukAble xukAble)
         {
             foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
@@ -167,25 +176,41 @@ namespace urakawa
 
             //return (object.ReferenceEquals(xukAble.Uid, string.Intern(uid)));
         }
+#endif //UidStringComparisonNoHashCodeOptimization
 
-        private T GetManagedObject_NO_LOCK(string uid, int uidHash)
+        private T GetManagedObject_NO_LOCK(string uid
+#if !UidStringComparisonNoHashCodeOptimization
+            , int uidHash
+#endif //UidStringComparisonNoHashCodeOptimization
+)
         {
             foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
             {
+
+#if !UidStringComparisonNoHashCodeOptimization
                 if (UidEquals(obj, uid, uidHash)) return obj;
+#else //UidStringComparisonNoHashCodeOptimization
+                if (obj.Uid == uid) return obj;
+#endif //UidStringComparisonNoHashCodeOptimization
             }
 
             throw new exception.IsNotManagerOfException(String.Format(
                                                                      "The manager does not manage an object with uid {0}",
                                                                      uid));
         }
+#if !UidStringComparisonNoHashCodeOptimization
         public T GetManagedObject(string uid)
         {
             int uidHash = XukAble.GetHashCode(uid);
             return GetManagedObject(uid, uidHash);
         }
+#endif //UidStringComparisonNoHashCodeOptimization
 
-        public T GetManagedObject(string uid, int uidHash)
+        public T GetManagedObject(string uid
+#if !UidStringComparisonNoHashCodeOptimization
+            , int uidHash
+#endif //UidStringComparisonNoHashCodeOptimization
+)
         {
             if (string.IsNullOrEmpty(uid))
             {
@@ -195,12 +220,20 @@ namespace urakawa
             {
                 lock (LOCK)
                 {
-                    return GetManagedObject_NO_LOCK(uid, uidHash);
+                    return GetManagedObject_NO_LOCK(uid
+#if !UidStringComparisonNoHashCodeOptimization
+            , int uidHash
+#endif //UidStringComparisonNoHashCodeOptimization
+);
                 }
             }
             else
             {
-                return GetManagedObject_NO_LOCK(uid, uidHash);
+                return GetManagedObject_NO_LOCK(uid
+#if !UidStringComparisonNoHashCodeOptimization
+            , int uidHash
+#endif //UidStringComparisonNoHashCodeOptimization
+);
             }
         }
 
@@ -300,6 +333,8 @@ namespace urakawa
             {
                 m_managedObjects.Remove(objectToRemove);
 
+
+#if !UidStringComparisonNoHashCodeOptimization
                 if (!XukAble.UsePrefixedIntUniqueHashCodes)
                 {
 #if DEBUG
@@ -308,6 +343,7 @@ namespace urakawa
 
                     CheckUidHashCollision_(objectToRemove.UidHash);
                 }
+#endif //UidStringComparisonNoHashCodeOptimization
                 return;
             }
 
@@ -340,6 +376,7 @@ namespace urakawa
         {
             obj.Uid = uid;
 
+#if !UidStringComparisonNoHashCodeOptimization
             if (!XukAble.UsePrefixedIntUniqueHashCodes)
             {
 #if DEBUG
@@ -347,6 +384,7 @@ namespace urakawa
 #endif //DEBUG
                 CheckUidHashCollision(obj.UidHash);
             }
+#endif //UidStringComparisonNoHashCodeOptimization
 
             if (safetyChecks)
             {
@@ -357,7 +395,11 @@ namespace urakawa
                         throw new exception.ObjectIsAlreadyManagedException(
                             "The given object is already managed by the Manager");
                     }
-                    if (UidEquals(objz, obj.Uid, obj.UidHash))
+#if !UidStringComparisonNoHashCodeOptimization
+                if (UidEquals(objz, obj.Uid, obj.UidHash))
+#else //UidStringComparisonNoHashCodeOptimization
+                    if (objz.Uid == obj.Uid)
+#endif //UidStringComparisonNoHashCodeOptimization
                     {
                         throw new exception.ObjectIsAlreadyManagedException(
                             String.Format("Another managed object exists with uid {0}", uid));
@@ -421,29 +463,49 @@ namespace urakawa
             }
         }
 
-        public bool IsManagerOf_NO_LOCK(string uid, int uidHash)
+        public bool IsManagerOf_NO_LOCK(string uid
+#if !UidStringComparisonNoHashCodeOptimization
+            , int uidHash
+#endif //UidStringComparisonNoHashCodeOptimization
+)
         {
             //int uidHash = XukAble.GetHashCode(uid);
 
             foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
             {
+#if !UidStringComparisonNoHashCodeOptimization
                 if (UidEquals(obj, uid, uidHash)) return true;
+#else //UidStringComparisonNoHashCodeOptimization
+                if (obj.Uid == uid) return true;
+#endif //UidStringComparisonNoHashCodeOptimization
             }
             return false;
         }
 
-        public bool IsManagerOf(string uid, int uidHash)
+        public bool IsManagerOf(string uid
+#if !UidStringComparisonNoHashCodeOptimization
+            , int uidHash
+#endif //UidStringComparisonNoHashCodeOptimization
+)
         {
             if (m_managedObjects.UseLock)
             {
                 lock (LOCK)
                 {
-                    return IsManagerOf_NO_LOCK(uid, uidHash);
+                    return IsManagerOf_NO_LOCK(uid
+#if !UidStringComparisonNoHashCodeOptimization
+            , int uidHash
+#endif //UidStringComparisonNoHashCodeOptimization
+);
                 }
             }
             else
             {
-                return IsManagerOf_NO_LOCK(uid, uidHash);
+                return IsManagerOf_NO_LOCK(uid
+#if !UidStringComparisonNoHashCodeOptimization
+            , int uidHash
+#endif //UidStringComparisonNoHashCodeOptimization
+);
             }
         }
 
@@ -470,8 +532,16 @@ namespace urakawa
 
             foreach (T obj in m_managedObjects.ContentsAs_Enumerable)
             {
-                if (!otherz.IsManagerOf(obj.Uid, obj.UidHash)) return false;
-                if (!otherz.GetManagedObject(obj.Uid, obj.UidHash).ValueEquals(obj)) return false;
+                if (!otherz.IsManagerOf(obj.Uid
+#if !UidStringComparisonNoHashCodeOptimization
+                    , obj.UidHash
+#endif //UidStringComparisonNoHashCodeOptimization
+)) return false;
+                if (!otherz.GetManagedObject(obj.Uid
+#if !UidStringComparisonNoHashCodeOptimization
+                    , obj.UidHash
+#endif //UidStringComparisonNoHashCodeOptimization
+).ValueEquals(obj)) return false;
             }
 
             return true;
