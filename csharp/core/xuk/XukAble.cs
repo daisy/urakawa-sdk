@@ -60,7 +60,10 @@ namespace urakawa.xuk
         //    return ulong.MaxValue;
         //}
 
-        // getter costs a lot of CPU time when called 10th of millions of time...so we use an unsafe public member :(
+
+#if !UidStringComparisonNoHashCodeOptimization
+
+        // getter costs a lot of CPU time when called millions of time...so we use an unsafe public member :(
         public int UidHash = int.MaxValue;
        
         private const uint zeroChar = (uint)'0';
@@ -170,6 +173,8 @@ namespace urakawa.xuk
                 return uid.GetHashCode();
             }
         }
+        
+#endif //UidStringComparisonNoHashCodeOptimization
 
         private string m_Uid = null;
         public string Uid
@@ -180,12 +185,18 @@ namespace urakawa.xuk
                 {
                     //m_Uid = string.Intern(value);
                     m_Uid = value;
+
+#if !UidStringComparisonNoHashCodeOptimization
                     UidHash = GetHashCode(m_Uid);
+#endif //UidStringComparisonNoHashCodeOptimization
+
                 }
                 else
                 {
                     m_Uid = null;
+#if !UidStringComparisonNoHashCodeOptimization
                     UidHash = int.MaxValue;
+#endif //UidStringComparisonNoHashCodeOptimization
                 }
             }
             get { return m_Uid; }
