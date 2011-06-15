@@ -222,7 +222,7 @@ namespace urakawa
                 {
                     return GetManagedObject_NO_LOCK(uid
 #if !UidStringComparisonNoHashCodeOptimization
-            , int uidHash
+            , uidHash
 #endif //UidStringComparisonNoHashCodeOptimization
 );
                 }
@@ -231,7 +231,7 @@ namespace urakawa
             {
                 return GetManagedObject_NO_LOCK(uid
 #if !UidStringComparisonNoHashCodeOptimization
-            , int uidHash
+            , uidHash
 #endif //UidStringComparisonNoHashCodeOptimization
 );
             }
@@ -494,7 +494,7 @@ namespace urakawa
                 {
                     return IsManagerOf_NO_LOCK(uid
 #if !UidStringComparisonNoHashCodeOptimization
-            , int uidHash
+            , uidHash
 #endif //UidStringComparisonNoHashCodeOptimization
 );
                 }
@@ -503,7 +503,7 @@ namespace urakawa
             {
                 return IsManagerOf_NO_LOCK(uid
 #if !UidStringComparisonNoHashCodeOptimization
-            , int uidHash
+            , uidHash
 #endif //UidStringComparisonNoHashCodeOptimization
 );
             }
