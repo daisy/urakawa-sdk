@@ -37,6 +37,34 @@ namespace urakawa.property.alt
             set { m_Role = value; }
         }
 
+        private Description m_ShortDescription;
+        public Description ShortDescription
+        {
+            get
+            {
+                if (m_ShortDescription == null)
+                {
+                    m_ShortDescription = new Description();
+                    m_ShortDescription.Name = XukStrings.ShortDescription;
+                }
+                return m_ShortDescription;
+            }
+        }
+
+        private Description m_LongDescription;
+        public Description LongDescription
+        {
+            get
+            {
+                if (m_LongDescription == null)
+                {
+                    m_LongDescription = new Description();
+                    m_LongDescription.Name = XukStrings.LongDescription;
+                }
+                return m_LongDescription;
+            }
+        }
+
         private ManagedImageMedia m_Image;
         public ManagedImageMedia Image
         {
@@ -104,6 +132,28 @@ namespace urakawa.property.alt
                     m_Audio = Presentation.MediaFactory.CreateManagedAudioMedia();
                     m_Audio.XukIn(source, handler);
                 }
+                else if (source.LocalName == XukStrings.Description)
+                {
+                     
+                    Description desc = new Description();
+                    desc.XukIn(source, handler);
+                    if (desc.Name == XukStrings.ShortDescription)
+                    {
+                        if (m_ShortDescription != null)
+                        {
+                            throw new exception.XukException("AlternateContent short description XukIn, already set !");
+                        }
+                        m_ShortDescription = desc;
+                    }
+                    else if (desc.Name == XukStrings.LongDescription)
+                    {
+                        if (m_LongDescription != null)
+                        {
+                            throw new exception.XukException("AlternateContent long description XukIn, already set !");
+                        }
+                        m_LongDescription = desc;
+                    }
+                }
                 else if (source.LocalName == XukStrings.ManagedImageMedia)
                 {
                     if (m_Image != null)
@@ -138,10 +188,20 @@ namespace urakawa.property.alt
                 m_Audio.XukOut(destination, baseUri, handler);
             }
 
+            if (m_ShortDescription != null)
+            {
+                m_ShortDescription.XukOut(destination, baseUri, handler);
+            }
+            if (m_LongDescription != null)
+            {
+                m_LongDescription.XukOut(destination, baseUri, handler);
+            }
+
             if (m_Image != null)
             {
                 m_Image.XukOut(destination, baseUri, handler);
             }
         }
+
     }
 }
