@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 
 using urakawa.xuk;
-using urakawa.progress;
 
 namespace urakawa.property.alt
 {
@@ -61,7 +58,7 @@ namespace urakawa.property.alt
             {
                 string prevVal = mValue;
                 mValue = value;
-                
+
             }
         }
 
@@ -234,7 +231,5 @@ namespace urakawa.property.alt
             if (NamespaceUri != "") displayName = NamespaceUri + ":" + displayName;
             return String.Format("{1}: {2}='{3}'", base.ToString(), displayName, Value.Replace("'", "''"));
         }
-
-
     }
 }

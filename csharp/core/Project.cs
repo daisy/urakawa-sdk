@@ -1,6 +1,9 @@
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Xml;
+using urakawa.ExternalFiles;
 using urakawa.media.data;
 using urakawa.progress;
 using urakawa.xuk;
@@ -13,6 +16,11 @@ namespace urakawa
     /// </summary>
     public class Project : XukAble, IValueEquatable<Project>, IChangeNotifier
     {
+        public static string GetXukSchema(bool isPrettyFormat)
+        {
+            return ""; // TODO 
+        }
+
         public override string GetTypeNameFormatted()
         {
             return XukStrings.Project;

@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using urakawa.command;
 using urakawa.events.progress;
+using urakawa.ExternalFiles;
 using urakawa.progress;
 
 namespace urakawa.xuk
@@ -187,7 +188,7 @@ namespace urakawa.xuk
             };
              */
             //dotnet2
-            EventHandler<ProgressEventArgs> progressing = delegate (object sender,ProgressEventArgs e) 
+            EventHandler<ProgressEventArgs> progressing = delegate(object sender, ProgressEventArgs e)
             {
                 double val = e.Current;
                 double max = e.Total;
@@ -209,21 +210,21 @@ namespace urakawa.xuk
             Progress += progressing;
             //Finished += (sender, e) =>
             //{
-                //Progress -= progressing;
+            //Progress -= progressing;
             //};
 
             //dotnet2
-            Finished += delegate (object sender,FinishedEventArgs e) 
+            Finished += delegate(object sender, FinishedEventArgs e)
             {
                 Progress -= progressing;
             };
             //Cancelled += (sender, e) =>
             //{
-                //Progress -= progressing;
+            //Progress -= progressing;
             //};
 
             //dotnet2
-            Cancelled += delegate (object sender,CancelledEventArgs e) 
+            Cancelled += delegate(object sender, CancelledEventArgs e)
             {
                 Progress -= progressing;
             };
@@ -328,6 +329,57 @@ namespace urakawa.xuk
             }
         }
 
+        public static void GenerateXukSchemas()
+        {
+            //<?oxygen RNGSchema="file.rnc" type="compact"?>
+            //<?oxygen SCHSchema="file.sch"?>
+
+            GenerateXukSchema(true);
+            GenerateXukSchema(false);
+        }
+
+
+        private static void GenerateXukSchema(bool isPrettyFormat)
+        {
+            const string SCHEMA_FILENAME_PREFIX = @"Tobi_Schema_";
+            const string SCHEMA_FILENAME_EXTENSION = @"rnc";
+
+            string schema_PrettyXuk_FilePath = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, SCHEMA_FILENAME_PREFIX + "PrettyXuk" + "." + SCHEMA_FILENAME_EXTENSION);
+            string schema_CompressedXuk_FilePath = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, SCHEMA_FILENAME_PREFIX + "CompressedXuk" + "." + SCHEMA_FILENAME_EXTENSION);
+
+            //xsi:noNamespaceSchemaLocation ===> XukAble.XUK_NS + "/" + XukAble.XUK_XSD_PATH
+
+            Project project = new Project();
+            if (isPrettyFormat)
+            {
+                project.SetPrettyFormat(true);
+            }
+            else
+            {
+                project.SetPrettyFormat(false);
+            }
+
+            StreamWriter streamWriter = new StreamWriter(isPrettyFormat ? schema_PrettyXuk_FilePath : schema_CompressedXuk_FilePath, false, Encoding.UTF8);
+            try
+            {
+                streamWriter.WriteLine("default namespace = \"" + XukAble.XUK_NS + "\"");
+                //streamWriter.WriteLine("namespace xuk2 = \""+XukAble.XUK_NS+"\"");
+                //streamWriter.WriteLine("namespace xuk1 = \"http://www.daisy.org/urakawa/xuk/1.0\"");
+                //streamWriter.WriteLine("namespace obi = \"http://www.daisy.org/urakawa/obi\"");
+                //streamWriter.WriteLine("namespace xsi = \"http://www.w3.org/2001/XMLSchema-instance\"");
+
+                //streamWriter.WriteLine("start = element " + XukStrings.Xuk + " { " + XukStrings.Xuk + ".attlist & " + XukStrings.Xuk + ".content }");
+                //streamWriter.WriteLine(XukStrings.Xuk + ".attlist = " + XukStrings.Xuk + ".NOOP.attr");
+
+                streamWriter.WriteLine("start = element " + XukStrings.Xuk + " { " + XukStrings .Project + " }");
+
+                streamWriter.Write(Project.GetXukSchema(isPrettyFormat));
+            }
+            finally
+            {
+                streamWriter.Close();
+            }
+        }
         //private void SaveXukAction_progress(object sender, urakawa.events.progress.ProgressEventArgs e)
         //{
         //    if (mHasCancelBeenRequested) e.Cancel();
