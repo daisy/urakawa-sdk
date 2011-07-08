@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 
 using urakawa.xuk;
@@ -10,7 +9,7 @@ using urakawa.media.data.audio;
 
 namespace urakawa.property.alt
 {
-    public class Description:WithPresentation
+    public class Description : WithPresentation
     {
         public override string GetTypeNameFormatted()
         {
@@ -27,7 +26,7 @@ namespace urakawa.property.alt
             set { m_Name = value; }
         }
 
-        
+
         private TextMedia m_Text;
         public TextMedia Text
         {
@@ -67,12 +66,12 @@ namespace urakawa.property.alt
             }
             mAttributes.Add(key, newAttribute);
             newAttribute.Parent = this;
-            
+
             return (prevValue != null);
         }
 
-        
-        
+
+
         public DescriptionAttribute RemoveAttribute(string localName, string namespaceUri)
         {
             DescriptionAttribute attrToRemove = GetAttribute(localName, namespaceUri);
@@ -94,10 +93,10 @@ namespace urakawa.property.alt
                 throw new System.Exception(
                     "The given DescriptionAttribute does not belong to the XmlProperty");
             }
-            
+
             mAttributes.Remove(key);
             attrToRemove.Parent = null;
-            
+
         }
 
         public bool SetAttribute(string localName, string namespaceUri, string value)
@@ -156,7 +155,7 @@ namespace urakawa.property.alt
 
             if (!string.IsNullOrEmpty(m_Name))
             {
-                destination.WriteAttributeString(XukStrings.DescriptionName , m_Name);
+                destination.WriteAttributeString(XukStrings.DescriptionName, m_Name);
             }
         }
 
@@ -183,7 +182,6 @@ namespace urakawa.property.alt
                     }
                     m_Audio = Presentation.MediaFactory.CreateManagedAudioMedia();
                     m_Audio.XukIn(source, handler);
-                   
                 }
                 else if (IsPrettyFormat() && source.LocalName == XukStrings.DescriptionAttributes)
                 {
@@ -269,9 +267,5 @@ namespace urakawa.property.alt
                 }
             }
         }
-
     }
-
-
-    
 }

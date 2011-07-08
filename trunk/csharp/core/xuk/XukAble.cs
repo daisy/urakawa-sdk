@@ -28,13 +28,13 @@ namespace urakawa.xuk
             throw new NotImplementedException();
         }
 
-        public const string XUK_NS = "http://www.daisy.org/urakawa/xuk/2.0";
+        public static readonly string XUK_NS = "http://www.daisy.org/urakawa/xuk/2.0";
 
 
         /// <summary>
         /// The path of the W3C XmlSchema defining the XUK namespace
         /// </summary>
-        public static string XUK_XSD_PATH = "xuk.xsd";
+        public static readonly string XUK_XSD_PATH = "xuk.xsd";
 
         #region IXUKAble members
 

@@ -38,35 +38,23 @@ namespace urakawa.property.alt
             }
         }
 
-
         private Description m_ShortDescription;
         public Description ShortDescription
         {
-            get
-            {
-                if (m_ShortDescription == null)
-                {
-                    m_ShortDescription = new Description();
-                    m_ShortDescription.Name = XukStrings.ShortDescription;
-                }
-                return m_ShortDescription;
-            }
+            get { return m_ShortDescription; }
+            set { m_ShortDescription = value; }
+            //m_ShortDescription = new Description();
+            //m_ShortDescription.Name = XukStrings.ShortDescription;
         }
 
         private Description m_LongDescription;
         public Description LongDescription
         {
-            get
-            {
-                if (m_LongDescription == null)
-                {
-                    m_LongDescription = new Description();
-                    m_LongDescription.Name = XukStrings.LongDescription;
-                }
-                return m_LongDescription;
-            }
+            get { return m_LongDescription; }
+            set { m_LongDescription = value; }
+            //m_LongDescription = new Description();
+            //m_LongDescription.Name = XukStrings.LongDescription;
         }
-
 
         protected override void XukInAttributes(XmlReader source)
         {

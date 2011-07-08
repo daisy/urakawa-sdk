@@ -13,7 +13,7 @@ namespace urakawa.property.alt
             : base(pres)
         {
         }
-        
+
         protected override void InitializeInstance(AlternateContent instance)
         {
             base.InitializeInstance(instance);

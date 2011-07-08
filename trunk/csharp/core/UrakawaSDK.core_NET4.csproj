@@ -48,7 +48,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG;TRACE;NET40</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40;UidStringComparisonNoHashCodeOptimization_</DefineConstants>
     <DocumentationFile>bin\DebugNET4\UrakawaSDK.core.XML</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
@@ -287,6 +287,8 @@
     <Compile Include="property\alt\AlternateContent.cs" />
     <Compile Include="property\alt\AlternateContentFactory.cs" />
     <Compile Include="property\alt\AlternateContentProperty.cs" />
+    <Compile Include="property\alt\Description.cs" />
+    <Compile Include="property\alt\DescriptionAttribute.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
     <Compile Include="property\channel\ImageChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />
