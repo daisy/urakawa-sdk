@@ -281,6 +281,8 @@ namespace urakawa.xuk
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataSetIdCommand" : "metaSetIdCmd"); }
         }
 
+
+
         public static string AlternateContentMetadataAddCommand
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentMetadataAddCommand" : "acMetaAddCmd"); }
@@ -301,22 +303,23 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentMetadataSetIdCommand" : "acMetaSetIdCmd"); }
         }
+
         public static string AlternateContentSetManagedMediaCommand
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentSetManagedMediaCommand" : "acSetManMedCmd"); }
         }
-        public static string AlternateContentSetRoleCommand
+        public static string AlternateContentRemoveManagedMediaCommand
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentSetRoleCommand" : "acSetRoleCmd"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentRemoveManagedMediaCommand" : "acRemManMedCmd"); }
         }
 
-        public static string TreeNodeAddAlternateContentCommand
+        public static string AlternateContentAddCommand
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TreeNodeAddAlternateContentCommand" : "nodAddAcCmd"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentAddCommand" : "acAddCmd"); }
         }
-        public static string TreeNodeRemoveAlternateContentCommand
+        public static string AlternateContentRemoveCommand
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "TreeNodeRemoveAlternateContentCommand" : "nodRemAcCmd"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentRemoveCommand" : "acRemCmd"); }
         }
 
         #endregion
@@ -672,25 +675,10 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContent" : "AC"); }
         }
-        public static string AlternateContentRole
-        {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "AlternateContentRole" : "AcRole"); }
-        }
+
         public static string Description
         {
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "Description" : "Desc"); }
-        }
-        public static string DescriptionName
-        {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "DescriptionName" : "DescName"); }
-        }
-        public static string DescriptionAttribute
-        {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "DescriptionAttribute" : "DescAttr"); }
-        }
-        public static string DescriptionAttributes
-        {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "DescriptionAttributes" : "DescAttrs"); }
         }
 
         public static string ManagedAudioMedia

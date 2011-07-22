@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
+using urakawa.metadata;
 using urakawa.xuk;
 using urakawa.progress;
 using urakawa.media;
@@ -14,14 +15,11 @@ namespace urakawa.property.alt
         {
             return XukStrings.AlternateContent;
         }
-
-        //public AlternateContent()
-        //{
-        //    m_Role = "urakawa:defaultRole";
-
-        //    m_Text = Presentation.MediaFactory.CreateTextMedia();
-        //    m_Text.Text = "default description";
-        //}
+        
+        public AlternateContent()
+        {
+            m_Metadata = new ObjectListProvider<Metadata>(this, true);
+        }
 
         //public override void XukIn(XmlReader source, IProgressHandler handler)
         //{
@@ -30,29 +28,13 @@ namespace urakawa.property.alt
         //    base.XukIn(source, handler);
         //}
 
-        private string m_Role;
-        public string Role
+        private ObjectListProvider<Metadata> m_Metadata;
+        public ObjectListProvider<Metadata> Metadatas
         {
-            get { return m_Role; }
-            set { m_Role = value; }
-        }
-
-        private Description m_ShortDescription;
-        public Description ShortDescription
-        {
-            get { return m_ShortDescription; }
-            set { m_ShortDescription = value; }
-            //m_ShortDescription = new Description();
-            //m_ShortDescription.Name = XukStrings.ShortDescription;
-        }
-
-        private Description m_LongDescription;
-        public Description LongDescription
-        {
-            get { return m_LongDescription; }
-            set { m_LongDescription = value; }
-            //m_LongDescription = new Description();
-            //m_LongDescription.Name = XukStrings.LongDescription;
+            get
+            {
+                return m_Metadata;
+            }
         }
 
         private ManagedImageMedia m_Image;
@@ -80,21 +62,32 @@ namespace urakawa.property.alt
         protected override void XukInAttributes(XmlReader source)
         {
             base.XukInAttributes(source);
-
-            string role = source.GetAttribute(XukStrings.AlternateContentRole);
-            if (!string.IsNullOrEmpty(role))
-            {
-                m_Role = role;
-            }
         }
 
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             base.XukOutAttributes(destination, baseUri);
+        }
 
-            if (!string.IsNullOrEmpty(m_Role))
+        private void XukInMetadata(XmlReader source, IProgressHandler handler)
+        {
+            if (source.IsEmptyElement) return;
+            while (source.Read())
             {
-                destination.WriteAttributeString(XukStrings.AlternateContentRole, m_Role);
+                if (source.NodeType == XmlNodeType.Element)
+                {
+                    Metadata md = Presentation.MetadataFactory.CreateMetadata();
+                    md.XukIn(source, handler);
+                    m_Metadata.Insert(m_Metadata.Count, md);
+                }
+                else if (source.NodeType == XmlNodeType.EndElement)
+                {
+                    break;
+                }
+                if (source.EOF)
+                {
+                    throw new exception.XukException("Unexpectedly reached EOF");
+                }
             }
         }
 
@@ -104,7 +97,11 @@ namespace urakawa.property.alt
             if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
-                if (source.LocalName == XukStrings.TextMedia)
+                if (source.LocalName == XukStrings.Metadatas)
+                {
+                    XukInMetadata(source, handler);
+                }
+                else if (source.LocalName == XukStrings.TextMedia)
                 {
                     if (m_Text != null)
                     {
@@ -121,27 +118,6 @@ namespace urakawa.property.alt
                     }
                     m_Audio = Presentation.MediaFactory.CreateManagedAudioMedia();
                     m_Audio.XukIn(source, handler);
-                }
-                else if (source.LocalName == XukStrings.Description)
-                {
-                    Description desc = new Description();
-                    desc.XukIn(source, handler);
-                    if (desc.Name == XukStrings.ShortDescription)
-                    {
-                        if (m_ShortDescription != null)
-                        {
-                            throw new exception.XukException("AlternateContent short description XukIn, already set !");
-                        }
-                        m_ShortDescription = desc;
-                    }
-                    else if (desc.Name == XukStrings.LongDescription)
-                    {
-                        if (m_LongDescription != null)
-                        {
-                            throw new exception.XukException("AlternateContent long description XukIn, already set !");
-                        }
-                        m_LongDescription = desc;
-                    }
                 }
                 else if (source.LocalName == XukStrings.ManagedImageMedia)
                 {
@@ -167,6 +143,13 @@ namespace urakawa.property.alt
         {
             base.XukOutChildren(destination, baseUri, handler);
 
+            destination.WriteStartElement(XukStrings.Metadatas, XukAble.XUK_NS);
+            foreach (Metadata md in m_Metadata.ContentsAs_Enumerable)
+            {
+                md.XukOut(destination, baseUri, handler);
+            }
+            destination.WriteEndElement();
+
             if (m_Text != null)
             {
                 m_Text.XukOut(destination, baseUri, handler);
@@ -175,15 +158,6 @@ namespace urakawa.property.alt
             if (m_Audio != null)
             {
                 m_Audio.XukOut(destination, baseUri, handler);
-            }
-
-            if (m_ShortDescription != null)
-            {
-                m_ShortDescription.XukOut(destination, baseUri, handler);
-            }
-            if (m_LongDescription != null)
-            {
-                m_LongDescription.XukOut(destination, baseUri, handler);
             }
 
             if (m_Image != null)

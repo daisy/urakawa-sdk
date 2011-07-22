@@ -38,24 +38,6 @@ namespace urakawa.property.alt
             }
         }
 
-        private Description m_ShortDescription;
-        public Description ShortDescription
-        {
-            get { return m_ShortDescription; }
-            set { m_ShortDescription = value; }
-            //m_ShortDescription = new Description();
-            //m_ShortDescription.Name = XukStrings.ShortDescription;
-        }
-
-        private Description m_LongDescription;
-        public Description LongDescription
-        {
-            get { return m_LongDescription; }
-            set { m_LongDescription = value; }
-            //m_LongDescription = new Description();
-            //m_LongDescription.Name = XukStrings.LongDescription;
-        }
-
         protected override void XukInAttributes(XmlReader source)
         {
             //nothing new here
@@ -72,15 +54,6 @@ namespace urakawa.property.alt
         {
             base.XukOutChildren(destination, baseUri, handler);
 
-            if (m_ShortDescription != null)
-            {
-                m_ShortDescription.XukOut(destination, baseUri, handler);
-            }
-            if (m_LongDescription != null)
-            {
-                m_LongDescription.XukOut(destination, baseUri, handler);
-            }
-
             destination.WriteStartElement(XukStrings.Metadatas, XukAble.XUK_NS);
             foreach (Metadata md in m_Metadata.ContentsAs_Enumerable)
             {
@@ -96,6 +69,28 @@ namespace urakawa.property.alt
             destination.WriteEndElement();
         }
 
+        private void XukInMetadata(XmlReader source, IProgressHandler handler)
+        {
+            if (source.IsEmptyElement) return;
+            while (source.Read())
+            {
+                if (source.NodeType == XmlNodeType.Element)
+                {
+                    Metadata md = Presentation.MetadataFactory.CreateMetadata();
+                    md.XukIn(source, handler);
+                    m_Metadata.Insert(m_Metadata.Count, md);
+                }
+                else if (source.NodeType == XmlNodeType.EndElement)
+                {
+                    break;
+                }
+                if (source.EOF)
+                {
+                    throw new exception.XukException("Unexpectedly reached EOF");
+                }
+            }
+        }
+
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
@@ -104,36 +99,13 @@ namespace urakawa.property.alt
                 readItem = true;
                 if (source.LocalName == XukStrings.Metadatas)
                 {
-                    Metadata md = Presentation.MetadataFactory.CreateMetadata();
-                    md.XukIn(source, handler);
-                    m_Metadata.Insert(m_Metadata.Count, md);
+                    XukInMetadata(source, handler);
                 }
                 else if (source.LocalName == XukStrings.AlternateContents)
                 {
                     AlternateContent ac = Presentation.AlternateContentFactory.CreateAlternateContent();
                     ac.XukIn(source, handler);
                     m_AlternateContents.Insert(m_AlternateContents.Count, ac);
-                }
-                else if (source.LocalName == XukStrings.Description)
-                {
-                    Description desc = new Description();
-                    desc.XukIn(source, handler);
-                    if (desc.Name == XukStrings.ShortDescription)
-                    {
-                        if (m_ShortDescription != null)
-                        {
-                            throw new exception.XukException("AlternateContent short description XukIn, already set !");
-                        }
-                        m_ShortDescription = desc;
-                    }
-                    else if (desc.Name == XukStrings.LongDescription)
-                    {
-                        if (m_LongDescription != null)
-                        {
-                            throw new exception.XukException("AlternateContent long description XukIn, already set !");
-                        }
-                        m_LongDescription = desc;
-                    }
                 }
                 else
                 {

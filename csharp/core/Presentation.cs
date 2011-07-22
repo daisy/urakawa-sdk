@@ -1342,17 +1342,28 @@ namespace urakawa
             PropertyFactory.CreateChannelsProperty();
             PropertyFactory.CreateXmlProperty();
             //
-            AlternateContent altContent = AlternateContentFactory.CreateAlternateContent();
             AlternateContentProperty altContentProp = PropertyFactory.CreateAlternateContentProperty();
-            CommandFactory.CreateAlternateContentMetadataAddCommand(altContentProp, meta);
-            CommandFactory.CreateAlternateContentMetadataRemoveCommand(altContentProp, meta);
-            CommandFactory.CreateAlternateContentMetadataSetContentCommand(altContentProp, meta, "sample content");
-            CommandFactory.CreateAlternateContentMetadataSetIdCommand(altContentProp, meta, false);
-            CommandFactory.CreateAlternateContentMetadataSetNameCommand(altContentProp, meta, "sample name");
+            
+            CommandFactory.CreateAlternateContentMetadataAddCommand(altContentProp, null, meta);
+            CommandFactory.CreateAlternateContentMetadataRemoveCommand(altContentProp, null, meta);
+            CommandFactory.CreateAlternateContentMetadataSetNameCommand(altContentProp, null, meta, "sample name");
+            CommandFactory.CreateAlternateContentMetadataSetContentCommand(altContentProp, null, meta, "sample content");
+            CommandFactory.CreateAlternateContentMetadataSetIdCommand(altContentProp, null, meta, false);
+
+            AlternateContent altContent = AlternateContentFactory.CreateAlternateContent();
+
+            CommandFactory.CreateAlternateContentAddCommand(treeNode, altContent);
+            CommandFactory.CreateAlternateContentRemoveCommand(treeNode, altContent);
+
+            CommandFactory.CreateAlternateContentMetadataAddCommand(null, altContent, meta);
+            CommandFactory.CreateAlternateContentMetadataRemoveCommand(null, altContent, meta);
+            CommandFactory.CreateAlternateContentMetadataSetContentCommand(null, altContent, meta, "sample content");
+            CommandFactory.CreateAlternateContentMetadataSetIdCommand(null, altContent, meta, false);
+            CommandFactory.CreateAlternateContentMetadataSetNameCommand(null, altContent, meta, "sample name");
+
             CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent, txtMedia);
-            CommandFactory.CreateAlternateContentSetRoleCommand(altContent, "urakawa:testRole");
-            CommandFactory.CreateTreeNodeAddAlternateContentCommand(treeNode, altContent);
-            CommandFactory.CreateTreeNodeRemoveAlternateContentCommand(treeNode, altContent);
+            CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(altContent, txtMedia);
+            
             //
             //
             CSSExternalFileData exFileDataCSS = ExternalFilesDataFactory.Create<CSSExternalFileData>();

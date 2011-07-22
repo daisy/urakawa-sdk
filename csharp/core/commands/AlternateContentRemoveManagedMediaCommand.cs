@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.command;
+using urakawa.media;
 using urakawa.media.data;
+using urakawa.media.data.audio;
+using urakawa.media.data.image;
 using urakawa.progress;
-using urakawa.property.alt;
 using urakawa.xuk;
+
+using urakawa.property.alt;
 
 namespace urakawa.commands
 {
-    public class AlternateContentSetRoleCommand : Command
+    public class AlternateContentRemoveManagedMediaCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -18,7 +22,7 @@ namespace urakawa.commands
                 return false;
             }
 
-            AlternateContentSetRoleCommand otherz = other as AlternateContentSetRoleCommand;
+            AlternateContentRemoveManagedMediaCommand otherz = other as AlternateContentRemoveManagedMediaCommand;
             if (otherz == null)
             {
                 return false;
@@ -30,7 +34,7 @@ namespace urakawa.commands
         }
         public override string GetTypeNameFormatted()
         {
-            return XukStrings.AlternateContentSetRoleCommand;
+            return XukStrings.AlternateContentRemoveManagedMediaCommand;
         }
 
         private AlternateContent m_AlternateContent;
@@ -40,37 +44,46 @@ namespace urakawa.commands
             get { return m_AlternateContent; }
         }
 
-        private string m_Role;
-        public string Role
+        private Media m_Media;
+        public Media Media
         {
-            private set { m_Role = value; }
-            get { return m_Role; }
-        }
-        private string m_OldRole;
-        public string OldRole
-        {
-            private set { m_OldRole = value; }
-            get { return m_OldRole; }
+            private set { m_Media = value; }
+            get { return m_Media; }
         }
 
-        public void Init(AlternateContent altContent, string role)
+        public void Init(AlternateContent altContent, Media media)
         {
             if (altContent == null)
             {
                 throw new ArgumentNullException("altContent");
             }
 
-            if (string.IsNullOrEmpty(role))
+            if (media == null)
             {
-                throw new ArgumentNullException("role");
+                throw new ArgumentNullException("media");
             }
 
-            m_AlternateContent = altContent;
-            Role = role;
-            OldRole = m_AlternateContent.Role;
+            AlternateContent = altContent;
+            Media = media;
 
-            ShortDescription = "Set role";
-            LongDescription = "Set the role of an AlternateContent";
+            if (media is ManagedAudioMedia)
+            {
+                m_UsedMediaData.Add(((ManagedAudioMedia)media).AudioMediaData);
+            }
+            else if (media is ManagedImageMedia)
+            {
+                m_UsedMediaData.Add(((ManagedImageMedia)media).ImageMediaData);
+            }
+            else if (media is TextMedia)
+            {
+                //
+            }
+            else
+            {
+                throw new ArgumentException("media should be ManagedAudioMedia, ManagedImageMedia, or TextMedia");
+            }
+            ShortDescription = "Add new ManagedMedia";
+            LongDescription = "Attach a ManagedMedia to a AlternateContent";
         }
 
         public override bool CanExecute
@@ -85,12 +98,34 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            m_AlternateContent.Role = Role;
+            if (Media is ManagedAudioMedia)
+            {
+                m_AlternateContent.Audio = null;
+            }
+            else if (Media is ManagedImageMedia)
+            {
+                m_AlternateContent.Image = null;
+            }
+            else if (Media is TextMedia)
+            {
+                m_AlternateContent.Text = null;
+            }
         }
 
         public override void UnExecute()
         {
-            m_AlternateContent.Role = OldRole;
+            if (Media is ManagedAudioMedia)
+            {
+                m_AlternateContent.Audio = (ManagedAudioMedia)Media;
+            }
+            else if (Media is ManagedImageMedia)
+            {
+                m_AlternateContent.Image = (ManagedImageMedia)Media;
+            }
+            else if (Media is TextMedia)
+            {
+                m_AlternateContent.Text = (TextMedia)Media;
+            }
         }
 
         private List<MediaData> m_UsedMediaData = new List<MediaData>();
@@ -127,3 +162,4 @@ namespace urakawa.commands
         }
     }
 }
+

@@ -43,21 +43,30 @@ namespace urakawa.commands
             get { return m_Metadata; }
         }
 
-        private AlternateContentProperty m_AlternateContent;
-        public AlternateContentProperty AlternateContent { get { return m_AlternateContent; } }
+        private AlternateContentProperty m_AlternateContentProperty;
+        public AlternateContentProperty AlternateContentProperty { get { return m_AlternateContentProperty; } }
 
-        public void Init(AlternateContentProperty altContent, Metadata metadata)
+        private AlternateContent m_AlternateContent;
+        public AlternateContent AlternateContent { get { return m_AlternateContent; } }
+
+        public void Init(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
         {
             if (metadata == null)
             {
                 throw new ArgumentNullException("metadata");
             }
-            if (altContent.Metadatas == null)
+            if (altContentProperty == null && altContent == null)
             {
-                throw new ArgumentException("AlternateContent has null metadata");
+                throw new ArgumentNullException("altContentProperty && altContent");
             }
+            if (altContentProperty != null && altContent != null)
+            {
+                throw new ArgumentException("altContentProperty && altContent");
+            }
+
             Metadata = metadata;
             m_AlternateContent = altContent;
+            m_AlternateContentProperty = altContentProperty;
 
             ShortDescription = "Add metadata";
             LongDescription = "Add the Metadata object to the AlternateContent";
@@ -75,12 +84,18 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            m_AlternateContent.Metadatas.Insert(m_AlternateContent.Metadatas.Count, Metadata);
+            if (m_AlternateContent != null)
+                m_AlternateContent.Metadatas.Insert(m_AlternateContent.Metadatas.Count, Metadata);
+            else if (m_AlternateContentProperty != null)
+                m_AlternateContentProperty.Metadatas.Insert(m_AlternateContentProperty.Metadatas.Count, Metadata);
         }
 
         public override void UnExecute()
         {
-            m_AlternateContent.Metadatas.Remove(Metadata);
+            if (m_AlternateContent != null)
+                m_AlternateContent.Metadatas.Remove(Metadata);
+            else if (m_AlternateContentProperty != null)
+                m_AlternateContentProperty.Metadatas.Remove(Metadata);
         }
 
 

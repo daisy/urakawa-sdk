@@ -120,8 +120,8 @@
     <Compile Include="commands\AlternateContentMetadataSetContentCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataSetIdCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataSetNameCommand.cs" />
+    <Compile Include="commands\AlternateContentRemoveManagedMediaCommand.cs" />
     <Compile Include="commands\AlternateContentSetManagedMediaCommand.cs" />
-    <Compile Include="commands\AlternateContentSetRoleCommand.cs" />
     <Compile Include="commands\CommandFactory.cs" />
     <Compile Include="commands\ManagedAudioMediaInsertDataCommand.cs" />
     <Compile Include="commands\MetadataAddCommand.cs" />
@@ -129,9 +129,9 @@
     <Compile Include="commands\MetadataSetContentCommand.cs" />
     <Compile Include="commands\MetadataSetIdCommand.cs" />
     <Compile Include="commands\MetadataSetNameCommand.cs" />
-    <Compile Include="commands\TreeNodeAddAlternateContentCommand.cs" />
+    <Compile Include="commands\AlternateContentAddCommand.cs" />
     <Compile Include="commands\TreeNodeAudioStreamDeleteCommand.cs" />
-    <Compile Include="commands\TreeNodeRemoveAlternateContentCommand.cs" />
+    <Compile Include="commands\AlternateContentRemoveCommand.cs" />
     <Compile Include="commands\TreeNodeSetIsMarkedCommand.cs" />
     <Compile Include="commands\TreeNodeSetManagedAudioMediaCommand.cs" />
     <Compile Include="command\IAction.cs" />
@@ -287,8 +287,6 @@
     <Compile Include="property\alt\AlternateContent.cs" />
     <Compile Include="property\alt\AlternateContentFactory.cs" />
     <Compile Include="property\alt\AlternateContentProperty.cs" />
-    <Compile Include="property\alt\Description.cs" />
-    <Compile Include="property\alt\DescriptionAttribute.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
     <Compile Include="property\channel\ImageChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />
