@@ -4,6 +4,7 @@ using System.Xml;
 using urakawa.command;
 using urakawa.core;
 using urakawa.media.data;
+using urakawa.media.data.audio;
 using urakawa.progress;
 using urakawa.xuk;
 
@@ -11,7 +12,7 @@ using urakawa.property.alt;
 
 namespace urakawa.commands
 {
-    public class TreeNodeAddAlternateContentCommand: Command
+    public class AlternateContentAddCommand: Command
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -20,7 +21,7 @@ namespace urakawa.commands
                 return false;
             }
 
-            TreeNodeAddAlternateContentCommand otherz = other as TreeNodeAddAlternateContentCommand;
+            AlternateContentAddCommand otherz = other as AlternateContentAddCommand;
             if (otherz == null)
             {
                 return false;
@@ -33,7 +34,7 @@ namespace urakawa.commands
 
         public override string GetTypeNameFormatted()
         {
-            return XukStrings.TreeNodeAddAlternateContentCommand;
+            return XukStrings.AlternateContentAddCommand;
         }
 
         private TreeNode m_TreeNode;
@@ -64,8 +65,15 @@ namespace urakawa.commands
 
             TreeNode = treeNode;
             AlternateContent = altContent;
-            
-            //m_UsedMediaData.Add(NOTHING);
+
+            if (AlternateContent.Audio != null)
+            {
+                m_UsedMediaData.Add(AlternateContent.Audio.AudioMediaData);
+            }
+            else if (AlternateContent.Image != null)
+            {
+                m_UsedMediaData.Add(AlternateContent.Image.ImageMediaData);
+            }
 
             ShortDescription = "Add AlternateContent";
             LongDescription = "Add alternate content to TreeNode";

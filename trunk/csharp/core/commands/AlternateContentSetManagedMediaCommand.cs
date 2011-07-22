@@ -69,18 +69,20 @@ namespace urakawa.commands
                 throw new ArgumentNullException("media");
             }
 
-            m_AlternateContent = altContent;
+            AlternateContent = altContent;
             Media = media;
 
             if (media is ManagedAudioMedia)
             {
                 OldMedia = m_AlternateContent.Audio;
                 m_UsedMediaData.Add(((ManagedAudioMedia)media).AudioMediaData);
+                m_UsedMediaData.Add(((ManagedAudioMedia)OldMedia).AudioMediaData);
             }
             else if (media is ManagedImageMedia)
             {
                 OldMedia = m_AlternateContent.Image;
                 m_UsedMediaData.Add(((ManagedImageMedia)media).ImageMediaData);
+                m_UsedMediaData.Add(((ManagedImageMedia)OldMedia).ImageMediaData);
             }
             else if (media is TextMedia)
             {

@@ -43,25 +43,30 @@ namespace urakawa.commands
             get { return m_Metadata; }
         }
 
-        private AlternateContentProperty m_AlternateContent;
-        public AlternateContentProperty AlternateContent { get { return m_AlternateContent; } }
+        private AlternateContentProperty m_AlternateContentProperty;
+        public AlternateContentProperty AlternateContentProperty { get { return m_AlternateContentProperty; } }
 
-        public void Init(AlternateContentProperty altContent, Metadata metadata)
+        private AlternateContent m_AlternateContent;
+        public AlternateContent AlternateContent { get { return m_AlternateContent; } }
+
+        public void Init(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
         {
             if (metadata == null)
             {
                 throw new ArgumentNullException("metadata");
             }
-            if (altContent == null)
+            if (altContentProperty == null && altContent == null)
             {
-                throw new ArgumentNullException("altContent");
+                throw new ArgumentNullException("altContentProperty && altContent");
             }
-            if (altContent.Metadatas == null)
+            if (altContentProperty != null && altContent != null)
             {
-                throw new ArgumentException("AlternateContent has null metadata");
+                throw new ArgumentException("altContentProperty && altContent");
             }
+
             Metadata = metadata;
             m_AlternateContent = altContent;
+            m_AlternateContentProperty = altContentProperty;
 
             ShortDescription = "Remove metadata";
             LongDescription = "Remove the Metadata object from the AlternateContent";
@@ -79,13 +84,24 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            m_Index = m_AlternateContent.Metadatas.IndexOf(Metadata);
-            m_AlternateContent.Metadatas.Remove(Metadata);
+            if (m_AlternateContent != null)
+            {
+                m_Index = m_AlternateContent.Metadatas.IndexOf(Metadata);
+                m_AlternateContent.Metadatas.Remove(Metadata);
+            }
+            else if (m_AlternateContentProperty != null)
+            {
+                m_Index = m_AlternateContentProperty.Metadatas.IndexOf(Metadata);
+                m_AlternateContentProperty.Metadatas.Remove(Metadata);
+            }
         }
 
         public override void UnExecute()
         {
-            m_AlternateContent.Metadatas.Insert(m_Index, Metadata);
+            if (m_AlternateContent != null)
+                m_AlternateContent.Metadatas.Insert(m_Index, Metadata);
+            else if (m_AlternateContentProperty != null)
+                m_AlternateContentProperty.Metadatas.Insert(m_Index, Metadata);
         }
 
 

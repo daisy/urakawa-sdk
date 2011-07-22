@@ -12,7 +12,7 @@ using urakawa.property.alt;
 
 namespace urakawa.commands
 {
-    public class TreeNodeRemoveAlternateContentCommand: Command
+    public class AlternateContentRemoveCommand: Command
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -21,7 +21,7 @@ namespace urakawa.commands
                 return false;
             }
 
-            TreeNodeRemoveAlternateContentCommand otherz = other as TreeNodeRemoveAlternateContentCommand;
+            AlternateContentRemoveCommand otherz = other as AlternateContentRemoveCommand;
             if (otherz == null)
             {
                 return false;
@@ -34,7 +34,7 @@ namespace urakawa.commands
 
         public override string GetTypeNameFormatted()
         {
-            return XukStrings.TreeNodeRemoveAlternateContentCommand;
+            return XukStrings.AlternateContentRemoveCommand;
         }
 
         private TreeNode m_TreeNode;
@@ -44,6 +44,7 @@ namespace urakawa.commands
             get { return m_TreeNode; }
         }
 
+        private int m_Index;
         private AlternateContent m_AlternateContent ;
         public AlternateContent AlternateContent
         {
@@ -65,8 +66,15 @@ namespace urakawa.commands
 
             TreeNode = treeNode;
             AlternateContent = altContent;
-            
-            //m_UsedMediaData.Add(NOTHING);
+
+            if (AlternateContent.Audio != null)
+            {
+                m_UsedMediaData.Add(AlternateContent.Audio.AudioMediaData);
+            }
+            else if (AlternateContent.Image != null)
+            {
+                m_UsedMediaData.Add(AlternateContent.Image.ImageMediaData);
+            }
 
             ShortDescription = "Remove AlternateContent";
             LongDescription = "Remove alternate content to TreeNode";
@@ -76,12 +84,15 @@ namespace urakawa.commands
         public override void UnExecute()
         {
             AlternateContentProperty prop = TreeNode.GetOrCreateAlternateContentProperty();
-            prop.AlternateContents.Insert(prop.AlternateContents.Count, m_AlternateContent);
+            prop.AlternateContents.Insert(m_Index,
+                //prop.AlternateContents.Count,
+                m_AlternateContent);
         }
 
         public override void Execute()
         {
             AlternateContentProperty prop = TreeNode.GetAlternateContentProperty();
+            m_Index = prop.AlternateContents.IndexOf(m_AlternateContent);
             prop.AlternateContents.Remove(m_AlternateContent);
         }
 

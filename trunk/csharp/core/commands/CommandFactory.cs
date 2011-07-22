@@ -20,57 +20,61 @@ namespace urakawa.commands
         {
         }
 
-        public AlternateContentMetadataAddCommand CreateAlternateContentMetadataAddCommand(AlternateContentProperty altContent, Metadata metadata)
+        public AlternateContentMetadataAddCommand CreateAlternateContentMetadataAddCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
         {
             AlternateContentMetadataAddCommand command = Create<AlternateContentMetadataAddCommand>();
-            command.Init(altContent, metadata);
+            command.Init(altContentProperty, altContent, metadata);
             return command;
         }
-        public AlternateContentMetadataRemoveCommand CreateAlternateContentMetadataRemoveCommand(AlternateContentProperty altContent, Metadata metadata)
+        public AlternateContentMetadataRemoveCommand CreateAlternateContentMetadataRemoveCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
         {
             AlternateContentMetadataRemoveCommand command = Create<AlternateContentMetadataRemoveCommand>();
-            command.Init(altContent, metadata);
+            command.Init(altContentProperty, altContent, metadata);
             return command;
         }
-        public AlternateContentMetadataSetContentCommand CreateAlternateContentMetadataSetContentCommand(AlternateContentProperty altContent, Metadata metadata, string content)
+        public AlternateContentMetadataSetContentCommand CreateAlternateContentMetadataSetContentCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, string content)
         {
             AlternateContentMetadataSetContentCommand command = Create<AlternateContentMetadataSetContentCommand>();
-            command.Init(altContent, metadata, content);
+            command.Init(altContentProperty, altContent, metadata, content);
             return command;
         }
-        public AlternateContentMetadataSetIdCommand CreateAlternateContentMetadataSetIdCommand(AlternateContentProperty altContent, Metadata metadata, bool id)
+        public AlternateContentMetadataSetIdCommand CreateAlternateContentMetadataSetIdCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, bool id)
         {
             AlternateContentMetadataSetIdCommand command = Create<AlternateContentMetadataSetIdCommand>();
-            command.Init(altContent, metadata, id);
+            command.Init(altContentProperty, altContent, metadata, id);
             return command;
         }
-        public AlternateContentMetadataSetNameCommand CreateAlternateContentMetadataSetNameCommand(AlternateContentProperty altContent, Metadata metadata, string name)
+        public AlternateContentMetadataSetNameCommand CreateAlternateContentMetadataSetNameCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, string name)
         {
             AlternateContentMetadataSetNameCommand command = Create<AlternateContentMetadataSetNameCommand>();
-            command.Init(altContent, metadata, name);
+            command.Init(altContentProperty, altContent, metadata, name);
             return command;
         }
+
+
+
         public AlternateContentSetManagedMediaCommand CreateAlternateContentSetManagedMediaCommand(AlternateContent altContent, Media media)
         {
             AlternateContentSetManagedMediaCommand command = Create<AlternateContentSetManagedMediaCommand>();
             command.Init(altContent, media);
             return command;
         }
-        public AlternateContentSetRoleCommand CreateAlternateContentSetRoleCommand(AlternateContent altContent, string role)
+        public AlternateContentRemoveManagedMediaCommand CreateAlternateContentRemoveManagedMediaCommand(AlternateContent altContent, Media media)
         {
-            AlternateContentSetRoleCommand command = Create<AlternateContentSetRoleCommand>();
-            command.Init(altContent, role);
+            AlternateContentRemoveManagedMediaCommand command = Create<AlternateContentRemoveManagedMediaCommand>();
+            command.Init(altContent, media);
             return command;
         }
-        public TreeNodeAddAlternateContentCommand CreateTreeNodeAddAlternateContentCommand(TreeNode treeNode, AlternateContent altContent)
+
+        public AlternateContentAddCommand CreateAlternateContentAddCommand(TreeNode treeNode, AlternateContent altContent)
         {
-            TreeNodeAddAlternateContentCommand command = Create<TreeNodeAddAlternateContentCommand>();
+            AlternateContentAddCommand command = Create<AlternateContentAddCommand>();
             command.Init(treeNode, altContent);
             return command;
         }
-        public TreeNodeRemoveAlternateContentCommand CreateTreeNodeRemoveAlternateContentCommand(TreeNode treeNode, AlternateContent altContent)
+        public AlternateContentRemoveCommand CreateAlternateContentRemoveCommand(TreeNode treeNode, AlternateContent altContent)
         {
-            TreeNodeRemoveAlternateContentCommand command = Create<TreeNodeRemoveAlternateContentCommand>();
+            AlternateContentRemoveCommand command = Create<AlternateContentRemoveCommand>();
             command.Init(treeNode, altContent);
             return command;
         }
