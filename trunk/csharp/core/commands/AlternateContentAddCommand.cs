@@ -79,9 +79,10 @@ namespace urakawa.commands
             LongDescription = "Add alternate content to TreeNode";
         }
 
-
+        private bool m_TreeNodeNoAltProp = false;
         public override void Execute()
         {
+            m_TreeNodeNoAltProp = !TreeNode.HasAlternateContentProperty;
             AlternateContentProperty prop = TreeNode.GetOrCreateAlternateContentProperty();
             prop.AlternateContents.Insert(prop.AlternateContents.Count, m_AlternateContent);
         }
@@ -90,6 +91,7 @@ namespace urakawa.commands
         {
             AlternateContentProperty prop = TreeNode.GetAlternateContentProperty();
             prop.AlternateContents.Remove(m_AlternateContent);
+            if (m_TreeNodeNoAltProp) TreeNode.RemoveProperty(prop);
         }
 
         public override bool CanExecute
