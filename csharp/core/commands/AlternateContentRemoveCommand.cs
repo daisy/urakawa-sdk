@@ -63,7 +63,7 @@ namespace urakawa.commands
             {
                 throw new ArgumentNullException("TreeNode");
             }
-
+            
             TreeNode = treeNode;
             AlternateContent = altContent;
 

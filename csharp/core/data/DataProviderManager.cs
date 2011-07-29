@@ -466,6 +466,12 @@ namespace urakawa.data
                 if (prov != null)
                 {
                     prov.XukIn(source, handler);
+                    
+                    //if (prov is FileDataProvider
+                    //    && !File.Exists(((FileDataProvider)prov).DataFileFullPath))
+                    //{
+                    // SEE BELOW
+                    //}
 
                     //string uid = source.GetAttribute(XukStrings.Uid);
                     if (string.IsNullOrEmpty(prov.Uid))
@@ -499,7 +505,7 @@ namespace urakawa.data
 
                         if (!File.Exists(fdProv.DataFileFullPath))
                         {
-                            Presentation.DataProviderManager.RemoveManagedObject(fdProv);
+                            Presentation.DataProviderManager.RemoveManagedObject(prov);
                             return;
                         }
                         mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());

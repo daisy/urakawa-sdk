@@ -11,7 +11,6 @@ namespace urakawa.commands
 {
     public class AlternateContentMetadataRemoveCommand : Command
     {
-        
         public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
@@ -87,17 +86,21 @@ namespace urakawa.commands
             if (m_AlternateContent != null)
             {
                 m_Index = m_AlternateContent.Metadatas.IndexOf(Metadata);
+                if (m_Index < 0) return;
                 m_AlternateContent.Metadatas.Remove(Metadata);
             }
             else if (m_AlternateContentProperty != null)
             {
                 m_Index = m_AlternateContentProperty.Metadatas.IndexOf(Metadata);
+                if (m_Index < 0) return;
                 m_AlternateContentProperty.Metadatas.Remove(Metadata);
             }
         }
 
         public override void UnExecute()
         {
+            if (m_Index < 0) return;
+
             if (m_AlternateContent != null)
                 m_AlternateContent.Metadatas.Insert(m_Index, Metadata);
             else if (m_AlternateContentProperty != null)

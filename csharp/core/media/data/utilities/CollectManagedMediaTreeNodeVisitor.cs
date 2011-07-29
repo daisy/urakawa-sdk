@@ -40,12 +40,12 @@ namespace urakawa.media.data.utilities
             {
                 if (prop is ChannelsProperty)
                 {
-                    ChannelsProperty chProp = (ChannelsProperty) prop;
+                    ChannelsProperty chProp = (ChannelsProperty)prop;
                     foreach (Channel ch in chProp.UsedChannels)
                     {
                         if (chProp.GetMedia(ch) is IManaged)
                         {
-                            IManaged mm = (IManaged) chProp.GetMedia(ch);
+                            IManaged mm = (IManaged)chProp.GetMedia(ch);
                             if (!mCollectedMedia.Contains(mm)) mCollectedMedia.Add(mm);
                         }
                     }
@@ -53,11 +53,11 @@ namespace urakawa.media.data.utilities
                 else if (prop is AlternateContentProperty)
                 {
                     AlternateContentProperty altProp = (AlternateContentProperty)prop;
-                    
+
                     foreach (AlternateContent ac in altProp.AlternateContents.ContentsAs_Enumerable)
                     {
-                        if (!mCollectedMedia.Contains(ac.Audio)) mCollectedMedia.Add(ac.Audio);
-                        if (!mCollectedMedia.Contains(ac.Image)) mCollectedMedia.Add(ac.Image);
+                        if (ac.Audio != null && !mCollectedMedia.Contains(ac.Audio)) mCollectedMedia.Add(ac.Audio);
+                        if (ac.Image != null && !mCollectedMedia.Contains(ac.Image)) mCollectedMedia.Add(ac.Image);
                     }
                 }
 

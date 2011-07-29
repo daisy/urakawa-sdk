@@ -20,6 +20,26 @@ namespace urakawa.property.alt
             m_Metadata = new ObjectListProvider<Metadata>(this, true);
         }
 
+        public bool IsEmpty
+        {
+            get
+            {
+                if (m_Metadata.Count == 0)
+                {
+                    if (m_AlternateContents.Count == 0) return true;
+
+                    foreach (var altContent in m_AlternateContents.ContentsAs_Enumerable)
+                    {
+                        if (!altContent.IsEmpty) return false;
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
         private ObjectListProvider<Metadata> m_Metadata;
         public ObjectListProvider<Metadata> Metadatas
         {
@@ -76,9 +96,12 @@ namespace urakawa.property.alt
             {
                 if (source.NodeType == XmlNodeType.Element)
                 {
-                    Metadata md = Presentation.MetadataFactory.CreateMetadata();
-                    md.XukIn(source, handler);
-                    m_Metadata.Insert(m_Metadata.Count, md);
+                    if (source.NamespaceURI == XukAble.XUK_NS && source.LocalName == XukStrings.Metadata)
+                    {
+                        Metadata md = Presentation.MetadataFactory.CreateMetadata();
+                        md.XukIn(source, handler);
+                        m_Metadata.Insert(m_Metadata.Count, md);
+                    }
                 }
                 else if (source.NodeType == XmlNodeType.EndElement)
                 {
@@ -91,6 +114,30 @@ namespace urakawa.property.alt
             }
         }
 
+        private void XukInAlternateContent(XmlReader source, IProgressHandler handler)
+        {
+            if (source.IsEmptyElement) return;
+            while (source.Read())
+            {
+                if (source.NodeType == XmlNodeType.Element)
+                {
+                    if (source.NamespaceURI == XukAble.XUK_NS && source.LocalName == XukStrings.AlternateContent)
+                    {
+                        AlternateContent ac = Presentation.AlternateContentFactory.CreateAlternateContent();
+                        ac.XukIn(source, handler);
+                        m_AlternateContents.Insert(m_AlternateContents.Count, ac);
+                    }
+                }
+                else if (source.NodeType == XmlNodeType.EndElement)
+                {
+                    break;
+                }
+                if (source.EOF)
+                {
+                    throw new exception.XukException("Unexpectedly reached EOF");
+                }
+            }
+        }
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;
@@ -103,9 +150,7 @@ namespace urakawa.property.alt
                 }
                 else if (source.LocalName == XukStrings.AlternateContents)
                 {
-                    AlternateContent ac = Presentation.AlternateContentFactory.CreateAlternateContent();
-                    ac.XukIn(source, handler);
-                    m_AlternateContents.Insert(m_AlternateContents.Count, ac);
+                    XukInAlternateContent(source, handler);
                 }
                 else
                 {
