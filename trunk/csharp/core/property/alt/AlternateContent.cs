@@ -15,10 +15,19 @@ namespace urakawa.property.alt
         {
             return XukStrings.AlternateContent;
         }
-        
+
         public AlternateContent()
         {
             m_Metadata = new ObjectListProvider<Metadata>(this, true);
+        }
+
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return m_Metadata.Count == 0 && Text == null && Image == null && Audio == null;
+            }
         }
 
         //public override void XukIn(XmlReader source, IProgressHandler handler)
@@ -76,9 +85,12 @@ namespace urakawa.property.alt
             {
                 if (source.NodeType == XmlNodeType.Element)
                 {
-                    Metadata md = Presentation.MetadataFactory.CreateMetadata();
-                    md.XukIn(source, handler);
-                    m_Metadata.Insert(m_Metadata.Count, md);
+                    if (source.NamespaceURI == XukAble.XUK_NS && source.LocalName == XukStrings.Metadata)
+                    {
+                        Metadata md = Presentation.MetadataFactory.CreateMetadata();
+                        md.XukIn(source, handler);
+                        m_Metadata.Insert(m_Metadata.Count, md);
+                    }
                 }
                 else if (source.NodeType == XmlNodeType.EndElement)
                 {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.data;
+using urakawa.exception;
 using urakawa.media.data.audio;
 using urakawa.progress;
 using urakawa.xuk;
@@ -392,7 +393,18 @@ namespace urakawa.media.data
                 data = Presentation.MediaDataFactory.Create_SkipManagerInitialization(source.LocalName, source.NamespaceURI);
                 if (data != null)
                 {
-                    data.XukIn(source, handler);
+                    try
+                    {
+                        data.XukIn(source, handler);
+                    }
+                    catch (XukException ex)
+                    {
+                        if (ex.InnerException != null && ex.InnerException is IsNotManagerOfException)
+                        {
+                            return; // ignore missing DataProviders (will be caught in ManagedMedia if actually used, or graceful continuation without errors otherwise)
+                        }
+                        throw;
+                    }
 
                     if (string.IsNullOrEmpty(data.Uid))
                     {
@@ -401,7 +413,7 @@ namespace urakawa.media.data
                     }
 
                     Presentation.MediaDataManager.AddManagedObject_NoSafetyChecks(data, data.Uid);
-                            
+
                     //string uid = source.GetAttribute(XukStrings.Uid);
 
                     //if (IsManagerOf(data.Uid))
@@ -440,7 +452,7 @@ namespace urakawa.media.data
                         if (data != null)
                         {
                             data.XukIn(source, handler);
-                            
+
                             //string uid_ = source.GetAttribute(XukStrings.Uid);
 
                             if (string.IsNullOrEmpty(data.Uid) && !string.IsNullOrEmpty(uid))

@@ -76,13 +76,15 @@ namespace urakawa.commands
             {
                 OldMedia = m_AlternateContent.Audio;
                 m_UsedMediaData.Add(((ManagedAudioMedia)media).AudioMediaData);
-                m_UsedMediaData.Add(((ManagedAudioMedia)OldMedia).AudioMediaData);
+                if (OldMedia != null)
+                    m_UsedMediaData.Add(((ManagedAudioMedia)OldMedia).AudioMediaData);
             }
             else if (media is ManagedImageMedia)
             {
                 OldMedia = m_AlternateContent.Image;
                 m_UsedMediaData.Add(((ManagedImageMedia)media).ImageMediaData);
-                m_UsedMediaData.Add(((ManagedImageMedia)OldMedia).ImageMediaData);
+                if (OldMedia != null)
+                    m_UsedMediaData.Add(((ManagedImageMedia)OldMedia).ImageMediaData);
             }
             else if (media is TextMedia)
             {
