@@ -1343,9 +1343,9 @@ namespace urakawa
             PropertyFactory.CreateXmlProperty();
             //
             AlternateContentProperty altContentProp = PropertyFactory.CreateAlternateContentProperty();
-            
-            CommandFactory.CreateAlternateContentMetadataAddCommand(altContentProp, null, meta);
-            CommandFactory.CreateAlternateContentMetadataRemoveCommand(altContentProp, null, meta);
+
+            CommandFactory.CreateAlternateContentMetadataAddCommand(treeNode, altContentProp, null, meta);
+            CommandFactory.CreateAlternateContentMetadataRemoveCommand(treeNode, altContentProp, null, meta);
             CommandFactory.CreateAlternateContentMetadataSetNameCommand(altContentProp, null, meta, "sample name");
             CommandFactory.CreateAlternateContentMetadataSetContentCommand(altContentProp, null, meta, "sample content");
             CommandFactory.CreateAlternateContentMetadataSetIdCommand(altContentProp, null, meta, false);
@@ -1355,14 +1355,14 @@ namespace urakawa
             CommandFactory.CreateAlternateContentAddCommand(treeNode, altContent);
             CommandFactory.CreateAlternateContentRemoveCommand(treeNode, altContent);
 
-            CommandFactory.CreateAlternateContentMetadataAddCommand(null, altContent, meta);
-            CommandFactory.CreateAlternateContentMetadataRemoveCommand(null, altContent, meta);
+            CommandFactory.CreateAlternateContentMetadataAddCommand(treeNode, null, altContent, meta);
+            CommandFactory.CreateAlternateContentMetadataRemoveCommand(treeNode, null, altContent, meta);
             CommandFactory.CreateAlternateContentMetadataSetContentCommand(null, altContent, meta, "sample content");
             CommandFactory.CreateAlternateContentMetadataSetIdCommand(null, altContent, meta, false);
             CommandFactory.CreateAlternateContentMetadataSetNameCommand(null, altContent, meta, "sample name");
 
-            CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent, txtMedia);
-            CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(altContent, txtMedia);
+            CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode, altContent, txtMedia);
+            CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(treeNode, altContent, txtMedia);
             
             //
             //
