@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.command;
+using urakawa.core;
 using urakawa.media;
 using urakawa.media.data;
 using urakawa.media.data.audio;
@@ -56,9 +57,18 @@ namespace urakawa.commands
             private set { m_OldMedia = value; }
             get { return m_OldMedia; }
         }
-
-        public void Init(AlternateContent altContent, Media media)
+        private TreeNode m_TreeNode;
+        public TreeNode TreeNode
         {
+            private set { m_TreeNode = value; }
+            get { return m_TreeNode; }
+        }
+        public void Init(TreeNode treeNode, AlternateContent altContent, Media media)
+        {
+            if (treeNode == null)
+            {
+                throw new ArgumentNullException("treeNode");
+            }
             if (altContent == null)
             {
                 throw new ArgumentNullException("altContent");
@@ -69,6 +79,7 @@ namespace urakawa.commands
                 throw new ArgumentNullException("media");
             }
 
+            TreeNode = treeNode;
             AlternateContent = altContent;
             Media = media;
 

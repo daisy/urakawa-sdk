@@ -20,16 +20,16 @@ namespace urakawa.commands
         {
         }
 
-        public AlternateContentMetadataAddCommand CreateAlternateContentMetadataAddCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
+        public AlternateContentMetadataAddCommand CreateAlternateContentMetadataAddCommand(TreeNode treeNode, AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
         {
             AlternateContentMetadataAddCommand command = Create<AlternateContentMetadataAddCommand>();
-            command.Init(altContentProperty, altContent, metadata);
+            command.Init(treeNode, altContentProperty, altContent, metadata);
             return command;
         }
-        public AlternateContentMetadataRemoveCommand CreateAlternateContentMetadataRemoveCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
+        public AlternateContentMetadataRemoveCommand CreateAlternateContentMetadataRemoveCommand(TreeNode treeNode, AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
         {
             AlternateContentMetadataRemoveCommand command = Create<AlternateContentMetadataRemoveCommand>();
-            command.Init(altContentProperty, altContent, metadata);
+            command.Init(treeNode, altContentProperty, altContent, metadata);
             return command;
         }
         public AlternateContentMetadataSetContentCommand CreateAlternateContentMetadataSetContentCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, string content)
@@ -53,16 +53,16 @@ namespace urakawa.commands
 
 
 
-        public AlternateContentSetManagedMediaCommand CreateAlternateContentSetManagedMediaCommand(AlternateContent altContent, Media media)
+        public AlternateContentSetManagedMediaCommand CreateAlternateContentSetManagedMediaCommand(TreeNode treeNode, AlternateContent altContent, Media media)
         {
             AlternateContentSetManagedMediaCommand command = Create<AlternateContentSetManagedMediaCommand>();
-            command.Init(altContent, media);
+            command.Init(treeNode, altContent, media);
             return command;
         }
-        public AlternateContentRemoveManagedMediaCommand CreateAlternateContentRemoveManagedMediaCommand(AlternateContent altContent, Media media)
+        public AlternateContentRemoveManagedMediaCommand CreateAlternateContentRemoveManagedMediaCommand(TreeNode treeNode, AlternateContent altContent, Media media)
         {
             AlternateContentRemoveManagedMediaCommand command = Create<AlternateContentRemoveManagedMediaCommand>();
-            command.Init(altContent, media);
+            command.Init(treeNode, altContent, media);
             return command;
         }
 
