@@ -28,7 +28,7 @@ namespace urakawa.property.alt
                 {
                     if (m_AlternateContents.Count == 0) return true;
 
-                    foreach (var altContent in m_AlternateContents.ContentsAs_Enumerable)
+                    foreach (AlternateContent altContent in m_AlternateContents.ContentsAs_ListAsReadOnly)
                     {
                         if (!altContent.IsEmpty) return false;
                     }
