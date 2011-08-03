@@ -54,12 +54,20 @@ namespace urakawa.daisy.export
                     string xmlNodeName = null;
                     string xmlNodeId = null;
                     List<Metadata> additionalMetadatas = GetAltContentNameAndXmlIdFromMetadata(altContent.Metadatas.ContentsAs_ListCopy, out xmlNodeName, out xmlNodeId);
-                    
-                    contentXmlNode = descDocument.CreateElement(xmlNodeName, namespace_Desc);
-                    bodyNode.AppendChild(contentXmlNode);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, "xml:id", xmlNodeId, namespace_Desc);
 
-                    foreach (Metadata m in additionalMetadatas) XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value, namespace_Desc);
+                    if (xmlNodeName != null)
+                    {
+                        
+                        contentXmlNode = descDocument.CreateElement(xmlNodeName, namespace_Desc);
+                        bodyNode.AppendChild(contentXmlNode);
+                        if (!String.IsNullOrEmpty( xmlNodeId )) XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, "xml:id", xmlNodeId, "http://www.w3.org/XML/1998/namespace");
+
+                        foreach (Metadata m in additionalMetadatas)
+                        {
+                            string metadataName = m.NameContentAttribute.Name.Contains(":") ? m.NameContentAttribute.Name.Split(':')[1] : m.NameContentAttribute.Name;
+                            XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, metadataName, m.NameContentAttribute.Value, namespace_Desc);
+                        }
+                    }
                 }
                 if (contentXmlNode == null)
                 {
@@ -105,9 +113,9 @@ namespace urakawa.daisy.export
             name = XmlId = null;
             List<Metadata> residualMetadataList = new List<Metadata>();
             residualMetadataList.AddRange(metadataList);
-            foreach (Metadata m in residualMetadataList)
+            for ( int i = 0 ; i < residualMetadataList.Count; i++ )
             {
-
+                Metadata m = residualMetadataList [i] ;
                 if (m.NameContentAttribute.Name == "xml:id")
                 {
                     XmlId = m.NameContentAttribute.Value;
