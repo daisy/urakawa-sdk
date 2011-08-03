@@ -15,43 +15,57 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private void CreateImageDescription(string imageSRC, AlternateContentProperty altProperty)
+        private string CreateImageDescription(string imageSRC, AlternateContentProperty altProperty)
         {
             XmlDocument descDocument = new XmlDocument();
 
-            XmlNode descriptionNode = descDocument.CreateElement("description");
+            string namespace_Desc = "http://www.daisy.org/ns/z3986/authoring/features/description/";
+            XmlNode descriptionNode = descDocument.CreateElement("description", "http://www.daisy.org/ns/z3986/authoring/");
+            XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, descriptionNode, "xmlns:d", namespace_Desc);
             descDocument.AppendChild(descriptionNode);
 
-            XmlNode headNode = descDocument.CreateElement("head");
+            XmlNode headNode = descDocument.CreateElement("head", namespace_Desc);
             descriptionNode.AppendChild(headNode);
 
             foreach (Metadata md in altProperty.Metadatas.ContentsAs_ListAsReadOnly)
             {
                 if (md.NameContentAttribute != null)
                 {
-                    XmlNode metaNode = descDocument.CreateElement("meta");
+                    XmlNode metaNode = descDocument.CreateElement("meta", namespace_Desc);
                     headNode.AppendChild(metaNode);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, metaNode, md.NameContentAttribute.Name, md.NameContentAttribute.Value);
+
+                    string metadataName = md.NameContentAttribute.Name.Contains(":") ? md.NameContentAttribute.Name.Split(':')[1] : md.NameContentAttribute.Name;
+                    metadataName =  metadataName.Replace(" ", "");
+                    //System.Windows.Forms.MessageBox.Show(metadataName + " : " + md.NameContentAttribute.Name);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, metaNode, metadataName, md.NameContentAttribute.Value, namespace_Desc);
                 }
 
             }
 
-            XmlNode bodyNode = descDocument.CreateElement("body");
+            XmlNode bodyNode = descDocument.CreateElement("body", namespace_Desc);
             descriptionNode.AppendChild(bodyNode);
 
             foreach (AlternateContent altContent in altProperty.AlternateContents.ContentsAs_ListAsReadOnly)
             {
                 //create node through metadata
-                string xmlNodeName = null;
-                string xmlNodeId = null;
-                List <Metadata> additionalMetadatas =  GetAltContentNameAndXmlIdFromMetadata(altContent.Metadatas.ContentsAs_ListCopy , out xmlNodeName,out xmlNodeId);
+                XmlNode contentXmlNode = null;
+                if (altContent.Metadatas.Count > 0)
+                {
+                    string xmlNodeName = null;
+                    string xmlNodeId = null;
+                    List<Metadata> additionalMetadatas = GetAltContentNameAndXmlIdFromMetadata(altContent.Metadatas.ContentsAs_ListCopy, out xmlNodeName, out xmlNodeId);
+                    
+                    contentXmlNode = descDocument.CreateElement(xmlNodeName, namespace_Desc);
+                    bodyNode.AppendChild(contentXmlNode);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, "xml:id", xmlNodeId, namespace_Desc);
 
-                XmlNode contentXmlNode = descDocument.CreateElement(xmlNodeName);
-                bodyNode.AppendChild(contentXmlNode);
-                XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, "xml:id", xmlNodeId);
-
-                foreach (Metadata m in additionalMetadatas) XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, m.NameContentAttribute.Name , m.NameContentAttribute.Value);
-
+                    foreach (Metadata m in additionalMetadatas) XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value, namespace_Desc);
+                }
+                if (contentXmlNode == null)
+                {
+                    contentXmlNode = descDocument.CreateElement("ac", namespace_Desc);
+                    bodyNode.AppendChild(contentXmlNode);
+                }
                 if (altContent.Text != null) contentXmlNode.AppendChild ( descDocument.CreateTextNode(altContent.Text.Text) ) ;
 
                 if (altContent.Audio != null)
@@ -72,7 +86,7 @@ namespace urakawa.daisy.export
                     }
 
                     //string imgSrcAttribute.Value = exportImageName;
-                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, "xlink:href", exportImageName);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, "xlink:href", exportImageName, namespace_Desc);
                     //if (!m_FilesList_Image.Contains(exportImageName))
                     //{
                     //m_FilesList_Image.Add(exportImageName);
@@ -83,6 +97,7 @@ namespace urakawa.daisy.export
                 
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + "_Desc.xml";
             SaveXukAction.WriteXmlDocument(descDocument, Path.Combine(m_OutputDirectory, descFileName));
+            return descFileName;
         }
 
         private List<Metadata> GetAltContentNameAndXmlIdFromMetadata (List<Metadata> metadataList,out string name, out string XmlId)
@@ -112,7 +127,7 @@ namespace urakawa.daisy.export
                 }
             }
             // add code to generate IDs if it is null
-
+            
             return residualMetadataList;
         }
 
