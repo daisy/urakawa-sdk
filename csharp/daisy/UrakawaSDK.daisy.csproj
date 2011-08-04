@@ -75,7 +75,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="export\Daisy3_Export_ImageDescription.cs" />
     <Compile Include="export\tree-visitor\AbstractBasePublishAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\AbstractPublishFlattenedManagedAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\AbstractPublishManagedAudioVisitor.cs" />

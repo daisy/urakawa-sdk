@@ -320,18 +320,18 @@ namespace urakawa.daisy.export
 
                                 imgSrcAttribute.Value = exportImageName;
 
-                                if (n.GetAlternateContentProperty() != null)
-                                {
-                                    string descriptionFile =  CreateImageDescription(exportImageName, n.GetAlternateContentProperty());
-                                    if (!String.IsNullOrEmpty(descriptionFile))
-                                    {
+                                //if (n.GetAlternateContentProperty() != null)
+                                //{
+                                    //string descriptionFile =  CreateImageDescription(exportImageName, n.GetAlternateContentProperty());
+                                    //if (!String.IsNullOrEmpty(descriptionFile))
+                                    //{
                                         // short term way for executing image description code: will be updated in later phase of implementation
-                                        XmlNode anchorNode = DTBookDocument.CreateElement("a", currentXmlNode.NamespaceURI);
-                                        currentXmlNode.AppendChild(anchorNode);
-                                        XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFile);
-                                        anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description"));
-                                    }
-                                }
+                                        //XmlNode anchorNode = DTBookDocument.CreateElement("a", currentXmlNode.NamespaceURI);
+                                        //currentXmlNode.AppendChild(anchorNode);
+                                        //XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFile);
+                                        //anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description"));
+                                    //}
+                                //}
 
                                 if (!m_FilesList_Image.Contains(exportImageName))
                                 {

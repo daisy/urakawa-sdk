@@ -35,8 +35,8 @@ namespace urakawa.daisy.export
         protected List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
         protected Time m_TotalTime;
 
-        protected TreeNodeTestDelegate triggerDelegate ;
-protected TreeNodeTestDelegate skipDelegate ;
+        protected TreeNodeTestDelegate m_TriggerDelegate ;
+protected TreeNodeTestDelegate m_SkipDelegate ;
         
         protected readonly bool m_SkipACM;
         private readonly bool m_encodeToMp3;
@@ -89,8 +89,8 @@ protected TreeNodeTestDelegate skipDelegate ;
 
         public virtual void ConfigureAudioFileDelegates ()
         {   
-            TreeNodeTestDelegate triggerDelegate = doesTreeNodeTriggerNewSmil;
-            TreeNodeTestDelegate skipDelegate = delegate { return false; };
+            m_TriggerDelegate = doesTreeNodeTriggerNewSmil;
+            m_SkipDelegate = delegate { return false; };
         }
 
         public override void DoWork()
@@ -142,7 +142,7 @@ protected TreeNodeTestDelegate skipDelegate ;
             //TreeNodeTestDelegate skipDelegate = delegate { return false; };
             ConfigureAudioFileDelegates();
 
-            m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(triggerDelegate, skipDelegate);
+            m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(m_TriggerDelegate, m_SkipDelegate);
 
             m_PublishVisitor.EncodePublishedAudioFilesToMp3 = m_encodeToMp3;
             if (m_encodeToMp3 && m_BitRate_Mp3 >= 32) m_PublishVisitor.BitRate_Mp3 = (ushort)m_BitRate_Mp3;
