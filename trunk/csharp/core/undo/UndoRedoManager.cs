@@ -435,6 +435,20 @@ namespace urakawa.undo
             NotifyTransactionStarted(newTrans);
         }
 
+        public bool IsTransactionEmpty
+        {
+            get
+            {
+                if (!IsTransactionActive)
+                {
+                    throw new exception.UndoRedoTransactionIsNotStartedException(
+                        "Can not probe transaction while no is active");
+                }
+                CompositeCommand command = mActiveTransactions.Peek();
+                return command.ChildCommands.Count <= 0;
+            }
+        }
+
         /// <summary>
         /// Ends the active transaction: 
         /// Wraps any <see cref="Command"/>s executed since the latest <see cref="StartTransaction"/> call
