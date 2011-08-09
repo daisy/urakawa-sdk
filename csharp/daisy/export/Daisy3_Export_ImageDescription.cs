@@ -20,6 +20,7 @@ namespace urakawa.daisy.export
             XmlDocument descDocument = new XmlDocument();
 
             string namespace_Desc = "http://www.daisy.org/ns/z3986/authoring/features/description/";
+            string namespace_Xml = "http://www.w3.org/XML/1998/namespace";
             XmlNode descriptionNode = descDocument.CreateElement("description", "http://www.daisy.org/ns/z3986/authoring/");
             XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, descriptionNode, "xmlns:d", namespace_Desc);
             descDocument.AppendChild(descriptionNode);
@@ -34,10 +35,13 @@ namespace urakawa.daisy.export
                     XmlNode metaNode = descDocument.CreateElement("meta", namespace_Desc);
                     headNode.AppendChild(metaNode);
 
-                    string metadataName = md.NameContentAttribute.Name.Contains(":") ? md.NameContentAttribute.Name.Split(':')[1] : md.NameContentAttribute.Name;
+                    //string metadataName = md.NameContentAttribute.Name.Contains(":") ? md.NameContentAttribute.Name.Split(':')[1] : md.NameContentAttribute.Name;
+                    string metadataName = md.NameContentAttribute.Name;
                     metadataName =  metadataName.Replace(" ", "");
+                    if (metadataName == "N/A") metadataName = "NA";
                     //System.Windows.Forms.MessageBox.Show(metadataName + " : " + md.NameContentAttribute.Name);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, metaNode, metadataName, md.NameContentAttribute.Value, namespace_Desc);
+                    
+                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, metaNode, metadataName, md.NameContentAttribute.Value,metadataName.StartsWith("xml:")?namespace_Xml: namespace_Desc);
                 }
 
             }
@@ -64,8 +68,8 @@ namespace urakawa.daisy.export
 
                         foreach (Metadata m in additionalMetadatas)
                         {
-                            string metadataName = m.NameContentAttribute.Name.Contains(":") ? m.NameContentAttribute.Name.Split(':')[1] : m.NameContentAttribute.Name;
-                            XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, metadataName, m.NameContentAttribute.Value, namespace_Desc);
+                            string metadataName = m.NameContentAttribute.Name;
+                            XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, metadataName, m.NameContentAttribute.Value,metadataName.StartsWith("xml:")? namespace_Xml: namespace_Desc);
                         }
                     }
                 }
@@ -113,22 +117,27 @@ namespace urakawa.daisy.export
             name = XmlId = null;
             List<Metadata> residualMetadataList = new List<Metadata>();
             residualMetadataList.AddRange(metadataList);
+            
             for ( int i = 0 ; i < residualMetadataList.Count; i++ )
             {
                 Metadata m = residualMetadataList [i] ;
+                //System.Windows.Forms.MessageBox.Show(m.NameContentAttribute.Name + " : " + m.NameContentAttribute.Value);
                 if (m.NameContentAttribute.Name == "xml:id")
                 {
                     XmlId = m.NameContentAttribute.Value;
                     residualMetadataList.Remove(m);
+                    --i;
                 }
-                else if (m.NameContentAttribute.Name == "XMLNAME")
+                else if (m.NameContentAttribute.Name == "description-name")
                 {
                     name = m.NameContentAttribute.Value;
                     residualMetadataList.Remove(m);
+                    --i;
                 }
                 else if (m.NameContentAttribute.Name == "xlink:href")
                 {
                     residualMetadataList.Remove(m);
+                    --i;
                 }
                 {
 
