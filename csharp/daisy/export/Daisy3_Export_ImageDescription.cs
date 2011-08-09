@@ -78,8 +78,28 @@ namespace urakawa.daisy.export
                     contentXmlNode = descDocument.CreateElement("ac", namespace_Desc);
                     bodyNode.AppendChild(contentXmlNode);
                 }
-                if (altContent.Text != null) contentXmlNode.AppendChild ( descDocument.CreateTextNode(altContent.Text.Text) ) ;
-
+                if (altContent.Text != null)
+                {
+                    string textData = altContent.Text.Text;
+                    string[] subStrings = System.Text.RegularExpressions.Regex.Split(textData, "<p>|</p>");
+//System.Windows.Forms.MessageBox.Show("original " + textData);
+                    for (int i = 0; i < subStrings.Length; i++)
+                    {
+                        string paraNodeText = subStrings[i];
+                        
+                            paraNodeText = paraNodeText.Replace("\n\r", "");
+                            paraNodeText = paraNodeText.Replace("\n", "");
+                        
+                        if (!string.IsNullOrEmpty(paraNodeText))
+                        {
+                            //System.Windows.Forms.MessageBox.Show("-" +  subStrings[i] + "-"+ paraNodeText.Length);
+                            XmlNode paraNode = descDocument.CreateElement("p", namespace_Desc);
+                            contentXmlNode.AppendChild(paraNode);
+                            paraNode.AppendChild(descDocument.CreateTextNode(paraNodeText));
+                        }
+                    }
+                    //contentXmlNode.AppendChild(descDocument.CreateTextNode(textData));
+                }
                 if (altContent.Audio != null)
                 {
                     // we need to publish audio before adding references
