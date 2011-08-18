@@ -322,8 +322,8 @@ namespace urakawa.daisy.export
 
                                 if (n.GetAlternateContentProperty() != null)
                                 {
-                                    try
-                                    {
+                                    //try
+                                    //{
                                         string descriptionFile = CreateImageDescription(exportImageName, n.GetAlternateContentProperty());
                                         if (!String.IsNullOrEmpty(descriptionFile))
                                         {
@@ -333,11 +333,11 @@ namespace urakawa.daisy.export
                                             XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFile);
                                             anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description"));
                                         }
-                                    }
-                                    catch (System.Exception ex)
-                                    {
-                                        System.Windows.Forms.MessageBox.Show(ex.ToString());
-                                    }
+                                    //}
+                                    //catch (System.Exception ex)
+                                    //{
+                                        //System.Windows.Forms.MessageBox.Show(ex.ToString());
+                                    //}
                                 }
 
                                 if (!m_FilesList_Image.Contains(exportImageName))
