@@ -46,6 +46,14 @@ namespace urakawa.commands
             get { return m_MetadataAttribute; }
         }
 
+        private int m_MetadataAttributeIndex;
+        public int MetadataAttributeIndex
+        {
+            private set { m_MetadataAttributeIndex= value; }
+            get { return m_MetadataAttributeIndex; }
+        }
+
+
         private Metadata m_Metadata;
         public Metadata Metadata
         {
@@ -68,7 +76,8 @@ public void Init(Metadata metadata, MetadataAttribute metadataAttribute)
             
             Metadata = metadata;
             MetadataAttribute = metadataAttribute ;
-    
+            MetadataAttributeIndex = metadata.OtherAttributes.IndexOf(metadataAttribute);
+
             ShortDescription = "Remove metadata attribute";
             LongDescription = "Remove the Metadata attribute object from the metadata";
         }
@@ -90,7 +99,8 @@ public void Init(Metadata metadata, MetadataAttribute metadataAttribute)
 
         public override void UnExecute()
         {
-            m_Metadata.OtherAttributes.Insert(m_Metadata.OtherAttributes.Count, m_MetadataAttribute);
+            m_Metadata.OtherAttributes.Insert(MetadataAttributeIndex < m_Metadata.OtherAttributes.Count ? MetadataAttributeIndex : m_Metadata.OtherAttributes.Count, 
+                m_MetadataAttribute);
             
         }
 
