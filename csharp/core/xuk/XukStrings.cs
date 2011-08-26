@@ -281,6 +281,15 @@ namespace urakawa.xuk
             get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataSetIdCommand" : "metaSetIdCmd"); }
         }
 
+        public static string AlternateContentMetadataAttributeAddCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataAttributeAddCommand" : "metaAttrAddCmd"); }
+        }
+
+        public static string AlternateContentMetadataAttributeRemoveCommand
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "MetadataAttributeRemoveCommand" : "metaAttrRemoveCmd"); }
+        }
 
 
         public static string AlternateContentMetadataAddCommand
