@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -122,6 +122,8 @@
     <Content Include="events\EventsClassDiagram.png" />
     <Compile Include="commands\AlternateContentAddCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataAddCommand.cs" />
+    <Compile Include="commands\AlternateContentMetadataAttributeAddCommand.cs" />
+    <Compile Include="commands\AlternateContentMetadataAttributeRemoveCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataRemoveCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataSetContentCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataSetIdCommand.cs" />
