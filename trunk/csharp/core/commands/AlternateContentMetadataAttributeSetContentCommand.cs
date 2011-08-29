@@ -59,10 +59,7 @@ namespace urakawa.commands
         private AlternateContentProperty m_AlternateContentProperty;
         public AlternateContentProperty AlternateContentProperty { get { return m_AlternateContentProperty; } }
 
-        private AlternateContent m_AlternateContent;
-        public AlternateContent AlternateContent { get { return m_AlternateContent; } }
-
-        public void Init(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, MetadataAttribute metadataAttribute, string content)
+        public void Init(AlternateContentProperty altContentProperty, Metadata metadata, MetadataAttribute metadataAttribute, string content)
         {
             if (metadata == null)
             {
@@ -77,19 +74,16 @@ namespace urakawa.commands
                 throw new ArgumentNullException("content");
             }
 
-            if (altContentProperty == null && altContent == null)
+            if (altContentProperty == null )
             {
-                throw new ArgumentNullException("altContentProperty && altContent");
+                throw new ArgumentNullException("altContentProperty");
             }
-            if (altContentProperty != null && altContent != null)
-            {
-                throw new ArgumentException("altContentProperty && altContent");
-            }
+            
             Metadata = metadata;
             MetadataAttribute = metadataAttribute;
             m_OriginalContent = metadataAttribute.Value;
             Content = content;
-            m_AlternateContent = altContent;
+            
             m_AlternateContentProperty = altContentProperty;
 
             ShortDescription = "Set metadata attribute content";
