@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using AudioLib;
 using urakawa.core;
 using urakawa.property.channel;
+using urakawa.property.alt ;
 using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
@@ -15,6 +16,7 @@ namespace urakawa.daisy.export.visitor
     {
         private List<ExternalAudioMedia> m_ExternalAudioMediaList = new List<ExternalAudioMedia>();
         private double m_EncodingFileCompressionRatio = 1;
+        private List<AlternateContentProperty> m_AlternateContentPropertiesList = new List<AlternateContentProperty>();
 
         private Stream m_TransientWavFileStream = null;
         private ulong m_TransientWavFileStreamRiffOffset = 0;
@@ -25,7 +27,8 @@ namespace urakawa.daisy.export.visitor
             {
                 return;
             }
-
+            CreateAudioFileForAlternateContentProperty();
+            m_AlternateContentPropertiesList.Clear();
             ulong bytesPcmTotal = (ulong)m_TransientWavFileStream.Position - m_TransientWavFileStreamRiffOffset;
             m_TransientWavFileStream.Position = 0;
             m_TransientWavFileStreamRiffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(m_TransientWavFileStream, (uint)bytesPcmTotal);
@@ -55,6 +58,72 @@ namespace urakawa.daisy.export.visitor
                 }
             }
         }
+
+        private void CreateAudioFileForAlternateContentProperty ()
+        {
+            if (m_AlternateContentPropertiesList == null || m_AlternateContentPropertiesList.Count == 0) return;
+
+            foreach (AlternateContentProperty altProperty in m_AlternateContentPropertiesList)
+            {
+                foreach (AlternateContent ac in altProperty.AlternateContents.ContentsAs_ListAsReadOnly)
+                {
+                    if (ac.Audio != null)
+                    {
+                        //
+
+                        Stream audioPcmStream = null;
+                        if (ac.Audio.AudioMediaData != null)
+                        {
+                            audioPcmStream = ac.Audio.AudioMediaData.OpenPcmInputStream();
+                        }
+                        else
+                        {
+                            Debug.Fail("This should never happen !!");
+                            return;
+                        }
+                        long bytesBegin = m_TransientWavFileStream.Position - (long)m_TransientWavFileStreamRiffOffset;
+                        try
+                        {
+                            const uint BUFFER_SIZE = 1024 * 1024 * 3; // 3 MB MAX BUFFER
+                            uint streamCount = StreamUtils.Copy(audioPcmStream, 0, m_TransientWavFileStream, BUFFER_SIZE);
+
+                        }
+                        catch
+                        {
+                            m_TransientWavFileStream.Close();
+                            m_TransientWavFileStream = null;
+                            m_TransientWavFileStreamRiffOffset = 0;
+
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
+                        finally
+                        {
+                            audioPcmStream.Close();
+                        }
+
+                        long bytesEnd = m_TransientWavFileStream.Position - (long)m_TransientWavFileStreamRiffOffset;
+                        string src = m_RootNode.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
+
+                        ExternalAudioMedia extAudioMedia = m_RootNode.Presentation.MediaFactory.Create<ExternalAudioMedia>();
+                        extAudioMedia.Language = m_RootNode.Presentation.Language;
+                        extAudioMedia.Src = src;
+
+                        long timeBegin =
+                            m_RootNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesBegin);
+                        long timeEnd =
+                            m_RootNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesEnd);
+                        extAudioMedia.ClipBegin = new Time(timeBegin);
+                        extAudioMedia.ClipEnd = new Time(timeEnd);
+                        ac.ExternalAudio = extAudioMedia;
+                        //
+                    }
+                }
+            }
+
+        }
+
 
         private void EncodeTransientFileResample()
         {
@@ -182,6 +251,8 @@ namespace urakawa.daisy.export.visitor
                 checkTransientWavFileAndClose(node);
                 // REMOVED, because doesn't support nested TreeNode matches ! return false; // skips children, see postVisit
             }
+
+            if (node.GetAlternateContentProperty() != null) m_AlternateContentPropertiesList.Add(node.GetAlternateContentProperty());
 
             if (!node.HasChannelsProperty)
             {

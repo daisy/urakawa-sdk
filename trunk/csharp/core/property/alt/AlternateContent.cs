@@ -66,6 +66,12 @@ namespace urakawa.property.alt
             get { return m_Audio; }
             set { m_Audio = value; }
         }
+        private ExternalAudioMedia m_ExternalAudio;
+        public ExternalAudioMedia ExternalAudio
+        {
+            get { return m_ExternalAudio; }
+            set { m_ExternalAudio = value; }
+        }
 
 
         protected override void XukInAttributes(XmlReader source)
