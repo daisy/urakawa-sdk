@@ -61,11 +61,7 @@ namespace urakawa.commands
             get { return m_Metadata; }
         }
 
-        private AlternateContentProperty m_AlternateContentProperty;
-        public AlternateContentProperty AlternateContentProperty { get { return m_AlternateContentProperty; } }
-
-
-        public void Init(AlternateContentProperty altContentProperty, Metadata metadata, MetadataAttribute metadataAttribute)
+        public void Init(Metadata metadata, MetadataAttribute metadataAttribute)
         {
             
             if (metadata == null)
@@ -78,15 +74,11 @@ namespace urakawa.commands
                 throw new ArgumentNullException("MetadataAttribute");
             }
 
-            if (altContentProperty == null)
-            {
-                throw new ArgumentNullException("altContentProperty");
-            }
-
+            
             Metadata = metadata;
             MetadataAttribute = metadataAttribute ;
             MetadataAttributeIndex = metadata.OtherAttributes.IndexOf(metadataAttribute);
-            m_AlternateContentProperty = altContentProperty;
+            
 
             ShortDescription = "Remove metadata attribute";
             LongDescription = "Remove the Metadata attribute object from the metadata";
