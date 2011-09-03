@@ -18,6 +18,13 @@ namespace urakawa.daisy.export
         private string CreateImageDescription(string imageSRC, AlternateContentProperty altProperty)
         {
             XmlDocument descDocument = new XmlDocument();
+              // <?xml-stylesheet type="text/xsl" href="desc2html.xsl"?>
+            string processingInstructionData = "type=\"text//xsl\" href=\"desc2html.xsl\"" ;
+            descDocument.AppendChild( descDocument.CreateProcessingInstruction ("xml-stylesheet", processingInstructionData ) );
+            string xsltFileName = "desc2html.xsl";
+            string sourceXsltPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, xsltFileName);
+            string destXsltPath = Path.Combine(m_OutputDirectory, xsltFileName);
+            if (!File.Exists(destXsltPath)) File.Copy(sourceXsltPath, destXsltPath);
 
             string namespace_Desc = "http://www.daisy.org/ns/z3986/authoring/features/description/";
             string namespace_Xml = "http://www.w3.org/XML/1998/namespace";
