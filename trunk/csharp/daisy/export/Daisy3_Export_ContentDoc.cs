@@ -300,6 +300,7 @@ namespace urakawa.daisy.export
                         AddReferencingNodeToReferencedAttributesList(currentXmlNode, referencingAttributesList);
 
                         // if QName is img and img src is on disk, copy it to output dir
+                        string exportImageName = null;
                         if (currentXmlNode.LocalName == "img")
                         {
                             XmlAttribute imgSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
@@ -308,7 +309,7 @@ namespace urakawa.daisy.export
                                 && n.GetImageMedia() is media.data.image.ManagedImageMedia)
                             {
                                 media.data.image.ManagedImageMedia managedImage = (media.data.image.ManagedImageMedia)n.GetImageMedia();
-                                string exportImageName = managedImage.ImageMediaData.OriginalRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
+                                exportImageName = managedImage.ImageMediaData.OriginalRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
                                 string destPath = Path.Combine(m_OutputDirectory, exportImageName);
 
                                 if (!File.Exists(destPath))
@@ -320,32 +321,42 @@ namespace urakawa.daisy.export
 
                                 imgSrcAttribute.Value = exportImageName;
 
-                                if (n.GetAlternateContentProperty() != null)
-                                {
-                                    //try
-                                    //{
-                                        string descriptionFile = CreateImageDescription(exportImageName, n.GetAlternateContentProperty());
-                                        if (!String.IsNullOrEmpty(descriptionFile))
-                                        {
-                                            //short term way for executing image description code: will be updated in later phase of implementation
-                                            XmlNode anchorNode = DTBookDocument.CreateElement("a", currentXmlNode.NamespaceURI);
-                                            currentXmlNode.AppendChild(anchorNode);
-                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFile);
-                                            anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description"));
-                                        }
-                                    //}
-                                    //catch (System.Exception ex)
-                                    //{
-                                        //System.Windows.Forms.MessageBox.Show(ex.ToString());
-                                    //}
-                                }
+                                
 
                                 if (!m_FilesList_Image.Contains(exportImageName))
                                 {
                                     m_FilesList_Image.Add(exportImageName);
                                 }
-
                             }
+                        }
+                                if (currentXmlNode.LocalName == "img"
+                                    && n.GetAlternateContentProperty() != null)
+                                    {
+                                        //try
+                                        //{
+                                        string descriptionFile = CreateImageDescription(exportImageName, n.GetAlternateContentProperty());
+                                        if (!String.IsNullOrEmpty(descriptionFile))
+                                        {
+                                            //short term way for executing image description code: will be updated in later phase of implementation
+                                            XmlNode prodNoteNode = DTBookDocument.CreateElement("prodnote", currentXmlNode.NamespaceURI);
+                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "render", "optional");
+                                            string id_Prodnote = GetNextID(ID_DTBPrefix);
+                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "id", id_Prodnote);
+                                            currentXmlNode.AppendChild(prodNoteNode);
+                                            XmlNode anchorNode = DTBookDocument.CreateElement("a", currentXmlNode.NamespaceURI);
+                                            prodNoteNode.AppendChild(anchorNode);
+                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFile);
+                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "external", "true");
+                                            anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description"));
+                                        }
+                                        //}
+                                        //catch (System.Exception ex)
+                                        //{
+                                        //System.Windows.Forms.MessageBox.Show(ex.ToString());
+                                        //}
+                                    //}
+
+                            //}
 
                         }
 
