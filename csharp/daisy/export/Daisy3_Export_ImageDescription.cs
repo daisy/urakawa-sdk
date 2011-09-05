@@ -27,8 +27,9 @@ namespace urakawa.daisy.export
             if (!File.Exists(destXsltPath)) File.Copy(sourceXsltPath, destXsltPath);
 
             string namespace_Desc = "http://www.daisy.org/ns/z3986/authoring/features/description/";
+            String namespace_DTBook = "http://www.daisy.org/ns/z3986/authoring/";
             string namespace_Xml = "http://www.w3.org/XML/1998/namespace";
-            XmlNode descriptionNode = descDocument.CreateElement("description", "http://www.daisy.org/ns/z3986/authoring/");
+            XmlNode descriptionNode = descDocument.CreateElement("description", namespace_DTBook);
             XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, descriptionNode, "xmlns:d", namespace_Desc);
             descDocument.AppendChild(descriptionNode);
 
@@ -53,7 +54,7 @@ namespace urakawa.daisy.export
 
             }
 
-            XmlNode bodyNode = descDocument.CreateElement("body", namespace_Desc);
+            XmlNode bodyNode = descDocument.CreateElement("d", "body", namespace_Desc);
             descriptionNode.AppendChild(bodyNode);
 
             foreach (AlternateContent altContent in altProperty.AlternateContents.ContentsAs_ListAsReadOnly)
@@ -69,7 +70,14 @@ namespace urakawa.daisy.export
                     if (xmlNodeName != null)
                     {
                         
-                        contentXmlNode = descDocument.CreateElement(xmlNodeName, namespace_Desc);
+                        if (xmlNodeName.StartsWith("d:"))
+                        {
+                            contentXmlNode = descDocument.CreateElement("d", xmlNodeName.Split(':')[1], namespace_Desc);
+                        }
+                        else
+                        {
+                            contentXmlNode = descDocument.CreateElement(xmlNodeName, namespace_Xml);
+                        }
                         bodyNode.AppendChild(contentXmlNode);
                         if (!String.IsNullOrEmpty( xmlNodeId )) XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, "xml:id", xmlNodeId, "http://www.w3.org/XML/1998/namespace");
 
@@ -100,7 +108,7 @@ namespace urakawa.daisy.export
                         if (!string.IsNullOrEmpty(paraNodeText))
                         {
                             //System.Windows.Forms.MessageBox.Show("-" +  subStrings[i] + "-"+ paraNodeText.Length);
-                            XmlNode paraNode = descDocument.CreateElement("p", namespace_Desc);
+                            XmlNode paraNode = descDocument.CreateElement("p", namespace_DTBook);
                             contentXmlNode.AppendChild(paraNode);
                             paraNode.AppendChild(descDocument.CreateTextNode(paraNodeText));
                         }
