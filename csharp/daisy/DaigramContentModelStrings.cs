@@ -42,7 +42,9 @@ namespace urakawa.daisy
             m_MetadataNames.Add("dc:creator");
             m_MetadataNames.Add("diagram:credentials");
             m_MetadataNames.Add("dc:rights");
-            m_MetadataNames.Add("dc:accessRights");      
+            m_MetadataNames.Add("dc:accessRights");
+            m_MetadataNames.Add("dc:description");
+            m_MetadataNames.Add("diagram:queryConcept"); 
         }
 
     }
