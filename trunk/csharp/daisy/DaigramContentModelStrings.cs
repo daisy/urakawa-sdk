@@ -34,6 +34,15 @@ namespace urakawa.daisy
             m_MetadataNames.Add("z3986:name");
             m_MetadataNames.Add("z3986:version");
             m_MetadataNames.Add("dc:identifier");
+            m_MetadataNames.Add("dc:language");
+            m_MetadataNames.Add("diagram:purpose");
+            m_MetadataNames.Add("diagram:targetAge");
+            m_MetadataNames.Add("diagram:targetGrade");
+            m_MetadataNames.Add("diagram:descriptionQuality");
+            m_MetadataNames.Add("dc:creator");
+            m_MetadataNames.Add("diagram:credentials");
+            m_MetadataNames.Add("dc:rights");
+            m_MetadataNames.Add("dc:accessRights");      
         }
 
     }
