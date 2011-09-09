@@ -18,6 +18,7 @@ namespace urakawa.daisy.export
         private List<urakawa.core.TreeNode> m_NotesNodeList = new List<TreeNode>();
 
         private List<string> m_TempImageId = null;
+        private Dictionary<TreeNode, XmlNode> m_Image_ProdNoteMap = new Dictionary<TreeNode, XmlNode>();
 
         // to do regenerate ids
         protected virtual void CreateDTBookDocument()
@@ -342,7 +343,10 @@ namespace urakawa.daisy.export
                                             XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "render", "optional");
                                             string id_Prodnote = GetNextID(ID_DTBPrefix);
                                             XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "id", id_Prodnote);
-                                            currentXmlNode.AppendChild(prodNoteNode);
+                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "imgref",currentXmlNode.Attributes.GetNamedItem("id").Value);
+                                            
+                                            currentXmlNode.ParentNode.AppendChild(prodNoteNode);
+                                            if (!m_Image_ProdNoteMap.ContainsKey(n)) m_Image_ProdNoteMap.Add(n, prodNoteNode);
                                             XmlNode anchorNode = DTBookDocument.CreateElement("a", currentXmlNode.NamespaceURI);
                                             prodNoteNode.AppendChild(anchorNode);
                                             XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFile);
