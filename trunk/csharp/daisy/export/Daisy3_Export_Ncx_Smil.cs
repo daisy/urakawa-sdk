@@ -206,10 +206,13 @@ namespace urakawa.daisy.export
 
                         }
                         
-                        if (m_Image_ProdNoteMap.ContainsKey(n) &&  !currentSmilCustomTestList.Contains("prodnote"))
+                        if (m_Image_ProdNoteMap.ContainsKey(n) )
                         {
-                            currentSmilCustomTestList.Add("prodnote");
-                            //System.Windows.Forms.MessageBox.Show("prodnote added");
+                            if (!currentSmilCustomTestList.Contains("prodnote"))
+                            {
+                                currentSmilCustomTestList.Add("prodnote");
+                                //System.Windows.Forms.MessageBox.Show("prodnote added");
+                            }
                         }
                         else if (!currentSmilCustomTestList.Contains(special_UrakawaNode.GetXmlElementQName().LocalName))
                         {
@@ -375,7 +378,8 @@ namespace urakawa.daisy.export
                     if (pageListNode == null)
                     {
                         pageListNode = ncxDocument.CreateElement(null, "pageList", ncxRootNode.NamespaceURI);
-                        ncxRootNode.AppendChild(pageListNode);
+                        //ncxRootNode.AppendChild(pageListNode);
+                        ncxRootNode.InsertAfter(pageListNode, navMapNode);
                     }
 
                     XmlNode pageTargetNode = ncxDocument.CreateElement(null, "pageTarget", pageListNode.NamespaceURI);
