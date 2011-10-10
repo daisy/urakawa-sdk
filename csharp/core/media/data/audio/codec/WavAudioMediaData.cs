@@ -92,10 +92,13 @@ namespace urakawa.media.data.audio.codec
             try
             {
                 ulong pos = PCMFormat.Data.RiffHeaderWrite(nsdps, dataLength);
+                nsdps.Close();
+                nsdps = null;
             }
             finally
             {
-                nsdps.Close();
+                if ( nsdps != null )  nsdps.Close();
+                nsdps = null;
             }
 
             newSingleDataProvider.AppendData(pcmData, dataLength);
@@ -116,6 +119,8 @@ namespace urakawa.media.data.audio.codec
         /// </remarks>
         public void ForceSingleDataProvider()
         {
+            if (mWavClips.Count == 0) return;
+
             if (mWavClips.Count == 1)
             {
                 WavClip theChosenOne = mWavClips[0];
