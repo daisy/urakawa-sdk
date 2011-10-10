@@ -92,13 +92,11 @@ namespace urakawa.media.data.audio.codec
             try
             {
                 ulong pos = PCMFormat.Data.RiffHeaderWrite(nsdps, dataLength);
-                nsdps.Close();
-                nsdps = null;
             }
             finally
             {
-                if ( nsdps != null )  nsdps.Close();
-                nsdps = null;
+				nsdps.Close();
+				nsdps = null;
             }
 
             newSingleDataProvider.AppendData(pcmData, dataLength);
@@ -167,7 +165,7 @@ namespace urakawa.media.data.audio.codec
                     String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0}",
                                   AudioDuration));
             }
-            //var copy = Copy();
+
             WavAudioMediaData copy = Copy();
 
             if (timeEnd.IsGreaterThan(Time.Zero) && timeEnd.IsLessThan(AudioDuration))
@@ -551,7 +549,7 @@ namespace urakawa.media.data.audio.codec
         {
             Time movingInsertPoint = insertPoint.Copy();
             Time remainingAvailableDuration = duration.Copy();
-            //foreach (var wavClip in mediaData.mWavClips)
+
             foreach (WavClip wavClip in mediaData.mWavClips)
             {
                 Time wavClipDur = wavClip.Duration;
