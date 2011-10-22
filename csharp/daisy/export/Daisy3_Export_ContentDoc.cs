@@ -267,7 +267,7 @@ namespace urakawa.daisy.export
                                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, currentXmlNode, "id", id);
                             }
 
-                            if (xmlProp.LocalName == "img" && m_TempImageId != null)
+                            if (xmlProp.LocalName!=null&&xmlProp.LocalName.ToLower() == "img" && m_TempImageId != null)
                             {
                                 string id = currentXmlNode.Attributes.GetNamedItem("id").Value;
                                 m_TempImageId.Add(id);
@@ -302,7 +302,7 @@ namespace urakawa.daisy.export
 
                         // if QName is img and img src is on disk, copy it to output dir
                         string exportImageName = null;
-                        if (currentXmlNode.LocalName == "img")
+                        if (currentXmlNode.LocalName != null && currentXmlNode.LocalName.ToLower() == "img")
                         {
                             XmlAttribute imgSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
                             if (imgSrcAttribute != null &&
@@ -330,7 +330,7 @@ namespace urakawa.daisy.export
                                 }
                             }
                         }
-                                if (currentXmlNode.LocalName == "img"
+                        if (currentXmlNode.LocalName != null && currentXmlNode.LocalName.ToLower() == "img"
                                     && n.GetAlternateContentProperty() != null)
                                     {
                                         //try
