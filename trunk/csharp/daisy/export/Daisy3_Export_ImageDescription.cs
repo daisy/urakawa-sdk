@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml ;
+using System.Xml;
 using System.IO;
 
-using urakawa    ;
-using urakawa.core ;
-using urakawa.property.alt ;
+using urakawa;
+using urakawa.core;
+using urakawa.property.alt;
 using urakawa.metadata;
 using urakawa.xuk;
 
@@ -18,9 +18,9 @@ namespace urakawa.daisy.export
         private string CreateImageDescription(string imageSRC, AlternateContentProperty altProperty)
         {
             XmlDocument descDocument = new XmlDocument();
-              // <?xml-stylesheet type="text/xsl" href="desc2html.xsl"?>
-            string processingInstructionData = "type=\"text//xsl\" href=\"desc2html.xsl\"" ;
-            descDocument.AppendChild( descDocument.CreateProcessingInstruction ("xml-stylesheet", processingInstructionData ) );
+            // <?xml-stylesheet type="text/xsl" href="desc2html.xsl"?>
+            string processingInstructionData = "type=\"text//xsl\" href=\"desc2html.xsl\"";
+            descDocument.AppendChild(descDocument.CreateProcessingInstruction("xml-stylesheet", processingInstructionData));
             string xsltFileName = "desc2html.xsl";
             string sourceXsltPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, xsltFileName);
             string destXsltPath = Path.Combine(m_OutputDirectory, xsltFileName);
@@ -45,11 +45,11 @@ namespace urakawa.daisy.export
 
                     //string metadataName = md.NameContentAttribute.Name.Contains(":") ? md.NameContentAttribute.Name.Split(':')[1] : md.NameContentAttribute.Name;
                     string metadataName = md.NameContentAttribute.Name;
-                    metadataName =  metadataName.Replace(" ", "");
-                    if (metadataName == "N/A") metadataName = "NA";
+                    metadataName = metadataName.Replace(" ", "");
+                    if (metadataName == DaigramContentModelStrings.NA) metadataName = DaigramContentModelStrings.NA_NoSlash;
                     //System.Windows.Forms.MessageBox.Show(metadataName + " : " + md.NameContentAttribute.Name);
-                    
-                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, metaNode, metadataName, md.NameContentAttribute.Value,metadataName.StartsWith("xml:")?namespace_Xml: namespace_Desc);
+
+                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, metaNode, metadataName, md.NameContentAttribute.Value, metadataName.StartsWith("xml:") ? namespace_Xml : namespace_Desc);
                 }
 
             }
@@ -69,7 +69,7 @@ namespace urakawa.daisy.export
 
                     if (xmlNodeName != null)
                     {
-                        
+
                         if (xmlNodeName.StartsWith("d:"))
                         {
                             contentXmlNode = descDocument.CreateElement("d", xmlNodeName.Split(':')[1], namespace_Desc);
@@ -79,12 +79,12 @@ namespace urakawa.daisy.export
                             contentXmlNode = descDocument.CreateElement(xmlNodeName, namespace_Xml);
                         }
                         bodyNode.AppendChild(contentXmlNode);
-                        if (!String.IsNullOrEmpty( xmlNodeId )) XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, "xml:id", xmlNodeId, "http://www.w3.org/XML/1998/namespace");
+                        if (!String.IsNullOrEmpty(xmlNodeId)) XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, DaigramContentModelStrings.XmlId, xmlNodeId, "http://www.w3.org/XML/1998/namespace");
 
                         foreach (Metadata m in additionalMetadatas)
                         {
                             string metadataName = m.NameContentAttribute.Name;
-                            XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, metadataName, m.NameContentAttribute.Value,metadataName.StartsWith("xml:")? namespace_Xml: namespace_Desc);
+                            XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, metadataName, m.NameContentAttribute.Value, metadataName.StartsWith("xml:") ? namespace_Xml : namespace_Desc);
                         }
                     }
                 }
@@ -97,14 +97,14 @@ namespace urakawa.daisy.export
                 {
                     string textData = altContent.Text.Text;
                     string[] subStrings = System.Text.RegularExpressions.Regex.Split(textData, "<p>|</p>");
-//System.Windows.Forms.MessageBox.Show("original " + textData);
+                    //System.Windows.Forms.MessageBox.Show("original " + textData);
                     for (int i = 0; i < subStrings.Length; i++)
                     {
                         string paraNodeText = subStrings[i];
-                        
-                            paraNodeText = paraNodeText.Replace("\n\r", "");
-                            paraNodeText = paraNodeText.Replace("\n", "");
-                        
+
+                        paraNodeText = paraNodeText.Replace("\n\r", "");
+                        paraNodeText = paraNodeText.Replace("\n", "");
+
                         if (!string.IsNullOrEmpty(paraNodeText))
                         {
                             //System.Windows.Forms.MessageBox.Show("-" +  subStrings[i] + "-"+ paraNodeText.Length);
@@ -141,29 +141,29 @@ namespace urakawa.daisy.export
 
                 }
             }
-                
+
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + "_Desc.xml";
             SaveXukAction.WriteXmlDocument(descDocument, Path.Combine(m_OutputDirectory, descFileName));
             return descFileName;
         }
 
-        private List<Metadata> GetAltContentNameAndXmlIdFromMetadata (List<Metadata> metadataList,out string name, out string XmlId)
+        private List<Metadata> GetAltContentNameAndXmlIdFromMetadata(List<Metadata> metadataList, out string name, out string XmlId)
         {
             name = XmlId = null;
             List<Metadata> residualMetadataList = new List<Metadata>();
             residualMetadataList.AddRange(metadataList);
-            
-            for ( int i = 0 ; i < residualMetadataList.Count; i++ )
+
+            for (int i = 0; i < residualMetadataList.Count; i++)
             {
-                Metadata m = residualMetadataList [i] ;
+                Metadata m = residualMetadataList[i];
                 //System.Windows.Forms.MessageBox.Show(m.NameContentAttribute.Name + " : " + m.NameContentAttribute.Value);
-                if (m.NameContentAttribute.Name == "xml:id")
+                if (m.NameContentAttribute.Name == DaigramContentModelStrings.XmlId)
                 {
                     XmlId = m.NameContentAttribute.Value;
                     residualMetadataList.Remove(m);
                     --i;
                 }
-                else if (m.NameContentAttribute.Name == "description-name")
+                else if (m.NameContentAttribute.Name == DaigramContentModelStrings.DescriptionName)
                 {
                     name = m.NameContentAttribute.Value;
                     residualMetadataList.Remove(m);
@@ -174,12 +174,9 @@ namespace urakawa.daisy.export
                     residualMetadataList.Remove(m);
                     --i;
                 }
-                {
-
-                }
             }
             // add code to generate IDs if it is null
-            
+
             return residualMetadataList;
         }
 

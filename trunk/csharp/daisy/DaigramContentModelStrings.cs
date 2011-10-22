@@ -6,16 +6,20 @@ namespace urakawa.daisy
 {
     public static class DaigramContentModelStrings
     {
+        public static string NA { get { return "N/A"; } }
+        public static string NA_NoSlash { get { return "NA"; } }
         public static string Summary { get { return "d:summary"; } }
+        public static string DescriptionName { get { return "description-name"; } }
+        public static string XmlId { get { return "xml:id"; } }
         public static string LondDesc { get { return "d:longDesc"; } }
-        public static string SimplifiedLanguageDescription { get { return "d:simplifiedLanguageDescription "; } }
+        public static string SimplifiedLanguageDescription { get { return "d:simplifiedLanguageDescription"; } }
         public static string Tactile { get { return "d:tactile"; } }
         public static string Tour { get { return "d:tour"; } }
-        public static string SimplifiedImage { get { return "d:simplifiedImage "; } }
+        public static string SimplifiedImage { get { return "d:simplifiedImage"; } }
         public static string Block { get { return "block"; } }
-        public static string Annotation { get { return "annotation "; } }
+        public static string Annotation { get { return "annotation"; } }
 
-        private static List<string> m_MetadataNames = null ;
+        private static List<string> m_MetadataNames = null;
         public static List<string> MetadataNames
         {
             get
@@ -44,8 +48,7 @@ namespace urakawa.daisy
             m_MetadataNames.Add("dc:rights");
             m_MetadataNames.Add("dc:accessRights");
             m_MetadataNames.Add("dc:description");
-            m_MetadataNames.Add("diagram:queryConcept"); 
+            m_MetadataNames.Add("diagram:queryConcept");
         }
-
     }
 }
