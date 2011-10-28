@@ -65,7 +65,8 @@ namespace urakawa.daisy.export
                 {
                     string xmlNodeName = null;
                     string xmlNodeId = null;
-                    List<Metadata> additionalMetadatas = GetAltContentNameAndXmlIdFromMetadata(altContent.Metadatas.ContentsAs_ListCopy, out xmlNodeName, out xmlNodeId);
+                    string xmlNodeTourText = null;
+                    List<Metadata> additionalMetadatas = GetAltContentNameAndXmlIdFromMetadata(altContent.Metadatas.ContentsAs_ListCopy, out xmlNodeName, out xmlNodeId, out xmlNodeTourText);
 
                     if (xmlNodeName != null)
                     {
@@ -81,6 +82,12 @@ namespace urakawa.daisy.export
                         bodyNode.AppendChild(contentXmlNode);
                         if (!String.IsNullOrEmpty(xmlNodeId)) XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, DaigramContentModelStrings.XmlId, xmlNodeId, "http://www.w3.org/XML/1998/namespace");
 
+                        if (!string.IsNullOrEmpty(xmlNodeTourText) && contentXmlNode != null)
+                        {   
+                                XmlNode tourNode = descDocument.CreateElement("d", daisy.DaigramContentModelStrings.Tour.Split(':')[1], namespace_Desc);
+                         tourNode.AppendChild ( descDocument.CreateTextNode(xmlNodeTourText ) );
+                            contentXmlNode.AppendChild(tourNode);
+                        }
                         foreach (Metadata m in additionalMetadatas)
                         {
                             string metadataName = m.NameContentAttribute.Name;
@@ -93,6 +100,7 @@ namespace urakawa.daisy.export
                     contentXmlNode = descDocument.CreateElement("ac", namespace_Desc);
                     bodyNode.AppendChild(contentXmlNode);
                 }
+
                 if (altContent.Text != null)
                 {
                     string textData = altContent.Text.Text;
@@ -147,9 +155,9 @@ namespace urakawa.daisy.export
             return descFileName;
         }
 
-        private List<Metadata> GetAltContentNameAndXmlIdFromMetadata(List<Metadata> metadataList, out string name, out string XmlId)
+        private List<Metadata> GetAltContentNameAndXmlIdFromMetadata(List<Metadata> metadataList, out string name, out string XmlId, out string tourText)
         {
-            name = XmlId = null;
+            name = XmlId = tourText = null;
             List<Metadata> residualMetadataList = new List<Metadata>();
             residualMetadataList.AddRange(metadataList);
 
@@ -171,6 +179,12 @@ namespace urakawa.daisy.export
                 }
                 else if (m.NameContentAttribute.Name == "xlink:href")
                 {
+                    residualMetadataList.Remove(m);
+                    --i;
+                }
+                else if (m.NameContentAttribute.Name == DaigramContentModelStrings.Tour)
+                {
+                    tourText = m.NameContentAttribute.Value;
                     residualMetadataList.Remove(m);
                     --i;
                 }
