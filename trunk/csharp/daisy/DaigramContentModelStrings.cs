@@ -44,10 +44,39 @@ namespace urakawa.daisy
             }
         }
 
+        private static List<string> m_XmlAttributesList;
+        public static List<string> XmlAttributesList
+        {
+            get
+            {
+                if (m_XmlAttributesList == null) InitializeXmlAttributeList();
+                return m_XmlAttributesList;
+            }
+        }
+
+        private static void InitializeXmlAttributeList()
+        {
+            m_XmlAttributesList = new List<string>();
+
+            m_XmlAttributesList.Add(XmlId);
+            m_XmlAttributesList.Add(DescriptionName);
+            m_XmlAttributesList.Add(Rel);
+            m_XmlAttributesList.Add(Resource);
+            m_XmlAttributesList.Add(About);
+            m_XmlAttributesList.Add(Role);
+            m_XmlAttributesList.Add(By);
+            m_XmlAttributesList.Add(Src);
+            m_XmlAttributesList.Add(SrcType);
+            m_XmlAttributesList.Add(XmlLang);
+            m_XmlAttributesList.Add(Age);
+            m_XmlAttributesList.Add(Ref);
+
+        }
+
         private static void InitializeMetadataList()
         {
             m_MetadataNames = new List<string>();
-
+            /*
             m_MetadataNames.Add(XmlId);
             m_MetadataNames.Add(DescriptionName);
             m_MetadataNames.Add(Rel);
@@ -60,8 +89,8 @@ namespace urakawa.daisy
             m_MetadataNames.Add(XmlLang);
             m_MetadataNames.Add(Age);
             m_MetadataNames.Add(Ref);
-
-
+            */
+            m_MetadataNames.AddRange(XmlAttributesList);
 
             //m_MetadataNames.Add("dc:identifier");
             //m_MetadataNames.Add("dc:language");
