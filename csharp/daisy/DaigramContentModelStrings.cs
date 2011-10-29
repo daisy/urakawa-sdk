@@ -27,6 +27,9 @@ namespace urakawa.daisy
         public static string By { get { return "by"; } }
         public static string Src { get { return "src"; } }
         public static string SrcType { get { return "srctype"; } }
+        public static string XmlLang { get { return "xml:lang"; } }
+        public static string Age { get { return "age"; } }
+        public static string Ref { get { return "ref"; } }
 
         private static List<string> m_MetadataNames = null;
         public static List<string> MetadataNames
@@ -54,6 +57,9 @@ namespace urakawa.daisy
             m_MetadataNames.Add(By);
             m_MetadataNames.Add(Src);
             m_MetadataNames.Add(SrcType);
+            m_MetadataNames.Add(XmlLang);
+            m_MetadataNames.Add(Age);
+            m_MetadataNames.Add(Ref);
 
 
 
