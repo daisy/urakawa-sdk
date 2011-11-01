@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Xml;
 using AudioLib;
 using ICSharpCode.SharpZipLib.Zip;
@@ -28,6 +29,8 @@ namespace urakawa.daisy.import
             if (Directory.Exists(unzipDirectory))
             {
                 Directory.Delete(unzipDirectory, true);
+
+                Thread.Sleep(200);
             }
 
             ZipEntry zipEntry;

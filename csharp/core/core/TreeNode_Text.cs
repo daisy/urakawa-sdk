@@ -87,7 +87,6 @@ namespace urakawa.core
 
             bool atLeastOneSiblingIsSignificantTextOnly = false;
 
-            //foreach (var child in proposed.Parent.Children.ContentsAs_YieldEnumerable)
             foreach (TreeNode child in proposed.Parent.Children.ContentsAs_Enumerable)
             {
                 if (child == proposed)

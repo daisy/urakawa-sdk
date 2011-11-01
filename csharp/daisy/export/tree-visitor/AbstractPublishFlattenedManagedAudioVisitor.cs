@@ -65,12 +65,10 @@ namespace urakawa.daisy.export.visitor
 
             foreach (AlternateContentProperty altProperty in m_AlternateContentPropertiesList)
             {
-                foreach (AlternateContent ac in altProperty.AlternateContents.ContentsAs_ListAsReadOnly)
+                foreach (AlternateContent ac in altProperty.AlternateContents.ContentsAs_Enumerable)
                 {
                     if (ac.Audio != null)
                     {
-                        //
-
                         Stream audioPcmStream = null;
                         if (ac.Audio.AudioMediaData != null)
                         {

@@ -221,7 +221,7 @@ namespace urakawa.daisy
         public static XmlAttribute CreateAppendXmlAttribute(XmlDocument xmlDoc, XmlNode node, string name, string val, string strNamespace)
         {
             XmlAttribute attr = null;
-            if (name.Contains(":"))
+            if (name.IndexOf(':') >= 0)
             {
                 string[] splitArray = name.Split(':');
 
