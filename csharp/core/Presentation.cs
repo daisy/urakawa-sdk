@@ -1346,8 +1346,8 @@ namespace urakawa
 
             CommandFactory.CreateAlternateContentMetadataAddCommand(treeNode, altContentProp, null, meta);
             CommandFactory.CreateAlternateContentMetadataRemoveCommand(treeNode, altContentProp, null, meta);
-            CommandFactory.CreateAlternateContentMetadataSetNameCommand(altContentProp, null, meta, "sample name");
-            CommandFactory.CreateAlternateContentMetadataSetContentCommand(altContentProp, null, meta, "sample content");
+            CommandFactory.CreateAlternateContentMetadataSetNameCommand(altContentProp, null, meta.NameContentAttribute, "sample name");
+            CommandFactory.CreateAlternateContentMetadataSetContentCommand(altContentProp, null, meta.NameContentAttribute, "sample content");
             CommandFactory.CreateAlternateContentMetadataSetIdCommand(altContentProp, null, meta, false);
 
             AlternateContent altContent = AlternateContentFactory.CreateAlternateContent();
@@ -1357,9 +1357,9 @@ namespace urakawa
 
             CommandFactory.CreateAlternateContentMetadataAddCommand(treeNode, null, altContent, meta);
             CommandFactory.CreateAlternateContentMetadataRemoveCommand(treeNode, null, altContent, meta);
-            CommandFactory.CreateAlternateContentMetadataSetContentCommand(null, altContent, meta, "sample content");
+            CommandFactory.CreateAlternateContentMetadataSetContentCommand(null, altContent, meta.NameContentAttribute, "sample content");
             CommandFactory.CreateAlternateContentMetadataSetIdCommand(null, altContent, meta, false);
-            CommandFactory.CreateAlternateContentMetadataSetNameCommand(null, altContent, meta, "sample name");
+            CommandFactory.CreateAlternateContentMetadataSetNameCommand(null, altContent, meta.NameContentAttribute, "sample name");
 
             CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode, altContent, txtMedia);
             CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(treeNode, altContent, txtMedia);

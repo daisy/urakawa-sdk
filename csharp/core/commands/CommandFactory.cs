@@ -32,25 +32,25 @@ namespace urakawa.commands
             command.Init(treeNode, altContentProperty, altContent, metadata);
             return command;
         }
-        public AlternateContentMetadataSetContentCommand CreateAlternateContentMetadataSetContentCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, string content)
-        {
-            AlternateContentMetadataSetContentCommand command = Create<AlternateContentMetadataSetContentCommand>();
-            command.Init(altContentProperty, altContent, metadata, content);
-            return command;
-        }
         public AlternateContentMetadataSetIdCommand CreateAlternateContentMetadataSetIdCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, bool id)
         {
             AlternateContentMetadataSetIdCommand command = Create<AlternateContentMetadataSetIdCommand>();
             command.Init(altContentProperty, altContent, metadata, id);
             return command;
         }
-        public AlternateContentMetadataSetNameCommand CreateAlternateContentMetadataSetNameCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, string name)
+        public AlternateContentMetadataSetNameCommand CreateAlternateContentMetadataSetNameCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, MetadataAttribute metadataAttribute, string name)
         {
             AlternateContentMetadataSetNameCommand command = Create<AlternateContentMetadataSetNameCommand>();
-            command.Init(altContentProperty, altContent, metadata, name);
+            command.Init(altContentProperty, altContent, metadataAttribute, name);
             return command;
         }
 
+        public AlternateContentMetadataSetContentCommand CreateAlternateContentMetadataSetContentCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, MetadataAttribute metadataAttribute, string content)
+        {
+            AlternateContentMetadataSetContentCommand command = Create<AlternateContentMetadataSetContentCommand>();
+            command.Init(altContentProperty, altContent, metadataAttribute, content);
+            return command;
+        }
 
 
         public AlternateContentSetManagedMediaCommand CreateAlternateContentSetManagedMediaCommand(TreeNode treeNode, AlternateContent altContent, Media media)
