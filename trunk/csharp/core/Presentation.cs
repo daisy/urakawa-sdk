@@ -1272,7 +1272,7 @@ namespace urakawa
             ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
             manMedia.MediaData = mdAudio;
             TreeNodeSetManagedAudioMediaCommand cmd1 = CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia, treeNode);
-            //foreach (var mediaData in cmd1.UsedMediaData)
+            
             foreach (MediaData mediaData in cmd1.UsedMediaData)
             {
                 DebugFix.Assert(mediaData == cmd1.ManagedAudioMedia.AudioMediaData);
@@ -1286,7 +1286,7 @@ namespace urakawa
             ManagedAudioMedia manMedia2 = MediaFactory.CreateManagedAudioMedia();
             manMedia2.MediaData = mdAudio.Copy();
             ManagedAudioMediaInsertDataCommand cmd2 = CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia2, 0, treeNode);
-            //foreach (var mediaData in cmd2.UsedMediaData)
+            
             foreach (MediaData mediaData in cmd2.UsedMediaData)
             {
                 DebugFix.Assert(mediaData == cmd2.OriginalManagedAudioMedia.AudioMediaData
@@ -1300,7 +1300,7 @@ namespace urakawa
             selection.m_LocalStreamLeftMark = -1;
             selection.m_LocalStreamRightMark = -1;
             TreeNodeAudioStreamDeleteCommand cmd3 = CommandFactory.CreateTreeNodeAudioStreamDeleteCommand(selection, treeNode);
-            //foreach (var mediaData in cmd3.UsedMediaData)
+            
             foreach (MediaData mediaData in cmd3.UsedMediaData)
             {
                 DebugFix.Assert(mediaData == cmd3.OriginalManagedAudioMedia.AudioMediaData);

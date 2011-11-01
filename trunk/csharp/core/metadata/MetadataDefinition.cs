@@ -182,36 +182,4 @@ namespace urakawa.metadata
                 return definition;
         }
     }
-
-    //helper class: based on the existing metadata list, what metadata am I still allowed to add?
-    public class MetadataAvailability
-    {
-        public static List<MetadataDefinition> GetAvailableMetadata(List<Metadata> alreadyUsedMetadata, List<MetadataDefinition> definitions)
-        {
-            List<MetadataDefinition> availableMetadata = new List<MetadataDefinition>();
-            foreach (MetadataDefinition definition in definitions)
-            {
-                Metadata exists = alreadyUsedMetadata.Find(
-                     delegate (Metadata item)  {return item.NameContentAttribute.Name.ToLower() == definition.Name.ToLower(); } );
-                //dotnet2
-                    //item => item.NameContentAttribute.Name.ToLower() == definition.Name.ToLower());
-
-                if (exists == null)
-                {
-                    availableMetadata.Add(definition);
-                }
-                else
-                {
-                    if (definition.IsRepeatable)
-                    {
-                        availableMetadata.Add(definition);
-                    }
-                }
-            }
-
-            return availableMetadata;
-        }
-    }
-
-
 }

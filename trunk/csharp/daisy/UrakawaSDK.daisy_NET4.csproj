@@ -64,6 +64,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="desc2html.xsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="tpbnarrator_res.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

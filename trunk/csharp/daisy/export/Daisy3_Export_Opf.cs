@@ -362,7 +362,7 @@ namespace urakawa.daisy.export
 
         private void CreateExternalFiles()
         {
-            foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
+            foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
             {
                 reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingExternalFiles);
                 if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains(efd.OriginalRelativePath))
@@ -370,7 +370,6 @@ namespace urakawa.daisy.export
                     string filePath = Path.Combine(m_OutputDirectory, efd.OriginalRelativePath);
                     efd.DataProvider.ExportDataStreamToFile(filePath, true);
                     m_FilesList_ExternalFiles.Add(efd.OriginalRelativePath);
-
                 }
             }
         }

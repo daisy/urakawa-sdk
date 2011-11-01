@@ -17,7 +17,6 @@ namespace urakawa.data
         {
             get
             {
-                //foreach (var stream in mSources)
                 foreach (Stream stream in mSources)
                 {
                     yield return stream;

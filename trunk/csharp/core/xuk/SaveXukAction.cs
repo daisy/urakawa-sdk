@@ -192,7 +192,7 @@ namespace urakawa.xuk
             {
                 double val = e.Current;
                 double max = e.Total;
-                //var percent = (int)((val / max) * 100);
+                
                 int percent = (int)((val / max) * 100);
 
                 if (percent != currentPercentage)

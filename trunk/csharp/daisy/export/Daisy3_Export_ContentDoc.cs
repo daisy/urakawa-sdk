@@ -36,7 +36,7 @@ namespace urakawa.daisy.export
             
             List<ExternalFileData> list_ExternalStyleSheets = new List<ExternalFileData>();
             string strInternalDTD = null;
-            foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
+            foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
             {
                 if (RequestCancellation) return;
 
@@ -46,12 +46,10 @@ namespace urakawa.daisy.export
                 {
                     StreamReader sr = new StreamReader(efd.OpenInputStream());
                     strInternalDTD = sr.ReadToEnd();
-
                 }
                 else if (efd is ExternalFiles.CSSExternalFileData || efd is XSLTExternalFileData)
                 {
                     list_ExternalStyleSheets.Add(efd);
-
                 }
             }
 

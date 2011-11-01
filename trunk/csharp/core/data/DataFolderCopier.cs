@@ -48,7 +48,7 @@ namespace urakawa.data
             int progress = progressStep;
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            //var list = new List<FileDataProvider>(m_Presentation.DataProviderManager.ManagedFileDataProviders);
+
             List<FileDataProvider > list = new List<FileDataProvider>(m_Presentation.DataProviderManager.ManagedFileDataProviders);
             foreach (FileDataProvider fdp in list)
             {

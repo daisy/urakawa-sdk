@@ -68,7 +68,7 @@ namespace urakawa.data
             progress = 10;
 
             int index = 0;
-            //var list3 = collectorVisitor.CollectedMedia;
+            
             List<IManaged > list3 = collectorVisitor.CollectedMedia;
             foreach (IManaged mm in list3)
             {
@@ -94,7 +94,7 @@ namespace urakawa.data
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             index = 0;
-            //var list = m_Presentation.MediaDataManager.ManagedObjects.ContentsAs_ListCopy;
+
             List<MediaData> list = m_Presentation.MediaDataManager.ManagedObjects.ContentsAs_ListCopy;
             foreach (MediaData md in list)
             {
@@ -151,7 +151,7 @@ namespace urakawa.data
             // (i.e. not in our list of collected used DataProviders so far)
 
             index = 0;
-            //var list2 = m_Presentation.DataProviderManager.ManagedObjects.ContentsAs_ListCopy;
+            
             List<DataProvider> list2 = m_Presentation.DataProviderManager.ManagedObjects.ContentsAs_ListCopy;
             foreach (DataProvider dp in list2)
             {

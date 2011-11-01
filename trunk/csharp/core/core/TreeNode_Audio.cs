@@ -117,7 +117,6 @@ namespace urakawa.core
 
                     //var mediaDataBackup = (WavAudioMediaData)m_TreeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
 
-                    //var mediaDataBackup = ((WavAudioMediaData)mediaData).Copy(timeBegin, timeEnd);
                     WavAudioMediaData mediaDataBackup = ((WavAudioMediaData)mediaData).Copy(timeBegin, timeEnd);
                     managedAudioMediaBackup.AudioMediaData = mediaDataBackup;
 

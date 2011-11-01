@@ -32,7 +32,6 @@ namespace urakawa.xuk
         {
             if ((baseUri == null) || (!baseUri.IsAbsoluteUri && (baseUri.OriginalString.Length == 0)))
             {
-                //var uri = new Uri(relativeUri, UriKind.RelativeOrAbsolute);
                 Uri uri = new Uri(relativeUri, UriKind.RelativeOrAbsolute);
                 if (!uri.IsAbsoluteUri && (uri.OriginalString.Length > 0))
                 {
@@ -383,7 +382,7 @@ namespace urakawa.xuk
             {
                 double val = e.Current;
                 double max = e.Total;
-                //var percent = (int)((val / max) * 100);
+
                 int percent = (int)((val / max) * 100);
 
                 if (percent != currentPercentage)
@@ -402,7 +401,7 @@ namespace urakawa.xuk
             EventHandler<ProgressEventArgs> progressing = delegate (object sender, ProgressEventArgs e) {
                 double val = e.Current;
                 double max = e.Total;
-                //var percent = (int)((val / max) * 100);
+                
                 int percent = (int)((val / max) * 100);
                 
                 if (percent != currentPercentage)
