@@ -16,7 +16,9 @@ namespace urakawa.daisy.export
             //metadataName = metadataName.Trim();
             //metadataName = metadataName.Replace(" ", "_");
 
-            if (metadataName == DiagramContentModelStrings.NA || metadataName == DiagramContentModelStrings.NA_NoSlash)
+            if (metadataName == DiagramContentModelStrings.NA
+                //|| metadataName == DiagramContentModelStrings.NA_NoSlash
+                )
             {
                 //if (true)
                 //{
@@ -101,37 +103,49 @@ namespace urakawa.daisy.export
 
             foreach (Metadata md in altProperty.Metadatas.ContentsAs_Enumerable)
             {
-                XmlNode metaNode = descDocument.CreateElement(
-            DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.Meta),
-                    DiagramContentModelStrings.NS_URL_ZAI);
-                headNode.AppendChild(metaNode);
-
-                if (md.NameContentAttribute != null)
+                if (md.NameContentAttribute != null && md.NameContentAttribute.Name.StartsWith(DiagramContentModelStrings.NS_PREFIX_XML + ":")
+                    && (md.OtherAttributes == null || md.OtherAttributes.Count == 0)
+                    && (descriptionNode.Attributes == null || descriptionNode.Attributes.GetNamedItem(md.NameContentAttribute.Name) == null))
                 {
-                    handleMetadataAttr(md.NameContentAttribute, descDocument, metaNode, false);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, descriptionNode,
+                md.NameContentAttribute.Name,
+                md.NameContentAttribute.Value,
+                DiagramContentModelStrings.NS_URL_XML);
                 }
-
-                if (md.OtherAttributes != null)
+                else
                 {
-                    foreach (MetadataAttribute metaAttr in md.OtherAttributes.ContentsAs_Enumerable)
+                    XmlNode metaNode = descDocument.CreateElement(
+                DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.Meta),
+                        DiagramContentModelStrings.NS_URL_ZAI);
+                    headNode.AppendChild(metaNode);
+
+                    if (md.NameContentAttribute != null)
                     {
-                        if (metaAttr.Name.StartsWith(DiagramContentModelStrings.NS_PREFIX_XML + ":"))
+                        handleMetadataAttr(md.NameContentAttribute, descDocument, metaNode, false);
+                    }
+
+                    if (md.OtherAttributes != null)
+                    {
+                        foreach (MetadataAttribute metaAttr in md.OtherAttributes.ContentsAs_Enumerable)
                         {
-                            handleMetadataAttr(metaAttr, descDocument, metaNode, false);
-                        }
-                        else if (metaAttr.Name == DiagramContentModelStrings.Rel
-                            || metaAttr.Name == DiagramContentModelStrings.Resource
-                            || metaAttr.Name == DiagramContentModelStrings.About)
-                        {
-                            handleMetadataAttr(metaAttr, descDocument, metaNode, true);
-                        }
-                        else
-                        {
-                            XmlNode metaSubNode = descDocument.CreateElement(
-                        DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.Meta),
-                                DiagramContentModelStrings.NS_URL_ZAI);
-                            metaNode.AppendChild(metaSubNode);
-                            handleMetadataAttr(metaAttr, descDocument, metaSubNode, false);
+                            if (metaAttr.Name.StartsWith(DiagramContentModelStrings.NS_PREFIX_XML + ":"))
+                            {
+                                handleMetadataAttr(metaAttr, descDocument, metaNode, false);
+                            }
+                            else if (metaAttr.Name == DiagramContentModelStrings.Rel
+                                     || metaAttr.Name == DiagramContentModelStrings.Resource
+                                     || metaAttr.Name == DiagramContentModelStrings.About)
+                            {
+                                handleMetadataAttr(metaAttr, descDocument, metaNode, true);
+                            }
+                            else
+                            {
+                                XmlNode metaSubNode = descDocument.CreateElement(
+                                    DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.Meta),
+                                    DiagramContentModelStrings.NS_URL_ZAI);
+                                metaNode.AppendChild(metaSubNode);
+                                handleMetadataAttr(metaAttr, descDocument, metaSubNode, false);
+                            }
                         }
                     }
                 }
@@ -238,7 +252,34 @@ namespace urakawa.daisy.export
 
                             string metadataName = m.NameContentAttribute.Name;
 
-                            if (metadataName.StartsWith(DiagramContentModelStrings.NS_PREFIX_XML + ":"))
+                            if (metadataName == DiagramContentModelStrings.Src)
+                            {
+                                XmlNode objectNode = descDocument.CreateElement(
+                                    //DiagramContentModelStrings.NS_PREFIX_ZAI,
+                                    DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.Object),
+                                    DiagramContentModelStrings.NS_URL_ZAI);
+
+                                contentXmlNode.AppendChild(objectNode);
+
+                                XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, objectNode,
+                                    metadataName,
+                                    m.NameContentAttribute.Value,
+                                    objectNode.NamespaceURI);
+
+                                string low = m.NameContentAttribute.Value.ToLower();
+                                int dotIndex = low.LastIndexOf('.');
+                                XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, objectNode,
+                                    DiagramContentModelStrings.SrcType,
+                                    low.EndsWith(".svg") || low.EndsWith(".svgz") ? "image/svg+xml" :
+                                    low.EndsWith(".png") ? "image/png" :
+                                    low.EndsWith(".gif") ? "image/gif" :
+                                    low.EndsWith(".jpg") || low.EndsWith(".jpeg") ? "image/jpg" :
+                                    low.EndsWith(".bmp") ? "image/bmp" :
+                                    dotIndex != -1 && dotIndex < (low.Length - 1) ? "image/" + low.Substring(dotIndex + 1) :
+                                    "image",
+                                    objectNode.NamespaceURI);
+                            }
+                            else if (metadataName.StartsWith(DiagramContentModelStrings.NS_PREFIX_XML + ":"))
                             {
                                 XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode,
                                     metadataName,

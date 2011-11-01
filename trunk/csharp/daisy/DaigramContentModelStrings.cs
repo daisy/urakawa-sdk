@@ -88,7 +88,7 @@ namespace urakawa.daisy
         // Metadata name and value (both)
 
         public const string NA = "N/A";
-        public const string NA_NoSlash = "NA";
+        //public const string NA_NoSlash = "NA";
 
         // DIAGRAM "diagram"-prefixed metadata qualifiers
 
@@ -190,7 +190,7 @@ namespace urakawa.daisy
                     m_MetadataNames_Generic.Add(XmlLang);
 
                     m_MetadataNames_Generic.Add(NA);
-                    m_MetadataNames_Generic.Add(NA_NoSlash);
+                    //m_MetadataNames_Generic.Add(NA_NoSlash);
 
                     m_MetadataNames_Generic.Add(Rel);
                     m_MetadataNames_Generic.Add(Resource);

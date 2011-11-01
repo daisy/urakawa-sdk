@@ -71,7 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="desc2html.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="tpbnarrator.res">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
