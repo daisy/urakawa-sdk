@@ -20,24 +20,24 @@ namespace urakawa.commands
         {
         }
 
-        public AlternateContentMetadataAddCommand CreateAlternateContentMetadataAddCommand(TreeNode treeNode, AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
+        public AlternateContentMetadataAddCommand CreateAlternateContentMetadataAddCommand(TreeNode treeNode, AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, MetadataAttribute metadataAttribute)
         {
             AlternateContentMetadataAddCommand command = Create<AlternateContentMetadataAddCommand>();
-            command.Init(treeNode, altContentProperty, altContent, metadata);
+            command.Init(treeNode, altContentProperty, altContent, metadata, metadataAttribute);
             return command;
         }
-        public AlternateContentMetadataRemoveCommand CreateAlternateContentMetadataRemoveCommand(TreeNode treeNode, AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
+        public AlternateContentMetadataRemoveCommand CreateAlternateContentMetadataRemoveCommand(TreeNode treeNode, AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, MetadataAttribute metadataAttribute)
         {
             AlternateContentMetadataRemoveCommand command = Create<AlternateContentMetadataRemoveCommand>();
-            command.Init(treeNode, altContentProperty, altContent, metadata);
+            command.Init(treeNode, altContentProperty, altContent, metadata, metadataAttribute);
             return command;
         }
-        public AlternateContentMetadataSetIdCommand CreateAlternateContentMetadataSetIdCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, bool id)
-        {
-            AlternateContentMetadataSetIdCommand command = Create<AlternateContentMetadataSetIdCommand>();
-            command.Init(altContentProperty, altContent, metadata, id);
-            return command;
-        }
+        //public AlternateContentMetadataSetIdCommand CreateAlternateContentMetadataSetIdCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, bool id)
+        //{
+        //    AlternateContentMetadataSetIdCommand command = Create<AlternateContentMetadataSetIdCommand>();
+        //    command.Init(altContentProperty, altContent, metadata, id);
+        //    return command;
+        //}
         public AlternateContentMetadataSetNameCommand CreateAlternateContentMetadataSetNameCommand(AlternateContentProperty altContentProperty, AlternateContent altContent, MetadataAttribute metadataAttribute, string name)
         {
             AlternateContentMetadataSetNameCommand command = Create<AlternateContentMetadataSetNameCommand>();

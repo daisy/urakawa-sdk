@@ -13,7 +13,7 @@ namespace urakawa.commands
 
     public class AlternateContentMetadataAddCommand : Command
     {
-        
+
         public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
@@ -44,6 +44,13 @@ namespace urakawa.commands
             get { return m_Metadata; }
         }
 
+        private MetadataAttribute m_MetadataAttribute;
+        public MetadataAttribute MetadataAttribute
+        {
+            private set { m_MetadataAttribute = value; }
+            get { return m_MetadataAttribute; }
+        }
+
         private TreeNode m_TreeNode;
         public TreeNode TreeNode
         {
@@ -57,7 +64,7 @@ namespace urakawa.commands
         private AlternateContent m_AlternateContent;
         public AlternateContent AlternateContent { get { return m_AlternateContent; } }
 
-        public void Init(TreeNode treeNode, AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
+        public void Init(TreeNode treeNode, AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, MetadataAttribute metadataAttribute)
         {
             if (treeNode == null)
             {
@@ -67,17 +74,21 @@ namespace urakawa.commands
             {
                 throw new ArgumentNullException("metadata");
             }
-            if (altContentProperty == null && altContent == null)
+            if (metadataAttribute == null)
             {
-                throw new ArgumentNullException("altContentProperty && altContent");
-            }
-            if (altContentProperty != null && altContent != null)
-            {
-                throw new ArgumentException("altContentProperty && altContent");
+                if (altContentProperty == null && altContent == null)
+                {
+                    throw new ArgumentNullException("altContentProperty && altContent");
+                }
+                if (altContentProperty != null && altContent != null)
+                {
+                    throw new ArgumentException("altContentProperty && altContent");
+                }
             }
 
             TreeNode = treeNode;
             Metadata = metadata;
+            MetadataAttribute = metadataAttribute;
             m_AlternateContent = altContent;
             m_AlternateContentProperty = altContentProperty;
 
@@ -97,18 +108,40 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            if (m_AlternateContent != null)
-                m_AlternateContent.Metadatas.Insert(m_AlternateContent.Metadatas.Count, Metadata);
-            else if (m_AlternateContentProperty != null)
-                m_AlternateContentProperty.Metadatas.Insert(m_AlternateContentProperty.Metadatas.Count, Metadata);
+            if (MetadataAttribute != null)
+            {
+                Metadata.OtherAttributes.Insert(Metadata.OtherAttributes.Count, MetadataAttribute);
+            }
+            else
+            {
+                if (m_AlternateContent != null)
+                {
+                    m_AlternateContent.Metadatas.Insert(m_AlternateContent.Metadatas.Count, Metadata);
+                }
+                else if (m_AlternateContentProperty != null)
+                {
+                    m_AlternateContentProperty.Metadatas.Insert(m_AlternateContentProperty.Metadatas.Count, Metadata);
+                }
+            }
         }
 
         public override void UnExecute()
         {
-            if (m_AlternateContent != null)
-                m_AlternateContent.Metadatas.Remove(Metadata);
-            else if (m_AlternateContentProperty != null)
-                m_AlternateContentProperty.Metadatas.Remove(Metadata);
+            if (MetadataAttribute != null)
+            {
+                Metadata.OtherAttributes.Remove(MetadataAttribute);
+            }
+            else
+            {
+                if (m_AlternateContent != null)
+                {
+                    m_AlternateContent.Metadatas.Remove(Metadata);
+                }
+                else if (m_AlternateContentProperty != null)
+                {
+                    m_AlternateContentProperty.Metadatas.Remove(Metadata);
+                }
+            }
         }
 
 
