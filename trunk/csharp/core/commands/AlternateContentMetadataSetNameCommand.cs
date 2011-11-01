@@ -42,11 +42,11 @@ namespace urakawa.commands
             private set { m_NewName = value; }
             get { return m_NewName; }
         }
-        private Metadata m_Metadata;
-        public Metadata Metadata
+        private MetadataAttribute m_MetadataAttribute;
+        public MetadataAttribute MetadataAttribute
         {
-            private set { m_Metadata = value; }
-            get { return m_Metadata; }
+            private set { m_MetadataAttribute = value; }
+            get { return m_MetadataAttribute; }
         }
 
         private AlternateContentProperty m_AlternateContentProperty;
@@ -55,11 +55,12 @@ namespace urakawa.commands
         private AlternateContent m_AlternateContent;
         public AlternateContent AlternateContent { get { return m_AlternateContent; } }
 
-        public void Init(AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, string name)
+        public void Init(AlternateContentProperty altContentProperty, AlternateContent altContent,
+            MetadataAttribute metadataAttribute, string name)
         {
-            if (metadata == null)
+            if (metadataAttribute == null)
             {
-                throw new ArgumentNullException("metadata");
+                throw new ArgumentNullException("metadataAttribute");
             }
             if (name == null)
             {
@@ -74,8 +75,8 @@ namespace urakawa.commands
             {
                 throw new ArgumentException("altContentProperty && altContent");
             }
-            Metadata = metadata;
-            m_OriginalName = Metadata.NameContentAttribute.Name;
+            MetadataAttribute = metadataAttribute;
+            m_OriginalName = MetadataAttribute.Name;
             Name = name;
             m_AlternateContent = altContent;
             m_AlternateContentProperty = altContentProperty;
@@ -96,12 +97,12 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            Metadata.NameContentAttribute.Name = m_NewName;
+            MetadataAttribute.Name = m_NewName;
         }
 
         public override void UnExecute()
         {
-            Metadata.NameContentAttribute.Name = m_OriginalName;
+            MetadataAttribute.Name = m_OriginalName;
         }
 
 
