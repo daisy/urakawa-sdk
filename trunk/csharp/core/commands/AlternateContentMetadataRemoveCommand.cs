@@ -43,6 +43,13 @@ namespace urakawa.commands
             get { return m_Metadata; }
         }
 
+        private MetadataAttribute m_MetadataAttribute;
+        public MetadataAttribute MetadataAttribute
+        {
+            private set { m_MetadataAttribute = value; }
+            get { return m_MetadataAttribute; }
+        }
+
         private TreeNode m_TreeNode;
         public TreeNode TreeNode
         {
@@ -56,7 +63,7 @@ namespace urakawa.commands
         private AlternateContent m_AlternateContent;
         public AlternateContent AlternateContent { get { return m_AlternateContent; } }
 
-        public void Init(TreeNode treeNode, AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata)
+        public void Init(TreeNode treeNode, AlternateContentProperty altContentProperty, AlternateContent altContent, Metadata metadata, MetadataAttribute metadataAttribute)
         {
             if (treeNode == null)
             {
@@ -66,17 +73,21 @@ namespace urakawa.commands
             {
                 throw new ArgumentNullException("metadata");
             }
-            if (altContentProperty == null && altContent == null)
+            if (metadataAttribute == null)
             {
-                throw new ArgumentNullException("altContentProperty && altContent");
-            }
-            if (altContentProperty != null && altContent != null)
-            {
-                throw new ArgumentException("altContentProperty && altContent");
+                if (altContentProperty == null && altContent == null)
+                {
+                    throw new ArgumentNullException("altContentProperty && altContent");
+                }
+                if (altContentProperty != null && altContent != null)
+                {
+                    throw new ArgumentException("altContentProperty && altContent");
+                }
             }
 
             TreeNode = treeNode;
             Metadata = metadata;
+            MetadataAttribute = metadataAttribute;
             m_AlternateContent = altContent;
             m_AlternateContentProperty = altContentProperty;
 
@@ -96,17 +107,26 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            if (m_AlternateContent != null)
+            if (MetadataAttribute != null)
             {
-                m_Index = m_AlternateContent.Metadatas.IndexOf(Metadata);
+                m_Index = Metadata.OtherAttributes.IndexOf(MetadataAttribute);
                 if (m_Index < 0) return;
-                m_AlternateContent.Metadatas.Remove(Metadata);
+                Metadata.OtherAttributes.Remove(MetadataAttribute);
             }
-            else if (m_AlternateContentProperty != null)
+            else
             {
-                m_Index = m_AlternateContentProperty.Metadatas.IndexOf(Metadata);
-                if (m_Index < 0) return;
-                m_AlternateContentProperty.Metadatas.Remove(Metadata);
+                if (m_AlternateContent != null)
+                {
+                    m_Index = m_AlternateContent.Metadatas.IndexOf(Metadata);
+                    if (m_Index < 0) return;
+                    m_AlternateContent.Metadatas.Remove(Metadata);
+                }
+                else if (m_AlternateContentProperty != null)
+                {
+                    m_Index = m_AlternateContentProperty.Metadatas.IndexOf(Metadata);
+                    if (m_Index < 0) return;
+                    m_AlternateContentProperty.Metadatas.Remove(Metadata);
+                }
             }
         }
 
@@ -114,10 +134,21 @@ namespace urakawa.commands
         {
             if (m_Index < 0) return;
 
-            if (m_AlternateContent != null)
-                m_AlternateContent.Metadatas.Insert(m_Index, Metadata);
-            else if (m_AlternateContentProperty != null)
-                m_AlternateContentProperty.Metadatas.Insert(m_Index, Metadata);
+            if (MetadataAttribute != null)
+            {
+                Metadata.OtherAttributes.Insert(m_Index, MetadataAttribute);
+            }
+            else
+            {
+                if (m_AlternateContent != null)
+                {
+                    m_AlternateContent.Metadatas.Insert(m_Index, Metadata);
+                }
+                else if (m_AlternateContentProperty != null)
+                {
+                    m_AlternateContentProperty.Metadatas.Insert(m_Index, Metadata);
+                }
+            }
         }
 
 

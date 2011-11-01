@@ -122,10 +122,6 @@
     <Content Include="events\EventsClassDiagram.png" />
     <Compile Include="commands\AlternateContentAddCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataAddCommand.cs" />
-    <Compile Include="commands\AlternateContentMetadataAttributeAddCommand.cs" />
-    <Compile Include="commands\AlternateContentMetadataAttributeRemoveCommand.cs" />
-    <Compile Include="commands\AlternateContentMetadataAttributeSetContentCommand.cs" />
-    <Compile Include="commands\AlternateContentMetadataAttributeSetNameCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataRemoveCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataSetContentCommand.cs" />
     <Compile Include="commands\AlternateContentMetadataSetIdCommand.cs" />

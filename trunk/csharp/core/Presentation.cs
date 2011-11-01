@@ -1344,23 +1344,23 @@ namespace urakawa
             //
             AlternateContentProperty altContentProp = PropertyFactory.CreateAlternateContentProperty();
 
-            CommandFactory.CreateAlternateContentMetadataAddCommand(treeNode, altContentProp, null, meta);
-            CommandFactory.CreateAlternateContentMetadataRemoveCommand(treeNode, altContentProp, null, meta);
+            CommandFactory.CreateAlternateContentMetadataAddCommand(treeNode, altContentProp, null, meta, null);
+            CommandFactory.CreateAlternateContentMetadataRemoveCommand(treeNode, altContentProp, null, meta, null);
             CommandFactory.CreateAlternateContentMetadataSetNameCommand(altContentProp, null, meta.NameContentAttribute, "sample name");
             CommandFactory.CreateAlternateContentMetadataSetContentCommand(altContentProp, null, meta.NameContentAttribute, "sample content");
-            CommandFactory.CreateAlternateContentMetadataSetIdCommand(altContentProp, null, meta, false);
+            //CommandFactory.CreateAlternateContentMetadataSetIdCommand(altContentProp, null, meta, false);
 
             AlternateContent altContent = AlternateContentFactory.CreateAlternateContent();
 
             CommandFactory.CreateAlternateContentAddCommand(treeNode, altContent);
             CommandFactory.CreateAlternateContentRemoveCommand(treeNode, altContent);
 
-            CommandFactory.CreateAlternateContentMetadataAddCommand(treeNode, null, altContent, meta);
-            CommandFactory.CreateAlternateContentMetadataRemoveCommand(treeNode, null, altContent, meta);
+            CommandFactory.CreateAlternateContentMetadataAddCommand(treeNode, null, altContent, meta, null);
+            CommandFactory.CreateAlternateContentMetadataRemoveCommand(treeNode, null, altContent, meta, null);
+            CommandFactory.CreateAlternateContentMetadataSetNameCommand(null, altContent, meta.NameContentAttribute, "sample name"); 
             CommandFactory.CreateAlternateContentMetadataSetContentCommand(null, altContent, meta.NameContentAttribute, "sample content");
-            CommandFactory.CreateAlternateContentMetadataSetIdCommand(null, altContent, meta, false);
-            CommandFactory.CreateAlternateContentMetadataSetNameCommand(null, altContent, meta.NameContentAttribute, "sample name");
-
+            //CommandFactory.CreateAlternateContentMetadataSetIdCommand(null, altContent, meta, false);
+            
             CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode, altContent, txtMedia);
             CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(treeNode, altContent, txtMedia);
             
