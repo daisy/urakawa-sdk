@@ -145,7 +145,7 @@ namespace urakawa.media.data
         //    DefaultPCMFormat = newDefault;
         //}
 
-        private bool mEnforceSinglePCMFormat;
+        private bool mEnforceSinglePCMFormat = true;
         /// <summary>
         /// Gets a <see cref="bool"/> indicating if a single 
         /// PCMFormat is enforced for all managed <see cref="audio.AudioMediaData"/>

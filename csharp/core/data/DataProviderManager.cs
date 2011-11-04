@@ -194,10 +194,11 @@ namespace urakawa.data
 
         public void SetDataFileDirectoryWithPrefix(string dataFolderPrefix)
         {
-            DataFileDirectory = dataFolderPrefix + "___" + DefaultDataFileDirectory;
+            DataFileDirectory = dataFolderPrefix + DefaultDataFileDirectorySeparator + DefaultDataFileDirectory;
         }
 
         public const string DefaultDataFileDirectory = "Data";
+        public const string DefaultDataFileDirectorySeparator = "___";
 
         // it's only public because XukIn needs it !
         public string DataFileDirectory = DefaultDataFileDirectory;
