@@ -26,7 +26,8 @@ namespace urakawa.data
         public string CopyFileDataProvidersToDataFolderWithPrefix(string parentFolderPath, string prefixforSubDataFolder)
         {
             string fullDataFolderPath = Path.Combine(parentFolderPath,
-                                                     prefixforSubDataFolder + "___" + DataProviderManager.DefaultDataFileDirectory);
+                                                     prefixforSubDataFolder +
+                                                     DataProviderManager.DefaultDataFileDirectorySeparator + DataProviderManager.DefaultDataFileDirectory);
 
             CopyFileDataProvidersToDataFolder(fullDataFolderPath);
 
