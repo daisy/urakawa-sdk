@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using urakawa.metadata.daisy;
+using urakawa.metadata;
 
 namespace urakawa.daisy
 {
@@ -215,12 +216,12 @@ namespace urakawa.daisy
 
                     m_MetadataNames_Generic.Add(DC_AccessRights);
 
-                    foreach (var def in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
+                    foreach (MetadataDefinition def in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
                     {
                         m_MetadataNames_Generic.Add(def.Name.ToLower());
                         if (def.Synonyms != null)
                         {
-                            foreach (var syn in def.Synonyms)
+                            foreach (string syn in def.Synonyms)
                             {
                                 m_MetadataNames_Generic.Add(syn.ToLower());
                             }
