@@ -156,6 +156,9 @@ namespace urakawa.commands
                 //|| manMedia.AudioMediaData.PCMFormat.Data.TimesAreEqualWithOneMillisecondTolerance(manMedia.Duration.AsLocalUnits, BytePositionInsert.AsLocalUnits)
                 )
             {
+                // WARNING: WavAudioMediaData implementation differs from AudioMediaData:
+                // the latter is naive and performs a stream binary copy, the latter is optimized and re-uses existing WavClips. 
+                //  WARNING 2: The audio data from the given parameter gets emptied !
                 manMedia.AudioMediaData.MergeWith(ManagedAudioMediaSource.AudioMediaData.Copy());
 
                 //Time duration = ManagedAudioMediaSource.Duration;
