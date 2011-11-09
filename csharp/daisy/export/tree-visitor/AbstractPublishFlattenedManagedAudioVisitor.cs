@@ -27,8 +27,12 @@ namespace urakawa.daisy.export.visitor
             {
                 return;
             }
+
+#if PUBLISH_ALT_CONTENT
             CreateAudioFileForAlternateContentProperty();
             m_AlternateContentPropertiesList.Clear();
+#endif // PUBLISH_ALT_CONTENT
+
             ulong bytesPcmTotal = (ulong)m_TransientWavFileStream.Position - m_TransientWavFileStreamRiffOffset;
             m_TransientWavFileStream.Position = 0;
             m_TransientWavFileStreamRiffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(m_TransientWavFileStream, (uint)bytesPcmTotal);
@@ -59,6 +63,7 @@ namespace urakawa.daisy.export.visitor
             }
         }
 
+#if PUBLISH_ALT_CONTENT
         private void CreateAudioFileForAlternateContentProperty ()
         {
             if (m_AlternateContentPropertiesList == null || m_AlternateContentPropertiesList.Count == 0) return;
@@ -119,9 +124,8 @@ namespace urakawa.daisy.export.visitor
                     }
                 }
             }
-
         }
-
+#endif // PUBLISH_ALT_CONTENT
 
         private void EncodeTransientFileResample()
         {

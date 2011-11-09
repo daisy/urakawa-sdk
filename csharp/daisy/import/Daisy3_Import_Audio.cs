@@ -191,6 +191,9 @@ namespace urakawa.daisy.import
                         {
                             ManagedAudioMedia seqManMedia = (ManagedAudioMedia)seqChild;
 
+                            // WARNING: WavAudioMediaData implementation differs from AudioMediaData:
+                            // the latter is naive and performs a stream binary copy, the latter is optimized and re-uses existing WavClips. 
+                            //  WARNING 2: The audio data from the given parameter gets emptied !
                             mediaData.MergeWith(seqManMedia.AudioMediaData);
 
                             //Stream stream = seqManMedia.AudioMediaData.OpenPcmInputStream();
