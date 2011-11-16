@@ -56,6 +56,51 @@ namespace urakawa.daisy
             return DTBDocument;
         }
 
+        public static XmlDocument CreateStub_XhtmlDocument(string language, string strInternalDTD, List<ExternalFiles.ExternalFileData> list_ExternalStyleSheets)
+        {
+            XmlDocument XhtmlDocument = new XmlDocument();
+            XhtmlDocument.XmlResolver = null;
+
+            //XhtmlDocument.CreateXmlDeclaration("1.0", "utf-8", null);
+            //XhtmlDocument.AppendChild(XhtmlDocument.CreateDocumentType("html",
+                //"-//NISO//DTD dtbook 2005-3//EN",
+                //"http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd",
+                //strInternalDTD));
+
+            XmlNode rootNode = XhtmlDocument.CreateElement(null,
+                "   html",
+                "http://www.w3.org/1999/xhtml");
+            CreateAppendXmlAttribute (XhtmlDocument, rootNode, "xmlns:epub", "http://www.idpf.org/2007/ops");
+            XhtmlDocument.AppendChild(rootNode);
+
+            XmlNode headNode = XhtmlDocument.CreateElement(null, "head", rootNode.NamespaceURI);
+            rootNode.AppendChild(headNode);
+
+            if (list_ExternalStyleSheets.Count > 0)
+            {
+                foreach (ExternalFiles.ExternalFileData efd in list_ExternalStyleSheets)
+                {
+                    if (efd is ExternalFiles.CSSExternalFileData)
+                    {
+                        XhtmlDocument.AppendChild(
+                        XhtmlDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/css\" href=\"" + efd.OriginalRelativePath + "\""));
+                    }
+                    else if (efd is ExternalFiles.XSLTExternalFileData)
+                    {
+                        XhtmlDocument.AppendChild(
+                        XhtmlDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"" + efd.OriginalRelativePath + "\""));
+                    }
+                }
+
+            }
+
+            XmlNode bodyNode = XhtmlDocument.CreateElement(null, "body", rootNode.NamespaceURI);
+            rootNode.AppendChild(bodyNode);
+
+            return XhtmlDocument;
+        }
+
+
         public static XmlNode GetFirstChildElementWithName(XmlNode root, bool deep, string localName, string namespaceUri)
         {
             foreach (XmlNode node in GetChildrenElementsWithName(root, deep, localName, namespaceUri, true))
