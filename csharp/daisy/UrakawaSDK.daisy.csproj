@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{69E083B4-AC97-4416-B7D4-61DEBA8A910D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="DaigramContentModelStrings.cs" />
     <Compile Include="export\Daisy3_Export_ImageDescription.cs" />
+    <Compile Include="export\Daisy3_Export_Xhtml.cs" />
     <Compile Include="export\tree-visitor\AbstractBasePublishAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\AbstractPublishFlattenedManagedAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\AbstractPublishManagedAudioVisitor.cs" />
