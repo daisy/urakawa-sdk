@@ -311,7 +311,7 @@ namespace AudioLib
             //watch.Stop();
             //long acmMS = watch.ElapsedMilliseconds;
 
-            //Debug.Assert(acmMS < csMS);
+            //DebugFix.Assert(acmMS < csMS);
             //Console.WriteLine("C# / ACM RATIO: " + csMS / acmMS);
             #endregion
 
@@ -360,7 +360,7 @@ namespace AudioLib
                 return null;
             }
 
-            Debug.Assert(File.Exists(destinationFile));
+            DebugFix.Assert(File.Exists(destinationFile));
 
             if (pcmFormat != null
                 &&

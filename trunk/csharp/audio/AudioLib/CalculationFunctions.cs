@@ -12,9 +12,11 @@ namespace AudioLib
 #if DEBUG
             if (!condition)
             {
-                bool PLACE_BREAKPOINT_HERE_IF_NEEDED = condition;
-                //Debugger.Break();
+                //bool PLACE_BREAKPOINT_HERE_IF_NEEDED = condition;
+                Debugger.Break();
             }
+#else
+            Debug.Assert(condition);
 #endif
         }
     }
