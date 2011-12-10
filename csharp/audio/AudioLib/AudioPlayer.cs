@@ -361,23 +361,23 @@ namespace AudioLib
                 endPosition = m_CurrentAudioPCMFormat.AdjustByteToBlockAlignFrameSize(bytesTo);
             }
 
-            if (m_CurrentAudioPCMFormat.BytesAreEqualWithOneMillisecondTolerance(startPosition, 0))
+            if (m_CurrentAudioPCMFormat.BytesAreEqualWithMillisecondsTolerance(startPosition, 0))
             {
                 startPosition = 0;
             }
 
-            if (m_CurrentAudioPCMFormat.BytesAreEqualWithOneMillisecondTolerance(endPosition, dataLength))
+            if (m_CurrentAudioPCMFormat.BytesAreEqualWithMillisecondsTolerance(endPosition, dataLength))
             {
                 endPosition = dataLength;
             }
 
-            if (m_CurrentAudioPCMFormat.BytesAreEqualWithOneMillisecondTolerance(endPosition, 0))
+            if (m_CurrentAudioPCMFormat.BytesAreEqualWithMillisecondsTolerance(endPosition, 0))
             {
                 endPosition = 0;
             }
 
             if (endPosition != 0
-                && m_CurrentAudioPCMFormat.BytesAreEqualWithOneMillisecondTolerance(endPosition, startPosition))
+                && m_CurrentAudioPCMFormat.BytesAreEqualWithMillisecondsTolerance(endPosition, startPosition))
             {
                 return;
             }
@@ -1017,8 +1017,10 @@ namespace AudioLib
                     }
 
                     //Console.WriteLine(String.Format("m_CircularBufferWritePosition: [{0} / toCopy {1}]", m_CircularBufferWritePosition, toCopy));
-
+                    
+#if DEBUG
                     DebugFix.Assert(m_CurrentAudioStream.Position + bytesToTransferToCircularBuffer <= m_PlaybackEndPosition);
+#endif //DEBUG
 
 #if USE_SLIMDX
                     if (SlimDX_IntermediaryTransferBuffer == null)

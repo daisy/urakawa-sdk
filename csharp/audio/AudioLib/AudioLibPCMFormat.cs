@@ -125,6 +125,7 @@ namespace AudioLib
         // 1.000.000 ==> nanoseconds
         public static readonly long TIME_UNIT = 1000000;
         public static readonly bool USE_ROUND_NOT_TRUNCATE = true;
+        public static readonly long MILLISECONDS_TOLERANCE = 5;
 
         public long ConvertTimeToBytes(long timeInLocalUnits)
         {
@@ -233,15 +234,15 @@ namespace AudioLib
         //    long timeInLocalUnitsForBlockAlign = ConvertBytesToTime(BlockAlign);
         //    return Math.Abs(time1 - time2) <= timeInLocalUnitsForBlockAlign;
         //}
-        public bool BytesAreEqualWithOneMillisecondTolerance(long bytes1, long bytes2)
+        public bool BytesAreEqualWithMillisecondsTolerance(long bytes1, long bytes2)
         {
-            long oneMillisecondsInLocalUnits = 1 * TIME_UNIT;
+            long oneMillisecondsInLocalUnits = MILLISECONDS_TOLERANCE * TIME_UNIT;
             long bytesForOneMillisecond = ConvertTimeToBytes(oneMillisecondsInLocalUnits);
             return Math.Abs(bytes1 - bytes2) <= bytesForOneMillisecond;
         }
-        public bool TimesAreEqualWithOneMillisecondTolerance(long timeInLocalUnits1, long timeInLocalUnits2)
+        public static bool TimesAreEqualWithMillisecondsTolerance(long timeInLocalUnits1, long timeInLocalUnits2)
         {
-            long oneMillisecondsInLocalUnits = 1 * TIME_UNIT;
+            long oneMillisecondsInLocalUnits = MILLISECONDS_TOLERANCE * TIME_UNIT;
             return Math.Abs(timeInLocalUnits1 - timeInLocalUnits2) <= oneMillisecondsInLocalUnits;
         }
 
