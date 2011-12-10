@@ -55,9 +55,9 @@ namespace urakawa.media.timing
             try
             {
                 TimeSpan timeSpan = TimeSpan.Parse(stringRepresentation);
-                DebugFix.Assert(timeSpan.TotalMilliseconds == timeMillisecondsDecimal);
+                DebugFix.Assert(Math.Abs(timeSpan.TotalMilliseconds - timeMillisecondsDecimal) <= AudioLibPCMFormat.MILLISECONDS_TOLERANCE);
             }
-            catch(FormatException ex)
+            catch (FormatException ex)
             {
                 ; // we can safely ignore 
             }
@@ -67,8 +67,10 @@ namespace urakawa.media.timing
             double timeAsLocalUnitsDecimal = timeMillisecondsDecimal * TIME_UNIT;
             long timeAsLocalUnitsIntegral = (long)(AudioLibPCMFormat.USE_ROUND_NOT_TRUNCATE ? Math.Round(timeAsLocalUnitsDecimal) : Math.Truncate(timeAsLocalUnitsDecimal));
 
-            // checking whether we are loosing fractions of milliseconds
-            DebugFix.Assert(timeAsLocalUnitsDecimal == (double)timeAsLocalUnitsIntegral);
+#if DEBUG
+            // checking whether we are loosing fractions (of localunits) greater than 0.1
+            DebugFix.Assert(((int)Math.Truncate((timeAsLocalUnitsDecimal - timeAsLocalUnitsIntegral) * 10)) <= 1);
+#endif //DEBUG
 
             AsLocalUnits = timeAsLocalUnitsIntegral;
         }
@@ -100,7 +102,7 @@ namespace urakawa.media.timing
                 timeMillisecondsDecimal = Math.Round(timeMillisecondsDecimal, decimalPlaces, MidpointRounding.AwayFromZero);
 
                 double timeAsLocalUnitsDecimal = timeMillisecondsDecimal * TIME_UNIT;
-                
+
                 long timeAsLocalUnitsIntegral = (long)(AudioLibPCMFormat.USE_ROUND_NOT_TRUNCATE ? Math.Round(timeAsLocalUnitsDecimal) : Math.Truncate(timeAsLocalUnitsDecimal));
 
                 // checking whether we are loosing fractions of milliseconds

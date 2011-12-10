@@ -111,13 +111,13 @@ namespace urakawa.commands
         {
             AudioChannel audioChannel = Presentation.ChannelsManager.GetOrCreateAudioChannel();
             ChannelsProperty chProp = m_TreeNode.GetOrCreateChannelsProperty();
-            chProp.SetMedia(audioChannel, m_ManagedAudioMedia);
+            chProp.SetMedia(audioChannel, ManagedAudioMedia.Copy());
         }
 
         public override void UnExecute()
         {
             AudioChannel audioChannel = Presentation.ChannelsManager.GetOrCreateAudioChannel();
-            ChannelsProperty chProp = m_TreeNode.GetChannelsProperty();
+            ChannelsProperty chProp = m_TreeNode.GetOrCreateChannelsProperty();
             chProp.SetMedia(audioChannel, null);
         }
 

@@ -152,7 +152,7 @@ namespace urakawa.commands
                 //|| timeInsertBytes == durationBytes
                 //|| manMedia.AudioMediaData.PCMFormat.Data.BytesAreEqualWithBlockAlignTolerance(timeInsertBytes, durationBytes)
                 //|| manMedia.AudioMediaData.PCMFormat.Data.TimesAreEqualWithBlockAlignTolerance(manMedia.Duration.AsLocalUnits, TimeInsert.AsLocalUnits)
-                manMedia.AudioMediaData.PCMFormat.Data.BytesAreEqualWithOneMillisecondTolerance(BytePositionInsert, durationBytes)
+                manMedia.AudioMediaData.PCMFormat.Data.BytesAreEqualWithMillisecondsTolerance(BytePositionInsert, durationBytes)
                 //|| manMedia.AudioMediaData.PCMFormat.Data.TimesAreEqualWithOneMillisecondTolerance(manMedia.Duration.AsLocalUnits, BytePositionInsert.AsLocalUnits)
                 )
             {
