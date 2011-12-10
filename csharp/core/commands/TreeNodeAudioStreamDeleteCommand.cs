@@ -99,7 +99,9 @@ namespace urakawa.commands
             OriginalManagedAudioMedia = manMedia.Copy();
             m_UsedMediaData.Add(OriginalManagedAudioMedia.AudioMediaData);
 
+#if DEBUG
             DebugFix.Assert(manMedia.Duration.IsEqualTo(OriginalManagedAudioMedia.Duration));
+#endif //DEBUG
 
             ChannelsProperty chProp = SelectionData.m_TreeNode.GetChannelsProperty();
             foreach (Channel ch in chProp.UsedChannels)
@@ -111,6 +113,7 @@ namespace urakawa.commands
                 }
             }
             DebugFix.Assert(ChannelOfOriginalMedia != null);
+            DebugFix.Assert(ChannelOfOriginalMedia is AudioChannel);
         }
 
         public override bool CanExecute
@@ -154,10 +157,13 @@ namespace urakawa.commands
         public override void UnExecute()
         {
             ChannelsProperty chProp = SelectionData.m_TreeNode.GetOrCreateChannelsProperty();
-            if (SelectionData.m_TreeNode.GetManagedAudioMedia() != null)
+
+            ManagedAudioMedia manMed = SelectionData.m_TreeNode.GetManagedAudioMedia();
+            if (manMed != null)
             {
                 chProp.SetMedia(ChannelOfOriginalMedia, null);
             }
+
             chProp.SetMedia(ChannelOfOriginalMedia, OriginalManagedAudioMedia.Copy());
         }
 

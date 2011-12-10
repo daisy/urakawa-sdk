@@ -20,14 +20,16 @@ namespace urakawa.core
         public bool TimeBeginEndEqualClipDuration(Time timeBegin, Time timeEnd, AudioMediaData mediaData)
         {
             bool equal = (
-                //timeBegin.IsEqualTo(Time.Zero)
-                mediaData.PCMFormat.Data.TimesAreEqualWithOneMillisecondTolerance(timeBegin.AsLocalUnits, Time.Zero.AsLocalUnits)
+                timeBegin.IsEqualTo(Time.Zero)
+                //mediaData.PCMFormat.Data.TimesAreEqualWithMillisecondsTolerance(timeBegin.AsLocalUnits, Time.Zero.AsLocalUnits)
                 )
                          &&
                          (
-                             //timeEnd.IsEqualTo(Time.Zero)
-                             mediaData.PCMFormat.Data.TimesAreEqualWithOneMillisecondTolerance(timeEnd.AsLocalUnits, Time.Zero.AsLocalUnits)
-                             || mediaData.PCMFormat.Data.TimesAreEqualWithOneMillisecondTolerance(timeEnd.GetDifference(timeBegin).AsLocalUnits, mediaData.AudioDuration.AsLocalUnits)
+                             timeEnd.IsEqualTo(Time.Zero)
+                             ||
+                             timeEnd.GetDifference(timeBegin).IsEqualTo(mediaData.AudioDuration)
+                             //mediaData.PCMFormat.Data.TimesAreEqualWithMillisecondsTolerance(timeEnd.AsLocalUnits, Time.Zero.AsLocalUnits)
+                             //|| mediaData.PCMFormat.Data.TimesAreEqualWithMillisecondsTolerance(timeEnd.GetDifference(timeBegin).AsLocalUnits, mediaData.AudioDuration.AsLocalUnits)
                          );
 
             if (equal) return true;
@@ -41,13 +43,13 @@ namespace urakawa.core
             {
                 long timeBytes = mediaData.PCMFormat.Data.ConvertTimeToBytes(mediaData.AudioDuration.AsLocalUnits);
                 rightOk = //m_LocalStreamRightMark == timeBytes
-                    mediaData.PCMFormat.Data.BytesAreEqualWithOneMillisecondTolerance(m_LocalStreamRightMark, timeBytes)
+                    mediaData.PCMFormat.Data.BytesAreEqualWithMillisecondsTolerance(m_LocalStreamRightMark, timeBytes)
                     ;
             }
 
             bool leftOk = m_LocalStreamLeftMark == -1
                 //|| m_LocalStreamLeftMark == 0
-                || mediaData.PCMFormat.Data.BytesAreEqualWithOneMillisecondTolerance(0, m_LocalStreamLeftMark)
+                || mediaData.PCMFormat.Data.BytesAreEqualWithMillisecondsTolerance(0, m_LocalStreamLeftMark)
                 ;
 
             return leftOk && rightOk;

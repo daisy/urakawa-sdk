@@ -95,8 +95,8 @@ namespace urakawa.media.data.audio.codec
             }
             finally
             {
-				nsdps.Close();
-				nsdps = null;
+                nsdps.Close();
+                nsdps = null;
             }
 
             newSingleDataProvider.AppendData(pcmData, dataLength);
@@ -162,8 +162,8 @@ namespace urakawa.media.data.audio.codec
                 || timeEnd.IsGreaterThan(AudioDuration))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
-                    String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0}",
-                                  AudioDuration));
+                    String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0} ([{1} --> {2})",
+                                  AudioDuration, timeBegin, timeEnd));
             }
 
             WavAudioMediaData copy = Copy();
@@ -657,8 +657,8 @@ namespace urakawa.media.data.audio.codec
                 || clipEnd.IsGreaterThan(new Time(AudioDuration.AsTimeSpan)))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
-                    String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0}",
-                                  AudioDuration));
+                    String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0} ([{1} --> {2})",
+                                  AudioDuration, clipBegin, clipEnd));
             }
             Time curBeginTime = Time.Zero;
 
@@ -1053,9 +1053,24 @@ namespace urakawa.media.data.audio.codec
             NotifyAudioDataRemoved(this, splitPoint, newClipDuration);
             oWAMD.NotifyAudioDataInserted(oWAMD, Time.Zero, newClipDuration);
 
-            DebugFix.Assert(newClipDuration.AsLocalUnits == oWAMD.AudioDuration.AsLocalUnits);
-            DebugFix.Assert((this.AudioDuration.AsLocalUnits + oWAMD.AudioDuration.AsLocalUnits) == originalDuration.AsLocalUnits);
-            
+#if DEBUG
+            DebugFix.Assert(AudioLibPCMFormat.TimesAreEqualWithMillisecondsTolerance(
+                newClipDuration.AsLocalUnits,
+                oWAMD.AudioDuration.AsLocalUnits));
+
+            DebugFix.Assert(newClipDuration.IsEqualTo(oWAMD.AudioDuration));
+
+
+
+            DebugFix.Assert(AudioLibPCMFormat.TimesAreEqualWithMillisecondsTolerance(
+                this.AudioDuration.AsLocalUnits + oWAMD.AudioDuration.AsLocalUnits,
+                originalDuration.AsLocalUnits));
+
+            Time copy = this.AudioDuration.Copy();
+            copy.Add(oWAMD.AudioDuration);
+            DebugFix.Assert(originalDuration.IsEqualTo(copy));
+#endif //DEBUG
+
             return oWAMD;
         }
     }

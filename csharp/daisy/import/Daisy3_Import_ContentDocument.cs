@@ -94,6 +94,8 @@ namespace urakawa.daisy.import
 
         private string ExtractInternalDTD(XmlDocumentType docType)
         {
+            if (docType == null) return null;
+
             string completeString = docType.OuterXml;
             if (completeString.Contains("[") && completeString.Contains("]"))
             {
@@ -376,7 +378,7 @@ namespace urakawa.daisy.import
                         //string text = xmlNode.Value.Trim();
                         string text = Regex.Replace(xmlNode.Value, @"\s+", " ");
 
-                        Debug.Assert(!string.IsNullOrEmpty(text));
+                        DebugFix.Assert(!string.IsNullOrEmpty(text));
 
 #if DEBUG
                         if (text.Length != xmlNode.Value.Length)

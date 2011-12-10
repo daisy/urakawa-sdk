@@ -36,7 +36,17 @@ namespace urakawa.media.timing
 
         public bool IsGreaterThan(Time time)
         {
-            return AsTimeSpan.CompareTo(time.AsTimeSpan) > 0;
+            TimeSpan t1 = AsTimeSpan;
+            TimeSpan t2 = time.AsTimeSpan;
+
+            // one millisecond resolution
+            long t1ms = (long)Math.Truncate(t1.TotalMilliseconds);
+            long t2ms = (long)Math.Truncate(t2.TotalMilliseconds);
+            if (t1ms == t2ms) return false;
+
+            if (Math.Abs(t1ms - t2ms) <= AudioLibPCMFormat.MILLISECONDS_TOLERANCE) return false;
+
+            return t1.CompareTo(t2) > 0;
             //return AsLocalUnits > time.AsLocalUnits;
         }
 
