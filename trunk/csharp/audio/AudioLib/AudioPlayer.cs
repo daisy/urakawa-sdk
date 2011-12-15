@@ -426,7 +426,7 @@ namespace AudioLib
 
         public void Pause(long bytePos)
         {
-            
+
             if (CurrentState == State.NotReady)
             {
                 return;
@@ -434,7 +434,7 @@ namespace AudioLib
 
             //if (CurrentState != State.Playing)
             //{
-                //return;
+            //return;
             //}
 
             m_ResumeStartPosition = bytePos;
@@ -448,12 +448,12 @@ namespace AudioLib
             }
             CurrentState = State.Paused;
 
-            if (wasPlaying )  stopPlayback();
+            if (wasPlaying) stopPlayback();
         }
 
         public void Pause()
         {
-            
+
             if (CurrentState == State.NotReady)
             {
                 return;
@@ -537,7 +537,7 @@ namespace AudioLib
             if (CurrentState == State.Paused)
             {
                 return m_ResumeStartPosition;
-            }   
+            }
 
             if (CurrentState == State.Stopped)
             {
@@ -768,7 +768,16 @@ namespace AudioLib
 
                                                  //Console.WriteLine("Player refresh thread exit.");
                                              };
+
+
+            if (m_CircularBufferRefreshThread != null)
+            {
+                //daniel
+                //stopPlayback();
+            }
+
             DebugFix.Assert(m_CircularBufferRefreshThread == null);
+
             lock (LOCK)
             {
                 m_CircularBufferRefreshThread = new Thread(threadDelegate);
@@ -1017,7 +1026,7 @@ namespace AudioLib
                     }
 
                     //Console.WriteLine(String.Format("m_CircularBufferWritePosition: [{0} / toCopy {1}]", m_CircularBufferWritePosition, toCopy));
-                    
+
 #if DEBUG
                     DebugFix.Assert(m_CurrentAudioStream.Position + bytesToTransferToCircularBuffer <= m_PlaybackEndPosition);
 #endif //DEBUG
