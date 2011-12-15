@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using AudioLib;
 using urakawa.data;
@@ -506,6 +507,11 @@ namespace urakawa.media.data.audio
                 throw new exception.InvalidDataFormatException(
                     "Can not merge this with a AudioMediaData with incompatible audio data");
             }
+
+#if DEBUG
+            Debugger.Break();
+#endif // DEBUG
+
             Stream otherData = other.OpenPcmInputStream();
             try
             {
