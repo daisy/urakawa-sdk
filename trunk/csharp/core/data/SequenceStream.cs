@@ -18,6 +18,7 @@ namespace urakawa.data
         {
             if (m_First == null)
             {
+                m_size = 1;
                 m_First = new Item();
                 m_First.m_data = data;
                 m_First.m_nextItem = null;
@@ -30,6 +31,7 @@ namespace urakawa.data
                 last = last.m_nextItem;
             }
 
+            m_size++;
             last.m_nextItem = new Item();
             last.m_nextItem.m_data = data;
             last.m_nextItem.m_nextItem = null;
@@ -52,7 +54,14 @@ namespace urakawa.data
                 }
             } while (current != null);
 
+            m_size = 0;
             m_First = null;
+        }
+
+        private int m_size = 0;
+        public int Count()
+        {
+            return m_size;
         }
 
         public bool IsEmpty
