@@ -510,7 +510,13 @@ namespace urakawa.media
             {
                 return null;
             }
+
+#if USE_NORMAL_LIST
             List<Stream> streams = new List<Stream>();
+#else
+            LightLinkedList<Stream> streams = new LightLinkedList<Stream>();
+#endif //USE_NORMAL_LIST
+
             foreach (Media media in mSequence.ContentsAs_Enumerable)
             {
                 if (media is ManagedAudioMedia)
@@ -529,7 +535,7 @@ namespace urakawa.media
                     break;
                 }
             }
-            if (streams.Count != 0)
+            if (!streams.IsEmpty)
             {
                 return new SequenceStream(streams);
             }

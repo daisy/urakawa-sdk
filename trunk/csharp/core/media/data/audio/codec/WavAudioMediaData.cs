@@ -305,7 +305,13 @@ namespace urakawa.media.data.audio.codec
 
             Time elapsedTime = new Time();
             int i = 0;
+
+#if USE_NORMAL_LIST
             List<Stream> resStreams = new List<Stream>();
+#else
+            LightLinkedList<Stream> resStreams = new LightLinkedList<Stream>();
+#endif //USE_NORMAL_LIST
+
             while (i < mWavClips.Count)
             {
                 WavClip curClip = mWavClips[i];
@@ -358,7 +364,7 @@ namespace urakawa.media.data.audio.codec
                 elapsedTime = newElapsedTime;
                 i++;
             }
-            if (resStreams.Count == 0)
+            if (resStreams.IsEmpty)
             {
                 Debug.Fail("That's probably going to create problems ?");
                 return new MemoryStream(0);
