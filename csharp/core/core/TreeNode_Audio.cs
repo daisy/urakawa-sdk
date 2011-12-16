@@ -335,7 +335,12 @@ namespace urakawa.core
             StreamWithMarkers returnVal = new StreamWithMarkers();
             returnVal.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>();
 
+#if USE_NORMAL_LIST
             List<Stream> listStreams = new List<Stream>();
+#else
+            LightLinkedList<Stream> listStreams = new LightLinkedList<Stream>();
+#endif //USE_NORMAL_LIST
+
             foreach (StreamWithMarkers strct in listStreamsWithMarkers)
             {
                 listStreams.Add(strct.m_Stream);

@@ -87,18 +87,18 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
             set { m_BitRate_Mp3 = value; }
         }
 
-        private bool m_EnableExplicitGarbageCollection = true ;
-        public bool EnableExplicitGarbageCollection
-        {
-            get
-            {
-                return m_EnableExplicitGarbageCollection;
-            }
-            set
-            {
-                m_EnableExplicitGarbageCollection = value;
-            }
-        }
+        //private bool m_EnableExplicitGarbageCollection = true ;
+        //public bool EnableExplicitGarbageCollection
+        //{
+        //    get
+        //    {
+        //        return m_EnableExplicitGarbageCollection;
+        //    }
+        //    set
+        //    {
+        //        m_EnableExplicitGarbageCollection = value;
+        //    }
+        //}
 
         public virtual void ConfigureAudioFileDelegates ()
         {   
@@ -188,11 +188,12 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
 
             m_PublishVisitor = null;
 
-            if (EnableExplicitGarbageCollection)
-            {
-                GC.Collect();
-                GC.WaitForFullGCComplete();
-            }
+            //if (EnableExplicitGarbageCollection)
+            //{
+            //    GC.Collect();
+            //    GC.WaitForFullGCComplete();
+            //}
+
             //if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
             return publishChannel;
         }

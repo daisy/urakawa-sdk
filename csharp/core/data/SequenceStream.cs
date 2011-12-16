@@ -4,26 +4,93 @@ using System.IO;
 
 namespace urakawa.data
 {
+    public class LightLinkedList<T> where T : class //, new() NO NEED FOR PUBLIC DEFAULT CONSTRUCTOR
+    {
+        public Item m_First;
+
+        public class Item
+        {
+            public T m_data;
+            public Item m_nextItem;
+        }
+
+        public void Add(T data)
+        {
+            if (m_First == null)
+            {
+                m_First = new Item();
+                m_First.m_data = data;
+                m_First.m_nextItem = null;
+                return;
+            }
+
+            Item last = m_First;
+            while (last.m_nextItem != null)
+            {
+                last = last.m_nextItem;
+            }
+
+            last.m_nextItem = new Item();
+            last.m_nextItem.m_data = data;
+            last.m_nextItem.m_nextItem = null;
+        }
+
+        public void Clear()
+        {
+            if (m_First == null) return;
+
+            Item current = m_First;
+            do
+            {
+                //current.m_data = default(T);
+                current.m_data = null;
+
+                current = current.m_nextItem;
+                if (current != null)
+                {
+                    current.m_nextItem = null;
+                }
+            } while (current != null);
+
+            m_First = null;
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return m_First == null;
+            }
+        }
+    }
+
     /// <summary>
     /// A <see cref="Stream"/> that supports reading from a sequence of source <see cref="Stream"/>s
     /// as if they were one.
     /// </summary>
     public class SequenceStream : Stream
     {
+#if USE_NORMAL_LIST
         private List<Stream> mSources;
         private int mCurrentIndex;
+#else
+        private LightLinkedList<Stream> mSources;
+        private LightLinkedList<Stream>.Item mCurrentStreamItem;
+#endif //USE_NORMAL_LIST
 
-        public IEnumerable<Stream> ChildStreams
-        {
-            get
-            {
-                foreach (Stream stream in mSources)
-                {
-                    yield return stream;
-                }
-            }
-        }
-        
+
+
+        //public IEnumerable<Stream> ChildStreams
+        //{
+        //    get
+        //    {
+        //        foreach (Stream stream in mSources)
+        //        {
+        //            yield return stream;
+        //        }
+        //    }
+        //}
+
 
         /// <summary>
         /// Constructor supplying the sequence of source <see cref="Stream"/>s
@@ -32,8 +99,15 @@ namespace urakawa.data
         /// The sequence of source <see cref="Stream"/>s. 
         /// Must contain at least one source <see cref="Stream"/>
         /// </param>
-        public SequenceStream(IEnumerable<Stream> ss)
+        public SequenceStream(
+#if USE_NORMAL_LIST
+IEnumerable<Stream> ss
+#else
+LightLinkedList<Stream> ss
+#endif //USE_NORMAL_LIST
+)
         {
+#if USE_NORMAL_LIST
             mSources = new List<Stream>(ss);
             if (mSources.Count == 0)
             {
@@ -41,7 +115,28 @@ namespace urakawa.data
                     "A SequenceStream must have at least one source Stream in it's sequence");
             }
             mCurrentIndex = 0;
-            mSources[0].Seek(0, SeekOrigin.Begin);
+            mSources[mCurrentIndex].Seek(0, SeekOrigin.Begin);
+#else
+            mSources = new LightLinkedList<Stream>();
+
+            LightLinkedList<Stream>.Item current = ss.m_First;
+            while (current != null)
+            {
+                Stream subS = current.m_data;
+                mSources.Add(subS);
+
+                current = current.m_nextItem;
+            }
+
+            if (mSources.IsEmpty)
+            {
+                mSources = null;
+                throw new exception.MethodParameterHasNoItemsException(
+                    "A SequenceStream must have at least one source Stream in it's sequence");
+            }
+            mCurrentStreamItem = mSources.m_First;
+            mCurrentStreamItem.m_data.Seek(0, SeekOrigin.Begin);
+#endif //USE_NORMAL_LIST
         }
 
         /// <summary>
@@ -51,6 +146,7 @@ namespace urakawa.data
         {
             get
             {
+#if USE_NORMAL_LIST
                 foreach (Stream subS in mSources)
                 {
                     if (!subS.CanRead)
@@ -59,6 +155,19 @@ namespace urakawa.data
                     }
                 }
                 return true;
+#else
+                LightLinkedList<Stream>.Item current = mSources.m_First;
+                while (current != null)
+                {
+                    Stream subS = current.m_data;
+                    if (!subS.CanRead)
+                    {
+                        return false;
+                    }
+                    current = current.m_nextItem;
+                }
+                return true;
+#endif //USE_NORMAL_LIST
             }
         }
 
@@ -69,6 +178,7 @@ namespace urakawa.data
         {
             get
             {
+#if USE_NORMAL_LIST
                 foreach (Stream subS in mSources)
                 {
                     if (!subS.CanSeek)
@@ -77,6 +187,19 @@ namespace urakawa.data
                     }
                 }
                 return true;
+#else
+                LightLinkedList<Stream>.Item current = mSources.m_First;
+                while (current != null)
+                {
+                    Stream subS = current.m_data;
+                    if (!subS.CanSeek)
+                    {
+                        return false;
+                    }
+                    current = current.m_nextItem;
+                }
+                return true;
+#endif //USE_NORMAL_LIST
             }
         }
 
@@ -103,12 +226,24 @@ namespace urakawa.data
         {
             get
             {
+#if USE_NORMAL_LIST
                 long len = 0;
                 foreach (Stream subS in mSources)
                 {
                     len += subS.Length;
                 }
                 return len;
+#else
+                long len = 0;
+                LightLinkedList<Stream>.Item current = mSources.m_First;
+                while (current != null)
+                {
+                    Stream subS = current.m_data;
+                    len += subS.Length;
+                    current = current.m_nextItem;
+                }
+                return len;
+#endif //USE_NORMAL_LIST
             }
         }
 
@@ -117,26 +252,62 @@ namespace urakawa.data
         /// </summary>
         public override long Position
         {
-            get { return GetBytesBeforeIndex(mCurrentIndex) + mSources[mCurrentIndex].Position; }
+            get
+            {
+
+#if USE_NORMAL_LIST
+                return GetBytesBeforeIndex(mCurrentIndex) + mSources[mCurrentIndex].Position;
+#else
+                return GetBytesBeforeStream(mCurrentStreamItem) + mCurrentStreamItem.m_data.Position;
+#endif //USE_NORMAL_LIST
+            }
             set
             {
+#if USE_NORMAL_LIST
                 mCurrentIndex = 0;
                 long bytesBefore = 0;
                 while (mCurrentIndex < mSources.Count)
                 {
-                    if (value < bytesBefore + mSources[mCurrentIndex].Length)
+                    long length = mSources[mCurrentIndex].Length;
+                    if (value < bytesBefore + length)
                     {
                         mSources[mCurrentIndex].Position = value - bytesBefore;
                         return;
                     }
-                    bytesBefore += mSources[mCurrentIndex].Length;
+                    bytesBefore += length;
                     mCurrentIndex++;
                 }
                 mCurrentIndex = mSources.Count - 1;
                 mSources[mCurrentIndex].Position = mSources[mCurrentIndex].Length;
+#else
+                mCurrentStreamItem = mSources.m_First;
+                long bytesBefore = 0;
+
+                LightLinkedList<Stream>.Item current = mSources.m_First;
+                while (current != null)
+                {
+                    mCurrentStreamItem = current;
+
+                    long length = mCurrentStreamItem.m_data.Length;
+
+                    if (value < bytesBefore + length)
+                    {
+                        mCurrentStreamItem.m_data.Position = value - bytesBefore;
+                        return;
+                    }
+
+                    bytesBefore += length;
+
+                    current = current.m_nextItem;
+                }
+
+                mCurrentStreamItem.m_data.Position = mCurrentStreamItem.m_data.Length;
+#endif //USE_NORMAL_LIST
             }
         }
 
+
+#if USE_NORMAL_LIST
         private long GetBytesBeforeIndex(int index)
         {
             int i = 0;
@@ -149,6 +320,23 @@ namespace urakawa.data
             }
             return bytesBefore;
         }
+#else
+        private long GetBytesBeforeStream(LightLinkedList<Stream>.Item streamItem)
+        {
+            long bytesBefore = 0;
+
+            LightLinkedList<Stream>.Item current = mSources.m_First;
+            while (current != null && current != streamItem)
+            {
+                Stream subS = current.m_data;
+                bytesBefore += subS.Length;
+
+                current = current.m_nextItem;
+            }
+
+            return bytesBefore;
+        }
+#endif //USE_NORMAL_LIST
 
 
         /// <summary>
@@ -170,6 +358,8 @@ namespace urakawa.data
         public override int Read(byte[] buffer, int offset, int count)
         {
             if (count == 0) return 0;
+
+#if USE_NORMAL_LIST
             int totalBytesRead = 0;
             int bytesRead = 0;
             while (true)
@@ -197,6 +387,47 @@ namespace urakawa.data
                 }
             }
             return totalBytesRead;
+#else
+            int totalBytesRead = 0;
+            int bytesRead = 0;
+            while (true)
+            {
+                if (mCurrentStreamItem.m_data.Position < mCurrentStreamItem.m_data.Length)
+                {
+                    bytesRead = mCurrentStreamItem.m_data.Read(buffer, offset, count);
+                }
+                else
+                {
+                    bytesRead = 0;
+                }
+                totalBytesRead += bytesRead;
+                count -= bytesRead;
+                offset += bytesRead;
+                if (count == 0) break;
+                if (mCurrentStreamItem.m_nextItem != null)
+                {
+                    mCurrentStreamItem = mCurrentStreamItem.m_nextItem;
+                    mCurrentStreamItem.m_data.Position = 0;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return totalBytesRead;
+
+
+
+
+            LightLinkedList<Stream>.Item current = mSources.m_First;
+            while (current != null)
+            {
+                Stream subS = current.m_data;
+                subS.Close();
+
+                current = current.m_nextItem;
+            }
+#endif //USE_NORMAL_LIST
         }
 
 
@@ -265,10 +496,22 @@ namespace urakawa.data
         public override void Close()
         {
             base.Close();
+
+#if USE_NORMAL_LIST
             foreach (Stream subS in mSources)
             {
                 subS.Close();
             }
+#else
+            LightLinkedList<Stream>.Item current = mSources.m_First;
+            while (current != null)
+            {
+                Stream subS = current.m_data;
+                subS.Close();
+
+                current = current.m_nextItem;
+            }
+#endif //USE_NORMAL_LIST
         }
     }
 }
