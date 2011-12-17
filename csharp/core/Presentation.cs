@@ -1337,7 +1337,9 @@ namespace urakawa
             MediaFactory.CreateExternalTextMedia();
             MediaFactory.CreateExternalAudioMedia();
             //
+#if ENABLE_SEQ_MEDIA
             MediaFactory.CreateSequenceMedia();
+#endif// ENABLE_SEQ_MEDIA
             //
             PropertyFactory.CreateChannelsProperty();
             PropertyFactory.CreateXmlProperty();

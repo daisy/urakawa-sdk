@@ -11,6 +11,9 @@ using urakawa.xuk;
 
 namespace urakawa.media
 {
+            
+#if ENABLE_SEQ_MEDIA
+
     /// <summary>
     /// SequenceMedia is a collection of same-type media objects
     /// The first object in the collection determines the collection's type.
@@ -549,4 +552,7 @@ namespace urakawa.media
             return null;
         }
     }
+        
+#endif //ENABLE_SEQ_MEDIA
+
 }

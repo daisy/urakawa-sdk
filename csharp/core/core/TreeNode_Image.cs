@@ -15,6 +15,8 @@ namespace urakawa.core
             return null;
         }
 
+#if ENABLE_SEQ_MEDIA
+
         public SequenceMedia GetImageSequenceMedia()
         {
             Media med = GetMediaInImageChannel();
@@ -24,7 +26,8 @@ namespace urakawa.core
             }
             return null;
         }
-
+        
+#endif //ENABLE_SEQ_MEDIA
         public Media GetMediaInImageChannel()
         {
             return GetMediaInChannel<ImageChannel>();

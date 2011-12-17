@@ -132,6 +132,8 @@ namespace urakawa.core
             return null;
         }
 
+#if ENABLE_SEQ_MEDIA
+
         public SequenceMedia GetTextSequenceMedia()
         {
             Media med = GetMediaInTextChannel();
@@ -141,6 +143,8 @@ namespace urakawa.core
             }
             return null;
         }
+#endif //ENABLE_SEQ_MEDIA
+
         public TreeNode GetLastDescendantWithText(bool acceptAltText)
         {
             if (mChildren.Count == 0)
@@ -280,6 +284,9 @@ namespace urakawa.core
                 }
                 return textMedia.Text;
             }
+                        
+#if ENABLE_SEQ_MEDIA
+
             SequenceMedia seq = GetTextSequenceMedia();
             if (seq != null)
             {
@@ -289,6 +296,10 @@ namespace urakawa.core
                     return strText;
                 }
             }
+                        
+#endif //ENABLE_SEQ_MEDIA
+
+
             if (acceptAltText)
             {
                 QualifiedName qName = GetXmlElementQName();

@@ -63,6 +63,9 @@ namespace urakawa.core
                 Debug.Fail("This should never happen !");
                 throw new Exception("TreeNode doesn't have managed audio media ?!");
             }
+
+#if ENABLE_SEQ_MEDIA
+
             else if (audioMedia is SequenceMedia)
             {
                 Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
@@ -92,6 +95,9 @@ namespace urakawa.core
                 //    sumDataPrev = sumData;
                 //}
             }
+                        
+#endif //ENABLE_SEQ_MEDIA
+
             else if (audioMedia is ManagedAudioMedia)
             {
                 AudioMediaData mediaData = ((ManagedAudioMedia)audioMedia).AudioMediaData;
@@ -183,12 +189,16 @@ struct
             {
                 return true;
             }
+                    
+#if ENABLE_SEQ_MEDIA
 
             SequenceMedia seqManagedAudioMedia = GetManagedAudioSequenceMedia();
             if (seqManagedAudioMedia != null)
             {
                 return true;
             }
+                    
+#endif //ENABLE_SEQ_MEDIA
 
             TreeNode ancerstor = GetFirstAncestorWithManagedAudio();
             if (ancerstor != null)
@@ -329,6 +339,9 @@ StreamWithMarkers?
                 val.m_SubStreamMarkers.Add(tnasdl);
                 return val;
             }
+
+                    
+#if ENABLE_SEQ_MEDIA
             SequenceMedia seq = GetManagedAudioSequenceMedia();
             if (seq != null)
             {
@@ -356,6 +369,9 @@ StreamWithMarkers?
                     return val;
                 }
             }
+                    
+#endif //ENABLE_SEQ_MEDIA
+
             return null;
         }
 
@@ -485,10 +501,16 @@ childVal
         public Media GetManagedAudioMediaOrSequenceMedia()
         {
             ManagedAudioMedia managedAudioMedia = GetManagedAudioMedia();
+                    
+#if ENABLE_SEQ_MEDIA
+
             if (managedAudioMedia == null)
             {
                 return GetManagedAudioSequenceMedia();
             }
+                    
+#endif //ENABLE_SEQ_MEDIA
+
             return managedAudioMedia;
         }
 
@@ -511,6 +533,8 @@ childVal
             }
             return null;
         }
+
+#if ENABLE_SEQ_MEDIA
 
         public SequenceMedia GetManagedAudioSequenceMedia()
         {
@@ -544,6 +568,8 @@ childVal
             }
             return null;
         }
+        
+#endif //ENABLE_SEQ_MEDIA
 
         public Media GetMediaInAudioChannel()
         {
@@ -558,6 +584,8 @@ childVal
                 return audioMedia.Duration;
             }
 
+#if ENABLE_SEQ_MEDIA
+
             SequenceMedia seq = GetManagedAudioSequenceMedia();
             if (seq != null)
             {
@@ -567,6 +595,8 @@ childVal
                     return durSeq;
                 }
             }
+            
+#endif //ENABLE_SEQ_MEDIA
 
             Time dur = new Time();
             for (int index = 0; index < mChildren.Count; index++)
