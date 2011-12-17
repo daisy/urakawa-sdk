@@ -28,8 +28,8 @@ namespace urakawa.core
                              timeEnd.IsEqualTo(Time.Zero)
                              ||
                              timeEnd.GetDifference(timeBegin).IsEqualTo(mediaData.AudioDuration)
-                             //mediaData.PCMFormat.Data.TimesAreEqualWithMillisecondsTolerance(timeEnd.AsLocalUnits, Time.Zero.AsLocalUnits)
-                             //|| mediaData.PCMFormat.Data.TimesAreEqualWithMillisecondsTolerance(timeEnd.GetDifference(timeBegin).AsLocalUnits, mediaData.AudioDuration.AsLocalUnits)
+                //mediaData.PCMFormat.Data.TimesAreEqualWithMillisecondsTolerance(timeEnd.AsLocalUnits, Time.Zero.AsLocalUnits)
+                //|| mediaData.PCMFormat.Data.TimesAreEqualWithMillisecondsTolerance(timeEnd.GetDifference(timeBegin).AsLocalUnits, mediaData.AudioDuration.AsLocalUnits)
                          );
 
             if (equal) return true;
@@ -143,16 +143,35 @@ namespace urakawa.core
         }
     }
 
-    public struct TreeNodeAndStreamDataLength
+    public
+#if USE_NORMAL_LIST
+struct
+#else
+ class
+#endif //USE_NORMAL_LIST
+ TreeNodeAndStreamDataLength
     {
         public TreeNode m_TreeNode;
         public long m_LocalStreamDataLength;
     }
 
-    public struct StreamWithMarkers
+    public
+#if USE_NORMAL_LIST
+struct
+#else
+ class
+#endif //USE_NORMAL_LIST
+ StreamWithMarkers
     {
         public Stream m_Stream;
-        public List<TreeNodeAndStreamDataLength> m_SubStreamMarkers;
+
+        public
+#if USE_NORMAL_LIST
+            List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<TreeNodeAndStreamDataLength> m_SubStreamMarkers;
     }
 
     public partial class TreeNode
@@ -270,15 +289,40 @@ namespace urakawa.core
             return Parent.GetNextSiblingWithManagedAudio();
         }
 
-        public StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMedia()
+        public
+#if USE_NORMAL_LIST
+StreamWithMarkers?
+#else
+ StreamWithMarkers
+#endif //USE_NORMAL_LIST
+ OpenPcmInputStreamOfManagedAudioMedia()
         {
-            StreamWithMarkers val;
+
+            StreamWithMarkers val = new StreamWithMarkers();
+
+//#if USE_NORMAL_LIST
+//            StreamWithMarkers val;
+//#else
+//            StreamWithMarkers val = new StreamWithMarkers();
+//#endif //USE_NORMAL_LIST
 
             ManagedAudioMedia audioMedia = GetManagedAudioMedia();
             if (audioMedia != null && audioMedia.HasActualAudioMediaData)
             {
                 val.m_Stream = audioMedia.AudioMediaData.OpenPcmInputStream();
-                val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
+
+                val.m_SubStreamMarkers = new
+#if USE_NORMAL_LIST
+            List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<TreeNodeAndStreamDataLength>(
+#if USE_NORMAL_LIST
+1
+#endif //USE_NORMAL_LIST
+);
+
                 TreeNodeAndStreamDataLength tnasdl = new TreeNodeAndStreamDataLength();
                 tnasdl.m_LocalStreamDataLength = val.m_Stream.Length;
                 tnasdl.m_TreeNode = this;
@@ -292,7 +336,19 @@ namespace urakawa.core
                 if (stream != null)
                 {
                     val.m_Stream = stream;
-                    val.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>(1);
+
+                    val.m_SubStreamMarkers = new
+#if USE_NORMAL_LIST
+                    List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<TreeNodeAndStreamDataLength>(
+#if USE_NORMAL_LIST
+                    1
+#endif //USE_NORMAL_LIST
+);
+
                     TreeNodeAndStreamDataLength tnasdl = new TreeNodeAndStreamDataLength();
                     tnasdl.m_LocalStreamDataLength = val.m_Stream.Length;
                     tnasdl.m_TreeNode = this;
@@ -303,27 +359,68 @@ namespace urakawa.core
             return null;
         }
 
-        public StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del)
+        public
+#if USE_NORMAL_LIST
+StreamWithMarkers?
+#else
+ StreamWithMarkers
+#endif //USE_NORMAL_LIST
+ OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del)
         {
-            StreamWithMarkers? val = OpenPcmInputStreamOfManagedAudioMedia();
+#if USE_NORMAL_LIST
+StreamWithMarkers?
+#else
+            StreamWithMarkers
+#endif //USE_NORMAL_LIST
+ val = OpenPcmInputStreamOfManagedAudioMedia();
+
             if (val != null)
             {
                 if (del != null)
                 {
-                    del.Invoke(val.GetValueOrDefault().m_Stream.Length);
+                    del.Invoke(
+val.
+#if USE_NORMAL_LIST
+            GetValueOrDefault().
+#endif //USE_NORMAL_LIST
+m_Stream.Length
+);
                 }
                 return val;
             }
 
-            List<StreamWithMarkers> listStreamsWithMarkers = new List<StreamWithMarkers>();
+#if USE_NORMAL_LIST
+                    List
+#else
+            LightLinkedList
+#endif //USE_NORMAL_LIST
+<StreamWithMarkers> listStreamsWithMarkers = new
+#if USE_NORMAL_LIST
+                    List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<StreamWithMarkers>();
 
             for (int index = 0; index < mChildren.Count; index++)
             {
                 TreeNode node = mChildren.Get(index);
-                StreamWithMarkers? childVal = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(del);
+
+#if USE_NORMAL_LIST
+StreamWithMarkers?
+#else
+                StreamWithMarkers
+#endif //USE_NORMAL_LIST
+ childVal = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(del);
+
                 if (childVal != null)
                 {
-                    listStreamsWithMarkers.Add(childVal.GetValueOrDefault());
+                    listStreamsWithMarkers.Add(
+childVal
+#if USE_NORMAL_LIST
+            .GetValueOrDefault()
+#endif //USE_NORMAL_LIST
+);
                 }
             }
 
@@ -333,20 +430,49 @@ namespace urakawa.core
             }
 
             StreamWithMarkers returnVal = new StreamWithMarkers();
-            returnVal.m_SubStreamMarkers = new List<TreeNodeAndStreamDataLength>();
+
+            returnVal.m_SubStreamMarkers = new
+#if USE_NORMAL_LIST
+                    List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<TreeNodeAndStreamDataLength>();
 
 #if USE_NORMAL_LIST
-            List<Stream> listStreams = new List<Stream>();
+                    List
 #else
-            LightLinkedList<Stream> listStreams = new LightLinkedList<Stream>();
+            LightLinkedList
 #endif //USE_NORMAL_LIST
+<Stream> listStreams = new
 
+#if USE_NORMAL_LIST
+                    List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<Stream>();
+
+#if USE_NORMAL_LIST
             foreach (StreamWithMarkers strct in listStreamsWithMarkers)
             {
                 listStreams.Add(strct.m_Stream);
                 returnVal.m_SubStreamMarkers.AddRange(strct.m_SubStreamMarkers);
                 strct.m_SubStreamMarkers.Clear();
             }
+#else
+            LightLinkedList<StreamWithMarkers>.Item current = listStreamsWithMarkers.m_First;
+            while (current != null)
+            {
+                StreamWithMarkers swm = current.m_data;
+
+                listStreams.Add(swm.m_Stream);
+                returnVal.m_SubStreamMarkers.AddRange(swm.m_SubStreamMarkers);
+                swm.m_SubStreamMarkers.Clear();
+
+                current = current.m_nextItem;
+            }
+#endif //USE_NORMAL_LIST
 
             returnVal.m_Stream = new SequenceStream(listStreams);
 

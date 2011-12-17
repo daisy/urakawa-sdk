@@ -34,9 +34,22 @@ namespace urakawa.core
 
         TreeNode Root { get; }
 
-        StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del);
+#if USE_NORMAL_LIST
+StreamWithMarkers?
+#else
+        StreamWithMarkers
+#endif //USE_NORMAL_LIST
+ OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del);
+
         Media GetManagedAudioMediaOrSequenceMedia();
-        StreamWithMarkers? OpenPcmInputStreamOfManagedAudioMedia();
+
+#if USE_NORMAL_LIST
+StreamWithMarkers?
+#else
+        StreamWithMarkers
+#endif //USE_NORMAL_LIST
+ OpenPcmInputStreamOfManagedAudioMedia();
+
         TreeNode GetNextSiblingWithManagedAudio();
         TreeNode GetPreviousSiblingWithManagedAudio();
 
@@ -51,10 +64,10 @@ namespace urakawa.core
 
         TreeNode GetNextSiblingWithText(bool acceptAltText);
         //TreeNode GetNextSiblingWithText(TreeNode upLimit, bool acceptAltText);
-        
+
         TreeNode GetFirstDescendantWithManagedAudio();
         TreeNode GetFirstAncestorWithManagedAudio();
-        
+
         bool HasOrInheritsAudio();
 
         TreeNode GetFirstChildWithXmlElementName(string elemName);
@@ -64,7 +77,7 @@ namespace urakawa.core
         QualifiedName GetXmlElementQName();
         string GetXmlElementId();
 
-        ObjectListProvider<Property> Properties { get;}
+        ObjectListProvider<Property> Properties { get; }
         ObjectListProvider<TreeNode> Children { get; }
         List<Type> UsedPropertyTypes { get; }
         List<Property> GetProperties(Type t);
