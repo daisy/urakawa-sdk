@@ -476,7 +476,7 @@ namespace urakawa.daisy.export.visitor
 #else
             StreamWithMarkers
 #endif //USE_NORMAL_LIST
- sm = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(null);
+ sm = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(null, false);
             if (sm == null)
             {
                 return;
