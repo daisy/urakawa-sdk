@@ -14,6 +14,18 @@ namespace urakawa.data
             public Item m_nextItem;
         }
 
+        public void AddRange(LightLinkedList<T> list)
+        {
+            Item current = list.m_First;
+            while (current != null)
+            {
+                T o = current.m_data;
+                Add(o);
+
+                current = current.m_nextItem;
+            }
+        }
+
         public void Add(T data)
         {
             if (m_First == null)
@@ -59,9 +71,9 @@ namespace urakawa.data
         }
 
         private int m_size = 0;
-        public int Count()
+        public int Count
         {
-            return m_size;
+            get { return m_size; }
         }
 
         public bool IsEmpty
@@ -79,11 +91,17 @@ namespace urakawa.data
     /// </summary>
     public class SequenceStream : Stream
     {
+        private
 #if USE_NORMAL_LIST
-        private List<Stream> mSources;
+            List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<Stream> mSources;
+
+#if USE_NORMAL_LIST
         private int mCurrentIndex;
 #else
-        private LightLinkedList<Stream> mSources;
         private LightLinkedList<Stream>.Item mCurrentStreamItem;
 #endif //USE_NORMAL_LIST
 
@@ -110,14 +128,21 @@ namespace urakawa.data
         /// </param>
         public SequenceStream(
 #if USE_NORMAL_LIST
-IEnumerable<Stream> ss
+IEnumerable
 #else
-LightLinkedList<Stream> ss
+LightLinkedList
 #endif //USE_NORMAL_LIST
-)
+<Stream> ss
+            )
         {
+            mSources = new
 #if USE_NORMAL_LIST
-            mSources = new List<Stream>(ss);
+List<Stream>(ss);
+#else
+ LightLinkedList<Stream>();
+#endif //USE_NORMAL_LIST
+
+#if USE_NORMAL_LIST
             if (mSources.Count == 0)
             {
                 throw new exception.MethodParameterHasNoItemsException(
@@ -126,8 +151,6 @@ LightLinkedList<Stream> ss
             mCurrentIndex = 0;
             mSources[mCurrentIndex].Seek(0, SeekOrigin.Begin);
 #else
-            mSources = new LightLinkedList<Stream>();
-
             LightLinkedList<Stream>.Item current = ss.m_First;
             while (current != null)
             {
@@ -424,18 +447,6 @@ LightLinkedList<Stream> ss
                 }
             }
             return totalBytesRead;
-
-
-
-
-            LightLinkedList<Stream>.Item current = mSources.m_First;
-            while (current != null)
-            {
-                Stream subS = current.m_data;
-                subS.Close();
-
-                current = current.m_nextItem;
-            }
 #endif //USE_NORMAL_LIST
         }
 

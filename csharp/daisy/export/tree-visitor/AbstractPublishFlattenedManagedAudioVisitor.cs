@@ -4,8 +4,9 @@ using System.IO;
 using System.Collections.Generic;
 using AudioLib;
 using urakawa.core;
+using urakawa.data;
 using urakawa.property.channel;
-using urakawa.property.alt ;
+using urakawa.property.alt;
 using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
@@ -353,7 +354,7 @@ namespace urakawa.daisy.export.visitor
 
                 m_TimeElapsedInLocalUnits += manAudioMedia != null ? manAudioMedia.Duration.AsLocalUnits :
                     seqAudioMedia.GetDurationOfManagedAudioMedia().AsLocalUnits;
-                
+
                 int percent = Convert.ToInt32((m_TimeElapsedInLocalUnits * 100) / m_TotalTimeInLocalUnits);
 
                 if (EncodePublishedAudioFilesToMp3)
@@ -368,12 +369,12 @@ namespace urakawa.daisy.export.visitor
             }
 
             ExternalAudioMedia extAudioMedia = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
-            
+
             if ((EncodePublishedAudioFilesToMp3
                 ||
                 (ushort)EncodePublishedAudioFilesSampleRate
                     != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate)
-                
+
                 && !m_ExternalAudioMediaList.Contains(extAudioMedia))
             {
                 m_ExternalAudioMediaList.Add(extAudioMedia);
@@ -457,8 +458,12 @@ namespace urakawa.daisy.export.visitor
                 Debug.Fail("! EnforceSinglePCMFormat ???");
                 throw new Exception("! EnforceSinglePCMFormat ???");
             }
-
-            StreamWithMarkers? sm = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(null);
+#if USE_NORMAL_LIST
+            StreamWithMarkers?
+#else
+            StreamWithMarkers
+#endif //USE_NORMAL_LIST
+ sm = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(null);
             if (sm == null)
             {
                 return;
@@ -468,7 +473,11 @@ namespace urakawa.daisy.export.visitor
             Uri waveFileUri = GetCurrentAudioFileUri();
             Stream wavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
 
-            Stream audioPcmStream = sm.GetValueOrDefault().m_Stream;
+            Stream audioPcmStream = sm.
+#if USE_NORMAL_LIST
+            GetValueOrDefault().
+#endif //USE_NORMAL_LIST
+m_Stream;
 
             if (RequestCancellation)
             {
@@ -496,8 +505,17 @@ namespace urakawa.daisy.export.visitor
             }
 
             long bytesBegin = 0;
+
+#if USE_NORMAL_LIST
             foreach (TreeNodeAndStreamDataLength marker in sm.GetValueOrDefault().m_SubStreamMarkers)
             {
+#else
+            LightLinkedList<TreeNodeAndStreamDataLength>.Item current = sm.m_SubStreamMarkers.m_First;
+            while (current != null)
+            {
+                TreeNodeAndStreamDataLength marker = current.m_data;
+#endif //USE_NORMAL_LIST
+
                 //long bytesEnd = bytesBegin + marker.m_LocalStreamDataLength;
 
                 ExternalAudioMedia extAudioMedia = marker.m_TreeNode.Presentation.MediaFactory.Create<ExternalAudioMedia>();
@@ -506,7 +524,7 @@ namespace urakawa.daisy.export.visitor
                 ||
                 (ushort)EncodePublishedAudioFilesSampleRate
                     != marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate)
-                
+
                     && !m_ExternalAudioMediaList.Contains(extAudioMedia))
                 {
                     m_ExternalAudioMediaList.Add(extAudioMedia);
@@ -536,7 +554,13 @@ namespace urakawa.daisy.export.visitor
                 chProp.SetMedia(DestinationChannel, extAudioMedia);
 
                 bytesBegin += marker.m_LocalStreamDataLength;
+
+#if USE_NORMAL_LIST
+                }
+#else
+                current = current.m_nextItem;
             }
+#endif //USE_NORMAL_LIST
         }
 
         #endregion

@@ -389,7 +389,7 @@ namespace urakawa.media
             base.XukOutAttributes(destination, baseUri);
 
             destination.WriteAttributeString(XukStrings.AllowMultipleMediaTypes, AllowMultipleTypes ? "true" : "false");
-            
+
         }
 
         /// <summary>
@@ -512,10 +512,17 @@ namespace urakawa.media
             }
 
 #if USE_NORMAL_LIST
-            List<Stream> streams = new List<Stream>();
+            List
 #else
-            LightLinkedList<Stream> streams = new LightLinkedList<Stream>();
+            LightLinkedList
 #endif //USE_NORMAL_LIST
+<Stream> streams = new
+#if USE_NORMAL_LIST
+            List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<Stream>();
 
             foreach (Media media in mSequence.ContentsAs_Enumerable)
             {
@@ -523,7 +530,7 @@ namespace urakawa.media
                 {
                     if (((ManagedAudioMedia)media).HasActualAudioMediaData)
                     {
-                        Stream stream = ((ManagedAudioMedia) media).AudioMediaData.OpenPcmInputStream();
+                        Stream stream = ((ManagedAudioMedia)media).AudioMediaData.OpenPcmInputStream();
                         if (stream != null)
                         {
                             streams.Add(stream);

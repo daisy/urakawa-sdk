@@ -307,10 +307,17 @@ namespace urakawa.media.data.audio.codec
             int i = 0;
 
 #if USE_NORMAL_LIST
-            List<Stream> resStreams = new List<Stream>();
+            List
 #else
-            LightLinkedList<Stream> resStreams = new LightLinkedList<Stream>();
+            LightLinkedList
 #endif //USE_NORMAL_LIST
+<Stream> resStreams = new
+#if USE_NORMAL_LIST
+            List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<Stream>();
 
             while (i < mWavClips.Count)
             {
