@@ -170,6 +170,7 @@ struct
  StreamWithMarkers
     {
         public Stream m_Stream;
+        public Stream m_SecondaryStream;
 
         public
 #if USE_NORMAL_LIST
@@ -305,7 +306,7 @@ StreamWithMarkers?
 #else
  StreamWithMarkers
 #endif //USE_NORMAL_LIST
- OpenPcmInputStreamOfManagedAudioMedia()
+ OpenPcmInputStreamOfManagedAudioMedia(bool openSecondaryStream = false)
         {
 
             StreamWithMarkers val = new StreamWithMarkers();
@@ -320,6 +321,10 @@ StreamWithMarkers?
             if (audioMedia != null && audioMedia.HasActualAudioMediaData)
             {
                 val.m_Stream = audioMedia.AudioMediaData.OpenPcmInputStream();
+                if (openSecondaryStream)
+                {
+                    val.m_SecondaryStream = audioMedia.AudioMediaData.OpenPcmInputStream();
+                }
 
                 val.m_SubStreamMarkers = new
 #if USE_NORMAL_LIST
@@ -381,14 +386,14 @@ StreamWithMarkers?
 #else
  StreamWithMarkers
 #endif //USE_NORMAL_LIST
- OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del)
+ OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del, bool openSecondaryStream = false)
         {
 #if USE_NORMAL_LIST
 StreamWithMarkers?
 #else
             StreamWithMarkers
 #endif //USE_NORMAL_LIST
- val = OpenPcmInputStreamOfManagedAudioMedia();
+ val = OpenPcmInputStreamOfManagedAudioMedia(openSecondaryStream);
 
             if (val != null)
             {
@@ -427,7 +432,7 @@ StreamWithMarkers?
 #else
                 StreamWithMarkers
 #endif //USE_NORMAL_LIST
- childVal = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(del);
+ childVal = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(del, openSecondaryStream);
 
                 if (childVal != null)
                 {
@@ -470,9 +475,32 @@ childVal
 <Stream>();
 
 #if USE_NORMAL_LIST
+                    List
+#else
+            LightLinkedList
+#endif //USE_NORMAL_LIST
+<Stream> listSecondaryStreams =
+
+openSecondaryStream ? 
+new
+
+#if USE_NORMAL_LIST
+                    List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<Stream>() : null;
+
+
+#if USE_NORMAL_LIST
             foreach (StreamWithMarkers strct in listStreamsWithMarkers)
             {
                 listStreams.Add(strct.m_Stream);
+                if (openSecondaryStream)
+                {
+                    listSecondaryStreams.Add(strct.m_SecondaryStream);
+                }
+
                 returnVal.m_SubStreamMarkers.AddRange(strct.m_SubStreamMarkers);
                 strct.m_SubStreamMarkers.Clear();
             }
@@ -483,6 +511,11 @@ childVal
                 StreamWithMarkers swm = current.m_data;
 
                 listStreams.Add(swm.m_Stream);
+                if (openSecondaryStream)
+                {
+                    listSecondaryStreams.Add(swm.m_SecondaryStream);
+                }
+
                 returnVal.m_SubStreamMarkers.AddRange(swm.m_SubStreamMarkers);
                 swm.m_SubStreamMarkers.Clear();
 
@@ -491,6 +524,10 @@ childVal
 #endif //USE_NORMAL_LIST
 
             returnVal.m_Stream = new SequenceStream(listStreams);
+            if (openSecondaryStream)
+            {
+                returnVal.m_SecondaryStream = new SequenceStream(listSecondaryStreams);
+            }
 
             listStreamsWithMarkers.Clear();
             listStreamsWithMarkers = null;

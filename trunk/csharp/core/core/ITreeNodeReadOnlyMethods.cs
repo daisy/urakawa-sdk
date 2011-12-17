@@ -43,13 +43,6 @@ namespace urakawa.core
 
         TreeNode Root { get; }
 
-#if USE_NORMAL_LIST
-StreamWithMarkers?
-#else
-        StreamWithMarkers
-#endif //USE_NORMAL_LIST
- OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del);
-
         Media GetManagedAudioMediaOrSequenceMedia();
 
 #if USE_NORMAL_LIST
@@ -57,7 +50,14 @@ StreamWithMarkers?
 #else
         StreamWithMarkers
 #endif //USE_NORMAL_LIST
- OpenPcmInputStreamOfManagedAudioMedia();
+ OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del, bool openSecondaryStream = false);
+
+#if USE_NORMAL_LIST
+StreamWithMarkers?
+#else
+        StreamWithMarkers
+#endif //USE_NORMAL_LIST
+ OpenPcmInputStreamOfManagedAudioMedia(bool openSecondaryStream = false);
 
         TreeNode GetNextSiblingWithManagedAudio();
         TreeNode GetPreviousSiblingWithManagedAudio();
