@@ -73,7 +73,7 @@ namespace urakawa.media
         {
             return Create<ExternalTextMedia>();
         }
-
+#if ENABLE_SEQ_MEDIA
         /// <summary>
         /// Creates a <see cref="SequenceMedia"/>
         /// </summary>
@@ -82,5 +82,6 @@ namespace urakawa.media
         {
             return Create<SequenceMedia>();
         }
+#endif //ENABLE_SEQ_MEDIA
     }
 }

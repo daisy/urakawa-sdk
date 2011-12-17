@@ -24,6 +24,9 @@ namespace urakawa.property.channel
         {
             if (!base.CanAccept(m)) return false;
             if (m is AbstractAudioMedia) return true;
+
+#if ENABLE_SEQ_MEDIA
+
             if (m is SequenceMedia)
             {
                 foreach (Media sm in ((SequenceMedia)m).ChildMedias.ContentsAs_Enumerable)
@@ -32,6 +35,8 @@ namespace urakawa.property.channel
                 }
                 return true;
             }
+#endif //ENABLE_SEQ_MEDIA
+
             return false;
         }
     }

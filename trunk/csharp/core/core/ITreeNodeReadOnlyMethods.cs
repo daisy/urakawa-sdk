@@ -18,15 +18,24 @@ namespace urakawa.core
     public interface ITreeNodeReadOnlyMethods
     {
         AbstractTextMedia GetTextMedia();
+
+#if ENABLE_SEQ_MEDIA
+
         SequenceMedia GetTextSequenceMedia();
+        SequenceMedia GetImageSequenceMedia();       
+        SequenceMedia GetManagedAudioSequenceMedia();
+        SequenceMedia GetAudioSequenceMedia();
+        
+#endif //ENABLE_SEQ_MEDIA
+
         AbstractImageMedia GetImageMedia();
-        SequenceMedia GetImageSequenceMedia();
+
+
         Media GetMediaInTextChannel();
         Media GetMediaInImageChannel();
         ManagedAudioMedia GetManagedAudioMedia();
         AbstractAudioMedia GetAudioMedia();
-        SequenceMedia GetManagedAudioSequenceMedia();
-        SequenceMedia GetAudioSequenceMedia();
+
         Media GetMediaInAudioChannel();
         Time GetDurationOfManagedAudioMediaFlattened();
         bool IsAfter(TreeNode node);

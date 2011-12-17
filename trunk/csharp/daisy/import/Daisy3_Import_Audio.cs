@@ -20,7 +20,7 @@ namespace urakawa.daisy.import
         protected AudioChannel m_audioChannel;
         private AudioFormatConvertorSession m_AudioConversionSession;
         private Dictionary<string, FileDataProvider> m_OriginalAudioFile_FileDataProviderMap = new Dictionary<string, FileDataProvider>(); // maps original audio file refered by smil to FileDataProvider of sdk.
-        protected List<TreeNode> TreenodesWithoutManagedAudioMediaData ;
+        protected List<TreeNode> TreenodesWithoutManagedAudioMediaData;
 
         //private bool m_firstTimePCMFormat;
 
@@ -167,6 +167,9 @@ namespace urakawa.daisy.import
                     }
                     else if (textPeerNode.LocalName == "seq")
                     {
+#if DEBUG
+                        Debugger.Break();
+#endif //DEBUG
                         XmlNodeList seqChildren = textPeerNode.ChildNodes;
                         foreach (XmlNode seqChild in seqChildren)
                         {
@@ -175,7 +178,7 @@ namespace urakawa.daisy.import
                                 addAudio(textTreeNode, seqChild, true, fullSmilPath);
                             }
                         }
-
+#if ENABLE_SEQ_MEDIA
                         SequenceMedia seqManAudioMedia = textTreeNode.GetManagedAudioSequenceMedia();
                         if (seqManAudioMedia == null)
                         {
@@ -213,7 +216,7 @@ namespace urakawa.daisy.import
                         ChannelsProperty chProp = textTreeNode.GetChannelsProperty();
                         chProp.SetMedia(m_audioChannel, null);
                         chProp.SetMedia(m_audioChannel, managedAudioMedia);
-
+#endif //ENABLE_SEQ_MEDIA
                         break;
                     }
                 }
@@ -241,7 +244,7 @@ namespace urakawa.daisy.import
             XmlNode audioAttrClipEnd = audioAttrs.GetNamedItem("clipEnd");
 
             Presentation presentation = m_Project.Presentations.Get(0);
-            Media media = null;
+            ManagedAudioMedia media = null;
 
             if (audioAttrSrc.Value.ToLower().EndsWith("wav"))
             {
@@ -409,14 +412,14 @@ namespace urakawa.daisy.import
 
             if (media == null)
             {
-                if (!TreenodesWithoutManagedAudioMediaData.Contains(treeNode))  TreenodesWithoutManagedAudioMediaData.Add(treeNode);
-                
+                if (!TreenodesWithoutManagedAudioMediaData.Contains(treeNode)) TreenodesWithoutManagedAudioMediaData.Add(treeNode);
+
                 Debug.Fail("Creating ExternalAudioMedia ??");
 
                 Time timeClipBegin = null;
 
-                media = presentation.MediaFactory.CreateExternalAudioMedia();
-                ((ExternalAudioMedia)media).Src = audioAttrSrc.Value;
+                ExternalAudioMedia exmedia = presentation.MediaFactory.CreateExternalAudioMedia();
+                exmedia.Src = audioAttrSrc.Value;
                 if (audioAttrClipBegin != null &&
                     !string.IsNullOrEmpty(audioAttrClipBegin.Value))
                 {
@@ -431,7 +434,7 @@ namespace urakawa.daisy.import
                         Console.WriteLine(str);
                         Debug.Fail(str);
                     }
-                    ((ExternalAudioMedia)media).ClipBegin = timeClipBegin;
+                    exmedia.ClipBegin = timeClipBegin;
                 }
                 if (audioAttrClipEnd != null &&
                     !string.IsNullOrEmpty(audioAttrClipEnd.Value))
@@ -452,7 +455,7 @@ namespace urakawa.daisy.import
                     {
                         try
                         {
-                            ((ExternalAudioMedia)media).ClipEnd = timeClipEnd;
+                            exmedia.ClipEnd = timeClipEnd;
                         }
                         catch (Exception ex)
                         {
@@ -478,6 +481,7 @@ namespace urakawa.daisy.import
                 }
                 if (isSequence)
                 {
+#if ENABLE_SEQ_MEDIA
                     SequenceMedia mediaSeq = chProp.GetMedia(m_audioChannel) as SequenceMedia;
                     if (mediaSeq == null)
                     {
@@ -486,6 +490,31 @@ namespace urakawa.daisy.import
                         chProp.SetMedia(m_audioChannel, mediaSeq);
                     }
                     mediaSeq.ChildMedias.Insert(mediaSeq.ChildMedias.Count, media);
+#else
+                    ManagedAudioMedia existingMedia = chProp.GetMedia(m_audioChannel) as ManagedAudioMedia;
+                    if (existingMedia == null)
+                    {
+                        chProp.SetMedia(m_audioChannel, media);
+                    }
+                    else
+                    {
+                        // WARNING: WavAudioMediaData implementation differs from AudioMediaData:
+                        // the latter is naive and performs a stream binary copy, the latter is optimized and re-uses existing WavClips. 
+                        //  WARNING 2: The audio data from the given parameter gets emptied !
+                        existingMedia.AudioMediaData.MergeWith(media.AudioMediaData);
+
+                        //Stream stream = seqManMedia.AudioMediaData.OpenPcmInputStream();
+                        //try
+                        //{
+                        //    mediaData.AppendPcmData(stream, null);
+                        //}
+                        //finally
+                        //{
+                        //    stream.Close();
+                        //}
+
+                    }
+#endif //ENABLE_SEQ_MEDIA
                 }
                 else
                 {
@@ -512,7 +541,7 @@ namespace urakawa.daisy.import
             return null;
         }
 
-        private Media addAudioWav(FileDataProvider dataProv, XmlNode audioAttrClipBegin, XmlNode audioAttrClipEnd, TreeNode treeNode)
+        private ManagedAudioMedia addAudioWav(FileDataProvider dataProv, XmlNode audioAttrClipBegin, XmlNode audioAttrClipEnd, TreeNode treeNode)
         {
             if (RequestCancellation) return null;
 
@@ -550,7 +579,7 @@ namespace urakawa.daisy.import
                 }
             }
 
-            Media media = null;
+            ManagedAudioMedia media = null;
             Presentation presentation = m_Project.Presentations.Get(0);
 
 
@@ -586,7 +615,7 @@ namespace urakawa.daisy.import
             if (isClipEndError)
             {
                 // reduce clip end by 1 millisecond for rounding off tolerance
-                isClipEndError =  addAudioWavWithEndOfFileTolerance(mediaData, dataProv, clipB, clipE, treeNode);
+                isClipEndError = addAudioWavWithEndOfFileTolerance(mediaData, dataProv, clipB, clipE, treeNode);
                 if (isClipEndError)
                 {
                     Console.WriteLine("CLIP TIME ERROR (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
@@ -596,7 +625,7 @@ namespace urakawa.daisy.import
             if (RequestCancellation) return null;
 
             media = presentation.MediaFactory.CreateManagedAudioMedia();
-            ((ManagedAudioMedia)media).AudioMediaData = mediaData;
+            media.AudioMediaData = mediaData;
             //}
             /* else
             {
@@ -667,7 +696,7 @@ namespace urakawa.daisy.import
             clipE.Substract(new Time(AudioLibPCMFormat.TIME_UNIT));
             Console.WriteLine("new clip " + clipE);
             try
-            {   
+            {
                 mediaData.AppendPcmData(dataProv, clipB, clipE);
                 isClipEndError = false;
             }

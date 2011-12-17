@@ -292,19 +292,23 @@ namespace urakawa.daisy.export.visitor
 
             long bytesBegin = m_TransientWavFileStream.Position - (long)m_TransientWavFileStreamRiffOffset;
 
+#if ENABLE_SEQ_MEDIA
             SequenceMedia seqAudioMedia = node.GetManagedAudioSequenceMedia();
+#endif //ENABLE_SEQ_MEDIA
 
             Stream audioPcmStream = null;
             if (manAudioMedia != null)
             {
                 audioPcmStream = manAudioMedia.AudioMediaData.OpenPcmInputStream();
             }
+#if ENABLE_SEQ_MEDIA
             else if (seqAudioMedia != null)
             {
                 Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
 
                 audioPcmStream = seqAudioMedia.OpenPcmInputStreamOfManagedAudioMedia();
             }
+#endif //ENABLE_SEQ_MEDIA
             else
             {
                 Debug.Fail("This should never happen !!");
@@ -348,12 +352,21 @@ namespace urakawa.daisy.export.visitor
 
             string src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
 
-            if (manAudioMedia != null || seqAudioMedia != null)
+            if (manAudioMedia != null
+#if ENABLE_SEQ_MEDIA
+                || seqAudioMedia != null
+#endif //ENABLE_SEQ_MEDIA
+)
             {
                 if (m_TotalTimeInLocalUnits == 0) m_TotalTimeInLocalUnits = node.Root.GetDurationOfManagedAudioMediaFlattened().AsLocalUnits;
 
                 m_TimeElapsedInLocalUnits += manAudioMedia != null ? manAudioMedia.Duration.AsLocalUnits :
-                    seqAudioMedia.GetDurationOfManagedAudioMedia().AsLocalUnits;
+#if ENABLE_SEQ_MEDIA
+                    seqAudioMedia.GetDurationOfManagedAudioMedia().AsLocalUnits
+#else
+ -1
+#endif //ENABLE_SEQ_MEDIA
+;
 
                 int percent = Convert.ToInt32((m_TimeElapsedInLocalUnits * 100) / m_TotalTimeInLocalUnits);
 
@@ -652,11 +665,17 @@ m_Stream;
                         Stream manMediaStream = null;
 
                         ManagedAudioMedia manMedia = node.GetManagedAudioMedia();
+
+#if ENABLE_SEQ_MEDIA
                         SequenceMedia seqMedia = node.GetManagedAudioSequenceMedia();
+#endif //ENABLE_SEQ_MEDIA
 
                         if (manMedia != null)
                         {
+#if ENABLE_SEQ_MEDIA
                             DebugFix.Assert(seqMedia == null);
+#endif //ENABLE_SEQ_MEDIA
+
                             DebugFix.Assert(manMedia.HasActualAudioMediaData);
 
                             manMediaStream = manMedia.AudioMediaData.OpenPcmInputStream();
@@ -665,12 +684,14 @@ m_Stream;
                         {
                             Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
 
+#if ENABLE_SEQ_MEDIA
                             DebugFix.Assert(seqMedia != null);
                             DebugFix.Assert(!seqMedia.AllowMultipleTypes);
                             DebugFix.Assert(seqMedia.ChildMedias.Count > 0);
                             DebugFix.Assert(seqMedia.ChildMedias.Get(0) is ManagedAudioMedia);
 
                             manMediaStream = seqMedia.OpenPcmInputStreamOfManagedAudioMedia();
+#endif //ENABLE_SEQ_MEDIA
                         }
 
                         try
@@ -685,12 +706,17 @@ m_Stream;
                             {
                                 DebugFix.Assert(pcmInfo.IsCompatibleWith(manMedia.AudioMediaData.PCMFormat.Data));
                             }
+                                    
+#if ENABLE_SEQ_MEDIA
+
                             if (seqMedia != null)
                             {
                                 DebugFix.Assert(
                                     pcmInfo.IsCompatibleWith(
                                         ((ManagedAudioMedia)seqMedia.ChildMedias.Get(0)).AudioMediaData.PCMFormat.Data));
                             }
+                                    
+#endif //ENABLE_SEQ_MEDIA
 
                             extMediaStream.Position +=
                                 pcmInfo.ConvertTimeToBytes(extMedia.ClipBegin.AsLocalUnits);
