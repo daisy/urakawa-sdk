@@ -405,7 +405,8 @@ namespace AudioLib
             }
             else
             {
-                throw new Exception("Start/end positions out of bounds of audio asset.");
+                //throw new Exception("Start/end positions out of bounds of audio asset.");
+                DebugFix.Assert(false);
             }
         }
 
