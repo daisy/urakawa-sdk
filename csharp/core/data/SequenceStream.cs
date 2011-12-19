@@ -11,6 +11,7 @@ namespace urakawa.data
         public class Item
         {
             public T m_data;
+            public Item m_previousItem;
             public Item m_nextItem;
         }
 
@@ -34,6 +35,7 @@ namespace urakawa.data
                 m_First = new Item();
                 m_First.m_data = data;
                 m_First.m_nextItem = null;
+                m_First.m_previousItem = null;
                 return;
             }
 
@@ -47,6 +49,7 @@ namespace urakawa.data
             last.m_nextItem = new Item();
             last.m_nextItem.m_data = data;
             last.m_nextItem.m_nextItem = null;
+            last.m_nextItem.m_previousItem = last;
         }
 
         public void Clear()
@@ -63,6 +66,7 @@ namespace urakawa.data
                 if (current != null)
                 {
                     current.m_nextItem = null;
+                    current.m_previousItem = null;
                 }
             } while (current != null);
 
