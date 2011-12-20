@@ -35,10 +35,13 @@ namespace urakawa.daisy.import
             set { m_IsAudioNCX = value; }
         }
 
+        private readonly bool m_XukPrettyFormat;
         private readonly bool m_SkipACM;
         protected readonly SampleRate m_audioProjectSampleRate;
-        public Daisy3_Import(string bookfile, string outDir, bool skipACM, SampleRate audioProjectSampleRate)
+        public Daisy3_Import(string bookfile, string outDir, bool skipACM, SampleRate audioProjectSampleRate, bool xukPrettyFormat)
         {
+            m_XukPrettyFormat = xukPrettyFormat;
+
             m_SkipACM = skipACM;
             m_audioProjectSampleRate = audioProjectSampleRate;
 
@@ -131,11 +134,7 @@ action.Cancelled +=new EventHandler<CancelledEventArgs>(
         protected virtual void initializeProject()
         {
             m_Project = new Project();
-#if (DEBUG)
-            m_Project.SetPrettyFormat(true);
-#else
-            m_Project.SetPrettyFormat(false);
-#endif
+            m_Project.SetPrettyFormat(m_XukPrettyFormat);
 
             Presentation presentation = m_Project.AddNewPresentation(new Uri(m_outDirectory), Path.GetFileName(m_Book_FilePath));
 
