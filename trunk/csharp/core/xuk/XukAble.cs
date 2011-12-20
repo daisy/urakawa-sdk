@@ -13,14 +13,66 @@ namespace urakawa.xuk
     /// </summary>
     public abstract class XukAble : IXukAble
     {
-        /*
-        public abstract bool IsPrettyFormat();
-        public abstract void SetPrettyFormat(bool pretty);
-        */
+        private struct XukNameAndPrettyFlag
+        {
+            public string name;
+            public bool isPretty;
+        }
+
+        private readonly Dictionary<Type, XukNameAndPrettyFlag> m_TypeNameMap = new Dictionary<Type, XukNameAndPrettyFlag>();
+
+        private string GetTypeNameFormatted(Type t)
+        {
+            XukNameAndPrettyFlag xuk;
+            m_TypeNameMap.TryGetValue(t, out xuk);
+            if (!string.IsNullOrEmpty(xuk.name))
+            {
+                if (IsPrettyFormat() == xuk.isPretty)
+                {
+                    return xuk.name;
+                }
+            }
+
+
+            //if (m_TypeNameMap.ContainsKey(t)) return m_TypeNameMap[t];
+
+            string name = t.Name;
+
+            PropertyInfo info = typeof(XukStrings).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
+            if (info != null)
+            {
+                if (info.PropertyType == typeof(string))
+                {
+                    string n = (info.GetValue(null, null) as string) ?? name;
+                    xuk.name = n;
+                    xuk.isPretty = IsPrettyFormat();
+                    m_TypeNameMap.Add(t, xuk);
+                    return n;
+                }
+            }
+            else
+            {
+                FieldInfo info2 = t.GetField("XukString", BindingFlags.Static | BindingFlags.Public);
+                if (info2 != null)
+                {
+                    if (info2.FieldType == typeof(string))
+                    {
+                        string n = (info2.GetValue(null) as string) ?? name;
+                        xuk.name = n;
+                        xuk.isPretty = IsPrettyFormat();
+                        m_TypeNameMap.Add(t, xuk);
+                        return n;
+                    }
+                }
+            }
+
+            System.Diagnostics.Debug.Fail("Type name not found ??");
+            return name;
+        }
 
         public virtual bool IsPrettyFormat()
         {
-            throw new NotImplementedException();
+            return XukStrings.IsPrettyFormat;
         }
 
         public virtual void SetPrettyFormat(bool pretty)
@@ -65,7 +117,7 @@ namespace urakawa.xuk
 
         // getter costs a lot of CPU time when called millions of time...so we use an unsafe public member :(
         public int UidHash = int.MaxValue;
-       
+
         private const uint zeroChar = (uint)'0';
         private static char[] m_digitsNoZero = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         public static bool UsePrefixedIntUniqueHashCodes = true;
@@ -173,7 +225,7 @@ namespace urakawa.xuk
                 return uid.GetHashCode();
             }
         }
-        
+
 #endif //UidStringComparisonNoHashCodeOptimization
 
         private string m_Uid = null;
@@ -464,7 +516,7 @@ namespace urakawa.xuk
         /// <param name="t">The <see cref="Type"/>, must inherit <see cref="XukAble"/></param>
         /// <returns>The qname</returns>
         /// <exception cref="MethodParameterIsNullException">Thrown when <paramref name="t"/> is <c>null</c></exception>
-        public static QualifiedName GetXukQualifiedName(Type t)
+        public QualifiedName GetXukQualifiedName(Type t)
         {
             if (!typeof(XukAble).IsAssignableFrom(t))
             {
@@ -479,45 +531,6 @@ namespace urakawa.xuk
             return new QualifiedName(GetTypeNameFormatted(t), GetXukNamespaceUri(t));
         }
 
-        private static readonly Dictionary<Type, string> m_TypeNameMap = new Dictionary<Type, string>();
-
-        private static string GetTypeNameFormatted(Type t)
-        {
-            string str;
-            m_TypeNameMap.TryGetValue(t, out str);
-            if (!string.IsNullOrEmpty(str)) return str;
-
-            //if (m_TypeNameMap.ContainsKey(t)) return m_TypeNameMap[t];
-
-            string name = t.Name;
-
-            PropertyInfo info = typeof(XukStrings).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
-            if (info != null)
-            {
-                if (info.PropertyType == typeof(string))
-                {
-                    string n = (info.GetValue(null, null) as string) ?? name;
-                    m_TypeNameMap.Add(t, n);
-                    return n;
-                }
-            }
-            else
-            {
-                FieldInfo info2 = t.GetField("XukString", BindingFlags.Static | BindingFlags.Public);
-                if (info2 != null)
-                {
-                    if (info2.FieldType == typeof(string))
-                    {
-                        string n = (info2.GetValue(null) as string) ?? name;
-                        m_TypeNameMap.Add(t, n);
-                        return n;
-                    }
-                }
-            }
-
-            System.Diagnostics.Debug.Fail("Type name not found ??");
-            return name;
-        }
 
         private static readonly Dictionary<Type, string> m_TypeNamespaceUriMap = new Dictionary<Type, string>();
 
