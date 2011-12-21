@@ -172,9 +172,16 @@ namespace AudioLib
                 Console.Write("m_computingPeakDb...");
             }
             m_PeakDb  = null;
-            if ( m_PcmDataBuffer != null )  m_PcmDataBuffer = new byte[m_PcmDataBuffer.Length];
+            if ( m_PcmDataBuffer != null )
+            {
+                Console.Write("ALLOCATING m_PcmDataBuffer");
+                m_PcmDataBuffer = new byte[m_PcmDataBuffer.Length];
+            }
             //m_PcmDataBuffer.Initialize(double.NegativeInfinity);
+
+            Console.Write("ALLOCATING m_AverageValue");
             m_AverageValue = new double[2];
+
             ResetHandler del = ResetEvent;
                 if (del != null) del ( this, new ResetEventArgs ()) ;
         }
@@ -190,7 +197,7 @@ namespace AudioLib
         {
             if (m_PeakDb == null || m_PeakDb.Length != pcmFormat.NumberOfChannels)
             {
-                Console.WriteLine("*** creating PeakDbValue buffer");
+                Console.Write("ALLOCATING m_PeakDb");
                 m_PeakDb = new double[pcmFormat.NumberOfChannels];
             }
 

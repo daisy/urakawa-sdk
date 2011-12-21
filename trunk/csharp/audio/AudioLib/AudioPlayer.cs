@@ -771,11 +771,24 @@ namespace AudioLib
                                              };
 
 
+            int count = 0;
+            while (m_CircularBufferRefreshThread != null)
+            {
+                Console.WriteLine(@"------------ m_CircularBufferRefreshThread NOT null!!: " + count++);
+                Thread.Sleep(20);
+
+                if (count > 10)
+                {
+                    Console.WriteLine(@"------------ m_CircularBufferRefreshThread NOT null!! ()BREAK(): " + count++);
+                    break;
+                }
+            }
+
             if (m_CircularBufferRefreshThread != null)
             {
-                //daniel
-                //stopPlayback();
+                stopPlayback();
             }
+
 
             DebugFix.Assert(m_CircularBufferRefreshThread == null);
 
