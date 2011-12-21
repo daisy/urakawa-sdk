@@ -243,9 +243,12 @@ namespace urakawa.daisy.export
                     shouldAddNewSeq = false;
                 }
 
-                if (externalAudio != null || m_Image_ProdNoteMap.ContainsKey(n) ||
-                    (n.GetTextMedia() != null 
-                    && special_UrakawaNode != null && (IsEscapableNode(special_UrakawaNode) || IsSkippableNode(special_UrakawaNode) || (special_UrakawaNode.GetXmlProperty() != null && special_UrakawaNode.GetXmlProperty().LocalName.ToLower() == "doctitle"))
+                if (externalAudio != null
+                    || m_Image_ProdNoteMap.ContainsKey(n)
+                    || (n.GetTextMedia() != null && special_UrakawaNode != null && (IsEscapableNode(special_UrakawaNode)
+                    || IsSkippableNode(special_UrakawaNode)
+
+                    || (special_UrakawaNode.GetXmlProperty() != null && special_UrakawaNode.GetXmlProperty().LocalName.ToLower() == "doctitle"))
                     && (m_TreeNode_XmlNodeMap[n].Attributes != null || m_TreeNode_XmlNodeMap[n.Parent].Attributes != null)))
                 {
                     // continue ahead 
@@ -255,114 +258,130 @@ namespace urakawa.daisy.export
                     return true;
                 }
 
-                XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
-
-                // decide the parent node for this new par node.
-                // if node n is child of current specialParentNode than append to it 
-                //else check if it has to be appended to parent of this special node in stack or to main seq.
-                if (special_UrakawaNode != null && (special_UrakawaNode == n || n.IsDescendantOf(special_UrakawaNode)))
+                if (
+                    externalAudio != null
+                    || n.GetFirstAncestorWithManagedAudio() == null
+                    )
                 {
-                    Seq_SpecialNode.AppendChild(parNode);
-                }
-                else
-                {
-                    bool IsParNodeAppended = false;
-                    string strReferedID = par_id;
-                    if (specialParentNodeStack.Count > 0)
+                    XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
+
+                    // decide the parent node for this new par node.
+                    // if node n is child of current specialParentNode than append to it 
+                    //else check if it has to be appended to parent of this special node in stack or to main seq.
+                    if (special_UrakawaNode != null &&
+                        (special_UrakawaNode == n || n.IsDescendantOf(special_UrakawaNode)))
                     {
-                        // check and pop stack till specialParentNode of   iterating node n is found in stack
-                        // the loop is also used to assign value of last imidiate seq or par to end attribute of parent seq while pop up
-                        while (specialParentNodeStack.Count > 0 && !n.IsDescendantOf(special_UrakawaNode))
-                        {
-                            if (Seq_SpecialNode != null
-                                            &&
-                                            strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
-                            {
-                                Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID + ".end";
-                            }
-                            strReferedID = Seq_SpecialNode.Attributes.GetNamedItem("id").Value;
-                            special_UrakawaNode = specialParentNodeStack.Pop();
-                            Seq_SpecialNode = specialSeqNodeStack.Pop();
-                        }
-
-                        // if parent of node n is retrieved from stack, apend the par node to it.
-                        if (n.IsDescendantOf(special_UrakawaNode))
-                        {
-                            Seq_SpecialNode.AppendChild(parNode);
-                            IsParNodeAppended = true;
-                            /*
-                            if (Seq_SpecialNode != null
-                                &&
-                                par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
-                                {
-                                Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
-                                }
-                            */
-                        }
-                        //System.Windows.Forms.MessageBox.Show ( "par_ id " + par_id + " count " + specialParentNodeStack.Count.ToString ());
-                    }// stack > 0 check ends
-
-                    if (specialSeqNodeStack.Count == 0 && !IsParNodeAppended)
-                    {
-                        mainSeq.AppendChild(parNode);
-                        special_UrakawaNode = null;
-                        if (Seq_SpecialNode != null)
-                        {
-                            //if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
-                            if (strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
-                            {
-                                //System.Windows.Forms.MessageBox.Show ( par_id == null ? "null" : par_id );
-                                //Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
-                                Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID + ".end";
-                            }
-                            Seq_SpecialNode = null;
-                        }
-                    }// check of append to main seq ends
-
-                }
-
-
-                par_id = GetNextID(ID_SmilPrefix);
-                // check and assign first par ID
-                if (firstPar_id == null)
-                {
-                    if (n.GetXmlElementQName() != null && currentHeadingTreeNode != null
-                        && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
-                    {
-                        firstPar_id = par_id;
+                        Seq_SpecialNode.AppendChild(parNode);
                     }
-                }
+                    else
+                    {
+                        bool IsParNodeAppended = false;
+                        string strReferedID = par_id;
+                        if (specialParentNodeStack.Count > 0)
+                        {
+                            // check and pop stack till specialParentNode of   iterating node n is found in stack
+                            // the loop is also used to assign value of last imidiate seq or par to end attribute of parent seq while pop up
+                            while (specialParentNodeStack.Count > 0 && !n.IsDescendantOf(special_UrakawaNode))
+                            {
+                                if (Seq_SpecialNode != null
+                                    &&
+                                    strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
+                                {
+                                    Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" +
+                                                                                           strReferedID + ".end";
+                                }
+                                strReferedID = Seq_SpecialNode.Attributes.GetNamedItem("id").Value;
+                                special_UrakawaNode = specialParentNodeStack.Pop();
+                                Seq_SpecialNode = specialSeqNodeStack.Pop();
+                            }
 
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
+                            // if parent of node n is retrieved from stack, apend the par node to it.
+                            if (n.IsDescendantOf(special_UrakawaNode))
+                            {
+                                Seq_SpecialNode.AppendChild(parNode);
+                                IsParNodeAppended = true;
+                                /*
+                                if (Seq_SpecialNode != null
+                                    &&
+                                    par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                                    {
+                                    Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
+                                    }
+                                */
+                            }
+                            //System.Windows.Forms.MessageBox.Show ( "par_ id " + par_id + " count " + specialParentNodeStack.Count.ToString ());
+                        } // stack > 0 check ends
+
+                        if (specialSeqNodeStack.Count == 0 && !IsParNodeAppended)
+                        {
+                            mainSeq.AppendChild(parNode);
+                            special_UrakawaNode = null;
+                            if (Seq_SpecialNode != null)
+                            {
+                                //if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                                if (strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
+                                {
+                                    //System.Windows.Forms.MessageBox.Show ( par_id == null ? "null" : par_id );
+                                    //Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
+                                    Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" +
+                                                                                           strReferedID + ".end";
+                                }
+                                Seq_SpecialNode = null;
+                            }
+                        } // check of append to main seq ends
+
+                    }
 
 
-                XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id", GetNextID(ID_SmilPrefix));
-                string dtbookID = null;
-                if (m_Image_ProdNoteMap.ContainsKey(n))
-                {
-                    dtbookID = m_Image_ProdNoteMap[n].Attributes.GetNamedItem("id").Value;
-                }
-                else
-                {
-                    dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null ? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value : m_TreeNode_XmlNodeMap[n.Parent].Attributes.GetNamedItem("id").Value;
-                }
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src", m_Filename_Content + "#" + dtbookID);
-                parNode.AppendChild(SmilTextNode);
-                if (externalAudio != null)
-                {
-                    XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin", FormatTimeString(externalAudio.ClipBegin));
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd", FormatTimeString(externalAudio.ClipEnd));
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src", Path.GetFileName(externalAudio.Src));
-                    parNode.AppendChild(audioNode);
+                    par_id = GetNextID(ID_SmilPrefix);
+                    // check and assign first par ID
+                    if (firstPar_id == null)
+                    {
+                        if (n.GetXmlElementQName() != null && currentHeadingTreeNode != null
+                            && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
+                        {
+                            firstPar_id = par_id;
+                        }
+                    }
 
-                    // add audio file name in audio files list for use in opf creation 
-                    string audioFileName = Path.GetFileName(externalAudio.Src);
-                    if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
 
-                    // add to duration 
-                    durationOfCurrentSmil.Add(externalAudio.Duration);
+
+                    XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id",
+                                                               GetNextID(ID_SmilPrefix));
+                    string dtbookID = null;
+                    if (m_Image_ProdNoteMap.ContainsKey(n))
+                    {
+                        dtbookID = m_Image_ProdNoteMap[n].Attributes.GetNamedItem("id").Value;
+                    }
+                    else
+                    {
+                        dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null
+                                       ? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value
+                                       : m_TreeNode_XmlNodeMap[n.Parent].Attributes.GetNamedItem("id").Value;
+                    }
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
+                                                               m_Filename_Content + "#" + dtbookID);
+                    parNode.AppendChild(SmilTextNode);
+                    if (externalAudio != null)
+                    {
+                        XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
+                                                                   FormatTimeString(externalAudio.ClipBegin));
+                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
+                                                                   FormatTimeString(externalAudio.ClipEnd));
+                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src",
+                                                                   Path.GetFileName(externalAudio.Src));
+                        parNode.AppendChild(audioNode);
+
+                        // add audio file name in audio files list for use in opf creation 
+                        string audioFileName = Path.GetFileName(externalAudio.Src);
+                        if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
+
+                        // add to duration 
+                        durationOfCurrentSmil.Add(externalAudio.Duration);
+                    }
                 }
 
                 // if node n is pagenum, add to pageList
@@ -687,7 +706,9 @@ namespace urakawa.daisy.export
             if (qName != null
                 &&
                 (qName == "list" || qName == "table" || qName == "tr"
-                || qName == "note" || qName == "annotation" || qName == "sidebar" || qName == "prodnote"))
+                || qName == "note" || qName == "annotation"
+                || qName == "sidebar"
+                 || qName == "prodnote" || qName == "endnote" || qName == "footnote" || qName == "rearnote"))
             {
                 return true;
             }
@@ -699,8 +720,9 @@ namespace urakawa.daisy.export
             string qName = node.GetXmlElementQName() != null ? node.GetXmlElementQName().LocalName : null;
             if (qName != null
                 &&
-                (qName == "pagenum" || qName == "noteref" || qName == "note"
-                || qName == "annotation" || qName == "linenum"
+                (qName == "pagenum" || qName == "linenum"
+                || qName == "noteref" || qName == "note"
+                || qName == "annoref" || qName == "annotation"
                 || IsOptionalSidebarOrProducerNote(node)))
             {
                 return true;
@@ -1313,102 +1335,127 @@ namespace urakawa.daisy.export
                 return true;
             }
 
-            XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
+            if (
+                externalAudio != null
+                || n.GetFirstAncestorWithManagedAudio() == null
+                )
+            {
+                XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
 
-            // decide the parent node for this new par node.
-            // if node n is child of current specialParentNode than append to it 
-            //else check if it has to be appended to parent of this special node in stack or to main seq.
-            if (special_UrakawaNode != null && (special_UrakawaNode == n || n.IsDescendantOf(special_UrakawaNode)))
-            {//2
-                Seq_SpecialNode.AppendChild(parNode);
-            }//-2
-            else
-            {//2
-                bool IsParNodeAppended = false;
-                string strReferedID = par_id;
-                if (specialParentNodeStack.Count > 0)
-                {//3
-                    // check and pop stack till specialParentNode of   iterating node n is found in stack
-                    // the loop is also used to assign value of last imidiate seq or par to end attribute of parent seq while pop up
-                    while (specialParentNodeStack.Count > 0 && !n.IsDescendantOf(special_UrakawaNode))
-                    {//4
-                        if (Seq_SpecialNode != null
-                                        &&
-                                        strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
-                        {//5
-                            Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID + ".end";
-                        }//-5
-                        strReferedID = Seq_SpecialNode.Attributes.GetNamedItem("id").Value;
-                        special_UrakawaNode = specialParentNodeStack.Pop();
-                        Seq_SpecialNode = specialSeqNodeStack.Pop();
-                    }//-4
+                // decide the parent node for this new par node.
+                // if node n is child of current specialParentNode than append to it 
+                //else check if it has to be appended to parent of this special node in stack or to main seq.
+                if (special_UrakawaNode != null && (special_UrakawaNode == n || n.IsDescendantOf(special_UrakawaNode)))
+                {
+//2
+                    Seq_SpecialNode.AppendChild(parNode);
+                } //-2
+                else
+                {
+//2
+                    bool IsParNodeAppended = false;
+                    string strReferedID = par_id;
+                    if (specialParentNodeStack.Count > 0)
+                    {
+//3
+                        // check and pop stack till specialParentNode of   iterating node n is found in stack
+                        // the loop is also used to assign value of last imidiate seq or par to end attribute of parent seq while pop up
+                        while (specialParentNodeStack.Count > 0 && !n.IsDescendantOf(special_UrakawaNode))
+                        {
+//4
+                            if (Seq_SpecialNode != null
+                                &&
+                                strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
+                            {
+//5
+                                Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID +
+                                                                                       ".end";
+                            } //-5
+                            strReferedID = Seq_SpecialNode.Attributes.GetNamedItem("id").Value;
+                            special_UrakawaNode = specialParentNodeStack.Pop();
+                            Seq_SpecialNode = specialSeqNodeStack.Pop();
+                        } //-4
 
-                    // if parent of node n is retrieved from stack, apend the par node to it.
-                    if (n.IsDescendantOf(special_UrakawaNode))
-                    {//4
-                        Seq_SpecialNode.AppendChild(parNode);
-                        IsParNodeAppended = true;
+                        // if parent of node n is retrieved from stack, apend the par node to it.
+                        if (n.IsDescendantOf(special_UrakawaNode))
+                        {
+//4
+                            Seq_SpecialNode.AppendChild(parNode);
+                            IsParNodeAppended = true;
 
-                    }//-4
-                    //System.Windows.Forms.MessageBox.Show ( "par_ id " + par_id + " count " + specialParentNodeStack.Count.ToString ());
-                }// stack > 0 check ends //-3
+                        } //-4
+                        //System.Windows.Forms.MessageBox.Show ( "par_ id " + par_id + " count " + specialParentNodeStack.Count.ToString ());
+                    } // stack > 0 check ends //-3
 
-                if (specialSeqNodeStack.Count == 0 && !IsParNodeAppended)
-                {//3
-                    mainSeq.AppendChild(parNode);
-                    special_UrakawaNode = null;
-                    if (Seq_SpecialNode != null)
-                    {//4
-                        //if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
-                        if (strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
-                        {//5
-                            //System.Windows.Forms.MessageBox.Show ( par_id == null ? "null" : par_id );
-                            //Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
-                            Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID + ".end";
-                        }//-5
-                        Seq_SpecialNode = null;
-                    }//-4
-                }// check of append to main seq ends//-3
+                    if (specialSeqNodeStack.Count == 0 && !IsParNodeAppended)
+                    {
+//3
+                        mainSeq.AppendChild(parNode);
+                        special_UrakawaNode = null;
+                        if (Seq_SpecialNode != null)
+                        {
+//4
+                            //if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
+                            if (strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
+                            {
+//5
+                                //System.Windows.Forms.MessageBox.Show ( par_id == null ? "null" : par_id );
+                                //Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
+                                Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID +
+                                                                                       ".end";
+                            } //-5
+                            Seq_SpecialNode = null;
+                        } //-4
+                    } // check of append to main seq ends//-3
 
-            }//-2
-
-
-            par_id = GetNextID(ID_SmilPrefix);
-            // check and assign first par ID
-            if (firstPar_id == null)
-            {//2
-                if (n.GetXmlElementQName() != null && currentHeadingTreeNode != null
-                    && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
-                {//3
-                    firstPar_id = par_id;
-                }//-3
-            }//-2
-
-            XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
-
-
-            XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
-            XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id", GetNextID(ID_SmilPrefix));
-            string dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null ? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value : m_TreeNode_XmlNodeMap[n.Parent].Attributes.GetNamedItem("id").Value;
-            XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src", m_Filename_Content + "#" + dtbookID);
-            parNode.AppendChild(SmilTextNode);
-            if (externalAudio != null)
-            {//2
-                XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin", FormatTimeString(externalAudio.ClipBegin));
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd", FormatTimeString(externalAudio.ClipEnd));
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src", Path.GetFileName(externalAudio.Src));
-                parNode.AppendChild(audioNode);
-
-                // add audio file name in audio files list for use in opf creation 
-                string audioFileName = Path.GetFileName(externalAudio.Src);
-                if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
-
-                // add to duration 
-                durOfCurrentSmil.Add(externalAudio.Duration);
-            }//-2
+                } //-2
 
 
+                par_id = GetNextID(ID_SmilPrefix);
+                // check and assign first par ID
+                if (firstPar_id == null)
+                {
+//2
+                    if (n.GetXmlElementQName() != null && currentHeadingTreeNode != null
+                        && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
+                    {
+//3
+                        firstPar_id = par_id;
+                    } //-3
+                } //-2
+
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
+
+
+                XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id", GetNextID(ID_SmilPrefix));
+                string dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null
+                                      ? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value
+                                      : m_TreeNode_XmlNodeMap[n.Parent].Attributes.GetNamedItem("id").Value;
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
+                                                           m_Filename_Content + "#" + dtbookID);
+                parNode.AppendChild(SmilTextNode);
+                if (externalAudio != null)
+                {
+//2
+                    XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
+                                                               FormatTimeString(externalAudio.ClipBegin));
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
+                                                               FormatTimeString(externalAudio.ClipEnd));
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src",
+                                                               Path.GetFileName(externalAudio.Src));
+                    parNode.AppendChild(audioNode);
+
+                    // add audio file name in audio files list for use in opf creation 
+                    string audioFileName = Path.GetFileName(externalAudio.Src);
+                    if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
+
+                    // add to duration 
+                    durOfCurrentSmil.Add(externalAudio.Duration);
+                } //-2
+
+            }
 
             //}//-1
             if (n.GetXmlElementQName() != null && n.GetXmlElementQName().LocalName == "sent")
