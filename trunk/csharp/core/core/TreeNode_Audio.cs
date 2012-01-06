@@ -299,6 +299,17 @@ struct
 
             return Parent.GetNextSiblingWithManagedAudio();
         }
+        
+        public
+#if USE_NORMAL_LIST
+StreamWithMarkers?
+#else
+ StreamWithMarkers
+#endif //USE_NORMAL_LIST
+ OpenPcmInputStreamOfManagedAudioMedia()
+        {
+            return OpenPcmInputStreamOfManagedAudioMedia(false);
+        }
 
         public
 #if USE_NORMAL_LIST
@@ -306,7 +317,7 @@ StreamWithMarkers?
 #else
  StreamWithMarkers
 #endif //USE_NORMAL_LIST
- OpenPcmInputStreamOfManagedAudioMedia(bool openSecondaryStream = false)
+ OpenPcmInputStreamOfManagedAudioMedia(bool openSecondaryStream)
         {
 
             StreamWithMarkers val = new StreamWithMarkers();
@@ -386,7 +397,18 @@ StreamWithMarkers?
 #else
  StreamWithMarkers
 #endif //USE_NORMAL_LIST
- OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del, bool openSecondaryStream = false)
+ OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del)
+        {
+            return OpenPcmInputStreamOfManagedAudioMediaFlattened(del, false);
+        }
+
+        public
+#if USE_NORMAL_LIST
+StreamWithMarkers?
+#else
+ StreamWithMarkers
+#endif //USE_NORMAL_LIST
+ OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del, bool openSecondaryStream)
         {
 #if USE_NORMAL_LIST
 StreamWithMarkers?
