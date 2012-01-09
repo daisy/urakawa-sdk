@@ -6,6 +6,7 @@ using urakawa.media.timing;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.xuk;
+using urakawa.property.alt;
 
 namespace urakawa.daisy.export
 {
@@ -1490,6 +1491,7 @@ namespace urakawa.daisy.export
             return durOfCurrentSmil;
         }
 
+        private Dictionary<AlternateContentProperty, XmlDocument> m_AltProperrty_DiagramDocument = new Dictionary<AlternateContentProperty, XmlDocument>();
         private void CreateSmilNodesForAltProperty(urakawa.core.TreeNode n, XmlDocument smilDocument, XmlNode mainSeq)
         {
             urakawa.property.alt.AlternateContentProperty altProperty = n.GetAlternateContentProperty();
