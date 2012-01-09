@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic ;
 using System.Xml;
 using System.IO;
 using urakawa.property.alt;
@@ -9,6 +10,9 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
+
+        
+
         private void handleMetadataAttr(MetadataAttribute mdAttr, XmlDocument descDocument, XmlNode metaNode, bool checkSpecialAttributesNames)
         {
             //string metadataName = md.NameContentAttribute.Name.Contains(":") ? md.NameContentAttribute.Name.Split(':')[1] : md.NameContentAttribute.Name;
@@ -72,30 +76,32 @@ namespace urakawa.daisy.export
             }
         }
 
+        
         private string CreateImageDescription(string imageSRC, AlternateContentProperty altProperty)
         {
-            XmlDocument descDocument = new XmlDocument();
+            XmlDocument descriptionDocument = new XmlDocument();
+            m_AltProperrty_DiagramDocument.Add(altProperty, descriptionDocument);
             // <?xml-stylesheet type="text/xsl" href="desc2html.xsl"?>
             string processingInstructionData = "type=\"text/xsl\" href=\"desc2html.xsl\"";
-            descDocument.AppendChild(descDocument.CreateProcessingInstruction("xml-stylesheet", processingInstructionData));
+            descriptionDocument.AppendChild(descriptionDocument.CreateProcessingInstruction("xml-stylesheet", processingInstructionData));
             string xsltFileName = "desc2html.xsl";
             string sourceXsltPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, xsltFileName);
             string destXsltPath = Path.Combine(m_OutputDirectory, xsltFileName);
             if (!File.Exists(destXsltPath)) File.Copy(sourceXsltPath, destXsltPath);
 
-            XmlNode descriptionNode = descDocument.CreateElement(
+            XmlNode descriptionNode = descriptionDocument.CreateElement(
                 DiagramContentModelStrings.NS_PREFIX_DIAGRAM,
                 DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.D_Description),
                 DiagramContentModelStrings.NS_URL_DIAGRAM);
-            XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, descriptionNode,
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
                 "xmlns:" + DiagramContentModelStrings.NS_PREFIX_DIAGRAM,
                 DiagramContentModelStrings.NS_URL_DIAGRAM);
-            XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, descriptionNode,
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
                 "xmlns",
                 DiagramContentModelStrings.NS_URL_ZAI);
-            descDocument.AppendChild(descriptionNode);
+            descriptionDocument.AppendChild(descriptionNode);
 
-            XmlNode headNode = descDocument.CreateElement(
+            XmlNode headNode = descriptionDocument.CreateElement(
                 DiagramContentModelStrings.NS_PREFIX_DIAGRAM,
                 DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.D_Head),
                 DiagramContentModelStrings.NS_URL_DIAGRAM);
@@ -107,21 +113,21 @@ namespace urakawa.daisy.export
                     && (md.OtherAttributes == null || md.OtherAttributes.Count == 0)
                     && (descriptionNode.Attributes == null || descriptionNode.Attributes.GetNamedItem(md.NameContentAttribute.Name) == null))
                 {
-                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, descriptionNode,
+                    XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
                 md.NameContentAttribute.Name,
                 md.NameContentAttribute.Value,
                 DiagramContentModelStrings.NS_URL_XML);
                 }
                 else
                 {
-                    XmlNode metaNode = descDocument.CreateElement(
+                    XmlNode metaNode = descriptionDocument.CreateElement(
                 DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.Meta),
                         DiagramContentModelStrings.NS_URL_ZAI);
                     headNode.AppendChild(metaNode);
 
                     if (md.NameContentAttribute != null)
                     {
-                        handleMetadataAttr(md.NameContentAttribute, descDocument, metaNode, false);
+                        handleMetadataAttr(md.NameContentAttribute, descriptionDocument, metaNode, false);
                     }
 
                     if (md.OtherAttributes != null)
@@ -130,28 +136,28 @@ namespace urakawa.daisy.export
                         {
                             if (metaAttr.Name.StartsWith(DiagramContentModelStrings.NS_PREFIX_XML + ":"))
                             {
-                                handleMetadataAttr(metaAttr, descDocument, metaNode, false);
+                                handleMetadataAttr(metaAttr, descriptionDocument, metaNode, false);
                             }
                             else if (metaAttr.Name == DiagramContentModelStrings.Rel
                                      || metaAttr.Name == DiagramContentModelStrings.Resource
                                      || metaAttr.Name == DiagramContentModelStrings.About)
                             {
-                                handleMetadataAttr(metaAttr, descDocument, metaNode, true);
+                                handleMetadataAttr(metaAttr, descriptionDocument, metaNode, true);
                             }
                             else
                             {
-                                XmlNode metaSubNode = descDocument.CreateElement(
+                                XmlNode metaSubNode = descriptionDocument.CreateElement(
                                     DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.Meta),
                                     DiagramContentModelStrings.NS_URL_ZAI);
                                 metaNode.AppendChild(metaSubNode);
-                                handleMetadataAttr(metaAttr, descDocument, metaSubNode, false);
+                                handleMetadataAttr(metaAttr, descriptionDocument, metaSubNode, false);
                             }
                         }
                     }
                 }
             }
 
-            XmlNode bodyNode = descDocument.CreateElement(
+            XmlNode bodyNode = descriptionDocument.CreateElement(
                 DiagramContentModelStrings.NS_PREFIX_DIAGRAM,
                 DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.D_Body),
                 DiagramContentModelStrings.NS_URL_DIAGRAM);
@@ -189,28 +195,28 @@ namespace urakawa.daisy.export
                     {
                         if (xmlNodeName.StartsWith(DiagramContentModelStrings.NS_PREFIX_DIAGRAM + ":"))
                         {
-                            contentXmlNode = descDocument.CreateElement(
+                            contentXmlNode = descriptionDocument.CreateElement(
                                 DiagramContentModelStrings.NS_PREFIX_DIAGRAM,
                                 DiagramContentModelStrings.StripNSPrefix(xmlNodeName),
                                 DiagramContentModelStrings.NS_URL_DIAGRAM);
                         }
                         else if (xmlNodeName.IndexOf(':') == -1)
                         {
-                            contentXmlNode = descDocument.CreateElement(xmlNodeName,
+                            contentXmlNode = descriptionDocument.CreateElement(xmlNodeName,
                                 DiagramContentModelStrings.NS_URL_ZAI);
                         }
                         else
                         {
-                            contentXmlNode = descDocument.CreateElement(xmlNodeName.Replace(':', '_'),
+                            contentXmlNode = descriptionDocument.CreateElement(xmlNodeName.Replace(':', '_'),
                                 DiagramContentModelStrings.NS_URL_ZAI);
                         }
                         bodyNode.AppendChild(contentXmlNode);
-                        if (!String.IsNullOrEmpty(xmlNodeId)) XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode, DiagramContentModelStrings.XmlId, xmlNodeId,
+                        if (!String.IsNullOrEmpty(xmlNodeId)) XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode, DiagramContentModelStrings.XmlId, xmlNodeId,
                             DiagramContentModelStrings.NS_URL_XML);
 
                         if (!string.IsNullOrEmpty(xmlNodeTourText))
                         {
-                            XmlNode tourNode = descDocument.CreateElement(
+                            XmlNode tourNode = descriptionDocument.CreateElement(
                                 DiagramContentModelStrings.NS_PREFIX_DIAGRAM,
                                 DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.D_Tour),
                                 DiagramContentModelStrings.NS_URL_DIAGRAM);
@@ -228,11 +234,11 @@ namespace urakawa.daisy.export
                                 if (!string.IsNullOrEmpty(paraNodeText))
                                 {
                                     //System.Windows.Forms.MessageBox.Show("-" +  subStrings[i] + "-"+ paraNodeText.Length);
-                                    XmlNode paraNode = descDocument.CreateElement(
+                                    XmlNode paraNode = descriptionDocument.CreateElement(
                         DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.P),
                         DiagramContentModelStrings.NS_URL_ZAI);
                                     tourNode.AppendChild(paraNode);
-                                    paraNode.AppendChild(descDocument.CreateTextNode(paraNodeText));
+                                    paraNode.AppendChild(descriptionDocument.CreateTextNode(paraNodeText));
                                 }
                             }
 
@@ -254,21 +260,21 @@ namespace urakawa.daisy.export
 
                             if (metadataName == DiagramContentModelStrings.Src)
                             {
-                                XmlNode objectNode = descDocument.CreateElement(
+                                XmlNode objectNode = descriptionDocument.CreateElement(
                                     //DiagramContentModelStrings.NS_PREFIX_ZAI,
                                     DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.Object),
                                     DiagramContentModelStrings.NS_URL_ZAI);
 
                                 contentXmlNode.AppendChild(objectNode);
 
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, objectNode,
+                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, objectNode,
                                     metadataName,
                                     m.NameContentAttribute.Value,
                                     objectNode.NamespaceURI);
 
                                 string low = m.NameContentAttribute.Value.ToLower();
                                 int dotIndex = low.LastIndexOf('.');
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, objectNode,
+                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, objectNode,
                                     DiagramContentModelStrings.SrcType,
                                     low.EndsWith(".svg") || low.EndsWith(".svgz") ? "image/svg+xml" :
                                     low.EndsWith(".png") ? "image/png" :
@@ -281,28 +287,28 @@ namespace urakawa.daisy.export
                             }
                             else if (metadataName.StartsWith(DiagramContentModelStrings.NS_PREFIX_XML + ":"))
                             {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode,
+                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
                                     metadataName,
                                     m.NameContentAttribute.Value,
                                     DiagramContentModelStrings.NS_URL_XML);
                             }
                             else if (metadataName.StartsWith(DiagramContentModelStrings.NS_PREFIX_DIAGRAM + ":"))
                             {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode,
+                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
                                     metadataName,
                                     m.NameContentAttribute.Value,
                                     DiagramContentModelStrings.NS_URL_DIAGRAM);
                             }
                             else if (metadataName.IndexOf(':') == -1)
                             {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode,
+                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
                                     metadataName,
                                     m.NameContentAttribute.Value,
                                     contentXmlNode.NamespaceURI);
                             }
                             else
                             {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode,
+                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
                                     metadataName.Replace(':', '_'),
                                     m.NameContentAttribute.Value,
                                     contentXmlNode.NamespaceURI);
@@ -313,7 +319,7 @@ namespace urakawa.daisy.export
                 }
                 if (contentXmlNode == null)
                 {
-                    contentXmlNode = descDocument.CreateElement("unknown_description_type",
+                    contentXmlNode = descriptionDocument.CreateElement("unknown_description_type",
                         DiagramContentModelStrings.NS_URL_DIAGRAM);
                     bodyNode.AppendChild(contentXmlNode);
                 }
@@ -333,11 +339,11 @@ namespace urakawa.daisy.export
                         if (!string.IsNullOrEmpty(paraNodeText))
                         {
                             //System.Windows.Forms.MessageBox.Show("-" +  subStrings[i] + "-"+ paraNodeText.Length);
-                            XmlNode paraNode = descDocument.CreateElement(
+                            XmlNode paraNode = descriptionDocument.CreateElement(
                 DiagramContentModelStrings.StripNSPrefix(DiagramContentModelStrings.P),
                 DiagramContentModelStrings.NS_URL_ZAI);
                             contentXmlNode.AppendChild(paraNode);
-                            paraNode.AppendChild(descDocument.CreateTextNode(paraNodeText));
+                            paraNode.AppendChild(descriptionDocument.CreateTextNode(paraNodeText));
                         }
                     }
                     //contentXmlNode.AppendChild(descDocument.CreateTextNode(textData));
@@ -360,7 +366,7 @@ namespace urakawa.daisy.export
                     }
 
                     //string imgSrcAttribute.Value = exportImageName;
-                    XmlDocumentHelper.CreateAppendXmlAttribute(descDocument, contentXmlNode,
+                    XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
                         DiagramContentModelStrings.XLINK_Href, exportImageName, DiagramContentModelStrings.NS_URL_XLINK);
                     //if (!m_FilesList_Image.Contains(exportImageName))
                     //{
@@ -371,7 +377,7 @@ namespace urakawa.daisy.export
             }
 
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + "_Desc.xml";
-            SaveXukAction.WriteXmlDocument(descDocument, Path.Combine(m_OutputDirectory, descFileName));
+            SaveXukAction.WriteXmlDocument(descriptionDocument, Path.Combine(m_OutputDirectory, descFileName));
             return descFileName;
         }
 
