@@ -1490,6 +1490,54 @@ namespace urakawa.daisy.export
             return durOfCurrentSmil;
         }
 
+        private void CreateSmilNodesForAltProperty(urakawa.core.TreeNode n, XmlDocument smilDocument, XmlNode mainSeq)
+        {
+            urakawa.property.alt.AlternateContentProperty altProperty = n.GetAlternateContentProperty();
+            XmlDocument descriptionDocument = m_AltProperrty_DiagramDocument[altProperty];
+            if (descriptionDocument != null)
+            {
+                XmlNode bodyNode = descriptionDocument.GetElementsByTagName("d:body")[0];
+                foreach (XmlNode xn in bodyNode.ChildNodes)
+                {
+                    XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
+                    mainSeq.AppendChild(parNode);
+                    XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id",
+                                                               GetNextID(ID_SmilPrefix));
+                    string dtbookID = null;
+                    dtbookID = xn.Attributes.GetNamedItem("xml:id").Value;
+
+                    //dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null
+                    //? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value
+                    //: m_TreeNode_XmlNodeMap[n.Parent].Attributes.GetNamedItem("id").Value;
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
+                                                               m_Filename_Content + "#" + dtbookID);
+                    parNode.AppendChild(SmilTextNode);
+                    /*
+                    if (externalAudio != null)
+                    {
+                        XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
+                                                                   FormatTimeString(externalAudio.ClipBegin));
+                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
+                                                                   FormatTimeString(externalAudio.ClipEnd));
+                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src",
+                                                                   Path.GetFileName(externalAudio.Src));
+                        parNode.AppendChild(audioNode);
+
+                        // add audio file name in audio files list for use in opf creation 
+                        string audioFileName = Path.GetFileName(externalAudio.Src);
+                        if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
+
+                        // add to duration 
+                        durationOfCurrentSmil.Add(externalAudio.Duration);
+                    }
+                }
+                    */
+                    System.Windows.Forms.MessageBox.Show(xn.Name);
+                }
+            }
+        }
 
 
 
