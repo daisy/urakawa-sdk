@@ -53,6 +53,17 @@ namespace urakawa.daisy.export
                 }
             }
 
+            if (m_ImageDescriptionInDTBook && strInternalDTD == null)
+            {
+                string strDescriptionDTDPath = Path.Combine (System.AppDomain.CurrentDomain.BaseDirectory, "export\\Image_DescriptionDTD.txt");
+                if (File.Exists(strDescriptionDTDPath))
+                {
+                    StreamReader sr = File.OpenText(strDescriptionDTDPath);
+                    strInternalDTD = sr.ReadToEnd();
+                    sr.Close();
+                    sr = null;
+                }
+            }
             if (RequestCancellation) return;
 
             //m_ProgressPercentage = 0;
@@ -350,6 +361,37 @@ namespace urakawa.daisy.export
                                             XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFile);
                                             XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "external", "true");
                                             anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description"));
+
+                                            if ( m_ImageDescriptionInDTBook )
+                                            {//1
+                                            // to do copy the diagram nodes that descend directly from body
+                                                if (m_AltProperrty_DiagramDocument.ContainsKey(n.GetAlternateContentProperty()))
+                                                {//2
+
+                                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, DTBookDocument.GetElementsByTagName("dtbook")[0],
+                    "xmlns:" + DiagramContentModelStrings.NS_PREFIX_DIAGRAM,
+                    DiagramContentModelStrings.NS_URL_DIAGRAM);
+                                                    XmlDocument descriptionDocument = m_AltProperrty_DiagramDocument[n.GetAlternateContentProperty()];
+                                                    XmlNodeList diagramNodesList = descriptionDocument.GetElementsByTagName("d:body")[0].ChildNodes;
+                                                    foreach (XmlNode xn in diagramNodesList)
+                                                    {//3
+                                                        XmlNode newNode = DTBookDocument.ImportNode(xn, true);
+                                                        prodNoteNode.AppendChild(newNode);
+                                                        for (int i = 0; i < newNode.Attributes.Count; i++)
+                                                        {//4
+                                                            XmlAttribute attr = newNode.Attributes[i];
+                                                            if (attr.Name == "xml:id")
+                                                            {//-4
+                                                                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, newNode, "id", attr.Value);
+                                                                newNode.Attributes.Remove(attr);
+                                                            }//-3
+                                                        }//-2
+                                                    }//-1
+                                                }
+                                            //XmlNode newNode = DTBookDocument.ImportNode(M_DescriptionDocument.GetElementsByTagName("d:description")[0], true);
+                                                //prodNoteNode.AppendChild(newNode);
+                                            }
+
                                         }
                                         //}
                                         //catch (System.Exception ex)
@@ -494,5 +536,7 @@ namespace urakawa.daisy.export
 
             }
         */
+
+
     }
 }
