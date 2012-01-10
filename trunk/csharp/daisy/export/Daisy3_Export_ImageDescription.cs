@@ -11,7 +11,7 @@ namespace urakawa.daisy.export
     public partial class Daisy3_Export
     {
 
-        
+        private bool m_ImageDescriptionInDTBook = false;
 
         private void handleMetadataAttr(MetadataAttribute mdAttr, XmlDocument descDocument, XmlNode metaNode, bool checkSpecialAttributesNames)
         {
