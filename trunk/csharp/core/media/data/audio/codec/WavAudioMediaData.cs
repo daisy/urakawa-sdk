@@ -115,9 +115,9 @@ namespace urakawa.media.data.audio.codec
         /// This effectively copies the data, 
         /// since the <see cref="DataProvider"/>(s) previously used to store the PCM data are left untouched
         /// </remarks>
-        public void ForceSingleDataProvider()
+        public DataProvider ForceSingleDataProvider()
         {
-            if (mWavClips.Count == 0) return;
+            if (mWavClips.Count == 0) return null;
 
             if (mWavClips.Count == 1)
             {
@@ -125,16 +125,19 @@ namespace urakawa.media.data.audio.codec
                 if (theChosenOne.ClipBegin.IsEqualTo(Time.Zero)
                     && theChosenOne.ClipEnd.IsEqualTo(new Time(theChosenOne.MediaDuration.AsTimeSpan)))
                 {
-                    return;
+                    return theChosenOne.DataProvider;
                 }
             }
 
             WavClip newSingleClip;
 
+            DataProvider dataProvider = null;
+
             Stream audioData = OpenPcmInputStream();
             try
             {
-                newSingleClip = new WavClip(CreateDataProviderFromRawPCMStream(audioData, null));
+                dataProvider = CreateDataProviderFromRawPCMStream(audioData, null);
+                newSingleClip = new WavClip(dataProvider);
             }
             finally
             {
@@ -142,6 +145,8 @@ namespace urakawa.media.data.audio.codec
             }
             mWavClips.Clear();
             mWavClips.Add(newSingleClip);
+
+            return dataProvider;
         }
 
         #region AudioMediaData
