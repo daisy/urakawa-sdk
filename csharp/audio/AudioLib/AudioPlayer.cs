@@ -853,7 +853,10 @@ namespace AudioLib
                     previousCircularBufferFrequence = m_CircularBuffer.Frequency;
 
                     int byteRate = m_CurrentAudioPCMFormat.BlockAlign * m_CircularBuffer.Frequency; // m_CurrentAudioPCMFormat.SampleRate;
-                    m_PredictedByteIncrement = (long)(byteRate * (REFRESH_INTERVAL_MS + 15) / 1000.0); // TODO: determine time experied since last iteration by comparing DateTime.Now.Ticks or a more efficient system timer
+
+                    // TODO: determine time elapsed since last iteration by comparing DateTime.UtcNow.Ticks or a more efficient system timer like StopWatch
+                    m_PredictedByteIncrement = (long)(byteRate * (REFRESH_INTERVAL_MS + 15) / 1000.0);
+
                     m_PredictedByteIncrement -= m_PredictedByteIncrement % m_CurrentAudioPCMFormat.BlockAlign;
                 }
 
