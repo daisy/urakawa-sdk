@@ -17,8 +17,11 @@ namespace urakawa.daisy
         public const string NS_PREFIX_ZAI = "z";
         public const string NS_URL_ZAI = "http://www.daisy.org/ns/z3986/authoring/";
 
-        public const string NS_PREFIX_XLINK = "xlink";
-        public const string NS_URL_XLINK = "http://www.w3.org/1999/xlink";
+        //public const string NS_PREFIX_XLINK = "xlink";
+        //public const string NS_URL_XLINK = "http://www.w3.org/1999/xlink";
+
+        public const string NS_PREFIX_TOBI = "tobi";
+        public const string NS_URL_TOBI = "http://www.daisy.org/tobi";
 
         public static string StripNSPrefix(string str)
         {
@@ -125,7 +128,9 @@ namespace urakawa.daisy
         //"dc:rights"
         //"dc:description"
 
-        public const string XLINK_Href = NS_PREFIX_XLINK + ":href";
+        //public const string XLINK_Href = NS_PREFIX_XLINK + ":href";
+
+        public const string TOBI_Audio = NS_PREFIX_TOBI + ":audio";
 
 
         private static List<string> m_MetadataValues = null;
@@ -171,8 +176,8 @@ namespace urakawa.daisy
                     m_MetadataNames_ForAltContentDescriptionInstance.Add(SrcType);
                     m_MetadataNames_ForAltContentDescriptionInstance.Add(Age);
 
-                    m_MetadataNames_ForAltContentDescriptionInstance.Add(D_Tour);
-                    m_MetadataNames_ForAltContentDescriptionInstance.Add(XLINK_Href);
+                    //m_MetadataNames_ForAltContentDescriptionInstance.Add(D_Tour);
+                    //m_MetadataNames_ForAltContentDescriptionInstance.Add(XLINK_Href);
                 }
                 return m_MetadataNames_ForAltContentDescriptionInstance;
             }
