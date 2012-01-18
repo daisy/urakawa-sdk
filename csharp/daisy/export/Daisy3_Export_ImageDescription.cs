@@ -14,6 +14,7 @@ namespace urakawa.daisy.export
     {
 
         private bool m_ImageDescriptionInDTBook = false;
+        private readonly string m_ImageDescriptionDirectoryName = "_Descriptions";
 
         private void handleMetadataAttr(MetadataAttribute mdAttr, XmlDocument descDocument, XmlNode metaNode, bool checkSpecialAttributesNames)
         {
@@ -81,6 +82,9 @@ namespace urakawa.daisy.export
         
         private string CreateImageDescription(string imageSRC, AlternateContentProperty altProperty)
         {
+            string imageDescriptionDirectoryPath = Path.Combine(m_OutputDirectory, m_ImageDescriptionDirectoryName);
+            if (!Directory.Exists(imageDescriptionDirectoryPath)) Directory.CreateDirectory(imageDescriptionDirectoryPath);
+            
             XmlDocument descriptionDocument = new XmlDocument();
             m_AltProperrty_DiagramDocument.Add(altProperty, descriptionDocument);
             // <?xml-stylesheet type="text/xsl" href="desc2html.xsl"?>
@@ -88,7 +92,7 @@ namespace urakawa.daisy.export
             descriptionDocument.AppendChild(descriptionDocument.CreateProcessingInstruction("xml-stylesheet", processingInstructionData));
             string xsltFileName = "desc2html.xsl";
             string sourceXsltPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, xsltFileName);
-            string destXsltPath = Path.Combine(m_OutputDirectory, xsltFileName);
+            string destXsltPath = Path.Combine(imageDescriptionDirectoryPath, xsltFileName);
             if (!File.Exists(destXsltPath)) File.Copy(sourceXsltPath, destXsltPath);
 
             XmlNode descriptionNode = descriptionDocument.CreateElement(
@@ -279,7 +283,7 @@ namespace urakawa.daisy.export
                     DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
                     
                     string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
-                    string destPath = Path.Combine(m_OutputDirectory, exportAudioName);
+                    string destPath = Path.Combine(imageDescriptionDirectoryPath, exportAudioName);
 
                     if (!File.Exists(destPath))
                     {
@@ -301,7 +305,7 @@ namespace urakawa.daisy.export
                 {
                     media.data.image.ManagedImageMedia managedImage = altContent.Image;
                     string exportImageName = managedImage.ImageMediaData.OriginalRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
-                    string destPath = Path.Combine(m_OutputDirectory, exportImageName);
+                    string destPath = Path.Combine(imageDescriptionDirectoryPath, exportImageName);
 
                     if (!File.Exists(destPath))
                     {
@@ -397,8 +401,8 @@ namespace urakawa.daisy.export
             }
 
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + "_Desc.xml";
-            SaveXukAction.WriteXmlDocument(descriptionDocument, Path.Combine(m_OutputDirectory, descFileName));
-            return descFileName;
+            SaveXukAction.WriteXmlDocument(descriptionDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName));
+            return Path.Combine(m_ImageDescriptionDirectoryName, descFileName);
         }
 
         //private List<Metadata> GetAltContentNameAndXmlIdFromMetadata(IEnumerable<Metadata> metadataList, out string name, out string XmlId, out string tourText)
