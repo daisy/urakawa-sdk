@@ -14,7 +14,7 @@ namespace urakawa.daisy.export
     {
 
         private bool m_ImageDescriptionInDTBook = false;
-        private readonly string m_ImageDescriptionDirectoryName = "_Descriptions";
+        private readonly string m_ImageDescriptionDirectoryInitials = "_Descriptions_";
 
         private void handleMetadataAttr(MetadataAttribute mdAttr, XmlDocument descDocument, XmlNode metaNode, bool checkSpecialAttributesNames)
         {
@@ -82,7 +82,8 @@ namespace urakawa.daisy.export
         
         private string CreateImageDescription(string imageSRC, AlternateContentProperty altProperty)
         {
-            string imageDescriptionDirectoryPath = Path.Combine(m_OutputDirectory, m_ImageDescriptionDirectoryName);
+            string imageDescriptionDirName = m_ImageDescriptionDirectoryInitials +imageSRC.Replace('.','_').Replace(Path.DirectorySeparatorChar, '_')  ;
+            string imageDescriptionDirectoryPath = Path.Combine(m_OutputDirectory, imageDescriptionDirName);
             if (!Directory.Exists(imageDescriptionDirectoryPath)) Directory.CreateDirectory(imageDescriptionDirectoryPath);
             
             XmlDocument descriptionDocument = new XmlDocument();
@@ -402,7 +403,7 @@ namespace urakawa.daisy.export
 
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + "_Desc.xml";
             SaveXukAction.WriteXmlDocument(descriptionDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName));
-            return Path.Combine(m_ImageDescriptionDirectoryName, descFileName);
+            return Path.Combine(imageDescriptionDirName, descFileName);
         }
 
         //private List<Metadata> GetAltContentNameAndXmlIdFromMetadata(IEnumerable<Metadata> metadataList, out string name, out string XmlId, out string tourText)
