@@ -358,7 +358,9 @@ namespace urakawa.daisy.export
                                             if (!m_Image_ProdNoteMap.ContainsKey(n)) m_Image_ProdNoteMap.Add(n, prodNoteNode);
                                             XmlNode anchorNode = DTBookDocument.CreateElement("a", currentXmlNode.NamespaceURI);
                                             prodNoteNode.AppendChild(anchorNode);
-                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFile);
+                                            string descriptionFileUrl = descriptionFile.Replace("\\", "/") ;
+                                            
+                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFileUrl);
                                             XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "external", "true");
                                             anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description"));
 
