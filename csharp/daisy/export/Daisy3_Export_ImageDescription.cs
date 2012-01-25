@@ -89,12 +89,12 @@ namespace urakawa.daisy.export
             XmlDocument descriptionDocument = new XmlDocument();
             m_AltProperrty_DiagramDocument.Add(altProperty, descriptionDocument);
             // <?xml-stylesheet type="text/xsl" href="desc2html.xsl"?>
-            string processingInstructionData = "type=\"text/xsl\" href=\"desc2html.xsl\"";
-            descriptionDocument.AppendChild(descriptionDocument.CreateProcessingInstruction("xml-stylesheet", processingInstructionData));
-            string xsltFileName = "desc2html.xsl";
-            string sourceXsltPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, xsltFileName);
-            string destXsltPath = Path.Combine(imageDescriptionDirectoryPath, xsltFileName);
-            if (!File.Exists(destXsltPath)) File.Copy(sourceXsltPath, destXsltPath);
+            //string processingInstructionData = "type=\"text/xsl\" href=\"desc2html.xsl\"";
+            //descriptionDocument.AppendChild(descriptionDocument.CreateProcessingInstruction("xml-stylesheet", processingInstructionData));
+            //string xsltFileName = "desc2html.xsl";
+            //string sourceXsltPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, xsltFileName);
+            //string destXsltPath = Path.Combine(imageDescriptionDirectoryPath, xsltFileName);
+            //if (!File.Exists(destXsltPath)) File.Copy(sourceXsltPath, destXsltPath);
 
             XmlNode descriptionNode = descriptionDocument.CreateElement(
                 DiagramContentModelStrings.NS_PREFIX_DIAGRAM,
