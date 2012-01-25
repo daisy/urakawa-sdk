@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{69E083B4-AC97-4416-B7D4-61DEBA8A910D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -70,9 +70,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="desc2html.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="export\Image_DescriptionDTD.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
