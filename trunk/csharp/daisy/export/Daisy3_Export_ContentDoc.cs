@@ -344,7 +344,8 @@ namespace urakawa.daisy.export
                                     {
                                         //try
                                         //{
-                                        string descriptionFile = CreateImageDescription(exportImageName, n.GetAlternateContentProperty());
+                                        Dictionary<string, List <string>> imageDescriptions = new Dictionary<string,List <string>>();
+                                        string descriptionFile = CreateImageDescription(exportImageName, n.GetAlternateContentProperty(), imageDescriptions);
                                         if (!String.IsNullOrEmpty(descriptionFile))
                                         {
                                             //short term way for executing image description code: will be updated in later phase of implementation
@@ -363,6 +364,30 @@ namespace urakawa.daisy.export
                                             XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFileUrl);
                                             XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "external", "true");
                                             anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description"));
+
+                                            if (m_ImageDescriptionInDTBook && imageDescriptions != null && imageDescriptions.Count > 0)
+                                            {
+                                                foreach (string s in imageDescriptions.Keys)
+                                                {
+                                                    System.Windows.Forms.MessageBox.Show(s + " : " + imageDescriptions[s]);
+
+                                                    XmlNode prodNoteDesc = DTBookDocument.CreateElement("prodnote", currentXmlNode.NamespaceURI);
+                                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "render", "optional");
+                                                    string id_ProdnoteDesc = GetNextID(ID_DTBPrefix);
+                                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "id", id_ProdnoteDesc);
+                                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "imgref", currentXmlNode.Attributes.GetNamedItem("id").Value);
+                                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "class", s);
+                                                    currentXmlNode.ParentNode.AppendChild(prodNoteDesc);
+
+                                                    foreach (string descText in imageDescriptions[s])
+                                                    {
+                                                        XmlNode paraNode = DTBookDocument.CreateElement("p", currentXmlNode.NamespaceURI);
+                                                        prodNoteDesc.AppendChild(paraNode);
+                                                        paraNode.AppendChild(DTBookDocument.CreateTextNode(descText));
+                                                    }
+                                                }
+                                                imageDescriptions = null;
+                                            }
 
                                             if ( m_ImageDescriptionInDTBook )
                                             {//1
