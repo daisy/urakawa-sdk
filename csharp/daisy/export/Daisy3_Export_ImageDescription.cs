@@ -80,7 +80,7 @@ namespace urakawa.daisy.export
         }
 
         
-        private string CreateImageDescription(string imageSRC, AlternateContentProperty altProperty)
+        private string CreateImageDescription(string imageSRC, AlternateContentProperty altProperty, Dictionary <string,List <string>> imageDescriptions)
         {
             string imageDescriptionDirName = m_ImageDescriptionDirectoryInitials +imageSRC.Replace('.','_').Replace(Path.DirectorySeparatorChar, '_')  ;
             string imageDescriptionDirectoryPath = Path.Combine(m_OutputDirectory, imageDescriptionDirName);
@@ -391,6 +391,16 @@ namespace urakawa.daisy.export
                     DiagramContentModelStrings.NS_URL_ZAI);
                                 contentXmlNode.AppendChild(paraNode);
                                 paraNode.AppendChild(descriptionDocument.CreateTextNode(paraNodeText));
+                                if (!imageDescriptions.ContainsKey(contentXmlNode.Name))
+                                {
+                                    imageDescriptions.Add(contentXmlNode.Name,new List<string> () );
+                                    imageDescriptions[contentXmlNode.Name].Add(paraNodeText);
+                                }
+                                else
+                                {
+                                    imageDescriptions[contentXmlNode.Name].Add(paraNodeText);
+                                }
+
                             }
 
 
