@@ -1565,7 +1565,11 @@ namespace urakawa.daisy.export
                 string dtbookID = m_Image_ProdNoteMap[n][counter].Attributes.GetNamedItem("id").Value;
                 string par_id = GetNextID(ID_SmilPrefix);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "id", strSeqID);
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "class", "prodnote");
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "customTest", "prodnote");
+
                 XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
+                seqNode.AppendChild(parNode);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
                 XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id", GetNextID(ID_SmilPrefix));
