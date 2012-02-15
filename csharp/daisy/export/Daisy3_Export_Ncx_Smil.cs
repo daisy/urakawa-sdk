@@ -231,7 +231,7 @@ namespace urakawa.daisy.export
                     }
                     if (m_Image_ProdNoteMap.ContainsKey(n))
                     {
-                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[n], "smilref", smilFileName + "#" + strSeqID);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[n][0], "smilref", smilFileName + "#" + strSeqID);
                     }
                     // decide the parent node to which this new seq node is to be appended.
                     if (specialSeqNodeStack.Count == 0)
@@ -356,7 +356,7 @@ namespace urakawa.daisy.export
                     string dtbookID = null;
                     if (m_Image_ProdNoteMap.ContainsKey(n))
                     {
-                        dtbookID = m_Image_ProdNoteMap[n].Attributes.GetNamedItem("id").Value;
+                        dtbookID = m_Image_ProdNoteMap[n][0].Attributes.GetNamedItem("id").Value;
                     }
                     else
                     {
@@ -389,7 +389,7 @@ namespace urakawa.daisy.export
 
                 if (m_Image_ProdNoteMap.ContainsKey(n))
                 {
-                    CreateSmilNodesForImageDescription(smilDocument, mainSeq, durationOfCurrentSmil, n.GetAlternateContentProperty ());
+                    CreateSmilNodesForImageDescription(n, smilDocument, mainSeq, durationOfCurrentSmil, n.GetAlternateContentProperty ());
                 }
                 // if node n is pagenum, add to pageList
                 if (n.GetXmlElementQName() != null
@@ -1547,28 +1547,68 @@ namespace urakawa.daisy.export
             }
         }
 
-        public void CreateSmilNodesForImageDescription(XmlDocument smilDocument,XmlNode mainSeq,Time durationOfCurrentSmil, AlternateContentProperty altProperty)
+        public void CreateSmilNodesForImageDescription(urakawa.core.TreeNode n,  XmlDocument smilDocument,XmlNode mainSeq,Time durationOfCurrentSmil, AlternateContentProperty altProperty)
     {
-        foreach (AlternateContent altContent in altProperty.AlternateContents.ContentsAs_ListAsReadOnly)
+        try
         {
-            if (altContent.Audio != null)
+            int counter = 0;
+            foreach (AlternateContent altContent in altProperty.AlternateContents.ContentsAs_ListAsReadOnly)
             {
-                media.data.audio.ManagedAudioMedia managedAudio = altContent.Audio;
-                DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
+                if (altContent.Text == null) continue;
+                counter++;
+                if (m_Image_ProdNoteMap[n].Count <= counter ) break;
+                XmlNode seqNode = smilDocument.CreateElement("seq", mainSeq.NamespaceURI);
+                mainSeq.AppendChild(seqNode);
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "class", "prodnote");
+                string strSeqID = GetNextID(ID_SmilPrefix);
+                //System.Windows.Forms.MessageBox.Show(counter.ToString ()  + " : " + m_Image_ProdNoteMap[n].Count.ToString());
+                string dtbookID = m_Image_ProdNoteMap[n][counter].Attributes.GetNamedItem("id").Value;
+                string par_id = GetNextID(ID_SmilPrefix);
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "id", strSeqID);
+                XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
+                XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id", GetNextID(ID_SmilPrefix));
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
+                                                                           m_Filename_Content + "#" + dtbookID);
+                parNode.AppendChild(SmilTextNode);
 
-                string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
-                string destPath = Path.Combine(m_ImageDescriptionDirectoryPath, exportAudioName);
-
-                if (!File.Exists(destPath))
+                if (altContent.Audio != null)
                 {
+                    media.data.audio.ManagedAudioMedia managedAudio = altContent.Audio;
+                    DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
 
-                    dataProvider.ExportDataStreamToFile(destPath, false);
+                    string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
+                    string destPath = Path.Combine(m_ImageDescriptionDirectoryPath, exportAudioName);
+
+                    if (!File.Exists(destPath))
+                    {
+
+                        dataProvider.ExportDataStreamToFile(destPath, false);
+                    }
+
+                    //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
+                    //DiagramContentModelStrings.TOBI_Audio, exportAudioName, DiagramContentModelStrings.NS_URL_TOBI);
+                    string srcPath = Path.GetDirectoryName(m_ImageDescriptionDirectoryPath) + "//" + exportAudioName;
+                    XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
+                    //XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
+                    //FormatTimeString(externalAudio.ClipBegin));
+                    //XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
+                    //FormatTimeString(externalAudio.ClipEnd));
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src",
+                                                               srcPath);
+                    parNode.AppendChild(audioNode);
+
+                    if (!m_FilesList_Audio.Contains(srcPath)) m_FilesList_Audio.Add(srcPath);
+
+                    // add to duration 
+                    durationOfCurrentSmil.Add(managedAudio.Duration);
                 }
-
-                //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
-                //DiagramContentModelStrings.TOBI_Audio, exportAudioName, DiagramContentModelStrings.NS_URL_TOBI);
-
             }
+        }
+        catch (System.Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.ToString());
         }
     }
 
