@@ -7,6 +7,8 @@ using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.xuk;
 using urakawa.property.alt;
+using urakawa.media.data.audio.codec;
+using urakawa.data;
 
 namespace urakawa.daisy.export
 {
@@ -385,6 +387,10 @@ namespace urakawa.daisy.export
                     }
                 }
 
+                if (m_Image_ProdNoteMap.ContainsKey(n))
+                {
+                    CreateSmilNodesForImageDescription(smilDocument, mainSeq, durationOfCurrentSmil, n.GetAlternateContentProperty ());
+                }
                 // if node n is pagenum, add to pageList
                 if (n.GetXmlElementQName() != null
                     && n.GetXmlElementQName().LocalName == "pagenum")
@@ -1541,7 +1547,30 @@ namespace urakawa.daisy.export
             }
         }
 
+        public void CreateSmilNodesForImageDescription(XmlDocument smilDocument,XmlNode mainSeq,Time durationOfCurrentSmil, AlternateContentProperty altProperty)
+    {
+        foreach (AlternateContent altContent in altProperty.AlternateContents.ContentsAs_ListAsReadOnly)
+        {
+            if (altContent.Audio != null)
+            {
+                media.data.audio.ManagedAudioMedia managedAudio = altContent.Audio;
+                DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
 
+                string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
+                string destPath = Path.Combine(m_ImageDescriptionDirectoryPath, exportAudioName);
+
+                if (!File.Exists(destPath))
+                {
+
+                    dataProvider.ExportDataStreamToFile(destPath, false);
+                }
+
+                //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
+                //DiagramContentModelStrings.TOBI_Audio, exportAudioName, DiagramContentModelStrings.NS_URL_TOBI);
+
+            }
+        }
+    }
 
 
     }
