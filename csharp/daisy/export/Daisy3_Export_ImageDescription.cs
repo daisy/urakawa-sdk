@@ -278,7 +278,7 @@ namespace urakawa.daisy.export
                         DiagramContentModelStrings.NS_URL_DIAGRAM);
                     bodyNode.AppendChild(contentXmlNode);
                 }
-
+/*
                 if (altContent.Audio != null)
                 {
                     media.data.audio.ManagedAudioMedia managedAudio = altContent.Audio;
@@ -302,7 +302,7 @@ namespace urakawa.daisy.export
                     //}
 
                 }
-
+                */
                 if (altContent.Image != null)
                 {
                     media.data.image.ManagedImageMedia managedImage = altContent.Image;
