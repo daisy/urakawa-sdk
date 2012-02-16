@@ -389,7 +389,7 @@ namespace urakawa.daisy.export
 
                 if (m_Image_ProdNoteMap.ContainsKey(n))
                 {
-                    CreateSmilNodesForImageDescription(n, smilDocument, mainSeq, durationOfCurrentSmil, n.GetAlternateContentProperty ());
+                    CreateSmilNodesForImageDescription(n, smilDocument, mainSeq, durationOfCurrentSmil, n.GetAlternateContentProperty (), smilFileName);
                 }
                 // if node n is pagenum, add to pageList
                 if (n.GetXmlElementQName() != null
@@ -1547,7 +1547,7 @@ namespace urakawa.daisy.export
             }
         }
 
-        public void CreateSmilNodesForImageDescription(urakawa.core.TreeNode n,  XmlDocument smilDocument,XmlNode mainSeq,Time durationOfCurrentSmil, AlternateContentProperty altProperty)
+        public void CreateSmilNodesForImageDescription(urakawa.core.TreeNode n, XmlDocument smilDocument, XmlNode mainSeq, Time durationOfCurrentSmil, AlternateContentProperty altProperty, string smilFileName)
     {
         try
         {
@@ -1567,6 +1567,7 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "id", strSeqID);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "class", "prodnote");
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "customTest", "prodnote");
+                XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[n][counter], "smilref", smilFileName + "#" + strSeqID);
 
                 XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
                 seqNode.AppendChild(parNode);
@@ -1576,6 +1577,7 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
                                                                            m_Filename_Content + "#" + dtbookID);
                 parNode.AppendChild(SmilTextNode);
+                
 
                 if (altContent.Audio != null)
                 {
