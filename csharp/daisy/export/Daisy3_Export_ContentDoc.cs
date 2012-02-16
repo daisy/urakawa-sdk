@@ -390,7 +390,7 @@ namespace urakawa.daisy.export
                                                 }
                                                 imageDescriptions = null;
                                             }
-
+                                            /*
                                             if ( m_ImageDescriptionInDTBook )
                                             {//1
                                             // to do copy the diagram nodes that descend directly from body
@@ -415,12 +415,15 @@ namespace urakawa.daisy.export
                                                                 newNode.Attributes.Remove(attr);
                                                             }//-3
                                                         }//-2
+                                              
                                                     }//-1
+                                             
                                                 }
+                                              
                                             //XmlNode newNode = DTBookDocument.ImportNode(M_DescriptionDocument.GetElementsByTagName("d:description")[0], true);
                                                 //prodNoteNode.AppendChild(newNode);
                                             }
-
+                                            */
                                         }
                                         //}
                                         //catch (System.Exception ex)
