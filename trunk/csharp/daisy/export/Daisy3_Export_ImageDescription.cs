@@ -13,9 +13,10 @@ namespace urakawa.daisy.export
     public partial class Daisy3_Export
     {
 
-        private bool m_ImageDescriptionInDTBook = false;
+        private bool m_ImageDescriptionInDTBook = true;
         private readonly string m_ImageDescriptionDirectoryInitials = "_Descriptions_";
         private string m_ImageDescriptionDirectoryPath;
+        private Dictionary<string, AlternateContent> m_ImageDescNodeToAltContentMap = new Dictionary<string, AlternateContent>();
 
         private void handleMetadataAttr(MetadataAttribute mdAttr, XmlDocument descDocument, XmlNode metaNode, bool checkSpecialAttributesNames)
         {
@@ -396,6 +397,7 @@ namespace urakawa.daisy.export
                                 {
                                     imageDescriptions.Add(contentXmlNode.Name,new List<string> () );
                                     imageDescriptions[contentXmlNode.Name].Add(paraNodeText);
+                                    m_ImageDescNodeToAltContentMap.Add(contentXmlNode.Name, altContent);
                                 }
                                 else
                                 {
