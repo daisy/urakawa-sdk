@@ -393,13 +393,13 @@ namespace urakawa.daisy.export
                     DiagramContentModelStrings.NS_URL_ZAI);
                                 contentXmlNode.AppendChild(paraNode);
                                 paraNode.AppendChild(descriptionDocument.CreateTextNode(paraNodeText));
-                                if (!imageDescriptions.ContainsKey(contentXmlNode.Name))
+                                if (!imageDescriptions.ContainsKey(contentXmlNode.Name) && IsIncludedInDTBook(contentXmlNode.Name))
                                 {
                                     imageDescriptions.Add(contentXmlNode.Name,new List<string> () );
                                     imageDescriptions[contentXmlNode.Name].Add(paraNodeText);
                                     m_ImageDescNodeToAltContentMap.Add(contentXmlNode.Name, altContent);
                                 }
-                                else
+                                else if (imageDescriptions.ContainsKey(contentXmlNode.Name) )
                                 {
                                     imageDescriptions[contentXmlNode.Name].Add(paraNodeText);
                                 }
@@ -417,6 +417,17 @@ namespace urakawa.daisy.export
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + "_Desc.xml";
             SaveXukAction.WriteXmlDocument(descriptionDocument, Path.Combine(m_ImageDescriptionDirectoryPath, descFileName));
             return Path.Combine(imageDescriptionDirName, descFileName);
+        }
+
+        private bool IsIncludedInDTBook(string name)
+        {
+            if (name == DiagramContentModelStrings.D_LondDesc
+                || name == DiagramContentModelStrings.D_SimplifiedLanguageDescription
+                || name == DiagramContentModelStrings.D_Summary)
+            {
+                return true;
+            }
+            return false;
         }
 
         //private List<Metadata> GetAltContentNameAndXmlIdFromMetadata(IEnumerable<Metadata> metadataList, out string name, out string XmlId, out string tourText)
