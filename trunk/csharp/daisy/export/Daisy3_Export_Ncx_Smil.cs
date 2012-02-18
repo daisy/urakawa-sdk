@@ -1596,7 +1596,10 @@ namespace urakawa.daisy.export
 
                     //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
                     //DiagramContentModelStrings.TOBI_Audio, exportAudioName, DiagramContentModelStrings.NS_URL_TOBI);
-                    string srcPath = Path.GetDirectoryName(m_ImageDescriptionDirectoryPath) + "//" + exportAudioName;
+                    DirectoryInfo d = new DirectoryInfo(m_ImageDescriptionDirectoryPath);
+                    
+                    string srcPath = d.Name + "/" + exportAudioName;
+                    
                     XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
                     //XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
                     //FormatTimeString(externalAudio.ClipBegin));
