@@ -1601,10 +1601,10 @@ namespace urakawa.daisy.export
                     string srcPath = d.Name + "/" + exportAudioName;
                     
                     XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
-                    //XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
-                    //FormatTimeString(externalAudio.ClipBegin));
-                    //XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
-                    //FormatTimeString(externalAudio.ClipEnd));
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
+                    "00:00:00");
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
+                    FormatTimeString(managedAudio.Duration));
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src",
                                                                srcPath);
                     parNode.AppendChild(audioNode);
