@@ -1585,7 +1585,8 @@ namespace urakawa.daisy.export
                     media.data.audio.ManagedAudioMedia managedAudio = altContent.Audio;
                     DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
 
-                    string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
+                    //string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
+                    string exportAudioName = Path.GetFileNameWithoutExtension(smilFileName) + "_" + counter.ToString() + ".wav";
                     string destPath = Path.Combine(m_ImageDescriptionDirectoryPath, exportAudioName);
 
                     if (!File.Exists(destPath))
