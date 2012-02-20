@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using urakawa.media.timing;
+using urakawa.media.data.audio;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.xuk;
 using urakawa.property.alt;
 using urakawa.media.data.audio.codec;
 using urakawa.data;
+
+using AudioLib;
 
 namespace urakawa.daisy.export
 {
@@ -1593,6 +1596,12 @@ namespace urakawa.daisy.export
                     {
 
                         dataProvider.ExportDataStreamToFile(destPath, false);
+
+                        if (m_encodeToMp3)
+                        {
+                            string convertedFile = EncodeWavFileToMp3(destPath);
+                            if (convertedFile != null) exportAudioName = Path.GetFileName(convertedFile);
+                        }
                     }
 
                     //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
@@ -1622,6 +1631,40 @@ namespace urakawa.daisy.export
             System.Windows.Forms.MessageBox.Show(ex.ToString());
         }
     }
+
+        private string EncodeWavFileToMp3(string sourceFilePath)
+        {
+
+            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, false);
+
+            string destinationFilePath = Path.Combine(Directory.GetParent(sourceFilePath).FullName,
+                Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
+
+            PCMFormatInfo audioFormat = m_Presentation.MediaDataManager.DefaultPCMFormat;
+            AudioLibPCMFormat pcmFormat = audioFormat.Data;
+            if ((ushort)m_sampleRate != pcmFormat.SampleRate)
+            {
+                pcmFormat.SampleRate = (ushort)m_sampleRate;
+            }
+
+            bool result = false;
+
+            result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat,(ushort) BitRate_Mp3);
+
+
+            if (result)
+            {
+
+                File.Delete(sourceFilePath);
+                return destinationFilePath;
+            }
+            else
+            {
+                // append error messages
+                //base.ErrorMessages = base.ErrorMessages + String.Format(UrakawaSDK_daisy_Lang.ErrorInEncoding, Path.GetFileName(sourceFilePath));
+                return null;
+            }
+        }
 
 
     }
