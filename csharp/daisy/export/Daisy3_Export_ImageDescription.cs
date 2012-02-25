@@ -16,7 +16,7 @@ namespace urakawa.daisy.export
         private bool m_ImageDescriptionInDTBook = true;
         private readonly string m_ImageDescriptionDirectoryInitials = "_Descriptions_";
         private string m_ImageDescriptionDirectoryPath;
-        //private Dictionary<string, AlternateContent> m_ImageDescNodeToAltContentMap = new Dictionary<string, AlternateContent>();
+        
         private Dictionary <AlternateContentProperty, Description> m_AltProperty_DescriptionMap = new Dictionary<AlternateContentProperty,Description> ();
 
         private void handleMetadataAttr(MetadataAttribute mdAttr, XmlDocument descDocument, XmlNode metaNode, bool checkSpecialAttributesNames)
@@ -432,44 +432,7 @@ namespace urakawa.daisy.export
             return false;
         }
 
-        //private List<Metadata> GetAltContentNameAndXmlIdFromMetadata(IEnumerable<Metadata> metadataList, out string name, out string XmlId, out string tourText)
-        //{
-        //    name = XmlId = tourText = null;
-        //    List<Metadata> residualMetadataList = new List<Metadata>();
-        //    residualMetadataList.AddRange(metadataList);
-
-        //    for (int i = 0; i < residualMetadataList.Count; i++)
-        //    {
-        //        Metadata m = residualMetadataList[i];
-        //        //System.Windows.Forms.MessageBox.Show(m.NameContentAttribute.Name + " : " + m.NameContentAttribute.Value);
-        //        if (m.NameContentAttribute.Name == DiagramContentModelStrings.XmlId)
-        //        {
-        //            XmlId = m.NameContentAttribute.Value;
-        //            residualMetadataList.Remove(m);
-        //            --i;
-        //        }
-        //        else if (m.NameContentAttribute.Name == DiagramContentModelStrings.DescriptionName)
-        //        {
-        //            name = m.NameContentAttribute.Value;
-        //            residualMetadataList.Remove(m);
-        //            --i;
-        //        }
-        //        else if (m.NameContentAttribute.Name == DiagramContentModelStrings.XLINK_Href)
-        //        {
-        //            residualMetadataList.Remove(m);
-        //            --i;
-        //        }
-        //        else if (m.NameContentAttribute.Name == DiagramContentModelStrings.D_Tour)
-        //        {
-        //            tourText = m.NameContentAttribute.Value;
-        //            residualMetadataList.Remove(m);
-        //            --i;
-        //        }
-        //    }
-        //    // add code to generate IDs if it is null
-
-        //    return residualMetadataList;
-        //}
+        
         private class Description
         {
             private Dictionary<string, AlternateContent> m_ImageDescNodeToAltContentMap = new Dictionary<string, AlternateContent>();
