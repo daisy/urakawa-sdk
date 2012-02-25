@@ -1555,9 +1555,9 @@ namespace urakawa.daisy.export
         try
         {
             int counter = 0;
-            foreach ( string s in m_ImageDescNodeToAltContentMap.Keys )
+            foreach ( string s in m_AltProperty_DescriptionMap[altProperty].ImageDescNodeToAltContentMap.Keys )
             {
-                AlternateContent altContent = m_ImageDescNodeToAltContentMap[s];
+                AlternateContent altContent = m_AltProperty_DescriptionMap[altProperty].ImageDescNodeToAltContentMap[s];
                 if (altContent.Text == null) continue;
                 counter++;
                 if (m_Image_ProdNoteMap[n].Count <= counter ) break;
