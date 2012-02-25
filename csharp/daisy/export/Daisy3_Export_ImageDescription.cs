@@ -16,7 +16,8 @@ namespace urakawa.daisy.export
         private bool m_ImageDescriptionInDTBook = true;
         private readonly string m_ImageDescriptionDirectoryInitials = "_Descriptions_";
         private string m_ImageDescriptionDirectoryPath;
-        private Dictionary<string, AlternateContent> m_ImageDescNodeToAltContentMap = new Dictionary<string, AlternateContent>();
+        //private Dictionary<string, AlternateContent> m_ImageDescNodeToAltContentMap = new Dictionary<string, AlternateContent>();
+        private Dictionary <AlternateContentProperty, Description> m_AltProperty_DescriptionMap = new Dictionary<AlternateContentProperty,Description> ();
 
         private void handleMetadataAttr(MetadataAttribute mdAttr, XmlDocument descDocument, XmlNode metaNode, bool checkSpecialAttributesNames)
         {
@@ -97,6 +98,7 @@ namespace urakawa.daisy.export
             //string sourceXsltPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, xsltFileName);
             //string destXsltPath = Path.Combine(imageDescriptionDirectoryPath, xsltFileName);
             //if (!File.Exists(destXsltPath)) File.Copy(sourceXsltPath, destXsltPath);
+            m_AltProperty_DescriptionMap.Add (altProperty, new Description ()) ;
 
             XmlNode descriptionNode = descriptionDocument.CreateElement(
                 DiagramContentModelStrings.NS_PREFIX_DIAGRAM,
@@ -397,7 +399,7 @@ namespace urakawa.daisy.export
                                 {
                                     imageDescriptions.Add(contentXmlNode.Name,new List<string> () );
                                     imageDescriptions[contentXmlNode.Name].Add(paraNodeText);
-                                    m_ImageDescNodeToAltContentMap.Add(contentXmlNode.Name, altContent);
+                                    m_AltProperty_DescriptionMap[altProperty].ImageDescNodeToAltContentMap.Add(contentXmlNode.Name, altContent);
                                 }
                                 else if (imageDescriptions.ContainsKey(contentXmlNode.Name) )
                                 {
@@ -468,5 +470,12 @@ namespace urakawa.daisy.export
 
         //    return residualMetadataList;
         //}
+        private class Description
+        {
+            private Dictionary<string, AlternateContent> m_ImageDescNodeToAltContentMap = new Dictionary<string, AlternateContent>();
+
+            public Dictionary<string, AlternateContent> ImageDescNodeToAltContentMap { get { return m_ImageDescNodeToAltContentMap; } }
+        }
+
     }
 }
