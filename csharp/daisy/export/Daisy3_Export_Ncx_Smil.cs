@@ -1026,7 +1026,7 @@ namespace urakawa.daisy.export
                 bookStrucMap.Add("annotation", "ANNOTATION");
                 bookStrucMap.Add("prodnote", "OPTIONAL_PRODUCER_NOTE");
                 bookStrucMap.Add("sidebar", "OPTIONAL_SIDEBAR");
-
+                bookStrucMap.Add("footnote", "NOTE");
 
                 foreach (string customTestName in ncxCustomTestList)
                 {
