@@ -1023,6 +1023,7 @@ namespace urakawa.daisy.export
                 bookStrucMap.Add("linenum", "LINE_NUMBER");
                 bookStrucMap.Add("note", "NOTE");
                 bookStrucMap.Add("noteref", "NOTE_REFERENCE");
+                bookStrucMap.Add("annoref", "NOTE_REFERENCE");
                 bookStrucMap.Add("annotation", "ANNOTATION");
                 bookStrucMap.Add("prodnote", "OPTIONAL_PRODUCER_NOTE");
                 bookStrucMap.Add("sidebar", "OPTIONAL_SIDEBAR");
