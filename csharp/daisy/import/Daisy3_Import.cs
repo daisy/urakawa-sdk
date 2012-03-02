@@ -22,13 +22,13 @@ namespace urakawa.daisy.import
         }
 
         private Project m_Project;
-        public Project Project
-        {
-            get { return m_Project; }
-            protected set { m_Project = value; }
-        }
+        //public Project Project
+        //{
+        //    get { return m_Project; }
+        //    protected set { m_Project = value; }
+        //}
 
-        private bool m_IsAudioNCX;
+        private bool m_IsAudioNCX  = false;
         public bool AudioNCXImport
         {
             get { return m_IsAudioNCX; }
@@ -60,8 +60,7 @@ namespace urakawa.daisy.import
             }
 
             m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
-            m_IsAudioNCX = false;
-
+      
             if (RequestCancellation) return;
             //initializeProject();
 
@@ -185,6 +184,8 @@ action.Cancelled +=new EventHandler<CancelledEventArgs>(
                         
                         break;
                     }
+                case ".xhtml":
+                case ".html":
                 case ".xml":
                     {
                         XmlDocument contentXmlDoc = OpenXukAction.ParseXmlDocument(m_Book_FilePath, true);
@@ -200,6 +201,7 @@ action.Cancelled +=new EventHandler<CancelledEventArgs>(
                         break;
                     }
                 case ".epub":
+                case ".zip":
                     {
                         unzipEPubAndParseOpf();
 
