@@ -120,7 +120,7 @@ namespace urakawa.daisy.import
             }
             else if (navPoint.LocalName == "docTitle")
             {
-                Presentation pres = Project.Presentations.Get(0) ;
+                Presentation pres = m_Project.Presentations.Get(0) ;
                 pres.RootNode.Insert (treeNode,0);
                 XmlProperty xmlProp = pres.PropertyFactory.CreateXmlProperty();
                 treeNode.AddProperty(xmlProp);

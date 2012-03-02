@@ -63,7 +63,7 @@ namespace urakawa.daisy.import
                 Console.WriteLine("smil file to be parsed: " + Path.GetFileName(smilPath));
 
                 //parseSmil(fullSmilPath); // commented for ncx import feature
-                if (!m_IsAudioNCX)
+                if (!AudioNCXImport)
                 {
                     parseSmil(fullSmilPath);
                 }

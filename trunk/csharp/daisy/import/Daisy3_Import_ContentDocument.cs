@@ -35,14 +35,19 @@ namespace urakawa.daisy.import
                 return;
             }
 
+            //TODO: init XUK bundle project (m_BundleProject) by cloning m_Project (with currently contains only OPF metadat)
+
             //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
             //string dirPath = opfParentDir.ToString();
             string dirPath = Path.GetDirectoryName(m_Book_FilePath);
 
-            bool first = true;
+            //bool first = true;
             foreach (string docPath in spineOfContentDocuments)
             {
                 if (RequestCancellation) return;
+
+                //TODO: init m_Project
+                //TODO: clone metadata from m_BundleProject into m_Project
 
                 string fullDocPath = Path.Combine(dirPath, docPath);
                 XmlDocument xmlDoc = OpenXukAction.ParseXmlDocument(fullDocPath, true);
@@ -71,25 +76,37 @@ namespace urakawa.daisy.import
                     continue;
                 }
 
-                if (first)
-                {
-                    Presentation presentation = m_Project.Presentations.Get(0);
-                    XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
-                    xmlProp.LocalName = "book";
-                    presentation.PropertyFactory.DefaultXmlNamespaceUri = bodyElement.NamespaceURI;
-                    xmlProp.NamespaceUri = presentation.PropertyFactory.DefaultXmlNamespaceUri;
-                    TreeNode treeNode = presentation.TreeNodeFactory.Create();
-                    treeNode.AddProperty(xmlProp);
-                    presentation.RootNode = treeNode;
+                //if (first)
+                //{
+                //    Presentation presentation = m_Project.Presentations.Get(0);
+                //    XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
+                //    xmlProp.LocalName = "book";
+                //    presentation.PropertyFactory.DefaultXmlNamespaceUri = bodyElement.NamespaceURI;
+                //    xmlProp.NamespaceUri = presentation.PropertyFactory.DefaultXmlNamespaceUri;
+                //    TreeNode treeNode = presentation.TreeNodeFactory.Create();
+                //    treeNode.AddProperty(xmlProp);
+                //    presentation.RootNode = treeNode;
 
-                    first = false;
-                }
+                //    first = false;
+                //}
 
-                foreach (XmlNode childOfBody in bodyElement.ChildNodes)
-                {
-                    parseContentDocument(childOfBody, m_Project.Presentations.Get(0).RootNode, fullDocPath);
-                }
+                //foreach (XmlNode childOfBody in bodyElement.ChildNodes)
+                //{
+                //    parseContentDocument(childOfBody, m_Project.Presentations.Get(0).RootNode, fullDocPath);
+                //}
+
+                // TODO: return hierarchical outline where each node points to a XUK relative path, + XukAble.Uid (TreeNode are not corrupted during XukAbleManager.RegenerateUids();
+                parseContentDocument(bodyElement, null, fullDocPath);
+
+
+                //TODO: be careful with XukPath public accessor !!!! (used in Tobi UrakawaSession)
+                //TODO: m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
+                //TODO: XukSave m_Project
+
+                //TODO: add XHTML outline to m_BundleProject TreeNodes
             }
+
+            //TODO: XukSave m_BundleProject
         }
 
         private string ExtractInternalDTD(XmlDocumentType docType)
