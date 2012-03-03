@@ -21,7 +21,7 @@ namespace urakawa.daisy.import
             protected set { m_Xuk_FilePath = value;  }
         }
 
-        private Project m_Project;
+        protected Project m_Project;
         //public Project Project
         //{
         //    get { return m_Project; }
