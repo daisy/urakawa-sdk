@@ -293,6 +293,12 @@ namespace urakawa.daisy.import
                                 addAudio(audioWrapperNode, aChild, false, fullSmilPath);
                                 break;
                             }
+                            else
+                            {
+                                AddAnchorNode(navPointTreeNode, textPeerNode, fullSmilPath);
+                                break;
+                            }
+
                         }
                     }
                     else if (textPeerNode.LocalName == "seq" || textPeerNode.LocalName == "par")
@@ -336,6 +342,28 @@ namespace urakawa.daisy.import
                 }
             }
         }
+
+        protected virtual TreeNode AddAnchorNode(TreeNode navPointTreeNode,XmlNode textPeerNode,string fullSmilPath)
+    {
+            TreeNode anchorNode = navPointTreeNode.Presentation.TreeNodeFactory.Create();
+navPointTreeNode.AppendChild(anchorNode);
+string strReferedID = textPeerNode.Attributes.GetNamedItem("href").Value;
+XmlNode seqParent = textPeerNode.ParentNode;
+while (seqParent != null)
+{
+    if (seqParent.LocalName == "seq" && seqParent.Attributes.GetNamedItem("customTest") != null) break;
+    seqParent = seqParent.ParentNode;
+}
+string strClass = seqParent.Attributes.GetNamedItem("class").Value;
+if (strClass != null)
+{
+    XmlProperty prop = anchorNode.GetOrCreateXmlProperty();
+    prop.SetQName(strClass, null);
+
+    prop.SetAttribute("href", null, strReferedID);
+}
+            return anchorNode ;
+    }
 
         protected virtual TreeNode CreateTreeNodeForAudioNode(TreeNode navPointTreeNode ,  bool isHeadingNode, XmlNode smilNode, string fullSmilPath)
         {
