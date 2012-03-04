@@ -257,7 +257,7 @@ namespace urakawa.daisy.import
                     }
                     if (textPeerNode.LocalName == "audio")
                     {   
-                    audioWrapperNode = CreateTreeNodeForAudioNode(navPointTreeNode, isHeading, textPeerNode);
+                    audioWrapperNode = CreateTreeNodeForAudioNode(navPointTreeNode, isHeading, textPeerNode, fullSmilPath);
                     CheckAndAssignForHeadingAudio(navPointTreeNode, audioWrapperNode, textPeerNode);
                     XmlProperty xmlProp = navPointTreeNode.Presentation.PropertyFactory.CreateXmlProperty();
                     audioWrapperNode.AddProperty(xmlProp);
@@ -337,7 +337,7 @@ namespace urakawa.daisy.import
             }
         }
 
-        protected virtual TreeNode CreateTreeNodeForAudioNode(TreeNode navPointTreeNode ,  bool isHeadingNode, XmlNode smilNode)
+        protected virtual TreeNode CreateTreeNodeForAudioNode(TreeNode navPointTreeNode ,  bool isHeadingNode, XmlNode smilNode, string fullSmilPath)
         {
             TreeNode audioWrapperNode = null;
             if (isHeadingNode)
