@@ -290,6 +290,8 @@ namespace urakawa.daisy.import
                         {
                             if (aChild.LocalName == "audio")
                             {
+                                //addAudio(audioWrapperNode, aChild, false, fullSmilPath);
+                                audioWrapperNode = CreateTreeNodeForAudioNode(navPointTreeNode, false, aChild, fullSmilPath);
                                 addAudio(audioWrapperNode, aChild, false, fullSmilPath);
                                 break;
                             }
