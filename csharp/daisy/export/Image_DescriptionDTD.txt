@@ -1,1 +1,22 @@
- <!ELEMENT d:summary (p)> <!ATTLIST dtbook xmlns:d CDATA #IMPLIED> <!ELEMENT d:longdesc (p)> <!ELEMENT d:tactile (tour)> <!ELEMENT d:simplifiedLanguageDescription (p)> <!ELEMENT d:simplifiedImage (tour)> <!ELEMENT d:tour (p)> <!ATTLIST d:summary id ID #REQUIRED> <!ATTLIST d:longdesc id ID #REQUIRED> <!ATTLIST d:tactile id ID #REQUIRED> <!ATTLIST d:simplifiedLanguageDescription id ID #REQUIRED> <!ATTLIST d:simplifiedImage id ID #REQUIRED> <!ATTLIST annotation id ID #REQUIRED> <!ATTLIST annotation ref IDREF #REQUIRED> <!ATTLIST annotation by CDATA "">
+
+<!ATTLIST dtbook xmlns:d CDATA #IMPLIED>
+
+<!ELEMENT d:summary (p)> 
+<!ELEMENT d:longdesc (p)>
+<!ELEMENT d:simplifiedLanguageDescription (p)>
+
+<!ELEMENT d:tactile (tour)>
+<!ELEMENT d:simplifiedImage (tour)>
+<!ELEMENT d:tour (p)>
+
+<!ATTLIST d:summary id ID #REQUIRED>
+<!ATTLIST d:longdesc id ID #REQUIRED>
+<!ATTLIST d:simplifiedLanguageDescription id ID #REQUIRED>
+
+<!ATTLIST d:tactile id ID #REQUIRED>
+<!ATTLIST d:simplifiedImage id ID #REQUIRED>
+
+<!ATTLIST annotation id ID #REQUIRED>
+<!ATTLIST annotation ref IDREF #REQUIRED>
+<!ATTLIST annotation by CDATA "">
+<!ATTLIST annotation role CDATA "">

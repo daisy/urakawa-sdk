@@ -53,9 +53,9 @@ namespace urakawa.daisy.export
                 }
             }
 
-            if (m_ImageDescriptionInDTBook && strInternalDTD == null)
+            if (EXPORT_IMAGE_DESCRIPTION_IN_DTBOOK && strInternalDTD == null)
             {
-                string strDescriptionDTDPath = Path.Combine (System.AppDomain.CurrentDomain.BaseDirectory, "export\\Image_DescriptionDTD.txt");
+                string strDescriptionDTDPath = Path.Combine (System.AppDomain.CurrentDomain.BaseDirectory, IMAGE_DESCRIPTION_DTD_FRAGMENT_PATH);
                 if (File.Exists(strDescriptionDTDPath))
                 {
                     StreamReader sr = File.OpenText(strDescriptionDTDPath);
@@ -337,103 +337,9 @@ namespace urakawa.daisy.export
                                 {
                                     m_FilesList_Image.Add(exportImageName);
                                 }
+
+                                generateImageDescriptionInDTBook(n, currentXmlNode, exportImageName, DTBookDocument);
                             }
-                        }
-                        if (currentXmlNode.LocalName != null && currentXmlNode.LocalName.ToLower() == "img"
-                                    && n.GetAlternateContentProperty() != null)
-                                    {
-                                        //try
-                                        //{
-                                        Dictionary<string, List <string>> imageDescriptions = new Dictionary<string,List <string>>();
-                                        string descriptionFile = CreateImageDescription(exportImageName, n.GetAlternateContentProperty(), imageDescriptions);
-                                        if (!String.IsNullOrEmpty(descriptionFile))
-                                        {
-                                            //short term way for executing image description code: will be updated in later phase of implementation
-                                            XmlNode prodNoteNode = DTBookDocument.CreateElement("prodnote", currentXmlNode.NamespaceURI);
-                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "render", "optional");
-                                            string id_Prodnote = GetNextID(ID_DTBPrefix);
-                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "id", id_Prodnote);
-                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "imgref",currentXmlNode.Attributes.GetNamedItem("id").Value);
-                                            
-                                            currentXmlNode.ParentNode.AppendChild(prodNoteNode);
-                                            if (!m_Image_ProdNoteMap.ContainsKey(n)) m_Image_ProdNoteMap.Add(n, new List<XmlNode> ());
-                                            m_Image_ProdNoteMap[n].Add ( prodNoteNode) ;
-                                            XmlNode anchorNode = DTBookDocument.CreateElement("a", currentXmlNode.NamespaceURI);
-                                            prodNoteNode.AppendChild(anchorNode);
-                                            string descriptionFileUrl = descriptionFile.Replace("\\", "/") ;
-                                            
-                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFileUrl);
-                                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "external", "true");
-                                            anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description"));
-
-                                            if (m_ImageDescriptionInDTBook && imageDescriptions != null && imageDescriptions.Count > 0)
-                                            {
-                                                foreach (string s in imageDescriptions.Keys)
-                                                {
-                                                    //System.Windows.Forms.MessageBox.Show(s + " : " + imageDescriptions[s]);
-
-                                                    XmlNode prodNoteDesc = DTBookDocument.CreateElement("prodnote", currentXmlNode.NamespaceURI);
-                                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "render", "optional");
-                                                    string id_ProdnoteDesc = GetNextID(ID_DTBPrefix);
-                                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "id", id_ProdnoteDesc);
-                                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "imgref", currentXmlNode.Attributes.GetNamedItem("id").Value);
-                                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "class", s);
-                                                    currentXmlNode.ParentNode.AppendChild(prodNoteDesc);
-                                                    m_Image_ProdNoteMap[n].Add(prodNoteDesc);
-
-                                                    foreach (string descText in imageDescriptions[s])
-                                                    {
-                                                        XmlNode paraNode = DTBookDocument.CreateElement("p", currentXmlNode.NamespaceURI);
-                                                        prodNoteDesc.AppendChild(paraNode);
-                                                        paraNode.AppendChild(DTBookDocument.CreateTextNode(descText));
-                                                    }
-                                                }
-                                                imageDescriptions = null;
-                                            }
-                                            /*
-                                            if ( m_ImageDescriptionInDTBook )
-                                            {//1
-                                            // to do copy the diagram nodes that descend directly from body
-                                                if (m_AltProperrty_DiagramDocument.ContainsKey(n.GetAlternateContentProperty()))
-                                                {//2
-
-                                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, DTBookDocument.GetElementsByTagName("dtbook")[0],
-                    "xmlns:" + DiagramContentModelStrings.NS_PREFIX_DIAGRAM,
-                    DiagramContentModelStrings.NS_URL_DIAGRAM);
-                                                    XmlDocument descriptionDocument = m_AltProperrty_DiagramDocument[n.GetAlternateContentProperty()];
-                                                    XmlNodeList diagramNodesList = descriptionDocument.GetElementsByTagName("d:body")[0].ChildNodes;
-                                                    foreach (XmlNode xn in diagramNodesList)
-                                                    {//3
-                                                        XmlNode newNode = DTBookDocument.ImportNode(xn, true);
-                                                        prodNoteNode.AppendChild(newNode);
-                                                        for (int i = 0; i < newNode.Attributes.Count; i++)
-                                                        {//4
-                                                            XmlAttribute attr = newNode.Attributes[i];
-                                                            if (attr.Name == "xml:id")
-                                                            {//-4
-                                                                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, newNode, "id", attr.Value);
-                                                                newNode.Attributes.Remove(attr);
-                                                            }//-3
-                                                        }//-2
-                                              
-                                                    }//-1
-                                             
-                                                }
-                                              
-                                            //XmlNode newNode = DTBookDocument.ImportNode(M_DescriptionDocument.GetElementsByTagName("d:description")[0], true);
-                                                //prodNoteNode.AppendChild(newNode);
-                                            }
-                                            */
-                                        }
-                                        //}
-                                        //catch (System.Exception ex)
-                                        //{
-                                        //System.Windows.Forms.MessageBox.Show(ex.ToString());
-                                        //}
-                                    //}
-
-                            //}
-
                         }
 
                         return true;

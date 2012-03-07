@@ -67,6 +67,7 @@
     <Content Include="desc2html.xsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="export\Image_DescriptionDTD.txt" />
     <Content Include="tpbnarrator_res.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -77,8 +78,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DaigramContentModelStrings.cs" />
+    <Compile Include="DiagramContentModelHelper.cs" />
     <Compile Include="export\Daisy3_Export_ImageDescription.cs" />
+    <Compile Include="export\Daisy3_Export_ImageDescription_BodyContent.cs" />
+    <Compile Include="export\Daisy3_Export_ImageDescription_DTBook.cs" />
+    <Compile Include="export\Daisy3_Export_ImageDescription_Metadata.cs" />
+    <Compile Include="export\Daisy3_Export_ImageDescription_Smil.cs" />
+    <Compile Include="export\Daisy3_Export_Xhtml.cs" />
     <Compile Include="export\tree-visitor\AbstractBasePublishAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\AbstractPublishFlattenedManagedAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\AbstractPublishManagedAudioVisitor.cs" />
@@ -104,6 +110,7 @@
     <Compile Include="import\Daisy3_Import_Opf.cs" />
     <Compile Include="import\Daisy3_Import_XmlParsing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZipStorer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\tobi\trunk\tobiapp\ExternalLibs\ICSharpCode\Lib.ICSharpCode_NET4.csproj">
