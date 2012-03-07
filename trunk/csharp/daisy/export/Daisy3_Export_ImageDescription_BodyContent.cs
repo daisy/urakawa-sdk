@@ -179,11 +179,11 @@ namespace urakawa.daisy.export
                     int dotIndex = low.LastIndexOf('.');
                     XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, objectNode,
                         DiagramContentModelHelper.SrcType,
-                        low.EndsWith(".svg") || low.EndsWith(".svgz") ? "image/svg+xml" :
-                        low.EndsWith(".png") ? "image/png" :
-                        low.EndsWith(".gif") ? "image/gif" :
-                        low.EndsWith(".jpg") || low.EndsWith(".jpeg") ? "image/jpg" :
-                        low.EndsWith(".bmp") ? "image/bmp" :
+                        low.EndsWith(".svg") || low.EndsWith(".svgz") ? DataProviderFactory.IMAGE_SVG_MIME_TYPE :
+                        low.EndsWith(".png") ? DataProviderFactory.IMAGE_PNG_MIME_TYPE :
+                        low.EndsWith(".gif") ? DataProviderFactory.IMAGE_GIF_MIME_TYPE :
+                        low.EndsWith(".jpg") || low.EndsWith(".jpeg") ? DataProviderFactory.IMAGE_JPG_MIME_TYPE :
+                        low.EndsWith(".bmp") ? DataProviderFactory.IMAGE_BMP_MIME_TYPE :
                         dotIndex != -1 && dotIndex < (low.Length - 1) ? "image/" + low.Substring(dotIndex + 1) :
                         "image",
                         objectNode.NamespaceURI);
