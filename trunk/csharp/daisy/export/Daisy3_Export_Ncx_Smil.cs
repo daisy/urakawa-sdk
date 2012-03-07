@@ -187,7 +187,7 @@ namespace urakawa.daisy.export
                         strSeqID = GetNextID(ID_SmilPrefix);
                     }
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "id", strSeqID);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "class", m_Image_ProdNoteMap.ContainsKey(n)? "prodnote": special_UrakawaNode.GetXmlElementQName().LocalName);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "class", m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementQName().LocalName);
 
                     if (IsEscapableNode(special_UrakawaNode))
                     {
@@ -197,7 +197,7 @@ namespace urakawa.daisy.export
 
                     if (IsSkippableNode(special_UrakawaNode) || m_Image_ProdNoteMap.ContainsKey(n))
                     {
-                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "customTest",m_Image_ProdNoteMap.ContainsKey(n)? "prodnote": special_UrakawaNode.GetXmlElementQName().LocalName);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "customTest", m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementQName().LocalName);
 
                         if (special_UrakawaNode.GetXmlElementQName().LocalName == "noteref" || special_UrakawaNode.GetXmlElementQName().LocalName == "annoref")
                         {
@@ -211,8 +211,8 @@ namespace urakawa.daisy.export
                             branchStartTreeNode = GetReferedTreeNode(special_UrakawaNode);
 
                         }
-                        
-                        if (m_Image_ProdNoteMap.ContainsKey(n) )
+
+                        if (m_Image_ProdNoteMap.ContainsKey(n))
                         {
                             if (!currentSmilCustomTestList.Contains("prodnote"))
                             {
@@ -392,7 +392,7 @@ namespace urakawa.daisy.export
 
                 if (m_Image_ProdNoteMap.ContainsKey(n))
                 {
-                    CreateSmilNodesForImageDescription(n, smilDocument, mainSeq, durationOfCurrentSmil, n.GetAlternateContentProperty (), smilFileName);
+                    CreateSmilNodesForImageDescription(n, smilDocument, mainSeq, durationOfCurrentSmil, n.GetAlternateContentProperty(), smilFileName);
                 }
                 // if node n is pagenum, add to pageList
                 if (n.GetXmlElementQName() != null
@@ -472,7 +472,7 @@ namespace urakawa.daisy.export
                 else if (special_UrakawaNode != null
                     && m_NavListElementNamesList.Contains(special_UrakawaNode.GetXmlElementQName().LocalName) && !specialParentNodesAddedToNavList.Contains(special_UrakawaNode) || m_Image_ProdNoteMap.ContainsKey(n))
                 {
-                    string navListNodeName =m_Image_ProdNoteMap.ContainsKey(n)? "prodnote": special_UrakawaNode.GetXmlElementQName().LocalName;
+                    string navListNodeName = m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementQName().LocalName;
                     specialParentNodesAddedToNavList.Add(special_UrakawaNode);
                     XmlNode navListNode = null;
 
@@ -1037,7 +1037,7 @@ namespace urakawa.daisy.export
                     headNode.AppendChild(customTestNode);
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, customTestNode, "bookStruct", bookStrucMap[customTestName]);
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, customTestNode, "defaultState", "false");
-                    
+
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, customTestNode, "id", customTestName);
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, customTestNode, "override", "visible");
                 }
@@ -1359,27 +1359,27 @@ namespace urakawa.daisy.export
                 //else check if it has to be appended to parent of this special node in stack or to main seq.
                 if (special_UrakawaNode != null && (special_UrakawaNode == n || n.IsDescendantOf(special_UrakawaNode)))
                 {
-//2
+                    //2
                     Seq_SpecialNode.AppendChild(parNode);
                 } //-2
                 else
                 {
-//2
+                    //2
                     bool IsParNodeAppended = false;
                     string strReferedID = par_id;
                     if (specialParentNodeStack.Count > 0)
                     {
-//3
+                        //3
                         // check and pop stack till specialParentNode of   iterating node n is found in stack
                         // the loop is also used to assign value of last imidiate seq or par to end attribute of parent seq while pop up
                         while (specialParentNodeStack.Count > 0 && !n.IsDescendantOf(special_UrakawaNode))
                         {
-//4
+                            //4
                             if (Seq_SpecialNode != null
                                 &&
                                 strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
                             {
-//5
+                                //5
                                 Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID +
                                                                                        ".end";
                             } //-5
@@ -1391,7 +1391,7 @@ namespace urakawa.daisy.export
                         // if parent of node n is retrieved from stack, apend the par node to it.
                         if (n.IsDescendantOf(special_UrakawaNode))
                         {
-//4
+                            //4
                             Seq_SpecialNode.AppendChild(parNode);
                             IsParNodeAppended = true;
 
@@ -1401,16 +1401,16 @@ namespace urakawa.daisy.export
 
                     if (specialSeqNodeStack.Count == 0 && !IsParNodeAppended)
                     {
-//3
+                        //3
                         mainSeq.AppendChild(parNode);
                         special_UrakawaNode = null;
                         if (Seq_SpecialNode != null)
                         {
-//4
+                            //4
                             //if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
                             if (strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
                             {
-//5
+                                //5
                                 //System.Windows.Forms.MessageBox.Show ( par_id == null ? "null" : par_id );
                                 //Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
                                 Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID +
@@ -1427,11 +1427,11 @@ namespace urakawa.daisy.export
                 // check and assign first par ID
                 if (firstPar_id == null)
                 {
-//2
+                    //2
                     if (n.GetXmlElementQName() != null && currentHeadingTreeNode != null
                         && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
                     {
-//3
+                        //3
                         firstPar_id = par_id;
                     } //-3
                 } //-2
@@ -1449,7 +1449,7 @@ namespace urakawa.daisy.export
                 parNode.AppendChild(SmilTextNode);
                 if (externalAudio != null)
                 {
-//2
+                    //2
                     XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
                                                                FormatTimeString(externalAudio.ClipBegin));
@@ -1502,138 +1502,6 @@ namespace urakawa.daisy.export
             return durOfCurrentSmil;
         }
 
-        private Dictionary<AlternateContentProperty, XmlDocument> m_AltProperrty_DiagramDocument = new Dictionary<AlternateContentProperty, XmlDocument>();
-        private void CreateSmilNodesForAltProperty(urakawa.core.TreeNode n, XmlDocument smilDocument, XmlNode mainSeq)
-        {
-            urakawa.property.alt.AlternateContentProperty altProperty = n.GetAlternateContentProperty();
-            XmlDocument descriptionDocument = m_AltProperrty_DiagramDocument[altProperty];
-            if (descriptionDocument != null)
-            {
-                XmlNode bodyNode = descriptionDocument.GetElementsByTagName("d:body")[0];
-                foreach (XmlNode xn in bodyNode.ChildNodes)
-                {
-                    XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
-                    mainSeq.AppendChild(parNode);
-                    XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id",
-                                                               GetNextID(ID_SmilPrefix));
-                    string dtbookID = null;
-                    dtbookID = xn.Attributes.GetNamedItem("xml:id").Value;
-
-                    //dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null
-                    //? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value
-                    //: m_TreeNode_XmlNodeMap[n.Parent].Attributes.GetNamedItem("id").Value;
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
-                                                               m_Filename_Content + "#" + dtbookID);
-                    parNode.AppendChild(SmilTextNode);
-                    /*
-                    if (externalAudio != null)
-                    {
-                        XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
-                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
-                                                                   FormatTimeString(externalAudio.ClipBegin));
-                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
-                                                                   FormatTimeString(externalAudio.ClipEnd));
-                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src",
-                                                                   Path.GetFileName(externalAudio.Src));
-                        parNode.AppendChild(audioNode);
-
-                        // add audio file name in audio files list for use in opf creation 
-                        string audioFileName = Path.GetFileName(externalAudio.Src);
-                        if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
-
-                        // add to duration 
-                        durationOfCurrentSmil.Add(externalAudio.Duration);
-                    }
-                }
-                    */
-                    System.Windows.Forms.MessageBox.Show(xn.Name);
-                }
-            }
-        }
-
-        public void CreateSmilNodesForImageDescription(urakawa.core.TreeNode n, XmlDocument smilDocument, XmlNode mainSeq, Time durationOfCurrentSmil, AlternateContentProperty altProperty, string smilFileName)
-    {
-        try
-        {
-            int counter = 0;
-            foreach ( string s in m_AltProperty_DescriptionMap[altProperty].ImageDescNodeToAltContentMap.Keys )
-            {
-                AlternateContent altContent = m_AltProperty_DescriptionMap[altProperty].ImageDescNodeToAltContentMap[s];
-                if (altContent.Text == null) continue;
-                counter++;
-                if (m_Image_ProdNoteMap[n].Count <= counter ) break;
-                XmlNode seqNode = smilDocument.CreateElement("seq", mainSeq.NamespaceURI);
-                mainSeq.AppendChild(seqNode);
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "class", "prodnote");
-                string strSeqID = GetNextID(ID_SmilPrefix);
-                //System.Windows.Forms.MessageBox.Show(counter.ToString ()  + " : " + m_Image_ProdNoteMap[n].Count.ToString());
-                string dtbookID = m_Image_ProdNoteMap[n][counter].Attributes.GetNamedItem("id").Value;
-                string par_id = GetNextID(ID_SmilPrefix);
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "id", strSeqID);
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "class", "prodnote");
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "customTest", "prodnote");
-                XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[n][counter], "smilref", smilFileName + "#" + strSeqID);
-
-                XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
-                seqNode.AppendChild(parNode);
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
-                XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id", GetNextID(ID_SmilPrefix));
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
-                                                                           m_Filename_Content + "#" + dtbookID);
-                parNode.AppendChild(SmilTextNode);
-                
-
-                if (altContent.Audio != null)
-                {
-                    media.data.audio.ManagedAudioMedia managedAudio = altContent.Audio;
-                    DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
-
-                    //string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
-                    string exportAudioName = Path.GetFileNameWithoutExtension(smilFileName) + "_" + counter.ToString() + ".wav";
-                    string destPath = Path.Combine(m_ImageDescriptionDirectoryPath, exportAudioName);
-
-                    if (!File.Exists(destPath))
-                    {
-
-                        dataProvider.ExportDataStreamToFile(destPath, false);
-
-                        if (m_encodeToMp3)
-                        {
-                            string convertedFile = EncodeWavFileToMp3(destPath);
-                            if (convertedFile != null) exportAudioName = Path.GetFileName(convertedFile);
-                        }
-                    }
-
-                    //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
-                    //DiagramContentModelStrings.TOBI_Audio, exportAudioName, DiagramContentModelStrings.NS_URL_TOBI);
-                    DirectoryInfo d = new DirectoryInfo(m_ImageDescriptionDirectoryPath);
-                    
-                    string srcPath = d.Name + "/" + exportAudioName;
-                    
-                    XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
-                    "00:00:00");
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
-                    FormatTimeString(managedAudio.Duration));
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src",
-                                                               srcPath);
-                    parNode.AppendChild(audioNode);
-
-                    if (!m_FilesList_Audio.Contains(srcPath)) m_FilesList_Audio.Add(srcPath);
-
-                    // add to duration 
-                    durationOfCurrentSmil.Add(managedAudio.Duration);
-                }
-            }
-        }
-        catch (System.Exception ex)
-        {
-            System.Windows.Forms.MessageBox.Show(ex.ToString());
-        }
-    }
-
         private string EncodeWavFileToMp3(string sourceFilePath)
         {
 
@@ -1651,7 +1519,7 @@ namespace urakawa.daisy.export
 
             bool result = false;
 
-            result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat,(ushort) BitRate_Mp3);
+            result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat, (ushort)BitRate_Mp3);
 
 
             if (result)
