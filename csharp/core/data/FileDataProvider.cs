@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Xml;
 using urakawa.xuk;
 
@@ -19,6 +20,38 @@ namespace urakawa.data
     /// </summary>
     public class FileDataProvider : DataProvider
     {
+        public static bool isHTTPFile(string filepath)
+        {
+            return filepath.StartsWith("http://") || filepath.StartsWith("https://");
+        }
+
+        public static string EnsureLocalFilePathDownloadTempDirectory(string filepath)
+        {
+            string localpath = filepath;
+
+            if (isHTTPFile(filepath))
+            {
+                localpath = new Uri(filepath, UriKind.Absolute).LocalPath; //AbsolutePath preserves %20, file:// etc.
+                localpath = Path.Combine(Path.GetTempPath(), Path.GetFileName(localpath));
+                try
+                {
+                    WebClient webClient = new WebClient();
+                    webClient.Proxy = null;
+                    webClient.DownloadFile(filepath, localpath);
+
+                    //byte[] imageContent = webClient.DownloadData(filepath);
+                    //Stream stream = new MemoryStream(imageContent);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+
+            return localpath;
+        }
+
+
         public override string GetTypeNameFormatted()
         {
             return XukStrings.FileDataProvider;
