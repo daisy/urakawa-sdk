@@ -24,21 +24,21 @@ namespace urakawa.daisy.import
         {
             if (RequestCancellation) return;
 
-            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsWithName(xmlDoc, true, "metadata", null, false))
+            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "metadata", null, false))
             {
                 if (RequestCancellation) return;
                 parseMetadata_ElementInnerText(node);
             }
 
             if (RequestCancellation) return;
-            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsWithName(xmlDoc, true, "dc-metadata", null, false))
+            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "dc-metadata", null, false))
             {
                 if (RequestCancellation) return;
                 parseMetadata_ElementInnerText(node);
             }
 
             if (RequestCancellation) return;
-            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsWithName(xmlDoc, true, "x-metadata", null, false))
+            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "x-metadata", null, false))
             {
                 if (RequestCancellation) return;
                 parseMetadata_ElementInnerText(node);
@@ -48,7 +48,7 @@ namespace urakawa.daisy.import
         private void parseMetadata_NameContentAll(XmlDocument xmlDoc)
         {
             if (RequestCancellation) return;
-            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsWithName(xmlDoc, true, "meta", null, false))
+            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "meta", null, false))
             {
                 if (RequestCancellation) return;
                 parseMetadata_NameContent(node);

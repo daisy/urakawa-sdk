@@ -14,7 +14,7 @@ namespace urakawa.daisy.import
 
         private void parseOpf(XmlDocument opfXmlDoc)
         {
-            XmlNode packageNode = XmlDocumentHelper.GetFirstChildElementWithName(opfXmlDoc, true, "package", null);
+            XmlNode packageNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlDoc, true, "package", null);
             if (packageNode != null)
             {
                 XmlAttributeCollection packageNodeAttrs = packageNode.Attributes;
@@ -97,7 +97,7 @@ namespace urakawa.daisy.import
             ncxPath = null;
             dtbookPath = null;
 
-            XmlNode spineNodeRoot = XmlDocumentHelper.GetFirstChildElementWithName(opfXmlDoc, true, "spine", null);
+            XmlNode spineNodeRoot = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlDoc, true, "spine", null);
 
             if (spineNodeRoot != null)
             {
@@ -126,7 +126,7 @@ namespace urakawa.daisy.import
                 }
             }
 
-            XmlNode manifNodeRoot = XmlDocumentHelper.GetFirstChildElementWithName(opfXmlDoc, true, "manifest", null);
+            XmlNode manifNodeRoot = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlDoc, true, "manifest", null);
             if (manifNodeRoot == null)
             {
                 return;

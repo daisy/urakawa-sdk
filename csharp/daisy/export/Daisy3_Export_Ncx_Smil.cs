@@ -31,8 +31,8 @@ namespace urakawa.daisy.export
         {
             XmlDocument ncxDocument = CreateStub_NcxDocument();
 
-            XmlNode ncxRootNode = XmlDocumentHelper.GetFirstChildElementWithName(ncxDocument, true, "ncx", null); //ncxDocument.GetElementsByTagName("ncx")[0];
-            XmlNode navMapNode = XmlDocumentHelper.GetFirstChildElementWithName(ncxDocument, true, "navMap", null); //ncxDocument.GetElementsByTagName("navMap")[0];
+            XmlNode ncxRootNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(ncxDocument, true, "ncx", null); //ncxDocument.GetElementsByTagName("ncx")[0];
+            XmlNode navMapNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(ncxDocument, true, "navMap", null); //ncxDocument.GetElementsByTagName("navMap")[0];
             Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap = new Dictionary<urakawa.core.TreeNode, XmlNode>();
             m_FilesList_Smil = new List<string>();
             m_FilesList_Audio = new List<string>();
@@ -154,7 +154,7 @@ namespace urakawa.daisy.export
                 if (smilDocument == null)
                 {
                     smilDocument = CreateStub_SmilDocument();
-                    mainSeq = XmlDocumentHelper.GetFirstChildElementWithName(smilDocument, true, "body", null).FirstChild;
+                    mainSeq = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(smilDocument, true, "body", null).FirstChild;
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, mainSeq, "id", GetNextID(ID_SmilPrefix));
                     smilFileName = GetNextSmilFileName;
                     //m_ProgressPercentage += Convert.ToInt32((m_SmilFileNameCounter / m_ListOfLevels.Count) * 100 * 0.7);
@@ -403,7 +403,7 @@ namespace urakawa.daisy.export
                         currentSmilCustomTestList.Add("pagenum");
                     }
 
-                    XmlNode pageListNode = XmlDocumentHelper.GetFirstChildElementWithName(ncxDocument, true, "pageList", null);
+                    XmlNode pageListNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(ncxDocument, true, "pageList", null);
                     if (pageListNode == null)
                     {
                         pageListNode = ncxDocument.CreateElement(null, "pageList", ncxRootNode.NamespaceURI);
@@ -477,7 +477,7 @@ namespace urakawa.daisy.export
                     XmlNode navListNode = null;
 
                     //= getFirstChildElementsWithName ( ncxDocument, true, "navList", null );
-                    foreach (XmlNode xn in XmlDocumentHelper.GetChildrenElementsWithName(ncxRootNode, true, "navList", ncxRootNode.NamespaceURI, true))
+                    foreach (XmlNode xn in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(ncxRootNode, true, "navList", ncxRootNode.NamespaceURI, true))
                     {
                         if (xn.Attributes.GetNamedItem("class").Value == navListNodeName)
                         {
@@ -632,7 +632,7 @@ namespace urakawa.daisy.export
                 if (smilDocument != null)
                 {
                     // update duration in seq node
-                    XmlNode mainSeqNode = XmlDocumentHelper.GetFirstChildElementWithName(smilDocument, true, "body", null).FirstChild; //smilDocument.GetElementsByTagName("body")[0].FirstChild;
+                    XmlNode mainSeqNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(smilDocument, true, "body", null).FirstChild; //smilDocument.GetElementsByTagName("body")[0].FirstChild;
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, mainSeqNode, "dur", FormatTimeString(durationOfCurrentSmil));
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, mainSeqNode, "fill", "remove");
                     AddMetadata_Smil(smilDocument, FormatTimeString(smilElapseTime), currentSmilCustomTestList);
@@ -659,7 +659,7 @@ namespace urakawa.daisy.export
             int playOrderCounter = 1;
             foreach (XmlNode xn in playOrderList_Sorted)
             {
-                XmlNode referedContentNode = XmlDocumentHelper.GetFirstChildElementWithName(xn, false, "content", xn.NamespaceURI);
+                XmlNode referedContentNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xn, false, "content", xn.NamespaceURI);
                 string contentNode_Src = referedContentNode.Attributes.GetNamedItem("src").Value;
 
                 string str;
@@ -768,7 +768,7 @@ namespace urakawa.daisy.export
                 "docTitle",
                  ncxRootNode.NamespaceURI);
 
-            XmlNode navMapNode = XmlDocumentHelper.GetFirstChildElementWithName(ncxDocument, true, "navMap", null);
+            XmlNode navMapNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(ncxDocument, true, "navMap", null);
 
             ncxRootNode.InsertBefore(docNode, navMapNode);
 
@@ -1003,7 +1003,7 @@ namespace urakawa.daisy.export
 
         protected void AddMetadata_Ncx(XmlDocument ncxDocument, string strTotalPages, string strMaxNormalPage, string strDepth, List<string> ncxCustomTestList)
         {
-            XmlNode headNode = XmlDocumentHelper.GetFirstChildElementWithName(ncxDocument, true, "head", null); //ncxDocument.GetElementsByTagName("head")[0];
+            XmlNode headNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(ncxDocument, true, "head", null); //ncxDocument.GetElementsByTagName("head")[0];
 
             AddMetadata_DtbUid(false, ncxDocument, headNode);
 
@@ -1047,7 +1047,7 @@ namespace urakawa.daisy.export
 
         protected void AddMetadata_Smil(XmlDocument smilDocument, string strElapsedTime, List<string> currentSmilCustomTestList)
         {
-            XmlNode headNode = XmlDocumentHelper.GetFirstChildElementWithName(smilDocument, true, "head", null); //smilDocument.GetElementsByTagName("head")[0];
+            XmlNode headNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(smilDocument, true, "head", null); //smilDocument.GetElementsByTagName("head")[0];
 
             AddMetadata_DtbUid(false, smilDocument, headNode);
 

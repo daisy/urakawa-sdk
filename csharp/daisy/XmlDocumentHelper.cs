@@ -101,16 +101,16 @@ namespace urakawa.daisy
         }
 
 
-        public static XmlNode GetFirstChildElementWithName(XmlNode root, bool deep, string localName, string namespaceUri)
+        public static XmlNode GetFirstChildElementOrSelfWithName(XmlNode root, bool deep, string localName, string namespaceUri)
         {
-            foreach (XmlNode node in GetChildrenElementsWithName(root, deep, localName, namespaceUri, true))
+            foreach (XmlNode node in GetChildrenElementsOrSelfWithName(root, deep, localName, namespaceUri, true))
             {
                 return node;
             }
             return null;
         }
 
-        public static IEnumerable<XmlNode> GetChildrenElementsWithName(XmlNode root, bool deep, string localName, string namespaceUri, bool breakOnFirstFound)
+        public static IEnumerable<XmlNode> GetChildrenElementsOrSelfWithName(XmlNode root, bool deep, string localName, string namespaceUri, bool breakOnFirstFound)
         {
             if (root.NodeType == XmlNodeType.Document)
             {
@@ -134,7 +134,7 @@ namespace urakawa.daisy
                     yield break;
                 }
 
-                foreach (XmlNode childNode in GetChildrenElementsWithName(element, deep, localName, namespaceUri, breakOnFirstFound))
+                foreach (XmlNode childNode in GetChildrenElementsOrSelfWithName(element, deep, localName, namespaceUri, breakOnFirstFound))
                 {
                     yield return childNode;
 
@@ -214,7 +214,7 @@ namespace urakawa.daisy
 
                 if (deep)
                 {
-                    foreach (XmlNode childNode in GetChildrenElementsWithName(node, deep, localName, namespaceUri, breakOnFirstFound))
+                    foreach (XmlNode childNode in GetChildrenElementsOrSelfWithName(node, deep, localName, namespaceUri, breakOnFirstFound))
                     {
                         yield return childNode;
 
