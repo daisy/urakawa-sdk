@@ -81,49 +81,52 @@ namespace urakawa.daisy.import
         {
             if (RequestCancellation) return;
 
-            if (meta != null)
+            if (meta == null)
             {
-                for (int i = 0; i < node.Attributes.Count; i++)
+                return;
+            }
+
+            for (int i = 0; i < node.Attributes.Count; i++)
+            {
+                XmlAttribute attribute = node.Attributes[i];
+
+                string lowerCaseName = attribute.Name.ToLower();
+                string lowerCaseLocalName = attribute.LocalName.ToLower();
+
+                if (lowerCaseLocalName == "name"
+                    || lowerCaseLocalName == "property"
+                    || lowerCaseLocalName == "content")
                 {
-                    XmlAttribute attribute = node.Attributes[i];
+                    continue;
+                }
+                if (lowerCaseLocalName == "id"
+                    && node != m_PublicationUniqueIdentifierNode)
+                {
+                    continue;
+                }
 
-                    string lowerCaseName = attribute.Name.ToLower();
-                    string lowerCaseLocalName = attribute.LocalName.ToLower();
+                if (lowerCaseName.StartsWith("xmlns:"))
+                {
+                    //meta.NameContentAttribute.NamespaceUri = attribute.Value;
+                }
+                else if (lowerCaseName == "xmlns")
+                {
+                    //meta.OtherAttributes.NamespaceUri = attribute.Value;
+                }
+                else
+                {
+                    MetadataAttribute xmlAttr = new MetadataAttribute();
 
-                    if (lowerCaseLocalName == "name"
-                        || lowerCaseLocalName == "content")
+                    xmlAttr.Name = attribute.Name;
+
+                    if (lowerCaseName.Contains(":"))
                     {
-                        continue;
-                    }
-                    if (lowerCaseLocalName == "id"
-                        && node != m_PublicationUniqueIdentifierNode)
-                    {
-                        continue;
+                        xmlAttr.NamespaceUri = attribute.NamespaceURI;
                     }
 
-                    if (lowerCaseName.StartsWith("xmlns:"))
-                    {
-                        //meta.NameContentAttribute.NamespaceUri = attribute.Value;
-                    }
-                    else if (lowerCaseName == "xmlns")
-                    {
-                        //meta.OtherAttributes.NamespaceUri = attribute.Value;
-                    }
-                    else
-                    {
-                        MetadataAttribute xmlAttr = new MetadataAttribute();
+                    xmlAttr.Value = attribute.Value;
 
-                        xmlAttr.Name = attribute.Name;
-
-                        if (lowerCaseName.Contains(":"))
-                        {
-                            xmlAttr.NamespaceUri = attribute.NamespaceURI;
-                        }
-
-                        xmlAttr.Value = attribute.Value;
-
-                        meta.OtherAttributes.Insert(meta.OtherAttributes.Count, xmlAttr);
-                    }
+                    meta.OtherAttributes.Insert(meta.OtherAttributes.Count, xmlAttr);
                 }
             }
         }
@@ -208,14 +211,22 @@ namespace urakawa.daisy.import
             }
 
             XmlNode attrName = mdAttributes.GetNamedItem("name");
+            XmlNode attrProperty = mdAttributes.GetNamedItem("property");
+
             XmlNode attrContent = mdAttributes.GetNamedItem("content");
 
-            if (attrName != null && !String.IsNullOrEmpty(attrName.Value)
+            if ((
+                attrName != null && !String.IsNullOrEmpty(attrName.Value)
+                ||
+                attrProperty != null && !String.IsNullOrEmpty(attrProperty.Value)
+                )
                 && attrContent != null && !String.IsNullOrEmpty(attrContent.Value))
             {
                 XmlNode mdIdentifier = mdAttributes.GetNamedItem("id");
 
-                handleMetaData(metaDataNode, attrName.Value, attrContent.Value, (mdIdentifier == null ? null : mdIdentifier.Value));
+                handleMetaData(metaDataNode,
+                    attrName != null ? attrName.Value : attrProperty.Value,
+                    attrContent.Value, (mdIdentifier == null ? null : mdIdentifier.Value));
             }
         }
 
@@ -309,7 +320,7 @@ namespace urakawa.daisy.import
         {
             //does this item exist?
             List<Metadata> primaryNameMetadata = findMetadataByName(metadataDefinition.Name);
-            
+
             List<Metadata> allSynonyms = new List<Metadata>();
 
             if (metadataDefinition.Synonyms == null) return;
@@ -346,7 +357,7 @@ namespace urakawa.daisy.import
                     }
                 }
             }
-            
+
         }
 
         //find all metadata items with the given name (case-insensitive)
@@ -355,10 +366,10 @@ namespace urakawa.daisy.import
         {
             IEnumerable<Metadata> metadatas =
                 m_Project.Presentations.Get(0).Metadatas.ContentsAs_Enumerable;
-            
+
             IEnumerator<Metadata> enumerator = metadatas.GetEnumerator();
             List<Metadata> found = new List<Metadata>();
-            while(enumerator.MoveNext())
+            while (enumerator.MoveNext())
             {
                 if (enumerator.Current.NameContentAttribute.Name.ToLower() == name.ToLower())
                 {

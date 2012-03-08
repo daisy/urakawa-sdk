@@ -85,6 +85,13 @@ namespace urakawa.commands
                     throw new ArgumentException("altContentProperty && altContent");
                 }
             }
+            else
+            {
+                if (altContentProperty == null || altContent != null)
+                {
+                    throw new ArgumentException("metadataAttribute != null ++ altContentProperty == null || altContent != null");
+                }
+            }
 
             TreeNode = treeNode;
             Metadata = metadata;
