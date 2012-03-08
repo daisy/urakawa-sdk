@@ -64,11 +64,11 @@ namespace urakawa.daisy.import
                 //{
                 //    listOfBodies = xmlDoc.GetElementsByTagName("book");
                 //}
-                XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementWithName(xmlDoc, true, "body", null);
+                XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDoc, true, "body", null);
 
                 if (bodyElement == null)
                 {
-                    bodyElement = XmlDocumentHelper.GetFirstChildElementWithName(xmlDoc, true, "book", null);
+                    bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDoc, true, "book", null);
                 }
 
                 if (bodyElement == null)
@@ -154,11 +154,11 @@ namespace urakawa.daisy.import
                         //{
                         //    listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("book");
                         //}
-                        XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementWithName(xmlNode, true, "body", null);
+                        XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "body", null);
 
                         if (bodyElement == null)
                         {
-                            bodyElement = XmlDocumentHelper.GetFirstChildElementWithName(xmlNode, true, "book", null);
+                            bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "book", null);
                         }
 
                         if (bodyElement != null)

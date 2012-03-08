@@ -51,7 +51,7 @@ namespace urakawa.daisy.import
             }
             treeNode.AddProperty(xmlProp);
 
-            m_DocTitleXmlNode  = XmlDocumentHelper.GetFirstChildElementWithName(ncxDocument.DocumentElement, true, "docTitle", ncxDocument.DocumentElement.NamespaceURI);
+            m_DocTitleXmlNode  = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(ncxDocument.DocumentElement, true, "docTitle", ncxDocument.DocumentElement.NamespaceURI);
             m_IsDocTitleCreated = false;
 
             ParseNCXNodes(presentation, navMap, treeNode);
@@ -68,9 +68,9 @@ namespace urakawa.daisy.import
             if (pageListNode != null)
             {
                 
-                foreach (XmlNode pageTargetNode in XmlDocumentHelper.GetChildrenElementsWithName(pageListNode, true, "pageTarget", navMap.NamespaceURI, false))
+                foreach (XmlNode pageTargetNode in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(pageListNode, true, "pageTarget", navMap.NamespaceURI, false))
                 {
-                    XmlNode contentNode = XmlDocumentHelper.GetFirstChildElementWithName(pageTargetNode, true, "content", pageTargetNode.NamespaceURI);
+                    XmlNode contentNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(pageTargetNode, true, "content", pageTargetNode.NamespaceURI);
                     m_PageReferencesMapDictionaryForNCX.Add(contentNode.Attributes.GetNamedItem("src").Value , pageTargetNode);
                     
                 }
@@ -92,10 +92,10 @@ namespace urakawa.daisy.import
                 {
                     treeNode = CreateTreeNodeForNavPoint(tNode, node);
                     
-                    XmlNode contentNode = XmlDocumentHelper.GetFirstChildElementWithName(node, true, "content", node.NamespaceURI);
+                    XmlNode contentNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(node, true, "content", node.NamespaceURI);
                     m_SmilRefToNavPointTreeNodeMap.Add(contentNode.Attributes.GetNamedItem("src").Value, treeNode);
 
-                    XmlNode navLabelXmlNode = XmlDocumentHelper.GetFirstChildElementWithName(node, true, "navLabel", node.NamespaceURI);
+                    XmlNode navLabelXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(node, true, "navLabel", node.NamespaceURI);
                     if (navLabelXmlNode != null) m_NavPointNode_NavLabelMap.Add(treeNode, navLabelXmlNode);
                 }
             
@@ -211,7 +211,7 @@ namespace urakawa.daisy.import
 
                 // handle doctitle if audio exists before first heading by adding doctitle node as first treenode
                 if (navPointTreeNode == null && !m_IsDocTitleCreated
-                    &&    (XmlDocumentHelper.GetFirstChildElementWithName(parNode, false, "audio", null) != null    ||    XmlDocumentHelper.GetFirstChildElementWithName(parNode, false, "text", null) != null))
+                    &&    (XmlDocumentHelper.GetFirstChildElementOrSelfWithName(parNode, false, "audio", null) != null    ||    XmlDocumentHelper.GetFirstChildElementOrSelfWithName(parNode, false, "text", null) != null))
                 {
                     m_IsDocTitleCreated = true;
                     navPointTreeNode = CreateTreeNodeForNavPoint(m_Project.Presentations.Get(0).RootNode, m_DocTitleXmlNode);
@@ -414,7 +414,7 @@ if (strClass != null)
         protected virtual void AddPagePropertiesToAudioNode(TreeNode audioWrapperNode, XmlNode pageTargetNode)
         {
             TextMedia textMedia = audioWrapperNode.Presentation.MediaFactory.CreateTextMedia();
-            textMedia.Text = XmlDocumentHelper.GetFirstChildElementWithName(pageTargetNode, true, "text", pageTargetNode.NamespaceURI).InnerText;
+            textMedia.Text = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(pageTargetNode, true, "text", pageTargetNode.NamespaceURI).InnerText;
             ChannelsProperty cProp = audioWrapperNode.Presentation.PropertyFactory.CreateChannelsProperty();
             cProp.SetMedia(m_textChannel, textMedia);
             audioWrapperNode.AddProperty(cProp);
@@ -436,8 +436,8 @@ if (strClass != null)
         {
             
             XmlNode navLabelXmlNode = m_NavPointNode_NavLabelMap[navPointTreeNode];
-            XmlNode headingAudio = XmlDocumentHelper.GetFirstChildElementWithName(navLabelXmlNode, true, "audio", navLabelXmlNode.NamespaceURI);
-            XmlNode textNode  = XmlDocumentHelper.GetFirstChildElementWithName(navLabelXmlNode, true, "text", navLabelXmlNode.NamespaceURI);
+            XmlNode headingAudio = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(navLabelXmlNode, true, "audio", navLabelXmlNode.NamespaceURI);
+            XmlNode textNode  = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(navLabelXmlNode, true, "text", navLabelXmlNode.NamespaceURI);
 
             double headingClipBegin = Math.Abs ((new urakawa.media.timing.Time (headingAudio.Attributes.GetNamedItem("clipBegin").Value)).AsTimeSpan.TotalMilliseconds);
             double headingClipEnd = Math.Abs ((new urakawa.media.timing.Time(headingAudio.Attributes.GetNamedItem("clipEnd").Value)).AsTimeSpan.TotalMilliseconds );

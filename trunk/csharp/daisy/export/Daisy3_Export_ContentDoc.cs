@@ -78,7 +78,7 @@ namespace urakawa.daisy.export
 
 
             // add metadata
-            XmlNode headNode = XmlDocumentHelper.GetFirstChildElementWithName(DTBookDocument, true, "head", null); //DTBookDocument.GetElementsByTagName("head")[0]
+            XmlNode headNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(DTBookDocument, true, "head", null); //DTBookDocument.GetElementsByTagName("head")[0]
 
             Metadata mdId = AddMetadata_DtbUid(false, DTBookDocument, headNode);
 
@@ -120,7 +120,7 @@ namespace urakawa.daisy.export
 
 
             TreeNode rNode = m_Presentation.RootNode;
-            XmlNode bookNode = XmlDocumentHelper.GetFirstChildElementWithName(DTBookDocument, true, "book", null); //DTBookDocument.GetElementsByTagName("book")[0];
+            XmlNode bookNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(DTBookDocument, true, "book", null); //DTBookDocument.GetElementsByTagName("book")[0];
 
             m_ListOfLevels.Add(m_Presentation.RootNode);
 

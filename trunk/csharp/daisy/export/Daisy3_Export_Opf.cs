@@ -19,7 +19,7 @@ namespace urakawa.daisy.export
             if (RequestCancellation) return;
             XmlDocument opfDocument = CreateStub_OpfDocument();
 
-            XmlNode manifestNode = XmlDocumentHelper.GetFirstChildElementWithName(opfDocument, true, "manifest", null); //opfDocument.GetElementsByTagName("manifest")[0];
+            XmlNode manifestNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfDocument, true, "manifest", null); //opfDocument.GetElementsByTagName("manifest")[0];
             const string mediaType_Smil = "application/smil";
             const string mediaType_Wav = "audio/x-wav";
             const string mediaType_Mpg = "audio/mpeg";
@@ -157,7 +157,7 @@ namespace urakawa.daisy.export
             }
 
             // create spine
-            XmlNode spineNode = XmlDocumentHelper.GetFirstChildElementWithName(opfDocument, true, "spine", null); //opfDocument.GetElementsByTagName("spine")[0];
+            XmlNode spineNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfDocument, true, "spine", null); //opfDocument.GetElementsByTagName("spine")[0];
 
             foreach (string strSmilID in smilIDListInPlayOrder)
             {
@@ -206,8 +206,8 @@ namespace urakawa.daisy.export
 
         private void AddMetadata_Opf(XmlDocument opfDocument)
         {
-            XmlNode dc_metadataNode = XmlDocumentHelper.GetFirstChildElementWithName(opfDocument, true, "dc-metadata", null); //opfDocument.GetElementsByTagName("dc-metadata")[0];
-            XmlNode x_metadataNode = XmlDocumentHelper.GetFirstChildElementWithName(opfDocument, true, "x-metadata", null); //opfDocument.GetElementsByTagName("x-metadata")[0];
+            XmlNode dc_metadataNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfDocument, true, "dc-metadata", null); //opfDocument.GetElementsByTagName("dc-metadata")[0];
+            XmlNode x_metadataNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfDocument, true, "x-metadata", null); //opfDocument.GetElementsByTagName("x-metadata")[0];
 
             Metadata mdId = AddMetadata_DtbUid(true, opfDocument, dc_metadataNode);
 

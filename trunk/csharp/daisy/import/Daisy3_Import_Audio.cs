@@ -96,7 +96,7 @@ namespace urakawa.daisy.import
 
             //reportProgress(-1, "Parsing SMIL: [" + Path.GetFileName(fullSmilPath) + "]");
 
-            foreach (XmlNode textNode in XmlDocumentHelper.GetChildrenElementsWithName(smilXmlDoc, true, "text", null, false))
+            foreach (XmlNode textNode in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(smilXmlDoc, true, "text", null, false))
             {
                 XmlAttributeCollection textNodeAttrs = textNode.Attributes;
                 if (textNodeAttrs == null || textNodeAttrs.Count == 0)
