@@ -380,7 +380,7 @@ namespace AudioLib
                 do
                 {
                     i++;
-                    m_RecordedFilePath = RecordingDirectory + Path.DirectorySeparatorChar + i.ToString() + ".wav";
+                    m_RecordedFilePath = RecordingDirectory + Path.DirectorySeparatorChar + i.ToString() + WavFormatConverter.AUDIO_WAV_EXTENSION;
 
                 } while (File.Exists(m_RecordedFilePath));
 
