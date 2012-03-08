@@ -56,7 +56,7 @@ namespace urakawa.daisy.export
                         DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
 
                         //string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
-                        string exportAudioName = Path.GetFileNameWithoutExtension(smilFileName) + "_" + counter.ToString() + ".wav";
+                        string exportAudioName = Path.GetFileNameWithoutExtension(smilFileName) + "_" + counter.ToString() + DataProviderFactory.AUDIO_WAV_EXTENSION;
                         string imageSRC = m_FilesList_Image[m_FilesList_Image.Count - 1];
                         string imageDescriptionDirectoryPath = getAndCreateImageDescriptionDirectoryPath(imageSRC);
                         string destPath = Path.Combine(imageDescriptionDirectoryPath, exportAudioName);

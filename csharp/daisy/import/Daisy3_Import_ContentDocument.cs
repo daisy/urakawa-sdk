@@ -275,7 +275,7 @@ namespace urakawa.daisy.import
                                         ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
 
                                         urakawa.media.data.image.ImageMediaData imageData =
-                                            CreateImageMediaData(presentation, Path.GetExtension(imgSourceFullpath));
+                                            presentation.MediaDataFactory.CreateImageMediaData(Path.GetExtension(imgSourceFullpath));
                                         imageData.InitializeImage(imgSourceFullpath, updatedSRC);
                                         media.data.image.ManagedImageMedia managedImage =
                                             presentation.MediaFactory.CreateManagedImageMedia();
@@ -458,32 +458,6 @@ namespace urakawa.daisy.import
             }
         }
 
-        private media.data.image.ImageMediaData CreateImageMediaData(Presentation presentation, string extension)
-        {
-            extension = extension.ToLower();
-            switch (extension)
-            {
-                case ".jpg":
-                    return presentation.MediaDataFactory.Create<JpgImageMediaData>();
-                    break;
-
-                case ".bmp":
-                    return presentation.MediaDataFactory.Create<BmpImageMediaData>();
-                    break;
-
-                case ".png":
-                    return presentation.MediaDataFactory.Create<PngImageMediaData>();
-                    break;
-
-                default:
-                    {
-                        return null;
-                        break;
-                    }
-            }
-        }
-
-
 
         private void AddStyleSheetsToXuk(XmlNodeList styleSheetNodesList)
         {
@@ -515,15 +489,14 @@ namespace urakawa.daisy.import
                 if (File.Exists(styleSheetPath))
                 {
                     ExternalFiles.ExternalFileData efd = null;
-                    switch (Path.GetExtension(relativePath).ToLower())
+                    string ext = Path.GetExtension(relativePath);
+                    if (String.Equals(ext, ".css", StringComparison.OrdinalIgnoreCase))
                     {
-                        case ".css":
-                            efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
-                            break;
-
-                        case ".xslt":
-                            efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
-                            break;
+                        efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
+                    }
+                    else if (String.Equals(ext, ".xslt", StringComparison.OrdinalIgnoreCase))
+                    {
+                        efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
                     }
 
                     if (efd != null) efd.InitializeWithData(styleSheetPath, relativePath, true);

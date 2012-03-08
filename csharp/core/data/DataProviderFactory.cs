@@ -42,124 +42,180 @@ namespace urakawa.data
             m_skipManagerInitialization = true;
             return Create(mimeType, xukLN, xukNS);
         }
-        /// <summary>
-        /// MIME type for MPEG-4 AAC audio
-        /// </summary>
-        public const string AUDIO_MP4_MIME_TYPE = "audio/mpeg-generic";
 
         /// <summary>
         /// MIME type for MPEG-1/2 Layer III audio (MP3)
         /// </summary>
         public const string AUDIO_MP3_MIME_TYPE = "audio/mpeg";
+        public const string AUDIO_MP3_EXTENSION = ".mp3";
 
         /// <summary>
         /// MIME type for linear PCM RIFF WAVE format audio (wav)
         /// </summary>
         public const string AUDIO_WAV_MIME_TYPE = "audio/x-wav";
+        public const string AUDIO_WAV_EXTENSION = ".wav";
 
         /// <summary>
         /// MIME type for JPEG images
         /// </summary>
         public const string IMAGE_JPG_MIME_TYPE = "image/jpeg";
+        public const string IMAGE_JPG_EXTENSION = ".jpg";
+        public const string IMAGE_JPEG_EXTENSION = ".jpeg";
 
         /// <summary>
         /// MIME type for PNG images
         /// </summary>
         public const string IMAGE_PNG_MIME_TYPE = "image/png";
+        public const string IMAGE_PNG_EXTENSION = ".png";
 
         /// <summary>
         /// MIME type for BMP images
         /// </summary>
         public const string IMAGE_BMP_MIME_TYPE = "image/bmp";
+        public const string IMAGE_BMP_EXTENSION = ".bmp";
 
 
         public const string IMAGE_GIF_MIME_TYPE = "image/gif";
+        public const string IMAGE_GIF_EXTENSION = ".gif";
 
         /// <summary>
         /// MIME type for Scalable Vector Graphics (SVG) images
         /// </summary>
         public const string IMAGE_SVG_MIME_TYPE = "image/svg+xml";
+        public const string IMAGE_SVG_EXTENSION = ".svg";
+        public const string IMAGE_SVGZ_EXTENSION = ".svgz";
 
         /// <summary>
         /// MIME type for Cascading Style Sheets (CSS)
         /// </summary>
         public const string STYLE_CSS_MIME_TYPE = "text/css";
+        public const string STYLE_CSS_EXTENSION = ".css";
 
         /// <summary>
         /// MIME type for (XSLT)
         /// </summary>
         public const string STYLE_XSLT_MIME_TYPE = "text/xsl" ;
+        public const string STYLE_XSLT_EXTENSION = ".xslt";
+        public const string STYLE_XSL_EXTENSION = ".xsl";
 
         /// <summary>
         /// MIME type for plain text
         /// </summary>
         public const string TEXT_PLAIN_MIME_TYPE = "text/plain";
+        public const string TEXT_PLAIN_EXTENSION = ".txt";
 
         /// <summary>
         /// MIME type for DTD
         /// </summary>
         public const string DTD_MIME_TYPE = "application/xml-dtd";
+        public const string DTD_EXTENSION = ".dtd";
 
         /// <summary>
         /// MIME type for xml
         /// </summary>
         public const string XML_TEXT_MIME_TYPE = "text/xml";
+        public const string XML_TEXT_EXTENSION = ".xml";
 
-        /// <summary>
-        /// Gets the file extension for a given MIME type
-        /// </summary>
-        /// <param name="mimeType"></param>
-        /// <returns>The extension</returns>
+
         public static string GetExtensionFromMimeType(string mimeType)
         {
             string extension;
             switch (mimeType)
             {
-                case AUDIO_MP4_MIME_TYPE:
-                    extension = ".mp4";
-                    break;
                 case AUDIO_MP3_MIME_TYPE:
-                    extension = ".mp3";
+                    extension = AUDIO_MP3_EXTENSION;
                     break;
                 case AUDIO_WAV_MIME_TYPE:
-                    extension = ".wav";
+                    extension = AUDIO_WAV_EXTENSION;
                     break;
                 case IMAGE_JPG_MIME_TYPE:
-                    extension = ".jpg";
+                    extension = IMAGE_JPG_EXTENSION;
                     break;
                 case IMAGE_PNG_MIME_TYPE:
-                    extension = ".png";
+                    extension = IMAGE_PNG_EXTENSION;
                     break;
                 case IMAGE_BMP_MIME_TYPE:
-                    extension = ".bmp";
+                    extension = IMAGE_BMP_EXTENSION;
                     break;
                 case IMAGE_GIF_MIME_TYPE:
-                    extension = ".gif";
+                    extension = IMAGE_GIF_EXTENSION;
                     break;
                 case IMAGE_SVG_MIME_TYPE:
-                    extension = ".svg";
+                    extension = IMAGE_SVG_EXTENSION;
                     break;
                 case STYLE_CSS_MIME_TYPE:
-                    extension = ".css";
+                    extension = STYLE_CSS_EXTENSION;
                     break;
                 case STYLE_XSLT_MIME_TYPE:
-                    extension = ".xsl";
+                    extension = STYLE_XSLT_EXTENSION;
                     break;
                 case TEXT_PLAIN_MIME_TYPE:
-                    extension = ".txt";
+                    extension = TEXT_PLAIN_EXTENSION;
                     break;
                 case DTD_MIME_TYPE:
-                    extension = ".dtd";
+                    extension = DTD_EXTENSION;
                     break;
                 case XML_TEXT_MIME_TYPE:
-                    extension = ".xml";
+                    extension = XML_TEXT_EXTENSION;
                     break;
                 default:
-                    extension = ".bin";
+                    extension = null;
                     break;
             }
             return extension;
         }
+
+
+        public static string GetMimeTypeFromExtension(string extension)
+        {
+            string mime;
+            switch (extension)
+            {
+                case AUDIO_MP3_EXTENSION:
+                    mime = AUDIO_MP3_MIME_TYPE;
+                    break;
+                case AUDIO_WAV_EXTENSION:
+                    mime = AUDIO_WAV_MIME_TYPE;
+                    break;
+                case IMAGE_JPG_EXTENSION:
+                case IMAGE_JPEG_EXTENSION:
+                    mime = IMAGE_JPG_MIME_TYPE;
+                    break;
+                case IMAGE_PNG_EXTENSION:
+                    mime = IMAGE_PNG_MIME_TYPE;
+                    break;
+                case IMAGE_BMP_EXTENSION:
+                    mime = IMAGE_BMP_MIME_TYPE;
+                    break;
+                case IMAGE_GIF_EXTENSION:
+                    mime = IMAGE_GIF_MIME_TYPE;
+                    break;
+                case IMAGE_SVG_EXTENSION:
+                case IMAGE_SVGZ_EXTENSION:
+                    mime = IMAGE_SVG_MIME_TYPE;
+                    break;
+                case STYLE_CSS_EXTENSION:
+                    mime = STYLE_CSS_MIME_TYPE;
+                    break;
+                case STYLE_XSLT_EXTENSION:
+                    mime = STYLE_XSLT_MIME_TYPE;
+                    break;
+                case TEXT_PLAIN_EXTENSION:
+                    mime = TEXT_PLAIN_MIME_TYPE;
+                    break;
+                case DTD_EXTENSION:
+                    mime = DTD_MIME_TYPE;
+                    break;
+                case XML_TEXT_EXTENSION:
+                    mime = XML_TEXT_MIME_TYPE;
+                    break;
+                default:
+                    mime = null;
+                    break;
+            }
+            return mime;
+        }
+
 
         private Type mDefaultDataProviderType = typeof (FileDataProvider);
 

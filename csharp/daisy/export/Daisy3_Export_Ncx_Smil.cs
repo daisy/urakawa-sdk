@@ -1508,7 +1508,7 @@ namespace urakawa.daisy.export
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, false);
 
             string destinationFilePath = Path.Combine(Directory.GetParent(sourceFilePath).FullName,
-                Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
+                Path.GetFileNameWithoutExtension(sourceFilePath) + DataProviderFactory.AUDIO_MP3_EXTENSION);
 
             PCMFormatInfo audioFormat = m_Presentation.MediaDataManager.DefaultPCMFormat;
             AudioLibPCMFormat pcmFormat = audioFormat.Data;

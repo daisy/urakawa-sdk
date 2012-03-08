@@ -42,7 +42,7 @@ namespace urakawa.daisy.import
                 XmlDocument dtbookXmlDoc = OpenXukAction.ParseXmlDocument(fullDtbookPath, true);
 
                 if (RequestCancellation) return;
-                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, dtbookPath)); 
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, dtbookPath));
                 parseMetadata(dtbookXmlDoc);
 
                 if (RequestCancellation) return;
@@ -53,7 +53,7 @@ namespace urakawa.daisy.import
             //if (false && ncxPath != null) //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
             if (
                 //(string.IsNullOrEmpty(dtbookPath) && !string.IsNullOrEmpty(ncxPath))  ||
-                AudioNCXImport )
+                AudioNCXImport)
             {
                 //m_IsAudioNCX = true;
                 if (RequestCancellation) return;
@@ -210,23 +210,14 @@ namespace urakawa.daisy.import
             string fileFullPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath),
                 relPath);
 
-            string extension = Path.GetExtension(fileFullPath).ToLower();
-
             ExternalFiles.ExternalFileData externalData = null;
 
-            switch (extension)
+            string ext = Path.GetExtension(fileFullPath);
+            if (String.Equals(ext, ".dtd", StringComparison.OrdinalIgnoreCase))
             {
-                //case ".css":
-                //externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData> ();
-                //break;
-
-                case ".dtd":
-                    externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData>();
-                    break;
-
-                default:
-                    break;
+                externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData>();
             }
+
             if (externalData != null)
             {
                 externalData.InitializeWithData(fileFullPath, relPath, true);

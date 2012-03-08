@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
+using urakawa.data;
 using urakawa.media.timing;
 using urakawa.metadata;
 using urakawa.xuk;
@@ -20,19 +22,12 @@ namespace urakawa.daisy.export
             XmlDocument opfDocument = CreateStub_OpfDocument();
 
             XmlNode manifestNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfDocument, true, "manifest", null); //opfDocument.GetElementsByTagName("manifest")[0];
+
             const string mediaType_Smil = "application/smil";
-            const string mediaType_Wav = "audio/x-wav";
-            const string mediaType_Mpg = "audio/mpeg";
-            const string mediaType_Opf = "text/xml";
             const string mediaType_Ncx = "application/x-dtbncx+xml";
             const string mediaType_Dtbook = "application/x-dtbook+xml";
-            const string mediaType_Image_Jpg = "image/jpeg";
-            const string mediaType_Image_Png = "image/png";
-            const string mediaType_Image_Svg = "image/svg+xml";
             const string mediaType_Resource = "application/x-dtbresource+xml";
-            const string mediaType_Css = "text/css";
-            const string mediaType_Transform = "text/xsl";
-            const string mediaType_DTD = "application/xml-dtd";
+
 
             m_AllowedInDcMetadata.Add("dc:title");
             m_AllowedInDcMetadata.Add("dc:creator");
@@ -68,31 +63,27 @@ namespace urakawa.daisy.export
 
             // add all files to manifest
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
-            if (m_Filename_Content != null )  AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), mediaType_Dtbook);
-            AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Opf, GetNextID(ID_OpfPrefix), mediaType_Opf);
+            if (m_Filename_Content != null) AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), mediaType_Dtbook);
+            AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Opf, GetNextID(ID_OpfPrefix), DataProviderFactory.XML_TEXT_MIME_TYPE);
 
             // add external files to manifest
             foreach (string externalFileName in m_FilesList_ExternalFiles)
             {
                 string strID = GetNextID(ID_OpfPrefix);
-                switch (Path.GetExtension(externalFileName).ToLower())
+
+                string ext = Path.GetExtension(externalFileName);
+                if (String.Equals(ext, ".css", StringComparison.OrdinalIgnoreCase))
                 {
-                    case ".css":
-                        AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, mediaType_Css);
-                        break;
-
-                    case ".xslt":
-                        AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, mediaType_Transform);
-                        break;
-
-                    case ".dtd":
-                        AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, mediaType_DTD);
-                        break;
-                    default:
-                        break;
+                    AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.STYLE_CSS_MIME_TYPE);
                 }
-
-
+                else if (String.Equals(ext, ".xslt", StringComparison.OrdinalIgnoreCase))
+                {
+                    AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.STYLE_XSLT_MIME_TYPE);
+                }
+                else if (String.Equals(ext, ".dtd", StringComparison.OrdinalIgnoreCase))
+                {
+                    AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.DTD_MIME_TYPE);
+                }
             }
 
             if (RequestCancellation) return;
@@ -111,15 +102,9 @@ namespace urakawa.daisy.export
             foreach (string audioFileName in m_FilesList_Audio)
             {
                 string strID = GetNextID(ID_OpfPrefix);
-
-                if (string.Compare(Path.GetExtension(audioFileName), ".wav", true) == 0)
-                {
-                    AddFilenameToManifest(opfDocument, manifestNode, audioFileName, strID, mediaType_Wav);
-                }
-                else
-                {
-                    AddFilenameToManifest(opfDocument, manifestNode, audioFileName, strID, mediaType_Mpg);
-                }
+                string ext = Path.GetExtension(audioFileName);
+                string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
+                AddFilenameToManifest(opfDocument, manifestNode, audioFileName, strID, mime);
             }
 
             if (RequestCancellation) return;
@@ -128,14 +113,9 @@ namespace urakawa.daisy.export
             {
                 string strID = GetNextID(ID_OpfPrefix);
 
-                if (string.Compare(Path.GetExtension(imageFileName), ".png", true) == 0)
-                {
-                    AddFilenameToManifest(opfDocument, manifestNode, imageFileName, strID, mediaType_Image_Png);
-                }
-                else
-                {
-                    AddFilenameToManifest(opfDocument, manifestNode, imageFileName, strID, mediaType_Image_Jpg);
-                }
+                string ext = Path.GetExtension(imageFileName);
+                string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
+                AddFilenameToManifest(opfDocument, manifestNode, imageFileName, strID, mime);
             }
 
             // copy resource files and place entry in manifest
@@ -153,7 +133,7 @@ namespace urakawa.daisy.export
 
                 // add entry to manifest
                 AddFilenameToManifest(opfDocument, manifestNode, ResourceRes_Filename, "resource", mediaType_Resource);
-                AddFilenameToManifest(opfDocument, manifestNode, resourceAudio_Filename, GetNextID(ID_OpfPrefix), mediaType_Mpg);
+                AddFilenameToManifest(opfDocument, manifestNode, resourceAudio_Filename, GetNextID(ID_OpfPrefix), DataProviderFactory.AUDIO_MP3_MIME_TYPE);
             }
 
             // create spine
@@ -189,11 +169,11 @@ namespace urakawa.daisy.export
             return itemNode;
         }
 
-        private readonly string m_GeneratorName_SDK = "the Urakawa SDK: the open-source DAISY multimedia authoring toolkit" ;
-        private string m_GeneratorName ;
-        public string GeneratorName 
-        { 
-            get { return string.IsNullOrEmpty(m_GeneratorName) ? m_GeneratorName= "Tobi and " + m_GeneratorName_SDK: m_GeneratorName ; }
+        private readonly string m_GeneratorName_SDK = "the Urakawa SDK: the open-source DAISY multimedia authoring toolkit";
+        private string m_GeneratorName;
+        public string GeneratorName
+        {
+            get { return string.IsNullOrEmpty(m_GeneratorName) ? m_GeneratorName = "Tobi and " + m_GeneratorName_SDK : m_GeneratorName; }
             set { m_GeneratorName = value + " and " + m_GeneratorName_SDK; }
         }
 
@@ -217,12 +197,12 @@ namespace urakawa.daisy.export
 
             if (true || m_Presentation.GetMetadata("dtb:multimediaType").Count == 0)
             {
-                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaType",m_Filename_Content != null? "audioFullText" : "audioNCX");
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaType", m_Filename_Content != null ? "audioFullText" : "audioNCX");
             }
 
             if (true || m_Presentation.GetMetadata("dtb:multimediaContent").Count == 0)
             {
-                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaContent",m_Filename_Content != null? "audio,text" : "audio");
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaContent", m_Filename_Content != null ? "audio,text" : "audio");
             }
 
             AddMetadataAsInnerText(opfDocument, dc_metadataNode, "dc:format", "ANSI/NISO Z39.86-2005");
@@ -235,7 +215,7 @@ namespace urakawa.daisy.export
                     || lowerName == "dtb:totaltime"
                     || lowerName == "dc:format"
                     || lowerName == "dtb:multimediatype"
-                    || lowerName == "dtb:multimediacontent") 
+                    || lowerName == "dtb:multimediacontent")
                     continue;
 
                 XmlNode metadataNodeCreated = null;
@@ -266,7 +246,7 @@ namespace urakawa.daisy.export
                         XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metadataNodeCreated, ma.Name, ma.Value);
                     }
                 }
-                
+
             } // end of metadata for each loop
 
 

@@ -532,7 +532,7 @@ namespace urakawa.daisy.import
             for (int i = 0; i < 900000; i++)
             {
                 string fullPath = Path.Combine(directoryPath, i.ToString());
-                fullPath = fullPath + ".wav";
+                fullPath = fullPath + DataProviderFactory.AUDIO_WAV_EXTENSION;
                 if (!File.Exists(fullPath))
                 {
                     return fullPath;

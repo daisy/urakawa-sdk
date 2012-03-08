@@ -1,4 +1,5 @@
 using System;
+using urakawa.data;
 using urakawa.exception;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
@@ -45,7 +46,7 @@ namespace urakawa.media.data
                 m_skipManagerInitialization = false;
                 return;
             }
-            
+
             Presentation.MediaDataManager.AddManagedObject(instance);
         }
 
@@ -131,18 +132,59 @@ namespace urakawa.media.data
             }
         }
 
-        /// <summary>
-        /// Creates a <see cref="AudioMediaData"/> of <see cref="DefaultAudioMediaDataType"/>
-        /// </summary>
-        /// <returns>The created <see cref="AudioMediaData"/></returns>
+        public ImageMediaData CreateImageMediaData()
+        {
+            return Create(m_DefaultImageMediaDataType) as ImageMediaData;
+        }
+
+
+        public ImageMediaData CreateImageMediaData(string extension)
+        {
+            if (String.Equals(extension, DataProviderFactory.IMAGE_JPG_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(extension, DataProviderFactory.IMAGE_JPEG_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<JpgImageMediaData>();
+            }
+            else if (String.Equals(extension, DataProviderFactory.IMAGE_BMP_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<BmpImageMediaData>();
+            }
+            else if (String.Equals(extension, DataProviderFactory.IMAGE_PNG_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<PngImageMediaData>();
+            }
+            else if (String.Equals(extension, DataProviderFactory.IMAGE_GIF_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<GifImageMediaData>();
+            }
+            else if (String.Equals(extension, DataProviderFactory.IMAGE_SVG_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(extension, DataProviderFactory.IMAGE_SVGZ_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<SvgImageMediaData>();
+            }
+
+
+            return null;
+        }
+
+
         public AudioMediaData CreateAudioMediaData()
         {
             return Create(DefaultAudioMediaDataType) as AudioMediaData;
         }
 
-        public ImageMediaData CreateImageMediaData()
+        public AudioMediaData CreateAudioMediaData(string extension)
         {
-            return Create(m_DefaultImageMediaDataType) as ImageMediaData;
+            if (String.Equals(extension, DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<WavAudioMediaData>();
+            }
+            //else if (String.Equals(extension, DataProviderFactory.AUDIO_MP3_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            //{
+            //    return Create<Mp3AudioMediaData>();
+            //}
+
+            return null;
         }
     }
 }

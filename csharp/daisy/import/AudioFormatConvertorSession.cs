@@ -213,11 +213,12 @@ namespace urakawa.daisy.import
         private static AudioFileType GetAudioFileType(string filePath)
         {
             AudioFileType sourceFileType = AudioFileType.NotSupported;
-            if (filePath.ToLower().EndsWith(".mp3"))
+            string ext = Path.GetExtension(filePath);
+            if (string.Equals(ext, DataProviderFactory.AUDIO_MP3_EXTENSION, StringComparison.OrdinalIgnoreCase))
             {
                 sourceFileType = AudioFileType.Mp3;
             }
-            else if (filePath.ToLower().EndsWith(".wav"))
+            if (string.Equals(ext, DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase))
             {
                 sourceFileType = AudioFileType.WavUncompressed;
             }

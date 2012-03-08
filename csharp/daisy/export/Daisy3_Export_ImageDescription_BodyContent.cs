@@ -175,17 +175,20 @@ namespace urakawa.daisy.export
                         exportImageName,
                         objectNode.NamespaceURI);
 
-                    string low = exportImageName.ToLower();
-                    int dotIndex = low.LastIndexOf('.');
+                    //string low = exportImageName.ToLower();
+                    string ext = Path.GetExtension(exportImageName);
+                    int dotIndex = exportImageName.LastIndexOf('.');
+
+                    string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
+
                     XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, objectNode,
                         DiagramContentModelHelper.SrcType,
-                        low.EndsWith(".svg") || low.EndsWith(".svgz") ? DataProviderFactory.IMAGE_SVG_MIME_TYPE :
-                        low.EndsWith(".png") ? DataProviderFactory.IMAGE_PNG_MIME_TYPE :
-                        low.EndsWith(".gif") ? DataProviderFactory.IMAGE_GIF_MIME_TYPE :
-                        low.EndsWith(".jpg") || low.EndsWith(".jpeg") ? DataProviderFactory.IMAGE_JPG_MIME_TYPE :
-                        low.EndsWith(".bmp") ? DataProviderFactory.IMAGE_BMP_MIME_TYPE :
-                        dotIndex != -1 && dotIndex < (low.Length - 1) ? "image/" + low.Substring(dotIndex + 1) :
-                        "image",
+                        mime ??
+                        (
+                        dotIndex != -1 && dotIndex < (exportImageName.Length - 1)
+                        ? "image/" + exportImageName.ToLower().Substring(dotIndex + 1)
+                        : "image"
+                        ),
                         objectNode.NamespaceURI);
 
 
