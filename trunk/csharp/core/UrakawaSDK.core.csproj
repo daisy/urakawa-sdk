@@ -227,8 +227,10 @@
     <Compile Include="GenericXukAbleFactory.cs" />
     <Compile Include="media\data\audio\codec\WavClip.cs" />
     <Compile Include="media\data\image\codec\BmpImageMediaData.cs" />
+    <Compile Include="media\data\image\codec\GifImageMediaData.cs" />
     <Compile Include="media\data\image\codec\JpgImageMediaData.cs" />
     <Compile Include="media\data\image\codec\PngImageMediaData.cs" />
+    <Compile Include="media\data\image\codec\SvgImageMediaData.cs" />
     <Compile Include="media\data\image\ImageMediaData.cs" />
     <Compile Include="media\data\image\ManagedImageMedia.cs" />
     <Compile Include="media\timing\Time_Compare.cs" />
