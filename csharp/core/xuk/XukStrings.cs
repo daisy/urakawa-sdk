@@ -756,6 +756,16 @@ namespace urakawa.xuk
             get { return ((mProject == null || IsPrettyFormat) ? "PngImageMediaData" : "pngIm"); }
         }
 
+        public static string SvgImageMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "SvgImageMediaData" : "svgIm"); }
+        }
+
+        public static string GifImageMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "GifImageMediaData" : "gifIm"); }
+        }
+
         public static string BmpImageMediaData
         {
             get { return ((mProject == null || IsPrettyFormat) ? "BmpImageMediaData" : "bmpIm"); }

@@ -1258,6 +1258,12 @@ namespace urakawa
             dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_JPG_MIME_TYPE);
             DataProviderManager.RemoveDataProvider(dpImage, true);
             //
+            dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_GIF_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpImage, true);
+            //
+            dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_SVG_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpImage, true);
+            //
             CommandFactory.CreateCompositeCommand();
             //
             MediaData mdImage = MediaDataFactory.CreateImageMediaData();
