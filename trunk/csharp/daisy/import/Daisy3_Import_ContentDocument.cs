@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using AudioLib;
 using urakawa.core;
+using urakawa.data;
 using urakawa.media;
 using urakawa.media.data.image.codec;
 using urakawa.property.channel;
@@ -224,10 +225,55 @@ namespace urakawa.daisy.import
                             XmlNode getSRC = xmlNode.Attributes.GetNamedItem("src");
                             if (getSRC != null)
                             {
+                                string imgSourceFullpath = null;
                                 string relativePath = xmlNode.Attributes.GetNamedItem("src").Value;
-                                if (!relativePath.StartsWith("http://"))
+                                if (FileDataProvider.isHTTPFile(relativePath))
                                 {
-                                    /*
+                                    imgSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
+
+                                    updatedSRC = relativePath;
+                                }
+                                else
+                                {
+                                    string parentPath = Directory.GetParent(filePath).FullName;
+                                    imgSourceFullpath = Path.Combine(parentPath, relativePath);
+
+                                    updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
+                                        Path.GetDirectoryName(m_Book_FilePath), "");
+
+                                    if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
+                                    {
+                                        updatedSRC = updatedSRC.Remove(0, 1);
+                                    }
+                                }
+
+                                if (imgSourceFullpath != null && File.Exists(imgSourceFullpath))
+                                {
+
+                                    //ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty();
+                                    //treeNode.AddProperty(chProp);
+                                    ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
+
+                                    urakawa.media.data.image.ImageMediaData imageData =
+                                        presentation.MediaDataFactory.CreateImageMediaData(Path.GetExtension(imgSourceFullpath));
+                                    imageData.InitializeImage(imgSourceFullpath, updatedSRC);
+                                    media.data.image.ManagedImageMedia managedImage =
+                                        presentation.MediaFactory.CreateManagedImageMedia();
+                                    managedImage.MediaData = imageData;
+                                    chProp.SetMedia(m_ImageChannel, managedImage);
+                                }
+                                else
+                                {
+                                    ExternalImageMedia externalImage = presentation.MediaFactory.CreateExternalImageMedia();
+                                    externalImage.Src = relativePath;
+
+                                    ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
+                                    chProp.SetMedia(m_ImageChannel, externalImage);
+                                }
+
+
+
+                                /*
                                     string datafilePath = presentation.DataProviderManager.DataFileDirectoryFullPath;
                                     string imgDestFullpath = Path.Combine(datafilePath,
                                                                           Path.GetFileName(imgSourceFullpath));
@@ -257,40 +303,6 @@ namespace urakawa.daisy.import
                                     externalImage.Src = updatedSRC;
                                     */
 
-                                    string parentPath = Directory.GetParent(filePath).FullName;
-                                    string imgSourceFullpath = Path.Combine(parentPath, relativePath);
-
-                                    if (File.Exists(imgSourceFullpath))
-                                    {
-                                        updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
-                                            Path.GetDirectoryName(m_Book_FilePath), "");
-                                        if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
-                                        {
-                                            updatedSRC = updatedSRC.Remove(0, 1);
-                                        }
-
-
-                                        //ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty();
-                                        //treeNode.AddProperty(chProp);
-                                        ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
-
-                                        urakawa.media.data.image.ImageMediaData imageData =
-                                            presentation.MediaDataFactory.CreateImageMediaData(Path.GetExtension(imgSourceFullpath));
-                                        imageData.InitializeImage(imgSourceFullpath, updatedSRC);
-                                        media.data.image.ManagedImageMedia managedImage =
-                                            presentation.MediaFactory.CreateManagedImageMedia();
-                                        managedImage.MediaData = imageData;
-                                        chProp.SetMedia(m_ImageChannel, managedImage);
-                                    }
-                                    else
-                                    {
-                                        ExternalImageMedia externalImage = presentation.MediaFactory.CreateExternalImageMedia();
-                                        externalImage.Src = relativePath;
-
-                                        ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
-                                        chProp.SetMedia(m_ImageChannel, externalImage);
-                                    }
-                                }
                             }
                         }
 
