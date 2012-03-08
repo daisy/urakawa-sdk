@@ -3,6 +3,7 @@ using System.IO;
 using AudioLib;
 using urakawa.core;
 using urakawa.core.visitor;
+using urakawa.data;
 using urakawa.property.channel;
 
 namespace urakawa.daisy.export.visitor
@@ -45,7 +46,7 @@ namespace urakawa.daisy.export.visitor
             get { return mCurrentAudioFileNumber; }
         }
 
-        private string mAudioFileBaseNameFormat = "aud{0:000}.wav";
+        private string mAudioFileBaseNameFormat = "aud{0:000}" + DataProviderFactory.AUDIO_WAV_EXTENSION;
         public string AudioFileNameFormat
         {
             get { return mAudioFileBaseNameFormat; }

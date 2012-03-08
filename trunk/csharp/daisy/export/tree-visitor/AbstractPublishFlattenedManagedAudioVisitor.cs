@@ -131,7 +131,7 @@ namespace urakawa.daisy.export.visitor
         private void EncodeTransientFileResample()
         {
             string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
-            //string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath, Path.GetFileNameWithoutExtension(sourceFilePath) + "_" + base.EncodePublishedAudioFilesSampleRate + ".wav");
+            //string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath, Path.GetFileNameWithoutExtension(sourceFilePath) + "_" + base.EncodePublishedAudioFilesSampleRate + DataProviderFactory.AUDIO_WAV_EXTENSION);
 
             //reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.ConvertingAudio,sourceFilePath));
 
@@ -179,7 +179,7 @@ namespace urakawa.daisy.export.visitor
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, DisableAcmCodecs);
             string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
             string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
-                Path.GetFileNameWithoutExtension(sourceFilePath) + ".mp3");
+                Path.GetFileNameWithoutExtension(sourceFilePath) + DataProviderFactory.AUDIO_MP3_EXTENSION);
 
             //reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(destinationFilePath), GetSizeInfo(m_RootNode)));
 
@@ -210,7 +210,7 @@ namespace urakawa.daisy.export.visitor
                 {
                     if (ext != null)
                     {
-                        ext.Src = ext.Src.Replace(".wav", ".mp3");
+                        ext.Src = ext.Src.Replace(DataProviderFactory.AUDIO_WAV_EXTENSION, DataProviderFactory.AUDIO_MP3_EXTENSION);
                     }
                 }
 
@@ -372,7 +372,7 @@ namespace urakawa.daisy.export.visitor
 
                 if (EncodePublishedAudioFilesToMp3)
                 {
-                    reportProgress(percent, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(src).Replace(".wav", ".mp3"), GetSizeInfo(node)));
+                    reportProgress(percent, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(src).Replace(DataProviderFactory.AUDIO_WAV_EXTENSION, DataProviderFactory.AUDIO_MP3_EXTENSION), GetSizeInfo(node)));
                 }
                 else
                 {
@@ -652,7 +652,8 @@ m_Stream;
                             ancestorExtAudioFile = extMedia.Uri.LocalPath;
                         }
 
-                        if (Path.GetExtension(ancestorExtAudioFile).ToLower() != ".wav")
+                        string ext = Path.GetExtension(ancestorExtAudioFile);
+                        if (!String.Equals(ext, DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase))
                         {
                             Debug.Fail("Verification can only be done if external media points to wav file!");
                         }
