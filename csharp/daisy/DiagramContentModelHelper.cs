@@ -8,6 +8,10 @@ namespace urakawa.daisy
 {
     public static class DiagramContentModelHelper
     {
+        public const string NS_PREFIX_DUBLIN_CORE = "dc";
+        public const string NS_URL_DUBLIN_CORE = "http://purl/dc";
+
+
         // -------------------------------------------------
 
         //public const string NS_PREFIX_XLINK = "xlink";
