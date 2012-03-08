@@ -8,6 +8,9 @@ namespace AudioLib
 {
     public class WavFormatConverter : DualCancellableProgressReporter
     {
+        public const string AUDIO_MP3_EXTENSION = ".mp3";
+        public const string AUDIO_WAV_EXTENSION = ".wav";
+
         public override void DoWork()
         {
         }
@@ -120,7 +123,7 @@ namespace AudioLib
                 16);
 
             wavFilePath = GenerateOutputFileFullname(
-                                    mp3FilePath + ".wav",
+                                    mp3FilePath + WavFormatConverter.AUDIO_WAV_EXTENSION,
                                     destinationDirectory,
                                     mp3PcmFormat);
 
@@ -223,7 +226,7 @@ namespace AudioLib
                         (ushort)pcmStream.WaveFormat.BitsPerSample);
 
                     wavFilePath = GenerateOutputFileFullname(
-                                            mp3FilePath + ".wav",
+                                            mp3FilePath + WavFormatConverter.AUDIO_WAV_EXTENSION,
                                             destinationDirectory,
                                             mp3PcmFormat);
 
@@ -436,7 +439,7 @@ namespace AudioLib
                 System.Reflection.Assembly.GetExecutingAssembly().Location);
             //string outputFilePath = Path.Combine (
             //Path.GetDirectoryName ( sourceFile ),
-            //Path.GetFileNameWithoutExtension ( sourceFile ) + ".mp3" );
+            //Path.GetFileNameWithoutExtension ( sourceFile ) + DataProviderFactory.AUDIO_MP3_EXTENSION );
 
             if (pcmFormat.SampleRate < 22050)
             {
@@ -528,6 +531,10 @@ namespace AudioLib
 
             string sourceFileName = Path.GetFileNameWithoutExtension(sourceFile);
             string sourceFileExt = Path.GetExtension(sourceFile);
+            if (!string.IsNullOrEmpty(sourceFileExt))
+            {
+                sourceFileExt = sourceFileExt.ToLower();
+            }
 
             string channels = (pcmFormat.NumberOfChannels == 1 ? "Mono" : (pcmFormat.NumberOfChannels == 2 ? "Stereo" : pcmFormat.NumberOfChannels.ToString()));
 
