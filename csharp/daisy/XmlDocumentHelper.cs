@@ -187,31 +187,6 @@ namespace urakawa.daisy
                     continue;
                 }
 
-                if (node.LocalName == localName || node.Name == localName)
-                {
-                    if (!string.IsNullOrEmpty(namespaceUri))
-                    {
-                        if (node.NamespaceURI == namespaceUri)
-                        {
-                            yield return node;
-
-                            if (breakOnFirstFound)
-                            {
-                                yield break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        yield return node;
-
-                        if (breakOnFirstFound)
-                        {
-                            yield break;
-                        }
-                    }
-                }
-
                 if (deep)
                 {
                     foreach (XmlNode childNode in GetChildrenElementsOrSelfWithName(node, deep, localName, namespaceUri, breakOnFirstFound))
@@ -221,6 +196,33 @@ namespace urakawa.daisy
                         if (breakOnFirstFound)
                         {
                             yield break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (node.LocalName == localName || node.Name == localName)
+                    {
+                        if (!string.IsNullOrEmpty(namespaceUri))
+                        {
+                            if (node.NamespaceURI == namespaceUri)
+                            {
+                                yield return node;
+
+                                if (breakOnFirstFound)
+                                {
+                                    yield break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            yield return node;
+
+                            if (breakOnFirstFound)
+                            {
+                                yield break;
+                            }
                         }
                     }
                 }
