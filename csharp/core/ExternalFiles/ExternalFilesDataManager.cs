@@ -36,7 +36,7 @@ namespace urakawa.ExternalFiles
 
             if (!Directory.Exists(STORAGE_FOLDER_PATH))
             {
-                Directory.CreateDirectory(STORAGE_FOLDER_PATH);
+                FileDataProvider.CreateDirectory(STORAGE_FOLDER_PATH);
             }
 #endif //USE_ISOLATED_STORAGE
         }

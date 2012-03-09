@@ -7,6 +7,7 @@ using System.Text;
 using System.Xml;
 using AudioLib;
 using urakawa.ExternalFiles;
+using urakawa.data;
 
 namespace urakawa.xuk
 {
@@ -183,7 +184,7 @@ namespace urakawa.xuk
 
                 if (!Directory.Exists(dirpath))
                 {
-                    Directory.CreateDirectory(dirpath);
+                    FileDataProvider.CreateDirectory(dirpath);
                 }
 
                 string filepath = Path.Combine(dirpath, Path.GetFileName(strWebDTDPath));

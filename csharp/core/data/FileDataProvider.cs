@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Xml;
 using urakawa.xuk;
 
@@ -20,6 +21,54 @@ namespace urakawa.data
     /// </summary>
     public class FileDataProvider : DataProvider
     {
+        private static int MAX_ATTEMPTS = 10;
+        public static void DeleteDirectory(string path)
+        {
+            int attempt = MAX_ATTEMPTS;
+            while (attempt-- >= 0)
+            {
+                try
+                {
+                    Directory.Delete(path, true);
+                    break;
+                }
+                catch (Exception e)
+                {
+                    Thread.Sleep(200);
+                }
+            }
+
+            if (Directory.Exists(path))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif // DEBUG
+            }
+        }
+        public static void CreateDirectory(string path)
+        {
+            int attempt = MAX_ATTEMPTS;
+            while (attempt-- >= 0)
+            {
+                try
+                {
+                    Directory.CreateDirectory(path);
+                    break;
+                }
+                catch (Exception e)
+                {
+                    Thread.Sleep(200);
+                }
+            }
+
+            if (!Directory.Exists(path))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif // DEBUG
+            }
+        }
+
         public static bool isHTTPFile(string filepath)
         {
             return filepath.StartsWith("http://") || filepath.StartsWith("https://");

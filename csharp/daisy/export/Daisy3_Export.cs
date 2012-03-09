@@ -7,6 +7,7 @@ using System.Xml;
 using AudioLib;
 using urakawa.core;
 using urakawa.daisy.export.visitor;
+using urakawa.data;
 using urakawa.media.timing;
 using urakawa.property.channel;
 using urakawa.media;
@@ -59,7 +60,7 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
             RequestCancellation = false;
             if (!Directory.Exists(exportDirectory))
             {
-                Directory.CreateDirectory(exportDirectory);
+                FileDataProvider.CreateDirectory(exportDirectory);
             }
 
             m_OutputDirectory = exportDirectory;

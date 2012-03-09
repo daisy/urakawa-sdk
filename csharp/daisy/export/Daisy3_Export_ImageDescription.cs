@@ -39,7 +39,7 @@ namespace urakawa.daisy.export
 
             if (!Directory.Exists(m_ImageDescriptionDirectoryPath))
             {
-                Directory.CreateDirectory(m_ImageDescriptionDirectoryPath);
+                FileDataProvider.CreateDirectory(m_ImageDescriptionDirectoryPath);
             }
 
             return m_ImageDescriptionDirectoryPath;
