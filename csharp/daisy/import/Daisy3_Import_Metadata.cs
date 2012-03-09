@@ -179,18 +179,16 @@ namespace urakawa.daisy.import
 
         private static bool isUniqueIdName(string name)
         {
-            string lower = name.ToLower();
-
-            if ("dc:identifier" == lower)
+            if (string.Equals(name, SupportedMetadata_Z39862005.DC_Identifier, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
 
-            MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition("dc:Identifier");
+            MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(SupportedMetadata_Z39862005.DC_Identifier);
             return md != null && md.Synonyms.Find(
                                 delegate(string s)
                                 {
-                                    return s.ToLower() == lower;
+                                    return string.Equals(s, name, StringComparison.OrdinalIgnoreCase);
                                 }) != null;
         }
 
@@ -383,7 +381,7 @@ namespace urakawa.daisy.import
         {
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
             {
-                Metadata meta = addMetadata("dc:Identifier", m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);
+                Metadata meta = addMetadata(SupportedMetadata_Z39862005.DC_Identifier, m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);
                 meta.IsMarkedAsPrimaryIdentifier = true;
             }
             //if no unique publication identifier could be determined, see how many identifiers there are
@@ -401,7 +399,10 @@ namespace urakawa.daisy.import
                             md.NameContentAttribute.Name, true);
 
                         //if this is a dc:identifier, then add it to our list
-                        if (definition.Name == "dc:Identifier") identifiers.Add(md);
+                        if (string.Equals(definition.Name, SupportedMetadata_Z39862005.DC_Identifier, StringComparison.OrdinalIgnoreCase))
+                        {
+                            identifiers.Add(md);
+                        }
                     }
 
                     //if there is only one identifier, then make it the publication UID

@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using urakawa.metadata.daisy;
 using urakawa.metadata;
+using urakawa.xuk;
 
 namespace urakawa.daisy
 {
     public static class DiagramContentModelHelper
     {
-        public const string NS_PREFIX_DUBLIN_CORE = "dc";
-        public const string NS_URL_DUBLIN_CORE = "http://purl/dc";
-
-
         // -------------------------------------------------
 
         //public const string NS_PREFIX_XLINK = "xlink";
@@ -30,12 +27,6 @@ namespace urakawa.daisy
 
         // -------------------------------------------------
 
-        public const string NS_PREFIX_XML = "xml";
-        public const string NS_URL_XML = "http://www.w3.org/XML/1998/namespace";
-
-
-        public const string XmlId = NS_PREFIX_XML + ":id";
-        public const string XmlLang = NS_PREFIX_XML + ":lang";
 
         // -------------------------------------------------
 
@@ -46,7 +37,7 @@ namespace urakawa.daisy
 
         public const string P = "p";
 
-#if SUPPORT_ANNOTATION_ELEMENT
+#if true || SUPPORT_ANNOTATION_ELEMENT
         public const string Annotation = "annotation";
         public const string Ref = "ref";
         public const string By = "by";
@@ -58,6 +49,7 @@ namespace urakawa.daisy
         public const string SrcType = "srctype";
 
         public const string Meta = "meta";
+        public const string Name = "name"; // legacy
         public const string Property = "property";
         public const string Content = "content";
         public const string Rel = "rel";
@@ -79,6 +71,7 @@ namespace urakawa.daisy
 
         //http://www.daisy.org/z3998/2012/auth/features/description/1.0/
         public const string NS_PREFIX_DIAGRAM = "d";
+        public const string NS_PREFIX_DIAGRAM_METADATA = "diagram";
         public const string NS_URL_DIAGRAM = "http://www.daisy.org/ns/z3998/authoring/features/description/";
 
 
@@ -111,12 +104,12 @@ namespace urakawa.daisy
 
         // -------------------------------------------------
         //http://www.daisy.org/z3998/2012/vocab/descriptions/
-        
+
         //public const string DIAGRAM_Credentials = "diagram:credentials"; // Metadata property attribute
 
         public const string DIAGRAM_Purpose = "diagram:purpose"; // Metadata property attribute
         public const string DIAGRAM_DescriptionQuality = "diagram:descriptionQuality"; // Metadata property attribute
-        
+
         public const string DIAGRAM_TargetAge = "diagram:targetAge"; // Metadata property attribute
         public const string DIAGRAM_targetGrade = "diagram:targetGrade"; // Metadata property attribute
 
@@ -124,20 +117,14 @@ namespace urakawa.daisy
         public const string DIAGRAM_ThisVersion = "diagram:thisVersion"; // Metadata rel attribute
         public const string DIAGRAM_PreviousVersion = "diagram:previousVersion"; // Metadata rel attribute
         public const string DIAGRAM_AlternateVersion = "diagram:alternateVersion"; // Metadata rel attribute
-        
+
         public const string DIAGRAM_Repository = "diagram:repository"; // Metadata rel attribute
         public const string DIAGRAM_QueryConcept = "diagram:queryConcept"; // Metadata property attribute
 
+        // NOT IN THE SPEC, BUT USED IN THE XML SAMPLE!?
+        public const string DIAGRAM_Credentials = "diagram:credentials"; // Metadata property attribute
+
         // -------------------------------------------------
-
-        public const string DC_AccessRights = "dc:accessRights";
-
-        // already in SupportedMetadata_Z39862005, but with upper case first letter
-        //"dc:identifier"
-        //"dc:language"
-        //"dc:creator"
-        //"dc:rights"
-        //"dc:description"
 
         // -------------------------------------------------
 
@@ -159,7 +146,7 @@ namespace urakawa.daisy
                     //// not technically in the DIAGRAM namespace ;)
                     //m_DIAGRAM_ElementNames.Add(Object);
 
-#if SUPPORT_ANNOTATION_ELEMENT
+#if true || SUPPORT_ANNOTATION_ELEMENT
                     // ? ... not technically in the DIAGRAM namespace, but useful in DIAGRAM nonetheless.
                     m_DIAGRAM_ElementNames.Add(Annotation);
 #endif //SUPPORT_ANNOTATION_ELEMENT
@@ -177,14 +164,14 @@ namespace urakawa.daisy
                 {
                     m_DIAGRAM_ElementAttributes = new List<string>();
 
-                    m_DIAGRAM_ElementAttributes.Add(XmlId);
-                    m_DIAGRAM_ElementAttributes.Add(XmlLang);
+                    m_DIAGRAM_ElementAttributes.Add(XmlReaderWriterHelper.XmlId);
+                    m_DIAGRAM_ElementAttributes.Add(XmlReaderWriterHelper.XmlLang);
 
                     //// see m_DIAGRAM_ElementNames.Add(Object);
                     //m_DIAGRAM_ElementAttributes.Add(Src);
                     //m_DIAGRAM_ElementAttributes.Add(SrcType);
 
-#if SUPPORT_ANNOTATION_ELEMENT
+#if true || SUPPORT_ANNOTATION_ELEMENT
                     // ? see m_DIAGRAM_ElementNames.Add(Annotation);
                     m_DIAGRAM_ElementAttributes.Add(Ref);
                     m_DIAGRAM_ElementAttributes.Add(By);
@@ -211,12 +198,12 @@ namespace urakawa.daisy
                     m_DIAGRAM_MetadataProperties.Add(DIAGRAM_DescriptionQuality);
                     //m_DIAGRAM_MetadataProperties.Add(DIAGRAM_Credentials);
 
-                    m_DIAGRAM_MetadataProperties.Add(DC_AccessRights);
+                    m_DIAGRAM_MetadataProperties.Add(SupportedMetadata_Z39862005.DC_AccessRights);
 
                     foreach (MetadataDefinition def in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
                     {
                         string str = def.Name.ToLower();
-                        if (str.StartsWith("dc:")
+                        if (str.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":")
                             && !m_DIAGRAM_MetadataProperties.Contains(str))
                         {
                             m_DIAGRAM_MetadataProperties.Add(str);
@@ -226,7 +213,7 @@ namespace urakawa.daisy
                             foreach (string syn in def.Synonyms)
                             {
                                 str = syn.ToLower();
-                                if (str.StartsWith("dc:")
+                                if (str.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":")
                                     && !m_DIAGRAM_MetadataProperties.Contains(str))
                                 {
                                     m_DIAGRAM_MetadataProperties.Add(str);
@@ -248,11 +235,11 @@ namespace urakawa.daisy
                 {
                     m_DIAGRAM_MetadataRelAttributeValues = new List<string>();
 
-                    m_DIAGRAM_MetadataRelAttributeValues.Add(DIAGRAM_PreviousVersion); 
+                    m_DIAGRAM_MetadataRelAttributeValues.Add(DIAGRAM_PreviousVersion);
                     m_DIAGRAM_MetadataRelAttributeValues.Add(DIAGRAM_CurrentVersion);
                     m_DIAGRAM_MetadataRelAttributeValues.Add(DIAGRAM_ThisVersion);
                     m_DIAGRAM_MetadataRelAttributeValues.Add(DIAGRAM_AlternateVersion);
-                    
+
                     m_DIAGRAM_MetadataRelAttributeValues.Add(DIAGRAM_Repository);
                 }
                 return m_DIAGRAM_MetadataRelAttributeValues;
@@ -269,7 +256,7 @@ namespace urakawa.daisy
                 {
                     m_DIAGRAM_MetadataAdditionalAttributeNames = new List<string>();
 
-                    m_DIAGRAM_MetadataAdditionalAttributeNames.Add(XmlId);
+                    m_DIAGRAM_MetadataAdditionalAttributeNames.Add(XmlReaderWriterHelper.XmlId);
                     m_DIAGRAM_MetadataAdditionalAttributeNames.Add(About);
                     m_DIAGRAM_MetadataAdditionalAttributeNames.Add(Rel);
                     m_DIAGRAM_MetadataAdditionalAttributeNames.Add(Resource);

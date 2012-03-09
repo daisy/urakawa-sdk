@@ -46,8 +46,7 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "external", "true");
                 anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description"));
 
-                if (EXPORT_IMAGE_DESCRIPTION_IN_DTBOOK
-                    && imageDescriptions != null && imageDescriptions.Count > 0)
+                if (imageDescriptions.Count > 0)
                 {
                     foreach (string s in imageDescriptions.Keys)
                     {
@@ -90,7 +89,7 @@ DiagramContentModelHelper.NS_URL_DIAGRAM);
                             for (int i = 0; i < newNode.Attributes.Count; i++)
                             {//4
                                 XmlAttribute attr = newNode.Attributes[i];
-                                if (attr.Name == "xml:id")
+                                if (attr.Name == DiagramContentModelHelper.NS_PREFIX_XML + ":id")
                                 {//-4
                                     XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, newNode, "id", attr.Value);
                                     newNode.Attributes.Remove(attr);

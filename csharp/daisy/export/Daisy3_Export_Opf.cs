@@ -5,6 +5,7 @@ using System.IO;
 using urakawa.data;
 using urakawa.media.timing;
 using urakawa.metadata;
+using urakawa.metadata.daisy;
 using urakawa.xuk;
 
 namespace urakawa.daisy.export
@@ -29,37 +30,37 @@ namespace urakawa.daisy.export
             const string mediaType_Resource = "application/x-dtbresource+xml";
 
 
-            m_AllowedInDcMetadata.Add("dc:title");
-            m_AllowedInDcMetadata.Add("dc:creator");
-            m_AllowedInDcMetadata.Add("dc:subject");
-            m_AllowedInDcMetadata.Add("dc:description");
-            m_AllowedInDcMetadata.Add("dc:publisher");
-            m_AllowedInDcMetadata.Add("dc:contributor");
-            m_AllowedInDcMetadata.Add("dc:date");
-            m_AllowedInDcMetadata.Add("dc:type");
-            m_AllowedInDcMetadata.Add("dc:format");
-            m_AllowedInDcMetadata.Add("dc:identifier");
-            m_AllowedInDcMetadata.Add("dc:source");
-            m_AllowedInDcMetadata.Add("dc:language");
-            m_AllowedInDcMetadata.Add("dc:relation");
-            m_AllowedInDcMetadata.Add("dc:coverage");
-            m_AllowedInDcMetadata.Add("dc:rights");
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Title.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Creator.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Subject.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Description.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Identifier.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Publisher.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Contributor.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Date.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Type.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Format.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.D_Source.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.D_Language.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Relation.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Coverage.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Rights.ToLower());
 
-            m_DtbAllowedInXMetadata.Add("dtb:sourcedate");
-            m_DtbAllowedInXMetadata.Add("dtb:sourceedition");
-            m_DtbAllowedInXMetadata.Add("dtb:sourcepublisher");
-            m_DtbAllowedInXMetadata.Add("dtb:sourcerights");
-            m_DtbAllowedInXMetadata.Add("dtb:sourcetitle");
-            m_DtbAllowedInXMetadata.Add("dtb:multimediatype");
-            m_DtbAllowedInXMetadata.Add("dtb:multimediacontent");
-            m_DtbAllowedInXMetadata.Add("dtb:narrator");
-            m_DtbAllowedInXMetadata.Add("dtb:producer");
-            m_DtbAllowedInXMetadata.Add("dtb:produceddate");
-            m_DtbAllowedInXMetadata.Add("dtb:revision");
-            m_DtbAllowedInXMetadata.Add("dtb:revisiondate");
-            m_DtbAllowedInXMetadata.Add("dtb:revisiondescription");
-            m_DtbAllowedInXMetadata.Add("dtb:totaltime");
-            m_DtbAllowedInXMetadata.Add("dtb:audioformat");
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_DATE.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_EDITION.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_PUBLISHER.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_RIGHTS.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_TITLE.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_NARRATOR.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_PRODUCER.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_PRODUCED_DATE.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_REVISION.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_REVISION_DATE.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_REVISION_DESCRIPTION.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_TOTAL_TIME.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_AUDIO_FORMAT.ToLower());
 
             // add all files to manifest
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
@@ -155,7 +156,7 @@ namespace urakawa.daisy.export
                 opfDocument = null;
                 return;
             }
-            SaveXukAction.WriteXmlDocument(opfDocument, Path.Combine(m_OutputDirectory, m_Filename_Opf));
+            XmlReaderWriterHelper.WriteXmlDocument(opfDocument, Path.Combine(m_OutputDirectory, m_Filename_Opf));
         }
 
         private XmlNode AddFilenameToManifest(XmlDocument opfDocument, XmlNode manifestNode, string filename, string strID, string mediaType)
@@ -179,7 +180,7 @@ namespace urakawa.daisy.export
 
         private void AddMetadata_Generator(XmlDocument doc, XmlNode parentNode)
         {
-            AddMetadataAsAttributes(doc, parentNode, "dtb:generator", GeneratorName);
+            AddMetadataAsAttributes(doc, parentNode, SupportedMetadata_Z39862005.DTB_GENERATOR, GeneratorName);
             //m_ProgressPercentage = 100;
             //reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.AllFilesCreated);                                       
         }
@@ -193,33 +194,34 @@ namespace urakawa.daisy.export
 
             //AddMetadata_Generator(opfDocument, x_metadataNode);
 
-            AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:totalTime", FormatTimeString(m_TotalTime));
+            AddMetadataAsAttributes(opfDocument, x_metadataNode, SupportedMetadata_Z39862005.DTB_TOTAL_TIME, FormatTimeString(m_TotalTime));
 
-            if (true || m_Presentation.GetMetadata("dtb:multimediaType").Count == 0)
+            if (true || m_Presentation.GetMetadata(SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE).Count == 0)
             {
-                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaType", m_Filename_Content != null ? "audioFullText" : "audioNCX");
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE, m_Filename_Content != null ? "audioFullText" : "audioNCX");
             }
 
-            if (true || m_Presentation.GetMetadata("dtb:multimediaContent").Count == 0)
+            if (true || m_Presentation.GetMetadata(SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT).Count == 0)
             {
-                AddMetadataAsAttributes(opfDocument, x_metadataNode, "dtb:multimediaContent", m_Filename_Content != null ? "audio,text" : "audio");
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT, m_Filename_Content != null ? "audio,text" : "audio");
             }
 
-            AddMetadataAsInnerText(opfDocument, dc_metadataNode, "dc:format", "ANSI/NISO Z39.86-2005");
+            AddMetadataAsInnerText(opfDocument, dc_metadataNode, SupportedMetadata_Z39862005.DC_Format.ToLower(), "ANSI/NISO Z39.86-2005");
 
 
             foreach (Metadata m in m_Presentation.Metadatas.ContentsAs_Enumerable)
             {
                 string lowerName = m.NameContentAttribute.Name.ToLower();
                 if (mdId == m
-                    || lowerName == "dtb:totaltime"
-                    || lowerName == "dc:format"
-                    || lowerName == "dtb:multimediatype"
-                    || lowerName == "dtb:multimediacontent")
+                    || string.Equals(m.NameContentAttribute.Name, SupportedMetadata_Z39862005.DTB_TOTAL_TIME, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(m.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_Format, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(m.NameContentAttribute.Name, SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(m.NameContentAttribute.Name, SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT, StringComparison.OrdinalIgnoreCase)
+                    )
                     continue;
 
                 XmlNode metadataNodeCreated = null;
-                //if (m.NameContentAttribute.Name.StartsWith("dc:"))
+                //if (m.NameContentAttribute.Name.StartsWith(SupportedMetadata_Z39862005.DC + ":"))
                 if (m_AllowedInDcMetadata.Contains(lowerName))
                 {
                     metadataNodeCreated = AddMetadataAsInnerText(opfDocument, dc_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
@@ -234,8 +236,9 @@ namespace urakawa.daisy.export
                 //items in x-metadata may start with dtb: ONLY if they are in the list of allowed dtb:* items
                 //OR, items in x-metadata may be anything else (non-dtb:*).
                 else if (
-                    (lowerName.StartsWith("dtb:") && m_DtbAllowedInXMetadata.Contains(lowerName))
-                    || !lowerName.StartsWith("dtb:")
+                    (lowerName.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DTB + ":")
+                    && m_DtbAllowedInXMetadata.Contains(lowerName))
+                    || !lowerName.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DTB + ":")
                     )
                 {
                     metadataNodeCreated = AddMetadataAsAttributes(opfDocument, x_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);

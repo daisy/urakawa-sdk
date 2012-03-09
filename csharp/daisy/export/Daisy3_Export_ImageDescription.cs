@@ -13,7 +13,6 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private const bool EXPORT_IMAGE_DESCRIPTION_IN_DTBOOK = true;
         private bool IsIncludedInDTBook(string name)
         {
             return (name == DiagramContentModelHelper.D_LondDesc
@@ -29,8 +28,6 @@ namespace urakawa.daisy.export
         }
         private Dictionary<AlternateContentProperty, Description> m_AltProperty_DescriptionMap = new Dictionary<AlternateContentProperty, Description>();
 
-
-        private const string IMAGE_DESCRIPTION_DTD_FRAGMENT_PATH = "export\\Image_DescriptionDTD.txt";
 
         private const string IMAGE_DESCRIPTION_XML_SUFFIX = "_DIAGRAM_Description";
 
@@ -72,6 +69,10 @@ namespace urakawa.daisy.export
                 "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
                 DiagramContentModelHelper.NS_URL_DIAGRAM);
 
+            //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
+            //    "xmlns:" + DiagramContentModelHelper.NS_PREFIX_MATHML,
+            //    DiagramContentModelHelper.NS_URL_MATHML);
+
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
                 "xmlns",
                 DiagramContentModelHelper.NS_URL_ZAI);
@@ -95,7 +96,7 @@ namespace urakawa.daisy.export
 
             string imageDescriptionDirectoryPath = getAndCreateImageDescriptionDirectoryPath(imageSRC);
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + IMAGE_DESCRIPTION_XML_SUFFIX + ".xml";
-            SaveXukAction.WriteXmlDocument(descriptionDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName));
+            XmlReaderWriterHelper.WriteXmlDocument(descriptionDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName));
 
             string relativePath = Path.GetFileName(imageDescriptionDirectoryPath);
             DirectoryInfo d = new DirectoryInfo(imageDescriptionDirectoryPath);

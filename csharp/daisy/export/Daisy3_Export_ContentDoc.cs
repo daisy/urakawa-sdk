@@ -53,17 +53,6 @@ namespace urakawa.daisy.export
                 }
             }
 
-            if (EXPORT_IMAGE_DESCRIPTION_IN_DTBOOK && strInternalDTD == null)
-            {
-                string strDescriptionDTDPath = Path.Combine (System.AppDomain.CurrentDomain.BaseDirectory, IMAGE_DESCRIPTION_DTD_FRAGMENT_PATH);
-                if (File.Exists(strDescriptionDTDPath))
-                {
-                    StreamReader sr = File.OpenText(strDescriptionDTDPath);
-                    strInternalDTD = sr.ReadToEnd();
-                    sr.Close();
-                    sr = null;
-                }
-            }
             if (RequestCancellation) return;
 
             //m_ProgressPercentage = 0;

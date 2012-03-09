@@ -637,7 +637,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, mainSeqNode, "fill", "remove");
                     AddMetadata_Smil(smilDocument, FormatTimeString(smilElapseTime), currentSmilCustomTestList);
 
-                    SaveXukAction.WriteXmlDocument(smilDocument, Path.Combine(m_OutputDirectory, smilFileName));
+                    XmlReaderWriterHelper.WriteXmlDocument(smilDocument, Path.Combine(m_OutputDirectory, smilFileName));
 
                     smilElapseTime.Add(durationOfCurrentSmil);
                     m_FilesList_Smil.Add(smilFileName);
@@ -684,7 +684,7 @@ namespace urakawa.daisy.export
                 ncxDocument = null;
                 return;
             }
-            SaveXukAction.WriteXmlDocument(m_DTBDocument, Path.Combine(m_OutputDirectory, m_Filename_Content));
+            XmlReaderWriterHelper.WriteXmlDocument(m_DTBDocument, Path.Combine(m_OutputDirectory, m_Filename_Content));
 
             if (RequestCancellation)
             {
@@ -695,7 +695,7 @@ namespace urakawa.daisy.export
             // write ncs document to file
             m_TotalTime = new Time(smilElapseTime.AsTimeSpan);
             AddMetadata_Ncx(ncxDocument, totalPageCount.ToString(), maxNormalPageNumber.ToString(), maxDepth.ToString(), ncxCustomTestList);
-            SaveXukAction.WriteXmlDocument(ncxDocument, Path.Combine(m_OutputDirectory, m_Filename_Ncx));
+            XmlReaderWriterHelper.WriteXmlDocument(ncxDocument, Path.Combine(m_OutputDirectory, m_Filename_Ncx));
         }
 
         private bool IsHeadingNode(urakawa.core.TreeNode node)
@@ -921,7 +921,7 @@ namespace urakawa.daisy.export
 
                     if (asInnerText)
                     {
-                        metaNodeUid = AddMetadataAsInnerText(doc, parentNode, "dc:Identifier", md.NameContentAttribute.Value);
+                        metaNodeUid = AddMetadataAsInnerText(doc, parentNode, SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":Identifier", md.NameContentAttribute.Value);
                         XmlDocumentHelper.CreateAppendXmlAttribute(doc, metaNodeUid, "id", "uid");
                     }
                     else
@@ -929,8 +929,8 @@ namespace urakawa.daisy.export
                         metaNodeUid = doc.CreateElement(null, "meta", parentNode.NamespaceURI);
                         parentNode.AppendChild(metaNodeUid);
 
-                        XmlDocumentHelper.CreateAppendXmlAttribute(doc, metaNodeUid, "name", "dtb:uid");
-                        XmlDocumentHelper.CreateAppendXmlAttribute(doc, metaNodeUid, "content", md.NameContentAttribute.Value);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(doc, metaNodeUid, DiagramContentModelHelper.Name, SupportedMetadata_Z39862005.DTB_UID);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(doc, metaNodeUid, DiagramContentModelHelper.Content, md.NameContentAttribute.Value);
                     }
 
                     mdUid = md;
@@ -958,7 +958,7 @@ namespace urakawa.daisy.export
                 //AddMetadataAsAttributes(ncxDocument, headNode, "dtb:uid", md.NameContentAttribute.Value);
                 if (asInnerText)
                 {
-                    metaNodeUid = AddMetadataAsInnerText(doc, parentNode, "dc:Identifier", md.NameContentAttribute.Value);
+                    metaNodeUid = AddMetadataAsInnerText(doc, parentNode, SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":Identifier", md.NameContentAttribute.Value);
                     XmlDocumentHelper.CreateAppendXmlAttribute(doc, metaNodeUid, "id", "uid");
                 }
                 else
@@ -966,8 +966,8 @@ namespace urakawa.daisy.export
                     metaNodeUid = doc.CreateElement(null, "meta", parentNode.NamespaceURI);
                     parentNode.AppendChild(metaNodeUid);
 
-                    XmlDocumentHelper.CreateAppendXmlAttribute(doc, metaNodeUid, "name", "dtb:uid");
-                    XmlDocumentHelper.CreateAppendXmlAttribute(doc, metaNodeUid, "content",
+                    XmlDocumentHelper.CreateAppendXmlAttribute(doc, metaNodeUid, DiagramContentModelHelper.Name, SupportedMetadata_Z39862005.DTB_UID);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(doc, metaNodeUid, DiagramContentModelHelper.Content,
                                                              md.NameContentAttribute.Value);
                 }
 
@@ -986,18 +986,18 @@ namespace urakawa.daisy.export
 
         private static bool isUniqueIdName(string name)
         {
-            string lower = name.ToLower();
-
-            if ("dc:identifier" == lower)
+            if (string.Equals(name, SupportedMetadata_Z39862005.DC_Identifier,
+                                 StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
 
-            MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition("dc:Identifier");
+            MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":Identifier");
             return md != null && md.Synonyms.Find(
                                 delegate(string s)
                                 {
-                                    return s.ToLower() == lower;
+                                    return string.Equals(s, SupportedMetadata_Z39862005.DC_Identifier,
+                                 StringComparison.OrdinalIgnoreCase);
                                 }) != null;
         }
 
@@ -1009,9 +1009,9 @@ namespace urakawa.daisy.export
 
             AddMetadata_Generator(ncxDocument, headNode);
 
-            AddMetadataAsAttributes(ncxDocument, headNode, "dtb:depth", strDepth);
-            AddMetadataAsAttributes(ncxDocument, headNode, "dtb:totalPageCount", strTotalPages);
-            AddMetadataAsAttributes(ncxDocument, headNode, "dtb:maxPageNumber", strMaxNormalPage);
+            AddMetadataAsAttributes(ncxDocument, headNode, SupportedMetadata_Z39862005.DTB_DEPTH, strDepth);
+            AddMetadataAsAttributes(ncxDocument, headNode, SupportedMetadata_Z39862005.DTB_TOTAL_PAGE_COUNT, strTotalPages);
+            AddMetadataAsAttributes(ncxDocument, headNode, SupportedMetadata_Z39862005.DTB_MAX_PAGE_NUMBER, strMaxNormalPage);
 
 
             // add custom test to headNode
@@ -1053,7 +1053,7 @@ namespace urakawa.daisy.export
 
             AddMetadata_Generator(smilDocument, headNode);
 
-            AddMetadataAsAttributes(smilDocument, headNode, "dtb:totalElapsedTime", strElapsedTime);
+            AddMetadataAsAttributes(smilDocument, headNode, SupportedMetadata_Z39862005.DTB_TOTAL_ELAPSED_TIME, strElapsedTime);
 
 
             //if (isCustomTestRequired)
@@ -1137,7 +1137,9 @@ namespace urakawa.daisy.export
 
 
             XmlDocumentHelper.CreateAppendXmlAttribute(NcxDocument, rootNode, "version", "2005-1");
-            XmlDocumentHelper.CreateAppendXmlAttribute(NcxDocument, rootNode, "xml:lang", (string.IsNullOrEmpty(m_Presentation.Language) ? "en-US" : m_Presentation.Language));
+            XmlDocumentHelper.CreateAppendXmlAttribute(NcxDocument, rootNode,
+                XmlReaderWriterHelper.XmlLang,
+                (string.IsNullOrEmpty(m_Presentation.Language) ? "en-US" : m_Presentation.Language));
 
 
             XmlNode headNode = NcxDocument.CreateElement(null, "head", rootNode.NamespaceURI);

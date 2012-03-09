@@ -176,7 +176,7 @@ action.Cancelled +=new EventHandler<CancelledEventArgs>(
             {
                 case ".opf":
                     {
-                        XmlDocument opfXmlDoc = OpenXukAction.ParseXmlDocument(m_Book_FilePath, false);
+                        XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false);
 
                         if (RequestCancellation) break;
                         reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingOPF, Path.GetFileName(m_Book_FilePath)));  
@@ -188,7 +188,7 @@ action.Cancelled +=new EventHandler<CancelledEventArgs>(
                 case ".html":
                 case ".xml":
                     {
-                        XmlDocument contentXmlDoc = OpenXukAction.ParseXmlDocument(m_Book_FilePath, true);
+                        XmlDocument contentXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, true);
 
                         if (RequestCancellation) break;
                         reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, Path.GetFileName(m_Book_FilePath)));  
@@ -238,7 +238,6 @@ action.Cancelled +=new EventHandler<CancelledEventArgs>(
                         MetadataDefinition definition = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(
                             md.NameContentAttribute.Name, true);
 
-                        //if this is a dc:identifier, then add it to our list
                         if (definition.Name == "dc:Identifier") identifiers.Add(md);
                     }
 

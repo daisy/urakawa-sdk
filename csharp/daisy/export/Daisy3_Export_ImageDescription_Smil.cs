@@ -119,7 +119,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id",
                                                                GetNextID(ID_SmilPrefix));
                     string dtbookID = null;
-                    dtbookID = xn.Attributes.GetNamedItem("xml:id").Value;
+                    dtbookID = xn.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlId).Value;
 
                     //dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null
                     //? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value

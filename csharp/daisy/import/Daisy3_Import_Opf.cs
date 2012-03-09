@@ -39,7 +39,7 @@ namespace urakawa.daisy.import
             {
                 if (RequestCancellation) return;
                 string fullDtbookPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), dtbookPath);
-                XmlDocument dtbookXmlDoc = OpenXukAction.ParseXmlDocument(fullDtbookPath, true);
+                XmlDocument dtbookXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullDtbookPath, true);
 
                 if (RequestCancellation) return;
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, dtbookPath));
@@ -58,7 +58,7 @@ namespace urakawa.daisy.import
                 //m_IsAudioNCX = true;
                 if (RequestCancellation) return;
                 string fullNcxPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), ncxPath);
-                XmlDocument ncxXmlDoc = OpenXukAction.ParseXmlDocument(fullNcxPath, false);
+                XmlDocument ncxXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullNcxPath, false);
 
                 if (RequestCancellation) return;
                 reportProgress(-1, "Parsing metadata: [" + ncxPath + "]");
