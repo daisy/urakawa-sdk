@@ -134,11 +134,9 @@ namespace urakawa.metadata
         // Note: case-insensitive
         public MetadataDefinition GetMetadataDefinition(string name)
         {
-            string lowerCaseName = name.ToLower();
-
             foreach (MetadataDefinition md in Definitions)
             {
-                if (md.Name.ToLower() == lowerCaseName)
+                if (string.Equals(md.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return md;
                 }
@@ -148,12 +146,10 @@ namespace urakawa.metadata
 
         public MetadataDefinition GetMetadataDefinition(string name, bool searchSynonyms)
         {
-            string lowerCaseName = name.ToLower();
-
             MetadataDefinition definition = Definitions.Find(
                 delegate(MetadataDefinition item)
                 {
-                    return item.Name.ToLower() == lowerCaseName;
+                    return string.Equals(item.Name, name, StringComparison.OrdinalIgnoreCase);
                 });
 
             if (definition == null)
@@ -166,7 +162,7 @@ namespace urakawa.metadata
                             string found = item.Synonyms.Find(
                                 delegate(string s)
                                 {
-                                    return s.ToLower() == lowerCaseName;
+                                    return string.Equals(s, name, StringComparison.OrdinalIgnoreCase);
                                 });
                             return (found != null);
                         }

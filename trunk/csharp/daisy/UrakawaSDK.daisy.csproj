@@ -70,9 +70,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="export\Image_DescriptionDTD.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="tpbnarrator.res">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

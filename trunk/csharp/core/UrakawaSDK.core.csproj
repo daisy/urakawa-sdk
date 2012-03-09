@@ -381,6 +381,7 @@
     <Compile Include="xuk\OpenXukAction.cs" />
     <Compile Include="xuk\QualifiedName.cs" />
     <Compile Include="xuk\SaveXukAction.cs" />
+    <Compile Include="xuk\XmlReaderWriterHelper.cs" />
     <Compile Include="xuk\XukAble.cs" />
     <Compile Include="xuk\IXUKable.cs" />
     <Compile Include="xuk\XukStrings.cs" />

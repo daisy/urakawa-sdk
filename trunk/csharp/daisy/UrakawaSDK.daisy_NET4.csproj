@@ -67,7 +67,6 @@
     <Content Include="desc2html.xsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="export\Image_DescriptionDTD.txt" />
     <Content Include="tpbnarrator_res.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

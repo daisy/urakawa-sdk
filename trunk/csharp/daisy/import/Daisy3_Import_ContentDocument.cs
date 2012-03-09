@@ -51,7 +51,7 @@ namespace urakawa.daisy.import
                 //TODO: clone metadata from m_BundleProject into m_Project
 
                 string fullDocPath = Path.Combine(dirPath, docPath);
-                XmlDocument xmlDoc = OpenXukAction.ParseXmlDocument(fullDocPath, true);
+                XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullDocPath, true);
 
 
                 if (RequestCancellation) return;

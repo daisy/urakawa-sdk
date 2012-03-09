@@ -15,72 +15,6 @@ namespace urakawa.xuk
     ///</summary>
     public class SaveXukAction : ProgressAction
     {
-        public static XmlWriterSettings GetDefaultXmlWriterConfiguration(bool pretty)
-        {
-            XmlWriterSettings settings = new XmlWriterSettings();
-
-            settings.Encoding = Encoding.UTF8;
-
-            settings.NewLineHandling = NewLineHandling.Replace;
-            settings.NewLineChars = Environment.NewLine;
-
-            if (!pretty)
-            {
-                settings.Indent = false;
-                settings.NewLineOnAttributes = false;
-            }
-            else
-            {
-                settings.Indent = true;
-                settings.IndentChars = "\t";
-                settings.NewLineOnAttributes = true;
-            }
-
-            return settings;
-        }
-
-        public static void WriteXmlDocument(XmlDocument xmlDoc, string path)
-        {
-            const bool pretty = true;
-
-            xmlDoc.PreserveWhitespace = false;
-            xmlDoc.XmlResolver = null;
-
-            XmlWriterSettings settings = GetDefaultXmlWriterConfiguration(pretty);
-
-            using (XmlWriter xmlWriter = XmlWriter.Create(path, settings))
-            {
-                if (pretty && xmlWriter is XmlTextWriter)
-                {
-                    ((XmlTextWriter)xmlWriter).Formatting = Formatting.Indented;
-                }
-
-                try
-                {
-                    xmlDoc.Save(xmlWriter);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-
-                    // No message box: use debugging instead (inspect stack trace, watch values)
-                    //MessageBox.Show(e.ToString());
-
-                    // The Fail() method is better:
-                    //System.Diagnostics.Debug.Fail(e.Message);
-
-                    //Or you can explicitely break:
-#if DEBUG
-                    Debugger.Break();
-#endif
-                }
-                finally
-                {
-                    xmlWriter.Close();
-                }
-            }
-        }
-
         public override void DoWork()
         {
             Stopwatch stopWatch = new Stopwatch();
@@ -140,7 +74,7 @@ namespace urakawa.xuk
             mSourceXukAble = xukAble;
             mDestStream = destStream;
 
-            XmlWriterSettings settings = GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
+            XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
             mXmlWriter = XmlWriter.Create(mDestStream, settings);
         }
 
@@ -231,7 +165,7 @@ namespace urakawa.xuk
 
             mDestStream = new FileStream(mDestUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
 
-            XmlWriterSettings settings = GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
+            XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
             mXmlWriter = XmlWriter.Create(mDestStream, settings);
         }
 

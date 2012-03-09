@@ -79,7 +79,7 @@ namespace urakawa.daisy.import
                 if (RequestCancellation) return;
 
                 m_Book_FilePath = Path.Combine(unzipDirectory, fileInfo.FullName);
-                XmlDocument opfXmlDoc = OpenXukAction.ParseXmlDocument(m_Book_FilePath, false);
+                XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false);
 
                 if (RequestCancellation) return;
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingOPF, fileInfo.FullName));            

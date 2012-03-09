@@ -1,14 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using urakawa.ExternalFiles;
 using urakawa.xuk;
 
 namespace urakawa.daisy
 {
     public static class XmlDocumentHelper
     {
-        public static XmlDocument CreateStub_DTBDocument(string language, string strInternalDTD, List<ExternalFiles.ExternalFileData> list_ExternalStyleSheets)
+        public static XmlDocument CreateStub_DTBDocument(string language, string strInternalDTD, List<ExternalFileData> list_ExternalStyleSheets)
         {
             XmlDocument DTBDocument = new XmlDocument();
             DTBDocument.XmlResolver = null;
@@ -21,14 +23,14 @@ namespace urakawa.daisy
 
             if (list_ExternalStyleSheets.Count > 0 )
                 {
-                foreach (ExternalFiles.ExternalFileData efd in list_ExternalStyleSheets)
+                foreach (ExternalFileData efd in list_ExternalStyleSheets)
                     {
-                    if (efd is ExternalFiles.CSSExternalFileData)
+                    if (efd is CSSExternalFileData)
                         {
                         DTBDocument.AppendChild(
                         DTBDocument.CreateProcessingInstruction ( "xml-stylesheet", "type=\"text/css\" href=\"" + efd.OriginalRelativePath + "\"" ) );
                         }
-                    else if (efd is ExternalFiles.XSLTExternalFileData)
+                    else if (efd is XSLTExternalFileData)
                         {
                         DTBDocument.AppendChild (
                         DTBDocument.CreateProcessingInstruction ( "xml-stylesheet", "type=\"text/xsl\" href=\"" + efd.OriginalRelativePath + "\"" ) );
@@ -45,7 +47,7 @@ namespace urakawa.daisy
 
 
             CreateAppendXmlAttribute(DTBDocument, DTBNode, "version", "2005-3");
-            CreateAppendXmlAttribute(DTBDocument, DTBNode, "xml:lang", (string.IsNullOrEmpty(language) ? "en-US" : language));
+            CreateAppendXmlAttribute(DTBDocument, DTBNode, XmlReaderWriterHelper.XmlLang, (String.IsNullOrEmpty(language) ? "en-US" : language));
 
 
             XmlNode headNode = DTBDocument.CreateElement(null, "head", DTBNode.NamespaceURI);
@@ -56,7 +58,7 @@ namespace urakawa.daisy
             return DTBDocument;
         }
 
-        public static XmlDocument CreateStub_XhtmlDocument(string language, string strInternalDTD, List<ExternalFiles.ExternalFileData> list_ExternalStyleSheets)
+        public static XmlDocument CreateStub_XhtmlDocument(string language, string strInternalDTD, List<ExternalFileData> list_ExternalStyleSheets)
         {
             XmlDocument XhtmlDocument = new XmlDocument();
             XhtmlDocument.XmlResolver = null;
@@ -78,14 +80,14 @@ namespace urakawa.daisy
 
             if (list_ExternalStyleSheets.Count > 0)
             {
-                foreach (ExternalFiles.ExternalFileData efd in list_ExternalStyleSheets)
+                foreach (ExternalFileData efd in list_ExternalStyleSheets)
                 {
-                    if (efd is ExternalFiles.CSSExternalFileData)
+                    if (efd is CSSExternalFileData)
                     {
                         XhtmlDocument.AppendChild(
                         XhtmlDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/css\" href=\"" + efd.OriginalRelativePath + "\""));
                     }
-                    else if (efd is ExternalFiles.XSLTExternalFileData)
+                    else if (efd is XSLTExternalFileData)
                     {
                         XhtmlDocument.AppendChild(
                         XhtmlDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"" + efd.OriginalRelativePath + "\""));
@@ -154,7 +156,7 @@ namespace urakawa.daisy
 
             if (root.LocalName == localName || root.Name == localName)
             {
-                if (!string.IsNullOrEmpty(namespaceUri))
+                if (!String.IsNullOrEmpty(namespaceUri))
                 {
                     if (root.NamespaceURI == namespaceUri)
                     {
@@ -203,7 +205,7 @@ namespace urakawa.daisy
                 {
                     if (node.LocalName == localName || node.Name == localName)
                     {
-                        if (!string.IsNullOrEmpty(namespaceUri))
+                        if (!String.IsNullOrEmpty(namespaceUri))
                         {
                             if (node.NamespaceURI == namespaceUri)
                             {
@@ -273,7 +275,7 @@ namespace urakawa.daisy
                 if (splitArray[0] == "xmlns")
                 {
                     string nsURI = node.GetNamespaceOfPrefix(splitArray[1]);
-                    if (string.IsNullOrEmpty(nsURI))
+                    if (String.IsNullOrEmpty(nsURI))
                     {
                         attr = xmlDoc.CreateAttribute(name, strNamespace);
                     }
