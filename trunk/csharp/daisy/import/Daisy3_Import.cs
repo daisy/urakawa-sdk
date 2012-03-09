@@ -2,6 +2,7 @@
 using System.IO;
 using System.Xml;
 using AudioLib;
+using urakawa.data;
 using urakawa.events.progress;
 using urakawa.media.data.audio;
 using urakawa.xuk;
@@ -56,7 +57,7 @@ namespace urakawa.daisy.import
             }
             if (!Directory.Exists(m_outDirectory))
             {
-                Directory.CreateDirectory(m_outDirectory);
+                FileDataProvider.CreateDirectory(m_outDirectory);
             }
 
             m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");

@@ -39,7 +39,7 @@ namespace urakawa.data
         {
             if (!Directory.Exists(fullDataFolderPath))
             {
-                Directory.CreateDirectory(fullDataFolderPath);
+                FileDataProvider.CreateDirectory(fullDataFolderPath);
             }
 
             reportProgress(-1, Path.GetFileName(fullDataFolderPath));

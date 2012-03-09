@@ -185,7 +185,7 @@ namespace urakawa.data
 
             if (!Directory.Exists(localPath))
             {
-                Directory.CreateDirectory(localPath);
+                FileDataProvider.CreateDirectory(localPath);
             }
 
             return localPath;

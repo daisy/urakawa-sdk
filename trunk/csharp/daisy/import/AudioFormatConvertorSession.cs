@@ -25,7 +25,7 @@ namespace urakawa.daisy.import
         {
             if (!Directory.Exists(TEMP_AUDIO_DIRECTORY))
             {
-                Directory.CreateDirectory(TEMP_AUDIO_DIRECTORY);
+                FileDataProvider.CreateDirectory(TEMP_AUDIO_DIRECTORY);
             }
         }
 
@@ -148,7 +148,7 @@ namespace urakawa.daisy.import
 
             if (!Directory.Exists(destinationDirectory))
             {
-                Directory.CreateDirectory(destinationDirectory);
+                FileDataProvider.CreateDirectory(destinationDirectory);
             }
 
             AudioFileType sourceFileType = GetAudioFileType(SourceFilePath);

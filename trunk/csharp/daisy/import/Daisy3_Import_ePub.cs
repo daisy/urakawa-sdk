@@ -4,6 +4,7 @@ using System.Threading;
 using System.Xml;
 using AudioLib;
 using ICSharpCode.SharpZipLib.Zip;
+using urakawa.data;
 using urakawa.xuk;
 
 namespace urakawa.daisy.import
@@ -28,9 +29,7 @@ namespace urakawa.daisy.import
             string unzipDirectory = Path.Combine(m_outDirectory, m_Book_FilePath.Replace(".", "_"));
             if (Directory.Exists(unzipDirectory))
             {
-                Directory.Delete(unzipDirectory, true);
-
-                Thread.Sleep(200);
+                FileDataProvider.DeleteDirectory(unzipDirectory);
             }
 
             ZipEntry zipEntry;
@@ -46,7 +45,7 @@ namespace urakawa.daisy.import
                     string unzippedFileDir = Path.GetDirectoryName(unzippedFilePath);
                     if (!Directory.Exists(unzippedFileDir))
                     {
-                        Directory.CreateDirectory(unzippedFileDir);
+                        FileDataProvider.CreateDirectory(unzippedFileDir);
                     }
 
                     FileStream fileStream = File.Create(unzippedFilePath);

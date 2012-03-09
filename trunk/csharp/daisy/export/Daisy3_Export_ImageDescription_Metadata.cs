@@ -54,8 +54,7 @@ namespace urakawa.daisy.export
                         if (md.NameContentAttribute.Value != DiagramContentModelHelper.NA)
                         {
                             // TODO: INNER_TEXT vs CONTENT_ATTR => is this specified anywhere?
-                            if ((md.OtherAttributes == null || md.OtherAttributes.Count == 0)
-                                && (
+                            if (
                                 string.Equals(md.NameContentAttribute.Name, DiagramContentModelHelper.DIAGRAM_Purpose, StringComparison.OrdinalIgnoreCase)
                                 || string.Equals(md.NameContentAttribute.Name, DiagramContentModelHelper.DIAGRAM_Credentials, StringComparison.OrdinalIgnoreCase)
                                 || string.Equals(md.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_AccessRights, StringComparison.OrdinalIgnoreCase)
@@ -64,7 +63,7 @@ namespace urakawa.daisy.export
                                 || string.Equals(md.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_Description, StringComparison.OrdinalIgnoreCase)
                                 || string.Equals(md.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_Title, StringComparison.OrdinalIgnoreCase)
                                 || string.Equals(md.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_Subject, StringComparison.OrdinalIgnoreCase)
-                                ))
+                                )
                             {
                                 metaNode.InnerText = md.NameContentAttribute.Value;
                             }
