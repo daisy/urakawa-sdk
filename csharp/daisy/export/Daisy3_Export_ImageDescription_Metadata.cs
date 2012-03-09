@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml;
 using System.IO;
+using AudioLib;
 using urakawa.data;
 using urakawa.media.data.audio.codec;
 using urakawa.metadata.daisy;
@@ -13,17 +15,130 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private void createDiagramHeadMetadata(XmlNode headNode, XmlDocument descriptionDocument, XmlNode descriptionNode, AlternateContentProperty altProperty)
+        private XmlNode addFlatDiagramHeadMetadata(
+            MetadataAttribute metaAttr, IEnumerable<MetadataAttribute> metaAttrs,
+            XmlNode parentNode, XmlDocument descriptionDocument, XmlNode descriptionNode)
         {
-            //XmlNode metaSubNode = descriptionDocument.CreateElement(
-            //    DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.Meta),
-            //    DiagramContentModelHelper.NS_URL_ZAI);
-            //metaNode.AppendChild(metaSubNode);
+            XmlNode metaNode = descriptionDocument.CreateElement(
+                    DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.Meta),
+                    DiagramContentModelHelper.NS_URL_ZAI);
+            parentNode.AppendChild(metaNode);
+
+            if (metaAttr != null)
+            {
+                if (metaAttr.Name != DiagramContentModelHelper.NA)
+                {
+                    XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
+                                                           DiagramContentModelHelper.Property,
+                                                           metaAttr.Name,
+                                                           DiagramContentModelHelper.NS_URL_ZAI);
+                }
+
+                if (metaAttr.Value != DiagramContentModelHelper.NA)
+                {
+                    // TODO: INNER_TEXT vs CONTENT_ATTR => is this specified anywhere?
+                    if (
+                        string.Equals(metaAttr.Name, DiagramContentModelHelper.DIAGRAM_Purpose, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(metaAttr.Name, DiagramContentModelHelper.DIAGRAM_Credentials, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(metaAttr.Name, SupportedMetadata_Z39862005.DC_AccessRights, StringComparison.OrdinalIgnoreCase)
+                        //
+                        || string.Equals(metaAttr.Name, SupportedMetadata_Z39862005.DC_Creator, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(metaAttr.Name, SupportedMetadata_Z39862005.DC_Description, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(metaAttr.Name, SupportedMetadata_Z39862005.DC_Title, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(metaAttr.Name, SupportedMetadata_Z39862005.DC_Subject, StringComparison.OrdinalIgnoreCase)
+                        )
+                    {
+                        metaNode.InnerText = metaAttr.Value;
+                    }
+                    else
+                    {
+                        XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
+                                                           DiagramContentModelHelper.Content,
+                                                           metaAttr.Value,
+                                                           DiagramContentModelHelper.NS_URL_ZAI);
+                    }
+                }
+            }
+
+            if (metaAttrs != null)
+            {
+                foreach (MetadataAttribute metaAttribute in metaAttrs)
+                {
+                    if (metaAttribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":"))
+                    {
+                        XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
+                            metaAttribute.Name,
+                            metaAttribute.Value,
+                            XmlReaderWriterHelper.NS_URL_XML);
+                    }
+                    else if (metaAttribute.Name.StartsWith(DiagramContentModelHelper.NS_PREFIX_ZAI + ":"))
+                    {
+                        XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
+                            metaAttribute.Name,
+                            metaAttribute.Value,
+                            DiagramContentModelHelper.NS_URL_ZAI);
+                    }
+                    else if (metaAttribute.Name.StartsWith(DiagramContentModelHelper.NS_PREFIX_DIAGRAM + ":"))
+                    {
+                        XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
+                            metaAttribute.Name,
+                            metaAttribute.Value,
+                            DiagramContentModelHelper.NS_URL_DIAGRAM);
+                    }
+                    else if (string.Equals(metaAttribute.Name, DiagramContentModelHelper.Rel, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(metaAttribute.Name, DiagramContentModelHelper.Resource, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(metaAttribute.Name, DiagramContentModelHelper.About, StringComparison.OrdinalIgnoreCase))
+                    {
+                        XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
+                            metaAttribute.Name.ToLower(),
+                            metaAttribute.Value,
+                            DiagramContentModelHelper.NS_URL_ZAI);
+                    }
+                    else
+                    {
+                        XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
+                            DiagramContentModelHelper.StripNSPrefix(metaAttribute.Name),
+                            metaAttribute.Value,
+                            descriptionNode.NamespaceURI);
+                    }
+                }
+            }
+
+            return metaNode;
+        }
+
+
+        private void createDiagramHeadMetadata(
+            XmlNode headNode, XmlDocument descriptionDocument, XmlNode descriptionNode,
+            AlternateContentProperty altProperty)
+        {
+
+            //TODO: ALWAYS DISABLE THE DEBUG CODE BELOW UNLESS NEEDED FOR TESTING!!
+#if DEBUG
+            foreach (Metadata md in altProperty.Metadatas.ContentsAs_Enumerable)
+            {
+                addFlatDiagramHeadMetadata(
+                    md.NameContentAttribute, md.OtherAttributes.ContentsAs_Enumerable,
+                    headNode, descriptionDocument, descriptionNode);
+            }
+#endif // DEBUG
+
+            var flatMetadatas = new List<Metadata>();
+            var groupedMetadata_Id = new Dictionary<string, List<Metadata>>();
+            var groupedMetadata_RelResource = new Dictionary<string, List<Metadata>>();
 
             foreach (Metadata md in altProperty.Metadatas.ContentsAs_Enumerable)
             {
-                if (md.NameContentAttribute != null
-                    && md.NameContentAttribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":")
+                if (md.NameContentAttribute == null)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif // DEBUG
+                    continue;
+                }
+
+                if (
+                    md.NameContentAttribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":")
 
                     && (md.OtherAttributes == null || md.OtherAttributes.Count == 0)
 
@@ -36,91 +151,208 @@ namespace urakawa.daisy.export
                 }
                 else
                 {
-                    XmlNode metaNode = descriptionDocument.CreateElement(
-                            DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.Meta),
-                            DiagramContentModelHelper.NS_URL_ZAI);
-                    headNode.AppendChild(metaNode);
-
-                    if (md.NameContentAttribute != null)
+                    if (md.OtherAttributes != null && md.OtherAttributes.Count > 0)
                     {
-                        if (md.NameContentAttribute.Name != DiagramContentModelHelper.NA)
+                        MetadataAttribute mdAttr_Rel = null;
+                        MetadataAttribute mdAttr_Resource = null;
+                        MetadataAttribute mdAttr_Id = null;
+                        bool hasOtherAttrs = false;
+                        foreach (MetadataAttribute mdAttr in md.OtherAttributes.ContentsAs_Enumerable)
                         {
-                            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
-                                                                   DiagramContentModelHelper.Property,
-                                                                   md.NameContentAttribute.Name,
-                                                                   DiagramContentModelHelper.NS_URL_ZAI);
+                            if (mdAttr.Name == DiagramContentModelHelper.Rel)
+                            {
+                                mdAttr_Rel = mdAttr;
+                                continue;
+                            }
+                            if (mdAttr.Name == DiagramContentModelHelper.Resource)
+                            {
+                                mdAttr_Resource = mdAttr;
+                                continue;
+                            }
+                            if (mdAttr.Name == XmlReaderWriterHelper.XmlId)
+                            {
+                                mdAttr_Id = mdAttr;
+                                continue;
+                            }
+
+                            hasOtherAttrs = true;
                         }
 
-                        if (md.NameContentAttribute.Value != DiagramContentModelHelper.NA)
+                        if (mdAttr_Id != null)
                         {
-                            // TODO: INNER_TEXT vs CONTENT_ATTR => is this specified anywhere?
-                            if (
-                                string.Equals(md.NameContentAttribute.Name, DiagramContentModelHelper.DIAGRAM_Purpose, StringComparison.OrdinalIgnoreCase)
-                                || string.Equals(md.NameContentAttribute.Name, DiagramContentModelHelper.DIAGRAM_Credentials, StringComparison.OrdinalIgnoreCase)
-                                || string.Equals(md.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_AccessRights, StringComparison.OrdinalIgnoreCase)
-                                //
-                                || string.Equals(md.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_Creator, StringComparison.OrdinalIgnoreCase)
-                                || string.Equals(md.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_Description, StringComparison.OrdinalIgnoreCase)
-                                || string.Equals(md.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_Title, StringComparison.OrdinalIgnoreCase)
-                                || string.Equals(md.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_Subject, StringComparison.OrdinalIgnoreCase)
-                                )
+                            addDic_(groupedMetadata_Id, mdAttr_Id.Value, md);
+
+                            continue;
+                        }
+                        else if (mdAttr_Rel != null || mdAttr_Resource != null)
+                        {
+                            string key = (mdAttr_Rel != null ? mdAttr_Rel.Value : "")
+                                         + "_-_"
+                                         + (mdAttr_Resource != null ? mdAttr_Resource.Value : "");
+                            addDic_(groupedMetadata_RelResource, key, md);
+
+                            continue;
+                        }
+                    }
+
+                    //md.NameContentAttribute.Name != DiagramContentModelHelper.NA
+                    //    && md.NameContentAttribute.Value != DiagramContentModelHelper.NA
+
+                    flatMetadatas.Add(md);
+                }
+            }
+
+            foreach (Metadata md in flatMetadatas)
+            {
+                addFlatDiagramHeadMetadata(
+                    md.NameContentAttribute, md.OtherAttributes.ContentsAs_Enumerable,
+                    headNode, descriptionDocument, descriptionNode);
+            }
+
+            handleMetadataGroup(headNode, descriptionDocument, descriptionNode, groupedMetadata_Id);
+            handleMetadataGroup(headNode, descriptionDocument, descriptionNode, groupedMetadata_RelResource);
+        }
+
+        private void handleMetadataGroup(
+            XmlNode headNode, XmlDocument descriptionDocument, XmlNode descriptionNode,
+            Dictionary<string, List<Metadata>> groupedMetadata)
+        {
+            foreach (string key in groupedMetadata.Keys)
+            {
+                List<Metadata> metadatasForKey = groupedMetadata[key];
+                if (metadatasForKey.Count == 1)
+                {
+                    addFlatDiagramHeadMetadata(
+                        metadatasForKey[0].NameContentAttribute, metadatasForKey[0].OtherAttributes.ContentsAs_Enumerable,
+                        headNode, descriptionDocument, descriptionNode);
+                }
+                else
+                {
+                    bool idAdded = false;
+                    string relAdded = null;
+                    string resourceAdded = null;
+
+                    var listCommonMetaAttributes = new List<MetadataAttribute>();
+                    var mapMetaUpdatedAttributes = new Dictionary<Metadata, List<MetadataAttribute>>();
+
+                    foreach (Metadata md in metadatasForKey)
+                    {
+                        if (md.OtherAttributes == null || md.OtherAttributes.Count == 0)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                            // DEBUG
+                            continue;
+                        }
+
+                        foreach (var metadataAttribute in md.OtherAttributes.ContentsAs_Enumerable)
+                        {
+                            if (metadataAttribute.Name == XmlReaderWriterHelper.XmlId)
                             {
-                                metaNode.InnerText = md.NameContentAttribute.Value;
+                                DebugFix.Assert(metadataAttribute.Value == key);
+
+                                if (!idAdded)
+                                {
+                                    listCommonMetaAttributes.Add(metadataAttribute);
+                                    idAdded = true;
+                                }
+                            }
+                            else if (metadataAttribute.Name == DiagramContentModelHelper.Rel)
+                            {
+                                if (relAdded == null)
+                                {
+                                    listCommonMetaAttributes.Add(metadataAttribute);
+                                    relAdded = metadataAttribute.Value;
+                                }
+                                else
+                                {
+                                    if (metadataAttribute.Value != relAdded)
+                                    {
+#if DEBUG
+                                        Debugger.Break();
+#endif
+                                        addDic(mapMetaUpdatedAttributes, md, metadataAttribute);
+                                    }
+                                }
+                            }
+                            else if (metadataAttribute.Name == DiagramContentModelHelper.Resource)
+                            {
+                                if (resourceAdded == null)
+                                {
+                                    listCommonMetaAttributes.Add(metadataAttribute);
+                                    resourceAdded = metadataAttribute.Value;
+                                }
+                                else
+                                {
+                                    if (metadataAttribute.Value != resourceAdded)
+                                    {
+#if DEBUG
+                                        Debugger.Break();
+#endif
+                                        addDic(mapMetaUpdatedAttributes, md, metadataAttribute);
+                                    }
+                                }
                             }
                             else
                             {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
-                                                                   DiagramContentModelHelper.Content,
-                                                                   md.NameContentAttribute.Value,
-                                                                   DiagramContentModelHelper.NS_URL_ZAI);
+                                addDic(mapMetaUpdatedAttributes, md, metadataAttribute);
                             }
                         }
                     }
 
-                    if (md.OtherAttributes != null)
+                    XmlNode metaNode = addFlatDiagramHeadMetadata(
+                        null, listCommonMetaAttributes,
+                        headNode, descriptionDocument, descriptionNode);
+
+
+                    foreach (Metadata md in metadatasForKey)
                     {
-                        foreach (MetadataAttribute metaAttr in md.OtherAttributes.ContentsAs_Enumerable)
+                        if (mapMetaUpdatedAttributes.ContainsKey(md))
                         {
-                            if (metaAttr.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":"))
-                            {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
-                                    metaAttr.Name,
-                                    metaAttr.Value,
-                                    XmlReaderWriterHelper.NS_URL_XML);
-                            }
-                            else if (metaAttr.Name.StartsWith(DiagramContentModelHelper.NS_PREFIX_ZAI + ":"))
-                            {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
-                                    metaAttr.Name,
-                                    metaAttr.Value,
-                                    DiagramContentModelHelper.NS_URL_ZAI);
-                            }
-                            else if (metaAttr.Name.StartsWith(DiagramContentModelHelper.NS_PREFIX_DIAGRAM + ":"))
-                            {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
-                                    metaAttr.Name,
-                                    metaAttr.Value,
-                                    DiagramContentModelHelper.NS_URL_DIAGRAM);
-                            }
-                            else if (string.Equals(metaAttr.Name, DiagramContentModelHelper.Rel, StringComparison.OrdinalIgnoreCase)
-                                || string.Equals(metaAttr.Name, DiagramContentModelHelper.Resource, StringComparison.OrdinalIgnoreCase)
-                                || string.Equals(metaAttr.Name, DiagramContentModelHelper.About, StringComparison.OrdinalIgnoreCase))
-                            {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
-                                    metaAttr.Name.ToLower(),
-                                    metaAttr.Value,
-                                    DiagramContentModelHelper.NS_URL_ZAI);
-                            }
-                            else
-                            {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
-                                    DiagramContentModelHelper.StripNSPrefix(metaAttr.Name),
-                                    metaAttr.Value,
-                                    descriptionNode.NamespaceURI);
-                            }
+                            addFlatDiagramHeadMetadata(
+                            md.NameContentAttribute, mapMetaUpdatedAttributes[md],
+                            metaNode, descriptionDocument, descriptionNode);
+                        }
+                        else
+                        {
+                            addFlatDiagramHeadMetadata(
+                            md.NameContentAttribute, null,
+                            metaNode, descriptionDocument, descriptionNode);
                         }
                     }
                 }
+            }
+        }
+
+        private void addDic(Dictionary<Metadata, List<MetadataAttribute>> dic, Metadata md, MetadataAttribute mdAttr)
+        {
+            List<MetadataAttribute> list;
+            dic.TryGetValue(md, out list);
+            if (list != null)
+            {
+                list.Add(mdAttr);
+            }
+            else
+            {
+                list = new List<MetadataAttribute>();
+                list.Add(mdAttr);
+                dic.Add(md, list);
+            }
+        }
+        private void addDic_(Dictionary<string, List<Metadata>> dic, string key, Metadata md)
+        {
+            List<Metadata> list;
+            dic.TryGetValue(key, out list);
+            if (list != null)
+            {
+                list.Add(md);
+            }
+            else
+            {
+                list = new List<Metadata>();
+                list.Add(md);
+                dic.Add(key, list);
             }
         }
     }
