@@ -222,9 +222,57 @@ namespace urakawa.daisy.export
                 List<Metadata> metadatasForKey = groupedMetadata[key];
                 if (metadatasForKey.Count == 1)
                 {
-                    addFlatDiagramHeadMetadata(
+                    Metadata md = metadatasForKey[0];
+
+                    string hasId = null;
+                    string hasRel = null;
+                    string hasResource = null;
+                    var mains = new List<MetadataAttribute>();
+
+                    var hasOthers = new List<MetadataAttribute>();
+
+                    foreach (var metadataAttribute in md.OtherAttributes.ContentsAs_Enumerable)
+                    {
+                        if (metadataAttribute.Name == XmlReaderWriterHelper.XmlId)
+                        {
+                            hasId = metadataAttribute.Value;
+                            mains.Add(metadataAttribute);
+                        }
+                        else if (metadataAttribute.Name == DiagramContentModelHelper.Rel)
+                        {
+                            hasRel = metadataAttribute.Value;
+                            mains.Add(metadataAttribute);
+                        }
+                        else if (metadataAttribute.Name == DiagramContentModelHelper.Resource)
+                        {
+                            hasResource = metadataAttribute.Value;
+                            mains.Add(metadataAttribute);
+                        }
+                        else
+                        {
+                            hasOthers.Add(metadataAttribute);
+                        }
+                    }
+
+                    if (hasRel != null && hasResource != null
+                        && (hasOthers.Count > 0
+                        || (md.NameContentAttribute != null
+                        && md.NameContentAttribute.Name != DiagramContentModelHelper.NA && md.NameContentAttribute.Value != DiagramContentModelHelper.NA)))
+                    {
+                        XmlNode metaNode = addFlatDiagramHeadMetadata(
+                        null, mains,
+                        headNode, descriptionDocument, descriptionNode);
+
+                        addFlatDiagramHeadMetadata(
+                        md.NameContentAttribute, hasOthers,
+                        metaNode, descriptionDocument, descriptionNode);
+                    }
+                    else
+                    {
+                        addFlatDiagramHeadMetadata(
                         metadatasForKey[0].NameContentAttribute, metadatasForKey[0].OtherAttributes.ContentsAs_Enumerable,
                         headNode, descriptionDocument, descriptionNode);
+                    }
                 }
                 else
                 {
