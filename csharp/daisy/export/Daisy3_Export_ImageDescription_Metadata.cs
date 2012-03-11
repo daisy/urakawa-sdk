@@ -123,9 +123,9 @@ namespace urakawa.daisy.export
             }
 #endif // DEBUG
 
-            var flatMetadatas = new List<Metadata>();
-            var groupedMetadata_Id = new Dictionary<string, List<Metadata>>();
-            var groupedMetadata_RelResource = new Dictionary<string, List<Metadata>>();
+            List<Metadata> flatMetadatas = new List<Metadata>();
+            Dictionary<string, List<Metadata>> groupedMetadata_Id = new Dictionary<string, List<Metadata>>();
+            Dictionary<string, List<Metadata>> groupedMetadata_RelResource = new Dictionary<string, List<Metadata>>();
 
             foreach (Metadata md in altProperty.Metadatas.ContentsAs_Enumerable)
             {
@@ -227,11 +227,11 @@ namespace urakawa.daisy.export
                     string hasId = null;
                     string hasRel = null;
                     string hasResource = null;
-                    var mains = new List<MetadataAttribute>();
+                    List<MetadataAttribute> mains = new List<MetadataAttribute>();
 
-                    var hasOthers = new List<MetadataAttribute>();
+                    List<MetadataAttribute> hasOthers = new List<MetadataAttribute>();
 
-                    foreach (var metadataAttribute in md.OtherAttributes.ContentsAs_Enumerable)
+                    foreach (MetadataAttribute metadataAttribute in md.OtherAttributes.ContentsAs_Enumerable)
                     {
                         if (metadataAttribute.Name == XmlReaderWriterHelper.XmlId)
                         {
@@ -280,8 +280,8 @@ namespace urakawa.daisy.export
                     string relAdded = null;
                     string resourceAdded = null;
 
-                    var listCommonMetaAttributes = new List<MetadataAttribute>();
-                    var mapMetaUpdatedAttributes = new Dictionary<Metadata, List<MetadataAttribute>>();
+                    List<MetadataAttribute> listCommonMetaAttributes = new List<MetadataAttribute>();
+                    Dictionary<Metadata, List<MetadataAttribute>> mapMetaUpdatedAttributes = new Dictionary<Metadata, List<MetadataAttribute>>();
 
                     foreach (Metadata md in metadatasForKey)
                     {
@@ -294,7 +294,7 @@ namespace urakawa.daisy.export
                             continue;
                         }
 
-                        foreach (var metadataAttribute in md.OtherAttributes.ContentsAs_Enumerable)
+                        foreach (MetadataAttribute metadataAttribute in md.OtherAttributes.ContentsAs_Enumerable)
                         {
                             if (metadataAttribute.Name == XmlReaderWriterHelper.XmlId)
                             {

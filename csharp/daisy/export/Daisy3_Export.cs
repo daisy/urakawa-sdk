@@ -109,31 +109,39 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
 
         public override void DoWork()
         {
-            m_FilesList_Image = new List<string>();
-            m_FilesList_ExternalFiles = new List<string>();
-            RequestCancellation = false;
+            try
+            {
+                m_FilesList_Image = new List<string>();
+                m_FilesList_ExternalFiles = new List<string>();
+                RequestCancellation = false;
 
 
-            m_ID_Counter = 0;
-            if (RequestCancellation) return;
+                m_ID_Counter = 0;
+                if (RequestCancellation) return;
 
 
-            Channel publishChannel = PublishAudioFiles ();
-            
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateDTBookDocument();
+                Channel publishChannel = PublishAudioFiles();
 
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateNcxAndSmilDocuments();
+                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                CreateDTBookDocument();
 
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateExternalFiles();
-            
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateOpfDocument();
+                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                CreateNcxAndSmilDocuments();
 
-            //m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
-            RemovePublishChannel(publishChannel);
+                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                CreateExternalFiles();
+
+                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                CreateOpfDocument();
+
+                //m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
+                RemovePublishChannel(publishChannel);
+            }
+            catch (System.Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.ToString());
+            }
+
         }
 
         /// <summary>
