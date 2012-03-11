@@ -72,8 +72,11 @@ namespace urakawa.daisy.import
         {
             if (RequestCancellation) return;
             initializeProject(); //initialization moved from constructor to allow derived class to implement project construction
-            transformBook();
+            
+                transformBook();
+            
 
+            
             reportProgress(-1, UrakawaSDK_daisy_Lang.SaveXUK);                                       
 
             if (RequestCancellation) return;
