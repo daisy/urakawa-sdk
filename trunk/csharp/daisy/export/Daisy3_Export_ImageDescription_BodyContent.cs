@@ -154,7 +154,7 @@ namespace urakawa.daisy.export
 
                     contentXmlNode.AppendChild(objectNode);
 
-                    foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                    foreach (Metadata metadata in altContent.Metadatas.ContentsAs_Enumerable)
                     {
                         //TODO: OBJECT ROLE!?
                         if (string.Equals(metadata.NameContentAttribute.Name, DiagramContentModelHelper.Role, StringComparison.OrdinalIgnoreCase))
