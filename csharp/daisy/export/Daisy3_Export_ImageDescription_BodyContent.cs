@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml;
 using System.IO;
 using urakawa.data;
@@ -12,33 +13,23 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private void createDiagramBodyContent(XmlNode bodyNode, XmlDocument descriptionDocument, XmlNode descriptionNode, AlternateContentProperty altProperty, Dictionary<string, List<string>> imageDescriptions, string imageSRC)
+        private void createDiagramBodyContent(XmlNode bodyNode, XmlDocument descriptionDocument, XmlNode descriptionNode,
+            AlternateContentProperty altProperty, Dictionary<string, List<string>> imageDescriptions, string imageSRC)
         {
             string imageDescriptionDirectoryPath = getAndCreateImageDescriptionDirectoryPath(imageSRC);
 
             foreach (AlternateContent altContent in altProperty.AlternateContents.ContentsAs_Enumerable)
             {
-
-
-
-
-
-
-
-
-
-
                 XmlNode contentXmlNode = null;
+
+
                 if (altContent.Metadatas != null && altContent.Metadatas.Count > 0)
                 {
                     string xmlNodeName = null;
                     string xmlNodeId = null;
-                    //string xmlNodeTourText = null;
-                    //List<Metadata> additionalMetadatas = GetAltContentNameAndXmlIdFromMetadata(altContent.Metadatas.ContentsAs_Enumerable, out xmlNodeName, out xmlNodeId, out xmlNodeTourText);
 
                     foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
                     {
-                        //System.Windows.Forms.MessageBox.Show(m.NameContentAttribute.Name + " : " + m.NameContentAttribute.Value);
                         if (m.NameContentAttribute.Name == XmlReaderWriterHelper.XmlId)
                         {
                             xmlNodeId = m.NameContentAttribute.Value;
@@ -48,10 +39,11 @@ namespace urakawa.daisy.export
                         {
                             xmlNodeName = m.NameContentAttribute.Value;
                         }
-                        //else if (m.NameContentAttribute.Name == DiagramContentModelHelper.D_Tour)
-                        //{
-                        //    xmlNodeTourText = m.NameContentAttribute.Value;
-                        //}
+
+                        if (xmlNodeName != null && xmlNodeId != null)
+                        {
+                            break;
+                        }
                     }
 
                     if (xmlNodeName != null)
@@ -73,9 +65,15 @@ namespace urakawa.daisy.export
                             contentXmlNode = descriptionDocument.CreateElement(xmlNodeName.Replace(':', '_'),
                                 DiagramContentModelHelper.NS_URL_ZAI);
                         }
-                        bodyNode.AppendChild(contentXmlNode);
-                        if (!String.IsNullOrEmpty(xmlNodeId)) XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode, XmlReaderWriterHelper.XmlId, xmlNodeId,
-                            XmlReaderWriterHelper.NS_URL_XML);
+                        
+                        
+                        //bodyNode.AppendChild(contentXmlNode);
+
+                        if (!String.IsNullOrEmpty(xmlNodeId))
+                        {
+                            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
+                                XmlReaderWriterHelper.XmlId, xmlNodeId, XmlReaderWriterHelper.NS_URL_XML);
+                        }
 
 
                         foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
@@ -83,8 +81,6 @@ namespace urakawa.daisy.export
                             if (m.NameContentAttribute.Name == XmlReaderWriterHelper.XmlId
                                 || m.NameContentAttribute.Name == DiagramContentModelHelper.DiagramElementName
                                 || m.NameContentAttribute.Name == DiagramContentModelHelper.DiagramElementName_OBSOLETE
-                                //|| m.NameContentAttribute.Name == DiagramContentModelHelper.XLINK_Href
-                                //|| m.NameContentAttribute.Name == DiagramContentModelHelper.D_Tour
                                 )
                             {
                                 continue;
@@ -92,9 +88,10 @@ namespace urakawa.daisy.export
 
                             string metadataName = m.NameContentAttribute.Name;
 
-                            if (metadataName == DiagramContentModelHelper.Src)
+                            //TODO: OBJECT ROLE!?
+                            if (altContent.Image != null && string.Equals(metadataName, DiagramContentModelHelper.Role, StringComparison.OrdinalIgnoreCase))
                             {
-                                // used to be obsolete image link
+                                // skip, used for object role!
                             }
                             else if (metadataName.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":"))
                             {
@@ -124,41 +121,20 @@ namespace urakawa.daisy.export
                                     m.NameContentAttribute.Value,
                                     contentXmlNode.NamespaceURI);
                             }
-
                         }
                     }
                 }
+
                 if (contentXmlNode == null)
                 {
-                    contentXmlNode = descriptionDocument.CreateElement("unknown_description_type",
+                    contentXmlNode = descriptionDocument.CreateElement(DiagramContentModelHelper.NA,
                         DiagramContentModelHelper.NS_URL_DIAGRAM);
-                    bodyNode.AppendChild(contentXmlNode);
-                }
-                /*
-                                if (altContent.Audio != null)
-                                {
-                                    media.data.audio.ManagedAudioMedia managedAudio = altContent.Audio;
-                                    DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
                     
-                                    string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
-                                    string destPath = Path.Combine(m_ImageDescriptionDirectoryPath, exportAudioName);
+                    //bodyNode.AppendChild(contentXmlNode);
+                }
 
-                                    if (!File.Exists(destPath))
-                                    {
-                                        //if (RequestCancellation) return false;
-                                        dataProvider.ExportDataStreamToFile(destPath, false);
-                                    }
+                
 
-                                    //string imgSrcAttribute.Value = exportImageName;
-                                    XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
-                                        DiagramContentModelHelper.TOBI_Audio, exportAudioName, DiagramContentModelHelper.NS_URL_TOBI);
-                                    //if (!m_FilesList_Image.Contains(exportImageName))
-                                    //{
-                                    //m_FilesList_Image.Add(exportImageName);
-                                    //}
-
-                                }
-                                */
                 if (altContent.Image != null)
                 {
                     media.data.image.ManagedImageMedia managedImage = altContent.Image;
@@ -168,7 +144,6 @@ namespace urakawa.daisy.export
 
                     if (!File.Exists(destPath))
                     {
-                        //if (RequestCancellation) return false;
                         managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
                     }
 
@@ -179,16 +154,27 @@ namespace urakawa.daisy.export
 
                     contentXmlNode.AppendChild(objectNode);
 
+                    foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                    {
+                        //TODO: OBJECT ROLE!?
+                        if (string.Equals(metadata.NameContentAttribute.Name, DiagramContentModelHelper.Role, StringComparison.OrdinalIgnoreCase))
+                        {
+                            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, objectNode,
+                                DiagramContentModelHelper.Role,
+                                metadata.NameContentAttribute.Value,
+                                objectNode.NamespaceURI);
+                        }
+                    }
+
                     XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, objectNode,
                         DiagramContentModelHelper.Src,
                         exportImageName,
                         objectNode.NamespaceURI);
 
-                    //string low = exportImageName.ToLower();
                     string ext = Path.GetExtension(exportImageName);
-                    int dotIndex = exportImageName.LastIndexOf('.');
-
                     string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
+
+                    int dotIndex = exportImageName.LastIndexOf('.');
 
                     XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, objectNode,
                         DiagramContentModelHelper.SrcType,
@@ -199,75 +185,225 @@ namespace urakawa.daisy.export
                         : "image"
                         ),
                         objectNode.NamespaceURI);
-
-
-
-                    //string imgSrcAttribute.Value = exportImageName;
-                    //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
-                    //DiagramContentModelHelper.XLINK_Href, exportImageName, DiagramContentModelHelper.NS_URL_XLINK);
-                    //if (!m_FilesList_Image.Contains(exportImageName))
-                    //{
-                    //m_FilesList_Image.Add(exportImageName);
-                    //}
-
                 }
 
 
-                if (altContent.Text != null)
+                if (altContent.Text != null && !string.IsNullOrEmpty(altContent.Text.Text))
                 {
-                    string textData = altContent.Text.Text;
-                    string[] subStrings = System.Text.RegularExpressions.Regex.Split(textData, "<p>|</p>");
-                    //System.Windows.Forms.MessageBox.Show("original " + textData);
-                    for (int i = 0; i < subStrings.Length; i++)
+                    XmlNode textParentNode = contentXmlNode;
+
+                    if (altContent.Image != null)
                     {
-                        string paraNodeText = subStrings[i];
+                        XmlNode tourNode = descriptionDocument.CreateElement(
+                            DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
+                            DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.D_Tour),
+                            DiagramContentModelHelper.NS_URL_DIAGRAM);
 
-                        paraNodeText = paraNodeText.Replace("\n\r", "");
-                        paraNodeText = paraNodeText.Replace("\n", "");
+                        contentXmlNode.AppendChild(tourNode);
 
-                        if (!string.IsNullOrEmpty(paraNodeText))
+                        textParentNode = tourNode;
+                    }
+
+                    string normalizedDescriptionText = altContent.Text.Text;
+
+                    if (altContent.Text.Text.Contains("<"))
+                    {
+                        try
                         {
-                            if (altContent.Image != null)
+                            textParentNode.InnerXml = altContent.Text.Text;
+                        }
+                        catch (Exception e)
+                        {
+                            textParentNode.AppendChild(descriptionDocument.CreateTextNode(altContent.Text.Text));
+                            normalizedDescriptionText = textParentNode.InnerText;
+                        }
+                    }
+                    else
+                    {
+                        string normalizedText = altContent.Text.Text.Replace("\n\r", "\n");
+
+                        string[] parasText = normalizedText.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                        //string[] parasText = System.Text.RegularExpressions.Regex.Split(normalizedText, "\n");
+
+                        for (int i = 0; i < parasText.Length; i++)
+                        {
+                            string paraText = parasText[i].Trim();
+                            if (string.IsNullOrEmpty(paraText))
                             {
-                                XmlNode tourNode = descriptionDocument.CreateElement(
-                                    DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
-                                    DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.D_Tour),
-                                    DiagramContentModelHelper.NS_URL_DIAGRAM);
-
-                                contentXmlNode.AppendChild(tourNode);
-
-                                XmlNode paraNode = descriptionDocument.CreateElement(
-                    DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.P),
-                    DiagramContentModelHelper.NS_URL_ZAI);
-                                tourNode.AppendChild(paraNode);
-
-                                paraNode.AppendChild(descriptionDocument.CreateTextNode(paraNodeText));
+                                continue;
                             }
-                            else
+
+                            XmlNode paragraph = descriptionDocument.CreateElement(
+                                //DiagramContentModelHelper.NS_PREFIX_ZAI,
+                                DiagramContentModelHelper.P,
+                                DiagramContentModelHelper.NS_URL_ZAI);
+
+                            paragraph.InnerText = paraText;
+
+                            textParentNode.AppendChild(paragraph);
+                        }
+
+                        normalizedDescriptionText = textParentNode.InnerXml;
+                    }
+
+
+                    bool mergedObjectForExistingTourDescription = false;
+
+                    if (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedImage, StringComparison.OrdinalIgnoreCase)
+                        )
+                    {
+                        XmlNode objectNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(contentXmlNode, false,
+                            DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.Object),
+                            DiagramContentModelHelper.NS_URL_ZAI);
+
+                        if (objectNode != null)
+                        {
+                            foreach (
+                                XmlNode existingNode in
+                                    XmlDocumentHelper.GetChildrenElementsOrSelfWithName(bodyNode, false,
+                                                                                        DiagramContentModelHelper
+                                                                                            .
+                                                                                            StripNSPrefix(
+                                                                                                contentXmlNode
+                                                                                                    .Name),
+                                                                                        DiagramContentModelHelper
+                                                                                            .
+                                                                                            NS_URL_DIAGRAM,
+                                                                                        false))
                             {
-
-                                //System.Windows.Forms.MessageBox.Show("-" +  subStrings[i] + "-"+ paraNodeText.Length);
-                                XmlNode paraNode = descriptionDocument.CreateElement(
-                    DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.P),
-                    DiagramContentModelHelper.NS_URL_ZAI);
-                                contentXmlNode.AppendChild(paraNode);
-                                paraNode.AppendChild(descriptionDocument.CreateTextNode(paraNodeText));
-                                if (!imageDescriptions.ContainsKey(contentXmlNode.Name) && IsIncludedInDTBook(contentXmlNode.Name))
+                                if (existingNode.NodeType != XmlNodeType.Element ||
+                                    existingNode.LocalName != DiagramContentModelHelper.
+                                                                  StripNSPrefix(contentXmlNode.Name))
                                 {
-                                    imageDescriptions.Add(contentXmlNode.Name, new List<string>());
-                                    imageDescriptions[contentXmlNode.Name].Add(paraNodeText);
-                                    m_AltProperty_DescriptionMap[altProperty].ImageDescNodeToAltContentMap.Add(contentXmlNode.Name, altContent);
-                                }
-                                else if (imageDescriptions.ContainsKey(contentXmlNode.Name))
-                                {
-                                    imageDescriptions[contentXmlNode.Name].Add(paraNodeText);
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    // DEBUG
+                                    continue;
                                 }
 
+                                XmlNode tourNode =
+                                    XmlDocumentHelper.GetFirstChildElementOrSelfWithName(existingNode, false,
+                                                                                         DiagramContentModelHelper
+                                                                                             .StripNSPrefix(
+                                                                                                 DiagramContentModelHelper
+                                                                                                     .D_Tour),
+                                                                                         DiagramContentModelHelper
+                                                                                             .NS_URL_DIAGRAM);
+
+                                if (normalizedDescriptionText == tourNode.InnerXml)
+                                {
+                                    bool idConflict = false;
+                                    XmlNode idAttr1 =
+                                        contentXmlNode.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlId);
+                                    if (idAttr1 != null)
+                                    {
+                                        XmlNode idAttr2 =
+                                            existingNode.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlId);
+                                        if (idAttr2 == null)
+                                        {
+                                            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument,
+                                                                                       existingNode,
+                                                                                       XmlReaderWriterHelper
+                                                                                           .XmlId,
+                                                                                       idAttr1.Value,
+                                                                                       XmlReaderWriterHelper
+                                                                                           .NS_URL_XML);
+                                        }
+                                        else
+                                        {
+                                            if (idAttr1.Value != idAttr2.Value)
+                                            {
+                                                idConflict = true;
+                                            }
+                                        }
+                                    }
+
+                                    if (!idConflict)
+                                    {
+                                        XmlNode obj1 = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(existingNode, false,
+                            DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.Object),
+                            DiagramContentModelHelper.NS_URL_ZAI);
+
+                                        if (obj1 != null)
+                                        {
+                                            contentXmlNode.RemoveChild(objectNode);
+
+                                            existingNode.InsertBefore(objectNode, obj1);
+                                            //existingNode.AppendChild(objectNode);
+
+                                            //bodyNode.RemoveChild(contentXmlNode);
+                                            mergedObjectForExistingTourDescription = true;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
-                    //contentXmlNode.AppendChild(descDocument.CreateTextNode(textData));
+
+                    if (!mergedObjectForExistingTourDescription)
+                    {
+                        bodyNode.AppendChild(contentXmlNode);
+                    }
+
+                    if (!mergedObjectForExistingTourDescription
+                        &&
+                        IsIncludedInDTBook(contentXmlNode.Name)
+
+//                        (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
+//                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_LondDesc, StringComparison.OrdinalIgnoreCase)
+//                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedLanguageDescription, StringComparison.OrdinalIgnoreCase)
+//                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
+//                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedImage, StringComparison.OrdinalIgnoreCase)
+//#if true || SUPPORT_ANNOTATION_ELEMENT
+// || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.Annotation, StringComparison.OrdinalIgnoreCase)
+//#endif //SUPPORT_ANNOTATION_ELEMENT
+//)
+                        )
+                    {
+                        List<string> list;
+                        imageDescriptions.TryGetValue(contentXmlNode.Name, out list);
+
+                        if (list != null)
+                        {
+                            list.Add(normalizedDescriptionText);
+                        }
+                        else if (IsIncludedInDTBook(contentXmlNode.Name))
+                        {
+                            list = new List<string>(1);
+                            list.Add(normalizedDescriptionText);
+                            imageDescriptions.Add(contentXmlNode.Name, list);
+
+                            m_AltProperty_DescriptionMap[altProperty].ImageDescNodeToAltContentMap.Add(
+                                contentXmlNode.Name, altContent);
+                        }
+                    }
                 }
+
+                //if (altContent.Audio != null)
+                //{
+                //    media.data.audio.ManagedAudioMedia managedAudio = altContent.Audio;
+                //    DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
+
+                //    string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
+                //    string destPath = Path.Combine(m_ImageDescriptionDirectoryPath, exportAudioName);
+
+                //    if (!File.Exists(destPath))
+                //    {
+                //        //if (RequestCancellation) return false;
+                //        dataProvider.ExportDataStreamToFile(destPath, false);
+                //    }
+
+                //    //string imgSrcAttribute.Value = exportImageName;
+                //    XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
+                //        DiagramContentModelHelper.TOBI_Audio, exportAudioName, DiagramContentModelHelper.NS_URL_TOBI);
+                //    //if (!m_FilesList_Image.Contains(exportImageName))
+                //    //{
+                //    //m_FilesList_Image.Add(exportImageName);
+                //    //}
+
+                //}
             }
         }
     }

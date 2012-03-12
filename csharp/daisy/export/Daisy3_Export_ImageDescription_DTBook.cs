@@ -48,7 +48,7 @@ namespace urakawa.daisy.export
 
                 if (imageDescriptions.Count > 0)
                 {
-                    foreach (string s in imageDescriptions.Keys)
+                    foreach (string diagramDescriptionElementName in imageDescriptions.Keys)
                     {
                         //System.Windows.Forms.MessageBox.Show(s + " : " + imageDescriptions[s]);
 
@@ -57,15 +57,15 @@ namespace urakawa.daisy.export
                         string id_ProdnoteDesc = GetNextID(ID_DTBPrefix);
                         XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "id", id_ProdnoteDesc);
                         XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "imgref", currentXmlNode.Attributes.GetNamedItem("id").Value);
-                        XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "class", s);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteDesc, "class", diagramDescriptionElementName);
                         currentXmlNode.ParentNode.AppendChild(prodNoteDesc);
                         m_Image_ProdNoteMap[n].Add(prodNoteDesc);
 
-                        foreach (string descText in imageDescriptions[s])
+                        foreach (string descText in imageDescriptions[diagramDescriptionElementName])
                         {
-                            XmlNode paraNode = DTBookDocument.CreateElement("p", currentXmlNode.NamespaceURI);
-                            prodNoteDesc.AppendChild(paraNode);
-                            paraNode.AppendChild(DTBookDocument.CreateTextNode(descText));
+                            XmlNode wrapperNode = DTBookDocument.CreateElement("code", currentXmlNode.NamespaceURI);
+                            prodNoteDesc.AppendChild(wrapperNode);
+                            wrapperNode.AppendChild(DTBookDocument.CreateTextNode(descText));
                         }
                     }
                 }
