@@ -114,7 +114,7 @@ namespace urakawa.daisy.export
         {
 
             //TODO: ALWAYS DISABLE THE DEBUG CODE BELOW UNLESS NEEDED FOR TESTING!!
-#if DEBUG
+#if false && DEBUG
             foreach (Metadata md in altProperty.Metadatas.ContentsAs_Enumerable)
             {
                 addFlatDiagramHeadMetadata(
