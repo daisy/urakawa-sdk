@@ -246,7 +246,7 @@ namespace urakawa.daisy.import
             Presentation presentation = m_Project.Presentations.Get(0);
             ManagedAudioMedia media = null;
 
-            if (audioAttrSrc.Value.ToLower().EndsWith("wav"))
+            if (audioAttrSrc.Value.EndsWith("wav", StringComparison.OrdinalIgnoreCase))
             {
                 string dirPathBook = Path.GetDirectoryName(m_Book_FilePath);
                 FileDataProvider dataProv = null;
@@ -336,7 +336,7 @@ namespace urakawa.daisy.import
                 //media = addAudioWav ( fullWavPath, deleteSrcAfterCompletion, audioAttrClipBegin, audioAttrClipEnd );
 
             }
-            else if (audioAttrSrc.Value.ToLower().EndsWith("mp3"))
+            else if (audioAttrSrc.Value.EndsWith("mp3", StringComparison.OrdinalIgnoreCase))
             {
                 string fullMp3PathOriginal = Path.Combine(dirPath, audioAttrSrc.Value);
                 if (!File.Exists(fullMp3PathOriginal))

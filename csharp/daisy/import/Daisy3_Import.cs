@@ -13,13 +13,13 @@ namespace urakawa.daisy.import
     {
         protected readonly string m_outDirectory;
         private string m_Book_FilePath;
-        
+
 
         private string m_Xuk_FilePath;
         public string XukPath
         {
             get { return m_Xuk_FilePath; }
-            protected set { m_Xuk_FilePath = value;  }
+            protected set { m_Xuk_FilePath = value; }
         }
 
         protected Project m_Project;
@@ -29,7 +29,7 @@ namespace urakawa.daisy.import
         //    protected set { m_Project = value; }
         //}
 
-        private bool m_IsAudioNCX  = false;
+        private bool m_IsAudioNCX = false;
         public bool AudioNCXImport
         {
             get { return m_IsAudioNCX; }
@@ -46,7 +46,7 @@ namespace urakawa.daisy.import
             m_SkipACM = skipACM;
             m_audioProjectSampleRate = audioProjectSampleRate;
 
-            reportProgress(10, UrakawaSDK_daisy_Lang.InitializeImport);                               
+            reportProgress(10, UrakawaSDK_daisy_Lang.InitializeImport);
 
             m_PackageUniqueIdAttr = null;
             m_Book_FilePath = bookfile;
@@ -61,23 +61,23 @@ namespace urakawa.daisy.import
             }
 
             m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
-      
+
             if (RequestCancellation) return;
             //initializeProject();
 
-            reportProgress(100, UrakawaSDK_daisy_Lang.ImportInitialized);                                 
+            reportProgress(100, UrakawaSDK_daisy_Lang.ImportInitialized);
         }
 
         public override void DoWork()
         {
             if (RequestCancellation) return;
             initializeProject(); //initialization moved from constructor to allow derived class to implement project construction
-            
-                transformBook();
-            
 
-            
-            reportProgress(-1, UrakawaSDK_daisy_Lang.SaveXUK);                                       
+            transformBook();
+
+
+
+            reportProgress(-1, UrakawaSDK_daisy_Lang.SaveXUK);
 
             if (RequestCancellation) return;
 
@@ -86,44 +86,44 @@ namespace urakawa.daisy.import
 
             SaveXukAction action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath));
             action.ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile;
-            action.LongDescription = UrakawaSDK_daisy_Lang.SerializeDOMIntoXUKFile  ;
+            action.LongDescription = UrakawaSDK_daisy_Lang.SerializeDOMIntoXUKFile;
 
-            action.Progress +=new EventHandler<urakawa.events.progress.ProgressEventArgs>(
-                delegate ( object sender, ProgressEventArgs e )
+            action.Progress += new EventHandler<urakawa.events.progress.ProgressEventArgs>(
+                delegate(object sender, ProgressEventArgs e)
+                {
+
+                    double val = e.Current;
+                    double max = e.Total;
+
+                    int percent = -1;
+                    if (val != max)
                     {
-                        
-                double val = e.Current;
-                double max = e.Total;
-                
-                int percent = -1;
-                if (val != max)
-                {
-                    percent = (int) ((val/max)*100);
-                }
-
-                reportProgress(percent, val + "/" + max);
-                //reportProgress(-1, action.LongDescription);
-
-                if (RequestCancellation)
-                {
-                    e.Cancel();
-                }
+                        percent = (int)((val / max) * 100);
                     }
+
+                    reportProgress(percent, val + "/" + max);
+                    //reportProgress(-1, action.LongDescription);
+
+                    if (RequestCancellation)
+                    {
+                        e.Cancel();
+                    }
+                }
                 );
 
 
-            action.Finished +=new EventHandler<FinishedEventArgs>(
-                delegate ( object sender, FinishedEventArgs e )
-                    {
-                        reportProgress(100, UrakawaSDK_daisy_Lang.XUKSaved);                 
-                    }
+            action.Finished += new EventHandler<FinishedEventArgs>(
+                delegate(object sender, FinishedEventArgs e)
+                {
+                    reportProgress(100, UrakawaSDK_daisy_Lang.XUKSaved);
+                }
                 );
-action.Cancelled +=new EventHandler<CancelledEventArgs>(
-    delegate (object sender, CancelledEventArgs e)
-        {
-            reportProgress(0, UrakawaSDK_daisy_Lang.CancelledXUKSaving);       
-        }
-    );
+            action.Cancelled += new EventHandler<CancelledEventArgs>(
+                delegate(object sender, CancelledEventArgs e)
+                {
+                    reportProgress(0, UrakawaSDK_daisy_Lang.CancelledXUKSaving);
+                }
+                );
 
             action.DoWork();
 
@@ -142,7 +142,7 @@ action.Cancelled +=new EventHandler<CancelledEventArgs>(
             Presentation presentation = m_Project.AddNewPresentation(new Uri(m_outDirectory), Path.GetFileName(m_Book_FilePath));
 
             PCMFormatInfo pcmFormat = presentation.MediaDataManager.DefaultPCMFormat.Copy();
-            pcmFormat.Data.SampleRate = (ushort) m_audioProjectSampleRate;
+            pcmFormat.Data.SampleRate = (ushort)m_audioProjectSampleRate;
             presentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
 
             presentation.MediaDataManager.EnforceSinglePCMFormat = true;
@@ -175,45 +175,43 @@ action.Cancelled +=new EventHandler<CancelledEventArgs>(
             }
 
             if (RequestCancellation) return;
-            string fileExt = m_Book_FilePath.Substring(indexOfDot).ToLower();
-            switch (fileExt)
+            string extension = m_Book_FilePath.Substring(indexOfDot);
+
+            if (!string.IsNullOrEmpty(extension))
             {
-                case ".opf":
-                    {
-                        XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false);
+                if (extension.Equals(".opf", StringComparison.OrdinalIgnoreCase))
+                {
+                    XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false);
 
-                        if (RequestCancellation) break;
-                        reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingOPF, Path.GetFileName(m_Book_FilePath)));  
-                        parseOpf(opfXmlDoc);
-                        
-                        break;
-                    }
-                case ".xhtml":
-                case ".html":
-                case ".xml":
-                    {
-                        XmlDocument contentXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, true);
+                    if (RequestCancellation) return;
+                    reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingOPF, Path.GetFileName(m_Book_FilePath)));
+                    parseOpf(opfXmlDoc);
+                }
+                else if (
+                    extension.Equals(".xhtml", StringComparison.OrdinalIgnoreCase)
+                    || extension.Equals(".html", StringComparison.OrdinalIgnoreCase)
+                    || extension.Equals(".xml", StringComparison.OrdinalIgnoreCase)
+                    )
+                {
+                    XmlDocument contentXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, true);
 
-                        if (RequestCancellation) break;
-                        reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, Path.GetFileName(m_Book_FilePath)));  
-                        parseMetadata(contentXmlDoc);
-                        
-                        if (RequestCancellation) break;
-                        reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, Path.GetFileName(m_Book_FilePath)));  
-                        parseContentDocument(contentXmlDoc, null, m_Book_FilePath);
-                        
-                        break;
-                    }
-                case ".epub":
-                case ".zip":
-                    {
-                        unzipEPubAndParseOpf();
+                    if (RequestCancellation) return;
+                    reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, Path.GetFileName(m_Book_FilePath)));
+                    parseMetadata(contentXmlDoc);
 
-                        break;
-                    }
-                default:
-                    break;
+                    if (RequestCancellation) return;
+                    reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, Path.GetFileName(m_Book_FilePath)));
+                    parseContentDocument(contentXmlDoc, null, m_Book_FilePath);
+
+                }
+                else if (
+                    extension.Equals(".epub", StringComparison.OrdinalIgnoreCase)
+                    || extension.Equals(".zip", StringComparison.OrdinalIgnoreCase))
+                {
+                    unzipEPubAndParseOpf();
+                }
             }
+
 
             if (RequestCancellation) return;
 
@@ -290,7 +288,7 @@ action.Cancelled +=new EventHandler<CancelledEventArgs>(
 
             if (RequestCancellation) return;
 
-            reportProgress(100, UrakawaSDK_daisy_Lang.TransformComplete);                                   
+            reportProgress(100, UrakawaSDK_daisy_Lang.TransformComplete);
         }
 
         private core.TreeNode getTreeNodeWithXmlElementId(string id)

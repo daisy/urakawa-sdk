@@ -202,21 +202,42 @@ namespace urakawa.daisy
 
                     foreach (MetadataDefinition def in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
                     {
-                        string str = def.Name.ToLower();
-                        if (str.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":")
-                            && !m_DIAGRAM_MetadataProperties.Contains(str))
+                        //string str = def.Name.ToLower();
+
+                        bool contains = false;
+                        foreach (string str in m_DIAGRAM_MetadataProperties)
                         {
-                            m_DIAGRAM_MetadataProperties.Add(str);
+                            if (str.Equals(def.Name, StringComparison.OrdinalIgnoreCase))
+                            {
+                                contains = true;
+                                break;
+                            }
                         }
+
+                        if (def.Name.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":", StringComparison.OrdinalIgnoreCase)
+                            && !contains)
+                        {
+                            m_DIAGRAM_MetadataProperties.Add(def.Name);
+                        }
+
                         if (def.Synonyms != null)
                         {
                             foreach (string syn in def.Synonyms)
                             {
-                                str = syn.ToLower();
-                                if (str.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":")
-                                    && !m_DIAGRAM_MetadataProperties.Contains(str))
+                                contains = false;
+                                foreach (string str in m_DIAGRAM_MetadataProperties)
                                 {
-                                    m_DIAGRAM_MetadataProperties.Add(str);
+                                    if (str.Equals(syn, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        contains = true;
+                                        break;
+                                    }
+                                }
+
+                                if (syn.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":", StringComparison.OrdinalIgnoreCase)
+                                    && !contains)
+                                {
+                                    m_DIAGRAM_MetadataProperties.Add(syn);
                                 }
                             }
                         }

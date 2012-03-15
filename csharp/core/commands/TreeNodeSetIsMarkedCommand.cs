@@ -92,7 +92,7 @@ namespace urakawa.commands
             else
             {
                 QualifiedName qname = node.GetXmlElementQName();
-                if (qname != null && qname.LocalName.ToLower() == "img")
+                if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
                 {
                     property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute("alt");
                     if (xmlAttr != null)
@@ -115,7 +115,7 @@ namespace urakawa.commands
             else
             {
                 QualifiedName qname = node.GetXmlElementQName();
-                if (qname != null && qname.LocalName.ToLower() == "img")
+                if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
                 {
                     urakawa.property.xml.XmlAttribute  xmlAttr = node.GetXmlProperty().GetAttribute("alt");
                     if (xmlAttr != null)

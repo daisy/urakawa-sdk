@@ -181,7 +181,7 @@ namespace urakawa.daisy.export
                         mime ??
                         (
                         dotIndex != -1 && dotIndex < (exportImageName.Length - 1)
-                        ? "image/" + exportImageName.ToLower().Substring(dotIndex + 1)
+                        ? "image/" + exportImageName.Substring(dotIndex + 1).ToLower()
                         : "image"
                         ),
                         objectNode.NamespaceURI);

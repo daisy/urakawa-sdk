@@ -220,7 +220,7 @@ namespace urakawa.daisy.import
 
                         string updatedSRC = null;
 
-                        if (xmlNode.LocalName != null && xmlNode.LocalName.ToLower() == "img")
+                        if (xmlNode.LocalName != null && xmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
                         {
                             XmlNode getSRC = xmlNode.Attributes.GetNamedItem("src");
                             if (getSRC != null)

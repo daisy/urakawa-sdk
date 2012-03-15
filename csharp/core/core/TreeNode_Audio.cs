@@ -153,7 +153,7 @@ namespace urakawa.core
 #if USE_NORMAL_LIST
 struct
 #else
- class
+ sealed class
 #endif //USE_NORMAL_LIST
  TreeNodeAndStreamDataLength
     {
@@ -165,7 +165,7 @@ struct
 #if USE_NORMAL_LIST
 struct
 #else
- class
+ sealed class
 #endif //USE_NORMAL_LIST
  StreamWithMarkers
     {

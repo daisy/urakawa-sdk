@@ -18,7 +18,7 @@ namespace urakawa.daisy.export
         private List<urakawa.core.TreeNode> m_NotesNodeList = new List<TreeNode>();
 
         private List<string> m_TempImageId = null;
-        private Dictionary<TreeNode, List<XmlNode>> m_Image_ProdNoteMap = new Dictionary<TreeNode,List<XmlNode>>();
+        private Dictionary<TreeNode, List<XmlNode>> m_Image_ProdNoteMap = new Dictionary<TreeNode, List<XmlNode>>();
 
         // to do regenerate ids
         protected virtual void CreateDTBookDocument()
@@ -33,7 +33,7 @@ namespace urakawa.daisy.export
             //}
 
 
-            
+
             List<ExternalFileData> list_ExternalStyleSheets = new List<ExternalFileData>();
             string strInternalDTD = null;
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
@@ -265,7 +265,9 @@ namespace urakawa.daisy.export
                                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, currentXmlNode, "id", id);
                             }
 
-                            if (xmlProp.LocalName!=null&&xmlProp.LocalName.ToLower() == "img" && m_TempImageId != null)
+                            if (xmlProp.LocalName != null
+                                && xmlProp.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                                && m_TempImageId != null)
                             {
                                 string id = currentXmlNode.Attributes.GetNamedItem("id").Value;
                                 m_TempImageId.Add(id);
@@ -300,7 +302,8 @@ namespace urakawa.daisy.export
 
                         // if QName is img and img src is on disk, copy it to output dir
                         string exportImageName = null;
-                        if (currentXmlNode.LocalName != null && currentXmlNode.LocalName.ToLower() == "img")
+                        if (currentXmlNode.LocalName != null
+                            && currentXmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
                         {
                             XmlAttribute imgSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
                             if (imgSrcAttribute != null &&
@@ -320,7 +323,7 @@ namespace urakawa.daisy.export
 
                                 imgSrcAttribute.Value = exportImageName;
 
-                                
+
 
                                 if (!m_FilesList_Image.Contains(exportImageName))
                                 {

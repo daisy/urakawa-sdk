@@ -77,6 +77,7 @@ StreamWithMarkers?
         TreeNode GetPreviousSiblingWithManagedAudio();
 
         string GetTextFlattened(bool acceptAltText);
+        TreeNode.StringChunk GetTextFlattened_(bool acceptAltText);
         string GetText(bool acceptAltText);
 
         TreeNode GetFirstDescendantWithText(bool acceptAltText);

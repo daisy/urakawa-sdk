@@ -4,7 +4,7 @@ using System.IO;
 
 namespace urakawa.data
 {
-    public class LightLinkedList<T> where T : class //, new() NO NEED FOR PUBLIC DEFAULT CONSTRUCTOR
+    public sealed class LightLinkedList<T> where T : class //, new() NO NEED FOR PUBLIC DEFAULT CONSTRUCTOR
     {
         public Item m_First;
 

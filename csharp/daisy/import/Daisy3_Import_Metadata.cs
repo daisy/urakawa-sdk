@@ -62,12 +62,12 @@ namespace urakawa.daisy.import
                 if (RequestCancellation) return;
 
                 //string lowerCaseName = mdNode.Name.ToLower();
-                string lowerCaseLocalName = mdNode.LocalName.ToLower();
+                //string lowerCaseLocalName = mdNode.LocalName.ToLower();
 
                 if (mdNode.NodeType == XmlNodeType.Element
-                    && lowerCaseLocalName != "meta"
-                    && lowerCaseLocalName != "dc-metadata"
-                    && lowerCaseLocalName != "x-metadata"
+                    && !mdNode.LocalName.Equals("meta", StringComparison.OrdinalIgnoreCase)
+                    && !mdNode.LocalName.Equals("dc-metadata", StringComparison.OrdinalIgnoreCase)
+                    && !mdNode.LocalName.Equals("x-metadata", StringComparison.OrdinalIgnoreCase)
                     && !String.IsNullOrEmpty(mdNode.InnerText))
                 {
                     XmlNode mdIdentifier = mdNode.Attributes.GetNamedItem("id");
@@ -90,26 +90,26 @@ namespace urakawa.daisy.import
             {
                 XmlAttribute attribute = node.Attributes[i];
 
-                string lowerCaseName = attribute.Name.ToLower();
-                string lowerCaseLocalName = attribute.LocalName.ToLower();
+                //string lowerCaseName = attribute.Name.ToLower();
+                //string lowerCaseLocalName = attribute.LocalName.ToLower();
 
-                if (lowerCaseLocalName == "name"
-                    || lowerCaseLocalName == "property"
-                    || lowerCaseLocalName == "content")
+                if (attribute.LocalName.Equals("name", StringComparison.OrdinalIgnoreCase)
+                    || attribute.LocalName.Equals("property", StringComparison.OrdinalIgnoreCase)
+                    || attribute.LocalName.Equals("content", StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
-                if (lowerCaseLocalName == "id"
+                if (attribute.LocalName.Equals("id", StringComparison.OrdinalIgnoreCase)
                     && node != m_PublicationUniqueIdentifierNode)
                 {
                     continue;
                 }
 
-                if (lowerCaseName.StartsWith("xmlns:"))
+                if (attribute.Name.StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
                 {
                     //meta.NameContentAttribute.NamespaceUri = attribute.Value;
                 }
-                else if (lowerCaseName == "xmlns")
+                else if (attribute.Name.Equals("xmlns", StringComparison.OrdinalIgnoreCase))
                 {
                     //meta.OtherAttributes.NamespaceUri = attribute.Value;
                 }
@@ -119,7 +119,7 @@ namespace urakawa.daisy.import
 
                     xmlAttr.Name = attribute.Name;
 
-                    if (lowerCaseName.Contains(":"))
+                    if (attribute.Name.Contains(":"))
                     {
                         xmlAttr.NamespaceUri = attribute.NamespaceURI;
                     }
@@ -238,7 +238,7 @@ namespace urakawa.daisy.import
             md.NameContentAttribute.Value = content;
 
             if (md.NameContentAttribute.Name.Contains(":")
-                && node.Name.ToLower() == md.NameContentAttribute.Name)
+                && node.Name.Equals(md.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
             {
                 md.NameContentAttribute.NamespaceUri = node.NamespaceURI;
             }
@@ -252,12 +252,12 @@ namespace urakawa.daisy.import
 
         private bool metadataNameContentAlreadyExists(string metaDataName, string metaDataContent)
         {
-            string lower = metaDataName.ToLower();
+            //string lower = metaDataName.ToLower();
 
             Presentation presentation = m_Project.Presentations.Get(0);
             foreach (Metadata md in presentation.Metadatas.ContentsAs_Enumerable)
             {
-                if (md.NameContentAttribute.Name.ToLower() == lower
+                if (md.NameContentAttribute.Name.Equals(metaDataName, StringComparison.OrdinalIgnoreCase)
                     && md.NameContentAttribute.Value == metaDataContent)
                 {
                     return true;
@@ -268,12 +268,12 @@ namespace urakawa.daisy.import
 
         private bool metadataNameAlreadyExists(string metaDataName)
         {
-            string lower = metaDataName.ToLower();
+            //string lower = metaDataName.ToLower();
 
             Presentation presentation = m_Project.Presentations.Get(0);
             foreach (Metadata md in presentation.Metadatas.ContentsAs_Enumerable)
             {
-                if (md.NameContentAttribute.Name.ToLower() == lower)
+                if (md.NameContentAttribute.Name.Equals(metaDataName, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -346,8 +346,7 @@ namespace urakawa.daisy.import
                 {
                     foreach (Metadata primaryMetadata in primaryNameMetadata)
                     {
-                        if (synonymMetadata.NameContentAttribute.Value.ToLower() ==
-                            primaryMetadata.NameContentAttribute.Value.ToLower())
+                        if (synonymMetadata.NameContentAttribute.Value.Equals(primaryMetadata.NameContentAttribute.Value, StringComparison.OrdinalIgnoreCase))
                         {
                             m_Project.Presentations.Get(0).Metadatas.Remove(synonymMetadata);
                             break;
@@ -369,7 +368,7 @@ namespace urakawa.daisy.import
             List<Metadata> found = new List<Metadata>();
             while (enumerator.MoveNext())
             {
-                if (enumerator.Current.NameContentAttribute.Name.ToLower() == name.ToLower())
+                if (enumerator.Current.NameContentAttribute.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
                 {
                     found.Add(enumerator.Current);
                 }
@@ -431,7 +430,7 @@ namespace urakawa.daisy.import
                     bool found = false;
                     foreach (Metadata m in metadatas)
                     {
-                        if (m.NameContentAttribute.Name.ToLower() == metadataDefinition.Name.ToLower())
+                        if (m.NameContentAttribute.Name.Equals(metadataDefinition.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             found = true;
                             break;

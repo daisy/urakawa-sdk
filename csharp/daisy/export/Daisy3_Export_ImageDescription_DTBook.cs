@@ -16,7 +16,7 @@ namespace urakawa.daisy.export
         private void generateImageDescriptionInDTBook(TreeNode n, XmlNode currentXmlNode, string exportImageName, XmlDocument DTBookDocument)
         {
             if (currentXmlNode.LocalName == null
-                || currentXmlNode.LocalName.ToLower() != "img"
+                || !currentXmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
                 || n.GetAlternateContentProperty() == null)
             {
                 return;
