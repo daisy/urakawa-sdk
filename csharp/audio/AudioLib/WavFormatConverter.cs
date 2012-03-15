@@ -327,8 +327,8 @@ namespace AudioLib
                 catch (Exception ex)
                 {
                     mp3PcmFormat = null;
-                    if (ex.GetType().FullName.ToLower().Contains("acm")
-                        || ex.Message.ToLower().Contains("acm")
+                    if (ex.GetType().FullName.IndexOf("acm", StringComparison.OrdinalIgnoreCase) >= 0
+                        || ex.Message.IndexOf("acm", StringComparison.OrdinalIgnoreCase) >= 0
                         ) // Hacky sucky !! Needs testing on machines that don't support ACM
                     {
 #if DEBUG
