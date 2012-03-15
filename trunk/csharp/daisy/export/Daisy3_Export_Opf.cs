@@ -30,37 +30,37 @@ namespace urakawa.daisy.export
             const string mediaType_Resource = "application/x-dtbresource+xml";
 
 
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Title.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Creator.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Subject.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Description.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Identifier.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Publisher.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Contributor.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Date.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Type.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Format.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.D_Source.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.D_Language.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Relation.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Coverage.ToLower());
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Rights.ToLower());
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Title);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Creator);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Subject);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Description);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Identifier);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Publisher);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Contributor);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Date);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Type);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Format);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.D_Source);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.D_Language);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Relation);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Coverage);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Rights);
 
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_DATE.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_EDITION.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_PUBLISHER.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_RIGHTS.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_TITLE.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_NARRATOR.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_PRODUCER.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_PRODUCED_DATE.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_REVISION.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_REVISION_DATE.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_REVISION_DESCRIPTION.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_TOTAL_TIME.ToLower());
-            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_AUDIO_FORMAT.ToLower());
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_DATE);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_EDITION);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_PUBLISHER);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_RIGHTS);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_SOURCE_TITLE);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_NARRATOR);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_PRODUCER);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_PRODUCED_DATE);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_REVISION);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_REVISION_DATE);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_REVISION_DESCRIPTION);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_TOTAL_TIME);
+            m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_AUDIO_FORMAT);
 
             // add all files to manifest
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
@@ -211,7 +211,7 @@ namespace urakawa.daisy.export
 
             foreach (Metadata m in m_Presentation.Metadatas.ContentsAs_Enumerable)
             {
-                string lowerName = m.NameContentAttribute.Name.ToLower();
+                //string lowerName = m.NameContentAttribute.Name.ToLower();
                 if (mdId == m
                     || string.Equals(m.NameContentAttribute.Name, SupportedMetadata_Z39862005.DTB_TOTAL_TIME, StringComparison.OrdinalIgnoreCase)
                     || string.Equals(m.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_Format, StringComparison.OrdinalIgnoreCase)
@@ -222,7 +222,28 @@ namespace urakawa.daisy.export
 
                 XmlNode metadataNodeCreated = null;
                 //if (m.NameContentAttribute.Name.StartsWith(SupportedMetadata_Z39862005.DC + ":"))
-                if (m_AllowedInDcMetadata.Contains(lowerName))
+
+                bool contains = false;
+                foreach (string str in m_AllowedInDcMetadata)
+                {
+                    if (str.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        contains = true;
+                        break;
+                    }
+                }
+
+                bool containsDtb = false;
+                foreach (string str in m_DtbAllowedInXMetadata)
+                {
+                    if (str.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        containsDtb = true;
+                        break;
+                    }
+                }
+
+                if (contains)
                 {
                     metadataNodeCreated = AddMetadataAsInnerText(opfDocument, dc_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
                     // add other metadata attributes if any
@@ -236,9 +257,11 @@ namespace urakawa.daisy.export
                 //items in x-metadata may start with dtb: ONLY if they are in the list of allowed dtb:* items
                 //OR, items in x-metadata may be anything else (non-dtb:*).
                 else if (
-                    (lowerName.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DTB + ":")
-                    && m_DtbAllowedInXMetadata.Contains(lowerName))
-                    || !lowerName.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DTB + ":")
+                    (
+                    containsDtb
+                    && m.NameContentAttribute.Name.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DTB + ":", StringComparison.OrdinalIgnoreCase)
+                    )
+                    || !m.NameContentAttribute.Name.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DTB + ":", StringComparison.OrdinalIgnoreCase)
                     )
                 {
                     metadataNodeCreated = AddMetadataAsAttributes(opfDocument, x_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
@@ -281,6 +304,7 @@ namespace urakawa.daisy.export
 
         private XmlNode AddMetadataAsInnerText(XmlDocument doc, XmlNode metadataParentNode, string name, string content)
         {
+            //string name = name_.ToLower();
             XmlNode node = null;
 
             if (name.Contains(":"))

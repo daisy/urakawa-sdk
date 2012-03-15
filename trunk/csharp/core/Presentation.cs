@@ -765,7 +765,10 @@ namespace urakawa
             List<Metadata> list = new List<Metadata>();
             foreach (Metadata md in mMetadata.ContentsAs_Enumerable)
             {
-                if (md.NameContentAttribute.Name.ToLower() == name.ToLower()) list.Add(md);
+                if (md.NameContentAttribute.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    list.Add(md);
+                }
             }
             return list;
         }

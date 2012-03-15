@@ -106,7 +106,8 @@ namespace urakawa.xuk
 
             //resolve resources from cache (if possible)
             if (m_EnableHttpCaching &&
-                (absoluteUri.Scheme.ToLower() == Uri.UriSchemeHttp || absoluteUri.Scheme.ToLower() == Uri.UriSchemeHttps) //absoluteUri.IsUnc?
+                (absoluteUri.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase)
+                || absoluteUri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)) //absoluteUri.IsUnc?
                 )
             {
                 WebRequest webReq = WebRequest.Create(absoluteUri);

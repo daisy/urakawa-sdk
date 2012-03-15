@@ -249,13 +249,30 @@ namespace urakawa.daisy.export
                     shouldAddNewSeq = false;
                 }
 
-                if (externalAudio != null
+                if (
+                    externalAudio != null
                     || m_Image_ProdNoteMap.ContainsKey(n)
-                    || (n.GetTextMedia() != null && special_UrakawaNode != null && (IsEscapableNode(special_UrakawaNode)
+                    ||
+                    (
+                    n.GetTextMedia() != null
+                    && special_UrakawaNode != null
+                    &&
+                    (
+                    IsEscapableNode(special_UrakawaNode)
                     || IsSkippableNode(special_UrakawaNode)
-
-                    || (special_UrakawaNode.GetXmlProperty() != null && special_UrakawaNode.GetXmlProperty().LocalName.ToLower() == "doctitle"))
-                    && (m_TreeNode_XmlNodeMap[n].Attributes != null || m_TreeNode_XmlNodeMap[n.Parent].Attributes != null)))
+                    ||
+                    (
+                    special_UrakawaNode.GetXmlProperty() != null
+                    && special_UrakawaNode.GetXmlProperty().LocalName.Equals("doctitle", StringComparison.OrdinalIgnoreCase)
+                    )
+                    )
+                    &&
+                    (
+                    m_TreeNode_XmlNodeMap[n].Attributes != null
+                    || m_TreeNode_XmlNodeMap[n.Parent].Attributes != null
+                    )
+                    )
+                    )
                 {
                     // continue ahead 
                 }
@@ -761,7 +778,7 @@ namespace urakawa.daisy.export
 
         private XmlNode CreateDocTitle(XmlDocument ncxDocument, XmlNode ncxRootNode, urakawa.core.TreeNode n)
         {
-            string txtMedia = n.GetTextFlattened(true);
+            
             urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
             XmlNode docNode = ncxDocument.CreateElement(null,
@@ -775,7 +792,7 @@ namespace urakawa.daisy.export
             XmlNode docTxtNode = ncxDocument.CreateElement(null, "text", docNode.NamespaceURI);
             docNode.AppendChild(docTxtNode);
             docTxtNode.AppendChild(
-            ncxDocument.CreateTextNode(txtMedia));
+            ncxDocument.CreateTextNode(n.GetTextFlattened(true)));
 
             if (externalAudio != null)
             {
@@ -793,7 +810,7 @@ namespace urakawa.daisy.export
         private XmlNode CreateNavPointWithoutContentNode(XmlDocument ncxDocument, urakawa.core.TreeNode urakawaNode, urakawa.core.TreeNode currentHeadingTreeNode, urakawa.core.TreeNode n, Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap)
         {
             XmlNode navMapNode = ncxDocument.GetElementsByTagName("navMap")[0];
-            string txtMedia = n.GetTextFlattened(true);
+            
             urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
             // first create navPoints
@@ -857,7 +874,7 @@ namespace urakawa.daisy.export
             navLabel.AppendChild(txtNode);
             if (currentHeadingTreeNode != null)
                 txtNode.AppendChild(
-                ncxDocument.CreateTextNode(txtMedia));
+                ncxDocument.CreateTextNode(n.GetTextFlattened(true)));
 
             // create audio node
             XmlNode audioNode = ncxDocument.CreateElement(null, "audio", navMapNode.NamespaceURI);
@@ -1337,10 +1354,29 @@ namespace urakawa.daisy.export
                 shouldAddNewSeq = false;
             }//-2
 
-            if (externalAudio != null ||
-                (n.GetTextMedia() != null
-                && special_UrakawaNode != null && (IsEscapableNode(special_UrakawaNode) || IsSkippableNode(special_UrakawaNode) || (special_UrakawaNode.GetXmlProperty() != null && special_UrakawaNode.GetXmlProperty().LocalName.ToLower() == "doctitle"))
-                && (m_TreeNode_XmlNodeMap[n].Attributes != null || m_TreeNode_XmlNodeMap[n.Parent].Attributes != null)))
+            if (
+                externalAudio != null
+                ||
+                (
+                n.GetTextMedia() != null
+                &&
+                special_UrakawaNode != null
+                &&
+                (
+                IsEscapableNode(special_UrakawaNode)
+                || IsSkippableNode(special_UrakawaNode)
+                || (special_UrakawaNode.GetXmlProperty() != null
+                &&
+                special_UrakawaNode.GetXmlProperty().LocalName.Equals("doctitle", StringComparison.OrdinalIgnoreCase)
+                )
+                )
+                &&
+                (
+                m_TreeNode_XmlNodeMap[n].Attributes != null
+                || m_TreeNode_XmlNodeMap[n.Parent].Attributes != null
+                )
+                )
+                )
             {
                 // continue ahead 
             }

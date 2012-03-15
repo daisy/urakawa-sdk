@@ -18,6 +18,7 @@ namespace urakawa.core
             }
             return base.ToString();
         }
+
         protected string getDebugString()
         {
             QualifiedName qname = GetXmlElementQName();

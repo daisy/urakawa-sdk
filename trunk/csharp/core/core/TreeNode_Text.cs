@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using urakawa.media;
 using urakawa.property.channel;
 using urakawa.property.xml;
@@ -87,6 +88,7 @@ namespace urakawa.core
 
             bool atLeastOneSiblingIsSignificantTextOnly = false;
 
+            StringBuilder stringBuilder = new StringBuilder();
             foreach (TreeNode child in proposed.Parent.Children.ContentsAs_Enumerable)
             {
                 if (child == proposed)
@@ -97,9 +99,12 @@ namespace urakawa.core
                 {
                     continue;
                 }
-                string text = child.GetTextFlattened(true);
-                if (!string.IsNullOrEmpty(text))
+                StringChunk strChunkStart = child.GetTextFlattened_(true);
+                if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
                 {
+                    stringBuilder.Clear();
+                    TreeNode.ConcatStringChunks(strChunkStart, stringBuilder);
+                    string text = stringBuilder.ToString();
                     text = text.Trim();
                     if (TextOnlyContainsPunctuation(text))
                     {
@@ -156,8 +161,8 @@ namespace urakawa.core
             {
                 TreeNode child = Children.Get(i);
 
-                string str = child.GetTextMediaFlattened(false, acceptAltText);
-                if (!string.IsNullOrEmpty(str))
+                StringChunk strChunkStart = child.GetTextMediaFlattened(false, acceptAltText);
+                if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
                 {
                     return child;
                 }
@@ -180,8 +185,8 @@ namespace urakawa.core
 
             foreach (TreeNode child in Children.ContentsAs_Enumerable)
             {
-                string str = child.GetTextMediaFlattened(false, acceptAltText);
-                if (!string.IsNullOrEmpty(str))
+                StringChunk strChunkStart = child.GetTextMediaFlattened(false, acceptAltText);
+                if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
                 {
                     return child;
                 }
@@ -209,8 +214,8 @@ namespace urakawa.core
             TreeNode next = this;
             while ((next = next.PreviousSibling) != null)
             {
-                string str = next.GetTextMediaFlattened(false, acceptAltText);
-                if (!string.IsNullOrEmpty(str))
+                StringChunk strChunkStart = next.GetTextMediaFlattened(false, acceptAltText);
+                if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
                 {
                     return next;
                 }
@@ -243,8 +248,8 @@ namespace urakawa.core
             TreeNode next = this;
             while ((next = next.NextSibling) != null)
             {
-                string str = next.GetTextMediaFlattened(false, acceptAltText);
-                if (!string.IsNullOrEmpty(str))
+                StringChunk strChunkStart = next.GetTextMediaFlattened(false, acceptAltText);
+                if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
                 {
                     return next;
                 }
@@ -263,17 +268,75 @@ namespace urakawa.core
             return null;
         }
 
+        public sealed class StringChunk
+        {
+            public StringChunk(string str)
+            {
+                Str = str;
+            }
+
+            public string Str;
+            public StringChunk Next;
+
+            public override string ToString()
+            {
+                return ConcatStringChunks(this, null);
+            }
+        }
+
+
+        public static string ConcatStringChunks(StringChunk strChunkStart, StringBuilder stringBuilder)
+        {
+            bool givenStringBuilderIsNull = stringBuilder == null;
+
+            if (strChunkStart == null) return null;
+            if (strChunkStart.Next == null)
+            {
+                if (givenStringBuilderIsNull)
+                {
+                    return strChunkStart.Str;
+                }
+
+                stringBuilder.Append(strChunkStart.Str);
+                return null;
+            }
+
+            if (givenStringBuilderIsNull)
+            {
+                stringBuilder = new StringBuilder();
+            }
+
+            StringChunk strChunk = strChunkStart;
+            do
+            {
+                stringBuilder.Append(strChunk.Str);
+                strChunk = strChunk.Next;
+            } while (strChunk != null);
+
+            if (givenStringBuilderIsNull)
+            {
+                return stringBuilder.ToString();
+            }
+            
+            return null;
+        }
+
         public string GetTextFlattened(bool acceptAltText)
+        {
+            return ConcatStringChunks(GetTextFlattened_(acceptAltText), null);
+        }
+
+        public StringChunk GetTextFlattened_(bool acceptAltText)
         {
             return GetTextMediaFlattened(true, acceptAltText);
         }
 
         public string GetText(bool acceptAltText)
         {
-            return GetTextMediaFlattened(false, acceptAltText);
+            return ConcatStringChunks(GetTextMediaFlattened(false, acceptAltText), null);
         }
 
-        private string GetTextMediaFlattened(bool deep, bool acceptAltText)
+        private StringChunk GetTextMediaFlattened(bool deep, bool acceptAltText)
         {
             AbstractTextMedia textMedia = GetTextMedia();
             if (textMedia != null)
@@ -282,9 +345,9 @@ namespace urakawa.core
                 {
                     return null;
                 }
-                return textMedia.Text;
+                return new StringChunk(textMedia.Text);
             }
-                        
+
 #if ENABLE_SEQ_MEDIA
 
             SequenceMedia seq = GetTextSequenceMedia();
@@ -304,7 +367,7 @@ namespace urakawa.core
             {
                 QualifiedName qName = GetXmlElementQName();
                 string imgAlt = null;
-                if (qName != null && qName.LocalName.ToLower() == "img")
+                if (qName != null && qName.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
                 {
                     XmlAttribute xmlAttr = GetXmlProperty().GetAttribute("alt");
                     if (xmlAttr != null)
@@ -314,7 +377,7 @@ namespace urakawa.core
                 }
                 if (!String.IsNullOrEmpty(imgAlt))
                 {
-                    return imgAlt;
+                    return new StringChunk(imgAlt);
                 }
             }
 
@@ -323,17 +386,27 @@ namespace urakawa.core
                 return null;
             }
 
-            string str = "";
+            StringChunk strChunkStart = null;
+            StringChunk strChunkPrevious = null;
             for (int index = 0; index < mChildren.Count; index++)
             {
                 TreeNode node = mChildren.Get(index);
-                str += node.GetTextMediaFlattened(true, acceptAltText);
+                StringChunk strChunk = node.GetTextMediaFlattened(true, acceptAltText);
+                if (strChunk != null)
+                {
+                    if (strChunkStart == null)
+                    {
+                        strChunkStart = strChunk;
+                    }
+                    else
+                    {
+                        strChunkPrevious.Next = strChunk;
+                    }
+                    strChunkPrevious = strChunk;
+                }
             }
-            if (str.Length == 0)
-            {
-                return null;
-            }
-            return str;
+
+            return strChunkStart;
         }
     }
 }

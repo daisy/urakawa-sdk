@@ -262,7 +262,7 @@ namespace urakawa.data
                 foreach (FileDataProvider prov in ManagedFileDataProviders)
                 {
                     if (!prov.IsDataFileInitialized) continue;
-                    if (prov.DataFileRelativePath.ToLower() == res.ToLower())
+                    if (prov.DataFileRelativePath.Equals(res, StringComparison.OrdinalIgnoreCase))
                     {
                         Debug.Fail("This situation should have been caught by the File.EXist() test above !");
                         continue;
@@ -467,7 +467,7 @@ namespace urakawa.data
                 if (prov != null)
                 {
                     prov.XukIn(source, handler);
-                    
+
                     //if (prov is FileDataProvider
                     //    && !File.Exists(((FileDataProvider)prov).DataFileFullPath))
                     //{
@@ -493,23 +493,28 @@ namespace urakawa.data
                     //{
                     //    SetUidOfManagedObject(prov, prov.Uid);
                     //}
-                        
+
                     if (prov is FileDataProvider)
                     {
                         FileDataProvider fdProv = (FileDataProvider)prov;
-                        if (mXukedInFilDataProviderPaths.Contains(fdProv.DataFileRelativePath.ToLower()))
+
+                        foreach (string path in mXukedInFilDataProviderPaths)
                         {
-                            throw new exception.XukException(String.Format(
-                                                                 "Another FileDataProvider using data file {0} has already been Xukked in",
-                                                                 fdProv.DataFileRelativePath.ToLower()));
+                            if (path.Equals(fdProv.DataFileRelativePath, StringComparison.OrdinalIgnoreCase))
+                            {
+                                throw new exception.XukException(String.Format(
+                                                                     "Another FileDataProvider using data file {0} has already been Xukked in",
+                                                                     fdProv.DataFileRelativePath));
+                            }
                         }
+
 
                         if (!File.Exists(fdProv.DataFileFullPath))
                         {
                             Presentation.DataProviderManager.RemoveManagedObject(prov);
                             return;
                         }
-                        mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
+                        mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath);
                     }
                 }
                 else if (!source.IsEmptyElement)
@@ -564,11 +569,15 @@ namespace urakawa.data
                             if (prov is FileDataProvider)
                             {
                                 FileDataProvider fdProv = (FileDataProvider)prov;
-                                if (mXukedInFilDataProviderPaths.Contains(fdProv.DataFileRelativePath.ToLower()))
+
+                                foreach (string path in mXukedInFilDataProviderPaths)
                                 {
-                                    throw new exception.XukException(String.Format(
+                                    if (path.Equals(fdProv.DataFileRelativePath, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        throw new exception.XukException(String.Format(
                                                                          "Another FileDataProvider using data file {0} has already been Xukked in",
-                                                                         fdProv.DataFileRelativePath.ToLower()));
+                                                                         fdProv.DataFileRelativePath));
+                                    }
                                 }
 
                                 if (!File.Exists(fdProv.DataFileFullPath))
@@ -576,7 +585,7 @@ namespace urakawa.data
                                     Presentation.DataProviderManager.RemoveManagedObject(fdProv);
                                     return;
                                 }
-                                mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
+                                mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath);
                             }
 
                             addedProvider = true;
