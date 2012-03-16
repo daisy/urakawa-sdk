@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using AudioLib;
 using urakawa.media;
 using urakawa.property.channel;
 using urakawa.property.xml;
@@ -9,6 +10,16 @@ namespace urakawa.core
 {
     public partial class TreeNode
     {
+        public static char ToLowerA_Z(char c)
+        {
+            return (c >= 'A' && c <= 'Z') ? (char)(c + 32) : c;
+        }
+
+        public static char ToUpperA_Z(char c)
+        {
+            return (c >= 'a' && c <= 'z') ? (char)(c - 32) : c;
+        }
+
         public static bool TextIsPunctuation(char text)
         {
             return text == ' ' || text == '.' || text == ',' || text == '?' || text == '!' || text == '"' || text == '\'' ||
@@ -17,12 +28,22 @@ namespace urakawa.core
 
         public static bool TextOnlyContainsPunctuation(string text)
         {
-            CharEnumerator enumtor = text.GetEnumerator();
-            while (enumtor.MoveNext())
+            for (int i = 0; i < text.Length; i++)
             {
-                if (!TextIsPunctuation(enumtor.Current))
+                char c = text[i];
+                if (!TextIsPunctuation(c))
+                {
                     return false;
+                }
             }
+
+            //CharEnumerator enumtor = text.GetEnumerator();
+            //while (enumtor.MoveNext()) //enumtor.Current
+            //foreach (char c in text)
+            //{
+
+            //}
+
             return true; // includes empty "text" (when space is trimmed on caller's side)
         }
 
@@ -88,7 +109,6 @@ namespace urakawa.core
 
             bool atLeastOneSiblingIsSignificantTextOnly = false;
 
-            StringBuilder stringBuilder = new StringBuilder();
             foreach (TreeNode child in proposed.Parent.Children.ContentsAs_Enumerable)
             {
                 if (child == proposed)
@@ -102,12 +122,15 @@ namespace urakawa.core
                 StringChunk strChunkStart = child.GetTextFlattened_(true);
                 if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
                 {
-#if NET40
-                    stringBuilder.Clear();
-#else
-                    stringBuilder.Length = 0;
-#endif //NET40
-                    TreeNode.ConcatStringChunks(strChunkStart, stringBuilder);
+                    StringBuilder stringBuilder = new StringBuilder(strChunkStart.GetLength());
+
+                    //#if NET40
+                    //                    stringBuilder.Clear();
+                    //#else
+                    //                    stringBuilder.Length = 0;
+                    //#endif //NET40
+
+                    TreeNode.ConcatStringChunks(strChunkStart, -1, stringBuilder);
                     string text = stringBuilder.ToString();
                     text = text.Trim();
                     if (TextOnlyContainsPunctuation(text))
@@ -282,40 +305,91 @@ namespace urakawa.core
             public string Str;
             public StringChunk Next;
 
+            public int GetLength()
+            {
+                int l = 0;
+
+                StringChunk strChunk = this;
+                while (strChunk != null)
+                {
+                    l += (strChunk.Str != null ? strChunk.Str.Length : 0);
+                    strChunk = strChunk.Next;
+                }
+
+                return l;
+            }
+
             public override string ToString()
             {
-                return ConcatStringChunks(this, null);
+                return ConcatStringChunks(this, -1, null);
             }
         }
 
 
-        public static string ConcatStringChunks(StringChunk strChunkStart, StringBuilder stringBuilder)
+        public static string ConcatStringChunks(StringChunk strChunkStart, int maxLength, StringBuilder stringBuilder)
         {
             bool givenStringBuilderIsNull = stringBuilder == null;
 
             if (strChunkStart == null) return null;
+
             if (strChunkStart.Next == null)
             {
-                if (givenStringBuilderIsNull)
+                string str = strChunkStart.Str ?? "";
+
+                if (maxLength > 0 && str.Length > maxLength)
                 {
-                    return strChunkStart.Str;
+                    str = str.Substring(0, maxLength);
                 }
 
-                stringBuilder.Append(strChunkStart.Str);
+                if (givenStringBuilderIsNull)
+                {
+                    return str;
+                }
+
+                stringBuilder.Append(str);
                 return null;
             }
 
+            int totalLength = strChunkStart.GetLength();
+            bool checkMax = maxLength > 0 && totalLength > maxLength;
+
             if (givenStringBuilderIsNull)
             {
-                stringBuilder = new StringBuilder();
+                int capacity = checkMax ? maxLength : totalLength;
+                stringBuilder = new StringBuilder(capacity);
             }
 
+            int accumulatedLength = stringBuilder.Length;
+
+            int sumLength = 0;
             StringChunk strChunk = strChunkStart;
             do
             {
-                stringBuilder.Append(strChunk.Str);
+                string str = strChunk.Str ?? "";
+
+                if (checkMax)
+                {
+                    if (((sumLength + str.Length) - maxLength) > 0) //overflow
+                    {
+                        str = str.Substring(0, maxLength - sumLength); //str.Length - overflow
+                    }
+                }
+
+                sumLength += str.Length;
+                stringBuilder.Append(str);
+
+                if (checkMax && sumLength >= maxLength)
+                {
+                    DebugFix.Assert(sumLength == maxLength);
+                    break;
+                }
+
                 strChunk = strChunk.Next;
             } while (strChunk != null);
+
+            accumulatedLength = stringBuilder.Length - accumulatedLength;
+
+            DebugFix.Assert(accumulatedLength == (checkMax ? maxLength : totalLength));
 
             if (givenStringBuilderIsNull)
             {
@@ -327,7 +401,7 @@ namespace urakawa.core
 
         public string GetTextFlattened(bool acceptAltText)
         {
-            return ConcatStringChunks(GetTextFlattened_(acceptAltText), null);
+            return ConcatStringChunks(GetTextFlattened_(acceptAltText), -1, null);
         }
 
         public StringChunk GetTextFlattened_(bool acceptAltText)
@@ -337,7 +411,7 @@ namespace urakawa.core
 
         public string GetText(bool acceptAltText)
         {
-            return ConcatStringChunks(GetTextMediaFlattened(false, acceptAltText), null);
+            return ConcatStringChunks(GetTextMediaFlattened(false, acceptAltText), -1, null);
         }
 
         private StringChunk GetTextMediaFlattened(bool deep, bool acceptAltText)
@@ -345,11 +419,12 @@ namespace urakawa.core
             AbstractTextMedia textMedia = GetTextMedia();
             if (textMedia != null)
             {
-                if (textMedia.Text.Length == 0)
+                if (!String.IsNullOrEmpty(textMedia.Text))
                 {
-                    return null;
+                    return new StringChunk(textMedia.Text);
                 }
-                return new StringChunk(textMedia.Text);
+
+                return null;
             }
 
 #if ENABLE_SEQ_MEDIA
@@ -370,18 +445,19 @@ namespace urakawa.core
             if (acceptAltText)
             {
                 QualifiedName qName = GetXmlElementQName();
-                string imgAlt = null;
+                
                 if (qName != null && qName.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
                 {
                     XmlAttribute xmlAttr = GetXmlProperty().GetAttribute("alt");
                     if (xmlAttr != null)
                     {
-                        imgAlt = xmlAttr.Value;
+                        if (!String.IsNullOrEmpty(xmlAttr.Value))
+                        {
+                            return new StringChunk(xmlAttr.Value);
+                        }
+
+                        return null;
                     }
-                }
-                if (!String.IsNullOrEmpty(imgAlt))
-                {
-                    return new StringChunk(imgAlt);
                 }
             }
 
