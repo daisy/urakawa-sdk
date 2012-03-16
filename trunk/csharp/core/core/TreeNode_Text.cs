@@ -102,7 +102,11 @@ namespace urakawa.core
                 StringChunk strChunkStart = child.GetTextFlattened_(true);
                 if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
                 {
+#if NET40
                     stringBuilder.Clear();
+#else
+                    stringBuilder.Length = 0;
+#endif //NET40
                     TreeNode.ConcatStringChunks(strChunkStart, stringBuilder);
                     string text = stringBuilder.ToString();
                     text = text.Trim();
@@ -317,7 +321,7 @@ namespace urakawa.core
             {
                 return stringBuilder.ToString();
             }
-            
+
             return null;
         }
 
