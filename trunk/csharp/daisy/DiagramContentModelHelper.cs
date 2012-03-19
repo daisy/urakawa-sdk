@@ -19,11 +19,11 @@ namespace urakawa.daisy
 
         // -------------------------------------------------
 
-        //public const string NS_PREFIX_TOBI = "tobi";
-        //public const string NS_URL_TOBI = "http://www.daisy.org/tobi";
+        public const string NS_PREFIX_TOBI = "tobi";
+        public const string NS_URL_TOBI = "http://www.daisy.org/tobi";
 
 
-        //public const string TOBI_Audio = NS_PREFIX_TOBI + ":audio";
+        public const string TOBI_Audio = NS_PREFIX_TOBI + ":audio";
 
         // -------------------------------------------------
 
