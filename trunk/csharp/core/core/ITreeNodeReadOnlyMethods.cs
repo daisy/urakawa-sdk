@@ -76,18 +76,18 @@ StreamWithMarkers?
         TreeNode GetNextSiblingWithManagedAudio();
         TreeNode GetPreviousSiblingWithManagedAudio();
 
-        string GetTextFlattened(bool acceptAltText);
-        TreeNode.StringChunk GetTextFlattened_(bool acceptAltText);
-        string GetText(bool acceptAltText);
+        string GetTextFlattened();
+        TreeNode.StringChunkRange GetTextFlattened_();
+        TreeNode.StringChunkRange GetText();
 
-        TreeNode GetFirstDescendantWithText(bool acceptAltText);
-        TreeNode GetLastDescendantWithText(bool acceptAltText);
+        TreeNode GetFirstDescendantWithText();
+        TreeNode GetLastDescendantWithText();
 
-        TreeNode GetPreviousSiblingWithText(bool acceptAltText);
-        //TreeNode GetPreviousSiblingWithText(TreeNode upLimit, bool acceptAltText);
+        TreeNode GetPreviousSiblingWithText();
+        //TreeNode GetPreviousSiblingWithText(TreeNode upLimit);
 
-        TreeNode GetNextSiblingWithText(bool acceptAltText);
-        //TreeNode GetNextSiblingWithText(TreeNode upLimit, bool acceptAltText);
+        TreeNode GetNextSiblingWithText();
+        //TreeNode GetNextSiblingWithText(TreeNode upLimit);
 
         TreeNode GetFirstDescendantWithManagedAudio();
         TreeNode GetFirstAncestorWithManagedAudio();

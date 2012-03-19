@@ -436,7 +436,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "playOrder", "");
                     string strTypeVal = n.GetXmlProperty().GetAttribute("page").Value;
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "type", strTypeVal);
-                    string strPageValue = n.GetTextFlattened(true);
+                    string strPageValue = n.GetTextFlattened();
                     ++totalPageCount;
 
                     playOrderList_Sorted.Add(pageTargetNode);
@@ -532,7 +532,7 @@ namespace urakawa.daisy.export
                     XmlNode txtNode = ncxDocument.CreateElement(null, "text", navTargetNode.NamespaceURI);
                     navLabelNode.AppendChild(txtNode);
                     txtNode.AppendChild(
-                        ncxDocument.CreateTextNode(n.GetTextFlattened(true)));
+                        ncxDocument.CreateTextNode(n.GetTextFlattened()));
 
                     // create audio node only if external audio media is not null
                     if (externalAudio != null)
@@ -792,7 +792,7 @@ namespace urakawa.daisy.export
             XmlNode docTxtNode = ncxDocument.CreateElement(null, "text", docNode.NamespaceURI);
             docNode.AppendChild(docTxtNode);
             docTxtNode.AppendChild(
-            ncxDocument.CreateTextNode(n.GetTextFlattened(true)));
+            ncxDocument.CreateTextNode(n.GetTextFlattened()));
 
             if (externalAudio != null)
             {
@@ -874,7 +874,7 @@ namespace urakawa.daisy.export
             navLabel.AppendChild(txtNode);
             if (currentHeadingTreeNode != null)
                 txtNode.AppendChild(
-                ncxDocument.CreateTextNode(n.GetTextFlattened(true)));
+                ncxDocument.CreateTextNode(n.GetTextFlattened()));
 
             // create audio node
             XmlNode audioNode = ncxDocument.CreateElement(null, "audio", navMapNode.NamespaceURI);
