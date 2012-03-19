@@ -227,7 +227,7 @@ namespace urakawa.core
             get { return m_TextLocal; }
         }
 
-        private void XukInAfter_TextMediaCache()
+        public void XukInAfter_TextMediaCache()
         {
             StringChunk localText = GetTextChunk();
             if (localText != null)
