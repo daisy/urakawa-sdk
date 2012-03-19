@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using AudioLib;
 using urakawa.command;
 using urakawa.core;
 using urakawa.media.data;
@@ -84,48 +85,110 @@ namespace urakawa.commands
 
         public static string GetText(TreeNode node)
         {
-            media.AbstractTextMedia textMedia = node.GetTextMedia();
-            if (textMedia != null)
+            TreeNode.StringChunk textLocal = node.GetTextChunk();
+            if (textLocal != null)
             {
-                return textMedia.Text;
+                //DebugFix.Assert(textMedia.First.IsAbstractTextMedia);
+                //DebugFix.Assert(range.Last == null);
+
+                return textLocal.Str;
             }
-            else
-            {
-                QualifiedName qname = node.GetXmlElementQName();
-                if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
-                {
-                    property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute("alt");
-                    if (xmlAttr != null)
-                    {
-                        return xmlAttr.Value;
-                    }
-                }
-            }
+            //else
+            //{
+            //    QualifiedName qname = node.GetXmlElementQName();
+            //    if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+            //    {
+            //        property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute("alt");
+            //        if (xmlAttr != null)
+            //        {
+            //            return xmlAttr.Value;
+            //        }
+            //    }
+            //}
             return null;
         }
 
         private static void SetText(TreeNode node, string txt)
         {
-            media.AbstractTextMedia textMedia = node.GetTextMedia();
-            if (textMedia != null)
+            TreeNode.StringChunk textLocal = node.GetTextChunk();
+            DebugFix.Assert(textLocal != null);
+            if (textLocal != null)
             {
-                textMedia.Text = txt;
-                return;
-            }
-            else
-            {
-                QualifiedName qname = node.GetXmlElementQName();
-                if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+                if (textLocal.IsAbstractTextMedia)
                 {
-                    urakawa.property.xml.XmlAttribute  xmlAttr = node.GetXmlProperty().GetAttribute("alt");
-                    if (xmlAttr != null)
-                    {
-                        xmlAttr.Value = txt;
-                        return;
-                    }
+                    DebugFix.Assert(textLocal.m_TextMedia != null);
+
+#if DEBUG
+                    media.AbstractTextMedia textMedia = node.GetTextMedia();
+                    DebugFix.Assert(textLocal.m_TextMedia == textMedia);
+#endif //DEBUG
+
+                    textLocal.m_TextMedia.Text = txt;
                 }
+                else
+                {
+                    DebugFix.Assert(textLocal.m_XmlAttribute != null);
+
+#if DEBUG
+                    QualifiedName qname = node.GetXmlElementQName();
+                    if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+                    {
+                        urakawa.property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute("alt");
+                        if (xmlAttr != null)
+                        {
+                            DebugFix.Assert(textLocal.m_XmlAttribute == xmlAttr);
+                        }
+                    }
+#endif //DEBUG
+
+                    textLocal.m_XmlAttribute.Value = txt;
+                }
+
+                DebugFix.Assert(textLocal.Str == txt);
+                //DebugFix.Assert(textLocal.IsAbstractTextMedia);
+                //DebugFix.Assert(range.Last == null);
             }
-            Debug.Fail("WTF ??");
+
+            //media.AbstractTextMedia textMedia = node.GetTextMedia();
+            //if (textMedia != null)
+            //{
+            //    textMedia.Text = txt;
+
+            //    TreeNode.StringChunk textLocal = node.GetTextMedia(true);
+            //    DebugFix.Assert(textLocal != null);
+            //    if (textLocal != null)
+            //    {
+            //        DebugFix.Assert(textLocal.Str == txt);
+            //        DebugFix.Assert(textLocal.IsAbstractTextMedia);
+            //        //DebugFix.Assert(range.Last == null);
+            //    }
+
+            //    return;
+            //}
+            //else
+            //{
+            //    QualifiedName qname = node.GetXmlElementQName();
+            //    if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+            //    {
+            //        urakawa.property.xml.XmlAttribute  xmlAttr = node.GetXmlProperty().GetAttribute("alt");
+            //        if (xmlAttr != null)
+            //        {
+            //            xmlAttr.Value = txt;
+
+            //            TreeNode.StringChunk textLocal = node.GetTextMedia(true);
+            //            DebugFix.Assert(textLocal != null);
+            //            if (textLocal != null)
+            //            {
+            //                DebugFix.Assert(textLocal.Str == txt);
+            //                DebugFix.Assert(!textLocal.IsAbstractTextMedia);
+            //                //DebugFix.Assert(range.Last == null);
+            //            }
+
+            //            return;
+            //        }
+            //    }
+            //}
+            //Debug.Fail("WTF ??");
         }
 
         public override void Execute()

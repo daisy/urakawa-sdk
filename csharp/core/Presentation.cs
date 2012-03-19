@@ -747,6 +747,8 @@ namespace urakawa
             }
         }
 
+        internal TreeNode.StringChunk m_PreviousTextLocal;
+
         internal long m_XukedInTreeNodes;
         public long XukedInTreeNodes
         {
@@ -1067,6 +1069,7 @@ namespace urakawa
                 }
                 else if (source.LocalName == XukStrings.RootNode)
                 {
+                    m_PreviousTextLocal = null;
                     m_XukedInTreeNodes = 0;
                     XukInRootNode(source, handler);
                 }

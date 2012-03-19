@@ -157,6 +157,9 @@ struct
 #endif //USE_NORMAL_LIST
  TreeNodeAndStreamDataLength
     {
+        public Object m_Tag1;
+        public Object m_Tag2;
+
         public TreeNode m_TreeNode;
         public long m_LocalStreamDataLength;
     }

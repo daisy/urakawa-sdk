@@ -369,6 +369,8 @@ namespace urakawa.core
         {
             Presentation.m_XukedInTreeNodes++;
             base.XukIn(source, handler);
+
+            XukInAfter_TextMediaCache();
         }
 
         private void XukInProperties(XmlReader source, IProgressHandler handler)

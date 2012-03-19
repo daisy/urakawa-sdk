@@ -24,7 +24,7 @@ namespace urakawa.core
             QualifiedName qname = GetXmlElementQName();
             String str = (qname != null ? qname.LocalName : "");
             str += " /// ";
-            str += GetTextFlattened(true);
+            str += GetTextFlattened();
             return str;
         }
 
