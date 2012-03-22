@@ -34,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;_USE_SLIMDX_;PAUSE_FEATURE_ENABLED;USE_SOUNDTOUCH</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;USE_SOUNDTOUCH;_USE_SLIMDX_;PAUSE_FEATURE_ENABLED;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
@@ -44,7 +44,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;_USE_SLIMDX_;PAUSE_FEATURE_ENABLED;USE_SOUNDTOUCH</DefineConstants>
+    <DefineConstants>TRACE;USE_SOUNDTOUCH;_USE_SLIMDX_;PAUSE_FEATURE_ENABLED;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
