@@ -110,7 +110,7 @@ namespace AudioLib
             get { return m_UseSoundTouch; }
             set
             {
-                //m_UseSoundTouch = value;
+                m_UseSoundTouch = value;
             }
         }
 #endif //USE_SOUNDTOUCH
@@ -620,22 +620,9 @@ namespace AudioLib
  m_CircularBuffer.Caps.BufferBytes
 #endif
 ;
-            long length = m_PlaybackEndPositionInCurrentAudioStream - m_PlaybackStartPositionInCurrentAudioStream;
-            length -= length % m_CurrentAudioPCMFormat.BlockAlign;
-            int initialFullBufferBytes = (int)Math.Min(length, circularBufferLength);
 
-            int bytesWrittenToCirularBuffer = transferBytesFromWavStreamToCircularBuffer(initialFullBufferBytes);
-
-#if DEBUG
-            if (
-#if USE_SOUNDTOUCH
-!UseSoundTouch ||
-#endif //USE_SOUNDTOUCH
- !NotNormalPlayFactor())
-            {
-                DebugFix.Assert(bytesWrittenToCirularBuffer == initialFullBufferBytes);
-            }
-#endif //DEBUG
+            int bytesWrittenToCirularBuffer =
+                transferBytesFromWavStreamToCircularBuffer(circularBufferLength);
 
             m_CurrentBytePosition = m_PlaybackStartPositionInCurrentAudioStream;
 
@@ -655,7 +642,13 @@ namespace AudioLib
                     m_PlaybackStopWatch = new Stopwatch();
                 }
 
+#if NET4
                 m_PlaybackStopWatch.Restart();
+#else
+                m_PlaybackStopWatch.Stop();
+                m_PlaybackStopWatch.Reset();
+                m_PlaybackStopWatch.Start();
+#endif //NET4
             }
             catch (Exception)
             {
