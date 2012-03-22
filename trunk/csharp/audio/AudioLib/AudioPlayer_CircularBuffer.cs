@@ -159,7 +159,7 @@ namespace AudioLib
                     }
                 }
 
-                int soundTouchSampleBufferLength = nSamplesInBuffer / m_CurrentAudioPCMFormat.NumberOfChannels;
+                int soundTouchSampleBufferLength = (int)Math.Round(nSamplesInBuffer / (double)m_CurrentAudioPCMFormat.NumberOfChannels);
 
                 m_SoundTouch.PutSamples((ArrayPtr<TSampleType>)m_SoundTouch_SampleBuffer, soundTouchSampleBufferLength);
 
@@ -226,7 +226,13 @@ namespace AudioLib
 
                 if (totalBytesReceived > 0)
                 {
+#if DEBUG
+                    double ratio = nbytes / (double)totalBytesReceived;
+                    Console.WriteLine("FAST: " + ratio + " -- " + m_FastPlayFactor);
+#endif // DEBUG
+
                     DebugFix.Assert(totalBytesReceived <= circularBufferLength);
+                    DebugFix.Assert(totalBytesReceived <= nbytes);
 
                     m_CircularBuffer.Write(m_CircularBufferWritePosition, m_SoundTouch_ByteBuffer_Stream,
                                            totalBytesReceived, LockFlag.None);
@@ -377,7 +383,7 @@ namespace AudioLib
 
         //private long m_CircularBufferFlushTolerance;
         //private int m_CircularBufferPreviousBytesAvailableForWriting;
-        
+
 
 
         private bool circularBufferRefreshThreadMethod()
@@ -386,14 +392,37 @@ namespace AudioLib
 
             //float previousFastPlayFactor = m_FastPlayFactor;
 
-            long predictedByteIncrement = -1;
-            int circularBufferTotalBytesPlayed = -1;
-            int previousCircularBufferPlayPosition = -1;
-            
+            //long predictedByteIncrement = -1;
+
+
+            //int circularBufferTotalBytesPlayed = -1;
+            //int previousCircularBufferPlayPosition = -1;
+
             int totalWriteSkips = 0;
 
+            ushort adjustedFastPlaySampleRate =
+                    (ushort)Math.Round(m_CurrentAudioPCMFormat.SampleRate * m_FastPlayFactor);
+
+            long pcmDataTotalPlayableFromStream = m_PlaybackEndPositionInCurrentAudioStream - m_PlaybackStartPositionInCurrentAudioStream;
+            long pcmDataTotalPlayableFromStream_DurationMS =
+                    (
+                    NotNormalPlayFactor()
+                    ?
+                    AudioLibPCMFormat.ConvertBytesToTime(
+                    pcmDataTotalPlayableFromStream,
+                    adjustedFastPlaySampleRate,
+                    m_CurrentAudioPCMFormat.BlockAlign
+#if DEBUG
+, true
+#endif
+)
+                    :
+                    m_CurrentAudioPCMFormat.ConvertBytesToTime(pcmDataTotalPlayableFromStream)
+                    )
+                    / AudioLibPCMFormat.TIME_UNIT;
+
             int sleepTime = REFRESH_INTERVAL_MS;
-            
+
             //bool endOfAudioStream = false;
             while (true)
             {
@@ -424,51 +453,44 @@ namespace AudioLib
                 }
 #endif
 
-
-
-
                 long pcmDataRemainingPlayableFromStream = m_PlaybackEndPositionInCurrentAudioStream - m_CurrentAudioStream.Position;
-
-                long pcmDataTotalPlayableFromStream = m_PlaybackEndPositionInCurrentAudioStream - m_PlaybackStartPositionInCurrentAudioStream;
-
                 //long pcmDataAlreadyReadFromStream = pcmDataTotalPlayableFromStream - pcmDataAvailableFromStream;
 
                 Thread.Sleep(sleepTime);
 
 
-                if (predictedByteIncrement < 0
-                    || true //m_FastPlayFactor != previousFastPlayFactor
-                    )
-                {
-                    //previousFastPlayFactor = m_FastPlayFactor;
+                //                if (predictedByteIncrement < 0
+                //                    || true //m_FastPlayFactor != previousFastPlayFactor
+                //                    )
+                //                {
+                //                    //previousFastPlayFactor = m_FastPlayFactor;
 
 
-                    int fastPlaySamplesPerSecond = (int)Math.Round(m_CurrentAudioPCMFormat.SampleRate * m_FastPlayFactor);
-#if DEBUG
-                    DebugFix.Assert(m_CurrentAudioPCMFormat.SampleRate == m_CircularBuffer.Format.SamplesPerSecond);
+                //                    int fastPlaySamplesPerSecond = (int)Math.Round(m_CurrentAudioPCMFormat.SampleRate * m_FastPlayFactor);
+                //#if DEBUG
+                //                    DebugFix.Assert(m_CurrentAudioPCMFormat.SampleRate == m_CircularBuffer.Format.SamplesPerSecond);
 
-                    if (
-#if USE_SOUNDTOUCH
-!UseSoundTouch &&
-#endif //USE_SOUNDTOUCH
-#if USE_SLIMDX
- m_CircularBuffer.Capabilities.ControlFrequency
-#else
- m_CircularBuffer.Caps.ControlFrequency
-#endif
-)
-                    {
-                        DebugFix.Assert(m_CircularBuffer.Frequency == fastPlaySamplesPerSecond);
+                //                    if (
+                //#if USE_SOUNDTOUCH
+                //!UseSoundTouch &&
+                //#endif //USE_SOUNDTOUCH
+                //#if USE_SLIMDX
+                // m_CircularBuffer.Capabilities.ControlFrequency
+                //#else
+                // m_CircularBuffer.Caps.ControlFrequency
+                //#endif
+                //)
+                //                    {
+                //                        DebugFix.Assert(m_CircularBuffer.Frequency == fastPlaySamplesPerSecond);
 
-                    }
-#endif //DEBUG
-                    int byteRate = fastPlaySamplesPerSecond * m_CurrentAudioPCMFormat.BlockAlign; // (m_CurrentAudioPCMFormat.BitDepth / 8) * m_CurrentAudioPCMFormat.NumberOfChannels;
+                //                    }
+                //#endif //DEBUG
+                //                    int byteRate = fastPlaySamplesPerSecond * m_CurrentAudioPCMFormat.BlockAlign; // (m_CurrentAudioPCMFormat.BitDepth / 8) * m_CurrentAudioPCMFormat.NumberOfChannels;
 
 
-                    // TODO: determine time elapsed since last iteration by comparing DateTime.UtcNow.Ticks or a more efficient system timer like StopWatch
-                    predictedByteIncrement = (long)(byteRate * (REFRESH_INTERVAL_MS + 15) / 1000.0);
-                    predictedByteIncrement -= predictedByteIncrement % m_CurrentAudioPCMFormat.BlockAlign;
-                }
+                //                    predictedByteIncrement = (long)(byteRate * (REFRESH_INTERVAL_MS + 15) / 1000.0);
+                //                    predictedByteIncrement -= predictedByteIncrement % m_CurrentAudioPCMFormat.BlockAlign;
+                //                }
 
 #if USE_SLIMDX
                 int circularBufferPlayPosition = m_CircularBuffer.CurrentPlayPosition;
@@ -483,42 +505,48 @@ namespace AudioLib
  m_CircularBuffer.Caps.BufferBytes
 #endif
 ;
-                if (circularBufferTotalBytesPlayed < 0)
-                {
-                    circularBufferTotalBytesPlayed = circularBufferPlayPosition;
-                }
-                else
-                {
-                    if (circularBufferPlayPosition >= previousCircularBufferPlayPosition)
-                    {
-                        circularBufferTotalBytesPlayed += circularBufferPlayPosition - previousCircularBufferPlayPosition;
-                    }
-                    else
-                    {
-                        circularBufferTotalBytesPlayed += (circularBufferLength - previousCircularBufferPlayPosition) + circularBufferPlayPosition;
-                    }
-                }
+                //if (circularBufferTotalBytesPlayed < 0)
+                //{
+                //    circularBufferTotalBytesPlayed = circularBufferPlayPosition;
+                //}
+                //else
+                //{
+                //    if (circularBufferPlayPosition >= previousCircularBufferPlayPosition)
+                //    {
+                //        circularBufferTotalBytesPlayed += circularBufferPlayPosition - previousCircularBufferPlayPosition;
+                //    }
+                //    else
+                //    {
+                //        circularBufferTotalBytesPlayed += (circularBufferLength - previousCircularBufferPlayPosition) + circularBufferPlayPosition;
+                //    }
+                //}
 
-                previousCircularBufferPlayPosition = circularBufferPlayPosition;
+                //previousCircularBufferPlayPosition = circularBufferPlayPosition;
 
 
-                int totalBytesPlayed_AdjustedPlaybackRate = circularBufferTotalBytesPlayed;
+                //                int totalBytesPlayed_AdjustedPlaybackRate = circularBufferTotalBytesPlayed;
 
-#if USE_SOUNDTOUCH
-                if (UseSoundTouch && NotNormalPlayFactor())
-                {
-                    //m_CurrentAudioPCMFormat
-                    totalBytesPlayed_AdjustedPlaybackRate = (int)Math.Round(totalBytesPlayed_AdjustedPlaybackRate * m_FastPlayFactor);
-                    totalBytesPlayed_AdjustedPlaybackRate -= totalBytesPlayed_AdjustedPlaybackRate % m_CurrentAudioPCMFormat.BlockAlign;
-                }
-#endif //USE_SOUNDTOUCH
+                //#if USE_SOUNDTOUCH
+                //                if (UseSoundTouch && NotNormalPlayFactor())
+                //                {
+                //                    //m_CurrentAudioPCMFormat
+                //                    totalBytesPlayed_AdjustedPlaybackRate = (int)Math.Round(totalBytesPlayed_AdjustedPlaybackRate * m_FastPlayFactor);
+                //                    totalBytesPlayed_AdjustedPlaybackRate -= totalBytesPlayed_AdjustedPlaybackRate % m_CurrentAudioPCMFormat.BlockAlign;
+                //                }
+                //#endif //USE_SOUNDTOUCH
+
+
+
 
                 int circularBufferBytesAvailableForWriting = (circularBufferPlayPosition == m_CircularBufferWritePosition ? 0
                                         : (circularBufferPlayPosition < m_CircularBufferWritePosition
                                   ? circularBufferPlayPosition + (circularBufferLength - m_CircularBufferWritePosition)
                                   : circularBufferPlayPosition - m_CircularBufferWritePosition));
 
-                int circularBufferBytesAvailableForPlaying = circularBufferLength - circularBufferBytesAvailableForWriting;
+                //int circularBufferBytesAvailableForPlaying = circularBufferLength - circularBufferBytesAvailableForWriting;
+
+
+
 
                 //realTimePlaybackPosition -= realTimePlaybackPosition % m_CurrentAudioPCMFormat.BlockAlign;
 
@@ -526,57 +554,36 @@ namespace AudioLib
 
                 //Console.WriteLine("dataAvailableFromStream: " + dataAvailableFromStream);
 
-                int circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate = circularBufferBytesAvailableForPlaying;
+                //                int circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate = circularBufferBytesAvailableForPlaying;
 
-#if USE_SOUNDTOUCH
-                if (UseSoundTouch && NotNormalPlayFactor())
-                {
-                    circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate = (int)Math.Round(circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate * m_FastPlayFactor);
-                    circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate -= circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate % m_CurrentAudioPCMFormat.BlockAlign;
-                }
-#endif //USE_SOUNDTOUCH
+                //#if USE_SOUNDTOUCH
+                //                if (UseSoundTouch && NotNormalPlayFactor())
+                //                {
+                //                    circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate = (int)Math.Round(circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate * m_FastPlayFactor);
+                //                    circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate -= circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate % m_CurrentAudioPCMFormat.BlockAlign;
+                //                }
+                //#endif //USE_SOUNDTOUCH
 
-                long remainingBytesToPlay = pcmDataTotalPlayableFromStream - totalBytesPlayed_AdjustedPlaybackRate;
-
-                long realTimePlaybackPosition = Math.Max(m_PlaybackStartPositionInCurrentAudioStream,
-                    m_CurrentAudioStream.Position - Math.Min(
-                    circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate, remainingBytesToPlay));
-
-                realTimePlaybackPosition = Math.Min(realTimePlaybackPosition,
-                    m_PlaybackStartPositionInCurrentAudioStream + totalBytesPlayed_AdjustedPlaybackRate);
-
-                if (m_CurrentBytePosition == m_PlaybackStartPositionInCurrentAudioStream)
-                {
-                    //Console.WriteLine(string.Format("m_CurrentBytePosition ASSIGNED: realTimePlaybackPosition [{0}]", realTimePlaybackPosition));
-
-                    m_CurrentBytePosition += totalBytesPlayed_AdjustedPlaybackRate;
-                }
-                else if (realTimePlaybackPosition < m_CurrentBytePosition)
-                {
-                    Console.WriteLine(string.Format("realTimePlaybackPosition [{0}] < m_CurrentBytePosition [{1}]", realTimePlaybackPosition, m_CurrentBytePosition));
-
-                    m_CurrentBytePosition = Math.Min(m_PlaybackEndPositionInCurrentAudioStream, m_CurrentBytePosition + predictedByteIncrement);
-                }
-                else if (realTimePlaybackPosition > m_CurrentBytePosition + predictedByteIncrement)
-                {
-                    Console.WriteLine(string.Format("realTimePlaybackPosition [{0}] > m_CurrentBytePosition [{1}] + m_PredictedByteIncrement: [{2}] (diff: [{3}])",
-                        realTimePlaybackPosition, m_CurrentBytePosition, predictedByteIncrement, realTimePlaybackPosition - m_CurrentBytePosition));
-
-                    m_CurrentBytePosition = Math.Min(m_PlaybackEndPositionInCurrentAudioStream, m_CurrentBytePosition + predictedByteIncrement);
-                }
-                else
-                {
-                    //Console.WriteLine(string.Format("m_CurrentBytePosition OK: realTimePlaybackPosition [{0}]", realTimePlaybackPosition));
-
-                    m_CurrentBytePosition = m_PlaybackStartPositionInCurrentAudioStream + totalBytesPlayed_AdjustedPlaybackRate;
-                }
-
-
-
+                long totalPlayedMS = m_PlaybackStopWatch.ElapsedMilliseconds;
+                long totalPlayedBytes =
+                    (
+                    NotNormalPlayFactor()
+                    ?
+                    AudioLibPCMFormat.ConvertTimeToBytes(
+                    totalPlayedMS * AudioLibPCMFormat.TIME_UNIT,
+                    adjustedFastPlaySampleRate,
+                    m_CurrentAudioPCMFormat.BlockAlign
 #if DEBUG
-                DebugFix.Assert(m_CurrentBytePosition >= m_PlaybackStartPositionInCurrentAudioStream);
-                DebugFix.Assert(m_CurrentBytePosition <= m_PlaybackEndPositionInCurrentAudioStream);
-#endif // DEBUG
+, true
+#endif
+)
+                    :
+                    m_CurrentAudioPCMFormat.ConvertTimeToBytes(totalPlayedMS * AudioLibPCMFormat.TIME_UNIT)
+                    );
+
+
+                m_CurrentBytePosition = m_PlaybackStartPositionInCurrentAudioStream + totalPlayedBytes;
+
                 if (m_CurrentBytePosition < m_PlaybackStartPositionInCurrentAudioStream)
                 {
                     m_CurrentBytePosition = m_PlaybackStartPositionInCurrentAudioStream;
@@ -586,6 +593,47 @@ namespace AudioLib
                     m_CurrentBytePosition = m_PlaybackEndPositionInCurrentAudioStream;
                 }
 
+                //#if DEBUG
+                //                DebugFix.Assert(m_CurrentBytePosition >= m_PlaybackStartPositionInCurrentAudioStream);
+                //                DebugFix.Assert(m_CurrentBytePosition <= m_PlaybackEndPositionInCurrentAudioStream);
+                //#endif // DEBUG
+
+
+
+                //long remainingBytesToPlay = pcmDataTotalPlayableFromStream - totalBytesPlayed_AdjustedPlaybackRate;
+
+                //long realTimePlaybackPosition = Math.Max(m_PlaybackStartPositionInCurrentAudioStream,
+                //    m_CurrentAudioStream.Position - Math.Min(
+                //    circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate, remainingBytesToPlay));
+
+                //realTimePlaybackPosition = Math.Min(realTimePlaybackPosition,
+                //    m_PlaybackStartPositionInCurrentAudioStream + totalBytesPlayed_AdjustedPlaybackRate);
+
+                //if (m_CurrentBytePosition == m_PlaybackStartPositionInCurrentAudioStream)
+                //{
+                //    //Console.WriteLine(string.Format("m_CurrentBytePosition ASSIGNED: realTimePlaybackPosition [{0}]", realTimePlaybackPosition));
+
+                //    m_CurrentBytePosition += totalBytesPlayed_AdjustedPlaybackRate;
+                //}
+                ////else if (realTimePlaybackPosition < m_CurrentBytePosition)
+                ////{
+                ////    Console.WriteLine(string.Format("realTimePlaybackPosition [{0}] < m_CurrentBytePosition [{1}]", realTimePlaybackPosition, m_CurrentBytePosition));
+
+                ////    m_CurrentBytePosition = Math.Min(m_PlaybackEndPositionInCurrentAudioStream, m_CurrentBytePosition + predictedByteIncrement);
+                ////}
+                ////else if (realTimePlaybackPosition > m_CurrentBytePosition + predictedByteIncrement)
+                ////{
+                ////    Console.WriteLine(string.Format("realTimePlaybackPosition [{0}] > m_CurrentBytePosition [{1}] + m_PredictedByteIncrement: [{2}] (diff: [{3}])",
+                ////        realTimePlaybackPosition, m_CurrentBytePosition, predictedByteIncrement, realTimePlaybackPosition - m_CurrentBytePosition));
+
+                ////    m_CurrentBytePosition = Math.Min(m_PlaybackEndPositionInCurrentAudioStream, m_CurrentBytePosition + predictedByteIncrement);
+                ////}
+                //else
+                //{
+                //    //Console.WriteLine(string.Format("m_CurrentBytePosition OK: realTimePlaybackPosition [{0}]", realTimePlaybackPosition));
+
+                //    m_CurrentBytePosition = m_PlaybackStartPositionInCurrentAudioStream + totalBytesPlayed_AdjustedPlaybackRate;
+                //}
 
 
                 PcmDataBufferAvailableHandler del = PcmDataBufferAvailable;
@@ -603,7 +651,8 @@ namespace AudioLib
                     DebugFix.Assert(min <= m_PcmDataBufferLength);
                     DebugFix.Assert(min <= m_PcmDataBuffer.Length);
 #endif //DEBUG
-
+                    if (min >= m_CurrentAudioPCMFormat.BlockAlign)
+                    {
 #if USE_SLIMDX
                     if (SlimDX_IntermediaryTransferBuffer != null)
                     {
@@ -621,19 +670,21 @@ namespace AudioLib
                             m_PcmDataBuffer, 0,
                             min);
 #else
-                    long pos = m_CurrentAudioStream.Position;
+                        long pos = m_CurrentAudioStream.Position;
 
-                    m_CurrentAudioStream.Position = m_CurrentBytePosition;
+                        m_CurrentAudioStream.Position = m_CurrentBytePosition;
 
-                    m_CurrentAudioStream.Read(m_PcmDataBuffer, 0, min);
+                        m_CurrentAudioStream.Read(m_PcmDataBuffer, 0, min);
 
-                    m_CurrentAudioStream.Position = pos;
-#endif // FETCH_PCM_FROM_CIRCULAR_BUFFER
-
-                    m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                    m_PcmDataBufferAvailableEventArgs.PcmDataBufferLength = min;
-                    del(this, m_PcmDataBufferAvailableEventArgs);
+                        m_CurrentAudioStream.Position = pos;
 #endif
+                        // FETCH_PCM_FROM_CIRCULAR_BUFFER
+
+                        m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
+                        m_PcmDataBufferAvailableEventArgs.PcmDataBufferLength = min;
+                        del(this, m_PcmDataBufferAvailableEventArgs);
+#endif
+                    }
                 }
                 //var del_ = PcmDataBufferAvailable;
                 //if (del_ != null
@@ -658,7 +709,7 @@ namespace AudioLib
                 {
                     if (pcmDataRemainingPlayableFromStream > 0)
                     {
-                        Console.WriteLine("circularBufferBytesAvailableForWriting <= 0, pcmDataAvailableFromStream > 0 ... continue...");
+                        //Console.WriteLine("circularBufferBytesAvailableForWriting <= 0, pcmDataAvailableFromStream > 0 ... continue...");
                         continue;
                     }
                     else
@@ -674,21 +725,33 @@ namespace AudioLib
                 // Now we have to wait until the playback ends.
                 if (pcmDataRemainingPlayableFromStream <= 0)
                 {
-                    if (remainingBytesToPlay > predictedByteIncrement)
+                    if ((m_PlaybackStopWatch.ElapsedMilliseconds + REFRESH_INTERVAL_MS) >= pcmDataTotalPlayableFromStream_DurationMS)
                     {
-                        Console.WriteLine(string.Format("remainingBytesToPlay [{0}] [{1}] [{2}] [{3}]",
-                            pcmDataTotalPlayableFromStream, totalBytesPlayed_AdjustedPlaybackRate, remainingBytesToPlay, predictedByteIncrement));
-                        continue;
+                        m_CircularBuffer.Stop();
+                        return true;
                     }
                     else
                     {
-                        m_CircularBuffer.Stop();
-
-                        //Console.WriteLine("Time to break, all bytes gone.");
-                        //break;
-
-                        return true;
+                        int newInterval = (int)Math.Round(REFRESH_INTERVAL_MS / 2.0);
+                        sleepTime = newInterval;
+                        continue;
                     }
+
+                    //if (remainingBytesToPlay > predictedByteIncrement)
+                    //{
+                    //    Console.WriteLine(string.Format("remainingBytesToPlay [{0}] [{1}] [{2}] [{3}]",
+                    //        pcmDataTotalPlayableFromStream, totalBytesPlayed_AdjustedPlaybackRate, remainingBytesToPlay, predictedByteIncrement));
+                    //    continue;
+                    //}
+                    //else
+                    //{
+                    //    m_CircularBuffer.Stop();
+
+                    //    //Console.WriteLine("Time to break, all bytes gone.");
+                    //    //break;
+
+                    //    return true;
+                    //}
 
 
                     //if (m_CircularBufferFlushTolerance < 0)
@@ -713,49 +776,59 @@ namespace AudioLib
                 }
                 else
                 {
-                    int circularBufferBytesAvailableForWriting_AdjustedPlaybackRate =
-                        circularBufferBytesAvailableForWriting;
-
-#if USE_SOUNDTOUCH
-                    if (UseSoundTouch && NotNormalPlayFactor())
-                    {
-                        circularBufferBytesAvailableForWriting_AdjustedPlaybackRate =
-                            (int)
-                            Math.Round(circularBufferBytesAvailableForWriting_AdjustedPlaybackRate * m_FastPlayFactor);
-                        circularBufferBytesAvailableForWriting_AdjustedPlaybackRate -=
-                            circularBufferBytesAvailableForWriting_AdjustedPlaybackRate %
-                            m_CurrentAudioPCMFormat.BlockAlign;
-                    }
-#endif //USE_SOUNDTOUCH
-
-
-                    long bytesToTransferToCircularBuffer =
-                        Math.Min(circularBufferBytesAvailableForWriting_AdjustedPlaybackRate,
-                                 pcmDataRemainingPlayableFromStream);
-                    //bytesToTransferToCircularBuffer = Math.Min(bytesToTransferToCircularBuffer, m_CircularBufferRefreshChunkSize);
-                    bytesToTransferToCircularBuffer -= bytesToTransferToCircularBuffer %
-                                                       m_CurrentAudioPCMFormat.BlockAlign;
-
-                    if (bytesToTransferToCircularBuffer <= 0)
-                    {
-                        Debug.Fail("bytesToTransferToCircularBuffer <= 0 !!?");
-                        continue;
-                    }
-
-                    //Console.WriteLine(String.Format("m_CircularBufferWritePosition: [{0} / toCopy {1}]", m_CircularBufferWritePosition, toCopy));
-
-#if DEBUG
-                    DebugFix.Assert(m_CurrentAudioStream.Position + bytesToTransferToCircularBuffer <=
-                                    m_PlaybackEndPositionInCurrentAudioStream);
-#endif//DEBUG
-                    //bool mustFlush = pcmDataRemainingPlayableFromStream <
-                    //                 circularBufferBytesAvailableForWriting_AdjustedPlaybackRate;
                     if (circularBufferBytesAvailableForWriting < (int)Math.Round(circularBufferLength * 2 / 3.0)) // 2 thirds minimum must be available
                     {
                         totalWriteSkips++;
                     }
                     else
                     {
+                        //                        int circularBufferBytesAvailableForWriting_AdjustedPlaybackRate =
+                        //                            circularBufferBytesAvailableForWriting;
+
+                        //#if USE_SOUNDTOUCH
+                        //                        if (UseSoundTouch && NotNormalPlayFactor())
+                        //                        {
+                        //                            int bytesPerSample = (int)Math.Round(m_CurrentAudioPCMFormat.BitDepth / 8.0);
+                        //                            int bytesPerFrame = bytesPerSample * m_CurrentAudioPCMFormat.NumberOfChannels;
+                        //                            DebugFix.Assert(m_CurrentAudioPCMFormat.BlockAlign == bytesPerFrame);
+
+
+
+                        //                            circularBufferBytesAvailableForWriting_AdjustedPlaybackRate =
+                        //                                (int)
+                        //                                Math.Round(circularBufferBytesAvailableForWriting_AdjustedPlaybackRate
+                        //                                * m_FastPlayFactor
+                        //                                * m_CurrentAudioPCMFormat.NumberOfChannels);
+
+                        //                            circularBufferBytesAvailableForWriting_AdjustedPlaybackRate -=
+                        //                                circularBufferBytesAvailableForWriting_AdjustedPlaybackRate %
+                        //                                m_CurrentAudioPCMFormat.BlockAlign;
+                        //                        }
+                        //#endif //USE_SOUNDTOUCH
+
+
+                        long bytesToTransferToCircularBuffer =
+                            Math.Min(circularBufferBytesAvailableForWriting,
+                                     pcmDataRemainingPlayableFromStream);
+                        //bytesToTransferToCircularBuffer = Math.Min(bytesToTransferToCircularBuffer, m_CircularBufferRefreshChunkSize);
+                        bytesToTransferToCircularBuffer -= bytesToTransferToCircularBuffer %
+                                                           m_CurrentAudioPCMFormat.BlockAlign;
+
+                        if (bytesToTransferToCircularBuffer <= 0)
+                        {
+                            Debug.Fail("bytesToTransferToCircularBuffer <= 0 !!?");
+                            continue;
+                        }
+
+                        //Console.WriteLine(String.Format("m_CircularBufferWritePosition: [{0} / toCopy {1}]", m_CircularBufferWritePosition, toCopy));
+
+                        if (m_CurrentAudioStream.Position + bytesToTransferToCircularBuffer >
+                                        m_PlaybackEndPositionInCurrentAudioStream)
+                        {
+                            // safeguard
+                            bytesToTransferToCircularBuffer = pcmDataRemainingPlayableFromStream;
+                        }
+
                         //Console.WriteLine("totalWriteSkips: " + totalWriteSkips + " ms: " + totalWriteSkips*REFRESH_INTERVAL_MS);
                         totalWriteSkips = 0;
 
@@ -775,7 +848,7 @@ namespace AudioLib
 #endif//DEBUG
                     }
                 }
-            }
+            } // WHILE LOOP
 
             return true;
 

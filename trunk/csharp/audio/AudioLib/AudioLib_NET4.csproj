@@ -34,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\DebugNET4\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;_USE_SLIMDX_;NET40;USE_SOUNDTOUCH_</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;_USE_SLIMDX_;NET40;USE_SOUNDTOUCH</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>

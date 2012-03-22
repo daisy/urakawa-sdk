@@ -41,8 +41,9 @@ namespace AudioLib
     //#endif
     public partial class AudioPlayer
     {
-        
-        public AudioPlayer(bool keepStreamAlive, bool useSoundTouchIfAvailable) : this(keepStreamAlive)
+
+        public AudioPlayer(bool keepStreamAlive, bool useSoundTouchIfAvailable)
+            : this(keepStreamAlive)
         {
 #if USE_SOUNDTOUCH
             UseSoundTouch = useSoundTouchIfAvailable;
@@ -109,7 +110,7 @@ namespace AudioLib
             get { return m_UseSoundTouch; }
             set
             {
-                m_UseSoundTouch = value;
+                //m_UseSoundTouch = value;
             }
         }
 #endif //USE_SOUNDTOUCH
@@ -590,6 +591,8 @@ namespace AudioLib
         private long m_PlaybackStartPositionInCurrentAudioStream;
         private long m_PlaybackEndPositionInCurrentAudioStream;
 
+        private Stopwatch m_PlaybackStopWatch;
+
         private void startPlayback(long startPosition, long endPosition)
         {
             initializeBuffers();
@@ -647,6 +650,12 @@ namespace AudioLib
  BufferPlayFlags.Looping // this makes it a circular buffer (which we manage manually, by tracking playback versus writing positions)
 #endif
 );
+                if (m_PlaybackStopWatch == null)
+                {
+                    m_PlaybackStopWatch = new Stopwatch();
+                }
+
+                m_PlaybackStopWatch.Restart();
             }
             catch (Exception)
             {
@@ -679,6 +688,11 @@ namespace AudioLib
                                                  }
                                                  finally
                                                  {
+                                                     if (m_PlaybackStopWatch != null)
+                                                     {
+                                                         m_PlaybackStopWatch.Stop();
+                                                     }
+
                                                      if (mPreviewTimer.Enabled)
                                                      {
                                                          if (endOfAudioStream || CurrentState == State.Playing)
