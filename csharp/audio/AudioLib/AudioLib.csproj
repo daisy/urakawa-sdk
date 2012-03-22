@@ -75,6 +75,8 @@
       <DependentUpon>AudioLib.Lang.resx</DependentUpon>
     </Compile>
     <Compile Include="AudioPlayer.cs" />
+    <Compile Include="AudioPlayer_CircularBuffer.cs" />
+    <Compile Include="AudioPlayer_FastForwardRewind.cs" />
     <Compile Include="AudioRecorder.cs" />
     <Compile Include="CalculationFunctions.cs" />
     <Compile Include="AudioLibPCMFormat.cs" />

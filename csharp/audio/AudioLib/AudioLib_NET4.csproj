@@ -34,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\DebugNET4\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;_USE_SLIMDX_;NET40;USE_SOUNDTOUCH</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;_USE_SLIMDX_;NET40;USE_SOUNDTOUCH_</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
@@ -74,6 +74,8 @@
       <DependentUpon>AudioLib.Lang.resx</DependentUpon>
     </Compile>
     <Compile Include="AudioPlayer.cs" />
+    <Compile Include="AudioPlayer_CircularBuffer.cs" />
+    <Compile Include="AudioPlayer_FastForwardRewind.cs" />
     <Compile Include="AudioRecorder.cs" />
     <Compile Include="CalculationFunctions.cs" />
     <Compile Include="AudioLibPCMFormat.cs" />
