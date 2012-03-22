@@ -136,7 +136,7 @@ namespace AudioLib
 );
         }
 
-        private static long ConvertTimeToBytes(long timeInLocalUnits, uint samplingRate, ushort frameSize
+        public static long ConvertTimeToBytes(long timeInLocalUnits, uint samplingRate, ushort frameSize
 #if DEBUG
 , bool checkRoundtrip
 #endif
@@ -184,7 +184,7 @@ namespace AudioLib
 );
         }
 
-        private static long ConvertBytesToTime(long bytes, uint samplingRate, ushort frameSize
+        public static long ConvertBytesToTime(long bytes, uint samplingRate, ushort frameSize
 #if DEBUG
 , bool checkRoundtrip
 #endif
