@@ -52,7 +52,7 @@ namespace AudioLib
         private double[] m_AverageValue; // array to hold average or RMS value
         public double[] AverageAmplitudeDBValue { get { return m_AverageValue; } }
 
-         private static readonly int INT_SAMPLE_SIZE = Marshal.SizeOf(typeof (int));
+         //private static readonly int INT_SAMPLE_SIZE = Marshal.SizeOf(typeof (int));
 
         double[] m_TempArray = new double[4];
         int m_TempCount = 0;

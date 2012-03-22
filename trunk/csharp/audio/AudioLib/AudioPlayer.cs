@@ -39,9 +39,15 @@ namespace AudioLib
     //#if NET40
     //    [SecuritySafeCritical]
     //#endif
-    public class AudioPlayer
+    public partial class AudioPlayer
     {
-
+        
+        public AudioPlayer(bool keepStreamAlive, bool useSoundTouchIfAvailable) : this(keepStreamAlive)
+        {
+#if USE_SOUNDTOUCH
+            UseSoundTouch = useSoundTouchIfAvailable;
+#endif // USE_SOUNDTOUCH
+        }
         private readonly bool m_KeepStreamAlive;
         public AudioPlayer(bool keepStreamAlive)
         {
@@ -53,13 +59,7 @@ namespace AudioLib
 
             CurrentState = State.NotReady;
 
-            //mPreviewTimer.Enabled = false;
-            mPreviewTimer.Stop();
-            mPreviewTimer.Interval = 50;
-            mPreviewTimer.Tick += new EventHandler(PreviewTimer_Tick);
-            //mPreviewTimer.Elapsed += new System.Timers.ElapsedEventHandler(PreviewTimer_Tick);
-
-            //mPreviewTimer.AutoReset = true;
+            initPreviewTimer();
         }
 
         /// <summary>
@@ -109,10 +109,17 @@ namespace AudioLib
             get { return m_UseSoundTouch; }
             set
             {
-                //m_UseSoundTouch = value;
+                m_UseSoundTouch = value;
             }
         }
 #endif //USE_SOUNDTOUCH
+
+
+        private bool NotNormalPlayFactor()
+        {
+            return ((int)Math.Round(m_FastPlayFactor * 100.0)) != 100;
+        }
+
 
         private float m_FastPlayFactor = 1;
         /// <summary>
@@ -126,8 +133,20 @@ namespace AudioLib
             }
             set
             {
+                Boolean wasPlaying = CurrentState == State.Playing;
+
+                if (wasPlaying)
+                {
+                    Pause();
+                }
+
                 m_FastPlayFactor = value;
 
+                if (wasPlaying)
+                {
+                    Resume();
+                    return;
+                }
 
 #if USE_SOUNDTOUCH
                 if (m_SoundTouch != null)
@@ -148,7 +167,7 @@ namespace AudioLib
 #endif
 )
                     {
-                        int fastPlaySamplesPerSecond = (int)(m_CircularBuffer.Format.SamplesPerSecond * m_FastPlayFactor);
+                        int fastPlaySamplesPerSecond = (int)Math.Round(m_CircularBuffer.Format.SamplesPerSecond * m_FastPlayFactor);
 #if DEBUG
                         DebugFix.Assert(m_CurrentAudioPCMFormat.SampleRate == m_CircularBuffer.Format.SamplesPerSecond);
 #endif //DEBUG
@@ -158,32 +177,6 @@ namespace AudioLib
                 }
             }
         }
-
-        //private System.Windows.Forms.Timer m_MonitoringTimer;
-        //public bool AllowBackToBackPlayback
-        //{
-        //    get { return m_AllowBackToBackPlayback; }
-        //    set
-        //    {
-        //        if (value)
-        //        {
-        //            if (m_MonitoringTimer == null) m_MonitoringTimer = new System.Windows.Forms.Timer();
-        //            m_MonitoringTimer.Tick += new EventHandler(m_MonitoringTimer_Tick);
-        //            m_MonitoringTimer.Interval = 250;
-        //            m_MonitoringTimer.Enabled = false;
-        //        }
-        //        else if ( m_MonitoringTimer != null )
-        //        {
-        //            m_MonitoringTimer.Enabled = false;
-        //            m_MonitoringTimer.Tick -= new EventHandler(m_MonitoringTimer_Tick);
-        //            m_MonitoringTimer.Dispose();
-        //            m_MonitoringTimer = null;
-
-        //        }
-        //        m_AllowBackToBackPlayback = value;
-        //    }
-        //}
-
 
 
         public delegate Stream StreamProviderDelegate();
@@ -213,28 +206,9 @@ namespace AudioLib
             return I_Closed_The_Stream;
         }
 
-        //private bool m_CircularBufferRefreshThreadIsAlive = false;
-
-        private readonly Object LOCK = new object();
-        private Thread m_CircularBufferRefreshThread;
-
 #if USE_SOUNDTOUCH
         SoundTouch<TSampleType, TLongSampleType> m_SoundTouch;
 #endif //USE_SOUNDTOUCH
-
-#if USE_SLIMDX
-        private SecondarySoundBuffer m_CircularBuffer;
-#else
-        private SecondaryBuffer m_CircularBuffer;
-#endif
-        //private int m_CircularBufferRefreshChunkSize;
-        private int m_CircularBufferWritePosition;
-
-        private byte[] m_PcmDataBuffer;
-        private int m_PcmDataBufferLength;
-
-        private long m_PlaybackStartPosition;
-        private long m_PlaybackEndPosition;
 
         private readonly Object LOCK_DEVICES = new object();
         public void ClearDeviceCache()
@@ -500,7 +474,7 @@ namespace AudioLib
             if (m_FwdRwdRate != 0)
             {
                 StopForwardRewind();
-                m_PlaybackEndPosition = m_CurrentAudioDataLength;
+                m_PlaybackEndPositionInCurrentAudioStream = m_CurrentAudioDataLength;
             }
             CurrentState = State.Paused;
 
@@ -523,7 +497,7 @@ namespace AudioLib
             if (m_FwdRwdRate != 0)
             {
                 StopForwardRewind();
-                m_PlaybackEndPosition = m_CurrentAudioDataLength;
+                m_PlaybackEndPositionInCurrentAudioStream = m_CurrentAudioDataLength;
             }
 
             m_ResumeStartPosition = getCurrentBytePosition();
@@ -545,7 +519,7 @@ namespace AudioLib
                 return;
             }
 
-            startPlayback(m_ResumeStartPosition, m_PlaybackEndPosition);
+            startPlayback(m_ResumeStartPosition, m_PlaybackEndPositionInCurrentAudioStream);
         }
 
         public void Stop()
@@ -613,348 +587,39 @@ namespace AudioLib
             return 0;
         }
 
-        private const int REFRESH_INTERVAL_MS = 50; //ms interval for refreshing PCM data
-        public int RefreshInterval
-        {
-            get { return REFRESH_INTERVAL_MS; }
-        }
-
-
-#if USE_SOUNDTOUCH
-        private byte[] m_SoundTouch_ByteBuffer = null;
-        private MemoryStream m_SoundTouch_ByteBuffer_Stream = null;
-
-        private TSampleType[] m_SoundTouch_SampleBuffer = null;
-#endif //USE_SOUNDTOUCH
-
-        private bool NotNormalPlayFactor()
-        {
-            return ((int)Math.Round(m_FastPlayFactor * 100.0)) != 100;
-        }
-
-        private int transferBytesFromWavStreamToCircularBuffer(int nbytes)
-        {
-            int sizeBytes =
-#if USE_SLIMDX
- m_CircularBuffer.Capabilities.BufferSize
-#else
- m_CircularBuffer.Caps.BufferBytes
-#endif
-;
-#if USE_SOUNDTOUCH
-
-            if (UseSoundTouch && NotNormalPlayFactor())
-            {
-                // example: 44.1 kHz (44,100 samples per second) * 16 bits per sample / 8 bits per byte * 2 channels (stereo)
-                // blockAlign is number of bytes per frame (samples required for all channels)
-                //uint byteRate = m_CurrentAudioPCMFormat.SampleRate * m_CurrentAudioPCMFormat.BlockAlign;
-
-                int sizeOfTypeInBytes = sizeof(TSampleType);
-                DebugFix.Assert(sizeOfTypeInBytes == m_CurrentAudioPCMFormat.BitDepth / 8);
-
-                int nBytesPerSample = m_CurrentAudioPCMFormat.BitDepth / 8; // 16bits => 2 bytes per sample
-
-                if (m_SoundTouch_ByteBuffer == null)
-                {
-                    m_SoundTouch_ByteBuffer = new byte[nbytes];
-                    m_SoundTouch_ByteBuffer_Stream = new MemoryStream(m_SoundTouch_ByteBuffer);
-                }
-                else if (m_SoundTouch_ByteBuffer.Length < nbytes)
-                {
-                    Array.Resize(ref m_SoundTouch_ByteBuffer, nbytes);
-
-                    //m_SoundTouch_ByteBuffer_Stream.Capacity = nbytes;
-                    //m_SoundTouch_ByteBuffer_Stream.SetLength(nbytes);
-
-                    m_SoundTouch_ByteBuffer_Stream = new MemoryStream(m_SoundTouch_ByteBuffer);
-                }
-
-                int bytesRead = m_CurrentAudioStream.Read(m_SoundTouch_ByteBuffer, 0, nbytes);
-                DebugFix.Assert(bytesRead == nbytes);
-
-                int nSamplesInBuffer = (bytesRead * 8) / m_CurrentAudioPCMFormat.BitDepth; // 16
-
-
-                if (m_SoundTouch_SampleBuffer == null)
-                {
-                    m_SoundTouch_SampleBuffer = new TSampleType[nSamplesInBuffer];
-                }
-                else if (m_SoundTouch_SampleBuffer.Length < nSamplesInBuffer)
-                {
-                    Array.Resize(ref m_SoundTouch_SampleBuffer, nSamplesInBuffer);
-                }
-
-                int sampleBufferIndex = 0;
-                int byteStep = nBytesPerSample * m_CurrentAudioPCMFormat.NumberOfChannels;
-                for (int i = 0; i < nbytes; i += byteStep)
-                {
-                    for (int channel = 0; channel < m_CurrentAudioPCMFormat.NumberOfChannels; channel++)
-                    {
-                        byte byte1 = m_SoundTouch_ByteBuffer[i + channel];
-                        byte byte2 = m_SoundTouch_ByteBuffer[i + channel + 1];
-                        var sample =
-                            BitConverter.IsLittleEndian
-                            ? (short)(byte1 | (byte2 << 8))
-                            : (short)((byte1 << 8) | byte2);
-                        m_SoundTouch_SampleBuffer[sampleBufferIndex] = sample;
-
-
-#if DEBUG
-                        //// Little Indian
-                        //short s1 = (short)(byte1 | (byte2 << 8));
-                        //short s2 = (short)(byte1 + byte2 * 256);
-
-                        //// Big Indian
-                        //short s3 = (short)((byte1 << 8) | byte2);
-                        //short s4 = (short)(byte1 * 256 + byte2);
-
-                        short checkedSample = BitConverter.ToInt16(m_SoundTouch_ByteBuffer, i + channel);
-                        DebugFix.Assert(checkedSample == sample);
-
-                        checkedSample = (short)(byte1 + byte2 * 256);
-                        DebugFix.Assert(checkedSample == sample);
-#endif //DEBUG
-                        sampleBufferIndex++;
-                    }
-                }
-
-                int soundTouchSampleBufferLength = nSamplesInBuffer / m_CurrentAudioPCMFormat.NumberOfChannels;
-
-                m_SoundTouch.PutSamples((ArrayPtr<TSampleType>)m_SoundTouch_SampleBuffer, soundTouchSampleBufferLength);
-
-
-                int totalBytesReceived = 0;
-                int samplesReceived = -1;
-                while (totalBytesReceived < nbytes
-                    &&
-                    (samplesReceived = m_SoundTouch.ReceiveSamples(
-                    (ArrayPtr<TSampleType>)m_SoundTouch_SampleBuffer,
-                    soundTouchSampleBufferLength)) > 0)
-                {
-                    int actualSamples = samplesReceived * m_CurrentAudioPCMFormat.NumberOfChannels;
-
-                    int bytesReceived = nBytesPerSample * actualSamples;
-
-                    if (bytesReceived > (nbytes - totalBytesReceived))
-                    {
-#if DEBUG
-                        // The breakpoint should never hit,
-                        // because the output audio data is smaller than the source
-                        // due to the time stretching making the playback faster.
-                        // (the chunk of audio of a given duration was able to fit inside the circular buffer,
-                        // but now is "compressed" to fit within a shorter rendering time,
-                        // so it should require less data than what the buffer offers).
-                        DebugFix.Assert(m_FastPlayFactor < 1);
-                        if (m_FastPlayFactor >= 1)
-                        {
-                            Debugger.Break();
-                        }
-#endif // DEBUG
-                        break;
-                    }
-
-                    if (BitConverter.IsLittleEndian)
-                    {
-                        Buffer.BlockCopy(m_SoundTouch_SampleBuffer, 0,
-                        m_SoundTouch_ByteBuffer, totalBytesReceived,
-                        bytesReceived);
-
-
-                        //unsafe
-                        //{
-                        //    fixed (short* pShorts = m_SoundTouch_SampleBuffer)
-                        //        Marshal.Copy((IntPtr)pShorts, 0, m_SoundTouch_ByteBuffer, actualSamples);
-                        //}
-                    }
-                    else
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif // DEBUG
-                    }
-
-                    totalBytesReceived += bytesReceived;
-
-#if DEBUG
-                    // this may not happen with FastPlayFactor < 1 !!
-                    DebugFix.Assert(totalBytesReceived <= nbytes);
-#endif // DEBUG
-                }
-
-                m_SoundTouch_ByteBuffer_Stream.Position = 0;
-
-                if (totalBytesReceived > 0)
-                {
-                    m_CircularBuffer.Write(m_CircularBufferWritePosition, m_SoundTouch_ByteBuffer_Stream,
-                                           totalBytesReceived, LockFlag.None);
-
-                    m_CircularBufferWritePosition += totalBytesReceived;
-                    m_CircularBufferWritePosition %= sizeBytes;
-                }
-
-                return totalBytesReceived;
-            }
-            else
-#endif //USE_SOUNDTOUCH
-
-            {
-#if USE_SLIMDX
-            if (SlimDX_IntermediaryTransferBuffer == null)
-            {
-                SlimDX_IntermediaryTransferBuffer = new byte[nbytes];
-            }
-            else if (SlimDX_IntermediaryTransferBuffer.Length != nbytes)
-            {
-                Array.Resize(ref SlimDX_IntermediaryTransferBuffer, nbytes);
-            }
-            int read = m_CurrentAudioStream.Read(SlimDX_IntermediaryTransferBuffer, 0, nbytes);
-            DebugFix.Assert(nbytes == read);
-            m_CircularBuffer.Write(SlimDX_IntermediaryTransferBuffer, 0, nbytes, m_CircularBufferWritePosition, LockFlags.None);
-#else
-                m_CircularBuffer.Write(m_CircularBufferWritePosition, m_CurrentAudioStream, nbytes, LockFlag.None);
-#endif
-
-                m_CircularBufferWritePosition += nbytes;
-                m_CircularBufferWritePosition %= sizeBytes;
-
-                //if (m_CircularBufferWritePosition >= m_CircularBuffer.Caps.BufferBytes) m_CircularBufferWritePosition -= m_CircularBuffer.Caps.BufferBytes;
-
-                return nbytes;
-            }
-
-            //int afterWriteCursor = m_CircularBuffer.Caps.BufferBytes - m_CircularBufferWritePosition;
-            //if (toCopy <= afterWriteCursor)
-            //{
-            //    m_CircularBuffer.Write(m_CircularBufferWritePosition, m_CurrentAudioStream, toCopy, LockFlag.None);
-            //}
-            //else
-            //{
-            //    m_CircularBuffer.Write(m_CircularBufferWritePosition, m_CurrentAudioStream, afterWriteCursor, LockFlag.None);
-            //    m_CircularBuffer.Write(0, m_CurrentAudioStream, toCopy - afterWriteCursor, LockFlag.None);
-            //}
-        }
-
-
-        private void initializeBuffers()
-        {
-            // example: 44.1 kHz (44,100 samples per second) * 16 bits per sample / 8 bits per byte * 2 channels (stereo)
-            // blockAlign is number of bytes per frame (samples required for all channels)
-            uint byteRate = m_CurrentAudioPCMFormat.SampleRate * m_CurrentAudioPCMFormat.BlockAlign;
-
-            int pcmDataBufferSize = (int)(byteRate * REFRESH_INTERVAL_MS / 1000.0);
-            pcmDataBufferSize -= pcmDataBufferSize % m_CurrentAudioPCMFormat.BlockAlign;
-
-            m_PcmDataBufferLength = pcmDataBufferSize;
-            if (m_PcmDataBuffer == null)
-            {
-                m_PcmDataBuffer = new byte[m_PcmDataBufferLength];
-            }
-            else if (m_PcmDataBuffer.Length < m_PcmDataBufferLength)
-            {
-                Array.Resize(ref m_PcmDataBuffer, m_PcmDataBufferLength);
-            }
-
-            int dxBufferSize = (int)(byteRate * 0.500); // 500ms
-            dxBufferSize -= dxBufferSize % m_CurrentAudioPCMFormat.BlockAlign;
-
-            //m_CircularBufferRefreshChunkSize = (int)(byteRate * 0.200); //200ms
-            //m_CircularBufferRefreshChunkSize -= m_CircularBufferRefreshChunkSize % m_CurrentAudioPCMFormat.BlockAlign;
-
-
-            WaveFormat waveFormat = new WaveFormat();
-            waveFormat.FormatTag = WaveFormatTag.Pcm;
-
-            waveFormat.Channels = (short)m_CurrentAudioPCMFormat.NumberOfChannels;
-            waveFormat.SamplesPerSecond = (int)m_CurrentAudioPCMFormat.SampleRate;
-            waveFormat.BitsPerSample = (short)m_CurrentAudioPCMFormat.BitDepth;
-            waveFormat.AverageBytesPerSecond = (int)byteRate;
-#if USE_SLIMDX
-            waveFormat.BlockAlignment = (short)m_CurrentAudioPCMFormat.BlockAlign;
-#else
-            waveFormat.BlockAlign = (short)m_CurrentAudioPCMFormat.BlockAlign;
-#endif
-
-#if USE_SLIMDX
-            SoundBufferDescription bufferDescription = new SoundBufferDescription();
-            bufferDescription.Flags = BufferFlags.ControlVolume | BufferFlags.ControlFrequency | BufferFlags.GlobalFocus;
-            bufferDescription.SizeInBytes = dxBufferSize;
-#else
-            BufferDescription bufferDescription = new BufferDescription();
-
-            bufferDescription.ControlVolume = true;
-            bufferDescription.ControlFrequency = true;
-            bufferDescription.GlobalFocus = true;
-            bufferDescription.BufferBytes = dxBufferSize;
-#endif
-            bufferDescription.Format = waveFormat;
-
-#if USE_SLIMDX
-            m_CircularBuffer = new SecondarySoundBuffer(OutputDevice.Device, bufferDescription);
-#else
-            m_CircularBuffer = new SecondaryBuffer(bufferDescription, OutputDevice.Device);
-#endif
-
-#if USE_SOUNDTOUCH
-            if (m_SoundTouch == null)
-            {
-                m_SoundTouch = new SoundTouch<TSampleType, TLongSampleType>();
-
-
-                m_SoundTouch.SetSetting(SettingId.UseQuickseek, 0);
-                m_SoundTouch.SetSetting(SettingId.UseAntiAliasFilter, 0);
-
-                //speech processing
-                m_SoundTouch.SetSetting(SettingId.SequenceDurationMs, 40);
-                m_SoundTouch.SetSetting(SettingId.SeekwindowDurationMs, 15);
-                m_SoundTouch.SetSetting(SettingId.OverlapDurationMs, 8);
-            }
-
-            //m_SoundTouch.Flush();
-            m_SoundTouch.Clear();
-
-            m_SoundTouch.SetSampleRate((int)m_CurrentAudioPCMFormat.SampleRate);
-            m_SoundTouch.SetChannels((int)m_CurrentAudioPCMFormat.NumberOfChannels);
-
-#endif //USE_SOUNDTOUCH
-
-
-            FastPlayFactor = m_FastPlayFactor; // reset
-        }
-
-#if USE_SLIMDX
-        private byte[] SlimDX_IntermediaryTransferBuffer;
-#endif
+        private long m_PlaybackStartPositionInCurrentAudioStream;
+        private long m_PlaybackEndPositionInCurrentAudioStream;
 
         private void startPlayback(long startPosition, long endPosition)
         {
             initializeBuffers();
 
-            m_PlaybackStartPosition = startPosition;
-            m_PlaybackEndPosition = endPosition == 0
+            m_PlaybackStartPositionInCurrentAudioStream = startPosition;
+            m_PlaybackEndPositionInCurrentAudioStream = endPosition == 0
                 ? m_CurrentAudioDataLength
                 : endPosition;
 
             m_CircularBufferWritePosition = 0;
 
             //m_CircularBufferFlushTolerance = -1;
-            m_PredictedByteIncrement = -1;
+            //m_PredictedByteIncrement = -1;
 
-            m_PreviousCircularBufferPlayPosition = -1;
-            m_TotalBytesPlayed = -1;
+            //m_PreviousCircularBufferPlayPosition = -1;
+            //m_CircularBufferTotalBytesPlayed = -1;
 
             m_CurrentAudioStream = m_CurrentAudioStreamProvider();
-            m_CurrentAudioStream.Position = m_PlaybackStartPosition;
+            m_CurrentAudioStream.Position = m_PlaybackStartPositionInCurrentAudioStream;
 
-            int sizeBytes =
+            int circularBufferLength =
 #if USE_SLIMDX
  m_CircularBuffer.Capabilities.BufferSize
 #else
  m_CircularBuffer.Caps.BufferBytes
 #endif
 ;
-            long length = m_PlaybackEndPosition - m_PlaybackStartPosition;
+            long length = m_PlaybackEndPositionInCurrentAudioStream - m_PlaybackStartPositionInCurrentAudioStream;
             length -= length % m_CurrentAudioPCMFormat.BlockAlign;
-            int initialFullBufferBytes = (int)Math.Min(length, sizeBytes);
+            int initialFullBufferBytes = (int)Math.Min(length, circularBufferLength);
 
             int bytesWrittenToCirularBuffer = transferBytesFromWavStreamToCircularBuffer(initialFullBufferBytes);
 
@@ -969,7 +634,7 @@ namespace AudioLib
             }
 #endif //DEBUG
 
-            m_CurrentBytePosition = m_PlaybackStartPosition;
+            m_CurrentBytePosition = m_PlaybackStartPositionInCurrentAudioStream;
 
             CurrentState = State.Playing;
             //if (AllowBackToBackPlayback && m_MonitoringTimer != null) m_MonitoringTimer.Start();
@@ -979,7 +644,7 @@ namespace AudioLib
 #if USE_SLIMDX
  PlayFlags.Looping
 #else
- BufferPlayFlags.Looping
+ BufferPlayFlags.Looping // this makes it a circular buffer (which we manage manually, by tracking playback versus writing positions)
 #endif
 );
             }
@@ -1102,369 +767,6 @@ namespace AudioLib
             //Console.WriteLine("Player refresh thread start.");
         }
 
-        //private long m_CircularBufferFlushTolerance;
-        //private int m_CircularBufferPreviousBytesAvailableForWriting;
-        private long m_PredictedByteIncrement;
-
-        private int m_PreviousCircularBufferPlayPosition;
-        private int m_TotalBytesPlayed;
-
-        private bool circularBufferRefreshThreadMethod()
-        {
-            //m_CircularBufferRefreshThreadIsAlive = true;
-
-            //float previousFastPlayFactor = m_FastPlayFactor;
-
-            bool endOfAudioStream = false;
-            while (true)
-            {
-                Thread.Sleep(REFRESH_INTERVAL_MS);
-
-#if USE_SLIMDX
-                if (m_CircularBuffer.Status == BufferStatus.BufferLost)
-                {
-                    m_CircularBuffer.Restore();
-                }
-#else
-                if (m_CircularBuffer.Status.BufferLost)
-                {
-                    m_CircularBuffer.Restore();
-                }
-#endif
-
-#if USE_SLIMDX
-                if (m_CircularBuffer.Status == BufferStatus.BufferTerminated)
-                {
-                    return;
-                }
-#else
-                if (m_CircularBuffer.Status.Terminated
-                    || !m_CircularBuffer.Status.Playing
-                    || !m_CircularBuffer.Status.Looping)
-                {
-                    return endOfAudioStream;
-                }
-#endif
-
-
-                if (m_PredictedByteIncrement < 0
-                    || true //m_FastPlayFactor != previousFastPlayFactor
-                    )
-                {
-                    //previousFastPlayFactor = m_FastPlayFactor;
-
-
-                    int fastPlaySamplesPerSecond = (int)(m_CurrentAudioPCMFormat.SampleRate * m_FastPlayFactor);
-#if DEBUG
-                    DebugFix.Assert(m_CurrentAudioPCMFormat.SampleRate == m_CircularBuffer.Format.SamplesPerSecond);
-
-                    if (
-#if USE_SOUNDTOUCH
-!UseSoundTouch &&
-#endif //USE_SOUNDTOUCH
- m_CircularBuffer != null &&
-#if USE_SLIMDX
- m_CircularBuffer.Capabilities.ControlFrequency
-#else
- m_CircularBuffer.Caps.ControlFrequency
-#endif
-)
-                    {
-                        DebugFix.Assert(m_CircularBuffer.Frequency == fastPlaySamplesPerSecond);
-
-                    }
-#endif //DEBUG
-                    int byteRate = fastPlaySamplesPerSecond * (m_CurrentAudioPCMFormat.BitDepth / 8) * m_CurrentAudioPCMFormat.NumberOfChannels;
-
-
-                    // TODO: determine time elapsed since last iteration by comparing DateTime.UtcNow.Ticks or a more efficient system timer like StopWatch
-                    m_PredictedByteIncrement = (long)(byteRate * (REFRESH_INTERVAL_MS + 15) / 1000.0);
-                    m_PredictedByteIncrement -= m_PredictedByteIncrement % m_CurrentAudioPCMFormat.BlockAlign;
-                }
-
-
-
-                long pcmDataAvailableFromStream = m_PlaybackEndPosition - m_CurrentAudioStream.Position;
-
-                long pcmDataTotalPlayableFromStream = m_PlaybackEndPosition - m_PlaybackStartPosition;
-
-                //long pcmDataAlreadyReadFromStream = pcmDataTotalPlayableFromStream - pcmDataAvailableFromStream;
-
-#if USE_SLIMDX
-                int circularBufferPlayPosition = m_CircularBuffer.CurrentPlayPosition;
-#else
-                int circularBufferPlayPosition = m_CircularBuffer.PlayPosition;
-#endif
-
-                int sizeBytes =
-#if USE_SLIMDX
- m_CircularBuffer.Capabilities.BufferSize
-#else
- m_CircularBuffer.Caps.BufferBytes
-#endif
-;
-                if (m_TotalBytesPlayed < 0)
-                {
-                    m_TotalBytesPlayed = circularBufferPlayPosition;
-                }
-                else
-                {
-                    if (circularBufferPlayPosition >= m_PreviousCircularBufferPlayPosition)
-                    {
-                        m_TotalBytesPlayed += circularBufferPlayPosition - m_PreviousCircularBufferPlayPosition;
-                    }
-                    else
-                    {
-                        m_TotalBytesPlayed += (sizeBytes - m_PreviousCircularBufferPlayPosition) + circularBufferPlayPosition;
-                    }
-                }
-
-                m_PreviousCircularBufferPlayPosition = circularBufferPlayPosition;
-
-
-                int totalBytesPlayed_AdjustedPlaybackRate = m_TotalBytesPlayed;
-
-#if USE_SOUNDTOUCH
-                if (UseSoundTouch && NotNormalPlayFactor())
-                {
-                    //m_CurrentAudioPCMFormat
-                    totalBytesPlayed_AdjustedPlaybackRate = (int)Math.Round(totalBytesPlayed_AdjustedPlaybackRate * m_FastPlayFactor);
-                    totalBytesPlayed_AdjustedPlaybackRate -= totalBytesPlayed_AdjustedPlaybackRate % m_CurrentAudioPCMFormat.BlockAlign;
-                }
-#endif //USE_SOUNDTOUCH
-
-                int circularBufferBytesAvailableForWriting = (circularBufferPlayPosition == m_CircularBufferWritePosition ? 0
-                                        : (circularBufferPlayPosition < m_CircularBufferWritePosition
-                                  ? circularBufferPlayPosition + (sizeBytes - m_CircularBufferWritePosition)
-                                  : circularBufferPlayPosition - m_CircularBufferWritePosition));
-
-                int circularBufferBytesAvailableForPlaying = sizeBytes - circularBufferBytesAvailableForWriting;
-
-                //realTimePlaybackPosition -= realTimePlaybackPosition % m_CurrentAudioPCMFormat.BlockAlign;
-
-                //Console.WriteLine(String.Format("bytesAvailableForWriting: [{0} / {1}]", bytesAvailableForWriting, m_CircularBuffer.Caps.BufferBytes));
-
-                //Console.WriteLine("dataAvailableFromStream: " + dataAvailableFromStream);
-
-                int circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate = circularBufferBytesAvailableForPlaying;
-
-#if USE_SOUNDTOUCH
-                if (UseSoundTouch && NotNormalPlayFactor())
-                {
-                    circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate = (int)Math.Round(circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate * m_FastPlayFactor);
-                    circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate -= circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate % m_CurrentAudioPCMFormat.BlockAlign;
-                }
-#endif //USE_SOUNDTOUCH
-
-                long remainingBytesToPlay = pcmDataTotalPlayableFromStream - totalBytesPlayed_AdjustedPlaybackRate;
-
-                long realTimePlaybackPosition = Math.Max(m_PlaybackStartPosition,
-                    m_CurrentAudioStream.Position - Math.Min(
-                    circularBufferBytesAvailableForPlaying_AdjustedPlaybackRate, remainingBytesToPlay));
-
-                realTimePlaybackPosition = Math.Min(realTimePlaybackPosition,
-                    m_PlaybackStartPosition + totalBytesPlayed_AdjustedPlaybackRate);
-
-                if (m_CurrentBytePosition == m_PlaybackStartPosition)
-                {
-                    //Console.WriteLine(string.Format("m_CurrentBytePosition ASSIGNED: realTimePlaybackPosition [{0}]", realTimePlaybackPosition));
-
-                    m_CurrentBytePosition += totalBytesPlayed_AdjustedPlaybackRate;
-                }
-                else if (realTimePlaybackPosition < m_CurrentBytePosition)
-                {
-                    //Console.WriteLine(string.Format("realTimePlaybackPosition [{0}] < m_CurrentBytePosition [{1}]", realTimePlaybackPosition, m_CurrentBytePosition));
-
-                    m_CurrentBytePosition = Math.Min(m_PlaybackEndPosition, m_CurrentBytePosition + m_PredictedByteIncrement);
-                }
-                else if (realTimePlaybackPosition > m_CurrentBytePosition + m_PredictedByteIncrement)
-                {
-                    //Console.WriteLine(string.Format("realTimePlaybackPosition [{0}] > m_CurrentBytePosition [{1}] + m_PredictedByteIncrement: [{2}] (diff: [{3}])",
-                    //    realTimePlaybackPosition, m_CurrentBytePosition, m_PredictedByteIncrement, realTimePlaybackPosition - m_CurrentBytePosition));
-
-                    m_CurrentBytePosition = Math.Min(m_PlaybackEndPosition, m_CurrentBytePosition + m_PredictedByteIncrement);
-                }
-                else
-                {
-                    //Console.WriteLine(string.Format("m_CurrentBytePosition OK: realTimePlaybackPosition [{0}]", realTimePlaybackPosition));
-
-                    m_CurrentBytePosition = m_PlaybackStartPosition + totalBytesPlayed_AdjustedPlaybackRate;
-                }
-
-
-                PcmDataBufferAvailableHandler del = PcmDataBufferAvailable;
-                if (del != null)
-                {
-                    int min = Math.Min(m_PcmDataBufferLength, circularBufferBytesAvailableForPlaying);
-#if USE_SLIMDX
-                    if (SlimDX_IntermediaryTransferBuffer != null)
-                    {
-                        Array.Copy(SlimDX_IntermediaryTransferBuffer, m_PcmDataBuffer, Math.Min(m_PcmDataBuffer.Length, SlimDX_IntermediaryTransferBuffer.Length));
-                        m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                        del  (this, m_PcmDataBufferAvailableEventArgs);
-                    }
-#else
-                    //TODO: circular buffer contains compressed (sped-up) samples!
-                    byte[] array = (byte[])m_CircularBuffer.Read(
-                        circularBufferPlayPosition, typeof(byte), LockFlag.None, min);
-                    //Array.Copy(array, m_PcmDataBuffer, min);
-                    Buffer.BlockCopy(array, 0,
-                            m_PcmDataBuffer, 0,
-                            min);
-
-                    m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                    m_PcmDataBufferAvailableEventArgs.PcmDataBufferLength = min;
-                    del(this, m_PcmDataBufferAvailableEventArgs);
-#endif
-                }
-                //var del_ = PcmDataBufferAvailable;
-                //if (del_ != null
-                //&& m_PcmDataBuffer.Length <= circularBufferBytesAvailableForPlaying)
-                //{
-                //#if USE_SLIMDX
-                //if (SlimDX_IntermediaryTransferBuffer != null)
-                //{
-                //Array.Copy(SlimDX_IntermediaryTransferBuffer, m_PcmDataBuffer, Math.Min(m_PcmDataBuffer.Length, SlimDX_IntermediaryTransferBuffer.Length));
-                //m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                //PcmDataBufferAvailable(this, m_PcmDataBufferAvailableEventArgs);
-                //}
-                //#else
-                //Array array = m_CircularBuffer.Read(circularBufferPlayPosition, typeof(byte), LockFlag.None, m_PcmDataBuffer.Length);
-                //Array.Copy(array, m_PcmDataBuffer, m_PcmDataBuffer.Length);
-                //m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                //del_(this, m_PcmDataBufferAvailableEventArgs);
-                //#endif
-                //}
-
-                if (circularBufferBytesAvailableForWriting <= 0)
-                {
-                    if (pcmDataAvailableFromStream > 0)
-                    {
-                        Console.WriteLine("circularBufferBytesAvailableForWriting <= 0, pcmDataAvailableFromStream > 0 ... continue...");
-                        continue;
-                    }
-                    else
-                    {
-                        Console.WriteLine("circularBufferBytesAvailableForWriting <= 0, pcmDataAvailableFromStream <= 0 ... BREAK...");
-                        break;
-                    }
-                }
-
-                //m_CircularBufferPreviousBytesAvailableForWriting = circularBufferBytesAvailableForWriting;
-
-                if (pcmDataAvailableFromStream <= 0)
-                {
-                    if (remainingBytesToPlay > m_PredictedByteIncrement)
-                    {
-                        Console.WriteLine(string.Format("remainingBytesToPlay [{0}] [{1}] [{2}] [{3}]",
-                            pcmDataTotalPlayableFromStream, totalBytesPlayed_AdjustedPlaybackRate, remainingBytesToPlay, m_PredictedByteIncrement));
-                        continue;
-                    }
-                    else
-                    {
-                        m_CircularBuffer.Stop(); // the earlier the better ?
-
-                        //Console.WriteLine("Time to break, all bytes gone.");
-                        break;
-                    }
-                    //if (m_CircularBufferFlushTolerance < 0)
-                    //{
-                    //    m_CircularBufferFlushTolerance = m_CurrentAudioPCMFormat.ConvertTimeToBytes(REFRESH_INTERVAL_MS*1.5);
-                    //}
-
-                    //Console.WriteLine(string.Format("pcmDataTotalPlayableFromStream [{0}]", pcmDataTotalPlayableFromStream));
-
-                    //Console.WriteLine(String.Format("pcmDataAvailableFromStream <= 0 // circularBufferBytesAvailableForWriting [{0}], m_CircularBufferFlushTolerance [{1}], m_CircularBuffer.Caps.BufferBytes [{2}], m_CircularBufferPreviousBytesAvailableForWriting [{3}]",
-                    //    circularBufferBytesAvailableForWriting, m_CircularBufferFlushTolerance, m_CircularBuffer.Caps.BufferBytes, m_CircularBufferPreviousBytesAvailableForWriting));
-
-                    //if ((circularBufferBytesAvailableForWriting + m_CircularBufferFlushTolerance) >= m_CircularBuffer.Caps.BufferBytes
-                    //    || m_CircularBufferPreviousBytesAvailableForWriting > circularBufferBytesAvailableForWriting)
-                    //{
-                    //    m_CircularBuffer.Stop(); // the earlier the better ?
-
-                    //    Console.WriteLine("Forcing closing-up.");
-
-                    //    circularBufferBytesAvailableForWriting = 0; // will enter the IF test below
-                    //}
-                }
-                else
-                {
-                    int circularBufferBytesAvailableForWriting_AdjustedPlaybackRate = circularBufferBytesAvailableForWriting;
-
-#if USE_SOUNDTOUCH
-                    if (UseSoundTouch && NotNormalPlayFactor())
-                    {
-                        circularBufferBytesAvailableForWriting_AdjustedPlaybackRate = (int)Math.Round(circularBufferBytesAvailableForWriting_AdjustedPlaybackRate * m_FastPlayFactor);
-                        circularBufferBytesAvailableForWriting_AdjustedPlaybackRate -= circularBufferBytesAvailableForWriting_AdjustedPlaybackRate % m_CurrentAudioPCMFormat.BlockAlign;
-                    }
-#endif //USE_SOUNDTOUCH
-                    long bytesToTransferToCircularBuffer = Math.Min(circularBufferBytesAvailableForWriting_AdjustedPlaybackRate, pcmDataAvailableFromStream);
-                    //bytesToTransferToCircularBuffer = Math.Min(bytesToTransferToCircularBuffer, m_CircularBufferRefreshChunkSize);
-                    bytesToTransferToCircularBuffer -= bytesToTransferToCircularBuffer % m_CurrentAudioPCMFormat.BlockAlign;
-
-                    if (bytesToTransferToCircularBuffer <= 0)
-                    {
-                        Debug.Fail("bytesToTransferToCircularBuffer <= 0 !!");
-                        continue;
-                    }
-
-                    //Console.WriteLine(String.Format("m_CircularBufferWritePosition: [{0} / toCopy {1}]", m_CircularBufferWritePosition, toCopy));
-
-#if DEBUG
-                    DebugFix.Assert(m_CurrentAudioStream.Position + bytesToTransferToCircularBuffer <= m_PlaybackEndPosition);
-#endif //DEBUG
-
-                    int bytesWrittenToCirularBuffer = transferBytesFromWavStreamToCircularBuffer((int)bytesToTransferToCircularBuffer);
-
-#if DEBUG
-                    if (
-#if USE_SOUNDTOUCH
-!UseSoundTouch ||
-#endif //USE_SOUNDTOUCH
- !NotNormalPlayFactor())
-                    {
-                        DebugFix.Assert(bytesWrittenToCirularBuffer == bytesToTransferToCircularBuffer);
-                    }
-#endif //DEBUG
-                }
-            }
-
-            endOfAudioStream = true;
-            return endOfAudioStream;
-
-            //CurrentState = State.Stopped;
-            //AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
-            //if (delFinished != null && !mPreviewTimer.Enabled)
-            //    delFinished(this, new AudioPlaybackFinishEventArgs());
-
-            //if (!m_AllowBackToBackPlayback)
-            //{
-            //    AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
-            //    if (delFinished != null && mEventsEnabled)
-            //        delFinished(this, new AudioPlaybackFinishEventArgs());
-            //}
-            //else
-            //{
-            //    m_FinishedPlayingCurrentStream = true;
-            //}
-        }
-
-        //private bool m_FinishedPlayingCurrentStream = false;
-        //private void m_MonitoringTimer_Tick(object sender, EventArgs e)
-        //{
-        //    //Console.WriteLine("monitoring ");
-        //    if (AllowBackToBackPlayback &&  m_FinishedPlayingCurrentStream)
-        //    {
-        //        if (m_MonitoringTimer != null) m_MonitoringTimer.Stop();
-        //        m_FinishedPlayingCurrentStream = false;
-        //        AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
-        //        if (delFinished != null && mEventsEnabled)
-        //            delFinished(this, new AudioPlaybackFinishEventArgs());
-
-        //    }
-        //}
-
-
         private void stopPlayback()
         {
 
@@ -1509,7 +811,7 @@ namespace AudioLib
                 //    }
                 //}
                 Console.WriteLine(@"///// PLAYER m_CircularBufferRefreshThread != null: " + count++);
-                Thread.Sleep(20);
+                Thread.Sleep(REFRESH_INTERVAL_MS / 2);
 
                 if (count > 15)
                 {
@@ -1535,262 +837,6 @@ namespace AudioLib
             if (!m_KeepStreamAlive)
             {
                 EnsurePlaybackStreamIsDead();
-            }
-        }
-
-        // timer for playing chunks at interval during Forward/Rewind 
-        System.Windows.Forms.Timer mPreviewTimer = new System.Windows.Forms.Timer();
-        //System.Timers.Timer mPreviewTimer = new System.Timers.Timer();
-
-        private int m_FwdRwdRate; // holds skip time multiplier for forward / rewind mode , value is 0 for normal playback,  positive  for FastForward and negetive  for Rewind
-
-        /// <summary>
-        /// Forward / Rewind rate.
-        /// 0 for normal playback
-        /// negative integer for Rewind
-        /// positive integer for FastForward
-        /// </summary>
-        public int PlaybackFwdRwdRate
-        {
-            get { return m_FwdRwdRate; }
-            set { SetPlaybackMode(value); }
-        }
-
-
-        /// <summary>
-        /// Set a new playback mode i.e. one of Normal, FastForward, Rewind 
-        /// </summary>
-        /// <param name="mode">The new mode.</param>
-        private void SetPlaybackMode(int rate)
-        {
-            if (rate != m_FwdRwdRate)
-            {
-                if (CurrentState == State.Playing)
-                {
-                    //            if (mFwdRwdRate != 0 || mPreviewTimer.Enabled)
-                    //            {
-                    //                //mPreviewTimer.Enabled = false;
-                    //                mPreviewTimer.Stop();
-                    //                //m_FwdRwdRate = 0 ;
-                    //                m_lChunkStartPosition = 0;
-                    ////                mIsFwdRwd = false;
-                    //                mEventsEnabled = true;
-                    //            }
-
-                    if (rate == 0)
-                    {
-                        Pause();
-                        //FastPlayFactor = 1;
-                        m_FwdRwdRate = rate;
-                        Thread.Sleep(10);
-                        Resume();
-                    }
-                    else
-                    {
-                        long restartPos = CurrentBytePosition;
-
-                        m_ResumeStartPosition = restartPos;
-
-                        CurrentState = State.Paused; // before stopPlayback(), doesn't kill the stream provider
-                        stopPlayback();
-
-                        m_FwdRwdRate = rate;
-
-                        //InitPlay(mCurrentAudio, restartPos, 0);
-                        //startPlayback(restartPos, m_CurrentAudioStream.Length );
-                        //startPlayback(restartPos, m_CurrentAudioDataLength);
-                        if (m_FwdRwdRate > 0)
-                        {
-                            FastForward(restartPos);
-                        }
-                        else if (m_FwdRwdRate < 0)
-                        {
-                            if (restartPos == 0) restartPos = m_CurrentAudioStream.Length;
-                            Rewind(restartPos);
-                        }
-                    }
-                }
-                else if (CurrentState == State.Paused || CurrentState == State.Stopped)
-                {
-                    m_FwdRwdRate = rate;
-                }
-            }
-        }
-        //private bool mEventsEnabled = true;
-        private long m_lChunkStartPosition = 0; // position for starting chunk play in forward/Rewind
-        //private bool mIsFwdRwd ;                // flag indicating forward or rewind playback is going on
-
-        //  FastForward , Rewind playback modes
-        /// <summary>
-        ///  Starts playing small chunks of audio while jumping backward in audio asset
-        /// <see cref=""/>
-        /// </summary>
-        /// <param name="lStartPosition"></param>
-        private void Rewind(long lStartPosition)
-        {
-            // let's play backward!
-            if (m_FwdRwdRate != 0)
-            {
-
-                m_lChunkStartPosition = lStartPosition;
-                //mEventsEnabled = false;
-
-                //                mIsFwdRwd = true;
-                mPreviewTimer.Interval = 50;
-                mPreviewTimer.Start();
-
-            }
-        }
-
-
-        /// <summary>
-        ///  Starts playing small chunks while jumping forward in audio asset
-        /// <see cref=""/>
-        /// </summary>
-        /// <param name="lStartPosition"></param>
-        private void FastForward(long lStartPosition)
-        {
-
-            // let's play forward!
-            if (m_FwdRwdRate != 0)
-            {
-
-                m_lChunkStartPosition = lStartPosition;
-                //mEventsEnabled = false;
-
-                //                mIsFwdRwd = true;
-                mPreviewTimer.Interval = 50;
-                mPreviewTimer.Start();
-            }
-        }
-
-
-
-        ///Preview timer tick function
-        private void PreviewTimer_Tick(object sender, EventArgs e)
-        { //1
-
-            if (m_CurrentAudioPCMFormat == null)
-                return;
-
-            double StepInMs = Math.Abs(4000 * m_FwdRwdRate);
-            //long lStepInBytes = CalculationFunctions.ConvertTimeToByte(StepInMs, (int)mCurrentAudio.getPCMFormat().getSampleRate(), mCurrentAudio.getPCMFormat().getBlockAlign());
-            long lStepInBytes = m_CurrentAudioPCMFormat.ConvertTimeToBytes(Convert.ToInt64(StepInMs * AudioLibPCMFormat.TIME_UNIT));
-            int PlayChunkLength = 1200;
-            //long lPlayChunkLength = CalculationFunctions.ConvertTimeToByte(PlayChunkLength, (int)mCurrentAudio.getPCMFormat().getSampleRate(), mCurrentAudio.getPCMFormat().getBlockAlign());
-            long lPlayChunkLength = m_CurrentAudioPCMFormat.ConvertTimeToBytes(Convert.ToInt64(PlayChunkLength * AudioLibPCMFormat.TIME_UNIT));
-            if (m_CurrentAudioDataLength < lPlayChunkLength)
-            {
-                lPlayChunkLength = m_CurrentAudioDataLength;
-                PlayChunkLength = Convert.ToInt32(m_CurrentAudioPCMFormat.ConvertBytesToTime(lPlayChunkLength) / AudioLibPCMFormat.TIME_UNIT);
-
-            }
-
-            Console.WriteLine("play chunk length " + PlayChunkLength + " : " + lPlayChunkLength);
-            //lPlayChunkLength = m_CurrentAudioPCMFormat.AdjustByteToBlockAlignFrameSize (PlayChunkLength) ;
-            mPreviewTimer.Interval = PlayChunkLength + 50;
-            Console.WriteLine("mPreviewTimer.Interval " + mPreviewTimer.Interval);
-            //System.Media.SystemSounds.Asterisk.Play();
-            long PlayStartPos = 0;
-            long PlayEndPos = 0;
-            if (m_FwdRwdRate > 0)
-            { //2
-                Console.WriteLine("rate is above 0");
-                //if ((mCurrentAudio.getPCMLength() - (lStepInBytes + m_lChunkStartPosition)) > lPlayChunkLength)
-                Console.WriteLine("m_CurrentAudioStream.Length " + m_CurrentAudioStream.Length + ", lStepInBytes :" + lStepInBytes + ",  m_lChunkStartPosition :" + m_lChunkStartPosition + ", lPlayChunkLength :" + lPlayChunkLength);
-
-                if ((m_CurrentAudioDataLength - (m_lChunkStartPosition)) >= lPlayChunkLength)
-                { //3
-                    if (m_lChunkStartPosition > 0)
-                    {
-                        Console.WriteLine("m_lChunkStartPosition  , step in bytes : " + m_lChunkStartPosition + " : " + lStepInBytes);
-                        m_lChunkStartPosition += lStepInBytes;
-
-                    }
-                    else
-                        //m_lChunkStartPosition = mFrameSize;
-                        m_lChunkStartPosition = m_CurrentAudioPCMFormat.BlockAlign;
-
-                    PlayStartPos = m_lChunkStartPosition;
-                    PlayEndPos = m_lChunkStartPosition + lPlayChunkLength;
-                    //PlayAssetStream(PlayStartPos, PlayEndPos);
-                    Console.WriteLine("play pos " + PlayStartPos + " : " + PlayEndPos);
-                    //mEventsEnabled = true;
-                    if (CurrentState == State.Playing)
-                    {
-                        //stopPlayback();
-                        //m_State = State.Paused;
-                    }
-                    if (CurrentState != State.Playing) startPlayback(PlayStartPos, PlayEndPos);
-
-                    //mEventsEnabled = false;
-                    Console.WriteLine(CurrentState);
-                    if (m_lChunkStartPosition > m_CurrentAudioStream.Length)
-                        m_lChunkStartPosition = m_CurrentAudioStream.Length;
-                } //-3
-                else
-                { //3
-                    Stop();
-                    AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
-                    if (!mPreviewTimer.Enabled
-                        && delFinished != null)
-                    {
-                        delFinished(this, new AudioPlaybackFinishEventArgs());
-                        //EndOfAudioAsset(this, new Events.Audio.Player.EndOfAudioAssetEventArgs());
-                    }
-
-                } //-3
-            } //-2
-            else if (m_FwdRwdRate < 0)
-            { //2
-                //if (m_lChunkStartPosition > (lStepInBytes ) && lPlayChunkLength <= m_Asset.getPCMLength () )
-                Console.WriteLine("rewind " + m_lChunkStartPosition);
-                if (m_lChunkStartPosition > 0)
-                { //3
-                    if (m_lChunkStartPosition < m_CurrentAudioStream.Length)
-                    {
-                        m_lChunkStartPosition -= lStepInBytes;
-                        if (m_lChunkStartPosition < lPlayChunkLength) m_lChunkStartPosition = 0;
-                    }
-                    else
-                        m_lChunkStartPosition = m_CurrentAudioStream.Length - lPlayChunkLength;
-
-                    PlayStartPos = m_lChunkStartPosition;
-                    PlayEndPos = m_lChunkStartPosition + lPlayChunkLength;
-                    //PlayAssetStream(PlayStartPos, PlayEndPos);
-                    startPlayback(PlayStartPos, PlayEndPos);
-                    if (m_lChunkStartPosition < 0)
-                        m_lChunkStartPosition = 0;
-                } //-3
-                else
-                {
-                    Stop();
-                    AudioPlaybackFinishHandler delFinished = AudioPlaybackFinished;
-                    if (!mPreviewTimer.Enabled
-                        && delFinished != null)
-                    {
-                        delFinished(this, new AudioPlaybackFinishEventArgs());
-                        //EndOfAudioAsset(this, new Events.Audio.Player.EndOfAudioAssetEventArgs());
-                    }
-                }
-            } //-2
-        } //-1
-
-
-        /// <summary>
-        /// Stop rewinding or forwarding, including the preview timer.
-        /// </summary>
-        private void StopForwardRewind()
-        {
-            if (//mFwdRwdRate != 0 ||
-                mPreviewTimer.Enabled)
-            {
-                //mPreviewTimer.Enabled = false;
-                mPreviewTimer.Stop();
-                //m_FwdRwdRate = 0 ;
-                m_lChunkStartPosition = 0;
-                //                mIsFwdRwd = false;
-                //mEventsEnabled = true;
             }
         }
 
