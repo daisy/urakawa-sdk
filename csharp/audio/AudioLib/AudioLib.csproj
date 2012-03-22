@@ -34,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;_USE_SLIMDX_;PAUSE_FEATURE_ENABLED</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;_USE_SLIMDX_;PAUSE_FEATURE_ENABLED;USE_SOUNDTOUCH</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
@@ -44,7 +44,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;_USE_SLIMDX_;PAUSE_FEATURE_ENABLED</DefineConstants>
+    <DefineConstants>TRACE;_USE_SLIMDX_;PAUSE_FEATURE_ENABLED;USE_SOUNDTOUCH</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
@@ -145,6 +145,10 @@
     <ProjectReference Include="..\NAudio\NAudio.csproj">
       <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
       <Name>NAudio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoundTouch.NET\SoundTouch.Net.csproj">
+      <Project>{EA570592-1FAB-412F-AA0C-159C947608CD}</Project>
+      <Name>SoundTouch.Net</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

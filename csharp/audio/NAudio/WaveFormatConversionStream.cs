@@ -170,7 +170,13 @@ namespace NAudio.Wave
                     int toCopy = Math.Min(bytesConverted, availableSpace);
                     //System.Diagnostics.Debug.Assert(toCopy == bytesConverted);
                     // TODO: save leftovers
+                    
                     Array.Copy(conversionStream.DestBuffer, 0, array, bytesRead + offset, toCopy);
+
+                    //Buffer.BlockCopy(conversionStream.DestBuffer, 0,
+                    //        array, bytesRead + offset,
+                    //        toCopy);
+
                     bytesRead += toCopy;
                     if (silenceBytes > 0 && silenceBytes < bytesRead)
                     {

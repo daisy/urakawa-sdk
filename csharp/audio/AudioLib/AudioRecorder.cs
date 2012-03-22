@@ -9,6 +9,8 @@ using SlimDX.DirectSound;
 using SlimDX.Multimedia;
 #else
 using Microsoft.DirectX.DirectSound;
+using Buffer = System.Buffer;
+
 #endif
 
 namespace AudioLib
@@ -21,6 +23,7 @@ namespace AudioLib
         private const int NOTIFICATIONS = 16;
 
         private byte[] m_PcmDataBuffer;
+        private int m_PcmDataBufferLength;
 
         private CaptureBuffer m_CircularBuffer;
         private int m_CircularBufferReadPositon;
@@ -72,10 +75,10 @@ namespace AudioLib
                 m_PreviousState = m_State;
                 m_State = value;
                 StateChangedHandler del = StateChanged;
-                if ( del != null) del(this, new StateChangedEventArgs(m_PreviousState) ) ;
+                if (del != null) del(this, new StateChangedEventArgs(m_PreviousState));
                 //var del = StateChanged;
                 //if (del != null)
-                    //del(this, new StateChangedEventArgs(m_PreviousState));
+                //del(this, new StateChangedEventArgs(m_PreviousState));
             }
         }
 
@@ -116,7 +119,7 @@ namespace AudioLib
             }
         }
 
-        private readonly PcmDataBufferAvailableEventArgs m_PcmDataBufferAvailableEventArgs = new PcmDataBufferAvailableEventArgs(new byte[] { 0, 0, 0, 0 });
+        private readonly PcmDataBufferAvailableEventArgs m_PcmDataBufferAvailableEventArgs = new PcmDataBufferAvailableEventArgs(new byte[] { 0, 0, 0, 0 }, 4);
         public event PcmDataBufferAvailableHandler PcmDataBufferAvailable;
         public delegate void PcmDataBufferAvailableHandler(object sender, PcmDataBufferAvailableEventArgs e);
         public class PcmDataBufferAvailableEventArgs : EventArgs
@@ -134,9 +137,28 @@ namespace AudioLib
                 }
             }
 
-            public PcmDataBufferAvailableEventArgs(byte[] pcmDataBuffer)
+            private int m_PcmDataBufferLength;
+            public int PcmDataBufferLength
+            {
+                get
+                {
+                    return m_PcmDataBufferLength;
+                }
+                set
+                {
+                    m_PcmDataBufferLength = value;
+
+                    if (m_PcmDataBuffer != null)
+                    {
+                        DebugFix.Assert(m_PcmDataBufferLength <= m_PcmDataBuffer.Length);
+                    }
+                }
+            }
+
+            public PcmDataBufferAvailableEventArgs(byte[] pcmDataBuffer, int length)
             {
                 m_PcmDataBuffer = pcmDataBuffer;
+                m_PcmDataBufferLength = length;
             }
         }
 
@@ -333,9 +355,17 @@ namespace AudioLib
             int pcmDataBufferSize = (int)(byteRate * REFRESH_INTERVAL_MS / 1000.0);
             pcmDataBufferSize -= pcmDataBufferSize % RecordingPCMFormat.BlockAlign;
 
-            m_PcmDataBuffer = new byte[pcmDataBufferSize];
+            m_PcmDataBufferLength = pcmDataBufferSize;
+            if (m_PcmDataBuffer == null)
+            {
+                m_PcmDataBuffer = new byte[m_PcmDataBufferLength];
+            }
+            else if (m_PcmDataBuffer.Length < m_PcmDataBufferLength)
+            {
+                Array.Resize(ref m_PcmDataBuffer, m_PcmDataBufferLength);
+            }
 
-            int circularBufferSize = pcmDataBufferSize * NOTIFICATIONS;
+            int circularBufferSize = m_PcmDataBufferLength * NOTIFICATIONS;
 
             CaptureBufferDescription bufferDescription = new CaptureBufferDescription();
             bufferDescription.BufferBytes = circularBufferSize;
@@ -356,7 +386,7 @@ namespace AudioLib
 #endif
             for (int i = 0; i < NOTIFICATIONS; i++)
             {
-                m_BufferPositionNotify[i].Offset = (pcmDataBufferSize * i) + pcmDataBufferSize - 1;
+                m_BufferPositionNotify[i].Offset = (m_PcmDataBufferLength * i) + m_PcmDataBufferLength - 1;
 #if USE_SLIMDX
                 m_BufferPositionNotify[i].Event = m_CircularBufferNotificationEvent;
 #else
@@ -598,29 +628,28 @@ namespace AudioLib
                 m_RecordingFileWriter.Write(incomingPcmData, 0, incomingPcmData.Length);
             }
 
-
-            if (m_PcmDataBuffer.Length != incomingPcmData.Length)
-            {
-                //Console.WriteLine(string.Format(">>>>> Resizing buffer: m_PcmDataBuffer = {0}, incomingPcmData = {1}",m_PcmDataBuffer.Length, incomingPcmData.Length));
-
-                Array.Resize(ref m_PcmDataBuffer, incomingPcmData.Length);
-            }
-
-            Array.Copy(incomingPcmData, m_PcmDataBuffer, m_PcmDataBuffer.Length);
-
             PcmDataBufferAvailableHandler del = PcmDataBufferAvailable;
-            if ( del != null ) 
+            if (del != null)
             {
+                //if (m_PcmDataBuffer.Length != incomingPcmData.Length)
+                //{
+                //    //Console.WriteLine(string.Format(">>>>> Resizing buffer: m_PcmDataBuffer = {0}, incomingPcmData = {1}",m_PcmDataBuffer.Length, incomingPcmData.Length));
+
+                //    Array.Resize(ref m_PcmDataBuffer, incomingPcmData.Length);
+                //}
+                //Array.Copy(incomingPcmData, m_PcmDataBuffer, m_PcmDataBuffer.Length);
+
+                int min = Math.Min(m_PcmDataBufferLength, incomingPcmData.Length);
+
+                //Array.Copy(incomingPcmData, m_PcmDataBuffer, min);
+                Buffer.BlockCopy(incomingPcmData, 0,
+                    m_PcmDataBuffer, 0,
+                    min);
+
                 m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                del (this, m_PcmDataBufferAvailableEventArgs);
-                
+                m_PcmDataBufferAvailableEventArgs.PcmDataBufferLength = min;
+                del(this, m_PcmDataBufferAvailableEventArgs);
             }
-            //var del = PcmDataBufferAvailable;
-            //if (del != null)
-            //{
-                //m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                //del(this, m_PcmDataBufferAvailableEventArgs);
-            //}
 
             return circularBufferBytesAvailableForReading;
         }
@@ -640,6 +669,7 @@ namespace AudioLib
                     m_PcmDataBuffer[i] = 0;
                 }
                 m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
+                m_PcmDataBufferAvailableEventArgs.PcmDataBufferLength = m_PcmDataBufferLength;
                 deleg(this, m_PcmDataBufferAvailableEventArgs);
             }
 
@@ -767,10 +797,10 @@ namespace AudioLib
             if (wasRecording)
             {
                 AudioRecordingFinishHandler del = AudioRecordingFinished;
-                if (del != null) del (this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
+                if (del != null) del(this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
                 //var del = AudioRecordingFinished;
                 //if (del != null)
-                    //del(this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
+                //del(this, new AudioRecordingFinishEventArgs(m_RecordedFilePath));
             }
         }
     }
