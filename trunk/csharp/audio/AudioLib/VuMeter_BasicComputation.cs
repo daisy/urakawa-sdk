@@ -26,6 +26,7 @@ namespace AudioLib
         private AudioRecorder m_Recorder;
 
         private byte[] m_PcmDataBuffer;
+        private int m_PcmDataBufferLength;
 
         public VuMeter(AudioPlayer player, AudioRecorder recorder)
         {
@@ -57,6 +58,7 @@ namespace AudioLib
             Array.Copy(e.PcmDataBuffer, m_PcmDataBuffer, e.PcmDataBuffer.Length);
 #else
             m_PcmDataBuffer = e.PcmDataBuffer;
+            m_PcmDataBufferLength = e.PcmDataBufferLength;
 #endif
 
             m_computingPeakDb = true;
@@ -119,6 +121,7 @@ namespace AudioLib
             Array.Copy(e.PcmDataBuffer, m_PcmDataBuffer, e.PcmDataBuffer.Length);
 #else
             m_PcmDataBuffer = e.PcmDataBuffer;
+            m_PcmDataBufferLength = e.PcmDataBufferLength;
 #endif
             m_computingPeakDb = true;
             double[] peakDb = computePeakDb(m_Recorder.RecordingPCMFormat);
@@ -175,7 +178,7 @@ namespace AudioLib
             if ( m_PcmDataBuffer != null )
             {
                 Console.Write("ALLOCATING m_PcmDataBuffer");
-                m_PcmDataBuffer = new byte[m_PcmDataBuffer.Length];
+                m_PcmDataBuffer = new byte[m_PcmDataBufferLength];
             }
             //m_PcmDataBuffer.Initialize(double.NegativeInfinity);
 
@@ -224,7 +227,7 @@ namespace AudioLib
 
             int bytesPerSample = pcmFormat.BitDepth / 8;
 
-            for (int byteOffsetOfFrame = 0; byteOffsetOfFrame < m_PcmDataBuffer.Length; byteOffsetOfFrame += pcmFormat.BlockAlign)
+            for (int byteOffsetOfFrame = 0; byteOffsetOfFrame < m_PcmDataBufferLength; byteOffsetOfFrame += pcmFormat.BlockAlign)
             {
                 for (int channelIndex = 0; channelIndex < pcmFormat.NumberOfChannels; channelIndex++)
                 {

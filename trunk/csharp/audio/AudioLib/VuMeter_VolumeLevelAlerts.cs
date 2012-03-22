@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Diagnostics;
 
@@ -51,6 +52,8 @@ namespace AudioLib
         private double[] m_AverageValue; // array to hold average or RMS value
         public double[] AverageAmplitudeDBValue { get { return m_AverageValue; } }
 
+         private static readonly int INT_SAMPLE_SIZE = Marshal.SizeOf(typeof (int));
+
         double[] m_TempArray = new double[4];
         int m_TempCount = 0;
         private void ComputeAverageValues(AudioLibPCMFormat audioPCMFormat)
@@ -59,7 +62,14 @@ namespace AudioLib
             int blockAlign = audioPCMFormat.BlockAlign;
             // create an local array and fill the amplitude value of both channels from function
             int[] TempAmpArray = new int[2];
-            Array.Copy(GetAverageOfPeaksInSpeechFragment(audioPCMFormat), TempAmpArray, 2);
+            int[] array = GetAverageOfPeaksInSpeechFragment(audioPCMFormat);
+            
+            Array.Copy(array, TempAmpArray, 2);
+            
+            //// ONLY WORKS IN LITTLE INDIAN
+            //Buffer.BlockCopy(array, 0,
+            //                TempAmpArray, 0,
+            //                2 * INT_SAMPLE_SIZE);
 
             //find value in db
             double MaxVal = (int)Math.Pow(2, 8 * (blockAlign / channels)) / 2;
@@ -95,8 +105,8 @@ namespace AudioLib
             uint PeakSampleCount = Convert.ToUInt32(samplingRate / 2000);
 
             // number of blocks iterated
-            uint Count = Convert.ToUInt32(m_PcmDataBuffer.Length / PeakSampleCount);
-            if (Count * PeakSampleCount > m_PcmDataBuffer.Length) Count--;
+            uint Count = Convert.ToUInt32(m_PcmDataBufferLength / PeakSampleCount);
+            if (Count * PeakSampleCount > m_PcmDataBufferLength) Count--;
 
             //System.IO.StreamWriter wr = System.IO.File.AppendText("c:\\2.txt");
             //wr.WriteLine("Count" +  Count.ToString() + "-"+ "PeakSampleCount" + PeakSampleCount.ToString());
@@ -170,7 +180,7 @@ namespace AudioLib
             System.Collections.Generic.Stack<int> leftPeaks = new System.Collections.Generic.Stack<int>();
             System.Collections.Generic.Stack<int> rightPeaks = new System.Collections.Generic.Stack<int>();
 
-            for (int i = 0; i < m_PcmDataBuffer.Length; i += blockAlign)
+            for (int i = 0; i < m_PcmDataBufferLength; i += blockAlign)
             {
                 switch (blockAlign)
                 {
