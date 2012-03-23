@@ -435,18 +435,21 @@ namespace urakawa.daisy.import
                     {
                         Presentation presentation = m_Project.Presentations.Get(0);
 
-                        if (xmlType == XmlNodeType.Whitespace)
+                        // HACK for books authored with xml:space="preserve" all over the place (e.g. Bookshare)
+
+                        bool whitespace_OnlySpaces = true;
+                        if (xmlType == XmlNodeType.Whitespace
+                            || xmlType == XmlNodeType.SignificantWhitespace)
                         {
-                            bool onlySpaces = true;
                             for (int i = 0; i < xmlNode.Value.Length; i++)
                             {
-                                if (xmlNode.Value[i] != ' ')
+                                if (xmlNode.Value[i] != ' ') //!char.IsWhiteSpace(xmlNode.Value[i])
                                 {
-                                    onlySpaces = false;
+                                    whitespace_OnlySpaces = false;
                                     break;
                                 }
                             }
-                            if (!onlySpaces)
+                            if (!whitespace_OnlySpaces)
                             {
                                 break;
                             }
@@ -455,43 +458,60 @@ namespace urakawa.daisy.import
                             //    int l = xmlNode.Value.Length;
                             //}
                         }
+
+
 #if DEBUG
                         if (xmlType == XmlNodeType.CDATA)
                         {
                             Debugger.Break();
                         }
-
-                        if (xmlType == XmlNodeType.SignificantWhitespace)
-                        {
-                            Debugger.Break();
-                        }
 #endif
-                        //string text = xmlNode.Value.Trim();
-                        string text = Regex.Replace(xmlNode.Value, @"\s+", " ");
 
-                        DebugFix.Assert(!string.IsNullOrEmpty(text));
+
+                        string text = null;
+
+                        if (xmlType == XmlNodeType.SignificantWhitespace
+                            || xmlType == XmlNodeType.Whitespace)
+                        {
+                            DebugFix.Assert(whitespace_OnlySpaces);
+
+                            text = " ";
+                        }
+                        else
+                        {
+                            // collapse adjoining whitespaces into one space character
+                            // (preserves begin and end space that would otherwise be trimmed by Trim())
+                            text = Regex.Replace(xmlNode.Value, @"\s+", " ");
+                            //string text = xmlNode.Value.Trim();
 
 #if DEBUG
-                        if (text.Length != xmlNode.Value.Length)
-                        {
-                            int debug = 1;
-                            //Debugger.Break();
+                            DebugFix.Assert(!string.IsNullOrEmpty(text));
+                            //if (string.IsNullOrEmpty(text))
+                            //{
+                            //    Debugger.Break();
+                            //}
+
+                            if (text.Length != xmlNode.Value.Length)
+                            {
+                                int debug = 1;
+                                //Debugger.Break();
+                            }
+
+                            if (xmlType != XmlNodeType.Whitespace && text == " ")
+                            {
+                                int debug = 1;
+                                //Debugger.Break();
+                            }
+#endif
                         }
 
-                        if (string.IsNullOrEmpty(text))
-                        {
-                            Debugger.Break();
-                        }
-                        if (xmlType != XmlNodeType.Whitespace && text == " ")
-                        {
-                            int debug = 1;
-                            //Debugger.Break();
-                        }
-#endif
+
+
                         if (string.IsNullOrEmpty(text))
                         {
                             break;
                         }
+
                         TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
                         textMedia.Text = text;
 
