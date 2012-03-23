@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using AudioLib;
 using urakawa.media;
+using urakawa.media.data.video;
 using urakawa.metadata;
 using urakawa.core;
 using urakawa.ExternalFiles;
@@ -301,10 +302,10 @@ namespace urakawa.daisy.export
                         AddReferencingNodeToReferencedAttributesList(currentXmlNode, referencingAttributesList);
 
                         // if QName is img and img src is on disk, copy it to output dir
-                        string exportImageName = null;
                         if (currentXmlNode.LocalName != null
                             && currentXmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
                         {
+                            string exportImageName = null;
                             XmlAttribute imgSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
                             if (imgSrcAttribute != null &&
                                 n.GetImageMedia() != null
@@ -333,6 +334,39 @@ namespace urakawa.daisy.export
                                 generateImageDescriptionInDTBook(n, currentXmlNode, exportImageName, DTBookDocument);
                             }
                         }
+                        else if (currentXmlNode.LocalName != null
+                            && currentXmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase))
+                        {
+                            string exportVideoName = null;
+                            XmlAttribute videoSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
+                            if (videoSrcAttribute != null &&
+                                n.GetVideoMedia() != null
+                                && n.GetVideoMedia() is ManagedVideoMedia)
+                            {
+                                ManagedVideoMedia managedVideo = (ManagedVideoMedia)n.GetVideoMedia();
+                                exportVideoName = managedVideo.VideoMediaData.OriginalRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
+                                string destPath = Path.Combine(m_OutputDirectory, exportVideoName);
+
+                                if (!File.Exists(destPath))
+                                {
+                                    if (RequestCancellation) return false;
+                                    managedVideo.VideoMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
+
+                                }
+
+                                videoSrcAttribute.Value = exportVideoName;
+
+
+
+                                if (!m_FilesList_Video.Contains(exportVideoName))
+                                {
+                                    m_FilesList_Video.Add(exportVideoName);
+                                }
+
+                            }
+                        }
+
+
 
                         return true;
                     },

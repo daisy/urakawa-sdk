@@ -118,6 +118,14 @@ namespace urakawa.daisy.export
                 string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
                 AddFilenameToManifest(opfDocument, manifestNode, imageFileName, strID, mime);
             }
+            foreach (string videoFileName in m_FilesList_Video)
+            {
+                string strID = GetNextID(ID_OpfPrefix);
+
+                string ext = Path.GetExtension(videoFileName);
+                string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
+                AddFilenameToManifest(opfDocument, manifestNode, videoFileName, strID, mime);
+            }
 
             // copy resource files and place entry in manifest
             string sourceDirectoryPath = System.AppDomain.CurrentDomain.BaseDirectory;

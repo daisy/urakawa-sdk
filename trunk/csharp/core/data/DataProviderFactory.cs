@@ -75,8 +75,48 @@ namespace urakawa.data
         public const string IMAGE_BMP_EXTENSION = ".bmp";
 
 
+        /// <summary>
+        /// MIME type for GIF images
+        /// </summary>
         public const string IMAGE_GIF_MIME_TYPE = "image/gif";
         public const string IMAGE_GIF_EXTENSION = ".gif";
+
+
+        /// <summary>
+        /// MIME type for WMV videos
+        /// </summary>
+        public const string VIDEO_WMV_MIME_TYPE = "video/wmv";
+        public const string VIDEO_WMV_EXTENSION = ".wmv";
+
+        /// <summary>
+        /// MIME type for MOV videos
+        /// </summary>
+        public const string VIDEO_MOV_MIME_TYPE = "video/mov";
+        public const string VIDEO_MOV_EXTENSION = ".mov";
+
+        /// <summary>
+        /// MIME type for AVI videos
+        /// </summary>
+        public const string VIDEO_AVI_MIME_TYPE = "video/avi";
+        public const string VIDEO_AVI_EXTENSION = ".avi";
+
+        /// <summary>
+        /// MIME type for MPEG videos
+        /// </summary>
+        public const string VIDEO_MPG_MIME_TYPE = "video/mpg";
+        public const string VIDEO_MPG_EXTENSION = ".mpg";
+        public const string VIDEO_MPEG_EXTENSION = ".mpeg";
+        public const string VIDEO_MP4_EXTENSION = ".mp4";
+        public const string VIDEO_M4V_EXTENSION = ".m4v";
+        public const string VIDEO_M2V_EXTENSION = ".m2v";
+        public const string VIDEO_3GP_EXTENSION = ".3gp";
+
+
+        public const string VIDEO_OGG_MIME_TYPE = "video/ogg";
+        public const string VIDEO_OGG_EXTENSION = ".ogv";
+
+        public const string VIDEO_WEBM_MIME_TYPE = "video/webm";
+        public const string VIDEO_WEBM_EXTENSION = ".webm";
 
         /// <summary>
         /// MIME type for Scalable Vector Graphics (SVG) images
@@ -122,6 +162,28 @@ namespace urakawa.data
             string extension;
             switch (mimeType)
             {
+                case VIDEO_AVI_MIME_TYPE:
+                    extension = VIDEO_AVI_EXTENSION;
+                    break;
+                case VIDEO_MOV_MIME_TYPE:
+                    extension = VIDEO_MOV_EXTENSION;
+                    break;
+                case VIDEO_MPG_MIME_TYPE:
+                    extension = VIDEO_MPG_EXTENSION;
+                    break;
+                case VIDEO_WMV_MIME_TYPE:
+                    extension = VIDEO_WMV_EXTENSION;
+                    break;
+
+                case VIDEO_OGG_MIME_TYPE:
+                    extension = VIDEO_OGG_EXTENSION;
+                    break;
+
+                case VIDEO_WEBM_MIME_TYPE:
+                    extension = VIDEO_WEBM_EXTENSION;
+                    break;
+
+
                 case AUDIO_MP3_MIME_TYPE:
                     extension = AUDIO_MP3_EXTENSION;
                     break;
@@ -159,7 +221,7 @@ namespace urakawa.data
                     extension = XML_TEXT_EXTENSION;
                     break;
                 default:
-                    extension = null;
+                    extension = ".bin";
                     break;
             }
             return extension;
@@ -171,6 +233,32 @@ namespace urakawa.data
             string mime;
             switch (extension)
             {
+                case VIDEO_MPG_EXTENSION:
+                case VIDEO_MPEG_EXTENSION:
+                case VIDEO_MP4_EXTENSION:
+                case VIDEO_M2V_EXTENSION:
+                case VIDEO_M4V_EXTENSION:
+                case VIDEO_3GP_EXTENSION:
+                    mime = VIDEO_MPG_MIME_TYPE;
+                    break;
+                case VIDEO_AVI_EXTENSION:
+                    mime = VIDEO_AVI_MIME_TYPE;
+                    break;
+                case VIDEO_OGG_EXTENSION:
+                    mime = VIDEO_OGG_MIME_TYPE;
+                    break;
+                case VIDEO_WEBM_EXTENSION:
+                    mime = VIDEO_WEBM_MIME_TYPE;
+                    break;
+                case VIDEO_WMV_EXTENSION:
+                    mime = VIDEO_WMV_MIME_TYPE;
+                    break;
+                case VIDEO_MOV_EXTENSION:
+                    mime = VIDEO_MOV_MIME_TYPE;
+                    break;
+
+
+
                 case AUDIO_MP3_EXTENSION:
                     mime = AUDIO_MP3_MIME_TYPE;
                     break;
@@ -210,7 +298,7 @@ namespace urakawa.data
                     mime = XML_TEXT_MIME_TYPE;
                     break;
                 default:
-                    mime = null;
+                    mime = "N/A";
                     break;
             }
             return mime;

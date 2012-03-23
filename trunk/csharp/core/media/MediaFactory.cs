@@ -1,5 +1,6 @@
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
+using urakawa.media.data.video;
 using urakawa.xuk;
 
 namespace urakawa.media
@@ -44,6 +45,11 @@ namespace urakawa.media
         public ManagedImageMedia CreateManagedImageMedia()
         {
             return Create<ManagedImageMedia>();
+        }
+
+        public ManagedVideoMedia CreateManagedVideoMedia()
+        {
+            return Create<ManagedVideoMedia>();
         }
 
         /// <summary>

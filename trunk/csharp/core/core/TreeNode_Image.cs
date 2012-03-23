@@ -5,6 +5,16 @@ namespace urakawa.core
 {
     public partial class TreeNode
     {
+        public AbstractVideoMedia GetVideoMedia()
+        {
+            Media med = GetMediaInVideoChannel();
+            if (med != null)
+            {
+                return med as AbstractVideoMedia;
+            }
+            return null;
+        }
+
         public AbstractImageMedia GetImageMedia()
         {
             Media med = GetMediaInImageChannel();
@@ -28,9 +38,17 @@ namespace urakawa.core
         }
         
 #endif //ENABLE_SEQ_MEDIA
+
+
         public Media GetMediaInImageChannel()
         {
             return GetMediaInChannel<ImageChannel>();
+        }
+
+
+        public Media GetMediaInVideoChannel()
+        {
+            return GetMediaInChannel<VideoChannel>();
         }
     }
 }

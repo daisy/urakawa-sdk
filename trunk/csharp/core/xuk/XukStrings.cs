@@ -631,6 +631,11 @@ namespace urakawa.xuk
             get { return ((mProject == null || IsPrettyFormat) ? "ImageChannel" : "imgCh"); }
         }
 
+        public static string VideoChannel
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "VideoChannel" : "vidCh"); }
+        }
+
         public static string AudioChannel
         {
             get { return ((mProject == null || IsPrettyFormat) ? "AudioChannel" : "auCh"); }
@@ -744,6 +749,35 @@ namespace urakawa.xuk
         public static string ManagedImageMedia
         {
             get { return ((mProject == null || IsPrettyFormat) ? "ManagedImageMedia" : "mIm"); }
+        }
+        public static string ManagedVideoMedia
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "ManagedVideoMedia" : "mVd"); }
+        }
+
+        public static string MovVideoMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "MovVideoMediaData" : "movVd"); }
+        }
+        public static string MpgVideoMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "MpgVideoMediaData" : "mpgVd"); }
+        }
+        public static string WebmVideoMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "WebmVideoMediaData" : "webmVd"); }
+        }
+        public static string OggVideoMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "OggVideoMediaData" : "oggVd"); }
+        }
+        public static string AviVideoMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "AviVideoMediaData" : "aviVd"); }
+        }
+        public static string WmvVideoMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "WmvVideoMediaData" : "wmvVd"); }
         }
 
         public static string JpgImageMediaData

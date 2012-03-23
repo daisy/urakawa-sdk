@@ -18,16 +18,39 @@ namespace urakawa.media
             return XukStrings.ExternalVideoMedia;
         }
         private string mSrc;
+        private int mWidth;
+        private int mHeight;
         private Time mClipBegin;
         private Time mClipEnd;
 
         private void Reset()
         {
             mSrc = DEFAULT_SRC;
+            mWidth = 0;
+            mHeight = 0;
             mClipBegin = Time.Zero;
             mClipEnd = Time.MaxValue;
         }
 
+        /// <summary>
+        /// Return the image width
+        /// </summary>
+        /// <returns>The width</returns>
+        public override int Width
+        {
+            get { return mWidth; }
+            set { SetSize(Height, value); }
+        }
+
+        /// <summary>
+        /// Return the image height
+        /// </summary>
+        /// <returns>The height</returns>
+        public override int Height
+        {
+            get { return mHeight; }
+            set { SetSize(value, Width); }
+        }
         /// <summary>
         /// Default constructor
         /// </summary>

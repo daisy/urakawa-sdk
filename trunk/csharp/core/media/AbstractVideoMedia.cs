@@ -16,9 +16,6 @@ namespace urakawa.media
             set { m_ResizeMode = value; }
         }
 
-        private int mWidth;
-        private int mHeight;
-
         /// <summary>
         /// This always returns true, because
         /// video media is always considered continuous
@@ -87,61 +84,33 @@ namespace urakawa.media
         /// </summary>
         protected AbstractVideoMedia()
         {
-            mHeight = 0;
-            mWidth = 0;
             SizeChanged += this_SizeChanged;
         }
 
         /// <summary>
-        /// Return the image width
+        /// Get the width of the <see cref="ISized"/> object.
         /// </summary>
         /// <returns>The width</returns>
-        public int Width
-        {
-            get { return mWidth; }
-            set { SetSize(Height, value); }
-        }
+        public abstract int Width { get; set; }
 
         /// <summary>
-        /// Return the image height
+        /// Get the height of the <see cref="ISized"/> object.
         /// </summary>
         /// <returns>The height</returns>
-        public int Height
-        {
-            get { return mHeight; }
-            set { SetSize(value, Width); }
-        }
-
+        public abstract int Height { get; set; }
 
         /// <summary>
-        /// Sets the image size
+        /// Sets the size of the <see cref="ISized"/> object.
         /// </summary>
-        /// <param name="height">The new height</param>
-        /// <param name="width">The new width</param>
+        /// <param name="newWidth">The new width</param>
+        /// <param name="newHeight">The new height</param>
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
         /// Thrown when the new width or height is negative
         /// </exception>
-        public void SetSize(int height, int width)
+        public virtual void SetSize(int newHeight, int newWidth)
         {
-
-            if (width < 0)
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    "The width of an image can not be negative");
-            }
-            if (height < 0)
-            {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    "The height of an image can not be negative");
-            }
-            int prevWidth = mWidth;
-            mWidth = width;
-            int prevHeight = mHeight;
-            mHeight = height;
-            if (mWidth != prevWidth || mHeight != prevHeight)
-            {
-                NotifySizeChanged(mHeight, mWidth, prevHeight, prevWidth);
-            }
+            Height = newHeight;
+            Width = newWidth;
         }
 
 

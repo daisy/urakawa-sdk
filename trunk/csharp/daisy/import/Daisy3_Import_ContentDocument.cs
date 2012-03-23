@@ -17,7 +17,8 @@ namespace urakawa.daisy.import
 {
     public partial class Daisy3_Import
     {
-        protected Channel m_ImageChannel;
+        protected ImageChannel m_ImageChannel;
+        protected VideoChannel m_VideoChannel;
         protected TextChannel m_textChannel;
 
         private string trimXmlTextInnerSpaces(string str)
@@ -256,6 +257,10 @@ namespace urakawa.daisy.import
 
                                     urakawa.media.data.image.ImageMediaData imageData =
                                         presentation.MediaDataFactory.CreateImageMediaData(Path.GetExtension(imgSourceFullpath));
+                                    if (imageData == null)
+                                    {
+                                        throw new NotSupportedException(imgSourceFullpath);
+                                    }
                                     imageData.InitializeImage(imgSourceFullpath, updatedSRC);
                                     media.data.image.ManagedImageMedia managedImage =
                                         presentation.MediaFactory.CreateManagedImageMedia();
@@ -303,6 +308,63 @@ namespace urakawa.daisy.import
                                     externalImage.Src = updatedSRC;
                                     */
 
+                            }
+                        }
+
+                        if (xmlNode.LocalName != null && xmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase))
+                        {
+                            XmlNode getSRC = xmlNode.Attributes.GetNamedItem("src");
+                            if (getSRC != null)
+                            {
+                                string videoSourceFullpath = null;
+                                string relativePath = xmlNode.Attributes.GetNamedItem("src").Value;
+                                if (FileDataProvider.isHTTPFile(relativePath))
+                                {
+                                    videoSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
+
+                                    updatedSRC = relativePath;
+                                }
+                                else
+                                {
+                                    string parentPath = Directory.GetParent(filePath).FullName;
+                                    videoSourceFullpath = Path.Combine(parentPath, relativePath);
+
+                                    updatedSRC = Path.GetFullPath(videoSourceFullpath).Replace(
+                                        Path.GetDirectoryName(m_Book_FilePath), "");
+
+                                    if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
+                                    {
+                                        updatedSRC = updatedSRC.Remove(0, 1);
+                                    }
+                                }
+
+                                if (videoSourceFullpath != null && File.Exists(videoSourceFullpath))
+                                {
+
+                                    //ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty();
+                                    //treeNode.AddProperty(chProp);
+                                    ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
+
+                                    urakawa.media.data.video.VideoMediaData videoData =
+                                        presentation.MediaDataFactory.CreateVideoMediaData(Path.GetExtension(videoSourceFullpath));
+                                    if (videoData == null)
+                                    {
+                                        throw new NotSupportedException(videoSourceFullpath);
+                                    }
+                                    videoData.InitializeVideo(videoSourceFullpath, updatedSRC);
+                                    media.data.video.ManagedVideoMedia managedVideo =
+                                        presentation.MediaFactory.CreateManagedVideoMedia();
+                                    managedVideo.MediaData = videoData;
+                                    chProp.SetMedia(m_VideoChannel, managedVideo);
+                                }
+                                else
+                                {
+                                    ExternalVideoMedia externalVideo = presentation.MediaFactory.CreateExternalVideoMedia();
+                                    externalVideo.Src = relativePath;
+
+                                    ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
+                                    chProp.SetMedia(m_VideoChannel, externalVideo);
+                                }
                             }
                         }
 

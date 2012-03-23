@@ -95,6 +95,10 @@ namespace urakawa.property.channel
         {
             return GetOrCreateChannel<ImageChannel>();
         }
+        public VideoChannel GetOrCreateVideoChannel()
+        {
+            return GetOrCreateChannel<VideoChannel>();
+        }
 
         /// <summary>
         /// this is a helper function for getting one or more channels by its localName

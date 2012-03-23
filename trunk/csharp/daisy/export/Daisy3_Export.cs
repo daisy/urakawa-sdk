@@ -33,6 +33,7 @@ namespace urakawa.daisy.export
         protected List<string> m_FilesList_Smil; //xmils files list generated in createNcx function
         protected List<string> m_FilesList_Audio; // list of audio files generated in create ncx function.
         protected List<string> m_FilesList_Image; // list of images, populated in create content document function
+        protected List<string> m_FilesList_Video; // list of videos, populated in create content document function
         protected List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
         protected Time m_TotalTime;
 
@@ -112,6 +113,7 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
             try
             {
                 m_FilesList_Image = new List<string>();
+                m_FilesList_Video = new List<string>();
                 m_FilesList_ExternalFiles = new List<string>();
                 RequestCancellation = false;
 

@@ -1,83 +1,22 @@
-using System;
+﻿using System;
 using System.Xml;
 using urakawa.events.media.data;
 using urakawa.media.data.audio;
+using urakawa.media.timing;
 using urakawa.xuk;
 
-namespace urakawa.media.data.image
+namespace urakawa.media.data.video
 {
-    public class ManagedImageMedia : AbstractImageMedia, IManaged
+    public class ManagedVideoMedia : AbstractVideoMedia, IManaged
     {
-        public ManagedImageMedia()
+        public override Time Duration
         {
-            Reset();
-            MediaDataChanged += this_MediaDataChanged;
+            get { throw new NotImplementedException(); }
         }
 
-        private void this_MediaDataChanged(object sender, MediaDataChangedEventArgs e)
+        protected override AbstractVideoMedia SplitProtected(Time splitPoint)
         {
-            NotifyChanged(e);
-        }
-
-        protected void NotifyMediaDataChanged(ManagedImageMedia source, ImageMediaData newData, ImageMediaData prevData)
-        {
-            EventHandler<MediaDataChangedEventArgs> d = MediaDataChanged;
-            if (d != null) d(this, new MediaDataChangedEventArgs(source, newData, prevData));
-        }
-
-        public override string GetTypeNameFormatted()
-        {
-            return xuk.XukStrings.ManagedImageMedia;
-        }
-
-        private ImageMediaData m_ImageMediaData;
-
-        private void Reset()
-        {
-            m_ImageMediaData = null;
-        }
-
-        protected override void Clear()
-        {
-            Reset();
-            base.Clear();
-        }
-
-        public override bool IsContinuous
-        {
-            get { return false; }
-        }
-        public override bool IsDiscrete
-        {
-            get { return true; }
-        }
-        public override bool IsSequence
-        {
-            get { return false; }
-        }
-
-        public new ManagedImageMedia Copy()
-        {
-            return CopyProtected() as ManagedImageMedia;
-        }
-
-        public new ManagedImageMedia Export(Presentation destPres)
-        {
-            return ExportProtected(destPres) as ManagedImageMedia;
-        }
-
-        protected override Media CopyProtected()
-        {
-            ManagedImageMedia cp = (ManagedImageMedia)base.CopyProtected();
-            cp.ImageMediaData = ImageMediaData.Copy();
-            return cp;
-        }
-
-        protected override Media ExportProtected(Presentation destPres)
-        {
-            ManagedImageMedia exported = (ManagedImageMedia)base.ExportProtected(destPres);
-            exported.ImageMediaData = ImageMediaData.Export(destPres);
-            return exported;
+            throw new NotImplementedException();
         }
 
         public override int Width
@@ -103,40 +42,114 @@ namespace urakawa.media.data.image
             }
         }
 
-        public ImageMediaData ImageMediaData
+
+
+        public ManagedVideoMedia()
+        {
+            Reset();
+            MediaDataChanged += this_MediaDataChanged;
+        }
+
+        private void this_MediaDataChanged(object sender, MediaDataChangedEventArgs e)
+        {
+            NotifyChanged(e);
+        }
+
+        protected void NotifyMediaDataChanged(ManagedVideoMedia source, VideoMediaData newData, VideoMediaData prevData)
+        {
+            EventHandler<MediaDataChangedEventArgs> d = MediaDataChanged;
+            if (d != null) d(this, new MediaDataChangedEventArgs(source, newData, prevData));
+        }
+
+        public override string GetTypeNameFormatted()
+        {
+            return xuk.XukStrings.ManagedVideoMedia;
+        }
+
+        private VideoMediaData m_VideoMediaData;
+
+        private void Reset()
+        {
+            m_VideoMediaData = null;
+        }
+
+        protected override void Clear()
+        {
+            Reset();
+            base.Clear();
+        }
+
+        public override bool IsContinuous
+        {
+            get { return false; }
+        }
+        public override bool IsDiscrete
+        {
+            get { return true; }
+        }
+        public override bool IsSequence
+        {
+            get { return false; }
+        }
+
+        public new ManagedVideoMedia Copy()
+        {
+            return CopyProtected() as ManagedVideoMedia;
+        }
+
+        public new ManagedVideoMedia Export(Presentation destPres)
+        {
+            return ExportProtected(destPres) as ManagedVideoMedia;
+        }
+
+        protected override Media CopyProtected()
+        {
+            ManagedVideoMedia cp = (ManagedVideoMedia)base.CopyProtected();
+            cp.VideoMediaData = VideoMediaData.Copy();
+            return cp;
+        }
+
+        protected override Media ExportProtected(Presentation destPres)
+        {
+            ManagedVideoMedia exported = (ManagedVideoMedia)base.ExportProtected(destPres);
+            exported.VideoMediaData = VideoMediaData.Export(destPres);
+            return exported;
+        }
+
+        public VideoMediaData VideoMediaData
         {
             get
             {
-                if (m_ImageMediaData == null)
+                if (m_VideoMediaData == null)
                 {
                     //Lazy initialization
-                    ImageMediaData = Presentation.MediaDataFactory.CreateImageMediaData();
+                    VideoMediaData = Presentation.MediaDataFactory.CreateVideoMediaData();
                 }
-                return m_ImageMediaData;
+                return m_VideoMediaData;
             }
 
             set
             {
-                if (m_ImageMediaData == value) return;
+                if (m_VideoMediaData == value) return;
 
-                if (m_ImageMediaData != null)
+                if (m_VideoMediaData != null)
                 {
-                    m_ImageMediaData.Changed -= ImageMediaData_Changed;
+                    m_VideoMediaData.Changed -= VideoMediaData_Changed;
                 }
-                ImageMediaData prevData = m_ImageMediaData;
+                VideoMediaData prevData = m_VideoMediaData;
 
-                m_ImageMediaData = value;
+                m_VideoMediaData = value;
 
-                if (m_ImageMediaData != null)
+                if (m_VideoMediaData != null)
                 {
-                    m_ImageMediaData.Changed += ImageMediaData_Changed;
+                    m_VideoMediaData.Changed += VideoMediaData_Changed;
                 }
 
-                NotifyMediaDataChanged(this, m_ImageMediaData, prevData);
+                NotifyMediaDataChanged(this, m_VideoMediaData, prevData);
             }
         }
 
-        private void ImageMediaData_Changed(object sender, events.DataModelChangedEventArgs e)
+        private void VideoMediaData_Changed(object sender, events.DataModelChangedEventArgs e)
         {
             NotifyChanged(e);
         }
@@ -145,17 +158,17 @@ namespace urakawa.media.data.image
         {
             get
             {
-                return ImageMediaData;
+                return VideoMediaData;
             }
             set
             {
-                if (!(value is ImageMediaData))
+                if (!(value is VideoMediaData))
                 {
                     throw new exception.MethodParameterIsWrongTypeException(
-                        "The MediaData of a ManagedImageMedia must be a ImageMediaData");
+                        "The MediaData of a ManagedVideoMedia must be a VideoMediaData");
                 }
 
-                ImageMediaData = value as ImageMediaData;
+                VideoMediaData = value as VideoMediaData;
             }
         }
 
@@ -171,13 +184,13 @@ namespace urakawa.media.data.image
                 return false;
             }
 
-            ManagedImageMedia otherz = other as ManagedImageMedia;
+            ManagedVideoMedia otherz = other as ManagedVideoMedia;
             if (otherz == null)
             {
                 return false;
             }
 
-            if (!ImageMediaData.ValueEquals(otherz.ImageMediaData))
+            if (!VideoMediaData.ValueEquals(otherz.VideoMediaData))
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
@@ -196,29 +209,29 @@ namespace urakawa.media.data.image
             string uid = source.GetAttribute(XukStrings.MediaDataUid);
             if (string.IsNullOrEmpty(uid))
             {
-                throw new exception.XukException("MediaDataUid attribute is missing from ImageMediaData");
+                throw new exception.XukException("MediaDataUid attribute is missing from VideoMediaData");
             }
             //if (!Presentation.MediaDataManager.IsManagerOf(uid))
             //{
             //    throw new exception.IsNotManagerOfException(String.Format(
-            //                                         "The MediaDataManager does not mamage a ImageMediaData with uid {0}",
+            //                                         "The MediaDataManager does not mamage a VideoMediaData with uid {0}",
             //                                         uid));
             //}
             MediaData md = Presentation.MediaDataManager.GetManagedObject(uid);
-            if (!(md is ImageMediaData))
+            if (!(md is VideoMediaData))
             {
                 throw new exception.XukException(String.Format(
-                                                     "The MediaData with uid {0} is a {1} which is not a ImageMediaData",
+                                                     "The MediaData with uid {0} is a {1} which is not a VideoMediaData",
                                                      uid, md.GetType().FullName));
             }
-            ImageMediaData = md as ImageMediaData;
+            VideoMediaData = md as VideoMediaData;
         }
 
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             base.XukOutAttributes(destination, baseUri);
 
-            destination.WriteAttributeString(XukStrings.MediaDataUid, ImageMediaData.Uid);
+            destination.WriteAttributeString(XukStrings.MediaDataUid, VideoMediaData.Uid);
         }
     }
 }

@@ -8,6 +8,7 @@ using urakawa.core;
 using urakawa.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
+using urakawa.media.data.video;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
@@ -1247,9 +1248,14 @@ namespace urakawa
         {
             Channel ch = ChannelFactory.Create();
             ChannelsManager.RemoveManagedObject(ch);
+
             ch = ChannelFactory.CreateTextChannel();
             ChannelsManager.RemoveManagedObject(ch);
+
             ch = ChannelFactory.CreateImageChannel();
+            ChannelsManager.RemoveManagedObject(ch);
+
+            ch = ChannelFactory.CreateVideoChannel();
             ChannelsManager.RemoveManagedObject(ch);
             //
             DataProvider dpAudio = DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
@@ -1270,6 +1276,24 @@ namespace urakawa
             dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_SVG_MIME_TYPE);
             DataProviderManager.RemoveDataProvider(dpImage, true);
             //
+            DataProvider dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_AVI_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpVideo, true);
+            //
+            dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_MOV_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpVideo, true);
+            //
+            dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_MPG_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpVideo, true);
+            //
+            dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_WMV_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpVideo, true);
+            //
+            dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_WEBM_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpVideo, true);
+            //
+            dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_OGG_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpVideo, true);
+            //
             CommandFactory.CreateCompositeCommand();
             //
             MediaData mdImage = MediaDataFactory.CreateImageMediaData();
@@ -1277,6 +1301,12 @@ namespace urakawa
             //
             ManagedImageMedia manImgMedia = MediaFactory.CreateManagedImageMedia();
             manImgMedia.MediaData = mdImage;
+            //
+            MediaData mdVideo = MediaDataFactory.CreateVideoMediaData();
+            MediaDataManager.RemoveManagedObject(mdVideo);
+            //
+            ManagedVideoMedia manVideoMedia = MediaFactory.CreateManagedVideoMedia();
+            manVideoMedia.MediaData = mdVideo;
             //
             MediaData mdAudio = MediaDataFactory.CreateAudioMediaData();
             //

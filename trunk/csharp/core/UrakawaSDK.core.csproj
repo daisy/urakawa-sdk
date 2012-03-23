@@ -233,6 +233,14 @@
     <Compile Include="media\data\image\codec\SvgImageMediaData.cs" />
     <Compile Include="media\data\image\ImageMediaData.cs" />
     <Compile Include="media\data\image\ManagedImageMedia.cs" />
+    <Compile Include="media\data\video\codec\AviVideoMediaData.cs" />
+    <Compile Include="media\data\video\codec\MovVideoMediaData.cs" />
+    <Compile Include="media\data\video\codec\MpgVideoMediaData.cs" />
+    <Compile Include="media\data\video\codec\OggVideoMediaData.cs" />
+    <Compile Include="media\data\video\codec\WebmVideoMediaData.cs" />
+    <Compile Include="media\data\video\codec\WmvVideoMediaData.cs" />
+    <Compile Include="media\data\video\ManagedVideoMedia.cs" />
+    <Compile Include="media\data\video\VideoMediaData.cs" />
     <Compile Include="media\timing\Time_Compare.cs" />
     <Compile Include="media\timing\Time_String.cs" />
     <Compile Include="metadata\daisy\SupportedMetadata_Z39862005.cs" />
@@ -298,6 +306,7 @@
     <Compile Include="property\channel\ImageChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />
     <Compile Include="property\channel\TextChannel.cs" />
+    <Compile Include="property\channel\VideoChannel.cs" />
     <Compile Include="property\Property.cs" />
     <Compile Include="IValueEquatable.cs" />
     <Compile Include="media\data\audio\AudioMediaData.cs" />
