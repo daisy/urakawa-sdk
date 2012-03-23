@@ -393,7 +393,7 @@ namespace SoundTouch
         {
             _isSampleRateSet = true;
             // set sample rate, leave other tempo changer parameters as they are.
-            _stretch.SetParameters(rate);
+            _stretch.SetParameters(rate,-1,-1,-1);
         }
 
         /// <summary>
