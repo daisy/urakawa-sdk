@@ -113,6 +113,18 @@ namespace AudioLib
                 m_UseSoundTouch = value;
             }
         }
+#else
+        public bool UseSoundTouch
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+            set
+            {
+                throw new NotSupportedException();
+            }
+        }
 #endif //USE_SOUNDTOUCH
 
 
