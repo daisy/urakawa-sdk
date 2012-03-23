@@ -165,7 +165,7 @@ namespace AudioLib
                     {
                         byte byte1 = m_SoundTouch_ByteBuffer[i + channel];
                         byte byte2 = m_SoundTouch_ByteBuffer[i + channel + 1];
-                        var sample =
+                        short sample =
                             BitConverter.IsLittleEndian
                             ? (short)(byte1 | (byte2 << 8))
                             : (short)((byte1 << 8) | byte2);
