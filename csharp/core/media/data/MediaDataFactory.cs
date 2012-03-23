@@ -5,6 +5,8 @@ using urakawa.media.data.audio;
 using urakawa.media.data.image;
 using urakawa.media.data.audio.codec;
 using urakawa.media.data.image.codec;
+using urakawa.media.data.video;
+using urakawa.media.data.video.codec;
 using urakawa.xuk;
 
 namespace urakawa.media.data
@@ -59,21 +61,8 @@ namespace urakawa.media.data
 
         private Type mDefaultAudioMediaDataType = typeof(WavAudioMediaData);
         private Type m_DefaultImageMediaDataType = typeof(JpgImageMediaData);
+        private Type m_DefaultVideoMediaDataType = typeof(MpgVideoMediaData);
 
-        /// <summary>
-        /// Gets or sets the default <see cref="AudioMediaData"/> <see cref="Type"/>
-        /// </summary>
-        /// <exception cref="MethodParameterIsNullException">
-        /// Thrown when trying to set to <c>null</c>
-        /// </exception>
-        /// <exception cref="MethodParameterIsWrongTypeException">
-        /// Thrown when trying to set to a <see cref="Type"/> that:
-        /// <list type="ol">
-        /// <item>Does not implement <see cref="AudioMediaData"/></item>
-        /// <item>Is abstract</item>
-        /// <item>Does npot have a default constructor</item>
-        /// </list>
-        /// </exception>
         public Type DefaultAudioMediaDataType
         {
             get
@@ -102,6 +91,32 @@ namespace urakawa.media.data
                 mDefaultAudioMediaDataType = value;
             }
         }
+
+
+        public AudioMediaData CreateAudioMediaData()
+        {
+            return Create(DefaultAudioMediaDataType) as AudioMediaData;
+        }
+
+        public AudioMediaData CreateAudioMediaData(string extension)
+        {
+            if (String.Equals(extension, DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<WavAudioMediaData>();
+            }
+            //else if (String.Equals(extension, DataProviderFactory.AUDIO_MP3_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            //{
+            //    return Create<Mp3AudioMediaData>();
+            //}
+
+            return null;
+        }
+
+
+
+
+
+
 
         public Type DefaultImageMediaDataType
         {
@@ -168,23 +183,81 @@ namespace urakawa.media.data
         }
 
 
-        public AudioMediaData CreateAudioMediaData()
+
+
+
+
+        public Type DefaultVideoMediaDataType
         {
-            return Create(DefaultAudioMediaDataType) as AudioMediaData;
+            get
+            {
+                return m_DefaultVideoMediaDataType;
+            }
+
+            set
+            {
+                if (value == null)
+                {
+                    throw new MethodParameterIsNullException("The default VideoMediaData Type cannot be null");
+                }
+                if (!(typeof(VideoMediaData).IsAssignableFrom(value)))
+                {
+                    throw new MethodParameterIsWrongTypeException("The default VideoMediaData Type must be a subclass of VideoMediaData");
+                }
+                if (value.IsAbstract)
+                {
+                    throw new MethodParameterIsWrongTypeException("The default VideoMediaData Type cannot be an abstract class");
+                }
+                if (value.GetConstructor(Type.EmptyTypes) == null)
+                {
+                    throw new MethodParameterIsWrongTypeException("The default VideoMediaData Type must have a default constructor");
+                }
+                m_DefaultVideoMediaDataType = value;
+            }
         }
 
-        public AudioMediaData CreateAudioMediaData(string extension)
+        public VideoMediaData CreateVideoMediaData()
         {
-            if (String.Equals(extension, DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            return Create(m_DefaultVideoMediaDataType) as VideoMediaData;
+        }
+
+
+        public VideoMediaData CreateVideoMediaData(string extension)
+        {
+            if (String.Equals(extension, DataProviderFactory.VIDEO_MPG_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(extension, DataProviderFactory.VIDEO_MPEG_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(extension, DataProviderFactory.VIDEO_MP4_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(extension, DataProviderFactory.VIDEO_M2V_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(extension, DataProviderFactory.VIDEO_M4V_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(extension, DataProviderFactory.VIDEO_3GP_EXTENSION, StringComparison.OrdinalIgnoreCase)
+
+                )
             {
-                return Create<WavAudioMediaData>();
+                return Create<MpgVideoMediaData>();
             }
-            //else if (String.Equals(extension, DataProviderFactory.AUDIO_MP3_EXTENSION, StringComparison.OrdinalIgnoreCase))
-            //{
-            //    return Create<Mp3AudioMediaData>();
-            //}
+            else if (String.Equals(extension, DataProviderFactory.VIDEO_AVI_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<AviVideoMediaData>();
+            }
+            else if (String.Equals(extension, DataProviderFactory.VIDEO_WEBM_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<WebmVideoMediaData>();
+            }
+            else if (String.Equals(extension, DataProviderFactory.VIDEO_OGG_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<OggVideoMediaData>();
+            }
+            else if (String.Equals(extension, DataProviderFactory.VIDEO_MOV_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<MovVideoMediaData>();
+            }
+            else if (String.Equals(extension, DataProviderFactory.VIDEO_WMV_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<WmvVideoMediaData>();
+            }
 
             return null;
         }
+
     }
 }

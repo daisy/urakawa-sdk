@@ -156,6 +156,9 @@ namespace urakawa.daisy.import
             m_ImageChannel = presentation.ChannelFactory.CreateImageChannel();
             m_ImageChannel.Name = "The Image Channel";
 
+            m_VideoChannel = presentation.ChannelFactory.CreateVideoChannel();
+            m_VideoChannel.Name = "The Video Channel";
+
             /*string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
            if (Directory.Exists(dataPath))
            {

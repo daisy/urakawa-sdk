@@ -131,7 +131,11 @@ namespace urakawa.commands
 
 #if DEBUG
                     QualifiedName qname = node.GetXmlElementQName();
-                    if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+                    if (qname != null &&
+                        (qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                        || qname.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                        )
+                        )
                     {
                         urakawa.property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute("alt");
                         if (xmlAttr != null)

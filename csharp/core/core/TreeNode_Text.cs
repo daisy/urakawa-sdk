@@ -117,6 +117,11 @@ namespace urakawa.core
 
         public static string ConcatStringChunks(StringChunkRange range, int maxLength, StringBuilder stringBuilder)
         {
+            if (range == null)
+            {
+                return null;
+            }
+
             return ConcatStringChunks(range.First, range.Last, maxLength, stringBuilder);
         }
 
@@ -687,7 +692,12 @@ namespace urakawa.core
             {
                 QualifiedName qName = GetXmlElementQName();
 
-                if (qName != null && qName.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+                if (qName != null &&
+                    (
+                    qName.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                    || qName.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                    )
+                    )
                 {
                     XmlAttribute xmlAttr = GetXmlProperty().GetAttribute("alt");
                     if (xmlAttr != null)
@@ -756,13 +766,13 @@ namespace urakawa.core
             //}
 
 
-#if DEBUG
-            Debugger.Break();
-#endif
-
             StringChunk localText = GetTextChunk();
             if (localText != null)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
+
                 return new StringChunkRange(localText, localText);
             }
 
@@ -797,7 +807,16 @@ namespace urakawa.core
                 }
             }
 
-            return new StringChunkRange(first, last);
+            if (first != null && last != null)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+
+                return new StringChunkRange(first, last);
+            }
+
+            return null;
         }
     }
 }
