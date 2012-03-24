@@ -19,8 +19,8 @@ namespace urakawa.daisy.export
     {
         public void CreateSmilNodesForImageDescription(urakawa.core.TreeNode n, XmlDocument smilDocument, XmlNode mainSeq, Time durationOfCurrentSmil, AlternateContentProperty altProperty, string smilFileName)
         {
-            try
-            {
+            //try
+            //{
                 int counter = 0;
                 foreach (string diagramDescriptionElementName in m_AltProperty_DescriptionMap[altProperty].ImageDescNodeToAltContentMap.Keys)
                 {
@@ -94,11 +94,11 @@ namespace urakawa.daisy.export
                         durationOfCurrentSmil.Add(managedAudio.Duration);
                     }
                 }
-            }
-            catch (System.Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show(ex.ToString());
-            }
+            //}
+            //catch (System.Exception ex)
+            //{
+            //    System.Windows.Forms.MessageBox.Show(ex.ToString());
+            //}
         }
 
 
@@ -148,7 +148,7 @@ namespace urakawa.daisy.export
                     }
                 }
                     */
-                    System.Windows.Forms.MessageBox.Show(xn.Name);
+                    //System.Windows.Forms.MessageBox.Show(xn.Name);
                 }
             }
         }

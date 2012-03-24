@@ -21,6 +21,33 @@ namespace urakawa.data
     /// </summary>
     public class FileDataProvider : DataProvider
     {
+        public static string EliminateForbiddenFileNameCharacters(string str)
+        {
+            string newStr = str
+                .Replace(""+Path.DirectorySeparatorChar, "_")
+                .Replace(""+Path.AltDirectorySeparatorChar, "_");
+
+            if (newStr.Contains("/"))
+            {
+                newStr = newStr.Replace("/", "_");
+            }
+            if (newStr.Contains("\\"))
+            {
+                newStr = newStr.Replace("\\", "_");
+            }
+
+            newStr = newStr.Replace(":", "-")
+                .Replace("*", "-")
+                .Replace("?", "-")
+                .Replace("<", "-")
+                .Replace(">", "-")
+                .Replace("|", "-")
+                .Replace("\"", "-")
+                ;
+
+            return newStr;
+        }
+
         private static int MAX_ATTEMPTS = 10;
         public static void DeleteDirectory(string path)
         {
