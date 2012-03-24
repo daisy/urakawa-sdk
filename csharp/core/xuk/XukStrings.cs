@@ -763,6 +763,10 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || IsPrettyFormat) ? "MpgVideoMediaData" : "mpgVd"); }
         }
+        public static string Mp4VideoMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "Mp4VideoMediaData" : "mp4Vd"); }
+        }
         public static string WebmVideoMediaData
         {
             get { return ((mProject == null || IsPrettyFormat) ? "WebmVideoMediaData" : "webmVd"); }

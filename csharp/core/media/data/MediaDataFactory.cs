@@ -226,14 +226,16 @@ namespace urakawa.media.data
         {
             if (String.Equals(extension, DataProviderFactory.VIDEO_MPG_EXTENSION, StringComparison.OrdinalIgnoreCase)
                 || String.Equals(extension, DataProviderFactory.VIDEO_MPEG_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(extension, DataProviderFactory.VIDEO_MP4_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(extension, DataProviderFactory.VIDEO_M2V_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(extension, DataProviderFactory.VIDEO_M4V_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(extension, DataProviderFactory.VIDEO_3GP_EXTENSION, StringComparison.OrdinalIgnoreCase)
-
+                //|| String.Equals(extension, DataProviderFactory.VIDEO_M2V_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                //|| String.Equals(extension, DataProviderFactory.VIDEO_M4V_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                //|| String.Equals(extension, DataProviderFactory.VIDEO_3GP_EXTENSION, StringComparison.OrdinalIgnoreCase)
                 )
             {
                 return Create<MpgVideoMediaData>();
+            }
+            else if (String.Equals(extension, DataProviderFactory.VIDEO_MP4_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<Mp4VideoMediaData>();
             }
             else if (String.Equals(extension, DataProviderFactory.VIDEO_AVI_EXTENSION, StringComparison.OrdinalIgnoreCase))
             {

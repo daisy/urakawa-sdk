@@ -106,10 +106,13 @@ namespace urakawa.data
         public const string VIDEO_MPG_MIME_TYPE = "video/mpg";
         public const string VIDEO_MPG_EXTENSION = ".mpg";
         public const string VIDEO_MPEG_EXTENSION = ".mpeg";
+
+        public const string VIDEO_MP4_MIME_TYPE = "video/mp4";
         public const string VIDEO_MP4_EXTENSION = ".mp4";
-        public const string VIDEO_M4V_EXTENSION = ".m4v";
-        public const string VIDEO_M2V_EXTENSION = ".m2v";
-        public const string VIDEO_3GP_EXTENSION = ".3gp";
+
+        //public const string VIDEO_M4V_EXTENSION = ".m4v";
+        //public const string VIDEO_M2V_EXTENSION = ".m2v";
+        //public const string VIDEO_3GP_EXTENSION = ".3gp";
 
 
         public const string VIDEO_OGG_MIME_TYPE = "video/ogg";
@@ -170,6 +173,9 @@ namespace urakawa.data
                     break;
                 case VIDEO_MPG_MIME_TYPE:
                     extension = VIDEO_MPG_EXTENSION;
+                    break;
+                case VIDEO_MP4_MIME_TYPE:
+                    extension = VIDEO_MP4_EXTENSION;
                     break;
                 case VIDEO_WMV_MIME_TYPE:
                     extension = VIDEO_WMV_EXTENSION;
@@ -233,12 +239,14 @@ namespace urakawa.data
             string mime;
             switch (extension)
             {
+                case VIDEO_MP4_EXTENSION:
+                    mime = VIDEO_MP4_MIME_TYPE;
+                    break;
                 case VIDEO_MPG_EXTENSION:
                 case VIDEO_MPEG_EXTENSION:
-                case VIDEO_MP4_EXTENSION:
-                case VIDEO_M2V_EXTENSION:
-                case VIDEO_M4V_EXTENSION:
-                case VIDEO_3GP_EXTENSION:
+                //case VIDEO_M2V_EXTENSION:
+                //case VIDEO_M4V_EXTENSION:
+                //case VIDEO_3GP_EXTENSION:
                     mime = VIDEO_MPG_MIME_TYPE;
                     break;
                 case VIDEO_AVI_EXTENSION:
