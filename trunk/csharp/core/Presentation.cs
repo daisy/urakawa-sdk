@@ -1285,6 +1285,9 @@ namespace urakawa
             dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_MPG_MIME_TYPE);
             DataProviderManager.RemoveDataProvider(dpVideo, true);
             //
+            dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_MP4_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpVideo, true);
+            //
             dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_WMV_MIME_TYPE);
             DataProviderManager.RemoveDataProvider(dpVideo, true);
             //
