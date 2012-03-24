@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using AudioLib;
+using urakawa.data;
 using urakawa.media;
 using urakawa.media.data.video;
 using urakawa.metadata;
@@ -305,14 +306,18 @@ namespace urakawa.daisy.export
                         if (currentXmlNode.LocalName != null
                             && currentXmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
                         {
-                            string exportImageName = null;
                             XmlAttribute imgSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
                             if (imgSrcAttribute != null &&
                                 n.GetImageMedia() != null
                                 && n.GetImageMedia() is media.data.image.ManagedImageMedia)
                             {
                                 media.data.image.ManagedImageMedia managedImage = (media.data.image.ManagedImageMedia)n.GetImageMedia();
-                                exportImageName = managedImage.ImageMediaData.OriginalRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
+
+                                //if (FileDataProvider.isHTTPFile(managedImage.ImageMediaData.OriginalRelativePath))                                
+                                //exportImageName = Path.GetFileName(managedImage.ImageMediaData.OriginalRelativePath);
+
+                                string exportImageName = FileDataProvider.EliminateForbiddenFileNameCharacters(managedImage.ImageMediaData.OriginalRelativePath);
+
                                 string destPath = Path.Combine(m_OutputDirectory, exportImageName);
 
                                 if (!File.Exists(destPath))
@@ -337,16 +342,19 @@ namespace urakawa.daisy.export
                         else if (currentXmlNode.LocalName != null
                             && currentXmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase))
                         {
-                            string exportVideoName = null;
                             XmlAttribute videoSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
                             if (videoSrcAttribute != null &&
                                 n.GetVideoMedia() != null
                                 && n.GetVideoMedia() is ManagedVideoMedia)
                             {
                                 ManagedVideoMedia managedVideo = (ManagedVideoMedia)n.GetVideoMedia();
-                                exportVideoName = managedVideo.VideoMediaData.OriginalRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
-                                string destPath = Path.Combine(m_OutputDirectory, exportVideoName);
 
+                                //if (FileDataProvider.isHTTPFile(managedVideo.VideoMediaData.OriginalRelativePath))                                
+                                //exportVideoName = Path.GetFileName(managedVideo.VideoMediaData.OriginalRelativePath);
+
+                                string exportVideoName = FileDataProvider.EliminateForbiddenFileNameCharacters(managedVideo.VideoMediaData.OriginalRelativePath);
+
+                                string destPath = Path.Combine(m_OutputDirectory, exportVideoName);
                                 if (!File.Exists(destPath))
                                 {
                                     if (RequestCancellation) return false;

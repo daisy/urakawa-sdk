@@ -110,8 +110,8 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
 
         public override void DoWork()
         {
-            try
-            {
+            //try
+            //{
                 m_FilesList_Image = new List<string>();
                 m_FilesList_Video = new List<string>();
                 m_FilesList_ExternalFiles = new List<string>();
@@ -138,11 +138,11 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
 
                 //m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
                 RemovePublishChannel(publishChannel);
-            }
-            catch (System.Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show(ex.ToString());
-            }
+            //}
+            //catch (System.Exception ex)
+            //{
+            //    System.Windows.Forms.MessageBox.Show(ex.ToString());
+            //}
 
         }
 

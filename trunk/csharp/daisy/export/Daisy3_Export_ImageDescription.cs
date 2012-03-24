@@ -34,7 +34,9 @@ namespace urakawa.daisy.export
         private const string IMAGE_DESCRIPTION_DIRECTORY_SUFFIX = "_DIAGRAM_Description";
         private string getAndCreateImageDescriptionDirectoryPath(string imageSRC)
         {
-            string imageDescriptionDirName = imageSRC.Replace('.', '_').Replace(Path.DirectorySeparatorChar, '_') + IMAGE_DESCRIPTION_DIRECTORY_SUFFIX;
+
+            string imageDescriptionDirName = FileDataProvider.EliminateForbiddenFileNameCharacters(imageSRC).Replace('.', '_') + IMAGE_DESCRIPTION_DIRECTORY_SUFFIX;
+
             string m_ImageDescriptionDirectoryPath = Path.Combine(m_OutputDirectory, imageDescriptionDirName);
 
             if (!Directory.Exists(m_ImageDescriptionDirectoryPath))
