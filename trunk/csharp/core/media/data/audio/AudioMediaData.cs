@@ -184,7 +184,7 @@ namespace urakawa.media.data.audio
         /// </remarks>
         public Stream OpenPcmInputStream(Time clipBegin)
         {
-            return OpenPcmInputStream(clipBegin, new Time(AudioDuration.AsTimeSpan));
+            return OpenPcmInputStream(clipBegin, new Time(AudioDuration));
         }
 
         /// <summary>
@@ -384,7 +384,7 @@ namespace urakawa.media.data.audio
         /// <param name="clipBegin">The clip begin</param>
         public virtual void RemovePcmData(Time clipBegin)
         {
-            RemovePcmData(clipBegin, new Time(AudioDuration.AsTimeSpan));
+            RemovePcmData(clipBegin, new Time(AudioDuration));
         }
 
         /// <summary>
@@ -451,7 +451,7 @@ namespace urakawa.media.data.audio
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The split point can not be negative");
             }
-            if (splitPoint.IsGreaterThan(new Time(AudioDuration.AsTimeSpan)))
+            if (splitPoint.IsGreaterThan(new Time(AudioDuration)))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The split point can not be beyond the end of the AudioMediaData");
@@ -464,7 +464,7 @@ namespace urakawa.media.data.audio
                                                                          XukLocalName, XukNamespaceUri));
             }
             AudioMediaData secondPartAMD = (AudioMediaData)md;
-            Time spDur = new Time(AudioDuration.AsTimeSpan).GetDifference(splitPoint);
+            Time spDur = new Time(AudioDuration).GetDifference(splitPoint);
             Stream secondPartAudioStream = OpenPcmInputStream(splitPoint);
             try
             {

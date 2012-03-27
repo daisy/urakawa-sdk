@@ -21,14 +21,14 @@ namespace urakawa.daisy.import
         protected VideoChannel m_VideoChannel;
         protected TextChannel m_textChannel;
 
-        private string trimXmlTextInnerSpaces(string str)
-        {
-            string[] whiteSpaces = new string[] { " ", "" + '\t', "\r\n", Environment.NewLine };
-            string[] strSplit = str.Split(whiteSpaces, StringSplitOptions.RemoveEmptyEntries);
-            return String.Join(" ", strSplit);
+        //private string trimXmlTextInnerSpaces(string str)
+        //{
+        //    string[] whiteSpaces = new string[] { " ", "" + '\t', "\r\n", Environment.NewLine };
+        //    string[] strSplit = str.Split(whiteSpaces, StringSplitOptions.RemoveEmptyEntries);
+        //    return String.Join(" ", strSplit);
 
-            //string strMultipleWhiteSpacesCollapsedToOneSpace = Regex.Replace(str, @"\s+", " ");
-        }
+        //    //string strMultipleWhiteSpacesCollapsedToOneSpace = Regex.Replace(str, @"\s+", " ");
+        //}
 
         private void parseContentDocuments(List<string> spineOfContentDocuments)
         {

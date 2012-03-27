@@ -55,7 +55,7 @@ namespace urakawa.media.data.audio.codec
             {
                 if (mClipEnd == null)
                 {
-                    mClipEnd = new Time(MediaDuration.AsTimeSpan);
+                    mClipEnd = new Time(MediaDuration);
                 }
                 return mClipEnd;
             }
@@ -72,7 +72,7 @@ namespace urakawa.media.data.audio.codec
                         throw new exception.MethodParameterIsOutOfBoundsException(
                             "The new clip end time is before current clip begin");
                     }
-                    if (value.IsGreaterThan(new Time(MediaDuration.AsTimeSpan)))
+                    if (value.IsGreaterThan(new Time(MediaDuration)))
                     {
                         throw new exception.MethodParameterIsOutOfBoundsException(
                             "The new clip end time is greater than the duration of the underlying media");
@@ -279,7 +279,7 @@ namespace urakawa.media.data.audio.codec
         /// <seealso cref="OpenPcmInputStream(urakawa.media.timing.Time,urakawa.media.timing.Time)"/>
         public Stream OpenPcmInputStream(Time subClipBegin)
         {
-            return OpenPcmInputStream(subClipBegin, new Time(Duration.AsTimeSpan));
+            return OpenPcmInputStream(subClipBegin, new Time(Duration));
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace urakawa.media.data.audio.codec
             if (
                 subClipBegin.IsLessThan(Time.Zero)
                 || subClipEnd.IsLessThan(subClipBegin)
-                || subClipEnd.IsGreaterThan(new Time(Duration.AsTimeSpan))
+                || subClipEnd.IsGreaterThan(new Time(Duration))
                 )
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(

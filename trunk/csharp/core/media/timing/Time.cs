@@ -35,12 +35,19 @@ namespace urakawa.media.timing
 
         public Time(long timeInLocalUnits)
         {
-            AsLocalUnits = timeInLocalUnits;
+            m_TimeSpan = ConvertFromLocalUnitsToTimeSpan(timeInLocalUnits);
         }
 
         public Time(TimeSpan timeSpan)
         {
-            AsTimeSpan = new TimeSpan(timeSpan.Ticks);
+            //AsTimeSpan = ...
+            m_TimeSpan = new TimeSpan(timeSpan.Ticks);
+        }
+
+        public Time(Time time) : this(time.m_TimeSpan)
+        {
+            //AsTimeSpan = ...
+            //m_TimeSpan = new TimeSpan(time.m_TimeSpan.Ticks);
         }
 
         public Time(string stringRepresentation)
@@ -112,36 +119,40 @@ namespace urakawa.media.timing
             }
             private set
             {
-                if (value == long.MaxValue)
-                {
-                    AsTimeSpan = TimeSpan.MaxValue;
-                    return;
-                }
-                if (value == long.MinValue)
-                {
-                    AsTimeSpan = TimeSpan.MinValue;
-                    return;
-                }
-                if (value == 0)
-                {
-                    AsTimeSpan = TimeSpan.Zero;
-                    return;
-                }
-
-                double timeMillisecondsDecimal = (double)value / TIME_UNIT;
-
-                int decimalPlaces = TIME_UNIT == 1 ? 0 : TIME_UNIT == 1000 ? 3 : TIME_UNIT == 1000000 ? 6 : 7;
-                DebugFix.Assert(decimalPlaces != 7);
-                timeMillisecondsDecimal = Math.Round(timeMillisecondsDecimal, decimalPlaces, MidpointRounding.AwayFromZero);
-
-                double ticksDecimal = timeMillisecondsDecimal * TimeSpan.TicksPerMillisecond;
-                long ticksIntegral = (long)(AudioLibPCMFormat.USE_ROUND_NOT_TRUNCATE ? Math.Round(ticksDecimal) : Math.Truncate(ticksDecimal));
-
-                // checking whether we are loosing fractions of milliseconds
-                /////DebugFix.Assert(ticksDecimal == (double)ticksIntegral);
-
-                AsTimeSpan = TimeSpan.FromTicks(ticksIntegral);
+                AsTimeSpan = ConvertFromLocalUnitsToTimeSpan(value);
             }
+        }
+
+        public static TimeSpan ConvertFromLocalUnitsToTimeSpan(long timeInLocalUnits)
+        {
+            if (timeInLocalUnits == long.MaxValue)
+            {
+                return TimeSpan.MaxValue;
+            }
+            if (timeInLocalUnits == long.MinValue)
+            {
+                return TimeSpan.MinValue;
+            }
+            if (timeInLocalUnits == 0)
+            {
+                return TimeSpan.Zero;
+            }
+
+            double timeMillisecondsDecimal = (double)timeInLocalUnits / TIME_UNIT;
+
+            int decimalPlaces = TIME_UNIT == 1 ? 0 : TIME_UNIT == 1000 ? 3 : TIME_UNIT == 1000000 ? 6 : 7;
+            DebugFix.Assert(decimalPlaces != 7);
+            timeMillisecondsDecimal = Math.Round(timeMillisecondsDecimal, decimalPlaces, MidpointRounding.AwayFromZero);
+
+            double ticksDecimal = timeMillisecondsDecimal * TimeSpan.TicksPerMillisecond;
+            long ticksIntegral =
+                (long)
+                (AudioLibPCMFormat.USE_ROUND_NOT_TRUNCATE ? Math.Round(ticksDecimal) : Math.Truncate(ticksDecimal));
+
+            // checking whether we are loosing fractions of milliseconds
+            /////DebugFix.Assert(ticksDecimal == (double)ticksIntegral);
+
+            return TimeSpan.FromTicks(ticksIntegral);
         }
 
         public TimeSpan AsTimeSpan
@@ -150,10 +161,15 @@ namespace urakawa.media.timing
             private set { m_TimeSpan = new TimeSpan(value.Ticks); }
         }
 
+        public TimeSpan GetReadOnlyInternalTimeSpan()
+        {
+            return m_TimeSpan;
+        }
+
 
         public Time Copy()
         {
-            return new Time(m_TimeSpan);
+            return new Time(this);
         }
 
         public void Add(Time other)

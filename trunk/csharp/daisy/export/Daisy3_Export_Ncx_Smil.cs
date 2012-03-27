@@ -710,7 +710,7 @@ namespace urakawa.daisy.export
                 return;
             }
             // write ncs document to file
-            m_TotalTime = new Time(smilElapseTime.AsTimeSpan);
+            m_TotalTime = new Time(smilElapseTime);
             AddMetadata_Ncx(ncxDocument, totalPageCount.ToString(), maxNormalPageNumber.ToString(), maxDepth.ToString(), ncxCustomTestList);
             XmlReaderWriterHelper.WriteXmlDocument(ncxDocument, Path.Combine(m_OutputDirectory, m_Filename_Ncx));
         }
