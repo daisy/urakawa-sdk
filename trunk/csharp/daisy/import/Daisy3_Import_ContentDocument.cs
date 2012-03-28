@@ -378,16 +378,19 @@ namespace urakawa.daisy.import
                                 if (attr.LocalName != "smilref"
                                     && attr.LocalName != "imgref") // && attr.Name != "xmlns:xsi" && attr.Name != "xml:space"
                                 {
-                                    if (attr.Name.Contains(":"))
+                                    if (attr.Name.Equals("xml:space", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        // TODO: ignore  xml:space="preserve"  (e.g. in Bookshare DTBooks)
+                                    }
+                                    else if (attr.Name.Contains(":"))
                                     {
                                         string[] splitArray = attr.Name.Split(':');
 
                                         if (splitArray[0] == "xmlns")
                                         {
-                                            if (xmlNode.LocalName == "book" || treeNode.Parent == null)
-                                            {
-                                                xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
-                                            }
+                                            DebugFix.Assert(xmlNode.LocalName == "book" || treeNode.Parent == null);
+
+                                            xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
                                         }
                                         else
                                         {
