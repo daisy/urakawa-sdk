@@ -87,6 +87,10 @@ namespace urakawa.core
 
         public static int GetLengthStringChunks(StringChunkRange range)
         {
+            if (range == null)
+            {
+                return 0;
+            }
             return GetLengthStringChunks(range.First, range.Last);
         }
 
