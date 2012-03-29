@@ -53,31 +53,9 @@ namespace urakawa.daisy.export
                     if (altContent.Audio != null)
                     {
                         media.data.audio.ManagedAudioMedia managedAudio = altContent.Audio;
-                        DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
+                        string srcPath = m_Map_AltContentAudio_to_RelativeExportedFilePath[altContent];
 
-                        //string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
-                        string exportAudioName = Path.GetFileNameWithoutExtension(smilFileName) + "_" + counter.ToString() + DataProviderFactory.AUDIO_WAV_EXTENSION;
-                        string imageSRC = m_FilesList_Image[m_FilesList_Image.Count - 1];
-                        string imageDescriptionDirectoryPath = getAndCreateImageDescriptionDirectoryPath(imageSRC);
-                        string destPath = Path.Combine(imageDescriptionDirectoryPath, exportAudioName);
-
-                        if (!File.Exists(destPath))
-                        {
-
-                            dataProvider.ExportDataStreamToFile(destPath, false);
-
-                            if (m_encodeToMp3)
-                            {
-                                string convertedFile = EncodeWavFileToMp3(destPath);
-                                if (convertedFile != null) exportAudioName = Path.GetFileName(convertedFile);
-                            }
-                        }
-
-                        //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
-                        //DiagramContentModelHelper.TOBI_Audio, exportAudioName, DiagramContentModelHelper.NS_URL_TOBI);
-                        DirectoryInfo d = new DirectoryInfo(imageDescriptionDirectoryPath);
-
-                        string srcPath = d.Name + "/" + exportAudioName;
+                        DebugFix.Assert(!string.IsNullOrEmpty(srcPath));
 
                         XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
                         XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
@@ -88,7 +66,10 @@ namespace urakawa.daisy.export
                                                                    srcPath);
                         parNode.AppendChild(audioNode);
 
-                        if (!m_FilesList_Audio.Contains(srcPath)) m_FilesList_Audio.Add(srcPath);
+                        if (!m_FilesList_Audio.Contains(srcPath))
+                        {
+                            m_FilesList_Audio.Add(srcPath);
+                        }
 
                         // add to duration 
                         durationOfCurrentSmil.Add(managedAudio.Duration);
@@ -101,6 +82,8 @@ namespace urakawa.daisy.export
             //}
         }
 
+        private Dictionary<AlternateContent, string> m_Map_AltContentAudio_to_RelativeExportedFilePath =
+            new Dictionary<AlternateContent, string>();
 
 
         private Dictionary<AlternateContentProperty, XmlDocument> m_AltProperrty_DiagramDocument = new Dictionary<AlternateContentProperty, XmlDocument>();

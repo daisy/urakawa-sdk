@@ -13,15 +13,20 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
+
+
+
+
+
+
+
+
         private bool IsIncludedInDTBook(string name)
         {
             return (name == DiagramContentModelHelper.D_LondDesc
                     || name == DiagramContentModelHelper.D_SimplifiedLanguageDescription
                     || name == DiagramContentModelHelper.D_Summary);
         }
-
-
-
         private class Description
         {
             public readonly Dictionary<string, AlternateContent> ImageDescNodeToAltContentMap = new Dictionary<string, AlternateContent>();
@@ -29,9 +34,14 @@ namespace urakawa.daisy.export
         private Dictionary<AlternateContentProperty, Description> m_AltProperty_DescriptionMap = new Dictionary<AlternateContentProperty, Description>();
 
 
-        private const string IMAGE_DESCRIPTION_XML_SUFFIX = "_DIAGRAM_Description";
 
+
+
+
+
+        private const string IMAGE_DESCRIPTION_XML_SUFFIX = "_DIAGRAM_Description";
         private const string IMAGE_DESCRIPTION_DIRECTORY_SUFFIX = "_DIAGRAM_Description";
+
         private string getAndCreateImageDescriptionDirectoryPath(string imageSRC)
         {
 
