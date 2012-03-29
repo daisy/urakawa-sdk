@@ -65,8 +65,8 @@ namespace urakawa.daisy.export
                             contentXmlNode = descriptionDocument.CreateElement(xmlNodeName.Replace(':', '_'),
                                 DiagramContentModelHelper.NS_URL_ZAI);
                         }
-                        
-                        
+
+
                         //bodyNode.AppendChild(contentXmlNode);
 
                         if (!String.IsNullOrEmpty(xmlNodeId))
@@ -129,11 +129,11 @@ namespace urakawa.daisy.export
                 {
                     contentXmlNode = descriptionDocument.CreateElement(DiagramContentModelHelper.NA,
                         DiagramContentModelHelper.NS_URL_DIAGRAM);
-                    
+
                     //bodyNode.AppendChild(contentXmlNode);
                 }
 
-                
+
 
                 if (altContent.Image != null)
                 {
@@ -356,14 +356,14 @@ namespace urakawa.daisy.export
                         IsIncludedInDTBook(contentXmlNode.Name)
 
 //                        (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
-//                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_LondDesc, StringComparison.OrdinalIgnoreCase)
-//                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedLanguageDescription, StringComparison.OrdinalIgnoreCase)
-//                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
-//                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedImage, StringComparison.OrdinalIgnoreCase)
-//#if true || SUPPORT_ANNOTATION_ELEMENT
-// || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.Annotation, StringComparison.OrdinalIgnoreCase)
-//#endif //SUPPORT_ANNOTATION_ELEMENT
-//)
+                        //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_LondDesc, StringComparison.OrdinalIgnoreCase)
+                        //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedLanguageDescription, StringComparison.OrdinalIgnoreCase)
+                        //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
+                        //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedImage, StringComparison.OrdinalIgnoreCase)
+                        //#if true || SUPPORT_ANNOTATION_ELEMENT
+                        // || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.Annotation, StringComparison.OrdinalIgnoreCase)
+                        //#endif //SUPPORT_ANNOTATION_ELEMENT
+                        //)
                         )
                     {
                         List<string> list;
@@ -385,29 +385,42 @@ namespace urakawa.daisy.export
                     }
                 }
 
-                //if (altContent.Audio != null)
-                //{
-                //    media.data.audio.ManagedAudioMedia managedAudio = altContent.Audio;
-                //    DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
+                if (altContent.Audio != null)
+                {
+                    media.data.audio.ManagedAudioMedia managedAudio = altContent.Audio;
+                    DataProvider dataProvider = ((WavAudioMediaData)managedAudio.AudioMediaData).ForceSingleDataProvider();
 
-                //    string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
-                //    string destPath = Path.Combine(m_ImageDescriptionDirectoryPath, exportAudioName);
+                    //string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
+                    //string exportAudioName = Path.GetFileNameWithoutExtension(smilFileName) + "_" + counter.ToString() + DataProviderFactory.AUDIO_WAV_EXTENSION;
+                    string exportAudioName = m_Map_AltContentAudio_to_RelativeExportedFilePath.Count + DataProviderFactory.AUDIO_WAV_EXTENSION;
+                    
+                    string destPath = Path.Combine(imageDescriptionDirectoryPath, exportAudioName);
+                    if (!File.Exists(destPath))
+                    {
+                        dataProvider.ExportDataStreamToFile(destPath, false);
 
-                //    if (!File.Exists(destPath))
-                //    {
-                //        //if (RequestCancellation) return false;
-                //        dataProvider.ExportDataStreamToFile(destPath, false);
-                //    }
+                        if (m_encodeToMp3)
+                        {
+                            string convertedFile = EncodeWavFileToMp3(destPath);
+                            if (convertedFile != null)
+                            {
+                                exportAudioName = Path.GetFileName(convertedFile);
+                                if (File.Exists(destPath))
+                                {
+                                    File.Delete(destPath);
+                                }
+                            }
+                        }
+                    }
 
-                //    //string imgSrcAttribute.Value = exportImageName;
-                //    XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
-                //        DiagramContentModelHelper.TOBI_Audio, exportAudioName, DiagramContentModelHelper.NS_URL_TOBI);
-                //    //if (!m_FilesList_Image.Contains(exportImageName))
-                //    //{
-                //    //m_FilesList_Image.Add(exportImageName);
-                //    //}
+                    XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
+                    DiagramContentModelHelper.TOBI_Audio, exportAudioName, DiagramContentModelHelper.NS_URL_TOBI);
 
-                //}
+
+                    DirectoryInfo d = new DirectoryInfo(imageDescriptionDirectoryPath);
+                    string srcPath = d.Name + "/" + exportAudioName;
+                    m_Map_AltContentAudio_to_RelativeExportedFilePath.Add(altContent, srcPath);
+                }
             }
         }
     }
