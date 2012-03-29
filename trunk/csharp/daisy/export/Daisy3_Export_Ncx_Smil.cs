@@ -407,7 +407,7 @@ namespace urakawa.daisy.export
                     }
                 }
 
-                if (m_Image_ProdNoteMap.ContainsKey(n))
+                if (m_includeImageDescriptions && m_Image_ProdNoteMap.ContainsKey(n))
                 {
                     CreateSmilNodesForImageDescription(n, smilDocument, mainSeq, durationOfCurrentSmil, n.GetAlternateContentProperty(), smilFileName);
                 }

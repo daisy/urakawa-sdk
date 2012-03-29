@@ -62,7 +62,9 @@ namespace urakawa.daisy.export
         private string CreateImageDescription(string imageSRC, AlternateContentProperty altProperty, Dictionary<string, List<string>> imageDescriptions)
         {
             XmlDocument descriptionDocument = new XmlDocument();
-            m_AltProperrty_DiagramDocument.Add(altProperty, descriptionDocument);
+            
+            //m_AltProperrty_DiagramDocument.Add(altProperty, descriptionDocument);
+
             // <?xml-stylesheet type="text/xsl" href="desc2html.xsl"?>
             //string processingInstructionData = "type=\"text/xsl\" href=\"desc2html.xsl\"";
             //descriptionDocument.AppendChild(descriptionDocument.CreateProcessingInstruction("xml-stylesheet", processingInstructionData));

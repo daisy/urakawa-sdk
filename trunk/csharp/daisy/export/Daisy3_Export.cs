@@ -42,6 +42,8 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
         
         protected readonly bool m_SkipACM;
         private readonly bool m_encodeToMp3;
+        private readonly bool m_includeImageDescriptions;
+        
         protected readonly SampleRate m_sampleRate;
         private int m_BitRate_Mp3;
         
@@ -52,8 +54,9 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
         /// </summary>
         /// <param name="presentation"></param>
         /// <param name="navListElementNamesList"></param>
-        public Daisy3_Export(Presentation presentation, string exportDirectory, List<string> navListElementNamesList, bool encodeToMp3, SampleRate sampleRate, bool skipACM)
+        public Daisy3_Export(Presentation presentation, string exportDirectory, List<string> navListElementNamesList, bool encodeToMp3, SampleRate sampleRate, bool skipACM, bool includeImageDescriptions)
         {
+            m_includeImageDescriptions = includeImageDescriptions;
             m_encodeToMp3 = encodeToMp3;
             m_sampleRate = sampleRate;
             m_SkipACM = skipACM;
