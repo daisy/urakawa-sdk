@@ -46,7 +46,7 @@ namespace urakawa.daisy.export
 
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFileUrl);
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "external", "true");
-                anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description"));
+                anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description (DIAGRAM XML)"));
 
                 if (imageDescriptions.Count > 0)
                 {

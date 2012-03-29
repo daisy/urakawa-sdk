@@ -18,6 +18,8 @@ namespace urakawa.daisy.export
         {
             string imageDescriptionDirectoryPath = getAndCreateImageDescriptionDirectoryPath(imageSRC);
 
+            int audioFileIndex = 0;
+
             foreach (AlternateContent altContent in altProperty.AlternateContents.ContentsAs_Enumerable)
             {
                 XmlNode contentXmlNode = null;
@@ -392,8 +394,9 @@ namespace urakawa.daisy.export
 
                     //string exportAudioName = ((FileDataProvider)dataProvider).DataFileRelativePath.Replace("" + Path.DirectorySeparatorChar, "_");
                     //string exportAudioName = Path.GetFileNameWithoutExtension(smilFileName) + "_" + counter.ToString() + DataProviderFactory.AUDIO_WAV_EXTENSION;
-                    string exportAudioName = m_Map_AltContentAudio_to_RelativeExportedFilePath.Count + DataProviderFactory.AUDIO_WAV_EXTENSION;
-                    
+                    string exportAudioName = audioFileIndex + DataProviderFactory.AUDIO_WAV_EXTENSION;
+                    audioFileIndex++;
+
                     string destPath = Path.Combine(imageDescriptionDirectoryPath, exportAudioName);
                     if (!File.Exists(destPath))
                     {
