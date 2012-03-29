@@ -25,8 +25,10 @@ namespace urakawa.daisy.export
             //try
             //{
             Dictionary<string, List<string>> imageDescriptions = new Dictionary<string, List<string>>();
+            
             string descriptionFile = CreateImageDescription(exportImageName, n.GetAlternateContentProperty(), imageDescriptions);
-            if (!String.IsNullOrEmpty(descriptionFile))
+            
+            if (m_includeImageDescriptions && !String.IsNullOrEmpty(descriptionFile))
             {
                 //short term way for executing image description code: will be updated in later phase of implementation
                 XmlNode prodNoteNode = DTBookDocument.CreateElement("prodnote", currentXmlNode.NamespaceURI);
