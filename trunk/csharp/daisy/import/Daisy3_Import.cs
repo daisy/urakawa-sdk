@@ -60,12 +60,17 @@ namespace urakawa.daisy.import
                 FileDataProvider.CreateDirectory(m_outDirectory);
             }
 
-            m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
+            m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath);
 
             if (RequestCancellation) return;
             //initializeProject();
 
             reportProgress(100, UrakawaSDK_daisy_Lang.ImportInitialized);
+        }
+
+        public static string GetXukFilePath(string outputDirectory, string bookFilePath)
+        {
+            return Path.Combine(outputDirectory, Path.GetFileName(bookFilePath) + ".xuk");
         }
 
         public override void DoWork()

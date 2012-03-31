@@ -27,12 +27,52 @@ namespace urakawa.daisy
 
         // -------------------------------------------------
 
+        public const string NS_PREFIX_XFORMS = "xforms";
+        public const string NS_URL_XFORMS = "http://www.w3.org/2002/xforms/";
+
+        // -------------------------------------------------
+
+        public const string NS_PREFIX_SVG = "svg";
+        public const string NS_URL_SVG = "http://www.w3.org/2000/svg";
+
+        // -------------------------------------------------
+
+        public const string NS_PREFIX_SSML = "ssml";
+        public const string NS_URL_SSML = "http://www.w3.org/2001/10/synthesis";
+
+        // -------------------------------------------------
+
+        public const string NS_PREFIX_ITS = "its";
+        public const string NS_URL_ITS = "http://www.w3.org/2005/11/its";
+
+        // -------------------------------------------------
+
+        public const string NS_PREFIX_MATHML = "m";
+        public const string NS_URL_MATHML = "http://www.w3.org/1998/Math/MathML";
+
+
+        // -------------------------------------------------
+
+        public const string NS_PREFIX_DC = "dc";
+        public const string NS_URL_DC = "http://purl.org/dc/elements/1.1/";
+
+        // -------------------------------------------------
+
+        public const string NS_PREFIX_DCTERMS = "dcterms";
+        public const string NS_URL_DCTERMS = "http://purl.org/dc/terms/";
+
 
         // -------------------------------------------------
 
         //http://www.daisy.org/z3998/2012/z3998-2012.html
         public const string NS_PREFIX_ZAI = "z";
         public const string NS_URL_ZAI = "http://www.daisy.org/ns/z3998/authoring/";
+
+        public const string NS_PREFIX_ZAI_REND = "rend";
+        public const string NS_URL_ZAI_REND = "http://www.daisy.org/ns/z3998/authoring/features/rend/";
+
+        public const string NS_PREFIX_ZAI_SELECT = "select";
+        public const string NS_URL_ZAI_SELECT = "http://www.daisy.org/ns/z3998/authoring/features/select/";
 
 
         public const string P = "p";

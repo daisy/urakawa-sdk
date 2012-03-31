@@ -80,33 +80,29 @@ namespace urakawa.daisy.export
                 DiagramContentModelHelper.NS_URL_DIAGRAM);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
-                DiagramContentModelHelper.NS_URL_DIAGRAM);
-
-            //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
-            //    "xmlns:" + DiagramContentModelHelper.NS_PREFIX_MATHML,
-            //    DiagramContentModelHelper.NS_URL_MATHML);
-
-            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
                 "xmlns",
                 DiagramContentModelHelper.NS_URL_ZAI);
             descriptionDocument.AppendChild(descriptionNode);
 
-            XmlNode headNode = descriptionDocument.CreateElement(
-                DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
-                DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.D_Head),
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
+                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
                 DiagramContentModelHelper.NS_URL_DIAGRAM);
-            descriptionNode.AppendChild(headNode);
 
-            createDiagramHeadMetadata(headNode, descriptionDocument, descriptionNode, altProperty);
-
-            XmlNode bodyNode = descriptionDocument.CreateElement(
-                DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
-                DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.D_Body),
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
+                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM_METADATA,
                 DiagramContentModelHelper.NS_URL_DIAGRAM);
-            descriptionNode.AppendChild(bodyNode);
 
-            createDiagramBodyContent(bodyNode, descriptionDocument, descriptionNode, altProperty, imageDescriptions, imageSRC);
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
+                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DC,
+                DiagramContentModelHelper.NS_URL_DC);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
+                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DCTERMS,
+                DiagramContentModelHelper.NS_URL_DCTERMS);
+
+            createDiagramHeadMetadata(descriptionDocument, descriptionNode, altProperty);
+
+            createDiagramBodyContent(descriptionDocument, descriptionNode, altProperty, imageDescriptions, imageSRC);
 
             string imageDescriptionDirectoryPath = getAndCreateImageDescriptionDirectoryPath(imageSRC);
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + IMAGE_DESCRIPTION_XML_SUFFIX + ".xml";

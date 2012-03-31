@@ -496,18 +496,15 @@ namespace urakawa.xuk
             }
         }
 
-        /// <summary>
-        /// Gets the Xuk <see cref="QualifiedName"/> of the instance (conveneince for <c>GetXukQualifiedName(GetType());</c>)
-        /// </summary>
-        public QualifiedName XukQualifiedName
-        {
-            get
-            {
-                return new QualifiedName(GetTypeNameFormatted(), XukNamespaceUri);
-                //GetXukNamespaceUri(GetType())
-                //return GetXukQualifiedName(GetType());
-            }
-        }
+        //public QualifiedName XukQualifiedName
+        //{
+        //    get
+        //    {
+        //        return new QualifiedName(GetTypeNameFormatted(), XukNamespaceUri);
+        //        //GetXukNamespaceUri(GetType())
+        //        //return GetXukQualifiedName(GetType());
+        //    }
+        //}
 
         /// <summary>
         /// Gets the Xuk QName of a <see cref="XukAble"/> <see cref="Type"/> in the form <c>[NS_URI:]LOCALNAME</c>,

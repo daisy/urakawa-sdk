@@ -12,6 +12,7 @@ using urakawa.media.data.image.codec;
 using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
+using XmlAttribute = System.Xml.XmlAttribute;
 
 namespace urakawa.daisy.import
 {
@@ -156,13 +157,48 @@ namespace urakawa.daisy.import
                         //{
                         //    listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("book");
                         //}
-                        XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "body", null);
 
+                        string lang = null;
+                        XmlNode rootElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "html", null);
+                        if (rootElement == null)
+                        {
+                            rootElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "dtbook", null);
+                        }
+                        if (rootElement != null)
+                        {
+                            // DOESN'T WORK
+                            XmlNode xmlAttr = rootElement.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML);
+                            if (xmlAttr == null)
+                            {
+                                // DOESN'T WORK
+                                xmlAttr = rootElement.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlLang, null);
+                                if (xmlAttr == null)
+                                {
+                                    // DOESN'T WORK
+                                    xmlAttr = rootElement.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlLang, rootElement.NamespaceURI);
+                                    if (xmlAttr == null)
+                                    {
+                                        // WORKS!
+                                        xmlAttr = rootElement.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlLang);
+                                        if (xmlAttr == null)
+                                        {
+                                            // SHOULD WORKS WITH HTML (untested)
+                                            xmlAttr = rootElement.Attributes.GetNamedItem("lang");
+                                        }
+                                    }
+                                }
+                            }
+                            if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
+                            {
+                                lang = xmlAttr.Value;
+                            }
+                        }
+
+                        XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "body", null);
                         if (bodyElement == null)
                         {
                             bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "book", null);
                         }
-
                         if (bodyElement != null)
                         {
                             Presentation presentation = m_Project.Presentations.Get(0);
@@ -186,6 +222,21 @@ namespace urakawa.daisy.import
                             }
 
                             parseContentDocument(bodyElement, parentTreeNode, filePath);
+
+                            if (!string.IsNullOrEmpty(lang) && m_Project.Presentations.Count > 0)
+                            {
+                                //Presentation presentation = m_Project.Presentations.Get(0);
+                                if (presentation.RootNode != null)
+                                {
+                                    string lang_ = presentation.RootNode.GetXmlElementLang();
+                                    if (string.IsNullOrEmpty(lang_))
+                                    {
+                                        XmlProperty xmlProp = presentation.RootNode.GetXmlProperty();
+                                        xmlProp.SetAttribute(XmlReaderWriterHelper.XmlLang,
+                                                             XmlReaderWriterHelper.NS_URL_XML, lang);
+                                    }
+                                }
+                            }
                         }
                         //parseContentDocument(((XmlDocument)xmlNode).DocumentElement, parentTreeNode);
                         break;

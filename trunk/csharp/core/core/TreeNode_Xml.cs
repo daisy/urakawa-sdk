@@ -148,16 +148,22 @@ namespace urakawa.core
             return null;
         }
 
-        ///<summary>
-        /// returns the QName of the attached XmlProperty, if any
-        ///</summary>
-        ///<returns></returns>
+        private QualifiedName m_QualifiedName = null;
         public QualifiedName GetXmlElementQName()
         {
+            //TODO QualifiedName fields are unmutable,
+            // so unless the underlying XmlProperty fields change, caching is okay
+            // (here we assume that once a TreeNode as been XukedIn,
+            // its XML definition does not change)
+            if (m_QualifiedName != null)
+            {
+                return m_QualifiedName;
+            }
             XmlProperty xmlProp = GetProperty<XmlProperty>();
             if (xmlProp != null)
             {
-                return new QualifiedName(xmlProp.LocalName, xmlProp.NamespaceUri);
+                m_QualifiedName = new QualifiedName(xmlProp.LocalName, xmlProp.NamespaceUri);
+                return m_QualifiedName;
             }
             return null;
         }
@@ -171,9 +177,31 @@ namespace urakawa.core
             if (xmlProp != null)
             {
                 XmlAttribute idAttr = xmlProp.GetAttribute("id", "");
+                if (idAttr == null)
+                {
+                    idAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlId, XmlReaderWriterHelper.NS_URL_XML);
+                }
                 if (idAttr != null)
                 {
                     return (string.IsNullOrEmpty(idAttr.Value) ? null : idAttr.Value);
+                }
+            }
+            return null;
+        }
+
+        public string GetXmlElementLang()
+        {
+            XmlProperty xmlProp = GetProperty<XmlProperty>();
+            if (xmlProp != null)
+            {
+                XmlAttribute langAttr = xmlProp.GetAttribute("lang", "");
+                if (langAttr == null)
+                {
+                    langAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML);
+                }
+                if (langAttr != null)
+                {
+                    return (string.IsNullOrEmpty(langAttr.Value) ? null : langAttr.Value);
                 }
             }
             return null;
