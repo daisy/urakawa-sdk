@@ -32,23 +32,30 @@ namespace urakawa.property.xml
                     XmlAttribute xmlAttr = GetAttribute(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML);
                     if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
                     {
-                        // TODO: Arabic and Hebrew...what else?
+                        // TODO: Arabic, Urdu, Hebrew, Yiddish, Farsi...what else?
                         if (xmlAttr.Value.Equals("ar")
+                                   || xmlAttr.Value.Equals("ur")
                                    || xmlAttr.Value.Equals("he")
+                                   || xmlAttr.Value.Equals("ji")
+                                   || xmlAttr.Value.Equals("fa")
                                    || xmlAttr.Value.StartsWith("ar-")
+                                   || xmlAttr.Value.StartsWith("ur-")
                                    || xmlAttr.Value.StartsWith("he-")
+                                   || xmlAttr.Value.StartsWith("ji-")
+                                   || xmlAttr.Value.StartsWith("fa-")
                             )
                         {
                             base.TreeNodeOwner.TextDirectionality = TreeNode.TextDirection.RTL;
                         }
-                        //else if (xmlAttr.Value.Equals("en")
-                        //           || xmlAttr.Value.Equals("fr")
-                        //           || xmlAttr.Value.StartsWith("en-")
-                        //           || xmlAttr.Value.StartsWith("fr-")
-                        //    )
-                        //{
-                        //    base.TreeNodeOwner.TextDirectionality = TreeNode.TextDirection.LTR;
-                        //}
+                        else
+                            //if (xmlAttr.Value.Equals("en")
+                            //       || xmlAttr.Value.Equals("fr")
+                            //       || xmlAttr.Value.StartsWith("en-")
+                            //       || xmlAttr.Value.StartsWith("fr-")
+                            //)
+                        {
+                            base.TreeNodeOwner.TextDirectionality = TreeNode.TextDirection.LTR;
+                        }
                     }
                     xmlAttr = GetAttribute("dir", "");
                     if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))

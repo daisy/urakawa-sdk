@@ -1161,7 +1161,9 @@ namespace urakawa.daisy.export
             XmlDocumentHelper.CreateAppendXmlAttribute(NcxDocument, rootNode, "version", "2005-1");
             XmlDocumentHelper.CreateAppendXmlAttribute(NcxDocument, rootNode,
                 XmlReaderWriterHelper.XmlLang,
-                (string.IsNullOrEmpty(m_Presentation.Language) ? "en-US" : m_Presentation.Language));
+                (string.IsNullOrEmpty(m_Presentation.Language)
+                ? "en-US"
+                : m_Presentation.Language));
 
 
             XmlNode headNode = NcxDocument.CreateElement(null, "head", rootNode.NamespaceURI);
