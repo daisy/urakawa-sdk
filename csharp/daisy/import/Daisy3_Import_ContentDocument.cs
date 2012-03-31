@@ -223,7 +223,9 @@ namespace urakawa.daisy.import
 
                             parseContentDocument(bodyElement, parentTreeNode, filePath);
 
-                            if (!string.IsNullOrEmpty(lang) && m_Project.Presentations.Count > 0)
+                            if (!string.IsNullOrEmpty(lang)
+                                //&& m_Project.Presentations.Count > 0
+                                )
                             {
                                 //Presentation presentation = m_Project.Presentations.Get(0);
                                 if (presentation.RootNode != null)
@@ -234,7 +236,17 @@ namespace urakawa.daisy.import
                                         XmlProperty xmlProp = presentation.RootNode.GetXmlProperty();
                                         xmlProp.SetAttribute(XmlReaderWriterHelper.XmlLang,
                                                              XmlReaderWriterHelper.NS_URL_XML, lang);
+                                        
+                                        presentation.Language = lang;
                                     }
+                                    else
+                                    {
+                                        presentation.Language = lang_;
+                                    }
+                                }
+                                else
+                                {
+                                    presentation.Language = lang;
                                 }
                             }
                         }
