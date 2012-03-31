@@ -14,8 +14,32 @@ namespace urakawa.core
     {
         public const bool ACCEPT_IMG_ALT_TEXT = true;
 
+        // determined at XukIn time
+        public TextDirection TextDirectionality = TextDirection.Unsure;
+        public TextDirection GetTextDirectionality()
+        {
+            if (TextDirectionality != TextDirection.Unsure)
+            {
+                return TextDirectionality;
+            }
+            if (Parent != null)
+            {
+                return Parent.GetTextDirectionality();
+            }
+            return TextDirection.Unsure;
+        }
+
+        public enum TextDirection
+        {
+            Unsure = 0,
+            LTR = 1,
+            RTL = 2
+        }
+
         public sealed class StringChunk
         {
+            public readonly TextDirection Direction = TextDirection.Unsure;
+
             public StringChunk Next;
 
             private StringChunk()
@@ -23,13 +47,15 @@ namespace urakawa.core
                 ;
             }
 
-            public StringChunk(XmlAttribute xmlAttr)
+            public StringChunk(XmlAttribute xmlAttr, TextDirection dir)
             {
+                Direction = dir;
                 m_XmlAttribute = xmlAttr;
             }
 
-            public StringChunk(AbstractTextMedia textMedia)
+            public StringChunk(AbstractTextMedia textMedia, TextDirection dir)
             {
+                Direction = dir;
                 m_TextMedia = textMedia;
             }
 
@@ -686,7 +712,7 @@ namespace urakawa.core
             {
                 if (!String.IsNullOrEmpty(textMedia.Text))
                 {
-                    return new StringChunk(textMedia);
+                    return new StringChunk(textMedia, GetTextDirectionality());
                 }
 
                 return null;
@@ -708,7 +734,7 @@ namespace urakawa.core
                     {
                         if (!String.IsNullOrEmpty(xmlAttr.Value))
                         {
-                            return new StringChunk(xmlAttr);
+                            return new StringChunk(xmlAttr, GetTextDirectionality());
                         }
 
                         return null;

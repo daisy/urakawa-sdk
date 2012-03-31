@@ -14,9 +14,48 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private void createDiagramBodyContent(XmlNode bodyNode, XmlDocument descriptionDocument, XmlNode descriptionNode,
+        private void createDiagramBodyContent(XmlDocument descriptionDocument, XmlNode descriptionNode,
             AlternateContentProperty altProperty, Dictionary<string, List<string>> imageDescriptions, string imageSRC)
         {
+            XmlNode bodyNode = descriptionDocument.CreateElement(
+                DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
+                DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.D_Body),
+                DiagramContentModelHelper.NS_URL_DIAGRAM);
+            descriptionNode.AppendChild(bodyNode);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
+                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ITS,
+                DiagramContentModelHelper.NS_URL_ITS);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
+                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_MATHML,
+                DiagramContentModelHelper.NS_URL_MATHML);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
+                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_SSML,
+                DiagramContentModelHelper.NS_URL_SSML);
+
+            //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
+            //    "xmlns:" + DiagramContentModelHelper.NS_PREFIX_SVG,
+            //    DiagramContentModelHelper.NS_URL_SVG);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
+                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_XFORMS,
+                DiagramContentModelHelper.NS_URL_XFORMS);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
+                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ZAI_REND,
+                DiagramContentModelHelper.NS_URL_ZAI_REND);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
+                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ZAI_SELECT,
+                DiagramContentModelHelper.NS_URL_ZAI_SELECT);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
+                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_TOBI,
+                DiagramContentModelHelper.NS_URL_TOBI);
+
+
             string imageDescriptionDirectoryPath = getAndCreateImageDescriptionDirectoryPath(imageSRC);
 
             int audioFileIndex = 0;
@@ -220,19 +259,60 @@ namespace urakawa.daisy.export
                             // NO! Adds xmlns attributes all over the place even though there is a global namespace already.
                             // textParentNode.InnerXml = normalizedDescriptionText;
 
+                            string xmlns_mathml = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_MATHML + "=\"" + DiagramContentModelHelper.NS_URL_MATHML + "\"";
+                            //string xmlns_svg = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_SVG + "=\"" + DiagramContentModelHelper.NS_URL_SVG + "\"";
+                            string xmlns_xforms = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_XFORMS + "=\"" + DiagramContentModelHelper.NS_URL_XFORMS + "\"";
+                            string xmlns_ssml = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_SSML + "=\"" + DiagramContentModelHelper.NS_URL_SSML + "\"";
+                            string xmlns_its = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ITS + "=\"" + DiagramContentModelHelper.NS_URL_ITS + "\"";
+
+                            string xmlns_z_rend = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ZAI_REND + "=\"" + DiagramContentModelHelper.NS_URL_ZAI_REND + "\"";
+                            string xmlns_z_select = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ZAI_SELECT + "=\"" + DiagramContentModelHelper.NS_URL_ZAI_SELECT + "\"";
+
+                            string xmlns_diagram = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM + "=\"" + DiagramContentModelHelper.NS_URL_DIAGRAM + "\"";
+                            string xmlns_zai = "xmlns=\"" + DiagramContentModelHelper.NS_URL_ZAI + "\"";
+
                             string xmlSourceString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-                            xmlSourceString += "<tobi xmlns=\"" + DiagramContentModelHelper.NS_URL_TOBI + "\">";
+                            xmlSourceString += "<zed "
+                                + xmlns_zai
+                                + " "
+                                + xmlns_diagram
+                                + " "
+                                + xmlns_z_rend
+                                + " "
+                                + xmlns_z_select
+                                + " "
+                                + xmlns_mathml
+                                + " "
+                                + xmlns_ssml
+                                + " "
+                                //+ xmlns_svg
+                                //+ " "
+                                + xmlns_xforms
+                                + " "
+                                + xmlns_its
+                                + " >";
                             //bool needsWrap = !normalizedDescriptionText.StartsWith("<");
                             //if (needsWrap)
                             //{
                             //    xmlSourceString += "<p xmlns=\"http://www.daisy.org/ns/z3998/authoring/\">";
                             //}
-                            xmlSourceString += normalizedDescriptionText;
+
+                            string strippedNS = normalizedDescriptionText.Replace(xmlns_zai, " ");
+                            strippedNS = strippedNS.Replace(xmlns_diagram, " ");
+                            strippedNS = strippedNS.Replace(xmlns_z_rend, " ");
+                            strippedNS = strippedNS.Replace(xmlns_z_select, " ");
+                            strippedNS = strippedNS.Replace(xmlns_mathml, " ");
+                            strippedNS = strippedNS.Replace(xmlns_ssml, " ");
+                            //strippedNS = strippedNS.Replace(xmlns_svg, " ");
+                            strippedNS = strippedNS.Replace(xmlns_xforms, " ");
+                            strippedNS = strippedNS.Replace(xmlns_its, " ");
+                            xmlSourceString += strippedNS;
+                            
                             //if (needsWrap)
                             //{
                             //    xmlSourceString += "</p>";
                             //}
-                            xmlSourceString += "</tobi>";
+                            xmlSourceString += "</zed>";
 
                             byte[] xmlSourceString_RawEncoded = Encoding.UTF8.GetBytes(xmlSourceString);
                             MemoryStream stream = new MemoryStream();
@@ -256,11 +336,20 @@ namespace urakawa.daisy.export
 
                             XmlNode tobi = fragmentDoc.ChildNodes[1]; // skip XML declaration
                             XmlNodeList children = tobi.ChildNodes;
+                            XmlNode[] xmlNodes = new XmlNode[children.Count];
+                            int i = 0;
                             foreach (XmlNode child in children)
                             {
-                                textParentNode.AppendChild(child);
-                            };
-
+                                xmlNodes[i] = child;
+                                i++;
+                            }
+                            for (i = 0; i < xmlNodes.Length; i++)
+                            {
+                                XmlNode child = xmlNodes[i];
+                                XmlNode imported = descriptionDocument.ImportNode(child, true);
+                                tobi.RemoveChild(child);
+                                textParentNode.AppendChild(imported);
+                            }
 
                             normalizedDescriptionText = textParentNode.InnerXml;
                         }

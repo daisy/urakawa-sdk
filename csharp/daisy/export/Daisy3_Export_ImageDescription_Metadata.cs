@@ -108,10 +108,13 @@ namespace urakawa.daisy.export
         }
 
 
-        private void createDiagramHeadMetadata(
-            XmlNode headNode, XmlDocument descriptionDocument, XmlNode descriptionNode,
-            AlternateContentProperty altProperty)
+        private void createDiagramHeadMetadata(XmlDocument descriptionDocument, XmlNode descriptionNode, AlternateContentProperty altProperty)
         {
+            XmlNode headNode = descriptionDocument.CreateElement(
+                DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
+                DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.D_Head),
+                DiagramContentModelHelper.NS_URL_DIAGRAM);
+            descriptionNode.AppendChild(headNode);
 
             //TODO: ALWAYS DISABLE THE DEBUG CODE BELOW UNLESS NEEDED FOR TESTING!!
 #if false && DEBUG

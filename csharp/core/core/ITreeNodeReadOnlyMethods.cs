@@ -100,6 +100,7 @@ StreamWithMarkers?
 
         QualifiedName GetXmlElementQName();
         string GetXmlElementId();
+        string GetXmlElementLang();
 
         ObjectListProvider<Property> Properties { get; }
         ObjectListProvider<TreeNode> Children { get; }

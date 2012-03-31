@@ -359,7 +359,7 @@ namespace urakawa.daisy.export
 
             XmlNode dcMetadataNode = document.CreateElement(null, "dc-metadata", rootNode.NamespaceURI);
             metadataNode.AppendChild(dcMetadataNode);
-            XmlDocumentHelper.CreateAppendXmlAttribute(document, dcMetadataNode, "xmlns:dc", "http://purl.org/dc/elements/1.1/");
+            XmlDocumentHelper.CreateAppendXmlAttribute(document, dcMetadataNode, "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DC, DiagramContentModelHelper.NS_URL_DC);
             XmlDocumentHelper.CreateAppendXmlAttribute(document, dcMetadataNode, "xmlns:oebpackage", "http://openebook.org/namespaces/oeb-package/1.0/");
 
             XmlNode xMetadataNode = document.CreateElement(null, "x-metadata", rootNode.NamespaceURI);

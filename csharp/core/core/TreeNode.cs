@@ -941,7 +941,6 @@ namespace urakawa.core
                 }
                 prop.TreeNodeOwner = this;
                 mProperties.Insert(mProperties.Count, prop);
-
             }
         }
 

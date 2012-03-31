@@ -46,7 +46,7 @@ namespace urakawa.property
         {
         }
 
-        private TreeNode mOwner = null;
+        protected TreeNode mOwner = null;
 
 
         /// <summary>

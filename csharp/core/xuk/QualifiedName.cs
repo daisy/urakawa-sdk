@@ -32,44 +32,44 @@ namespace urakawa.xuk
             }
         }
 
-        /// <summary>
-        /// Parses a QName in form <c>[NamespaceUri:]LocalName</c>
-        /// </summary>
-        /// <param name="qn">The QName to parse</param>
-        /// <returns>The parsed <see cref="QualifiedName"/></returns>
-        /// <exception cref="MethodParameterIsNullException">
-        /// Thrown when <paramref name="qn"/> is <c>null</c>
-        /// </exception>
-        /// <exception cref="MethodParameterIsOutOfBoundsException">
-        /// Thrown when <paramref name="qn"/> cannot be parsed
-        /// </exception>
-        /// <exception cref="MethodParameterIsEmptyStringException">
-        /// Thrwon when the LocalName part of <paramref name="qn"/> is an empty string
-        /// </exception>
-        public static QualifiedName ParseQName(string qn)
-        {
-            if (qn==null)
-            {
-                throw new MethodParameterIsNullException("The LocalName or the NamespaceUri of the QualifiedName cannot be parsed from a null QName");
-            }
-            string[] parts = qn.Split(':');
-            string ln;
-            string ns = "";
-            if (parts.Length>1)
-            {
-                ln = parts[parts.Length-1];
-                ns = parts[0];
-                for (int i=1; i<parts.Length-1; i++)
-                {
-                    ns += ":" + parts[i];
-                }
-            }
-            else
-            {
-                ln = qn;
-            }
-            return new QualifiedName(ln, ns);
-        }
+        ///// <summary>
+        ///// Parses a QName in form <c>[NamespaceUri:]LocalName</c>
+        ///// </summary>
+        ///// <param name="qn">The QName to parse</param>
+        ///// <returns>The parsed <see cref="QualifiedName"/></returns>
+        ///// <exception cref="MethodParameterIsNullException">
+        ///// Thrown when <paramref name="qn"/> is <c>null</c>
+        ///// </exception>
+        ///// <exception cref="MethodParameterIsOutOfBoundsException">
+        ///// Thrown when <paramref name="qn"/> cannot be parsed
+        ///// </exception>
+        ///// <exception cref="MethodParameterIsEmptyStringException">
+        ///// Thrwon when the LocalName part of <paramref name="qn"/> is an empty string
+        ///// </exception>
+        //public static QualifiedName ParseQName(string qn)
+        //{
+        //    if (qn==null)
+        //    {
+        //        throw new MethodParameterIsNullException("The LocalName or the NamespaceUri of the QualifiedName cannot be parsed from a null QName");
+        //    }
+        //    string[] parts = qn.Split(':');
+        //    string ln;
+        //    string ns = "";
+        //    if (parts.Length>1)
+        //    {
+        //        ln = parts[parts.Length-1];
+        //        ns = parts[0];
+        //        for (int i=1; i<parts.Length-1; i++)
+        //        {
+        //            ns += ":" + parts[i];
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ln = qn;
+        //    }
+        //    return new QualifiedName(ln, ns);
+        //}
 
         /// <summary>
         /// Constructor initializing the <see cref="LocalName"/> and <see cref="NamespaceUri"/> fields

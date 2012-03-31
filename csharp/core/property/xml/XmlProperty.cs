@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml;
+using urakawa.core;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.xuk;
@@ -12,6 +14,63 @@ namespace urakawa.property.xml
     /// </summary>
     public class XmlProperty : Property
     {
+        public override TreeNode TreeNodeOwner
+        {
+            set
+            {
+                if (mOwner != null && value == null) //base.TreeNodeOwner NOT INIT YET!
+                {
+                    base.TreeNodeOwner.TextDirectionality = TreeNode.TextDirection.Unsure;
+                }
+
+                base.TreeNodeOwner = value;
+
+                if (base.TreeNodeOwner != null)
+                {
+                    base.TreeNodeOwner.TextDirectionality = TreeNode.TextDirection.Unsure;
+
+                    XmlAttribute xmlAttr = GetAttribute(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML);
+                    if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
+                    {
+                        // TODO: Arabic and Hebrew...what else?
+                        if (xmlAttr.Value.Equals("ar")
+                                   || xmlAttr.Value.Equals("he")
+                                   || xmlAttr.Value.StartsWith("ar-")
+                                   || xmlAttr.Value.StartsWith("he-")
+                            )
+                        {
+                            base.TreeNodeOwner.TextDirectionality = TreeNode.TextDirection.RTL;
+                        }
+                        //else if (xmlAttr.Value.Equals("en")
+                        //           || xmlAttr.Value.Equals("fr")
+                        //           || xmlAttr.Value.StartsWith("en-")
+                        //           || xmlAttr.Value.StartsWith("fr-")
+                        //    )
+                        //{
+                        //    base.TreeNodeOwner.TextDirectionality = TreeNode.TextDirection.LTR;
+                        //}
+                    }
+                    xmlAttr = GetAttribute("dir", "");
+                    if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
+                    {
+                        if (xmlAttr.Value.Equals("rtl"))
+                        {
+                            base.TreeNodeOwner.TextDirectionality = TreeNode.TextDirection.RTL;
+                        }
+                        else if (xmlAttr.Value.Equals("ltr"))
+                        {
+                            base.TreeNodeOwner.TextDirectionality = TreeNode.TextDirection.LTR;
+                        }
+#if DEBUG
+                        else
+                        {
+                            Debugger.Break();
+                        }
+#endif //DEBUG
+                    }
+                }
+            }
+        }
 
         public override string GetTypeNameFormatted()
         {
@@ -183,7 +242,7 @@ namespace urakawa.property.xml
             XmlAttribute obj;
             mAttributes.TryGetValue(key, out obj);
 
-            if (obj != null ) //mAttributes.ContainsKey(key))
+            if (obj != null) //mAttributes.ContainsKey(key))
             {
                 XmlAttribute prevAttr = obj; // mAttributes[key];
                 prevValue = prevAttr.Value;
@@ -274,7 +333,7 @@ namespace urakawa.property.xml
         public XmlAttribute GetAttribute(string localName, string namespaceUri)
         {
             string key = String.Format("{1}:{0}", localName, namespaceUri);
-            
+
             XmlAttribute obj;
             mAttributes.TryGetValue(key, out obj);
             return obj;
@@ -305,8 +364,8 @@ namespace urakawa.property.xml
         /// <returns>The copy</returns>
         protected override Property CopyProtected()
         {
-            XmlProperty xmlProp = (XmlProperty) base.CopyProtected();
-            
+            XmlProperty xmlProp = (XmlProperty)base.CopyProtected();
+
             xmlProp.SetQName(LocalName, NamespaceUri);
             foreach (XmlAttribute attr in Attributes)
             {
@@ -463,7 +522,7 @@ namespace urakawa.property.xml
 
             destination.WriteAttributeString(XukStrings.LocalName, LocalName);
             if (!String.IsNullOrEmpty(NamespaceUri)) destination.WriteAttributeString(XukStrings.NamespaceUri, NamespaceUri);
-            
+
         }
 
         /// <summary>
