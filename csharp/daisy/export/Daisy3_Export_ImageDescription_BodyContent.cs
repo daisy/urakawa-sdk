@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Xml;
 using System.IO;
 using urakawa.data;
@@ -212,21 +213,73 @@ namespace urakawa.daisy.export
 
                     string normalizedDescriptionText = altContent.Text.Text;
 
-                    if (altContent.Text.Text.Contains("<"))
+                    if (normalizedDescriptionText.Contains("<"))
                     {
                         try
                         {
-                            textParentNode.InnerXml = altContent.Text.Text;
+                            // NO! Adds xmlns attributes all over the place even though there is a global namespace already.
+                            // textParentNode.InnerXml = normalizedDescriptionText;
+
+                            string xmlSourceString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+                            xmlSourceString += "<tobi xmlns=\"" + DiagramContentModelHelper.NS_URL_TOBI + "\">";
+                            //bool needsWrap = !normalizedDescriptionText.StartsWith("<");
+                            //if (needsWrap)
+                            //{
+                            //    xmlSourceString += "<p xmlns=\"http://www.daisy.org/ns/z3998/authoring/\">";
+                            //}
+                            xmlSourceString += normalizedDescriptionText;
+                            //if (needsWrap)
+                            //{
+                            //    xmlSourceString += "</p>";
+                            //}
+                            xmlSourceString += "</tobi>";
+
+                            byte[] xmlSourceString_RawEncoded = Encoding.UTF8.GetBytes(xmlSourceString);
+                            MemoryStream stream = new MemoryStream();
+                            stream.Write(xmlSourceString_RawEncoded, 0, xmlSourceString_RawEncoded.Length);
+
+                            stream.Flush();
+
+                            stream.Seek(0, SeekOrigin.Begin);
+                            stream.Position = 0;
+
+                            XmlDocument fragmentDoc = new XmlDocument();
+                            fragmentDoc.XmlResolver = null;
+
+                            //XmlTextReader reader = new XmlTextReader(stream);
+                            //fragmentDoc.Load(reader);
+
+                            fragmentDoc.Load(stream);
+
+                            //fragmentDoc.LoadXml(xmlSourceString);
+
+
+                            XmlNode tobi = fragmentDoc.ChildNodes[1]; // skip XML declaration
+                            XmlNodeList children = tobi.ChildNodes;
+                            foreach (XmlNode child in children)
+                            {
+                                textParentNode.AppendChild(child);
+                            };
+
+
+                            normalizedDescriptionText = textParentNode.InnerXml;
                         }
                         catch (Exception e)
                         {
-                            textParentNode.AppendChild(descriptionDocument.CreateTextNode(altContent.Text.Text));
+#if DEBUG
+                            Debugger.Break();
+#endif //DEBUG
+                            textParentNode.AppendChild(descriptionDocument.CreateTextNode(normalizedDescriptionText));
                             normalizedDescriptionText = textParentNode.InnerText;
                         }
                     }
                     else
                     {
-                        string normalizedText = altContent.Text.Text.Replace("\n\r", "\n");
+                        // NOT NEEDED, the "p" elements are added without namespace prefix or explicit xmlns attribute.
+                        //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, textParentNode,
+                        //"xmlns:z", DiagramContentModelHelper.NS_URL_ZAI);
+
+                        string normalizedText = normalizedDescriptionText.Replace("\n\r", "\n");
 
                         string[] parasText = normalizedText.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                         //string[] parasText = System.Text.RegularExpressions.Regex.Split(normalizedText, "\n");
