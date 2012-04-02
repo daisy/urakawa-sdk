@@ -21,7 +21,7 @@ namespace urakawa.metadata.daisy
         public const string DC_Subject = "dc:Subject";
         public const string DC_Creator = "dc:Creator";
         public const string DC_Identifier = "dc:Identifier";
-        public const string D_Language = "dc:Language";
+        public const string DC_Language = "dc:Language";
         public const string DC_Publisher = "dc:Publisher";
         public const string DC_Title = "dc:Title";
         public const string DC_Date = "dc:Date";
@@ -106,7 +106,7 @@ namespace urakawa.metadata.daisy
                            UrakawaSDK_core_Lang.Metadata_desc_dcPublisher,
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
-                           D_Language,
+                           DC_Language,
                            MetadataDataType.LanguageCode,
                            MetadataOccurrence.Required,
                            false,
