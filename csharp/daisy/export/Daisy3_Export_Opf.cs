@@ -41,7 +41,7 @@ namespace urakawa.daisy.export
             m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Type);
             m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Format);
             m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.D_Source);
-            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.D_Language);
+            m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Language);
             m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Relation);
             m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Coverage);
             m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Rights);
