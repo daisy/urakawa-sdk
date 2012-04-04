@@ -176,14 +176,15 @@ namespace urakawa.daisy.import
             //FileInfo DTBFilePathInfo = new FileInfo(m_Book_FilePath);
             //switch (DTBFilePathInfo.Extension)
 
-            int indexOfDot = m_Book_FilePath.LastIndexOf('.');
-            if (indexOfDot < 0 || indexOfDot == m_Book_FilePath.Length - 1)
-            {
-                return;
-            }
+            //int indexOfDot = m_Book_FilePath.LastIndexOf('.');
+            //if (indexOfDot < 0 || indexOfDot == m_Book_FilePath.Length - 1)
+            //{
+            //    return;
+            //}
 
             if (RequestCancellation) return;
-            string extension = m_Book_FilePath.Substring(indexOfDot);
+
+            string extension = Path.GetExtension(m_Book_FilePath); //m_Book_FilePath.Substring(indexOfDot);
 
             if (!string.IsNullOrEmpty(extension))
             {
@@ -218,6 +219,14 @@ namespace urakawa.daisy.import
                 {
                     unzipEPubAndParseOpf();
                 }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                return;
             }
 
 

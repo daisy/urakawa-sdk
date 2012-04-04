@@ -167,21 +167,15 @@ namespace urakawa.daisy.import
             }
             else
             {
-#if true || DEBUG
-                // So we can test duplicate metadata in validator
-                Metadata meta = addMetadata(name, content, mdNode);
-#else
                 MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(name);
                 if (
                     (md == null && !metadataNameContentAlreadyExists(name, content))
                     || (md != null && md.IsRepeatable && !metadataNameContentAlreadyExists(name, content))
                     || (md != null && !md.IsRepeatable && !metadataNameAlreadyExists(name))
-
                     )
                 {
                     Metadata meta = addMetadata(name, content, mdNode);
                 }
-#endif //DEBUG
             }
         }
 
