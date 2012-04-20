@@ -9,6 +9,8 @@ namespace urakawa.daisy
 {
     public static class DiagramContentModelHelper
     {
+        public const string EPUB_DescribedAt = "epub:describedAt";
+
         // -------------------------------------------------
 
         //public const string NS_PREFIX_XLINK = "xlink";

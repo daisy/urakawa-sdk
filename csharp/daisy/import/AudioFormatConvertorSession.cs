@@ -9,6 +9,39 @@ using urakawa.media.data.audio;
 
 namespace urakawa.daisy.import
 {
+    public class AudioClipConverter : DualCancellableProgressReporter
+    {
+        private readonly string SourceFilePath;
+        private readonly AudioFormatConvertorSession AudioFormatConvertorSession;
+
+        public AudioClipConverter(AudioFormatConvertorSession audioFormatConvertorSession, string sourceFilePath)
+        {
+            AudioFormatConvertorSession = audioFormatConvertorSession;
+            SourceFilePath = sourceFilePath;
+
+            AddSubCancellable(audioFormatConvertorSession);
+        }
+
+        private string m_ConvertedFilePath;
+        public string ConvertedFilePath
+        {
+            get { return m_ConvertedFilePath; }
+            private set { m_ConvertedFilePath = value; }
+        }
+
+        public override void DoWork()
+        {
+            try
+            {
+                ConvertedFilePath = AudioFormatConvertorSession.ConvertAudioFileFormat(SourceFilePath);
+            }
+            finally
+            {
+                RemoveSubCancellable(AudioFormatConvertorSession);
+            }
+        }
+    }
+
     /// <summary>
     ///  class to maintain session for importing files of format different from default format of project
     /// will reduce re conversion of files already converted in the same session

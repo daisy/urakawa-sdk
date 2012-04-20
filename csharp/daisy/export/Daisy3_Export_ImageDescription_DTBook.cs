@@ -36,6 +36,7 @@ namespace urakawa.daisy.export
                 string id_Prodnote = GetNextID(ID_DTBPrefix);
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "id", id_Prodnote);
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "imgref", currentXmlNode.Attributes.GetNamedItem("id").Value);
+                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "class", DiagramContentModelHelper.EPUB_DescribedAt);
 
                 currentXmlNode.ParentNode.AppendChild(prodNoteNode);
                 if (!m_Image_ProdNoteMap.ContainsKey(n)) m_Image_ProdNoteMap.Add(n, new List<XmlNode>());
