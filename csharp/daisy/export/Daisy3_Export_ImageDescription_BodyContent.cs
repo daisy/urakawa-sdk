@@ -14,8 +14,13 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private void createDiagramBodyContent(XmlDocument descriptionDocument, XmlNode descriptionNode,
-            AlternateContentProperty altProperty, Dictionary<string, List<string>> imageDescriptions, string imageSRC)
+        private void createDiagramBodyContent(
+            XmlDocument descriptionDocument,
+            XmlNode descriptionNode,
+            AlternateContentProperty altProperty,
+            Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions,
+            string imageSRC
+            )
         {
             XmlNode bodyNode = descriptionDocument.CreateElement(
                 DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
@@ -63,7 +68,6 @@ namespace urakawa.daisy.export
             foreach (AlternateContent altContent in altProperty.AlternateContents.ContentsAs_Enumerable)
             {
                 XmlNode contentXmlNode = null;
-
 
                 if (altContent.Metadatas != null && altContent.Metadatas.Count > 0)
                 {
@@ -310,7 +314,7 @@ namespace urakawa.daisy.export
                             strippedNS = strippedNS.Replace(xmlns_xforms, " ");
                             strippedNS = strippedNS.Replace(xmlns_its, " ");
                             xmlSourceString += strippedNS;
-                            
+
                             //if (needsWrap)
                             //{
                             //    xmlSourceString += "</p>";
@@ -398,7 +402,7 @@ namespace urakawa.daisy.export
                     }
 
 
-                    
+
 
                     if (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
                         || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedImage, StringComparison.OrdinalIgnoreCase)
@@ -494,17 +498,14 @@ namespace urakawa.daisy.export
                     }
                 }
 
-                    if (!mergedObjectForExistingTourDescription)
-                    {
-                        bodyNode.AppendChild(contentXmlNode);
-                    }
+                if (!mergedObjectForExistingTourDescription)
+                {
+                    bodyNode.AppendChild(contentXmlNode);
 
-                    if (!mergedObjectForExistingTourDescription
-                        &&
-                        IsIncludedInDTBook(contentXmlNode.Name)
-                        &&
-                        normalizedDescriptionText != null
-//                        (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
+                    if (normalizedDescriptionText != null
+                        && IsIncludedInDTBook(contentXmlNode.Name)
+                        
+                        //                        (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
                         //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_LondDesc, StringComparison.OrdinalIgnoreCase)
                         //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedLanguageDescription, StringComparison.OrdinalIgnoreCase)
                         //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
@@ -516,23 +517,20 @@ namespace urakawa.daisy.export
                         )
                     {
                         List<string> list;
-                        imageDescriptions.TryGetValue(contentXmlNode.Name, out list);
+                        map_DiagramElementName_TO_TextualDescriptions.TryGetValue(contentXmlNode.Name, out list);
 
-                        if (list != null)
-                        {
-                            list.Add(normalizedDescriptionText);
-                        }
-                        else if (IsIncludedInDTBook(contentXmlNode.Name))
+                        if (list == null)
                         {
                             list = new List<string>(1);
-                            list.Add(normalizedDescriptionText);
-                            imageDescriptions.Add(contentXmlNode.Name, list);
+                            map_DiagramElementName_TO_TextualDescriptions.Add(contentXmlNode.Name, list);
 
-                            m_AltProperty_DescriptionMap[altProperty].ImageDescNodeToAltContentMap.Add(
+                            m_Map_AltProperty_TO_Description[altProperty].Map_DiagramElementName_TO_AltContent.Add(
                                 contentXmlNode.Name, altContent);
                         }
+
+                        list.Add(normalizedDescriptionText);
                     }
-                
+                }
 
                 if (altContent.Audio != null)
                 {
@@ -569,9 +567,16 @@ namespace urakawa.daisy.export
 
                     DirectoryInfo d = new DirectoryInfo(imageDescriptionDirectoryPath);
                     string srcPath = d.Name + "/" + exportAudioName;
-                    m_Map_AltContentAudio_to_RelativeExportedFilePath.Add(altContent, srcPath);
+                    m_Map_AltContentAudio_TO_RelativeExportedFilePath.Add(altContent, srcPath);
                 }
             }
+        }
+
+        private bool IsIncludedInDTBook(string name)
+        {
+            return (name == DiagramContentModelHelper.D_LondDesc
+                    || name == DiagramContentModelHelper.D_SimplifiedLanguageDescription
+                    || name == DiagramContentModelHelper.D_Summary);
         }
     }
 }

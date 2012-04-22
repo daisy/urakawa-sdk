@@ -21,24 +21,6 @@ namespace urakawa.daisy.export
 
 
 
-        private bool IsIncludedInDTBook(string name)
-        {
-            return (name == DiagramContentModelHelper.D_LondDesc
-                    || name == DiagramContentModelHelper.D_SimplifiedLanguageDescription
-                    || name == DiagramContentModelHelper.D_Summary);
-        }
-        private class Description
-        {
-            public readonly Dictionary<string, AlternateContent> ImageDescNodeToAltContentMap = new Dictionary<string, AlternateContent>();
-        }
-        private Dictionary<AlternateContentProperty, Description> m_AltProperty_DescriptionMap = new Dictionary<AlternateContentProperty, Description>();
-
-
-
-
-
-
-
         private const string IMAGE_DESCRIPTION_XML_SUFFIX = "_DIAGRAM_Description";
         private const string IMAGE_DESCRIPTION_DIRECTORY_SUFFIX = "_DIAGRAM_Description";
 
@@ -59,7 +41,11 @@ namespace urakawa.daisy.export
 
 
 
-        private string CreateImageDescription(string imageSRC, AlternateContentProperty altProperty, Dictionary<string, List<string>> imageDescriptions)
+        private string CreateImageDescription(
+            string imageSRC,
+            AlternateContentProperty altProperty,
+            Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions
+            )
         {
             XmlDocument descriptionDocument = new XmlDocument();
             
@@ -72,7 +58,7 @@ namespace urakawa.daisy.export
             //string sourceXsltPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, xsltFileName);
             //string destXsltPath = Path.Combine(imageDescriptionDirectoryPath, xsltFileName);
             //if (!File.Exists(destXsltPath)) File.Copy(sourceXsltPath, destXsltPath);
-            m_AltProperty_DescriptionMap.Add(altProperty, new Description());
+            m_Map_AltProperty_TO_Description.Add(altProperty, new Description());
 
             XmlNode descriptionNode = descriptionDocument.CreateElement(
                 DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
@@ -102,7 +88,7 @@ namespace urakawa.daisy.export
 
             createDiagramHeadMetadata(descriptionDocument, descriptionNode, altProperty);
 
-            createDiagramBodyContent(descriptionDocument, descriptionNode, altProperty, imageDescriptions, imageSRC);
+            createDiagramBodyContent(descriptionDocument, descriptionNode, altProperty, map_DiagramElementName_TO_TextualDescriptions, imageSRC);
 
             string imageDescriptionDirectoryPath = getAndCreateImageDescriptionDirectoryPath(imageSRC);
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + IMAGE_DESCRIPTION_XML_SUFFIX + ".xml";
