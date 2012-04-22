@@ -24,9 +24,9 @@ namespace urakawa.daisy.export
 
             //try
             //{
-            Dictionary<string, List<string>> imageDescriptions = new Dictionary<string, List<string>>();
+            Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions = new Dictionary<string, List<string>>();
             
-            string descriptionFile = CreateImageDescription(exportImageName, n.GetAlternateContentProperty(), imageDescriptions);
+            string descriptionFile = CreateImageDescription(exportImageName, n.GetAlternateContentProperty(), map_DiagramElementName_TO_TextualDescriptions);
             
             if (m_includeImageDescriptions && !String.IsNullOrEmpty(descriptionFile))
             {
@@ -49,9 +49,9 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "external", "true");
                 anchorNode.AppendChild(DTBookDocument.CreateTextNode("Image description (DIAGRAM XML)"));
 
-                if (imageDescriptions.Count > 0)
+                if (map_DiagramElementName_TO_TextualDescriptions.Count > 0)
                 {
-                    foreach (string diagramDescriptionElementName in imageDescriptions.Keys)
+                    foreach (string diagramDescriptionElementName in map_DiagramElementName_TO_TextualDescriptions.Keys)
                     {
                         //System.Windows.Forms.MessageBox.Show(s + " : " + imageDescriptions[s]);
 
@@ -64,7 +64,7 @@ namespace urakawa.daisy.export
                         currentXmlNode.ParentNode.AppendChild(prodNoteDesc);
                         m_Image_ProdNoteMap[n].Add(prodNoteDesc);
 
-                        foreach (string descText in imageDescriptions[diagramDescriptionElementName])
+                        foreach (string descText in map_DiagramElementName_TO_TextualDescriptions[diagramDescriptionElementName])
                         {
                             XmlNode wrapperNode = DTBookDocument.CreateElement("code", currentXmlNode.NamespaceURI);
                             prodNoteDesc.AppendChild(wrapperNode);
