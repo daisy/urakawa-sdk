@@ -234,6 +234,9 @@ namespace urakawa.daisy.export
                 }
 
 
+                bool mergedObjectForExistingTourDescription = false;
+                string normalizedDescriptionText = null;
+
                 if (altContent.Text != null && !string.IsNullOrEmpty(altContent.Text.Text))
                 {
                     XmlNode textParentNode = contentXmlNode;
@@ -250,7 +253,7 @@ namespace urakawa.daisy.export
                         textParentNode = tourNode;
                     }
 
-                    string normalizedDescriptionText = altContent.Text.Text;
+                    normalizedDescriptionText = altContent.Text.Text;
 
                     if (normalizedDescriptionText.Contains("<"))
                     {
@@ -395,7 +398,7 @@ namespace urakawa.daisy.export
                     }
 
 
-                    bool mergedObjectForExistingTourDescription = false;
+                    
 
                     if (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
                         || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedImage, StringComparison.OrdinalIgnoreCase)
@@ -489,6 +492,7 @@ namespace urakawa.daisy.export
                             }
                         }
                     }
+                }
 
                     if (!mergedObjectForExistingTourDescription)
                     {
@@ -498,7 +502,8 @@ namespace urakawa.daisy.export
                     if (!mergedObjectForExistingTourDescription
                         &&
                         IsIncludedInDTBook(contentXmlNode.Name)
-
+                        &&
+                        normalizedDescriptionText != null
 //                        (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
                         //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_LondDesc, StringComparison.OrdinalIgnoreCase)
                         //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedLanguageDescription, StringComparison.OrdinalIgnoreCase)
@@ -527,7 +532,7 @@ namespace urakawa.daisy.export
                                 contentXmlNode.Name, altContent);
                         }
                     }
-                }
+                
 
                 if (altContent.Audio != null)
                 {
