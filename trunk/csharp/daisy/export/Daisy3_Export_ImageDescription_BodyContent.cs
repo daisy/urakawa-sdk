@@ -447,7 +447,7 @@ namespace urakawa.daisy.export
                                                                                          DiagramContentModelHelper
                                                                                              .NS_URL_DIAGRAM);
 
-                                if (normalizedDescriptionText == tourNode.InnerXml)
+                                if (tourNode != null && normalizedDescriptionText == tourNode.InnerXml)
                                 {
                                     bool idConflict = false;
                                     XmlNode idAttr1 =
@@ -504,7 +504,7 @@ namespace urakawa.daisy.export
 
                     if (normalizedDescriptionText != null
                         && IsIncludedInDTBook(contentXmlNode.Name)
-                        
+
                         //                        (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
                         //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_LondDesc, StringComparison.OrdinalIgnoreCase)
                         //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedLanguageDescription, StringComparison.OrdinalIgnoreCase)
