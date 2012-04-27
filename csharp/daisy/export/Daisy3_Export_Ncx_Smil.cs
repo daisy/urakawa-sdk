@@ -1547,29 +1547,21 @@ namespace urakawa.daisy.export
             return durOfCurrentSmil;
         }
 
-        private string EncodeWavFileToMp3(string sourceFilePath)
+        private static string EncodeWavFileToMp3(string sourceFilePath, AudioLibPCMFormat pcmFormat, int bitRate_Mp3)
         {
-
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, false);
 
             string destinationFilePath = Path.Combine(Directory.GetParent(sourceFilePath).FullName,
                 Path.GetFileNameWithoutExtension(sourceFilePath) + DataProviderFactory.AUDIO_MP3_EXTENSION);
 
-            PCMFormatInfo audioFormat = m_Presentation.MediaDataManager.DefaultPCMFormat;
-            AudioLibPCMFormat pcmFormat = audioFormat.Data;
-            if ((ushort)m_sampleRate != pcmFormat.SampleRate)
-            {
-                pcmFormat.SampleRate = (ushort)m_sampleRate;
-            }
-
             bool result = false;
 
-            result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat, (ushort)BitRate_Mp3);
+            result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat,
+                (ushort)bitRate_Mp3);
 
 
             if (result)
             {
-
                 File.Delete(sourceFilePath);
                 return destinationFilePath;
             }
@@ -1580,7 +1572,5 @@ namespace urakawa.daisy.export
                 return null;
             }
         }
-
-
     }
 }

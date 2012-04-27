@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Xml;
 using System.IO;
+using AudioLib;
 using urakawa.data;
 using urakawa.media.data.audio.codec;
 using urakawa.property.alt;
@@ -14,12 +15,17 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private void createDiagramBodyContent(
+        private static void createDiagramBodyContent(
             XmlDocument descriptionDocument,
             XmlNode descriptionNode,
             AlternateContentProperty altProperty,
             Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions,
-            string imageSRC
+            string imageDescriptionDirectoryPath,
+            Dictionary<AlternateContentProperty, Description> map_AltProperty_TO_Description,
+            bool encodeToMp3,
+            int bitRate_Mp3,
+            AudioLibPCMFormat pcmFormat,
+            Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath
             )
         {
             XmlNode bodyNode = descriptionDocument.CreateElement(
@@ -59,9 +65,6 @@ namespace urakawa.daisy.export
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
                 "xmlns:" + DiagramContentModelHelper.NS_PREFIX_TOBI,
                 DiagramContentModelHelper.NS_URL_TOBI);
-
-
-            string imageDescriptionDirectoryPath = getAndCreateImageDescriptionDirectoryPath(imageSRC);
 
             int audioFileIndex = 0;
 
@@ -502,7 +505,8 @@ namespace urakawa.daisy.export
                 {
                     bodyNode.AppendChild(contentXmlNode);
 
-                    if (normalizedDescriptionText != null
+                    if (map_DiagramElementName_TO_TextualDescriptions != null
+                        && normalizedDescriptionText != null
                         && IsIncludedInDTBook(contentXmlNode.Name)
 
                         //                        (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
@@ -524,8 +528,12 @@ namespace urakawa.daisy.export
                             list = new List<string>(1);
                             map_DiagramElementName_TO_TextualDescriptions.Add(contentXmlNode.Name, list);
 
-                            m_Map_AltProperty_TO_Description[altProperty].Map_DiagramElementName_TO_AltContent.Add(
-                                contentXmlNode.Name, altContent);
+                            if (map_AltProperty_TO_Description != null)
+                            {
+                                map_AltProperty_TO_Description[altProperty]
+                                    .Map_DiagramElementName_TO_AltContent
+                                    .Add(contentXmlNode.Name, altContent);
+                            }
                         }
 
                         list.Add(normalizedDescriptionText);
@@ -547,9 +555,9 @@ namespace urakawa.daisy.export
                     {
                         dataProvider.ExportDataStreamToFile(destPath, false);
 
-                        if (m_encodeToMp3)
+                        if (encodeToMp3)
                         {
-                            string convertedFile = EncodeWavFileToMp3(destPath);
+                            string convertedFile = EncodeWavFileToMp3(destPath, pcmFormat, bitRate_Mp3);
                             if (convertedFile != null)
                             {
                                 exportAudioName = Path.GetFileName(convertedFile);
@@ -565,14 +573,17 @@ namespace urakawa.daisy.export
                     DiagramContentModelHelper.TOBI_Audio, exportAudioName, DiagramContentModelHelper.NS_URL_TOBI);
 
 
-                    DirectoryInfo d = new DirectoryInfo(imageDescriptionDirectoryPath);
-                    string srcPath = d.Name + "/" + exportAudioName;
-                    m_Map_AltContentAudio_TO_RelativeExportedFilePath.Add(altContent, srcPath);
+                    if (map_AltContentAudio_TO_RelativeExportedFilePath!=null)
+                    {
+                        DirectoryInfo d = new DirectoryInfo(imageDescriptionDirectoryPath);
+                        string srcPath = d.Name + "/" + exportAudioName;
+                        map_AltContentAudio_TO_RelativeExportedFilePath.Add(altContent, srcPath);
+                    }
                 }
             }
         }
 
-        private bool IsIncludedInDTBook(string name)
+        private static bool IsIncludedInDTBook(string name)
         {
             return (name == DiagramContentModelHelper.D_LondDesc
                     || name == DiagramContentModelHelper.D_SimplifiedLanguageDescription
