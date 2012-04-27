@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using System.IO;
 using AudioLib;
@@ -16,6 +17,7 @@ namespace urakawa.daisy.export
     public partial class Daisy3_Export
     {
         private static void createDiagramBodyContent(
+            bool skipACM,
             XmlDocument descriptionDocument,
             XmlNode descriptionNode,
             AlternateContentProperty altProperty,
@@ -554,14 +556,16 @@ namespace urakawa.daisy.export
                     if (!File.Exists(destPath))
                     {
                         dataProvider.ExportDataStreamToFile(destPath, false);
-
-                        if (encodeToMp3)
+                        if (encodeToMp3 ||
+                            (ushort)pcmFormat.SampleRate != (ushort)managedAudio.AudioMediaData.PCMFormat.Data.SampleRate)
                         {
-                            string convertedFile = EncodeWavFileToMp3(destPath, pcmFormat, bitRate_Mp3);
+                            string convertedFile = EncodeWavFileToMp3(skipACM, destPath, encodeToMp3, pcmFormat,
+                                                                      bitRate_Mp3);
                             if (convertedFile != null)
                             {
                                 exportAudioName = Path.GetFileName(convertedFile);
-                                if (File.Exists(destPath))
+                                
+                                if (encodeToMp3 && File.Exists(destPath))
                                 {
                                     File.Delete(destPath);
                                 }
@@ -588,6 +592,48 @@ namespace urakawa.daisy.export
             return (name == DiagramContentModelHelper.D_LondDesc
                     || name == DiagramContentModelHelper.D_SimplifiedLanguageDescription
                     || name == DiagramContentModelHelper.D_Summary);
+        }
+
+        private static string EncodeWavFileToMp3(bool skipACM, string sourceFilePath, bool encodeToMp3, AudioLibPCMFormat pcmFormat, int bitRate_Mp3)
+        {
+            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, skipACM);
+
+            string dir = Directory.GetParent(sourceFilePath).FullName;
+
+            if (encodeToMp3)
+            {
+                string destinationFilePath = Path.Combine(dir,
+                                                          Path.GetFileNameWithoutExtension(sourceFilePath) +
+                                                          DataProviderFactory.AUDIO_MP3_EXTENSION);
+                bool result = false;
+                result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat,
+                                                          (ushort) bitRate_Mp3);
+
+                if (result)
+                {
+                    File.Delete(sourceFilePath);
+
+                    return destinationFilePath;
+                }
+            }
+            else
+            {
+                string filePath = formatConverter.ConvertSampleRate(sourceFilePath, dir, pcmFormat);
+
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    File.Delete(sourceFilePath);
+
+                    Thread.Sleep(200);
+
+                    File.Move(filePath, sourceFilePath);
+
+                    return filePath;
+                }
+            }
+
+
+            return null;
         }
     }
 }

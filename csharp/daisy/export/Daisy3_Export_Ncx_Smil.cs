@@ -778,7 +778,7 @@ namespace urakawa.daisy.export
 
         private XmlNode CreateDocTitle(XmlDocument ncxDocument, XmlNode ncxRootNode, urakawa.core.TreeNode n)
         {
-            
+
             urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
             XmlNode docNode = ncxDocument.CreateElement(null,
@@ -810,7 +810,7 @@ namespace urakawa.daisy.export
         private XmlNode CreateNavPointWithoutContentNode(XmlDocument ncxDocument, urakawa.core.TreeNode urakawaNode, urakawa.core.TreeNode currentHeadingTreeNode, urakawa.core.TreeNode n, Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap)
         {
             XmlNode navMapNode = ncxDocument.GetElementsByTagName("navMap")[0];
-            
+
             urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
             // first create navPoints
@@ -1545,32 +1545,6 @@ namespace urakawa.daisy.export
             Seq_SpecialNode = null;
 
             return durOfCurrentSmil;
-        }
-
-        private static string EncodeWavFileToMp3(string sourceFilePath, AudioLibPCMFormat pcmFormat, int bitRate_Mp3)
-        {
-            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, false);
-
-            string destinationFilePath = Path.Combine(Directory.GetParent(sourceFilePath).FullName,
-                Path.GetFileNameWithoutExtension(sourceFilePath) + DataProviderFactory.AUDIO_MP3_EXTENSION);
-
-            bool result = false;
-
-            result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat,
-                (ushort)bitRate_Mp3);
-
-
-            if (result)
-            {
-                File.Delete(sourceFilePath);
-                return destinationFilePath;
-            }
-            else
-            {
-                // append error messages
-                //base.ErrorMessages = base.ErrorMessages + String.Format(UrakawaSDK_daisy_Lang.ErrorInEncoding, Path.GetFileName(sourceFilePath));
-                return null;
-            }
         }
     }
 }

@@ -71,6 +71,7 @@ namespace urakawa.daisy.export
 
 
         public static string CreateImageDescription(
+            bool skipACM,
             AudioLibPCMFormat pcmFormat,
             bool encodeToMp3,
             int bitRate_Mp3,
@@ -126,7 +127,7 @@ namespace urakawa.daisy.export
 
             createDiagramHeadMetadata(descriptionDocument, descriptionNode, altProperty);
 
-            createDiagramBodyContent(descriptionDocument, descriptionNode,
+            createDiagramBodyContent(skipACM, descriptionDocument, descriptionNode,
                 altProperty, map_DiagramElementName_TO_TextualDescriptions,
                 imageDescriptionDirectoryPath,
                 map_AltProperty_TO_Description, encodeToMp3, bitRate_Mp3, pcmFormat,
