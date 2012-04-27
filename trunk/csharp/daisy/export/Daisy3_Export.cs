@@ -45,7 +45,6 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
         private readonly bool m_includeImageDescriptions;
         
         protected readonly SampleRate m_sampleRate;
-        private int m_BitRate_Mp3;
         
 
         /// <summary>
@@ -86,6 +85,7 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
 
         }
 
+        private int m_BitRate_Mp3;
         public int BitRate_Mp3
         {
             get { return m_BitRate_Mp3; }

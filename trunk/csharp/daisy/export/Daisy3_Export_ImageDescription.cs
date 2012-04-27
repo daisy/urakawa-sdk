@@ -54,27 +54,32 @@ namespace urakawa.daisy.export
         private const string IMAGE_DESCRIPTION_XML_SUFFIX = "_DIAGRAM_Description";
         private const string IMAGE_DESCRIPTION_DIRECTORY_SUFFIX = "_DIAGRAM_Description";
 
-        private string getAndCreateImageDescriptionDirectoryPath(string imageSRC)
+        public static string GetAndCreateImageDescriptionDirectoryPath(bool create, string imageSRC, string outputDirectory)
         {
-
             string imageDescriptionDirName = FileDataProvider.EliminateForbiddenFileNameCharacters(imageSRC).Replace('.', '_') + IMAGE_DESCRIPTION_DIRECTORY_SUFFIX;
 
-            string m_ImageDescriptionDirectoryPath = Path.Combine(m_OutputDirectory, imageDescriptionDirName);
+            string imageDescriptionDirectoryPath = Path.Combine(outputDirectory, imageDescriptionDirName);
 
-            if (!Directory.Exists(m_ImageDescriptionDirectoryPath))
+            if (create && !Directory.Exists(imageDescriptionDirectoryPath))
             {
-                FileDataProvider.CreateDirectory(m_ImageDescriptionDirectoryPath);
+                FileDataProvider.CreateDirectory(imageDescriptionDirectoryPath);
             }
 
-            return m_ImageDescriptionDirectoryPath;
+            return imageDescriptionDirectoryPath;
         }
 
 
 
-        private string CreateImageDescription(
+        public static string CreateImageDescription(
+            AudioLibPCMFormat pcmFormat,
+            bool encodeToMp3,
+            int bitRate_Mp3,
+            string imageDescriptionDirectoryPath,
             string imageSRC,
             AlternateContentProperty altProperty,
-            Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions
+            Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions,
+            Dictionary<AlternateContentProperty, Description> map_AltProperty_TO_Description,
+            Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath
             )
         {
 #if DEBUG
@@ -92,7 +97,6 @@ namespace urakawa.daisy.export
             //string sourceXsltPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, xsltFileName);
             //string destXsltPath = Path.Combine(imageDescriptionDirectoryPath, xsltFileName);
             //if (!File.Exists(destXsltPath)) File.Copy(sourceXsltPath, destXsltPath);
-            m_Map_AltProperty_TO_Description.Add(altProperty, new Description());
 
             XmlNode descriptionNode = descriptionDocument.CreateElement(
                 DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
@@ -122,9 +126,12 @@ namespace urakawa.daisy.export
 
             createDiagramHeadMetadata(descriptionDocument, descriptionNode, altProperty);
 
-            createDiagramBodyContent(descriptionDocument, descriptionNode, altProperty, map_DiagramElementName_TO_TextualDescriptions, imageSRC);
+            createDiagramBodyContent(descriptionDocument, descriptionNode,
+                altProperty, map_DiagramElementName_TO_TextualDescriptions,
+                imageDescriptionDirectoryPath,
+                map_AltProperty_TO_Description, encodeToMp3, bitRate_Mp3, pcmFormat,
+                map_AltContentAudio_TO_RelativeExportedFilePath);
 
-            string imageDescriptionDirectoryPath = getAndCreateImageDescriptionDirectoryPath(imageSRC);
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + IMAGE_DESCRIPTION_XML_SUFFIX + ".xml";
             XmlReaderWriterHelper.WriteXmlDocument(descriptionDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName));
 

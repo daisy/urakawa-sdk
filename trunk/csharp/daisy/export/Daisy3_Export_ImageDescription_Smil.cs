@@ -17,7 +17,7 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private class Description
+        public class Description
         {
             public readonly Dictionary<string, AlternateContent> Map_DiagramElementName_TO_AltContent = new Dictionary<string, AlternateContent>();
         }

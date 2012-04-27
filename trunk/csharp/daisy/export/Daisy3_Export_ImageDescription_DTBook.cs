@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
+using AudioLib;
 using urakawa.core;
 using urakawa.data;
+using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
 using urakawa.property.alt;
 using urakawa.metadata;
@@ -24,12 +26,25 @@ namespace urakawa.daisy.export
                 return;
             }
 
-            //try
-            //{
+            m_Map_AltProperty_TO_Description.Add(altProp, new Description());
+
+            PCMFormatInfo audioFormat = m_Presentation.MediaDataManager.DefaultPCMFormat;
+            AudioLibPCMFormat pcmFormat = audioFormat.Data;
+            if ((ushort)m_sampleRate != pcmFormat.SampleRate)
+            {
+                pcmFormat.SampleRate = (ushort)m_sampleRate;
+            }
+
             Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions = new Dictionary<string, List<string>>();
 
-            string descriptionFile = CreateImageDescription(exportImageName, altProp, map_DiagramElementName_TO_TextualDescriptions);
-            
+            string imageDescriptionDirectoryPath = GetAndCreateImageDescriptionDirectoryPath(true, exportImageName, m_OutputDirectory);
+            string descriptionFile = CreateImageDescription(pcmFormat, m_encodeToMp3, m_BitRate_Mp3,
+                imageDescriptionDirectoryPath, exportImageName,
+                altProp,
+                map_DiagramElementName_TO_TextualDescriptions,
+                m_Map_AltProperty_TO_Description,
+                m_Map_AltContentAudio_TO_RelativeExportedFilePath);
+
             if (m_includeImageDescriptions && !String.IsNullOrEmpty(descriptionFile))
             {
                 //short term way for executing image description code: will be updated in later phase of implementation

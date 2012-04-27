@@ -15,7 +15,7 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private XmlNode addFlatDiagramHeadMetadata(
+        private static XmlNode addFlatDiagramHeadMetadata(
             MetadataAttribute metaAttr, IEnumerable<MetadataAttribute> metaAttrs,
             XmlNode parentNode, XmlDocument descriptionDocument, XmlNode descriptionNode)
         {
@@ -108,7 +108,7 @@ namespace urakawa.daisy.export
         }
 
 
-        private void createDiagramHeadMetadata(XmlDocument descriptionDocument, XmlNode descriptionNode, AlternateContentProperty altProperty)
+        private static void createDiagramHeadMetadata(XmlDocument descriptionDocument, XmlNode descriptionNode, AlternateContentProperty altProperty)
         {
             XmlNode headNode = descriptionDocument.CreateElement(
                 DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
@@ -216,7 +216,7 @@ namespace urakawa.daisy.export
             handleMetadataGroup(headNode, descriptionDocument, descriptionNode, groupedMetadata_RelResource);
         }
 
-        private void handleMetadataGroup(
+        private static void handleMetadataGroup(
             XmlNode headNode, XmlDocument descriptionDocument, XmlNode descriptionNode,
             Dictionary<string, List<Metadata>> groupedMetadata)
         {
@@ -376,7 +376,7 @@ namespace urakawa.daisy.export
             }
         }
 
-        private void addDic(Dictionary<Metadata, List<MetadataAttribute>> dic, Metadata md, MetadataAttribute mdAttr)
+        private static void addDic(Dictionary<Metadata, List<MetadataAttribute>> dic, Metadata md, MetadataAttribute mdAttr)
         {
             List<MetadataAttribute> list;
             dic.TryGetValue(md, out list);
@@ -391,7 +391,7 @@ namespace urakawa.daisy.export
                 dic.Add(md, list);
             }
         }
-        private void addDic_(Dictionary<string, List<Metadata>> dic, string key, Metadata md)
+        private static void addDic_(Dictionary<string, List<Metadata>> dic, string key, Metadata md)
         {
             List<Metadata> list;
             dic.TryGetValue(key, out list);
