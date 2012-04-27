@@ -628,7 +628,7 @@ namespace urakawa.daisy.export
 
                     File.Move(filePath, sourceFilePath);
 
-                    return filePath;
+                    return sourceFilePath;
                 }
             }
 
