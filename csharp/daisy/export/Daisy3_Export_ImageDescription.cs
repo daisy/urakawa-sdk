@@ -13,13 +13,43 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
+        public static bool AltPropHasSignificantMetadata(AlternateContentProperty altProp)
+        {
+            bool has = false;
 
+            foreach (var md in altProp.Metadatas.ContentsAs_Enumerable)
+            {
+                if (
+                    !md.NameContentAttribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":")
+                    )
+                {
+                    has = true;
+                    break;
+                }
+            }
 
+            return has;
+        }
 
+        public static bool AltContentHasSignificantMetadata(AlternateContent altContent)
+        {
+            bool has = false;
 
+            foreach (var md in altContent.Metadatas.ContentsAs_Enumerable)
+            {
+                if (
+                    !md.NameContentAttribute.Name.Equals(DiagramContentModelHelper.DiagramElementName)
+                    && !md.NameContentAttribute.Name.Equals(DiagramContentModelHelper.DiagramElementName_OBSOLETE)
+                    && !md.NameContentAttribute.Name.Equals(XmlReaderWriterHelper.XmlId)
+                    )
+                {
+                    has = true;
+                    break;
+                }
+            }
 
-
-
+            return has;
+        }
 
         private const string IMAGE_DESCRIPTION_XML_SUFFIX = "_DIAGRAM_Description";
         private const string IMAGE_DESCRIPTION_DIRECTORY_SUFFIX = "_DIAGRAM_Description";
@@ -47,8 +77,12 @@ namespace urakawa.daisy.export
             Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions
             )
         {
+#if DEBUG
+            DebugFix.Assert(!altProperty.IsEmpty);
+#endif //DEBUG
+
             XmlDocument descriptionDocument = new XmlDocument();
-            
+
             //m_AltProperrty_DiagramDocument.Add(altProperty, descriptionDocument);
 
             // <?xml-stylesheet type="text/xsl" href="desc2html.xsl"?>

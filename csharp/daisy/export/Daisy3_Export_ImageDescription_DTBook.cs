@@ -15,9 +15,11 @@ namespace urakawa.daisy.export
     {
         private void generateImageDescriptionInDTBook(TreeNode n, XmlNode currentXmlNode, string exportImageName, XmlDocument DTBookDocument)
         {
+            AlternateContentProperty altProp = n.GetAlternateContentProperty();
+
             if (currentXmlNode.LocalName == null
                 || !currentXmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
-                || n.GetAlternateContentProperty() == null)
+                || altProp == null || altProp.IsEmpty)
             {
                 return;
             }
@@ -25,8 +27,8 @@ namespace urakawa.daisy.export
             //try
             //{
             Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions = new Dictionary<string, List<string>>();
-            
-            string descriptionFile = CreateImageDescription(exportImageName, n.GetAlternateContentProperty(), map_DiagramElementName_TO_TextualDescriptions);
+
+            string descriptionFile = CreateImageDescription(exportImageName, altProp, map_DiagramElementName_TO_TextualDescriptions);
             
             if (m_includeImageDescriptions && !String.IsNullOrEmpty(descriptionFile))
             {

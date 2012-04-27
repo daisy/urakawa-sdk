@@ -9,6 +9,25 @@ namespace urakawa.daisy
 {
     public static class DiagramContentModelHelper
     {
+        //http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thelongdescelement
+        public const string URI_Help_LongDescription = "http://www.daisy.org/z3998/2012/auth/profiles/descriptions/1.0/schemadoc/subfiles/e-longdesc01.html";
+
+        //http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thesummaryelement
+        public const string URI_Help_SummaryDescription = "http://www.daisy.org/z3998/2012/auth/profiles/descriptions/1.0/schemadoc/subfiles/e-summary01.html";
+
+        //http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thesimplifiedlanguagedescriptionelement
+        public const string URI_Help_SimplifiedDescription = "http://www.daisy.org/z3998/2012/auth/profiles/descriptions/1.0/schemadoc/subfiles/e-simplifiedLanguageDescription01.html";
+
+        //http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thetactileelement
+        public const string URI_Help_TactileImage = "http://www.daisy.org/z3998/2012/auth/profiles/descriptions/1.0/schemadoc/subfiles/e-tactile01.html";
+
+        //http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thesimplifiedimageelement
+        public const string URI_Help_SimplifiedImage = "http://www.daisy.org/z3998/2012/auth/profiles/descriptions/1.0/schemadoc/subfiles/e-simplifiedImage01.html";
+
+        //http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thetourelement
+        public const string URI_Help_Tour = "http://www.daisy.org/z3998/2012/auth/profiles/descriptions/1.0/schemadoc/subfiles/e-tour01.html";
+
+
         public const string EPUB_DescribedAt = "epub:describedAt";
 
         // -------------------------------------------------
