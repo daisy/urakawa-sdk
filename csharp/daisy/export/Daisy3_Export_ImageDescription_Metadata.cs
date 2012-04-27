@@ -143,7 +143,7 @@ namespace urakawa.daisy.export
                 if (
                     md.NameContentAttribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":")
 
-                    && (md.OtherAttributes == null || md.OtherAttributes.Count == 0)
+                    //&& (md.OtherAttributes == null || md.OtherAttributes.Count == 0)
 
                     && (descriptionNode.Attributes == null || descriptionNode.Attributes.GetNamedItem(md.NameContentAttribute.Name) == null))
                 {
