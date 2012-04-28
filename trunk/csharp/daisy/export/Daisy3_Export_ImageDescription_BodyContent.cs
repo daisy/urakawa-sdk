@@ -246,8 +246,13 @@ namespace urakawa.daisy.export
                 bool mergedObjectForExistingTourDescription = false;
                 string normalizedDescriptionText = null;
 
+                bool descriptionTextContainsMarkup = false;
+                string descriptionTextEscaped = null;
+
                 if (altContent.Text != null && !string.IsNullOrEmpty(altContent.Text.Text))
                 {
+                    descriptionTextEscaped = altContent.Text.Text;
+
                     XmlNode textParentNode = contentXmlNode;
 
                     if (altContent.Image != null)
@@ -264,7 +269,9 @@ namespace urakawa.daisy.export
 
                     normalizedDescriptionText = altContent.Text.Text;
 
-                    if (normalizedDescriptionText.Contains("<"))
+                    descriptionTextContainsMarkup = normalizedDescriptionText.Contains("<");
+
+                    if (descriptionTextContainsMarkup)
                     {
                         try
                         {
@@ -370,8 +377,21 @@ namespace urakawa.daisy.export
 #if DEBUG
                             Debugger.Break();
 #endif //DEBUG
-                            textParentNode.AppendChild(descriptionDocument.CreateTextNode(normalizedDescriptionText));
-                            normalizedDescriptionText = textParentNode.InnerText;
+
+                            descriptionTextContainsMarkup = false;
+                            descriptionTextEscaped = DIAGRAM_XML_PARSE_FAIL + normalizedDescriptionText; //xmlText.InnerText; // normalizedDescriptionText;
+                            
+                            XmlText xmlText = descriptionDocument.CreateTextNode(normalizedDescriptionText);
+
+                            XmlNode code = descriptionDocument.CreateElement(
+                                //DiagramContentModelHelper.NS_PREFIX_ZAI,
+                                DiagramContentModelHelper.CODE,
+                                DiagramContentModelHelper.NS_URL_ZAI);
+
+                            code.AppendChild(xmlText);
+                            textParentNode.AppendChild(code);
+
+                            //normalizedDescriptionText = textParentNode.InnerText;
                         }
                     }
                     else
@@ -380,7 +400,7 @@ namespace urakawa.daisy.export
                         //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, textParentNode,
                         //"xmlns:z", DiagramContentModelHelper.NS_URL_ZAI);
 
-                        string normalizedText = normalizedDescriptionText.Replace("\n\r", "\n");
+                        string normalizedText = normalizedDescriptionText.Replace("\r\n", "\n");
 
                         string[] parasText = normalizedText.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                         //string[] parasText = System.Text.RegularExpressions.Regex.Split(normalizedText, "\n");
@@ -538,7 +558,17 @@ namespace urakawa.daisy.export
                             }
                         }
 
-                        list.Add(normalizedDescriptionText);
+                        string text = null;
+                        if (descriptionTextContainsMarkup)
+                        {
+                            text = normalizedDescriptionText;
+                        }
+                        else
+                        {
+                            text = descriptionTextEscaped; //  altContent.Text.Text;
+                        }
+
+                        list.Add(text);
                     }
                 }
 
@@ -564,7 +594,7 @@ namespace urakawa.daisy.export
                             if (convertedFile != null)
                             {
                                 exportAudioName = Path.GetFileName(convertedFile);
-                                
+
                                 if (encodeToMp3 && File.Exists(destPath))
                                 {
                                     File.Delete(destPath);
@@ -577,7 +607,7 @@ namespace urakawa.daisy.export
                     DiagramContentModelHelper.TOBI_Audio, exportAudioName, DiagramContentModelHelper.NS_URL_TOBI);
 
 
-                    if (map_AltContentAudio_TO_RelativeExportedFilePath!=null)
+                    if (map_AltContentAudio_TO_RelativeExportedFilePath != null)
                     {
                         DirectoryInfo d = new DirectoryInfo(imageDescriptionDirectoryPath);
                         string srcPath = d.Name + "/" + exportAudioName;
@@ -607,7 +637,7 @@ namespace urakawa.daisy.export
                                                           DataProviderFactory.AUDIO_MP3_EXTENSION);
                 bool result = false;
                 result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat,
-                                                          (ushort) bitRate_Mp3);
+                                                          (ushort)bitRate_Mp3);
 
                 if (result)
                 {

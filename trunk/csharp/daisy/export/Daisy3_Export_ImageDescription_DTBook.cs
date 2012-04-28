@@ -15,6 +15,8 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
+        private const string DIAGRAM_XML_PARSE_FAIL = "_DIAGRAM_XML_PARSE_FAIL_";
+
         private void generateImageDescriptionInDTBook(TreeNode n, XmlNode currentXmlNode, string exportImageName, XmlDocument DTBookDocument)
         {
             AlternateContentProperty altProp = n.GetAlternateContentProperty();
@@ -59,7 +61,12 @@ namespace urakawa.daisy.export
                 if (!m_Image_ProdNoteMap.ContainsKey(n)) m_Image_ProdNoteMap.Add(n, new List<XmlNode>());
                 m_Image_ProdNoteMap[n].Add(prodNoteNode);
                 XmlNode anchorNode = DTBookDocument.CreateElement("a", currentXmlNode.NamespaceURI);
-                prodNoteNode.AppendChild(anchorNode);
+
+                XmlNode pAnchor = DTBookDocument.CreateElement(
+                    DiagramContentModelHelper.P , currentXmlNode.NamespaceURI
+                    );
+                pAnchor.AppendChild(anchorNode);
+                prodNoteNode.AppendChild(pAnchor);
                 string descriptionFileUrl = descriptionFile.Replace("\\", "/");
 
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFileUrl);
@@ -81,11 +88,52 @@ namespace urakawa.daisy.export
                         currentXmlNode.ParentNode.AppendChild(prodNoteDesc);
                         m_Image_ProdNoteMap[n].Add(prodNoteDesc);
 
-                        foreach (string descText in map_DiagramElementName_TO_TextualDescriptions[diagramDescriptionElementName])
+                        foreach (string txt in map_DiagramElementName_TO_TextualDescriptions[diagramDescriptionElementName])
                         {
-                            XmlNode wrapperNode = DTBookDocument.CreateElement("code", currentXmlNode.NamespaceURI);
-                            prodNoteDesc.AppendChild(wrapperNode);
-                            wrapperNode.AppendChild(DTBookDocument.CreateTextNode(descText));
+                            string descText = txt;
+
+                            bool xmlParseFail = descText.StartsWith(DIAGRAM_XML_PARSE_FAIL);
+
+                            bool descriptionTextContainsMarkup = !xmlParseFail && descText.Contains("<");
+                            if (descriptionTextContainsMarkup)
+                            {
+                                XmlNode wrapperNode = DTBookDocument.CreateElement("code", currentXmlNode.NamespaceURI);
+                                prodNoteDesc.AppendChild(wrapperNode);
+                                wrapperNode.AppendChild(DTBookDocument.CreateTextNode(descText));
+                            }
+                            else
+                            {
+                                if (xmlParseFail)
+                                {
+                                    //descText = descText.Replace(DIAGRAM_XML_PARSE_FAIL, "");
+                                    descText = descText.Substring(DIAGRAM_XML_PARSE_FAIL.Length);
+                                }
+
+                                string normalizedText = descText.Replace("\r\n", "\n");
+
+                                string[] parasText = normalizedText.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                                //string[] parasText = System.Text.RegularExpressions.Regex.Split(normalizedText, "\n");
+
+                                for (int i = 0; i < parasText.Length; i++)
+                                {
+                                    string paraText = parasText[i].Trim();
+                                    if (string.IsNullOrEmpty(paraText))
+                                    {
+                                        continue;
+                                    }
+
+                                    XmlNode paragraph = DTBookDocument.CreateElement(
+                                        //DiagramContentModelHelper.NS_PREFIX_ZAI,
+                                        DiagramContentModelHelper.P
+                                        , currentXmlNode.NamespaceURI
+                                        //, DiagramContentModelHelper.NS_URL_ZAI
+                                        );
+
+                                    paragraph.InnerText = paraText;
+
+                                    prodNoteDesc.AppendChild(paragraph);
+                                }
+                            }
                         }
                     }
                 }

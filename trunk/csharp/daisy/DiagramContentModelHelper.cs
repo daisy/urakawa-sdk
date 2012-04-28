@@ -98,6 +98,8 @@ namespace urakawa.daisy
 
         public const string P = "p";
 
+        public const string CODE = "code";
+
 #if true || SUPPORT_ANNOTATION_ELEMENT
         public const string Annotation = "annotation";
         public const string Ref = "ref";
