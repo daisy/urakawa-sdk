@@ -451,7 +451,7 @@ namespace urakawa.daisy.import
 
                                         if (splitArray[0] == "xmlns")
                                         {
-                                            DebugFix.Assert(xmlNode.LocalName == "book" || treeNode.Parent == null);
+                                            //DebugFix.Assert(xmlNode.LocalName == "book" || treeNode.Parent == null);
 
                                             xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
                                         }
