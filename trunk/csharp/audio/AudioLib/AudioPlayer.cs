@@ -543,6 +543,18 @@ namespace AudioLib
                 return;
             }
 
+            //PcmDataBufferAvailableHandler deleg = PcmDataBufferAvailable;
+            //if (deleg != null)
+            //{
+            //    for (int i = 0; i < m_PcmDataBuffer.Length; i++)
+            //    {
+            //        m_PcmDataBuffer[i] = 0;
+            //    }
+            //    m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
+            //    m_PcmDataBufferAvailableEventArgs.PcmDataBufferLength = m_PcmDataBufferLength;
+            //    deleg(this, m_PcmDataBufferAvailableEventArgs);
+            //}
+
             if (CurrentState == State.Stopped)
             {
                 return;

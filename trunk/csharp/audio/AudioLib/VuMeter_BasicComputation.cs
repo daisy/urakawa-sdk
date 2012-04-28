@@ -14,7 +14,7 @@ namespace AudioLib
     // http://daisy.trac.cvsdude.com/urakawa-sdk/browser/trunk/csharp/audio/AudioLib/VuMeter.cs?rev=1485
     public partial class VuMeter
     {
-        
+
         private readonly PeakOverloadEventArgs m_PeakOverloadEventArgs = new PeakOverloadEventArgs(1); //, 0);
         public event PeakOverloadHandler PeakMeterOverloaded;
 
@@ -42,7 +42,6 @@ namespace AudioLib
 
         public void OnPcmDataBufferAvailable_Player(object sender, AudioPlayer.PcmDataBufferAvailableEventArgs e)
         {
-            
             AudioPlayer ob_AudioPlayer = sender as AudioPlayer;
             if (ob_AudioPlayer == null || ob_AudioPlayer != m_Player)
             {
@@ -66,9 +65,11 @@ namespace AudioLib
             m_computingPeakDb = false;
 
             PeakMeterUpdateHandler del = PeakMeterUpdated;
-            if ( m_Player.CurrentState == AudioPlayer.State.Playing    &&     del != null )
+            if (m_Player.CurrentState == AudioPlayer.State.Playing
+                && del != null)
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
+
                 del(this, m_PeakMeterUpdateEventArgs);
             }
             //var del_ = PeakMeterUpdated;
@@ -88,10 +89,11 @@ namespace AudioLib
                 }
 
                 PeakOverloadHandler delOverload = PeakMeterOverloaded;
-                if (m_Player.CurrentState == AudioPlayer.State.Playing && del != null)
+                if (m_Player.CurrentState == AudioPlayer.State.Playing
+                    && delOverload != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
-                    
+
                     delOverload(this, m_PeakOverloadEventArgs);
                 }
                 //var del = PeakMeterOverloaded;
@@ -128,11 +130,12 @@ namespace AudioLib
             m_computingPeakDb = false;
 
             PeakMeterUpdateHandler del = PeakMeterUpdated;
-            
-               if ( (m_Recorder.CurrentState == AudioRecorder.State.Monitoring || m_Recorder.CurrentState == AudioRecorder.State.Recording)
-                   && del != null)
+
+            if ((m_Recorder.CurrentState == AudioRecorder.State.Monitoring || m_Recorder.CurrentState == AudioRecorder.State.Recording)
+                && del != null)
             {
                 m_PeakMeterUpdateEventArgs.PeakDb = peakDb;
+
                 del(this, m_PeakMeterUpdateEventArgs);
             }
             //var del_ = PeakMeterUpdated;
@@ -151,11 +154,13 @@ namespace AudioLib
                     continue;
                 }
 
-                if (PeakMeterOverloaded != null)
+                PeakOverloadHandler delOverload = PeakMeterOverloaded;
+                if ((m_Recorder.CurrentState == AudioRecorder.State.Monitoring || m_Recorder.CurrentState == AudioRecorder.State.Recording)
+                    && delOverload != null)
                 {
                     m_PeakOverloadEventArgs.Channel = index;
 
-                    PeakMeterOverloaded(this, m_PeakOverloadEventArgs);
+                    delOverload(this, m_PeakOverloadEventArgs);
                 }
                 //var del = PeakMeterOverloaded;
                 //if (del != null)
@@ -167,15 +172,15 @@ namespace AudioLib
             }
         }
 
-        private void StateChanged(object sender,EventArgs e)
+        private void StateChanged(object sender, EventArgs e)
         {
             while (m_computingPeakDb)
             {
                 Thread.Sleep(10);
                 Console.Write("m_computingPeakDb...");
             }
-            m_PeakDb  = null;
-            if ( m_PcmDataBuffer != null )
+            m_PeakDb = null;
+            if (m_PcmDataBuffer != null)
             {
                 Console.Write("ALLOCATING m_PcmDataBuffer");
                 m_PcmDataBuffer = new byte[m_PcmDataBufferLength];
@@ -186,7 +191,7 @@ namespace AudioLib
             m_AverageValue = new double[2];
 
             ResetHandler del = ResetEvent;
-                if (del != null) del ( this, new ResetEventArgs ()) ;
+            if (del != null) del(this, new ResetEventArgs());
         }
 
         public double[] LastPeakDb
@@ -260,7 +265,7 @@ namespace AudioLib
             return m_PeakDb;
         }
 
-        
+
 
         public delegate void PeakOverloadHandler(object sender, PeakOverloadEventArgs e);
 
