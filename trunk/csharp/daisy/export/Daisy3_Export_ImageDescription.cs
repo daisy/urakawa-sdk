@@ -17,7 +17,7 @@ namespace urakawa.daisy.export
         {
             bool has = false;
 
-            foreach (var md in altProp.Metadatas.ContentsAs_Enumerable)
+            foreach (metadata.Metadata md in altProp.Metadatas.ContentsAs_Enumerable)
             {
                 if (
                     !md.NameContentAttribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":")
@@ -35,7 +35,7 @@ namespace urakawa.daisy.export
         {
             bool has = false;
 
-            foreach (var md in altContent.Metadatas.ContentsAs_Enumerable)
+            foreach (metadata.Metadata md in altContent.Metadatas.ContentsAs_Enumerable)
             {
                 if (
                     !md.NameContentAttribute.Name.Equals(DiagramContentModelHelper.DiagramElementName)
