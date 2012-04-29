@@ -76,7 +76,7 @@ namespace AudioLib
             {
                 //  BlockSum is function to retrieve average amplitude in  Block
                 //lCurrentSum  = GetAverageSampleValue(brRef, SampleCount)  ;
-                lCurrentSum = GetAvragePeakValue(brRef, SampleCount, audioPCMFormat);
+                lCurrentSum = GetAvragePeakValue(assetStream, SampleCount, audioPCMFormat);
                 lBlockSum = Convert.ToInt64((lCurrentSum + lSumPrev) / 2);
                 lSumPrev = lCurrentSum;
 
@@ -157,7 +157,7 @@ namespace AudioLib
 
             double BlockTime = 25; // milliseconds
             double BeforePhraseInMS = audioPCMFormat.ConvertBytesToTime((long)before) / AudioLibPCMFormat.TIME_UNIT;
-            Console.WriteLine ("before , silgap " + BeforePhraseInMS  ) ;
+            //Console.WriteLine ("before , silgap " + BeforePhraseInMS+" , " + GapLength  ) ;
             lCountSilGap = Convert.ToInt64((audioPCMFormat.ConvertBytesToTime((long)GapLength) / AudioLibPCMFormat.TIME_UNIT) / BlockTime);
 
             long Iterations = Convert.ToInt64(assetTimeInMS/ BlockTime);
@@ -178,7 +178,7 @@ namespace AudioLib
                 if (CancelOperation) return null;
                 // decodes audio chunck inside block
                 //lCurrentSum = GetAverageSampleValue(br, SampleCount);
-                lCurrentSum = GetAvragePeakValue(br, SampleCount, audioPCMFormat);
+                lCurrentSum = GetAvragePeakValue(assetStream, SampleCount, audioPCMFormat);
                 lSum = (lCurrentSum + lSumPrev) / 2;
                 lSumPrev = lCurrentSum;
 
@@ -253,7 +253,7 @@ namespace AudioLib
         }
 
 
-        private static int GetAverageSampleValue(BinaryReader br, long SampleLength, AudioLibPCMFormat audioPCMFormat)
+        private static int GetAverageSampleValue(Stream br, long SampleLength, AudioLibPCMFormat audioPCMFormat)
         {
             long AvgSampleValue = 0;
 
@@ -267,7 +267,7 @@ namespace AudioLib
         }
 
 
-        private static  int GetAvragePeakValue(BinaryReader br, long SampleCount, AudioLibPCMFormat audioPCMFormat)
+        public static  int GetAvragePeakValue(Stream br, long SampleCount, AudioLibPCMFormat audioPCMFormat)
         {
                     // average value to return
             long AverageValue = 0;
@@ -291,7 +291,7 @@ namespace AudioLib
         }
 
 
-        private static int GetPeak(BinaryReader br, long UBound, AudioLibPCMFormat audioPCMFormat)
+        private static int GetPeak(Stream br, long UBound, AudioLibPCMFormat audioPCMFormat)
         {
             int Peak = 0;
             
@@ -306,7 +306,7 @@ namespace AudioLib
         }
 
 
-        private static int GetSampleValue(BinaryReader br, AudioLibPCMFormat audioPCMFormat)
+        private static int GetSampleValue(Stream br, AudioLibPCMFormat audioPCMFormat)
         {
             int SampleValue1 =  0 ;
 int SampleValue2 = 0 ;
@@ -345,7 +345,7 @@ int SampleValue2 = 0 ;
         /// </summary>
         /// <param name="SampleCount"></param>
         /// <returns></returns>
-        private static double GetErrorCompensatingConstant(long SampleCount, AudioLibPCMFormat audioPCMFormat)
+        public static double GetErrorCompensatingConstant(long SampleCount, AudioLibPCMFormat audioPCMFormat)
             {
             // number of samples from which peak is selected
                 long PeakCount = Convert.ToInt64(audioPCMFormat.SampleRate / m_FrequencyDivisor);
