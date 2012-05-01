@@ -427,7 +427,7 @@ namespace urakawa.core
             return true; // includes empty "text" (when whitespace is trimmed)
         }
 
-        public static TreeNode EnsureTreeNodeHasNoSignificantTextOnlySiblings(TreeNode rootBoundary, TreeNode proposed)
+        public static TreeNode EnsureTreeNodeHasNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode rootBoundary, TreeNode proposed)
         {
             if (rootBoundary == null)
             {
@@ -436,21 +436,28 @@ namespace urakawa.core
 
         checkProposed:
 
-            if (proposed != null
-                && rootBoundary == proposed)
+            if (proposed != null)
             {
-                return rootBoundary;
-            }
+                if (proposed == rootBoundary)
+                {
+                    return rootBoundary;
+                }
 
-            if (proposed != null
-                && !proposed.IsDescendantOf(rootBoundary))
-            {
-                return null;
+                if (!proposed.IsDescendantOf(rootBoundary))
+                {
+                    return null;
+                }
             }
-
-            if (proposed == null)
+            else
             {
-                proposed = rootBoundary.GetFirstDescendantWithText();
+                if (directionPrevious)
+                {
+                    proposed = rootBoundary.GetLastDescendantWithText();
+                }
+                else
+                {
+                    proposed = rootBoundary.GetFirstDescendantWithText();
+                }
                 if (proposed == null)
                 {
                     StringChunkRange textRange = rootBoundary.GetText();
@@ -458,14 +465,22 @@ namespace urakawa.core
                     {
                         return null;
                     }
-                    proposed = rootBoundary;
+                    //proposed = rootBoundary;
+                    return rootBoundary;
                 }
 
                 while (proposed != null && (proposed.GetXmlElementQName() == null
                     || TextOnlyContainsPunctuation(proposed.GetText())
                     ))
                 {
-                    proposed = proposed.GetNextSiblingWithText();
+                    if (directionPrevious)
+                    {
+                        proposed = proposed.GetPreviousSiblingWithText();
+                    }
+                    else
+                    {
+                        proposed = proposed.GetNextSiblingWithText();
+                    }
                 }
 
                 if (proposed == null)
@@ -486,15 +501,51 @@ namespace urakawa.core
                 return proposed;
             }
 
-
-            bool atLeastOneSiblingIsSignificantTextOnly = false;
-
-            foreach (TreeNode child in proposed.Parent.Children.ContentsAs_Enumerable)
+            if (atLeastOneSiblingIsSignificantTextOnly(proposed.Parent))
             {
-                if (child == proposed)
+                return EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, rootBoundary, proposed.Parent);
+            }
+
+            //if (!skipTextOnlyNodes)
+            //{
+            //    return proposed;
+            //}
+
+            TreeNode last = null;
+            TreeNode child = proposed.Parent;
+            TreeNode parent = child.Parent;
+            while (parent != null)
+            {
+                if (atLeastOneSiblingIsSignificantTextOnly(parent))
                 {
-                    //
+                    if (parent == rootBoundary
+                        || parent.IsDescendantOf(rootBoundary))
+                    {
+                        last = parent;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
+                child = parent;
+                parent = child.Parent;
+            }
+            if (last == null) // || last.Parent == null)
+            {
+                return proposed;
+            }
+            return last;
+        }
+
+        private static bool atLeastOneSiblingIsSignificantTextOnly(TreeNode parent)
+        {
+            foreach (TreeNode child in parent.Children.ContentsAs_Enumerable)
+            {
+                //if (child == proposed)
+                //{
+                //    //
+                //}
                 if (child.GetXmlElementQName() != null)
                 {
                     continue;
@@ -520,16 +571,12 @@ namespace urakawa.core
                             continue; // we ignore insignificant punctuation
                         }
 
-                        atLeastOneSiblingIsSignificantTextOnly = true;
+                        return true;
                     }
                 }
             }
-            if (!atLeastOneSiblingIsSignificantTextOnly)
-            {
-                return proposed;
-            }
 
-            return EnsureTreeNodeHasNoSignificantTextOnlySiblings(rootBoundary, proposed.Parent);
+            return false;
         }
 
         public Media GetMediaInTextChannel()
