@@ -427,7 +427,7 @@ namespace urakawa.core
             return true; // includes empty "text" (when whitespace is trimmed)
         }
 
-        public static TreeNode GetNextTreeNodeWithNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode node)
+        public static TreeNode GetNextTreeNodeWithNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode node, out TreeNode nested)
         {
             TreeNode root = node.Root;
 
@@ -443,6 +443,7 @@ namespace urakawa.core
 
             if (nextDirect == null)
             {
+                nested = null;
                 return null;
             }
             else
@@ -468,6 +469,7 @@ namespace urakawa.core
                 if (next == null)
                 {
                     next = nextDirect;
+                    nested = null;
                     return next;
                     //m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
                 }
@@ -479,11 +481,13 @@ namespace urakawa.core
                         || next.GetAudioMedia() != null
                         || next.GetFirstDescendantWithManagedAudio() == null)
                     {
+                        nested = null;
                         return next;
                         //m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
                     }
                     else
                     {
+                        nested = beforeAdjust;
                         return next;
                         //m_UrakawaSession.PerformTreeNodeSelection(next, false, beforeAdjust);
                     }
