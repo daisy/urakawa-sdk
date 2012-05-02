@@ -427,6 +427,70 @@ namespace urakawa.core
             return true; // includes empty "text" (when whitespace is trimmed)
         }
 
+        public static TreeNode GetNextTreeNodeWithNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode node)
+        {
+            TreeNode root = node.Root;
+
+            TreeNode nextDirect = null;
+            if (directionPrevious)
+            {
+                nextDirect = node.GetPreviousSiblingWithText();
+            }
+            else
+            {
+                nextDirect = node.GetNextSiblingWithText();
+            }
+
+            if (nextDirect == null)
+            {
+                return null;
+            }
+            else
+            {
+                TreeNode next = nextDirect;
+                TreeNode beforeAdjust = null;
+                while (next != null)
+                {
+                    beforeAdjust = next;
+                    next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, next);
+                    //m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode
+
+                    bool isXmlElement = next.GetXmlElementQName() != null;
+                    //bool isSignificantTextOnly = !isXmlElement && !TreeNode.TextOnlyContainsPunctuation(next.GetText());
+                    if (isXmlElement)
+                    {
+                        break;
+                    }
+
+                    next = next.GetNextSiblingWithText();
+                }
+
+                if (next == null)
+                {
+                    next = nextDirect;
+                    return next;
+                    //m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
+                }
+                else
+                {
+                    if (beforeAdjust == null
+                        || beforeAdjust == next
+                        || !next.IsAncestorOf(beforeAdjust)
+                        || next.GetAudioMedia() != null
+                        || next.GetFirstDescendantWithManagedAudio() == null)
+                    {
+                        return next;
+                        //m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
+                    }
+                    else
+                    {
+                        return next;
+                        //m_UrakawaSession.PerformTreeNodeSelection(next, false, beforeAdjust);
+                    }
+                }
+            }
+        }
+
         public static TreeNode EnsureTreeNodeHasNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode rootBoundary, TreeNode proposed)
         {
             if (rootBoundary == null)
