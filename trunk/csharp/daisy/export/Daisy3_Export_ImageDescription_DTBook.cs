@@ -67,7 +67,7 @@ namespace urakawa.daisy.export
                     );
                 pAnchor.AppendChild(anchorNode);
                 prodNoteNode.AppendChild(pAnchor);
-                string descriptionFileUrl = descriptionFile.Replace("\\", "/");
+                string descriptionFileUrl = descriptionFile.Replace('\\', '/');
 
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "href", descriptionFileUrl);
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, anchorNode, "external", "true");
@@ -94,7 +94,7 @@ namespace urakawa.daisy.export
 
                             bool xmlParseFail = descText.StartsWith(DIAGRAM_XML_PARSE_FAIL);
 
-                            bool descriptionTextContainsMarkup = !xmlParseFail && descText.Contains("<");
+                            bool descriptionTextContainsMarkup = !xmlParseFail && descText.IndexOf('<') >= 0; // descText.Contains("<");
                             if (descriptionTextContainsMarkup)
                             {
                                 XmlNode wrapperNode = DTBookDocument.CreateElement("code", currentXmlNode.NamespaceURI);

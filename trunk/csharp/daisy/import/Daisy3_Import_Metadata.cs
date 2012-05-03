@@ -5,6 +5,7 @@ using System.Xml;
 using AudioLib;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
+using urakawa.xuk;
 
 namespace urakawa.daisy.import
 {
@@ -109,7 +110,7 @@ namespace urakawa.daisy.import
                 {
                     //meta.NameContentAttribute.NamespaceUri = attribute.Value;
                 }
-                else if (attribute.Name.Equals("xmlns", StringComparison.OrdinalIgnoreCase))
+                else if (attribute.Name.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS, StringComparison.OrdinalIgnoreCase))
                 {
                     //meta.OtherAttributes.NamespaceUri = attribute.Value;
                 }
@@ -119,7 +120,7 @@ namespace urakawa.daisy.import
 
                     xmlAttr.Name = attribute.Name;
 
-                    if (attribute.Name.Contains(":"))
+                    if (attribute.Name.IndexOf(':') >= 0) // attribute.Name.Contains(":")
                     {
                         xmlAttr.NamespaceUri = attribute.NamespaceURI;
                     }
@@ -239,7 +240,7 @@ namespace urakawa.daisy.import
             md.NameContentAttribute.Name = name; //.ToLower();
             md.NameContentAttribute.Value = content;
 
-            if (md.NameContentAttribute.Name.Contains(":")
+            if (md.NameContentAttribute.Name.IndexOf(':') >= 0 // md.NameContentAttribute.Name.Contains(":")
                 && node.Name.Equals(md.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
             {
                 md.NameContentAttribute.NamespaceUri = node.NamespaceURI;

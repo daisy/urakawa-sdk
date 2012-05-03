@@ -213,6 +213,16 @@ namespace urakawa.property.xml
             {
                 throw new exception.MethodParameterIsNullException("The namespace uri must not be null");
             }
+
+            if (newLocalName.IndexOf(':') >= 0) //newLocalName.Contains(":"))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                //prefix = mLocalName.Split(':')[0];
+                newLocalName = newLocalName.Split(':')[1];
+            }
+
             string prevLN = mLocalName;
             string prevNS = mNamespaceUri;
             mLocalName = newLocalName;
