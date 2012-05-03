@@ -26,7 +26,7 @@ namespace urakawa.daisy.import
                 directoryName += Path.DirectorySeparatorChar;
             }*/
 
-            string unzipDirectory = Path.Combine(m_outDirectory, m_Book_FilePath.Replace(".", "_"));
+            string unzipDirectory = Path.Combine(m_outDirectory, m_Book_FilePath.Replace('.', '_'));
             if (Directory.Exists(unzipDirectory))
             {
                 FileDataProvider.DeleteDirectory(unzipDirectory);

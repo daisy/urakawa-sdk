@@ -117,7 +117,9 @@ namespace urakawa.daisy.import
             if (docType == null) return null;
 
             string completeString = docType.OuterXml;
-            if (completeString.Contains("[") && completeString.Contains("]"))
+            if (completeString.IndexOf('[') >= 0 // completeString.Contains("[")
+                &&
+                completeString.IndexOf(']') >= 0 // completeString.Contains("]"))
             {
                 string DTDString = completeString.Split('[')[1];
                 DTDString = DTDString.Split(']')[0];
@@ -234,9 +236,8 @@ namespace urakawa.daisy.import
                                     if (string.IsNullOrEmpty(lang_))
                                     {
                                         XmlProperty xmlProp = presentation.RootNode.GetXmlProperty();
-                                        xmlProp.SetAttribute(XmlReaderWriterHelper.XmlLang,
-                                                             XmlReaderWriterHelper.NS_URL_XML, lang);
-                                        
+                                        xmlProp.SetAttribute(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML, lang);
+
                                         presentation.Language = lang;
                                     }
                                     else
@@ -271,13 +272,26 @@ namespace urakawa.daisy.import
 
                         XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
                         treeNode.AddProperty(xmlProp);
+
+                        // we get rid of element name prefixes, we use namespace URIs instead.
                         xmlProp.LocalName = xmlNode.LocalName;
+
                         if (xmlNode.ParentNode != null && xmlNode.ParentNode.NodeType == XmlNodeType.Document)
                         {
                             presentation.PropertyFactory.DefaultXmlNamespaceUri = xmlNode.NamespaceURI;
                         }
 
-                        if (xmlNode.NamespaceURI != presentation.PropertyFactory.DefaultXmlNamespaceUri)
+                        //string nodeName_Prefix = null;
+                        //string nodeName_Local = null;
+                        //if (xmlNode.Name.Contains(":"))
+                        //{
+                        //    nodeName_Prefix = xmlNode.Name.Split(':')[0];
+                        //    nodeName_Local = xmlNode.Name.Split(':')[1];
+                        //}
+
+                        // check inherited NS URI
+                        string nsUri = treeNode.GetXmlNamespaceUri();
+                        if (xmlNode.NamespaceURI != nsUri) //presentation.PropertyFactory.DefaultXmlNamespaceUri)
                         {
                             xmlProp.NamespaceUri = xmlNode.NamespaceURI;
                         }
@@ -441,47 +455,53 @@ namespace urakawa.daisy.import
                                 if (attr.LocalName != "smilref"
                                     && attr.LocalName != "imgref") // && attr.Name != "xmlns:xsi" && attr.Name != "xml:space"
                                 {
-                                    if (attr.Name.Equals("xml:space", StringComparison.OrdinalIgnoreCase))
+                                    if (attr.Name.Equals(XmlReaderWriterHelper.NS_PREFIX_XML + ":space", StringComparison.OrdinalIgnoreCase))
                                     {
                                         // TODO: ignore  xml:space="preserve"  (e.g. in Bookshare DTBooks)
                                     }
-                                    else if (attr.Name.Contains(":"))
-                                    {
-                                        string[] splitArray = attr.Name.Split(':');
-
-                                        if (splitArray[0] == "xmlns")
-                                        {
-                                            //DebugFix.Assert(xmlNode.LocalName == "book" || treeNode.Parent == null);
-
-                                            xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
-                                        }
-                                        else
-                                        {
-                                            xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
-                                        }
-                                    }
                                     else if (updatedSRC != null && attr.LocalName == "src")
                                     {
-                                        xmlProp.SetAttribute(attr.LocalName, "", updatedSRC);
+                                        xmlProp.SetAttribute(attr.LocalName, (attr.NamespaceURI == null ? "" : attr.NamespaceURI), updatedSRC);
+                                    }
+                                    else if (attr.Name.IndexOf(':') >= 0) // attr.Name.Contains(":")
+                                    {
+                                        bool redundant = false;
+
+                                        string[] splitArray = attr.Name.Split(':');
+
+                                        if (splitArray[0] == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
+                                        {
+                                            DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(attr.NamespaceURI));
+
+                                            string nsUriFromPrefix = treeNode.GetXmlNamespaceUri(splitArray[1]);
+                                            if (!string.IsNullOrEmpty(nsUriFromPrefix))
+                                            {
+                                                bool check = nsUriFromPrefix.Equals(attr.Value);
+                                                DebugFix.Assert(check);
+                                                if (check)
+                                                {
+                                                    redundant = true;
+                                                }
+                                            }
+                                        }
+                                        else if (splitArray[0] == XmlReaderWriterHelper.NS_PREFIX_XML)
+                                        {
+                                            DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XML.Equals(attr.NamespaceURI));
+                                        }
+
+                                        if (!redundant)
+                                        {
+                                            xmlProp.SetAttribute(attr.Name, (attr.NamespaceURI == null ? "" : attr.NamespaceURI), attr.Value);
+                                        }
                                     }
                                     else
                                     {
-                                        if (attr.LocalName == "xmlns")
+                                        if (attr.Name == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
                                         {
-                                            if (attr.Value != presentation.PropertyFactory.DefaultXmlNamespaceUri)
-                                            {
-                                                xmlProp.SetAttribute(attr.LocalName, "", attr.Value);
-                                            }
+                                            DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(attr.NamespaceURI));
                                         }
-                                        else if (string.IsNullOrEmpty(attr.NamespaceURI)
-                                            || attr.NamespaceURI == presentation.PropertyFactory.DefaultXmlNamespaceUri)
-                                        {
-                                            xmlProp.SetAttribute(attr.LocalName, "", attr.Value);
-                                        }
-                                        else
-                                        {
-                                            xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
-                                        }
+
+                                        xmlProp.SetAttribute(attr.Name, (attr.NamespaceURI == null ? "" : attr.NamespaceURI), attr.Value);
                                     }
                                 }
                             }
@@ -499,6 +519,17 @@ namespace urakawa.daisy.import
                 case XmlNodeType.SignificantWhitespace:
                 case XmlNodeType.Text:
                     {
+                        string textRepresentation = xmlNode.Value;
+
+#if DEBUG
+                        if (xmlType != XmlNodeType.Whitespace)
+                        {
+                            Debug.Assert(xmlNode.Value == xmlNode.OuterXml);
+                            //Debug.Assert(xmlNode.Value == xmlNode.InnerXml);
+                            Debug.Assert(xmlNode.Value == xmlNode.InnerText);
+                        }
+#endif //DEBUG
+
                         Presentation presentation = m_Project.Presentations.Get(0);
 
                         // HACK for books authored with xml:space="preserve" all over the place (e.g. Bookshare)
@@ -507,9 +538,9 @@ namespace urakawa.daisy.import
                         if (xmlType == XmlNodeType.Whitespace
                             || xmlType == XmlNodeType.SignificantWhitespace)
                         {
-                            for (int i = 0; i < xmlNode.Value.Length; i++)
+                            for (int i = 0; i < textRepresentation.Length; i++)
                             {
-                                if (xmlNode.Value[i] != ' ') //!char.IsWhiteSpace(xmlNode.Value[i])
+                                if (textRepresentation[i] != ' ') //!char.IsWhiteSpace(xmlNode.Value[i])
                                 {
                                     whitespace_OnlySpaces = false;
                                     break;
@@ -547,7 +578,7 @@ namespace urakawa.daisy.import
                         {
                             // collapse adjoining whitespaces into one space character
                             // (preserves begin and end space that would otherwise be trimmed by Trim())
-                            text = Regex.Replace(xmlNode.Value, @"\s+", " ");
+                            text = Regex.Replace(textRepresentation, @"\s+", " ");
                             //string text = xmlNode.Value.Trim();
 
 #if DEBUG
@@ -557,7 +588,7 @@ namespace urakawa.daisy.import
                             //    Debugger.Break();
                             //}
 
-                            if (text.Length != xmlNode.Value.Length)
+                            if (text.Length != textRepresentation.Length)
                             {
                                 int debug = 1;
                                 //Debugger.Break();
@@ -568,7 +599,7 @@ namespace urakawa.daisy.import
                                 int debug = 1;
                                 //Debugger.Break();
                             }
-#endif
+#endif // DEBUG
                         }
 
 
@@ -578,6 +609,9 @@ namespace urakawa.daisy.import
                             break;
                         }
 
+#if DEBUG
+                        text = Regex.Replace(text, "\u2028", "&#x2028;");
+#endif // DEBUG
                         TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
                         textMedia.Text = text;
 

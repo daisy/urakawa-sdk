@@ -85,13 +85,16 @@ namespace urakawa.daisy.export
 
                 string name = m.NameContentAttribute.Name;
 
-                if (name.Contains(":"))
+                if (name.IndexOf(':') >= 0) //name.Contains(":"))
                 {
+
+                    string[] strs = name.Split(':');
+
                     // split the metadata name and make first alphabet upper, required for daisy 3.0
-                    string splittedName = name.Split(':')[1];
+                    string splittedName = strs[1];
                     splittedName = splittedName.Substring(0, 1).ToUpper() + splittedName.Remove(0, 1);
 
-                    name = name.Split(':')[0] + ":" + splittedName;
+                    name = strs[0] + ":" + splittedName;
                 }
 
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, metaNode, "name", name);
@@ -197,31 +200,39 @@ namespace urakawa.daisy.export
                         else
                             currentXmlNode = DTBookDocument.CreateElement(null, xmlProp.LocalName, (string.IsNullOrEmpty(xmlProp.NamespaceUri) ? bookNode.NamespaceURI : xmlProp.NamespaceUri));
 
-                        string prefix = null;
                         // add attributes
                         if (xmlProp.Attributes != null && xmlProp.Attributes.Count > 0)
                         {
                             for (int i = 0; i < xmlProp.Attributes.Count; i++)
                             {
-                                if (xmlProp.Attributes[i].LocalName.Contains(":"))
+                                property.xml.XmlAttribute xmlAttr = xmlProp.Attributes[i];
+
+                                string prefix = xmlAttr.Prefix;
+                                string nameWithoutPrefix = xmlAttr.PrefixedLocalName;
+
+                                if (!string.IsNullOrEmpty(prefix)
+                                    && string.IsNullOrEmpty(currentXmlNode.Prefix)
+                                    && string.IsNullOrEmpty(DTBookDocument.DocumentElement.GetNamespaceOfPrefix(prefix))
+                                    && string.IsNullOrEmpty(bookNode.GetNamespaceOfPrefix(prefix)))
                                 {
-                                    prefix = xmlProp.Attributes[i].LocalName.Split(':')[0];
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, DTBookDocument.DocumentElement, "xmlns:" + prefix, currentXmlNode.GetNamespaceOfPrefix(prefix));
                                 }
+
                                 //todo: check ID attribute, normalize with fresh new list of IDs
                                 // (warning: be careful maintaining ID REFS, such as idref attributes for annotation/annoref and prodnote/noteref
                                 // (be careful because idref contain URIs with hash character),
                                 // and also the special imgref and headers attributes which contain space-separated list of IDs, not URIs)
 
-                                if (xmlProp.Attributes[i].LocalName == "id")
+                                if (xmlAttr.LocalName == "id" || xmlAttr.LocalName == XmlReaderWriterHelper.XmlId)
                                 {
                                     string id_New = GetNextID(ID_DTBPrefix);
                                     XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument,
                                         currentXmlNode,
                                         "id", id_New);
 
-                                    if (!old_New_IDMap.ContainsKey(xmlProp.Attributes[i].Value))
+                                    if (!old_New_IDMap.ContainsKey(xmlAttr.Value))
                                     {
-                                        old_New_IDMap.Add(xmlProp.Attributes[i].Value, id_New);
+                                        old_New_IDMap.Add(xmlAttr.Value, id_New);
                                     }
                                     else
                                     {
@@ -232,9 +243,9 @@ namespace urakawa.daisy.export
                                 {
                                     XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument,
                                     currentXmlNode,
-                                    xmlProp.Attributes[i].LocalName,
-                                    xmlProp.Attributes[i].Value,
-                                    xmlProp.Attributes[i].NamespaceUri);
+                                    xmlAttr.LocalName,
+                                    xmlAttr.Value,
+                                    xmlAttr.NamespaceUri);
                                 }
                             } // for loop ends
                         } // attribute nodes created
@@ -286,13 +297,7 @@ namespace urakawa.daisy.export
 
                             DebugFix.Assert(n.Children.Count == 0);
                         }
-                        if (!string.IsNullOrEmpty(prefix)
-                            && string.IsNullOrEmpty(currentXmlNode.Prefix)
-                            && string.IsNullOrEmpty(DTBookDocument.DocumentElement.GetNamespaceOfPrefix(prefix))
-                            && string.IsNullOrEmpty(bookNode.GetNamespaceOfPrefix(prefix)))
-                        {
-                            XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, DTBookDocument.DocumentElement, "xmlns:" + prefix, currentXmlNode.GetNamespaceOfPrefix(prefix));
-                        }
+
                         // add current node to its parent
                         m_TreeNode_XmlNodeMap[n.Parent].AppendChild(currentXmlNode);
 
@@ -393,7 +398,7 @@ namespace urakawa.daisy.export
             foreach (XmlAttribute attr in referencingAttributesList)
             {
                 string strIDToFind = attr.Value;
-                if (strIDToFind.Contains("#"))
+                if (strIDToFind.IndexOf('#') >= 0) //strIDToFind.Contains("#")
                 {
                     strIDToFind = strIDToFind.Split('#')[1];
                 }

@@ -315,13 +315,16 @@ namespace urakawa.daisy.export
             //string name = name_.ToLower();
             XmlNode node = null;
 
-            if (name.Contains(":"))
+            if (name.IndexOf(':') >= 0) //name.Contains(":")
             {
                 // split the metadata name and make first alphabet upper, required for daisy 3.0
-                string splittedName = name.Split(':')[1];
+
+                string[] strs = name.Split(':');
+
+                string splittedName = strs[1];
                 splittedName = splittedName.Substring(0, 1).ToUpper() + splittedName.Remove(0, 1);
 
-                node = doc.CreateElement(name.Split(':')[0], splittedName, metadataParentNode.Attributes.GetNamedItem("xmlns:dc").Value);
+                node = doc.CreateElement(strs[0], splittedName, metadataParentNode.Attributes.GetNamedItem("xmlns:dc").Value);
             }
             else
             {

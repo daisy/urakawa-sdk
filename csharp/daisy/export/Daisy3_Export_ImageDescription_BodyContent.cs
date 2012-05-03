@@ -269,7 +269,7 @@ namespace urakawa.daisy.export
 
                     normalizedDescriptionText = altContent.Text.Text;
 
-                    descriptionTextContainsMarkup = normalizedDescriptionText.Contains("<");
+                    descriptionTextContainsMarkup = normalizedDescriptionText.IndexOf('<') >= 0; // normalizedDescriptionText.Contains("<");
 
                     if (descriptionTextContainsMarkup)
                     {

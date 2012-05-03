@@ -251,6 +251,9 @@ namespace urakawa.xuk
         public const string NS_PREFIX_XML = "xml";
         public const string NS_URL_XML = "http://www.w3.org/XML/1998/namespace";
 
+        public const string NS_PREFIX_XMLNS = "xmlns";
+        public const string NS_URL_XMLNS = "http://www.w3.org/2000/xmlns/";
+
         public const string XmlId = NS_PREFIX_XML + ":id";
         public const string XmlLang = NS_PREFIX_XML + ":lang";
 
@@ -280,43 +283,32 @@ namespace urakawa.xuk
 
         public static XmlDocument ParseXmlDocument(string path, bool preserveWhiteSpace)
         {
+            XmlDocument xmldoc = null;
+
             XmlReaderSettings settings = GetDefaultXmlReaderConfiguration(true, preserveWhiteSpace);
 
-            using (XmlReader xmlReader = XmlReader.Create(path, settings))
+            XmlReader xmlReader = null;
+            try
             {
+                xmlReader = XmlReader.Create(path, settings);
                 if (preserveWhiteSpace && xmlReader is XmlTextReader)
                 {
                     ((XmlTextReader)xmlReader).WhitespaceHandling = WhitespaceHandling.All;
                 }
-                XmlDocument xmldoc = new XmlDocument();
+                xmldoc = new XmlDocument();
                 xmldoc.PreserveWhitespace = preserveWhiteSpace;
                 xmldoc.XmlResolver = null;
-                try
-                {
-                    xmldoc.Load(xmlReader);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-
-                    // No message box: use debugging instead (inspect stack trace, watch values)
-                    //MessageBox.Show(e.ToString());
-
-                    // The Fail() method is better:
-                    //System.Diagnostics.Debug.Fail(e.Message);
-
-                    //Or you can explicitely break:
-#if DEBUG
-                    Debugger.Break();
-#endif
-                }
-                finally
+                xmldoc.Load(xmlReader);
+            }
+            finally
+            {
+                if (xmlReader != null)
                 {
                     xmlReader.Close();
                 }
-
-                return xmldoc;
             }
+
+            return xmldoc;
         }
 
         public static XmlWriterSettings GetDefaultXmlWriterConfiguration(bool pretty)
@@ -352,33 +344,21 @@ namespace urakawa.xuk
 
             XmlWriterSettings settings = GetDefaultXmlWriterConfiguration(pretty);
 
-            using (XmlWriter xmlWriter = XmlWriter.Create(path, settings))
+            XmlWriter xmlWriter = null;
+            try
             {
+                xmlWriter = XmlWriter.Create(path, settings);
+
                 if (pretty && xmlWriter is XmlTextWriter)
                 {
                     ((XmlTextWriter)xmlWriter).Formatting = Formatting.Indented;
                 }
 
-                try
-                {
-                    xmlDoc.Save(xmlWriter);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-
-                    // No message box: use debugging instead (inspect stack trace, watch values)
-                    //MessageBox.Show(e.ToString());
-
-                    // The Fail() method is better:
-                    //System.Diagnostics.Debug.Fail(e.Message);
-
-                    //Or you can explicitely break:
-#if DEBUG
-                    Debugger.Break();
-#endif
-                }
-                finally
+                xmlDoc.Save(xmlWriter);
+            }
+            finally
+            {
+                if (xmlWriter != null)
                 {
                     xmlWriter.Close();
                 }

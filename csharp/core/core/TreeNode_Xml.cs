@@ -1,5 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Xml;
+using AudioLib;
+using urakawa.media;
 using urakawa.property.xml;
 using urakawa.xuk;
 using XmlAttribute = urakawa.property.xml.XmlAttribute;
@@ -221,6 +226,247 @@ namespace urakawa.core
                 }
             }
             return null;
+        }
+
+        public string GetXmlNamespaceUri(string prefix)
+        {
+            QualifiedName qname = GetXmlElementQName();
+            if (qname == null)
+            {
+                return null;
+            }
+
+            string name = qname.LocalName;
+            string NSPrefix = null;
+            string localName = null;
+            if (name.IndexOf(':') >= 0) //name.Contains(":"))
+            {
+                string[] arr = name.Split(':');
+                NSPrefix = arr[0];
+                localName = arr[1];
+            }
+
+            XmlProperty xmlProp = GetProperty<XmlProperty>();
+
+            if (Parent == null && string.IsNullOrEmpty(xmlProp.NamespaceUri))
+            {
+                return Presentation.PropertyFactory.DefaultXmlNamespaceUri;
+            }
+
+            if (!string.IsNullOrEmpty(xmlProp.NamespaceUri)
+                &&
+                (
+                string.IsNullOrEmpty(prefix)
+                ||
+                (!string.IsNullOrEmpty(NSPrefix) && prefix.Equals(NSPrefix))
+                )
+                )
+            {
+                return xmlProp.NamespaceUri;
+            }
+
+
+            foreach (XmlAttribute xmlAttr in xmlProp.Attributes)
+            {
+                string attrName = xmlAttr.LocalName;
+                string attrNSPrefix = null;
+                string attrLocalName = null;
+                if (attrName.IndexOf(':') >= 0) //attrName.Contains(":"))
+                {
+                    string[] arr = attrName.Split(':');
+                    attrNSPrefix = arr[0];
+                    attrLocalName = arr[1];
+                }
+
+                if (string.IsNullOrEmpty(prefix))
+                {
+                    if (string.IsNullOrEmpty(attrNSPrefix) && attrName.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
+                    {
+                        return xmlAttr.Value;
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(attrNSPrefix) && attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
+                    {
+                        if (prefix.Equals(attrLocalName))
+                        {
+                            return xmlAttr.Value;
+                        }
+                    }
+                }
+            }
+
+            TreeNode node = Parent;
+            while (node != null)
+            {
+                string ns = node.GetXmlNamespaceUri(prefix);
+                if (!string.IsNullOrEmpty(ns))
+                {
+                    return ns;
+                }
+                node = node.Parent;
+            }
+
+            return null;
+        }
+
+        public string GetXmlNamespaceUri()
+        {
+            return GetXmlNamespaceUri(null);
+        }
+
+        protected void GetXmlFragment_(XmlTextWriter xmlWriter)
+        {
+            QualifiedName qname = GetXmlElementQName();
+            if (qname != null)
+            {
+                string name = qname.LocalName;
+                string NSPrefix = null;
+                string localName = null;
+                if (name.IndexOf(':') >= 0) //name.Contains(":"))
+                {
+                    string[] arr = name.Split(':');
+                    NSPrefix = arr[0];
+                    localName = arr[1];
+                }
+
+                string nsUri = GetXmlNamespaceUri(NSPrefix);
+
+                XmlProperty xmlProp = GetProperty<XmlProperty>();
+
+                if (string.IsNullOrEmpty(NSPrefix))
+                {
+                    if (!string.IsNullOrEmpty(nsUri))
+                    {
+                        xmlWriter.WriteStartElement(name, nsUri);
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif //DEBUG
+                        xmlWriter.WriteStartElement(name);
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(nsUri))
+                    {
+                        xmlWriter.WriteStartElement(NSPrefix, localName, nsUri);
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif //DEBUG
+                        xmlWriter.WriteStartElement(name);
+                    }
+                }
+
+                foreach (XmlAttribute xmlAttr in xmlProp.Attributes)
+                {
+                    string attrName = xmlAttr.LocalName;
+                    string attrNSPrefix = null;
+                    string attrLocalName = null;
+                    if (attrName.IndexOf(':') >= 0) //attrName.Contains(":"))
+                    {
+                        string[] arr = attrName.Split(':');
+                        attrNSPrefix = arr[0];
+                        attrLocalName = arr[1];
+                    }
+
+                    if (string.IsNullOrEmpty(attrNSPrefix))
+                    {
+                        if (attrName.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
+                        {
+                            DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(xmlAttr.NamespaceUri));
+
+                            xmlWriter.WriteAttributeString(attrName, xmlAttr.NamespaceUri, xmlAttr.Value);
+                        }
+                        else if (!string.IsNullOrEmpty(xmlAttr.NamespaceUri))
+                        {
+#if DEBUG
+                            //Debugger.Break();
+#endif //DEBUG
+                            xmlWriter.WriteAttributeString(attrName, xmlAttr.NamespaceUri, xmlAttr.Value);
+                        }
+                        else
+                        {
+                            xmlWriter.WriteAttributeString(attrName, xmlAttr.Value);
+                        }
+                    }
+                    else
+                    {
+                        if (attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS) || attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XML))
+                        {
+                            //http://www.w3.org/2000/xmlns/
+                            xmlWriter.WriteAttributeString(attrNSPrefix, attrLocalName, XmlReaderWriterHelper.NS_URL_XMLNS,
+                                                           xmlAttr.Value);
+                        }
+                        else if (!string.IsNullOrEmpty(xmlAttr.NamespaceUri))
+                        {
+#if DEBUG
+                            //Debugger.Break();
+#endif //DEBUG
+                            xmlWriter.WriteAttributeString(attrNSPrefix, attrLocalName, xmlAttr.NamespaceUri, xmlAttr.Value);
+                        }
+                        else if (!string.IsNullOrEmpty(nsUri))
+                        {
+                            xmlWriter.WriteAttributeString(attrNSPrefix, attrLocalName, nsUri, xmlAttr.Value);
+                        }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif //DEBUG
+                            xmlWriter.WriteAttributeString(attrLocalName, xmlAttr.Value);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < mChildren.Count; i++)
+                {
+                    TreeNode child = mChildren.Get(i);
+
+                    child.GetXmlFragment_(xmlWriter);
+                }
+
+                xmlWriter.WriteEndElement();
+            }
+
+            AbstractTextMedia txt = GetTextMedia();
+            if (txt != null)
+            {
+                DebugFix.Assert(qname == null || mChildren.Count == 0);
+                xmlWriter.WriteString(txt.Text);
+            }
+        }
+
+        public string GetXmlFragment()
+        {
+            QualifiedName qname = GetXmlElementQName();
+            if (qname == null)
+            {
+                return null;
+            }
+
+            StringWriter strWriter = new StringWriter();
+            XmlTextWriter xmlWriter = new XmlTextWriter(strWriter);
+            xmlWriter.Formatting = Formatting.Indented;
+            xmlWriter.Indentation = 4;
+            xmlWriter.IndentChar = ' ';
+            xmlWriter.Namespaces = true;
+            xmlWriter.QuoteChar = '"';
+
+            GetXmlFragment_(xmlWriter);
+
+            xmlWriter.Flush();
+            xmlWriter.Close();
+
+            //string xmlFragment = Encoding.UTF8.GetString(memStream.GetBuffer());
+            string xmlFragment = strWriter.ToString();
+            return xmlFragment;
         }
     }
 }

@@ -95,6 +95,8 @@ StreamWithMarkers?
         bool HasOrInheritsAudio();
 
         TreeNode GetFirstChildWithXmlElementName(string elemName);
+        
+        string GetXmlFragment();
 
         TreeNode GetTreeNodeWithXmlElementId(string id);
 

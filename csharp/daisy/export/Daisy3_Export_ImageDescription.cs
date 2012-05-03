@@ -105,7 +105,7 @@ namespace urakawa.daisy.export
                 DiagramContentModelHelper.NS_URL_DIAGRAM);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
-                "xmlns",
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS,
                 DiagramContentModelHelper.NS_URL_ZAI);
             descriptionDocument.AppendChild(descriptionNode);
 

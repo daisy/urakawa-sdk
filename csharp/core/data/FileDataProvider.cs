@@ -24,25 +24,25 @@ namespace urakawa.data
         public static string EliminateForbiddenFileNameCharacters(string str)
         {
             string newStr = str
-                .Replace("" + Path.DirectorySeparatorChar, "_")
-                .Replace("" + Path.AltDirectorySeparatorChar, "_");
+                .Replace(Path.DirectorySeparatorChar, '_')
+                .Replace(Path.AltDirectorySeparatorChar, '_');
 
-            if (newStr.Contains("/"))
+            if (newStr.IndexOf('/') >= 0) //newStr.Contains("/"))
             {
-                newStr = newStr.Replace("/", "_");
+                newStr = newStr.Replace('/', '_');
             }
-            if (newStr.Contains("\\"))
+            if (newStr.IndexOf('\\') >= 0) //newStr.Contains("\\"))
             {
-                newStr = newStr.Replace("\\", "_");
+                newStr = newStr.Replace('\\', '_');
             }
 
-            newStr = newStr.Replace(":", "-")
-                .Replace("*", "-")
-                .Replace("?", "-")
-                .Replace("<", "-")
-                .Replace(">", "-")
-                .Replace("|", "-")
-                .Replace("\"", "-")
+            newStr = newStr.Replace(':', '-')
+                .Replace('*', '-')
+                .Replace('?', '-')
+                .Replace('<', '-')
+                .Replace('>', '-')
+                .Replace('|', '-')
+                .Replace('\"', '-')
                 ;
 
             return newStr;
