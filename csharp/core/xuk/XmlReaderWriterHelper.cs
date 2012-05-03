@@ -35,7 +35,15 @@ namespace urakawa.xuk
                 return uri;
             }
 
-            return !String.IsNullOrEmpty(relativeUri) ? new Uri(baseUri, relativeUri) : baseUri;
+            if (!String.IsNullOrEmpty(relativeUri))
+            {
+                Uri uriOut = new Uri(baseUri, relativeUri);
+                return uriOut;
+            }
+            else
+            {
+                return baseUri;
+            }
         }
 
         public override ICredentials Credentials
@@ -76,7 +84,19 @@ namespace urakawa.xuk
                 }
             */
 
-            string filename = Path.GetFileName(absoluteUri.AbsolutePath);
+            string absPath = absoluteUri.AbsolutePath;
+
+            string ext = Path.GetExtension(absPath);
+            if (string.Equals(ext, ".xml") || string.Equals(ext, ".xsl"))
+            {
+                if (File.Exists(absPath))
+                {
+                    Stream stream = File.Open(absPath, FileMode.Open, FileAccess.Read, FileShare.None);
+                    return stream;
+                }
+            }
+
+            string filename = Path.GetFileName(absPath);
 
 #if USE_ISOLATED_STORAGE
 
@@ -225,7 +245,7 @@ namespace urakawa.xuk
         //    } //-2
         //} // -1
     }
-    
+
     public class XmlReaderWriterHelper
     {
         public const string NS_PREFIX_XML = "xml";
