@@ -130,17 +130,18 @@ namespace urakawa.commands
                     DebugFix.Assert(textLocal.m_XmlAttribute != null);
 
 #if DEBUG
-                    QualifiedName qname = node.GetXmlElementQName();
-                    if (qname != null &&
-                        (qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
-                        || qname.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
-                        )
-                        )
+                    if (node.HasXmlProperty)
                     {
-                        urakawa.property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute("alt");
-                        if (xmlAttr != null)
+                        string localName = node.GetXmlElementLocalName();
+                        if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                             || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                            )
                         {
-                            DebugFix.Assert(textLocal.m_XmlAttribute == xmlAttr);
+                            urakawa.property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute("alt");
+                            if (xmlAttr != null)
+                            {
+                                DebugFix.Assert(textLocal.m_XmlAttribute == xmlAttr);
+                            }
                         }
                     }
 #endif //DEBUG

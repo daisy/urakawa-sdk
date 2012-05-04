@@ -3,8 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using urakawa.ExternalFiles;
+using urakawa.property.xml;
 using urakawa.xuk;
+using XmlAttribute = System.Xml.XmlAttribute;
 
 namespace urakawa.daisy
 {
@@ -58,49 +61,49 @@ namespace urakawa.daisy
             return DTBDocument;
         }
 
-        public static XmlDocument CreateStub_XhtmlDocument(string language, string strInternalDTD, List<ExternalFileData> list_ExternalStyleSheets)
-        {
-            XmlDocument XhtmlDocument = new XmlDocument();
-            XhtmlDocument.XmlResolver = null;
+        //public static XmlDocument CreateStub_XhtmlDocument(string language, string strInternalDTD, List<ExternalFileData> list_ExternalStyleSheets)
+        //{
+        //    XmlDocument XhtmlDocument = new XmlDocument();
+        //    XhtmlDocument.XmlResolver = null;
 
-            //XhtmlDocument.CreateXmlDeclaration("1.0", "utf-8", null);
-            //XhtmlDocument.AppendChild(XhtmlDocument.CreateDocumentType("html",
-            //"-//NISO//DTD dtbook 2005-3//EN",
-            //"http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd",
-            //strInternalDTD));
+        //    //XhtmlDocument.CreateXmlDeclaration("1.0", "utf-8", null);
+        //    //XhtmlDocument.AppendChild(XhtmlDocument.CreateDocumentType("html",
+        //    //"-//NISO//DTD dtbook 2005-3//EN",
+        //    //"http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd",
+        //    //strInternalDTD));
 
-            XmlNode rootNode = XhtmlDocument.CreateElement(null,
-                "   html",
-                "http://www.w3.org/1999/xhtml");
-            CreateAppendXmlAttribute(XhtmlDocument, rootNode, "xmlns:epub", "http://www.idpf.org/2007/ops");
-            XhtmlDocument.AppendChild(rootNode);
+        //    XmlNode rootNode = XhtmlDocument.CreateElement(null,
+        //        "html",
+        //        "http://www.w3.org/1999/xhtml");
+        //    CreateAppendXmlAttribute(XhtmlDocument, rootNode, XmlReaderWriterHelper.NS_PREFIX_XMLNS+":epub", "http://www.idpf.org/2007/ops");
+        //    XhtmlDocument.AppendChild(rootNode);
 
-            XmlNode headNode = XhtmlDocument.CreateElement(null, "head", rootNode.NamespaceURI);
-            rootNode.AppendChild(headNode);
+        //    XmlNode headNode = XhtmlDocument.CreateElement(null, "head", rootNode.NamespaceURI);
+        //    rootNode.AppendChild(headNode);
 
-            if (list_ExternalStyleSheets.Count > 0)
-            {
-                foreach (ExternalFileData efd in list_ExternalStyleSheets)
-                {
-                    if (efd is CSSExternalFileData)
-                    {
-                        XhtmlDocument.AppendChild(
-                        XhtmlDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/css\" href=\"" + efd.OriginalRelativePath + "\""));
-                    }
-                    else if (efd is XSLTExternalFileData)
-                    {
-                        XhtmlDocument.AppendChild(
-                        XhtmlDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"" + efd.OriginalRelativePath + "\""));
-                    }
-                }
+        //    if (list_ExternalStyleSheets.Count > 0)
+        //    {
+        //        foreach (ExternalFileData efd in list_ExternalStyleSheets)
+        //        {
+        //            if (efd is CSSExternalFileData)
+        //            {
+        //                XhtmlDocument.AppendChild(
+        //                XhtmlDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/css\" href=\"" + efd.OriginalRelativePath + "\""));
+        //            }
+        //            else if (efd is XSLTExternalFileData)
+        //            {
+        //                XhtmlDocument.AppendChild(
+        //                XhtmlDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"" + efd.OriginalRelativePath + "\""));
+        //            }
+        //        }
 
-            }
+        //    }
 
-            XmlNode bodyNode = XhtmlDocument.CreateElement(null, "body", rootNode.NamespaceURI);
-            rootNode.AppendChild(bodyNode);
+        //    XmlNode bodyNode = XhtmlDocument.CreateElement(null, "body", rootNode.NamespaceURI);
+        //    rootNode.AppendChild(bodyNode);
 
-            return XhtmlDocument;
-        }
+        //    return XhtmlDocument;
+        //}
 
 
         public static XmlNode GetFirstChildElementOrSelfWithName(XmlNode root, bool deep, string localName, string namespaceUri)
@@ -268,25 +271,43 @@ namespace urakawa.daisy
         public static XmlAttribute CreateAppendXmlAttribute(XmlDocument xmlDoc, XmlNode node, string name, string val, string strNamespace)
         {
             XmlAttribute attr = null;
-            if (name.IndexOf(':') >= 0)
-            {
-                //name.Contains(":")
-                string[] splitArray = name.Split(':');
 
-                if (splitArray[0] == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
+            string prefix;
+            string localName;
+            XmlProperty.SplitLocalName(name, out prefix, out localName);
+
+            if (prefix != null)
+            {
+#if DEBUG
+                string nsURI = node.GetNamespaceOfPrefix(prefix);
+                DebugFix.Assert(strNamespace == nsURI);
+#endif //DEBUG
+
+                if (prefix == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
                 {
-                    string nsURI = node.GetNamespaceOfPrefix(splitArray[1]);
-                    if (!String.IsNullOrEmpty(nsURI))
-                    {
-                        attr = xmlDoc.CreateAttribute(splitArray[0], splitArray[1], nsURI);
-                    }
+#if DEBUG
+                    DebugFix.Assert(strNamespace == XmlReaderWriterHelper.NS_URL_XMLNS);
+#endif //DEBUG
+
+                    attr = xmlDoc.CreateAttribute(XmlReaderWriterHelper.NS_PREFIX_XMLNS, localName, XmlReaderWriterHelper.NS_URL_XMLNS);
                 }
-                attr = xmlDoc.CreateAttribute(splitArray[0], splitArray[1], strNamespace);
+                else if (prefix == XmlReaderWriterHelper.NS_PREFIX_XML)
+                {
+#if DEBUG
+                    DebugFix.Assert(strNamespace == XmlReaderWriterHelper.NS_URL_XML);
+#endif //DEBUG
+
+                    attr = xmlDoc.CreateAttribute(XmlReaderWriterHelper.NS_PREFIX_XML, localName, XmlReaderWriterHelper.NS_URL_XML);
+                }
+                else
+                {
+                    attr = xmlDoc.CreateAttribute(prefix, localName, strNamespace);
+                }
 
 
                 //XmlNode parentNode = xmlDoc.DocumentElement;
 
-                //string parentAttributeName = "xmlns:" + splitArray[0];
+                //string parentAttributeName = XmlReaderWriterHelper.NS_PREFIX_XMLNS+":" + splitArray[0];
 
                 //if (parentNode != null
                 //    && parentNode.Attributes != null
@@ -304,8 +325,13 @@ namespace urakawa.daisy
             }
             else
             {
+#if DEBUG
+                DebugFix.Assert(strNamespace == node.NamespaceURI);
+#endif //DEBUG
                 attr = xmlDoc.CreateAttribute(name);
+                //attr = xmlDoc.CreateAttribute(name, strNamespace);
             }
+
             attr.Value = val;
             node.Attributes.Append(attr);
             return attr;

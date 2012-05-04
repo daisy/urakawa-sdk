@@ -16,18 +16,17 @@ namespace urakawa.core
     {
         public override string ToString()
         {
-            QualifiedName qname = GetXmlElementQName();
-            if (qname != null)
+            if (HasXmlProperty)
             {
-                return qname.LocalName;
+                return GetXmlElementLocalName();
             }
             return base.ToString();
         }
 
         protected string getDebugString()
         {
-            QualifiedName qname = GetXmlElementQName();
-            String str = (qname != null ? qname.LocalName : "");
+            string localName = GetXmlElementLocalName();
+            String str = (localName != null ? localName : "NO XML");
             str += " /// ";
             str += GetTextFlattened();
             return str;
@@ -41,8 +40,7 @@ namespace urakawa.core
                 return null;
             }
 
-            QualifiedName qName = Parent.GetXmlElementQName();
-            if (qName != null && qName.LocalName == localName)
+            if (Parent.HasXmlProperty && Parent.GetXmlElementLocalName() == localName)
             {
                 return Parent;
             }
@@ -59,8 +57,7 @@ namespace urakawa.core
 
             foreach (TreeNode child in Children.ContentsAs_Enumerable)
             {
-                QualifiedName qName = child.GetXmlElementQName();
-                if (qName != null && qName.LocalName == localName)
+                if (child.HasXmlProperty && child.GetXmlElementLocalName() == localName)
                 {
                     return child;
                 }
@@ -83,8 +80,7 @@ namespace urakawa.core
             TreeNode previous = this;
             while ((previous = previous.PreviousSibling) != null)
             {
-                QualifiedName qName = previous.GetXmlElementQName();
-                if (qName != null && qName.LocalName == localName)
+                if (previous.HasXmlProperty && previous.GetXmlElementLocalName() == localName)
                 {
                     return previous;
                 }
@@ -108,8 +104,7 @@ namespace urakawa.core
             TreeNode next = this;
             while ((next = next.NextSibling) != null)
             {
-                QualifiedName qName = next.GetXmlElementQName();
-                if (qName != null && qName.LocalName == localName)
+                if (next.HasXmlProperty && next.GetXmlElementLocalName() == localName)
                 {
                     return next;
                 }
@@ -153,24 +148,39 @@ namespace urakawa.core
             return null;
         }
 
-        private QualifiedName m_QualifiedName = null;
-        public QualifiedName GetXmlElementQName()
+        public string GetXmlElementLocalName()
         {
-            //TODO QualifiedName fields are unmutable,
-            // so unless the underlying XmlProperty fields change, caching is okay
-            // (here we assume that once a TreeNode as been XukedIn,
-            // its XML definition does not change)
-            if (m_QualifiedName != null)
-            {
-                return m_QualifiedName;
-            }
+            QualifiedName qName = GetXmlElementQName();
+            if (qName == null) return null;
+
+            return qName.LocalName;
+        }
+
+        private QualifiedName m_QualifiedName = null;
+        private QualifiedName GetXmlElementQName()
+        {
             XmlProperty xmlProp = GetProperty<XmlProperty>();
             if (xmlProp != null)
             {
-                m_QualifiedName = new QualifiedName(xmlProp.LocalName, xmlProp.NamespaceUri);
-                return m_QualifiedName;
+                //TODO QualifiedName fields are unmutable,
+                // so unless the underlying XmlProperty fields change, caching is okay
+                // (here we assume that once a TreeNode as been XukedIn,
+                // its XML definition does not change)
+                if (m_QualifiedName == null || xmlProp.QNameIsInvalidated)
+                {
+                    string nsUri = GetXmlNamespaceUri();
+
+                    m_QualifiedName = new QualifiedName(xmlProp.LocalName, nsUri);
+
+                    xmlProp.QNameIsInvalidated = false;
+                }
             }
-            return null;
+            else
+            {
+                m_QualifiedName = null;
+            }
+
+            return m_QualifiedName;
         }
         ///<summary>
         /// returns the ID attribute value of the attached XmlProperty, if any
@@ -181,7 +191,7 @@ namespace urakawa.core
             XmlProperty xmlProp = GetProperty<XmlProperty>();
             if (xmlProp != null)
             {
-                XmlAttribute idAttr = xmlProp.GetAttribute("id", "");
+                XmlAttribute idAttr = xmlProp.GetAttribute("id");
                 if (idAttr == null)
                 {
                     idAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlId, XmlReaderWriterHelper.NS_URL_XML);
@@ -199,7 +209,7 @@ namespace urakawa.core
             XmlProperty xmlProp = GetProperty<XmlProperty>();
             if (xmlProp != null)
             {
-                XmlAttribute langAttr = xmlProp.GetAttribute("lang", "");
+                XmlAttribute langAttr = xmlProp.GetAttribute("lang");
                 if (langAttr == null)
                 {
                     langAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML);
@@ -214,8 +224,7 @@ namespace urakawa.core
 
         public TreeNode GetFirstChildWithXmlElementName(string elemName)
         {
-            QualifiedName qname = GetXmlElementQName();
-            if (qname != null && qname.LocalName == elemName) return this;
+            if (HasXmlProperty && GetXmlElementLocalName() == elemName) return this;
 
             for (int i = 0; i < mChildren.Count; i++)
             {
@@ -230,85 +239,13 @@ namespace urakawa.core
 
         public string GetXmlNamespaceUri(string prefix)
         {
-            QualifiedName qname = GetXmlElementQName();
-            if (qname == null)
+            if (!HasXmlProperty)
             {
                 return null;
             }
 
-            string name = qname.LocalName;
-            string NSPrefix = null;
-            string localName = null;
-            if (name.IndexOf(':') >= 0) //name.Contains(":"))
-            {
-                string[] arr = name.Split(':');
-                NSPrefix = arr[0];
-                localName = arr[1];
-            }
-
             XmlProperty xmlProp = GetProperty<XmlProperty>();
-
-            if (Parent == null && string.IsNullOrEmpty(xmlProp.NamespaceUri))
-            {
-                return Presentation.PropertyFactory.DefaultXmlNamespaceUri;
-            }
-
-            if (!string.IsNullOrEmpty(xmlProp.NamespaceUri)
-                &&
-                (
-                string.IsNullOrEmpty(prefix)
-                ||
-                (!string.IsNullOrEmpty(NSPrefix) && prefix.Equals(NSPrefix))
-                )
-                )
-            {
-                return xmlProp.NamespaceUri;
-            }
-
-
-            foreach (XmlAttribute xmlAttr in xmlProp.Attributes)
-            {
-                string attrName = xmlAttr.LocalName;
-                string attrNSPrefix = null;
-                string attrLocalName = null;
-                if (attrName.IndexOf(':') >= 0) //attrName.Contains(":"))
-                {
-                    string[] arr = attrName.Split(':');
-                    attrNSPrefix = arr[0];
-                    attrLocalName = arr[1];
-                }
-
-                if (string.IsNullOrEmpty(prefix))
-                {
-                    if (string.IsNullOrEmpty(attrNSPrefix) && attrName.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
-                    {
-                        return xmlAttr.Value;
-                    }
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(attrNSPrefix) && attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
-                    {
-                        if (prefix.Equals(attrLocalName))
-                        {
-                            return xmlAttr.Value;
-                        }
-                    }
-                }
-            }
-
-            TreeNode node = Parent;
-            while (node != null)
-            {
-                string ns = node.GetXmlNamespaceUri(prefix);
-                if (!string.IsNullOrEmpty(ns))
-                {
-                    return ns;
-                }
-                node = node.Parent;
-            }
-
-            return null;
+            return xmlProp.GetNamespaceUri(prefix);
         }
 
         public string GetXmlNamespaceUri()
@@ -318,18 +255,12 @@ namespace urakawa.core
 
         protected void GetXmlFragment_(XmlTextWriter xmlWriter)
         {
-            QualifiedName qname = GetXmlElementQName();
-            if (qname != null)
+            if (HasXmlProperty)
             {
-                string name = qname.LocalName;
-                string NSPrefix = null;
-                string localName = null;
-                if (name.IndexOf(':') >= 0) //name.Contains(":"))
-                {
-                    string[] arr = name.Split(':');
-                    NSPrefix = arr[0];
-                    localName = arr[1];
-                }
+                string name = GetXmlElementLocalName();
+                string NSPrefix;
+                string localName;
+                XmlProperty.SplitLocalName(name, out NSPrefix, out localName);
 
                 string nsUri = GetXmlNamespaceUri(NSPrefix);
 
@@ -364,32 +295,29 @@ namespace urakawa.core
                     }
                 }
 
-                foreach (XmlAttribute xmlAttr in xmlProp.Attributes)
+                foreach (XmlAttribute xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
                 {
+                    string nsUriAttr = xmlAttr.GetNamespaceUri();
+
                     string attrName = xmlAttr.LocalName;
-                    string attrNSPrefix = null;
-                    string attrLocalName = null;
-                    if (attrName.IndexOf(':') >= 0) //attrName.Contains(":"))
-                    {
-                        string[] arr = attrName.Split(':');
-                        attrNSPrefix = arr[0];
-                        attrLocalName = arr[1];
-                    }
+                    string attrNSPrefix;
+                    string attrLocalName;
+                    XmlProperty.SplitLocalName(attrName, out attrNSPrefix, out attrLocalName);
 
                     if (string.IsNullOrEmpty(attrNSPrefix))
                     {
                         if (attrName.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
                         {
-                            DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(xmlAttr.NamespaceUri));
+                            DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(nsUriAttr));
 
-                            xmlWriter.WriteAttributeString(attrName, xmlAttr.NamespaceUri, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XMLNS, XmlReaderWriterHelper.NS_URL_XMLNS, xmlAttr.Value);
                         }
-                        else if (!string.IsNullOrEmpty(xmlAttr.NamespaceUri))
+                        else if (!string.IsNullOrEmpty(nsUriAttr) && nsUriAttr != nsUri)
                         {
 #if DEBUG
-                            //Debugger.Break();
+                            Debugger.Break();
 #endif //DEBUG
-                            xmlWriter.WriteAttributeString(attrName, xmlAttr.NamespaceUri, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(attrName, nsUriAttr, xmlAttr.Value);
                         }
                         else
                         {
@@ -398,21 +326,33 @@ namespace urakawa.core
                     }
                     else
                     {
-                        if (attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS) || attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XML))
+                        if (attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
                         {
-                            //http://www.w3.org/2000/xmlns/
-                            xmlWriter.WriteAttributeString(attrNSPrefix, attrLocalName, XmlReaderWriterHelper.NS_URL_XMLNS,
+                            DebugFix.Assert(nsUriAttr == XmlReaderWriterHelper.NS_URL_XMLNS);
+                            xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XMLNS, attrLocalName, XmlReaderWriterHelper.NS_URL_XMLNS,
                                                            xmlAttr.Value);
                         }
-                        else if (!string.IsNullOrEmpty(xmlAttr.NamespaceUri))
+                        else if (attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XML))
+                        {
+                            DebugFix.Assert(nsUriAttr == XmlReaderWriterHelper.NS_URL_XML);
+                            xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XML, attrLocalName, XmlReaderWriterHelper.NS_URL_XML,
+                                                           xmlAttr.Value);
+                        }
+                        else if (!string.IsNullOrEmpty(nsUriAttr))
                         {
 #if DEBUG
-                            //Debugger.Break();
+                            DebugFix.Assert(nsUriAttr != nsUri);
+
+                            string uriCheck = xmlProp.GetNamespaceUri(attrNSPrefix);
+                            DebugFix.Assert(nsUriAttr == uriCheck);
 #endif //DEBUG
-                            xmlWriter.WriteAttributeString(attrNSPrefix, attrLocalName, xmlAttr.NamespaceUri, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(attrNSPrefix, attrLocalName, nsUriAttr, xmlAttr.Value);
                         }
                         else if (!string.IsNullOrEmpty(nsUri))
                         {
+#if DEBUG
+                            Debugger.Break();
+#endif //DEBUG
                             xmlWriter.WriteAttributeString(attrNSPrefix, attrLocalName, nsUri, xmlAttr.Value);
                         }
                         else
@@ -438,15 +378,14 @@ namespace urakawa.core
             AbstractTextMedia txt = GetTextMedia();
             if (txt != null)
             {
-                DebugFix.Assert(qname == null || mChildren.Count == 0);
+                DebugFix.Assert(!HasXmlProperty || mChildren.Count == 0);
                 xmlWriter.WriteString(txt.Text);
             }
         }
 
         public string GetXmlFragment()
         {
-            QualifiedName qname = GetXmlElementQName();
-            if (qname == null)
+            if (!HasXmlProperty)
             {
                 return null;
             }

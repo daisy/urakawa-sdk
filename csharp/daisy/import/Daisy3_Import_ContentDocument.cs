@@ -67,8 +67,8 @@ namespace urakawa.daisy.import
                 //{
                 //    listOfBodies = xmlDoc.GetElementsByTagName("book");
                 //}
-                XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDoc, true, "body", null);
 
+                XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDoc, true, "body", null);
                 if (bodyElement == null)
                 {
                     bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDoc, true, "book", null);
@@ -119,7 +119,7 @@ namespace urakawa.daisy.import
             string completeString = docType.OuterXml;
             if (completeString.IndexOf('[') >= 0 // completeString.Contains("[")
                 &&
-                completeString.IndexOf(']') >= 0 // completeString.Contains("]"))
+                completeString.IndexOf(']') >= 0) // completeString.Contains("]"))
             {
                 string DTDString = completeString.Split('[')[1];
                 DTDString = DTDString.Split(']')[0];
@@ -258,6 +258,12 @@ namespace urakawa.daisy.import
                     {
                         Presentation presentation = m_Project.Presentations.Get(0);
 
+                        if (xmlNode.ParentNode != null && xmlNode.ParentNode.NodeType == XmlNodeType.Document
+                            || parentTreeNode == null)
+                        {
+                            presentation.PropertyFactory.DefaultXmlNamespaceUri = xmlNode.NamespaceURI;
+                        }
+
                         TreeNode treeNode = presentation.TreeNodeFactory.Create();
 
                         if (parentTreeNode == null)
@@ -273,13 +279,6 @@ namespace urakawa.daisy.import
                         XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
                         treeNode.AddProperty(xmlProp);
 
-                        // we get rid of element name prefixes, we use namespace URIs instead.
-                        xmlProp.LocalName = xmlNode.LocalName;
-
-                        if (xmlNode.ParentNode != null && xmlNode.ParentNode.NodeType == XmlNodeType.Document)
-                        {
-                            presentation.PropertyFactory.DefaultXmlNamespaceUri = xmlNode.NamespaceURI;
-                        }
 
                         //string nodeName_Prefix = null;
                         //string nodeName_Local = null;
@@ -289,12 +288,29 @@ namespace urakawa.daisy.import
                         //    nodeName_Local = xmlNode.Name.Split(':')[1];
                         //}
 
+                        // we get rid of element name prefixes, we use namespace URIs instead.
                         // check inherited NS URI
                         string nsUri = treeNode.GetXmlNamespaceUri();
                         if (xmlNode.NamespaceURI != nsUri) //presentation.PropertyFactory.DefaultXmlNamespaceUri)
                         {
-                            xmlProp.NamespaceUri = xmlNode.NamespaceURI;
+                            nsUri = xmlNode.NamespaceURI;
+                            xmlProp.SetQName(xmlNode.LocalName, nsUri);
+
+#if DEBUG
+                            string uriCheck = xmlProp.GetNamespaceUri();
+                            DebugFix.Assert(uriCheck == nsUri);
+#endif //DEBUG
                         }
+                        else
+                        {
+                            xmlProp.SetQName(xmlNode.LocalName, "");
+                        }
+
+                        //string nsUri = treeNode.GetXmlNamespaceUri();
+                        // if xmlNode.NamespaceURI != nsUri
+                        // => xmlProp.GetNamespaceUri() == xmlNode.NamespaceURI
+
+
 
                         string updatedSRC = null;
 
@@ -449,11 +465,19 @@ namespace urakawa.daisy.import
 
                         if (attributeCol != null)
                         {
+                            XmlNode xmlnsAttr = attributeCol.GetNamedItem(XmlReaderWriterHelper.NS_PREFIX_XMLNS);
+                            if (xmlnsAttr != null)
+                            {
+                                DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(xmlnsAttr.NamespaceURI));
+
+                                xmlProp.SetAttribute(xmlnsAttr.Name, xmlnsAttr.NamespaceURI, xmlnsAttr.Value);
+                            }
+
                             for (int i = 0; i < attributeCol.Count; i++)
                             {
                                 XmlNode attr = attributeCol.Item(i);
                                 if (attr.LocalName != "smilref"
-                                    && attr.LocalName != "imgref") // && attr.Name != "xmlns:xsi" && attr.Name != "xml:space"
+                                    && attr.LocalName != "imgref") // && attr.Name != XmlReaderWriterHelper.NS_PREFIX_XMLNS+":xsi" && attr.Name != "xml:space"
                                 {
                                     if (attr.Name.Equals(XmlReaderWriterHelper.NS_PREFIX_XML + ":space", StringComparison.OrdinalIgnoreCase))
                                     {
@@ -461,19 +485,25 @@ namespace urakawa.daisy.import
                                     }
                                     else if (updatedSRC != null && attr.LocalName == "src")
                                     {
-                                        xmlProp.SetAttribute(attr.LocalName, (attr.NamespaceURI == null ? "" : attr.NamespaceURI), updatedSRC);
+                                        xmlProp.SetAttribute("src", "", updatedSRC);
                                     }
                                     else if (attr.Name.IndexOf(':') >= 0) // attr.Name.Contains(":")
                                     {
                                         bool redundant = false;
 
-                                        string[] splitArray = attr.Name.Split(':');
+                                        string prefix;
+                                        string localName;
+                                        urakawa.property.xml.XmlProperty.SplitLocalName(attr.Name, out prefix, out localName);
 
-                                        if (splitArray[0] == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
+                                        if (prefix == null)
+                                        {
+                                            Debug.Fail("WTF?!");
+                                        }
+                                        else if (prefix == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
                                         {
                                             DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(attr.NamespaceURI));
 
-                                            string nsUriFromPrefix = treeNode.GetXmlNamespaceUri(splitArray[1]);
+                                            string nsUriFromPrefix = xmlProp.GetNamespaceUri(localName);
                                             if (!string.IsNullOrEmpty(nsUriFromPrefix))
                                             {
                                                 bool check = nsUriFromPrefix.Equals(attr.Value);
@@ -484,24 +514,31 @@ namespace urakawa.daisy.import
                                                 }
                                             }
                                         }
-                                        else if (splitArray[0] == XmlReaderWriterHelper.NS_PREFIX_XML)
+                                        else if (prefix == XmlReaderWriterHelper.NS_PREFIX_XML)
                                         {
                                             DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XML.Equals(attr.NamespaceURI));
                                         }
 
                                         if (!redundant)
                                         {
-                                            xmlProp.SetAttribute(attr.Name, (attr.NamespaceURI == null ? "" : attr.NamespaceURI), attr.Value);
+                                            string uri = "";
+                                            if (!string.IsNullOrEmpty(attr.NamespaceURI))
+                                            {
+                                                if (attr.NamespaceURI != nsUri)
+                                                {
+                                                    uri = attr.NamespaceURI;
+                                                }
+                                            }
+
+                                            xmlProp.SetAttribute(attr.Name, uri, attr.Value);
                                         }
                                     }
-                                    else
+                                    else // no prefix
                                     {
-                                        if (attr.Name == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
+                                        if (attr.Name != XmlReaderWriterHelper.NS_PREFIX_XMLNS) // already processed
                                         {
-                                            DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(attr.NamespaceURI));
+                                            xmlProp.SetAttribute(attr.Name, "", attr.Value);
                                         }
-
-                                        xmlProp.SetAttribute(attr.Name, (attr.NamespaceURI == null ? "" : attr.NamespaceURI), attr.Value);
                                     }
                                 }
                             }
@@ -524,9 +561,14 @@ namespace urakawa.daisy.import
 #if DEBUG
                         if (xmlType != XmlNodeType.Whitespace)
                         {
+                            //Identical for text nodes
                             Debug.Assert(xmlNode.Value == xmlNode.OuterXml);
-                            //Debug.Assert(xmlNode.Value == xmlNode.InnerXml);
+
+                            //Identical for text nodes
                             Debug.Assert(xmlNode.Value == xmlNode.InnerText);
+
+                            //Preserves HTML entities, but converts unicode escapes
+                            //Debug.Assert(xmlNode.Value == xmlNode.InnerXml);
                         }
 #endif //DEBUG
 
@@ -610,6 +652,8 @@ namespace urakawa.daisy.import
                         }
 
 #if DEBUG
+                        //TODO:
+                        Debugger.Break();
                         text = Regex.Replace(text, "\u2028", "&#x2028;");
 #endif // DEBUG
                         TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();

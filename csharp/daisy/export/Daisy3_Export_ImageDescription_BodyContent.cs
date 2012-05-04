@@ -37,35 +37,35 @@ namespace urakawa.daisy.export
             descriptionNode.AppendChild(bodyNode);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ITS,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ITS,
                 DiagramContentModelHelper.NS_URL_ITS);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_MATHML,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_MATHML,
                 DiagramContentModelHelper.NS_URL_MATHML);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_SSML,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_SSML,
                 DiagramContentModelHelper.NS_URL_SSML);
 
             //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
-            //    "xmlns:" + DiagramContentModelHelper.NS_PREFIX_SVG,
+            //    XmlReaderWriterHelper.NS_PREFIX_XMLNS+":" + DiagramContentModelHelper.NS_PREFIX_SVG,
             //    DiagramContentModelHelper.NS_URL_SVG);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_XFORMS,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_XFORMS,
                 DiagramContentModelHelper.NS_URL_XFORMS);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ZAI_REND,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ZAI_REND,
                 DiagramContentModelHelper.NS_URL_ZAI_REND);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ZAI_SELECT,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ZAI_SELECT,
                 DiagramContentModelHelper.NS_URL_ZAI_SELECT);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, bodyNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_TOBI,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_TOBI,
                 DiagramContentModelHelper.NS_URL_TOBI);
 
             int audioFileIndex = 0;
@@ -278,16 +278,16 @@ namespace urakawa.daisy.export
                             // NO! Adds xmlns attributes all over the place even though there is a global namespace already.
                             // textParentNode.InnerXml = normalizedDescriptionText;
 
-                            string xmlns_mathml = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_MATHML + "=\"" + DiagramContentModelHelper.NS_URL_MATHML + "\"";
-                            //string xmlns_svg = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_SVG + "=\"" + DiagramContentModelHelper.NS_URL_SVG + "\"";
-                            string xmlns_xforms = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_XFORMS + "=\"" + DiagramContentModelHelper.NS_URL_XFORMS + "\"";
-                            string xmlns_ssml = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_SSML + "=\"" + DiagramContentModelHelper.NS_URL_SSML + "\"";
-                            string xmlns_its = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ITS + "=\"" + DiagramContentModelHelper.NS_URL_ITS + "\"";
+                            string xmlns_mathml = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_MATHML + "=\"" + DiagramContentModelHelper.NS_URL_MATHML + "\"";
+                            //string xmlns_svg = XmlReaderWriterHelper.NS_PREFIX_XMLNS+":" + DiagramContentModelHelper.NS_PREFIX_SVG + "=\"" + DiagramContentModelHelper.NS_URL_SVG + "\"";
+                            string xmlns_xforms = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_XFORMS + "=\"" + DiagramContentModelHelper.NS_URL_XFORMS + "\"";
+                            string xmlns_ssml = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_SSML + "=\"" + DiagramContentModelHelper.NS_URL_SSML + "\"";
+                            string xmlns_its = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ITS + "=\"" + DiagramContentModelHelper.NS_URL_ITS + "\"";
 
-                            string xmlns_z_rend = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ZAI_REND + "=\"" + DiagramContentModelHelper.NS_URL_ZAI_REND + "\"";
-                            string xmlns_z_select = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_ZAI_SELECT + "=\"" + DiagramContentModelHelper.NS_URL_ZAI_SELECT + "\"";
+                            string xmlns_z_rend = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ZAI_REND + "=\"" + DiagramContentModelHelper.NS_URL_ZAI_REND + "\"";
+                            string xmlns_z_select = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ZAI_SELECT + "=\"" + DiagramContentModelHelper.NS_URL_ZAI_SELECT + "\"";
 
-                            string xmlns_diagram = "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM + "=\"" + DiagramContentModelHelper.NS_URL_DIAGRAM + "\"";
+                            string xmlns_diagram = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM + "=\"" + DiagramContentModelHelper.NS_URL_DIAGRAM + "\"";
                             string xmlns_zai = "xmlns=\"" + DiagramContentModelHelper.NS_URL_ZAI + "\"";
 
                             string xmlSourceString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
@@ -380,7 +380,7 @@ namespace urakawa.daisy.export
 
                             descriptionTextContainsMarkup = false;
                             descriptionTextEscaped = DIAGRAM_XML_PARSE_FAIL + normalizedDescriptionText; //xmlText.InnerText; // normalizedDescriptionText;
-                            
+
                             XmlText xmlText = descriptionDocument.CreateTextNode(normalizedDescriptionText);
 
                             XmlNode code = descriptionDocument.CreateElement(
@@ -398,7 +398,7 @@ namespace urakawa.daisy.export
                     {
                         // NOT NEEDED, the "p" elements are added without namespace prefix or explicit xmlns attribute.
                         //XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, textParentNode,
-                        //"xmlns:z", DiagramContentModelHelper.NS_URL_ZAI);
+                        //XmlReaderWriterHelper.NS_PREFIX_XMLNS+":z", DiagramContentModelHelper.NS_URL_ZAI);
 
                         string normalizedText = normalizedDescriptionText.Replace("\r\n", "\n");
 

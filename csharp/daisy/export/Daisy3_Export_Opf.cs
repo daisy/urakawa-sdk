@@ -315,16 +315,31 @@ namespace urakawa.daisy.export
             //string name = name_.ToLower();
             XmlNode node = null;
 
-            if (name.IndexOf(':') >= 0) //name.Contains(":")
+            string prefix;
+            string localName;
+            urakawa.property.xml.XmlProperty.SplitLocalName(name, out prefix, out localName);
+
+            if (!string.IsNullOrEmpty(prefix))
             {
                 // split the metadata name and make first alphabet upper, required for daisy 3.0
 
-                string[] strs = name.Split(':');
+                localName = localName.Substring(0, 1).ToUpper() + localName.Remove(0, 1);
 
-                string splittedName = strs[1];
-                splittedName = splittedName.Substring(0, 1).ToUpper() + splittedName.Remove(0, 1);
+                string nsUri = null;
+                if (metadataParentNode != null && metadataParentNode.Attributes != null)
+                {
+                    XmlNode attr = metadataParentNode.Attributes.GetNamedItem(XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":dc");
+                    if (attr != null)
+                    {
+                        nsUri = attr.Value;
+                    }
+                }
+                if (nsUri == null)
+                {
+                    nsUri = DiagramContentModelHelper.NS_URL_DC;
+                }
 
-                node = doc.CreateElement(strs[0], splittedName, metadataParentNode.Attributes.GetNamedItem("xmlns:dc").Value);
+                node = doc.CreateElement(prefix, localName, nsUri);
             }
             else
             {
@@ -362,8 +377,8 @@ namespace urakawa.daisy.export
 
             XmlNode dcMetadataNode = document.CreateElement(null, "dc-metadata", rootNode.NamespaceURI);
             metadataNode.AppendChild(dcMetadataNode);
-            XmlDocumentHelper.CreateAppendXmlAttribute(document, dcMetadataNode, "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DC, DiagramContentModelHelper.NS_URL_DC);
-            XmlDocumentHelper.CreateAppendXmlAttribute(document, dcMetadataNode, "xmlns:oebpackage", "http://openebook.org/namespaces/oeb-package/1.0/");
+            XmlDocumentHelper.CreateAppendXmlAttribute(document, dcMetadataNode, XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DC, DiagramContentModelHelper.NS_URL_DC);
+            XmlDocumentHelper.CreateAppendXmlAttribute(document, dcMetadataNode, XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":oebpackage", "http://openebook.org/namespaces/oeb-package/1.0/");
 
             XmlNode xMetadataNode = document.CreateElement(null, "x-metadata", rootNode.NamespaceURI);
             metadataNode.AppendChild(xMetadataNode);

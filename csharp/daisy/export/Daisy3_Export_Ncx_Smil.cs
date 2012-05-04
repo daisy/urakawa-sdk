@@ -80,15 +80,13 @@ namespace urakawa.daisy.export
 
                 if (RequestCancellation) return false;
 
-                QualifiedName currentQName = n.GetXmlElementQName();
-
                 if (IsHeadingNode(n))
                 {
                     currentHeadingTreeNode = n;
                 }
 
-                if (currentQName != null &&
-                        currentQName.LocalName != urakawaNode.GetXmlElementQName().LocalName
+                if (n.HasXmlProperty &&
+                        n.GetXmlElementLocalName() != urakawaNode.GetXmlElementLocalName()
                         && doesTreeNodeTriggerNewSmil(n))
                 {
                     if (m_ListOfLevels.IndexOf(n) > m_ListOfLevels.IndexOf(urakawaNode))
@@ -120,12 +118,9 @@ namespace urakawa.daisy.export
                     }
                 */
 
-                QualifiedName qName1 = currentHeadingTreeNode != null ? currentHeadingTreeNode.GetXmlElementQName() : null;
-                bool isDoctitle_1 = (qName1 != null && qName1.LocalName == "doctitle");
-
                 if (!IsNcxNativeNodeAdded && currentHeadingTreeNode != null && (currentHeadingTreeNode.GetDurationOfManagedAudioMediaFlattened() == null || currentHeadingTreeNode.GetDurationOfManagedAudioMediaFlattened().AsLocalUnits == 0))
                 {
-                    if (isDoctitle_1)
+                    if (currentHeadingTreeNode.HasXmlProperty && currentHeadingTreeNode.GetXmlElementLocalName() == "doctitle")
                     {
                         //urakawa.core.TreeNode n = textAudioNodesList[0];
                         if (!isDocTitleAdded)
@@ -145,10 +140,6 @@ namespace urakawa.daisy.export
                     return true;
                     // carry on processing following lines. and in case this is not true, skip all the following lines
                 }
-
-
-                QualifiedName qName = currentHeadingTreeNode != null ? currentHeadingTreeNode.GetXmlElementQName() : null;
-                bool isDoctitle_ = (qName != null && qName.LocalName == "doctitle");
 
                 // create smil stub document
                 if (smilDocument == null)
@@ -178,7 +169,7 @@ namespace urakawa.daisy.export
                     Seq_SpecialNode = smilDocument.CreateElement(null, "seq", mainSeq.NamespaceURI);
                     string strSeqID = "";
                     // specific handling of IDs for notes for allowing predetermined refered IDs
-                    if (special_UrakawaNode.GetXmlElementQName().LocalName == "note" || special_UrakawaNode.GetXmlElementQName().LocalName == "annotation")
+                    if (special_UrakawaNode.GetXmlElementLocalName() == "note" || special_UrakawaNode.GetXmlElementLocalName() == "annotation")
                     {
                         strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value;
                     }
@@ -187,7 +178,7 @@ namespace urakawa.daisy.export
                         strSeqID = GetNextID(ID_SmilPrefix);
                     }
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "id", strSeqID);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "class", m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementQName().LocalName);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "class", m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementLocalName());
 
                     if (IsEscapableNode(special_UrakawaNode))
                     {
@@ -197,9 +188,9 @@ namespace urakawa.daisy.export
 
                     if (IsSkippableNode(special_UrakawaNode) || m_Image_ProdNoteMap.ContainsKey(n))
                     {
-                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "customTest", m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementQName().LocalName);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "customTest", m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementLocalName());
 
-                        if (special_UrakawaNode.GetXmlElementQName().LocalName == "noteref" || special_UrakawaNode.GetXmlElementQName().LocalName == "annoref")
+                        if (special_UrakawaNode.GetXmlElementLocalName() == "noteref" || special_UrakawaNode.GetXmlElementLocalName() == "annoref")
                         {
                             XmlNode anchorNode = smilDocument.CreateElement(null, "a", Seq_SpecialNode.NamespaceURI);
                             Seq_SpecialNode.AppendChild(anchorNode);
@@ -220,9 +211,9 @@ namespace urakawa.daisy.export
                                 //System.Windows.Forms.MessageBox.Show("prodnote added");
                             }
                         }
-                        else if (!currentSmilCustomTestList.Contains(special_UrakawaNode.GetXmlElementQName().LocalName))
+                        else if (!currentSmilCustomTestList.Contains(special_UrakawaNode.GetXmlElementLocalName()))
                         {
-                            currentSmilCustomTestList.Add(special_UrakawaNode.GetXmlElementQName().LocalName);
+                            currentSmilCustomTestList.Add(special_UrakawaNode.GetXmlElementLocalName());
                         }
                     }
 
@@ -360,7 +351,7 @@ namespace urakawa.daisy.export
                     // check and assign first par ID
                     if (firstPar_id == null)
                     {
-                        if (n.GetXmlElementQName() != null && currentHeadingTreeNode != null
+                        if (n.HasXmlProperty && currentHeadingTreeNode != null
                             && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
                         {
                             firstPar_id = par_id;
@@ -412,8 +403,8 @@ namespace urakawa.daisy.export
                     CreateSmilNodesForImageDescription(n, smilDocument, mainSeq, durationOfCurrentSmil, n.GetAlternateContentProperty(), smilFileName);
                 }
                 // if node n is pagenum, add to pageList
-                if (n.GetXmlElementQName() != null
-                    && n.GetXmlElementQName().LocalName == "pagenum")
+                if (n.HasXmlProperty
+                    && n.GetXmlElementLocalName() == "pagenum")
                 {
                     if (!currentSmilCustomTestList.Contains("pagenum"))
                     {
@@ -487,9 +478,9 @@ namespace urakawa.daisy.export
                      */
                 }
                 else if (special_UrakawaNode != null
-                    && m_NavListElementNamesList.Contains(special_UrakawaNode.GetXmlElementQName().LocalName) && !specialParentNodesAddedToNavList.Contains(special_UrakawaNode) || m_Image_ProdNoteMap.ContainsKey(n))
+                    && m_NavListElementNamesList.Contains(special_UrakawaNode.GetXmlElementLocalName()) && !specialParentNodesAddedToNavList.Contains(special_UrakawaNode) || m_Image_ProdNoteMap.ContainsKey(n))
                 {
-                    string navListNodeName = m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementQName().LocalName;
+                    string navListNodeName = m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementLocalName();
                     specialParentNodesAddedToNavList.Add(special_UrakawaNode);
                     XmlNode navListNode = null;
 
@@ -552,7 +543,10 @@ namespace urakawa.daisy.export
 
                 if (!IsNcxNativeNodeAdded)
                 {
-                    if (isDoctitle_ && !isDocTitleAdded)
+                    if (currentHeadingTreeNode != null
+                        && currentHeadingTreeNode.HasXmlProperty
+                        && currentHeadingTreeNode.GetXmlElementLocalName() == "doctitle"
+                        && !isDocTitleAdded)
                     {
                         //urakawa.core.TreeNode n = textAudioNodesList[0];
 
@@ -569,7 +563,7 @@ namespace urakawa.daisy.export
 
                         int indexOf_n = 0;
 
-                        if (n.GetXmlElementQName() != null && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
+                        if (n.HasXmlProperty && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
                         {
                             //indexOf_n = audioNodeIndex;
                             //indexOf_n = 0;
@@ -614,8 +608,8 @@ namespace urakawa.daisy.export
                     isBranchingActive = false;
 
                 }
-                if (n.GetXmlElementQName() != null && n.GetXmlElementQName().LocalName == "sent"
-                        && special_UrakawaNode != null && (special_UrakawaNode.GetXmlElementQName().LocalName == "note" || special_UrakawaNode.GetXmlElementQName().LocalName == "annotation"))
+                if (n.HasXmlProperty && n.GetXmlElementLocalName() == "sent"
+                        && special_UrakawaNode != null && (special_UrakawaNode.GetXmlElementLocalName() == "note" || special_UrakawaNode.GetXmlElementLocalName() == "annotation"))
                 {
 
                     return false;
@@ -717,62 +711,76 @@ namespace urakawa.daisy.export
 
         private bool IsHeadingNode(urakawa.core.TreeNode node)
         {
-            QualifiedName currentQName = node.GetXmlElementQName() != null ? node.GetXmlElementQName() : null;
-            if (currentQName != null &&
-                    (currentQName.LocalName == "levelhd" || currentQName.LocalName == "hd" || currentQName.LocalName == "h1" || currentQName.LocalName == "h2" || currentQName.LocalName == "h3" || currentQName.LocalName == "h4"
-                    || currentQName.LocalName == "h5" || currentQName.LocalName == "h6" || currentQName.LocalName == "doctitle"))
+            if (node.HasXmlProperty)
             {
-                return true;
+                string localName = node.GetXmlElementLocalName();
+
+                if (localName == "levelhd" || localName == "hd" ||
+                    localName == "h1" || localName == "h2" || localName == "h3" ||
+                    localName == "h4"
+                    || localName == "h5" || localName == "h6" ||
+                    localName == "doctitle")
+                {
+                    return true;
+                }
             }
+
             return false;
         }
 
         private bool IsEscapableNode(urakawa.core.TreeNode node)
         {
-            string qName = node.GetXmlElementQName() != null ? node.GetXmlElementQName().LocalName : null;
-            if (qName != null
-                &&
-                (qName == "list" || qName == "table" || qName == "tr"
-                || qName == "note" || qName == "annotation"
-                || qName == "sidebar"
-                 || qName == "prodnote" || qName == "endnote" || qName == "footnote" || qName == "rearnote"))
+            if (node.HasXmlProperty)
             {
-                return true;
+                string localName = node.GetXmlElementLocalName();
+
+                if (localName == "list" || localName == "table" || localName == "tr"
+                    || localName == "note" || localName == "annotation"
+                    || localName == "sidebar"
+                    || localName == "prodnote" || localName == "endnote" || localName == "footnote" ||
+                    localName == "rearnote")
+                {
+                    return true;
+                }
             }
             return false;
         }
 
         private bool IsSkippableNode(urakawa.core.TreeNode node)
         {
-            string qName = node.GetXmlElementQName() != null ? node.GetXmlElementQName().LocalName : null;
-            if (qName != null
-                &&
-                (qName == "pagenum" || qName == "linenum"
-                || qName == "noteref" || qName == "note"
-                || qName == "annoref" || qName == "annotation"
-                || IsOptionalSidebarOrProducerNote(node)))
+            if (node.HasXmlProperty)
             {
-                return true;
+                string localName = node.GetXmlElementLocalName();
+
+                if (localName == "pagenum" || localName == "linenum"
+                    || localName == "noteref" || localName == "note"
+                    || localName == "annoref" || localName == "annotation"
+                    || IsOptionalSidebarOrProducerNote(node))
+                {
+                    return true;
+                }
             }
             return false;
         }
 
         private bool IsOptionalSidebarOrProducerNote(urakawa.core.TreeNode node)
         {
-            string qName = node.GetXmlElementQName() != null ? node.GetXmlElementQName().LocalName : null;
-            if (qName != null
-                && (qName == "sidebar" || qName == "prodnote"))
+            if (node.HasXmlProperty)
             {
-                foreach (urakawa.property.xml.XmlAttribute attr in node.GetXmlProperty().Attributes)
+                string localName = node.GetXmlElementLocalName();
+
+                if (localName == "sidebar" || localName == "prodnote")
                 {
-                    if (attr.LocalName == "render" && attr.Value == "optional")
+                    foreach (urakawa.property.xml.XmlAttribute attr in node.GetXmlProperty().Attributes.ContentsAs_Enumerable)
                     {
-                        return true;
-                    }
-                }// foreach loop ends
+                        if (attr.LocalName == "render" && attr.Value == "optional")
+                        {
+                            return true;
+                        }
+                    } // foreach loop ends
 
-            } // end check for sidebar and producer notes local name
-
+                } // end check for sidebar and producer notes local name
+            }
             return false;
         }
 
@@ -891,23 +899,22 @@ namespace urakawa.daisy.export
             return navPointNode;
         }
 
-
-
         private urakawa.core.TreeNode GetParentLevelNode(urakawa.core.TreeNode node)
         {
             urakawa.core.TreeNode parentNode = node.Parent;
-            QualifiedName qName = parentNode.GetXmlElementQName();
 
-            while (qName == null ||
-                (qName != null && !qName.LocalName.StartsWith("level")))
+            while (parentNode != null)
             {
-                if (qName != null && qName.LocalName == "book")
-                    return null;
+                DebugFix.Assert(parentNode.HasXmlProperty);
 
+                if (parentNode.GetXmlElementLocalName().StartsWith("level"))
+                {
+                    return parentNode;
+                }
                 parentNode = parentNode.Parent;
-                qName = parentNode.GetXmlElementQName();
             }
-            return parentNode;
+
+            return null;
         }
 
         protected int GetDepthOfNavPointNode(XmlDocument doc, XmlNode navPointNode)
@@ -1240,15 +1247,13 @@ namespace urakawa.daisy.export
 
             if (RequestCancellation) return false;
 
-            QualifiedName currentQName = n.GetXmlElementQName();
-
             if (IsHeadingNode(n))
             {//2
                 currentHeadingTreeNode = n;
             }//-2
 
-            if (currentQName != null &&
-                    currentQName.LocalName != urakawaNode.GetXmlElementQName().LocalName
+            if (n.HasXmlProperty &&
+                    n.GetXmlElementLocalName() != urakawaNode.GetXmlElementLocalName()
                     && doesTreeNodeTriggerNewSmil(n))
             {//2
                 return false;
@@ -1271,9 +1276,8 @@ namespace urakawa.daisy.export
             urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
 
-            QualifiedName qName1 = currentHeadingTreeNode != null ? currentHeadingTreeNode.GetXmlElementQName() : null;
-            bool isDoctitle_1 = (qName1 != null && qName1.LocalName == "doctitle");
-
+            //bool isDoctitle_1 = currentHeadingTreeNode != null && currentHeadingTreeNode.HasXmlProperty &&
+            //                    currentHeadingTreeNode.GetXmlElementLocalName() == "doctitle";
 
 
             Time urakawaNodeDur = urakawaNode.GetDurationOfManagedAudioMediaFlattened();
@@ -1284,8 +1288,9 @@ namespace urakawa.daisy.export
             }
 
 
-            QualifiedName qName = currentHeadingTreeNode != null ? currentHeadingTreeNode.GetXmlElementQName() : null;
-            bool isDoctitle_ = (qName != null && qName.LocalName == "doctitle");
+            //bool isDoctitle_ = currentHeadingTreeNode != null && currentHeadingTreeNode.HasXmlProperty &&
+            //                    currentHeadingTreeNode.GetXmlElementLocalName() == "doctitle";
+
 
             // create smil stub document
 
@@ -1306,7 +1311,7 @@ namespace urakawa.daisy.export
                 Seq_SpecialNode = smilDocument.CreateElement(null, "seq", mainSeq.NamespaceURI);
                 string strSeqID = "";
                 // specific handling of IDs for notes for allowing predetermined refered IDs
-                if (special_UrakawaNode.GetXmlElementQName().LocalName == "note" || special_UrakawaNode.GetXmlElementQName().LocalName == "annotation")
+                if (special_UrakawaNode.GetXmlElementLocalName() == "note" || special_UrakawaNode.GetXmlElementLocalName() == "annotation")
                 {//3
                     strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value + "_1";
                 }//-3
@@ -1315,7 +1320,7 @@ namespace urakawa.daisy.export
                     strSeqID = GetNextID(ID_SmilPrefix);
                 }//-3
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "id", strSeqID);
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "class", special_UrakawaNode.GetXmlElementQName().LocalName);
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "class", special_UrakawaNode.GetXmlElementLocalName());
 
                 if (IsEscapableNode(special_UrakawaNode))
                 {//3
@@ -1325,9 +1330,9 @@ namespace urakawa.daisy.export
 
                 if (IsSkippableNode(special_UrakawaNode))
                 {//3
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "customTest", special_UrakawaNode.GetXmlElementQName().LocalName);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "customTest", special_UrakawaNode.GetXmlElementLocalName());
 
-                    if (special_UrakawaNode.GetXmlElementQName().LocalName == "noteref" || special_UrakawaNode.GetXmlElementQName().LocalName == "annoref")
+                    if (special_UrakawaNode.GetXmlElementLocalName() == "noteref" || special_UrakawaNode.GetXmlElementLocalName() == "annoref")
                     {//4
                         XmlNode anchorNode = smilDocument.CreateElement(null, "a", Seq_SpecialNode.NamespaceURI);
                         Seq_SpecialNode.AppendChild(anchorNode);
@@ -1335,9 +1340,9 @@ namespace urakawa.daisy.export
                         XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, anchorNode, "href", "#" + ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("idref").Value.Replace("#", ""));
 
                     }//-4
-                    if (!currentSmilCustomTestList.Contains(special_UrakawaNode.GetXmlElementQName().LocalName))
+                    if (!currentSmilCustomTestList.Contains(special_UrakawaNode.GetXmlElementLocalName()))
                     {//4
-                        currentSmilCustomTestList.Add(special_UrakawaNode.GetXmlElementQName().LocalName);
+                        currentSmilCustomTestList.Add(special_UrakawaNode.GetXmlElementLocalName());
                     }//-4
                 }//-3
 
@@ -1473,7 +1478,7 @@ namespace urakawa.daisy.export
                 if (firstPar_id == null)
                 {
                     //2
-                    if (n.GetXmlElementQName() != null && currentHeadingTreeNode != null
+                    if (n.HasXmlProperty && currentHeadingTreeNode != null
                         && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
                     {
                         //3
@@ -1515,7 +1520,7 @@ namespace urakawa.daisy.export
             }
 
             //}//-1
-            if (n.GetXmlElementQName() != null && n.GetXmlElementQName().LocalName == "sent")
+            if (n.HasXmlProperty && n.GetXmlElementLocalName() == "sent")
             {
                 return false;
             }

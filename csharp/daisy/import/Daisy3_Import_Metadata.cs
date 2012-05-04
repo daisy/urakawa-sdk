@@ -106,7 +106,7 @@ namespace urakawa.daisy.import
                     continue;
                 }
 
-                if (attribute.Name.StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+                if (attribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":", StringComparison.OrdinalIgnoreCase))
                 {
                     //meta.NameContentAttribute.NamespaceUri = attribute.Value;
                 }

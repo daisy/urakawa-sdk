@@ -110,19 +110,19 @@ namespace urakawa.daisy.export
             descriptionDocument.AppendChild(descriptionNode);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
                 DiagramContentModelHelper.NS_URL_DIAGRAM);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM_METADATA,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM_METADATA,
                 DiagramContentModelHelper.NS_URL_DIAGRAM);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DC,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DC,
                 DiagramContentModelHelper.NS_URL_DC);
 
             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, descriptionNode,
-                "xmlns:" + DiagramContentModelHelper.NS_PREFIX_DCTERMS,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DCTERMS,
                 DiagramContentModelHelper.NS_URL_DCTERMS);
 
             createDiagramHeadMetadata(descriptionDocument, descriptionNode, altProperty);

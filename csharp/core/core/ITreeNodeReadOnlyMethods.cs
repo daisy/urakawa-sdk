@@ -44,21 +44,21 @@ namespace urakawa.core
         TreeNode Root { get; }
 
         Media GetManagedAudioMediaOrSequenceMedia();
-        
+
 #if USE_NORMAL_LIST
 StreamWithMarkers?
 #else
         StreamWithMarkers
 #endif //USE_NORMAL_LIST
  OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del);
-        
+
 #if USE_NORMAL_LIST
 StreamWithMarkers?
 #else
         StreamWithMarkers
 #endif //USE_NORMAL_LIST
  OpenPcmInputStreamOfManagedAudioMediaFlattened(DelegateAudioPcmStreamFound del, bool openSecondaryStream);
-        
+
 #if USE_NORMAL_LIST
 StreamWithMarkers?
 #else
@@ -95,12 +95,16 @@ StreamWithMarkers?
         bool HasOrInheritsAudio();
 
         TreeNode GetFirstChildWithXmlElementName(string elemName);
-        
+
         string GetXmlFragment();
+
+        string GetXmlNamespaceUri();
+        string GetXmlNamespaceUri(string prefix);
 
         TreeNode GetTreeNodeWithXmlElementId(string id);
 
-        QualifiedName GetXmlElementQName();
+        string GetXmlElementLocalName();
+        //QualifiedName GetXmlElementQName();
         string GetXmlElementId();
         string GetXmlElementLang();
 
