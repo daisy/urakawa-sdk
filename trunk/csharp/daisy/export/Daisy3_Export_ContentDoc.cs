@@ -85,16 +85,17 @@ namespace urakawa.daisy.export
 
                 string name = m.NameContentAttribute.Name;
 
-                if (name.IndexOf(':') >= 0) //name.Contains(":"))
+                string prefix;
+                string localName;
+                urakawa.property.xml.XmlProperty.SplitLocalName(name, out prefix, out localName);
+
+                if (!string.IsNullOrEmpty(prefix))
                 {
-
-                    string[] strs = name.Split(':');
-
                     // split the metadata name and make first alphabet upper, required for daisy 3.0
-                    string splittedName = strs[1];
-                    splittedName = splittedName.Substring(0, 1).ToUpper() + splittedName.Remove(0, 1);
 
-                    name = strs[0] + ":" + splittedName;
+                    localName = localName.Substring(0, 1).ToUpper() + localName.Remove(0, 1);
+
+                    name = prefix + ":" + localName;
                 }
 
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, metaNode, "name", name);
@@ -115,6 +116,10 @@ namespace urakawa.daisy.export
 
             TreeNode rNode = m_Presentation.RootNode;
             XmlNode bookNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(DTBookDocument, true, "book", null); //DTBookDocument.GetElementsByTagName("book")[0];
+            if (bookNode == null)
+            {
+                bookNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(DTBookDocument, true, "body", null);
+            }
 
             m_ListOfLevels.Add(m_Presentation.RootNode);
 
@@ -150,7 +155,7 @@ namespace urakawa.daisy.export
                         {
                             isHeadingNodeAvailable = true;
                         }
-                        if (n.GetXmlElementQName() != null && (n.GetXmlElementQName().LocalName == "note" || n.GetXmlElementQName().LocalName == "annotation"))
+                        if (n.HasXmlProperty && (n.GetXmlElementLocalName() == "note" || n.GetXmlElementLocalName() == "annotation"))
                         {
                             m_NotesNodeList.Add(n);
                         }
@@ -195,17 +200,24 @@ namespace urakawa.daisy.export
                         //string elementName = name.Contains(":") ? name.Split(':')[1] : name;
                         //currentXmlNode = DTBookDocument.CreateElement(prefix, elementName, bookNode.NamespaceURI);
 
-                        if (xmlProp.LocalName == "book")
+                        if (xmlProp.LocalName == "book" || xmlProp.LocalName == "body")
+                        {
                             currentXmlNode = bookNode;
+                        }
                         else
-                            currentXmlNode = DTBookDocument.CreateElement(null, xmlProp.LocalName, (string.IsNullOrEmpty(xmlProp.NamespaceUri) ? bookNode.NamespaceURI : xmlProp.NamespaceUri));
+                        {
+                            string nsUri = n.GetXmlNamespaceUri();
+
+                            currentXmlNode = DTBookDocument.CreateElement(null,
+                                xmlProp.LocalName, nsUri);
+                        }
 
                         // add attributes
-                        if (xmlProp.Attributes != null && xmlProp.Attributes.Count > 0)
+                        if (xmlProp.Attributes.Count > 0)
                         {
                             for (int i = 0; i < xmlProp.Attributes.Count; i++)
                             {
-                                property.xml.XmlAttribute xmlAttr = xmlProp.Attributes[i];
+                                property.xml.XmlAttribute xmlAttr = xmlProp.Attributes.Get(i);
 
                                 string prefix = xmlAttr.Prefix;
                                 string nameWithoutPrefix = xmlAttr.PrefixedLocalName;
@@ -215,7 +227,12 @@ namespace urakawa.daisy.export
                                     && string.IsNullOrEmpty(DTBookDocument.DocumentElement.GetNamespaceOfPrefix(prefix))
                                     && string.IsNullOrEmpty(bookNode.GetNamespaceOfPrefix(prefix)))
                                 {
-                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, DTBookDocument.DocumentElement, "xmlns:" + prefix, currentXmlNode.GetNamespaceOfPrefix(prefix));
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                        DTBookDocument,
+                                        DTBookDocument.DocumentElement,
+                                        XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + prefix,
+                                        currentXmlNode.GetNamespaceOfPrefix(prefix)
+                                        );
                                 }
 
                                 //todo: check ID attribute, normalize with fresh new list of IDs
@@ -236,7 +253,7 @@ namespace urakawa.daisy.export
                                     }
                                     else
                                     {
-                                        System.Diagnostics.Debug.Fail("Duplicate ID found in original DTBook document", "Original DTBook document has duplicate ID: " + xmlProp.Attributes[i].Value);
+                                        System.Diagnostics.Debug.Fail("Duplicate ID found in original DTBook document", "Original DTBook document has duplicate ID: " + xmlProp.Attributes.Get(i).Value);
                                     }
                                 }
                                 else
@@ -245,12 +262,15 @@ namespace urakawa.daisy.export
                                     currentXmlNode,
                                     xmlAttr.LocalName,
                                     xmlAttr.Value,
-                                    xmlAttr.NamespaceUri);
+                                    xmlAttr.GetNamespaceUri());
                                 }
                             } // for loop ends
                         } // attribute nodes created
 
-                        if (xmlProp.LocalName == "book") return true;
+                        if (xmlProp.LocalName == "book" || xmlProp.LocalName == "body")
+                        {
+                            return true;
+                        }
                         if (xmlProp.LocalName == "imggroup")
                         {
                             m_TempImageId = new List<string>(1);
@@ -424,6 +444,7 @@ namespace urakawa.daisy.export
         {
             if (string.IsNullOrEmpty(nodeLocalName)
                 || nodeLocalName == "book"
+                || nodeLocalName == "body"
                 || nodeLocalName == "frontmatter"
                 || nodeLocalName == "bodymatter"
                  || nodeLocalName == "rearmatter"

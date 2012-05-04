@@ -146,7 +146,7 @@ namespace urakawa.daisy.export
                     {//2
 
                         XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, DTBookDocument.GetElementsByTagName("dtbook")[0],
-"xmlns:" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
+XmlReaderWriterHelper.NS_PREFIX_XMLNS+":" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
 DiagramContentModelHelper.NS_URL_DIAGRAM);
                         XmlDocument descriptionDocument = m_AltProperrty_DiagramDocument[n.GetAlternateContentProperty()];
                         XmlNodeList diagramNodesList = descriptionDocument.GetElementsByTagName("d:body")[0].ChildNodes;

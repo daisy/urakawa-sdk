@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Xml;
 using AudioLib;
+using urakawa.core;
 using urakawa.xuk;
 
 namespace urakawa.property.xml
@@ -103,14 +104,34 @@ namespace urakawa.property.xml
             }
         }
 
+        public string GetNamespaceUri()
+        {
+            if (!string.IsNullOrEmpty(NamespaceUri))
+            {
+                return NamespaceUri;
+            }
+
+            if (Parent != null)
+            {
+                if (!string.IsNullOrEmpty(Prefix))
+                {
+                    return Parent.GetNamespaceUri(Prefix);
+                }
+
+                return Parent.GetNamespaceUri();
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Gets the namespace of the <see cref="XmlAttribute"/>
         /// </summary>
         /// <returns>The namespace</returns>
-        public string NamespaceUri
+        internal string NamespaceUri
         {
             get { return mNamespaceUri; }
-            private set { SetQName(LocalName, value); }
+            //private set { SetQName(LocalName, value); }
         }
 
         /// <summary>
@@ -129,7 +150,7 @@ namespace urakawa.property.xml
                 return mLocalName;
             }
 
-            private set { SetQName(value, NamespaceUri); }
+            //private set { SetQName(value, NamespaceUri); }
         }
 
         private string m_Prefix;
@@ -138,18 +159,6 @@ namespace urakawa.property.xml
         private string m_PrefixedLocalName;
         public string PrefixedLocalName { get { return m_PrefixedLocalName; } }
 
-        public static void SplitLocalName(string name, out string prefix, out string realLocalName)
-        {
-            prefix = null;
-            realLocalName = null;
-
-            if (name != null && name.IndexOf(':') >= 0) //mLocalName.Contains(":"))
-            {
-                string[] arr = name.Split(':');
-                prefix = arr[0];
-                realLocalName = arr[1];
-            }
-        }
 
         /// <summary>
         /// Sets the QName of the <see cref="XmlAttribute"/> 
@@ -193,18 +202,18 @@ namespace urakawa.property.xml
 
                 string prefix;
                 string realLocalName;
-                SplitLocalName(mLocalName, out prefix, out realLocalName);
+                XmlProperty.SplitLocalName(mLocalName, out prefix, out realLocalName);
                 m_Prefix = prefix;
                 m_PrefixedLocalName = realLocalName;
 
-#if DEBUG
-                //Debugger.Break();
+//#if DEBUG
+//                //Debugger.Break();
 
-                if (m_Prefix != null)
-                {
-                    DebugFix.Assert(!string.IsNullOrEmpty(mNamespaceUri));
-                }
-#endif //DEBUG
+//                if (m_Prefix != null)
+//                {
+//                    DebugFix.Assert(!string.IsNullOrEmpty(mNamespaceUri));
+//                }
+//#endif //DEBUG
 
                 if (parent != null)
                 {

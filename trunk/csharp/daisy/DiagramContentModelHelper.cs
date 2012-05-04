@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using urakawa.metadata.daisy;
 using urakawa.metadata;
+using urakawa.property.xml;
 using urakawa.xuk;
 
 namespace urakawa.daisy
@@ -363,17 +364,26 @@ namespace urakawa.daisy
 
         public static string StripNSPrefix(string str)
         {
-            //str.Split(':')[1]
+            string prefix;
+            string localName;
+            XmlProperty.SplitLocalName(str, out prefix, out localName);
 
-            if (str.Length < 2) return str;
+            if (string.IsNullOrEmpty(localName))
+            {
+                return str;
+            }
 
-            int index = str.IndexOf(':');
+            return localName;
 
-            if (index == -1) return str;
+            //if (str.Length < 2) return str;
 
-            if (index == str.Length - 1) return string.Empty;
+            //int index = str.IndexOf(':');
 
-            return str.Substring(index + 1);
+            //if (index == -1) return str;
+
+            //if (index == str.Length - 1) return string.Empty;
+
+            //return str.Substring(index + 1);
         }
     }
 }

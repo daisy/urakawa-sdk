@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using AudioLib;
 using urakawa.core;
 using urakawa.progress;
 using urakawa.property;
@@ -48,16 +49,16 @@ namespace urakawa.property.xml
                             base.TreeNodeOwner.TextDirectionality = TreeNode.TextDirection.RTL;
                         }
                         else
-                            //if (xmlAttr.Value.Equals("en")
-                            //       || xmlAttr.Value.Equals("fr")
-                            //       || xmlAttr.Value.StartsWith("en-")
-                            //       || xmlAttr.Value.StartsWith("fr-")
-                            //)
+                        //if (xmlAttr.Value.Equals("en")
+                        //       || xmlAttr.Value.Equals("fr")
+                        //       || xmlAttr.Value.StartsWith("en-")
+                        //       || xmlAttr.Value.StartsWith("fr-")
+                        //)
                         {
                             base.TreeNodeOwner.TextDirectionality = TreeNode.TextDirection.LTR;
                         }
                     }
-                    xmlAttr = GetAttribute("dir", "");
+                    xmlAttr = GetAttribute("dir");
                     if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
                     {
                         if (xmlAttr.Value.Equals("rtl"))
@@ -146,12 +147,16 @@ namespace urakawa.property.xml
 
         #endregion
 
+        private ObjectListProvider<XmlAttribute> mAttributes = null;
+
         /// <summary>
         /// Default constructor - for system use only, 
         /// <see cref="Property"/>s should only be created via. the <see cref="PropertyFactory"/>
         /// </summary>
         public XmlProperty()
         {
+            mAttributes = new ObjectListProvider<XmlAttribute>(this, false);
+
             QNameChanged += new EventHandler<urakawa.events.property.xml.QNameChangedEventArgs>(this_qNameChanged);
             XmlAttributeSet +=
                 new EventHandler<urakawa.events.property.xml.XmlAttributeSetEventArgs>(this_xmlAttributeSet);
@@ -159,7 +164,9 @@ namespace urakawa.property.xml
 
         private string mLocalName = null;
         private string mNamespaceUri = "";
-        private IDictionary<string, XmlAttribute> mAttributes = new Dictionary<string, XmlAttribute>();
+        //private IDictionary<string, XmlAttribute> mAttributes = new Dictionary<string, XmlAttribute>();
+
+
 
         /// <summary>
         /// Gets the local localName of <c>this</c>
@@ -176,17 +183,122 @@ namespace urakawa.property.xml
                 }
                 return mLocalName;
             }
-            set { SetQName(value, NamespaceUri); }
+            //set { SetQName(value, NamespaceUri); }
         }
 
         /// <summary>
         /// Gets the namespace uri of <c>this</c>
         /// </summary>
         /// <returns>The namespace uri</returns>
-        public string NamespaceUri
+        private string NamespaceUri
         {
             get { return mNamespaceUri; }
-            set { SetQName(LocalName, value); }
+            //set { SetQName(LocalName, value); }
+        }
+
+        private bool m_QNameIsInvalidated;
+        public bool QNameIsInvalidated
+        {
+            get { return m_QNameIsInvalidated; }
+            set { m_QNameIsInvalidated = value; }
+        }
+
+        public static void SplitLocalName(string name, out string prefix, out string realLocalName)
+        {
+            prefix = null;
+            realLocalName = null;
+
+            if (name != null && name.IndexOf(':') >= 0) //mLocalName.Contains(":"))
+            {
+                string[] arr = name.Split(':');
+                prefix = arr[0];
+                realLocalName = arr[1];
+            }
+        }
+
+        public string GetNamespaceUri(string prefix)
+        {
+            string NSPrefix;
+            string localName;
+            SplitLocalName(LocalName, out NSPrefix, out localName);
+
+            DebugFix.Assert(NSPrefix == null);
+
+            if (!string.IsNullOrEmpty(NamespaceUri)
+                &&
+                (
+                string.IsNullOrEmpty(prefix)
+                ||
+                (!string.IsNullOrEmpty(NSPrefix) && prefix.Equals(NSPrefix))
+                )
+                )
+            {
+                DebugFix.Assert(string.IsNullOrEmpty(prefix));
+
+                return NamespaceUri;
+            }
+
+
+            foreach (XmlAttribute xmlAttr in Attributes.ContentsAs_Enumerable)
+            {
+                string attrNSPrefix;
+                string attrLocalName;
+                SplitLocalName(xmlAttr.LocalName, out attrNSPrefix, out attrLocalName);
+
+                if (string.IsNullOrEmpty(prefix))
+                {
+                    if (string.IsNullOrEmpty(attrNSPrefix) && xmlAttr.LocalName.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
+                    {
+                        // xmlns="URI"
+                        return xmlAttr.Value;
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(attrNSPrefix) && attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
+                    {
+                        if (prefix.Equals(attrLocalName))
+                        {
+                            // xmlns:prefix="URI"
+                            return xmlAttr.Value;
+                        }
+                    }
+                }
+            }
+
+            if (TreeNodeOwner == null)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                return null;
+            }
+
+            TreeNode node = TreeNodeOwner.Parent;
+            while (node != null)
+            {
+                string ns = node.GetXmlNamespaceUri(prefix);
+                if (!string.IsNullOrEmpty(ns))
+                {
+                    return ns;
+                }
+                node = node.Parent;
+            }
+
+            if (string.IsNullOrEmpty(prefix))
+            {
+                return Presentation.PropertyFactory.DefaultXmlNamespaceUri;
+            }
+
+#if DEBUG
+            Debugger.Break();
+#endif //DEBUG
+            return null;
+        }
+
+        public string GetNamespaceUri()
+        {
+            return GetNamespaceUri(null);
         }
 
         /// <summary>
@@ -214,13 +326,17 @@ namespace urakawa.property.xml
                 throw new exception.MethodParameterIsNullException("The namespace uri must not be null");
             }
 
-            if (newLocalName.IndexOf(':') >= 0) //newLocalName.Contains(":"))
+            m_QNameIsInvalidated = true;
+
+            string prefix;
+            string localName;
+            SplitLocalName(newLocalName, out prefix, out localName);
+            if (!string.IsNullOrEmpty(prefix))
             {
 #if DEBUG
                 Debugger.Break();
 #endif //DEBUG
-                //prefix = mLocalName.Split(':')[0];
-                newLocalName = newLocalName.Split(':')[1];
+                newLocalName = localName;
             }
 
             string prevLN = mLocalName;
@@ -234,9 +350,9 @@ namespace urakawa.property.xml
         /// Gets a list of the <see cref="XmlAttribute"/>s of <c>this</c>
         /// </summary>
         /// <returns>The list</returns>
-        public List<XmlAttribute> Attributes
+        public ObjectListProvider<XmlAttribute> Attributes
         {
-            get { return new List<XmlAttribute>(mAttributes.Values); }
+            get { return mAttributes; }
         }
 
         /// <summary>
@@ -253,11 +369,14 @@ namespace urakawa.property.xml
             {
                 throw new exception.MethodParameterIsNullException("Can not set a null xml attribute");
             }
-            string key = String.Format("{1}:{0}", newAttribute.LocalName, newAttribute.NamespaceUri);
+            //string key = String.Format("{1}:{0}", newAttribute.LocalName, newAttribute.NamespaceUri);
+
             string prevValue = null;
 
-            XmlAttribute obj;
-            mAttributes.TryGetValue(key, out obj);
+            XmlAttribute obj = GetAttribute(newAttribute.LocalName, newAttribute.NamespaceUri);
+
+            //XmlAttribute obj;
+            //mAttributes.TryGetValue(key, out obj);
 
             if (obj != null) //mAttributes.ContainsKey(key))
             {
@@ -265,53 +384,14 @@ namespace urakawa.property.xml
                 prevValue = prevAttr.Value;
                 RemoveAttribute(prevAttr);
             }
-            mAttributes.Add(key, newAttribute);
+
+            //mAttributes.Add(key, newAttribute);
+            mAttributes.Insert(mAttributes.Count, newAttribute);
+
             newAttribute.Parent = this;
             newAttribute.ValueChanged += new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
             NotifyXmlAttributeSet(this, newAttribute.LocalName, newAttribute.NamespaceUri, newAttribute.Value, prevValue);
             return (prevValue != null);
-        }
-
-        /// <summary>
-        /// Removes an <see cref="XmlAttribute"/> by QName
-        /// </summary>
-        /// <param name="localName">The localName part of the QName of the <see cref="XmlAttribute"/> to remove</param>
-        /// <param name="namespaceUri">The namespaceUri part of the QName of the <see cref="XmlAttribute"/> to remove</param>
-        /// <returns>The removes <see cref="XmlAttribute"/></returns>
-        /// <exception cref="exception.XmlAttributeDoesNotExistsException">
-        /// Thrown when the <see cref="XmlProperty"/> does not have an event with the given QName</exception>
-        public XmlAttribute RemoveAttribute(string localName, string namespaceUri)
-        {
-            XmlAttribute attrToRemove = GetAttribute(localName, namespaceUri);
-            if (attrToRemove == null)
-            {
-                throw new exception.XmlAttributeDoesNotExistsException(String.Format(
-                                                                           "The XmlProperty does not have an attribute with QName {1}:{0}",
-                                                                           localName, namespaceUri));
-            }
-            RemoveAttribute(attrToRemove);
-            return attrToRemove;
-        }
-
-        /// <summary>
-        /// Removes a given <see cref="XmlAttribute"/>
-        /// </summary>
-        /// <param name="attrToRemove">The <see cref="XmlAttribute"/> to remove</param>
-        /// <exception cref="exception.XmlAttributeDoesNotBelongException">
-        /// Thrown when the given <see cref="XmlAttribute"/> instance does not belong to the <see cref="XmlProperty"/>
-        /// </exception>
-        public void RemoveAttribute(XmlAttribute attrToRemove)
-        {
-            string key = String.Format("{1}:{0}", attrToRemove.LocalName, attrToRemove.NamespaceUri);
-            if (!Object.ReferenceEquals(mAttributes[key], attrToRemove))
-            {
-                throw new exception.XmlAttributeDoesNotBelongException(
-                    "The given XmlAttribute does not belong to the XmlProperty");
-            }
-            attrToRemove.ValueChanged -= new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
-            mAttributes.Remove(key);
-            attrToRemove.Parent = null;
-            NotifyXmlAttributeSet(this, attrToRemove.LocalName, attrToRemove.NamespaceUri, null, attrToRemove.Value);
         }
 
         /// <summary>
@@ -342,6 +422,49 @@ namespace urakawa.property.xml
         }
 
         /// <summary>
+        /// Removes an <see cref="XmlAttribute"/> by QName
+        /// </summary>
+        /// <param name="localName">The localName part of the QName of the <see cref="XmlAttribute"/> to remove</param>
+        /// <param name="namespaceUri">The namespaceUri part of the QName of the <see cref="XmlAttribute"/> to remove</param>
+        /// <returns>The removes <see cref="XmlAttribute"/></returns>
+        /// <exception cref="exception.XmlAttributeDoesNotExistsException">
+        /// Thrown when the <see cref="XmlProperty"/> does not have an event with the given QName</exception>
+        public XmlAttribute RemoveAttribute(string localName, string namespaceUri)
+        {
+            XmlAttribute attrToRemove = GetAttribute(localName, namespaceUri);
+            if (attrToRemove == null)
+            {
+                throw new exception.XmlAttributeDoesNotExistsException(String.Format(
+                                                                           "The XmlProperty does not have an attribute with QName {1}:{0}",
+                                                                           localName, namespaceUri));
+            }
+            //string key = String.Format("{1}:{0}", attrToRemove.LocalName, attrToRemove.NamespaceUri);
+            //if (!Object.ReferenceEquals(attrToRemove, attrToRemove))
+            //{
+            //    throw new exception.XmlAttributeDoesNotBelongException(
+            //        "The given XmlAttribute does not belong to the XmlProperty");
+            //}
+            attrToRemove.ValueChanged -= new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
+            mAttributes.Remove(attrToRemove);
+            attrToRemove.Parent = null;
+            NotifyXmlAttributeSet(this, attrToRemove.LocalName, attrToRemove.NamespaceUri, null, attrToRemove.Value);
+
+            return attrToRemove;
+        }
+
+        /// <summary>
+        /// Removes a given <see cref="XmlAttribute"/>
+        /// </summary>
+        /// <param name="attrToRemove">The <see cref="XmlAttribute"/> to remove</param>
+        /// <exception cref="exception.XmlAttributeDoesNotBelongException">
+        /// Thrown when the given <see cref="XmlAttribute"/> instance does not belong to the <see cref="XmlProperty"/>
+        /// </exception>
+        public void RemoveAttribute(XmlAttribute attrToRemove)
+        {
+            RemoveAttribute(attrToRemove.LocalName, attrToRemove.NamespaceUri);
+        }
+
+        /// <summary>
         /// Gets the <see cref="XmlAttribute"/> with a given QName
         /// </summary>
         /// <param name="localName">The local localName part of the given QName</param>
@@ -349,11 +472,35 @@ namespace urakawa.property.xml
         /// <returns>The <see cref="XmlAttribute"/> if found, otherwise <c>null</c></returns>
         public XmlAttribute GetAttribute(string localName, string namespaceUri)
         {
-            string key = String.Format("{1}:{0}", localName, namespaceUri);
+            string nsUri = GetNamespaceUri();
 
-            XmlAttribute obj;
-            mAttributes.TryGetValue(key, out obj);
-            return obj;
+            foreach (XmlAttribute attr in Attributes.ContentsAs_Enumerable)
+            {
+                if (attr.LocalName == localName)
+                {
+                    if (string.IsNullOrEmpty(namespaceUri))
+                    {
+                        if (attr.GetNamespaceUri() == nsUri)
+                        {
+                            return attr;
+                        }
+                    }
+                    else
+                    {
+                        if (attr.GetNamespaceUri() == namespaceUri)
+                        {
+                            return attr;
+                        }
+                    }
+                }
+            }
+            return null;
+
+            //string key = String.Format("{1}:{0}", localName, namespaceUri);
+
+            //XmlAttribute obj;
+            //mAttributes.TryGetValue(key, out obj);
+            //return obj;
 
             //if (mAttributes.ContainsKey(key))
             //{
@@ -363,7 +510,7 @@ namespace urakawa.property.xml
         }
         public XmlAttribute GetAttribute(string localName)
         {
-            return GetAttribute(localName, "");
+            return GetAttribute(localName, null);
         }
 
         /// <summary>
@@ -382,9 +529,14 @@ namespace urakawa.property.xml
         protected override Property CopyProtected()
         {
             XmlProperty xmlProp = (XmlProperty)base.CopyProtected();
+            string nsUri = NamespaceUri;
+            if (TreeNodeOwner != null)
+            {
+                nsUri = TreeNodeOwner.GetXmlNamespaceUri();
+            }
 
-            xmlProp.SetQName(LocalName, NamespaceUri);
-            foreach (XmlAttribute attr in Attributes)
+            xmlProp.SetQName(LocalName, nsUri);
+            foreach (XmlAttribute attr in Attributes.ContentsAs_Enumerable)
             {
                 xmlProp.SetAttribute(attr.Copy());
             }
@@ -415,8 +567,14 @@ namespace urakawa.property.xml
                                                                          "The property factory can not create an XmlProperty matching QName {0}:{1}",
                                                                          XukNamespaceUri, XukLocalName));
             }
-            xmlProp.SetQName(LocalName, NamespaceUri);
-            foreach (XmlAttribute attr in Attributes)
+            string nsUri = NamespaceUri;
+            if (TreeNodeOwner != null)
+            {
+                nsUri = TreeNodeOwner.GetXmlNamespaceUri();
+            }
+
+            xmlProp.SetQName(LocalName, nsUri);
+            foreach (XmlAttribute attr in Attributes.ContentsAs_Enumerable)
             {
                 xmlProp.SetAttribute(attr.Copy());
             }
@@ -432,7 +590,7 @@ namespace urakawa.property.xml
         {
             mLocalName = null;
             mNamespaceUri = "";
-            foreach (XmlAttribute attr in this.Attributes)
+            foreach (XmlAttribute attr in this.Attributes.ContentsAs_Enumerable)
             {
                 RemoveAttribute(attr);
             }
@@ -538,8 +696,10 @@ namespace urakawa.property.xml
             base.XukOutAttributes(destination, baseUri);
 
             destination.WriteAttributeString(XukStrings.LocalName, LocalName);
-            if (!String.IsNullOrEmpty(NamespaceUri)) destination.WriteAttributeString(XukStrings.NamespaceUri, NamespaceUri);
-
+            if (!String.IsNullOrEmpty(NamespaceUri))
+            {
+                destination.WriteAttributeString(XukStrings.NamespaceUri, NamespaceUri);
+            }
         }
 
         /// <summary>
@@ -555,14 +715,14 @@ namespace urakawa.property.xml
         {
             base.XukOutChildren(destination, baseUri, handler);
 
-            List<XmlAttribute> attrs = Attributes;
+            ObjectListProvider<XmlAttribute> attrs = Attributes;
             if (attrs.Count > 0)
             {
                 if (IsPrettyFormat())
                 {
                     destination.WriteStartElement(XukStrings.XmlAttributes, XukAble.XUK_NS);
                 }
-                foreach (XmlAttribute a in attrs)
+                foreach (XmlAttribute a in attrs.ContentsAs_Enumerable)
                 {
                     a.XukOut(destination, baseUri, handler);
                 }
@@ -593,19 +753,34 @@ namespace urakawa.property.xml
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            if (NamespaceUri != otherz.NamespaceUri)
+
+
+            string nsUri = NamespaceUri;
+            if (TreeNodeOwner != null)
+            {
+                nsUri = TreeNodeOwner.GetXmlNamespaceUri();
+            }
+
+            string nsUriOther = otherz.NamespaceUri;
+            if (otherz.TreeNodeOwner != null)
+            {
+                nsUriOther = otherz.TreeNodeOwner.GetXmlNamespaceUri();
+            }
+
+
+            if (nsUri != nsUriOther)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            List<XmlAttribute> thisAttrs = Attributes;
-            List<XmlAttribute> otherAttrs = otherz.Attributes;
+            ObjectListProvider<XmlAttribute> thisAttrs = Attributes;
+            ObjectListProvider<XmlAttribute> otherAttrs = otherz.Attributes;
             if (thisAttrs.Count != otherAttrs.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
                 return false;
             }
-            foreach (XmlAttribute thisAttr in thisAttrs)
+            foreach (XmlAttribute thisAttr in thisAttrs.ContentsAs_Enumerable)
             {
                 XmlAttribute otherAttr = otherz.GetAttribute(thisAttr.LocalName, thisAttr.NamespaceUri);
                 if (otherAttr == null)
@@ -631,9 +806,19 @@ namespace urakawa.property.xml
         public override string ToString()
         {
             string displayName = mLocalName ?? "null";
-            if (NamespaceUri != "") displayName += String.Format(" xmlns='{0}'", NamespaceUri.Replace("'", "''"));
+
+            string nsUri = NamespaceUri;
+            if (TreeNodeOwner != null)
+            {
+                nsUri = TreeNodeOwner.GetXmlNamespaceUri();
+            }
+
+            if (!string.IsNullOrEmpty(nsUri))
+            {
+                displayName += String.Format(" xmlns='{0}'", NamespaceUri.Replace("'", "''"));
+            }
             string attrs = " ";
-            foreach (XmlAttribute attr in Attributes)
+            foreach (XmlAttribute attr in Attributes.ContentsAs_Enumerable)
             {
                 string attrDisplayName;
                 try

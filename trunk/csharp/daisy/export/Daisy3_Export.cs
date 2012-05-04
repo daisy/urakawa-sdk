@@ -236,8 +236,13 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
 
         protected virtual bool doesTreeNodeTriggerNewSmil(TreeNode node)
         {
-            QualifiedName qName = node.GetXmlElementQName();
-            return qName != null && (qName.LocalName.StartsWith("level") || qName.LocalName == "section");
+            if (node.HasXmlProperty)
+            {
+                string localName = node.GetXmlElementLocalName();
+                return localName.StartsWith("level")
+                    || localName == "section";
+            }
+            return false;
         }
 
         protected ExternalAudioMedia GetExternalAudioMedia(TreeNode node)

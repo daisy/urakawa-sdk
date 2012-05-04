@@ -456,7 +456,7 @@ namespace urakawa.core
                     next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, next);
                     //m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode
 
-                    bool isXmlElement = next.GetXmlElementQName() != null;
+                    bool isXmlElement = next.HasXmlProperty;
                     //bool isSignificantTextOnly = !isXmlElement && !TreeNode.TextOnlyContainsPunctuation(next.GetText());
                     if (isXmlElement)
                     {
@@ -537,7 +537,7 @@ namespace urakawa.core
                     return rootBoundary;
                 }
 
-                while (proposed != null && (proposed.GetXmlElementQName() == null
+                while (proposed != null && (!proposed.HasXmlProperty
                     || TextOnlyContainsPunctuation(proposed.GetText())
                     ))
                 {
@@ -614,7 +614,7 @@ namespace urakawa.core
                 //{
                 //    //
                 //}
-                if (child.GetXmlElementQName() != null)
+                if (child.HasXmlProperty)
                 {
                     continue;
                 }
@@ -835,24 +835,24 @@ namespace urakawa.core
 
             if (ACCEPT_IMG_ALT_TEXT)
             {
-                QualifiedName qName = GetXmlElementQName();
-
-                if (qName != null &&
-                    (
-                    qName.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
-                    || qName.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
-                    )
-                    )
+                if (HasXmlProperty)
                 {
-                    XmlAttribute xmlAttr = GetXmlProperty().GetAttribute("alt");
-                    if (xmlAttr != null)
-                    {
-                        if (!String.IsNullOrEmpty(xmlAttr.Value))
-                        {
-                            return new StringChunk(xmlAttr, GetTextDirectionality());
-                        }
+                    string localName = GetXmlElementLocalName();
 
-                        return null;
+                    if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                            || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                        )
+                    {
+                        XmlAttribute xmlAttr = GetXmlProperty().GetAttribute("alt");
+                        if (xmlAttr != null)
+                        {
+                            if (!String.IsNullOrEmpty(xmlAttr.Value))
+                            {
+                                return new StringChunk(xmlAttr, GetTextDirectionality());
+                            }
+
+                            return null;
+                        }
                     }
                 }
             }
