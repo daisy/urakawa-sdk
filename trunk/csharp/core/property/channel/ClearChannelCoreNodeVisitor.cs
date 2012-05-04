@@ -47,7 +47,7 @@ namespace urakawa.property.channel
         {
             bool foundMedia = false;
 
-            ChannelsProperty chProp = node.GetProperty<ChannelsProperty>();
+            ChannelsProperty chProp = node.GetChannelsProperty();
             if (chProp != null)
             {
                 urakawa.media.Media m = chProp.GetMedia(ChannelToClear);

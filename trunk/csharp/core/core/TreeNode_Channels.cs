@@ -7,7 +7,7 @@ namespace urakawa.core
     {
         public Media GetMediaInChannel<T>() where T : Channel
         {
-            ChannelsProperty chProp = GetProperty<ChannelsProperty>();
+            ChannelsProperty chProp = GetChannelsProperty();
             if (chProp != null)
             {
                 T channel = null;
@@ -36,7 +36,7 @@ namespace urakawa.core
 
         public bool HasChannelsProperty
         {
-            get { return GetProperty<ChannelsProperty>() != null; }
+            get { return GetChannelsProperty() != null; }
         }
 
         public ChannelsProperty GetOrCreateChannelsProperty()

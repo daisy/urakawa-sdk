@@ -75,7 +75,7 @@ namespace urakawa.daisy.export.visitor
 
             if (node.HasProperties(typeof(ChannelsProperty)))
             {
-                ChannelsProperty chProp = node.GetProperty<ChannelsProperty>();
+                ChannelsProperty chProp = node.GetChannelsProperty();
 
                 ManagedAudioMedia mam = chProp.GetMedia(SourceChannel) as ManagedAudioMedia;
                 if (mam != null)

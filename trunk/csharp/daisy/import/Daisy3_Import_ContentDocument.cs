@@ -294,7 +294,7 @@ namespace urakawa.daisy.import
                         if (xmlNode.NamespaceURI != nsUri) //presentation.PropertyFactory.DefaultXmlNamespaceUri)
                         {
                             nsUri = xmlNode.NamespaceURI;
-                            xmlProp.SetQName(xmlNode.LocalName, nsUri);
+                            xmlProp.SetQName(xmlNode.LocalName, nsUri == null ? "" : nsUri);
 
 #if DEBUG
                             string uriCheck = xmlProp.GetNamespaceUri();

@@ -122,7 +122,7 @@ namespace urakawa.core
 
         public bool HasXmlProperty
         {
-            get { return GetProperty<XmlProperty>() != null; }
+            get { return GetXmlProperty() != null; }
         }
         public XmlProperty GetOrCreateXmlProperty()
         {
@@ -159,7 +159,7 @@ namespace urakawa.core
         private QualifiedName m_QualifiedName = null;
         private QualifiedName GetXmlElementQName()
         {
-            XmlProperty xmlProp = GetProperty<XmlProperty>();
+            XmlProperty xmlProp = GetXmlProperty();
             if (xmlProp != null)
             {
                 //TODO QualifiedName fields are unmutable,
@@ -188,13 +188,16 @@ namespace urakawa.core
         ///<returns>null of there is no ID attribute</returns>
         public string GetXmlElementId()
         {
-            XmlProperty xmlProp = GetProperty<XmlProperty>();
+            XmlProperty xmlProp = GetXmlProperty();
             if (xmlProp != null)
             {
                 XmlAttribute idAttr = xmlProp.GetAttribute("id");
                 if (idAttr == null)
                 {
                     idAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlId, XmlReaderWriterHelper.NS_URL_XML);
+
+                    // "id" with no NS should have picked-up "xml:id" in XML NS.
+                    DebugFix.Assert(idAttr == null);
                 }
                 if (idAttr != null)
                 {
@@ -206,13 +209,16 @@ namespace urakawa.core
 
         public string GetXmlElementLang()
         {
-            XmlProperty xmlProp = GetProperty<XmlProperty>();
+            XmlProperty xmlProp = GetXmlProperty();
             if (xmlProp != null)
             {
                 XmlAttribute langAttr = xmlProp.GetAttribute("lang");
                 if (langAttr == null)
                 {
                     langAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML);
+
+                    // "lang" with no NS should have picked-up "xml:lang" in XML NS.
+                    DebugFix.Assert(langAttr == null);
                 }
                 if (langAttr != null)
                 {
@@ -244,7 +250,7 @@ namespace urakawa.core
                 return null;
             }
 
-            XmlProperty xmlProp = GetProperty<XmlProperty>();
+            XmlProperty xmlProp = GetXmlProperty();
             return xmlProp.GetNamespaceUri(prefix);
         }
 
@@ -262,9 +268,11 @@ namespace urakawa.core
                 string localName;
                 XmlProperty.SplitLocalName(name, out NSPrefix, out localName);
 
+                //DebugFix.Assert(string.IsNullOrEmpty(NSPrefix));
+
                 string nsUri = GetXmlNamespaceUri(NSPrefix);
 
-                XmlProperty xmlProp = GetProperty<XmlProperty>();
+                XmlProperty xmlProp = GetXmlProperty();
 
                 if (string.IsNullOrEmpty(NSPrefix))
                 {
@@ -282,6 +290,9 @@ namespace urakawa.core
                 }
                 else
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
                     if (!string.IsNullOrEmpty(nsUri))
                     {
                         xmlWriter.WriteStartElement(NSPrefix, localName, nsUri);
@@ -299,14 +310,12 @@ namespace urakawa.core
                 {
                     string nsUriAttr = xmlAttr.GetNamespaceUri();
 
-                    string attrName = xmlAttr.LocalName;
-                    string attrNSPrefix;
-                    string attrLocalName;
-                    XmlProperty.SplitLocalName(attrName, out attrNSPrefix, out attrLocalName);
+                    string attrNSPrefix = xmlAttr.Prefix;
+                    string nameWithoutPrefix = xmlAttr.PrefixedLocalName != null ? xmlAttr.PrefixedLocalName : xmlAttr.LocalName;
 
                     if (string.IsNullOrEmpty(attrNSPrefix))
                     {
-                        if (attrName.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
+                        if (nameWithoutPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
                         {
                             DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(nsUriAttr));
 
@@ -317,11 +326,11 @@ namespace urakawa.core
 #if DEBUG
                             Debugger.Break();
 #endif //DEBUG
-                            xmlWriter.WriteAttributeString(attrName, nsUriAttr, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(nameWithoutPrefix, nsUriAttr, xmlAttr.Value);
                         }
                         else
                         {
-                            xmlWriter.WriteAttributeString(attrName, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(nameWithoutPrefix, xmlAttr.Value);
                         }
                     }
                     else
@@ -329,13 +338,13 @@ namespace urakawa.core
                         if (attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
                         {
                             DebugFix.Assert(nsUriAttr == XmlReaderWriterHelper.NS_URL_XMLNS);
-                            xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XMLNS, attrLocalName, XmlReaderWriterHelper.NS_URL_XMLNS,
+                            xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XMLNS, nameWithoutPrefix, XmlReaderWriterHelper.NS_URL_XMLNS,
                                                            xmlAttr.Value);
                         }
                         else if (attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XML))
                         {
                             DebugFix.Assert(nsUriAttr == XmlReaderWriterHelper.NS_URL_XML);
-                            xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XML, attrLocalName, XmlReaderWriterHelper.NS_URL_XML,
+                            xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XML, nameWithoutPrefix, XmlReaderWriterHelper.NS_URL_XML,
                                                            xmlAttr.Value);
                         }
                         else if (!string.IsNullOrEmpty(nsUriAttr))
@@ -346,21 +355,21 @@ namespace urakawa.core
                             string uriCheck = xmlProp.GetNamespaceUri(attrNSPrefix);
                             DebugFix.Assert(nsUriAttr == uriCheck);
 #endif //DEBUG
-                            xmlWriter.WriteAttributeString(attrNSPrefix, attrLocalName, nsUriAttr, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(attrNSPrefix, nameWithoutPrefix, nsUriAttr, xmlAttr.Value);
                         }
                         else if (!string.IsNullOrEmpty(nsUri))
                         {
 #if DEBUG
                             Debugger.Break();
 #endif //DEBUG
-                            xmlWriter.WriteAttributeString(attrNSPrefix, attrLocalName, nsUri, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(attrNSPrefix, nameWithoutPrefix, nsUri, xmlAttr.Value);
                         }
                         else
                         {
 #if DEBUG
                             Debugger.Break();
 #endif //DEBUG
-                            xmlWriter.WriteAttributeString(attrLocalName, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(nameWithoutPrefix, xmlAttr.Value);
                         }
                     }
                 }
