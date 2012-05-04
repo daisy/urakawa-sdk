@@ -472,7 +472,7 @@ namespace urakawa.daisy.import
             if (media != null)
             {
                 ChannelsProperty chProp =
-                    treeNode.GetProperty<ChannelsProperty>();
+                    treeNode.GetChannelsProperty();
                 if (chProp == null)
                 {
                     chProp =

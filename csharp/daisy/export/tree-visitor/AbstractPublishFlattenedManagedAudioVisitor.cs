@@ -403,7 +403,7 @@ namespace urakawa.daisy.export.visitor
             extAudioMedia.ClipBegin = new Time(timeBegin);
             extAudioMedia.ClipEnd = new Time(timeEnd);
 
-            ChannelsProperty chProp = node.GetProperty<ChannelsProperty>();
+            ChannelsProperty chProp = node.GetChannelsProperty();
             if (chProp.GetMedia(DestinationChannel) != null)
             {
                 chProp.SetMedia(DestinationChannel, null);

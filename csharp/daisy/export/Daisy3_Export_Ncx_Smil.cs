@@ -771,9 +771,12 @@ namespace urakawa.daisy.export
 
                 if (localName == "sidebar" || localName == "prodnote")
                 {
-                    foreach (urakawa.property.xml.XmlAttribute attr in node.GetXmlProperty().Attributes.ContentsAs_Enumerable)
+                    foreach (urakawa.property.xml.XmlAttribute xmlAttr in node.GetXmlProperty().Attributes.ContentsAs_Enumerable)
                     {
-                        if (attr.LocalName == "render" && attr.Value == "optional")
+                        string prefix = xmlAttr.Prefix;
+                        string nameWithoutPrefix = xmlAttr.PrefixedLocalName != null ? xmlAttr.PrefixedLocalName : xmlAttr.LocalName;
+
+                        if (nameWithoutPrefix == "render" && xmlAttr.Value == "optional")
                         {
                             return true;
                         }
@@ -823,7 +826,7 @@ namespace urakawa.daisy.export
 
             // first create navPoints
             XmlNode navPointNode = ncxDocument.CreateElement(null, "navPoint", navMapNode.NamespaceURI);
-            if (currentHeadingTreeNode != null) XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navPointNode, "class", currentHeadingTreeNode.GetProperty<urakawa.property.xml.XmlProperty>().LocalName);
+            if (currentHeadingTreeNode != null) XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navPointNode, "class", currentHeadingTreeNode.GetXmlProperty().LocalName);
             XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navPointNode, "id", GetNextID(ID_NcxPrefix));
             XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navPointNode, "playOrder", "");
 
@@ -1118,16 +1121,16 @@ namespace urakawa.daisy.export
 
         private urakawa.core.TreeNode GetReferedTreeNode(urakawa.core.TreeNode node)
         {
-            string noteRefID = node.GetProperty<property.xml.XmlProperty>().GetAttribute("idref").Value;
+            string noteRefID = node.GetXmlProperty().GetAttribute("idref").Value;
 
             //System.Windows.Forms.MessageBox.Show ( "Attributes xml " + noteRefID );
 
             noteRefID = noteRefID.Replace("#", "");
             foreach (urakawa.core.TreeNode n in m_NotesNodeList)
             {
-                urakawa.property.xml.XmlAttribute attr = n.GetProperty<property.xml.XmlProperty>().GetAttribute("id");
+                string id = n.GetXmlElementId();
 
-                if (attr != null && attr.Value == noteRefID)
+                if (!String.IsNullOrEmpty(id) && id == noteRefID)
                 {
 
                     return n;

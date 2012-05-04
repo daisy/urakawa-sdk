@@ -160,7 +160,7 @@ namespace urakawa.daisy.export
                             m_NotesNodeList.Add(n);
                         }
 
-                        property.xml.XmlProperty xmlProp = n.GetProperty<property.xml.XmlProperty>();
+                        property.xml.XmlProperty xmlProp = n.GetXmlProperty();
 
                         if (xmlProp == null)
                         {
@@ -200,77 +200,115 @@ namespace urakawa.daisy.export
                         //string elementName = name.Contains(":") ? name.Split(':')[1] : name;
                         //currentXmlNode = DTBookDocument.CreateElement(prefix, elementName, bookNode.NamespaceURI);
 
-                        if (xmlProp.LocalName == "book" || xmlProp.LocalName == "body")
+                        bool notBookRoot = xmlProp.LocalName != "book" && xmlProp.LocalName != "body";
+
+                        if (!notBookRoot)
                         {
                             currentXmlNode = bookNode;
                         }
                         else
                         {
+                            XmlNode xmlNodeParent = m_TreeNode_XmlNodeMap[n.Parent];
+
+                            // add current node to its parent
+                            xmlNodeParent.AppendChild(currentXmlNode);
+
+                            // add nodes to dictionary 
+                            m_TreeNode_XmlNodeMap.Add(n, currentXmlNode);
+
+
                             string nsUri = n.GetXmlNamespaceUri();
 
-                            currentXmlNode = DTBookDocument.CreateElement(null,
-                                xmlProp.LocalName, nsUri);
+                            string prefix = xmlNodeParent.GetPrefixOfNamespace(nsUri);
+                            if (prefix == null)
+                            {
+                                foreach (property.xml.XmlAttribute xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
+                                {
+                                    string prefixAttr = xmlAttr.Prefix;
+                                    string nameWithoutPrefix = xmlAttr.PrefixedLocalName != null ? xmlAttr.PrefixedLocalName : xmlAttr.LocalName;
+
+                                    if (prefixAttr == XmlReaderWriterHelper.NS_PREFIX_XMLNS
+                                        && xmlAttr.Value == nsUri)
+                                    {
+                                        prefix = nameWithoutPrefix;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            currentXmlNode = DTBookDocument.CreateElement(prefix, xmlProp.LocalName, nsUri);
                         }
 
                         // add attributes
-                        if (xmlProp.Attributes.Count > 0)
+                        for (int i = 0; i < xmlProp.Attributes.Count; i++)
                         {
-                            for (int i = 0; i < xmlProp.Attributes.Count; i++)
+                            property.xml.XmlAttribute xmlAttr = xmlProp.Attributes.Get(i);
+
+                            string prefix = xmlAttr.Prefix;
+                            string nameWithoutPrefix = xmlAttr.PrefixedLocalName != null ? xmlAttr.PrefixedLocalName : xmlAttr.LocalName;
+
+                            if (!string.IsNullOrEmpty(prefix))
                             {
-                                property.xml.XmlAttribute xmlAttr = xmlProp.Attributes.Get(i);
+                                string nsUriPrefix = xmlProp.GetNamespaceUri(prefix);
+                                if (string.IsNullOrEmpty(nsUriPrefix))
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif //DEBUG
+                                    nsUriPrefix = currentXmlNode.GetNamespaceOfPrefix(prefix);
+                                }
 
-                                string prefix = xmlAttr.Prefix;
-                                string nameWithoutPrefix = xmlAttr.PrefixedLocalName;
-
-                                if (!string.IsNullOrEmpty(prefix)
-                                    && string.IsNullOrEmpty(currentXmlNode.Prefix)
+                                if (!string.IsNullOrEmpty(nsUriPrefix)
                                     && string.IsNullOrEmpty(DTBookDocument.DocumentElement.GetNamespaceOfPrefix(prefix))
                                     && string.IsNullOrEmpty(bookNode.GetNamespaceOfPrefix(prefix)))
                                 {
                                     XmlDocumentHelper.CreateAppendXmlAttribute(
                                         DTBookDocument,
-                                        DTBookDocument.DocumentElement,
+                                        bookNode,
                                         XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + prefix,
-                                        currentXmlNode.GetNamespaceOfPrefix(prefix)
+                                        nsUriPrefix,
+                                        XmlReaderWriterHelper.NS_URL_XMLNS
                                         );
                                 }
+                            }
 
-                                //todo: check ID attribute, normalize with fresh new list of IDs
-                                // (warning: be careful maintaining ID REFS, such as idref attributes for annotation/annoref and prodnote/noteref
-                                // (be careful because idref contain URIs with hash character),
-                                // and also the special imgref and headers attributes which contain space-separated list of IDs, not URIs)
+                            //todo: check ID attribute, normalize with fresh new list of IDs
+                            // (warning: be careful maintaining ID REFS, such as idref attributes for annotation/annoref and prodnote/noteref
+                            // (be careful because idref contain URIs with hash character),
+                            // and also the special imgref and headers attributes which contain space-separated list of IDs, not URIs)
 
-                                if (xmlAttr.LocalName == "id" || xmlAttr.LocalName == XmlReaderWriterHelper.XmlId)
+                            if (nameWithoutPrefix == "id") //  xmlAttr.LocalName == "id" || xmlAttr.LocalName == XmlReaderWriterHelper.XmlId)
+                            {
+                                string id_New = GetNextID(ID_DTBPrefix);
+                                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument,
+                                    currentXmlNode,
+                                    "id", id_New);
+
+                                if (!old_New_IDMap.ContainsKey(xmlAttr.Value))
                                 {
-                                    string id_New = GetNextID(ID_DTBPrefix);
-                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument,
-                                        currentXmlNode,
-                                        "id", id_New);
-
-                                    if (!old_New_IDMap.ContainsKey(xmlAttr.Value))
-                                    {
-                                        old_New_IDMap.Add(xmlAttr.Value, id_New);
-                                    }
-                                    else
-                                    {
-                                        System.Diagnostics.Debug.Fail("Duplicate ID found in original DTBook document", "Original DTBook document has duplicate ID: " + xmlProp.Attributes.Get(i).Value);
-                                    }
+                                    old_New_IDMap.Add(xmlAttr.Value, id_New);
                                 }
                                 else
                                 {
-                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument,
-                                    currentXmlNode,
-                                    xmlAttr.LocalName,
-                                    xmlAttr.Value,
-                                    xmlAttr.GetNamespaceUri());
+                                    System.Diagnostics.Debug.Fail("Duplicate ID found in original DTBook document", "Original DTBook document has duplicate ID: " + xmlProp.Attributes.Get(i).Value);
                                 }
-                            } // for loop ends
-                        } // attribute nodes created
+                            }
+                            else
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument,
+                                currentXmlNode,
+                                xmlAttr.LocalName,
+                                xmlAttr.Value,
+                                xmlAttr.GetNamespaceUri());
+                            }
+                        } // for loop ends
 
-                        if (xmlProp.LocalName == "book" || xmlProp.LocalName == "body")
+                        if (!notBookRoot)
                         {
                             return true;
                         }
+
+
                         if (xmlProp.LocalName == "imggroup")
                         {
                             m_TempImageId = new List<string>(1);
@@ -317,12 +355,6 @@ namespace urakawa.daisy.export
 
                             DebugFix.Assert(n.Children.Count == 0);
                         }
-
-                        // add current node to its parent
-                        m_TreeNode_XmlNodeMap[n.Parent].AppendChild(currentXmlNode);
-
-                        // add nodes to dictionary 
-                        m_TreeNode_XmlNodeMap.Add(n, currentXmlNode);
 
                         // if current xmlnode is referencing node, add its referencing attribute to referencingAttributesList
                         AddReferencingNodeToReferencedAttributesList(currentXmlNode, referencingAttributesList);
@@ -405,7 +437,7 @@ namespace urakawa.daisy.export
                     },
                     delegate(urakawa.core.TreeNode n)
                     {
-                        property.xml.XmlProperty xmlProp = n.GetProperty<property.xml.XmlProperty>();
+                        property.xml.XmlProperty xmlProp = n.GetXmlProperty();
                         //QualifiedName qName = n.GetXmlElementQName();
                         if (xmlProp != null && xmlProp.LocalName == "imggroup")
                         {

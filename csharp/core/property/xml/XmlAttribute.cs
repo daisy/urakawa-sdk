@@ -20,7 +20,7 @@ namespace urakawa.property.xml
             }
 
             if (otherz.LocalName != LocalName
-                || otherz.NamespaceUri != NamespaceUri
+                || otherz.GetNamespaceUri() != GetNamespaceUri()
                 || otherz.Value != Value)
             {
                 return false;
@@ -80,7 +80,8 @@ namespace urakawa.property.xml
         public virtual XmlAttribute Copy()
         {
             XmlAttribute cp = new XmlAttribute();
-            cp.SetQName(LocalName, NamespaceUri);
+            string nsUri = GetNamespaceUri();
+            cp.SetQName(LocalName, nsUri == null ? "" : nsUri);
             cp.Value = Value;
             return cp;
         }
@@ -128,7 +129,7 @@ namespace urakawa.property.xml
         /// Gets the namespace of the <see cref="XmlAttribute"/>
         /// </summary>
         /// <returns>The namespace</returns>
-        internal string NamespaceUri
+        private string NamespaceUri
         {
             get { return mNamespaceUri; }
             //private set { SetQName(LocalName, value); }
@@ -206,14 +207,14 @@ namespace urakawa.property.xml
                 m_Prefix = prefix;
                 m_PrefixedLocalName = realLocalName;
 
-//#if DEBUG
-//                //Debugger.Break();
+                //#if DEBUG
+                //                //Debugger.Break();
 
-//                if (m_Prefix != null)
-//                {
-//                    DebugFix.Assert(!string.IsNullOrEmpty(mNamespaceUri));
-//                }
-//#endif //DEBUG
+                //                if (m_Prefix != null)
+                //                {
+                //                    DebugFix.Assert(!string.IsNullOrEmpty(mNamespaceUri));
+                //                }
+                //#endif //DEBUG
 
                 if (parent != null)
                 {
@@ -273,8 +274,8 @@ namespace urakawa.property.xml
             Value = value;
 
             string ns = source.GetAttribute(XukStrings.NamespaceUri);
-            if (ns == null) ns = "";
-            SetQName(name, ns);
+
+            SetQName(name, ns == null ? "" : ns);
         }
 
         /// <summary>
@@ -322,7 +323,11 @@ namespace urakawa.property.xml
         public override string ToString()
         {
             string displayName = mLocalName ?? "null";
-            if (NamespaceUri != "") displayName = NamespaceUri + ":" + displayName;
+            string nsUri = GetNamespaceUri();
+            if (!string.IsNullOrEmpty(nsUri))
+            {
+                displayName = nsUri + ":" + displayName;
+            }
             return String.Format("{1}: {2}='{3}'", base.ToString(), displayName, Value.Replace("'", "''"));
         }
     }

@@ -368,7 +368,7 @@ namespace urakawa.daisy.import
             if (strClass != null)
             {
                 XmlProperty prop = anchorNode.GetOrCreateXmlProperty();
-                prop.SetQName(strClass, null);
+                prop.SetQName(strClass, "");
 
                 prop.SetAttribute(xmlNodeAttr.Name, "", strReferedID);
             }

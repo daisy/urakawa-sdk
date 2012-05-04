@@ -256,7 +256,7 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
 
             Channel publishChannel = channelsList[0];
 
-            ChannelsProperty mediaProperty = node.GetProperty<ChannelsProperty>();
+            ChannelsProperty mediaProperty = node.GetChannelsProperty();
 
             if (mediaProperty == null) return null;
 

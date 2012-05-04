@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml;
 using urakawa.core.visitor;
 using urakawa.events;
@@ -8,7 +9,9 @@ using urakawa.exception;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.alt;
+using urakawa.property.xml;
 using urakawa.xuk;
+using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 namespace urakawa.core
 {
@@ -26,7 +29,7 @@ namespace urakawa.core
 
         public bool HasAlternateContentProperty
         {
-            get { return GetProperty<AlternateContentProperty>() != null; }
+            get { return GetAlternateContentProperty() != null; }
         }
         public AlternateContentProperty GetOrCreateAlternateContentProperty()
         {
@@ -940,7 +943,70 @@ namespace urakawa.core
                         "The given Property can not be added to the TreeNode");
                 }
                 prop.TreeNodeOwner = this;
+
                 mProperties.Insert(mProperties.Count, prop);
+
+                if (prop is XmlProperty)
+                {
+                    UpdateTextDirectionality(this, (XmlProperty)prop);
+                }
+            }
+        }
+
+        public static void UpdateTextDirectionality(TreeNode node, XmlProperty xmlProp)
+        {
+            node.TextDirectionality = TreeNode.TextDirection.Unsure;
+
+            if (xmlProp == null)
+            {
+                return;
+            }
+
+            XmlAttribute xmlAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML);
+            if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
+            {
+                // TODO: Arabic, Urdu, Hebrew, Yiddish, Farsi...what else?
+                if (xmlAttr.Value.Equals("ar")
+                           || xmlAttr.Value.Equals("ur")
+                           || xmlAttr.Value.Equals("he")
+                           || xmlAttr.Value.Equals("ji")
+                           || xmlAttr.Value.Equals("fa")
+                           || xmlAttr.Value.StartsWith("ar-")
+                           || xmlAttr.Value.StartsWith("ur-")
+                           || xmlAttr.Value.StartsWith("he-")
+                           || xmlAttr.Value.StartsWith("ji-")
+                           || xmlAttr.Value.StartsWith("fa-")
+                    )
+                {
+                    node.TextDirectionality = TreeNode.TextDirection.RTL;
+                }
+                else
+                //if (xmlAttr.Value.Equals("en")
+                //       || xmlAttr.Value.Equals("fr")
+                //       || xmlAttr.Value.StartsWith("en-")
+                //       || xmlAttr.Value.StartsWith("fr-")
+                //)
+                {
+                    node.TextDirectionality = TreeNode.TextDirection.LTR;
+                }
+            }
+            xmlAttr = xmlProp.GetAttribute("dir");
+            if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
+            {
+                if (xmlAttr.Value.Equals("rtl"))
+                {
+                    node.TextDirectionality = TreeNode.TextDirection.RTL;
+                }
+                else if (xmlAttr.Value.Equals("ltr"))
+                {
+                    node.TextDirectionality = TreeNode.TextDirection.LTR;
+                }
+#if DEBUG
+                else
+                {
+                    Debugger.Break();
+                }
+#endif //DEBUG
             }
         }
 
@@ -969,6 +1035,10 @@ namespace urakawa.core
             if (mProperties.IndexOf(prop) != -1)
             {
                 prop.TreeNodeOwner = null;
+                if (prop is XmlProperty)
+                {
+                    UpdateTextDirectionality(this, null);
+                }
                 mProperties.Remove(prop);
             }
         }
