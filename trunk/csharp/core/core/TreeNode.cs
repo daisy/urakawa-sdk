@@ -962,20 +962,20 @@ namespace urakawa.core
                 return;
             }
 
-            XmlAttribute xmlAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML);
-            if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
+            string lang = xmlProp.GetLangFromAttributes();
+            if (!string.IsNullOrEmpty(lang))
             {
                 // TODO: Arabic, Urdu, Hebrew, Yiddish, Farsi...what else?
-                if (xmlAttr.Value.Equals("ar")
-                           || xmlAttr.Value.Equals("ur")
-                           || xmlAttr.Value.Equals("he")
-                           || xmlAttr.Value.Equals("ji")
-                           || xmlAttr.Value.Equals("fa")
-                           || xmlAttr.Value.StartsWith("ar-")
-                           || xmlAttr.Value.StartsWith("ur-")
-                           || xmlAttr.Value.StartsWith("he-")
-                           || xmlAttr.Value.StartsWith("ji-")
-                           || xmlAttr.Value.StartsWith("fa-")
+                if (lang.Equals("ar")
+                           || lang.Equals("ur")
+                           || lang.Equals("he")
+                           || lang.Equals("ji")
+                           || lang.Equals("fa")
+                           || lang.StartsWith("ar-")
+                           || lang.StartsWith("ur-")
+                           || lang.StartsWith("he-")
+                           || lang.StartsWith("ji-")
+                           || lang.StartsWith("fa-")
                     )
                 {
                     node.TextDirectionality = TreeNode.TextDirection.RTL;
@@ -990,7 +990,8 @@ namespace urakawa.core
                     node.TextDirectionality = TreeNode.TextDirection.LTR;
                 }
             }
-            xmlAttr = xmlProp.GetAttribute("dir");
+
+            XmlAttribute xmlAttr = xmlProp.GetAttribute("dir");
             if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
             {
                 if (xmlAttr.Value.Equals("rtl"))

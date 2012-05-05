@@ -120,6 +120,33 @@ namespace urakawa.property.xml
         //private IDictionary<string, XmlAttribute> mAttributes = new Dictionary<string, XmlAttribute>();
 
 
+        public string GetIdFromAttributes()
+        {
+            XmlAttribute langAttr = GetAttribute(XmlReaderWriterHelper.XmlId, XmlReaderWriterHelper.NS_URL_XML);
+            if (langAttr == null)
+            {
+                langAttr = GetAttribute("id");
+            }
+            if (langAttr != null)
+            {
+                return (string.IsNullOrEmpty(langAttr.Value) ? null : langAttr.Value);
+            }
+            return null;
+        }
+
+        public string GetLangFromAttributes()
+        {
+            XmlAttribute langAttr = GetAttribute(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML);
+            if (langAttr == null)
+            {
+                langAttr = GetAttribute("lang");
+            }
+            if (langAttr != null)
+            {
+                return (string.IsNullOrEmpty(langAttr.Value) ? null : langAttr.Value);
+            }
+            return null;
+        }
 
         /// <summary>
         /// Gets the local localName of <c>this</c>
@@ -451,7 +478,7 @@ namespace urakawa.property.xml
         public XmlAttribute GetAttribute(string name, string namespaceUri)
         {
             bool noNamespaceSpecified = string.IsNullOrEmpty(namespaceUri);
-
+            
             string prefix;
             string localName;
             SplitLocalName(name, out prefix, out localName);
@@ -459,6 +486,11 @@ namespace urakawa.property.xml
             if (string.IsNullOrEmpty(localName))
             {
                 localName = name;
+            }
+
+            if (noNamespaceSpecified && !string.IsNullOrEmpty(prefix))
+            {
+                namespaceUri = GetNamespaceUri(prefix);
             }
 
             string nsUri = GetNamespaceUri();
@@ -488,8 +520,10 @@ namespace urakawa.property.xml
                     }
                 }
             }
-
-            if (noNamespaceSpecified)
+            
+            //TODO
+            const bool strict = true;
+            if (!strict && noNamespaceSpecified)
             {
                 foreach (XmlAttribute attr in Attributes.ContentsAs_Enumerable)
                 {

@@ -191,18 +191,7 @@ namespace urakawa.core
             XmlProperty xmlProp = GetXmlProperty();
             if (xmlProp != null)
             {
-                XmlAttribute idAttr = xmlProp.GetAttribute("id");
-                if (idAttr == null)
-                {
-                    idAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlId, XmlReaderWriterHelper.NS_URL_XML);
-
-                    // "id" with no NS should have picked-up "xml:id" in XML NS.
-                    DebugFix.Assert(idAttr == null);
-                }
-                if (idAttr != null)
-                {
-                    return (string.IsNullOrEmpty(idAttr.Value) ? null : idAttr.Value);
-                }
+                return xmlProp.GetIdFromAttributes();
             }
             return null;
         }
@@ -212,18 +201,7 @@ namespace urakawa.core
             XmlProperty xmlProp = GetXmlProperty();
             if (xmlProp != null)
             {
-                XmlAttribute langAttr = xmlProp.GetAttribute("lang");
-                if (langAttr == null)
-                {
-                    langAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML);
-
-                    // "lang" with no NS should have picked-up "xml:lang" in XML NS.
-                    DebugFix.Assert(langAttr == null);
-                }
-                if (langAttr != null)
-                {
-                    return (string.IsNullOrEmpty(langAttr.Value) ? null : langAttr.Value);
-                }
+                return xmlProp.GetLangFromAttributes();
             }
             return null;
         }
