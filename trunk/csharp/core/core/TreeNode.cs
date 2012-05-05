@@ -957,7 +957,7 @@ namespace urakawa.core
         {
             node.TextDirectionality = TreeNode.TextDirection.Unsure;
 
-            if (xmlProp == null)
+            if (xmlProp == null || xmlProp.mLocalName == null)
             {
                 return;
             }
