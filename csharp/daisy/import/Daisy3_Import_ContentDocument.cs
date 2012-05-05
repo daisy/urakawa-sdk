@@ -161,39 +161,38 @@ namespace urakawa.daisy.import
                         //}
 
                         string lang = null;
+                        bool isHTML = true;
                         XmlNode rootElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "html", null);
                         if (rootElement == null)
                         {
+                            isHTML = false;
                             rootElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "dtbook", null);
                         }
                         if (rootElement != null)
                         {
-                            // DOESN'T WORK
-                            XmlNode xmlAttr = rootElement.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML);
+                            XmlNode xmlAttr = null;
+
+                            //XmlReaderWriterHelper.NS_URL_XML
+                            //null
+                            xmlAttr = rootElement.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlLang);
                             if (xmlAttr == null)
                             {
-                                // DOESN'T WORK
-                                xmlAttr = rootElement.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlLang, null);
-                                if (xmlAttr == null)
-                                {
-                                    // DOESN'T WORK
-                                    xmlAttr = rootElement.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlLang, rootElement.NamespaceURI);
-                                    if (xmlAttr == null)
-                                    {
-                                        // WORKS!
-                                        xmlAttr = rootElement.Attributes.GetNamedItem(XmlReaderWriterHelper.XmlLang);
-                                        if (xmlAttr == null)
-                                        {
-                                            // SHOULD WORKS WITH HTML (untested)
-                                            xmlAttr = rootElement.Attributes.GetNamedItem("lang");
-                                        }
-                                    }
-                                }
+                                xmlAttr = rootElement.Attributes.GetNamedItem("lang");
                             }
+
                             if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
                             {
                                 lang = xmlAttr.Value;
                             }
+                        }
+
+                        Presentation presentation = m_Project.Presentations.Get(0);
+
+                        if (!string.IsNullOrEmpty(lang)
+                            //&& m_Project.Presentations.Count > 0
+                            )
+                        {
+                            presentation.Language = lang;
                         }
 
                         XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "body", null);
@@ -203,7 +202,6 @@ namespace urakawa.daisy.import
                         }
                         if (bodyElement != null)
                         {
-                            Presentation presentation = m_Project.Presentations.Get(0);
                             presentation.PropertyFactory.DefaultXmlNamespaceUri = bodyElement.NamespaceURI;
 
                             // preserve internal DTD if it exists in dtbook 
@@ -225,29 +223,29 @@ namespace urakawa.daisy.import
 
                             parseContentDocument(bodyElement, parentTreeNode, filePath);
 
-                            if (!string.IsNullOrEmpty(lang)
-                                //&& m_Project.Presentations.Count > 0
-                                )
+                            //Presentation presentation = m_Project.Presentations.Get(0);
+                            if (presentation.RootNode != null)
                             {
-                                //Presentation presentation = m_Project.Presentations.Get(0);
-                                if (presentation.RootNode != null)
+                                string lang_ = presentation.RootNode.GetXmlElementLang();
+                                if (string.IsNullOrEmpty(lang_))
                                 {
-                                    string lang_ = presentation.RootNode.GetXmlElementLang();
-                                    if (string.IsNullOrEmpty(lang_))
+                                    if (!string.IsNullOrEmpty(lang)) //presentation.Language
                                     {
                                         XmlProperty xmlProp = presentation.RootNode.GetXmlProperty();
-                                        xmlProp.SetAttribute(XmlReaderWriterHelper.XmlLang, XmlReaderWriterHelper.NS_URL_XML, lang);
-
-                                        presentation.Language = lang;
-                                    }
-                                    else
-                                    {
-                                        presentation.Language = lang_;
+                                        if (isHTML)
+                                        {
+                                            xmlProp.SetAttribute(XmlReaderWriterHelper.XmlLang,
+                                                                 XmlReaderWriterHelper.NS_URL_XML, lang);
+                                        }
+                                        else
+                                        {
+                                            xmlProp.SetAttribute("lang", "", lang);
+                                        }
                                     }
                                 }
                                 else
                                 {
-                                    presentation.Language = lang;
+                                    presentation.Language = lang_; // override existing lang from dtbook/html element
                                 }
                             }
                         }
@@ -564,7 +562,7 @@ namespace urakawa.daisy.import
                                     {
                                         Debug.Fail("WTF?!");
                                     }
-                                    
+
                                     if (prefix != XmlReaderWriterHelper.NS_PREFIX_XMLNS && prefix != XmlReaderWriterHelper.NS_PREFIX_XML)
                                     {
                                         if (string.IsNullOrEmpty(xmlProp.GetNamespaceUri(prefix)))
