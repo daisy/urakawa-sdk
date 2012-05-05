@@ -325,11 +325,21 @@ namespace urakawa.daisy
             }
             else
             {
+                if (name == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
+                {
 #if DEBUG
-                DebugFix.Assert(strNamespace == node.NamespaceURI);
+                    DebugFix.Assert(strNamespace == XmlReaderWriterHelper.NS_URL_XMLNS);
 #endif //DEBUG
-                attr = xmlDoc.CreateAttribute(name);
-                //attr = xmlDoc.CreateAttribute(name, strNamespace);
+                    attr = xmlDoc.CreateAttribute(name, strNamespace);
+                }
+                else
+                {
+#if DEBUG
+                    DebugFix.Assert(strNamespace == node.NamespaceURI);
+#endif //DEBUG
+
+                    attr = xmlDoc.CreateAttribute(name);
+                }
             }
 
             attr.Value = val;

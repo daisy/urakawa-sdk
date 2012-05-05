@@ -210,13 +210,6 @@ namespace urakawa.daisy.export
                         {
                             XmlNode xmlNodeParent = m_TreeNode_XmlNodeMap[n.Parent];
 
-                            // add current node to its parent
-                            xmlNodeParent.AppendChild(currentXmlNode);
-
-                            // add nodes to dictionary 
-                            m_TreeNode_XmlNodeMap.Add(n, currentXmlNode);
-
-
                             string nsUri = n.GetXmlNamespaceUri();
 
                             string prefix = xmlNodeParent.GetPrefixOfNamespace(nsUri);
@@ -237,6 +230,12 @@ namespace urakawa.daisy.export
                             }
 
                             currentXmlNode = DTBookDocument.CreateElement(prefix, xmlProp.LocalName, nsUri);
+
+                            // add current node to its parent
+                            xmlNodeParent.AppendChild(currentXmlNode);
+
+                            // add nodes to dictionary 
+                            m_TreeNode_XmlNodeMap.Add(n, currentXmlNode);
                         }
 
                         // add attributes
