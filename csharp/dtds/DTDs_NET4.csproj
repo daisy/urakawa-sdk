@@ -39,7 +39,8 @@
     <OutputPath>bin\DebugNET4\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel><NoWarn>1591</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
     <DocumentationFile>bin\DebugNET4\DTDs.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -48,14 +49,14 @@
     <OutputPath>bin\ReleaseNET4\</OutputPath>
     <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel><NoWarn>1591</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
     <DocumentationFile>
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
-      
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -74,7 +75,9 @@
     <EmbeddedResource Include="Resources\dtbook-2005-2.dtd" />
     <EmbeddedResource Include="Resources\dtbook-2005-3.dtd" />
     <EmbeddedResource Include="Resources\dtbsmil-2005-2.dtd" />
-    <EmbeddedResource Include="Resources\mathml2.dtd" />
+    <EmbeddedResource Include="Resources\mathml2.dtd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\ncx-2005-1.dtd" />
     <EmbeddedResource Include="Resources\xhtml-math-svg-flat.dtd" />
     <EmbeddedResource Include="Resources\xhtml11.dtd" />
