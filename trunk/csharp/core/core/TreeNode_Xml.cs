@@ -373,23 +373,28 @@ namespace urakawa.core
                         }
                     }
                 }
+            }
 
+            if (mChildren.Count > 0)
+            {
                 for (int i = 0; i < mChildren.Count; i++)
                 {
                     TreeNode child = mChildren.Get(i);
 
                     child.GetXmlFragment_(xmlWriter);
                 }
-
-                xmlWriter.WriteEndElement();
             }
-
-            AbstractTextMedia txt = GetTextMedia();
-            if (txt != null)
+            else
             {
-                DebugFix.Assert(!HasXmlProperty || mChildren.Count == 0);
-                xmlWriter.WriteString(txt.Text);
+                AbstractTextMedia txt = GetTextMedia();
+                if (txt != null)
+                {
+                    DebugFix.Assert(!HasXmlProperty || mChildren.Count == 0);
+                    xmlWriter.WriteString(txt.Text);
+                }
             }
+
+            xmlWriter.WriteEndElement();
         }
 
         public string GetXmlFragment()
