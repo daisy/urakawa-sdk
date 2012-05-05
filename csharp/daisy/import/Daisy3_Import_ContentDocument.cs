@@ -258,16 +258,17 @@ namespace urakawa.daisy.import
                     {
                         Presentation presentation = m_Project.Presentations.Get(0);
 
-                        if (xmlNode.ParentNode != null && xmlNode.ParentNode.NodeType == XmlNodeType.Document
-                            || parentTreeNode == null)
-                        {
-                            presentation.PropertyFactory.DefaultXmlNamespaceUri = xmlNode.NamespaceURI;
-                        }
+                        //if (xmlNode.ParentNode != null && xmlNode.ParentNode.NodeType == XmlNodeType.Document)
+                        //{
+
+                        //}
 
                         TreeNode treeNode = presentation.TreeNodeFactory.Create();
 
                         if (parentTreeNode == null)
                         {
+                            presentation.PropertyFactory.DefaultXmlNamespaceUri = xmlNode.NamespaceURI;
+
                             presentation.RootNode = treeNode;
                             parentTreeNode = presentation.RootNode;
                         }
@@ -277,8 +278,8 @@ namespace urakawa.daisy.import
                         }
 
                         XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
-                        treeNode.AddProperty(xmlProp);
 
+                        treeNode.AddProperty(xmlProp);
 
                         //string nodeName_Prefix = null;
                         //string nodeName_Local = null;
@@ -290,21 +291,21 @@ namespace urakawa.daisy.import
 
                         // we get rid of element name prefixes, we use namespace URIs instead.
                         // check inherited NS URI
-                        string nsUri = treeNode.GetXmlNamespaceUri();
-                        if (xmlNode.NamespaceURI != nsUri) //presentation.PropertyFactory.DefaultXmlNamespaceUri)
+
+                        string nsUri = treeNode.Parent != null ?
+                            treeNode.Parent.GetXmlNamespaceUri() :
+                            xmlNode.NamespaceURI; //presentation.PropertyFactory.DefaultXmlNamespaceUri
+
+                        if (xmlNode.NamespaceURI != nsUri)
                         {
                             nsUri = xmlNode.NamespaceURI;
                             xmlProp.SetQName(xmlNode.LocalName, nsUri == null ? "" : nsUri);
-
-#if DEBUG
-                            string uriCheck = xmlProp.GetNamespaceUri();
-                            DebugFix.Assert(uriCheck == nsUri);
-#endif //DEBUG
                         }
                         else
                         {
                             xmlProp.SetQName(xmlNode.LocalName, "");
                         }
+
 
                         //string nsUri = treeNode.GetXmlNamespaceUri();
                         // if xmlNode.NamespaceURI != nsUri
@@ -468,77 +469,133 @@ namespace urakawa.daisy.import
                             XmlNode xmlnsAttr = attributeCol.GetNamedItem(XmlReaderWriterHelper.NS_PREFIX_XMLNS);
                             if (xmlnsAttr != null)
                             {
-                                DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(xmlnsAttr.NamespaceURI));
+#if DEBUG
+                                DebugFix.Assert(xmlnsAttr.Value == nsUri);
+#endif //DEBUG
+                                if (treeNode.Parent == null)
+                                {
+                                    xmlProp.SetAttribute(xmlnsAttr.Name, xmlnsAttr.NamespaceURI, xmlnsAttr.Value);
+                                }
+                                else
+                                {
+                                    string nsUriInherited = treeNode.Parent.GetXmlNamespaceUri();
 
-                                xmlProp.SetAttribute(xmlnsAttr.Name, xmlnsAttr.NamespaceURI, xmlnsAttr.Value);
+                                    bool redundant = false;
+                                    if (!string.IsNullOrEmpty(nsUriInherited))
+                                    {
+                                        redundant = nsUriInherited.Equals(xmlnsAttr.Value);
+                                        DebugFix.Assert(!redundant);
+                                    }
+                                    if (!redundant)
+                                    {
+                                        xmlProp.SetAttribute(xmlnsAttr.Name, xmlnsAttr.NamespaceURI, xmlnsAttr.Value);
+                                    }
+                                }
+                            }
+#if DEBUG
+                            string uriCheck = xmlProp.GetNamespaceUri();
+                            DebugFix.Assert(uriCheck == nsUri);
+#endif //DEBUG
+
+                            for (int i = 0; i < attributeCol.Count; i++)
+                            {
+                                XmlNode attr = attributeCol.Item(i);
+
+                                if (attr.Name.IndexOf(':') < 0) // attr.Name.Contains(":")
+                                {
+                                    continue;
+                                }
+
+                                string prefix;
+                                string localName;
+                                urakawa.property.xml.XmlProperty.SplitLocalName(attr.Name, out prefix, out localName);
+
+                                if (prefix == null)
+                                {
+                                    Debug.Fail("WTF?!");
+                                }
+                                else if (prefix == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
+                                {
+                                    if (treeNode.Parent == null)
+                                    {
+                                        xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
+                                    }
+                                    else
+                                    {
+                                        bool redundant = false;
+                                        string nsUriFromPrefix = treeNode.Parent.GetXmlNamespaceUri(localName);
+                                        if (!string.IsNullOrEmpty(nsUriFromPrefix))
+                                        {
+                                            redundant = nsUriFromPrefix.Equals(attr.Value);
+                                            DebugFix.Assert(!redundant);
+                                        }
+                                        if (!redundant)
+                                        {
+                                            xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, attr.Value);
+                                        }
+                                    }
+                                }
                             }
 
                             for (int i = 0; i < attributeCol.Count; i++)
                             {
                                 XmlNode attr = attributeCol.Item(i);
-                                if (attr.LocalName != "smilref"
-                                    && attr.LocalName != "imgref") // && attr.Name != XmlReaderWriterHelper.NS_PREFIX_XMLNS+":xsi" && attr.Name != "xml:space"
+
+                                if (attr.LocalName == "smilref"
+                                    || attr.LocalName == "imgref") // && attr.Name != XmlReaderWriterHelper.NS_PREFIX_XMLNS+":xsi" && attr.Name != "xml:space"
                                 {
-                                    if (attr.Name.Equals(XmlReaderWriterHelper.NS_PREFIX_XML + ":space", StringComparison.OrdinalIgnoreCase))
+                                    // ignore
+                                }
+                                else if (attr.Name.Equals(XmlReaderWriterHelper.NS_PREFIX_XML + ":space", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    // ignore  xml:space="preserve"  (e.g. in Bookshare DTBooks)
+                                }
+                                else if (updatedSRC != null && attr.LocalName == "src")
+                                {
+                                    xmlProp.SetAttribute("src", "", updatedSRC);
+                                }
+                                else if (attr.Name.IndexOf(':') >= 0) // attr.Name.Contains(":")
+                                {
+                                    string prefix;
+                                    string localName;
+                                    urakawa.property.xml.XmlProperty.SplitLocalName(attr.Name, out prefix, out localName);
+
+                                    if (prefix == null)
                                     {
-                                        // TODO: ignore  xml:space="preserve"  (e.g. in Bookshare DTBooks)
+                                        Debug.Fail("WTF?!");
                                     }
-                                    else if (updatedSRC != null && attr.LocalName == "src")
+
+                                    // ignore (already processed)
+                                    if (prefix != XmlReaderWriterHelper.NS_PREFIX_XMLNS)
                                     {
-                                        xmlProp.SetAttribute("src", "", updatedSRC);
-                                    }
-                                    else if (attr.Name.IndexOf(':') >= 0) // attr.Name.Contains(":")
-                                    {
-                                        bool redundant = false;
-
-                                        string prefix;
-                                        string localName;
-                                        urakawa.property.xml.XmlProperty.SplitLocalName(attr.Name, out prefix, out localName);
-
-                                        if (prefix == null)
+                                        string uri = "";
+                                        if (!string.IsNullOrEmpty(attr.NamespaceURI))
                                         {
-                                            Debug.Fail("WTF?!");
-                                        }
-                                        else if (prefix == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
-                                        {
-                                            DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(attr.NamespaceURI));
-
-                                            string nsUriFromPrefix = xmlProp.GetNamespaceUri(localName);
-                                            if (!string.IsNullOrEmpty(nsUriFromPrefix))
+                                            if (attr.NamespaceURI != nsUri)
                                             {
-                                                bool check = nsUriFromPrefix.Equals(attr.Value);
-                                                DebugFix.Assert(check);
-                                                if (check)
-                                                {
-                                                    redundant = true;
-                                                }
+                                                uri = attr.NamespaceURI;
                                             }
                                         }
-                                        else if (prefix == XmlReaderWriterHelper.NS_PREFIX_XML)
-                                        {
-                                            DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XML.Equals(attr.NamespaceURI));
-                                        }
 
-                                        if (!redundant)
-                                        {
-                                            string uri = "";
-                                            if (!string.IsNullOrEmpty(attr.NamespaceURI))
-                                            {
-                                                if (attr.NamespaceURI != nsUri)
-                                                {
-                                                    uri = attr.NamespaceURI;
-                                                }
-                                            }
-
-                                            xmlProp.SetAttribute(attr.Name, uri, attr.Value);
-                                        }
+                                        xmlProp.SetAttribute(attr.Name, uri, attr.Value);
                                     }
-                                    else // no prefix
+
+#if DEBUG
+                                    if (prefix == XmlReaderWriterHelper.NS_PREFIX_XML)
                                     {
-                                        if (attr.Name != XmlReaderWriterHelper.NS_PREFIX_XMLNS) // already processed
-                                        {
-                                            xmlProp.SetAttribute(attr.Name, "", attr.Value);
-                                        }
+                                        DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XML.Equals(attr.NamespaceURI));
+                                    }
+                                    else if (prefix == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
+                                    {
+                                        DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(attr.NamespaceURI));
+                                    }
+#endif //DEBUG
+                                }
+                                else // no prefix
+                                {
+                                    if (attr.Name != XmlReaderWriterHelper.NS_PREFIX_XMLNS) // already processed
+                                    {
+                                        xmlProp.SetAttribute(attr.Name, "", attr.Value);
                                     }
                                 }
                             }

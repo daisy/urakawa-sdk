@@ -15,7 +15,7 @@ namespace urakawa.core
         public const bool ACCEPT_IMG_ALT_TEXT = true;
 
         // determined at XukIn time
-        public TextDirection TextDirectionality = TextDirection.Unsure;
+        private TextDirection TextDirectionality = TextDirection.Unsure;
         public TextDirection GetTextDirectionality()
         {
             if (TextDirectionality != TextDirection.Unsure)

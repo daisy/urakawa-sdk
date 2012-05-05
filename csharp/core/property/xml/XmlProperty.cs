@@ -115,7 +115,7 @@ namespace urakawa.property.xml
                 new EventHandler<urakawa.events.property.xml.XmlAttributeSetEventArgs>(this_xmlAttributeSet);
         }
 
-        private string mLocalName = null;
+        internal string mLocalName = null;
         private string mNamespaceUri = "";
         //private IDictionary<string, XmlAttribute> mAttributes = new Dictionary<string, XmlAttribute>();
 
@@ -247,9 +247,9 @@ namespace urakawa.property.xml
                 return Presentation.PropertyFactory.DefaultXmlNamespaceUri;
             }
 
-#if DEBUG
-            Debugger.Break();
-#endif //DEBUG
+//#if DEBUG
+//            Debugger.Break();
+//#endif //DEBUG
             return null;
         }
 
