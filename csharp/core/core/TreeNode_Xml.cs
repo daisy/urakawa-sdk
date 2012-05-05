@@ -350,7 +350,7 @@ namespace urakawa.core
                         else if (!string.IsNullOrEmpty(nsUriAttr))
                         {
 #if DEBUG
-                            DebugFix.Assert(nsUriAttr != nsUri);
+                            //DebugFix.Assert(nsUriAttr != nsUri);
 
                             string uriCheck = xmlProp.GetNamespaceUri(attrNSPrefix);
                             DebugFix.Assert(nsUriAttr == uriCheck);

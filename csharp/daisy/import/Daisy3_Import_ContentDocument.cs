@@ -484,7 +484,7 @@ namespace urakawa.daisy.import
                                     if (!string.IsNullOrEmpty(nsUriInherited))
                                     {
                                         redundant = nsUriInherited.Equals(xmlnsAttr.Value);
-                                        DebugFix.Assert(!redundant);
+                                        //DebugFix.Assert(!redundant);
                                     }
                                     if (!redundant)
                                     {
@@ -527,7 +527,7 @@ namespace urakawa.daisy.import
                                         if (!string.IsNullOrEmpty(nsUriFromPrefix))
                                         {
                                             redundant = nsUriFromPrefix.Equals(attr.Value);
-                                            DebugFix.Assert(!redundant);
+                                            //DebugFix.Assert(!redundant);
                                         }
                                         if (!redundant)
                                         {
@@ -563,6 +563,18 @@ namespace urakawa.daisy.import
                                     if (prefix == null)
                                     {
                                         Debug.Fail("WTF?!");
+                                    }
+                                    
+                                    if (prefix != XmlReaderWriterHelper.NS_PREFIX_XMLNS && prefix != XmlReaderWriterHelper.NS_PREFIX_XML)
+                                    {
+                                        if (string.IsNullOrEmpty(xmlProp.GetNamespaceUri(prefix)))
+                                        {
+                                            string uri = attr.GetNamespaceOfPrefix(prefix);
+
+                                            presentation.RootNode.GetXmlProperty().SetAttribute(
+                                                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + prefix,
+                                                XmlReaderWriterHelper.NS_URL_XMLNS, uri);
+                                        }
                                     }
 
                                     // ignore (already processed)
@@ -619,13 +631,11 @@ namespace urakawa.daisy.import
                         if (xmlType != XmlNodeType.Whitespace)
                         {
                             //Identical for text nodes
-                            Debug.Assert(xmlNode.Value == xmlNode.OuterXml);
-
-                            //Identical for text nodes
                             Debug.Assert(xmlNode.Value == xmlNode.InnerText);
 
                             //Preserves HTML entities, but converts unicode escapes
                             //Debug.Assert(xmlNode.Value == xmlNode.InnerXml);
+                            //Debug.Assert(xmlNode.Value == xmlNode.OuterXml);
                         }
 #endif //DEBUG
 
@@ -710,7 +720,7 @@ namespace urakawa.daisy.import
 
 #if DEBUG
                         //TODO:
-                        Debugger.Break();
+                        //Debugger.Break();
                         text = Regex.Replace(text, "\u2028", "&#x2028;");
 #endif // DEBUG
                         TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
