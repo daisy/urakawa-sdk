@@ -721,7 +721,7 @@ namespace urakawa.daisy.import
 #if DEBUG
                         //TODO:
                         //Debugger.Break();
-                        text = Regex.Replace(text, "\u2028", "&#x2028;");
+                        text = Regex.Replace(text, "\u2028", "&amp;#x2028;");
 #endif // DEBUG
                         TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
                         textMedia.Text = text;

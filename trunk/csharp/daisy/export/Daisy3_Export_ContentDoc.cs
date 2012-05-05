@@ -249,7 +249,21 @@ namespace urakawa.daisy.export
 
                             if (!string.IsNullOrEmpty(prefix))
                             {
-                                string nsUriPrefix = xmlProp.GetNamespaceUri(prefix);
+                                string nsUriPrefix = null;
+
+                                if (prefix == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
+                                {
+                                    nsUriPrefix = XmlReaderWriterHelper.NS_URL_XMLNS;
+                                }
+                                else if (prefix == XmlReaderWriterHelper.NS_PREFIX_XML)
+                                {
+                                    nsUriPrefix = XmlReaderWriterHelper.NS_URL_XML;
+                                }
+                                else
+                                {
+                                    nsUriPrefix = xmlProp.GetNamespaceUri(prefix);
+                                }
+
                                 if (string.IsNullOrEmpty(nsUriPrefix))
                                 {
 #if DEBUG
