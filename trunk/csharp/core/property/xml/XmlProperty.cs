@@ -196,8 +196,52 @@ namespace urakawa.property.xml
             }
         }
 
+        public string GetXmlNamespacePrefix(string uri)
+        {
+            foreach (XmlAttribute xmlAttr in Attributes.ContentsAs_Enumerable)
+            {
+                string attrNSPrefix = xmlAttr.Prefix;
+                string attrLocalName = xmlAttr.PrefixedLocalName != null ? xmlAttr.PrefixedLocalName : xmlAttr.LocalName;
+
+                if (XmlReaderWriterHelper.NS_PREFIX_XMLNS.Equals(attrNSPrefix)
+                    && xmlAttr.Value == uri)
+                {
+                    return attrLocalName;
+                }
+            }
+
+            if (TreeNodeOwner != null)
+            {
+                TreeNode node = TreeNodeOwner.Parent;
+                while (node != null)
+                {
+                    string prefix = node.GetXmlNamespacePrefix(uri);
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        return prefix;
+                    }
+                    node = node.Parent;
+                }
+            }
+
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif //DEBUG
+            return null;
+        }
+
         public string GetNamespaceUri(string prefix)
         {
+            if (XmlReaderWriterHelper.NS_PREFIX_XML.Equals(prefix))
+            {
+                return XmlReaderWriterHelper.NS_URL_XML;
+            }
+
+            if (XmlReaderWriterHelper.NS_PREFIX_XMLNS.Equals(prefix))
+            {
+                return XmlReaderWriterHelper.NS_URL_XMLNS;
+            }
+
             string NSPrefix;
             string localName;
             SplitLocalName(LocalName, out NSPrefix, out localName);
@@ -274,9 +318,9 @@ namespace urakawa.property.xml
                 return Presentation.PropertyFactory.DefaultXmlNamespaceUri;
             }
 
-//#if DEBUG
-//            Debugger.Break();
-//#endif //DEBUG
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif //DEBUG
             return null;
         }
 
@@ -478,7 +522,7 @@ namespace urakawa.property.xml
         public XmlAttribute GetAttribute(string name, string namespaceUri)
         {
             bool noNamespaceSpecified = string.IsNullOrEmpty(namespaceUri);
-            
+
             string prefix;
             string localName;
             SplitLocalName(name, out prefix, out localName);
@@ -520,7 +564,7 @@ namespace urakawa.property.xml
                     }
                 }
             }
-            
+
             //TODO
             const bool strict = true;
             if (!strict && noNamespaceSpecified)

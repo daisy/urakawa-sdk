@@ -221,6 +221,17 @@ namespace urakawa.core
             return null;
         }
 
+        public string GetXmlNamespacePrefix(string uri)
+        {
+            if (!HasXmlProperty)
+            {
+                return null;
+            }
+
+            XmlProperty xmlProp = GetXmlProperty();
+            return xmlProp.GetXmlNamespacePrefix(uri);
+        }
+
         public string GetXmlNamespaceUri(string prefix)
         {
             if (!HasXmlProperty)

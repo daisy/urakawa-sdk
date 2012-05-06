@@ -212,24 +212,31 @@ namespace urakawa.daisy.export
 
                             string nsUri = n.GetXmlNamespaceUri();
 
-                            string prefix = xmlNodeParent.GetPrefixOfNamespace(nsUri);
-                            if (prefix == null)
-                            {
-                                foreach (property.xml.XmlAttribute xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
-                                {
-                                    string prefixAttr = xmlAttr.Prefix;
-                                    string nameWithoutPrefix = xmlAttr.PrefixedLocalName != null ? xmlAttr.PrefixedLocalName : xmlAttr.LocalName;
+                            string prefix = n.GetXmlNamespacePrefix(nsUri);
 
-                                    if (prefixAttr == XmlReaderWriterHelper.NS_PREFIX_XMLNS
-                                        && xmlAttr.Value == nsUri)
-                                    {
-                                        prefix = nameWithoutPrefix;
-                                        break;
-                                    }
-                                }
-                            }
+                            //prefix = xmlNodeParent.GetPrefixOfNamespace(nsUri);
+                            //if (prefix == null)
+                            //{
+                            //    foreach (property.xml.XmlAttribute xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
+                            //    {
+                            //        string prefixAttr = xmlAttr.Prefix;
+                            //        string nameWithoutPrefix = xmlAttr.PrefixedLocalName != null ? xmlAttr.PrefixedLocalName : xmlAttr.LocalName;
 
-                            currentXmlNode = DTBookDocument.CreateElement(prefix, xmlProp.LocalName, nsUri);
+                            //        if (prefixAttr == XmlReaderWriterHelper.NS_PREFIX_XMLNS
+                            //            && xmlAttr.Value == nsUri)
+                            //        {
+                            //            prefix = nameWithoutPrefix;
+                            //            break;
+                            //        }
+                            //    }
+                            //}
+
+                            string nsUriParent = n.Parent == null ? nsUri : n.Parent.GetXmlNamespaceUri();
+
+                            currentXmlNode = DTBookDocument.CreateElement(
+                                nsUriParent != nsUri ? prefix : null,
+                                xmlProp.LocalName,
+                                nsUri);
 
                             // add current node to its parent
                             xmlNodeParent.AppendChild(currentXmlNode);
@@ -248,20 +255,7 @@ namespace urakawa.daisy.export
 
                             if (!string.IsNullOrEmpty(prefix))
                             {
-                                string nsUriPrefix = null;
-
-                                if (prefix == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
-                                {
-                                    nsUriPrefix = XmlReaderWriterHelper.NS_URL_XMLNS;
-                                }
-                                else if (prefix == XmlReaderWriterHelper.NS_PREFIX_XML)
-                                {
-                                    nsUriPrefix = XmlReaderWriterHelper.NS_URL_XML;
-                                }
-                                else
-                                {
-                                    nsUriPrefix = xmlProp.GetNamespaceUri(prefix);
-                                }
+                                string nsUriPrefix = xmlProp.GetNamespaceUri(prefix);
 
                                 if (string.IsNullOrEmpty(nsUriPrefix))
                                 {
