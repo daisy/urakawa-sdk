@@ -232,7 +232,7 @@ namespace urakawa.daisy.import
                                     if (!string.IsNullOrEmpty(lang)) //presentation.Language
                                     {
                                         XmlProperty xmlProp = presentation.RootNode.GetXmlProperty();
-                                        if (isHTML)
+                                        if (true || isHTML)
                                         {
                                             xmlProp.SetAttribute(XmlReaderWriterHelper.XmlLang,
                                                                  XmlReaderWriterHelper.NS_URL_XML, lang);

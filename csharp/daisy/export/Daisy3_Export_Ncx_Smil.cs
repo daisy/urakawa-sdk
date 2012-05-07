@@ -364,6 +364,13 @@ namespace urakawa.daisy.export
                     XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id",
                                                                GetNextID(ID_SmilPrefix));
+
+                    bool isMath = m_TreeNode_XmlNodeMap[n].LocalName == DiagramContentModelHelper.Math;
+                    if (isMath)
+                    {
+                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "type", DiagramContentModelHelper.NS_URL_MATHML);
+                    }
+
                     string dtbookID = null;
                     if (m_Image_ProdNoteMap.ContainsKey(n))
                     {

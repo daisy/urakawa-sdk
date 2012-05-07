@@ -839,11 +839,13 @@ namespace urakawa.core
                 {
                     string localName = GetXmlElementLocalName();
 
+                    bool isMath = localName.Equals("math", StringComparison.OrdinalIgnoreCase);
                     if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
                             || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                        || isMath
                         )
                     {
-                        XmlAttribute xmlAttr = GetXmlProperty().GetAttribute("alt");
+                        XmlAttribute xmlAttr = GetXmlProperty().GetAttribute(isMath ? "alttext" : "alt");
                         if (xmlAttr != null)
                         {
                             if (!String.IsNullOrEmpty(xmlAttr.Value))

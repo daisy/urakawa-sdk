@@ -49,6 +49,12 @@ namespace urakawa.daisy
 
         // -------------------------------------------------
 
+        public const string NS_PREFIX_MATHML = "m";
+        public const string NS_URL_MATHML = "http://www.w3.org/1998/Math/MathML";
+        public const string Math = "math";
+
+        // -------------------------------------------------
+
         public const string NS_PREFIX_XFORMS = "xforms";
         public const string NS_URL_XFORMS = "http://www.w3.org/2002/xforms/";
 
@@ -66,12 +72,6 @@ namespace urakawa.daisy
 
         public const string NS_PREFIX_ITS = "its";
         public const string NS_URL_ITS = "http://www.w3.org/2005/11/its";
-
-        // -------------------------------------------------
-
-        public const string NS_PREFIX_MATHML = "m";
-        public const string NS_URL_MATHML = "http://www.w3.org/1998/Math/MathML";
-
 
         // -------------------------------------------------
 

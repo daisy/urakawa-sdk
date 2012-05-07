@@ -133,11 +133,13 @@ namespace urakawa.commands
                     if (node.HasXmlProperty)
                     {
                         string localName = node.GetXmlElementLocalName();
+                        bool isMath = localName.Equals("math", StringComparison.OrdinalIgnoreCase);
                         if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
                              || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                            || isMath
                             )
                         {
-                            urakawa.property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute("alt");
+                            urakawa.property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute(isMath ? "alttext" : "alt");
                             if (xmlAttr != null)
                             {
                                 DebugFix.Assert(textLocal.m_XmlAttribute == xmlAttr);
