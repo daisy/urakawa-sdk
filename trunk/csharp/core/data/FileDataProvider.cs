@@ -580,7 +580,7 @@ namespace urakawa.data
 
             if (!File.Exists(DataFileFullPath))
             {
-                Debug.Fail(String.Format("The data file [{0}] does not exist", DataFileFullPath));
+                Console.WriteLine(String.Format("The data file [{0}] does not exist", DataFileFullPath));
                 //throw new exception.DataMissingException();
             }
             else

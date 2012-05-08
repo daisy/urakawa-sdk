@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using AudioLib;
 using urakawa.data;
+using urakawa.exception;
 using urakawa.media.timing;
 using urakawa.progress;
 using urakawa.xuk;
@@ -880,15 +881,26 @@ namespace urakawa.media.data.audio.codec
             //    throw new exception.IsNotManagerOfException(
             //            String.Format("DataProvider cannot be found {0}", dataProviderUid));
             //}
-            DataProvider prov = Presentation.DataProviderManager.GetManagedObject(dataProviderUid);
 
             try
             {
+                DataProvider prov = Presentation.DataProviderManager.GetManagedObject(dataProviderUid);
                 mWavClips.Add(new WavClip(prov, cb, ce));
+            }
+            catch (exception.IsNotManagerOfException ex)
+            {
+                Presentation.Project.notifyDataIsMissing(this, new DataMissingException(ex.Message, ex.InnerException));
             }
             catch (exception.DataMissingException ex)
             {
-                // TODO: this is a temporary fix ! Instead of ignoring the fact that the underlying audio resource is missing, we should have a system to let the consumer of the SDK (i.e. the host application) know about the error and decide about the processing (i.e. abandon parsing or carry-on by ignoring the resource). This relates to the global issue of configurable error recovery, not only for the data attached to the XUK instance, but also for corrupted XUK markup or values. 
+                // TODO: this is a temporary fix !
+                // Instead of ignoring the fact that the underlying audio resource is missing,
+                // we should have a system to let the consumer of the SDK
+                // (i.e. the host application) know about the error and decide about the processing
+                // (i.e. abandon parsing or carry-on by ignoring the resource).
+                // This relates to the global issue of configurable error recovery,
+                // not only for the data attached to the XUK instance,
+                // but also for corrupted XUK markup or values. 
                 Presentation.Project.notifyDataIsMissing(this, ex);
             }
 
