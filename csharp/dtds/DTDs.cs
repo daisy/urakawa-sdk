@@ -7,7 +7,7 @@ namespace DTDs
 {
     public static class DTDs
     {
-        public static string DTBOOK_2005_3 = "DTDs.Resources.dtbook-2005-3.dtd";
+        public static string DTBOOK_2005_3_MATHML = "DTDs.Resources.dtbook-2005-3_MathML.dtd";
 
         public static readonly Dictionary<string, string> ENTITIES_MAPPING;
 
@@ -24,7 +24,7 @@ namespace DTDs
             ENTITIES_MAPPING.Add("dtbook110.dtd", "DTDs.Resources.dtbook110.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD%20dtbook%202005-1//EN", "DTDs.Resources.dtbook-2005-1.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD%20dtbook%202005-2//EN", "DTDs.Resources.dtbook-2005-2.dtd");
-            ENTITIES_MAPPING.Add("//NISO//DTD%20dtbook%202005-3//EN", DTBOOK_2005_3);
+            ENTITIES_MAPPING.Add("//NISO//DTD%20dtbook%202005-3//EN", "DTDs.Resources.dtbook-2005-3.dtd");
 
             // SMIL
 
