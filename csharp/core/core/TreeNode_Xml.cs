@@ -18,14 +18,14 @@ namespace urakawa.core
         {
             if (HasXmlProperty)
             {
-                return GetXmlElementLocalName();
+                return GetXmlElementPrefixedLocalName();
             }
             return base.ToString();
         }
 
         protected string getDebugString()
         {
-            string localName = GetXmlElementLocalName();
+            string localName = GetXmlElementPrefixedLocalName();
             String str = (localName != null ? localName : "NO XML");
             str += " /// ";
             str += GetTextFlattened();
@@ -148,40 +148,112 @@ namespace urakawa.core
             return null;
         }
 
-        public string GetXmlElementLocalName()
+        public bool NeedsXmlNamespacePrefix()
         {
-            QualifiedName qName = GetXmlElementQName();
-            if (qName == null) return null;
-
-            return qName.LocalName;
-        }
-
-        private QualifiedName m_QualifiedName = null;
-        private QualifiedName GetXmlElementQName()
-        {
-            XmlProperty xmlProp = GetXmlProperty();
-            if (xmlProp != null)
+            if (!HasXmlProperty)
             {
-                //TODO QualifiedName fields are unmutable,
-                // so unless the underlying XmlProperty fields change, caching is okay
-                // (here we assume that once a TreeNode as been XukedIn,
-                // its XML definition does not change)
-                if (m_QualifiedName == null || xmlProp.QNameIsInvalidated)
+                return false;
+            }
+            string nsUri_NearestXmlns = null;
+
+            TreeNode node = this;
+            while (node != null)
+            {
+                XmlProperty xmlProp = node.GetXmlProperty();
+
+                foreach (XmlAttribute xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
                 {
-                    string nsUri = GetXmlNamespaceUri();
-
-                    m_QualifiedName = new QualifiedName(xmlProp.LocalName, nsUri);
-
-                    xmlProp.QNameIsInvalidated = false;
+                    string attrNSPrefix = xmlAttr.Prefix;
+                    string attrLocalName = xmlAttr.PrefixedLocalName != null
+                                               ? xmlAttr.PrefixedLocalName
+                                               : xmlAttr.LocalName;
+                    if (string.IsNullOrEmpty(attrNSPrefix) &&
+                        attrLocalName.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
+                    {
+                        // xmlns="URI"
+                        nsUri_NearestXmlns = xmlAttr.Value;
+                        break;
+                    }
+                }
+                if (string.IsNullOrEmpty(nsUri_NearestXmlns))
+                {
+                    node = node.Parent;
                 }
             }
-            else
+            if (string.IsNullOrEmpty(nsUri_NearestXmlns))
             {
-                m_QualifiedName = null;
+                nsUri_NearestXmlns = Presentation.PropertyFactory.DefaultXmlNamespaceUri;
             }
 
-            return m_QualifiedName;
+            string nsUri = GetXmlNamespaceUri();
+            if (nsUri_NearestXmlns == nsUri)
+            {
+                return false;
+            }
+
+            return true;
         }
+
+        public string GetXmlElementPrefixedLocalName()
+        {
+            if (!HasXmlProperty)
+            {
+                return null;
+            }
+            XmlProperty xmlProp = GetXmlProperty();
+            string localName = xmlProp.LocalName;
+
+            if (NeedsXmlNamespacePrefix())
+            {
+                string nsUri = GetXmlNamespaceUri();
+                string prefix = GetXmlNamespacePrefix(nsUri);
+
+                return prefix + ":" + localName;
+            }
+
+            return localName;
+        }
+
+        public string GetXmlElementLocalName()
+        {
+            //QualifiedName qName = GetXmlElementQName();
+            //if (qName == null) return null;
+            //return qName.LocalName;
+
+            if (!HasXmlProperty)
+            {
+                return null;
+            }
+            XmlProperty xmlProp = GetXmlProperty();
+            return xmlProp.LocalName;
+        }
+
+        //private QualifiedName m_QualifiedName = null;
+        //private QualifiedName GetXmlElementQName()
+        //{
+        //    XmlProperty xmlProp = GetXmlProperty();
+        //    if (xmlProp != null)
+        //    {
+        //        //TODOx QualifiedName fields are unmutable,
+        //        // so unless the underlying XmlProperty fields change, caching is okay
+        //        // (here we assume that once a TreeNode as been XukedIn,
+        //        // its XML definition does not change)
+        //        if (m_QualifiedName == null || xmlProp.QNameIsInvalidated)
+        //        {
+        //            string nsUri = GetXmlNamespaceUri();
+
+        //            m_QualifiedName = new QualifiedName(xmlProp.LocalName, nsUri);
+
+        //            xmlProp.QNameIsInvalidated = false;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        m_QualifiedName = null;
+        //    }
+
+        //    return m_QualifiedName;
+        //}
         ///<summary>
         /// returns the ID attribute value of the attached XmlProperty, if any
         ///</summary>
@@ -252,7 +324,7 @@ namespace urakawa.core
         {
             if (HasXmlProperty)
             {
-                string name = GetXmlElementLocalName();
+                string name = GetXmlElementPrefixedLocalName();
                 string NSPrefix;
                 string localName;
                 XmlProperty.SplitLocalName(name, out NSPrefix, out localName);
@@ -279,9 +351,9 @@ namespace urakawa.core
                 }
                 else
                 {
-#if DEBUG
-                    Debugger.Break();
-#endif //DEBUG
+                    //#if DEBUG
+                    //                    Debugger.Break();
+                    //#endif //DEBUG
                     if (!string.IsNullOrEmpty(nsUri))
                     {
                         xmlWriter.WriteStartElement(NSPrefix, localName, nsUri);

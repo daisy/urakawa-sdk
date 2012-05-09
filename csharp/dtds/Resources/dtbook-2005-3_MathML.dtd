@@ -1,689 +1,10 @@
-<!-- DTBook DTD v2005-3  2007-12-19
-file: dtbook-2005-3.dtd   
- 
-The following identifiers apply to this DTD:    
-  "-//NISO//DTD dtbook 2005-3//EN"
-  "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd">
--->
 
-<!--jpritchett@rfbd.org:  2007-12-19  Changes that update to version 2005-3, per committee decisions
-    Issue numbers noted in change log below refer to Z39.86 issue tracker at 
-    http://www.daisy.org/z3986/issues/ 
--->
 
-<!--jpritchett@rfbd.org:  2006-09-08  Changes that update to version 2005-2, per committee decisions 
-    Issue numbers noted in change log below refer to Z39.86 issue tracker at 
-    http://www.daisy.org/z3986/issues/ 
--->
 
-<!--HB: 2004-03-25 - 2004-04-28 Changes that update dtbook 1.1.0 Document
-    Type Declaration: 
-    When the change date is followed by "nn:" or "nna" that represents the
-    number/letter code on the change list supplied from Michael Moodie on
-    that date. Additional changes not so noted have been made in discussion
-    with Michael Moodie.
-    These changes have been made by Harvey Bingham. -->
+<!ENTITY % externalFlow " | m:math">
+<!ENTITY % externalNamespaces "xmlns:m CDATA #FIXED  'http://www.w3.org/1998/Math/MathML'">
 
-<!--HB: 2004-04-15 Editorial revisions made at the group meeting 2004-04-15 -->
 
-<!--    
-    Original authors:
-
-    Harvey Bingham 
-    George Kerscher 
-    Michael Moodie 
-    David Pawson 
-
-    Assisted by DAISY Consortium and NISO DTB Committee work teams.
-
-    1. Purpose
-
-    The Digital Talking Book Document Type Definition (DTD) provides
-    the means to mark up the text of a document to permit support for
-    the combination of professional narration and navigation into that
-    narration. It also facilitates the output of a document's content in
-    a variety of accessible formats. The markup tags in the book convey
-    its content in structure, and contain some metadata about the book
-    content and its structure.
-
-    The Document Type Definition names and defines the allowable element
-    types, their allowable content, and their attributes. Correct markup
-    of the text of the book permits the textual material to be synchronized
-    using SMIL [SMIL2.0] files with the professionally narrated version of
-    that book. The synchronization can permit concurrent display of the
-    text being narrated. The textual content can be searched in context to
-    locate material desired for narration.
-
-    More detailed documentation of this dtbook dtd [DTBOOKV20053DTD] is
-    available as an html document. See [DTBOOKV20053DOC].
-
-    1.1. Prior Related Work
-
-    The DAISY (Digital Accessible Information SYstem) Consortium
-    contributed substantially to the development of this DTD.
-    This application of XML is the next generation after several DAISY
-    versions of 2.X specifications, see [DAISY202].
-
-    The DAISY Statement of Principles for the Creation and Production
-    of Accessible Books and Materials [DAISY-2-GUIDELINES] represents
-    the minimum standard to be met by Libraries of the Blind and producers
-    of alternative format materials.
-
-    Its Navigation Control Center (NCC) provided for synchronizing
-    document structure with narration.
-
-    The NCC evolved into an XML application called the "Navigation Control
-    File for XML applications" (NCX). Its content is derived from
-    the markup of documents tagged using the dtbook DTD. Richer
-    structuring capability is one of the objectives of that DTD. The
-    Synchronized Multimedia Integration Language [SMIL2.0] is used
-    to provide synchronized narrations and text. The NCX provides
-    navigation using the identified elements of documents tagged to this DTD.
-
-    The dtbook DTD includes many, but not all, of the element types found
-    in both the [HTML401STRICT] and [XHTML11STRICT] strict DTDs. HTML
-    authoring tools permit those additional element tags, and may ignore
-    the additional tags that are dtbook-specific. The lowercase names
-    from XHTML are used, rather than the uppercase names from HTML.
-
-    1.2. Evolution from HTML and XHTML
-
-
-    Dtbook-2005-3 has 83 element types. It shares 46 element types with the
-    HTML4.0 Strict DTD [HTML401STRICT] (as adjusted to use the lower-case
-    names consonant with the XHTML Strict DTD [XHTML11STRICT]). It omits
-    31 element types from them, and has 32 unique element types.
-
-    Endtag markup is sometimes optional in HTML. It is required for use with
-    xhtml and dtbook. Any XML application [XML12] requires endtags, or their
-    abbreviated form for empty elements, such as "<link />". The benefit of
-    including endtags is that the tagged document has dependable structure
-    that can be validated against the dtbook dtd.
-
-    Some tools available for browsing HTML may be used with dtbook
-    material, at the expense of their discarding or ignoring some specific
-    tagging and attributes that are not part of HTML 4.0. A CSS-based
-    stylesheet [CSS1] or [CSS2] that identifies the presentation expectations
-    for the HTML and non-HTML tags, or a filter to map those tags onto
-    suitable HTML tags can provide appropriate visual presentation.
-
-    2. Document Prolog
-
-    A Digital Talking Book document is an XML application. Therefore, it
-    must begin with the XML declaration, followed by the DOCTYPE
-    declaration.
-
-    2.1. XML Declaration
-
-    The XML declaration identifies the version of XML, and the
-    optional character set encoding for the document:
-
-        <?xml version="1.0" encoding="UTF-8" ?>
-
-
-
-    2.2. Character Set Encodings (removed as redundant; unicode suffices)
-
-
-
-
-    2.3. DOCTYPE Declaration
-
-    The document type declaration, the DOCTYPE, follows. It has several forms.
-    The simpler form assumes that the proper version of the dtbook DTD
-    is in the same directory as the dtbook file itself.
-
-        <!DOCTYPE dtbook SYSTEM
-            "dtbook-2005-3.dtd">
-
-    A more general form provides the PUBLIC URI from which the SYSTEM
-    filename can be substituted, should that system copy be missing:
-
-        <!DOCTYPE dtbook PUBLIC
-            "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd"
-            "dtbook-2005-3.dtd">
-
-    That assumes the URI can be reached, which may not be true for
-    portable dtbook players.
-
-    The still more general form recommended for xml applications [XML12] is:
-
-        <!DOCTYPE dtbook PUBLIC
-            "-//NISO//DTD dtbook 2005-3//EN"
-            "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd">
-
-    where the Formal Public Identifier (FPI) on the second line is converted
-    to the URI where it may be publicly found:
-
-    http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd
-
-    The [OASIS-TR9401] Entity Management Catalog provides an indirect
-    means to provide that mapping from FPI to the dtd.
-
-    That catalog is more generally useful to provide the mapping from
-    any external entity names (such as modules) to URIs where they may
-    be found.
-
-    Note that the reference above is to a particular version of the DTD,
-    distinguished by the string "2005-3".
-
-    2.4. Digital Talking Book File MIME Type
-
-    A Digital Talking Book document is tagged to the dtbook XML
-    application. Its MIME media-type is "text/xml". The tagged book
-    filename should have suffix ".xml". See [RFC2045].
-
-    3. Modular Extension to the DTD
-
-    The dtbook DTD has four parameter entities defined that provide means
-    to allow an individual book to modularly extend the content models:
-
-        <!ENTITY % externalblock "">
-        <!ENTITY % externalinline "">
-        <!ENTITY % externalFlow "">
-        <!ENTITY % externalNamespaces "">
-
-    These parameter entities appear in corresponding block and inline
-    content models. With this "" content they have no effect on books
-    tagged to the dtbook DTD. In a book that needs a modular extension,
-    values are given by redefinition in the internal subset of that book.
-    This extends the dtbook DTD without having to change it.
-
-    A book can augment the dtbook DTD by including other declarations
-    or parameter entity references in the internal subset of declarations.
-    The internal subset may occur in square brackets following the
-    ExternalID and before the concluding ">" of the initial DOCTYPE
-    declaration that identifies the dtbook DTD.
-
-    Those additional markup declarations in the internal subset
-    take preference over any in the dtbook DTD itself. The effective
-    DTD is thereby augmented by the parameter entity values and any other
-    declarations of the book's internal subset. When a given parameter
-    entity declaration appears more than once in the external modules and
-    the dtbook DTD, the first occurrence of that declaration is the one
-    that takes effect, with modules in the internal subset being processed
-    in order, before the DTD itself.
-
-    For example:
-
-        <!DOCTYPE dtbook SYSTEM
-        "dtbook.dtd"
-        [
-            <!ENTITY % dramaModule SYSTEM "drama.dtd">
-            %dramaModule;
-            <!ENTITY % externalblock "| d:drama">
-            <!ENTITY % externalinline "| d:character">
-            <!ENTITY % externalFlow "| d:stagedir">
-            <!ENTITY % externalNamespaces "xmlns:d CDATA #FIXED 'http://www.sample.org/drama'">
-        ]>
-
-    The "%dramaModule;" invocation causes all declarations made within
-    dramaModule to become the initial part of the dtbook DTD. Within the
-    book, the empty entity declarations for % externalblock, 
-    % externalinline, % externalFlow, and %externalNamespaces
-    are replaced by these new definitions. Thus the
-    block element d:drama can appear wherever block elements may occur in
-    dtbook, d:character can appear wherever inline elements may occur, and
-    d:stagedir can appear in either block or inline contexts.  Note that
-    each extension element must appear in no more than one of these three
-    entities. The namespace attribute xmlns:d can occur on any element with 
-    the fixed value of "http://www.sample.org/drama".
-
-    More than one module may be needed and included in a book, for example
-    both poem and drama can appear in the internal subset of the book.
-    For example, the internal subset of the book could contain:
-
-        <!DOCTYPE dtbook SYSTEM
-        "dtbook.dtd"
-        [
-            <!ENTITY % poemModule SYSTEM "poem.dtd">
-            %poemModule;
-            <!ENTITY % dramaModule SYSTEM "drama.dtd">
-            %dramaModule;
-            <!ENTITY % externalblock "| poem | stanza | verse | drama">
-            <!ENTITY % externalinline "| stagedir">
-        ]>
-
-    Such external modules need to include the definitions of any parameter
-    entities that are used in the modules since their definitions are needed
-    before they can be expanded in their references. They cannot depend
-    on parameter entities in the SystemLiteral or PubidLiteral.
-
-    Note that arbitrary external modules from other sources may not have
-    all the needed attributes. XML allows augmentation of ATTLISTs in the
-    internal subset. Additional attribute names can be added to an
-    associated element type. Any redefinitions of a particular named
-    attribute resulting from presence in the internal subset have
-    precedence.
-
-    Note that tools and players processing any extended markup that affects
-    navigation structure will need to know of those modular extensions.
-
-    The form above for augmenting the dtbook dtd through the document's
-    internal subset does not require the XML namespace mechanism, with
-    its namespace-specific prefix on element and attribute names to
-    disambiguate any potential name collisions. However, use of XML
-    namespaces [XML-NAMES] is recommended.
-
-    4. References
-
-    These references are informative. The bracketed names here are targets for
-    indirect reference from the corresponding bracketed names in other parts
-    of this document or in descriptions within this section.
-
-    [CSS1] Cascading Style Sheets, Level 1. Rec-CSS1-1999011 Revised 11 Jan 1999
-
-        http://www.w3.org/TR/REC-CSS1
-
-    [CSS2] Cascading Style Sheets, Level 2 CSS2 Specification REC-CSS2-19980512
-
-        http://www.w3.org/TR/REC-CSS2
-
-    [DAISY202] The DAISY 2.02 Specification for the DAISY Digital Talking
-    Book (DTB) format, which enables navigation within a sequential
-    and hierarchical structure consisting of (marked-up) text synchronized
-    with audio.
-
-        http://www.daisy.org/dtbook/spec/2/final/d202/daisy_202.html
-
-    [DAISY-2-GUIDELINES] The DAISY 2.02 Specification for
-    the Creation and Production of Accessible Books and Materials,
-    Version 0.99 1999-09-23 represents minimum standard to be met by
-    Libraries for the Blind and producers of alternative format materials:
-
-        http://www.daisy.org/dtbook/guidelines/draft/principles.htm
-
-    [DTBOOKV20053DTD] The dtbook DTD version 2005-3 (this DTD) is available at:
-
-        http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd
-
-    Note that some browsers do not permit downloading a file with suffix dtd.
-
-    [DTBOOKV20053DOC] Digital Talking Book Expanded Document Type Definition
-    Documentation for Version 2005-3 of this DTD is available as an
-    HTML 4.0 document:
-
-        http://www.daisy.org/z3986/2005/dtbook/dtbookdoc.html
-
-    Should revisions occur, a new directory with node named for the year
-    of change will contain the revisions.
-
-    Any prior specific version of the dtbook dtd and its documentation will
-    persist.
-
-    [DTBOOK3] The last public beta version was dtbook3-07.dtd (2001-01-31).
-
-        http://www.loc.gov/nls/z3986/background/dtbk3_old_dtds/dtbk3-07.dtd
-
-    and its expanded documentation:
-
-        http://www.loc.gov/nls/z3986/background/dtbk3_old_dtds/dtbk3-07doc.htm
-
-    Those and prior versions are available at:
-
-        http://www.loc.gov/nls/z3986/background/dtbk3_old_dtds/index.html
-
-    The history of changes prior to this version, including those
-    in internal drafts through dtbk110.dtd and before is in:
-
-        http://www.loc.gov/nls/z3986/background/dtbook-dtd-changes.txt
-
-    In that directory also are the old dtdbk3 dtds, some of which have
-    been used for test markup,  and their documentation. See its
-    index.html for the list. (Caution: some browsers may not
-    permit downloading DTDs.)
-
-        http://www.loc.gov/nls/z3986/background/index.html
-
-    [HTML401STRICT] "HTML 4.0 Strict DTD," 1999-12-24, Dave Raggett,
-    Arnaud Le hors, and Ian Jacobs. Dtbook110 was originally based on
-    the HTML 4.0 Strict DTD with design adaptation for dtbook110.
-    A principal adaptation is to use lower-case names for element types
-    and attribute names. For expanded discussion, see [HTML401].
-
-        http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd
-
-    [HTML401] "HTML 4.01 Specification" W3C Recommendation 24 December 1999
-    Documentation of the element types that come from the HTML 4.0 Strict
-    DTD [HTML401STRICT] is available at:
-
-        http://www.w3.org/TR/1999/REC-html401-19991224/
-
-    Dtbook110 (and now Dtbook122) is partially harmonized with the
-    [XHTML11STRICT] DTD.
-
-    The XHTML camelCase parameter entity names are retained, and comments
-    and references following those parameter entities explain them. The
-    lower-case element and attribute names are used. The simplified table
-    content model of just table rows is included.
-
-    [ISO10646] "Information Technology - Universal Multiple-Octet Coded
-    Character Set (UCS) - Part 1: Architecture and Basic Multilingual
-    Plane", ISO/IEC 10646-1:1993. The current specification also takes
-    into consideration the first five amendments to ISO/IEC 10646-1:1993.
-
-    [ISO8859] "Information Processing - 8-bit single-byte coded graphic
-    character sets - Part 1: Latin alphabet No. 1," ISO 8859-1:1987.
-    Other suffixes "-2 through -9" correspond to other character sets
-    in the family.
-
-    [JIS] "JIS Character Sets" describes the history of JIS, and the
-    several character sets for KANJI, KANA and other characters.
-
-        http://www.io.com/~kazushi/encoding/jis.html
-
-    [ANSINISOZ39-86-2002] Specifications for the Digital Talking Book.
-
-        http://www.niso.org
-    
-    [ANSINISOZ39-86-2005] Specifications for the Digital Talking Book.
-
-        http://www.niso.org    
-
-    [NLS-Z3986] Development of ANSI/NISO Z39.86
-    Contains links to the DTDs developed for ANSI/NISO Z39.86,
-    Specifications for the Digital Talking Book
-
-        http://www.loc.gov/nls/z3986/index.html
-
-    [OASIS-TR9401] Entity Management, OASIS Technical Resolution 9401:1997
-    (Amendment 2 to TR 9401). Paul Grosso, 1997 September 10.
-
-        http://www.oasis-open.org/specs/tr9401.html
-
-    [RFC1556] "Handling of Bi-directional Texts in MIME," H. Nussbacher,
-    December 1993.
-
-        http://www.cis.ohio-state.edu/cgi-bin/rfc/rfc1556.html
-
-    [RFC1942] "HTML Tables", D. Raggett, May 1996
-
-        http://www.ietf.org/rfc/rfc1942.txt
-
-    Contains detailed descriptions of table elements and their
-    inheritance of attribute values. Adjustment for XML application is
-    required: end-tags are necessary, not optional, attribute values
-    must be quoted.
-
-    [RFC2045] "Multipurpose Internet Mail Extensions (MIME) Part One:
-    Format of Internet Message Bodies", N. Freed and N. Borenstein,
-    November 1996. Note that this RFC obsoletes RFC1521, RFC1522, and RFC1590.
-    The %ContentType; and %ContentTypes; media types and the
-    %Charset; and %Charsets; character encoding values are from [RFC2045].
-
-        http://www.cis.ohio-state.edu/cgi-bin/rfc/rfc2045.html
-
-    [RFC2046] "Multipurpose Internet Mail Extensions (MIME) Part Two:
-    Media Types," N. Freed, November 1996. Source for %ContentType; and
-    %ContentTypes; permitted values:
-
-        http://www.cis.ohio-state.edu/cgi-bin/rfc/rfc2046.html
-
-    [RFC2396] "Uniform Resource Identifiers (URI): Generic Syntax,"
-    T. Berners-Lee, R. Fielding, L. Masinter, August 1998. Note that this RFC
-    revises and replaces the generic definitions in RFC 1738 and RFC 1808.
-
-        http://www.cis.ohio-state.edu/cgi-bin/rfc/rfc2396.html
-
-
-
-    [RFC4646] "Tags for Identifying Languages,"
-    A. Phillips, Ed., September 2006
-
-        http://www.faqs.org/rfcs/rfc4646.html
-
-
-    [SMIL2.0] The Synchronized Multimedia Integration Language SMIL 2.0
-    W3C Recommendation 07 August 2001 is available at:
-
-        http://www.w3.org/TR/2001/REC-smil20-20010807/smil20.html
-
-    [XHTML11] "XHTML (tm) 1.0: The Extensible HyperText Markup Language,"
-    W3C Recommendation 26 January 2000, A reformulation of HTML4 in XML 1.0
-    includes case-sensitive names, lower-case for elements and their
-    attributes (but not parameter entity names) and in some cases
-    equivalent content models that do not require SGML inclusions
-    and exclusion exceptions (as occurred in the HTML4.0 strict
-    DTD [HTML401STRICT]) is available at:
-
-        http://www.w3.org/TR/xhtml/
-
-    [XML-NAMES] "Namespaces in XML 1.1" World Wide Web Consortium
-    W3C Recommendation 4-Febrary-2004
-
-        http://www.w3.org/TR/REC-xml-names11-20040204
-
-
-    [XHTML11STRICT] Expanded documentation of the element types that come
-    from the XHTML11 strict.dtd and its other DTDs is available within
-    the zip file:
-
-        http://www.w3.org/TR/xhtml1/DTD/xhtml1/xhtml1.zip
-
-    Note: some browsers cannot download a dtd directly.
-
-
-
-    [XML12] This dtbook-2005-3.dtd is an application of the Extensible Markup
-    Language XML 1.0 (Second Edition) W3C Recommendation 6 October 2000.
-    It is available at:
-
-        http://www.w3.org/TR/REC-xml
-
-    -->
-
-<!--======================= Change Log Summary ============================-->
-
-<!--HB: 2004-04-28 changed all version references from 1.1.2 to 1.2.0 -->
-<!--HB: 2004-03-25 - 2004-04-28 Changes that update dtbook 1.1.0 Document
-    Type Declaration: 
-    When the change date is followed by "nn:" or "nna" that represents the
-    number/letter code on the change list supplied from Michael Moodie on
-    that date. Additional changes not so noted have been made in discussion
-    with Michael Moodie.
-    These changes have been made by Harvey Bingham. -->
-<!--HB: 2004-04-15 Editorial revisions made at the group meeting 2004-04-15 -->
-<!--HB: 2004-03-25 32: Drop section 2.2 on Character Set Encoding, retained
-    number so external references won't break to subsequent sections. -->
-<!--HB: 2004-04-02 dtbook: updated public identifier
-        fro:  "http://www.loc.bov/nls/z3986/v100"
-        to:   "http://www.loc.gov/nls/z3986/2004". --> 
-<!--HB: 2004-04-02 dtbook: updated public identifier 
-    from: "http://www.loc.bov/nls/z3986/v100/dtbook110.dtd"
-    to:   "http://www.loc.gov/nls/z3986/2004/dtbook.dtd". -->
-<!--HB: 2004-03-25 Changed reference from RFC1766 to its revison, RFC 3066. -->
-<!--HB: 2004-03-25 Changed reference from RFC1766 to its revison, RFC 3066. -->
-<!--HB: 2004-04-05 % list removed: as content reduced to contain only <list>.-->
-<!--HB: 2004-03-25 36f: caption: removed from % inlineinblock. -->
-<!--HB: 2004-03-25 30: hr: eliminated, so dropped from % block. -->
-<!--HB: 2004-03-29 % block additions:
-    poem | linegroup | byline | dateline | epigraph. -->
-<!--HB: 2004-03-25 30: hr: eliminated, dropped from % blocknoimggroup. -->
-<!--HB: 2004-03-29 % blocknoimggroup additions:
-    poem | linegroup | byline | dateline | epigraph. -->
-<!--HB: 2004-03-29 % docblockorinline additions:
-    poem | linegroup | byline | dateline | epigraph. -->
-<!--HB: 2004-04-08 covertitle: added to % docblockorinline -->
-<!--HB: 2004-04-27 blockhead: added to % docblockorinline; -->
-<!--HB: 2004-03-25 33: % coreattrs: dropped mention of character
-    mnemonic entities, as use unicode. -->    
-<!--HB: 2004-03-25 36a: % i18n: removed lang attribute,
-    as redundant with xml:lang. -->
-<!--HB: 2004-04-05 dtbook: added attribute xmlns with FIXED value 
-    'http://www.loc.gov/nls/z3986/2004/dtbook'
-    Also updated version value from 1.1.0' to '1.1.1'. -->
-<!--HB: 2004-04-05 version: updated from '1.1.0' to '1.1.1'.
-    added value for xmlns: 
-    %URI #FIXED 'http://www.loc.gov/nls/z3986/2004/dtbook/'. -->
-<!--HB: 2004-03-25 36: % headmisc: removed style. -->
-<!--HB: 2004-04-02 title: element removed from head,
-    now only used for cite and poem. -->
-<!--HB: 2004-03-29 Dublin Core: minimum requirement 
-    name="dc:title" content="book title"; encourage use of
-    additional name/content pairs from Dublin Core 
-    name="dc:..." and from Digital Talking Book name="dtb:..."
-    Encourage inclusion of additional Dublin Core and Dtbook metadata
-    attributes to make more useful the dtbook as stand-alone content. -->
-<!--HB: 2004-03-25 36: head: drop th removed element style. -->
-<!--HB: 2004-03-25 29: frontmatter: eliminate %block;
-    level or level1 container is required. -->
-<!--HB: 2004-04-08 frontmatter: added covertitle. -->
-<!--HB: 2004-03-25 29: bodymatter: eliminate %block;
-    level or level1 container is required. -->
-<!--HB: 2004-03-25 29: rearmatter: eliminate %block;
-    level or level1 container is required. -->
-<!--HB: 2004-03-25 28: level: add constraint - at most one <levelhd> (later 
-        changed to <hd>) per <level>. -->
-<!--HB: 2004-03-26 34: level: make contentmodel (...)+, rather than (...)*. -->
-<!--HB: 2004-03-25 28: level1: added constraint - at most one <h1> 
-        per <level1>. -->
-<!--HB: 2004-03-26 34: level1: make contentmodel (...)+, rather than (...)*. -->
-<!--HB: 2004-03-25 28: level2: added constraint - at most one <h2> 
-        per <level2>. -->
-<!--HB: 2004-03-26 34: level2: make contentmodel (...)+, rather than (...)*. -->
-<!--HB: 2004-03-25 28: level3: added constraint - at most one <h3> 
-        per <level3>. -->
-<!--HB: 2004-03-25 28: level4: added constraint - at most one <h4> 
-        per <level4>. -->
-<!--HB: 2004-03-25 28: level5: added constraint - at most one <h5> 
-        per <level5>. -->
-<!--HB: 2004-03-25 28: level6: added constraint - at most one <h6> 
-        per <level6>. -->
-<!--HB: 2004-04-23 % special: eliminated linenum from % special,
-     linenum only appears within line. --> 
-<!--HB: 2004-04-23 % specialnoa: eliminated linenum from % specialnoa,
-     linenum only appears within line. --> 
-<!--HB: 2004-03-25 36h: to % inlinenoa add %dtbookinline;. -->
-<!--HB: 2004-03-30 poem: added linenum use. -->
-<!--HB: 2004-04-08 div: added covertitle. --> 
-<!--HB: 2004-04-04 35b  title: added <title> for use in <poem> or <cite>. -->
-<!--HB: 2004-03-25 35d: notice element dropped: its purpose is sufficiently
-    achieved with sidebar with attribute render="required." This provides
-    sufficient capability for admonitions like warning, hazard, 
-    danger, or caution. -->
-<!--HB: 2004-03-25 35g: prodnote: use render="required" to achieve the explicit
-    admonition such as caution, warning, danger, or hazard, from the
-    text. Optionally put the specific admonition in the class attribute
-    value, repeating it from the text. -->
-<!--HB: 2004-03-25 35g: sidebar: use render="required" to achieve the explicit
-    admonition such as caution, warning, danger, or hazard, from the
-    text. Optionally put the specific admonition in the class attribute
-    value, repeating it from the text. -->
-<!--HB: 2004-03-30 epigraph: element added. -->
-<!--HB: 2004-30-30 byline: element added. -->
-<!--HB: 2004-30-30 dateline: element added. -->
-<!--HB: 2004-03-30 linegroup: The class attribute value can identify the
-    kind of linegroup, such as "stanza", "chorus", or "canto". -->
-<!--HB: 2004-03-30 poem: removed notice and hr from content model. -->
-<!--HB: 2004-03-30 poem: added title and author to content model. -->
-<!--HB: 2004-03-25 35a: cite: allow title and author. -->
-<!--HB: 2004-03-25 30: hr: element dropped horizontal rule as purely visual. -->
-<!--HB: 2004-04-08 covertitle: element added -->
-<!--HB: 2004-04-02 bridgehead: element added. -->
-<!--HB: 2004-03-25 36i: blockquote allow pagenum. -->
-<!--HB: 2004-03-25 36d: list: added start attribute to indicate initial
-    ordinal of a numbered list. -->
-<!--HB: 2004-03-31 list: changed enum from 'U' to 'A' for uppercase, and
-    "X" to 'I' for uppercase Roman. --> 
-<!--HB: 2004-03-31 list: changed enum value choices from "U" to "A" for
-    uppercase, and "X" to "I" for uppercase Roman for compatibility
-    with xhtml. -->
-<!--HB: 2004-04-02 list: expanded discussion on enum attribute. -->
-<!--HB: 2004-04-27 list: added type "pl" to indicate that the list is 
-    preformatted so no bullets or enumerations should be added. -->
-<!--HB: 2004-04-22 list: removed bullet attribute, It is up to a style-sheet to
-    make any needed visual distinction for nested unordered lists, or if the
-    list type is "pl" preformatted the bullet form may be there. -->
-<!--HB: 2004-03-25 36f: caption: removed use for <img>. -->
-<!--MM: 2004-07-08 Various editorial changes. -->
-<!--MM: 2004-07-08 34: level3: make contentmodel (...)+, rather than (...)*. -->
-<!--MM: 2004-07-08 34: level4: make contentmodel (...)+, rather than (...)*. -->
-<!--MM: 2004-07-08 34: level5: make contentmodel (...)+, rather than (...)*. -->
-<!--MM: 2004-07-08 34: level6: make contentmodel (...)+, rather than (...)*. -->
-<!--MM: 2004-07-23 In %docblockorinline: changed blockhead to bridgehead; 
-        eliminated poem, linegroup, byline, dateline, and epigraph since already
-        present via %block -->
-<!--MM: 2004-07-23 In %inlinenoa: removed %externalinline; since already present
-        via %dtbookinline;.-->
-<!--MM: 2004-07-23 34: level6: replaced "%block | %inlineinblock" with 
-        "%docblockorinline;" per other leveln models. -->
-<!--MM: 2004-07-30  Changed content models of level and level1 - level6 to 
-        eliminate ambiguity. Changed version to 1.1.5a-->
-<!--MM: 2004-07-30 Dropped 'level' attribute from element div. Revised 
-        description of page types for 'page' attribute on element pagenum.  
-        Dropped recommendation to use page number as id. Copied recent change 
-        comments to text. Removed comments explaining amp, lt, gt, etc. Changed 
-        version to 1.1.5b-->
-<!--MM, DP: 2004-08-17 Corrected typos in content models of level and level1 - 
-        level6. Added missing exclamation point in previous change message.-->
-<!--MM: 2004-08-17 Added %dtbookblocknoimggroup; to % blocknoimggroup, from 
-        which it had been accidentally dropped. Deleted section on 
-        character entities. -->
-<!--MM: 2004-09-15: caption: changed content model to %flow;. -->
-<!--MM: 2004-09-15 Deleted element levelhd, replacing it with hd in content 
-        model of level. -->
-<!--MM: 2004-09-15 bridgehead: changed content model to (%inline;)*, to match 
-        hd, and h1-h6. -->
-<!--MM: 2004-09-16 Changed version to 1.2.0 -->
-<!--MM: 2005-03-10 level, level1 - level6: Reverted to 2004-08-17 content model 
-        as simplified content model was not valid. -->
-<!--MM: 2005-03-10 Changed version to 1.2.1 -->
-<!--MM: 2005-03-11 changed value for xmlns to: 
-    %URI; #FIXED 'http://www.loc.gov/nls/z3986/2005/dtbook/'. -->
-<!--MM: 2005-04-22 epigraph - changed ATTLIST to %attrs; -->
-<!--MM: 2005-04-22 byline - changed ATTLIST to %attrs; -->
-<!--MM: 2005-04-22 dateline - changed ATTLIST to %attrs; -->
-<!--MM: 2005-04-22 linegroup - changed ATTLIST to %attrs; -->
-<!--MM: 2005-04-22 poem - changed ATTLIST to %attrs; -->
-<!--MM: 2005-04-22 dtbook - changed version to 1.2.1a -->
-<!--MM: 2005-04-26 version: updated from 1.2.1a to 1.2.2-->
-<!--MG: 2005-05-03 fixed malformed comments (double hyphen) -->
-<!--NB: 2005-06-22 wrapped all lines at 80 columns -->
-<!-- 2005-06-26 M. Gylling. Changed pid, sid, ns uri, and filename for Z3986-2005 -->
-<!--jpritchett@rfbd.org:  2006-07-06.  Changed pid, sid, version, and filename for 2005-2 throughout -->
-<!--jpritchett@rfbd.org:  2006-07-06.  (Issue 45) Changed div model to %docblockorinline to include bridgehead -->
-<!--jpritchett@rfbd.org:  2006-07-06.  (Issue 51) Changed content model for frontmatter.  doctitle now required, order of doctitle, covertitle, docauthor fixed. -->
-<!--jpritchett@rfbd.org:  2006-07-06.  (Issue 129) Removed @style from %coreattrs and %attrsrqd -->
-<!--jpritchett@rfbd.org:  2006-07-06.  Removed definition of %StyleSheet, since it is no longer needed -->
-<!--jpritchett@rfbd.org:  2006-07-06.  (Issues 50/68)  Added xml:space to %coreattrs and %attrsrqd -->
-<!--jpritchett@rfbd.org:  2006-07-06.  (Issue 52) Added %coreattrs (id, class, title, xml:space) to title attribute list -->
-<!--jpritchett@rfbd.org:  2006-07-07.  (Issue 102) Changed @idref type for noteref/annoref to %URI to clarify usage -->
-<!--jpritchett@rfbd.org:  2006-07-07.  (Issue 102) Modified comments in noteref/annoref ATTLISTs to clarify @idref usage -->
-<!--jpritchett@rfbd.org:  2006-07-07.  (Issue 119) Changed @lang to @xml:lang in bdo -->
-<!--jpritchett@rfbd.org:  2006-07-07.  (Issue 48) Corrected reference to RFC2046 in comments regarding @type for a, annoref, noteref -->
-<!--jpritchett@rfbd.org:  2006-07-07.  (Issue 65) Corrected usage comment for meta -->
-<!--jpritchett@rfbd.org:  2006-07-07.  (Issue 120) Corrected terminology in section 2 of general documentation comment -->
-<!--jpritchett@rfbd.org:  2006-07-07.  (Issue 92) Added comment deprecating @showin -->
-<!--jpritchett@rfbd.org:  2006-07-07.  (Issue 113) Created new entity %externalFlow; for extension elements that are both block and inline -->
-<!--jpritchett@rfbd.org:  2006-07-07.  (Issue 113) Added %externalFlow to %flow;, %flownopagenum;, %inlines;, %inlinew;, %dtbookblock;, %block; -->
-<!--jpritchett@rfbd.org:  2006-07-07.  (Issue 117) Created new entity %externalNamespaces; for extension namespace attributes -->
-<!--jpritchett@rfbd.org:  2006-07-07.  (Issue 117) Added %externalNamespaces; to %coreattrs;, %attrsrqd;, and dtbook -->
-<!--jpritchett@rfbd.org:  2006-08-11.  (Issue 113) Added %externalFlow; to %dtbookinline; -->
-<!--jpritchett@rfbd.org:  2006-09-08.  (Issues 50/68) Rewrote attribute lists of code and samp to prevent duplication of @xml:lang -->
-<!--jpritchett@rfbd.org:  2007-12-07.  Changed pid, sid, version, and filename for 2005-3 throughout, including documentary comments -->
-<!--jpritchett@rfbd.org:  2007-12-10.  (Issue 194) Removed superfluous %dtbookblock entity -->
-<!--jpritchett@rfbd.org:  2007-12-10.  (Issue 191) Updated RFC reference from 3066 to 4646 -->
-<!--jpritchett@rfbd.org:  2007-12-17.  (Issue 148) Updated comments regarding caption/@imgrefs to reflect type of IDREFS, not %URI; -->
-<!--jpritchett@rfbd.org:  2007-12-17.  (Issue 156) Changed attlist for title to %attrs; -->
-<!--jpritchett@rfbd.org:  2007-12-17.  (Issue 157) Added @smilref and @showin to bdo -->
-<!--jpritchett@rfbd.org:  2007-12-17.  (Issue 195) Expanded title content model to include inlines -->
-<!--jpritchett@rfbd.org:  2007-12-17.  (Issue 200) Added pagenum to imggroup content model -->
-<!--jpritchett@rfbd.org:  2007-12-19.  (Issue 199) Added pagenum to table and tbody content models -->
-
-
-<!--================= Comment Classification Conventions ==================-->
-
-<!--       Some comments start with a pattern followed by a colon:
-
-               Use: element type and its use.
-
-               Attuse: attribute use for associated element type.
-
-               HB: date object comment on change by Michael Moodie.
-
-           Other comments without such a pattern are dividing lines,
-           details about the DTD structure, or about dtbook objects.
-    -->
 
 <!--=================== Imported Parameter Entity Names ===================-->
 
@@ -736,14 +57,12 @@ The following identifiers apply to this DTD:
 
 <!--jpritchett@rfbd.org:  2006-07-07.  Created new entity %externalFlow; for extension elements that are both block and inline -->
 
-<!ENTITY % externalFlow "" >
 	<!-- placeholder for elements that can be either block or inline from 
 	     external modules; if changed, string in external subset begins 
 	     " | flowelementname". -->
 
 <!--jpritchett@rfbd.org:  2006-07-07.  Created new entity %externalNamespaces; for extension namespace attributes -->
 
-<!ENTITY % externalNamespaces "" >
 	<!-- placeholder for namespace attributes for external modules.  These 
 	     attributes will be available on all elements.  If changed, string
 	     in external subset is in format 
@@ -811,154 +130,6 @@ The following identifiers apply to this DTD:
           %block; | %inlineinblock;">
     <!-- common non-head elements for use with level or levelN -->
 
-<!--========================= Generic Attributes ==========================-->
-
-<!--HB: 2004-03-25 33: % coreattrs: dropped mention of character
-    mnemonic entities, as use unicode. -->    
-
-<!--jpritchett@rfbd.org:  2006-07-06.  Removed @style -->
-<!--jpritchett@rfbd.org:  2006-07-06 Added @xml:space -->
-<!--jpritchett@rfbd.org:  2006-07-07.  Added %externalNamespaces; -->
-
-<!ENTITY % coreattrs
-    "id          ID             #IMPLIED
-     class       CDATA          #IMPLIED
-     title       %Text;         #IMPLIED 
-     xml:space 	(default|preserve) 	#IMPLIED 
-     %externalNamespaces;" 
- >
-
-    <!-- coreattrs are attributes permissible for most elements
-
-        id       document-wide unique id
-        class    space separated list of classes used for rendering
-        title    advisory title/amplification
-        xml:space	whitespace handling (see http://www.w3.org/TR/xml11/#sec-white-space)
-    -->
-
-<!--HB: 2004-03-25 36a: % i18n: removed lang attribute,
-    as redundant with xml:lang. -->
-
-<!ENTITY % i18n
-    "xml:lang    %LanguageCode; #IMPLIED
-     dir         (ltr|rtl)      #IMPLIED" >
-
-    <!-- i18n internationalization attributes
-        xml:lang    language code (as per XML 1.0 spec)
-        dir         direction for weak/neutral text
-                    ltr=left to right
-                    rtl=right to left
-
-    xhtml recommendation: use xml:lang such as "en-US", on the major
-    containing block, to provide source language for
-    the #IMPLIED values of its descendent elements.
-    See [RFC1556] for handling bi-directional text in MIME.
-    -->
-
-<!--jpritchett@rfbd.org:  2006-07-07  Added comment deprecating @showin -->
-
-<!ENTITY % showin
-    "showin (xxx|xxp|xlx|xlp|bxx|bxp|blx|blp) #IMPLIED" >
-    <!-- NOTE:
-    	 With version 2005-2 of the DTD, the use of the showin attribute is deprecated.
-    	 Following more modern conventions that have evolved since showin was
-    	 originally added, the Z39.86 Maintenance Committee's intention is to use
-    	 namespaces to distinguish output-format-specific information via extension
-    	 modules
-	-->
-    <!--showin attribute applies for text elements to permit identification
-        of the kinds of display appropriate for the element, so presentation
-        choice by the reader among alternative readings can be provided, when
-        appropriate. Values of showin are coded with three letters in order:
-        "b"=Braille, "l"=Largeprint, and "p"=Print; or "x"=inappropriate:
-
-            Value  Braille  Largeprint Print   Interpretation
-
-            "xxx"                              hide
-            "xxp"                      p       print only
-            "xlx"           l                  largeprint only
-            "xlp"           l          p       largeprint and print
-            "bxx"   b                          braille only
-            "bxp"   b                  p       braille and print
-            "blx"   b       l                  braille and largeprint
-            "blp"   b       l          p       braille, largeprint, and print
-
-        There is no default value; this attribute value is implied
-        from the most immediate ancestor that specifies a value.
-        The usual default for showin is 'blp'. If only one showin
-        value is needed it should be included with <book>.
-
-        Different content for the same element (usually <prodnote>) meeting
-        different needs is possible, with showin serving as a switch to
-        differentiate among them. Both largeprint and print are appropriate
-        for screen rendering as well as printing. Different corresponding
-        styles may be appropriate.
-
-        It is possible to include equivalent content from any major structure
-        below <book> to provide the different content suitable for different
-        media. These would be independent, sharing no direct content, possibly
-        having common references to images, with different accompanying text
-        descriptions.
-    -->
-
-<!ENTITY % attrs 
-    "%coreattrs;
-     %i18n;
-     smilref      CDATA       #IMPLIED
-     %showin;" >
-
-    <!-- %attrs; is part of most attribute lists. It includes
-
-    %coreattrs; from which come the four #IMPLIED attributes:
-        id, class, title, and xml:space
-
-    %i18n; from which come the implied attributes: xml:lang, and dir
-
-    smilref is a pointer to a [SMIL2.0] file, normally to the time container
-        (SMIL <par> or <seq>) containing the media object that references this
-        element. However, in a text-only DTB consisting of a sequence of
-        text media objects, smilref points to the media object that
-        references this element. smilref allows resumption of SMIL
-        presentation at the proper location after navigation via dtbook file.
-        All smilref values are expected to be added to an augmented
-        version of the <dtbook> during production.
-
-    %showin; (See entity declaration.)
-    -->
-
-<!--jpritchett@rfbd.org:  2006-07-06.  Removed @style -->
-<!--jpritchett@rfbd.org:  2006-07-06.  Added xml:space.  This allows control of whitespace handling on any element. -->
-<!--jpritchett@rfbd.org:  2006-07-07.  Added %externalNamespaces; -->
-
-
-<!ENTITY % attrsrqd
-    "id          ID             #REQUIRED
-     class       CDATA          #IMPLIED
-     title       %Text;         #IMPLIED
-     xml:space 	(default|preserve) 	#IMPLIED
-     smilref     CDATA          #IMPLIED
-     %i18n;
-     %showin; 
-     %externalNamespaces; " >
-    <!-- %attrsrqd; includes required id and implied class,
-        title, and xml:space (see %coreattrs above)
-
-    %i18n; from which come the implied attributes: xml:lang, and dir
-
-    smilref is a pointer to a [SMIL2.0] file, normally to the time container
-        (SMIL <par> or <seq>) containing the media object that references this
-        element. However, in a text-only DTB consisting of a sequence of
-        text media objects, smilref points to the media object that
-        references this element. smilref allows resumption of SMIL
-        presentation at the proper location after navigation via dtbook file.
-        All smilref values are expected to be added to an augmented
-        version of the <dtbook> during production.
-        
-    %externalnamespace; (See entity declaration)
-
-    %showin; (See entity declaration.)
-    -->
-
 <!--========================= Document Structure ==========================-->
 
 <!ENTITY % dtbookcontent
@@ -1002,117 +173,7 @@ The following identifiers apply to this DTD:
 <!--jpritchett@rfbd.org:  2006-07-07.  Added %externalNamespaces; -->
     <!--jpritchett@rfbd.org:  2007-12-07  updated @version to 2005-3 -->
     
-<!ATTLIST dtbook
-  version CDATA #FIXED '2005-3'
-  xmlns   %URI; #FIXED 'http://www.daisy.org/z3986/2005/dtbook/'
-  %i18n;
-  %externalNamespaces;
-  >
-
-<!--======================== Document Head Metadata =======================-->
-
-<!--HB: 2004-03-25 36: % headmisc: removed style. -->
-
-<!ENTITY % headmisc
-    "meta | link " >
-    <!-- optional head elements -->
-
-<!--Use: head contains metainformation about the book but no
-    actual content of the book itself, which is placed in <book>.
-    This information is consonant with the <head> information
-    in xhtml, see [XHTML11STRICT].
-    -->
-
-<!--HB: 2003-03-25 head: element drop title -->
-
-<!ELEMENT head (%headmisc;)* >
-
-<!--Attuse: head
-    "profile" gives one or more
-    whitespace-separated profile URI targets that may provide
-    additional information about the current document.
-    -->
-
-<!ATTLIST head
-  %i18n;
-  profile %URI; #IMPLIED
-  >
-
-<!--HB: 2004-04-02 title: element removed from head,
-    now only used for cite and poem. -->
-
-<!--Use: link is an empty element appearing in the <head> section
-    of a document that establishes a connection between the current
-    document and another document. The <link> element conveys
-    relationship information (for example, "next" and "previous") that
-    may be rendered by user agents in a variety of ways.
-    -->
-
-<!ELEMENT link EMPTY >
-
-<!--Attuse: link
-
-    Each attribute use indicated by a parameter entity is
-    defined in the comment following its definition.
-    -->
-
-<!ATTLIST link
-  %attrs;
-  charset %Charset; #IMPLIED
-  href %URI; #IMPLIED
-  hreflang %LanguageCode; #IMPLIED
-  type %ContentType; #IMPLIED
-  rel %LinkTypes; #IMPLIED
-  rev %LinkTypes; #IMPLIED
-  media %MediaDesc; #IMPLIED
-  >
-
-<!--HB: 2004-03-29 Dublin Core: minimum requirement 
-    name="dc:title" content="book title"; encourage use of
-    additional name/content pairs from Dublin Core 
-    name="dc:..." and from Digital Talking Book name="dtb:..."
-    Encourage inclusion of additional Dublin Core and Dtbook metadata
-    attributes to make more useful the dtbook as stand-alone content. -->
-
-<!--jpritchett@rfbd.org:  2006-07-07  Corrected usage comment  -->
-<!--Use: meta indicates metadata about the book. It is an empty
-    element that may appear repeatedly only in <head>.
-    Meta is the container for the Dublin Core attributes, 
-    and the additional DTBook attributes.
-    As a minumum the dc:Title and dtb:uid meta are required.
-    Inclusion of the full range of applicable Dublin Core elements is 
-    recommended, to make a DTBook document more useful as stand-alone 
-    content.
-    The Dublin Core specification is available at:
-    	http://purl.org/dc/
-    -->
-
-<!ELEMENT meta EMPTY >
-
-<!--Attuse: meta
-
-    "http-equiv" connects the content attribute
-    value to an http header field.
-
-    "name" value identifies the specific kind of
-    content value.
-
-    "content" indicates the value for that "name",
-    possibly constrained by the semantics for the individual names.
-
-    "scheme" indicates a predetermined format for interpreting
-    the content value, such as the Dublin Core.
-    -->
-
-<!ATTLIST meta
-  %i18n;
-  http-equiv NMTOKEN #IMPLIED
-  name NMTOKEN #IMPLIED
-  content CDATA #REQUIRED
-  scheme CDATA #IMPLIED
-  >
-
-<!--HB: 2004-03-25 36: head: removed element style. -->
+ 
 
 <!--============================ Book Content =============================-->
 
@@ -1123,9 +184,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT book (frontmatter?, bodymatter?, rearmatter?) >
 
-<!ATTLIST book
-  %attrs;
-  >
+ 
 
 <!--======================== Book Major Structures ========================-->
 
@@ -1144,9 +203,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT frontmatter (doctitle, covertitle?, docauthor*, (level | level1)*) >
 
-<!ATTLIST frontmatter
-  %attrs;
-  >
+ 
 
 <!--Use: bodymatter consists of the text proper of a book, as contrasted
     with preliminary material <frontmatter> or supplementary information
@@ -1158,9 +215,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT bodymatter (level | level1)+ >
 
-<!ATTLIST bodymatter
-  %attrs;
-  >
+ 
 
 <!--Use: rearmatter contains supplementary material such as
     appendices, glossaries, bibliographies, and indices. It follows
@@ -1171,9 +226,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT rearmatter (level | level1)+ >
 
-<!ATTLIST rearmatter
-  %attrs;
-  >
+ 
 
 <!--================== dtbook Recursive Structure level ===================-->
 
@@ -1208,10 +261,7 @@ The following identifiers apply to this DTD:
     "depth" indicates the nesting depth, starting at 1.
     -->
 
-<!ATTLIST level
-  %attrs;
-  depth CDATA #IMPLIED
-  >
+ 
 
 <!--============ dtbook Hierarchic Structure level1 ... level6 ============-->
 
@@ -1239,9 +289,7 @@ The following identifiers apply to this DTD:
 ((%docblockorinline; | level2)+, (h1, (%docblockorinline; | level2)+)?))
 >
 
-<!ATTLIST level1
-  %attrs;
-  >
+ 
 
 <!--Use: level2 contains subdivisions that nest within <level1>
     divisions. The class attribute identifies the actual name (e.g.,
@@ -1263,9 +311,7 @@ The following identifiers apply to this DTD:
 ((%docblockorinline; | level3)+, (h2, (%docblockorinline; | level3)+)?))
 >
 
-<!ATTLIST level2
-  %attrs;
-  >
+ 
 
 <!--HB: 2004-03-25 28: level3: added constraint - at most one <h3> 
         per <level3>. -->
@@ -1289,9 +335,7 @@ The following identifiers apply to this DTD:
 ((%docblockorinline; | level4)+, (h3, (%docblockorinline; | level4)+)?))
 >
 
-<!ATTLIST level3
-  %attrs;
-  >
+ 
 
 <!--HB: 2004-03-25 28: level4: added constraint - at most one <h4> 
         per <level4>. -->
@@ -1314,9 +358,7 @@ The following identifiers apply to this DTD:
 ((%docblockorinline; | level5)+, (h4, (%docblockorinline; | level5)+)?))
 >
 
-<!ATTLIST level4
-  %attrs;
-  >
+ 
 
 <!--HB: 2004-03-25 28: level5: added constraint - at most one <h5> 
         per <level5>. -->
@@ -1340,9 +382,7 @@ The following identifiers apply to this DTD:
 ((%docblockorinline; | level6)+, (h5, (%docblockorinline; | level6)+)?))
 >
 
-<!ATTLIST level5
-  %attrs;
-  >
+ 
 
 <!--HB: 2004-03-25 28: level6: added constraint - at most one <h6> 
         per <level6>. -->
@@ -1367,9 +407,7 @@ The following identifiers apply to this DTD:
 ((%docblockorinline;)+, (h6, (%docblockorinline;)+)?))
 >
 
-<!ATTLIST level6
-  %attrs;
-  >
+ 
 
 <!--============================= Text Markup =============================-->
 
@@ -1460,9 +498,7 @@ The following identifiers apply to this DTD:
     to which the more general %attrs; apply.
     -->
 
-<!ATTLIST br
-  %coreattrs;
-  >
+ 
 
 <!--Use: line marks a single logical line of text. Often used in
     conjunction with <linenum> in documents with numbered lines.
@@ -1470,9 +506,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT line (%inline; | linenum)* >
 
-<!ATTLIST line
-  %attrs;
-  >
+ 
 
 <!--HB: 2004-03-30 poem: added linenum use. -->
 
@@ -1481,9 +515,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT linenum (#PCDATA) >
 
-<!ATTLIST linenum
-  %attrs;
-  >
+ 
 
 <!--Use: address contains a location at which a person or agency
     may be contacted. By use of <line> to contain content of the
@@ -1495,9 +527,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT address (%inline; | line)* >
 
-<!ATTLIST address
-  %attrs;
-  >
+ 
 
 <!--Use: div is a generic container for subdivisions of a book. The
     <level1> ... <level6> hierarchy, or the <level> tag used recursively,
@@ -1519,9 +549,7 @@ The following identifiers apply to this DTD:
     actual name (e.g., part, chapter, letter) of the structure it marks.
     -->
 
-<!ATTLIST div
-  %attrs;
->
+ 
 
 <!--=== dtbook Block Elements: Title, Author, Prodnote, Sidebar ===-->
 
@@ -1536,9 +564,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT title (%inline;)* >
 
-<!ATTLIST title
-  %attrs;
-  >
+ 
 
 <!--Use: author identifies the writer of a work other than this one.
     Contrast with <docauthor>,  which identifies the author of this work.
@@ -1547,9 +573,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT author (%inline;)* >
 
-<!ATTLIST author
-  %attrs;
-  >
+ 
 
 <!--HB: 2004-03-25 35d: notice element dropped: its purpose is sufficiently
     achieved with sidebar with attribute render="required." This provides
@@ -1585,11 +609,7 @@ The following identifiers apply to this DTD:
     value, repeating it from the text. -->
 
 
-<!ATTLIST prodnote
-  %attrs;
-  imgref IDREFS #IMPLIED
-  render (required | optional) #REQUIRED
-  >
+ 
 
 <!--Use: sidebar contains information supplementary to the main
     text and/or narrative flow and is often boxed and printed apart
@@ -1603,10 +623,7 @@ The following identifiers apply to this DTD:
     text. Optionally put the specific admonition in the class attribute
     value, repeating it from the text. -->
 
-<!ATTLIST sidebar
-  %attrs;
-  render (required | optional) #REQUIRED
-  >
+ 
 
 <!--Use: note marks a footnote, endnote, etc. Any local reference to
     <note id="yyy"> is by <noteref idref="#yyy">.
@@ -1614,9 +631,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT note (%block; | %inlineinblock;)+ >
 
-<!ATTLIST note
-  %attrsrqd;
-  >
+ 
 
 <!--Use: annotation is a comment on or explanation of a portion of
     a printed book. It differs from <note> in that an <annotation>
@@ -1627,9 +642,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT annotation (%block; | %inlineinblock;)+ >
 
-<!ATTLIST annotation
-  %attrsrqd;
-  >
+ 
 
 <!--====================== Byline, Epigraph, Dateline =====================-->
 
@@ -1649,9 +662,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT epigraph (%flow;)* >
 
-<!ATTLIST epigraph
-  %attrs;
-  >
+ 
 
 <!--HB: 2004-30-30 byline: element added. -->
 
@@ -1663,9 +674,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT byline (%inline;)* >
 
-<!ATTLIST byline
-  %attrs;
-  >
+ 
 
 <!--HB: 2004-30-30 dateline: element added. -->
 
@@ -1677,9 +686,7 @@ The following identifiers apply to this DTD:
 
 <!ELEMENT dateline (%inline;)* >
 
-<!ATTLIST dateline
-  %attrs;
-  >
+ 
 
 <!--============================= Poem, Linegroup =========================-->
 
@@ -1700,9 +707,7 @@ The following identifiers apply to this DTD:
     kind of linegroup, such as "stanza", "chorus", or "canto". -->
     <!--MM: 2005-04-22 linegroup - changed ATTLIST to %attrs; --> 
 
-<!ATTLIST linegroup 
-  %attrs;
-  >
+ 
 
 <!--HB: 2004-03-30 poem: removed notice and hr from content model. -->
 
@@ -1716,9 +721,7 @@ The following identifiers apply to this DTD:
 <!ELEMENT poem (title | author | hd | dateline | epigraph | byline | 
     linegroup | line | pagenum | img | imggroup | sidebar)* >
 
-<!ATTLIST poem
-  %attrs;
-  >
+ 
 
 <!--========================= The Anchor Element ==========================-->
 
@@ -1769,17 +772,7 @@ The following identifiers apply to this DTD:
             the DTB player.
     -->
 
-<!ATTLIST a
-  %attrs;
-  type %ContentType; #IMPLIED
-  href %URI; #IMPLIED
-  hreflang %LanguageCode; #IMPLIED
-  rel %LinkTypes; #IMPLIED
-  rev %LinkTypes; #IMPLIED
-  accesskey %Character; #IMPLIED
-  tabindex %Number; #IMPLIED
-  external (true | false) 'false'
-  >
+ 
 
 <!--=========================== Inline Elements ===========================-->
 
@@ -1789,9 +782,7 @@ Compare with <strong>.
 
 <!ELEMENT em (%inline;)* >
 
-<!ATTLIST em
-  %attrs;
-  >
+ 
 
 <!--Use: strong marks stronger emphasis than <em>. Visually <strong> is
     usually rendered bold.
@@ -1799,9 +790,7 @@ Compare with <strong>.
 
 <!ELEMENT strong (%inline;)* >
 
-<!ATTLIST strong
-  %attrs;
-  >
+ 
 
 <!--Use: dfn marks the first occurrence of a word or term that is
     defined or explained there or elsewhere in <book>. Often
@@ -1810,9 +799,7 @@ Compare with <strong>.
 
 <!ELEMENT dfn (%inline;)* >
 
-<!ATTLIST dfn
-  %attrs;
-  >
+ 
 
 <!--Use: kbd designates information that the reader is to input
     directly into a computer using the keyboard.
@@ -1820,9 +807,7 @@ Compare with <strong>.
 
 <!ELEMENT kbd (%inline;)* >
 
-<!ATTLIST kbd
-  %attrs;
-  >
+ 
 
 <!--Use: code designates a fragment of computer code.
     -->
@@ -1835,16 +820,7 @@ Compare with <strong>.
     See http://www.w3.org/TR/xml11/#sec-white-space for information on xml:space.
     -->
 
-<!ATTLIST code
-  id          ID             #IMPLIED
-  class       CDATA          #IMPLIED
-  title       %Text;         #IMPLIED 
-  xml:space 	(default|preserve) 	'preserve' 
-  %externalNamespaces;
-  %i18n;
-  smilref      CDATA       #IMPLIED
-  %showin;
-  >
+ 
 
 <!--Use: samp contains a sample of work created by the author for
     use as an example or template. For example, a sample business
@@ -1859,16 +835,7 @@ Compare with <strong>.
     See http://www.w3.org/TR/xml11/#sec-white-space for information on xml:space.
     -->
 
-<!ATTLIST samp
-  id          ID             #IMPLIED
-  class       CDATA          #IMPLIED
-  title       %Text;         #IMPLIED 
-  xml:space 	(default|preserve) 	'preserve' 
-  %externalNamespaces;
-  %i18n;
-  smilref      CDATA       #IMPLIED
-  %showin;
-  >
+ 
 
 <!--Use: cite marks a reference (or citation) to another document.
     -->
@@ -1877,9 +844,7 @@ Compare with <strong>.
 
 <!ELEMENT cite (%inline; | title | author)* >
 
-<!ATTLIST cite
-  %attrs;
-  >
+ 
 
 <!--Use: abbr designates an abbreviation, a shortened form of a
     word. For examples: Mr., approx., lbs., rec'd.
@@ -1893,9 +858,7 @@ Compare with <strong>.
     "title" value may expand that abbreviation.
     -->
 
-<!ATTLIST abbr
-  %attrs;
-  >
+ 
 
 <!--Use: acronym marks a word formed from key letters (usually
     initials) of a group of words. For examples: UNESCO, NATO, XML, US.
@@ -1913,10 +876,7 @@ Compare with <strong>.
     of letters (for examples, "XML" or  "US").
     -->
 
-<!ATTLIST acronym
-  %attrs;
-  pronounce (yes | no) #IMPLIED
-  >
+ 
 
 <!--Use: sub indicates a subscript character (printed below a
     character's normal baseline). Can be used recursively and/or
@@ -1925,9 +885,7 @@ Compare with <strong>.
 
 <!ELEMENT sub (%inline;)* >
 
-<!ATTLIST sub
-  %attrs;
-  >
+ 
 
 <!--Use: sup marks a superscript character (printed above a
     character's normal baseline). Can be used recursively and/or
@@ -1936,9 +894,7 @@ Compare with <strong>.
 
 <!ELEMENT sup (%inline;)* >
 
-<!ATTLIST sup
-  %attrs;
-  >
+ 
 
 <!--Use: span is a generic container for use in inline settings
     when no specific tag exists for a given situation. The class
@@ -1950,9 +906,7 @@ Compare with <strong>.
 
 <!ELEMENT span (%inline;)* >
 
-<!ATTLIST span
-  %attrs;
-  >
+ 
 
 <!--Use: bdo is used in special cases where the automatic actions
     of the bi-directional algorithm would result in incorrect display.
@@ -1970,13 +924,7 @@ Compare with <strong>.
     left-to-right, 'rtl' is right-to-left.
     -->
 
-<!ATTLIST bdo
-  %coreattrs;
-  xml:lang %LanguageCode; #IMPLIED
-  dir (ltr | rtl) #REQUIRED
-  smilref      CDATA       #IMPLIED
-  %showin;
-  >
+ 
 
 <!--=================== dtbook Inline Sentence and Word ===================-->
 
@@ -1985,18 +933,14 @@ Compare with <strong>.
 
 <!ELEMENT sent (%inlines;)* >
 
-<!ATTLIST sent
-  %attrs;
-  >
+ 
 
 <!--Use: w marks a word.
     -->
 
 <!ELEMENT w (%inlinew;)* >
 
-<!ATTLIST w
-  %attrs;
-  >
+ 
 
 <!--======== Inline Page Number, Footnote and Annotation Reference ========-->
 
@@ -2022,10 +966,7 @@ Compare with <strong>.
     the page where that content starts.
     -->
 
-<!ATTLIST pagenum
-  %attrsrqd;
-  page (front | normal | special) 'normal'
-  >
+ 
 
 <!--Use: noteref marks one or more characters that reference a footnote
     or endnote <note>. Contrast with <annoref>. <noteref> and <note>
@@ -2049,11 +990,7 @@ Compare with <strong>.
     the target, see [RFC2046].
     -->
 
-<!ATTLIST noteref
-  %attrs;
-  idref %URI; #REQUIRED
-  type %ContentType; #IMPLIED
-  >
+ 
 
 <!--Use: annoref marks a text segment that references an <annotation>.
     Each <annoref> is usually a word, phrase, or whole line that
@@ -2079,11 +1016,7 @@ Compare with <strong>.
     type of the targeted id, see [RFC2046].
     -->
 
-<!ATTLIST annoref
-  %attrs;
-  idref %URI; #REQUIRED
-  type %ContentType; #IMPLIED
-  >
+ 
 
 <!--============================ Inline Quotes ============================-->
 
@@ -2099,10 +1032,7 @@ Compare with <strong>.
     "cite" may provide a URI reference.
     -->
 
-<!ATTLIST q
-  %attrs;
-  cite %URI; #IMPLIED
-  >
+ 
 
 <!--=============================== Images ================================-->
 
@@ -2153,14 +1083,7 @@ Compare with <strong>.
     information, measured in pixels.
     -->
 
-<!ATTLIST img
-  %attrs;
-  src %URI; #REQUIRED
-  alt %Text; #REQUIRED
-  longdesc %URI; #IMPLIED
-  height %Length; #IMPLIED
-  width %Length; #IMPLIED
-  >
+ 
 
 <!-- jpritchett@rfbd.org 2007-12-17:  Added pagenum to content model -->
 
@@ -2186,9 +1109,7 @@ Compare with <strong>.
 <!ELEMENT imggroup (prodnote | img | caption | pagenum)+ >
 
 
-<!ATTLIST imggroup
-  %attrs;
-  >
+ 
 
 <!--HB: 2004-03-25 30: hr: element dropped horizontal rule as purely visual. -->
 
@@ -2199,9 +1120,7 @@ Compare with <strong>.
  
 <!ELEMENT p (%inline; | list | dl)* >
 
-<!ATTLIST p
-  %attrs;
-  >
+ 
 
 <!--=========== Doctitle, Docauthor, Covertitle, and Headings  ============-->
 
@@ -2213,9 +1132,7 @@ Compare with <strong>.
 
 <!ELEMENT doctitle (%inline;)* >
 
-<!ATTLIST doctitle
-  %attrs;
-  >
+ 
 
 <!--Use: docauthor marks each author or editor of this work. Compare with
     <author>, used to mark the author of another work, within <blockquote>
@@ -2224,9 +1141,7 @@ Compare with <strong>.
 
 <!ELEMENT docauthor (%inline;)* >
 
-<!ATTLIST docauthor
-  %attrs;
-  >
+ 
 
 <!--Use: covertitle is the short title of a book, often found on the
     spine. It may be the same as the doctitle.
@@ -2236,9 +1151,7 @@ Compare with <strong>.
 
 <!ELEMENT covertitle (%inline;)* >
 
-<!ATTLIST covertitle
-  %attrs;
-  >
+ 
 
 
 <!--MM: 2004-09-15 Deleted element levelhd, replacing it with hd in content 
@@ -2249,53 +1162,41 @@ Compare with <strong>.
 
 <!ELEMENT h1 (%inline;)* >
 
-<!ATTLIST h1
-  %attrs;
-  >
+ 
 
 <!--Use: h2 contains the text of the heading for a <level2> structure.
     -->
 
 <!ELEMENT h2 (%inline;)* >
 
-<!ATTLIST h2
-  %attrs;
-  >
+ 
 
 <!--Use: h3 contains the text of the heading for a <level3> structure.
     -->
 
 <!ELEMENT h3 (%inline;)* >
 
-<!ATTLIST h3
-  %attrs;
-  >
+ 
 
 <!--Use: h4 contains the text of the heading for a <level4> structure.
     -->
 
 <!ELEMENT h4 (%inline;)* >
-<!ATTLIST h4
-  %attrs;
-  >
+ 
 
 <!--Use: h5 contains the text of the heading for a <level5> structure.
     -->
 
 <!ELEMENT h5 (%inline;)* >
 
-<!ATTLIST h5
-  %attrs;
-  >
+ 
 
 <!--Use: h6 contains the text of the heading for a <level6> structure.
     -->
 
 <!ELEMENT h6 (%inline;)* >
 
-<!ATTLIST h6
-  %attrs;
-  >
+ 
 
 <!--HB: 2004-04-02 bridgehead: element added. -->
 <!--MM: 2004-09-15 bridgehead: changed content model to (%inline;)*, to match 
@@ -2312,18 +1213,14 @@ Compare with <strong>.
 
 <!ELEMENT bridgehead (%inline;)* >
 
-<!ATTLIST bridgehead
-  %attrs;
-  >
+ 
 
 <!--Use: hd marks the text of a heading in <level>, <poem>, <list>, <linegroup>,
          or <sidebar>. -->
 
 <!ELEMENT hd (%inline;)* >
 
-<!ATTLIST hd
-  %attrs;
-  >
+ 
 
 <!--========================== Preformatted Text ==========================-->
 
@@ -2346,10 +1243,7 @@ Compare with <strong>.
     URI from which the <blockquote> came.
     -->
 
-<!ATTLIST blockquote
-  %attrs;
-  cite %URI; #IMPLIED
-  >
+ 
 
 <!--================== Definition List, and Other Lists ===================-->
 
@@ -2360,9 +1254,7 @@ Compare with <strong>.
 
 <!ELEMENT dl (dt | dd | pagenum)+ >
 
-<!ATTLIST dl
- %attrs;
-  >
+ 
 
 <!--Use: dt marks a term in a definition list <dl> for which a
     definition <dd> follows.
@@ -2370,9 +1262,7 @@ Compare with <strong>.
 
 <!ELEMENT dt (%inline;)* >
 
-<!ATTLIST dt
-  %attrs;
-  >
+ 
 
 <!--Use: dd marks a definition of the preceding term <dt> within a
     definition list <dl>. A definition without a preceding <dt> has
@@ -2382,9 +1272,7 @@ Compare with <strong>.
 
 <!ELEMENT dd (%flow;)* >
 
-<!ATTLIST dd
-  %attrs;
-  >
+ 
 
 <!--Use: list contains some form of list, ordered, unordered, or preformatted.
     The list may have intermixed heading <hd> (generally only one,
@@ -2440,13 +1328,7 @@ Compare with <strong>.
     make any needed visual distinction for nested unordered lists, or if the
     list type is "pl" preformatted the bullet form may be there. -->
 
-<!ATTLIST list
-  %attrs;
-  type (ol | ul | pl) #REQUIRED
-  depth CDATA #IMPLIED
-  enum (1 | a | A | i | I) #IMPLIED
-  start CDATA #IMPLIED
-  >
+ 
 
 <!--Use: li marks each list item in a <list>. <li> content may be
     either inline or block and may include other nested
@@ -2458,9 +1340,7 @@ Compare with <strong>.
 
 <!ELEMENT li (%flow; | lic)* >
 
-<!ATTLIST li
-  %attrs;
-  >
+ 
 
 <!--Use: lic ("list item component") allows ordered substructure
     within a list item <li>. Used when a list item is made up of
@@ -2479,9 +1359,7 @@ Compare with <strong>.
     class values might include "section", and "pagenumber".
     -->
 
-<!ATTLIST lic
-  %attrs;
-  >
+ 
 
 <!--=============================== Tables ================================-->
 
@@ -2572,16 +1450,7 @@ Compare with <strong>.
     declarations.
     -->
 
-<!ATTLIST table
-  %attrs;
-  summary %Text; #IMPLIED
-  width %Length; #IMPLIED
-  border %Pixels; #IMPLIED
-  frame %TFrame; #IMPLIED
-  rules %TRules; #IMPLIED
-  cellspacing %Length; #IMPLIED
-  cellpadding %Length; #IMPLIED
-  >
+ 
 <!--HB: 2004-03-25 36f: caption: removed use for <img>. -->
 <!--MM: 2004-09-15: caption: changed content model to %flow;. -->
 
@@ -2603,10 +1472,7 @@ Compare with <strong>.
     Note: imgref is an extension for dtbook.
     -->
 
-<!ATTLIST caption
-  %attrs;
-  imgref IDREFS #IMPLIED
-  >
+ 
 
 
 <!--Use: thead marks header information in a <table>, consisting of
@@ -2617,11 +1483,7 @@ Compare with <strong>.
 
 <!ELEMENT thead (tr)+ >
 
-<!ATTLIST thead
-  %attrs;
-  %cellhalign;
-  %cellvalign;
-  >
+ 
 
 
 <!--Use: tfoot marks footer information in a <table>, consisting of
@@ -2633,11 +1495,7 @@ Compare with <strong>.
 
 <!ELEMENT tfoot (tr)+ >
 
-<!ATTLIST tfoot
-  %attrs;
-  %cellhalign;
-  %cellvalign;
-  >
+ 
 
 
 <!--Use: tbody marks a group of rows in the main body of a <table>. If
@@ -2652,11 +1510,7 @@ Compare with <strong>.
 
 <!ELEMENT tbody ((tr|pagenum)+) >
 
-<!ATTLIST tbody
-  %attrs;
-  %cellhalign;
-  %cellvalign;
-  >
+ 
 
 <!--Use: colgroup groups adjacent columns <col> that are semantically
     related.
@@ -2690,13 +1544,7 @@ Compare with <strong>.
     user agent, possibly by user preference.
     -->
 
-<!ATTLIST colgroup
-  %attrs;
-  span NMTOKEN '1'
-  width %MultiLength; #IMPLIED
-  %cellhalign;
-  %cellvalign;
-  >
+ 
 
 <!--Use: col elements define the alignment properties for cells in
     one or more columns.
@@ -2725,13 +1573,7 @@ Compare with <strong>.
     If none, it is up to the user agent, possibly by user preference.
     -->
 
-<!ATTLIST col
-  %attrs;
-  span NMTOKEN '1'
-  width %MultiLength; #IMPLIED
-  %cellhalign;
-  %cellvalign;
-  >
+ 
 
 <!--Use: tr marks one row of a <table> containing <th> or <td> cells.
     -->
@@ -2751,11 +1593,7 @@ Compare with <strong>.
 
     -->
 
-<!ATTLIST tr
-  %attrs;
-  %cellhalign;
-  %cellvalign;
-  >
+ 
 
 <!--Use: th indicates a table cell containing header information.
     -->
@@ -2790,17 +1628,7 @@ Compare with <strong>.
     cells share these attributes.
     -->
 
-<!ATTLIST th
-  %attrs;
-  abbr %Text; #IMPLIED
-  axis CDATA #IMPLIED
-  headers IDREFS #IMPLIED
-  scope %Scope; #IMPLIED
-  rowspan NMTOKEN '1'
-  colspan NMTOKEN '1'
-  %cellhalign;
-  %cellvalign;
-  >
+ 
 
 <!--Use: td indicates a table cell containing data.
     -->
@@ -2835,32 +1663,1232 @@ Compare with <strong>.
     cells share these attributes.
     -->
 
-<!ATTLIST td
-  %attrs;
-  abbr %Text; #IMPLIED
-  axis CDATA #IMPLIED
-  headers IDREFS #IMPLIED
-  scope %Scope; #IMPLIED
-  rowspan NMTOKEN '1'
-  colspan NMTOKEN '1'
-  %cellhalign;
-  %cellvalign;
-  >
+ 
 
 <!-- End dtbook-2005-3.dtd -->
 
 
-<!-- !ENTITY % NS.prefixed     "IGNORE" -->
-
-<!ENTITY % MATHML.prefixed "INCLUDE">
-<!ENTITY % MATHML.prefix "m">
-<!ENTITY % mathml-charent.module "IGNORE" >
-
-<!ENTITY % MATHML.Common.attrib "xlink:href CDATA #IMPLIED  xlink:type CDATA #IMPLIED  class CDATA #IMPLIED  style CDATA #IMPLIED  id ID #IMPLIED  xref IDREF #IMPLIED  other CDATA #IMPLIED  xmlns:dtbook CDATA #FIXED  'http://www.daisy.org/z3986/2005/dtbook/'  dtbook:smilref CDATA #IMPLIED">
 
 
-<!ENTITY % mathML2 PUBLIC "-//W3C//DTD MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd">
-%mathML2;
+<!-- Section A: XHTML XML Namespace Framework :::::::::::::::::::: -->
 
-<!ENTITY % externalFlow " | m:math">
-<!ENTITY % externalNamespaces "xmlns:m CDATA #FIXED  'http://www.w3.org/1998/Math/MathML'">
+<!ENTITY % NS.prefixed     "INCLUDE" >
+<!ENTITY % MATHML.prefixed "%NS.prefixed;" >
+
+<!-- XLink ............... -->
+
+<!ENTITY % XLINK.prefix         "xlink" >		
+<!ENTITY % XLINK.xmlns "http://www.w3.org/1999/xlink" >
+<!ENTITY % XLINK.xmlns.attrib
+     "xmlns:%XLINK.prefix;  CDATA           #FIXED '%XLINK.xmlns;'"
+>
+
+<!-- W3C XML Schema ............... -->
+
+<!ENTITY % Schema.prefix         "xsi" >		
+<!ENTITY % Schema.xmlns "http://www.w3.org/2001/XMLSchema-instance" >
+<!ENTITY % Schema.xmlns.attrib
+     "xmlns:%Schema.prefix;  CDATA           #IMPLIED"
+>
+
+<!-- MathML .............. -->
+
+<!ENTITY % MATHML.xmlns    "http://www.w3.org/1998/Math/MathML" >
+<!ENTITY % MATHML.prefix   "m" >
+<![%MATHML.prefixed;[
+<!ENTITY % MATHML.xmlns.extra.attrib  "" >
+]]>
+<!ENTITY % MATHML.xmlns.extra.attrib 
+     "%XLINK.xmlns.attrib; 
+      %Schema.xmlns.attrib;" >
+
+<![%MATHML.prefixed;[
+<!ENTITY % MATHML.pfx  "%MATHML.prefix;:" >
+<!ENTITY % MATHML.xmlns.attrib
+     "xmlns:%MATHML.prefix;  CDATA   #FIXED '%MATHML.xmlns;'
+      %MATHML.xmlns.extra.attrib;"
+>
+]]>
+<!ENTITY % MATHML.pfx  "" >
+<!ENTITY % MATHML.xmlns.attrib
+     "xmlns        CDATA           #FIXED '%MATHML.xmlns;'
+      %MATHML.xmlns.extra.attrib;"
+>
+
+<![%NS.prefixed;[
+<!ENTITY % XHTML.xmlns.extra.attrib 
+     "%MATHML.xmlns.attrib;" >
+]]>
+<!ENTITY % XHTML.xmlns.extra.attrib
+     "%XLINK.xmlns.attrib;
+      %Schema.xmlns.attrib;"
+>
+
+<!-- Section B: MathML Qualified Names ::::::::::::::::::::::::::::: -->
+
+<!-- 9. This section declares parameter entities used to provide
+        namespace-qualified names for all MathML element types.
+-->
+
+<!ENTITY % abs.qname            "%MATHML.pfx;abs" >
+<!ENTITY % and.qname            "%MATHML.pfx;and" >
+<!ENTITY % annotation-xml.qname "%MATHML.pfx;annotation-xml" >
+<!ENTITY % annotation.qname     "%MATHML.pfx;annotation" >
+<!ENTITY % apply.qname          "%MATHML.pfx;apply" >
+<!ENTITY % approx.qname         "%MATHML.pfx;approx" >
+<!ENTITY % arccos.qname         "%MATHML.pfx;arccos" >
+<!ENTITY % arccosh.qname        "%MATHML.pfx;arccosh" >
+<!ENTITY % arccosh.qname        "%MATHML.pfx;arccosh" >
+<!ENTITY % arccot.qname         "%MATHML.pfx;arccot" >
+<!ENTITY % arccoth.qname        "%MATHML.pfx;arccoth" >
+<!ENTITY % arccsc.qname         "%MATHML.pfx;arccsc" >
+<!ENTITY % arccsch.qname        "%MATHML.pfx;arccsch" >
+<!ENTITY % arcsec.qname         "%MATHML.pfx;arcsec" >
+<!ENTITY % arcsech.qname        "%MATHML.pfx;arcsech" >
+<!ENTITY % arcsin.qname         "%MATHML.pfx;arcsin" >
+<!ENTITY % arcsinh.qname        "%MATHML.pfx;arcsinh" >
+<!ENTITY % arctan.qname         "%MATHML.pfx;arctan" >
+<!ENTITY % arctanh.qname        "%MATHML.pfx;arctanh" >
+<!ENTITY % arg.qname            "%MATHML.pfx;arg" >
+<!ENTITY % bvar.qname           "%MATHML.pfx;bvar" >
+<!ENTITY % card.qname           "%MATHML.pfx;card" >
+<!ENTITY % cartesianproduct.qname "%MATHML.pfx;cartesianproduct" >
+<!ENTITY % ceiling.qname         "%MATHML.pfx;ceiling" >
+<!ENTITY % ci.qname             "%MATHML.pfx;ci" >
+<!ENTITY % cn.qname             "%MATHML.pfx;cn" >
+<!ENTITY % codomain.qname       "%MATHML.pfx;codomain" >
+<!ENTITY % complexes.qname      "%MATHML.pfx;complexes" >
+<!ENTITY % compose.qname        "%MATHML.pfx;compose" >
+<!ENTITY % condition.qname      "%MATHML.pfx;condition" >
+<!ENTITY % conjugate.qname      "%MATHML.pfx;conjugate" >
+<!ENTITY % cos.qname            "%MATHML.pfx;cos" >
+<!ENTITY % cosh.qname           "%MATHML.pfx;cosh" >
+<!ENTITY % cot.qname            "%MATHML.pfx;cot" >
+<!ENTITY % coth.qname           "%MATHML.pfx;coth" >
+<!ENTITY % csc.qname            "%MATHML.pfx;csc" >
+<!ENTITY % csch.qname           "%MATHML.pfx;csch" >
+<!ENTITY % csymbol.qname        "%MATHML.pfx;csymbol" >
+<!ENTITY % curl.qname           "%MATHML.pfx;curl" >
+<!ENTITY % declare.qname        "%MATHML.pfx;declare" >
+<!ENTITY % degree.qname         "%MATHML.pfx;degree" >
+<!ENTITY % determinant.qname    "%MATHML.pfx;determinant" >
+<!ENTITY % diff.qname           "%MATHML.pfx;diff" >
+<!ENTITY % divergence.qname     "%MATHML.pfx;divergence" >
+<!ENTITY % divide.qname         "%MATHML.pfx;divide" >
+<!ENTITY % domain.qname         "%MATHML.pfx;domain" >
+<!ENTITY % domainofapplication.qname "%MATHML.pfx;domainofapplication" >
+<!ENTITY % emptyset.qname       "%MATHML.pfx;emptyset" >
+<!ENTITY % eq.qname             "%MATHML.pfx;eq" >
+<!ENTITY % equivalent.qname     "%MATHML.pfx;equivalent" >
+<!ENTITY % eulergamma.qname     "%MATHML.pfx;eulergamma" >
+<!ENTITY % exists.qname         "%MATHML.pfx;exists" >
+<!ENTITY % exp.qname            "%MATHML.pfx;exp" >
+<!ENTITY % exponentiale.qname   "%MATHML.pfx;exponentiale" >
+<!ENTITY % factorial.qname      "%MATHML.pfx;factorial" >
+<!ENTITY % factorof.qname       "%MATHML.pfx;factorof" >
+<!ENTITY % false.qname          "%MATHML.pfx;false" >
+<!ENTITY % floor.qname          "%MATHML.pfx;floor" >
+<!ENTITY % fn.qname             "%MATHML.pfx;fn" >
+<!ENTITY % forall.qname         "%MATHML.pfx;forall" >
+<!ENTITY % gcd.qname            "%MATHML.pfx;gcd" >
+<!ENTITY % geq.qname            "%MATHML.pfx;geq" >
+<!ENTITY % grad.qname           "%MATHML.pfx;grad" >
+<!ENTITY % gt.qname             "%MATHML.pfx;gt" >
+<!ENTITY % ident.qname          "%MATHML.pfx;ident" >
+<!ENTITY % image.qname          "%MATHML.pfx;image" >
+<!ENTITY % imaginary.qname      "%MATHML.pfx;imaginary" >
+<!ENTITY % imaginaryi.qname     "%MATHML.pfx;imaginaryi" >
+<!ENTITY % implies.qname        "%MATHML.pfx;implies" >
+<!ENTITY % in.qname             "%MATHML.pfx;in" >
+<!ENTITY % infinity.qname       "%MATHML.pfx;infinity" >
+<!ENTITY % int.qname            "%MATHML.pfx;int" >
+<!ENTITY % integers.qname       "%MATHML.pfx;integers" >
+<!ENTITY % intersect.qname      "%MATHML.pfx;intersect" >
+<!ENTITY % interval.qname       "%MATHML.pfx;interval" >
+<!ENTITY % inverse.qname        "%MATHML.pfx;inverse" >
+<!ENTITY % lambda.qname         "%MATHML.pfx;lambda" >
+<!ENTITY % laplacian.qname      "%MATHML.pfx;laplacian" >
+<!ENTITY % lcm.qname            "%MATHML.pfx;lcm" >
+<!ENTITY % leq.qname            "%MATHML.pfx;leq" >
+<!ENTITY % limit.qname          "%MATHML.pfx;limit" >
+<!ENTITY % list.qname           "%MATHML.pfx;list" >
+<!ENTITY % ln.qname             "%MATHML.pfx;ln" >
+<!ENTITY % log.qname            "%MATHML.pfx;log" >
+<!ENTITY % logbase.qname        "%MATHML.pfx;logbase" >
+<!ENTITY % lowlimit.qname       "%MATHML.pfx;lowlimit" >
+<!ENTITY % lt.qname             "%MATHML.pfx;lt" >
+<!ENTITY % maction.qname        "%MATHML.pfx;maction" >
+<!ENTITY % maligngroup.qname    "%MATHML.pfx;maligngroup" >
+<!ENTITY % malignmark.qname     "%MATHML.pfx;malignmark" >
+<!ENTITY % math.qname           "%MATHML.pfx;math" >
+<!ENTITY % matrix.qname         "%MATHML.pfx;matrix" >
+<!ENTITY % matrixrow.qname      "%MATHML.pfx;matrixrow" >
+<!ENTITY % max.qname            "%MATHML.pfx;max" >
+<!ENTITY % mean.qname           "%MATHML.pfx;mean" >
+<!ENTITY % median.qname         "%MATHML.pfx;median" >
+<!ENTITY % menclose.qname       "%MATHML.pfx;menclose" >
+<!ENTITY % merror.qname         "%MATHML.pfx;merror" >
+<!ENTITY % mfenced.qname        "%MATHML.pfx;mfenced" >
+<!ENTITY % mfrac.qname          "%MATHML.pfx;mfrac" >
+<!ENTITY % mglyph.qname         "%MATHML.pfx;mglyph" >
+<!ENTITY % mi.qname             "%MATHML.pfx;mi" >
+<!ENTITY % min.qname            "%MATHML.pfx;min" >
+<!ENTITY % minus.qname          "%MATHML.pfx;minus" >
+<!ENTITY % mlabeledtr.qname     "%MATHML.pfx;mlabeledtr" >
+<!ENTITY % mmultiscripts.qname  "%MATHML.pfx;mmultiscripts" >
+<!ENTITY % mn.qname             "%MATHML.pfx;mn" >
+<!ENTITY % mo.qname             "%MATHML.pfx;mo" >
+<!ENTITY % mode.qname           "%MATHML.pfx;mode" >
+<!ENTITY % moment.qname         "%MATHML.pfx;moment" >
+<!ENTITY % momentabout.qname    "%MATHML.pfx;momentabout" >
+<!ENTITY % mover.qname          "%MATHML.pfx;mover" >
+<!ENTITY % mpadded.qname        "%MATHML.pfx;mpadded" >
+<!ENTITY % mphantom.qname       "%MATHML.pfx;mphantom" >
+<!ENTITY % mprescripts.qname    "%MATHML.pfx;mprescripts" >
+<!ENTITY % mroot.qname          "%MATHML.pfx;mroot" >
+<!ENTITY % mrow.qname           "%MATHML.pfx;mrow" >
+<!ENTITY % ms.qname             "%MATHML.pfx;ms" >
+<!ENTITY % mspace.qname         "%MATHML.pfx;mspace" >
+<!ENTITY % msqrt.qname          "%MATHML.pfx;msqrt" >
+<!ENTITY % mstyle.qname         "%MATHML.pfx;mstyle" >
+<!ENTITY % msub.qname           "%MATHML.pfx;msub" >
+<!ENTITY % msubsup.qname        "%MATHML.pfx;msubsup" >
+<!ENTITY % msup.qname           "%MATHML.pfx;msup" >
+<!ENTITY % mtable.qname         "%MATHML.pfx;mtable" >
+<!ENTITY % mtd.qname            "%MATHML.pfx;mtd" >
+<!ENTITY % mtext.qname          "%MATHML.pfx;mtext" >
+<!ENTITY % mtr.qname            "%MATHML.pfx;mtr" >
+<!ENTITY % munder.qname         "%MATHML.pfx;munder" >
+<!ENTITY % munderover.qname     "%MATHML.pfx;munderover" >
+<!ENTITY % naturalnumbers.qname "%MATHML.pfx;naturalnumbers" >
+<!ENTITY % neq.qname            "%MATHML.pfx;neq" >
+<!ENTITY % none.qname           "%MATHML.pfx;none" >
+<!ENTITY % not.qname            "%MATHML.pfx;not" >
+<!ENTITY % notanumber.qname     "%MATHML.pfx;notanumber" >
+<!ENTITY % notin.qname          "%MATHML.pfx;notin" >
+<!ENTITY % notprsubset.qname    "%MATHML.pfx;notprsubset" >
+<!ENTITY % notsubset.qname      "%MATHML.pfx;notsubset" >
+<!ENTITY % or.qname             "%MATHML.pfx;or" >
+<!ENTITY % otherwise.qname      "%MATHML.pfx;otherwise" >
+<!ENTITY % outerproduct.qname   "%MATHML.pfx;outerproduct" >
+<!ENTITY % partialdiff.qname    "%MATHML.pfx;partialdiff" >
+<!ENTITY % pi.qname             "%MATHML.pfx;pi" >
+<!ENTITY % piece.qname          "%MATHML.pfx;piece" >
+<!ENTITY % piecewise.qname      "%MATHML.pfx;piecewise" >
+<!ENTITY % plus.qname           "%MATHML.pfx;plus" >
+<!ENTITY % power.qname          "%MATHML.pfx;power" >
+<!ENTITY % primes.qname         "%MATHML.pfx;primes" >
+<!ENTITY % product.qname        "%MATHML.pfx;product" >
+<!ENTITY % prsubset.qname       "%MATHML.pfx;prsubset" >
+<!ENTITY % quotient.qname       "%MATHML.pfx;quotient" >
+<!ENTITY % rationals.qname      "%MATHML.pfx;rationals" >
+<!ENTITY % real.qname           "%MATHML.pfx;real" >
+<!ENTITY % reals.qname          "%MATHML.pfx;reals" >
+<!ENTITY % reln.qname           "%MATHML.pfx;reln" >
+<!ENTITY % rem.qname            "%MATHML.pfx;rem" >
+<!ENTITY % root.qname           "%MATHML.pfx;root" >
+<!ENTITY % scalarproduct.qname  "%MATHML.pfx;scalarproduct" >
+<!ENTITY % sdev.qname           "%MATHML.pfx;sdev" >
+<!ENTITY % sec.qname            "%MATHML.pfx;sec" >
+<!ENTITY % sech.qname           "%MATHML.pfx;sech" >
+<!ENTITY % selector.qname       "%MATHML.pfx;selector" >
+<!ENTITY % semantics.qname      "%MATHML.pfx;semantics" >
+<!ENTITY % sep.qname            "%MATHML.pfx;sep" >
+<!ENTITY % set.qname            "%MATHML.pfx;set" >
+<!ENTITY % setdiff.qname        "%MATHML.pfx;setdiff" >
+<!ENTITY % sin.qname            "%MATHML.pfx;sin" >
+<!ENTITY % sinh.qname           "%MATHML.pfx;sinh" >
+<!ENTITY % subset.qname         "%MATHML.pfx;subset" >
+<!ENTITY % sum.qname            "%MATHML.pfx;sum" >
+<!ENTITY % tan.qname            "%MATHML.pfx;tan" >
+<!ENTITY % tanh.qname           "%MATHML.pfx;tanh" >
+<!ENTITY % tendsto.qname        "%MATHML.pfx;tendsto" >
+<!ENTITY % times.qname          "%MATHML.pfx;times" >
+<!ENTITY % transpose.qname      "%MATHML.pfx;transpose" >
+<!ENTITY % true.qname           "%MATHML.pfx;true" >
+<!ENTITY % union.qname          "%MATHML.pfx;union" >
+<!ENTITY % uplimit.qname        "%MATHML.pfx;uplimit" >
+<!ENTITY % variance.qname       "%MATHML.pfx;variance" >
+<!ENTITY % vector.qname         "%MATHML.pfx;vector" >
+<!ENTITY % vectorproduct.qname  "%MATHML.pfx;vectorproduct" >
+<!ENTITY % xor.qname            "%MATHML.pfx;xor" >
+
+<!-- end of template-qname-1.mod -->
+
+
+
+<!-- Entity used to enable marked sections which enforces stricter		
+     checking of MathML syntax rules		
+-->
+<!ENTITY % MathMLstrict "IGNORE">		
+
+
+<!-- Presentation element set  ................................... -->
+
+<!-- Presentation schemata with content -->
+
+<!ENTITY % ptoken                   
+     "%mi.qname; | %mn.qname; | %mo.qname;
+      | %mtext.qname; | %ms.qname;" >
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+<!-- Empty presentation schemata -->
+
+<!ENTITY % petoken                  
+     "%mspace.qname;" >
+<!ELEMENT %mspace.qname;  EMPTY >
+
+ 
+
+<!-- Presentation: general layout schemata -->
+
+<!ENTITY % pgenschema               
+     "%mrow.qname; | %mfrac.qname; | %msqrt.qname; | %mroot.qname; 
+      | %menclose.qname; | %mstyle.qname; | %merror.qname; 
+      | %mpadded.qname; | %mphantom.qname; | %mfenced.qname;" >
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+<!-- Presentation layout schemata: scripts and limits -->
+
+<!ENTITY % pscrschema               
+     "%msub.qname; | %msup.qname; | %msubsup.qname; | %munder.qname; 
+      | %mover.qname; | %munderover.qname; | %mmultiscripts.qname;" >
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+<!-- Presentation layout schemata: empty elements for scripts -->
+
+<!ENTITY % pscreschema              
+     "%mprescripts.qname; | %none.qname;" >
+
+<!ELEMENT %mprescripts.qname;  EMPTY >
+ 
+
+<!ELEMENT %none.qname;  EMPTY >
+ 
+
+<!-- Presentation layout schemata: tables -->
+
+<![%MathMLstrict;[
+<!-- in strict mode only allow mtable at top level.
+     mtr ,mlabledtr and mtd only allowed inside mtable.
+-->
+  <!ENTITY % ptabschema    "%mtable.qname;" >
+]]>
+
+<!ENTITY % ptabschema               
+     "%mtable.qname; | %mtr.qname; | %mlabeledtr.qname; | %mtd.qname;" >
+
+ 
+
+ 
+
+ 
+
+ 
+<!ENTITY % plschema                 
+     "%pgenschema; | %pscrschema; | %ptabschema;" >
+
+<!-- Empty presentation layout schemata -->
+
+<!ENTITY % peschema                 
+     "%maligngroup.qname; | %malignmark.qname;" >
+
+<!ELEMENT %malignmark.qname;  EMPTY >
+
+ 
+
+<!ELEMENT %maligngroup.qname;  EMPTY >
+ 
+
+
+<!ELEMENT %mglyph.qname;  EMPTY >
+ 
+
+<!-- Presentation action schemata -->
+
+<!ENTITY % pactions                 
+     "%maction.qname;" >
+ 
+
+<!-- The following entity for substitution into
+     content constructs excludes elements that
+     are not valid as expressions.
+-->
+
+<!ENTITY % PresInCont               
+     "%ptoken; | %petoken; |
+      %plschema; | %peschema; | %pactions;" >
+
+<!-- Presentation entity: all presentation constructs -->
+
+
+<![%MathMLstrict;[
+<!-- In strict mode don't allow prescripts and none at top level.-->
+  <!ENTITY % Presentation "%PresInCont;">             
+]]>
+<!ENTITY % Presentation             
+     "%ptoken; | %petoken; | %pscreschema; |
+      %plschema; | %peschema; | %pactions;">
+
+<!-- Content element set  ........................................ -->
+
+<!-- Attribute definitions -->
+
+<!ENTITY % att-base                 
+     "base         CDATA                    '10'" >
+<!ENTITY % att-closure              
+     "closure      CDATA                    'closed'" >
+<!ENTITY % att-definition           
+     "definitionURL CDATA                   ''" >
+<!ENTITY % att-encoding             
+     "encoding     CDATA                    ''" >
+<!ENTITY % att-nargs             
+     "nargs        CDATA                    '1'" >
+<!ENTITY % att-occurrence           
+     "occurrence   CDATA                    'function-model'" >
+<!ENTITY % att-order   
+     "order        CDATA                    'numeric'" >
+<!ENTITY % att-scope                
+     "scope        CDATA                    'local'" >
+<!ENTITY % att-type                 
+     "type         CDATA                    #IMPLIED" >
+
+<!-- Content elements: leaf nodes -->
+
+<!ENTITY % ctoken               
+     "%csymbol.qname; | %ci.qname; | %cn.qname;" >
+
+ 
+
+ 
+
+ 
+
+<!-- Content elements: specials -->
+
+<!ENTITY % cspecial                 
+     "%apply.qname; | %reln.qname; |
+      %lambda.qname;" >
+
+ 
+
+ 
+
+ 
+
+<!-- Content elements: others -->
+
+<!ENTITY % cother                   
+     "%condition.qname; | %declare.qname; | %sep.qname;" >
+
+ 
+
+ 
+
+<!ELEMENT %sep.qname;  EMPTY >
+ 
+
+<!-- Content elements: semantic mapping -->
+
+<![%MathMLstrict;[
+<!-- in strict mode only allow semantics at top level.
+     annotation and annotation-xml only allowed in semantics
+-->
+  <!ENTITY % csemantics  "%semantics.qname;" >
+]]>
+<!ENTITY % csemantics               
+     "%semantics.qname; | %annotation.qname; |
+      %annotation-xml.qname;" >
+
+ 
+
+ 
+
+ 
+
+<!-- Content elements: constructors -->
+
+<!ENTITY % cconstructor             
+     "%interval.qname; | %list.qname; | %matrix.qname; 
+      | %matrixrow.qname; | %set.qname; | %vector.qname;
+      | %piecewise.qname; " >
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+<!-- Content elements: symbols -->
+
+<!ENTITY % c0ary              
+    "%integers.qname; |
+     %reals.qname; |
+     %rationals.qname; |
+     %naturalnumbers.qname; |
+     %complexes.qname; |
+     %primes.qname; |
+     %exponentiale.qname; |
+     %imaginaryi.qname; |
+     %notanumber.qname; |
+     %true.qname; |
+     %false.qname; |
+     %emptyset.qname; |
+     %pi.qname; |
+     %eulergamma.qname; |
+     %infinity.qname;" >
+
+<!ELEMENT %integers.qname;  EMPTY >
+ 
+
+<!ELEMENT %reals.qname;  EMPTY >
+ 
+
+<!ELEMENT %rationals.qname;  EMPTY >
+ 
+
+<!ELEMENT %naturalnumbers.qname;  EMPTY >
+ 
+
+<!ELEMENT %complexes.qname;  EMPTY >
+ 
+
+<!ELEMENT %primes.qname;  EMPTY >
+ 
+
+<!ELEMENT %exponentiale.qname;  EMPTY >
+ 
+
+<!ELEMENT %imaginaryi.qname;  EMPTY >
+ 
+
+<!ELEMENT %notanumber.qname;  EMPTY >
+ 
+
+<!ELEMENT %true.qname;  EMPTY >
+ 
+
+<!ELEMENT %false.qname;  EMPTY >
+ 
+
+<!ELEMENT %emptyset.qname;  EMPTY >
+ 
+
+<!ELEMENT %pi.qname;  EMPTY >
+ 
+
+<!ELEMENT %eulergamma.qname;  EMPTY >
+ 
+
+<!ELEMENT %infinity.qname;  EMPTY >
+ 
+
+<!-- Content elements: operators -->
+
+<!ENTITY % cfuncop1ary              
+     "%inverse.qname; | %ident.qname;|
+      %domain.qname; |  %codomain.qname; | 
+      %image.qname;  " >
+
+<!ELEMENT %inverse.qname;  EMPTY >
+ 
+
+<!ELEMENT %domain.qname;  EMPTY >
+ 
+
+<!ELEMENT %codomain.qname;  EMPTY >
+ 
+
+<!ELEMENT %image.qname;  EMPTY >
+ 
+
+
+
+<!ENTITY % cfuncopnary              
+     "%fn.qname; | %compose.qname;" >
+
+ 
+
+<!ELEMENT %ident.qname;  EMPTY >
+ 
+
+<!ELEMENT %compose.qname;  EMPTY >
+ 
+
+<!ENTITY % carithop1ary             
+     "%abs.qname; | %conjugate.qname; | %exp.qname; | %factorial.qname; |
+      %arg.qname; | %real.qname; | %imaginary.qname; |
+      %floor.qname; | %ceiling.qname;" >
+
+<!ELEMENT %exp.qname;  EMPTY >
+ 
+
+<!ELEMENT %abs.qname;  EMPTY >
+ 
+
+<!ELEMENT %arg.qname;  EMPTY >
+ 
+
+<!ELEMENT %real.qname;  EMPTY >
+ 
+
+<!ELEMENT %imaginary.qname;  EMPTY >
+ 
+
+<!ELEMENT %conjugate.qname;  EMPTY >
+ 
+
+<!ELEMENT %factorial.qname;  EMPTY >
+ 
+
+
+<!ELEMENT %floor.qname;  EMPTY >
+ 
+
+<!ELEMENT %ceiling.qname;  EMPTY >
+ 
+<!ENTITY % carithop1or2ary          
+     "%minus.qname;" >
+
+<!ELEMENT %minus.qname;  EMPTY >
+ 
+
+<!ENTITY % carithop2ary             
+     "%quotient.qname; | %divide.qname; | %power.qname; | %rem.qname;" >
+
+<!ELEMENT %quotient.qname;  EMPTY >
+ 
+
+<!ELEMENT %divide.qname;  EMPTY >
+ 
+
+<!ELEMENT %power.qname;  EMPTY >
+ 
+
+<!ELEMENT %rem.qname;  EMPTY >
+ 
+
+<!ENTITY % carithopnary             
+     "%plus.qname; | %times.qname; | %max.qname; 
+      | %min.qname; | %gcd.qname; | %lcm.qname;" >
+
+<!ELEMENT %plus.qname;  EMPTY >
+ 
+
+<!ELEMENT %max.qname;  EMPTY >
+ 
+
+<!ELEMENT %min.qname;  EMPTY >
+ 
+
+<!ELEMENT %times.qname;  EMPTY >
+ 
+
+<!ELEMENT %gcd.qname;  EMPTY >
+ 
+
+<!ELEMENT %lcm.qname;  EMPTY >
+ 
+
+<!ENTITY % carithoproot             
+     "%root.qname;" >
+
+<!ELEMENT %root.qname;  EMPTY >
+ 
+
+<!ENTITY % clogicopquant            
+     "%exists.qname; | %forall.qname;" >
+
+<!ELEMENT %exists.qname;  EMPTY >
+ 
+
+<!ELEMENT %forall.qname;  EMPTY >
+ 
+
+<!ENTITY % clogicopnary             
+     "%and.qname; | %or.qname; | %xor.qname;" >
+
+<!ELEMENT %and.qname;  EMPTY >
+ 
+
+<!ELEMENT %or.qname;  EMPTY >
+ 
+
+<!ELEMENT %xor.qname;  EMPTY >
+ 
+
+<!ENTITY % clogicop1ary             
+     "%not.qname;" >
+
+<!ELEMENT %not.qname;  EMPTY >
+ 
+
+<!ENTITY % clogicop2ary             
+     "%implies.qname;" >
+
+<!ELEMENT %implies.qname;  EMPTY >
+ 
+
+<!ENTITY % ccalcop                  
+     "%log.qname; | %int.qname; | %diff.qname; | %partialdiff.qname; |
+      %divergence.qname; | %grad.qname; | %curl.qname; | %laplacian.qname;" >
+
+<!ELEMENT %divergence.qname;  EMPTY >
+ 
+
+<!ELEMENT %grad.qname;  EMPTY >
+ 
+
+<!ELEMENT %curl.qname;  EMPTY >
+ 
+
+<!ELEMENT %laplacian.qname;  EMPTY >
+ 
+
+<!ELEMENT %log.qname;  EMPTY >
+ 
+
+<!ELEMENT %int.qname;  EMPTY >
+ 
+
+<!ELEMENT %diff.qname;  EMPTY >
+ 
+
+<!ELEMENT %partialdiff.qname;  EMPTY >
+ 
+
+<!ENTITY % ccalcop1ary              
+     "%ln.qname;" >
+
+<!ELEMENT %ln.qname;  EMPTY >
+ 
+
+<!ENTITY % csetop1ary               
+     "%card.qname;" >
+
+<!ELEMENT %card.qname;  EMPTY >
+ 
+
+<!ENTITY % csetop2ary               
+     "%setdiff.qname;" >
+
+<!ELEMENT %setdiff.qname;  EMPTY >
+ 
+
+<!ENTITY % csetopnary               
+     "%union.qname; | %intersect.qname; | %cartesianproduct.qname; " >
+
+<!ELEMENT %union.qname;  EMPTY >
+ 
+
+<!ELEMENT %intersect.qname;  EMPTY >
+ 
+
+<!ELEMENT %cartesianproduct.qname;  EMPTY >
+ 
+
+<!ENTITY % cseqop                   
+     "%sum.qname; | %product.qname; | %limit.qname;" >
+
+<!ELEMENT %sum.qname;  EMPTY >
+ 
+
+<!ELEMENT %product.qname;  EMPTY >
+ 
+
+<!ELEMENT %limit.qname;  EMPTY >
+ 
+
+<!ENTITY % ctrigop                  
+     "%sin.qname; | %cos.qname; | %tan.qname; 
+      | %sec.qname; | %csc.qname; | %cot.qname; 
+      | %sinh.qname; | %cosh.qname; | %tanh.qname; 
+      | %sech.qname; | %csch.qname; | %coth.qname; 
+      | %arcsin.qname; | %arccos.qname; | %arctan.qname;
+      | %arccosh.qname; | %arccot.qname; | %arccoth.qname;
+      | %arccsc.qname; | %arccsch.qname; | %arcsec.qname;
+      | %arcsech.qname; | %arcsinh.qname; | %arctanh.qname;
+      " >
+
+<!ELEMENT %sin.qname;  EMPTY >
+ 
+
+<!ELEMENT %cos.qname;  EMPTY >
+ 
+
+<!ELEMENT %tan.qname;  EMPTY >
+ 
+
+<!ELEMENT %sec.qname;  EMPTY >
+ 
+
+<!ELEMENT %csc.qname;  EMPTY >
+ 
+
+<!ELEMENT %cot.qname;  EMPTY >
+ 
+
+<!ELEMENT %sinh.qname;  EMPTY >
+ 
+
+<!ELEMENT %cosh.qname;  EMPTY >
+ 
+
+<!ELEMENT %tanh.qname;  EMPTY >
+ 
+
+<!ELEMENT %sech.qname;  EMPTY >
+ 
+
+<!ELEMENT %csch.qname;  EMPTY >
+ 
+
+<!ELEMENT %coth.qname;  EMPTY >
+ 
+
+<!ELEMENT %arcsin.qname;  EMPTY >
+ 
+
+<!ELEMENT %arccos.qname;  EMPTY >
+ 
+
+<!ELEMENT %arctan.qname;  EMPTY >
+ 
+
+<!ELEMENT %arccosh.qname;  EMPTY >
+ 
+
+
+<!ELEMENT %arccot.qname;  EMPTY >
+ 
+
+<!ELEMENT %arccoth.qname;  EMPTY >
+ 
+
+
+<!ELEMENT %arccsc.qname;  EMPTY >
+ 
+
+<!ELEMENT %arccsch.qname;  EMPTY >
+ 
+
+<!ELEMENT %arcsec.qname;  EMPTY >
+ 
+
+<!ELEMENT %arcsech.qname;  EMPTY >
+ 
+
+<!ELEMENT %arcsinh.qname;  EMPTY >
+ 
+
+<!ELEMENT %arctanh.qname;  EMPTY >
+ 
+
+
+
+<!ENTITY % cstatopnary              
+     "%mean.qname; | %sdev.qname; |
+      %variance.qname; | %median.qname; |
+      %mode.qname;" >
+
+<!ELEMENT %mean.qname;  EMPTY >
+ 
+
+<!ELEMENT %sdev.qname;  EMPTY >
+ 
+
+<!ELEMENT %variance.qname;  EMPTY >
+ 
+
+<!ELEMENT %median.qname;  EMPTY >
+ 
+
+<!ELEMENT %mode.qname;  EMPTY >
+ 
+
+<!ENTITY % cstatopmoment            
+     "%moment.qname;" >
+
+<!ELEMENT %moment.qname;  EMPTY >
+ 
+
+<!ENTITY % clalgop1ary              
+     "%determinant.qname; |
+      %transpose.qname;" >
+
+<!ELEMENT %determinant.qname;  EMPTY >
+ 
+
+<!ELEMENT %transpose.qname;  EMPTY >
+ 
+
+<!ENTITY % clalgop2ary              
+     "%vectorproduct.qname; 
+      | %scalarproduct.qname; 
+      | %outerproduct.qname;" >
+
+<!ELEMENT %vectorproduct.qname;  EMPTY >
+ 
+
+<!ELEMENT %scalarproduct.qname;  EMPTY >
+ 
+
+<!ELEMENT %outerproduct.qname;  EMPTY >
+ 
+
+<!ENTITY % clalgopnary              
+     "%selector.qname;" >
+
+<!ELEMENT %selector.qname;  EMPTY >
+ 
+
+<!-- Content elements: relations -->
+
+<!ENTITY % cgenrel2ary             
+     "%neq.qname; | %factorof.qname;" >
+
+<!ELEMENT %neq.qname;  EMPTY >
+ 
+
+<!ELEMENT %factorof.qname;  EMPTY >
+ 
+
+<!ENTITY % cgenrelnary              
+     "%eq.qname; | %leq.qname; | %lt.qname; | %geq.qname; 
+      | %gt.qname;| %equivalent.qname; | %approx.qname;" >
+
+<!ELEMENT %eq.qname;  EMPTY >
+ 
+
+<!ELEMENT %equivalent.qname;  EMPTY >
+ 
+
+<!ELEMENT %approx.qname;  EMPTY >
+ 
+
+<!ELEMENT %gt.qname;  EMPTY >
+ 
+
+<!ELEMENT %lt.qname;  EMPTY >
+ 
+
+<!ELEMENT %geq.qname;  EMPTY >
+ 
+
+<!ELEMENT %leq.qname;  EMPTY >
+ 
+
+<!ENTITY % csetrel2ary              
+     "%in.qname; | %notin.qname; | %notsubset.qname; | %notprsubset.qname;" >
+
+<!ELEMENT %in.qname;  EMPTY >
+ 
+
+<!ELEMENT %notin.qname;  EMPTY >
+ 
+
+<!ELEMENT %notsubset.qname;  EMPTY >
+ 
+
+<!ELEMENT %notprsubset.qname;  EMPTY >
+ 
+
+<!ENTITY % csetrelnary       
+     "%subset.qname; | %prsubset.qname;" >
+
+<!ELEMENT %subset.qname;  EMPTY >
+ 
+
+<!ELEMENT %prsubset.qname;  EMPTY >
+ 
+
+<!ENTITY % cseqrel2ary              
+     "%tendsto.qname;" >
+
+<!ELEMENT %tendsto.qname;  EMPTY >
+ 
+
+<!-- Content elements: quantifiers -->
+
+<!ENTITY % cquantifier            
+     "%lowlimit.qname; | %uplimit.qname; | %bvar.qname; 
+      | %degree.qname; | %logbase.qname;
+      | %momentabout.qname; | %domainofapplication.qname; " >
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+<!-- Operator groups -->
+
+<!ENTITY % cop1ary                  
+     "%cfuncop1ary; | %carithop1ary; | %clogicop1ary; |
+      %ccalcop1ary; | %ctrigop; | %clalgop1ary; |
+      %csetop1ary;" >
+
+<!ENTITY % cop2ary                  
+     "%carithop2ary; | %clogicop2ary;| %clalgop2ary; | %csetop2ary;" >
+
+<!ENTITY % copnary                  
+     "%cfuncopnary; | %carithopnary; | %clogicopnary; |
+      %csetopnary; | %cstatopnary; | %clalgopnary;" >
+
+<!ENTITY % copmisc                  
+     "%carithoproot; | %carithop1or2ary; | %ccalcop; |
+      %cseqop; | %cstatopmoment; | %clogicopquant;" >
+
+<!-- Relation groups -->
+
+<!ENTITY % crel2ary                 
+     "%cgenrel2ary; | %csetrel2ary; | %cseqrel2ary;" >
+
+<!ENTITY % crelnary                 
+     "%cgenrelnary; | %csetrelnary;" >
+
+<!-- Content constructs: all -->
+
+<!ENTITY % Content                  
+     "%ctoken; | %cspecial; | %cother; | %csemantics; | %c0ary;
+      | %cconstructor; | %cquantifier; | %cop1ary; | %cop2ary; 
+      | %copnary; |%copmisc; | %crel2ary; | %crelnary;" >
+
+<!-- Content constructs for substitution in presentation structures -->
+
+<!ENTITY % ContInPres               
+     "%ci.qname; |%csymbol.qname;| %cn.qname; | %c0ary; |
+      %apply.qname; | %fn.qname; |
+      %lambda.qname; | %reln.qname; |
+      %cconstructor; |
+      %semantics.qname; |%declare.qname;" >
+
+<!-- ............................................................. -->
+<!-- Recursive definition for content of expressions. Include
+     presentation constructs at lowest level so presentation
+     layout schemata hold presentation or content elements.
+     Include content constructs at lowest level so content
+     elements hold PCDATA or presentation elements at leaf
+     level (for permitted substitutable elements in context)
+-->
+<![%MathMLstrict;[
+<!-- in strict mode don't allow presentation in content
+     except where allowed by chapter 5:
+     ci, cn, csymbol, semantics
+-->
+  <!ENTITY % ContentExpression  "(%Content;)*" >
+  <!ENTITY % semanticsContentExpression        
+       "(%Content; | %PresInCont; |
+         %annotation.qname; | %annotation-xml.qname;)*" >
+]]>
+<!ENTITY % ContentExpression        
+     "(%Content; | %PresInCont;)*" >
+<!ENTITY % semanticsContentExpression    "%ContentExpression;">    
+
+
+<!ENTITY % PresExpression      
+     "(%Presentation; | %ContInPres;)*" >
+<!ENTITY % MathExpression           
+     "(%PresInCont; | %ContInPres;)*" >
+
+<!-- PCDATA or MathML character elements -->
+<!ENTITY % MathMLCharacters         
+     "#PCDATA | %mglyph.qname; " >
+
+<!-- Content elements: tokens                       -->
+<!-- (may contain embedded presentation constructs) -->
+
+<!ELEMENT %ci.qname;                 (%MathMLCharacters; | %PresInCont;)* >
+<!ELEMENT %csymbol.qname;            (%MathMLCharacters; | %PresInCont;)* >
+<!ELEMENT %cn.qname;                 (%MathMLCharacters; | %sep.qname; | %PresInCont;)* >
+
+<!-- Content elements: special -->
+
+<!ELEMENT %apply.qname;              (%ContentExpression;) >
+<!ELEMENT %reln.qname;               (%ContentExpression;) >
+<!ELEMENT %lambda.qname;             (%ContentExpression;) >
+
+<!-- Content elements: other -->
+
+<!ELEMENT %condition.qname;          (%ContentExpression;) >
+<!ELEMENT %declare.qname;            (%ContentExpression;) >
+
+<!-- Content elements: semantics -->
+
+<!ELEMENT %semantics.qname;          (%semanticsContentExpression;) >
+<!ENTITY % Annotation.content  "( #PCDATA )" >
+<!ELEMENT %annotation.qname;         %Annotation.content; >
+
+<!ENTITY % Annotation-xml.content "ANY" >
+<!ELEMENT %annotation-xml.qname;     %Annotation-xml.content; >
+
+<!-- Content elements: constructors -->
+
+<!ELEMENT %interval.qname;           (%ContentExpression;) >
+<!ELEMENT %set.qname;                (%ContentExpression;) >
+<!ELEMENT %list.qname;               (%ContentExpression;) >
+<!ELEMENT %vector.qname;             (%ContentExpression;) >
+<!ELEMENT %matrix.qname;             (%ContentExpression;) >
+<!ELEMENT %matrixrow.qname;          (%ContentExpression;) >
+
+<!ELEMENT %piecewise.qname;          ((%piece.qname;)*, (%otherwise.qname;)? ) >
+<!ELEMENT %piece.qname;              (%ContentExpression;) >
+<!ELEMENT %otherwise.qname;          (%ContentExpression;) >
+
+<!-- Content elements: operator (user-defined) -->
+
+<!ELEMENT %fn.qname;                 (%ContentExpression;) >
+
+<!-- Content elements: quantifiers -->
+
+<!ELEMENT %lowlimit.qname;           (%ContentExpression;) >
+<!ELEMENT %uplimit.qname;            (%ContentExpression;) >
+<!ELEMENT %bvar.qname;               (%ContentExpression;) >
+<!ELEMENT %degree.qname;             (%ContentExpression;) >
+<!ELEMENT %logbase.qname;            (%ContentExpression;) >
+<!ELEMENT %momentabout.qname;        (%ContentExpression;) >
+<!ELEMENT %domainofapplication.qname; (%ContentExpression;) >
+
+<!-- ............................................................. -->
+<!-- Presentation layout schemata contain tokens,
+     layout and content schemata.
+-->
+
+
+
+<![%MathMLstrict;[
+<!-- In strict mode enforce mfrac has exactly two children
+      same for msub etc -->
+  <!ENTITY % onePresExpression
+       "(%Presentation; | %ContInPres;)" >
+  <!ENTITY % twoPresExpression
+       "(%onePresExpression;,%onePresExpression;)" >
+  <!ENTITY % threePresExpression
+       "(%onePresExpression;,%onePresExpression;,%onePresExpression;)" >
+  <!ENTITY % mtrPresExpression
+       "(%mtr.qname;|%mlabeledtr.qname;)*" >
+  <!ENTITY % mtdPresExpression
+       "(%mtd.qname;)*" >
+  <!ENTITY % prscrPresExpression " (%onePresExpression;,
+  ((%onePresExpression;|%none.qname;),(%onePresExpression;|%none.qname;))*,
+  (%mprescripts.qname;,
+  ((%onePresExpression;|%none.qname;),(%onePresExpression;|%none.qname;))*)?
+  )">
+]]>
+
+
+<!-- By default keep them as they were in MathML 2.0  -->
+<!ENTITY % onePresExpression   "%PresExpression;">
+<!ENTITY % twoPresExpression   "%PresExpression;">
+<!ENTITY % threePresExpression "%PresExpression;">
+<!ENTITY % mtrPresExpression   "%PresExpression;">
+<!ENTITY % mtdPresExpression   "%PresExpression;">
+<!ENTITY % prscrPresExpression "%PresExpression;">
+
+<!ELEMENT %mstyle.qname;             (%PresExpression;) >
+<!ELEMENT %merror.qname;             (%PresExpression;) >
+<!ELEMENT %mphantom.qname;           (%PresExpression;) >
+<!ELEMENT %mrow.qname;               (%PresExpression;) >
+<!ELEMENT %mfrac.qname;              (%twoPresExpression;) >
+<!ELEMENT %msqrt.qname;              (%PresExpression;) >
+<!ELEMENT %menclose.qname;           (%PresExpression;) >
+<!ELEMENT %mroot.qname;              (%twoPresExpression;) >
+<!ELEMENT %msub.qname;               (%twoPresExpression;) >
+<!ELEMENT %msup.qname;               (%twoPresExpression;) >
+<!ELEMENT %msubsup.qname;            (%threePresExpression;) >
+<!ELEMENT %mmultiscripts.qname;      (%prscrPresExpression;) >
+<!ELEMENT %munder.qname;             (%twoPresExpression;) >
+<!ELEMENT %mover.qname;              (%twoPresExpression;) >
+<!ELEMENT %munderover.qname;         (%threePresExpression;) >
+<!ELEMENT %mtable.qname;             (%mtrPresExpression;) >
+<!ELEMENT %mtr.qname;                (%mtdPresExpression;) >
+<!ELEMENT %mlabeledtr.qname;         (%mtdPresExpression;) >
+<!ELEMENT %mtd.qname;                (%PresExpression;) >
+<!ELEMENT %maction.qname;            (%PresExpression;) >
+<!ELEMENT %mfenced.qname;            (%PresExpression;) >
+<!ELEMENT %mpadded.qname;            (%PresExpression;) >
+
+<!-- Presentation elements contain PCDATA or malignmark constructs. -->
+
+<!ELEMENT %mi.qname;                 (%MathMLCharacters; |
+      %malignmark.qname;)* >
+<!ELEMENT %mn.qname;                 (%MathMLCharacters; |
+      %malignmark.qname;)* >
+<!ELEMENT %mo.qname;                 (%MathMLCharacters; |
+      %malignmark.qname;)* >
+<!ELEMENT %mtext.qname;              (%MathMLCharacters; |
+      %malignmark.qname;)* >
+<!ELEMENT %ms.qname;                 (%MathMLCharacters; |
+      %malignmark.qname;)* >
+<!-- ............................................................. -->
+<!-- The top-level element "math" contains MathML encoded
+     mathematics. The "math" element has the browser info
+     attributes iff it is also the browser interface element.
+-->
+
+<!ELEMENT %math.qname;               (%MathExpression;) >
+
+ 
+
