@@ -5,6 +5,8 @@ namespace urakawa.metadata.daisy
     //wraps the generic MetadataDefinitionSet
     public static class SupportedMetadata_Z39862005
     {
+        public const string MATHML_XSLT_METADATA = "DTBook-XSLTFallback";
+
         public const string NS_PREFIX_DUBLIN_CORE = "dc";
         public const string NS_URL_DUBLIN_CORE = "http://purl/dc";
 

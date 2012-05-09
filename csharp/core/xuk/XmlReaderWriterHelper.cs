@@ -87,7 +87,10 @@ namespace urakawa.xuk
             string absPath = absoluteUri.AbsolutePath;
 
             string ext = Path.GetExtension(absPath);
-            if (string.Equals(ext, ".xml") || string.Equals(ext, ".xsl"))
+            if (string.Equals(ext, DataProviderFactory.XML_TEXT_EXTENSION) ||
+                String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                    || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                )
             {
                 if (File.Exists(absPath))
                 {

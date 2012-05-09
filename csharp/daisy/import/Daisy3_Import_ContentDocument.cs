@@ -18,6 +18,8 @@ namespace urakawa.daisy.import
 {
     public partial class Daisy3_Import
     {
+        public const string INTERNAL_DTD_NAME = "DTBookLocalDTD.dtd";
+
         protected ImageChannel m_ImageChannel;
         protected VideoChannel m_VideoChannel;
         protected TextChannel m_textChannel;
@@ -214,13 +216,13 @@ namespace urakawa.daisy.import
                                 MemoryStream ms = new MemoryStream(bytesArray);
 
 
-                                //string internalDTDFilePath = Path.Combine ( presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd" );
+                                //string internalDTDFilePath = Path.Combine ( presentation.DataProviderManager.DataFileDirectoryFullPath, INTERNAL_DTD_NAME );
                                 //File.WriteAllText(
                                 //internalDTDFilePath,
                                 //strInternalDTD);
 
                                 ExternalFiles.ExternalFileData dtdEfd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData>();
-                                dtdEfd.InitializeWithData(ms, "DTBookLocalDTD.dtd", false);
+                                dtdEfd.InitializeWithData(ms, INTERNAL_DTD_NAME, false);
                             }
 
                             parseContentDocument(bodyElement, parentTreeNode, filePath);
@@ -799,7 +801,8 @@ namespace urakawa.daisy.import
                     {
                         efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
                     }
-                    else if (String.Equals(ext, ".xslt", StringComparison.OrdinalIgnoreCase))
+                    else if (String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                    || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
                     {
                         efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
                     }
