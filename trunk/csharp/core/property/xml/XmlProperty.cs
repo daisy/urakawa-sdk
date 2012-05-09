@@ -176,12 +176,12 @@ namespace urakawa.property.xml
             //set { SetQName(LocalName, value); }
         }
 
-        private bool m_QNameIsInvalidated;
-        public bool QNameIsInvalidated
-        {
-            get { return m_QNameIsInvalidated; }
-            set { m_QNameIsInvalidated = value; }
-        }
+        //private bool m_QNameIsInvalidated;
+        //public bool QNameIsInvalidated
+        //{
+        //    get { return m_QNameIsInvalidated; }
+        //    set { m_QNameIsInvalidated = value; }
+        //}
 
         public static void SplitLocalName(string name, out string prefix, out string realLocalName)
         {
@@ -354,7 +354,7 @@ namespace urakawa.property.xml
                 throw new exception.MethodParameterIsNullException("The namespace uri must not be null");
             }
 
-            m_QNameIsInvalidated = true;
+            //m_QNameIsInvalidated = true;
 
             string prefix;
             string localName;
