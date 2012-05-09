@@ -7,7 +7,7 @@ namespace DTDs
 {
     public static class DTDs
     {
-        public static string DTBOOK_2005_3_MATHML = "DTDs.Resources.dtbook-2005-3_MathML.dtd";
+        public const string DTBOOK_2005_3_MATHML = "DTDs.Resources.dtbook-2005-3_MathML.dtd";
 
         public static readonly Dictionary<string, string> ENTITIES_MAPPING;
 
@@ -75,7 +75,7 @@ namespace DTDs
             
         }
 
-        private static Assembly m_Assembly = Assembly.GetExecutingAssembly();
+        private static readonly Assembly m_Assembly = Assembly.GetExecutingAssembly();
 
         public static Stream Fetch(string resourcePath)
         {
