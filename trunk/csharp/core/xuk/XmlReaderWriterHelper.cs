@@ -91,7 +91,7 @@ namespace urakawa.xuk
             {
                 if (File.Exists(absPath))
                 {
-                    Stream stream = File.Open(absPath, FileMode.Open, FileAccess.Read, FileShare.None);
+                    Stream stream = File.Open(absPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     return stream;
                 }
             }
@@ -118,7 +118,7 @@ namespace urakawa.xuk
 
             if (File.Exists(path))
             {
-                Stream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
+                Stream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
                 return stream;
             }
 #endif //USE_ISOLATED_STORAGE
