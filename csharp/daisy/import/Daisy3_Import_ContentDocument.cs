@@ -126,6 +126,8 @@ namespace urakawa.daisy.import
 
                 if (!string.IsNullOrEmpty(DTDString))
                 {
+                    DTDString = DTDString.Replace("\r\n", "\n");
+                    DTDString = DTDString.Replace("\n", "\r\n");
                     return DTDString;
                 }
             }
