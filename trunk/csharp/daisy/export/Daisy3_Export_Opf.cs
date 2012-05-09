@@ -77,7 +77,8 @@ namespace urakawa.daisy.export
                 {
                     AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.STYLE_CSS_MIME_TYPE);
                 }
-                else if (String.Equals(ext, ".xslt", StringComparison.OrdinalIgnoreCase))
+                else if (String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                    || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
                 {
                     AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.STYLE_XSLT_MIME_TYPE);
                 }
@@ -398,11 +399,19 @@ namespace urakawa.daisy.export
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
             {
                 reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingExternalFiles);
-                if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains(efd.OriginalRelativePath))
+
+                string filename = efd.OriginalRelativePath;
+                if (filename.StartsWith(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA))
                 {
-                    string filePath = Path.Combine(m_OutputDirectory, efd.OriginalRelativePath);
+                    filename = filename.Substring(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA.Length);
+                }
+
+                if (efd.IsPreservedForOutputFile
+                    && !m_FilesList_ExternalFiles.Contains(filename))
+                {
+                    string filePath = Path.Combine(m_OutputDirectory, filename);
                     efd.DataProvider.ExportDataStreamToFile(filePath, true);
-                    m_FilesList_ExternalFiles.Add(efd.OriginalRelativePath);
+                    m_FilesList_ExternalFiles.Add(filename);
                 }
             }
         }

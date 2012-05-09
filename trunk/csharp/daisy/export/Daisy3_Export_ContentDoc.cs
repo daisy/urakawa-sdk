@@ -10,6 +10,7 @@ using urakawa.media.data.video;
 using urakawa.metadata;
 using urakawa.core;
 using urakawa.ExternalFiles;
+using urakawa.metadata.daisy;
 using urakawa.xuk;
 
 namespace urakawa.daisy.export
@@ -26,7 +27,7 @@ namespace urakawa.daisy.export
         protected virtual void CreateDTBookDocument()
         {
             // check if there is preserved internal DTD 
-            //string[] dtbFilesList = Directory.GetFiles(m_Presentation.DataProviderManager.DataFileDirectoryFullPath, "DTBookLocalDTD.dtd", SearchOption.AllDirectories);
+            //string[] dtbFilesList = Directory.GetFiles(m_Presentation.DataProviderManager.DataFileDirectoryFullPath, daisy.import.Daisy3_Import.INTERNAL_DTD_NAME, SearchOption.AllDirectories);
             //string strInternalDTD = null;
             //if (dtbFilesList.Length > 0)
             //{
@@ -42,14 +43,18 @@ namespace urakawa.daisy.export
             {
                 if (RequestCancellation) return;
 
-                if (efd is ExternalFiles.DTDExternalFileData &&
-                    efd.OriginalRelativePath == "DTBookLocalDTD.dtd" && !efd.IsPreservedForOutputFile
+                if (efd is ExternalFiles.DTDExternalFileData
+                    && efd.OriginalRelativePath == daisy.import.Daisy3_Import.INTERNAL_DTD_NAME
+                    && !efd.IsPreservedForOutputFile
                     && strInternalDTD == null)
                 {
                     StreamReader sr = new StreamReader(efd.OpenInputStream());
                     strInternalDTD = sr.ReadToEnd();
                 }
-                else if (efd is ExternalFiles.CSSExternalFileData || efd is XSLTExternalFileData)
+                else if (efd is ExternalFiles.CSSExternalFileData
+                    || efd is XSLTExternalFileData
+                    //&& !efd.OriginalRelativePath.StartsWith(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA)
+                    )
                 {
                     list_ExternalStyleSheets.Add(efd);
                 }
@@ -60,7 +65,10 @@ namespace urakawa.daisy.export
             //m_ProgressPercentage = 0;
             reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingXMLFile);
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
-            if (list_ExternalStyleSheets != null) ExportStyleSheets(list_ExternalStyleSheets);
+            if (list_ExternalStyleSheets != null)
+            {
+                ExportStyleSheets(list_ExternalStyleSheets);
+            }
 
             m_ListOfLevels = new List<TreeNode>();
             Dictionary<string, string> old_New_IDMap = new Dictionary<string, string>();
@@ -514,11 +522,18 @@ namespace urakawa.daisy.export
 
             foreach (ExternalFileData efd in list_ExternalStyleSheets)
             {
-                if (efd.IsPreservedForOutputFile && !m_FilesList_ExternalFiles.Contains(efd.OriginalRelativePath))
+                string filename = efd.OriginalRelativePath;
+                if (filename.StartsWith(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA))
                 {
-                    string filePath = Path.Combine(m_OutputDirectory, efd.OriginalRelativePath);
+                    filename = filename.Substring(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA.Length);
+                }
+
+                if (efd.IsPreservedForOutputFile
+                    && !m_FilesList_ExternalFiles.Contains(filename))
+                {
+                    string filePath = Path.Combine(m_OutputDirectory, filename);
                     efd.DataProvider.ExportDataStreamToFile(filePath, true);
-                    m_FilesList_ExternalFiles.Add(efd.OriginalRelativePath);
+                    m_FilesList_ExternalFiles.Add(filename);
 
                 }
             }

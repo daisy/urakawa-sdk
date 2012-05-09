@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Xml;
 using AudioLib;
+using urakawa.data;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.xuk;
@@ -250,6 +252,23 @@ namespace urakawa.daisy.import
 
             handleMetaDataOptionalAttrs(md, node);
 
+            if (name == SupportedMetadata_Z39862005.MATHML_XSLT_METADATA)
+            {
+                string styleSheetPath = Path.Combine(
+                    Path.GetDirectoryName(m_Book_FilePath),
+                    content);
+
+                if (File.Exists(styleSheetPath))
+                {
+                    string ext = Path.GetExtension(content);
+                    if (String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                    || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                    {
+                        ExternalFiles.ExternalFileData efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
+                        efd.InitializeWithData(styleSheetPath, SupportedMetadata_Z39862005.MATHML_XSLT_METADATA + content, true);
+                    }
+                }
+            }
             return md;
         }
 
