@@ -722,11 +722,15 @@ namespace urakawa.daisy.export
             {
                 string localName = node.GetXmlElementLocalName();
 
-                if (localName == "levelhd" || localName == "hd" ||
-                    localName == "h1" || localName == "h2" || localName == "h3" ||
-                    localName == "h4"
-                    || localName == "h5" || localName == "h6" ||
-                    localName == "doctitle")
+                if (localName == "levelhd"
+                    || localName == "hd"
+                    || localName == "h1"
+                    || localName == "h2"
+                    || localName == "h3"
+                    || localName == "h4"
+                    || localName == "h5"
+                    || localName == "h6"
+                    || localName == "doctitle")
                 {
                     return true;
                 }
@@ -741,11 +745,18 @@ namespace urakawa.daisy.export
             {
                 string localName = node.GetXmlElementLocalName();
 
-                if (localName == "list" || localName == "table" || localName == "tr"
-                    || localName == "note" || localName == "annotation"
+                if (localName == "list"
+                    || localName == "table"
+                    || localName == "tr"
+                    || localName == "note"
+                    || localName == "annotation"
                     || localName == "sidebar"
-                    || localName == "prodnote" || localName == "endnote" || localName == "footnote" ||
-                    localName == "rearnote")
+                    || localName == "prodnote"
+                    || localName == "endnote"
+                    || localName == "footnote"
+                    || localName == "rearnote"
+                    || localName == "math"
+                    )
                 {
                     return true;
                 }
@@ -759,9 +770,12 @@ namespace urakawa.daisy.export
             {
                 string localName = node.GetXmlElementLocalName();
 
-                if (localName == "pagenum" || localName == "linenum"
-                    || localName == "noteref" || localName == "note"
-                    || localName == "annoref" || localName == "annotation"
+                if (localName == "pagenum"
+                    || localName == "linenum"
+                    || localName == "noteref"
+                    || localName == "note"
+                    || localName == "annoref"
+                    || localName == "annotation"
                     || IsOptionalSidebarOrProducerNote(node))
                 {
                     return true;
