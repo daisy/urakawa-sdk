@@ -175,10 +175,12 @@ namespace urakawa.core
                         break;
                     }
                 }
-                if (string.IsNullOrEmpty(nsUri_NearestXmlns))
+                if (!string.IsNullOrEmpty(nsUri_NearestXmlns))
                 {
-                    node = node.Parent;
+                    break;
                 }
+
+                node = node.Parent;
             }
             if (string.IsNullOrEmpty(nsUri_NearestXmlns))
             {
