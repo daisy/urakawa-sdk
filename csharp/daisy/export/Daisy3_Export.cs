@@ -274,5 +274,29 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
             string strNumericFrag = (++m_ID_Counter).ToString();
             return prefix + strNumericFrag;
         }
+
+        private bool m_AddSectionNameToAudioFile =false ;
+        public bool AddSectionNameToAudioFile
+        {
+            get
+            {
+                return m_AddSectionNameToAudioFile;
+            }
+            set
+            {
+                m_AddSectionNameToAudioFile = value;
+            }
+        }
+
+        protected string AddSectionNameToAudioFileName(string externalAudioSrc, string sectionName)
+        {
+            string audioFileName = Path.GetFileNameWithoutExtension (externalAudioSrc) + "_" + sectionName.Replace(" ", "_") + Path.GetExtension(externalAudioSrc) ;
+            string source = Path.Combine(m_OutputDirectory,Path.GetFileName( externalAudioSrc));
+            string dest = Path.Combine(m_OutputDirectory, audioFileName);
+            
+            if (File.Exists(source))  File.Move(source, dest);
+            return audioFileName;
+        }
+
     }
 }
