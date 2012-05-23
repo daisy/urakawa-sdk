@@ -290,7 +290,7 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
 
         protected string AddSectionNameToAudioFileName(string externalAudioSrc, string sectionName)
         {
-            string audioFileName = Path.GetFileNameWithoutExtension (externalAudioSrc) + "_" + sectionName.Replace(" ", "_") + Path.GetExtension(externalAudioSrc) ;
+            string audioFileName = Path.GetFileNameWithoutExtension (externalAudioSrc) + "_" + FileDataProvider.EliminateForbiddenFileNameCharacters (sectionName.Replace(" ", "_")) + Path.GetExtension(externalAudioSrc) ;
             string source = Path.Combine(m_OutputDirectory,Path.GetFileName( externalAudioSrc));
             string dest = Path.Combine(m_OutputDirectory, audioFileName);
             
