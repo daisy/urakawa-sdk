@@ -830,6 +830,12 @@ namespace urakawa.xuk
             get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "DTDExternalFileData" : "dtdExFl"); }
             }
 
+        public static string PLSExternalFileData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "PlsExternalFileData" : "plsExFl"); }
+        }
+
+
         public static string ExternalFileDatas
             {
             get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "ExternalFileDatas" : "exFlDts"); }

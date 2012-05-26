@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -218,6 +218,7 @@
     <Compile Include="ExternalFiles\ExternalFileData.cs" />
     <Compile Include="ExternalFiles\ExternalFileDataFactory.cs" />
     <Compile Include="ExternalFiles\ExternalFilesDataManager.cs" />
+    <Compile Include="ExternalFiles\PLSExternalFileData.cs" />
     <Compile Include="ExternalFiles\XSLTExternalFileData.cs" />
     <Compile Include="GenericWithPresentationFactory.cs" />
     <Compile Include="GenericXukAbleFactory.cs" />
@@ -424,8 +425,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="datax\" />
-    <Folder Include="project\" />
+    <ProjectReference Include="..\audio\AudioLib\AudioLib.csproj">
+      <Project>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</Project>
+      <Name>AudioLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\audio\AudioLib\AudioLib.csproj">
@@ -436,6 +439,10 @@
       <Project>{3393A6E2-BB27-4D53-ACAA-629723D51F5E}</Project>
       <Name>DTDs</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="datax\" />
+    <Folder Include="project\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1419,6 +1419,8 @@ namespace urakawa
             ExternalFilesDataManager.RemoveManagedObject(exFileDataXSLT);
             DTDExternalFileData exFileDataDTD = ExternalFilesDataFactory.Create<DTDExternalFileData>();
             ExternalFilesDataManager.RemoveManagedObject(exFileDataDTD);
+            PLSExternalFileData exFileDataPLS = ExternalFilesDataFactory.Create<PLSExternalFileData>();
+            ExternalFilesDataManager.RemoveManagedObject(exFileDataPLS);
             //
             DebugFix.Assert(ExternalFilesDataManager.ManagedObjects.Count == 0);
             DebugFix.Assert(DataProviderManager.ManagedObjects.Count == 0);

@@ -141,6 +141,12 @@ namespace urakawa.data
         public const string STYLE_XSLT_EXTENSION = ".xslt";
         public const string STYLE_XSL_EXTENSION = ".xsl";
 
+/// <summary>
+        /// MIME type for Pronunciation Lexicon Specification (PLS)
+        /// </summary>
+        public const string STYLE_PLS_MIME_TYPE = "application/pls+xml";
+        public const string STYLE_PLS_EXTENSION = ".pls";
+
         /// <summary>
         /// MIME type for plain text
         /// </summary>
@@ -216,6 +222,9 @@ namespace urakawa.data
                     break;
                 case STYLE_XSLT_MIME_TYPE:
                     extension = STYLE_XSLT_EXTENSION;
+                    break;
+                case STYLE_PLS_MIME_TYPE:
+                    extension = STYLE_PLS_EXTENSION;
                     break;
                 case TEXT_PLAIN_MIME_TYPE:
                     extension = TEXT_PLAIN_EXTENSION;
@@ -295,6 +304,9 @@ namespace urakawa.data
                     break;
                 case STYLE_XSLT_EXTENSION:
                     mime = STYLE_XSLT_MIME_TYPE;
+                    break;
+                case STYLE_PLS_EXTENSION:
+                    mime = STYLE_PLS_MIME_TYPE;
                     break;
                 case TEXT_PLAIN_EXTENSION:
                     mime = TEXT_PLAIN_MIME_TYPE;
