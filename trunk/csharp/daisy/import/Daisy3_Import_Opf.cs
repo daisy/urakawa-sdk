@@ -190,7 +190,12 @@ namespace urakawa.daisy.import
                 {
                     AddExternalFilesToXuk(m_Project.Presentations.Get(0), attrHref.Value);
                 }
-                else if (attrMediaType.Value == "image/jpeg"
+                    else if (attrMediaType.Value == "application/pls+xml")
+                
+                    {
+                    AddExternalFilesToXuk(m_Project.Presentations.Get(0), attrHref.Value);
+                }
+                else if (attrMediaType.Value == "image/jpeg"    
                 || attrMediaType.Value == "audio/mpeg"
                 || attrMediaType.Value == "text/css"
                 || attrMediaType.Value == "text/xml"
@@ -217,7 +222,10 @@ namespace urakawa.daisy.import
             {
                 externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData>();
             }
-
+            if (String.Equals(ext, ".pls", StringComparison.OrdinalIgnoreCase))
+            {
+                externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.PLSExternalFileData>();
+            }
             if (externalData != null)
             {
                 externalData.InitializeWithData(fileFullPath, relPath, true);
