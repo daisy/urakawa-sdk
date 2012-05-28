@@ -186,15 +186,12 @@ namespace urakawa.daisy.import
                 {
                     ncxPath = attrHref.Value;
                 }
-                else if (attrMediaType.Value == "text/css")
+                else if (attrMediaType.Value == "text/css"
+                    || attrMediaType.Value == "application/pls+xml")
                 {
                     AddExternalFilesToXuk(m_Project.Presentations.Get(0), attrHref.Value);
                 }
-                    else if (attrMediaType.Value == "application/pls+xml")
-                
-                    {
-                    AddExternalFilesToXuk(m_Project.Presentations.Get(0), attrHref.Value);
-                }
+                    
                 else if (attrMediaType.Value == "image/jpeg"    
                 || attrMediaType.Value == "audio/mpeg"
                 || attrMediaType.Value == "text/css"
