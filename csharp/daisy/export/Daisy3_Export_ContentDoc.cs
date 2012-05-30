@@ -514,8 +514,7 @@ namespace urakawa.daisy.export
 
         private void ExportStyleSheets(List<ExternalFileData> list_ExternalStyleSheets)
         {
-            if (list_ExternalStyleSheets == null ||
-                (list_ExternalStyleSheets != null && list_ExternalStyleSheets.Count == 0))
+            if (list_ExternalStyleSheets == null || list_ExternalStyleSheets.Count == 0)
             {
                 return;
             }
