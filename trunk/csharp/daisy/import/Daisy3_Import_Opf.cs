@@ -81,6 +81,13 @@ namespace urakawa.daisy.import
                 case "application/xhtml+xml":
                     {
                         parseContentDocuments(spine);
+                        if (!string.IsNullOrEmpty(ncxPath))
+                        {
+                            string fullNcxPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), ncxPath);
+                            ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.NCXExternalFileData>();
+                            if (externalData != null) externalData.InitializeWithData(fullNcxPath, ncxPath, true);
+                        }
+
                         break;
                     }
             }
