@@ -835,6 +835,10 @@ namespace urakawa.xuk
             get { return ((mProject == null || IsPrettyFormat) ? "PlsExternalFileData" : "plsExFl"); }
         }
 
+        public static string NCXExternalFileData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "NCXExternalFileData" : "NCXExFl"); }
+        }
 
         public static string ExternalFileDatas
             {

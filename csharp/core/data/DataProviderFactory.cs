@@ -148,6 +148,13 @@ namespace urakawa.data
         public const string STYLE_PLS_EXTENSION = ".pls";
 
         /// <summary>
+        /// MIME type for Navigation Control file for Xml(NCX)
+        /// </summary>
+        public const string STYLE_NCX_MIME_TYPE = "application/x-dtbncx+xml";
+        public const string STYLE_NCX_EXTENSION = ".ncx";
+
+
+        /// <summary>
         /// MIME type for plain text
         /// </summary>
         public const string TEXT_PLAIN_MIME_TYPE = "text/plain";
