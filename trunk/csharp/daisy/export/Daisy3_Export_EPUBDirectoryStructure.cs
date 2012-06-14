@@ -6,6 +6,7 @@ using System.IO;
 
 using urakawa;
 using urakawa.core;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace urakawa.daisy.export
 {
@@ -38,7 +39,20 @@ namespace urakawa.daisy.export
                     // create directories here
                 }
             }
-             */ 
+             */
+            //PackageToZip();
+        }
+
+        public void PackageToZip ()
+        {
+            FastZip zip = new FastZip();
+            zip.UseZip64 = UseZip64.On;
+            
+            string parentDirectory = Directory.GetParent(m_OutputDirectory).FullName;
+            string fileName = Path.GetFileName(m_OutputDirectory);
+            string filePath = Path.Combine(parentDirectory, fileName + ".zip");
+            
+            zip.CreateZip( filePath, m_OutputDirectory, true, null);
         }
 
     }
