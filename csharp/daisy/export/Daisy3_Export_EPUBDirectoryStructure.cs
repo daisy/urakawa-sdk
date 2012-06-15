@@ -50,6 +50,7 @@ namespace urakawa.daisy.export
             zipEvents.ProcessFile = ProcessEvents;
 
             FastZip zip = new FastZip(zipEvents);
+            zip.CreateEmptyDirectories = true ;
             //zip.UseZip64 = UseZip64.On;
             
             string parentDirectory = Directory.GetParent(m_OutputDirectory).FullName;
@@ -60,30 +61,47 @@ namespace urakawa.daisy.export
             string emptyDirectoryPath = Path.Combine(m_OutputDirectory, fileName);
             Directory.CreateDirectory(emptyDirectoryPath);
             //zip.CreateZip( filePath, m_OutputDirectory, true, null);
-            zip.CreateZip(filePath, emptyDirectoryPath, true, null);
+            zip.CreateZip(filePath, emptyDirectoryPath, false, null);
 
             Directory.Delete(emptyDirectoryPath);
             ZipFile zippeFile = new ZipFile(filePath ) ;
             zippeFile.BeginUpdate();
-            string mimeTypePath = Path.Combine(m_OutputDirectory, "mimetype")  ;
+            //zippeFile.Delete(emptyDirectoryPath);
+            string initialPath = Directory.GetParent(m_OutputDirectory).FullName;
+            //System.Windows.Forms.MessageBox.Show(initialPath);
+            //zippeFile.AddDirectory(
+            string mimeTypePath = Path.Combine(m_OutputDirectory,"mimetype")  ;
             ICSharpCode.SharpZipLib.Zip.StaticDiskDataSource dataSource = new StaticDiskDataSource(mimeTypePath) ;
-            zippeFile.Add(dataSource , "mimetype", CompressionMethod.Stored);
+            //zippeFile.Add(dataSource , Path.Combine(Path.GetFileName (emptyDirectoryPath), "mimetype"), CompressionMethod.Stored);
+            zippeFile.Add(dataSource, mimeTypePath.Replace(initialPath,"") ,CompressionMethod.Stored);
+            
             string [] listOfFiles = Directory.GetFiles(m_OutputDirectory, "*.*", SearchOption.TopDirectoryOnly);
             for(int i = 0 ; i < listOfFiles.Length ; i++ )
             {
                 if ( listOfFiles[i] != mimeTypePath )
                 {
-                    zippeFile.Add(listOfFiles[i], Path.GetFileName(listOfFiles[i]));
+                    zippeFile.Add(listOfFiles[i], listOfFiles[i].Replace(initialPath,""));
                 }
             }
             string[] listOfDirectories = Directory.GetDirectories(m_OutputDirectory, "*.*", SearchOption.AllDirectories);
             for (int i = 0; i < listOfDirectories.Length; i++)
             {
-                zippeFile.AddDirectory(listOfDirectories[i]);
+                
+                string[] listOfInternalFiles = Directory.GetFiles(listOfDirectories[i], "*.*", SearchOption.TopDirectoryOnly);
+                //if (listOfInternalFiles.Length == 0) zippeFile.AddDirectory(listOfDirectories[i]);
+                for (int j = 0; j < listOfInternalFiles.Length; j++)
+                {
+                    
+                        zippeFile.Add(listOfInternalFiles[j], listOfInternalFiles[j].Replace(initialPath, ""));
+                    
+                }
+                
             }
 
             //zippeFile.Add(Path.Combine(m_OutputDirectory, "mimetype"), "mimetype");
+            
             zippeFile.CommitUpdate();
+
             zippeFile.Close();
         }
 
