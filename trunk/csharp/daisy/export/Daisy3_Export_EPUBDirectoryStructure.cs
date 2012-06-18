@@ -103,10 +103,24 @@ namespace urakawa.daisy.export
             zippeFile.CommitUpdate();
 
             zippeFile.Close();
+            DisplayZipHeaderForVerification(filePath);
         }
 
         private void ProcessEvents(object sender, ScanEventArgs args)
         {
+        }
+
+        private void DisplayZipHeaderForVerification(string zipFilePath)
+        {
+            BinaryReader reader = new BinaryReader(File.OpenRead(zipFilePath));
+            Console.WriteLine ("1-4. Signatures: " + reader.ReadInt32());
+
+            Console.WriteLine("5-6. version: " + reader.ReadInt16());
+            Console.WriteLine("7-8. Compression: " + reader.ReadInt16());
+            Console.WriteLine("9-10. last modified: " + reader.ReadInt16());
+            Console.WriteLine("11-12. last modified date: " + reader.ReadInt16());
+            Console.WriteLine("13-16. CRC: " + reader.ReadInt32());
+            reader.Close();
         }
 
     }
