@@ -73,7 +73,7 @@ namespace urakawa.daisy.export
                 string strID = GetNextID(ID_OpfPrefix);
 
                 string ext = Path.GetExtension(externalFileName);
-                if (String.Equals(ext, ".css", StringComparison.OrdinalIgnoreCase))
+                if (String.Equals(ext, DataProviderFactory.STYLE_CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
                 {
                     AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.STYLE_CSS_MIME_TYPE);
                 }
@@ -82,7 +82,7 @@ namespace urakawa.daisy.export
                 {
                     AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.STYLE_XSLT_MIME_TYPE);
                 }
-                else if (String.Equals(ext, ".dtd", StringComparison.OrdinalIgnoreCase))
+                else if (String.Equals(ext, DataProviderFactory.DTD_EXTENSION, StringComparison.OrdinalIgnoreCase))
                 {
                     AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.DTD_MIME_TYPE);
                 }

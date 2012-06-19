@@ -312,6 +312,9 @@ namespace urakawa.data
                 case STYLE_XSLT_EXTENSION:
                     mime = STYLE_XSLT_MIME_TYPE;
                     break;
+                case STYLE_XSL_EXTENSION:
+                    mime = STYLE_XSLT_MIME_TYPE;
+                    break;
                 case STYLE_PLS_EXTENSION:
                     mime = STYLE_PLS_MIME_TYPE;
                     break;

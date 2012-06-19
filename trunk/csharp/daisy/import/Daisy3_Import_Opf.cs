@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using urakawa.data;
 using urakawa.xuk;
 
 namespace urakawa.daisy.import
@@ -189,26 +190,25 @@ namespace urakawa.daisy.import
                     dtbookPath = attrHref.Value;
                 }
                 else if (attrMediaType.Value == "application/x-dtbncx+xml"
-                    || attrMediaType.Value == "text/xml" && attrHref.Value.EndsWith(".ncx"))
+                    || attrMediaType.Value == DataProviderFactory.XML_TEXT_MIME_TYPE
+                        && attrHref.Value.EndsWith(".ncx"))
                 {
                     ncxPath = attrHref.Value;
                 }
-                else if (attrMediaType.Value == "text/css"
-                    || attrMediaType.Value == "application/pls+xml")
+                else if (attrMediaType.Value == DataProviderFactory.STYLE_CSS_MIME_TYPE
+                    || attrMediaType.Value == DataProviderFactory.STYLE_PLS_MIME_TYPE)
                 {
                     AddExternalFilesToXuk(m_Project.Presentations.Get(0), attrHref.Value);
                 }
-                    
-                else if (attrMediaType.Value == "image/jpeg"    
-                || attrMediaType.Value == "audio/mpeg"
-                || attrMediaType.Value == "text/css"
-                || attrMediaType.Value == "text/xml"
-                || attrMediaType.Value == "application/vnd.adobe.page-template+xml"
-                || attrMediaType.Value == "application/oebps-page-map+xml"
-                || attrMediaType.Value == "application/x-dtbresource+xml")
-                {
-                    // Ignore
-                }
+                //else if (attrMediaType.Value == "image/jpeg"
+                //|| attrMediaType.Value == "audio/mpeg"
+                //|| attrMediaType.Value == DataProviderFactory.XML_TEXT_MIME_TYPE
+                //|| attrMediaType.Value == "application/vnd.adobe.page-template+xml"
+                //|| attrMediaType.Value == "application/oebps-page-map+xml"
+                //|| attrMediaType.Value == "application/x-dtbresource+xml")
+                //{
+                //    // Ignore
+                //}
             }
         }
 
@@ -222,11 +222,11 @@ namespace urakawa.daisy.import
             ExternalFiles.ExternalFileData externalData = null;
 
             string ext = Path.GetExtension(fileFullPath);
-            if (String.Equals(ext, ".dtd", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(ext, DataProviderFactory.DTD_EXTENSION, StringComparison.OrdinalIgnoreCase))
             {
                 externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData>();
             }
-            if (String.Equals(ext, ".pls", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(ext, DataProviderFactory.STYLE_PLS_EXTENSION, StringComparison.OrdinalIgnoreCase))
             {
                 externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.PLSExternalFileData>();
             }
