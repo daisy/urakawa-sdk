@@ -156,7 +156,7 @@ namespace urakawa.daisy.import
                                                       ("/processing-instruction(\"xml-stylesheet\")");
                         if (styleSheetNodeList != null && styleSheetNodeList.Count > 0)
                         {
-                            AddStyleSheetsToXuk(styleSheetNodeList);
+                            AddXmlStyleSheetsToXuk(styleSheetNodeList);
                         }
                         //XmlNodeList listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("body");
                         //if (listOfBodies.Count == 0)
@@ -766,7 +766,7 @@ namespace urakawa.daisy.import
         }
 
 
-        private void AddStyleSheetsToXuk(XmlNodeList styleSheetNodesList)
+        private void AddXmlStyleSheetsToXuk(XmlNodeList styleSheetNodesList)
         {
             if (RequestCancellation) return;
 
@@ -797,7 +797,7 @@ namespace urakawa.daisy.import
                 {
                     ExternalFiles.ExternalFileData efd = null;
                     string ext = Path.GetExtension(relativePath);
-                    if (String.Equals(ext, ".css", StringComparison.OrdinalIgnoreCase))
+                    if (String.Equals(ext, DataProviderFactory.STYLE_CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
                     {
                         efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
                     }
