@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Xml;
 using urakawa.xuk;
@@ -21,37 +22,63 @@ namespace urakawa.data
     /// </summary>
     public class FileDataProvider : DataProvider
     {
+        private const char UNDERSCORE = '_';
+        private const char HYPHEN = '-';
+        private static readonly char[] INVALID_CHARS = Path.GetInvalidPathChars();
+        private static readonly StringBuilder m_StrBuilder = new StringBuilder(30);
         public static string EliminateForbiddenFileNameCharacters(string str)
         {
-            string newStr = str
-                .Replace(Path.DirectorySeparatorChar, '_')
-                .Replace(Path.AltDirectorySeparatorChar, '_');
+            //StringBuilder strBuilder = new StringBuilder(str.Length);
+#if NET40
+            m_StrBuilder.Clear();
+#else
+            strBuilder.Length = 0;
+#endif //NET40
+            m_StrBuilder.EnsureCapacity(str.Length);
 
-            if (newStr.IndexOf('/') >= 0) //newStr.Contains("/"))
+            for (int i = 0; i < str.Length; i++)
             {
-                newStr = newStr.Replace('/', '_');
-            }
-            if (newStr.IndexOf('\\') >= 0) //newStr.Contains("\\"))
-            {
-                newStr = newStr.Replace('\\', '_');
+                char c = str[i];
+
+                if (c == Path.DirectorySeparatorChar
+                    || c == Path.AltDirectorySeparatorChar
+                    || c == '/'
+                    || c == '\\')
+                {
+                    m_StrBuilder.Append(UNDERSCORE);
+                }
+                else if (c == ':'
+                    || c == '*'
+                    || c == '?'
+                    || c == '<'
+                    || c == '>'
+                    || c == '|'
+                    || c == '\"'
+                    || c == '\''
+                )
+                {
+                    m_StrBuilder.Append(HYPHEN);
+                }
+                else
+                {
+                    bool added = false;
+                    foreach (char cc in INVALID_CHARS)
+                    {
+                        if (c == cc)
+                        {
+                            m_StrBuilder.Append(UNDERSCORE);
+                            added = true;
+                            break;
+                        }
+                    }
+                    if (!added)
+                    {
+                        m_StrBuilder.Append(c);
+                    }
+                }
             }
 
-            foreach (char c in Path.GetInvalidPathChars ())
-            {
-                newStr = newStr.Replace(c, '_');
-            }
-
-            newStr = newStr.Replace(':', '-')
-                .Replace('*', '-')
-                .Replace('?', '-')
-                .Replace('<', '-')
-                .Replace('>', '-')
-                .Replace('|', '-')
-                .Replace('\"', '-')
-                .Replace('\'','-')
-                ;
-
-            return newStr;
+            return m_StrBuilder.ToString();
         }
 
         private static int MAX_ATTEMPTS = 10;
