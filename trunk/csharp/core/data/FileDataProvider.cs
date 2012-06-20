@@ -36,6 +36,11 @@ namespace urakawa.data
                 newStr = newStr.Replace('\\', '_');
             }
 
+            foreach (char c in Path.GetInvalidPathChars ())
+            {
+                newStr = newStr.Replace(c, '_');
+            }
+
             newStr = newStr.Replace(':', '-')
                 .Replace('*', '-')
                 .Replace('?', '-')
@@ -43,6 +48,7 @@ namespace urakawa.data
                 .Replace('>', '-')
                 .Replace('|', '-')
                 .Replace('\"', '-')
+                .Replace('\'','-')
                 ;
 
             return newStr;
