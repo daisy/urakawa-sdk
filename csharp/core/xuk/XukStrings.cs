@@ -59,6 +59,11 @@ namespace urakawa.xuk
             get { return ((mProject == null || IsPrettyFormat) ? "RootUri" : "rootUri"); }
         }
 
+        public static string HeadNode
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "HeadNode" : "head"); }
+        }
+
         public static string Metadatas
         {
             get { return ((mProject == null || IsPrettyFormat) ? "Metadatas" : "mtdts"); }

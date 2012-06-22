@@ -275,6 +275,7 @@ namespace urakawa
         private bool mRootNodeInitialized;
         private Uri mRootUri;
         private string mLanguage;
+        private TreeNode mHeadNode;
 
         private ObjectListProvider<Metadata> mMetadata;
         public ObjectListProvider<Metadata> Metadatas
@@ -347,6 +348,43 @@ namespace urakawa
                 if (mLanguage != prevLang) notifyLanguageChanged(this, mLanguage, prevLang);
             }
         }
+
+        /// <summary>
+        /// Gets the head node for holding header data <see cref="TreeNode"/> of <c>this</c>
+        /// </summary>
+        /// <returns>The Head node</returns>
+        /// <remarks>
+        /// <see cref="HeadNode "/> is initialized lazily: 
+        /// If <see cref="HeadNode"/> is retrieved before it is explicitly set (possibly explicitly set to null),
+        /// it is initialized to a newly created <see cref="TreeNode"/>
+        /// </remarks>
+        public TreeNode HeadNode
+        {
+            get
+            {
+                if (mHeadNode == null) HeadNode = TreeNodeFactory.Create();
+                return mHeadNode;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    if (value.Parent != null)
+                    {
+                        throw new exception.NodeHasParentException(
+                            "A TreeNode with a parent can not be the Head node of a Presentation");
+                    }
+                    if (value.Presentation != this)
+                    {
+                        throw new exception.NodeInDifferentPresentationException(
+                            "The head TreeNode of a Presentation has to belong to that Presentation");
+                    }
+                }
+                    mHeadNode = value;
+                    notifyChanged(new DataModelChangedEventArgs(this));
+            }
+        }
+
 
         /// <summary>
         /// Gets the root <see cref="TreeNode"/> of <c>this</c>
@@ -814,6 +852,7 @@ namespace urakawa
             mRootNodeInitialized = false;
             mRootUri = null;
             mLanguage = null;
+            mHeadNode = null;
 
             foreach (Metadata md in mMetadata.ContentsAs_ListCopy)
             {
@@ -911,6 +950,43 @@ namespace urakawa
             }
         }
 
+
+        /// <summary>
+        /// Reads the Head node <see cref="TreeNode"/> of <c>this</c> from a <c>mHeadNode</c> xuk xml element
+        /// </summary>
+        /// <param name="source">The source <see cref="XmlReader"/></param>
+        /// <param name="handler">The handler for progress</param>
+        /// <remarks>The read is considered succesful even if no valid Head node is found</remarks>
+        protected void XukInHeadNode(XmlReader source, IProgressHandler handler)
+        {
+            HeadNode = null;
+            if (!source.IsEmptyElement)
+            {
+                while (source.Read())
+                {
+                    if (source.NodeType == XmlNodeType.Element)
+                    {
+                        TreeNode newHeadNode = TreeNodeFactory.Create(source.LocalName, source.NamespaceURI);
+                        if (newHeadNode != null)
+                        {
+                            newHeadNode.XukIn(source, handler);
+                            HeadNode = newHeadNode;
+                        }
+                        else if (!source.IsEmptyElement)
+                        {
+                            source.ReadSubtree().Close();
+                        }
+                    }
+                    else if (source.NodeType == XmlNodeType.EndElement)
+                    {
+                        break;
+                    }
+                    if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                }
+            }
+        }
+
+        
 
         /// <summary>
         /// Reads the root <see cref="TreeNode"/> of <c>this</c> from a <c>mRootNode</c> xuk xml element
@@ -1074,6 +1150,11 @@ namespace urakawa
                     m_XukedInTreeNodes = 0;
                     XukInRootNode(source, handler);
                 }
+                else if (source.LocalName == XukStrings.HeadNode)
+                {
+                    
+                    XukInHeadNode(source, handler);
+                }
                 else
                 {
                     readItem = false;
@@ -1160,6 +1241,10 @@ namespace urakawa
 
             if (!m_IgnoreUndoRedoStack)
                 UndoRedoManager.XukOut(destination, baseUri, handler);
+
+            destination.WriteStartElement(XukStrings.HeadNode, XukAble.XUK_NS);
+            HeadNode.XukOut(destination, baseUri, handler);
+            destination.WriteEndElement();
 
             destination.WriteStartElement(XukStrings.RootNode, XukAble.XUK_NS);
             RootNode.XukOut(destination, baseUri, handler);

@@ -32,7 +32,7 @@ namespace urakawa.data
 #if NET40
             m_StrBuilder.Clear();
 #else
-            strBuilder.Length = 0;
+            m_StrBuilder.Length = 0;
 #endif //NET40
             m_StrBuilder.EnsureCapacity(str.Length);
 
