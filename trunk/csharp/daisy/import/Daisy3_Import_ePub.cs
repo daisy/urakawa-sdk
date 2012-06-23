@@ -4,8 +4,12 @@ using System.Threading;
 using System.Xml;
 using AudioLib;
 using ICSharpCode.SharpZipLib.Zip;
+
+using urakawa.core;
 using urakawa.data;
 using urakawa.xuk;
+using urakawa.property.xml;
+using urakawa.property.channel;
 
 namespace urakawa.daisy.import
 {
@@ -14,6 +18,43 @@ namespace urakawa.daisy.import
     /// </summary>
     public partial class Daisy3_Import
     {
+
+        private void ParseHeadLinks(XmlDocument contentDoc)
+        {
+            XmlNode headXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(contentDoc.DocumentElement, true, "head", null);
+            Presentation presentation = m_Project.Presentations.Get(0) ;
+            TreeNode headTreeNode = presentation.HeadNode;
+            
+            foreach ( XmlNode linkNode in XmlDocumentHelper.GetChildrenElementsOrSelfWithName (headXmlNode, true,"link",headXmlNode.NamespaceURI,false ))
+            {
+                TreeNode treeNode = presentation.TreeNodeFactory.Create();
+                headTreeNode.AppendChild(treeNode);
+                XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
+                treeNode.AddProperty(xmlProp);
+                xmlProp.SetQName(linkNode.LocalName,
+                    headXmlNode.NamespaceURI == linkNode.NamespaceURI ? "" : linkNode.NamespaceURI);
+                Console.WriteLine("XmlProperty: " + xmlProp.LocalName);
+                foreach (System.Xml.XmlAttribute xAttr in linkNode.Attributes)
+                {
+                    xmlProp.SetAttribute(xAttr.LocalName,
+                        linkNode.NamespaceURI == xAttr.NamespaceURI ? "" : xAttr.NamespaceURI,
+                        xAttr.Value);
+                    //if (xmlProp.Attributes.Count > 0)
+                    //Console.WriteLine("Link attribute: " + xmlProp.Attributes.ContentsAs_ListAsReadOnly[xmlProp.Attributes.Count - 1]);
+                }
+                if ( !string.IsNullOrEmpty (linkNode.InnerText ))
+                {
+                     urakawa.media.TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
+                        textMedia.Text = linkNode.InnerText;
+                        ChannelsProperty cProp = presentation.PropertyFactory.CreateChannelsProperty();
+                        cProp.SetMedia(m_textChannel, textMedia);
+                    treeNode.AddProperty (cProp) ;
+                    Console.WriteLine("Link inner text: " + textMedia.Text);
+                }
+            }
+            
+        }
+
         private void unzipEPubAndParseOpf()
         {
             if (RequestCancellation) return;

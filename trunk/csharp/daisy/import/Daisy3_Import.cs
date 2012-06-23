@@ -207,7 +207,7 @@ namespace urakawa.daisy.import
                     if (RequestCancellation) return;
                     reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, Path.GetFileName(m_Book_FilePath)));
                     parseMetadata(contentXmlDoc);
-
+                    ParseHeadLinks(contentXmlDoc);
                     if (RequestCancellation) return;
                     reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, Path.GetFileName(m_Book_FilePath)));
                     parseContentDocument(contentXmlDoc, null, m_Book_FilePath);
