@@ -103,7 +103,10 @@ namespace urakawa.daisy.import
                 {
                     efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.PLSExternalFileData>();
                 }
-                
+                else if (String.Equals(ext, DataProviderFactory.STYLE_JS_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                {
+                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.JSExternalFileData>();
+                }
                 if (efd != null) efd.InitializeWithData(fullPath, relativePath, true);
                 return efd;
             }
