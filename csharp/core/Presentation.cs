@@ -1508,6 +1508,8 @@ namespace urakawa
             ExternalFilesDataManager.RemoveManagedObject(exFileDataPLS);
             NCXExternalFileData exFileDataNCX = ExternalFilesDataFactory.Create<NCXExternalFileData>();
             ExternalFilesDataManager.RemoveManagedObject(exFileDataNCX);
+            JSExternalFileData exFileDataJS = ExternalFilesDataFactory.Create<JSExternalFileData>();
+            ExternalFilesDataManager.RemoveManagedObject(exFileDataJS);
             //
             DebugFix.Assert(ExternalFilesDataManager.ManagedObjects.Count == 0);
             DebugFix.Assert(DataProviderManager.ManagedObjects.Count == 0);

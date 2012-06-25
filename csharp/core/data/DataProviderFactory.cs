@@ -155,6 +155,13 @@ namespace urakawa.data
 
 
         /// <summary>
+        /// MIME type for Java Script(PLS)
+        /// </summary>
+        public const string STYLE_JS_MIME_TYPE = "•application/javascript";
+        public const string STYLE_JS_EXTENSION = ".js";
+
+
+        /// <summary>
         /// MIME type for plain text
         /// </summary>
         public const string TEXT_PLAIN_MIME_TYPE = "text/plain";
