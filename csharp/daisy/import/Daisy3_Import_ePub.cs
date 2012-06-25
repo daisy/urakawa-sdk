@@ -28,7 +28,18 @@ namespace urakawa.daisy.import
             List<XmlNode> externalFilesLinks = new List<XmlNode>();
             externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "link", headXmlNode.NamespaceURI, false));
             externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "script", headXmlNode.NamespaceURI, false));
-            
+
+            List<string> externalFileRelativePaths = new List<string>();
+            foreach (ExternalFiles.ExternalFileData extData in presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
+            {
+                if (!string.IsNullOrEmpty (extData.OriginalRelativePath))
+                {
+                string relPath = Path.GetFullPath(extData.OriginalRelativePath);
+                    if ( !externalFileRelativePaths.Contains(relPath )) externalFileRelativePaths.Add (relPath ) ;
+                }
+            }
+
+
             foreach ( XmlNode linkNode in externalFilesLinks)
             {
                 
@@ -44,8 +55,16 @@ namespace urakawa.daisy.import
                     xmlProp.SetAttribute(xAttr.LocalName,
                         linkNode.NamespaceURI == xAttr.NamespaceURI ? "" : xAttr.NamespaceURI,
                         xAttr.Value);
-                    //if (xmlProp.Attributes.Count > 0)
-                    //Console.WriteLine("Link attribute: " + xmlProp.Attributes.ContentsAs_ListAsReadOnly[xmlProp.Attributes.Count - 1]);
+                    
+                    
+                    if ((xAttr.Name.ToLower() == "href"
+                        || xAttr.Name.ToLower() == "src")
+                        && !string.IsNullOrEmpty (xAttr.Value) && !externalFileRelativePaths.Contains (Path.GetFullPath(xAttr.Value)))
+                    {
+                        
+                        ExternalFiles.ExternalFileData extData =  CreateAndAddExternalFileData(xAttr.Value);
+                        externalFileRelativePaths.Add(Path.GetFullPath(extData.OriginalRelativePath));
+                    }
                 }
                 if ( !string.IsNullOrEmpty (linkNode.InnerText ))
                 {
@@ -58,6 +77,37 @@ namespace urakawa.daisy.import
                 }
             }
             
+        }
+
+        private ExternalFiles.ExternalFileData CreateAndAddExternalFileData(string relativePath)
+        {
+            Presentation presentation = m_Project.Presentations.Get(0);
+            string fullPath = Path.Combine(
+                    Path.GetDirectoryName(m_Book_FilePath),
+                    relativePath);
+
+            if (File.Exists(fullPath))
+            {
+                ExternalFiles.ExternalFileData efd = null;
+                string ext = Path.GetExtension(relativePath);
+                if (String.Equals(ext, DataProviderFactory.STYLE_CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                {
+                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
+                }
+                else if (String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                {
+                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
+                }
+                else if (String.Equals(ext, DataProviderFactory.STYLE_PLS_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                {
+                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.PLSExternalFileData>();
+                }
+                
+                if (efd != null) efd.InitializeWithData(fullPath, relativePath, true);
+                return efd;
+            }
+            return null;
         }
 
         private void unzipEPubAndParseOpf()
