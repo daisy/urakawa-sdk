@@ -213,6 +213,7 @@
     <Compile Include="exception\XmlAttributeDoesNotExistsException.cs" />
     <Compile Include="exception\XukException.cs" />
     <Compile Include="exception\XukQNameNotUniqueWithinFactoryException.cs" />
+    <Compile Include="ExternalFiles\JSExternalFileData.cs" />
     <Compile Include="ExternalFiles\CSSExternalFileData.cs" />
     <Compile Include="ExternalFiles\DTDExternalFileData.cs" />
     <Compile Include="ExternalFiles\ExternalFileData.cs" />
