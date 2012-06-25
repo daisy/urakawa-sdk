@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Xml;
+using System.Collections.Generic;
 using AudioLib;
 using ICSharpCode.SharpZipLib.Zip;
 
@@ -24,9 +25,13 @@ namespace urakawa.daisy.import
             XmlNode headXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(contentDoc.DocumentElement, true, "head", null);
             Presentation presentation = m_Project.Presentations.Get(0) ;
             TreeNode headTreeNode = presentation.HeadNode;
+            List<XmlNode> externalFilesLinks = new List<XmlNode>();
+            externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "link", headXmlNode.NamespaceURI, false));
+            externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "script", headXmlNode.NamespaceURI, false));
             
-            foreach ( XmlNode linkNode in XmlDocumentHelper.GetChildrenElementsOrSelfWithName (headXmlNode, true,"link",headXmlNode.NamespaceURI,false ))
+            foreach ( XmlNode linkNode in externalFilesLinks)
             {
+                
                 TreeNode treeNode = presentation.TreeNodeFactory.Create();
                 headTreeNode.AppendChild(treeNode);
                 XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
