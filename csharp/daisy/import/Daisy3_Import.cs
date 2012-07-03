@@ -70,7 +70,7 @@ namespace urakawa.daisy.import
 
         public static string GetXukFilePath(string outputDirectory, string bookFilePath)
         {
-            return Path.Combine(outputDirectory, Path.GetFileName(bookFilePath) + ".xuk");
+            return Path.Combine(outputDirectory, Path.GetFileName(bookFilePath) + OpenXukAction.XUK_EXTENSION);
         }
 
         public override void DoWork()

@@ -21,6 +21,9 @@ namespace urakawa.xuk
     ///</summary>
     public class OpenXukAction : ProgressAction
     {
+        public const string XUK_EXTENSION = @".xuk";
+        public const string XUK_SPINE_EXTENSION = @".xukspine";
+
         public override void DoWork()
         {
             Stopwatch stopWatch = new Stopwatch();

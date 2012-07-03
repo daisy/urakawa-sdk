@@ -105,7 +105,7 @@ namespace urakawa.daisy.import
 
 
                 //TODO: be careful with XukPath public accessor !!!! (used in Tobi UrakawaSession)
-                //TODO: m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + ".xuk");
+                //TODO: m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + OpenXukAction.XUK_EXTENSION);
                 //TODO: XukSave m_Project
 
                 //TODO: add XHTML outline to m_BundleProject TreeNodes
