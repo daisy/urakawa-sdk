@@ -474,8 +474,14 @@ namespace urakawa.media.data.audio.codec
             }
 
             WavClip newSingleWavClip = new WavClip(fileDataProvider);
-            newSingleWavClip.ClipBegin = clipBegin.Copy();
-            newSingleWavClip.ClipEnd = clipEnd.Copy();
+            if (clipBegin != null)
+            {
+                newSingleWavClip.ClipBegin = clipBegin.Copy();
+            }
+            if (clipEnd != null)
+            {
+                newSingleWavClip.ClipEnd = clipEnd.Copy();
+            }
             mWavClips.Add(newSingleWavClip);
 
             checkPcmFormat(newSingleWavClip);
