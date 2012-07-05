@@ -102,6 +102,7 @@ namespace AudioLib
         }
 
         private string m_RecordedFilePath;
+        public string RecordedFilePath { get { return m_RecordedFilePath; } }
 
         public event AudioRecordingFinishHandler AudioRecordingFinished;
         public delegate void AudioRecordingFinishHandler(object sender, AudioRecordingFinishEventArgs e);
@@ -282,6 +283,53 @@ namespace AudioLib
                 {
                     Directory.CreateDirectory(m_RecordingDirectory);
                 }
+            }
+        }
+
+        public long CurrentDurationBytePosition_BufferLookAhead
+        {
+            get
+            {
+                if (CurrentState == State.NotReady)
+                {
+                    return 0;
+                }
+
+                if (CurrentState != State.Monitoring && CurrentState != State.Recording)
+                {
+                    return 0;
+                }
+
+                Monitor.Enter(LOCK);
+                try
+                {
+                    m_CircularBuffer.Stop();
+
+                    int remainingBytesToRead = 0;
+                    do
+                    {
+                        try
+                        {
+                            remainingBytesToRead = circularBufferTransferData();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine(ex.StackTrace);
+                            break;
+                        }
+
+                        //Console.WriteLine(string.Format("circularBufferTransferData: fetched remaining bytes: {0}", remainingBytesToRead));
+                    } while (remainingBytesToRead > 0);
+
+                    m_CircularBuffer.Start(true);
+                }
+                finally
+                {
+                    Monitor.Exit(LOCK);
+                }
+
+                return m_TotalRecordedBytes;
             }
         }
 
@@ -607,6 +655,7 @@ namespace AudioLib
                                                     m_CircularBufferReadPositon);
     }
              */
+            //DebugFix.Assert(circularBufferBytesAvailableForReading == incomingPcmData.Length);
 
             m_TotalRecordedBytes += incomingPcmData.Length;
 
