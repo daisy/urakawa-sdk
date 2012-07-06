@@ -13,19 +13,37 @@ namespace AudioLib
     {
         private readonly AudioLibPCMFormat m_PcmFormat;
         private readonly SpeechSynthesizer m_SpeechSynthesizer;
+        private List<string> m_InstalledVoices = new List<string>();
 
         public TextToSpeech(AudioLibPCMFormat pcmFormat, SpeechSynthesizer speechSynthesizer)
         {
             m_PcmFormat = pcmFormat;
             
-            m_SpeechSynthesizer = speechSynthesizer;
+            m_SpeechSynthesizer = speechSynthesizer == null ? new    SpeechSynthesizer () : speechSynthesizer ;
         }
 
-        public bool SpeakString( string input, string fileFullPath)
+        public SpeechSynthesizer Synthesizer { get { return m_SpeechSynthesizer; } }
+
+        public List<string> InstalledVoices
+        {
+            get
+            {
+                m_InstalledVoices.Clear();
+                foreach (InstalledVoice voice in m_SpeechSynthesizer.GetInstalledVoices())
+                {
+                    if (voice.Enabled) m_InstalledVoices.Add(voice.VoiceInfo.Name);
+                }
+                return m_InstalledVoices;
+            }
+        }
+
+        public bool SpeakString(string voice,  string input, string fileFullPath)
         {
  
     SpeechAudioFormatInfo formatInfo = new SpeechAudioFormatInfo((int)m_PcmFormat.SampleRate, AudioBitsPerSample.Sixteen, m_PcmFormat.NumberOfChannels == 2 ? AudioChannel.Stereo : AudioChannel.Mono);
-                  if (fileFullPath != null)
+    m_SpeechSynthesizer.SelectVoice(voice);
+                  
+            if (fileFullPath != null)
                   {
                       m_SpeechSynthesizer.SetOutputToWaveFile(fileFullPath, formatInfo);
                       m_SpeechSynthesizer.SpeakAsync(input);
