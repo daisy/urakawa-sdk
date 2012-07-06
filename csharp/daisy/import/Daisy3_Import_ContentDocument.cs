@@ -314,16 +314,18 @@ namespace urakawa.daisy.import
                         // => xmlProp.GetNamespaceUri() == xmlNode.NamespaceURI
 
 
+                        XmlAttributeCollection attributeCol = xmlNode.Attributes;
+
 
                         string updatedSRC = null;
 
-                        if (xmlNode.LocalName != null && xmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+                        if (attributeCol != null && xmlNode.LocalName != null && xmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
                         {
-                            XmlNode getSRC = xmlNode.Attributes.GetNamedItem("src");
-                            if (getSRC != null)
+                            XmlNode srcAttr = attributeCol.GetNamedItem("src");
+                            if (srcAttr != null)
                             {
                                 string imgSourceFullpath = null;
-                                string relativePath = xmlNode.Attributes.GetNamedItem("src").Value;
+                                string relativePath = srcAttr.Value;
                                 if (FileDataProvider.isHTTPFile(relativePath))
                                 {
                                     imgSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
@@ -407,13 +409,13 @@ namespace urakawa.daisy.import
                             }
                         }
 
-                        if (xmlNode.LocalName != null && xmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase))
+                        if (attributeCol != null && xmlNode.LocalName != null && xmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase))
                         {
-                            XmlNode getSRC = xmlNode.Attributes.GetNamedItem("src");
-                            if (getSRC != null)
+                            XmlNode srcAttr = attributeCol.GetNamedItem("src");
+                            if (srcAttr != null)
                             {
                                 string videoSourceFullpath = null;
-                                string relativePath = xmlNode.Attributes.GetNamedItem("src").Value;
+                                string relativePath = srcAttr.Value;
                                 if (FileDataProvider.isHTTPFile(relativePath))
                                 {
                                     videoSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
@@ -464,7 +466,82 @@ namespace urakawa.daisy.import
                             }
                         }
 
-                        XmlAttributeCollection attributeCol = xmlNode.Attributes;
+
+
+
+
+
+                        updatedSRC = null;
+
+                        if (attributeCol != null && xmlNode.LocalName != null && xmlNode.LocalName.Equals(DiagramContentModelHelper.Math, StringComparison.OrdinalIgnoreCase))
+                        {
+                            XmlNode srcAttr = attributeCol.GetNamedItem("altimg");
+                            if (srcAttr != null)
+                            {
+                                string imgSourceFullpath = null;
+                                string relativePath = srcAttr.Value;
+                                if (FileDataProvider.isHTTPFile(relativePath))
+                                {
+                                    imgSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
+
+                                    updatedSRC = relativePath;
+                                }
+                                else
+                                {
+                                    string parentPath = Directory.GetParent(filePath).FullName;
+                                    imgSourceFullpath = Path.Combine(parentPath, relativePath);
+
+                                    updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
+                                        Path.GetDirectoryName(m_Book_FilePath), "");
+
+                                    if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
+                                    {
+                                        updatedSRC = updatedSRC.Remove(0, 1);
+                                    }
+                                }
+
+                                if (imgSourceFullpath != null && File.Exists(imgSourceFullpath))
+                                {
+
+                                    //ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty();
+                                    //treeNode.AddProperty(chProp);
+                                    ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
+
+                                    urakawa.media.data.image.ImageMediaData imageData =
+                                        presentation.MediaDataFactory.CreateImageMediaData(Path.GetExtension(imgSourceFullpath));
+                                    if (imageData == null)
+                                    {
+                                        throw new NotSupportedException(imgSourceFullpath);
+                                    }
+                                    imageData.InitializeImage(imgSourceFullpath, updatedSRC);
+                                    media.data.image.ManagedImageMedia managedImage =
+                                        presentation.MediaFactory.CreateManagedImageMedia();
+                                    managedImage.MediaData = imageData;
+                                    chProp.SetMedia(m_ImageChannel, managedImage);
+                                }
+                                else
+                                {
+                                    ExternalImageMedia externalImage = presentation.MediaFactory.CreateExternalImageMedia();
+                                    externalImage.Src = relativePath;
+
+                                    ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
+                                    chProp.SetMedia(m_ImageChannel, externalImage);
+                                }
+                            }
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                         if (attributeCol != null)
                         {
@@ -555,6 +632,10 @@ namespace urakawa.daisy.import
                                 else if (updatedSRC != null && attr.LocalName == "src")
                                 {
                                     xmlProp.SetAttribute("src", "", updatedSRC);
+                                }
+                                else if (updatedSRC != null && attr.LocalName == "altimg")
+                                {
+                                    xmlProp.SetAttribute("altimg", "", updatedSRC);
                                 }
                                 else if (attr.Name.IndexOf(':') >= 0) // attr.Name.Contains(":")
                                 {
