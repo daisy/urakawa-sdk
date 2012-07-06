@@ -137,7 +137,8 @@ namespace urakawa.data
         /// <summary>
         /// MIME type for (XSLT)
         /// </summary>
-        public const string STYLE_XSLT_MIME_TYPE = "text/xsl" ;
+        public const string STYLE_XSLT_MIME_TYPE = "text/xsl";
+        public const string STYLE_XSLT_MIME_TYPE_ = "application/xml";
         public const string STYLE_XSLT_EXTENSION = ".xslt";
         public const string STYLE_XSL_EXTENSION = ".xsl";
 
