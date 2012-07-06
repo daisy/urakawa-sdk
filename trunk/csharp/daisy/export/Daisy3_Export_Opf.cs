@@ -80,7 +80,7 @@ namespace urakawa.daisy.export
                 else if (String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
                     || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
                 {
-                    AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.STYLE_XSLT_MIME_TYPE);
+                    AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.STYLE_XSLT_MIME_TYPE_);
                 }
                 else if (String.Equals(ext, DataProviderFactory.DTD_EXTENSION, StringComparison.OrdinalIgnoreCase))
                 {

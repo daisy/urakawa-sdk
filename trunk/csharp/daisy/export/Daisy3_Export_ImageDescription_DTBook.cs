@@ -58,7 +58,10 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, prodNoteNode, "class", DiagramContentModelHelper.EPUB_DescribedAt);
 
                 currentXmlNode.ParentNode.AppendChild(prodNoteNode);
-                if (!m_Image_ProdNoteMap.ContainsKey(n)) m_Image_ProdNoteMap.Add(n, new List<XmlNode>());
+                if (!m_Image_ProdNoteMap.ContainsKey(n))
+                {
+                    m_Image_ProdNoteMap.Add(n, new List<XmlNode>());
+                }
                 m_Image_ProdNoteMap[n].Add(prodNoteNode);
                 XmlNode anchorNode = DTBookDocument.CreateElement("a", currentXmlNode.NamespaceURI);
 
