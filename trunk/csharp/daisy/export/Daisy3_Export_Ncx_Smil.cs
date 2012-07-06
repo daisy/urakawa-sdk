@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using urakawa.media.timing;
@@ -361,6 +362,32 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
 
 
+                    string dtbookSmilRef = null;
+                    XmlNode dtBookNode = null;
+                    if (m_Image_ProdNoteMap.ContainsKey(n))
+                    {
+                        dtBookNode = m_Image_ProdNoteMap[n][0];
+                        XmlNode attr = dtBookNode.Attributes != null ?
+                                        dtBookNode.Attributes.GetNamedItem("smilref") : null;
+                        dtbookSmilRef = attr != null ? attr.Value : null;
+                    }
+                    else
+                    {
+                        dtBookNode = m_TreeNode_XmlNodeMap[n];
+                        XmlNode attr = dtBookNode.Attributes != null ?
+                                        dtBookNode.Attributes.GetNamedItem("smilref") : null;
+                        dtbookSmilRef = attr != null ? attr.Value : null;
+                    }
+                    if (dtBookNode != null && string.IsNullOrEmpty(dtbookSmilRef))
+                    {
+                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtBookNode, "smilref", smilFileName + "#" + par_id);
+                    }
+                    else
+                    {
+                        bool debug = true;
+                    }
+
+
                     XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id",
                                                                GetNextID(ID_SmilPrefix));
@@ -484,19 +511,102 @@ namespace urakawa.daisy.export
                         }
                      */
                 }
+                else if (n.HasXmlProperty
+                    && n.GetXmlElementLocalName() == DiagramContentModelHelper.Math)
+                {
+                    string idValue = ID_NcxPrefix + DiagramContentModelHelper.Math;
+
+                    XmlNode navListNodeMathML = null;
+                    foreach (XmlNode navListNode in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(ncxDocument, true, "navList", null, false))
+                    {
+                        if (navListNode.NodeType != XmlNodeType.Element || navListNode.LocalName != "navList")
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                            // DEBUG
+                            continue;
+                        }
+
+                        XmlAttributeCollection attrs = navListNode.Attributes;
+                        if (attrs == null) continue;
+
+                        XmlNode idAttr = attrs.GetNamedItem("id");
+                        if (idAttr == null) continue;
+
+                        if (idAttr.Value == idValue)
+                        {
+                            navListNodeMathML = navListNode;
+                            break;
+                        }
+                    }
+
+                    if (navListNodeMathML == null)
+                    {
+                        navListNodeMathML = ncxDocument.CreateElement(null, "navList", ncxRootNode.NamespaceURI);
+                        //ncxRootNode.AppendChild(pageListNode);
+                        ncxRootNode.InsertAfter(navListNodeMathML, navMapNode);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navListNodeMathML, "id", idValue);
+
+
+                        XmlNode mainNavLabel = ncxDocument.CreateElement(null, "navLabel", navListNodeMathML.NamespaceURI);
+                        navListNodeMathML.AppendChild(mainNavLabel);
+                        XmlNode mainTextNode = ncxDocument.CreateElement(null, "text", navListNodeMathML.NamespaceURI);
+                        mainNavLabel.AppendChild(mainTextNode);
+                        mainTextNode.AppendChild(ncxDocument.CreateTextNode(DiagramContentModelHelper.Math));
+                    }
+
+                    XmlNode navTargetNode = ncxDocument.CreateElement(null, "navTarget", navListNodeMathML.NamespaceURI);
+                    navListNodeMathML.AppendChild(navTargetNode);
+
+                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "id", GetNextID(ID_NcxPrefix));
+                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "class", DiagramContentModelHelper.Math);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "playOrder", "");
+
+                    string strPageValue = n.GetTextFlattened();
+                    ++totalPageCount;
+
+                    playOrderList_Sorted.Add(navTargetNode);
+
+                    XmlNode navLabelNode = ncxDocument.CreateElement(null, "navLabel", navListNodeMathML.NamespaceURI);
+                    navTargetNode.AppendChild(navLabelNode);
+
+                    XmlNode txtNode = ncxDocument.CreateElement(null, "text", navListNodeMathML.NamespaceURI);
+                    navLabelNode.AppendChild(txtNode);
+                    txtNode.AppendChild(ncxDocument.CreateTextNode(strPageValue));
+
+                    if (externalAudio != null)
+                    {
+                        XmlNode audioNodeNcx = ncxDocument.CreateElement(null, "audio", navListNodeMathML.NamespaceURI);
+                        navLabelNode.AppendChild(audioNodeNcx);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipBegin", FormatTimeString(externalAudio.ClipBegin));
+                        XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipEnd", FormatTimeString(externalAudio.ClipEnd));
+                        XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "src", Path.GetFileName(externalAudio.Src));
+                    }
+
+                    XmlNode contentNode = ncxDocument.CreateElement(null, "content", navListNodeMathML.NamespaceURI);
+                    navTargetNode.AppendChild(contentNode);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, contentNode, "src", smilFileName + "#" + par_id);
+
+                }
                 else if (special_UrakawaNode != null
-                    && m_NavListElementNamesList.Contains(special_UrakawaNode.GetXmlElementLocalName()) && !specialParentNodesAddedToNavList.Contains(special_UrakawaNode) || m_Image_ProdNoteMap.ContainsKey(n))
+                  && m_NavListElementNamesList.Contains(special_UrakawaNode.GetXmlElementLocalName())
+                    && !specialParentNodesAddedToNavList.Contains(special_UrakawaNode)
+
+                    ||
+                    m_Image_ProdNoteMap.ContainsKey(n))
                 {
                     string navListNodeName = m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementLocalName();
                     specialParentNodesAddedToNavList.Add(special_UrakawaNode);
                     XmlNode navListNode = null;
 
                     //= getFirstChildElementsWithName ( ncxDocument, true, "navList", null );
-                    foreach (XmlNode xn in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(ncxRootNode, true, "navList", ncxRootNode.NamespaceURI, true))
+                    foreach (XmlNode xn in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(ncxRootNode, true, "navList", ncxRootNode.NamespaceURI, false))
                     {
                         if (xn.Attributes.GetNamedItem("class").Value == navListNodeName)
                         {
                             navListNode = xn;
+                            break;
                         }
                     }
 
@@ -755,7 +865,7 @@ namespace urakawa.daisy.export
                     || localName == "endnote"
                     || localName == "footnote"
                     || localName == "rearnote"
-                    || localName == "math"
+                    || localName == DiagramContentModelHelper.Math
                     )
                 {
                     return true;
