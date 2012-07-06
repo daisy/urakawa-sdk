@@ -92,7 +92,6 @@ namespace urakawa.daisy.export
                 {
                     if (m_ListOfLevels.IndexOf(n) > m_ListOfLevels.IndexOf(urakawaNode))
                     {
-
                         return false;
                     }
                 }
@@ -121,17 +120,20 @@ namespace urakawa.daisy.export
                     }
                 */
 
-                if (!IsNcxNativeNodeAdded && currentHeadingTreeNode != null && (currentHeadingTreeNode.GetDurationOfManagedAudioMediaFlattened() == null || currentHeadingTreeNode.GetDurationOfManagedAudioMediaFlattened().AsLocalUnits == 0))
+                if (!isDocTitleAdded
+                    && !IsNcxNativeNodeAdded
+                    && currentHeadingTreeNode != null
+                    && currentHeadingTreeNode.HasXmlProperty
+                    && currentHeadingTreeNode.GetXmlElementLocalName() == "doctitle")
                 {
-                    if (currentHeadingTreeNode.HasXmlProperty && currentHeadingTreeNode.GetXmlElementLocalName() == "doctitle")
+                    Time currentHeadingTreeNodeDur = currentHeadingTreeNode.GetDurationOfManagedAudioMediaFlattened();
+
+                    if (currentHeadingTreeNodeDur == null
+                        || currentHeadingTreeNodeDur.AsLocalUnits == 0)
                     {
-                        //urakawa.core.TreeNode n = textAudioNodesList[0];
-                        if (!isDocTitleAdded)
-                        {
-                            CreateDocTitle(ncxDocument, ncxRootNode, n);
-                            isDocTitleAdded = true;
-                            IsNcxNativeNodeAdded = true;
-                        }
+                        CreateDocTitle(ncxDocument, ncxRootNode, n);
+                        isDocTitleAdded = true;
+                        IsNcxNativeNodeAdded = true;
                     }
                 }
 
@@ -662,18 +664,14 @@ namespace urakawa.daisy.export
 
                 if (!IsNcxNativeNodeAdded)
                 {
-                    if (currentHeadingTreeNode != null
+                    if (!isDocTitleAdded
+                        && currentHeadingTreeNode != null
                         && currentHeadingTreeNode.HasXmlProperty
-                        && currentHeadingTreeNode.GetXmlElementLocalName() == "doctitle"
-                        && !isDocTitleAdded)
+                        && currentHeadingTreeNode.GetXmlElementLocalName() == "doctitle")
                     {
-                        //urakawa.core.TreeNode n = textAudioNodesList[0];
-
-
                         CreateDocTitle(ncxDocument, ncxRootNode, n);
                         isDocTitleAdded = true;
                         IsNcxNativeNodeAdded = true;
-
                     }
                     else if (currentHeadingTreeNode != null)
                     {
@@ -728,15 +726,38 @@ namespace urakawa.daisy.export
 
                 }
                 if (n.HasXmlProperty && n.GetXmlElementLocalName() == "sent"
-                        && special_UrakawaNode != null && (special_UrakawaNode.GetXmlElementLocalName() == "note" || special_UrakawaNode.GetXmlElementLocalName() == "annotation"))
+                        && special_UrakawaNode != null
+                        && (special_UrakawaNode.GetXmlElementLocalName() == "note"
+                        || special_UrakawaNode.GetXmlElementLocalName() == "annotation"))
                 {
-
                     return false;
                 }
 
                 return true;
             },
-                    delegate(urakawa.core.TreeNode n) { });
+
+
+
+
+
+
+
+
+
+                    delegate(urakawa.core.TreeNode n) { }
+                    );
+
+
+
+
+
+
+
+
+
+
+
+
 
                 // make specials to null
                 special_UrakawaNode = null;
@@ -922,9 +943,6 @@ namespace urakawa.daisy.export
 
         private XmlNode CreateDocTitle(XmlDocument ncxDocument, XmlNode ncxRootNode, urakawa.core.TreeNode n)
         {
-
-            urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
-
             XmlNode docNode = ncxDocument.CreateElement(null,
                 "docTitle",
                  ncxRootNode.NamespaceURI);
@@ -937,6 +955,9 @@ namespace urakawa.daisy.export
             docNode.AppendChild(docTxtNode);
             docTxtNode.AppendChild(
             ncxDocument.CreateTextNode(n.GetTextFlattened()));
+
+
+            urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
             if (externalAudio != null)
             {
