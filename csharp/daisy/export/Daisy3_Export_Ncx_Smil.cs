@@ -97,7 +97,9 @@ namespace urakawa.daisy.export
                     }
                 }
 
-                if ((IsHeadingNode(n) || IsEscapableNode(n) || IsSkippableNode(n) || m_Image_ProdNoteMap.ContainsKey(n))
+                bool nodeIsImageAndHasDescriptionProdnotes = m_includeImageDescriptions && m_Image_ProdNoteMap.ContainsKey(n);
+
+                if ((IsHeadingNode(n) || IsEscapableNode(n) || IsSkippableNode(n) || nodeIsImageAndHasDescriptionProdnotes)
                     && (special_UrakawaNode != n))
                 {
                     // if this candidate special node is child of existing special node then ad existing special node to stack for nesting.
@@ -179,7 +181,7 @@ namespace urakawa.daisy.export
                         strSeqID = GetNextID(ID_SmilPrefix);
                     }
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "id", strSeqID);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "class", m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementLocalName());
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "class", nodeIsImageAndHasDescriptionProdnotes ? "prodnote" : special_UrakawaNode.GetXmlElementLocalName());
 
                     if (IsEscapableNode(special_UrakawaNode))
                     {
@@ -187,9 +189,9 @@ namespace urakawa.daisy.export
                         XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "fill", "remove");
                     }
 
-                    if (IsSkippableNode(special_UrakawaNode) || m_Image_ProdNoteMap.ContainsKey(n))
+                    if (IsSkippableNode(special_UrakawaNode) || nodeIsImageAndHasDescriptionProdnotes)
                     {
-                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "customTest", m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementLocalName());
+                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "customTest", nodeIsImageAndHasDescriptionProdnotes ? "prodnote" : special_UrakawaNode.GetXmlElementLocalName());
 
                         if (special_UrakawaNode.GetXmlElementLocalName() == "noteref" || special_UrakawaNode.GetXmlElementLocalName() == "annoref")
                         {
@@ -204,7 +206,7 @@ namespace urakawa.daisy.export
 
                         }
 
-                        if (m_Image_ProdNoteMap.ContainsKey(n))
+                        if (nodeIsImageAndHasDescriptionProdnotes)
                         {
                             if (!currentSmilCustomTestList.Contains("prodnote"))
                             {
@@ -219,14 +221,14 @@ namespace urakawa.daisy.export
                     }
 
                     // add smilref reference to seq_special  in dtbook document
-                    if (IsEscapableNode(special_UrakawaNode) || IsSkippableNode(special_UrakawaNode) || m_Image_ProdNoteMap.ContainsKey(n))
+                    if (IsEscapableNode(special_UrakawaNode) || IsSkippableNode(special_UrakawaNode)) // || nodeIsImageAndHasDescriptionProdnotes) WE DON'T WANT THE IMAGE ITSELF TO SMIL-REF THE FIRST PRODNOTE (link to Diagram desc XML file)
                     {
                         XmlNode dtbEscapableNode = m_TreeNode_XmlNodeMap[special_UrakawaNode];
-                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtbEscapableNode, "smilref", smilFileName + "#" + strSeqID);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtbEscapableNode, "smilref", smilFileName + "#" + strSeqID, m_DTBDocument.DocumentElement.NamespaceURI);
                     }
-                    if (m_Image_ProdNoteMap.ContainsKey(n))
+                    if (nodeIsImageAndHasDescriptionProdnotes)
                     {
-                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[n][0], "smilref", smilFileName + "#" + strSeqID);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[n][0], "smilref", smilFileName + "#" + strSeqID, m_DTBDocument.DocumentElement.NamespaceURI);
                     }
                     // decide the parent node to which this new seq node is to be appended.
                     if (specialSeqNodeStack.Count == 0)
@@ -243,7 +245,7 @@ namespace urakawa.daisy.export
 
                 if (
                     externalAudio != null
-                    || m_Image_ProdNoteMap.ContainsKey(n)
+                    || nodeIsImageAndHasDescriptionProdnotes
                     ||
                     (
                     n.GetTextMedia() != null
@@ -273,9 +275,10 @@ namespace urakawa.daisy.export
                     return true;
                 }
 
-                if (
-                    externalAudio != null
-                    || n.GetFirstAncestorWithManagedAudio() == null
+                if (n.HasXmlProperty
+                    &&
+                    (externalAudio != null
+                    || n.GetFirstAncestorWithManagedAudio() == null)
                     )
                 {
                     XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
@@ -364,7 +367,7 @@ namespace urakawa.daisy.export
 
                     string dtbookSmilRef = null;
                     XmlNode dtBookNode = null;
-                    if (m_Image_ProdNoteMap.ContainsKey(n))
+                    if (nodeIsImageAndHasDescriptionProdnotes)
                     {
                         dtBookNode = m_Image_ProdNoteMap[n][0];
                         XmlNode attr = dtBookNode.Attributes != null ?
@@ -380,7 +383,7 @@ namespace urakawa.daisy.export
                     }
                     if (dtBookNode != null && string.IsNullOrEmpty(dtbookSmilRef))
                     {
-                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtBookNode, "smilref", smilFileName + "#" + par_id);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtBookNode, "smilref", smilFileName + "#" + par_id, m_DTBDocument.DocumentElement.NamespaceURI);
                     }
                     else
                     {
@@ -399,13 +402,13 @@ namespace urakawa.daisy.export
                     }
 
                     string dtbookID = null;
-                    if (m_Image_ProdNoteMap.ContainsKey(n))
+                    if (nodeIsImageAndHasDescriptionProdnotes)
                     {
                         dtbookID = m_Image_ProdNoteMap[n][0].Attributes.GetNamedItem("id").Value;
                     }
                     else
                     {
-                        dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null
+                        dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null && m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id") != null
                                        ? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value
                                        : m_TreeNode_XmlNodeMap[n.Parent].Attributes.GetNamedItem("id").Value;
                     }
@@ -432,7 +435,7 @@ namespace urakawa.daisy.export
                     }
                 }
 
-                if (m_includeImageDescriptions && m_Image_ProdNoteMap.ContainsKey(n))
+                if (nodeIsImageAndHasDescriptionProdnotes)
                 {
                     CreateSmilNodesForImageDescription(n, smilDocument, mainSeq, durationOfCurrentSmil, n.GetAlternateContentProperty(), smilFileName);
                 }
@@ -544,8 +547,8 @@ namespace urakawa.daisy.export
                     if (navListNodeMathML == null)
                     {
                         navListNodeMathML = ncxDocument.CreateElement(null, "navList", ncxRootNode.NamespaceURI);
-                        //ncxRootNode.AppendChild(pageListNode);
-                        ncxRootNode.InsertAfter(navListNodeMathML, navMapNode);
+                        ncxRootNode.AppendChild(navListNodeMathML);
+                        //ncxRootNode.InsertAfter(navListNodeMathML, navMapNode);
                         XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navListNodeMathML, "id", idValue);
 
 
@@ -563,8 +566,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "class", DiagramContentModelHelper.Math);
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "playOrder", "");
 
-                    string strPageValue = n.GetTextFlattened();
-                    ++totalPageCount;
+                    string strMathML = n.GetTextFlattened(); // grabs alttext, if any
 
                     playOrderList_Sorted.Add(navTargetNode);
 
@@ -573,7 +575,7 @@ namespace urakawa.daisy.export
 
                     XmlNode txtNode = ncxDocument.CreateElement(null, "text", navListNodeMathML.NamespaceURI);
                     navLabelNode.AppendChild(txtNode);
-                    txtNode.AppendChild(ncxDocument.CreateTextNode(strPageValue));
+                    txtNode.AppendChild(ncxDocument.CreateTextNode(strMathML));
 
                     if (externalAudio != null)
                     {
@@ -594,12 +596,12 @@ namespace urakawa.daisy.export
                     && !specialParentNodesAddedToNavList.Contains(special_UrakawaNode)
 
                     ||
-                    m_Image_ProdNoteMap.ContainsKey(n))
+                    nodeIsImageAndHasDescriptionProdnotes)
                 {
-                    string navListNodeName = m_Image_ProdNoteMap.ContainsKey(n) ? "prodnote" : special_UrakawaNode.GetXmlElementLocalName();
+                    string navListNodeName = nodeIsImageAndHasDescriptionProdnotes ? DiagramContentModelHelper.EPUB_DescribedAt : special_UrakawaNode.GetXmlElementLocalName();
                     specialParentNodesAddedToNavList.Add(special_UrakawaNode);
-                    XmlNode navListNode = null;
 
+                    XmlNode navListNode = null;
                     //= getFirstChildElementsWithName ( ncxDocument, true, "navList", null );
                     foreach (XmlNode xn in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(ncxRootNode, true, "navList", ncxRootNode.NamespaceURI, false))
                     {
@@ -628,7 +630,7 @@ namespace urakawa.daisy.export
                     navListNode.AppendChild(navTargetNode);
 
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "id", GetNextID(ID_NcxPrefix));
-                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "class", navListNodeName);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "class", nodeIsImageAndHasDescriptionProdnotes ? "prodnote" : navListNodeName);
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "playOrder", "");
 
                     playOrderList_Sorted.Add(navTargetNode);
@@ -1484,7 +1486,7 @@ namespace urakawa.daisy.export
                 if (IsEscapableNode(special_UrakawaNode) || IsSkippableNode(special_UrakawaNode))
                 {//3
                     XmlNode dtbEscapableNode = m_TreeNode_XmlNodeMap[special_UrakawaNode];
-                    XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtbEscapableNode, "smilref", smilFileName + "#" + strSeqID);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtbEscapableNode, "smilref", smilFileName + "#" + strSeqID, m_DTBDocument.DocumentElement.NamespaceURI);
                 }//-3
 
                 // decide the parent node to which this new seq node is to be appended.

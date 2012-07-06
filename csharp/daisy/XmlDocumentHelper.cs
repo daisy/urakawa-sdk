@@ -336,11 +336,18 @@ namespace urakawa.daisy
                 }
                 else
                 {
-#if DEBUG
-                    DebugFix.Assert(strNamespace == node.NamespaceURI);
-#endif //DEBUG
+//#if DEBUG
+//                    DebugFix.Assert(strNamespace == node.NamespaceURI);
+//#endif //DEBUG
 
-                    attr = xmlDoc.CreateAttribute(name);
+                    if (strNamespace == node.NamespaceURI)
+                    {
+                        attr = xmlDoc.CreateAttribute(name);
+                    }
+                    else
+                    {
+                        attr = xmlDoc.CreateAttribute(name, strNamespace);
+                    }
                 }
             }
 

@@ -37,7 +37,10 @@ namespace urakawa.daisy.export
                 AlternateContent altContent = m_Map_AltProperty_TO_Description[altProperty].Map_DiagramElementName_TO_AltContent[diagramDescriptionElementName];
                 if (altContent.Text == null) continue;
                 counter++;
-                if (m_Image_ProdNoteMap[n].Count <= counter) break;
+                if (m_Image_ProdNoteMap[n].Count <= counter)
+                {
+                    break;
+                }
                 XmlNode seqNode = smilDocument.CreateElement("seq", mainSeq.NamespaceURI);
                 mainSeq.AppendChild(seqNode);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "class", "prodnote");

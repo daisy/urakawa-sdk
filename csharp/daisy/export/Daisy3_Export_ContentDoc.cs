@@ -66,12 +66,16 @@ namespace urakawa.daisy.export
             reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingXMLFile);
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
 
+            bool hasMathML = false;
+
             foreach (ExternalFileData efd in list_ExternalStyleSheets)
             {
                 string filename = efd.OriginalRelativePath;
                 if (filename.StartsWith(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA))
                 {
                     filename = filename.Substring(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA.Length);
+
+                    hasMathML = true;
                 }
 
                 if (efd.IsPreservedForOutputFile
@@ -140,6 +144,17 @@ namespace urakawa.daisy.export
             if (bookNode == null)
             {
                 bookNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(DTBookDocument, true, "body", null);
+            }
+
+            if (false && hasMathML) // namespace prefix attribute automatically added for each m:math element because of MathML DTD
+            {
+                XmlDocumentHelper.CreateAppendXmlAttribute(
+                DTBookDocument,
+                bookNode,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + "dtbook",
+                bookNode.NamespaceURI,
+                XmlReaderWriterHelper.NS_URL_XMLNS
+                );
             }
 
             m_ListOfLevels.Add(m_Presentation.RootNode);
