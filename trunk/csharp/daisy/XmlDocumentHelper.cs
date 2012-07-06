@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using AudioLib;
 using urakawa.ExternalFiles;
+using urakawa.metadata.daisy;
 using urakawa.property.xml;
 using urakawa.xuk;
 using XmlAttribute = System.Xml.XmlAttribute;
@@ -19,12 +20,8 @@ namespace urakawa.daisy
             DTBDocument.XmlResolver = null;
 
             DTBDocument.CreateXmlDeclaration("1.0", "utf-8", null);
-            DTBDocument.AppendChild(DTBDocument.CreateDocumentType("dtbook",
-                "-//NISO//DTD dtbook 2005-3//EN",
-                "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd",
-                strInternalDTD));
 
-            if (list_ExternalStyleSheets.Count > 0)
+            if (list_ExternalStyleSheets != null)
             {
                 foreach (ExternalFileData efd in list_ExternalStyleSheets)
                 {
@@ -33,7 +30,7 @@ namespace urakawa.daisy
                         DTBDocument.AppendChild(
                         DTBDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/css\" href=\"" + efd.OriginalRelativePath + "\""));
                     }
-                    else if (efd is XSLTExternalFileData)
+                    else if (efd is XSLTExternalFileData && !efd.OriginalRelativePath.StartsWith(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA))
                     {
                         DTBDocument.AppendChild(
                         DTBDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"" + efd.OriginalRelativePath + "\""));
@@ -41,6 +38,11 @@ namespace urakawa.daisy
                 }
             }
 
+
+            DTBDocument.AppendChild(DTBDocument.CreateDocumentType("dtbook",
+                "-//NISO//DTD dtbook 2005-3//EN",
+                "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd",
+                strInternalDTD));
 
             XmlNode DTBNode = DTBDocument.CreateElement(null,
                 "dtbook",

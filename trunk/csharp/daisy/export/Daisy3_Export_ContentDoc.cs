@@ -65,9 +65,22 @@ namespace urakawa.daisy.export
             //m_ProgressPercentage = 0;
             reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingXMLFile);
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
-            if (list_ExternalStyleSheets != null)
+
+            foreach (ExternalFileData efd in list_ExternalStyleSheets)
             {
-                ExportStyleSheets(list_ExternalStyleSheets);
+                string filename = efd.OriginalRelativePath;
+                if (filename.StartsWith(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA))
+                {
+                    filename = filename.Substring(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA.Length);
+                }
+
+                if (efd.IsPreservedForOutputFile
+                    && !m_FilesList_ExternalFiles.Contains(filename))
+                {
+                    string filePath = Path.Combine(m_OutputDirectory, filename);
+                    efd.DataProvider.ExportDataStreamToFile(filePath, true);
+                    m_FilesList_ExternalFiles.Add(filename);
+                }
             }
 
             m_ListOfLevels = new List<TreeNode>();
@@ -323,20 +336,23 @@ namespace urakawa.daisy.export
                                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, currentXmlNode, "imgref", imgIds);
                             }
                         }
+
+                        XmlAttributeCollection currentXmlNodeAttrs = currentXmlNode.Attributes;
+
                         // add id attribute in case it do not exists and it is required
-                        if (IsIDRequired(currentXmlNode.LocalName))
+                        if (IsIDRequired(currentXmlNode.LocalName) && currentXmlNodeAttrs != null)
                         {
-                            if (currentXmlNode.Attributes.GetNamedItem("id") == null)
+                            XmlNode idAttr = currentXmlNodeAttrs.GetNamedItem("id");
+                            if (idAttr == null)
                             {
                                 string id = GetNextID(ID_DTBPrefix);
                                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, currentXmlNode, "id", id);
                             }
-
-                            if (xmlProp.LocalName != null
+                            else if (xmlProp.LocalName != null
                                 && xmlProp.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
                                 && m_TempImageId != null)
                             {
-                                string id = currentXmlNode.Attributes.GetNamedItem("id").Value;
+                                string id = idAttr.Value;
                                 m_TempImageId.Add(id);
                             }
                         }
@@ -355,78 +371,112 @@ namespace urakawa.daisy.export
                         // if current xmlnode is referencing node, add its referencing attribute to referencingAttributesList
                         AddReferencingNodeToReferencedAttributesList(currentXmlNode, referencingAttributesList);
 
-                        // if QName is img and img src is on disk, copy it to output dir
-                        if (currentXmlNode.LocalName != null
-                            && currentXmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+                        if (currentXmlNodeAttrs != null && currentXmlNode.LocalName != null)
                         {
-                            XmlAttribute imgSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
-                            if (imgSrcAttribute != null &&
-                                n.GetImageMedia() != null
-                                && n.GetImageMedia() is media.data.image.ManagedImageMedia)
+                            // if QName is img and img src is on disk, copy it to output dir
+                            if (currentXmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
                             {
-                                media.data.image.ManagedImageMedia managedImage = (media.data.image.ManagedImageMedia)n.GetImageMedia();
-
-                                //if (FileDataProvider.isHTTPFile(managedImage.ImageMediaData.OriginalRelativePath))                                
-                                //exportImageName = Path.GetFileName(managedImage.ImageMediaData.OriginalRelativePath);
-
-                                string exportImageName = FileDataProvider.EliminateForbiddenFileNameCharacters(managedImage.ImageMediaData.OriginalRelativePath);
-
-                                string destPath = Path.Combine(m_OutputDirectory, exportImageName);
-
-                                if (!File.Exists(destPath))
+                                XmlAttribute imgSrcAttribute =
+                                    (XmlAttribute)currentXmlNodeAttrs.GetNamedItem("src");
+                                if (imgSrcAttribute != null &&
+                                    n.GetImageMedia() != null
+                                    && n.GetImageMedia() is media.data.image.ManagedImageMedia)
                                 {
-                                    if (RequestCancellation) return false;
-                                    managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
+                                    media.data.image.ManagedImageMedia managedImage =
+                                        (media.data.image.ManagedImageMedia)n.GetImageMedia();
 
+                                    //if (FileDataProvider.isHTTPFile(managedImage.ImageMediaData.OriginalRelativePath))                                
+                                    //exportImageName = Path.GetFileName(managedImage.ImageMediaData.OriginalRelativePath);
+
+                                    string exportImageName =
+                                        FileDataProvider.EliminateForbiddenFileNameCharacters(
+                                            managedImage.ImageMediaData.OriginalRelativePath);
+
+                                    string destPath = Path.Combine(m_OutputDirectory, exportImageName);
+
+                                    if (!File.Exists(destPath))
+                                    {
+                                        if (RequestCancellation) return false;
+                                        managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
+                                    }
+
+                                    imgSrcAttribute.Value = exportImageName;
+
+                                    if (!m_FilesList_Image.Contains(exportImageName))
+                                    {
+                                        m_FilesList_Image.Add(exportImageName);
+                                    }
+
+                                    generateImageDescriptionInDTBook(n, currentXmlNode, exportImageName, DTBookDocument);
                                 }
-
-                                imgSrcAttribute.Value = exportImageName;
-
-
-
-                                if (!m_FilesList_Image.Contains(exportImageName))
+                            }
+                            else if (currentXmlNode.LocalName.Equals(DiagramContentModelHelper.Math, StringComparison.OrdinalIgnoreCase))
+                            {
+                                XmlAttribute imgSrcAttribute =
+                                    (XmlAttribute)currentXmlNodeAttrs.GetNamedItem("altimg");
+                                if (imgSrcAttribute != null &&
+                                    n.GetImageMedia() != null
+                                    && n.GetImageMedia() is media.data.image.ManagedImageMedia)
                                 {
-                                    m_FilesList_Image.Add(exportImageName);
-                                }
+                                    media.data.image.ManagedImageMedia managedImage =
+                                        (media.data.image.ManagedImageMedia)n.GetImageMedia();
 
-                                generateImageDescriptionInDTBook(n, currentXmlNode, exportImageName, DTBookDocument);
+                                    //if (FileDataProvider.isHTTPFile(managedImage.ImageMediaData.OriginalRelativePath))                                
+                                    //exportImageName = Path.GetFileName(managedImage.ImageMediaData.OriginalRelativePath);
+
+                                    string exportImageName =
+                                        FileDataProvider.EliminateForbiddenFileNameCharacters(
+                                            managedImage.ImageMediaData.OriginalRelativePath);
+
+                                    string destPath = Path.Combine(m_OutputDirectory, exportImageName);
+
+                                    if (!File.Exists(destPath))
+                                    {
+                                        if (RequestCancellation) return false;
+                                        managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
+                                    }
+
+                                    imgSrcAttribute.Value = exportImageName;
+
+                                    if (!m_FilesList_Image.Contains(exportImageName))
+                                    {
+                                        m_FilesList_Image.Add(exportImageName);
+                                    }
+                                }
+                            }
+                            else if (currentXmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase))
+                            {
+                                XmlAttribute videoSrcAttribute =
+                                    (XmlAttribute)currentXmlNodeAttrs.GetNamedItem("src");
+                                if (videoSrcAttribute != null &&
+                                    n.GetVideoMedia() != null
+                                    && n.GetVideoMedia() is ManagedVideoMedia)
+                                {
+                                    ManagedVideoMedia managedVideo = (ManagedVideoMedia)n.GetVideoMedia();
+
+                                    //if (FileDataProvider.isHTTPFile(managedVideo.VideoMediaData.OriginalRelativePath))                                
+                                    //exportVideoName = Path.GetFileName(managedVideo.VideoMediaData.OriginalRelativePath);
+
+                                    string exportVideoName =
+                                        FileDataProvider.EliminateForbiddenFileNameCharacters(
+                                            managedVideo.VideoMediaData.OriginalRelativePath);
+
+                                    string destPath = Path.Combine(m_OutputDirectory, exportVideoName);
+                                    if (!File.Exists(destPath))
+                                    {
+                                        if (RequestCancellation) return false;
+                                        managedVideo.VideoMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
+                                    }
+
+                                    videoSrcAttribute.Value = exportVideoName;
+
+                                    if (!m_FilesList_Video.Contains(exportVideoName))
+                                    {
+                                        m_FilesList_Video.Add(exportVideoName);
+                                    }
+                                }
                             }
                         }
-                        else if (currentXmlNode.LocalName != null
-                            && currentXmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase))
-                        {
-                            XmlAttribute videoSrcAttribute = (XmlAttribute)currentXmlNode.Attributes.GetNamedItem("src");
-                            if (videoSrcAttribute != null &&
-                                n.GetVideoMedia() != null
-                                && n.GetVideoMedia() is ManagedVideoMedia)
-                            {
-                                ManagedVideoMedia managedVideo = (ManagedVideoMedia)n.GetVideoMedia();
-
-                                //if (FileDataProvider.isHTTPFile(managedVideo.VideoMediaData.OriginalRelativePath))                                
-                                //exportVideoName = Path.GetFileName(managedVideo.VideoMediaData.OriginalRelativePath);
-
-                                string exportVideoName = FileDataProvider.EliminateForbiddenFileNameCharacters(managedVideo.VideoMediaData.OriginalRelativePath);
-
-                                string destPath = Path.Combine(m_OutputDirectory, exportVideoName);
-                                if (!File.Exists(destPath))
-                                {
-                                    if (RequestCancellation) return false;
-                                    managedVideo.VideoMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
-
-                                }
-
-                                videoSrcAttribute.Value = exportVideoName;
-
-
-
-                                if (!m_FilesList_Video.Contains(exportVideoName))
-                                {
-                                    m_FilesList_Video.Add(exportVideoName);
-                                }
-
-                            }
-                        }
-
 
 
                         return true;
@@ -512,31 +562,6 @@ namespace urakawa.daisy.export
             return false;
         }
 
-        private void ExportStyleSheets(List<ExternalFileData> list_ExternalStyleSheets)
-        {
-            if (list_ExternalStyleSheets == null || list_ExternalStyleSheets.Count == 0)
-            {
-                return;
-            }
-
-            foreach (ExternalFileData efd in list_ExternalStyleSheets)
-            {
-                string filename = efd.OriginalRelativePath;
-                if (filename.StartsWith(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA))
-                {
-                    filename = filename.Substring(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA.Length);
-                }
-
-                if (efd.IsPreservedForOutputFile
-                    && !m_FilesList_ExternalFiles.Contains(filename))
-                {
-                    string filePath = Path.Combine(m_OutputDirectory, filename);
-                    efd.DataProvider.ExportDataStreamToFile(filePath, true);
-                    m_FilesList_ExternalFiles.Add(filename);
-
-                }
-            }
-        }
 
         /*
         private XmlDocument SaveCurrentSmilAndCreateNextSmilDocument ( XmlDocument smilDocument )
