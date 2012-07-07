@@ -15,14 +15,15 @@ namespace AudioLib
         private readonly SpeechSynthesizer m_SpeechSynthesizer;
         private List<string> m_InstalledVoices = new List<string>();
 
-        public TextToSpeech(AudioLibPCMFormat pcmFormat, SpeechSynthesizer speechSynthesizer)
+        public TextToSpeech(AudioLibPCMFormat pcmFormat)
         {
             m_PcmFormat = pcmFormat;
             
-            m_SpeechSynthesizer = speechSynthesizer == null ? new    SpeechSynthesizer () : speechSynthesizer ;
+            m_SpeechSynthesizer = new    SpeechSynthesizer () ;
         }
 
-        public SpeechSynthesizer Synthesizer { get { return m_SpeechSynthesizer; } }
+        public bool IsSynthesizerAlive { get { return m_SpeechSynthesizer != null; } }
+        public bool IsSynthesizerSpeaking { get { return m_SpeechSynthesizer != null && m_SpeechSynthesizer.State == SynthesizerState.Speaking; } }
 
         public List<string> InstalledVoices
         {
@@ -59,7 +60,16 @@ else
             return true;
         }
 
-
+        public bool PauseAndDispose()
+        {
+            if (m_SpeechSynthesizer != null && m_SpeechSynthesizer.State == SynthesizerState.Speaking)
+            {
+                m_SpeechSynthesizer.Pause();
+                m_SpeechSynthesizer.Dispose();
+                return true;
+            }
+            return false;
+        }
 
 
     }
