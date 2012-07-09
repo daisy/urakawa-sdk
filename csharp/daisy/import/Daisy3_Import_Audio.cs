@@ -17,7 +17,6 @@ namespace urakawa.daisy.import
 {
     public partial class Daisy3_Import
     {
-        protected AudioChannel m_audioChannel;
         private AudioFormatConvertorSession m_AudioConversionSession;
         private Dictionary<string, FileDataProvider> m_OriginalAudioFile_FileDataProviderMap = new Dictionary<string, FileDataProvider>(); // maps original audio file refered by smil to FileDataProvider of sdk.
         protected List<TreeNode> TreenodesWithoutManagedAudioMediaData;
@@ -114,7 +113,7 @@ namespace urakawa.daisy.import
                     return;
                 }
                 string srcFragmentId = textNodeAttrSrc.Value.Substring(index + 1);
-                TreeNode textTreeNode = getTreeNodeWithXmlElementId(srcFragmentId);
+                TreeNode textTreeNode = m_Project.Presentations.Get(0).RootNode.GetTreeNodeWithXmlElementId(srcFragmentId);
                 if (textTreeNode == null)
                 {
                     continue;
@@ -491,10 +490,10 @@ namespace urakawa.daisy.import
                     }
                     mediaSeq.ChildMedias.Insert(mediaSeq.ChildMedias.Count, media);
 #else
-                    ManagedAudioMedia existingMedia = chProp.GetMedia(m_audioChannel) as ManagedAudioMedia;
+                    ManagedAudioMedia existingMedia = chProp.GetMedia(presentation.ChannelsManager.GetOrCreateAudioChannel()) as ManagedAudioMedia;
                     if (existingMedia == null)
                     {
-                        chProp.SetMedia(m_audioChannel, media);
+                        chProp.SetMedia(presentation.ChannelsManager.GetOrCreateAudioChannel(), media);
                     }
                     else
                     {
@@ -518,7 +517,7 @@ namespace urakawa.daisy.import
                 }
                 else
                 {
-                    chProp.SetMedia(m_audioChannel, media);
+                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateAudioChannel(), media);
                 }
             }
             else

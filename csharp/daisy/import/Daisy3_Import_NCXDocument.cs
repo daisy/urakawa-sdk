@@ -424,7 +424,7 @@ namespace urakawa.daisy.import
             TextMedia textMedia = audioWrapperNode.Presentation.MediaFactory.CreateTextMedia();
             textMedia.Text = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(pageTargetNode, true, "text", pageTargetNode.NamespaceURI).InnerText;
             ChannelsProperty cProp = audioWrapperNode.Presentation.PropertyFactory.CreateChannelsProperty();
-            cProp.SetMedia(m_textChannel, textMedia);
+            cProp.SetMedia(audioWrapperNode.Presentation.ChannelsManager.GetOrCreateTextChannel(), textMedia);
             audioWrapperNode.AddProperty(cProp);
             System.Xml.XmlAttributeCollection pageAttributes = pageTargetNode.Attributes;
             if (pageAttributes != null)
@@ -470,7 +470,7 @@ namespace urakawa.daisy.import
                 textMedia.Text = textNode.InnerText;
 
                 ChannelsProperty cProp = navPointTreeNode.Presentation.PropertyFactory.CreateChannelsProperty();
-                cProp.SetMedia(m_textChannel, textMedia);
+                cProp.SetMedia(navPointTreeNode.Presentation.ChannelsManager.GetOrCreateTextChannel(), textMedia);
 
                 //TreeNode txtWrapperNode = parentNode.Presentation.TreeNodeFactory.Create();
                 phraseTreeNode.AddProperty(cProp);

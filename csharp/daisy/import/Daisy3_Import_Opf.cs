@@ -10,6 +10,7 @@ namespace urakawa.daisy.import
     public partial class Daisy3_Import
     {
         private XmlNode m_PackageUniqueIdAttr;
+
         private string m_PublicationUniqueIdentifier;
         private XmlNode m_PublicationUniqueIdentifierNode;
 
@@ -26,7 +27,7 @@ namespace urakawa.daisy.import
             }
 
             if (RequestCancellation) return;
-            parseMetadata(opfXmlDoc);
+            parseMetadata(m_Book_FilePath, m_Project, opfXmlDoc);
 
             List<string> spine;
             string spineMimeType;
@@ -44,11 +45,14 @@ namespace urakawa.daisy.import
 
                 if (RequestCancellation) return;
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, dtbookPath));
-                parseMetadata(dtbookXmlDoc);
+                parseMetadata(m_Book_FilePath, m_Project, dtbookXmlDoc);
+
+                if (RequestCancellation) return;
+                ParseHeadLinks(m_Book_FilePath, m_Project, dtbookXmlDoc);
 
                 if (RequestCancellation) return;
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, dtbookPath));
-                parseContentDocument(dtbookXmlDoc, null, fullDtbookPath);
+                parseContentDocument(m_Book_FilePath, m_Project, dtbookXmlDoc, null, fullDtbookPath);
             }
 
             //if (false && ncxPath != null) //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
@@ -63,7 +67,7 @@ namespace urakawa.daisy.import
 
                 if (RequestCancellation) return;
                 reportProgress(-1, "Parsing metadata: [" + ncxPath + "]");
-                parseMetadata(ncxXmlDoc);
+                parseMetadata(m_Book_FilePath, m_Project, ncxXmlDoc);
 
                 if (AudioNCXImport)
                 {
@@ -82,11 +86,15 @@ namespace urakawa.daisy.import
                 case "application/xhtml+xml":
                     {
                         parseContentDocuments(spine);
+
                         if (!string.IsNullOrEmpty(ncxPath))
                         {
                             string fullNcxPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), ncxPath);
                             ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.NCXExternalFileData>();
-                            if (externalData != null) externalData.InitializeWithData(fullNcxPath, ncxPath, true);
+                            if (externalData != null)
+                            {
+                                externalData.InitializeWithData(fullNcxPath, ncxPath, true);
+                            }
                         }
 
                         break;
@@ -106,7 +114,6 @@ namespace urakawa.daisy.import
             dtbookPath = null;
 
             XmlNode spineNodeRoot = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlDoc, true, "spine", null);
-
             if (spineNodeRoot != null)
             {
                 XmlNodeList listOfSpineItemNodes = spineNodeRoot.ChildNodes;
@@ -141,7 +148,6 @@ namespace urakawa.daisy.import
             }
 
             XmlNodeList listOfManifestItemNodes = manifNodeRoot.ChildNodes;
-
             foreach (XmlNode manifItemNode in listOfManifestItemNodes)
             {
                 if (RequestCancellation) return;
@@ -195,11 +201,11 @@ namespace urakawa.daisy.import
                 {
                     ncxPath = attrHref.Value;
                 }
-                else if (attrMediaType.Value == DataProviderFactory.STYLE_CSS_MIME_TYPE
-                    || attrMediaType.Value == DataProviderFactory.STYLE_PLS_MIME_TYPE)
-                {
-                    AddExternalFilesToXuk(m_Project.Presentations.Get(0), attrHref.Value);
-                }
+                //else if (attrMediaType.Value == DataProviderFactory.STYLE_CSS_MIME_TYPE
+                //    || attrMediaType.Value == DataProviderFactory.STYLE_PLS_MIME_TYPE)
+                //{
+                //    AddExternalFilesToXuk(m_Project.Presentations.Get(0), attrHref.Value);
+                //}
                 //else if (attrMediaType.Value == "image/jpeg"
                 //|| attrMediaType.Value == "audio/mpeg"
                 //|| attrMediaType.Value == DataProviderFactory.XML_TEXT_MIME_TYPE
@@ -212,28 +218,28 @@ namespace urakawa.daisy.import
             }
         }
 
-        private void AddExternalFilesToXuk(Presentation presentation, string relPath)
-        {
-            if (RequestCancellation) return;
+        //private void AddExternalFilesToXuk(Presentation presentation, string relPath)
+        //{
+        //    if (RequestCancellation) return;
 
-            string fileFullPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath),
-                relPath);
+        //    string fileFullPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath),
+        //        relPath);
 
-            ExternalFiles.ExternalFileData externalData = null;
+        //    ExternalFiles.ExternalFileData externalData = null;
 
-            string ext = Path.GetExtension(fileFullPath);
-            if (String.Equals(ext, DataProviderFactory.DTD_EXTENSION, StringComparison.OrdinalIgnoreCase))
-            {
-                externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData>();
-            }
-            if (String.Equals(ext, DataProviderFactory.STYLE_PLS_EXTENSION, StringComparison.OrdinalIgnoreCase))
-            {
-                externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.PLSExternalFileData>();
-            }
-            if (externalData != null)
-            {
-                externalData.InitializeWithData(fileFullPath, relPath, true);
-            }
-        }
+        //    string ext = Path.GetExtension(fileFullPath);
+        //    if (String.Equals(ext, DataProviderFactory.DTD_EXTENSION, StringComparison.OrdinalIgnoreCase))
+        //    {
+        //        externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData>();
+        //    }
+        //    if (String.Equals(ext, DataProviderFactory.STYLE_PLS_EXTENSION, StringComparison.OrdinalIgnoreCase))
+        //    {
+        //        externalData = presentation.ExternalFilesDataFactory.Create<ExternalFiles.PLSExternalFileData>();
+        //    }
+        //    if (externalData != null)
+        //    {
+        //        externalData.InitializeWithData(fileFullPath, relPath, true);
+        //    }
+        //}
     }
 }

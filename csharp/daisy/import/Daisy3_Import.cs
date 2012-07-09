@@ -5,6 +5,7 @@ using AudioLib;
 using urakawa.data;
 using urakawa.events.progress;
 using urakawa.media.data.audio;
+using urakawa.property.channel;
 using urakawa.xuk;
 
 namespace urakawa.daisy.import
@@ -152,17 +153,21 @@ namespace urakawa.daisy.import
 
             presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
-            m_textChannel = presentation.ChannelFactory.CreateTextChannel();
-            m_textChannel.Name = "The Text Channel";
+            TextChannel textChannel = presentation.ChannelFactory.CreateTextChannel();
+            textChannel.Name = "The Text Channel";
+            DebugFix.Assert(textChannel == presentation.ChannelsManager.GetOrCreateTextChannel());
 
-            m_audioChannel = presentation.ChannelFactory.CreateAudioChannel();
-            m_audioChannel.Name = "The Audio Channel";
+            AudioChannel audioChannel = presentation.ChannelFactory.CreateAudioChannel();
+            audioChannel.Name = "The Audio Channel";
+            DebugFix.Assert(audioChannel == presentation.ChannelsManager.GetOrCreateAudioChannel());
 
-            m_ImageChannel = presentation.ChannelFactory.CreateImageChannel();
-            m_ImageChannel.Name = "The Image Channel";
+            ImageChannel imageChannel = presentation.ChannelFactory.CreateImageChannel();
+            imageChannel.Name = "The Image Channel";
+            DebugFix.Assert(imageChannel == presentation.ChannelsManager.GetOrCreateImageChannel());
 
-            m_VideoChannel = presentation.ChannelFactory.CreateVideoChannel();
-            m_VideoChannel.Name = "The Video Channel";
+            VideoChannel videoChannel = presentation.ChannelFactory.CreateVideoChannel();
+            videoChannel.Name = "The Video Channel";
+            DebugFix.Assert(videoChannel == presentation.ChannelsManager.GetOrCreateVideoChannel());
 
             /*string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
            if (Directory.Exists(dataPath))
@@ -206,12 +211,14 @@ namespace urakawa.daisy.import
 
                     if (RequestCancellation) return;
                     reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, Path.GetFileName(m_Book_FilePath)));
-                    parseMetadata(contentXmlDoc);
-                    ParseHeadLinks(contentXmlDoc);
+                    parseMetadata(m_Book_FilePath, m_Project, contentXmlDoc);
+
+                    if (RequestCancellation) return;
+                    ParseHeadLinks(m_Book_FilePath, m_Project, contentXmlDoc);
+
                     if (RequestCancellation) return;
                     reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, Path.GetFileName(m_Book_FilePath)));
-                    parseContentDocument(contentXmlDoc, null, m_Book_FilePath);
-
+                    parseContentDocument(m_Book_FilePath, m_Project, contentXmlDoc, null, m_Book_FilePath);
                 }
                 else if (
                     extension.Equals(".epub", StringComparison.OrdinalIgnoreCase)
@@ -232,7 +239,7 @@ namespace urakawa.daisy.import
 
             if (RequestCancellation) return;
 
-            metadataPostProcessing();
+            metadataPostProcessing(m_Book_FilePath, m_Project);
 
             /*
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
@@ -306,12 +313,6 @@ namespace urakawa.daisy.import
             if (RequestCancellation) return;
 
             reportProgress(100, UrakawaSDK_daisy_Lang.TransformComplete);
-        }
-
-        private core.TreeNode getTreeNodeWithXmlElementId(string id)
-        {
-            Presentation pres = m_Project.Presentations.Get(0);
-            return pres.RootNode.GetTreeNodeWithXmlElementId(id);
         }
     }
 }

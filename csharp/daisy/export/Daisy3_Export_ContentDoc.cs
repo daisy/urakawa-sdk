@@ -46,7 +46,7 @@ namespace urakawa.daisy.export
                 if (efd is ExternalFiles.DTDExternalFileData
                     && efd.OriginalRelativePath == daisy.import.Daisy3_Import.INTERNAL_DTD_NAME
                     && !efd.IsPreservedForOutputFile
-                    && strInternalDTD == null)
+                    && string.IsNullOrEmpty(strInternalDTD))
                 {
                     StreamReader sr = new StreamReader(efd.OpenInputStream());
                     strInternalDTD = sr.ReadToEnd();
