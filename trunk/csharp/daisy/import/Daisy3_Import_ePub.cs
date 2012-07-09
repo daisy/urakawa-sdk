@@ -19,71 +19,76 @@ namespace urakawa.daisy.import
     /// </summary>
     public partial class Daisy3_Import
     {
-
-        private void ParseHeadLinks(XmlDocument contentDoc)
+        private void ParseHeadLinks(string book_FilePath, Project project, XmlDocument contentDoc)
         {
+            Presentation presentation = project.Presentations.Get(0);
+
+            List<string> externalFileRelativePaths = new List<string>();
+            foreach (ExternalFiles.ExternalFileData extData in presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
+            {
+                if (!string.IsNullOrEmpty(extData.OriginalRelativePath))
+                {
+                    string relPath = Path.GetFullPath(extData.OriginalRelativePath);
+                    if (!externalFileRelativePaths.Contains(relPath))
+                    {
+                        externalFileRelativePaths.Add(relPath);
+                    }
+                }
+            }
+
             XmlNode headXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(contentDoc.DocumentElement, true, "head", null);
-            Presentation presentation = m_Project.Presentations.Get(0) ;
-            TreeNode headTreeNode = presentation.HeadNode;
+
             List<XmlNode> externalFilesLinks = new List<XmlNode>();
             externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "link", headXmlNode.NamespaceURI, false));
             externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "script", headXmlNode.NamespaceURI, false));
 
-            List<string> externalFileRelativePaths = new List<string>();
-            foreach (ExternalFiles.ExternalFileData extData in presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_ListAsReadOnly)
+            foreach (XmlNode linkNode in externalFilesLinks)
             {
-                if (!string.IsNullOrEmpty (extData.OriginalRelativePath))
-                {
-                string relPath = Path.GetFullPath(extData.OriginalRelativePath);
-                    if ( !externalFileRelativePaths.Contains(relPath )) externalFileRelativePaths.Add (relPath ) ;
-                }
-            }
-
-
-            foreach ( XmlNode linkNode in externalFilesLinks)
-            {
-                
                 TreeNode treeNode = presentation.TreeNodeFactory.Create();
-                headTreeNode.AppendChild(treeNode);
+                presentation.HeadNode.AppendChild(treeNode);
                 XmlProperty xmlProp = presentation.PropertyFactory.CreateXmlProperty();
                 treeNode.AddProperty(xmlProp);
                 xmlProp.SetQName(linkNode.LocalName,
                     headXmlNode.NamespaceURI == linkNode.NamespaceURI ? "" : linkNode.NamespaceURI);
-                Console.WriteLine("XmlProperty: " + xmlProp.LocalName);
+                //Console.WriteLine("XmlProperty: " + xmlProp.LocalName);
+
                 foreach (System.Xml.XmlAttribute xAttr in linkNode.Attributes)
                 {
                     xmlProp.SetAttribute(xAttr.LocalName,
                         linkNode.NamespaceURI == xAttr.NamespaceURI ? "" : xAttr.NamespaceURI,
                         xAttr.Value);
-                    
-                    
-                    if ((xAttr.Name.ToLower() == "href"
-                        || xAttr.Name.ToLower() == "src")
-                        && !string.IsNullOrEmpty (xAttr.Value) && !externalFileRelativePaths.Contains (Path.GetFullPath(xAttr.Value)))
+
+                    if ((xAttr.Name.Equals("href", StringComparison.OrdinalIgnoreCase)
+                        || xAttr.Name.Equals("src", StringComparison.OrdinalIgnoreCase))
+                        && !string.IsNullOrEmpty(xAttr.Value)
+                        && !externalFileRelativePaths.Contains(Path.GetFullPath(xAttr.Value)))
                     {
-                        
-                        ExternalFiles.ExternalFileData extData =  CreateAndAddExternalFileData(xAttr.Value);
-                        externalFileRelativePaths.Add(Path.GetFullPath(extData.OriginalRelativePath));
+                        ExternalFiles.ExternalFileData extData = CreateAndAddExternalFileData(book_FilePath, project, xAttr.Value);
+                        if (extData != null)
+                        {
+                            externalFileRelativePaths.Add(Path.GetFullPath(extData.OriginalRelativePath));
+                        }
                     }
                 }
-                if ( !string.IsNullOrEmpty (linkNode.InnerText ))
+                string innerText = linkNode.InnerText; // TODO: what about CDATA?;
+
+                if (!string.IsNullOrEmpty(innerText))
                 {
-                     urakawa.media.TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
-                        textMedia.Text = linkNode.InnerText;
-                        ChannelsProperty cProp = presentation.PropertyFactory.CreateChannelsProperty();
-                        cProp.SetMedia(m_textChannel, textMedia);
-                    treeNode.AddProperty (cProp) ;
-                    Console.WriteLine("Link inner text: " + textMedia.Text);
+                    urakawa.media.TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
+                    textMedia.Text = innerText;
+                    ChannelsProperty cProp = presentation.PropertyFactory.CreateChannelsProperty();
+                    cProp.SetMedia(presentation.ChannelsManager.GetOrCreateTextChannel(), textMedia);
+                    treeNode.AddProperty(cProp);
+                    //Console.WriteLine("Link inner text: " + textMedia.Text);
                 }
             }
-            
         }
 
-        private ExternalFiles.ExternalFileData CreateAndAddExternalFileData(string relativePath)
+        private ExternalFiles.ExternalFileData CreateAndAddExternalFileData(string book_FilePath, Project project, string relativePath)
         {
-            Presentation presentation = m_Project.Presentations.Get(0);
+            Presentation presentation = project.Presentations.Get(0);
             string fullPath = Path.Combine(
-                    Path.GetDirectoryName(m_Book_FilePath),
+                    Path.GetDirectoryName(book_FilePath),
                     relativePath);
 
             if (File.Exists(fullPath))
@@ -94,11 +99,6 @@ namespace urakawa.daisy.import
                 {
                     efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
                 }
-                else if (String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
-                {
-                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
-                }
                 else if (String.Equals(ext, DataProviderFactory.STYLE_PLS_EXTENSION, StringComparison.OrdinalIgnoreCase))
                 {
                     efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.PLSExternalFileData>();
@@ -107,9 +107,18 @@ namespace urakawa.daisy.import
                 {
                     efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.JSExternalFileData>();
                 }
-                if (efd != null) efd.InitializeWithData(fullPath, relativePath, true);
+                else if (String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                {
+                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
+                }
+                if (efd != null)
+                {
+                    efd.InitializeWithData(fullPath, relativePath, true);
+                }
                 return efd;
             }
+
             return null;
         }
 
@@ -125,7 +134,10 @@ namespace urakawa.daisy.import
                 directoryName += Path.DirectorySeparatorChar;
             }*/
 
-            string unzipDirectory = Path.Combine(m_outDirectory, m_Book_FilePath.Replace('.', '_'));
+            string unzipDirectory = Path.Combine(m_outDirectory,
+                FileDataProvider.EliminateForbiddenFileNameCharacters(m_Book_FilePath)
+                //m_Book_FilePath.Replace('.', '_')
+            );
             if (Directory.Exists(unzipDirectory))
             {
                 FileDataProvider.DeleteDirectory(unzipDirectory);
@@ -180,7 +192,7 @@ namespace urakawa.daisy.import
                 XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false);
 
                 if (RequestCancellation) return;
-                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingOPF, fileInfo.FullName));            
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingOPF, fileInfo.FullName));
                 parseOpf(opfXmlDoc);
 
                 break;

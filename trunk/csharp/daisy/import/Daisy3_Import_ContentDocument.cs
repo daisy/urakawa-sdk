@@ -20,9 +20,6 @@ namespace urakawa.daisy.import
     {
         public const string INTERNAL_DTD_NAME = "DTBookLocalDTD.dtd";
 
-        protected ImageChannel m_ImageChannel;
-        protected VideoChannel m_VideoChannel;
-        protected TextChannel m_textChannel;
 
         //private string trimXmlTextInnerSpaces(string str)
         //{
@@ -40,19 +37,23 @@ namespace urakawa.daisy.import
                 return;
             }
 
-            //TODO: init XUK bundle project (m_BundleProject) by cloning m_Project (with currently contains only OPF metadat)
+            //TODO: init local XUK XHTML project by cloning m_Project (Xuk Spine)
+            // (with currently contains only OPF metadata, and NCX / MathML-XSLT external data file)
+
+            Project project = m_Project;
+            string book_FilePath = m_Book_FilePath;
 
             //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
             //string dirPath = opfParentDir.ToString();
-            string dirPath = Path.GetDirectoryName(m_Book_FilePath);
+            string dirPath = Path.GetDirectoryName(book_FilePath);
 
             //bool first = true;
             foreach (string docPath in spineOfContentDocuments)
             {
                 if (RequestCancellation) return;
 
-                //TODO: init m_Project
-                //TODO: clone metadata from m_BundleProject into m_Project
+                m_PublicationUniqueIdentifier = null;
+                m_PublicationUniqueIdentifierNode = null;
 
                 string fullDocPath = Path.Combine(dirPath, docPath);
                 XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullDocPath, true);
@@ -60,7 +61,10 @@ namespace urakawa.daisy.import
 
                 if (RequestCancellation) return;
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, docPath));
-                parseMetadata(xmlDoc);
+                parseMetadata(book_FilePath, project, xmlDoc);
+
+                if (RequestCancellation) return;
+                ParseHeadLinks(book_FilePath, project, xmlDoc);
 
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, docPath));
 
@@ -101,17 +105,70 @@ namespace urakawa.daisy.import
                 //}
 
                 // TODO: return hierarchical outline where each node points to a XUK relative path, + XukAble.Uid (TreeNode are not corrupted during XukAbleManager.RegenerateUids();
-                parseContentDocument(bodyElement, null, fullDocPath);
+                parseContentDocument(book_FilePath, project, bodyElement, null, fullDocPath);
 
 
                 //TODO: be careful with XukPath public accessor !!!! (used in Tobi UrakawaSession)
                 //TODO: m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + OpenXukAction.XUK_EXTENSION);
                 //TODO: XukSave m_Project
 
+
+
+
+
+
+                //SaveXukAction action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath));
+                //action.ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile;
+                //action.LongDescription = UrakawaSDK_daisy_Lang.SerializeDOMIntoXUKFile;
+
+                //action.Progress += new EventHandler<urakawa.events.progress.ProgressEventArgs>(
+                //    delegate(object sender, ProgressEventArgs e)
+                //    {
+
+                //        double val = e.Current;
+                //        double max = e.Total;
+
+                //        int percent = -1;
+                //        if (val != max)
+                //        {
+                //            percent = (int)((val / max) * 100);
+                //        }
+
+                //        reportProgress(percent, val + "/" + max);
+                //        //reportProgress(-1, action.LongDescription);
+
+                //        if (RequestCancellation)
+                //        {
+                //            e.Cancel();
+                //        }
+                //    }
+                //    );
+
+
+                //action.Finished += new EventHandler<FinishedEventArgs>(
+                //    delegate(object sender, FinishedEventArgs e)
+                //    {
+                //        reportProgress(100, UrakawaSDK_daisy_Lang.XUKSaved);
+                //    }
+                //    );
+                //action.Cancelled += new EventHandler<CancelledEventArgs>(
+                //    delegate(object sender, CancelledEventArgs e)
+                //    {
+                //        reportProgress(0, UrakawaSDK_daisy_Lang.CancelledXUKSaving);
+                //    }
+                //    );
+
+                //action.DoWork();
+
+
+
+
+
+
+
+
                 //TODO: add XHTML outline to m_BundleProject TreeNodes
             }
-
-            //TODO: XukSave m_BundleProject
         }
 
         private string ExtractInternalDTD(XmlDocumentType docType)
@@ -137,8 +194,10 @@ namespace urakawa.daisy.import
             return null;
         }
 
-        protected virtual void parseContentDocument(XmlNode xmlNode, TreeNode parentTreeNode, string filePath)
+        protected virtual void parseContentDocument(string book_FilePath, Project project, XmlNode xmlNode, TreeNode parentTreeNode, string filePath)
         {
+            Presentation presentation = project.Presentations.Get(0);
+
             if (RequestCancellation) return;
 
             XmlNodeType xmlType = xmlNode.NodeType;
@@ -156,7 +215,7 @@ namespace urakawa.daisy.import
                                                       ("/processing-instruction(\"xml-stylesheet\")");
                         if (styleSheetNodeList != null && styleSheetNodeList.Count > 0)
                         {
-                            AddXmlStyleSheetsToXuk(styleSheetNodeList);
+                            AddXmlStyleSheetsToXuk(book_FilePath, project, styleSheetNodeList);
                         }
                         //XmlNodeList listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("body");
                         //if (listOfBodies.Count == 0)
@@ -189,8 +248,6 @@ namespace urakawa.daisy.import
                                 lang = xmlAttr.Value;
                             }
                         }
-
-                        Presentation presentation = m_Project.Presentations.Get(0);
 
                         if (!string.IsNullOrEmpty(lang)
                             //&& m_Project.Presentations.Count > 0
@@ -225,7 +282,7 @@ namespace urakawa.daisy.import
                                 dtdEfd.InitializeWithData(ms, INTERNAL_DTD_NAME, false);
                             }
 
-                            parseContentDocument(bodyElement, parentTreeNode, filePath);
+                            parseContentDocument(book_FilePath, project, bodyElement, parentTreeNode, filePath);
 
                             //Presentation presentation = m_Project.Presentations.Get(0);
                             if (presentation.RootNode != null)
@@ -258,7 +315,6 @@ namespace urakawa.daisy.import
                     }
                 case XmlNodeType.Element:
                     {
-                        Presentation presentation = m_Project.Presentations.Get(0);
 
                         //if (xmlNode.ParentNode != null && xmlNode.ParentNode.NodeType == XmlNodeType.Document)
                         //{
@@ -338,7 +394,7 @@ namespace urakawa.daisy.import
                                     imgSourceFullpath = Path.Combine(parentPath, relativePath);
 
                                     updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
-                                        Path.GetDirectoryName(m_Book_FilePath), "");
+                                        Path.GetDirectoryName(book_FilePath), "");
 
                                     if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
                                     {
@@ -348,7 +404,6 @@ namespace urakawa.daisy.import
 
                                 if (imgSourceFullpath != null && File.Exists(imgSourceFullpath))
                                 {
-
                                     //ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty();
                                     //treeNode.AddProperty(chProp);
                                     ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
@@ -363,7 +418,7 @@ namespace urakawa.daisy.import
                                     media.data.image.ManagedImageMedia managedImage =
                                         presentation.MediaFactory.CreateManagedImageMedia();
                                     managedImage.MediaData = imageData;
-                                    chProp.SetMedia(m_ImageChannel, managedImage);
+                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateImageChannel(), managedImage);
                                 }
                                 else
                                 {
@@ -371,7 +426,7 @@ namespace urakawa.daisy.import
                                     externalImage.Src = relativePath;
 
                                     ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
-                                    chProp.SetMedia(m_ImageChannel, externalImage);
+                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateImageChannel(), externalImage);
                                 }
 
 
@@ -428,7 +483,7 @@ namespace urakawa.daisy.import
                                     videoSourceFullpath = Path.Combine(parentPath, relativePath);
 
                                     updatedSRC = Path.GetFullPath(videoSourceFullpath).Replace(
-                                        Path.GetDirectoryName(m_Book_FilePath), "");
+                                        Path.GetDirectoryName(book_FilePath), "");
 
                                     if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
                                     {
@@ -453,7 +508,7 @@ namespace urakawa.daisy.import
                                     media.data.video.ManagedVideoMedia managedVideo =
                                         presentation.MediaFactory.CreateManagedVideoMedia();
                                     managedVideo.MediaData = videoData;
-                                    chProp.SetMedia(m_VideoChannel, managedVideo);
+                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateVideoChannel(), managedVideo);
                                 }
                                 else
                                 {
@@ -461,7 +516,7 @@ namespace urakawa.daisy.import
                                     externalVideo.Src = relativePath;
 
                                     ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
-                                    chProp.SetMedia(m_VideoChannel, externalVideo);
+                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateVideoChannel(), externalVideo);
                                 }
                             }
                         }
@@ -492,7 +547,7 @@ namespace urakawa.daisy.import
                                     imgSourceFullpath = Path.Combine(parentPath, relativePath);
 
                                     updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
-                                        Path.GetDirectoryName(m_Book_FilePath), "");
+                                        Path.GetDirectoryName(book_FilePath), "");
 
                                     if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
                                     {
@@ -517,7 +572,7 @@ namespace urakawa.daisy.import
                                     media.data.image.ManagedImageMedia managedImage =
                                         presentation.MediaFactory.CreateManagedImageMedia();
                                     managedImage.MediaData = imageData;
-                                    chProp.SetMedia(m_ImageChannel, managedImage);
+                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateImageChannel(), managedImage);
                                 }
                                 else
                                 {
@@ -525,7 +580,7 @@ namespace urakawa.daisy.import
                                     externalImage.Src = relativePath;
 
                                     ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
-                                    chProp.SetMedia(m_ImageChannel, externalImage);
+                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateImageChannel(), externalImage);
                                 }
                             }
                         }
@@ -699,7 +754,7 @@ namespace urakawa.daisy.import
                         if (RequestCancellation) return;
                         foreach (XmlNode childXmlNode in xmlNode.ChildNodes)
                         {
-                            parseContentDocument(childXmlNode, treeNode, filePath);
+                            parseContentDocument(book_FilePath, project, childXmlNode, treeNode, filePath);
                         }
                         break;
                     }
@@ -721,9 +776,6 @@ namespace urakawa.daisy.import
                             //Debug.Assert(xmlNode.Value == xmlNode.OuterXml);
                         }
 #endif //DEBUG
-
-                        Presentation presentation = m_Project.Presentations.Get(0);
-
                         // HACK for books authored with xml:space="preserve" all over the place (e.g. Bookshare)
 
                         bool whitespace_OnlySpaces = true;
@@ -810,7 +862,7 @@ namespace urakawa.daisy.import
                         textMedia.Text = text;
 
                         ChannelsProperty cProp = presentation.PropertyFactory.CreateChannelsProperty();
-                        cProp.SetMedia(m_textChannel, textMedia);
+                        cProp.SetMedia(presentation.ChannelsManager.GetOrCreateTextChannel(), textMedia);
 
 
                         int counter = 0;
@@ -847,11 +899,11 @@ namespace urakawa.daisy.import
         }
 
 
-        private void AddXmlStyleSheetsToXuk(XmlNodeList styleSheetNodesList)
+        private void AddXmlStyleSheetsToXuk(string book_FilePath, Project project, XmlNodeList styleSheetNodesList)
         {
             if (RequestCancellation) return;
 
-            Presentation presentation = m_Project.Presentations.Get(0);
+            Presentation presentation = project.Presentations.Get(0);
             // first collect existing style sheet files objects to avoid duplicacy.
             //List<string> existingFiles = new List<string> ();
 
@@ -871,7 +923,7 @@ namespace urakawa.daisy.import
                     }
                 }
                 string styleSheetPath = Path.Combine(
-                    Path.GetDirectoryName(m_Book_FilePath),
+                    Path.GetDirectoryName(book_FilePath),
                     relativePath);
 
                 if (File.Exists(styleSheetPath))
@@ -888,7 +940,10 @@ namespace urakawa.daisy.import
                         efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
                     }
 
-                    if (efd != null) efd.InitializeWithData(styleSheetPath, relativePath, true);
+                    if (efd != null)
+                    {
+                        efd.InitializeWithData(styleSheetPath, relativePath, true);
+                    }
                 }
             }
         }
