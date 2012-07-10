@@ -140,7 +140,7 @@ namespace urakawa.daisy.export
                             string metadataName = m.NameContentAttribute.Name;
 
                             //TODO: OBJECT ROLE!?
-                            if (altContent.Image != null && string.Equals(metadataName, DiagramContentModelHelper.Role, StringComparison.OrdinalIgnoreCase))
+                            if (altContent.Image != null && DiagramContentModelHelper.Role.Equals(metadataName, StringComparison.OrdinalIgnoreCase))
                             {
                                 // skip, used for object role!
                             }
@@ -212,7 +212,7 @@ namespace urakawa.daisy.export
                     foreach (Metadata metadata in altContent.Metadatas.ContentsAs_Enumerable)
                     {
                         //TODO: OBJECT ROLE!?
-                        if (string.Equals(metadata.NameContentAttribute.Name, DiagramContentModelHelper.Role, StringComparison.OrdinalIgnoreCase))
+                        if (DiagramContentModelHelper.Role.Equals(metadata.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, objectNode,
                                 DiagramContentModelHelper.Role,
@@ -429,8 +429,8 @@ namespace urakawa.daisy.export
 
 
 
-                    if (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedImage, StringComparison.OrdinalIgnoreCase)
+                    if (DiagramContentModelHelper.D_Tactile.Equals(contentXmlNode.Name, StringComparison.OrdinalIgnoreCase)
+                        || DiagramContentModelHelper.D_SimplifiedImage.Equals(contentXmlNode.Name, StringComparison.OrdinalIgnoreCase)
                         )
                     {
                         XmlNode objectNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(contentXmlNode, false,

@@ -38,14 +38,14 @@ namespace urakawa.daisy.export
                 {
                     // TODO: INNER_TEXT vs CONTENT_ATTR => is this specified anywhere?
                     if (
-                        string.Equals(metaAttr.Name, DiagramContentModelHelper.DIAGRAM_Purpose, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(metaAttr.Name, DiagramContentModelHelper.DIAGRAM_Credentials, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(metaAttr.Name, SupportedMetadata_Z39862005.DC_AccessRights, StringComparison.OrdinalIgnoreCase)
+                        DiagramContentModelHelper.DIAGRAM_Purpose.Equals(metaAttr.Name, StringComparison.OrdinalIgnoreCase)
+                        || DiagramContentModelHelper.DIAGRAM_Credentials.Equals(metaAttr.Name, StringComparison.OrdinalIgnoreCase)
+                        || SupportedMetadata_Z39862005.DC_AccessRights.Equals(metaAttr.Name, StringComparison.OrdinalIgnoreCase)
                         //
-                        || string.Equals(metaAttr.Name, SupportedMetadata_Z39862005.DC_Creator, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(metaAttr.Name, SupportedMetadata_Z39862005.DC_Description, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(metaAttr.Name, SupportedMetadata_Z39862005.DC_Title, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(metaAttr.Name, SupportedMetadata_Z39862005.DC_Subject, StringComparison.OrdinalIgnoreCase)
+                        || SupportedMetadata_Z39862005.DC_Creator.Equals(metaAttr.Name, StringComparison.OrdinalIgnoreCase)
+                        || SupportedMetadata_Z39862005.DC_Description.Equals(metaAttr.Name, StringComparison.OrdinalIgnoreCase)
+                        || SupportedMetadata_Z39862005.DC_Title.Equals(metaAttr.Name, StringComparison.OrdinalIgnoreCase)
+                        || SupportedMetadata_Z39862005.DC_Subject.Equals(metaAttr.Name, StringComparison.OrdinalIgnoreCase)
                         )
                     {
                         metaNode.InnerText = metaAttr.Value;
@@ -85,9 +85,9 @@ namespace urakawa.daisy.export
                             metaAttribute.Value,
                             DiagramContentModelHelper.NS_URL_DIAGRAM);
                     }
-                    else if (string.Equals(metaAttribute.Name, DiagramContentModelHelper.Rel, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(metaAttribute.Name, DiagramContentModelHelper.Resource, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(metaAttribute.Name, DiagramContentModelHelper.About, StringComparison.OrdinalIgnoreCase))
+                    else if (DiagramContentModelHelper.Rel.Equals(metaAttribute.Name, StringComparison.OrdinalIgnoreCase)
+                        || DiagramContentModelHelper.Resource.Equals(metaAttribute.Name, StringComparison.OrdinalIgnoreCase)
+                        || DiagramContentModelHelper.About.Equals(metaAttribute.Name, StringComparison.OrdinalIgnoreCase))
                     {
                         XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
                             metaAttribute.Name.ToLower(),

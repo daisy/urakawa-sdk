@@ -1172,18 +1172,18 @@ namespace urakawa.daisy.export
 
         private static bool isUniqueIdName(string name)
         {
-            if (string.Equals(name, SupportedMetadata_Z39862005.DC_Identifier,
-                                 StringComparison.OrdinalIgnoreCase))
+            if (SupportedMetadata_Z39862005.DC_Identifier.Equals(name, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
 
-            MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":Identifier");
+            MetadataDefinition md = SupportedMetadata_Z39862005.DefinitionSet.GetMetadataDefinition(SupportedMetadata_Z39862005.DC_Identifier);
+            //SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":Identifier"
+
             return md != null && md.Synonyms.Find(
                                 delegate(string s)
                                 {
-                                    return string.Equals(s, SupportedMetadata_Z39862005.DC_Identifier,
-                                 StringComparison.OrdinalIgnoreCase);
+                                    return name.Equals(s, StringComparison.OrdinalIgnoreCase);
                                 }) != null;
         }
 

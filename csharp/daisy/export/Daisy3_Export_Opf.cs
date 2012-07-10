@@ -73,16 +73,16 @@ namespace urakawa.daisy.export
                 string strID = GetNextID(ID_OpfPrefix);
 
                 string ext = Path.GetExtension(externalFileName);
-                if (String.Equals(ext, DataProviderFactory.CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                if (DataProviderFactory.CSS_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
                 {
                     AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.CSS_MIME_TYPE);
                 }
-                else if (String.Equals(ext, DataProviderFactory.XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                    || String.Equals(ext, DataProviderFactory.XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                else if (DataProviderFactory.XSLT_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                    || DataProviderFactory.XSL_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
                 {
                     AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.XSLT_MIME_TYPE_);
                 }
-                else if (String.Equals(ext, DataProviderFactory.DTD_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                else if (DataProviderFactory.DTD_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
                 {
                     AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.DTD_MIME_TYPE);
                 }
@@ -222,10 +222,10 @@ namespace urakawa.daisy.export
             {
                 //string lowerName = m.NameContentAttribute.Name.ToLower();
                 if (mdId == m
-                    || string.Equals(m.NameContentAttribute.Name, SupportedMetadata_Z39862005.DTB_TOTAL_TIME, StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(m.NameContentAttribute.Name, SupportedMetadata_Z39862005.DC_Format, StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(m.NameContentAttribute.Name, SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE, StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(m.NameContentAttribute.Name, SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT, StringComparison.OrdinalIgnoreCase)
+                    || SupportedMetadata_Z39862005.DTB_TOTAL_TIME.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase)
+                    || SupportedMetadata_Z39862005.DC_Format.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase)
+                    || SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase)
+                    || SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase)
                     )
                     continue;
 
