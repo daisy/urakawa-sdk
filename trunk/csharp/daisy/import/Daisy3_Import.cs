@@ -176,6 +176,13 @@ namespace urakawa.daisy.import
            }*/
         }
 
+        private bool m_IsEPUB;
+        public bool IsEPUB
+        {
+            get { return m_IsEPUB; }
+            protected set { m_IsEPUB = value; }
+        }
+
         private void transformBook()
         {
             //FileInfo DTBFilePathInfo = new FileInfo(m_Book_FilePath);
@@ -224,6 +231,7 @@ namespace urakawa.daisy.import
                     extension.Equals(".epub", StringComparison.OrdinalIgnoreCase)
                     || extension.Equals(".zip", StringComparison.OrdinalIgnoreCase))
                 {
+                    IsEPUB = true;
                     unzipEPubAndParseOpf();
                 }
                 else
