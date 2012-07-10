@@ -3,20 +3,45 @@ using urakawa.data;
 
 namespace urakawa.ExternalFiles
 {
+    public class CoverImageExternalFileData : GenericExternalFileData
+    {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.CoverImageExternalFileData;
+        }
+
+    }
+
     public class NCXExternalFileData : ExternalFileData
     {
-
         public override string MimeType
         {
             get
             {
-                return DataProviderFactory.STYLE_NCX_MIME_TYPE;
+                return DataProviderFactory.NCX_MIME_TYPE;
             }
         }
 
         public override string GetTypeNameFormatted()
         {
             return XukStrings.NCXExternalFileData;
+        }
+
+    }
+
+    public class NavDocExternalFileData : ExternalFileData
+    {
+        public override string MimeType
+        {
+            get
+            {
+                return "application/xhtml+xml";
+            }
+        }
+
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.NavDocExternalFileData;
         }
 
     }

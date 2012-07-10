@@ -228,9 +228,9 @@ namespace urakawa.xuk
         }
 
         public static string ExternalFileDataFactory
-            {
-            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "ExternalFileDataFactory" : "ExFlDtFct"); }
-            }
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ExternalFileDataFactory" : "ExFlDtFct"); }
+        }
 
         public static string AlternateContentFactory
         {
@@ -377,9 +377,9 @@ namespace urakawa.xuk
         }
 
         public static string ExternalFileDataManager
-            {
-            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "ExternalFileDataManager" : "ExFlDtMan"); }
-            }
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ExternalFileDataManager" : "ExFlDtMan"); }
+        }
 
 
 
@@ -822,51 +822,65 @@ namespace urakawa.xuk
         public static string CSSExternalFileData
         {
             get { return ((mProject == null || IsPrettyFormat) ? "CssExternalFileData" : "cssExFl"); }
-                }
+        }
 
         public static string XSLTExternalFileData
         {
-        get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "XsltExternalFileData" : "XsltExFl"); }
-                }
-        
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "XsltExternalFileData" : "XsltExFl"); }
+        }
+
 
         public static string DTDExternalFileData
-            {
-            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "DTDExternalFileData" : "dtdExFl"); }
-            }
-
-        public static string PLSExternalFileData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "PlsExternalFileData" : "plsExFl"); }
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "DTDExternalFileData" : "dtdExFl"); }
         }
+
+        //public static string PLSExternalFileData
+        //{
+        //    get { return ((mProject == null || IsPrettyFormat) ? "PlsExternalFileData" : "plsExFl"); }
+        //}
 
         public static string NCXExternalFileData
         {
             get { return ((mProject == null || IsPrettyFormat) ? "NCXExternalFileData" : "NCXExFl"); }
         }
 
-        public static string JSExternalFileData
+        public static string CoverImageExternalFileData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "JSExternalFileData" : "JSExFl"); }
+            get { return ((mProject == null || IsPrettyFormat) ? "CoverImageExternalFileData" : "CovrImgExFl"); }
+        }
+
+        public static string NavDocExternalFileData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "NavDocExternalFileData" : "NavExFl"); }
+        }
+
+        //public static string JSExternalFileData
+        //{
+        //    get { return ((mProject == null || IsPrettyFormat) ? "JSExternalFileData" : "JSExFl"); }
+        //}
+        public static string GenericExternalFileData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "GenericExternalFileData" : "GenExFl"); }
         }
 
         public static string ExternalFileDatas
-            {
-            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "ExternalFileDatas" : "exFlDts"); }
-            }
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ExternalFileDatas" : "exFlDts"); }
+        }
 
         public static string ExternalFileDataItem
-            {
-            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "ExternalFileDataItem" : "exFlDtItm"); }
-            }
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ExternalFileDataItem" : "exFlDtItm"); }
+        }
 
 
         public static string IsPreservedForOutputFile
-            {
-            get { return ((mProject == null || mProject.IsPrettyFormat ()) ? "IsPreservedForOutputFile" : "preOutFl"); }
-            }
+        {
+            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "IsPreservedForOutputFile" : "preOutFl"); }
+        }
 
-        
+
 
         #endregion
 
