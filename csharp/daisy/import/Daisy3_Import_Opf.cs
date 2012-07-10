@@ -220,6 +220,18 @@ namespace urakawa.daisy.import
                     continue;
                 }
 
+                if (attrProperties != null && attrProperties.Value.Contains("cover-image"))
+                {
+                    DebugFix.Assert(attrMediaType.Value == DataProviderFactory.IMAGE_SVG_MIME_TYPE
+                        || attrMediaType.Value == DataProviderFactory.IMAGE_JPG_MIME_TYPE
+                        || attrMediaType.Value == DataProviderFactory.IMAGE_BMP_MIME_TYPE
+                        || attrMediaType.Value == DataProviderFactory.IMAGE_PNG_MIME_TYPE
+                        || attrMediaType.Value == DataProviderFactory.IMAGE_GIF_MIME_TYPE
+                        );
+
+                    coverImagePath = attrHref.Value;
+                }
+
                 if (attrMediaType.Value == "application/smil"
                     || attrMediaType.Value == "application/xhtml+xml"
                     || attrMediaType.Value == DataProviderFactory.IMAGE_SVG_MIME_TYPE)
@@ -229,18 +241,6 @@ namespace urakawa.daisy.import
                         DebugFix.Assert(attrMediaType.Value == "application/xhtml+xml");
 
                         navDocPath = attrHref.Value;
-                    }
-
-                    if (attrProperties != null && attrProperties.Value.Contains("cover-image"))
-                    {
-                        DebugFix.Assert(attrMediaType.Value == DataProviderFactory.IMAGE_SVG_MIME_TYPE
-                            || attrMediaType.Value == DataProviderFactory.IMAGE_JPG_MIME_TYPE
-                            || attrMediaType.Value == DataProviderFactory.IMAGE_BMP_MIME_TYPE
-                            || attrMediaType.Value == DataProviderFactory.IMAGE_PNG_MIME_TYPE
-                            || attrMediaType.Value == DataProviderFactory.IMAGE_GIF_MIME_TYPE
-                            );
-
-                        coverImagePath = attrHref.Value;
                     }
 
                     if (attrId != null)
