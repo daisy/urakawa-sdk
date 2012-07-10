@@ -189,13 +189,20 @@ namespace urakawa.xuk
             //    Debugger.Break();
             //}
 
+            string normalisedUri = absoluteUri.AbsolutePath.Replace("%20", " ").Replace(" //", "//").Replace("// ", "//");
+
             Stream dtdStream = null;
             foreach (String key in DTDs.DTDs.ENTITIES_MAPPING.Keys)
             {
-                if (absoluteUri.AbsolutePath.Replace("%20", " ").Contains(key))
+                if (normalisedUri.Contains(key))
                 {
-                    dtdStream = DTDs.DTDs.Fetch(DTDs.DTDs.ENTITIES_MAPPING[key]);
-                    Console.WriteLine("XML Entity Resolver [" + DTDs.DTDs.ENTITIES_MAPPING[key] + "]: " + (dtdStream != null ? dtdStream.Length + " bytes resource. " : "resource not found ?? ") + " ( " + absoluteUri + " )");
+                    string resource = DTDs.DTDs.ENTITIES_MAPPING[key];
+                    dtdStream = DTDs.DTDs.Fetch(resource);
+                    if (dtdStream == null)
+                    {
+                        bool debug = true;
+                    }
+                    Console.WriteLine("XML Entity Resolver [" + resource + "]: " + (dtdStream != null ? dtdStream.Length + " bytes resource. " : "resource not found?! ") + " ( " + absoluteUri + " )");
                     return dtdStream;
                 }
             }
