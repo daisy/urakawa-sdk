@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using urakawa.data;
 using urakawa.xuk;
 
@@ -33,9 +34,11 @@ namespace urakawa.daisy.import
             string spineMimeType;
             string dtbookPath;
             string ncxPath;
+            string navDocPath;
+            string coverImagePath;
 
             if (RequestCancellation) return;
-            parseOpfManifest(opfXmlDoc, out spine, out spineMimeType, out dtbookPath, out ncxPath);
+            parseOpfManifest(opfXmlDoc, out spine, out spineMimeType, out dtbookPath, out ncxPath, out navDocPath, out coverImagePath);
 
             if (dtbookPath != null && !AudioNCXImport)
             {
@@ -84,8 +87,27 @@ namespace urakawa.daisy.import
                         break;
                     }
                 case "application/xhtml+xml":
+                case DataProviderFactory.IMAGE_SVG_MIME_TYPE:
                     {
-                        parseContentDocuments(spine);
+                        if (!string.IsNullOrEmpty(coverImagePath) && !spine.Contains(coverImagePath))
+                        {
+                            string fullCoverImagePath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), coverImagePath);
+                            ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.CoverImageExternalFileData>();
+                            if (externalData != null)
+                            {
+                                externalData.InitializeWithData(fullCoverImagePath, coverImagePath, true);
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(navDocPath) && !spine.Contains(navDocPath))
+                        {
+                            string fullNavDocPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), navDocPath);
+                            ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.NavDocExternalFileData>();
+                            if (externalData != null)
+                            {
+                                externalData.InitializeWithData(fullNavDocPath, navDocPath, true);
+                            }
+                        }
 
                         if (!string.IsNullOrEmpty(ncxPath))
                         {
@@ -97,6 +119,8 @@ namespace urakawa.daisy.import
                             }
                         }
 
+                        parseContentDocuments(spine, coverImagePath, navDocPath);
+
                         break;
                     }
             }
@@ -106,12 +130,16 @@ namespace urakawa.daisy.import
                                 out List<string> spine,
                                 out string spineMimeType,
                                 out string dtbookPath,
-                                out string ncxPath)
+                                out string ncxPath,
+                                out string navDocPath,
+                                out string coverImagePath)
         {
             spine = new List<string>();
             spineMimeType = null;
             ncxPath = null;
             dtbookPath = null;
+            navDocPath = null;
+            coverImagePath = null;
 
             XmlNode spineNodeRoot = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlDoc, true, "spine", null);
             if (spineNodeRoot != null)
@@ -166,6 +194,7 @@ namespace urakawa.daisy.import
                 XmlNode attrId = manifItemAttributes.GetNamedItem("id");
                 XmlNode attrHref = manifItemAttributes.GetNamedItem("href");
                 XmlNode attrMediaType = manifItemAttributes.GetNamedItem("media-type");
+                XmlNode attrProperties = manifItemAttributes.GetNamedItem("properties");
 
                 if (attrHref == null || String.IsNullOrEmpty(attrHref.Value)
                     || attrMediaType == null || String.IsNullOrEmpty(attrMediaType.Value))
@@ -174,19 +203,39 @@ namespace urakawa.daisy.import
                 }
 
                 if (attrMediaType.Value == "application/smil"
-                    || attrMediaType.Value == "application/xhtml+xml")
+                    || attrMediaType.Value == "application/xhtml+xml"
+                    || attrMediaType.Value == DataProviderFactory.IMAGE_SVG_MIME_TYPE)
                 {
+                    if (attrProperties != null && attrProperties.Value.Contains("nav"))
+                    {
+                        DebugFix.Assert(attrMediaType.Value == "application/xhtml+xml");
+
+                        navDocPath = attrHref.Value;
+                    }
+
+                    if (attrProperties != null && attrProperties.Value.Contains("cover-image"))
+                    {
+                        DebugFix.Assert(attrMediaType.Value == DataProviderFactory.IMAGE_SVG_MIME_TYPE
+                            || attrMediaType.Value == DataProviderFactory.IMAGE_JPG_MIME_TYPE
+                            || attrMediaType.Value == DataProviderFactory.IMAGE_BMP_MIME_TYPE
+                            || attrMediaType.Value == DataProviderFactory.IMAGE_PNG_MIME_TYPE
+                            || attrMediaType.Value == DataProviderFactory.IMAGE_GIF_MIME_TYPE
+                            );
+
+                        coverImagePath = attrHref.Value;
+                    }
+
                     if (attrId != null)
                     {
                         int i = spine.IndexOf(attrId.Value);
                         if (i >= 0)
                         {
                             spine[i] = attrHref.Value;
-                            if (!string.IsNullOrEmpty(spineMimeType)
-                                && spineMimeType != attrMediaType.Value)
-                            {
-                                System.Diagnostics.Debug.Fail(String.Format("Spine contains different mime-types ?! {0} vs {1}", attrMediaType.Value, spineMimeType));
-                            }
+                            //if (!string.IsNullOrEmpty(spineMimeType)
+                            //    && spineMimeType != attrMediaType.Value)
+                            //{
+                            //    System.Diagnostics.Debug.Fail(String.Format("Spine contains different mime-types ?! {0} vs {1}", attrMediaType.Value, spineMimeType));
+                            //}
                             spineMimeType = attrMediaType.Value;
                         }
                     }
@@ -196,7 +245,7 @@ namespace urakawa.daisy.import
                     dtbookPath = attrHref.Value;
                 }
                 else if (attrMediaType.Value == "application/x-dtbncx+xml"
-                    || attrMediaType.Value == DataProviderFactory.XML_TEXT_MIME_TYPE
+                    || attrMediaType.Value == DataProviderFactory.XML_MIME_TYPE
                         && attrHref.Value.EndsWith(".ncx"))
                 {
                     ncxPath = attrHref.Value;
