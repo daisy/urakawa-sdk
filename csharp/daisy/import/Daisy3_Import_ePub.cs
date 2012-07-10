@@ -107,7 +107,7 @@ namespace urakawa.daisy.import
             if (File.Exists(fullPath))
             {
                 ExternalFiles.ExternalFileData efd = null;
-                string ext = Path.GetExtension(relativePath);
+                //string ext = Path.GetExtension(relativePath);
                 //if (String.Equals(ext, DataProviderFactory.CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
                 //{
                 //    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
@@ -206,19 +206,6 @@ namespace urakawa.daisy.import
                 if (RequestCancellation) return;
 
                 m_Book_FilePath = Path.Combine(unzipDirectory, fileInfo.FullName);
-                m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, true);
-
-                string dataDir = m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
-                if (Directory.Exists(dataDir))
-                {
-                    string[] files = Directory.GetFiles(dataDir);
-                    if (files == null || files.Length == 0)
-                    {
-                        FileDataProvider.DeleteDirectory(dataDir);
-                    }
-                }
-                initializeProject();
-
                 XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false);
 
                 if (RequestCancellation) return;
