@@ -65,7 +65,7 @@ namespace urakawa.daisy.export
             // add all files to manifest
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
             if (m_Filename_Content != null) AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), mediaType_Dtbook);
-            AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Opf, GetNextID(ID_OpfPrefix), DataProviderFactory.XML_TEXT_MIME_TYPE);
+            AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Opf, GetNextID(ID_OpfPrefix), DataProviderFactory.XML_MIME_TYPE);
 
             // add external files to manifest
             foreach (string externalFileName in m_FilesList_ExternalFiles)
@@ -73,14 +73,14 @@ namespace urakawa.daisy.export
                 string strID = GetNextID(ID_OpfPrefix);
 
                 string ext = Path.GetExtension(externalFileName);
-                if (String.Equals(ext, DataProviderFactory.STYLE_CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                if (String.Equals(ext, DataProviderFactory.CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
                 {
-                    AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.STYLE_CSS_MIME_TYPE);
+                    AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.CSS_MIME_TYPE);
                 }
-                else if (String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                    || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                else if (String.Equals(ext, DataProviderFactory.XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                    || String.Equals(ext, DataProviderFactory.XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
                 {
-                    AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.STYLE_XSLT_MIME_TYPE_);
+                    AddFilenameToManifest(opfDocument, manifestNode, externalFileName, strID, DataProviderFactory.XSLT_MIME_TYPE_);
                 }
                 else if (String.Equals(ext, DataProviderFactory.DTD_EXTENSION, StringComparison.OrdinalIgnoreCase))
                 {

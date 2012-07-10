@@ -133,7 +133,7 @@ namespace urakawa.daisy.export
                 map_AltProperty_TO_Description, encodeToMp3, bitRate_Mp3, pcmFormat,
                 map_AltContentAudio_TO_RelativeExportedFilePath);
 
-            string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + IMAGE_DESCRIPTION_XML_SUFFIX + DataProviderFactory.XML_TEXT_EXTENSION;
+            string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + IMAGE_DESCRIPTION_XML_SUFFIX + DataProviderFactory.XML_EXTENSION;
             XmlReaderWriterHelper.WriteXmlDocument(descriptionDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName));
 
             string relativePath = Path.GetFileName(imageDescriptionDirectoryPath);

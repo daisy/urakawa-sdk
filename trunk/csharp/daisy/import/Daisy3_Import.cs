@@ -56,12 +56,13 @@ namespace urakawa.daisy.import
             {
                 m_outDirectory += Path.DirectorySeparatorChar;
             }
+
             if (!Directory.Exists(m_outDirectory))
             {
                 FileDataProvider.CreateDirectory(m_outDirectory);
             }
 
-            m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath);
+            m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, false);
 
             if (RequestCancellation) return;
             //initializeProject();
@@ -69,9 +70,9 @@ namespace urakawa.daisy.import
             reportProgress(100, UrakawaSDK_daisy_Lang.ImportInitialized);
         }
 
-        public static string GetXukFilePath(string outputDirectory, string bookFilePath)
+        public static string GetXukFilePath(string outputDirectory, string bookFilePath, bool isSpine)
         {
-            return Path.Combine(outputDirectory, Path.GetFileName(bookFilePath) + OpenXukAction.XUK_EXTENSION);
+            return Path.Combine(outputDirectory, Path.GetFileName(bookFilePath) + (isSpine ? OpenXukAction.XUK_SPINE_EXTENSION : OpenXukAction.XUK_EXTENSION));
         }
 
         public override void DoWork()
@@ -176,12 +177,6 @@ namespace urakawa.daisy.import
            }*/
         }
 
-        private bool m_IsEPUB;
-        public bool IsEPUB
-        {
-            get { return m_IsEPUB; }
-            protected set { m_IsEPUB = value; }
-        }
 
         private void transformBook()
         {
@@ -227,11 +222,9 @@ namespace urakawa.daisy.import
                     reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, Path.GetFileName(m_Book_FilePath)));
                     parseContentDocument(m_Book_FilePath, m_Project, contentXmlDoc, null, m_Book_FilePath);
                 }
-                else if (
-                    extension.Equals(".epub", StringComparison.OrdinalIgnoreCase)
+                else if (extension.Equals(".epub", StringComparison.OrdinalIgnoreCase)
                     || extension.Equals(".zip", StringComparison.OrdinalIgnoreCase))
                 {
-                    IsEPUB = true;
                     unzipEPubAndParseOpf();
                 }
                 else

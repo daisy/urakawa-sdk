@@ -42,6 +42,7 @@ namespace urakawa.daisy.import
             externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "link", headXmlNode.NamespaceURI, false));
             externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "script", headXmlNode.NamespaceURI, false));
             externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "style", headXmlNode.NamespaceURI, false));
+            externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "title", headXmlNode.NamespaceURI, false));
 
             foreach (XmlNode linkNode in externalFilesLinks)
             {
@@ -82,7 +83,7 @@ namespace urakawa.daisy.import
                         }
                     }
                 }
-                string innerText = linkNode.InnerText; // TODO: what about CDATA?;
+                string innerText = linkNode.InnerText; // includes CDATA sections! (merges "//" javascript comment markers too)
 
                 if (!string.IsNullOrEmpty(innerText))
                 {
@@ -107,23 +108,24 @@ namespace urakawa.daisy.import
             {
                 ExternalFiles.ExternalFileData efd = null;
                 string ext = Path.GetExtension(relativePath);
-                if (String.Equals(ext, DataProviderFactory.STYLE_CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
-                {
-                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
-                }
-                else if (String.Equals(ext, DataProviderFactory.STYLE_PLS_EXTENSION, StringComparison.OrdinalIgnoreCase))
-                {
-                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.PLSExternalFileData>();
-                }
-                else if (String.Equals(ext, DataProviderFactory.STYLE_JS_EXTENSION, StringComparison.OrdinalIgnoreCase))
-                {
-                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.JSExternalFileData>();
-                }
-                else if (String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
-                {
-                    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
-                }
+                //if (String.Equals(ext, DataProviderFactory.CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                //{
+                //    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
+                //}
+                //else if (String.Equals(ext, DataProviderFactory.PLS_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                //{
+                //    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.PLSExternalFileData>();
+                //}
+                //else if (String.Equals(ext, DataProviderFactory.JS_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                //{
+                //    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.JSExternalFileData>();
+                //}
+                //if (String.Equals(ext, DataProviderFactory.XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                //|| String.Equals(ext, DataProviderFactory.XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                //{
+                //    efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
+                //}
+                efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.GenericExternalFileData>();
                 if (efd != null)
                 {
                     efd.InitializeWithData(fullPath, relativePath, true);
@@ -204,7 +206,7 @@ namespace urakawa.daisy.import
                 if (RequestCancellation) return;
 
                 m_Book_FilePath = Path.Combine(unzipDirectory, fileInfo.FullName);
-                m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath);
+                m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, true);
 
                 string dataDir = m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
                 if (Directory.Exists(dataDir))

@@ -261,8 +261,8 @@ namespace urakawa.daisy.import
                 if (File.Exists(styleSheetPath))
                 {
                     string ext = Path.GetExtension(content);
-                    if (String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                    || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                    if (String.Equals(ext, DataProviderFactory.XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                    || String.Equals(ext, DataProviderFactory.XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
                     {
                         ExternalFiles.ExternalFileData efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
                         efd.InitializeWithData(styleSheetPath, SupportedMetadata_Z39862005.MATHML_XSLT_METADATA + content, true);

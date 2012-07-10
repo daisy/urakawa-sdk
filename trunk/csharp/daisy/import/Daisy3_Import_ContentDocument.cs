@@ -33,7 +33,7 @@ namespace urakawa.daisy.import
         //    //string strMultipleWhiteSpacesCollapsedToOneSpace = Regex.Replace(str, @"\s+", " ");
         //}
 
-        private void parseContentDocuments(List<string> spineOfContentDocuments)
+        private void parseContentDocuments(List<string> spineOfContentDocuments, string coverImagePath, string navDocPath)
         {
             if (spineOfContentDocuments == null || spineOfContentDocuments.Count <= 0)
             {
@@ -50,9 +50,86 @@ namespace urakawa.daisy.import
                 string fullDocPath = Path.Combine(dirPath, docPath);
                 if (!File.Exists(fullDocPath))
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
                     continue;
                 }
 
+                Presentation spinePresentation = m_Project.Presentations.Get(0);
+                TreeNode spineChild = spinePresentation.TreeNodeFactory.Create();
+                TextMedia txt = spinePresentation.MediaFactory.CreateTextMedia();
+                txt.Text = docPath; // Path.GetFileName(fullDocPath);
+                spineChild.GetOrCreateChannelsProperty().SetMedia(spinePresentation.ChannelsManager.GetOrCreateTextChannel(), txt);
+                spinePresentation.RootNode.AppendChild(spineChild);
+
+                spineChild.GetOrCreateXmlProperty().SetQName("metadata", "");
+
+                string ext = Path.GetExtension(fullDocPath);
+
+                if (docPath == coverImagePath)
+                {
+                    DebugFix.Assert(ext.Equals(".svg", StringComparison.OrdinalIgnoreCase));
+
+                    spineChild.GetOrCreateXmlProperty().SetAttribute("cover-image", "", "true");
+                }
+
+                if (docPath == navDocPath)
+                {
+                    DebugFix.Assert(
+                        ext.Equals(".xhtml", StringComparison.OrdinalIgnoreCase)
+                        || ext.Equals(".html", StringComparison.OrdinalIgnoreCase));
+
+                    spineChild.GetOrCreateXmlProperty().SetAttribute("nav", "", "true");
+                }
+
+                if (
+                    !ext.Equals(".xhtml", StringComparison.OrdinalIgnoreCase)
+                    && !ext.Equals(".html", StringComparison.OrdinalIgnoreCase)
+                    && !ext.Equals(".dtbook", StringComparison.OrdinalIgnoreCase)
+                    )
+                {
+                    DebugFix.Assert(ext.Equals(".svg", StringComparison.OrdinalIgnoreCase));
+
+                    bool notExistYet = true;
+                    foreach (var externalFileData in m_Project.Presentations.Get(0).ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
+                    {
+                        if (!string.IsNullOrEmpty(externalFileData.OriginalRelativePath))
+                        {
+                            bool notExist = docPath != externalFileData.OriginalRelativePath;
+                            notExistYet = notExistYet && notExist;
+                            if (!notExist)
+                            {
+                                break;
+                            }
+                        }
+                    }
+
+                    DebugFix.Assert(notExistYet);
+
+                    if (notExistYet)
+                    {
+                        ExternalFiles.ExternalFileData externalData = null;
+                        if (docPath == coverImagePath)
+                        {
+                            externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create
+                                <ExternalFiles.CoverImageExternalFileData>();
+                        }
+                        else
+                        {
+                            externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create
+                                <ExternalFiles.GenericExternalFileData>();
+                        }
+                        if (externalData != null)
+                        {
+                            externalData.InitializeWithData(fullDocPath, docPath, true);
+                        }
+                    }
+
+                    continue;
+                }
+
+                spineChild.GetOrCreateXmlProperty().SetAttribute("xuk", "", "true");
 
                 XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullDocPath, true);
 
@@ -144,7 +221,7 @@ namespace urakawa.daisy.import
 
 
 
-                string xuk_FilePath = GetXukFilePath(m_outDirectory, fullDocPath);
+                string xuk_FilePath = GetXukFilePath(m_outDirectory, fullDocPath, false);
                 SaveXukAction action = new SaveXukAction(project, project, new Uri(xuk_FilePath));
                 action.ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile;
                 action.LongDescription = UrakawaSDK_daisy_Lang.SerializeDOMIntoXUKFile;
@@ -984,12 +1061,12 @@ namespace urakawa.daisy.import
                 {
                     ExternalFiles.ExternalFileData efd = null;
                     string ext = Path.GetExtension(relativePath);
-                    if (String.Equals(ext, DataProviderFactory.STYLE_CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                    if (String.Equals(ext, DataProviderFactory.CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
                     {
                         efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
                     }
-                    else if (String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                    || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                    else if (String.Equals(ext, DataProviderFactory.XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                    || String.Equals(ext, DataProviderFactory.XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
                     {
                         efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
                     }
