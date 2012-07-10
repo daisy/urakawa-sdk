@@ -182,6 +182,12 @@ namespace urakawa.data
         public const string XML_MIME_TYPE = "text/xml";
         public const string XML_EXTENSION = ".xml";
 
+        public const string XHTML_MIME_TYPE = "application/xhtml+xml";
+        public const string XHTML_EXTENSION = ".xhtml";
+
+        //public const string HTML_MIME_TYPE = "text/html";
+        //public const string HTML_EXTENSION = ".html";
+
 
         public static string GetExtensionFromMimeType(string mimeType)
         {
@@ -261,6 +267,9 @@ namespace urakawa.data
                     break;
                 case JS_MIME_TYPE:
                     extension = JS_EXTENSION;
+                    break;
+                case XHTML_MIME_TYPE:
+                    extension = XHTML_EXTENSION;
                     break;
                 default:
 #if DEBUG
@@ -359,6 +368,9 @@ namespace urakawa.data
                     break;
                 case JS_EXTENSION:
                     mime = JS_MIME_TYPE;
+                    break;
+                case XHTML_EXTENSION:
+                    mime = XHTML_MIME_TYPE;
                     break;
                 default:
 #if DEBUG
