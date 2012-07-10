@@ -55,6 +55,17 @@ namespace urakawa.daisy.import
 
                 foreach (System.Xml.XmlAttribute xAttr in linkNode.Attributes)
                 {
+                    if (
+                        //xAttr.LocalName.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS, StringComparison.OrdinalIgnoreCase)
+                        //|| xAttr.LocalName.Equals("xsi", StringComparison.OrdinalIgnoreCase)
+                        xAttr.NamespaceURI.Equals(XmlReaderWriterHelper.NS_URL_XMLNS, StringComparison.OrdinalIgnoreCase)
+                        || xAttr.LocalName.Equals("space", StringComparison.OrdinalIgnoreCase)
+                           && xAttr.NamespaceURI.Equals(XmlReaderWriterHelper.NS_URL_XML, StringComparison.OrdinalIgnoreCase)
+                        )
+                    {
+                        continue;
+                    }
+
                     xmlProp.SetAttribute(xAttr.LocalName,
                         linkNode.NamespaceURI == xAttr.NamespaceURI ? "" : xAttr.NamespaceURI,
                         xAttr.Value);
@@ -194,6 +205,16 @@ namespace urakawa.daisy.import
 
                 m_Book_FilePath = Path.Combine(unzipDirectory, fileInfo.FullName);
                 m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath);
+
+                string dataDir = m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+                if (Directory.Exists(dataDir))
+                {
+                    string[] files = Directory.GetFiles(dataDir);
+                    if (files == null || files.Length == 0)
+                    {
+                        FileDataProvider.DeleteDirectory(dataDir);
+                    }
+                }
                 initializeProject();
 
                 XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false);
