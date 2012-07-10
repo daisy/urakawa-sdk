@@ -17,6 +17,34 @@ namespace urakawa.daisy.import
 
         private void parseOpf(XmlDocument opfXmlDoc)
         {
+            List<string> spine;
+            string spineMimeType;
+            string dtbookPath;
+            string ncxPath;
+            string navDocPath;
+            string coverImagePath;
+
+            if (RequestCancellation) return;
+            parseOpfManifest(opfXmlDoc, out spine, out spineMimeType, out dtbookPath, out ncxPath, out navDocPath, out coverImagePath);
+
+            if (spineMimeType == "application/xhtml+xml"
+                || spineMimeType == DataProviderFactory.IMAGE_SVG_MIME_TYPE)
+            {
+                m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, true);
+
+                string dataDir = m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+                if (Directory.Exists(dataDir))
+                {
+                    string[] files = Directory.GetFiles(dataDir);
+                    if (files == null || files.Length == 0)
+                    {
+                        FileDataProvider.DeleteDirectory(dataDir);
+                    }
+                }
+
+                initializeProject();
+            }
+
             XmlNode packageNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlDoc, true, "package", null);
             if (packageNode != null)
             {
@@ -29,16 +57,6 @@ namespace urakawa.daisy.import
 
             if (RequestCancellation) return;
             parseMetadata(m_Book_FilePath, m_Project, opfXmlDoc);
-
-            List<string> spine;
-            string spineMimeType;
-            string dtbookPath;
-            string ncxPath;
-            string navDocPath;
-            string coverImagePath;
-
-            if (RequestCancellation) return;
-            parseOpfManifest(opfXmlDoc, out spine, out spineMimeType, out dtbookPath, out ncxPath, out navDocPath, out coverImagePath);
 
             if (dtbookPath != null && !AudioNCXImport)
             {
