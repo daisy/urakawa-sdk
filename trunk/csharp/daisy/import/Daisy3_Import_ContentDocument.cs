@@ -182,9 +182,10 @@ namespace urakawa.daisy.import
                         MetadataAttribute mdAttr = metadataAttribute.Copy();
                         md.OtherAttributes.Insert(md.OtherAttributes.Count, mdAttr);
                     }
+
+                    presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
                 }
 
-                // TODO: copy NCX and MathML XSLT external file data?
                 //m_Project.Presentations.Get(0).ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable
 
                 if (RequestCancellation) return;
@@ -506,9 +507,22 @@ namespace urakawa.daisy.import
 
                         string updatedSRC = null;
 
-                        if (attributeCol != null && xmlNode.LocalName != null && xmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+                        if (attributeCol != null && xmlNode.LocalName != null
+                            &&
+                            (xmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                            || xmlNode.LocalName.Equals("image", StringComparison.OrdinalIgnoreCase))
+                            )
                         {
                             XmlNode srcAttr = attributeCol.GetNamedItem("src");
+                            if (srcAttr == null)
+                            {
+                                //srcAttr = attributeCol.GetNamedItem(DiagramContentModelHelper.XLINK_Href, DiagramContentModelHelper.NS_URL_XLINK);
+                                //srcAttr = attributeCol.GetNamedItem(DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.XLINK_Href));
+
+                                //srcAttr = attributeCol.GetNamedItem(DiagramContentModelHelper.XLINK_Href);
+                                srcAttr = attributeCol.GetNamedItem(DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.XLINK_Href), DiagramContentModelHelper.NS_URL_XLINK);
+                            }
+
                             if (srcAttr != null)
                             {
                                 string imgSourceFullpath = null;
@@ -524,8 +538,10 @@ namespace urakawa.daisy.import
                                     string parentPath = Directory.GetParent(filePath).FullName;
                                     imgSourceFullpath = Path.Combine(parentPath, relativePath);
 
-                                    updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
-                                        Path.GetDirectoryName(filePath), "");
+                                    string fullPath = Path.GetFullPath(imgSourceFullpath);
+                                    string toReplace = Path.GetDirectoryName(filePath);
+                                    toReplace = Path.GetFullPath(toReplace);
+                                    updatedSRC = fullPath.Replace(toReplace, "");
 
                                     if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
                                     {
@@ -817,11 +833,15 @@ namespace urakawa.daisy.import
                                 }
                                 else if (updatedSRC != null && attr.LocalName == "src")
                                 {
-                                    xmlProp.SetAttribute("src", "", updatedSRC);
+                                    xmlProp.SetAttribute(attr.LocalName, "", updatedSRC);
+                                }
+                                else if (updatedSRC != null && attr.LocalName == DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.XLINK_Href))
+                                {
+                                    xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, updatedSRC);
                                 }
                                 else if (updatedSRC != null && attr.LocalName == "altimg")
                                 {
-                                    xmlProp.SetAttribute("altimg", "", updatedSRC);
+                                    xmlProp.SetAttribute(attr.LocalName, "", updatedSRC);
                                 }
                                 else if (attr.Name.IndexOf(':') >= 0) // attr.Name.Contains(":")
                                 {

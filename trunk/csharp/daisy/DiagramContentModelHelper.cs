@@ -33,11 +33,11 @@ namespace urakawa.daisy
 
         // -------------------------------------------------
 
-        //public const string NS_PREFIX_XLINK = "xlink";
-        //public const string NS_URL_XLINK = "http://www.w3.org/1999/xlink";
+        public const string NS_PREFIX_XLINK = "xlink";
+        public const string NS_URL_XLINK = "http://www.w3.org/1999/xlink";
 
 
-        //public const string XLINK_Href = NS_PREFIX_XLINK + ":href";
+        public const string XLINK_Href = NS_PREFIX_XLINK + ":href";
 
         // -------------------------------------------------
 
