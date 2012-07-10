@@ -44,6 +44,10 @@ namespace urakawa.media.data.video
             private set
             {
                 m_OriginalRelativePath = value;
+                if (m_OriginalRelativePath != null)
+                {
+                    m_OriginalRelativePath = m_OriginalRelativePath.Replace('\\', '/');
+                }
             }
         }
 

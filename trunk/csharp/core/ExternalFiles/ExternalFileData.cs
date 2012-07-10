@@ -75,6 +75,10 @@ namespace urakawa.ExternalFiles
             private set
             {
                 m_OriginalRelativePath = value;
+                if (m_OriginalRelativePath != null)
+                {
+                    m_OriginalRelativePath = m_OriginalRelativePath.Replace('\\', '/');
+                }
             }
         }
 
@@ -119,6 +123,9 @@ namespace urakawa.ExternalFiles
 
         public void InitializeWithData(string path, string originalRelativePath, bool preserveForOutput)
         {
+            OriginalRelativePath = originalRelativePath;
+            m_PreserveForOutputFile = preserveForOutput;
+
             if (string.IsNullOrEmpty(path))
             {
                 throw new MethodParameterIsNullException("The path of file can not be null");
@@ -135,9 +142,6 @@ namespace urakawa.ExternalFiles
                 throw new MethodParameterIsEmptyStringException("For preserving file for output, original name of file cannot be null!");
             }
 
-            OriginalRelativePath = originalRelativePath;
-            m_PreserveForOutputFile = preserveForOutput;
-
             DataProvider externalFileDataProvider = Presentation.DataProviderFactory.Create(MimeType);
             ((FileDataProvider)externalFileDataProvider).InitByCopyingExistingFile(path);
 
@@ -146,6 +150,9 @@ namespace urakawa.ExternalFiles
 
         public void InitializeWithData(Stream dataStream, string originalRelativePath, bool preserveForOutput)
         {
+            OriginalRelativePath = originalRelativePath;
+            m_PreserveForOutputFile = preserveForOutput;
+
             if (dataStream == null)
             {
                 throw new MethodParameterIsNullException("The dataStream parameter is null");
@@ -161,9 +168,6 @@ namespace urakawa.ExternalFiles
                 throw new MethodParameterIsEmptyStringException("For preserving file for output, original name of file cannot be null!");
             }
 
-            OriginalRelativePath = originalRelativePath;
-            m_PreserveForOutputFile = preserveForOutput;
-
             DataProvider externalFileDataProvider = Presentation.DataProviderFactory.Create(MimeType);
             externalFileDataProvider.AppendData(dataStream, dataStream.Length);
 
@@ -173,6 +177,9 @@ namespace urakawa.ExternalFiles
 
         public void InitializeWithData(DataProvider dataProv, string originalRelativePath, bool preserveForOutput)
         {
+            OriginalRelativePath = originalRelativePath;
+            m_PreserveForOutputFile = preserveForOutput;
+
             if (dataProv == null)
             {
                 throw new MethodParameterIsNullException("The data provider can not be null");
@@ -187,9 +194,6 @@ namespace urakawa.ExternalFiles
             {
                 throw new MethodParameterIsEmptyStringException("For preserving file for output, original name of file cannot be null!");
             }
-
-            OriginalRelativePath = originalRelativePath;
-            m_PreserveForOutputFile = preserveForOutput;
 
             DataProvider = dataProv;
         }
