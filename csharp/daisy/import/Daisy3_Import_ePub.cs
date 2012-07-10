@@ -41,6 +41,7 @@ namespace urakawa.daisy.import
             List<XmlNode> externalFilesLinks = new List<XmlNode>();
             externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "link", headXmlNode.NamespaceURI, false));
             externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "script", headXmlNode.NamespaceURI, false));
+            externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "style", headXmlNode.NamespaceURI, false));
 
             foreach (XmlNode linkNode in externalFilesLinks)
             {
@@ -134,9 +135,12 @@ namespace urakawa.daisy.import
                 directoryName += Path.DirectorySeparatorChar;
             }*/
 
-            string unzipDirectory = Path.Combine(m_outDirectory,
-                FileDataProvider.EliminateForbiddenFileNameCharacters(m_Book_FilePath)
+            string unzipDirectory = Path.Combine(
+                Path.GetDirectoryName(m_Book_FilePath),
+                //m_outDirectory,
+                //FileDataProvider.EliminateForbiddenFileNameCharacters(m_Book_FilePath)
                 //m_Book_FilePath.Replace('.', '_')
+                m_Book_FilePath + "_UNZIPPED"
             );
             if (Directory.Exists(unzipDirectory))
             {
@@ -189,6 +193,9 @@ namespace urakawa.daisy.import
                 if (RequestCancellation) return;
 
                 m_Book_FilePath = Path.Combine(unzipDirectory, fileInfo.FullName);
+                m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath);
+                initializeProject();
+
                 XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false);
 
                 if (RequestCancellation) return;

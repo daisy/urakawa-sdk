@@ -7,8 +7,11 @@ using System.Xml;
 using AudioLib;
 using urakawa.core;
 using urakawa.data;
+using urakawa.events.progress;
 using urakawa.media;
+using urakawa.media.data.audio;
 using urakawa.media.data.image.codec;
+using urakawa.metadata;
 using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
@@ -37,34 +40,85 @@ namespace urakawa.daisy.import
                 return;
             }
 
-            //TODO: init local XUK XHTML project by cloning m_Project (Xuk Spine)
-            // (with currently contains only OPF metadata, and NCX / MathML-XSLT external data file)
-
-            Project project = m_Project;
-            string book_FilePath = m_Book_FilePath;
-
-            //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
-            //string dirPath = opfParentDir.ToString();
-            string dirPath = Path.GetDirectoryName(book_FilePath);
 
             //bool first = true;
             foreach (string docPath in spineOfContentDocuments)
             {
+                //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
+                //string dirPath = opfParentDir.ToString();
+                string dirPath = Path.GetDirectoryName(m_Book_FilePath);
+                string fullDocPath = Path.Combine(dirPath, docPath);
+                if (!File.Exists(fullDocPath))
+                {
+                    continue;
+                }
+
+
+                XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullDocPath, true);
+
                 if (RequestCancellation) return;
 
                 m_PublicationUniqueIdentifier = null;
                 m_PublicationUniqueIdentifierNode = null;
 
-                string fullDocPath = Path.Combine(dirPath, docPath);
-                XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullDocPath, true);
+                Project project = new Project();
+                project.SetPrettyFormat(m_XukPrettyFormat);
+
+                Presentation presentation = project.AddNewPresentation(new Uri(m_outDirectory), Path.GetFileName(fullDocPath));
+
+                PCMFormatInfo pcmFormat = presentation.MediaDataManager.DefaultPCMFormat.Copy();
+                pcmFormat.Data.SampleRate = (ushort)m_audioProjectSampleRate;
+                presentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
+
+                presentation.MediaDataManager.EnforceSinglePCMFormat = true;
+
+                TextChannel textChannel = presentation.ChannelFactory.CreateTextChannel();
+                textChannel.Name = "The Text Channel";
+                DebugFix.Assert(textChannel == presentation.ChannelsManager.GetOrCreateTextChannel());
+
+                AudioChannel audioChannel = presentation.ChannelFactory.CreateAudioChannel();
+                audioChannel.Name = "The Audio Channel";
+                DebugFix.Assert(audioChannel == presentation.ChannelsManager.GetOrCreateAudioChannel());
+
+                ImageChannel imageChannel = presentation.ChannelFactory.CreateImageChannel();
+                imageChannel.Name = "The Image Channel";
+                DebugFix.Assert(imageChannel == presentation.ChannelsManager.GetOrCreateImageChannel());
+
+                VideoChannel videoChannel = presentation.ChannelFactory.CreateVideoChannel();
+                videoChannel.Name = "The Video Channel";
+                DebugFix.Assert(videoChannel == presentation.ChannelsManager.GetOrCreateVideoChannel());
+
+                /*string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
+               if (Directory.Exists(dataPath))
+               {
+                   Directory.Delete(dataPath, true);
+               }*/
+
+
+                foreach (var metadata in m_Project.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
+                {
+                    Metadata md = presentation.MetadataFactory.CreateMetadata();
+                    md.NameContentAttribute = metadata.NameContentAttribute.Copy();
+
+                    foreach (var metadataAttribute in metadata.OtherAttributes.ContentsAs_Enumerable)
+                    {
+                        MetadataAttribute mdAttr = metadataAttribute.Copy();
+                        md.OtherAttributes.Insert(md.OtherAttributes.Count, mdAttr);
+                    }
+                }
+
+                // TODO: copy NCX and MathML XSLT external file data?
+                //m_Project.Presentations.Get(0).ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable
+
+                if (RequestCancellation) return;
 
 
                 if (RequestCancellation) return;
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, docPath));
-                parseMetadata(book_FilePath, project, xmlDoc);
+                parseMetadata(fullDocPath, project, xmlDoc);
 
                 if (RequestCancellation) return;
-                ParseHeadLinks(book_FilePath, project, xmlDoc);
+                ParseHeadLinks(fullDocPath, project, xmlDoc);
 
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, docPath));
 
@@ -85,6 +139,70 @@ namespace urakawa.daisy.import
                     continue;
                 }
 
+                // TODO: return hierarchical outline where each node points to a XUK relative path, + XukAble.Uid (TreeNode are not corrupted during XukAbleManager.RegenerateUids();
+                parseContentDocument(fullDocPath, project, bodyElement, null, fullDocPath);
+
+
+
+                string xuk_FilePath = GetXukFilePath(m_outDirectory, fullDocPath);
+                SaveXukAction action = new SaveXukAction(project, project, new Uri(xuk_FilePath));
+                action.ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile;
+                action.LongDescription = UrakawaSDK_daisy_Lang.SerializeDOMIntoXUKFile;
+
+                action.Progress += new EventHandler<urakawa.events.progress.ProgressEventArgs>(
+                    delegate(object sender, ProgressEventArgs e)
+                    {
+
+                        double val = e.Current;
+                        double max = e.Total;
+
+                        int percent = -1;
+                        if (val != max)
+                        {
+                            percent = (int)((val / max) * 100);
+                        }
+
+                        reportProgress(percent, val + "/" + max);
+                        //reportProgress(-1, action.LongDescription);
+
+                        if (RequestCancellation)
+                        {
+                            e.Cancel();
+                        }
+                    }
+                    );
+
+
+                action.Finished += new EventHandler<FinishedEventArgs>(
+                    delegate(object sender, FinishedEventArgs e)
+                    {
+                        reportProgress(100, UrakawaSDK_daisy_Lang.XUKSaved);
+                    }
+                    );
+                action.Cancelled += new EventHandler<CancelledEventArgs>(
+                    delegate(object sender, CancelledEventArgs e)
+                    {
+                        reportProgress(0, UrakawaSDK_daisy_Lang.CancelledXUKSaving);
+                    }
+                    );
+
+                action.DoWork();
+
+
+
+
+
+
+
+
+                //TODO: add XHTML outline to m_BundleProject TreeNodes
+
+
+
+
+
+
+
                 //if (first)
                 //{
                 //    Presentation presentation = m_Project.Presentations.Get(0);
@@ -104,70 +222,6 @@ namespace urakawa.daisy.import
                 //    parseContentDocument(childOfBody, m_Project.Presentations.Get(0).RootNode, fullDocPath);
                 //}
 
-                // TODO: return hierarchical outline where each node points to a XUK relative path, + XukAble.Uid (TreeNode are not corrupted during XukAbleManager.RegenerateUids();
-                parseContentDocument(book_FilePath, project, bodyElement, null, fullDocPath);
-
-
-                //TODO: be careful with XukPath public accessor !!!! (used in Tobi UrakawaSession)
-                //TODO: m_Xuk_FilePath = Path.Combine(m_outDirectory, Path.GetFileName(m_Book_FilePath) + OpenXukAction.XUK_EXTENSION);
-                //TODO: XukSave m_Project
-
-
-
-
-
-
-                //SaveXukAction action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath));
-                //action.ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile;
-                //action.LongDescription = UrakawaSDK_daisy_Lang.SerializeDOMIntoXUKFile;
-
-                //action.Progress += new EventHandler<urakawa.events.progress.ProgressEventArgs>(
-                //    delegate(object sender, ProgressEventArgs e)
-                //    {
-
-                //        double val = e.Current;
-                //        double max = e.Total;
-
-                //        int percent = -1;
-                //        if (val != max)
-                //        {
-                //            percent = (int)((val / max) * 100);
-                //        }
-
-                //        reportProgress(percent, val + "/" + max);
-                //        //reportProgress(-1, action.LongDescription);
-
-                //        if (RequestCancellation)
-                //        {
-                //            e.Cancel();
-                //        }
-                //    }
-                //    );
-
-
-                //action.Finished += new EventHandler<FinishedEventArgs>(
-                //    delegate(object sender, FinishedEventArgs e)
-                //    {
-                //        reportProgress(100, UrakawaSDK_daisy_Lang.XUKSaved);
-                //    }
-                //    );
-                //action.Cancelled += new EventHandler<CancelledEventArgs>(
-                //    delegate(object sender, CancelledEventArgs e)
-                //    {
-                //        reportProgress(0, UrakawaSDK_daisy_Lang.CancelledXUKSaving);
-                //    }
-                //    );
-
-                //action.DoWork();
-
-
-
-
-
-
-
-
-                //TODO: add XHTML outline to m_BundleProject TreeNodes
             }
         }
 
@@ -215,7 +269,7 @@ namespace urakawa.daisy.import
                                                       ("/processing-instruction(\"xml-stylesheet\")");
                         if (styleSheetNodeList != null && styleSheetNodeList.Count > 0)
                         {
-                            AddXmlStyleSheetsToXuk(book_FilePath, project, styleSheetNodeList);
+                            AddXmlStyleSheetsToXuk(filePath, project, styleSheetNodeList);
                         }
                         //XmlNodeList listOfBodies = ((XmlDocument)xmlNode).GetElementsByTagName("body");
                         //if (listOfBodies.Count == 0)
@@ -394,7 +448,7 @@ namespace urakawa.daisy.import
                                     imgSourceFullpath = Path.Combine(parentPath, relativePath);
 
                                     updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
-                                        Path.GetDirectoryName(book_FilePath), "");
+                                        Path.GetDirectoryName(filePath), "");
 
                                     if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
                                     {
@@ -483,7 +537,7 @@ namespace urakawa.daisy.import
                                     videoSourceFullpath = Path.Combine(parentPath, relativePath);
 
                                     updatedSRC = Path.GetFullPath(videoSourceFullpath).Replace(
-                                        Path.GetDirectoryName(book_FilePath), "");
+                                        Path.GetDirectoryName(filePath), "");
 
                                     if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
                                     {
@@ -547,7 +601,7 @@ namespace urakawa.daisy.import
                                     imgSourceFullpath = Path.Combine(parentPath, relativePath);
 
                                     updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
-                                        Path.GetDirectoryName(book_FilePath), "");
+                                        Path.GetDirectoryName(filePath), "");
 
                                     if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
                                     {
