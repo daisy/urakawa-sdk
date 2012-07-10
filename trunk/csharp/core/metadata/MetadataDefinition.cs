@@ -136,7 +136,7 @@ namespace urakawa.metadata
         {
             foreach (MetadataDefinition md in Definitions)
             {
-                if (string.Equals(md.Name, name, StringComparison.OrdinalIgnoreCase))
+                if (md.Name.Equals(name, StringComparison.Ordinal)) //OrdinalIgnoreCase
                 {
                     return md;
                 }
@@ -149,7 +149,7 @@ namespace urakawa.metadata
             MetadataDefinition definition = Definitions.Find(
                 delegate(MetadataDefinition item)
                 {
-                    return string.Equals(item.Name, name, StringComparison.OrdinalIgnoreCase);
+                    return item.Name.Equals(name, StringComparison.Ordinal); //OrdinalIgnoreCase
                 });
 
             if (definition == null)
@@ -162,7 +162,7 @@ namespace urakawa.metadata
                             string found = item.Synonyms.Find(
                                 delegate(string s)
                                 {
-                                    return string.Equals(s, name, StringComparison.OrdinalIgnoreCase);
+                                    return s.Equals(name, StringComparison.Ordinal); //OrdinalIgnoreCase
                                 });
                             return (found != null);
                         }

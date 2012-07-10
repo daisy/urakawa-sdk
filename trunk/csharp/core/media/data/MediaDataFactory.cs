@@ -100,7 +100,7 @@ namespace urakawa.media.data
 
         public AudioMediaData CreateAudioMediaData(string extension)
         {
-            if (String.Equals(extension, DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            if (DataProviderFactory.AUDIO_WAV_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<WavAudioMediaData>();
             }
@@ -155,25 +155,25 @@ namespace urakawa.media.data
 
         public ImageMediaData CreateImageMediaData(string extension)
         {
-            if (String.Equals(extension, DataProviderFactory.IMAGE_JPG_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(extension, DataProviderFactory.IMAGE_JPEG_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            if (DataProviderFactory.IMAGE_JPG_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.IMAGE_JPEG_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<JpgImageMediaData>();
             }
-            else if (String.Equals(extension, DataProviderFactory.IMAGE_BMP_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.IMAGE_BMP_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<BmpImageMediaData>();
             }
-            else if (String.Equals(extension, DataProviderFactory.IMAGE_PNG_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.IMAGE_PNG_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<PngImageMediaData>();
             }
-            else if (String.Equals(extension, DataProviderFactory.IMAGE_GIF_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.IMAGE_GIF_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<GifImageMediaData>();
             }
-            else if (String.Equals(extension, DataProviderFactory.IMAGE_SVG_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(extension, DataProviderFactory.IMAGE_SVGZ_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.IMAGE_SVG_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.IMAGE_SVGZ_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<SvgImageMediaData>();
             }
@@ -224,8 +224,8 @@ namespace urakawa.media.data
 
         public VideoMediaData CreateVideoMediaData(string extension)
         {
-            if (String.Equals(extension, DataProviderFactory.VIDEO_MPG_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(extension, DataProviderFactory.VIDEO_MPEG_EXTENSION, StringComparison.OrdinalIgnoreCase)
+            if (DataProviderFactory.VIDEO_MPG_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.VIDEO_MPEG_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase)
                 //|| String.Equals(extension, DataProviderFactory.VIDEO_M2V_EXTENSION, StringComparison.OrdinalIgnoreCase)
                 //|| String.Equals(extension, DataProviderFactory.VIDEO_M4V_EXTENSION, StringComparison.OrdinalIgnoreCase)
                 //|| String.Equals(extension, DataProviderFactory.VIDEO_3GP_EXTENSION, StringComparison.OrdinalIgnoreCase)
@@ -233,27 +233,27 @@ namespace urakawa.media.data
             {
                 return Create<MpgVideoMediaData>();
             }
-            else if (String.Equals(extension, DataProviderFactory.VIDEO_MP4_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.VIDEO_MP4_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<Mp4VideoMediaData>();
             }
-            else if (String.Equals(extension, DataProviderFactory.VIDEO_AVI_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.VIDEO_AVI_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<AviVideoMediaData>();
             }
-            else if (String.Equals(extension, DataProviderFactory.VIDEO_WEBM_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.VIDEO_WEBM_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<WebmVideoMediaData>();
             }
-            else if (String.Equals(extension, DataProviderFactory.VIDEO_OGG_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.VIDEO_OGG_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<OggVideoMediaData>();
             }
-            else if (String.Equals(extension, DataProviderFactory.VIDEO_MOV_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.VIDEO_MOV_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<MovVideoMediaData>();
             }
-            else if (String.Equals(extension, DataProviderFactory.VIDEO_WMV_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.VIDEO_WMV_EXTENSION.Equals(extension, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<WmvVideoMediaData>();
             }

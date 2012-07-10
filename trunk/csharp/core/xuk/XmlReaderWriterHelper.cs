@@ -93,14 +93,14 @@ namespace urakawa.xuk
             if (!isHTTP
                 &&
                 (
-                String.Equals(ext, DataProviderFactory.XML_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(ext, ".html", StringComparison.OrdinalIgnoreCase)
-                || String.Equals(ext, ".xhtml", StringComparison.OrdinalIgnoreCase)
-                || String.Equals(ext, ".ncx", StringComparison.OrdinalIgnoreCase)
-                || String.Equals(ext, ".opf", StringComparison.OrdinalIgnoreCase)
-                || String.Equals(ext, DataProviderFactory.IMAGE_SVG_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(ext, DataProviderFactory.XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                || String.Equals(ext, DataProviderFactory.XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                DataProviderFactory.XML_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || ".html".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || ".xhtml".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || ".ncx".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || ".opf".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.IMAGE_SVG_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.XSLT_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.XSL_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
                 )
             {
                 if (File.Exists(absPath))
