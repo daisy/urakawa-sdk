@@ -139,15 +139,28 @@ namespace urakawa.xuk
                 {
                     webReq.Credentials = m_Credentials;
                 }
-                WebResponse resp = webReq.GetResponse();
-                Stream webStream = resp.GetResponseStream();
+                WebResponse resp = null;
+                try
+                {
+                    resp = webReq.GetResponse();
+                    Stream webStream = resp.GetResponseStream();
 
-                string localpath = CreateLocalDTDFileFromWebStream(absoluteUri.AbsolutePath, webStream);
+                    string localpath = CreateLocalDTDFileFromWebStream(absoluteUri.AbsolutePath, webStream);
 
-                //webStream.Close();
-                resp.Close();
-
-                return File.Open(localpath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    return File.Open(localpath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                }
+                catch (Exception ex)
+                {
+                    bool debug = true;
+                }
+                finally
+                {
+                    //webStream.Close();
+                    if (resp != null)
+                    {
+                        resp.Close();
+                    }
+                }
             }
 
             // No need to look for a local file that does not exist.
@@ -179,7 +192,7 @@ namespace urakawa.xuk
             Stream dtdStream = null;
             foreach (String key in DTDs.DTDs.ENTITIES_MAPPING.Keys)
             {
-                if (absoluteUri.AbsolutePath.Contains(key))
+                if (absoluteUri.AbsolutePath.Replace("%20", " ").Contains(key))
                 {
                     dtdStream = DTDs.DTDs.Fetch(DTDs.DTDs.ENTITIES_MAPPING[key]);
                     Console.WriteLine("XML Entity Resolver [" + DTDs.DTDs.ENTITIES_MAPPING[key] + "]: " + (dtdStream != null ? dtdStream.Length + " bytes resource. " : "resource not found ?? ") + " ( " + absoluteUri + " )");
