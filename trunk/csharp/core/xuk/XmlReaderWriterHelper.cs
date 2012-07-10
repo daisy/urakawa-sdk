@@ -200,7 +200,9 @@ namespace urakawa.xuk
                     dtdStream = DTDs.DTDs.Fetch(resource);
                     if (dtdStream == null)
                     {
-                        bool debug = true;
+#if DEBUG
+                        Debugger.Break();
+#endif //DEBUG
                     }
                     Console.WriteLine("XML Entity Resolver [" + resource + "]: " + (dtdStream != null ? dtdStream.Length + " bytes resource. " : "resource not found?! ") + " ( " + absoluteUri + " )");
                     return dtdStream;
