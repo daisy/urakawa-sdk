@@ -67,6 +67,9 @@ namespace urakawa.xuk
                 return null;
             }
 
+            bool isHTTP = absoluteUri.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase)
+                          || absoluteUri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
+
             // Resolve local known entities
             Stream localStream = mapUri(absoluteUri);
             if (localStream != null)
@@ -87,9 +90,17 @@ namespace urakawa.xuk
             string absPath = absoluteUri.AbsolutePath;
 
             string ext = Path.GetExtension(absPath);
-            if (string.Equals(ext, DataProviderFactory.XML_TEXT_EXTENSION) ||
-                String.Equals(ext, DataProviderFactory.STYLE_XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                    || String.Equals(ext, DataProviderFactory.STYLE_XSL_EXTENSION, StringComparison.OrdinalIgnoreCase)
+            if (!isHTTP
+                &&
+                (
+                String.Equals(ext, DataProviderFactory.XML_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(ext, ".html", StringComparison.OrdinalIgnoreCase)
+                || String.Equals(ext, ".xhtml", StringComparison.OrdinalIgnoreCase)
+                || String.Equals(ext, ".ncx", StringComparison.OrdinalIgnoreCase)
+                || String.Equals(ext, ".opf", StringComparison.OrdinalIgnoreCase)
+                || String.Equals(ext, DataProviderFactory.IMAGE_SVG_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(ext, DataProviderFactory.XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(ext, DataProviderFactory.XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
                 )
             {
                 if (File.Exists(absPath))
@@ -129,8 +140,7 @@ namespace urakawa.xuk
 
             //resolve resources from cache (if possible)
             if (m_EnableHttpCaching &&
-                (absoluteUri.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase)
-                || absoluteUri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)) //absoluteUri.IsUnc?
+                isHTTP //absoluteUri.IsUnc?
                 )
             {
                 WebRequest webReq = WebRequest.Create(absoluteUri);

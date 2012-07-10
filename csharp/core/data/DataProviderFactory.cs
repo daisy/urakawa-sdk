@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using urakawa.exception;
 using urakawa.xuk;
 
@@ -13,7 +14,8 @@ namespace urakawa.data
         {
             return XukStrings.DataProviderFactory;
         }
-        public DataProviderFactory(Presentation pres) : base(pres)
+        public DataProviderFactory(Presentation pres)
+            : base(pres)
         {
         }
 
@@ -131,35 +133,35 @@ namespace urakawa.data
         /// <summary>
         /// MIME type for Cascading Style Sheets (CSS)
         /// </summary>
-        public const string STYLE_CSS_MIME_TYPE = "text/css";
-        public const string STYLE_CSS_EXTENSION = ".css";
+        public const string CSS_MIME_TYPE = "text/css";
+        public const string CSS_EXTENSION = ".css";
 
         /// <summary>
         /// MIME type for (XSLT)
         /// </summary>
-        public const string STYLE_XSLT_MIME_TYPE = "text/xsl";
-        public const string STYLE_XSLT_MIME_TYPE_ = "application/xml";
-        public const string STYLE_XSLT_EXTENSION = ".xslt";
-        public const string STYLE_XSL_EXTENSION = ".xsl";
+        public const string XSLT_MIME_TYPE = "text/xsl";
+        public const string XSLT_MIME_TYPE_ = "application/xml";
+        public const string XSLT_EXTENSION = ".xslt";
+        public const string XSL_EXTENSION = ".xsl";
 
-/// <summary>
+        /// <summary>
         /// MIME type for Pronunciation Lexicon Specification (PLS)
         /// </summary>
-        public const string STYLE_PLS_MIME_TYPE = "application/pls+xml";
-        public const string STYLE_PLS_EXTENSION = ".pls";
+        public const string PLS_MIME_TYPE = "application/pls+xml";
+        public const string PLS_EXTENSION = ".pls";
 
         /// <summary>
         /// MIME type for Navigation Control file for Xml(NCX)
         /// </summary>
-        public const string STYLE_NCX_MIME_TYPE = "application/x-dtbncx+xml";
-        public const string STYLE_NCX_EXTENSION = ".ncx";
+        public const string NCX_MIME_TYPE = "application/x-dtbncx+xml";
+        public const string NCX_EXTENSION = ".ncx";
 
 
         /// <summary>
-        /// MIME type for Java Script(PLS)
+        /// MIME type for Java Script
         /// </summary>
-        public const string STYLE_JS_MIME_TYPE = "application/javascript";
-        public const string STYLE_JS_EXTENSION = ".js";
+        public const string JS_MIME_TYPE = "application/javascript";
+        public const string JS_EXTENSION = ".js";
 
 
         /// <summary>
@@ -177,8 +179,8 @@ namespace urakawa.data
         /// <summary>
         /// MIME type for xml
         /// </summary>
-        public const string XML_TEXT_MIME_TYPE = "text/xml";
-        public const string XML_TEXT_EXTENSION = ".xml";
+        public const string XML_MIME_TYPE = "text/xml";
+        public const string XML_EXTENSION = ".xml";
 
 
         public static string GetExtensionFromMimeType(string mimeType)
@@ -217,6 +219,8 @@ namespace urakawa.data
                 case AUDIO_WAV_MIME_TYPE:
                     extension = AUDIO_WAV_EXTENSION;
                     break;
+
+
                 case IMAGE_JPG_MIME_TYPE:
                     extension = IMAGE_JPG_EXTENSION;
                     break;
@@ -232,14 +236,16 @@ namespace urakawa.data
                 case IMAGE_SVG_MIME_TYPE:
                     extension = IMAGE_SVG_EXTENSION;
                     break;
-                case STYLE_CSS_MIME_TYPE:
-                    extension = STYLE_CSS_EXTENSION;
+
+
+                case CSS_MIME_TYPE:
+                    extension = CSS_EXTENSION;
                     break;
-                case STYLE_XSLT_MIME_TYPE:
-                    extension = STYLE_XSLT_EXTENSION;
+                case XSLT_MIME_TYPE:
+                    extension = XSLT_EXTENSION;
                     break;
-                case STYLE_PLS_MIME_TYPE:
-                    extension = STYLE_PLS_EXTENSION;
+                case PLS_MIME_TYPE:
+                    extension = PLS_EXTENSION;
                     break;
                 case TEXT_PLAIN_MIME_TYPE:
                     extension = TEXT_PLAIN_EXTENSION;
@@ -247,10 +253,19 @@ namespace urakawa.data
                 case DTD_MIME_TYPE:
                     extension = DTD_EXTENSION;
                     break;
-                case XML_TEXT_MIME_TYPE:
-                    extension = XML_TEXT_EXTENSION;
+                case XML_MIME_TYPE:
+                    extension = XML_EXTENSION;
+                    break;
+                case NCX_MIME_TYPE:
+                    extension = NCX_EXTENSION;
+                    break;
+                case JS_MIME_TYPE:
+                    extension = JS_EXTENSION;
                     break;
                 default:
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
                     extension = ".bin";
                     break;
             }
@@ -268,9 +283,9 @@ namespace urakawa.data
                     break;
                 case VIDEO_MPG_EXTENSION:
                 case VIDEO_MPEG_EXTENSION:
-                //case VIDEO_M2V_EXTENSION:
-                //case VIDEO_M4V_EXTENSION:
-                //case VIDEO_3GP_EXTENSION:
+                    //case VIDEO_M2V_EXTENSION:
+                    //case VIDEO_M4V_EXTENSION:
+                    //case VIDEO_3GP_EXTENSION:
                     mime = VIDEO_MPG_MIME_TYPE;
                     break;
                 case VIDEO_AVI_EXTENSION:
@@ -297,6 +312,8 @@ namespace urakawa.data
                 case AUDIO_WAV_EXTENSION:
                     mime = AUDIO_WAV_MIME_TYPE;
                     break;
+
+
                 case IMAGE_JPG_EXTENSION:
                 case IMAGE_JPEG_EXTENSION:
                     mime = IMAGE_JPG_MIME_TYPE;
@@ -314,17 +331,19 @@ namespace urakawa.data
                 case IMAGE_SVGZ_EXTENSION:
                     mime = IMAGE_SVG_MIME_TYPE;
                     break;
-                case STYLE_CSS_EXTENSION:
-                    mime = STYLE_CSS_MIME_TYPE;
+
+
+                case CSS_EXTENSION:
+                    mime = CSS_MIME_TYPE;
                     break;
-                case STYLE_XSLT_EXTENSION:
-                    mime = STYLE_XSLT_MIME_TYPE;
+                case XSLT_EXTENSION:
+                    mime = XSLT_MIME_TYPE;
                     break;
-                case STYLE_XSL_EXTENSION:
-                    mime = STYLE_XSLT_MIME_TYPE;
+                case XSL_EXTENSION:
+                    mime = XSLT_MIME_TYPE;
                     break;
-                case STYLE_PLS_EXTENSION:
-                    mime = STYLE_PLS_MIME_TYPE;
+                case PLS_EXTENSION:
+                    mime = PLS_MIME_TYPE;
                     break;
                 case TEXT_PLAIN_EXTENSION:
                     mime = TEXT_PLAIN_MIME_TYPE;
@@ -332,10 +351,19 @@ namespace urakawa.data
                 case DTD_EXTENSION:
                     mime = DTD_MIME_TYPE;
                     break;
-                case XML_TEXT_EXTENSION:
-                    mime = XML_TEXT_MIME_TYPE;
+                case XML_EXTENSION:
+                    mime = XML_MIME_TYPE;
+                    break;
+                case NCX_EXTENSION:
+                    mime = NCX_MIME_TYPE;
+                    break;
+                case JS_EXTENSION:
+                    mime = JS_MIME_TYPE;
                     break;
                 default:
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
                     mime = "N/A";
                     break;
             }
@@ -343,7 +371,7 @@ namespace urakawa.data
         }
 
 
-        private Type mDefaultDataProviderType = typeof (FileDataProvider);
+        private Type mDefaultDataProviderType = typeof(FileDataProvider);
 
         /// <summary>
         /// Gets or sets the default <see cref="DataProvider"/> <see cref="Type"/>
@@ -443,7 +471,7 @@ namespace urakawa.data
         public DataProvider Create(string mimeType, string xukLocalName, string xukNamespaceUri)
         {
             DataProvider newProv = Create(xukLocalName, xukNamespaceUri);
-            if (newProv!=null) newProv.MimeType = mimeType;
+            if (newProv != null) newProv.MimeType = mimeType;
             return newProv;
         }
     }

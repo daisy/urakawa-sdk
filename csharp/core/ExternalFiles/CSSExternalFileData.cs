@@ -10,7 +10,7 @@ namespace urakawa.ExternalFiles
         {
             get
             {
-                return DataProviderFactory.STYLE_CSS_MIME_TYPE;
+                return DataProviderFactory.CSS_MIME_TYPE;
             }
         }
 

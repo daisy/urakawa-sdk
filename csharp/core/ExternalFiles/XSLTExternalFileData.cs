@@ -10,7 +10,7 @@ namespace urakawa.ExternalFiles
         {
             get
             {
-                return DataProviderFactory.STYLE_XSLT_MIME_TYPE;
+                return DataProviderFactory.XSLT_MIME_TYPE;
             }
         }
 

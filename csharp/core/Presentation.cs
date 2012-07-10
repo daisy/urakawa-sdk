@@ -1498,18 +1498,27 @@ namespace urakawa
             
             //
             //
+            GenericExternalFileData exFileDataGeneric = ExternalFilesDataFactory.Create<GenericExternalFileData>();
+            ExternalFilesDataManager.RemoveManagedObject(exFileDataGeneric);
+            //
             CSSExternalFileData exFileDataCSS = ExternalFilesDataFactory.Create<CSSExternalFileData>();
             ExternalFilesDataManager.RemoveManagedObject(exFileDataCSS);
+            //
             XSLTExternalFileData exFileDataXSLT = ExternalFilesDataFactory.Create<XSLTExternalFileData>();
             ExternalFilesDataManager.RemoveManagedObject(exFileDataXSLT);
+            //
             DTDExternalFileData exFileDataDTD = ExternalFilesDataFactory.Create<DTDExternalFileData>();
             ExternalFilesDataManager.RemoveManagedObject(exFileDataDTD);
-            PLSExternalFileData exFileDataPLS = ExternalFilesDataFactory.Create<PLSExternalFileData>();
-            ExternalFilesDataManager.RemoveManagedObject(exFileDataPLS);
+            //
             NCXExternalFileData exFileDataNCX = ExternalFilesDataFactory.Create<NCXExternalFileData>();
             ExternalFilesDataManager.RemoveManagedObject(exFileDataNCX);
-            JSExternalFileData exFileDataJS = ExternalFilesDataFactory.Create<JSExternalFileData>();
-            ExternalFilesDataManager.RemoveManagedObject(exFileDataJS);
+            //
+            NavDocExternalFileData exFileDataNavDoc = ExternalFilesDataFactory.Create<NavDocExternalFileData>();
+            ExternalFilesDataManager.RemoveManagedObject(exFileDataNavDoc);
+            //PLSExternalFileData exFileDataPLS = ExternalFilesDataFactory.Create<PLSExternalFileData>();
+            //ExternalFilesDataManager.RemoveManagedObject(exFileDataPLS);
+            //JSExternalFileData exFileDataJS = ExternalFilesDataFactory.Create<JSExternalFileData>();
+            //ExternalFilesDataManager.RemoveManagedObject(exFileDataJS);
             //
             DebugFix.Assert(ExternalFilesDataManager.ManagedObjects.Count == 0);
             DebugFix.Assert(DataProviderManager.ManagedObjects.Count == 0);
