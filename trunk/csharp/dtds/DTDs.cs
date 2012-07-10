@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -156,8 +157,8 @@ namespace DTDs
             ENTITIES_MAPPING.Add("xhtml-charent-1.mod", "DTDs.Resources.xhtml-charent-1.mod");
             ENTITIES_MAPPING.Add("//W3C//ENTITIES XHTML Character Entities 1.0//EN", "DTDs.Resources.xhtml-charent-1.mod");
 
-            ENTITIES_MAPPING.Add("xhtml11-model-1.mod", "DTDs.Resources.ixhtml11-model-1soamsa.mod");
-            ENTITIES_MAPPING.Add("//W3C//ENTITIES XHTML 1.1 Document Model 1.0//EN", "DTDs.Resources.ixhtml11-model-1soamsa.mod");
+            ENTITIES_MAPPING.Add("xhtml11-model-1.mod", "DTDs.Resources.xhtml11-model-1.mod");
+            ENTITIES_MAPPING.Add("//W3C//ENTITIES XHTML 1.1 Document Model 1.0//EN", "DTDs.Resources.xhtml11-model-1.mod");
 
             ENTITIES_MAPPING.Add("xhtml-attribs-1.mod", "DTDs.Resources.xhtml-attribs-1.mod");
             ENTITIES_MAPPING.Add("//W3C//ENTITIES XHTML Common Attributes 1.0//EN", "DTDs.Resources.xhtml-attribs-1.mod");
@@ -199,6 +200,26 @@ namespace DTDs
             ENTITIES_MAPPING.Add("isoamsn.ent", "DTDs.Resources.isoamsn.ent");
             ENTITIES_MAPPING.Add("isoamso.ent", "DTDs.Resources.isoamso.ent");
             ENTITIES_MAPPING.Add("isoamsa.ent", "DTDs.Resources.isoamsa.ent");
+
+#if DEBUG
+            Dictionary<string, string>.ValueCollection values = ENTITIES_MAPPING.Values;
+            List<string> alreadyTested = new List<string>(values.Count);
+            foreach (String resource in values)
+            {
+                if (alreadyTested.Contains(resource))
+                {
+                    continue;
+                }
+
+                alreadyTested.Add(resource);
+
+                Stream dtdStream = Fetch(resource);
+                if (dtdStream == null)
+                {
+                    Debugger.Break();
+                }
+            }
+#endif //DEBUG
         }
 
         private static readonly Assembly m_Assembly = Assembly.GetExecutingAssembly();
