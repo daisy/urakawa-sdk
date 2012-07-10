@@ -653,7 +653,7 @@ m_Stream;
                         }
 
                         string ext = Path.GetExtension(ancestorExtAudioFile);
-                        if (!String.Equals(ext, DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                        if (!DataProviderFactory.AUDIO_WAV_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
                         {
                             Debug.Fail("Verification can only be done if external media points to wav file!");
                         }

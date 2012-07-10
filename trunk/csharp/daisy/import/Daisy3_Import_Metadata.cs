@@ -184,7 +184,7 @@ namespace urakawa.daisy.import
 
         private static bool isUniqueIdName(string name)
         {
-            if (string.Equals(name, SupportedMetadata_Z39862005.DC_Identifier, StringComparison.OrdinalIgnoreCase))
+            if (SupportedMetadata_Z39862005.DC_Identifier.Equals(name, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
@@ -193,7 +193,7 @@ namespace urakawa.daisy.import
             return md != null && md.Synonyms.Find(
                                 delegate(string s)
                                 {
-                                    return string.Equals(s, name, StringComparison.OrdinalIgnoreCase);
+                                    return s.Equals(name, StringComparison.OrdinalIgnoreCase);
                                 }) != null;
         }
 
@@ -261,8 +261,8 @@ namespace urakawa.daisy.import
                 if (File.Exists(styleSheetPath))
                 {
                     string ext = Path.GetExtension(content);
-                    if (String.Equals(ext, DataProviderFactory.XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                    || String.Equals(ext, DataProviderFactory.XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                    if (DataProviderFactory.XSLT_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                    || DataProviderFactory.XSL_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
                     {
                         ExternalFiles.ExternalFileData efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
                         efd.InitializeWithData(styleSheetPath, SupportedMetadata_Z39862005.MATHML_XSLT_METADATA + content, true);
@@ -420,7 +420,7 @@ namespace urakawa.daisy.import
                             md.NameContentAttribute.Name, true);
 
                         //if this is a dc:identifier, then add it to our list
-                        if (string.Equals(definition.Name, SupportedMetadata_Z39862005.DC_Identifier, StringComparison.OrdinalIgnoreCase))
+                        if (SupportedMetadata_Z39862005.DC_Identifier.Equals(definition.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             identifiers.Add(md);
                         }

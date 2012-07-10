@@ -935,7 +935,7 @@ namespace urakawa.daisy.import
 #if DEBUG
                         if (xmlType == XmlNodeType.CDATA)
                         {
-                            Debugger.Break();
+                            //Debugger.Break();
                         }
 #endif
 
@@ -951,11 +951,17 @@ namespace urakawa.daisy.import
                         }
                         else
                         {
-                            // collapse adjoining whitespaces into one space character
-                            // (preserves begin and end space that would otherwise be trimmed by Trim())
-                            text = Regex.Replace(textRepresentation, @"\s+", " ");
-                            //string text = xmlNode.Value.Trim();
-
+                            if (xmlNode.ParentNode != null && xmlNode.ParentNode.LocalName == "script")
+                            {
+                                text = textRepresentation;
+                            }
+                            else
+                            {
+                                // collapse adjoining whitespaces into one space character
+                                // (preserves begin and end space that would otherwise be trimmed by Trim())
+                                text = Regex.Replace(textRepresentation, @"\s+", " ");
+                                //string text = xmlNode.Value.Trim();
+                            }
 #if DEBUG
                             DebugFix.Assert(!string.IsNullOrEmpty(text));
                             //if (string.IsNullOrEmpty(text))
@@ -1061,12 +1067,12 @@ namespace urakawa.daisy.import
                 {
                     ExternalFiles.ExternalFileData efd = null;
                     string ext = Path.GetExtension(relativePath);
-                    if (String.Equals(ext, DataProviderFactory.CSS_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                    if (DataProviderFactory.CSS_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
                     {
                         efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
                     }
-                    else if (String.Equals(ext, DataProviderFactory.XSLT_EXTENSION, StringComparison.OrdinalIgnoreCase)
-                    || String.Equals(ext, DataProviderFactory.XSL_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                    else if (DataProviderFactory.XSLT_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                    || DataProviderFactory.XSL_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
                     {
                         efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
                     }
