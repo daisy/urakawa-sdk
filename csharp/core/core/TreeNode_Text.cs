@@ -917,7 +917,8 @@ namespace urakawa.core
             if (localText != null)
             {
 #if DEBUG
-                Debugger.Break();
+                //Debugger.Break();
+                bool debug = true;
 #endif
 
                 return new StringChunkRange(localText, localText);
