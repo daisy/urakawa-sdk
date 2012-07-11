@@ -12,6 +12,7 @@ using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.image.codec;
 using urakawa.metadata;
+using urakawa.metadata.daisy;
 using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
@@ -188,6 +189,29 @@ namespace urakawa.daisy.import
                }*/
 
 
+                //m_Project.Presentations.Get(0).ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable
+
+                if (RequestCancellation) return;
+
+                string title = null;
+
+                if (RequestCancellation) return;
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, docPath));
+                parseMetadata(fullDocPath, project, xmlDoc);
+
+                if (presentation.Metadatas.Count > 0)
+                {
+                    foreach (Metadata metadata in presentation.Metadatas.ContentsAs_Enumerable)
+                    {
+                        if (metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DC_Title, StringComparison.OrdinalIgnoreCase)
+                            || metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DTB_TITLE, StringComparison.OrdinalIgnoreCase))
+                        {
+                            title = metadata.NameContentAttribute.Value;
+                        }
+                    }
+                }
+
+
                 foreach (var metadata in m_Project.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                 {
                     Metadata md = presentation.MetadataFactory.CreateMetadata();
@@ -202,17 +226,27 @@ namespace urakawa.daisy.import
                     presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
                 }
 
-                //m_Project.Presentations.Get(0).ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable
-
-                if (RequestCancellation) return;
-
-
-                if (RequestCancellation) return;
-                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, docPath));
-                parseMetadata(fullDocPath, project, xmlDoc);
 
                 if (RequestCancellation) return;
                 ParseHeadLinks(fullDocPath, project, xmlDoc);
+
+                if (presentation.HeadNode != null && presentation.HeadNode.Children != null && presentation.HeadNode.Children.Count > 0)
+                {
+                    foreach (TreeNode treeNode in presentation.HeadNode.Children.ContentsAs_Enumerable)
+                    {
+                        if (treeNode.GetXmlElementLocalName() == "title")
+                        {
+                            title = treeNode.GetTextFlattened();
+                            break;
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(title))
+                {
+                    spineChild.GetOrCreateXmlProperty().SetAttribute("title", "", title);
+                }
+
 
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, docPath));
 
