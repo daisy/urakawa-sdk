@@ -140,10 +140,18 @@ namespace urakawa.daisy.export
 
 
             TreeNode rNode = m_Presentation.RootNode;
+
             XmlNode bookNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(DTBookDocument, true, "book", null); //DTBookDocument.GetElementsByTagName("book")[0];
             if (bookNode == null)
             {
                 bookNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(DTBookDocument, true, "body", null);
+            }
+
+
+            XmlNode docRootNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(DTBookDocument, true, "dtbook", null);
+            if (docRootNode == null)
+            {
+                docRootNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(DTBookDocument, true, "html", null);
             }
 
             if (false && hasMathML) // namespace prefix attribute automatically added for each m:math element because of MathML DTD
@@ -288,7 +296,7 @@ namespace urakawa.daisy.export
                                 {
                                     XmlDocumentHelper.CreateAppendXmlAttribute(
                                         DTBookDocument,
-                                        bookNode,
+                                        docRootNode, //bookNode,
                                         XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + prefix,
                                         nsUriPrefix,
                                         XmlReaderWriterHelper.NS_URL_XMLNS
@@ -319,8 +327,22 @@ namespace urakawa.daisy.export
                             }
                             else
                             {
+                                XmlNode xmlNd = null;
+                                if (currentXmlNode == bookNode
+                                    &&
+                                    (prefix == XmlReaderWriterHelper.NS_PREFIX_XMLNS
+                                    || nameWithoutPrefix == "lang"))
+                                {
+                                    // Hack: to make sure DTD validation passes.
+                                    xmlNd = docRootNode;
+                                }
+                                else
+                                {
+                                    xmlNd = currentXmlNode;
+                                }
+
                                 XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument,
-                                currentXmlNode,
+                                xmlNd,
                                 xmlAttr.LocalName,
                                 xmlAttr.Value,
                                 xmlAttr.GetNamespaceUri());
