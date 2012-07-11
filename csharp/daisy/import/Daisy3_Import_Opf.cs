@@ -18,6 +18,8 @@ namespace urakawa.daisy.import
         private void parseOpf(XmlDocument opfXmlDoc)
         {
             List<string> spine;
+            Dictionary<string, string> spineAttributes;
+            List<Dictionary<string, string>> spineItemsAttributes;
             string spineMimeType;
             string dtbookPath;
             string ncxPath;
@@ -25,7 +27,7 @@ namespace urakawa.daisy.import
             string coverImagePath;
 
             if (RequestCancellation) return;
-            parseOpfManifest(opfXmlDoc, out spine, out spineMimeType, out dtbookPath, out ncxPath, out navDocPath, out coverImagePath);
+            parseOpfManifest(opfXmlDoc, out spine, out spineAttributes, out spineItemsAttributes, out spineMimeType, out dtbookPath, out ncxPath, out navDocPath, out coverImagePath);
 
             if (spineMimeType == "application/xhtml+xml"
                 || spineMimeType == DataProviderFactory.IMAGE_SVG_MIME_TYPE)
@@ -137,7 +139,7 @@ namespace urakawa.daisy.import
                             }
                         }
 
-                        parseContentDocuments(spine, coverImagePath, navDocPath);
+                        parseContentDocuments(spine, spineAttributes, spineItemsAttributes, coverImagePath, navDocPath);
 
                         break;
                     }
@@ -146,6 +148,8 @@ namespace urakawa.daisy.import
 
         private void parseOpfManifest(XmlDocument opfXmlDoc,
                                 out List<string> spine,
+            out Dictionary<string, string> spineAttributes,
+            out List<Dictionary<string, string>> spineItemsAttributes,
                                 out string spineMimeType,
                                 out string dtbookPath,
                                 out string ncxPath,
@@ -153,6 +157,8 @@ namespace urakawa.daisy.import
                                 out string coverImagePath)
         {
             spine = new List<string>();
+            spineAttributes = new Dictionary<string, string>();
+            spineItemsAttributes = new List<Dictionary<string, string>>();
             spineMimeType = null;
             ncxPath = null;
             dtbookPath = null;
@@ -162,6 +168,19 @@ namespace urakawa.daisy.import
             XmlNode spineNodeRoot = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlDoc, true, "spine", null);
             if (spineNodeRoot != null)
             {
+                XmlAttributeCollection spineAttrs = spineNodeRoot.Attributes;
+
+                if (spineAttrs != null && spineAttrs.Count > 0)
+                {
+                    foreach (XmlAttribute spineAttr in spineAttrs)
+                    {
+                        if (spineAttr.LocalName != "id" && spineAttr.LocalName != "toc")
+                        {
+                            spineAttributes.Add(spineAttr.Name, spineAttr.Value);
+                        }
+                    }
+                }
+
                 XmlNodeList listOfSpineItemNodes = spineNodeRoot.ChildNodes;
                 foreach (XmlNode spineItemNode in listOfSpineItemNodes)
                 {
@@ -183,6 +202,16 @@ namespace urakawa.daisy.import
                     if (attrIdRef != null && !string.IsNullOrEmpty(attrIdRef.Value))
                     {
                         spine.Add(attrIdRef.Value);
+
+                        Dictionary<string, string> dict = new Dictionary<string, string>();
+                        spineItemsAttributes.Add(dict);
+                        foreach (XmlAttribute spineItemAttr in spineItemAttributes)
+                        {
+                            if (spineItemAttr.LocalName != "id" && spineItemAttr.LocalName != "idref")
+                            {
+                                dict.Add(spineItemAttr.Name, spineItemAttr.Value);
+                            }
+                        }
                     }
                 }
             }
@@ -203,23 +232,22 @@ namespace urakawa.daisy.import
                 {
                     continue;
                 }
-                XmlAttributeCollection manifItemAttributes = manifItemNode.Attributes;
 
+                XmlAttributeCollection manifItemAttributes = manifItemNode.Attributes;
                 if (manifItemAttributes == null)
                 {
                     continue;
                 }
-                XmlNode attrId = manifItemAttributes.GetNamedItem("id");
+
                 XmlNode attrHref = manifItemAttributes.GetNamedItem("href");
                 XmlNode attrMediaType = manifItemAttributes.GetNamedItem("media-type");
-                XmlNode attrProperties = manifItemAttributes.GetNamedItem("properties");
-
                 if (attrHref == null || String.IsNullOrEmpty(attrHref.Value)
                     || attrMediaType == null || String.IsNullOrEmpty(attrMediaType.Value))
                 {
                     continue;
                 }
 
+                XmlNode attrProperties = manifItemAttributes.GetNamedItem("properties");
                 if (attrProperties != null && attrProperties.Value.Contains("cover-image"))
                 {
                     DebugFix.Assert(attrMediaType.Value == DataProviderFactory.IMAGE_SVG_MIME_TYPE
@@ -243,6 +271,7 @@ namespace urakawa.daisy.import
                         navDocPath = attrHref.Value;
                     }
 
+                    XmlNode attrId = manifItemAttributes.GetNamedItem("id");
                     if (attrId != null)
                     {
                         int i = spine.IndexOf(attrId.Value);
@@ -255,6 +284,12 @@ namespace urakawa.daisy.import
                             //    System.Diagnostics.Debug.Fail(String.Format("Spine contains different mime-types ?! {0} vs {1}", attrMediaType.Value, spineMimeType));
                             //}
                             spineMimeType = attrMediaType.Value;
+
+                            if (attrProperties != null)
+                            {
+                                Dictionary<string, string> dict = spineItemsAttributes[i];
+                                dict.Add(attrProperties.Name, attrProperties.Value);
+                            }
                         }
                     }
                 }

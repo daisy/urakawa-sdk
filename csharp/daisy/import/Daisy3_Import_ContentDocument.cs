@@ -33,17 +33,29 @@ namespace urakawa.daisy.import
         //    //string strMultipleWhiteSpacesCollapsedToOneSpace = Regex.Replace(str, @"\s+", " ");
         //}
 
-        private void parseContentDocuments(List<string> spineOfContentDocuments, string coverImagePath, string navDocPath)
+
+        private void parseContentDocuments(List<string> spineOfContentDocuments, Dictionary<string, string> spineAttributes, List<Dictionary<string, string>> spineItemsAttributes, string coverImagePath, string navDocPath)
         {
             if (spineOfContentDocuments == null || spineOfContentDocuments.Count <= 0)
             {
                 return;
             }
 
+            Presentation spinePresentation = m_Project.Presentations.Get(0);
 
-            //bool first = true;
+            spinePresentation.RootNode.GetOrCreateXmlProperty().SetQName("spine", "");
+
+            foreach (KeyValuePair<string, string> spineAttribute in spineAttributes)
+            {
+                spinePresentation.RootNode.GetOrCreateXmlProperty().SetAttribute(spineAttribute.Key, "", spineAttribute.Value);
+            }
+
+
+            int index = -1;
             foreach (string docPath in spineOfContentDocuments)
             {
+                index++;
+
                 //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
                 //string dirPath = opfParentDir.ToString();
                 string dirPath = Path.GetDirectoryName(m_Book_FilePath);
@@ -56,7 +68,6 @@ namespace urakawa.daisy.import
                     continue;
                 }
 
-                Presentation spinePresentation = m_Project.Presentations.Get(0);
                 TreeNode spineChild = spinePresentation.TreeNodeFactory.Create();
                 TextMedia txt = spinePresentation.MediaFactory.CreateTextMedia();
                 txt.Text = docPath; // Path.GetFileName(fullDocPath);
@@ -64,6 +75,11 @@ namespace urakawa.daisy.import
                 spinePresentation.RootNode.AppendChild(spineChild);
 
                 spineChild.GetOrCreateXmlProperty().SetQName("metadata", "");
+
+                foreach (KeyValuePair<string, string> spineItemAttribute in spineItemsAttributes[index])
+                {
+                    spineChild.GetOrCreateXmlProperty().SetAttribute(spineItemAttribute.Key, "", spineItemAttribute.Value);
+                }
 
                 string ext = Path.GetExtension(fullDocPath);
 
