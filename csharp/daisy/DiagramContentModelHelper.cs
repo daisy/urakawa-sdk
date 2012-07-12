@@ -62,6 +62,7 @@ namespace urakawa.daisy
 
         public const string NS_PREFIX_SVG = "svg";
         public const string NS_URL_SVG = "http://www.w3.org/2000/svg";
+        public const string Svg = "svg";
 
         // -------------------------------------------------
 
