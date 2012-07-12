@@ -1021,7 +1021,10 @@ namespace urakawa.daisy.import
                         }
                         else
                         {
-                            if (xmlNode.ParentNode != null && xmlNode.ParentNode.LocalName == "script")
+                            if (xmlNode.ParentNode != null &&
+                                (xmlNode.ParentNode.LocalName == "script"
+                                || xmlNode.ParentNode.LocalName == "pre")
+                                )
                             {
                                 text = textRepresentation;
                             }
