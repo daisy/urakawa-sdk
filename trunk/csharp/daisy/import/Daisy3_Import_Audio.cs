@@ -242,14 +242,14 @@ namespace urakawa.daisy.import
             XmlNode audioAttrClipBegin = audioAttrs.GetNamedItem("clipBegin");
             XmlNode audioAttrClipEnd = audioAttrs.GetNamedItem("clipEnd");
 
-            Presentation presentation = m_Project.Presentations.Get(0);
+            Presentation presentation = treeNode.Presentation; // m_Project.Presentations.Get(0);
             ManagedAudioMedia media = null;
 
             if (audioAttrSrc.Value.EndsWith("wav", StringComparison.OrdinalIgnoreCase))
             {
-                string dirPathBook = Path.GetDirectoryName(m_Book_FilePath);
+                string dirPathSmil = Path.GetDirectoryName(fullSmilPath); //m_Book_FilePath);
                 FileDataProvider dataProv = null;
-                string fullWavPathOriginal = Path.Combine(dirPathBook, audioAttrSrc.Value);
+                string fullWavPathOriginal = Path.Combine(dirPathSmil, audioAttrSrc.Value);
                 if (!File.Exists(fullWavPathOriginal))
                 {
                     Debug.Fail("File not found: {0}", fullWavPathOriginal);
@@ -335,7 +335,8 @@ namespace urakawa.daisy.import
                 //media = addAudioWav ( fullWavPath, deleteSrcAfterCompletion, audioAttrClipBegin, audioAttrClipEnd );
 
             }
-            else if (audioAttrSrc.Value.EndsWith("mp3", StringComparison.OrdinalIgnoreCase))
+            else if (audioAttrSrc.Value.EndsWith("mp3", StringComparison.OrdinalIgnoreCase)
+                || audioAttrSrc.Value.EndsWith("mp4", StringComparison.OrdinalIgnoreCase))
             {
                 string fullMp3PathOriginal = Path.Combine(dirPath, audioAttrSrc.Value);
                 if (!File.Exists(fullMp3PathOriginal))
@@ -579,7 +580,7 @@ namespace urakawa.daisy.import
             }
 
             ManagedAudioMedia media = null;
-            Presentation presentation = m_Project.Presentations.Get(0);
+            Presentation presentation = treeNode.Presentation; // m_Project.Presentations.Get(0);
 
 
             //if (deleteSrcAfterCompletion)
