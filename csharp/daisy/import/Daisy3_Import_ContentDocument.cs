@@ -273,6 +273,125 @@ namespace urakawa.daisy.import
                 parseContentDocument(fullDocPath, project, bodyElement, null, fullDocPath);
 
 
+                foreach (KeyValuePair<string, string> spineItemAttribute in spineItemsAttributes[index])
+                {
+                    if (spineItemAttribute.Key == "media-overlay")
+                    {
+                        string opfDirPath = Path.GetDirectoryName(m_Book_FilePath);
+                        string overlayPath = spineItemAttribute.Value;
+                        string fullOverlayPath = Path.Combine(opfDirPath, overlayPath);
+                        if (!File.Exists(fullOverlayPath))
+                        {
+                            continue;
+                        }
+                        XmlDocument overlayXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullOverlayPath, true);
+
+                        IEnumerable<XmlNode> audioElements = XmlDocumentHelper.GetChildrenElementsOrSelfWithName(overlayXmlDoc, true, "audio", null, false);
+                        if (audioElements == null)
+                        {
+                            continue;
+                        }
+
+                        foreach (XmlNode audioNode in audioElements)
+                        {
+                            XmlAttributeCollection attrs = audioNode.Attributes;
+                            if (attrs == null)
+                            {
+                                continue;
+                            }
+
+                            XmlNode attrSrc = attrs.GetNamedItem("src");
+                            if (attrSrc == null)
+                            {
+                                continue;
+                            }
+
+                            //XmlNode attrBegin = attrs.GetNamedItem("clipBegin");
+                            //XmlNode attrEnd = attrs.GetNamedItem("clipEnd");
+
+                            //string overlayDirPath = Path.GetDirectoryName(fullOverlayPath);
+                            //string fullAudioPath = Path.Combine(overlayDirPath, attrSrc.Value);
+
+                            //if (!File.Exists(fullAudioPath))
+                            //{
+                            //    continue;
+                            //}
+
+
+                            //if (RequestCancellation) return;
+                            //reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.DecodingAudio, Path.GetFileName(fullAudioPath)));
+
+                            if (m_AudioConversionSession == null)
+                            {
+                                m_AudioConversionSession = new AudioFormatConvertorSession(
+                                    //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
+                                   presentation.DataProviderManager.DataFileDirectoryFullPath,
+                                   presentation.MediaDataManager.DefaultPCMFormat,
+                                   m_SkipACM);
+                                AddSubCancellable(m_AudioConversionSession);
+                                m_OriginalAudioFile_FileDataProviderMap.Clear();
+                                TreenodesWithoutManagedAudioMediaData = new List<TreeNode>();
+                            }
+
+                            TreeNode textTreeNode = null;
+
+                            XmlNodeList children = audioNode.ParentNode.ChildNodes;
+                            foreach (XmlNode child in children)
+                            {
+                                if (child == audioNode)
+                                {
+                                    continue;
+                                }
+                                if (child.LocalName != "text")
+                                {
+                                    continue;
+                                }
+
+                                XmlAttributeCollection textAttrs = child.Attributes;
+                                if (textAttrs == null)
+                                {
+                                    continue;
+                                }
+
+                                XmlNode textSrc = textAttrs.GetNamedItem("src");
+                                if (textSrc == null)
+                                {
+                                    continue;
+                                }
+
+                                string[] srcParts = textSrc.Value.Split('#');
+                                if (srcParts.Length != 2)
+                                {
+                                    continue;
+                                }
+                                string fileNameOnly = Path.GetFileName(srcParts[0]);
+
+#if DEBUG
+                                string refFileName = Path.GetFileName(fullDocPath);
+                                if (refFileName != fileNameOnly)
+                                {
+                                    Debugger.Break();
+                                }
+#endif //DEBUG
+
+                                string txtId = srcParts[1];
+
+                                textTreeNode = presentation.RootNode.GetFirstDescendantWithXmlID(txtId);
+                            }
+
+                            if (textTreeNode != null)
+                            {
+                                addAudio(textTreeNode, audioNode, false, fullOverlayPath);
+                            }
+                        }
+                    }
+                }
+
+
+
+
+
+
 
                 string xuk_FilePath = GetXukFilePath(m_outDirectory, fullDocPath, false);
                 SaveXukAction action = new SaveXukAction(project, project, new Uri(xuk_FilePath));

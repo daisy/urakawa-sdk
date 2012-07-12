@@ -212,13 +212,32 @@ namespace urakawa.daisy.import
                 case AudioFileType.Mp3:
                     {
                         WavFormatConverter formatConverter2 = new WavFormatConverter(true, skipACM);
-                        
+
                         AddSubCancellable(formatConverter2);
 
                         string result = null;
                         try
                         {
-                            result =  formatConverter2.UnCompressMp3File(SourceFilePath, destinationDirectory,
+                            result = formatConverter2.UnCompressMp3File(SourceFilePath, destinationDirectory,
+                            destinationFormatInfo != null ? destinationFormatInfo.Data : null);
+                        }
+                        finally
+                        {
+                            RemoveSubCancellable(formatConverter2);
+                        }
+
+                        return result;
+                    }
+                case AudioFileType.Mp4_AAC:
+                    {
+                        WavFormatConverter formatConverter2 = new WavFormatConverter(true, skipACM);
+
+                        AddSubCancellable(formatConverter2);
+
+                        string result = null;
+                        try
+                        {
+                            result = formatConverter2.UnCompressMp4_AACFile(SourceFilePath, destinationDirectory,
                             destinationFormatInfo != null ? destinationFormatInfo.Data : null);
                         }
                         finally
@@ -235,7 +254,7 @@ namespace urakawa.daisy.import
         }
 
 
-        private enum AudioFileType { WavUncompressed, WavCompressed, Mp3, NotSupported } ;
+        private enum AudioFileType { WavUncompressed, WavCompressed, Mp3, Mp4_AAC, NotSupported } ;
 
 
         ///// <summary>
@@ -250,6 +269,9 @@ namespace urakawa.daisy.import
             if (DataProviderFactory.AUDIO_MP3_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
                 sourceFileType = AudioFileType.Mp3;
+            } if (DataProviderFactory.AUDIO_MP4_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
+            {
+                sourceFileType = AudioFileType.Mp4_AAC;
             }
             if (DataProviderFactory.AUDIO_WAV_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
