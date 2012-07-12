@@ -50,6 +50,29 @@ namespace urakawa.core
             return Parent.GetFirstAncestorWithXmlElement(localName);
         }
 
+        public TreeNode GetFirstDescendantWithXmlID(string id)
+        {
+            if (mChildren.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (TreeNode child in Children.ContentsAs_Enumerable)
+            {
+                if (child.HasXmlProperty && child.GetXmlElementId() == id)
+                {
+                    return child;
+                }
+
+                TreeNode childIn = child.GetFirstDescendantWithXmlID(id);
+                if (childIn != null)
+                {
+                    return childIn;
+                }
+            }
+            return null;
+        }
+
         public TreeNode GetFirstDescendantWithXmlElement(string localName)
         {
             if (mChildren.Count == 0)
