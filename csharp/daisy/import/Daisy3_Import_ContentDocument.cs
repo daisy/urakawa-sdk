@@ -51,6 +51,8 @@ namespace urakawa.daisy.import
                 spinePresentation.RootNode.GetOrCreateXmlProperty().SetAttribute(spineAttribute.Key, "", spineAttribute.Value);
             }
 
+            // Audio files may be shared between chapters of a book!
+            m_OriginalAudioFile_FileDataProviderMap.Clear();
 
             int index = -1;
             foreach (string docPath in spineOfContentDocuments)
@@ -189,6 +191,32 @@ namespace urakawa.daisy.import
                    Directory.Delete(dataPath, true);
                }*/
 
+                if (m_AudioConversionSession != null)
+                {
+                    RemoveSubCancellable(m_AudioConversionSession);
+                    m_AudioConversionSession = null;
+                }
+
+                m_AudioConversionSession = new AudioFormatConvertorSession(
+                    //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
+                   presentation.DataProviderManager.DataFileDirectoryFullPath,
+                   presentation.MediaDataManager.DefaultPCMFormat,
+                   m_SkipACM);
+
+                AddSubCancellable(m_AudioConversionSession);
+
+                TreenodesWithoutManagedAudioMediaData = new List<TreeNode>();
+
+                //foreach (var key in m_OriginalAudioFile_FileDataProviderMap.Keys)
+                //{
+                //    FileDataProvider dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                //VERSUS//
+                //    FileDataProvider dataProv = new FileDataProvider();
+                //    dataProv.MimeType = DataProviderFactory.AUDIO_WAV_MIME_TYPE;
+                //}
+
+                
+
 
                 //m_Project.Presentations.Get(0).ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable
 
@@ -322,17 +350,6 @@ namespace urakawa.daisy.import
                             //if (RequestCancellation) return;
                             //reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.DecodingAudio, Path.GetFileName(fullAudioPath)));
 
-                            if (m_AudioConversionSession == null)
-                            {
-                                m_AudioConversionSession = new AudioFormatConvertorSession(
-                                    //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
-                                   presentation.DataProviderManager.DataFileDirectoryFullPath,
-                                   presentation.MediaDataManager.DefaultPCMFormat,
-                                   m_SkipACM);
-                                AddSubCancellable(m_AudioConversionSession);
-                                m_OriginalAudioFile_FileDataProviderMap.Clear();
-                                TreenodesWithoutManagedAudioMediaData = new List<TreeNode>();
-                            }
 
                             TreeNode textTreeNode = null;
 
