@@ -266,7 +266,21 @@ namespace urakawa.daisy.import
 
                     if (obj != null)  //m_OriginalAudioFile_FileDataProviderMap.ContainsKey(fullWavPath))
                     {
-                        dataProv = obj; // m_OriginalAudioFile_FileDataProviderMap[fullWavPath];
+                        if (obj.Presentation != presentation)
+                        {
+                            dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+
+                            dataProv.InitByCopyingExistingFile(obj.DataFileFullPath);
+
+                            //m_AudioConversionSession.RelocateDestinationFilePath(newfullWavPath, dataProv.DataFileFullPath);
+
+                            m_OriginalAudioFile_FileDataProviderMap.Remove(fullWavPath);
+                            m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
+                        }
+                        else
+                        {
+                            dataProv = obj; // m_OriginalAudioFile_FileDataProviderMap[fullWavPath];
+                        }
                     }
                     else // create FileDataProvider
                     {
@@ -358,10 +372,6 @@ namespace urakawa.daisy.import
 
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.DecodingAudio, Path.GetFileName(fullMp3PathOriginal)));
 
-                // At first look, this conversion seems redundant if the m_OriginalAudioFile_FileDataProviderMap already contains the fullMp3PathOriginal,
-                // but this is ok because the m_AudioConversionSession won't convert again if already done (i.e. maintains its own mapping)
-                // so this is just to get the newfullWavPath for later use down here...
-                string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullMp3PathOriginal);
 
                 if (RequestCancellation) return;
 
@@ -371,10 +381,26 @@ namespace urakawa.daisy.import
                 FileDataProvider dataProv = null;
                 if (obj != null) //m_OriginalAudioFile_FileDataProviderMap.ContainsKey(fullMp3PathOriginal))
                 {
-                    dataProv = obj; // m_OriginalAudioFile_FileDataProviderMap[fullMp3PathOriginal];
+                    if (obj.Presentation != presentation)
+                    {
+                        dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+
+                        dataProv.InitByCopyingExistingFile(obj.DataFileFullPath);
+
+                        //m_AudioConversionSession.RelocateDestinationFilePath(newfullWavPath, dataProv.DataFileFullPath);
+
+                        m_OriginalAudioFile_FileDataProviderMap.Remove(fullMp3PathOriginal);
+                        m_OriginalAudioFile_FileDataProviderMap.Add(fullMp3PathOriginal, dataProv);
+                    }
+                    else
+                    {
+                        dataProv = obj; // m_OriginalAudioFile_FileDataProviderMap[fullMp3PathOriginal];
+                    }
                 }
                 else
                 {
+                    string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullMp3PathOriginal);
+
                     dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
                     Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullMp3PathOriginal) + " = " + dataProv.DataFileRelativePath);
                     dataProv.InitByMovingExistingFile(newfullWavPath);
@@ -386,7 +412,7 @@ namespace urakawa.daisy.import
                     if (RequestCancellation) return;
                 }
 
-                if (newfullWavPath != null)
+                if (dataProv != null)
                 {
                     //if (m_firstTimePCMFormat)
                     //{
@@ -413,6 +439,11 @@ namespace urakawa.daisy.import
 
                     //media = addAudioWav(newfullWavPath, true, audioAttrClipBegin, audioAttrClipEnd);
                     media = addAudioWav(dataProv, audioAttrClipBegin, audioAttrClipEnd, treeNode);
+
+                    if (media == null)
+                    {
+                        Debugger.Break();
+                    }
                 }
                 //}
             }
@@ -421,7 +452,10 @@ namespace urakawa.daisy.import
 
             if (media == null)
             {
-                if (!TreenodesWithoutManagedAudioMediaData.Contains(treeNode)) TreenodesWithoutManagedAudioMediaData.Add(treeNode);
+                if (!TreenodesWithoutManagedAudioMediaData.Contains(treeNode))
+                {
+                    TreenodesWithoutManagedAudioMediaData.Add(treeNode);
+                }
 
                 Debug.Fail("Creating ExternalAudioMedia ??");
 
@@ -527,6 +561,9 @@ namespace urakawa.daisy.import
                 }
                 else
                 {
+                    //#if DEBUG
+                    //                    ((WavAudioMediaData) media.AudioMediaData).checkWavClips();
+                    //#endif //DEBUG
                     chProp.SetMedia(presentation.ChannelsManager.GetOrCreateAudioChannel(), media);
                 }
             }
@@ -601,36 +638,53 @@ namespace urakawa.daisy.import
                 (WavAudioMediaData)
                 presentation.MediaDataFactory.CreateAudioMediaData();
 
+            //  mediaData.AudioDuration DOES NOT WORK BECAUSE DEPENDS ON WAVCLIPS LIST!!!
+            WavClip wavClip = new WavClip(dataProv);
+
+            Time newClipE = clipE.Copy();
+            if (newClipE.IsGreaterThan(wavClip.MediaDuration))
+            {
+                //newClipE = wavClip.MediaDuration;
+                newClipE = null;
+            }
+
             //FileDataProvider dataProv = m_Src_FileDataProviderMap[fullWavPath];
             //System.Windows.Forms.MessageBox.Show ( clipB.ToString () + " : " + clipE.ToString () ) ;
-            bool isClipEndError = false;
+
+            //bool isClipEndError = false;
             try
             {
-                mediaData.AppendPcmData(dataProv, clipB, clipE);
+                mediaData.AppendPcmData(dataProv, clipB, newClipE);
             }
             catch (Exception ex)
             {
-                if (ex is exception.MethodParameterIsOutOfBoundsException && clipB != null && clipE != null && clipB.IsLessThanOrEqualTo(clipE))
-                {
-                    isClipEndError = true;
-                }
-                else
-                {
-                    Console.WriteLine("CLIP TIME ERROR (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
-                    return null;
-                }
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                Console.WriteLine("CLIP TIME ERROR1 (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ") === " + wavClip.MediaDuration);
+
+                //if (ex is exception.MethodParameterIsOutOfBoundsException && clipB != null && clipE != null && clipB.IsLessThanOrEqualTo(clipE))
+                //{
+                //    isClipEndError = true;
+                //}
+                //else
+                //{
+                //    Console.WriteLine("CLIP TIME ERROR1 (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
+                //    return null;
+                //}
             }
 
-            if (isClipEndError)
-            {
-                // reduce clip end by 1 millisecond for rounding off tolerance
-                isClipEndError = addAudioWavWithEndOfFileTolerance(mediaData, dataProv, clipB, clipE, treeNode);
-                if (isClipEndError)
-                {
-                    Console.WriteLine("CLIP TIME ERROR (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
-                    return null;
-                }
-            }
+            //if (isClipEndError)
+            //{
+            //    // reduce clip end by 1 millisecond for rounding off tolerance
+            //    isClipEndError = addAudioWavWithEndOfFileTolerance(mediaData, dataProv, clipB, clipE, treeNode);
+            //    if (isClipEndError)
+            //    {
+            //        Console.WriteLine("CLIP TIME ERROR2 (end < begin ?): " + clipB + " (" + (audioAttrClipBegin != null ? audioAttrClipBegin.Value : "N/A") + ") / " + clipE + " (" + (audioAttrClipEnd != null ? audioAttrClipEnd.Value : "N/A") + ")");
+            //        return null;
+            //    }
+            //}
+
             if (RequestCancellation) return null;
 
             media = presentation.MediaFactory.CreateManagedAudioMedia();
@@ -697,27 +751,26 @@ namespace urakawa.daisy.import
             return media;
         }
 
-        protected virtual bool addAudioWavWithEndOfFileTolerance(WavAudioMediaData mediaData, FileDataProvider dataProv, Time clipB, Time clipE, TreeNode treeNode)
-        {
-            bool isClipEndError = false;
-            // reduce clip end by 1 millisecond for rounding off tolerance
-            Console.WriteLine("Error encountered: reducing original clip by 1ms" + clipE);
-            clipE.Substract(new Time(AudioLibPCMFormat.TIME_UNIT));
-            Console.WriteLine("new clip " + clipE);
-            try
-            {
-                mediaData.AppendPcmData(dataProv, clipB, clipE);
-                isClipEndError = false;
-            }
-            catch (Exception ex)
-            {
-                isClipEndError = true;
-                Console.WriteLine("clip error after providing tolerance of 1ms also");
-                //return null;
+        //protected virtual bool addAudioWavWithEndOfFileTolerance(WavAudioMediaData mediaData, FileDataProvider dataProv, Time clipB, Time clipE, TreeNode treeNode)
+        //{
+        //    bool isClipEndError = false;
+        //    // reduce clip end by 1 millisecond for rounding off tolerance
+        //    Console.WriteLine("Error encountered: reducing original clip by 1ms" + clipE);
+        //    clipE.Substract(new Time(AudioLibPCMFormat.TIME_UNIT));
+        //    Console.WriteLine("new clip " + clipE);
+        //    try
+        //    {
+        //        mediaData.AppendPcmData(dataProv, clipB, clipE);
+        //        isClipEndError = false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        isClipEndError = true;
+        //        Console.WriteLine("clip error after providing tolerance of 1ms also");
+        //        //return null;
 
-            }
-            return isClipEndError;
-        }
-
+        //    }
+        //    return isClipEndError;
+        //}
     }
 }
