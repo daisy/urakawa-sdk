@@ -230,7 +230,7 @@ namespace urakawa.media.data.audio.codec
             WavClip newClip = new WavClip(DataProvider, ClipBegin, clipEnd);
             newClip.m_cachedDuration = m_cachedDuration.Copy();
             newClip.m_cachedPcmFormat = new AudioLibPCMFormat();
-            newClip.m_cachedPcmFormat.CopyValues(m_cachedPcmFormat);
+            newClip.m_cachedPcmFormat.CopyFrom(m_cachedPcmFormat);
             return newClip;
         }
 
@@ -246,7 +246,7 @@ namespace urakawa.media.data.audio.codec
             WavClip newClip = new WavClip(DataProvider.Export(destPres), ClipBegin, clipEnd);
             newClip.m_cachedDuration = m_cachedDuration.Copy();
             newClip.m_cachedPcmFormat = new AudioLibPCMFormat();
-            newClip.m_cachedPcmFormat.CopyValues(m_cachedPcmFormat);
+            newClip.m_cachedPcmFormat.CopyFrom(m_cachedPcmFormat);
             return newClip;
         }
 
