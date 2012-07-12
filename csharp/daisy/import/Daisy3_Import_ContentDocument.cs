@@ -555,7 +555,7 @@ namespace urakawa.daisy.import
                         XmlAttributeCollection attributeCol = xmlNode.Attributes;
 
 
-                        string updatedSRC = null;
+                        //string updatedSRC = null;
 
                         if (attributeCol != null && xmlNode.LocalName != null
                             &&
@@ -581,22 +581,22 @@ namespace urakawa.daisy.import
                                 {
                                     imgSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
 
-                                    updatedSRC = relativePath;
+                                    //updatedSRC = relativePath;
                                 }
                                 else
                                 {
                                     string parentPath = Directory.GetParent(filePath).FullName;
                                     imgSourceFullpath = Path.Combine(parentPath, relativePath);
 
-                                    string fullPath = Path.GetFullPath(imgSourceFullpath);
-                                    string toReplace = Path.GetDirectoryName(filePath);
-                                    toReplace = Path.GetFullPath(toReplace);
-                                    updatedSRC = fullPath.Replace(toReplace, "");
+                                    //string fullPath = Path.GetFullPath(imgSourceFullpath);
+                                    //string toReplace = Path.GetDirectoryName(filePath);
+                                    //toReplace = Path.GetFullPath(toReplace);
+                                    //updatedSRC = fullPath.Replace(toReplace, "");
 
-                                    if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
-                                    {
-                                        updatedSRC = updatedSRC.Remove(0, 1);
-                                    }
+                                    //if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
+                                    //{
+                                    //    updatedSRC = updatedSRC.Remove(0, 1);
+                                    //}
                                 }
 
                                 if (imgSourceFullpath != null && File.Exists(imgSourceFullpath))
@@ -611,7 +611,7 @@ namespace urakawa.daisy.import
                                     {
                                         throw new NotSupportedException(imgSourceFullpath);
                                     }
-                                    imageData.InitializeImage(imgSourceFullpath, updatedSRC);
+                                    imageData.InitializeImage(imgSourceFullpath, relativePath); //updatedSRC
                                     media.data.image.ManagedImageMedia managedImage =
                                         presentation.MediaFactory.CreateManagedImageMedia();
                                     managedImage.MediaData = imageData;
@@ -672,20 +672,20 @@ namespace urakawa.daisy.import
                                 {
                                     videoSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
 
-                                    updatedSRC = relativePath;
+                                    //updatedSRC = relativePath;
                                 }
                                 else
                                 {
                                     string parentPath = Directory.GetParent(filePath).FullName;
                                     videoSourceFullpath = Path.Combine(parentPath, relativePath);
 
-                                    updatedSRC = Path.GetFullPath(videoSourceFullpath).Replace(
-                                        Path.GetDirectoryName(filePath), "");
+                                    //updatedSRC = Path.GetFullPath(videoSourceFullpath).Replace(
+                                    //    Path.GetDirectoryName(filePath), "");
 
-                                    if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
-                                    {
-                                        updatedSRC = updatedSRC.Remove(0, 1);
-                                    }
+                                    //if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
+                                    //{
+                                    //    updatedSRC = updatedSRC.Remove(0, 1);
+                                    //}
                                 }
 
                                 if (videoSourceFullpath != null && File.Exists(videoSourceFullpath))
@@ -701,7 +701,7 @@ namespace urakawa.daisy.import
                                     {
                                         throw new NotSupportedException(videoSourceFullpath);
                                     }
-                                    videoData.InitializeVideo(videoSourceFullpath, updatedSRC);
+                                    videoData.InitializeVideo(videoSourceFullpath, relativePath); //updatedSRC
                                     media.data.video.ManagedVideoMedia managedVideo =
                                         presentation.MediaFactory.CreateManagedVideoMedia();
                                     managedVideo.MediaData = videoData;
@@ -723,7 +723,7 @@ namespace urakawa.daisy.import
 
 
 
-                        updatedSRC = null;
+                        //updatedSRC = null;
 
                         if (attributeCol != null && xmlNode.LocalName != null && xmlNode.LocalName.Equals(DiagramContentModelHelper.Math, StringComparison.OrdinalIgnoreCase))
                         {
@@ -736,20 +736,20 @@ namespace urakawa.daisy.import
                                 {
                                     imgSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
 
-                                    updatedSRC = relativePath;
+                                    //updatedSRC = relativePath;
                                 }
                                 else
                                 {
                                     string parentPath = Directory.GetParent(filePath).FullName;
                                     imgSourceFullpath = Path.Combine(parentPath, relativePath);
 
-                                    updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
-                                        Path.GetDirectoryName(filePath), "");
+                                    //updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
+                                    //    Path.GetDirectoryName(filePath), "");
 
-                                    if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
-                                    {
-                                        updatedSRC = updatedSRC.Remove(0, 1);
-                                    }
+                                    //if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
+                                    //{
+                                    //    updatedSRC = updatedSRC.Remove(0, 1);
+                                    //}
                                 }
 
                                 if (imgSourceFullpath != null && File.Exists(imgSourceFullpath))
@@ -765,7 +765,7 @@ namespace urakawa.daisy.import
                                     {
                                         throw new NotSupportedException(imgSourceFullpath);
                                     }
-                                    imageData.InitializeImage(imgSourceFullpath, updatedSRC);
+                                    imageData.InitializeImage(imgSourceFullpath, relativePath); //updatedSRC
                                     media.data.image.ManagedImageMedia managedImage =
                                         presentation.MediaFactory.CreateManagedImageMedia();
                                     managedImage.MediaData = imageData;
@@ -881,18 +881,18 @@ namespace urakawa.daisy.import
                                 {
                                     // ignore  xml:space="preserve"  (e.g. in Bookshare DTBooks)
                                 }
-                                else if (updatedSRC != null && attr.LocalName == "src")
-                                {
-                                    xmlProp.SetAttribute(attr.LocalName, "", updatedSRC);
-                                }
-                                else if (updatedSRC != null && attr.LocalName == DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.XLINK_Href))
-                                {
-                                    xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, updatedSRC);
-                                }
-                                else if (updatedSRC != null && attr.LocalName == "altimg")
-                                {
-                                    xmlProp.SetAttribute(attr.LocalName, "", updatedSRC);
-                                }
+                                //else if (updatedSRC != null && attr.LocalName == "src")
+                                //{
+                                //    xmlProp.SetAttribute(attr.LocalName, "", updatedSRC);
+                                //}
+                                //else if (updatedSRC != null && attr.LocalName == DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.XLINK_Href))
+                                //{
+                                //    xmlProp.SetAttribute(attr.Name, attr.NamespaceURI, updatedSRC);
+                                //}
+                                //else if (updatedSRC != null && attr.LocalName == "altimg")
+                                //{
+                                //    xmlProp.SetAttribute(attr.LocalName, "", updatedSRC);
+                                //}
                                 else if (attr.Name.IndexOf(':') >= 0) // attr.Name.Contains(":")
                                 {
                                     string prefix;
