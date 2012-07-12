@@ -261,9 +261,6 @@ namespace urakawa.daisy.import
 
                     string fullWavPath = fullWavPathOriginal;
 
-                    uint dataLength;
-                    AudioLibPCMFormat pcmInfo = null;
-
                     FileDataProvider obj;
                     m_OriginalAudioFile_FileDataProviderMap.TryGetValue(fullWavPath, out obj);
 
@@ -278,7 +275,16 @@ namespace urakawa.daisy.import
                         {
                             wavStream = File.Open(fullWavPath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
+                            uint dataLength;
+                            AudioLibPCMFormat pcmInfo = null;
+
                             pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
+
+                            if (m_AudioConversionSession.FirstDiscoveredPCMFormat == null)
+                            {
+                                m_AudioConversionSession.FirstDiscoveredPCMFormat = new PCMFormatInfo(pcmInfo);
+                            }
+
 
                             if (RequestCancellation) return;
 
@@ -323,7 +329,10 @@ namespace urakawa.daisy.import
                         }
                         finally
                         {
-                            if (wavStream != null) wavStream.Close();
+                            if (wavStream != null)
+                            {
+                                wavStream.Close();
+                            }
                         }
                     }
 

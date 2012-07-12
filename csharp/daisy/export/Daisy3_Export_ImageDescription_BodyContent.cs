@@ -651,7 +651,13 @@ namespace urakawa.daisy.export
             }
             else
             {
-                string filePath = formatConverter.ConvertSampleRate(sourceFilePath, dir, pcmFormat);
+                AudioLibPCMFormat originalPcmFormat;
+                string filePath = formatConverter.ConvertSampleRate(sourceFilePath, dir, pcmFormat, out originalPcmFormat);
+                if (originalPcmFormat != null)
+                {
+                    //TODO: DebugFix.Assert(wavPcmFormat.Equals(originalPcmFormat));
+                }
+                
 
                 if (!string.IsNullOrEmpty(filePath))
                 {

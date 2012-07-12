@@ -162,6 +162,7 @@ namespace urakawa.daisy.import
 
                 PCMFormatInfo pcmFormat = presentation.MediaDataManager.DefaultPCMFormat.Copy();
                 pcmFormat.Data.SampleRate = (ushort)m_audioProjectSampleRate;
+                pcmFormat.Data.NumberOfChannels = m_audioStereo ? (ushort)2 : (ushort)1;
                 presentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
 
                 presentation.MediaDataManager.EnforceSinglePCMFormat = true;
