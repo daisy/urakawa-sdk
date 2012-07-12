@@ -63,10 +63,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\WINDOWS\Microsoft.NET\Managed DirectX\v9.02.2904\Microsoft.DirectX.DirectSound.dll</HintPath>
     </Reference>
-    <Reference Include="SoundTouch.Net, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SoundTouch.NET\bin\Debug\SoundTouch.Net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -160,6 +156,10 @@
     <ProjectReference Include="..\NAudio\NAudio.csproj">
       <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
       <Name>NAudio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoundTouch.NET\SoundTouch.Net.csproj">
+      <Project>{EA570592-1FAB-412F-AA0C-159C947608CD}</Project>
+      <Name>SoundTouch.Net</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
