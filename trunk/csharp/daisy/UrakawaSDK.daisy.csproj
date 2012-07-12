@@ -108,6 +108,7 @@
     <Compile Include="import\Daisy3_Import_Opf.cs" />
     <Compile Include="import\Daisy3_Import_XmlParsing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZipStorer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\tobi\trunk\tobiapp\ExternalLibs\ICSharpCode\Lib.ICSharpCode.csproj">
