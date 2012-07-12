@@ -8,6 +8,23 @@ namespace AudioLib
 {
     public class WavFormatConverter : DualCancellableProgressReporter
     {
+        static WavFormatConverter()
+        {
+#if DEBUG
+            string workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string lameExe = Path.Combine(workingDir, "lame.exe"); ;
+            if (!File.Exists(lameExe))
+            {
+                Debugger.Break();
+            }
+            string faadExe = Path.Combine(workingDir, "faad.exe"); ;
+            if (!File.Exists(faadExe))
+            {
+                Debugger.Break();
+            }
+#endif //DEBUG
+        }
+
         public const string AUDIO_MP3_EXTENSION = ".mp3";
         public const string AUDIO_WAV_EXTENSION = ".wav";
 
@@ -84,7 +101,7 @@ namespace AudioLib
 
                             int percent = (int)(100.0 * sourceStream.Position / sourceStream.Length);
                             reportProgress(percent, msg); // + sourceStream.Position + "/" + sourceStream.Length);
-                            
+
                             watch.Reset();
                             watch.Start();
                         }
@@ -162,7 +179,7 @@ namespace AudioLib
 
                         int percent = (int)(100.0 * mp3Stream.Position / mp3Stream.Length);
                         reportProgress(percent, msg); // + mp3Stream.Position + "/" + mp3Stream.Length);
-                        
+
                         watch.Reset();
                         watch.Start();
                     }
@@ -264,7 +281,7 @@ namespace AudioLib
 
                                     int percent = (int)(100.0 * reader.Position / reader.Length);
                                     reportProgress(percent, msg); // + reader.Position + "/" + reader.Length);
-                                    
+
                                     watch.Reset();
                                     watch.Start();
                                 }
@@ -281,6 +298,139 @@ namespace AudioLib
             }
 
             return mp3PcmFormat;
+        }
+
+        public string UnCompressMp4_AACFile(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat)
+        {
+            if (!File.Exists(sourceFile))
+                throw new FileNotFoundException("Invalid source file path");
+
+            if (!Directory.Exists(destinationDirectory))
+                throw new FileNotFoundException("Invalid destination directory");
+
+            //        AudioLibPCMFormat mp4PcmFormat = new AudioLibPCMFormat(
+            //            (ushort)pcmStream.WaveFormat.Channels,
+            //            (uint)pcmStream.WaveFormat.SampleRate,
+            //            (ushort)pcmStream.WaveFormat.BitsPerSample);
+
+            //AudioLibPCMFormat mp4PcmFormat = new AudioLibPCMFormat(
+            //    (ushort)(mp3Frame.mode() == Header.SINGLE_CHANNEL ? 1 : 2),
+            //    (uint)mp3Frame.frequency(),
+            //    16);
+
+
+            string destinationFile = GenerateOutputFileFullname(
+                                    sourceFile + WavFormatConverter.AUDIO_WAV_EXTENSION,
+                                    destinationDirectory,
+                                    null);
+
+            AudioLibPCMFormat mp4PcmFormat = null;
+
+            string workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+            Process mp4_AACDecodeProcess = new Process();
+
+            mp4_AACDecodeProcess.StartInfo.FileName = Path.Combine(workingDir, "faad.exe");
+            mp4_AACDecodeProcess.StartInfo.RedirectStandardOutput = false;
+            mp4_AACDecodeProcess.StartInfo.UseShellExecute = true;
+            mp4_AACDecodeProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            mp4_AACDecodeProcess.StartInfo.Arguments = "-o \"" + destinationFile + "\" \"" + sourceFile + "\"";
+
+            mp4_AACDecodeProcess.Start();
+            mp4_AACDecodeProcess.WaitForExit();
+
+            if (!mp4_AACDecodeProcess.StartInfo.UseShellExecute && mp4_AACDecodeProcess.ExitCode != 0)
+            {
+                StreamReader stdErr = mp4_AACDecodeProcess.StandardError;
+                if (!stdErr.EndOfStream)
+                {
+                    string toLog = stdErr.ReadToEnd();
+                    if (!string.IsNullOrEmpty(toLog))
+                    {
+                        Console.WriteLine(toLog);
+                    }
+                }
+            }
+            else if (!mp4_AACDecodeProcess.StartInfo.UseShellExecute)
+            {
+                StreamReader stdOut = mp4_AACDecodeProcess.StandardOutput;
+                if (!stdOut.EndOfStream)
+                {
+                    string toLog = stdOut.ReadToEnd();
+                    if (!string.IsNullOrEmpty(toLog))
+                    {
+                        Console.WriteLine(toLog);
+                    }
+                }
+            }
+
+            if (File.Exists(destinationFile))
+            {
+                uint dataLength;
+                Stream stream = null;
+                try
+                {
+                    stream = File.Open(destinationFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    if (stream != null)
+                    {
+                        mp4PcmFormat = AudioLibPCMFormat.RiffHeaderParse(stream, out dataLength);
+                    }
+                }
+                finally
+                {
+                    if (stream != null)
+                    {
+                        stream.Close();
+                    }
+                }
+
+                if (mp4PcmFormat != null)
+                {
+                    string destinationFileUPDATED = GenerateOutputFileFullname(
+                        sourceFile + WavFormatConverter.AUDIO_WAV_EXTENSION,
+                        destinationDirectory,
+                        mp4PcmFormat);
+
+                    try
+                    {
+                        File.Move(destinationFile, destinationFileUPDATED);
+                        destinationFile = destinationFileUPDATED;
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+
+            if (mp4PcmFormat == null || RequestCancellation)
+            {
+                if (File.Exists(destinationFile))
+                {
+                    File.Delete(destinationFile);
+                }
+                return null;
+            }
+
+            DebugFix.Assert(File.Exists(destinationFile));
+
+            if (pcmFormat != null
+                &&
+                !mp4PcmFormat.IsCompatibleWith(pcmFormat))
+            {
+                string newDestinationFilePath = ConvertSampleRate(destinationFile, destinationDirectory, pcmFormat);
+
+                if (File.Exists(destinationFile))
+                {
+                    File.Delete(destinationFile);
+                }
+                if (RequestCancellation)
+                {
+                    return null;
+                }
+                return newDestinationFilePath;
+            }
+
+            return destinationFile;
         }
 
         private bool m_SkipACM;
@@ -435,8 +585,7 @@ namespace AudioLib
 
 
 
-            string LameWorkingDir = Path.GetDirectoryName(
-                System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string LameWorkingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             //string outputFilePath = Path.Combine (
             //Path.GetDirectoryName ( sourceFile ),
             //Path.GetFileNameWithoutExtension ( sourceFile ) + DataProviderFactory.AUDIO_MP3_EXTENSION );
@@ -457,22 +606,22 @@ namespace AudioLib
                 + " -m " + channelsArg
                 + " \"" + sourceFile + "\" \"" + destinationFile + "\"";
 
-            Process mp3encodeProcess = new Process () ;
-            
-                mp3encodeProcess.StartInfo.FileName =Path.Combine(LameWorkingDir, "lame.exe") ;
-                mp3encodeProcess.StartInfo.RedirectStandardOutput = false;
-                mp3encodeProcess.StartInfo.UseShellExecute = true;
-                mp3encodeProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                mp3encodeProcess.StartInfo.Arguments = argumentString;
-                //{
-                    //FileName = Path.Combine(LameWorkingDir, "lame.exe"),
-                  
+            Process mp3encodeProcess = new Process();
+
+            mp3encodeProcess.StartInfo.FileName = Path.Combine(LameWorkingDir, "lame.exe");
+            mp3encodeProcess.StartInfo.RedirectStandardOutput = false;
+            mp3encodeProcess.StartInfo.UseShellExecute = true;
+            mp3encodeProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            mp3encodeProcess.StartInfo.Arguments = argumentString;
+            //{
+            //FileName = Path.Combine(LameWorkingDir, "lame.exe"),
+
             //RedirectStandardError = false,
-                    //RedirectStandardOutput = false,
-                    //UseShellExecute = true,
-                    //WindowStyle = ProcessWindowStyle.Hidden,
-                    //Arguments = argumentString
-                //}
+            //RedirectStandardOutput = false,
+            //UseShellExecute = true,
+            //WindowStyle = ProcessWindowStyle.Hidden,
+            //Arguments = argumentString
+            //}
             //};
             mp3encodeProcess.Start();
             mp3encodeProcess.WaitForExit();
@@ -536,7 +685,7 @@ namespace AudioLib
                 sourceFileExt = sourceFileExt.ToLower();
             }
 
-            string channels = (pcmFormat.NumberOfChannels == 1 ? "Mono" : (pcmFormat.NumberOfChannels == 2 ? "Stereo" : pcmFormat.NumberOfChannels.ToString()));
+            string channels = pcmFormat == null ? null : (pcmFormat.NumberOfChannels == 1 ? "Mono" : (pcmFormat.NumberOfChannels == 2 ? "Stereo" : pcmFormat.NumberOfChannels.ToString()));
 
             string destFile = null;
 
@@ -544,12 +693,16 @@ namespace AudioLib
             {
                 destFile = Path.Combine(destinationDirectory,
                                            sourceFileName
-                                           + "_"
+
+                                           +
+                                           (pcmFormat == null ? "" :
+                                           ("_"
                                            + pcmFormat.BitDepth
                                            + "-"
                                            + channels
                                            + "-"
-                                           + pcmFormat.SampleRate
+                                           + pcmFormat.SampleRate))
+
                                            + sourceFileExt);
             }
             else
@@ -568,12 +721,16 @@ namespace AudioLib
 
                     destFile = Path.Combine(destinationDirectory,
                                         sourceFileName
-                                        + "_"
-                                        + pcmFormat.BitDepth
-                                        + "-"
-                                        + channels
-                                        + "-"
-                                        + pcmFormat.SampleRate
+
+                                           +
+                                           (pcmFormat == null ? "" :
+                                           ("_"
+                                           + pcmFormat.BitDepth
+                                           + "-"
+                                           + channels
+                                           + "-"
+                                           + pcmFormat.SampleRate))
+
                                         + randomStr
                                         + sourceFileExt);
                 } while (File.Exists(destFile));
