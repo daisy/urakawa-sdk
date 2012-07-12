@@ -426,8 +426,10 @@ namespace urakawa.daisy.export
                                     //exportImageName = Path.GetFileName(managedImage.ImageMediaData.OriginalRelativePath);
 
                                     string exportImageName =
-                                        FileDataProvider.EliminateForbiddenFileNameCharacters(
-                                            managedImage.ImageMediaData.OriginalRelativePath);
+                                        //Path.GetFileName
+                                        FileDataProvider.EliminateForbiddenFileNameCharacters
+                                        (managedImage.ImageMediaData.OriginalRelativePath)
+                                        ;
 
                                     string destPath = Path.Combine(m_OutputDirectory, exportImageName);
 
@@ -462,8 +464,10 @@ namespace urakawa.daisy.export
                                     //exportImageName = Path.GetFileName(managedImage.ImageMediaData.OriginalRelativePath);
 
                                     string exportImageName =
-                                        FileDataProvider.EliminateForbiddenFileNameCharacters(
-                                            managedImage.ImageMediaData.OriginalRelativePath);
+                                        //Path.GetFileName
+                                        FileDataProvider.EliminateForbiddenFileNameCharacters
+                                        (managedImage.ImageMediaData.OriginalRelativePath)
+                                        ;
 
                                     string destPath = Path.Combine(m_OutputDirectory, exportImageName);
 

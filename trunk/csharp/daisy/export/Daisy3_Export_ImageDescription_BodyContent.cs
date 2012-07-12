@@ -193,8 +193,11 @@ namespace urakawa.daisy.export
                     //if (FileDataProvider.isHTTPFile(managedImage.ImageMediaData.OriginalRelativePath))                                
                     //exportImageName = Path.GetFileName(managedImage.ImageMediaData.OriginalRelativePath);
 
-                    string exportImageName = FileDataProvider.EliminateForbiddenFileNameCharacters(managedImage.ImageMediaData.OriginalRelativePath);
-
+                    string exportImageName =
+                        //Path.GetFileName
+                        FileDataProvider.EliminateForbiddenFileNameCharacters
+                        (managedImage.ImageMediaData.OriginalRelativePath)
+                        ;
                     string destPath = Path.Combine(imageDescriptionDirectoryPath, exportImageName);
 
                     if (!File.Exists(destPath))
