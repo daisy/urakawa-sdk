@@ -4,7 +4,9 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using AudioLib;
+using urakawa.data;
 using urakawa.media;
+using urakawa.media.data.image;
 using urakawa.property.xml;
 using urakawa.xuk;
 using XmlAttribute = urakawa.property.xml.XmlAttribute;
@@ -369,12 +371,23 @@ namespace urakawa.core
                     }
                 }
 
+                ManagedImageMedia manMedia = GetImageMedia() as ManagedImageMedia;
+
                 foreach (XmlAttribute xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
                 {
+                    string value = xmlAttr.Value;
+
                     string nsUriAttr = xmlAttr.GetNamespaceUri();
 
                     string attrNSPrefix = xmlAttr.Prefix;
                     string nameWithoutPrefix = xmlAttr.PrefixedLocalName != null ? xmlAttr.PrefixedLocalName : xmlAttr.LocalName;
+
+                    if (manMedia != null &&
+                        (nameWithoutPrefix == "href" || nameWithoutPrefix == "src"))
+                    {
+                        DebugFix.Assert(manMedia.ImageMediaData.OriginalRelativePath == value);
+                        value = ((FileDataProvider) manMedia.ImageMediaData.DataProvider).DataFileFullPath;
+                    }
 
                     if (string.IsNullOrEmpty(attrNSPrefix))
                     {
@@ -382,18 +395,18 @@ namespace urakawa.core
                         {
                             DebugFix.Assert(XmlReaderWriterHelper.NS_URL_XMLNS.Equals(nsUriAttr));
 
-                            xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XMLNS, XmlReaderWriterHelper.NS_URL_XMLNS, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XMLNS, XmlReaderWriterHelper.NS_URL_XMLNS, value);
                         }
                         else if (!string.IsNullOrEmpty(nsUriAttr) && nsUriAttr != nsUri)
                         {
 #if DEBUG
                             Debugger.Break();
 #endif //DEBUG
-                            xmlWriter.WriteAttributeString(nameWithoutPrefix, nsUriAttr, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(nameWithoutPrefix, nsUriAttr, value);
                         }
                         else
                         {
-                            xmlWriter.WriteAttributeString(nameWithoutPrefix, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(nameWithoutPrefix, value);
                         }
                     }
                     else
@@ -402,13 +415,13 @@ namespace urakawa.core
                         {
                             DebugFix.Assert(nsUriAttr == XmlReaderWriterHelper.NS_URL_XMLNS);
                             xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XMLNS, nameWithoutPrefix, XmlReaderWriterHelper.NS_URL_XMLNS,
-                                                           xmlAttr.Value);
+                                                           value);
                         }
                         else if (attrNSPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XML))
                         {
                             DebugFix.Assert(nsUriAttr == XmlReaderWriterHelper.NS_URL_XML);
                             xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XML, nameWithoutPrefix, XmlReaderWriterHelper.NS_URL_XML,
-                                                           xmlAttr.Value);
+                                                           value);
                         }
                         else if (!string.IsNullOrEmpty(nsUriAttr))
                         {
@@ -418,21 +431,21 @@ namespace urakawa.core
                             string uriCheck = xmlProp.GetNamespaceUri(attrNSPrefix);
                             DebugFix.Assert(nsUriAttr == uriCheck);
 #endif //DEBUG
-                            xmlWriter.WriteAttributeString(attrNSPrefix, nameWithoutPrefix, nsUriAttr, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(attrNSPrefix, nameWithoutPrefix, nsUriAttr, value);
                         }
                         else if (!string.IsNullOrEmpty(nsUri))
                         {
 #if DEBUG
                             Debugger.Break();
 #endif //DEBUG
-                            xmlWriter.WriteAttributeString(attrNSPrefix, nameWithoutPrefix, nsUri, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(attrNSPrefix, nameWithoutPrefix, nsUri, value);
                         }
                         else
                         {
 #if DEBUG
                             Debugger.Break();
 #endif //DEBUG
-                            xmlWriter.WriteAttributeString(nameWithoutPrefix, xmlAttr.Value);
+                            xmlWriter.WriteAttributeString(nameWithoutPrefix, value);
                         }
                     }
                 }
@@ -453,7 +466,34 @@ namespace urakawa.core
                 if (txt != null)
                 {
                     DebugFix.Assert(!HasXmlProperty || mChildren.Count == 0);
-                    xmlWriter.WriteString(txt.Text);
+
+                    bool needsCData = false;
+                    TreeNode node = null;
+                    if (HasXmlProperty)
+                    {
+                        node = this;
+                    }
+                    else if (Parent != null && Parent.HasXmlProperty)
+                    {
+                        node = Parent;
+                    }
+                    if (node != null)
+                    {
+                        string name = node.GetXmlElementLocalName();
+                        if (name == "script" || name == "style")
+                        {
+                            needsCData = true;
+                        }
+                    }
+
+                    if (needsCData)
+                    {
+                        xmlWriter.WriteCData(txt.Text);
+                    }
+                    else
+                    {
+                        xmlWriter.WriteString(txt.Text);
+                    }
                 }
             }
 
