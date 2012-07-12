@@ -237,6 +237,8 @@ namespace urakawa.daisy.import
                         if (treeNode.GetXmlElementLocalName() == "title")
                         {
                             title = treeNode.GetTextFlattened();
+                            title = Regex.Replace(title, @"\s+", " ");
+                            title = title.Trim();
                             break;
                         }
                     }

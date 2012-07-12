@@ -102,11 +102,13 @@ namespace urakawa.daisy.import
                 {
                     continue;
                 }
-                if (attribute.LocalName.Equals("id", StringComparison.OrdinalIgnoreCase)
-                    && node != m_PublicationUniqueIdentifierNode)
-                {
-                    continue;
-                }
+
+                // We keep IDS in case they are referred to by "refines"
+                //if (attribute.LocalName.Equals("id", StringComparison.OrdinalIgnoreCase)
+                //    && node != m_PublicationUniqueIdentifierNode)
+                //{
+                //    continue;
+                //}
 
                 if (attribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":", StringComparison.OrdinalIgnoreCase))
                 {
@@ -223,13 +225,19 @@ namespace urakawa.daisy.import
                 ||
                 attrProperty != null && !String.IsNullOrEmpty(attrProperty.Value)
                 )
-                && attrContent != null && !String.IsNullOrEmpty(attrContent.Value))
+                &&
+                (
+                attrContent != null && !String.IsNullOrEmpty(attrContent.Value)
+                ||
+                !String.IsNullOrEmpty(metaDataNode.InnerText)
+                ))
             {
                 XmlNode mdIdentifier = mdAttributes.GetNamedItem("id");
 
                 handleMetaData(book_FilePath, project, metaDataNode,
                     attrName != null ? attrName.Value : attrProperty.Value,
-                    attrContent.Value, (mdIdentifier == null ? null : mdIdentifier.Value));
+                    attrContent != null ? attrContent.Value : metaDataNode.InnerText,
+                    (mdIdentifier == null ? null : mdIdentifier.Value));
             }
         }
 
