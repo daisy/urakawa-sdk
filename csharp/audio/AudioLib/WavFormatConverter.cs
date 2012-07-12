@@ -47,7 +47,7 @@ namespace AudioLib
 
         private const uint PROGRESS_INTERVAL_MS = 500;
 
-        public string ConvertSampleRate(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat)
+        public string ConvertSampleRate(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat, out AudioLibPCMFormat originalPcmFormat)
         {
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path");
@@ -70,43 +70,60 @@ namespace AudioLib
 
                 destinationFilePath = GenerateOutputFileFullname(sourceFile, destinationDirectory, pcmFormat);
 
-                //WaveFileWriter.CreateWaveFile(destinationFilePath, conversionStream);
-                using (WaveFileWriter writer = new WaveFileWriter(destinationFilePath, conversionStream.WaveFormat))
+                WaveFormat sourceFormat = sourceStream.WaveFormat;
+                originalPcmFormat = new AudioLibPCMFormat((ushort)sourceFormat.Channels, (uint)sourceFormat.SampleRate, (ushort)sourceFormat.BitsPerSample);
+                bool formatsEqual1 = sourceFormat.Equals(destFormat);
+                bool formatsEqual2 = originalPcmFormat.Equals(pcmFormat);
+                DebugFix.Assert(formatsEqual1 && formatsEqual1 || !formatsEqual1 && !formatsEqual1);
+                if (formatsEqual1 || formatsEqual2)
                 {
-                    //const int BUFFER_SIZE = 1024 * 8; // 8 KB MAX BUFFER
-                    int BUFFER_SIZE = (int)pcmFormat.ConvertTimeToBytes(1500 * AudioLibPCMFormat.TIME_UNIT);
-                    //int debug = pcmStream.GetReadSize(4000);
-                    byte[] buffer = new byte[BUFFER_SIZE];
-                    int byteRead;
-                    writer.Flush();
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                    File.Copy(sourceFile, destinationFilePath);
+                }
+                else
+                {
 
-                    string msg = Path.GetFileName(sourceFile) + " / " + Path.GetFileName(destinationFilePath); //"Resampling WAV audio...";
-                    reportProgress(-1, msg);
-                    watch.Start();
-                    while ((byteRead = conversionStream.Read(buffer, 0, buffer.Length)) > 0)
+                    //WaveFileWriter.CreateWaveFile(destinationFilePath, conversionStream);
+                    using (WaveFileWriter writer = new WaveFileWriter(destinationFilePath, conversionStream.WaveFormat))
                     {
-                        if (RequestCancellation)
+                        //const int BUFFER_SIZE = 1024 * 8; // 8 KB MAX BUFFER
+                        int BUFFER_SIZE = (int)pcmFormat.ConvertTimeToBytes(1500 * AudioLibPCMFormat.TIME_UNIT);
+                        //int debug = pcmStream.GetReadSize(4000);
+                        byte[] buffer = new byte[BUFFER_SIZE];
+                        int byteRead;
+                        writer.Flush();
+
+                        string msg = Path.GetFileName(sourceFile) + " / " + Path.GetFileName(destinationFilePath);
+                        //"Resampling WAV audio...";
+                        reportProgress(-1, msg);
+                        watch.Start();
+                        while ((byteRead = conversionStream.Read(buffer, 0, buffer.Length)) > 0)
                         {
-                            writer.Close();
-                            if (File.Exists(destinationFilePath))
+                            if (RequestCancellation)
                             {
-                                File.Delete(destinationFilePath);
+                                writer.Close();
+                                if (File.Exists(destinationFilePath))
+                                {
+                                    File.Delete(destinationFilePath);
+                                }
+                                return null;
                             }
-                            return null;
+
+                            if (watch.ElapsedMilliseconds >= PROGRESS_INTERVAL_MS)
+                            {
+                                watch.Stop();
+
+                                int percent = (int)(100.0 * sourceStream.Position / sourceStream.Length);
+                                reportProgress(percent, msg); // + sourceStream.Position + "/" + sourceStream.Length);
+
+                                watch.Reset();
+                                watch.Start();
+                            }
+
+                            writer.WriteData(buffer, 0, byteRead);
                         }
-
-                        if (watch.ElapsedMilliseconds >= PROGRESS_INTERVAL_MS)
-                        {
-                            watch.Stop();
-
-                            int percent = (int)(100.0 * sourceStream.Position / sourceStream.Length);
-                            reportProgress(percent, msg); // + sourceStream.Position + "/" + sourceStream.Length);
-
-                            watch.Reset();
-                            watch.Start();
-                        }
-
-                        writer.WriteData(buffer, 0, byteRead);
                     }
                 }
             }
@@ -300,13 +317,15 @@ namespace AudioLib
             return mp3PcmFormat;
         }
 
-        public string UnCompressMp4_AACFile(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat)
+        public string UnCompressMp4_AACFile(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat, out AudioLibPCMFormat originalPcmFormat)
         {
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path");
 
             if (!Directory.Exists(destinationDirectory))
                 throw new FileNotFoundException("Invalid destination directory");
+            
+            originalPcmFormat = null;
 
             //        AudioLibPCMFormat mp4PcmFormat = new AudioLibPCMFormat(
             //            (ushort)pcmStream.WaveFormat.Channels,
@@ -386,6 +405,12 @@ namespace AudioLib
 
                 if (mp4PcmFormat != null)
                 {
+                    originalPcmFormat = new AudioLibPCMFormat();
+                    originalPcmFormat.CopyFrom(mp4PcmFormat);
+                }
+
+                if (mp4PcmFormat != null)
+                {
                     string destinationFileUPDATED = GenerateOutputFileFullname(
                         sourceFile + WavFormatConverter.AUDIO_WAV_EXTENSION,
                         destinationDirectory,
@@ -417,7 +442,13 @@ namespace AudioLib
                 &&
                 !mp4PcmFormat.IsCompatibleWith(pcmFormat))
             {
-                string newDestinationFilePath = ConvertSampleRate(destinationFile, destinationDirectory, pcmFormat);
+                AudioLibPCMFormat originalWavPcmFormat;
+                string newDestinationFilePath = ConvertSampleRate(destinationFile, destinationDirectory, pcmFormat, out originalWavPcmFormat);
+                if (originalWavPcmFormat != null)
+                {
+                    DebugFix.Assert(mp4PcmFormat.Equals(originalWavPcmFormat));
+                }
+
 
                 if (File.Exists(destinationFile))
                 {
@@ -434,13 +465,15 @@ namespace AudioLib
         }
 
         private bool m_SkipACM;
-        public string UnCompressMp3File(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat)
+        public string UnCompressMp3File(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat, out AudioLibPCMFormat originalPcmFormat)
         {
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path");
 
             if (!Directory.Exists(destinationDirectory))
                 throw new FileNotFoundException("Invalid destination directory");
+            
+            originalPcmFormat = null;
 
             string destinationFile = null;
             AudioLibPCMFormat mp3PcmFormat = null;
@@ -495,6 +528,13 @@ namespace AudioLib
                     Console.WriteLine(ex.StackTrace);
                 }
             }
+
+            if (mp3PcmFormat != null)
+            {
+                originalPcmFormat = new AudioLibPCMFormat();
+                originalPcmFormat.CopyFrom(mp3PcmFormat);
+            }
+
             if (RequestCancellation)
             {
                 return null;
@@ -519,7 +559,12 @@ namespace AudioLib
                 &&
                 !mp3PcmFormat.IsCompatibleWith(pcmFormat))
             {
-                string newDestinationFilePath = ConvertSampleRate(destinationFile, destinationDirectory, pcmFormat);
+                AudioLibPCMFormat originalWavPcmFormat;
+                string newDestinationFilePath = ConvertSampleRate(destinationFile, destinationDirectory, pcmFormat, out originalWavPcmFormat);
+                if (originalWavPcmFormat != null)
+                {
+                    DebugFix.Assert(mp3PcmFormat.Equals(originalWavPcmFormat));
+                }
 
                 if (File.Exists(destinationFile))
                 {
