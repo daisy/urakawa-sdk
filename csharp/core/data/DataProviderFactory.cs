@@ -51,6 +51,9 @@ namespace urakawa.data
         public const string AUDIO_MP3_MIME_TYPE = "audio/mpeg";
         public const string AUDIO_MP3_EXTENSION = ".mp3";
 
+        public const string AUDIO_MP4_MIME_TYPE = "audio/mp4";
+        public const string AUDIO_MP4_EXTENSION = ".mp4";
+
         /// <summary>
         /// MIME type for linear PCM RIFF WAVE format audio (wav)
         /// </summary>
@@ -222,6 +225,9 @@ namespace urakawa.data
                 case AUDIO_MP3_MIME_TYPE:
                     extension = AUDIO_MP3_EXTENSION;
                     break;
+                case AUDIO_MP4_MIME_TYPE:
+                    extension = AUDIO_MP4_EXTENSION;
+                    break;
                 case AUDIO_WAV_MIME_TYPE:
                     extension = AUDIO_WAV_EXTENSION;
                     break;
@@ -287,9 +293,9 @@ namespace urakawa.data
             string mime;
             switch (extension)
             {
-                case VIDEO_MP4_EXTENSION:
-                    mime = VIDEO_MP4_MIME_TYPE;
-                    break;
+                //case VIDEO_MP4_EXTENSION:
+                //    mime = VIDEO_MP4_MIME_TYPE;
+                //    break;
                 case VIDEO_MPG_EXTENSION:
                 case VIDEO_MPEG_EXTENSION:
                     //case VIDEO_M2V_EXTENSION:
@@ -317,6 +323,9 @@ namespace urakawa.data
 
                 case AUDIO_MP3_EXTENSION:
                     mime = AUDIO_MP3_MIME_TYPE;
+                    break;
+                case AUDIO_MP4_EXTENSION:
+                    mime = AUDIO_MP4_MIME_TYPE;
                     break;
                 case AUDIO_WAV_EXTENSION:
                     mime = AUDIO_WAV_MIME_TYPE;
