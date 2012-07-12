@@ -758,6 +758,15 @@ namespace urakawa.media.data.audio.codec
             mWavClips.Clear();
             base.Clear();
         }
+        
+//#if DEBUG
+//        public override void XukIn(XmlReader source, IProgressHandler handler)
+//        {
+//            base.XukIn(source, handler);
+
+//            checkWavClips();
+//        }
+//#endif //DEBUG
 
         /// <summary>
         /// Reads a child of a WavAudioMediaData xuk element. 
@@ -915,6 +924,7 @@ namespace urakawa.media.data.audio.codec
                 source.ReadSubtree().Close();
             }
         }
+
         protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             base.XukOutAttributes(destination, baseUri);
@@ -1109,5 +1119,12 @@ namespace urakawa.media.data.audio.codec
 
             return oWAMD;
         }
+
+//#if DEBUG
+//        public void checkWavClips()
+//        {
+//            DebugFix.Assert(mWavClips != null && mWavClips.Count > 0);
+//        }
+//#endif //DEBUG
     }
 }
