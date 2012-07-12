@@ -17,6 +17,21 @@ namespace AudioLib
     /// </summary> 
     public class AudioLibPCMFormat
     {
+        public override bool Equals(object obj)
+        {
+            AudioLibPCMFormat other = obj as AudioLibPCMFormat;
+            if (other != null)
+            {
+                return
+                    NumberOfChannels == other.NumberOfChannels &&
+                    SampleRate == other.SampleRate &&
+                    ByteRate == other.ByteRate &&
+                    BlockAlign == other.BlockAlign &&
+                    BitDepth == other.BitDepth;
+            }
+            return false;
+        }
+
         public AudioLibPCMFormat()
             : this(1, 44100, 16)
         {
@@ -113,7 +128,7 @@ namespace AudioLib
         }
 
 
-        public void CopyValues(AudioLibPCMFormat pcmFormat)
+        public void CopyFrom(AudioLibPCMFormat pcmFormat)
         {
             NumberOfChannels = pcmFormat.NumberOfChannels;
             SampleRate = pcmFormat.SampleRate;
