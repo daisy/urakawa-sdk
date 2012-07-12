@@ -463,7 +463,14 @@ namespace urakawa.core
                         break;
                     }
 
-                    next = next.GetNextSiblingWithText();
+                    if (directionPrevious)
+                    {
+                        next = next.GetPreviousSiblingWithText();
+                    }
+                    else
+                    {
+                        next = next.GetNextSiblingWithText();
+                    }
                 }
 
                 if (next == null)
