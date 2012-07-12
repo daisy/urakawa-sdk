@@ -138,7 +138,9 @@ namespace urakawa.daisy.export.visitor
             ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
             PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
 
-            AudioLibPCMFormat pcmFormat = audioFormat.Data;
+            //AudioLibPCMFormat pcmFormat = audioFormat.Data;
+            AudioLibPCMFormat pcmFormat = new AudioLibPCMFormat();
+            pcmFormat.CopyFrom(audioFormat.Data);
             pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
 
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, DisableAcmCodecs);
@@ -149,7 +151,12 @@ namespace urakawa.daisy.export.visitor
             string destinationFilePath = null;
             try
             {
-                destinationFilePath = formatConverter.ConvertSampleRate(sourceFilePath, base.DestinationDirectory.LocalPath, pcmFormat);
+                AudioLibPCMFormat originalPcmFormat;
+                destinationFilePath = formatConverter.ConvertSampleRate(sourceFilePath, base.DestinationDirectory.LocalPath, pcmFormat, out originalPcmFormat);
+                if (originalPcmFormat != null)
+                {
+                    DebugFix.Assert(audioFormat.Data.Equals(originalPcmFormat));
+                }
             }
             finally
             {
