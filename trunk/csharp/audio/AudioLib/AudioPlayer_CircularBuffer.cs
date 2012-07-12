@@ -108,15 +108,15 @@ namespace AudioLib
 
             if (UseSoundTouch && NotNormalPlayFactor())
             {
-#if DEBUG
-                int size = m_CurrentAudioPCMFormat.BitDepth / 8;
-                int sizeOfTypeInBytes = Marshal.SizeOf(typeof(TSampleType));
-                DebugFix.Assert(sizeOfTypeInBytes == size);
-                sizeOfTypeInBytes = sizeof(TSampleType);
-                DebugFix.Assert(sizeOfTypeInBytes == size);
-#endif // DEBUG
-
                 int nBytesPerSample = m_CurrentAudioPCMFormat.BitDepth / 8; // 16bits => 2 bytes per sample
+
+#if DEBUG
+                int sizeOfTypeInBytes = Marshal.SizeOf(typeof(TSampleType));
+                DebugFix.Assert(sizeOfTypeInBytes == nBytesPerSample);
+
+                sizeOfTypeInBytes = sizeof(TSampleType);
+                DebugFix.Assert(sizeOfTypeInBytes == nBytesPerSample);
+#endif // DEBUG
 
                 if (m_SoundTouch_ByteBuffer == null)
                 {
