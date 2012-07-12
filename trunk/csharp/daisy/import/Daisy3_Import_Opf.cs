@@ -290,6 +290,27 @@ namespace urakawa.daisy.import
                                 Dictionary<string, string> dict = spineItemsAttributes[i];
                                 dict.Add(attrProperties.Name, attrProperties.Value);
                             }
+
+                            XmlNode attrMediaOverlay = manifItemAttributes.GetNamedItem("media-overlay");
+                            if (attrMediaOverlay != null && !String.IsNullOrEmpty(attrMediaOverlay.Value))
+                            {
+                                foreach (XmlNode manifItemNode2 in listOfManifestItemNodes)
+                                {
+                                    XmlAttributeCollection manifItemAttributes2 = manifItemNode2.Attributes;
+                                    if (manifItemAttributes2 == null)
+                                    {
+                                        continue;
+                                    }
+                                    XmlNode attrId2 = manifItemAttributes2.GetNamedItem("id");
+                                    XmlNode attrHref2 = manifItemAttributes2.GetNamedItem("href");
+                                    if (attrId2 != null && attrId2.Value == attrMediaOverlay.Value
+                                        && attrHref2 != null && !string.IsNullOrEmpty(attrHref2.Value))
+                                    {
+                                        Dictionary<string, string> dict = spineItemsAttributes[i];
+                                        dict.Add(attrMediaOverlay.Name, attrHref2.Value);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
