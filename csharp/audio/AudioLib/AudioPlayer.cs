@@ -384,6 +384,14 @@ namespace AudioLib
                 return;
             }
 
+
+#if USE_SOUNDTOUCH
+            if (pcmInfo.NumberOfChannels > 1)
+            {
+                UseSoundTouch = false; //TODO: stereo all scrambled with SoundTouch !!
+            }
+#endif // USE_SOUNDTOUCH
+
             m_CurrentAudioStreamProvider = currentAudioStreamProvider;
             m_CurrentAudioStream = m_CurrentAudioStreamProvider();
             m_CurrentAudioPCMFormat = pcmInfo;
