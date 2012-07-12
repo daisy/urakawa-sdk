@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 using System.Xml;
 using AudioLib;
 using urakawa.data;
@@ -32,6 +33,8 @@ namespace urakawa.daisy.import
             if (spineMimeType == "application/xhtml+xml"
                 || spineMimeType == DataProviderFactory.IMAGE_SVG_MIME_TYPE)
             {
+                MessageBox.Show("EPUB support is experimental and incomplete, please use with caution!");
+
                 m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, true);
 
                 string dataDir = m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;

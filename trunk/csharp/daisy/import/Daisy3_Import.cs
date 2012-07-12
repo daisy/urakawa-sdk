@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 using System.Xml;
 using AudioLib;
 using urakawa.data;
@@ -195,6 +196,8 @@ namespace urakawa.daisy.import
 
             if (!string.IsNullOrEmpty(extension))
             {
+                bool isHTML = extension.Equals(".xhtml", StringComparison.OrdinalIgnoreCase)
+                            || extension.Equals(".html", StringComparison.OrdinalIgnoreCase);
                 if (extension.Equals(".opf", StringComparison.OrdinalIgnoreCase))
                 {
                     XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false);
@@ -204,11 +207,15 @@ namespace urakawa.daisy.import
                     parseOpf(opfXmlDoc);
                 }
                 else if (
-                    extension.Equals(".xhtml", StringComparison.OrdinalIgnoreCase)
-                    || extension.Equals(".html", StringComparison.OrdinalIgnoreCase)
+                    isHTML
                     || extension.Equals(".xml", StringComparison.OrdinalIgnoreCase)
                     )
                 {
+                    if (isHTML)
+                    {
+                        MessageBox.Show("(X)HTML support is experimental and incomplete, please use with caution!");
+                    }
+
                     XmlDocument contentXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, true);
 
                     if (RequestCancellation) return;
