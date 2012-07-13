@@ -121,6 +121,8 @@ namespace AudioLib
         public bool IsCompatibleWith(AudioLibPCMFormat pcmInfo)
         {
             if (pcmInfo == null) return false;
+            if (Object.ReferenceEquals(this, pcmInfo)) return true;
+
             if (NumberOfChannels != pcmInfo.NumberOfChannels) return false;
             if (SampleRate != pcmInfo.SampleRate) return false;
             if (BitDepth != pcmInfo.BitDepth) return false;

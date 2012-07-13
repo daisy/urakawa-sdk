@@ -324,7 +324,7 @@ namespace AudioLib
 
             if (!Directory.Exists(destinationDirectory))
                 throw new FileNotFoundException("Invalid destination directory");
-            
+
             originalPcmFormat = null;
 
             //        AudioLibPCMFormat mp4PcmFormat = new AudioLibPCMFormat(
@@ -438,6 +438,11 @@ namespace AudioLib
 
             DebugFix.Assert(File.Exists(destinationFile));
 
+            if (pcmFormat == null) // auto detect
+            {
+                pcmFormat = mp4PcmFormat;
+            }
+
             if (pcmFormat != null
                 &&
                 !mp4PcmFormat.IsCompatibleWith(pcmFormat))
@@ -472,7 +477,7 @@ namespace AudioLib
 
             if (!Directory.Exists(destinationDirectory))
                 throw new FileNotFoundException("Invalid destination directory");
-            
+
             originalPcmFormat = null;
 
             string destinationFile = null;
@@ -551,6 +556,11 @@ namespace AudioLib
                     File.Delete(destinationFile);
                 }
                 return null;
+            }
+
+            if (pcmFormat == null) // auto detect
+            {
+                pcmFormat = mp3PcmFormat;
             }
 
             DebugFix.Assert(File.Exists(destinationFile));
