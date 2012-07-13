@@ -111,10 +111,6 @@
     <Compile Include="ZipStorer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\tobi\trunk\tobiapp\ExternalLibs\ICSharpCode\Lib.ICSharpCode.csproj">
-      <Project>{CB23BC6E-0493-482A-89B9-DD2E2FA4E97D}</Project>
-      <Name>Lib.ICSharpCode</Name>
-    </ProjectReference>
     <ProjectReference Include="..\audio\AudioLib\AudioLib.csproj">
       <Project>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</Project>
       <Name>AudioLib</Name>
