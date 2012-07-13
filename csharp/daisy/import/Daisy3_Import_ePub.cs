@@ -5,7 +5,6 @@ using System.Threading;
 using System.Xml;
 using System.Collections.Generic;
 using AudioLib;
-
 using urakawa.core;
 using urakawa.data;
 using urakawa.xuk;
@@ -14,6 +13,8 @@ using urakawa.property.channel;
 
 #if ENABLE_SHARPZIP
 using ICSharpCode.SharpZipLib.Zip;
+#else
+using Jaime.Olivares;
 #endif
 
 namespace urakawa.daisy.import
