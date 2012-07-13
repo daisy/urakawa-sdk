@@ -10,6 +10,7 @@ using urakawa.data;
 using urakawa.events.progress;
 using urakawa.media;
 using urakawa.media.data.audio;
+using urakawa.media.data.audio.codec;
 using urakawa.media.data.image.codec;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
@@ -53,6 +54,8 @@ namespace urakawa.daisy.import
 
             // Audio files may be shared between chapters of a book!
             m_OriginalAudioFile_FileDataProviderMap.Clear();
+
+            Presentation spineItemPresentation = null;
 
             int index = -1;
             foreach (string docPath in spineOfContentDocuments)
@@ -160,30 +163,32 @@ namespace urakawa.daisy.import
                 Project project = new Project();
                 project.SetPrettyFormat(m_XukPrettyFormat);
 
-                Presentation presentation = project.AddNewPresentation(new Uri(m_outDirectory), Path.GetFileName(fullDocPath));
+                spineItemPresentation = project.AddNewPresentation(new Uri(m_outDirectory), Path.GetFileName(fullDocPath));
 
-                PCMFormatInfo pcmFormat = presentation.MediaDataManager.DefaultPCMFormat.Copy();
+                PCMFormatInfo pcmFormat = spineItemPresentation.MediaDataManager.DefaultPCMFormat; //.Copy();
                 pcmFormat.Data.SampleRate = (ushort)m_audioProjectSampleRate;
                 pcmFormat.Data.NumberOfChannels = m_audioStereo ? (ushort)2 : (ushort)1;
-                presentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
+                spineItemPresentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
 
-                presentation.MediaDataManager.EnforceSinglePCMFormat = true;
+                //presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
-                TextChannel textChannel = presentation.ChannelFactory.CreateTextChannel();
+                //presentation.MediaDataFactory.DefaultAudioMediaDataType = typeof(WavAudioMediaData);
+
+                TextChannel textChannel = spineItemPresentation.ChannelFactory.CreateTextChannel();
                 textChannel.Name = "The Text Channel";
-                DebugFix.Assert(textChannel == presentation.ChannelsManager.GetOrCreateTextChannel());
+                DebugFix.Assert(textChannel == spineItemPresentation.ChannelsManager.GetOrCreateTextChannel());
 
-                AudioChannel audioChannel = presentation.ChannelFactory.CreateAudioChannel();
+                AudioChannel audioChannel = spineItemPresentation.ChannelFactory.CreateAudioChannel();
                 audioChannel.Name = "The Audio Channel";
-                DebugFix.Assert(audioChannel == presentation.ChannelsManager.GetOrCreateAudioChannel());
+                DebugFix.Assert(audioChannel == spineItemPresentation.ChannelsManager.GetOrCreateAudioChannel());
 
-                ImageChannel imageChannel = presentation.ChannelFactory.CreateImageChannel();
+                ImageChannel imageChannel = spineItemPresentation.ChannelFactory.CreateImageChannel();
                 imageChannel.Name = "The Image Channel";
-                DebugFix.Assert(imageChannel == presentation.ChannelsManager.GetOrCreateImageChannel());
+                DebugFix.Assert(imageChannel == spineItemPresentation.ChannelsManager.GetOrCreateImageChannel());
 
-                VideoChannel videoChannel = presentation.ChannelFactory.CreateVideoChannel();
+                VideoChannel videoChannel = spineItemPresentation.ChannelFactory.CreateVideoChannel();
                 videoChannel.Name = "The Video Channel";
-                DebugFix.Assert(videoChannel == presentation.ChannelsManager.GetOrCreateVideoChannel());
+                DebugFix.Assert(videoChannel == spineItemPresentation.ChannelsManager.GetOrCreateVideoChannel());
 
                 /*string dataPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
                if (Directory.Exists(dataPath))
@@ -191,18 +196,25 @@ namespace urakawa.daisy.import
                    Directory.Delete(dataPath, true);
                }*/
 
+                //AudioLibPCMFormat previousPcm = null;
                 if (m_AudioConversionSession != null)
                 {
+                    //previousPcm = m_AudioConversionSession.FirstDiscoveredPCMFormat;
                     RemoveSubCancellable(m_AudioConversionSession);
                     m_AudioConversionSession = null;
                 }
 
                 m_AudioConversionSession = new AudioFormatConvertorSession(
                     //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
-                   presentation.DataProviderManager.DataFileDirectoryFullPath,
-                   presentation.MediaDataManager.DefaultPCMFormat,
+                   spineItemPresentation.DataProviderManager.DataFileDirectoryFullPath,
+                   spineItemPresentation.MediaDataManager.DefaultPCMFormat,
                    m_autoDetectPcmFormat,
                    m_SkipACM);
+
+                //if (previousPcm != null)
+                //{
+                //    m_AudioConversionSession.FirstDiscoveredPCMFormat = previousPcm;
+                //}
 
                 AddSubCancellable(m_AudioConversionSession);
 
@@ -216,7 +228,7 @@ namespace urakawa.daisy.import
                 //    dataProv.MimeType = DataProviderFactory.AUDIO_WAV_MIME_TYPE;
                 //}
 
-                
+
 
 
                 //m_Project.Presentations.Get(0).ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable
@@ -229,9 +241,9 @@ namespace urakawa.daisy.import
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, docPath));
                 parseMetadata(fullDocPath, project, xmlDoc);
 
-                if (presentation.Metadatas.Count > 0)
+                if (spineItemPresentation.Metadatas.Count > 0)
                 {
-                    foreach (Metadata metadata in presentation.Metadatas.ContentsAs_Enumerable)
+                    foreach (Metadata metadata in spineItemPresentation.Metadatas.ContentsAs_Enumerable)
                     {
                         if (metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DC_Title, StringComparison.OrdinalIgnoreCase)
                             || metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DTB_TITLE, StringComparison.OrdinalIgnoreCase))
@@ -244,7 +256,7 @@ namespace urakawa.daisy.import
 
                 foreach (Metadata metadata in m_Project.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                 {
-                    Metadata md = presentation.MetadataFactory.CreateMetadata();
+                    Metadata md = spineItemPresentation.MetadataFactory.CreateMetadata();
                     md.NameContentAttribute = metadata.NameContentAttribute.Copy();
 
                     foreach (MetadataAttribute metadataAttribute in metadata.OtherAttributes.ContentsAs_Enumerable)
@@ -253,16 +265,16 @@ namespace urakawa.daisy.import
                         md.OtherAttributes.Insert(md.OtherAttributes.Count, mdAttr);
                     }
 
-                    presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
+                    spineItemPresentation.Metadatas.Insert(spineItemPresentation.Metadatas.Count, md);
                 }
 
 
                 if (RequestCancellation) return;
                 ParseHeadLinks(fullDocPath, project, xmlDoc);
 
-                if (presentation.HeadNode != null && presentation.HeadNode.Children != null && presentation.HeadNode.Children.Count > 0)
+                if (spineItemPresentation.HeadNode != null && spineItemPresentation.HeadNode.Children != null && spineItemPresentation.HeadNode.Children.Count > 0)
                 {
-                    foreach (TreeNode treeNode in presentation.HeadNode.Children.ContentsAs_Enumerable)
+                    foreach (TreeNode treeNode in spineItemPresentation.HeadNode.Children.ContentsAs_Enumerable)
                     {
                         if (treeNode.GetXmlElementLocalName() == "title")
                         {
@@ -395,7 +407,7 @@ namespace urakawa.daisy.import
 
                                 string txtId = srcParts[1];
 
-                                textTreeNode = presentation.RootNode.GetFirstDescendantWithXmlID(txtId);
+                                textTreeNode = spineItemPresentation.RootNode.GetFirstDescendantWithXmlID(txtId);
                             }
 
                             if (textTreeNode != null)
@@ -407,8 +419,7 @@ namespace urakawa.daisy.import
                 }
 
 
-
-
+                spinePresentation.MediaDataManager.DefaultPCMFormat = spineItemPresentation.MediaDataManager.DefaultPCMFormat; //copied!
 
 
 

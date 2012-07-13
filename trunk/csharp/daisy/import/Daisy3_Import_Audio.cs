@@ -267,6 +267,21 @@ namespace urakawa.daisy.import
 
                     if (obj != null)  //m_OriginalAudioFile_FileDataProviderMap.ContainsKey(fullWavPath))
                     {
+                        if (m_AudioConversionSession.FirstDiscoveredPCMFormat == null)
+                        {
+                            DebugFix.Assert(obj.Presentation != presentation);
+                            
+                            Object appData = obj.AppData;
+                            
+                            DebugFix.Assert(appData != null);
+
+                            if (appData != null && appData is WavClip.PcmFormatAndTime)
+                            {
+                                m_AudioConversionSession.FirstDiscoveredPCMFormat = new AudioLibPCMFormat();
+                                m_AudioConversionSession.FirstDiscoveredPCMFormat.CopyFrom(((WavClip.PcmFormatAndTime)appData).mFormat);
+                            }
+                        }
+
                         if (obj.Presentation != presentation)
                         {
                             dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
@@ -277,6 +292,15 @@ namespace urakawa.daisy.import
 
                             m_OriginalAudioFile_FileDataProviderMap.Remove(fullWavPath);
                             m_OriginalAudioFile_FileDataProviderMap.Add(fullWavPath, dataProv);
+
+                            Object appData = obj.AppData;
+
+                            DebugFix.Assert(appData != null);
+
+                            if (appData != null && appData is WavClip.PcmFormatAndTime)
+                            {
+                                dataProv.AppData = new WavClip.PcmFormatAndTime(((WavClip.PcmFormatAndTime)appData).mFormat, ((WavClip.PcmFormatAndTime)appData).mTime);
+                            }
                         }
                         else
                         {
@@ -364,26 +388,41 @@ namespace urakawa.daisy.import
             else if (audioAttrSrc.Value.EndsWith("mp3", StringComparison.OrdinalIgnoreCase)
                 || audioAttrSrc.Value.EndsWith("mp4", StringComparison.OrdinalIgnoreCase))
             {
-                string fullMp3PathOriginal = Path.Combine(dirPath, audioAttrSrc.Value);
-                if (!File.Exists(fullMp3PathOriginal))
+                string fullMp34PathOriginal = Path.Combine(dirPath, audioAttrSrc.Value);
+                if (!File.Exists(fullMp34PathOriginal))
                 {
-                    Debug.Fail("File not found: {0}", fullMp3PathOriginal);
+                    Debug.Fail("File not found: {0}", fullMp34PathOriginal);
                     return;
                 }
 
                 if (RequestCancellation) return;
 
-                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.DecodingAudio, Path.GetFileName(fullMp3PathOriginal)));
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.DecodingAudio, Path.GetFileName(fullMp34PathOriginal)));
 
 
                 if (RequestCancellation) return;
 
                 FileDataProvider obj;
-                m_OriginalAudioFile_FileDataProviderMap.TryGetValue(fullMp3PathOriginal, out obj);
+                m_OriginalAudioFile_FileDataProviderMap.TryGetValue(fullMp34PathOriginal, out obj);
 
                 FileDataProvider dataProv = null;
                 if (obj != null) //m_OriginalAudioFile_FileDataProviderMap.ContainsKey(fullMp3PathOriginal))
                 {
+                    if (m_AudioConversionSession.FirstDiscoveredPCMFormat == null)
+                    {
+                        DebugFix.Assert(obj.Presentation != presentation);
+
+                        Object appData = obj.AppData;
+
+                        DebugFix.Assert(appData != null);
+
+                        if (appData != null && appData is WavClip.PcmFormatAndTime)
+                        {
+                            m_AudioConversionSession.FirstDiscoveredPCMFormat = new AudioLibPCMFormat();
+                            m_AudioConversionSession.FirstDiscoveredPCMFormat.CopyFrom(((WavClip.PcmFormatAndTime)appData).mFormat);
+                        }
+                    }
+
                     if (obj.Presentation != presentation)
                     {
                         dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
@@ -392,8 +431,17 @@ namespace urakawa.daisy.import
 
                         //m_AudioConversionSession.RelocateDestinationFilePath(newfullWavPath, dataProv.DataFileFullPath);
 
-                        m_OriginalAudioFile_FileDataProviderMap.Remove(fullMp3PathOriginal);
-                        m_OriginalAudioFile_FileDataProviderMap.Add(fullMp3PathOriginal, dataProv);
+                        m_OriginalAudioFile_FileDataProviderMap.Remove(fullMp34PathOriginal);
+                        m_OriginalAudioFile_FileDataProviderMap.Add(fullMp34PathOriginal, dataProv);
+                        
+                        Object appData = obj.AppData;
+
+                        DebugFix.Assert(appData != null);
+
+                        if (appData != null && appData is WavClip.PcmFormatAndTime)
+                        {
+                            dataProv.AppData = new WavClip.PcmFormatAndTime(((WavClip.PcmFormatAndTime)appData).mFormat, ((WavClip.PcmFormatAndTime)appData).mTime);
+                        }
                     }
                     else
                     {
@@ -402,15 +450,15 @@ namespace urakawa.daisy.import
                 }
                 else
                 {
-                    string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullMp3PathOriginal);
+                    string newfullWavPath = m_AudioConversionSession.ConvertAudioFileFormat(fullMp34PathOriginal);
 
                     dataProv = (FileDataProvider)presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-                    Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullMp3PathOriginal) + " = " + dataProv.DataFileRelativePath);
+                    Console.WriteLine("Source audio file to SDK audio file map (before creating SDK audio file): " + Path.GetFileName(fullMp34PathOriginal) + " = " + dataProv.DataFileRelativePath);
                     dataProv.InitByMovingExistingFile(newfullWavPath);
 
                     m_AudioConversionSession.RelocateDestinationFilePath(newfullWavPath, dataProv.DataFileFullPath);
 
-                    m_OriginalAudioFile_FileDataProviderMap.Add(fullMp3PathOriginal, dataProv);
+                    m_OriginalAudioFile_FileDataProviderMap.Add(fullMp34PathOriginal, dataProv);
 
                     if (RequestCancellation) return;
                 }
@@ -604,7 +652,7 @@ namespace urakawa.daisy.import
                 pcmFormat.Data.CopyFrom(m_AudioConversionSession.FirstDiscoveredPCMFormat);
                 //pcmFormat.Data.SampleRate = (ushort) m_audioProjectSampleRate;
                 //pcmFormat.Data.NumberOfChannels = m_audioStereo ? (ushort) 2 : (ushort) 1;
-                //treeNode.Presentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
+                treeNode.Presentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
             }
 
             if (RequestCancellation) return null;
@@ -649,9 +697,6 @@ namespace urakawa.daisy.import
 
             //if (deleteSrcAfterCompletion)
             //{
-            presentation.MediaDataFactory.DefaultAudioMediaDataType =
-                typeof(WavAudioMediaData);
-
             WavAudioMediaData mediaData =
                 (WavAudioMediaData)
                 presentation.MediaDataFactory.CreateAudioMediaData();
