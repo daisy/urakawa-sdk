@@ -62,6 +62,8 @@ namespace urakawa.daisy.import
             {
                 index++;
 
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ReadXMLDoc, docPath));
+
                 //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
                 //string dirPath = opfParentDir.ToString();
                 string dirPath = Path.GetDirectoryName(m_Book_FilePath);
@@ -321,11 +323,17 @@ namespace urakawa.daisy.import
                     {
                         string opfDirPath = Path.GetDirectoryName(m_Book_FilePath);
                         string overlayPath = spineItemAttribute.Value;
+
+
+                        reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMediaOverlay, overlayPath));
+
+
                         string fullOverlayPath = Path.Combine(opfDirPath, overlayPath);
                         if (!File.Exists(fullOverlayPath))
                         {
                             continue;
                         }
+
                         XmlDocument overlayXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullOverlayPath, true);
 
                         IEnumerable<XmlNode> audioElements = XmlDocumentHelper.GetChildrenElementsOrSelfWithName(overlayXmlDoc, true, "audio", null, false);

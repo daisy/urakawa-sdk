@@ -166,6 +166,12 @@
   <data name="ParsingOPF" xml:space="preserve">
     <value>Parsing OPF: [{0}]</value>
   </data>
+  <data name="ParsingMediaOverlay" xml:space="preserve">
+    <value>Parsing EPUB3 Media Overlay: [{0}]</value>
+  </data>
+  <data name="Unzipping" xml:space="preserve">
+    <value>Decompressing file: [{0}]</value>
+  </data>
   <data name="ParsingSmilFile" xml:space="preserve">
     <value>Parsing SMIL file [{2}] {0} / {1}...</value>
   </data>

@@ -1,16 +1,20 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Threading;
 using System.Xml;
 using System.Collections.Generic;
 using AudioLib;
-using ICSharpCode.SharpZipLib.Zip;
 
 using urakawa.core;
 using urakawa.data;
 using urakawa.xuk;
 using urakawa.property.xml;
 using urakawa.property.channel;
+
+#if ENABLE_SHARPZIP
+using ICSharpCode.SharpZipLib.Zip;
+#endif
 
 namespace urakawa.daisy.import
 {
@@ -140,8 +144,6 @@ namespace urakawa.daisy.import
         {
             if (RequestCancellation) return;
 
-            ZipInputStream zipInputStream = new ZipInputStream(File.OpenRead(m_Book_FilePath));
-
             /*string directoryName = Path.GetTempPath();
             if (!directoryName.EndsWith("" + Path.DirectorySeparatorChar))
             {
@@ -160,6 +162,8 @@ namespace urakawa.daisy.import
                 FileDataProvider.DeleteDirectory(unzipDirectory);
             }
 
+#if ENABLE_SHARPZIP
+            ZipInputStream zipInputStream = new ZipInputStream(File.OpenRead(m_Book_FilePath));
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.GetNextEntry()) != null)
             {
@@ -197,6 +201,28 @@ namespace urakawa.daisy.import
                 }
             }
             zipInputStream.Close();
+#else //ENABLE_SHARPZIP
+            ZipStorer zip = ZipStorer.Open(File.OpenRead(m_Book_FilePath), FileAccess.Read);
+
+            List<ZipStorer.ZipFileEntry> dir = zip.ReadCentralDir();
+            foreach (ZipStorer.ZipFileEntry entry in dir)
+            {
+                if (RequestCancellation) return;
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.Unzipping, entry.FilenameInZip));
+
+                string unzippedFilePath = unzipDirectory + Path.DirectorySeparatorChar + entry.FilenameInZip;
+                string unzippedFileDir = Path.GetDirectoryName(unzippedFilePath);
+                if (!Directory.Exists(unzippedFileDir))
+                {
+                    FileDataProvider.CreateDirectory(unzippedFileDir);
+                }
+
+                zip.ExtractFile(entry, unzippedFilePath);
+            }
+            //zip.Close();
+            zip.Dispose();
+#endif //ENABLE_SHARPZIP
+
 
             DirectoryInfo dirInfo = new DirectoryInfo(unzipDirectory);
             FileInfo[] opfFiles = dirInfo.GetFiles("*.opf ", SearchOption.AllDirectories);
