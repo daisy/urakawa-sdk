@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DiagramContentModelHelper.cs" />
+    <Compile Include="export\Daisy3_Export_EPUBDirectoryStructure.cs" />
     <Compile Include="export\Daisy3_Export_ImageDescription.cs" />
     <Compile Include="export\Daisy3_Export_ImageDescription_BodyContent.cs" />
     <Compile Include="export\Daisy3_Export_ImageDescription_DTBook.cs" />
