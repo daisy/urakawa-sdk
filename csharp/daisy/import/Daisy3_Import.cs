@@ -6,6 +6,7 @@ using AudioLib;
 using urakawa.data;
 using urakawa.events.progress;
 using urakawa.media.data.audio;
+using urakawa.media.data.audio.codec;
 using urakawa.property.channel;
 using urakawa.xuk;
 
@@ -153,12 +154,14 @@ namespace urakawa.daisy.import
 
             Presentation presentation = m_Project.AddNewPresentation(new Uri(m_outDirectory), Path.GetFileName(m_Book_FilePath));
 
-            PCMFormatInfo pcmFormat = presentation.MediaDataManager.DefaultPCMFormat.Copy();
+            PCMFormatInfo pcmFormat = presentation.MediaDataManager.DefaultPCMFormat; //.Copy();
             pcmFormat.Data.SampleRate = (ushort)m_audioProjectSampleRate;
             pcmFormat.Data.NumberOfChannels = m_audioStereo ? (ushort)2 : (ushort)1;
             presentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
+            
+            //presentation.MediaDataFactory.DefaultAudioMediaDataType = typeof(WavAudioMediaData);
 
-            presentation.MediaDataManager.EnforceSinglePCMFormat = true;
+            //presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
             TextChannel textChannel = presentation.ChannelFactory.CreateTextChannel();
             textChannel.Name = "The Text Channel";
