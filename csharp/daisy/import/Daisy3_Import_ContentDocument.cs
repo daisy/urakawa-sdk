@@ -201,6 +201,7 @@ namespace urakawa.daisy.import
                     //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
                    presentation.DataProviderManager.DataFileDirectoryFullPath,
                    presentation.MediaDataManager.DefaultPCMFormat,
+                   m_autoDetectPcmFormat,
                    m_SkipACM);
 
                 AddSubCancellable(m_AudioConversionSession);

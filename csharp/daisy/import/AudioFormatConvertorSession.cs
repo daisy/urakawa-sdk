@@ -65,14 +65,17 @@ namespace urakawa.daisy.import
         private readonly Dictionary<string, string> m_FilePathsMap; // maps source files to converted files
         private readonly string m_destinationDirectory;
         private readonly PCMFormatInfo m_destinationFormatInfo;
+        private readonly bool m_autoDetectPcmFormat;
 
         private readonly bool m_SkipACM;
-        public AudioFormatConvertorSession(string destinationDirectory, PCMFormatInfo destinationFormatInfo, bool skipACM)
+        public AudioFormatConvertorSession(string destinationDirectory, PCMFormatInfo destinationFormatInfo, bool autoDetectPcmFormat, bool skipACM)
         {
             if (destinationDirectory == null) throw new ArgumentNullException("destinationDirectory");
             m_destinationDirectory = destinationDirectory;
 
             m_destinationFormatInfo = destinationFormatInfo;
+
+            m_autoDetectPcmFormat = autoDetectPcmFormat;
 
             m_SkipACM = skipACM;
 
@@ -113,7 +116,9 @@ namespace urakawa.daisy.import
             {
                 string fullPath = str; // m_FilePathsMap[sourceFilePath];
                 if (File.Exists(fullPath))
+                {
                     return fullPath; // this should always be the case, unless the files have been removed from "outside" (i.e. user deleting the audio temporary directory while a session is alive)
+                }
 #if DEBUG
                 Debugger.Break();
 #endif //DEBUG
@@ -166,7 +171,7 @@ namespace urakawa.daisy.import
         //}
 
 
-        public PCMFormatInfo FirstDiscoveredPCMFormat = null;
+        public AudioLibPCMFormat FirstDiscoveredPCMFormat = null;
 
 
         /// <summary>
@@ -204,7 +209,9 @@ namespace urakawa.daisy.import
 
                                 pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
 
-                                FirstDiscoveredPCMFormat = new PCMFormatInfo(pcmInfo);
+                                //FirstDiscoveredPCMFormat = new PCMFormatInfo(pcmInfo);
+                                FirstDiscoveredPCMFormat = new AudioLibPCMFormat();
+                                FirstDiscoveredPCMFormat.CopyFrom(pcmInfo);
                             }
                             finally
                             {
@@ -219,17 +226,21 @@ namespace urakawa.daisy.import
 
                         AddSubCancellable(formatConverter1);
 
+                        // Preserve existing WAV PCM format, the call below to ConvertSampleRate detects the equality of PCM formats and copies the audio file instead of resampling.
+                        AudioLibPCMFormat pcmFormat = m_autoDetectPcmFormat ? FirstDiscoveredPCMFormat :
+                            (destinationFormatInfo != null ? destinationFormatInfo.Data : new AudioLibPCMFormat());
+
+
                         string result = null;
                         try
                         {
                             AudioLibPCMFormat originalPcmFormat;
                             result = formatConverter1.ConvertSampleRate(SourceFilePath, destinationDirectory,
-                                                                        destinationFormatInfo != null
-                                                                            ? destinationFormatInfo.Data
-                                                                            : new AudioLibPCMFormat(), out originalPcmFormat);
+                                                                        pcmFormat,
+                                                                        out originalPcmFormat);
                             if (originalPcmFormat != null && FirstDiscoveredPCMFormat != null)
                             {
-                                DebugFix.Assert(FirstDiscoveredPCMFormat.Data.Equals(originalPcmFormat));
+                                DebugFix.Assert(FirstDiscoveredPCMFormat.Equals(originalPcmFormat));
                             }
                         }
                         finally
@@ -239,6 +250,7 @@ namespace urakawa.daisy.import
 
                         return result;
                     }
+                case AudioFileType.Mp4_AAC:
                 case AudioFileType.Mp3:
                     {
                         WavFormatConverter formatConverter2 = new WavFormatConverter(true, skipACM);
@@ -248,13 +260,32 @@ namespace urakawa.daisy.import
                         string result = null;
                         try
                         {
+                            AudioLibPCMFormat pcmFormat = m_autoDetectPcmFormat ? FirstDiscoveredPCMFormat : // can be null!
+                               (destinationFormatInfo != null ? destinationFormatInfo.Data : new AudioLibPCMFormat());
+
                             AudioLibPCMFormat originalPcmFormat;
-                            result = formatConverter2.UnCompressMp3File(SourceFilePath, destinationDirectory, destinationFormatInfo != null ? destinationFormatInfo.Data : null, out originalPcmFormat);
+                            if (sourceFileType == AudioFileType.Mp3)
+                            {
+                                result = formatConverter2.UnCompressMp3File(SourceFilePath, destinationDirectory,
+                                pcmFormat,
+                                out originalPcmFormat);
+                            }
+                            else
+                            {
+                                DebugFix.Assert(sourceFileType == AudioFileType.Mp4_AAC);
+
+                                result = formatConverter2.UnCompressMp4_AACFile(SourceFilePath, destinationDirectory,
+                                    pcmFormat,
+                                    out originalPcmFormat);
+                            }
+
                             if (originalPcmFormat != null)
                             {
                                 if (FirstDiscoveredPCMFormat == null)
                                 {
-                                    FirstDiscoveredPCMFormat = new PCMFormatInfo(originalPcmFormat);
+                                    //FirstDiscoveredPCMFormat = new PCMFormatInfo(originalPcmFormat);
+                                    FirstDiscoveredPCMFormat = new AudioLibPCMFormat();
+                                    FirstDiscoveredPCMFormat.CopyFrom(originalPcmFormat);
                                 }
                             }
                         }
@@ -265,30 +296,7 @@ namespace urakawa.daisy.import
 
                         return result;
                     }
-                case AudioFileType.Mp4_AAC:
-                    {
-                        WavFormatConverter formatConverter2 = new WavFormatConverter(true, skipACM);
-
-                        AddSubCancellable(formatConverter2);
-
-                        string result = null;
-                        try
-                        {
-                            AudioLibPCMFormat originalPcmFormat;
-                            result = formatConverter2.UnCompressMp4_AACFile(SourceFilePath, destinationDirectory, destinationFormatInfo != null ? destinationFormatInfo.Data : null, out originalPcmFormat);
-                            if (FirstDiscoveredPCMFormat == null)
-                            {
-                                FirstDiscoveredPCMFormat = new PCMFormatInfo(originalPcmFormat);
-                            }
-                        }
-                        finally
-                        {
-                            RemoveSubCancellable(formatConverter2);
-                        }
-
-                        return result;
-                    }
-
+                
                 default:
                     throw new Exception("Source file format not supported");
             }
@@ -310,7 +318,8 @@ namespace urakawa.daisy.import
             if (DataProviderFactory.AUDIO_MP3_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
                 sourceFileType = AudioFileType.Mp3;
-            } if (DataProviderFactory.AUDIO_MP4_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
+            }
+            if (DataProviderFactory.AUDIO_MP4_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
                 sourceFileType = AudioFileType.Mp4_AAC;
             }

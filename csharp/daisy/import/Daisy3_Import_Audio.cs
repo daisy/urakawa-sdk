@@ -41,6 +41,7 @@ namespace urakawa.daisy.import
                 //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
                 m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath,
                 m_Project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat,
+                m_autoDetectPcmFormat,
                 m_SkipACM);
             AddSubCancellable(m_AudioConversionSession);
 
@@ -296,7 +297,9 @@ namespace urakawa.daisy.import
 
                             if (m_AudioConversionSession.FirstDiscoveredPCMFormat == null)
                             {
-                                m_AudioConversionSession.FirstDiscoveredPCMFormat = new PCMFormatInfo(pcmInfo);
+                                //m_AudioConversionSession.FirstDiscoveredPCMFormat = new PCMFormatInfo(pcmInfo);
+                                m_AudioConversionSession.FirstDiscoveredPCMFormat = new AudioLibPCMFormat();
+                                m_AudioConversionSession.FirstDiscoveredPCMFormat.CopyFrom(pcmInfo);
                             }
 
 
@@ -587,6 +590,10 @@ namespace urakawa.daisy.import
             return null;
         }
 
+        protected virtual void clipEndAdjustedToNull(Time clipB, Time clipE, Time duration, TreeNode treeNode)
+        {
+        }
+
         private ManagedAudioMedia addAudioWav(FileDataProvider dataProv, XmlNode audioAttrClipBegin, XmlNode audioAttrClipEnd, TreeNode treeNode)
         {
             if (RequestCancellation) return null;
@@ -644,6 +651,7 @@ namespace urakawa.daisy.import
             Time newClipE = clipE.Copy();
             if (newClipE.IsGreaterThan(wavClip.MediaDuration))
             {
+                clipEndAdjustedToNull(clipB, newClipE, wavClip.MediaDuration, treeNode);
                 //newClipE = wavClip.MediaDuration;
                 newClipE = null;
             }

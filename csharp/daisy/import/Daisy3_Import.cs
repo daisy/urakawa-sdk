@@ -42,13 +42,15 @@ namespace urakawa.daisy.import
         private readonly bool m_SkipACM;
         protected readonly SampleRate m_audioProjectSampleRate;
         protected readonly bool m_audioStereo;
-        public Daisy3_Import(string bookfile, string outDir, bool skipACM, SampleRate audioProjectSampleRate, bool stereo, bool xukPrettyFormat)
+        protected readonly bool m_autoDetectPcmFormat;
+        public Daisy3_Import(string bookfile, string outDir, bool skipACM, SampleRate audioProjectSampleRate, bool stereo, bool autoDetectPcmFormat, bool xukPrettyFormat)
         {
             m_XukPrettyFormat = xukPrettyFormat;
 
             m_SkipACM = skipACM;
             m_audioProjectSampleRate = audioProjectSampleRate;
             m_audioStereo = stereo;
+            m_autoDetectPcmFormat = autoDetectPcmFormat;
 
             reportProgress(10, UrakawaSDK_daisy_Lang.InitializeImport);
 
