@@ -596,6 +596,17 @@ namespace urakawa.daisy.import
 
         private ManagedAudioMedia addAudioWav(FileDataProvider dataProv, XmlNode audioAttrClipBegin, XmlNode audioAttrClipEnd, TreeNode treeNode)
         {
+            if (m_autoDetectPcmFormat
+                && m_AudioConversionSession.FirstDiscoveredPCMFormat != null
+                && !m_AudioConversionSession.FirstDiscoveredPCMFormat.IsCompatibleWith(treeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data))
+            {
+                PCMFormatInfo pcmFormat = treeNode.Presentation.MediaDataManager.DefaultPCMFormat; //.Copy();
+                pcmFormat.Data.CopyFrom(m_AudioConversionSession.FirstDiscoveredPCMFormat);
+                //pcmFormat.Data.SampleRate = (ushort) m_audioProjectSampleRate;
+                //pcmFormat.Data.NumberOfChannels = m_audioStereo ? (ushort) 2 : (ushort) 1;
+                //treeNode.Presentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
+            }
+
             if (RequestCancellation) return null;
 
             Time clipB = Time.Zero;
