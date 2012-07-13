@@ -114,7 +114,7 @@ namespace urakawa.media.data.audio.codec
     /// </summary>
     public class WavClip : Clip, IValueEquatable<WavClip>
     {
-        struct PcmFormatAndTime
+        public struct PcmFormatAndTime
         {
             public AudioLibPCMFormat mFormat;
             public Time mTime;
