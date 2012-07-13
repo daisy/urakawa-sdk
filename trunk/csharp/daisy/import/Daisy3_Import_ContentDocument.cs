@@ -111,7 +111,7 @@ namespace urakawa.daisy.import
                     DebugFix.Assert(ext.Equals(".svg", StringComparison.OrdinalIgnoreCase));
 
                     bool notExistYet = true;
-                    foreach (var externalFileData in m_Project.Presentations.Get(0).ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
+                    foreach (ExternalFiles.ExternalFileData externalFileData in m_Project.Presentations.Get(0).ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
                     {
                         if (!string.IsNullOrEmpty(externalFileData.OriginalRelativePath))
                         {
@@ -241,12 +241,12 @@ namespace urakawa.daisy.import
                 }
 
 
-                foreach (var metadata in m_Project.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
+                foreach (Metadata metadata in m_Project.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                 {
                     Metadata md = presentation.MetadataFactory.CreateMetadata();
                     md.NameContentAttribute = metadata.NameContentAttribute.Copy();
 
-                    foreach (var metadataAttribute in metadata.OtherAttributes.ContentsAs_Enumerable)
+                    foreach (MetadataAttribute metadataAttribute in metadata.OtherAttributes.ContentsAs_Enumerable)
                     {
                         MetadataAttribute mdAttr = metadataAttribute.Copy();
                         md.OtherAttributes.Insert(md.OtherAttributes.Count, mdAttr);
