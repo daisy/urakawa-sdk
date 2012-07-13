@@ -158,7 +158,7 @@
       <Name>NAudio</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoundTouch.NET\SoundTouch.Net.csproj">
-      <Project>{EA570592-1FAB-412F-AA0C-159C947608CD}</Project>
+      <Project>{ea570592-1fab-412f-aa0c-159c947608cd}</Project>
       <Name>SoundTouch.Net</Name>
     </ProjectReference>
   </ItemGroup>
