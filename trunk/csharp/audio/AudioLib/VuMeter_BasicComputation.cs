@@ -80,8 +80,9 @@ namespace AudioLib
             //}
 
             int index = 0;
-            foreach (double peak in peakDb)
+            for (int i = 0; i < peakDb.Length; i++)
             {
+                double peak = peakDb[i];
                 index++;
                 if (peak < 0)
                 {
@@ -146,8 +147,9 @@ namespace AudioLib
             //}
 
             int index = 0;
-            foreach (double peak in peakDb)
+            for (int i = 0; i < peakDb.Length; i++)
             {
+                double peak = peakDb[i];
                 index++;
                 if (peak < 0)
                 {
@@ -260,7 +262,11 @@ namespace AudioLib
             {
                 m_PeakDb[channelIndex] = 20 * Math.Log10(m_PeakDb[channelIndex] / halfFull);
             }
-            if (EnableAudioLevelAlerts) ComputeAverageValues(pcmFormat);
+
+            if (EnableAudioLevelAlerts)
+            {
+                ComputeAverageValues(pcmFormat);
+            }
 
             return m_PeakDb;
         }
