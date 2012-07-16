@@ -47,6 +47,12 @@ namespace urakawa.daisy.export
         protected readonly SampleRate m_sampleRate;
         protected readonly bool m_audioStereo;
 
+        protected readonly ushort m_BitRate_Mp3 = 64;
+        //public ushort BitRate_Mp3
+        //{
+        //    get { return m_BitRate_Mp3; }
+        //    set { m_BitRate_Mp3 = value; }
+        //}
 
         /// <summary>
         /// initializes instance with presentation and list of element names for which navList will be created, 
@@ -94,12 +100,6 @@ namespace urakawa.daisy.export
 
         }
 
-        private ushort m_BitRate_Mp3 = 64;
-        //public ushort BitRate_Mp3
-        //{
-        //    get { return m_BitRate_Mp3; }
-        //    set { m_BitRate_Mp3 = value; }
-        //}
 
         //private bool m_EnableExplicitGarbageCollection = true ;
         //public bool EnableExplicitGarbageCollection
