@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Security;
 using System.Threading;
@@ -36,7 +37,7 @@ namespace AudioLib
 #if !USE_SLIMDX
         private Notify m_Notify;
 #endif
-        private long m_TotalRecordedBytes;
+        private ulong m_TotalRecordedBytes;
 
 
         public AudioRecorder()
@@ -286,7 +287,7 @@ namespace AudioLib
             }
         }
 
-        public long CurrentDurationBytePosition_BufferLookAhead
+        public ulong CurrentDurationBytePosition_BufferLookAhead
         {
             get
             {
@@ -333,7 +334,7 @@ namespace AudioLib
             }
         }
 
-        public long CurrentDurationBytePosition
+        public ulong CurrentDurationBytePosition
         {
             get
             {
@@ -657,7 +658,22 @@ namespace AudioLib
              */
             //DebugFix.Assert(circularBufferBytesAvailableForReading == incomingPcmData.Length);
 
-            m_TotalRecordedBytes += incomingPcmData.Length;
+            if (m_TotalRecordedBytes >= (ulong.MaxValue - (ulong)incomingPcmData.Length))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+
+                // Oh oh! :(
+                if (CurrentState == State.Monitoring)
+                {
+                    m_TotalRecordedBytes = 0;
+                }
+            }
+            else
+            {
+                m_TotalRecordedBytes += (ulong)incomingPcmData.Length;
+            }
 
             m_CircularBufferReadPositon += incomingPcmData.Length;
             m_CircularBufferReadPositon %= sizeBytes;
@@ -671,7 +687,7 @@ namespace AudioLib
                     m_RecordingFileWriter = new BinaryWriter(File.OpenWrite(m_RecordedFilePath));
                 }
 
-                m_RecordingFileWriter.BaseStream.Position = m_TotalRecordedBytes +
+                m_RecordingFileWriter.BaseStream.Position = (long)m_TotalRecordedBytes +
                                                             (long)m_RecordedFileRiffHeaderSize;
                 // m_RecordingFileWriter.BaseStream.Length;
                 m_RecordingFileWriter.Write(incomingPcmData, 0, incomingPcmData.Length);
