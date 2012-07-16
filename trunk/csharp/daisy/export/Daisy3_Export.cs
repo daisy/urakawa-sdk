@@ -37,15 +37,16 @@ namespace urakawa.daisy.export
         protected List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
         protected Time m_TotalTime;
 
-        protected TreeNodeTestDelegate m_TriggerDelegate ;
-protected TreeNodeTestDelegate m_SkipDelegate ;
-        
+        protected TreeNodeTestDelegate m_TriggerDelegate;
+        protected TreeNodeTestDelegate m_SkipDelegate;
+
         protected readonly bool m_SkipACM;
         private readonly bool m_encodeToMp3;
         private readonly bool m_includeImageDescriptions;
-        
+
         protected readonly SampleRate m_sampleRate;
-        
+        protected readonly bool m_audioStereo;
+
 
         /// <summary>
         /// initializes instance with presentation and list of element names for which navList will be created, 
@@ -53,12 +54,20 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
         /// </summary>
         /// <param name="presentation"></param>
         /// <param name="navListElementNamesList"></param>
-        public Daisy3_Export(Presentation presentation, string exportDirectory, List<string> navListElementNamesList, bool encodeToMp3, SampleRate sampleRate, bool skipACM, bool includeImageDescriptions)
+        public Daisy3_Export(Presentation presentation,
+            string exportDirectory,
+            List<string> navListElementNamesList,
+            bool encodeToMp3, ushort bitRate_Mp3,
+            SampleRate sampleRate, bool stereo,
+            bool skipACM,
+            bool includeImageDescriptions)
         {
             m_includeImageDescriptions = includeImageDescriptions;
             m_encodeToMp3 = encodeToMp3;
             m_sampleRate = sampleRate;
+            m_audioStereo = stereo;
             m_SkipACM = skipACM;
+            m_BitRate_Mp3 = bitRate_Mp3;
 
             RequestCancellation = false;
             if (!Directory.Exists(exportDirectory))
@@ -85,12 +94,12 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
 
         }
 
-        private int m_BitRate_Mp3;
-        public int BitRate_Mp3
-        {
-            get { return m_BitRate_Mp3; }
-            set { m_BitRate_Mp3 = value; }
-        }
+        private ushort m_BitRate_Mp3 = 64;
+        //public ushort BitRate_Mp3
+        //{
+        //    get { return m_BitRate_Mp3; }
+        //    set { m_BitRate_Mp3 = value; }
+        //}
 
         //private bool m_EnableExplicitGarbageCollection = true ;
         //public bool EnableExplicitGarbageCollection
@@ -105,8 +114,8 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
         //    }
         //}
 
-        public virtual void ConfigureAudioFileDelegates ()
-        {   
+        public virtual void ConfigureAudioFileDelegates()
+        {
             m_TriggerDelegate = doesTreeNodeTriggerNewSmil;
             m_SkipDelegate = delegate { return false; };
         }
@@ -115,32 +124,32 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
         {
             //try
             //{
-                m_FilesList_Image = new List<string>();
-                m_FilesList_Video = new List<string>();
-                m_FilesList_ExternalFiles = new List<string>();
-                RequestCancellation = false;
+            m_FilesList_Image = new List<string>();
+            m_FilesList_Video = new List<string>();
+            m_FilesList_ExternalFiles = new List<string>();
+            RequestCancellation = false;
 
 
-                m_ID_Counter = 0;
-                if (RequestCancellation) return;
+            m_ID_Counter = 0;
+            if (RequestCancellation) return;
 
 
-                Channel publishChannel = PublishAudioFiles();
+            Channel publishChannel = PublishAudioFiles();
 
-                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                CreateDTBookDocument();
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+            CreateDTBookDocument();
 
-                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                CreateNcxAndSmilDocuments();
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+            CreateNcxAndSmilDocuments();
 
-                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                CreateExternalFiles();
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+            CreateExternalFiles();
 
-                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                CreateOpfDocument();
+            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+            CreateOpfDocument();
 
-                //m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
-                RemovePublishChannel(publishChannel);
+            //m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
+            RemovePublishChannel(publishChannel);
             //}
             //catch (System.Exception ex)
             //{
@@ -172,8 +181,12 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
             m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(m_TriggerDelegate, m_SkipDelegate);
 
             m_PublishVisitor.EncodePublishedAudioFilesToMp3 = m_encodeToMp3;
-            if (m_encodeToMp3 && m_BitRate_Mp3 >= 32) m_PublishVisitor.BitRate_Mp3 = (ushort)m_BitRate_Mp3;
+            if (m_encodeToMp3) // && m_BitRate_Mp3 >= 32)
+            {
+                m_PublishVisitor.BitRate_Mp3 = m_BitRate_Mp3;
+            }
             m_PublishVisitor.EncodePublishedAudioFilesSampleRate = m_sampleRate;
+            m_PublishVisitor.EncodePublishedAudioFilesStereo = m_audioStereo;
             m_PublishVisitor.DisableAcmCodecs = m_SkipACM;
 
             m_PublishVisitor.DestinationDirectory = new Uri(m_OutputDirectory, UriKind.Absolute);
@@ -212,7 +225,7 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
             return publishChannel;
         }
 
-        protected void RemovePublishChannel (Channel publishChannel )
+        protected void RemovePublishChannel(Channel publishChannel)
         {
             m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
         }
@@ -226,13 +239,13 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
             }
             return false;
         }
-//        private int m_ProgressPercentage;
-//        private void ReportAudioPublishProgress(object sender, ProgressChangedEventArgs e)
-//        {
-//            //m_ProgressPercentage = Convert.ToInt32(e.ProgressPercentage * 0.85);
-//        m_ProgressPercentage = Convert.ToInt32 ( e.ProgressPercentage  );
-////            reportProgress(m_ProgressPercentage, (string)e.UserState);
-//        }
+        //        private int m_ProgressPercentage;
+        //        private void ReportAudioPublishProgress(object sender, ProgressChangedEventArgs e)
+        //        {
+        //            //m_ProgressPercentage = Convert.ToInt32(e.ProgressPercentage * 0.85);
+        //        m_ProgressPercentage = Convert.ToInt32 ( e.ProgressPercentage  );
+        ////            reportProgress(m_ProgressPercentage, (string)e.UserState);
+        //        }
 
         protected virtual bool doesTreeNodeTriggerNewSmil(TreeNode node)
         {
@@ -275,7 +288,7 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
             return prefix + strNumericFrag;
         }
 
-        private bool m_AddSectionNameToAudioFile =false ;
+        private bool m_AddSectionNameToAudioFile = false;
         public bool AddSectionNameToAudioFile
         {
             get
@@ -290,11 +303,11 @@ protected TreeNodeTestDelegate m_SkipDelegate ;
 
         protected string AddSectionNameToAudioFileName(string externalAudioSrc, string sectionName)
         {
-            string audioFileName = Path.GetFileNameWithoutExtension (externalAudioSrc) + "_" + FileDataProvider.EliminateForbiddenFileNameCharacters (sectionName.Replace(" ", "_")) + Path.GetExtension(externalAudioSrc) ;
-            string source = Path.Combine(m_OutputDirectory,Path.GetFileName( externalAudioSrc));
+            string audioFileName = Path.GetFileNameWithoutExtension(externalAudioSrc) + "_" + FileDataProvider.EliminateForbiddenFileNameCharacters(sectionName.Replace(" ", "_")) + Path.GetExtension(externalAudioSrc);
+            string source = Path.Combine(m_OutputDirectory, Path.GetFileName(externalAudioSrc));
             string dest = Path.Combine(m_OutputDirectory, audioFileName);
-            
-            if (File.Exists(source))  File.Move(source, dest);
+
+            if (File.Exists(source)) File.Move(source, dest);
             return audioFileName;
         }
 

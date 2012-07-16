@@ -45,8 +45,10 @@ namespace urakawa.daisy.export.visitor
             if (RequestCancellation) return;
             if (m_ExternalAudioMediaList.Count > 0)
             {
-                if ((ushort)base.EncodePublishedAudioFilesSampleRate
-                    != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate)
+                ushort nChannels = (ushort)(base.EncodePublishedAudioFilesStereo ? 2 : 1);
+                if ((ushort)base.EncodePublishedAudioFilesSampleRate != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
+                    ||
+                    nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels)
                 {
                     if (base.EncodePublishedAudioFilesToMp3)
                     {
@@ -142,6 +144,7 @@ namespace urakawa.daisy.export.visitor
             AudioLibPCMFormat pcmFormat = new AudioLibPCMFormat();
             pcmFormat.CopyFrom(audioFormat.Data);
             pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
+            pcmFormat.NumberOfChannels = (ushort)(base.EncodePublishedAudioFilesStereo ? 2 : 1);
 
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, DisableAcmCodecs);
 
@@ -192,10 +195,8 @@ namespace urakawa.daisy.export.visitor
 
             PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
             AudioLibPCMFormat pcmFormat = audioFormat.Data;
-            if ((ushort)base.EncodePublishedAudioFilesSampleRate != pcmFormat.SampleRate)
-            {
-                pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
-            }
+            pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
+            pcmFormat.NumberOfChannels = (ushort)(base.EncodePublishedAudioFilesStereo ? 2 : 1);
 
             AddSubCancellable(formatConverter);
 
@@ -390,11 +391,12 @@ namespace urakawa.daisy.export.visitor
 
             ExternalAudioMedia extAudioMedia = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
 
+            ushort nChannels = (ushort)(EncodePublishedAudioFilesStereo ? 2 : 1);
             if ((EncodePublishedAudioFilesToMp3
                 ||
-                (ushort)EncodePublishedAudioFilesSampleRate
-                    != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate)
-
+                (ushort)EncodePublishedAudioFilesSampleRate != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
+                || nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels
+                )
                 && !m_ExternalAudioMediaList.Contains(extAudioMedia))
             {
                 m_ExternalAudioMediaList.Add(extAudioMedia);
@@ -539,12 +541,14 @@ m_Stream;
                 //long bytesEnd = bytesBegin + marker.m_LocalStreamDataLength;
 
                 ExternalAudioMedia extAudioMedia = marker.m_TreeNode.Presentation.MediaFactory.Create<ExternalAudioMedia>();
+                
+                ushort nChannels = (ushort)(EncodePublishedAudioFilesStereo ? 2 : 1);
 
                 if ((EncodePublishedAudioFilesToMp3
                 ||
-                (ushort)EncodePublishedAudioFilesSampleRate
-                    != marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate)
-
+                (ushort)EncodePublishedAudioFilesSampleRate != marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
+                || nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels
+                )
                     && !m_ExternalAudioMediaList.Contains(extAudioMedia))
                 {
                     m_ExternalAudioMediaList.Add(extAudioMedia);
@@ -714,7 +718,7 @@ m_Stream;
                             {
                                 DebugFix.Assert(pcmInfo.IsCompatibleWith(manMedia.AudioMediaData.PCMFormat.Data));
                             }
-                                    
+
 #if ENABLE_SEQ_MEDIA
 
                             if (seqMedia != null)
