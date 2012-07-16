@@ -7,20 +7,20 @@ namespace AudioLib
 {
     public enum Mp3BitRate : ushort
     {
-        kbps_32 = 32,
+        kbps_32 = 32, //
         kbps_40 = 40,
-        kbps_48 = 48,
+        kbps_48 = 48, //
         kbps_56 = 56,
-        kbps_64 = 64,
+        kbps_64 = 64, //
         kbps_80 = 80,
         kbps_96 = 96,
         kbps_112 = 112,
-        kbps_128 = 128,
+        kbps_128 = 128, // 
         kbps_160 = 160,
-        kbps_196 = 196,
+        kbps_196 = 196, //
         kbps_224 = 224,
         kbps_256 = 256,
-        kbps_320 = 320
+        kbps_320 = 320 //
     }
     public enum SampleRate : ushort
     {
