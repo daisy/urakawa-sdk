@@ -164,6 +164,18 @@ namespace urakawa.daisy.export.visitor
                 m_EncodePublishedAudioFilesSampleRate = value;
             }
         }
+        private bool m_EncodePublishedAudioFilesStereo = false;
+        public bool EncodePublishedAudioFilesStereo
+        {
+            get
+            {
+                return m_EncodePublishedAudioFilesStereo;
+            }
+            set
+            {
+                m_EncodePublishedAudioFilesStereo = value;
+            }
+        }
 
 
         private ushort m_BitRate_Mp3 = 64;
