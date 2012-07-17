@@ -30,7 +30,8 @@ namespace urakawa.core
             string localName = GetXmlElementPrefixedLocalName();
             String str = (localName != null ? localName : "NO XML");
             str += " /// ";
-            str += GetTextFlattened();
+            string txt = GetTextFlattened();
+            str += txt;
             return str;
         }
 
