@@ -546,8 +546,10 @@ namespace urakawa.property.xml
                 if (noNamespaceSpecified)
                 {
                     bool namesMatch = string.IsNullOrEmpty(prefix) ?
-                        name == attrLocalName :
-                        name == attr.LocalName;
+                        //name == attrLocalName :
+                        //name == attr.LocalName;
+                    name.Equals(attrLocalName, StringComparison.OrdinalIgnoreCase) :
+                    name.Equals(attr.LocalName, StringComparison.OrdinalIgnoreCase);
 
                     if (attr.GetNamespaceUri() == nsUri
                         && namesMatch)
@@ -558,7 +560,9 @@ namespace urakawa.property.xml
                 else
                 {
                     if (attr.GetNamespaceUri() == namespaceUri
-                        && attrLocalName == localName)
+                        && attrLocalName.Equals(localName, StringComparison.OrdinalIgnoreCase)
+                        //&& attrLocalName == localName
+                        )
                     {
                         return attr;
                     }
@@ -574,8 +578,10 @@ namespace urakawa.property.xml
                     string attrLocalName = attr.PrefixedLocalName != null ? attr.PrefixedLocalName : attr.LocalName;
 
                     bool namesMatch = string.IsNullOrEmpty(prefix) ?
-                        name == attrLocalName :
-                        name == attr.LocalName;
+                        //name == attrLocalName :
+                        //name == attr.LocalName;
+                    name.Equals(attrLocalName, StringComparison.OrdinalIgnoreCase) :
+                    name.Equals(attr.LocalName, StringComparison.OrdinalIgnoreCase);
 
                     if (namesMatch)
                     {
@@ -598,6 +604,7 @@ namespace urakawa.property.xml
             //}
             //return null;
         }
+
         public XmlAttribute GetAttribute(string localName)
         {
             return GetAttribute(localName, null);
