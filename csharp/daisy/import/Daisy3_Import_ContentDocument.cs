@@ -290,7 +290,8 @@ namespace urakawa.daisy.import
 #if DEBUG
                             else
                             {
-                                Debugger.Break();
+                                //Debugger.Break();
+                                bool debug = true;
                             }
 #endif //DEBUG
                         }
