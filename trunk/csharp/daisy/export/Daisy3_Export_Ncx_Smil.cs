@@ -249,6 +249,8 @@ namespace urakawa.daisy.export
                     externalAudio != null
                     || nodeIsImageAndHasDescriptionProdnotes
                     ||
+                    (externalAudio == null && n.GetFirstAncestorWithManagedAudio () == null && n.GetTextMedia () != null )
+                    ||
                     (
                     n.GetTextMedia() != null
                     && special_UrakawaNode != null
@@ -280,7 +282,7 @@ namespace urakawa.daisy.export
                 if (n.HasXmlProperty
                     &&
                     (externalAudio != null
-                    || n.GetFirstAncestorWithManagedAudio() == null)
+                    || n.GetFirstAncestorWithManagedAudio() == null) //write the element with text but no audio to smil
                     )
                 {
                     XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
