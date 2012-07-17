@@ -802,7 +802,12 @@ namespace urakawa.core
 
         public string GetTextFlattened()
         {
-            return ConcatStringChunks(GetTextFlattened_(), -1, null);
+            StringChunkRange range = GetTextFlattened_();
+            if (range == null)
+            {
+                return string.Empty;
+            }
+            return ConcatStringChunks(range, -1, null);
         }
 
         public StringChunkRange GetTextFlattened_()
