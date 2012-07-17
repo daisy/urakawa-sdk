@@ -79,12 +79,18 @@ namespace urakawa.daisy.import
                     if ((xAttr.Name.Equals("href", StringComparison.OrdinalIgnoreCase)
                         || xAttr.Name.Equals("src", StringComparison.OrdinalIgnoreCase))
                         && !string.IsNullOrEmpty(xAttr.Value)
-                        && !externalFileRelativePaths.Contains(Path.GetFullPath(xAttr.Value)))
+                        && !FileDataProvider.isHTTPFile(xAttr.Value))
                     {
-                        ExternalFiles.ExternalFileData extData = CreateAndAddExternalFileData(book_FilePath, project, xAttr.Value);
-                        if (extData != null)
+                        string pathFromAttr = Path.GetFullPath(xAttr.Value);
+
+                        if (!externalFileRelativePaths.Contains(pathFromAttr))
                         {
-                            externalFileRelativePaths.Add(Path.GetFullPath(extData.OriginalRelativePath));
+                            ExternalFiles.ExternalFileData extData = CreateAndAddExternalFileData(book_FilePath, project,
+                                                                                                  xAttr.Value);
+                            if (extData != null)
+                            {
+                                externalFileRelativePaths.Add(Path.GetFullPath(extData.OriginalRelativePath));
+                            }
                         }
                     }
                 }
