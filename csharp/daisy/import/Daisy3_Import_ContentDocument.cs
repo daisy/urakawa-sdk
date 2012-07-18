@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
 using AudioLib;
+using DtdSharp;
 using urakawa.core;
 using urakawa.data;
 using urakawa.events.progress;
@@ -324,7 +326,7 @@ namespace urakawa.daisy.import
                 }
 
                 // TODO: return hierarchical outline where each node points to a XUK relative path, + XukAble.Uid (TreeNode are not corrupted during XukAbleManager.RegenerateUids();
-                parseContentDocument(fullDocPath, project, bodyElement, null, fullDocPath);
+                parseContentDocument(fullDocPath, project, bodyElement, null, fullDocPath, null);
 
 
                 foreach (KeyValuePair<string, string> spineItemAttribute in spineItemsAttributes[index])
@@ -545,7 +547,9 @@ namespace urakawa.daisy.import
             return null;
         }
 
-        protected virtual void parseContentDocument(string book_FilePath, Project project, XmlNode xmlNode, TreeNode parentTreeNode, string filePath)
+        private Dictionary<string, List<string>> m_listOfMixedContentXmlElementNames = new Dictionary<string, List<string>>();
+
+        protected virtual void parseContentDocument(string book_FilePath, Project project, XmlNode xmlNode, TreeNode parentTreeNode, string filePath, string dtdUniqueResourceId)
         {
             Presentation presentation = project.Presentations.Get(0);
 
@@ -562,6 +566,62 @@ namespace urakawa.daisy.import
                 case XmlNodeType.Document:
                     {
                         XmlDocument xmlDoc = ((XmlDocument)xmlNode);
+
+                        //xmlNode.OwnerDocument
+                        string dtdID = xmlDoc.DocumentType == null ? string.Empty
+                        : !string.IsNullOrEmpty(xmlDoc.DocumentType.SystemId) ? xmlDoc.DocumentType.SystemId
+                        : !string.IsNullOrEmpty(xmlDoc.DocumentType.PublicId) ? xmlDoc.DocumentType.PublicId
+                        : xmlDoc.DocumentType.Name;
+
+                        if (!string.IsNullOrEmpty(dtdID) && !dtdID.StartsWith(@"http://"))
+                        {
+                            dtdID = @"http://www.daisy.org/" + dtdID;
+                        }
+
+                        if (!string.IsNullOrEmpty(dtdID))
+                        {
+                            Stream dtdStream = LocalXmlUrlResolver.mapUri(new Uri(dtdID, UriKind.Absolute), out dtdUniqueResourceId);
+
+                            if (!string.IsNullOrEmpty(dtdUniqueResourceId))
+                            {
+                                DebugFix.Assert(dtdStream != null);
+
+                                List<string> list;
+                                m_listOfMixedContentXmlElementNames.TryGetValue(dtdUniqueResourceId, out list);
+
+                                if (list == null)
+                                {
+                                    if (dtdStream != null)
+                                    {
+                                        list = new List<string>();
+                                        m_listOfMixedContentXmlElementNames.Add(dtdUniqueResourceId, list);
+
+                                        initMixedContentXmlElementNamesFromDTD(dtdUniqueResourceId, dtdStream);
+                                    }
+                                    else
+                                    {
+#if DEBUG
+                                        Debugger.Break();
+#endif
+                                    }
+                                }
+                                else
+                                {
+                                    if (dtdStream != null)
+                                    {
+                                        dtdStream.Close();
+                                    }
+                                }
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+
+
                         XmlNodeList styleSheetNodeList = xmlDoc.SelectNodes
                                                       ("/processing-instruction(\"xml-stylesheet\")");
                         if (styleSheetNodeList != null && styleSheetNodeList.Count > 0)
@@ -633,7 +693,7 @@ namespace urakawa.daisy.import
                                 dtdEfd.InitializeWithData(ms, INTERNAL_DTD_NAME, false);
                             }
 
-                            parseContentDocument(book_FilePath, project, bodyElement, parentTreeNode, filePath);
+                            parseContentDocument(book_FilePath, project, bodyElement, parentTreeNode, filePath, dtdUniqueResourceId);
 
                             //Presentation presentation = m_Project.Presentations.Get(0);
                             if (presentation.RootNode != null)
@@ -1124,8 +1184,53 @@ namespace urakawa.daisy.import
                         if (RequestCancellation) return;
                         foreach (XmlNode childXmlNode in xmlNode.ChildNodes)
                         {
-                            parseContentDocument(book_FilePath, project, childXmlNode, treeNode, filePath);
+                            parseContentDocument(book_FilePath, project, childXmlNode, treeNode, filePath, dtdUniqueResourceId);
                         }
+
+                        if (treeNode.Children.Count > 1)
+                        {
+                            //TODO: merge contiguous text-only nodes with interspersed XML nodes?
+                            bool allChildrenAreTextNodes = true;
+                            foreach (TreeNode childTreeNode in treeNode.Children.ContentsAs_Enumerable)
+                            {
+                                if (childTreeNode.GetXmlProperty() != null)
+                                {
+                                    allChildrenAreTextNodes = false;
+                                    break;
+                                }
+                            }
+                            if (allChildrenAreTextNodes)
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif //DEBUG
+                                TreeNode first = null;
+                                List<TreeNode> list = treeNode.Children.ContentsAs_ListCopy;
+                                foreach (TreeNode childTreeNode in list)
+                                {
+                                    AbstractTextMedia textMedia = childTreeNode.GetTextMedia();
+                                    if (textMedia == null)
+                                    {
+#if DEBUG
+                                        Debugger.Break();
+#endif //DEBUG
+                                        continue;
+                                    }
+
+                                    DebugFix.Assert(!string.IsNullOrEmpty(textMedia.Text));
+
+                                    if (first == null)
+                                    {
+                                        first = childTreeNode;
+                                        continue;
+                                    }
+
+                                    first.GetTextMedia().Text += textMedia.Text;
+                                    treeNode.Children.Remove(childTreeNode);
+                                }
+                            }
+                        }
+
                         break;
                     }
                 case XmlNodeType.Whitespace:
@@ -1133,10 +1238,26 @@ namespace urakawa.daisy.import
                 case XmlNodeType.SignificantWhitespace:
                 case XmlNodeType.Text:
                     {
-                        string textRepresentation = xmlNode.Value;
+                        bool preserveTextAsIs =
+                            xmlType == XmlNodeType.CDATA
+                            ||
+                        xmlNode.ParentNode != null &&
+                        (xmlNode.ParentNode.LocalName == @"script"
+                         || xmlNode.ParentNode.LocalName == @"pre"
+                         || xmlNode.ParentNode.LocalName == @"style");
+
+                        string text = xmlNode.Value;
+
+                        if (string.IsNullOrEmpty(text))
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif // DEBUG
+                            break; // switch+case
+                        }
 
 #if DEBUG
-                        if (xmlType != XmlNodeType.Whitespace)
+                        if (xmlType == XmlNodeType.CDATA || xmlType == XmlNodeType.Text)
                         {
                             //Identical for text nodes
                             Debug.Assert(xmlNode.Value == xmlNode.InnerText);
@@ -1145,98 +1266,127 @@ namespace urakawa.daisy.import
                             //Debug.Assert(xmlNode.Value == xmlNode.InnerXml);
                             //Debug.Assert(xmlNode.Value == xmlNode.OuterXml);
                         }
-#endif //DEBUG
-                        // HACK for books authored with xml:space="preserve" all over the place (e.g. Bookshare)
+#endif
+                        bool hasXmlSpacePreserve = false;
 
-                        bool whitespace_OnlySpaces = true;
-                        if (xmlType == XmlNodeType.Whitespace
-                            || xmlType == XmlNodeType.SignificantWhitespace)
+                        XmlNode curNode = xmlNode;
+                        while (curNode != null)
                         {
-                            for (int i = 0; i < textRepresentation.Length; i++)
+                            XmlAttributeCollection attrs = curNode.Attributes;
+                            if (attrs != null)
                             {
-                                if (textRepresentation[i] != ' ') //!char.IsWhiteSpace(xmlNode.Value[i])
+                                XmlNode attr = attrs.GetNamedItem("xml:space",
+                                                                  XmlReaderWriterHelper.NS_URL_XML);
+                                if (attr != null && attr.Value == "preserve")
                                 {
-                                    whitespace_OnlySpaces = false;
+#if DEBUG
+                                    //Debugger.Break();
+                                    bool debug = true;
+#endif // DEBUG
+                                    hasXmlSpacePreserve = true;
                                     break;
                                 }
                             }
-                            if (!whitespace_OnlySpaces)
+
+                            curNode = curNode.ParentNode;
+                            if (curNode == null || curNode.NodeType != XmlNodeType.Element)
                             {
                                 break;
                             }
-                            //else
-                            //{
-                            //    int l = xmlNode.Value.Length;
-                            //}
                         }
 
-
-#if DEBUG
-                        if (xmlType == XmlNodeType.CDATA)
-                        {
-                            //Debugger.Break();
-                        }
-#endif
-
-
-                        string text = null;
+                        // HACK for content that is mistakenly authored with
+                        // xml:space="preserve"
+                        // all over the place (e.g. Bookshare DTBOOKs)
 
                         if (xmlType == XmlNodeType.SignificantWhitespace
-                            || xmlType == XmlNodeType.Whitespace)
+                            //&& !hasXmlSpacePreserve
+                            )
                         {
-                            DebugFix.Assert(whitespace_OnlySpaces);
+#if DEBUG
+                            //Debugger.Break();
+                            bool debug = true;
+#endif
+                        }
 
-                            text = " ";
+                        if (xmlType == XmlNodeType.Whitespace
+                            || xmlType == XmlNodeType.SignificantWhitespace
+                            )
+                        {
+                            bool hasMixedContent = false;
+
+                            if (xmlNode.ParentNode != null
+                                && !string.IsNullOrEmpty(dtdUniqueResourceId))
+                            {
+                                List<string> list;
+                                m_listOfMixedContentXmlElementNames.TryGetValue(dtdUniqueResourceId, out list);
+
+                                if (list != null)
+                                {
+                                    hasMixedContent = list.Contains(xmlNode.ParentNode.Name);
+                                }
+                            }
+                            if (!hasMixedContent)
+                            {
+                                break; // switch+case
+                            }
+
+                            text = @" ";
                         }
                         else
                         {
-                            if (xmlNode.ParentNode != null &&
-                                (xmlNode.ParentNode.LocalName == "script"
-                                || xmlNode.ParentNode.LocalName == "pre")
-                                )
-                            {
-                                text = textRepresentation;
-                            }
-                            else
-                            {
-                                // collapse adjoining whitespaces into one space character
-                                // (preserves begin and end space that would otherwise be trimmed by Trim())
-                                text = Regex.Replace(textRepresentation, @"\s+", " ");
-                                //string text = xmlNode.Value.Trim();
-                            }
-#if DEBUG
-                            DebugFix.Assert(!string.IsNullOrEmpty(text));
-                            //if (string.IsNullOrEmpty(text))
-                            //{
-                            //    Debugger.Break();
-                            //}
+                            text = text.Replace(@"\r\n", @"\n");
 
-                            if (text.Length != textRepresentation.Length)
+                            if (!preserveTextAsIs)
                             {
-                                int debug = 1;
-                                //Debugger.Break();
-                            }
+                                text = text.Replace(@"\n", @" ");
 
-                            if (xmlType != XmlNodeType.Whitespace && text == " ")
-                            {
-                                int debug = 1;
-                                //Debugger.Break();
+                                //bool removeFirstLineBreak = text[0] == '\n';
+                                //bool removeLastLineBreak = text[text.Length - 1] == '\n';
+                                //if (removeFirstLineBreak || removeLastLineBreak)
+                                //{
+                                //    if (text.Length == 1)
+                                //    {
+                                //        break; // switch+case
+                                //    }
+
+                                //    int i = removeFirstLineBreak ? 1 : 0;
+                                //    int l = text.Length - i;
+                                //    if (removeLastLineBreak)
+                                //    {
+                                //        l--;
+                                //    }
+                                //    if (l == 0)
+                                //    {
+                                //        break; // switch+case
+                                //    }
+                                //    text = text.Substring(i, l);
+                                //}
+
+                                // collapse adjoining whitespaces into a single space character
+                                text = Regex.Replace(text, @"\s+", @" ");
                             }
-#endif // DEBUG
                         }
-
-
 
                         if (string.IsNullOrEmpty(text))
                         {
-                            break;
+#if DEBUG
+                            Debugger.Break();
+#endif // DEBUG
+                            break; // switch+case
                         }
 
+
 #if DEBUG
-                        //TODO:
-                        //Debugger.Break();
-                        //text = Regex.Replace(text, "\u2028", "&amp;#x2028;");
-#endif // DEBUG
+                        //TreeNode.StringChunkRange parentText = parentTreeNode.GetText(); // warning: also captures img@alt attribute, and MathML alttext
+                        AbstractTextMedia parentText = parentTreeNode.GetTextMedia();
+                        DebugFix.Assert(parentText == null);
+
+                        // warning: parentTreeNode.GetFirstAncestorWithText() also captures img@alt attribute, and MathML alttext
+                        TreeNode firstAncestorWithText = parentTreeNode.GetFirstAncestorWithTextMedia();
+                        DebugFix.Assert(firstAncestorWithText == null);
+#endif //DEBUG
+
                         TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
                         textMedia.Text = text;
 
@@ -1244,31 +1394,43 @@ namespace urakawa.daisy.import
                         cProp.SetMedia(presentation.ChannelsManager.GetOrCreateTextChannel(), textMedia);
 
 
-                        int counter = 0;
+                        int nChildren = 0;
                         foreach (XmlNode childXmlNode in xmlNode.ParentNode.ChildNodes)
                         {
                             XmlNodeType childXmlType = childXmlNode.NodeType;
-                            if (childXmlType == XmlNodeType.Text
-                                || childXmlType == XmlNodeType.Element
+                            if (childXmlType == XmlNodeType.Element
+                                || childXmlType == XmlNodeType.Text
                                 || childXmlType == XmlNodeType.Whitespace
                                 || childXmlType == XmlNodeType.SignificantWhitespace
                                 || childXmlType == XmlNodeType.CDATA)
                             {
-                                counter++;
+                                nChildren++;
                             }
                         }
-                        if (counter == 1)
+
+                        if (nChildren == 1) // That's me!
                         {
                             parentTreeNode.AddProperty(cProp);
                         }
-                        else
+                        else // otherwise, I have siblings
                         {
                             TreeNode txtWrapperNode = presentation.TreeNodeFactory.Create();
                             txtWrapperNode.AddProperty(cProp);
                             parentTreeNode.AppendChild(txtWrapperNode);
                         }
 
-                        break;
+                        break; // switch+case
+
+
+
+#if DEBUG
+                        //TODO:
+                        //Debugger.Break();
+                        //MathML character entities?
+                        //text = Regex.Replace(text, "\u2028", "&amp;#x2028;");
+
+#endif // DEBUG
+
                     }
                 default:
                     {
@@ -1325,6 +1487,159 @@ namespace urakawa.daisy.import
                     }
                 }
             }
+        }
+
+        private void initMixedContentXmlElementNamesFromDTD(string dtdUniqueResourceId, Stream dtdStream)
+        {
+            List<string> list;
+            m_listOfMixedContentXmlElementNames.TryGetValue(dtdUniqueResourceId, out list);
+
+            DebugFix.Assert(list != null);
+
+            if (list == null)
+            {
+                return;
+            }
+
+            DTD dtd = null;
+            try
+            {
+                // NOTE: the Stream is automatically closed by the parser, see Scanner.ReadNextChar()
+                DTDParser parser = new DTDParser(new StreamReader(dtdStream));
+                dtd = parser.Parse(true);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                dtdStream.Close();
+            }
+
+            if (dtd != null)
+            {
+                foreach (DictionaryEntry entry in dtd.Elements)
+                {
+                    DTDElement dtdElement = (DTDElement)entry.Value;
+                    DTDItem item = dtdElement.Content;
+                    if (isMixedContent(item))
+                    {
+                        if (!list.Contains(dtdElement.Name))
+                        {
+                            list.Add(dtdElement.Name);
+                        }
+                    }
+                }
+
+
+                foreach (DictionaryEntry entry in dtd.Entities)
+                {
+                    DTDEntity dtdEntity = (DTDEntity)entry.Value;
+
+                    if (dtdEntity.ExternalId == null)
+                    {
+                        continue;
+                    }
+
+                    string system = dtdEntity.ExternalId.System;
+                    if (dtdEntity.ExternalId is DTDPublic)
+                    {
+                        string pub = ((DTDPublic)dtdEntity.ExternalId).Pub;
+                        if (!string.IsNullOrEmpty(pub))
+                        {
+                            system = pub; //.Replace(" ", "%20");
+                        }
+                    }
+
+                    string normalisedUri = system.Replace("%20", " ").Replace(" //", "//").Replace("// ", "//");
+
+                    foreach (String key in DTDs.DTDs.ENTITIES_MAPPING.Keys)
+                    {
+                        if (normalisedUri.Contains(key))
+                        {
+                            string subResource = DTDs.DTDs.ENTITIES_MAPPING[key];
+                            Stream stream = DTDs.DTDs.Fetch(subResource);
+
+                            if (stream != null)
+                            {
+                                initMixedContentXmlElementNamesFromDTD(dtdUniqueResourceId, stream);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool isMixedContent(DTDItem dtdItem)
+        {
+            if (dtdItem is DTDAny)
+            {
+                return false;
+            }
+            else if (dtdItem is DTDEmpty)
+            {
+                return false;
+            }
+            else if (dtdItem is DTDName)
+            {
+                return false;
+            }
+            else if (dtdItem is DTDChoice)
+            {
+                List<DTDItem> items = ((DTDChoice)dtdItem).Items;
+                foreach (DTDItem item in items)
+                {
+                    bool b = isMixedContent(item);
+                    if (b)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else if (dtdItem is DTDSequence)
+            {
+                List<DTDItem> items = ((DTDSequence)dtdItem).Items;
+                foreach (DTDItem item in items)
+                {
+                    bool b = isMixedContent(item);
+                    if (b)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else if (dtdItem is DTDMixed)
+            {
+                List<DTDItem> items = ((DTDMixed)dtdItem).Items;
+                foreach (DTDItem item in items)
+                {
+                    bool b = isMixedContent(item);
+                    if (b)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else if (dtdItem is DTDPCData)
+            {
+                return true;
+            }
+            else
+            {
+#if DEBUG
+                Debugger.Break();
+#endif // DEBUG
+            }
+
+            return false;
         }
     }
 }
