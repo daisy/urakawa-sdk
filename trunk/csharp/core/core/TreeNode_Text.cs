@@ -684,7 +684,7 @@ namespace urakawa.core
             {
                 TreeNode child = Children.Get(i);
 
-                StringChunkRange range = child.GetTextMediaFlattened(false);
+                StringChunkRange range = child.GetTextFlattened_internal(false);
                 if (range != null)
                 {
                     if (range.First != null && !string.IsNullOrEmpty(range.First.Str))
@@ -701,6 +701,41 @@ namespace urakawa.core
             return null;
         }
 
+        public TreeNode GetFirstAncestorWithTextMedia()
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+
+            AbstractTextMedia txt = Parent.GetTextMedia();
+            if (txt != null)
+            {
+                return Parent;
+            }
+
+            return Parent.GetFirstAncestorWithTextMedia();
+        }
+
+        public TreeNode GetFirstAncestorWithText()
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+
+            StringChunkRange range = Parent.GetTextFlattened_internal(false);
+            if (range != null)
+            {
+                if (range.First != null && !string.IsNullOrEmpty(range.First.Str))
+                {
+                    return Parent;
+                }
+            }
+
+            return Parent.GetFirstAncestorWithText();
+        }
+
         public TreeNode GetFirstDescendantWithText()
         {
             if (mChildren.Count == 0)
@@ -710,7 +745,7 @@ namespace urakawa.core
 
             foreach (TreeNode child in Children.ContentsAs_Enumerable)
             {
-                StringChunkRange range = child.GetTextMediaFlattened(false);
+                StringChunkRange range = child.GetTextFlattened_internal(false);
                 if (range != null)
                 {
                     if (range.First != null && !string.IsNullOrEmpty(range.First.Str))
@@ -741,7 +776,7 @@ namespace urakawa.core
             TreeNode next = this;
             while ((next = next.PreviousSibling) != null)
             {
-                StringChunkRange range = next.GetTextMediaFlattened(false);
+                StringChunkRange range = next.GetTextFlattened_internal(false);
                 if (range != null)
                 {
                     if (range.First != null && !string.IsNullOrEmpty(range.First.Str))
@@ -777,7 +812,7 @@ namespace urakawa.core
             TreeNode next = this;
             while ((next = next.NextSibling) != null)
             {
-                StringChunkRange range = next.GetTextMediaFlattened(false);
+                StringChunkRange range = next.GetTextFlattened_internal(false);
                 if (range != null)
                 {
                     if (range.First != null && !string.IsNullOrEmpty(range.First.Str))
@@ -812,13 +847,13 @@ namespace urakawa.core
 
         public StringChunkRange GetTextFlattened_()
         {
-            return GetTextMediaFlattened(true);
+            return GetTextFlattened_internal(true);
         }
 
         public StringChunkRange GetText()
         {
             //return ConcatStringChunks(GetTextMediaFlattened(false), -1, null);
-            return GetTextMediaFlattened(false);
+            return GetTextFlattened_internal(false);
         }
 
         public AbstractTextMedia GetTextMedia()
@@ -889,7 +924,7 @@ namespace urakawa.core
             return null;
         }
 
-        private StringChunkRange GetTextMediaFlattened(bool deep)
+        private StringChunkRange GetTextFlattened_internal(bool deep)
         {
             if (TextLocal != null &&
                 (ACCEPT_IMG_ALT_TEXT || TextLocal.First.IsAbstractTextMedia))
@@ -947,7 +982,7 @@ namespace urakawa.core
             for (int index = 0; index < mChildren.Count; index++)
             {
                 TreeNode node = mChildren.Get(index);
-                StringChunkRange range = node.GetTextMediaFlattened(true);
+                StringChunkRange range = node.GetTextFlattened_internal(true);
                 if (range != null)
                 {
                     if (range.First != null)
