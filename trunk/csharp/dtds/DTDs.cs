@@ -16,6 +16,11 @@ namespace DTDs
         {
             ENTITIES_MAPPING = new Dictionary<String, String>();
 
+            // HTML5 (we use a basic DTD to emulate some validation behaviour, ultimately we should use the XHTML5 schema/relaxng from EPUB3)
+
+            ENTITIES_MAPPING.Add("html5", "DTDs.Resources.html5.dtd");
+            ENTITIES_MAPPING.Add("html", "DTDs.Resources.html5.dtd");
+
             // NCX
 
             ENTITIES_MAPPING.Add("//NISO//DTD ncx 2005-1//EN", "DTDs.Resources.ncx-2005-1.dtd");
@@ -25,6 +30,8 @@ namespace DTDs
             ENTITIES_MAPPING.Add("dtbook110.dtd", "DTDs.Resources.dtbook110.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbook 2005-1//EN", "DTDs.Resources.dtbook-2005-1.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbook 2005-2//EN", "DTDs.Resources.dtbook-2005-2.dtd");
+
+            ENTITIES_MAPPING.Add("dtbook-2005-3.dtd", "DTDs.Resources.dtbook-2005-3.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbook 2005-3//EN", "DTDs.Resources.dtbook-2005-3.dtd");
 
             // SMIL
@@ -217,6 +224,10 @@ namespace DTDs
                 if (dtdStream == null)
                 {
                     Debugger.Break();
+                }
+                else
+                {
+                    dtdStream.Close();
                 }
             }
 #endif //DEBUG
