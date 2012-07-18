@@ -71,7 +71,8 @@ namespace urakawa.xuk
                           || absoluteUri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
 
             // Resolve local known entities
-            Stream localStream = mapUri(absoluteUri);
+            string uniqueResourceId;
+            Stream localStream = mapUri(absoluteUri, out uniqueResourceId);
             if (localStream != null)
             {
                 return localStream;
@@ -190,7 +191,7 @@ namespace urakawa.xuk
             }
         }
 
-        public Stream mapUri(Uri absoluteUri)
+        public static Stream mapUri(Uri absoluteUri, out string uniqueResourceId)
         {
             //if (!absoluteUri.AbsolutePath.EndsWith("opf")
             //    && !absoluteUri.AbsolutePath.EndsWith("xhtml")
@@ -214,11 +215,15 @@ namespace urakawa.xuk
                         Debugger.Break();
 #endif //DEBUG
                     }
+
                     Console.WriteLine("XML Entity Resolver [" + resource + "]: " + (dtdStream != null ? dtdStream.Length + " bytes resource. " : "resource not found?! ") + " ( " + absoluteUri + " )");
+
+                    uniqueResourceId = resource;
                     return dtdStream;
                 }
             }
 
+            uniqueResourceId = null;
             return null;
         }
 
@@ -297,6 +302,8 @@ namespace urakawa.xuk
             XmlReaderSettings settings = new XmlReaderSettings();
 
             settings.ProhibitDtd = false;
+            //settings.DtdProcessing = DtdProcessing.Ignore;
+
             settings.ValidationType = ValidationType.None;
             settings.ConformanceLevel = ConformanceLevel.Auto;
 

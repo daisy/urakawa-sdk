@@ -80,6 +80,7 @@ StreamWithMarkers?
         TreeNode.StringChunkRange GetTextFlattened_();
         TreeNode.StringChunkRange GetText();
 
+        TreeNode GetFirstAncestorWithText();
         TreeNode GetFirstDescendantWithText();
         TreeNode GetLastDescendantWithText();
 
