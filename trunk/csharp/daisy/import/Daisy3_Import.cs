@@ -235,7 +235,7 @@ namespace urakawa.daisy.import
 
                     if (RequestCancellation) return;
                     reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, Path.GetFileName(m_Book_FilePath)));
-                    parseContentDocument(m_Book_FilePath, m_Project, contentXmlDoc, null, m_Book_FilePath);
+                    parseContentDocument(m_Book_FilePath, m_Project, contentXmlDoc, null, m_Book_FilePath, null);
                 }
                 else if (extension.Equals(".epub", StringComparison.OrdinalIgnoreCase)
                     || extension.Equals(".zip", StringComparison.OrdinalIgnoreCase))

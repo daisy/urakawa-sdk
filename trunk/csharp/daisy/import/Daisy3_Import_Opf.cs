@@ -76,7 +76,7 @@ namespace urakawa.daisy.import
 
                 if (RequestCancellation) return;
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, dtbookPath));
-                parseContentDocument(m_Book_FilePath, m_Project, dtbookXmlDoc, null, fullDtbookPath);
+                parseContentDocument(m_Book_FilePath, m_Project, dtbookXmlDoc, null, fullDtbookPath, null);
             }
 
             //if (false && ncxPath != null) //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
