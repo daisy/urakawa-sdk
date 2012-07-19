@@ -608,6 +608,15 @@ namespace urakawa.daisy.import
                             dtdID = @"html5";
                         }
 
+                        if (dtdID.Contains(@"xhtml1")
+                            //systemId.Contains(@"xhtml11.dtd")
+                            //|| systemId.Contains(@"xhtml1-strict.dtd")
+                            //|| systemId.Contains(@"xhtml1-transitional.dtd")
+                            )
+                        {
+                            dtdID = @"http://www.w3.org/xhtml-math-svg-flat.dtd";
+                        }
+
                         if (!string.IsNullOrEmpty(dtdID) && !dtdID.StartsWith(@"http://"))
                         {
                             dtdID = @"http://www.daisy.org/" + dtdID;
@@ -719,9 +728,8 @@ namespace urakawa.daisy.import
 
 
 
-                            reader = new SaxDriver();
-
-                            //reader = new ExpatReader();
+                            //reader = new SaxDriver();
+                            reader = new ExpatReader();
 
                             if (reader != null)
                             {
@@ -2232,9 +2240,7 @@ namespace urakawa.daisy.import
         {
             string declStr = String.Format("<!ELEMENT {0} {1}>", name, model);
 
-            bool debug = true;
-
-            if (model.Contains("CDATA") && !m_listOfMixedContentXmlElementNames.Contains(name))
+            if (model.Contains("#PCDATA") && !m_listOfMixedContentXmlElementNames.Contains(name))
             {
                 m_listOfMixedContentXmlElementNames.Add(name);
             }
@@ -2310,15 +2316,6 @@ namespace urakawa.daisy.import
         public InputSource ResolveEntity(string name, string publicId, string baseUri, string systemId)
         {
             bool debug = true;
-
-#if DEBUG
-            if (systemId.Contains(@"xhtml11.dtd"))
-            {
-                Debugger.Break();
-            }
-#endif
-            //systemId = systemId.Replace(@"xhtml11.dtd", @"xhtml1-transitional.dtd");
-            systemId = systemId.Replace(@"xhtml11.dtd", @"xhtml1-strict.dtd");
 
             string dtdUniqueResourceId;
             Stream dtdStream = LocalXmlUrlResolver.mapUri(new Uri(systemId, UriKind.Absolute), out dtdUniqueResourceId);
