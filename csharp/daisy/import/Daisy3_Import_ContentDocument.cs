@@ -573,6 +573,13 @@ namespace urakawa.daisy.import
                         : !string.IsNullOrEmpty(xmlDoc.DocumentType.PublicId) ? xmlDoc.DocumentType.PublicId
                         : xmlDoc.DocumentType.Name;
 
+                        if (dtdID == @"html"
+                            && string.IsNullOrEmpty(xmlDoc.DocumentType.SystemId)
+                            && string.IsNullOrEmpty(xmlDoc.DocumentType.PublicId))
+                        {
+                            dtdID = @"html5";
+                        }
+
                         if (!string.IsNullOrEmpty(dtdID) && !dtdID.StartsWith(@"http://"))
                         {
                             dtdID = @"http://www.daisy.org/" + dtdID;
