@@ -91,6 +91,7 @@
     <Compile Include="export\tree-visitor\PublishFlattenedManagedAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\PublishManagedAudioVisitor.cs" />
     <Compile Include="import\AudioFormatConvertorSession.cs" />
+    <Compile Include="import\Daisy3_Import_DTD.cs" />
     <Compile Include="import\Daisy3_Import_NCXDocument.cs" />
     <Compile Include="UrakawaSDK.daisy.Lang.Designer.cs">
       <AutoGen>True</AutoGen>
