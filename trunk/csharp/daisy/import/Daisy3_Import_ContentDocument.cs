@@ -77,12 +77,12 @@ namespace urakawa.daisy.import
                         parseContentDocument_DTD(isHTML, book_FilePath, project, xmlDoc, parentTreeNode, filePath,
                                                  out dtdUniqueResourceId);
 
-#if DEBUG
-                        foreach (string elementName in m_listOfMixedContentXmlElementNames)
-                        {
-                            Console.WriteLine(elementName);
-                        }
-#endif
+                        //#if DEBUG
+                        //                        foreach (string elementName in m_listOfMixedContentXmlElementNames)
+                        //                        {
+                        //                            Console.WriteLine(elementName);
+                        //                        }
+                        //#endif
 
                         XmlNodeList styleSheetNodeList = xmlDoc.SelectNodes
                                                       ("/processing-instruction(\"xml-stylesheet\")");
@@ -700,7 +700,8 @@ namespace urakawa.daisy.import
                         xmlNode.ParentNode != null &&
                         (xmlNode.ParentNode.LocalName == @"script"
                          || xmlNode.ParentNode.LocalName == @"pre"
-                         || xmlNode.ParentNode.LocalName == @"style");
+                         || xmlNode.ParentNode.LocalName == @"style"
+                         || xmlNode.ParentNode.LocalName == @"textarea");
 
                         string text = xmlNode.Value;
 

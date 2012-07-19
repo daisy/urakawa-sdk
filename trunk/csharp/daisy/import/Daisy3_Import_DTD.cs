@@ -66,6 +66,7 @@ namespace urakawa.daisy.import
                 return;
             }
 
+
 #if ENABLE_DTDSHARP
                             Stream dtdStream = LocalXmlUrlResolver.mapUri(new Uri(dtdID, UriKind.Absolute), out dtdUniqueResourceId);
 
@@ -107,56 +108,7 @@ namespace urakawa.daisy.import
 #endif
                             }
 #else
-
-            //#if DEBUG
-            //            try
-            //            {
-            //                string str1 = Org.System.Xml.Sax.Resources.GetString(Org.System.Xml.Sax.RsId.AttIndexOutOfBounds);
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Debugger.Break();
-            //            }
-
-            //            try
-            //            {
-            //                string str4 = Kds.Xml.Sax.Constants.GetString(Kds.Xml.Sax.RsId.CannotResolveEntity);
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Debugger.Break();
-            //            }
-
-            //            try
-            //            {
-            //                string str5 = Kds.Xml.Expat.Constants.GetString(Kds.Xml.Expat.RsId.AccessingBaseUri);
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Debugger.Break();
-            //            }
-
-            //            try
-            //            {
-            //                string str3 = Kds.Text.Resources.GetString(Kds.Text.RsId.ArrayOutOfBounds);
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Debugger.Break();
-            //            }
-
-            //            try
-            //            {
-            //                string str2 =
-            //                    Org.System.Xml.Resources.GetString(Org.System.Xml.RsId.InternalNsError);
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Debugger.Break();
-            //            }
-            //#endif
-
-
+            dtdUniqueResourceId = dtdID;
 
             IXmlReader reader = null;
 
@@ -180,9 +132,14 @@ namespace urakawa.daisy.import
             //                            }
 
 
-
-            //reader = new SaxDriver();
-            reader = new ExpatReader();
+            if (dtdID.Contains(@"html5"))
+            {
+                reader = new SaxDriver();
+            }
+            else
+            {
+                reader = new ExpatReader();
+            }
 
             if (reader == null)
             {
@@ -734,6 +691,57 @@ namespace urakawa.daisy.import
 
     class SaxContentHandler : IDtdHandler, IContentHandler, ILexicalHandler, IDeclHandler
     {
+        static SaxContentHandler()
+        {
+            //#if DEBUG
+            //            try
+            //            {
+            //                string str1 = Org.System.Xml.Sax.Resources.GetString(Org.System.Xml.Sax.RsId.AttIndexOutOfBounds);
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                Debugger.Break();
+            //            }
+
+            //            try
+            //            {
+            //                string str4 = Kds.Xml.Sax.Constants.GetString(Kds.Xml.Sax.RsId.CannotResolveEntity);
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                Debugger.Break();
+            //            }
+
+            //            try
+            //            {
+            //                string str5 = Kds.Xml.Expat.Constants.GetString(Kds.Xml.Expat.RsId.AccessingBaseUri);
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                Debugger.Break();
+            //            }
+
+            //            try
+            //            {
+            //                string str3 = Kds.Text.Resources.GetString(Kds.Text.RsId.ArrayOutOfBounds);
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                Debugger.Break();
+            //            }
+
+            //            try
+            //            {
+            //                string str2 =
+            //                    Org.System.Xml.Resources.GetString(Org.System.Xml.RsId.InternalNsError);
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                Debugger.Break();
+            //            }
+            //#endif
+        }
+
         private List<string> m_listOfMixedContentXmlElementNames;
         public SaxContentHandler(List<string> list)
         {
@@ -851,6 +859,8 @@ namespace urakawa.daisy.import
 
         public void ElementDecl(string name, string model)
         {
+            Console.WriteLine(name + " ===> " + model);
+
             if (model.Contains("#PCDATA") && !m_listOfMixedContentXmlElementNames.Contains(name))
             {
                 m_listOfMixedContentXmlElementNames.Add(name);
@@ -909,6 +919,9 @@ namespace urakawa.daisy.import
 
         public void FatalError(ParseError error)
         {
+#if DEBUG
+            Debugger.Break();
+#endif // DEBUG
             error.Throw();
         }
     }
