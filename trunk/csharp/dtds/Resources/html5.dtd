@@ -1,6 +1,10 @@
-<!ENTITY % phrase "#PCDATA | a | area | link | meta | style | abbr | address | audio | b | bdi | bdo | br | button | canvas | cite | code | command | data | datalist | del | em | embed | i | iframe | img | input | ins | kbd | keygen | label | map | mark | menu | meter | noscript | object | output | progress | q | ruby | s | samp | script | section | select | small | span | strong | sub | sup | svg | textarea | time | u | var | video | wbr">
+<!ENTITY % phrasex "a | area | link | meta | style | abbr | address | audio | b | bdi | bdo | br | button | canvas | cite | code | command | data | datalist | del | em | embed | i | iframe | img | input | ins | kbd | keygen | label | map | mark | menu | meter | noscript | object | output | progress | q | ruby | s | samp | script | section | select | small | span | strong | sub | sup | svg | textarea | time | u | var | video | wbr">
 
-<!ENTITY % flow "%phrase; | article | aside | blockquote | details | dfn | div | dl | fieldset | figure | footer | form | h1 | h2 | h3 | h4 | h5 | h6 | header | hgroup | hr | nav | ol | p | pre | table | ul">
+<!ENTITY % phrase "#PCDATA | %phrasex;">
+
+<!ENTITY % flowx "%phrasex; | article | aside | blockquote | details | dfn | div | dl | fieldset | figure | footer | form | h1 | h2 | h3 | h4 | h5 | h6 | header | hgroup | hr | nav | ol | p | pre | table | ul">
+
+<!ENTITY % flow "#PCDATA | %flowx;">
 
 <!ENTITY % global "
     accesskey CDATA #IMPLIED
@@ -85,23 +89,24 @@
   value CDATA #IMPLIED
   >
   
+<!ELEMENT summary (%phrase;)*>
+<!ATTLIST summary
+  %global;
+  >
+  
+<!ELEMENT details (%flow; | summary)*>
+<!ATTLIST details
+  %global;
+  open (open) #IMPLIED
+  >
+  
 <!ELEMENT legend (%phrase;)*>
 <!ATTLIST legend
   %global;
   >
 
   
-<!ELEMENT fieldset (legend?, (%flow;)*)>
-<!ATTLIST fieldset
-  %global;
-  autofocus (autofocus) #IMPLIED
-  disabled (disabled) #IMPLIED
-  form CDATA #IMPLIED
-  name CDATA #IMPLIED
-  >
-
-  
-<!ELEMENT meter (%phrase;)* -(meter)>
+<!ELEMENT meter (%phrase;)* >
 <!ATTLIST meter
   %global;
   value CDATA #IMPLIED
@@ -113,7 +118,23 @@
   >
 
 
-<!ELEMENT object ((param)*, (%flow;)*)>
+<!ELEMENT progress (%phrase;)* >
+<!ATTLIST progress
+  %global;
+  value CDATA #IMPLIED
+  max CDATA #IMPLIED
+  >
+  
+<!ELEMENT fieldset ( legend?, (%flowx;)*)>
+<!ATTLIST fieldset
+  %global;
+  autofocus (autofocus) #IMPLIED
+  disabled (disabled) #IMPLIED
+  form CDATA #IMPLIED
+  name CDATA #IMPLIED
+  >
+
+<!ELEMENT object ( (param)*, (%flowx;)*)>
 <!ATTLIST object
   %global;
   data CDATA #IMPLIED
@@ -126,12 +147,6 @@
   height CDATA #IMPLIED
   >
 
-<!ELEMENT progress (%phrase;)* -(progress)>
-<!ATTLIST progress
-  %global;
-  value CDATA #IMPLIED
-  max CDATA #IMPLIED
-  >
 
 <!ELEMENT script ( CDATA )>
 <!ATTLIST script
@@ -586,11 +601,6 @@
   cite CDATA #IMPLIED
   >
 
-<!ELEMENT details (summary, (%flow;)*)>
-<!ATTLIST details
-  %global;
-  open (open) #IMPLIED
-  >
 
 <!ELEMENT dfn (%flow;)*>
 <!ATTLIST dfn
@@ -819,10 +829,6 @@
   media CDATA #IMPLIED
   >
 
-<!ELEMENT summary (%phrase;)*>
-<!ATTLIST summary
-  %global;
-  >
 
 <!ELEMENT tbody   (tr)*>
 <!ATTLIST tbody
