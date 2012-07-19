@@ -74,6 +74,7 @@ namespace urakawa.daisy.export
 
                 bool isBranchingActive = false;
                 urakawa.core.TreeNode branchStartTreeNode = null;
+                bool isTextOnlyMixedContent = false;
 
                 urakawaNode.AcceptDepthFirst(
             delegate(urakawa.core.TreeNode n)
@@ -245,11 +246,16 @@ namespace urakawa.daisy.export
                     shouldAddNewSeq = false;
                 }
 
+                bool noAudioInAncestor = (n.GetFirstAncestorWithManagedAudio() == null);
+                isTextOnlyMixedContent = noAudioInAncestor && IsTextOnlyMixedContent(n, externalAudio);
+
                 if (
                     externalAudio != null
                     || nodeIsImageAndHasDescriptionProdnotes
                     ||
-                    (externalAudio == null && n.GetFirstAncestorWithManagedAudio () == null && n.GetTextMedia () != null )
+                    (externalAudio == null && noAudioInAncestor && n.GetTextMedia () != null )
+                    ||
+                    isTextOnlyMixedContent
                     ||
                     (
                     n.GetTextMedia() != null
@@ -272,17 +278,22 @@ namespace urakawa.daisy.export
                     )
                     )
                 {
+                    //if (n.GetTextMedia() != null) Console.WriteLine(n.GetTextMedia().Text);
                     // continue ahead 
                 }
                 else
                 {
+                    //if (n.GetTextMedia() != null) Console.WriteLine("Return: " +  n.GetTextMedia().Text);
                     return true;
                 }
+
+                
 
                 if (n.HasXmlProperty
                     &&
                     (externalAudio != null
                     || n.GetFirstAncestorWithManagedAudio() == null) //write the element with text but no audio to smil
+                    || isTextOnlyMixedContent
                     )
                 {
                     XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
@@ -717,7 +728,7 @@ namespace urakawa.daisy.export
                         IsNcxNativeNodeAdded = true;
                     }
                 }
-
+                
                 if (isBranchingActive)
                 {
                     //IsBranchAssigned = true;
@@ -734,7 +745,11 @@ namespace urakawa.daisy.export
                 {
                     return false;
                 }
-
+                if (isTextOnlyMixedContent)
+                {
+                    isTextOnlyMixedContent = false;
+                    return false;
+                }
                 return true;
             },
 
@@ -941,6 +956,26 @@ namespace urakawa.daisy.export
                 } // end check for sidebar and producer notes local name
             }
             return false;
+        }
+
+        private bool IsTextOnlyMixedContent(urakawa.core.TreeNode node, media.ExternalAudioMedia externalAudio)
+        {
+            if (externalAudio != null) return false;
+            
+            bool isChildWithoutElement = false;
+            if (node.GetXmlProperty() != null && node.Children.Count > 0
+                && !IsSkippableNode(node) && !IsEscapableNode(node))
+            {   
+                foreach (urakawa.core.TreeNode n in node.Children.ContentsAs_ListAsReadOnly)
+                {
+                    if (n.GetTextMedia () != null  && n.GetXmlProperty() == null)
+                    {
+                            isChildWithoutElement = true;
+                        
+                    }
+                }
+            }
+            return isChildWithoutElement ;
         }
 
         private XmlNode CreateDocTitle(XmlDocument ncxDocument, XmlNode ncxRootNode, urakawa.core.TreeNode n)
