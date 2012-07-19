@@ -19,7 +19,6 @@ namespace DTDs
             // HTML5 (we use a basic DTD to emulate some validation behaviour, ultimately we should use the XHTML5 schema/relaxng from EPUB3)
 
             ENTITIES_MAPPING.Add("html5", "DTDs.Resources.html5.dtd");
-            ENTITIES_MAPPING.Add("html", "DTDs.Resources.html5.dtd");
 
             // NCX
 
