@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Xml;
 using AudioLib;
 using urakawa.data;
@@ -48,7 +49,7 @@ namespace urakawa.daisy.export
                     && !efd.IsPreservedForOutputFile
                     && string.IsNullOrEmpty(strInternalDTD))
                 {
-                    StreamReader sr = new StreamReader(efd.OpenInputStream());
+                    StreamReader sr = new StreamReader(efd.OpenInputStream(), Encoding.UTF8);
                     strInternalDTD = sr.ReadToEnd();
                 }
                 else if (efd is ExternalFiles.CSSExternalFileData

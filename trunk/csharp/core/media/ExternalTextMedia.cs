@@ -57,7 +57,7 @@ namespace urakawa.media
             try
             {
                 Uri src = Uri;
-                StreamReader rd = new StreamReader(client.OpenRead(src));
+                StreamReader rd = new StreamReader(client.OpenRead(src), Encoding.UTF8);
                 string res = rd.ReadToEnd();
                 rd.Close();
                 return res;
