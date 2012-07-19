@@ -134,6 +134,13 @@ namespace AudioLib
             {
                 DoWork();
             }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw ex;
+            }
             finally
             {
                 if (m_stopWatch != null)
