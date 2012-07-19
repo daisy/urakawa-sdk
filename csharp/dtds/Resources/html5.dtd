@@ -78,12 +78,8 @@
     ">
 <!ENTITY % phrase "a | area | link | meta | style | abbr | address | audio | b | bdi | bdo | br | button | canvas | cite | code | command | data | datalist | del | em | embed | i | iframe | img | input | ins | kbd | keygen | label | map | mark | menu | meter | noscript | object | output | progress | q | ruby | s | samp | script | section | select | small | span | strong | sub | sup | svg | textarea | time | u | var | video | wbr | (#PCDATA)">
 
-<!ENTITY % flow "article | aside | blockquote | details | dfn | div | dl | fieldset | figure | footer | form | h1 | h2 | h3 | h4 | h5 | h6 | header | hgroup | hr | nav | ol | p | pre | table | ul | %phrase;">
-
 
 <!ELEMENT area EMPTY>
-
-<!ELEMENT a (%flow;)*>
 
 <!ATTLIST a
   %global;
@@ -96,6 +92,11 @@
   hreflang NAME #IMPLIED
   type CDATA #IMPLIED
   >
+  
+<!ENTITY % flow "article | aside | blockquote | details | dfn | div | dl | fieldset | figure | footer | form | h1 | h2 | h3 | h4 | h5 | h6 | header | hgroup | hr | nav | ol | p | pre | table | ul | %phrase;">
+
+<!ELEMENT a (%flow;)*>
+
 
 <!ATTLIST area
   %global;
