@@ -80,7 +80,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\ncx-2005-1.dtd" />
     <EmbeddedResource Include="Resources\xhtml-math-svg-flat.dtd" />
-    <EmbeddedResource Include="Resources\xhtml11.dtd" />
+    <EmbeddedResource Include="Resources\xhtml11.dtd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\dtbsmil-2005-1.dtd" />
@@ -193,6 +195,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\html5.dtd" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\xhtml1-strict.dtd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

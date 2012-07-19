@@ -49,13 +49,16 @@ namespace DTDs
             
             ENTITIES_MAPPING.Add("oeb12.ent", "DTDs.Resources.oeb12.ent"); 
             ENTITIES_MAPPING.Add("//ISBN 0-9673008-1-9//DTD OEB 1.2 Entities//EN", "DTDs.Resources.oeb12.ent");
-            
+
 
             // XHTML
 
             ENTITIES_MAPPING.Add("xhtml1-transitional.dtd", "DTDs.Resources.xhtml1-transitional.dtd");
             ENTITIES_MAPPING.Add("//W3C//DTD XHTML 1.0 Transitional//EN", "DTDs.Resources.xhtml1-transitional.dtd");
 
+            ENTITIES_MAPPING.Add("xhtml1-strict.dtd", "DTDs.Resources.xhtml1-strict.dtd");
+            ENTITIES_MAPPING.Add("//W3C//DTD XHTML 1.0 Strict//EN", "DTDs.Resources.xhtml1-strict.dtd");
+            
             ENTITIES_MAPPING.Add("xhtml11.dtd", "DTDs.Resources.xhtml11.dtd");
             ENTITIES_MAPPING.Add("//W3C//DTD XHTML 1.1//EN", "DTDs.Resources.xhtml11.dtd");
 

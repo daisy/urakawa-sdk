@@ -39,7 +39,7 @@ namespace urakawa.daisy.export
                     && efd.IsPreservedForOutputFile
                     && strPls== null)
                 {
-                    StreamReader sr = new StreamReader(efd.OpenInputStream());
+                    StreamReader sr = new StreamReader(efd.OpenInputStream(), Encoding.UTF8);
                     strPls = sr.ReadToEnd();
                     // create directories here
                 }

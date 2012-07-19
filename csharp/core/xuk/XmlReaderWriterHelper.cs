@@ -144,6 +144,9 @@ namespace urakawa.xuk
                 isHTTP //absoluteUri.IsUnc?
                 )
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 WebRequest webReq = WebRequest.Create(absoluteUri);
                 webReq.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Default);
                 if (m_Credentials != null)
@@ -162,7 +165,9 @@ namespace urakawa.xuk
                 }
                 catch (Exception ex)
                 {
-                    bool debug = true;
+#if DEBUG
+                    Debugger.Break();
+#endif
                 }
                 finally
                 {
@@ -183,6 +188,9 @@ namespace urakawa.xuk
             //otherwise use the default behavior of the XmlUrlResolver class (resolve resources from source)
             try
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 return base.GetEntity(absoluteUri, role, ofObjectToReturn);
             }
             catch
