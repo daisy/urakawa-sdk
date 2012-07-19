@@ -189,7 +189,7 @@ namespace urakawa.xuk
             try
             {
 #if DEBUG
-                Debugger.Break();
+                //Debugger.Break();
 #endif
                 return base.GetEntity(absoluteUri, role, ofObjectToReturn);
             }
@@ -349,6 +349,13 @@ namespace urakawa.xuk
                 xmldoc.PreserveWhitespace = preserveWhiteSpace;
                 xmldoc.XmlResolver = null;
                 xmldoc.Load(xmlReader);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw ex;
             }
             finally
             {
