@@ -208,7 +208,7 @@ namespace urakawa.daisy.import
                             || extension.Equals(".html", StringComparison.OrdinalIgnoreCase);
                 if (extension.Equals(".opf", StringComparison.OrdinalIgnoreCase))
                 {
-                    XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false);
+                    XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false, false);
 
                     if (RequestCancellation) return;
                     reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingOPF, Path.GetFileName(m_Book_FilePath)));
@@ -224,7 +224,7 @@ namespace urakawa.daisy.import
                         MessageBox.Show("(X)HTML support is experimental and incomplete, please use with caution!");
                     }
 
-                    XmlDocument contentXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, true);
+                    XmlDocument contentXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, true, true);
 
                     if (RequestCancellation) return;
                     reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, Path.GetFileName(m_Book_FilePath)));
@@ -235,7 +235,7 @@ namespace urakawa.daisy.import
 
                     if (RequestCancellation) return;
                     reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, Path.GetFileName(m_Book_FilePath)));
-                    parseContentDocument(m_Book_FilePath, m_Project, contentXmlDoc, null, m_Book_FilePath, null);
+                    parseContentDocument(m_Book_FilePath, m_Project, contentXmlDoc, null, m_Book_FilePath, null, DocumentMarkupType.NA);
                 }
                 else if (extension.Equals(".epub", StringComparison.OrdinalIgnoreCase)
                     || extension.Equals(".zip", StringComparison.OrdinalIgnoreCase))

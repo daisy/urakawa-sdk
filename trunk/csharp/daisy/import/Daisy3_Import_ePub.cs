@@ -243,7 +243,7 @@ namespace urakawa.daisy.import
                 if (RequestCancellation) return;
 
                 m_Book_FilePath = Path.Combine(unzipDirectory, fileInfo.FullName);
-                XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false);
+                XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false, false);
 
                 if (RequestCancellation) return;
                 reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingOPF, fileInfo.FullName));
@@ -374,7 +374,7 @@ namespace urakawa.daisy.import
 
                 spineChild.GetOrCreateXmlProperty().SetAttribute("xuk", "", "true");
 
-                XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullDocPath, true);
+                XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullDocPath, true, true);
 
                 if (RequestCancellation) return;
 
@@ -543,7 +543,7 @@ namespace urakawa.daisy.import
                 }
 
                 // TODO: return hierarchical outline where each node points to a XUK relative path, + XukAble.Uid (TreeNode are not corrupted during XukAbleManager.RegenerateUids();
-                parseContentDocument(fullDocPath, project, bodyElement, null, fullDocPath, null);
+                parseContentDocument(fullDocPath, project, bodyElement, null, fullDocPath, null, DocumentMarkupType.NA);
 
 
                 foreach (KeyValuePair<string, string> spineItemAttribute in spineItemsAttributes[index])
@@ -563,7 +563,7 @@ namespace urakawa.daisy.import
                             continue;
                         }
 
-                        XmlDocument overlayXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullOverlayPath, true);
+                        XmlDocument overlayXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullOverlayPath, true, false);
 
                         IEnumerable<XmlNode> audioElements = XmlDocumentHelper.GetChildrenElementsOrSelfWithName(overlayXmlDoc, true, "audio", null, false);
                         if (audioElements == null)

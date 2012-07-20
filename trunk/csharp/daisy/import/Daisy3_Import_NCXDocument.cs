@@ -156,7 +156,7 @@ namespace urakawa.daisy.import
         {
             //foreach (string s in m_SmilRefToNavPointTreeNodeMap.Keys) System.Windows.Forms.MessageBox.Show(s + " : " + m_SmilRefToNavPointTreeNodeMap[s].GetXmlElementLocalName() );
             if (RequestCancellation) return;
-            XmlDocument smilXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullSmilPath, false);
+            XmlDocument smilXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullSmilPath, false, false);
 
             if (RequestCancellation) return;
             m_SmilXmlNodeToTreeNodeMap = new Dictionary<XmlNode, TreeNode>();

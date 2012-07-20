@@ -29,10 +29,19 @@ namespace urakawa.daisy.import
         private List<string> m_listOfMixedContentXmlElementNames = new List<string>();
 #endif
 
+        protected enum DocumentMarkupType
+        {
+            NA,
+            DTBOOK,
+            XHTML,
+            XHTML5
+        }
 
-        protected void parseContentDocument_DTD(bool isHTML, string book_FilePath, Project project, XmlDocument xmlDoc, TreeNode parentTreeNode, string filePath, out string dtdUniqueResourceId)
+        protected DocumentMarkupType parseContentDocument_DTD(string book_FilePath, Project project, XmlDocument xmlDoc, TreeNode parentTreeNode, string filePath, out string dtdUniqueResourceId)
         {
             dtdUniqueResourceId = null;
+
+            DocumentMarkupType docMarkupType = DocumentMarkupType.NA;
 
             //xmlNode.OwnerDocument
             string dtdID = xmlDoc.DocumentType == null ? string.Empty
@@ -40,20 +49,30 @@ namespace urakawa.daisy.import
             : !string.IsNullOrEmpty(xmlDoc.DocumentType.PublicId) ? xmlDoc.DocumentType.PublicId
             : xmlDoc.DocumentType.Name;
 
+            string rootElemName = xmlDoc.DocumentElement.LocalName;
+
             if (dtdID == @"html"
                 && string.IsNullOrEmpty(xmlDoc.DocumentType.SystemId)
                 && string.IsNullOrEmpty(xmlDoc.DocumentType.PublicId))
             {
                 dtdID = @"html5";
+                docMarkupType = DocumentMarkupType.XHTML5;
+                DebugFix.Assert(rootElemName == @"html");
             }
-
-            if (dtdID.Contains(@"xhtml1")
+            else if (dtdID.Contains(@"xhtml1")
                 //systemId.Contains(@"xhtml11.dtd")
                 //|| systemId.Contains(@"xhtml1-strict.dtd")
                 //|| systemId.Contains(@"xhtml1-transitional.dtd")
                 )
             {
                 dtdID = @"http://www.w3.org/xhtml-math-svg-flat.dtd";
+                docMarkupType = DocumentMarkupType.XHTML;
+                DebugFix.Assert(rootElemName == @"html");
+            }
+            else
+            {
+                docMarkupType = DocumentMarkupType.DTBOOK;
+                DebugFix.Assert(rootElemName == @"dtbook");
             }
 
             if (!string.IsNullOrEmpty(dtdID) && !dtdID.StartsWith(@"http://"))
@@ -61,11 +80,52 @@ namespace urakawa.daisy.import
                 dtdID = @"http://www.daisy.org/" + dtdID;
             }
 
-            if (string.IsNullOrEmpty(dtdID))
+            if (docMarkupType == DocumentMarkupType.NA)
             {
-                return;
+#if DEBUG
+                Debugger.Break();
+#endif
+                //if (rootElemName == @"dtbook")
+                //{
+                //    docMarkupType = DocumentMarkupType.DTBOOK;
+                //}
+                //else if (rootElemName == @"html")
+                //{
+                //    docMarkupType = DocumentMarkupType.XHTML5;
+                //}
             }
 
+            bool needToLoadDTDManuallyToCheckMixedContentElements = docMarkupType == DocumentMarkupType.XHTML5;
+            if (docMarkupType == DocumentMarkupType.DTBOOK)
+            {
+                XmlNode rootElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDoc, true, "book", null);
+                DebugFix.Assert(rootElement != null);
+                if (rootElement != null)
+                {
+                    XmlAttributeCollection attrs = rootElement.Attributes;
+                    if (attrs != null)
+                    {
+                        XmlNode attr = attrs.GetNamedItem("space", XmlReaderWriterHelper.NS_URL_XML);
+                        if (attr == null)
+                        {
+                            attr = attrs.GetNamedItem("xml:space", XmlReaderWriterHelper.NS_URL_XML);
+                        }
+
+                        if (attr != null && attr.Value == "preserve")
+                        {
+                            //Bookshare hack! :(
+                            needToLoadDTDManuallyToCheckMixedContentElements = true;
+                        }
+                    }
+                }
+            }
+
+            if (!needToLoadDTDManuallyToCheckMixedContentElements)
+            {
+                return docMarkupType;
+            }
+
+            bool isHTML = docMarkupType == DocumentMarkupType.XHTML || docMarkupType == DocumentMarkupType.XHTML5;
 
 #if ENABLE_DTDSHARP
                             Stream dtdStream = LocalXmlUrlResolver.mapUri(new Uri(dtdID, UriKind.Absolute), out dtdUniqueResourceId);
@@ -131,8 +191,8 @@ namespace urakawa.daisy.import
             //#endif
             //                            }
 
-
-            if (dtdID.Contains(@"html5"))
+            bool useCSharpSaxImpl = false; // docMarkupType == DocumentMarkupType.XHTML5;
+            if (useCSharpSaxImpl)
             {
                 reader = new SaxDriver();
             }
@@ -141,9 +201,10 @@ namespace urakawa.daisy.import
                 reader = new ExpatReader();
             }
 
+            DebugFix.Assert(reader != null);
             if (reader == null)
             {
-                return;
+                return docMarkupType;
             }
             //Type readerType = reader.GetType();
 
@@ -504,6 +565,9 @@ namespace urakawa.daisy.import
             reader.Parse(input);
 
 #endif //ENABLE_DTDSHARP
+
+
+            return docMarkupType;
         }
 
         private string ExtractInternalDTD(XmlDocumentType docType)

@@ -82,7 +82,7 @@ namespace urakawa.daisy.import
         private void parseSmil(string fullSmilPath)
         {
             if (RequestCancellation) return;
-            XmlDocument smilXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullSmilPath, false);
+            XmlDocument smilXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullSmilPath, false, false);
 
             if (RequestCancellation) return;
             //we skip SMIL metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
