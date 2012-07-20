@@ -310,8 +310,8 @@ namespace urakawa.xuk
             XmlReaderSettings settings = new XmlReaderSettings();
 
 #if NET40
-            settings.ProhibitDtd = false;
-            settings.DtdProcessing = DtdProcessing.DTD;
+            //settings.ProhibitDtd = false;
+            settings.DtdProcessing = DtdProcessing.Parse;
 #else
             settings.ProhibitDtd = false;
 #endif //NET40
