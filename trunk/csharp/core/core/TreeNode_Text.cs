@@ -452,15 +452,18 @@ namespace urakawa.core
                 TreeNode beforeAdjust = null;
                 while (next != null)
                 {
-                    beforeAdjust = next;
-                    next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, next);
-                    //m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode
-
-                    bool isXmlElement = next.HasXmlProperty;
-                    //bool isSignificantTextOnly = !isXmlElement && !TreeNode.TextOnlyContainsPunctuation(next.GetText());
-                    if (isXmlElement)
+                    if (!TextOnlyContainsPunctuation(next.GetText()))
                     {
-                        break;
+                        beforeAdjust = next;
+                        next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, next);
+                        //m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode
+
+                        bool isXmlElement = next.HasXmlProperty;
+                        //bool isSignificantTextOnly = !isXmlElement && !TreeNode.TextOnlyContainsPunctuation(next.GetText());
+                        if (isXmlElement)
+                        {
+                            break;
+                        }
                     }
 
                     if (directionPrevious)
@@ -476,6 +479,10 @@ namespace urakawa.core
                 if (next == null)
                 {
                     next = nextDirect;
+                    if (TextOnlyContainsPunctuation(next.GetText()))
+                    {
+                        next = null;
+                    }
                     nested = null;
                     return next;
                     //m_UrakawaSession.PerformTreeNodeSelection(next, false, null);

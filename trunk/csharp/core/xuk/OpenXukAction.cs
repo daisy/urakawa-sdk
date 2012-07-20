@@ -166,7 +166,7 @@ namespace urakawa.xuk
 
             mSourceStream = new FileStream(mSourceUri.LocalPath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-            XmlReaderSettings settings = XmlReaderWriterHelper.GetDefaultXmlReaderConfiguration(false, false);
+            XmlReaderSettings settings = XmlReaderWriterHelper.GetDefaultXmlReaderConfiguration(false, false, false);
 
             if (!mDestXukAble.IsPrettyFormat())
             {

@@ -305,14 +305,27 @@ namespace urakawa.xuk
         public const string XmlId = NS_PREFIX_XML + ":id";
         public const string XmlLang = NS_PREFIX_XML + ":lang";
 
-        public static XmlReaderSettings GetDefaultXmlReaderConfiguration(bool useLocalXmlResolver, bool preserveWhiteSpace)
+        public static XmlReaderSettings GetDefaultXmlReaderConfiguration(bool useLocalXmlResolver, bool preserveWhiteSpace, bool validate)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
 
+#if NET40
             settings.ProhibitDtd = false;
-            //settings.DtdProcessing = DtdProcessing.Ignore;
+            settings.DtdProcessing = DtdProcessing.DTD;
+#else
+            settings.ProhibitDtd = false;
+#endif //NET40
 
-            settings.ValidationType = ValidationType.None;
+            if (validate)
+            {
+                settings.ValidationType = ValidationType.DTD;
+                settings.ValidationEventHandler += XmlValidationEventHandler;
+            }
+            else
+            {
+                settings.ValidationType = ValidationType.None;
+            }
+
             settings.ConformanceLevel = ConformanceLevel.Auto;
 
             if (useLocalXmlResolver)
@@ -331,11 +344,16 @@ namespace urakawa.xuk
             return settings;
         }
 
-        public static XmlDocument ParseXmlDocument(string path, bool preserveWhiteSpace)
+        static void XmlValidationEventHandler(object sender, System.Xml.Schema.ValidationEventArgs e)
+        {
+            bool debug = true; // ignore
+        }
+
+        public static XmlDocument ParseXmlDocument(string path, bool preserveWhiteSpace, bool validate)
         {
             XmlDocument xmldoc = null;
 
-            XmlReaderSettings settings = GetDefaultXmlReaderConfiguration(true, preserveWhiteSpace);
+            XmlReaderSettings settings = GetDefaultXmlReaderConfiguration(true, preserveWhiteSpace, validate);
 
             XmlReader xmlReader = null;
             try
