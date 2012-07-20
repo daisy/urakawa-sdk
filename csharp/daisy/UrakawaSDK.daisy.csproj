@@ -89,6 +89,7 @@
     <Compile Include="export\tree-visitor\PublishFlattenedManagedAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\PublishManagedAudioVisitor.cs" />
     <Compile Include="import\AudioFormatConvertorSession.cs" />
+    <Compile Include="import\Daisy3_Import_DTD.cs" />
     <Compile Include="import\Daisy3_Import_NCXDocument.cs" />
     <Compile Include="UrakawaSDK.daisy.Lang.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -111,6 +112,10 @@
     <Compile Include="ZipStorer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\tobi\trunk\tobiapp\ExternalLibs\SaxNET\SaxNET.csproj">
+      <Project>{15655d56-6c48-4f93-ad3a-d0dea9a79b19}</Project>
+      <Name>SaxNET</Name>
+    </ProjectReference>
     <ProjectReference Include="..\audio\AudioLib\AudioLib.csproj">
       <Project>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</Project>
       <Name>AudioLib</Name>
