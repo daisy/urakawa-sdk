@@ -381,7 +381,7 @@ namespace urakawa.core
 
         public static bool TextIsPunctuation(char c)
         {
-            return char.IsWhiteSpace(c) || c == '.' || c == ',' || c == '?' || c == '!' || c == '"' || c == '\'' ||
+            return Char.IsWhiteSpace(c) || c == '.' || c == ',' || c == '?' || c == '!' || c == '"' || c == '\'' ||
                    c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']';
         }
 
@@ -455,7 +455,7 @@ namespace urakawa.core
                     if (!TextOnlyContainsPunctuation(next.GetText()))
                     {
                         beforeAdjust = next;
-                        next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, next);
+                        next = EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, next);
                         //m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode
 
                         bool isXmlElement = next.HasXmlProperty;
@@ -635,7 +635,7 @@ namespace urakawa.core
                 StringChunkRange range = child.GetTextFlattened_();
                 if (range != null)
                 {
-                    if (range.First != null && !string.IsNullOrEmpty(range.First.Str))
+                    if (range.First != null && !String.IsNullOrEmpty(range.First.Str))
                     {
                         //StringBuilder stringBuilder = new StringBuilder(range.GetLength());
 
@@ -694,7 +694,7 @@ namespace urakawa.core
                 StringChunkRange range = child.GetTextFlattened_internal(false);
                 if (range != null)
                 {
-                    if (range.First != null && !string.IsNullOrEmpty(range.First.Str))
+                    if (range.First != null && !String.IsNullOrEmpty(range.First.Str))
                     {
                         return child;
                     }
@@ -734,7 +734,7 @@ namespace urakawa.core
             StringChunkRange range = Parent.GetTextFlattened_internal(false);
             if (range != null)
             {
-                if (range.First != null && !string.IsNullOrEmpty(range.First.Str))
+                if (range.First != null && !String.IsNullOrEmpty(range.First.Str))
                 {
                     return Parent;
                 }
@@ -755,7 +755,7 @@ namespace urakawa.core
                 StringChunkRange range = child.GetTextFlattened_internal(false);
                 if (range != null)
                 {
-                    if (range.First != null && !string.IsNullOrEmpty(range.First.Str))
+                    if (range.First != null && !String.IsNullOrEmpty(range.First.Str))
                     {
                         return child;
                     }
@@ -786,7 +786,7 @@ namespace urakawa.core
                 StringChunkRange range = next.GetTextFlattened_internal(false);
                 if (range != null)
                 {
-                    if (range.First != null && !string.IsNullOrEmpty(range.First.Str))
+                    if (range.First != null && !String.IsNullOrEmpty(range.First.Str))
                     {
                         return next;
                     }
@@ -822,7 +822,7 @@ namespace urakawa.core
                 StringChunkRange range = next.GetTextFlattened_internal(false);
                 if (range != null)
                 {
-                    if (range.First != null && !string.IsNullOrEmpty(range.First.Str))
+                    if (range.First != null && !String.IsNullOrEmpty(range.First.Str))
                     {
                         return next;
                     }
@@ -847,7 +847,7 @@ namespace urakawa.core
             StringChunkRange range = GetTextFlattened_();
             if (range == null)
             {
-                return string.Empty;
+                return String.Empty;
             }
             return ConcatStringChunks(range, -1, null);
         }
@@ -947,7 +947,7 @@ namespace urakawa.core
             if (TextFlattened != null)
             {
                 DebugFix.Assert(TextFlattened.First != null);
-                DebugFix.Assert(!string.IsNullOrEmpty(TextFlattened.First.Str));
+                DebugFix.Assert(!String.IsNullOrEmpty(TextFlattened.First.Str));
                 return TextFlattened;
             }
 
