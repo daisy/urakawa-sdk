@@ -6,6 +6,7 @@ using urakawa.core.visitor;
 using urakawa.events;
 using urakawa.events.core;
 using urakawa.exception;
+using urakawa.navigation;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.alt;
@@ -327,7 +328,6 @@ namespace urakawa.core
             if (postVisit != null) postVisit(this);
         }
 
-
         /// <summary>
         /// Visits the <see cref="IVisitableTreeNode"/> breadth-first
         /// </summary>
@@ -347,6 +347,57 @@ namespace urakawa.core
                 }
             }
         }
+
+
+        public void AcceptBreadthFirst(INavigator navigator, ITreeNodeVisitor visitor)
+        {
+            PreVisitDelegate preVisit = new PreVisitDelegate(visitor.PreVisit);
+            AcceptBreadthFirst(navigator, preVisit);
+        }
+        public void AcceptBreadthFirst(INavigator navigator, PreVisitDelegate preVisit)
+        {
+            if (preVisit == null) return;
+            Queue<TreeNode> nodeQueue = new Queue<TreeNode>();
+            nodeQueue.Enqueue(this);
+            while (nodeQueue.Count > 0)
+            {
+                TreeNode next = nodeQueue.Dequeue();
+                if (!preVisit(next)) break;
+
+                int count = navigator.GetChildCount(next);
+                for (int i = 0; i < count; i++)
+                {
+                    nodeQueue.Enqueue(navigator.GetChild(next, i));
+                }
+            }
+        }
+
+        public void AcceptDepthFirst(INavigator navigator, ITreeNodeVisitor visitor)
+        {
+            PreVisitDelegate preVisit = new PreVisitDelegate(visitor.PreVisit);
+            PostVisitDelegate postVisit = new PostVisitDelegate(visitor.PostVisit);
+            AcceptDepthFirst(navigator, preVisit, postVisit);
+        }
+        public void AcceptDepthFirst(INavigator navigator, PreVisitDelegate preVisit, PostVisitDelegate postVisit)
+        {
+            //If both PreVisit and PostVisit delegates are null, there is nothing to do.
+            if (preVisit == null && postVisit == null) return;
+            bool visitChildren = true;
+            if (preVisit != null)
+            {
+                if (!preVisit(this)) visitChildren = false;
+            }
+            if (visitChildren)
+            {
+                int count = navigator.GetChildCount(this);
+                for (int i = 0; i < count; i++)
+                {
+                    navigator.GetChild(this, i).AcceptDepthFirst(preVisit, postVisit);
+                }
+            }
+            if (postVisit != null) postVisit(this);
+        }
+
 
         #endregion
 

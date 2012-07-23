@@ -1,5 +1,6 @@
 using System;
 using urakawa.core;
+using urakawa.navigation;
 
 namespace urakawa.core.visitor
 {
@@ -8,24 +9,19 @@ namespace urakawa.core.visitor
     /// </summary>
     public interface IVisitableTreeNode
     {
-        /// <summary>
-        /// Accept a <see cref="ITreeNodeVisitor"/> in depth first mode
-        /// </summary>
-        /// <param name="visitor">The <see cref="ITreeNodeVisitor"/></param>
         void AcceptDepthFirst(ITreeNodeVisitor visitor);
-
-        /// <summary>
-        /// Accept a <see cref="ITreeNodeVisitor"/> in breadth first mode
-        /// </summary>
-        /// <param name="visitor">The <see cref="ITreeNodeVisitor"/></param>
-        void AcceptBreadthFirst(ITreeNodeVisitor visitor);
-
-        /// <summary>
-        /// Visits the <see cref="IVisitableTreeNode"/> depth first
-        /// </summary>
-        /// <param name="preVisit">The pre-visit delegate</param>
-        /// <param name="postVisit">The post visit delegate</param>
         void AcceptDepthFirst(PreVisitDelegate preVisit, PostVisitDelegate postVisit);
+
+        void AcceptBreadthFirst(ITreeNodeVisitor visitor);
+        void AcceptBreadthFirst(PreVisitDelegate preVisit);
+
+
+
+        void AcceptDepthFirst(INavigator navigator, ITreeNodeVisitor visitor);
+        void AcceptDepthFirst(INavigator navigator, PreVisitDelegate preVisit, PostVisitDelegate postVisit);
+
+        void AcceptBreadthFirst(INavigator navigator, ITreeNodeVisitor visitor);
+        void AcceptBreadthFirst(INavigator navigator, PreVisitDelegate preVisit);
     }
 
     /// <summary>
