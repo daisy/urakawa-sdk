@@ -23,11 +23,7 @@ namespace urakawa.daisy.import
     {
         public const string INTERNAL_DTD_NAME = "DTBookLocalDTD.dtd";
 
-#if ENABLE_DTDSHARP
         private Dictionary<string, List<string>> m_listOfMixedContentXmlElementNames = new Dictionary<string, List<string>>();
-#else
-        private List<string> m_listOfMixedContentXmlElementNames = new List<string>();
-#endif
 
         protected enum DocumentMarkupType
         {
@@ -69,15 +65,14 @@ namespace urakawa.daisy.import
                 docMarkupType = DocumentMarkupType.XHTML;
                 DebugFix.Assert(rootElemName == @"html");
             }
-            else
+            else if (rootElemName == @"dtbook")
             {
                 docMarkupType = DocumentMarkupType.DTBOOK;
-                DebugFix.Assert(rootElemName == @"dtbook");
             }
-
-            if (!string.IsNullOrEmpty(dtdID) && !dtdID.StartsWith(@"http://"))
+            else if (rootElemName == @"html")
             {
-                dtdID = @"http://www.daisy.org/" + dtdID;
+                dtdID = @"html5";
+                docMarkupType = DocumentMarkupType.XHTML5;
             }
 
             if (docMarkupType == DocumentMarkupType.NA)
@@ -85,14 +80,16 @@ namespace urakawa.daisy.import
 #if DEBUG
                 Debugger.Break();
 #endif
-                //if (rootElemName == @"dtbook")
-                //{
-                //    docMarkupType = DocumentMarkupType.DTBOOK;
-                //}
-                //else if (rootElemName == @"html")
-                //{
-                //    docMarkupType = DocumentMarkupType.XHTML5;
-                //}
+            }
+
+            if (string.IsNullOrEmpty(dtdID))
+            {
+                return docMarkupType;
+            }
+
+            if (!string.IsNullOrEmpty(dtdID) && !dtdID.StartsWith(@"http://"))
+            {
+                dtdID = @"http://www.daisy.org/" + dtdID;
             }
 
             bool needToLoadDTDManuallyToCheckMixedContentElements = docMarkupType == DocumentMarkupType.XHTML5;
@@ -169,6 +166,17 @@ namespace urakawa.daisy.import
                             }
 #else
             dtdUniqueResourceId = dtdID;
+
+            List<string> list;
+            m_listOfMixedContentXmlElementNames.TryGetValue(dtdUniqueResourceId, out list);
+
+            if (list != null)
+            {
+                return docMarkupType;
+            }
+
+            list = new List<string>();
+            m_listOfMixedContentXmlElementNames.Add(dtdUniqueResourceId, list);
 
             IXmlReader reader = null;
 
@@ -503,7 +511,7 @@ namespace urakawa.daisy.import
                 //                                    }
             }
 
-            SaxContentHandler handler = new SaxContentHandler(m_listOfMixedContentXmlElementNames);
+            SaxContentHandler handler = new SaxContentHandler(list);
 
             try
             {

@@ -779,12 +779,8 @@ namespace urakawa.daisy.import
                             if (xmlNode.ParentNode != null
                                 && !string.IsNullOrEmpty(dtdUniqueResourceId))
                             {
-#if ENABLE_DTDSHARP
                                 List<string> list;
                                 m_listOfMixedContentXmlElementNames.TryGetValue(dtdUniqueResourceId, out list);
-#else
-                                List<string> list = m_listOfMixedContentXmlElementNames;
-#endif
 
                                 if (list != null && list.Count > 0)
                                 {
