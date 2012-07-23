@@ -115,15 +115,15 @@ namespace urakawa.core
         /// Event fired after the <see cref="TreeNode"/> has changed. 
         /// The event fire before any change specific event 
         /// </summary>
-        public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
+        public event EventHandler<DataModelChangedEventArgs> Changed;
 
         /// <summary>
         /// Fires the <see cref="Changed"/> event 
         /// </summary>
         /// <param name="args">The arguments of the event</param>
-        protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
+        protected void NotifyChanged(DataModelChangedEventArgs args)
         {
-            EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
+            EventHandler<DataModelChangedEventArgs> d = Changed;
             if (d != null) d(this, args);
         }
 
@@ -211,7 +211,7 @@ namespace urakawa.core
             NotifyChanged(ev);
         }
 
-        private void Child_Changed(object sender, urakawa.events.DataModelChangedEventArgs e)
+        private void Child_Changed(object sender, DataModelChangedEventArgs e)
         {
             NotifyChanged(e);
         }
@@ -228,7 +228,7 @@ namespace urakawa.core
             NotifyChanged(ev);
         }
 
-        private void Property_Changed(object sender, urakawa.events.DataModelChangedEventArgs e)
+        private void Property_Changed(object sender, DataModelChangedEventArgs e)
         {
             NotifyChanged(e);
         }
@@ -400,7 +400,7 @@ namespace urakawa.core
                     {
                         break;
                     }
-                    if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                    if (source.EOF) throw new XukException("Unexpectedly reached EOF");
                 }
             }
         }
@@ -437,7 +437,7 @@ namespace urakawa.core
                     {
                         break;
                     }
-                    if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                    if (source.EOF) throw new XukException("Unexpectedly reached EOF");
                 }
             }
         }
@@ -451,11 +451,11 @@ namespace urakawa.core
         {
             bool readItem = true;
 
-            if (source.NamespaceURI == XukAble.XUK_NS && source.LocalName == XukStrings.Properties)
+            if (source.NamespaceURI == XUK_NS && source.LocalName == XukStrings.Properties)
             {
                 XukInProperties(source, handler);
             }
-            else if (IsPrettyFormat() && source.NamespaceURI == XukAble.XUK_NS && source.LocalName == XukStrings.Children)
+            else if (IsPrettyFormat() && source.NamespaceURI == XUK_NS && source.LocalName == XukStrings.Children)
             {
                 XukInChildren(source, handler);
             }
@@ -484,7 +484,7 @@ namespace urakawa.core
         {
             base.XukOutChildren(destination, baseUri, handler);
 
-            destination.WriteStartElement(XukStrings.Properties, XukAble.XUK_NS);
+            destination.WriteStartElement(XukStrings.Properties, XUK_NS);
             foreach (Property prop in Properties.ContentsAs_Enumerable)
             {
                 prop.XukOut(destination, baseUri, handler);
@@ -493,7 +493,7 @@ namespace urakawa.core
 
             if (IsPrettyFormat())
             {
-                destination.WriteStartElement(XukStrings.Children, XukAble.XUK_NS);
+                destination.WriteStartElement(XukStrings.Children, XUK_NS);
             }
             for (int i = 0; i < Children.Count; i++)
             {
@@ -623,7 +623,7 @@ namespace urakawa.core
         public bool HasProperty(Property prop)
         {
             if (prop == null)
-                throw new exception.MethodParameterIsNullException("The TreeNode can not have a null Property");
+                throw new MethodParameterIsNullException("The TreeNode can not have a null Property");
             return mProperties.IndexOf(prop) != -1;
         }
 
@@ -758,7 +758,7 @@ namespace urakawa.core
         {
             if (destPres == null)
             {
-                throw new exception.MethodParameterIsNullException("Can not export the TreeNode to a null Presentation");
+                throw new MethodParameterIsNullException("Can not export the TreeNode to a null Presentation");
             }
             TreeNode exportedNode = destPres.TreeNodeFactory.Create(GetType());
             if (exportedNode == null)
@@ -766,7 +766,7 @@ namespace urakawa.core
                 string msg = String.Format(
                     "The TreeNodeFactory of the export destination Presentation can not create a TreeNode matching Xuk QName {1}:{0}",
                     XukLocalName, XukNamespaceUri);
-                throw new exception.FactoryCannotCreateTypeException(msg);
+                throw new FactoryCannotCreateTypeException(msg);
             }
             foreach (Property prop in Properties.ContentsAs_Enumerable)
             {
@@ -825,7 +825,7 @@ namespace urakawa.core
         {
             if (node == null)
             {
-                throw new exception.MethodParameterIsNullException(
+                throw new MethodParameterIsNullException(
                     "The node to test relationship with is null");
             }
             TreeNode p = Parent;
@@ -836,7 +836,7 @@ namespace urakawa.core
         {
             if (node == null)
             {
-                throw new exception.MethodParameterIsNullException(
+                throw new MethodParameterIsNullException(
                     "The node to test relationship with is null");
             }
             TreeNode p = node.Parent;
@@ -858,7 +858,7 @@ namespace urakawa.core
         {
             if (node == null)
             {
-                throw new exception.MethodParameterIsNullException(
+                throw new MethodParameterIsNullException(
                     "The node to test relationship with is null");
             }
             return node.IsAncestorOf(this);
@@ -916,7 +916,7 @@ namespace urakawa.core
         /// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="props"/> is null</exception>
         public void AddProperties(IList<Property> props)
         {
-            if (props == null) throw new exception.MethodParameterIsNullException("No list of Property was given");
+            if (props == null) throw new MethodParameterIsNullException("No list of Property was given");
             foreach (Property p in props)
             {
                 AddProperty(p);
@@ -934,12 +934,12 @@ namespace urakawa.core
         public void AddProperty(Property prop)
         {
             if (prop == null)
-                throw new exception.MethodParameterIsNullException("Can not add a null Property to the TreeNode");
+                throw new MethodParameterIsNullException("Can not add a null Property to the TreeNode");
             if (mProperties.IndexOf(prop) == -1)
             {
                 if (!prop.CanBeAddedTo(this))
                 {
-                    throw new exception.PropertyCanNotBeAddedException(
+                    throw new PropertyCanNotBeAddedException(
                         "The given Property can not be added to the TreeNode");
                 }
                 prop.TreeNodeOwner = this;
@@ -955,7 +955,7 @@ namespace urakawa.core
 
         public static void UpdateTextDirectionality(TreeNode node, XmlProperty xmlProp)
         {
-            node.TextDirectionality = TreeNode.TextDirection.Unsure;
+            node.TextDirectionality = TextDirection.Unsure;
 
             if (xmlProp == null || xmlProp.mLocalName == null)
             {
@@ -963,7 +963,7 @@ namespace urakawa.core
             }
 
             string lang = xmlProp.GetLangFromAttributes();
-            if (!string.IsNullOrEmpty(lang))
+            if (!String.IsNullOrEmpty(lang))
             {
                 // TODO: Arabic, Urdu, Hebrew, Yiddish, Farsi...what else?
                 if (lang.Equals("ar")
@@ -978,7 +978,7 @@ namespace urakawa.core
                            || lang.StartsWith("fa-")
                     )
                 {
-                    node.TextDirectionality = TreeNode.TextDirection.RTL;
+                    node.TextDirectionality = TextDirection.RTL;
                 }
                 else
                 //if (xmlAttr.Value.Equals("en")
@@ -987,20 +987,20 @@ namespace urakawa.core
                 //       || xmlAttr.Value.StartsWith("fr-")
                 //)
                 {
-                    node.TextDirectionality = TreeNode.TextDirection.LTR;
+                    node.TextDirectionality = TextDirection.LTR;
                 }
             }
 
             XmlAttribute xmlAttr = xmlProp.GetAttribute("dir");
-            if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
+            if (xmlAttr != null && !String.IsNullOrEmpty(xmlAttr.Value))
             {
                 if (xmlAttr.Value.Equals("rtl"))
                 {
-                    node.TextDirectionality = TreeNode.TextDirection.RTL;
+                    node.TextDirectionality = TextDirection.RTL;
                 }
                 else if (xmlAttr.Value.Equals("ltr"))
                 {
-                    node.TextDirectionality = TreeNode.TextDirection.LTR;
+                    node.TextDirectionality = TextDirection.LTR;
                 }
 #if DEBUG
                 else
@@ -1032,7 +1032,7 @@ namespace urakawa.core
         /// <param name="prop">The <see cref="Property"/> to remove</param>
         public void RemoveProperty(Property prop)
         {
-            if (prop == null) throw new exception.MethodParameterIsNullException("Can not remove a null Property");
+            if (prop == null) throw new MethodParameterIsNullException("Can not remove a null Property");
             if (mProperties.IndexOf(prop) != -1)
             {
                 prop.TreeNodeOwner = null;
@@ -1066,18 +1066,18 @@ namespace urakawa.core
         {
             if (node == null)
             {
-                throw new exception.MethodParameterIsNullException(String.Format(
+                throw new MethodParameterIsNullException(String.Format(
                                                                        "Can not insert null child at index {0:0}",
                                                                        insertIndex));
             }
             if (node.Parent != null)
             {
-                throw new exception.NodeNotDetachedException(
+                throw new NodeNotDetachedException(
                     "Can not insert child node that is already attached to a parent node");
             }
             if (insertIndex < 0 || mChildren.Count < insertIndex)
             {
-                throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+                throw new MethodParameterIsOutOfBoundsException(String.Format(
                                                                               "Could not insert a new child at index {0:0} - index is out of bounds",
                                                                               insertIndex));
             }
@@ -1266,27 +1266,27 @@ namespace urakawa.core
         {
             if (node == null)
             {
-                throw new exception.MethodParameterIsNullException(
+                throw new MethodParameterIsNullException(
                     "The given node from which to append children is null");
             }
             if (Presentation != node.Presentation)
             {
-                throw new exception.NodeInDifferentPresentationException(
+                throw new NodeInDifferentPresentationException(
                     "Can not append the children of a node from a different presentation");
             }
             if (node == this)
             {
-                throw new exception.NodeIsSelfException(
+                throw new NodeIsSelfException(
                     "Can not append a nodes own children to itself");
             }
             if (node.IsAncestorOf(this))
             {
-                throw new exception.NodeIsAncestorException(
+                throw new NodeIsAncestorException(
                     "Can not append the children of an ancestor node");
             }
             if (node.IsDescendantOf(this))
             {
-                throw new exception.NodeIsDescendantException(
+                throw new NodeIsDescendantException(
                     "Can not append the children of a descendant node");
             }
             while (node.mChildren.Count > 0)
@@ -1321,32 +1321,32 @@ namespace urakawa.core
         {
             if (node == null)
             {
-                throw new exception.MethodParameterIsNullException(
+                throw new MethodParameterIsNullException(
                     "The given node with which to swap is null");
             }
             if (Presentation != node.Presentation)
             {
-                throw new exception.NodeInDifferentPresentationException(
+                throw new NodeInDifferentPresentationException(
                     "Can not swap with a node from a different presentation");
             }
             if (node == this)
             {
-                throw new exception.NodeIsSelfException(
+                throw new NodeIsSelfException(
                     "Can not swap with itself");
             }
             if (node.IsAncestorOf(this))
             {
-                throw new exception.NodeIsAncestorException(
+                throw new NodeIsAncestorException(
                     "Can not swap with an ancestor node");
             }
             if (node.IsDescendantOf(this))
             {
-                throw new exception.NodeIsDescendantException(
+                throw new NodeIsDescendantException(
                     "Can not swap with a descendant node");
             }
             if (Parent == null || node.Parent == null)
             {
-                throw new exception.NodeHasNoParentException(
+                throw new NodeHasNoParentException(
                     "Both nodes in a swap need to have a parent");
             }
             TreeNode thisParent = Parent;
@@ -1381,7 +1381,7 @@ namespace urakawa.core
         {
             if (index < 0 || mChildren.Count <= index)
             {
-                throw new exception.MethodParameterIsOutOfBoundsException(
+                throw new MethodParameterIsOutOfBoundsException(
                     "The given index at which to split children is out of bounds");
             }
             TreeNode res = Copy(false, copyProperties);

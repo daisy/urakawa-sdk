@@ -1,4 +1,5 @@
-﻿using urakawa.media;
+﻿using System;
+using urakawa.media;
 using urakawa.property.channel;
 
 namespace urakawa.core

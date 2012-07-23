@@ -36,6 +36,22 @@ namespace urakawa.core
         }
 
 
+        public static bool IsLevel(string localXmlName)
+        {
+            if (String.IsNullOrEmpty(localXmlName))
+                return false;
+
+            return localXmlName.Equals("level1", StringComparison.OrdinalIgnoreCase)
+                   || localXmlName.Equals("level2", StringComparison.OrdinalIgnoreCase)
+                   || localXmlName.Equals("level3", StringComparison.OrdinalIgnoreCase)
+                   || localXmlName.Equals("level4", StringComparison.OrdinalIgnoreCase)
+                   || localXmlName.Equals("level5", StringComparison.OrdinalIgnoreCase)
+                   || localXmlName.Equals("level6", StringComparison.OrdinalIgnoreCase)
+                   || localXmlName.Equals("level", StringComparison.OrdinalIgnoreCase)
+                ;
+        }
+
+
         public TreeNode GetFirstAncestorWithXmlElement(string localName)
         {
             if (Parent == null)
@@ -193,7 +209,7 @@ namespace urakawa.core
                     string attrLocalName = xmlAttr.PrefixedLocalName != null
                                                ? xmlAttr.PrefixedLocalName
                                                : xmlAttr.LocalName;
-                    if (string.IsNullOrEmpty(attrNSPrefix) &&
+                    if (String.IsNullOrEmpty(attrNSPrefix) &&
                         attrLocalName.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
                     {
                         // xmlns="URI"
@@ -201,14 +217,14 @@ namespace urakawa.core
                         break;
                     }
                 }
-                if (!string.IsNullOrEmpty(nsUri_NearestXmlns))
+                if (!String.IsNullOrEmpty(nsUri_NearestXmlns))
                 {
                     break;
                 }
 
                 node = node.Parent;
             }
-            if (string.IsNullOrEmpty(nsUri_NearestXmlns))
+            if (String.IsNullOrEmpty(nsUri_NearestXmlns))
             {
                 nsUri_NearestXmlns = Presentation.PropertyFactory.DefaultXmlNamespaceUri;
             }
@@ -363,9 +379,9 @@ namespace urakawa.core
 
                 XmlProperty xmlProp = GetXmlProperty();
 
-                if (string.IsNullOrEmpty(NSPrefix))
+                if (String.IsNullOrEmpty(NSPrefix))
                 {
-                    if (!string.IsNullOrEmpty(nsUri))
+                    if (!String.IsNullOrEmpty(nsUri))
                     {
                         xmlWriter.WriteStartElement(name, nsUri);
                     }
@@ -382,7 +398,7 @@ namespace urakawa.core
                     //#if DEBUG
                     //                    Debugger.Break();
                     //#endif //DEBUG
-                    if (!string.IsNullOrEmpty(nsUri))
+                    if (!String.IsNullOrEmpty(nsUri))
                     {
                         xmlWriter.WriteStartElement(NSPrefix, localName, nsUri);
                     }
@@ -413,7 +429,7 @@ namespace urakawa.core
                         value = ((FileDataProvider) manMedia.ImageMediaData.DataProvider).DataFileFullPath;
                     }
 
-                    if (string.IsNullOrEmpty(attrNSPrefix))
+                    if (String.IsNullOrEmpty(attrNSPrefix))
                     {
                         if (nameWithoutPrefix.Equals(XmlReaderWriterHelper.NS_PREFIX_XMLNS))
                         {
@@ -421,7 +437,7 @@ namespace urakawa.core
 
                             xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XMLNS, XmlReaderWriterHelper.NS_URL_XMLNS, value);
                         }
-                        else if (!string.IsNullOrEmpty(nsUriAttr) && nsUriAttr != nsUri)
+                        else if (!String.IsNullOrEmpty(nsUriAttr) && nsUriAttr != nsUri)
                         {
 #if DEBUG
                             Debugger.Break();
@@ -447,7 +463,7 @@ namespace urakawa.core
                             xmlWriter.WriteAttributeString(XmlReaderWriterHelper.NS_PREFIX_XML, nameWithoutPrefix, XmlReaderWriterHelper.NS_URL_XML,
                                                            value);
                         }
-                        else if (!string.IsNullOrEmpty(nsUriAttr))
+                        else if (!String.IsNullOrEmpty(nsUriAttr))
                         {
 #if DEBUG
                             //DebugFix.Assert(nsUriAttr != nsUri);
@@ -457,7 +473,7 @@ namespace urakawa.core
 #endif //DEBUG
                             xmlWriter.WriteAttributeString(attrNSPrefix, nameWithoutPrefix, nsUriAttr, value);
                         }
-                        else if (!string.IsNullOrEmpty(nsUri))
+                        else if (!String.IsNullOrEmpty(nsUri))
                         {
 #if DEBUG
                             Debugger.Break();
