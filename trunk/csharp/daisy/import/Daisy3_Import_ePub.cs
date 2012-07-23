@@ -531,19 +531,19 @@ namespace urakawa.daisy.import
                 //    listOfBodies = xmlDoc.GetElementsByTagName("book");
                 //}
 
-                XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDoc, true, "body", null);
-                if (bodyElement == null)
-                {
-                    bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDoc, true, "book", null);
-                }
+                //XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDoc, true, "body", null);
+                //if (bodyElement == null)
+                //{
+                //    bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDoc, true, "book", null);
+                //}
 
-                if (bodyElement == null)
-                {
-                    continue;
-                }
+                //if (bodyElement == null)
+                //{
+                //    continue;
+                //}
 
                 // TODO: return hierarchical outline where each node points to a XUK relative path, + XukAble.Uid (TreeNode are not corrupted during XukAbleManager.RegenerateUids();
-                parseContentDocument(fullDocPath, project, bodyElement, null, fullDocPath, null, DocumentMarkupType.NA);
+                parseContentDocument(fullDocPath, project, xmlDoc, null, fullDocPath, null, DocumentMarkupType.NA);
 
 
                 foreach (KeyValuePair<string, string> spineItemAttribute in spineItemsAttributes[index])
