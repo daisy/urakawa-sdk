@@ -6,9 +6,9 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using System.Xml;
 using AudioLib;
-using urakawa.core;
 using urakawa.data;
 using urakawa.events.progress;
 using urakawa.media;
@@ -30,6 +30,8 @@ using Org.System.Xml.Sax.Helpers;
 using Constants = Org.System.Xml.Sax.Constants;
 using AElfred;
 using Kds.Xml.Expat;
+using TreeNode = urakawa.core.TreeNode;
+
 #endif //ENABLE_DTDSHARP
 
 
@@ -174,6 +176,13 @@ namespace urakawa.daisy.import
                                 {
                                     presentation.Language = lang_; // override existing lang from dtbook/html element
                                 }
+
+#if DEBUG
+                                List<TreeNode.Section> outline = presentation.RootNode.BuildOutline();
+                                string debugOutline = presentation.RootNode.ToStringOutline();
+                                Console.WriteLine(debugOutline);
+                                MessageBox.Show(debugOutline);
+#endif
                             }
                         }
                         //parseContentDocument(((XmlDocument)xmlNode).DocumentElement, parentTreeNode);

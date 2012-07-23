@@ -30,6 +30,9 @@ namespace urakawa.daisy.import
     {
         private void ParseHeadLinks(string book_FilePath, Project project, XmlDocument contentDoc)
         {
+            XmlNode headXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(contentDoc.DocumentElement, true, "head", null);
+            if (headXmlNode == null) return;
+
             Presentation presentation = project.Presentations.Get(0);
 
             List<string> externalFileRelativePaths = new List<string>();
@@ -44,8 +47,6 @@ namespace urakawa.daisy.import
                     }
                 }
             }
-
-            XmlNode headXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(contentDoc.DocumentElement, true, "head", null);
 
             List<XmlNode> externalFilesLinks = new List<XmlNode>();
             externalFilesLinks.AddRange(XmlDocumentHelper.GetChildrenElementsOrSelfWithName(headXmlNode, true, "link", headXmlNode.NamespaceURI, false));
