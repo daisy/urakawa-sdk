@@ -344,7 +344,9 @@ StreamWithMarkers?
 #if USE_NORMAL_LIST
             List
 #else
- LightLinkedList<TreeNodeAndStreamDataLength>(
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<TreeNodeAndStreamDataLength>(
 #if USE_NORMAL_LIST
 1
 #endif //USE_NORMAL_LIST
@@ -436,11 +438,15 @@ m_Stream.Length
 #if USE_NORMAL_LIST
                     List
 #else
-            LightLinkedList<StreamWithMarkers> listStreamsWithMarkers = new
+            LightLinkedList
+#endif //USE_NORMAL_LIST
+<StreamWithMarkers> listStreamsWithMarkers = new
 #if USE_NORMAL_LIST
                     List
 #else
- LightLinkedList<StreamWithMarkers>();
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<StreamWithMarkers>();
 
             for (int index = 0; index < mChildren.Count; index++)
             {
@@ -475,22 +481,30 @@ childVal
 #if USE_NORMAL_LIST
                     List
 #else
- LightLinkedList<TreeNodeAndStreamDataLength>();
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<TreeNodeAndStreamDataLength>();
 
 #if USE_NORMAL_LIST
                     List
 #else
-            LightLinkedList<Stream> listStreams = new
+            LightLinkedList
+#endif //USE_NORMAL_LIST
+<Stream> listStreams = new
 
 #if USE_NORMAL_LIST
                     List
 #else
- LightLinkedList<Stream>();
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<Stream>();
 
 #if USE_NORMAL_LIST
                     List
 #else
-            LightLinkedList<Stream> listSecondaryStreams =
+            LightLinkedList
+#endif //USE_NORMAL_LIST
+<Stream> listSecondaryStreams =
 
 openSecondaryStream ? 
 new
@@ -498,7 +512,9 @@ new
 #if USE_NORMAL_LIST
                     List
 #else
- LightLinkedList<Stream>() : null;
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<Stream>() : null;
 
 
 #if USE_NORMAL_LIST
