@@ -31,10 +31,12 @@ namespace urakawa.core
 
             public void ToString(StringBuilder strBuilder, int level)
             {
-                strBuilder.AppendLine();
-
+                //strBuilder.AppendLine();
                 strIndent(strBuilder, level);
-                strBuilder.Append(@"[ <");
+                strBuilder.Append(@"<li>");
+                strBuilder.Append(@"<a");
+
+                string uid = (RealSectioningRootOrContent != null ? RealSectioningRootOrContent.GetXmlElementId() : null);
 
                 if (Heading != null)
                 {
@@ -58,45 +60,130 @@ namespace urakawa.core
 
                         if (highestRanked != null)
                         {
+                            if (string.IsNullOrEmpty(uid))
+                            {
+                                uid = Heading.GetXmlElementId();
+
+                                if (string.IsNullOrEmpty(uid))
+                                {
+                                    uid = highestRanked.GetXmlElementId();
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(uid))
+                            {
+                                strBuilder.Append(" href=\"#" + uid + "\"");
+                            }
+
+                            strBuilder.Append(@">");
+
                             strBuilder.Append(highestRanked.GetTextFlattened());
                         }
                         else
                         {
                             Debugger.Break();
+
+                            if (string.IsNullOrEmpty(uid))
+                            {
+                                uid = Heading.GetXmlElementId();
+                            }
+
+                            if (!string.IsNullOrEmpty(uid))
+                            {
+                                strBuilder.Append(" href=\"#" + uid + "\"");
+                            }
+
+                            strBuilder.Append(@">");
+
                             strBuilder.Append(Heading.GetTextFlattened());
                         }
                     }
                     else
                     {
+                        if (string.IsNullOrEmpty(uid))
+                        {
+                            uid = Heading.GetXmlElementId();
+                        }
+
+                        if (!string.IsNullOrEmpty(uid))
+                        {
+                            strBuilder.Append(" href=\"#" + uid + "\"");
+                        }
+
+                        strBuilder.Append(@">");
+
                         strBuilder.Append(Heading.GetTextFlattened());
                     }
                 }
                 else
                 {
-                    strBuilder.Append(@"UNTITLED");
+                    if (!string.IsNullOrEmpty(uid))
+                    {
+                        strBuilder.Append(" href=\"#" + uid + "\"");
+                    }
+
+                    strBuilder.Append(@">");
 
                     if (RealSectioningRootOrContent != null)
                     {
-                        strBuilder.Append(@" (");
-
                         string name = RealSectioningRootOrContent.GetXmlElementPrefixedLocalName();
-                        strBuilder.Append(name);
 
-                        strBuilder.Append(@")");
+                        if (name.Equals(@"body"))
+                        {
+                            strBuilder.Append(@"Untitled document");
+                        }
+                        else if (name.Equals(@"section"))
+                        {
+                            strBuilder.Append(@"Untitled section");
+                        }
+                        else if (name.Equals(@"article"))
+                        {
+                            strBuilder.Append(@"Article");
+                        }
+                        else if (name.Equals(@"aside"))
+                        {
+                            strBuilder.Append(@"Sidebar");
+                        }
+                        else if (name.Equals(@"nav"))
+                        {
+                            strBuilder.Append(@"Navigation");
+                        }
+                        else
+                        {
+                            strBuilder.Append(@"UNTITLED (");
+                            strBuilder.Append(name);
+                            strBuilder.Append(@")");
+                        }
+                    }
+                    else
+                    {
+                        strBuilder.Append(@"UNTITLED");
                     }
                 }
 
-                strBuilder.AppendLine(">");
+                strBuilder.Append(@"</a>");
 
-                foreach (Section section in SubSections)
+                if (SubSections.Count > 0)
                 {
-                    DebugFix.Assert(section.ParentSection == this);
+                    strBuilder.AppendLine();
+                    strIndent(strBuilder, level + 1);
+                    strBuilder.AppendLine(@"<ol>");
 
-                    section.ToString(strBuilder, level + 1);
+                    foreach (Section section in SubSections)
+                    {
+                        DebugFix.Assert(section.ParentSection == this);
+
+                        section.ToString(strBuilder, level + 2);
+                    }
+
+                    //strBuilder.AppendLine();
+                    strIndent(strBuilder, level + 1);
+                    strBuilder.AppendLine(@"</ol>");
+
+                    strIndent(strBuilder, level);
                 }
 
-                strIndent(strBuilder, level);
-                strBuilder.AppendLine(@"]");
+                strBuilder.AppendLine("</li>");
             }
 #endif //DEBUG
         }
@@ -113,12 +200,16 @@ namespace urakawa.core
 
             StringBuilder strBuilder = new StringBuilder();
 
+            strBuilder.AppendLine();
+            strBuilder.AppendLine(@"<ol>");
             foreach (Section section in Outline)
             {
                 DebugFix.Assert(section.ParentSection == null);
 
-                section.ToString(strBuilder, 0);
+                section.ToString(strBuilder, 1);
             }
+            //strBuilder.AppendLine();
+            strBuilder.AppendLine(@"</ol>");
 
             return strBuilder.ToString();
         }
