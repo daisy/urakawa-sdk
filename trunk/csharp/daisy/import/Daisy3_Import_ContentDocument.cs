@@ -39,6 +39,73 @@ namespace urakawa.daisy.import
 {
     public partial class Daisy3_Import
     {
+#if DEBUG
+        public void VerifyHtml5OutliningAlgorithmUsingPipelineTestSuite()
+        {
+            string filepath = @"C:\Users\daniel\Desktop\daisy\assets\HTML5-outline\html5-outliner_test.xml";
+
+            XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocument(filepath, false, false);
+
+            foreach (XmlNode sourceNode in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, @"utfx:source", @"http://utfx.org/test-definition", false))
+            {
+                Console.WriteLine(@"=============================");
+                Console.WriteLine(@"=============================");
+
+                Console.WriteLine(sourceNode.InnerXml);
+
+                if (sourceNode.NodeType != XmlNodeType.Element
+                    || sourceNode.Name != @"utfx:source"
+                    || sourceNode.NamespaceURI != @"http://utfx.org/test-definition")
+                {
+                    Debugger.Break();
+                    continue;
+                }
+
+                Project project = new Project();
+                project.SetPrettyFormat(m_XukPrettyFormat);
+
+                Presentation presentation = project.AddNewPresentation(new Uri(Path.GetDirectoryName(filepath), UriKind.Absolute), Path.GetFileName(filepath));
+
+                XmlNode bodyNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(sourceNode, true, @"body", @"http://www.w3.org/1999/xhtml");
+
+                parseContentDocument(filepath, project, bodyNode, null, filepath, null, DocumentMarkupType.NA);
+
+                List<TreeNode.Section> outline = presentation.RootNode.BuildOutline();
+
+                string debugOutline = presentation.RootNode.ToStringOutline();
+
+                Console.WriteLine(debugOutline);
+                //MessageBox.Show(debugOutline);
+
+                XmlNode expectedNode = sourceNode.NextSibling;
+
+                if (expectedNode.NodeType != XmlNodeType.Element
+                    || expectedNode.Name != @"utfx:expected"
+                    || expectedNode.NamespaceURI != @"http://utfx.org/test-definition")
+                {
+                    Debugger.Break();
+                    continue;
+                }
+
+                debugOutline = Regex.Replace(debugOutline, @"\s+", @" ");
+                debugOutline = debugOutline.Trim();
+                debugOutline = debugOutline.Replace("> <", "><");
+
+                Console.WriteLine(debugOutline);
+
+                string expectedText = expectedNode.InnerXml;
+                expectedText = expectedText.Replace(" xmlns=\"" + @"http://www.w3.org/1999/xhtml" + "\"", @"");
+                expectedText = Regex.Replace(expectedText, @"\s+", @" ");
+                expectedText = expectedText.Trim();
+                expectedText = expectedText.Replace("> <", "><");
+
+                Console.WriteLine(expectedText);
+
+                DebugFix.Assert(debugOutline == expectedText);
+            }
+        }
+#endif
+
         //private string trimXmlTextInnerSpaces(string str)
         //{
         //    string[] whiteSpaces = new string[] { " ", "" + '\t', "\r\n", Environment.NewLine };
@@ -176,13 +243,6 @@ namespace urakawa.daisy.import
                                 {
                                     presentation.Language = lang_; // override existing lang from dtbook/html element
                                 }
-
-#if DEBUG
-                                List<TreeNode.Section> outline = presentation.RootNode.BuildOutline();
-                                string debugOutline = presentation.RootNode.ToStringOutline();
-                                Console.WriteLine(debugOutline);
-                                MessageBox.Show(debugOutline);
-#endif
                             }
                         }
                         //parseContentDocument(((XmlDocument)xmlNode).DocumentElement, parentTreeNode);
