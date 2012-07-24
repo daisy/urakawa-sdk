@@ -9,6 +9,8 @@ namespace urakawa.core
 {
     public partial class TreeNode
     {
+        public List<Section> Outline = null;
+
         public class Section
         {
             public List<Section> SubSections = new List<Section>();
@@ -16,6 +18,53 @@ namespace urakawa.core
 
             public TreeNode Heading = null;
             public TreeNode RealSectioningRootOrContent = null;
+
+            private static TreeNode NoRealHeading = new TreeNode();
+            private TreeNode RealHeading = NoRealHeading;
+            public TreeNode GetRealHeading()
+            {
+                if (RealHeading != NoRealHeading)
+                {
+                    return RealHeading;
+                }
+
+                if (Heading != null)
+                {
+                    string headingName = Heading.GetXmlElementLocalName();
+                    if (!string.IsNullOrEmpty(headingName) &&
+                        headingName.Equals(@"hgroup", StringComparison.OrdinalIgnoreCase))
+                    {
+                        TreeNode highestRanked = null;
+                        int highestRank = int.MaxValue;
+
+                        foreach (TreeNode child in Heading.Children.ContentsAs_Enumerable)
+                        {
+                            string name = child.GetXmlElementLocalName();
+
+                            int rank = GetHeadingRank(name);
+                            if (rank >= 0 && rank < highestRank)
+                            {
+                                highestRank = rank;
+                                highestRanked = child;
+                            }
+                        }
+
+                        DebugFix.Assert(highestRanked != null);
+
+                        if (highestRanked != null)
+                        {
+                            RealHeading = highestRanked;
+                            return RealHeading;
+                        }
+                    }
+
+                    RealHeading = Heading;
+                    return RealHeading;
+                }
+
+                RealHeading = null;
+                return RealHeading;
+            }
 
 #if DEBUG
             private void strIndent(StringBuilder strBuilder, int level)
@@ -188,8 +237,6 @@ namespace urakawa.core
 #endif //DEBUG
         }
 
-        public List<Section> Outline = null;
-
 #if DEBUG
         public string ToStringOutline()
         {
@@ -215,7 +262,7 @@ namespace urakawa.core
         }
 #endif //DEBUG
 
-        public List<Section> BuildOutline()
+        public List<Section> GetOrCreateOutline()
         {
             string localXmlName = GetXmlElementLocalName();
 
@@ -226,6 +273,11 @@ namespace urakawa.core
             {
                 Outline = null;
                 return null;
+            }
+
+            if (Outline != null)
+            {
+                return Outline;
             }
 
             TreeNode currentOutlinee = null;
