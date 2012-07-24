@@ -312,8 +312,8 @@ namespace urakawa.xuk
             if (validate)
             {
 #if NET40
-            //settings.ProhibitDtd = false;
-            settings.DtdProcessing = DtdProcessing.Parse;
+                //settings.ProhibitDtd = false;
+                settings.DtdProcessing = DtdProcessing.Parse;
 #else
                 settings.ProhibitDtd = false;
 #endif //NET40
@@ -324,10 +324,10 @@ namespace urakawa.xuk
             else
             {
 #if NET40
-            //settings.ProhibitDtd = true;
-            settings.DtdProcessing = DtdProcessing.Ignore;
+                //settings.ProhibitDtd = false;
+                settings.DtdProcessing = DtdProcessing.Ignore;
 #else
-                settings.ProhibitDtd = true;
+                settings.ProhibitDtd = false;
 #endif //NET40
 
                 settings.ValidationType = ValidationType.None;
