@@ -70,7 +70,7 @@ namespace urakawa.daisy.import
 
                 parseContentDocument(filepath, project, bodyNode, null, filepath, null, DocumentMarkupType.NA);
 
-                List<TreeNode.Section> outline = presentation.RootNode.BuildOutline();
+                List<TreeNode.Section> outline = presentation.RootNode.GetOrCreateOutline();
 
                 string debugOutline = presentation.RootNode.ToStringOutline();
 
