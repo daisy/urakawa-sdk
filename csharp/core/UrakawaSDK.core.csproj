@@ -141,6 +141,7 @@
     <Compile Include="core\TreeNode_Audio.cs" />
     <Compile Include="core\TreeNode_Channels.cs" />
     <Compile Include="core\TreeNode_Image.cs" />
+    <Compile Include="core\TreeNode_Outlining.cs" />
     <Compile Include="core\TreeNode_Text.cs" />
     <Compile Include="core\TreeNode_Xml.cs" />
     <Compile Include="data\Cleaner.cs" />
