@@ -309,24 +309,31 @@ namespace urakawa.xuk
         {
             XmlReaderSettings settings = new XmlReaderSettings();
 
+            if (validate)
+            {
 #if NET40
             //settings.ProhibitDtd = false;
             settings.DtdProcessing = DtdProcessing.Parse;
 #else
-            settings.ProhibitDtd = false;
+                settings.ProhibitDtd = false;
 #endif //NET40
 
-            if (validate)
-            {
                 settings.ValidationType = ValidationType.DTD;
                 settings.ValidationEventHandler += XmlValidationEventHandler;
             }
             else
             {
+#if NET40
+            //settings.ProhibitDtd = true;
+            settings.DtdProcessing = DtdProcessing.Ignore;
+#else
+                settings.ProhibitDtd = true;
+#endif //NET40
+
                 settings.ValidationType = ValidationType.None;
             }
 
-            settings.ConformanceLevel = ConformanceLevel.Auto;
+            settings.ConformanceLevel = ConformanceLevel.Document;
 
             if (useLocalXmlResolver)
             {
@@ -349,7 +356,7 @@ namespace urakawa.xuk
             bool debug = true; // ignore
         }
 
-        public static XmlDocument ParseXmlDocument(string path, bool preserveWhiteSpace, bool validate)
+        public static XmlDocument ParseXmlDocument(string filePath, bool preserveWhiteSpace, bool validate)
         {
             XmlDocument xmldoc = null;
 
@@ -358,10 +365,26 @@ namespace urakawa.xuk
             XmlReader xmlReader = null;
             try
             {
-                xmlReader = XmlReader.Create(path, settings);
-                if (preserveWhiteSpace && xmlReader is XmlTextReader)
+                DebugFix.Assert(File.Exists(filePath));
+
+                Stream stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                TextReader reader = new StreamReader(stream, Encoding.UTF8);
+
+                Uri uri = new Uri(@"file:///" + filePath.Replace('\\', '/'), UriKind.Absolute);
+                string uriStr = uri.ToString();
+
+                xmlReader = XmlReader.Create(reader, settings, uriStr);
+
+                if (xmlReader is XmlTextReader)
                 {
-                    ((XmlTextReader)xmlReader).WhitespaceHandling = WhitespaceHandling.All;
+                    if (preserveWhiteSpace)
+                    {
+                        ((XmlTextReader)xmlReader).WhitespaceHandling = WhitespaceHandling.All;
+                    }
+                    else
+                    {
+                        ((XmlTextReader)xmlReader).WhitespaceHandling = WhitespaceHandling.None;
+                    }
                 }
                 xmldoc = new XmlDocument();
                 xmldoc.PreserveWhitespace = preserveWhiteSpace;
