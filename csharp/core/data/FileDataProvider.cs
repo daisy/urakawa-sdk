@@ -74,11 +74,15 @@ namespace urakawa.data
                     if (!added)
                     {
                         if (c == '.'
-                            && m_StrBuilder.Length > 0
-                            && m_StrBuilder[m_StrBuilder.Length - 1] == '.'
+                            &&
+                            (
+                            m_StrBuilder.Length == 0
+                            ||
+                            m_StrBuilder[m_StrBuilder.Length - 1] == '.'
+                            )
                             )
                         {
-                            //let's avoid two consecutive dots
+                            //let's avoid two consecutive dots, or dot at begining of filename
                             bool debug = true;
                         }
                         else
