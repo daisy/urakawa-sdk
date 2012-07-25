@@ -78,6 +78,8 @@ namespace urakawa.daisy.export
 
                     hasMathML = true;
                 }
+                
+                filename = FileDataProvider.EliminateForbiddenFileNameCharacters(filename);
 
                 if (efd.IsPreservedForOutputFile
                     && !m_FilesList_ExternalFiles.Contains(filename))

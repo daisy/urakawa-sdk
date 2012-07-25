@@ -1,12 +1,13 @@
 using System.Collections.Generic;
+using urakawa.data;
 
 namespace urakawa.metadata.daisy
 {
     //wraps the generic MetadataDefinitionSet
     public static class SupportedMetadata_Z39862005
     {
-        public const string MATHML_XSLT_METADATA = "DTBook-XSLTFallback";
-
+        public static readonly string MATHML_XSLT_METADATA = "DTBook-XSLTFallback";
+        
         public const string NS_PREFIX_DUBLIN_CORE = "dc";
         public const string NS_URL_DUBLIN_CORE = "http://purl/dc";
 
@@ -68,6 +69,8 @@ namespace urakawa.metadata.daisy
         
         static SupportedMetadata_Z39862005()
         {
+            MATHML_XSLT_METADATA = FileDataProvider.EliminateForbiddenFileNameCharacters(MATHML_XSLT_METADATA);
+
             m_IdentifierSynonyms = new List<string>();
             m_IdentifierSynonyms.Add(DTB_UID);
             m_TitleSynonyms = new List<string>();
