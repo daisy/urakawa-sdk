@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using AudioLib;
 using urakawa.ExternalFiles;
+using urakawa.data;
 using urakawa.metadata.daisy;
 using urakawa.property.xml;
 using urakawa.xuk;
@@ -25,15 +26,18 @@ namespace urakawa.daisy
             {
                 foreach (ExternalFileData efd in list_ExternalStyleSheets)
                 {
+                    string adjustedFilePath =
+                        FileDataProvider.EliminateForbiddenFileNameCharacters(efd.OriginalRelativePath);
+
                     if (efd is CSSExternalFileData)
                     {
                         DTBDocument.AppendChild(
-                        DTBDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/css\" href=\"" + efd.OriginalRelativePath + "\""));
+                        DTBDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/css\" href=\"" + adjustedFilePath + "\""));
                     }
                     else if (efd is XSLTExternalFileData && !efd.OriginalRelativePath.StartsWith(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA))
                     {
                         DTBDocument.AppendChild(
-                        DTBDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"" + efd.OriginalRelativePath + "\""));
+                        DTBDocument.CreateProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"" + adjustedFilePath + "\""));
                     }
                 }
             }

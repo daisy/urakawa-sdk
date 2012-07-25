@@ -73,7 +73,18 @@ namespace urakawa.data
                     }
                     if (!added)
                     {
-                        m_StrBuilder.Append(c);
+                        if (c == '.'
+                            && m_StrBuilder.Length > 0
+                            && m_StrBuilder[m_StrBuilder.Length - 1] == '.'
+                            )
+                        {
+                            //let's avoid two consecutive dots
+                            bool debug = true;
+                        }
+                        else
+                        {
+                            m_StrBuilder.Append(c);
+                        }
                     }
                 }
             }

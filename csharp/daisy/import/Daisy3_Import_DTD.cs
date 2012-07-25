@@ -6,6 +6,7 @@ using System.Text;
 using System.Xml;
 using AudioLib;
 using urakawa.core;
+using urakawa.data;
 using urakawa.xuk;
 #if ENABLE_DTDSHARP
 using DtdSharp;
@@ -21,7 +22,7 @@ namespace urakawa.daisy.import
 {
     public partial class Daisy3_Import
     {
-        public const string INTERNAL_DTD_NAME = "DTBookLocalDTD.dtd";
+        public static readonly string INTERNAL_DTD_NAME = "DTBookLocalDTD.dtd";
 
         private Dictionary<string, List<string>> m_listOfMixedContentXmlElementNames = new Dictionary<string, List<string>>();
 

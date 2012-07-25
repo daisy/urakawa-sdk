@@ -44,6 +44,13 @@ namespace urakawa.daisy.import
         protected readonly SampleRate m_audioProjectSampleRate;
         protected readonly bool m_audioStereo;
         protected readonly bool m_autoDetectPcmFormat;
+
+
+        static Daisy3_Import()
+        {
+            INTERNAL_DTD_NAME = FileDataProvider.EliminateForbiddenFileNameCharacters(INTERNAL_DTD_NAME);
+        }
+
         public Daisy3_Import(string bookfile, string outDir, bool skipACM, SampleRate audioProjectSampleRate, bool stereo, bool autoDetectPcmFormat, bool xukPrettyFormat)
         {
             m_XukPrettyFormat = xukPrettyFormat;
@@ -158,7 +165,7 @@ namespace urakawa.daisy.import
             pcmFormat.Data.SampleRate = (ushort)m_audioProjectSampleRate;
             pcmFormat.Data.NumberOfChannels = m_audioStereo ? (ushort)2 : (ushort)1;
             presentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
-            
+
             //presentation.MediaDataFactory.DefaultAudioMediaDataType = typeof(WavAudioMediaData);
 
             //presentation.MediaDataManager.EnforceSinglePCMFormat = true;

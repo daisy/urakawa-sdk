@@ -64,12 +64,18 @@ namespace urakawa.daisy.export
 
             // add all files to manifest
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
-            if (m_Filename_Content != null) AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), mediaType_Dtbook);
+            if (m_Filename_Content != null)
+            {
+                AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), mediaType_Dtbook);
+            }
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Opf, GetNextID(ID_OpfPrefix), DataProviderFactory.XML_MIME_TYPE);
 
             // add external files to manifest
             foreach (string externalFileName in m_FilesList_ExternalFiles)
             {
+                // ALREADY escaped!
+                //externalFileName = FileDataProvider.EliminateForbiddenFileNameCharacters(externalFileName);
+
                 string strID = GetNextID(ID_OpfPrefix);
 
                 string ext = Path.GetExtension(externalFileName);
@@ -406,6 +412,8 @@ namespace urakawa.daisy.export
                     filename = filename.Substring(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA.Length);
                 }
 
+                filename = FileDataProvider.EliminateForbiddenFileNameCharacters(filename);
+                
                 if (efd.IsPreservedForOutputFile
                     && !m_FilesList_ExternalFiles.Contains(filename))
                 {

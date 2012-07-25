@@ -263,7 +263,10 @@ namespace urakawa.daisy.export.visitor
                 // REMOVED, because doesn't support nested TreeNode matches ! return false; // skips children, see postVisit
             }
 
-            if (node.GetAlternateContentProperty() != null) m_AlternateContentPropertiesList.Add(node.GetAlternateContentProperty());
+            if (node.GetAlternateContentProperty() != null)
+            {
+                m_AlternateContentPropertiesList.Add(node.GetAlternateContentProperty());
+            }
 
             if (!node.HasChannelsProperty)
             {
@@ -425,7 +428,10 @@ namespace urakawa.daisy.export.visitor
 
         private string GetSizeInfo(TreeNode node)
         {
-            if (node == null) return "";
+            if (node == null)
+            {
+                return "";
+            }
 
             int elapsedSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TimeElapsedInLocalUnits) / (1024 * 1024);
             int totalSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TotalTimeInLocalUnits) / (1024 * 1024);
@@ -441,8 +447,8 @@ namespace urakawa.daisy.export.visitor
 
                 sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, Math.Round((decimal)elapsedSizeInMB, 5, MidpointRounding.ToEven), Math.Round((decimal)totalSizeInMB, 5, MidpointRounding.ToEven));
             }
-            return sizeInfo;
 
+            return sizeInfo;
         }
 
 
@@ -541,7 +547,7 @@ m_Stream;
                 //long bytesEnd = bytesBegin + marker.m_LocalStreamDataLength;
 
                 ExternalAudioMedia extAudioMedia = marker.m_TreeNode.Presentation.MediaFactory.Create<ExternalAudioMedia>();
-                
+
                 ushort nChannels = (ushort)(EncodePublishedAudioFilesStereo ? 2 : 1);
 
                 if ((EncodePublishedAudioFilesToMp3
@@ -590,7 +596,7 @@ m_Stream;
         #endregion
 
 
-
+#if DEBUG_TREE
 
         public void VerifyTree(TreeNode rootNode)
         {
@@ -763,5 +769,6 @@ m_Stream;
                 verifyTree(child, ancestorHasAudio, ancestorExtAudioFile);
             }
         }
+#endif //DEBUG_TREE
     }
 }

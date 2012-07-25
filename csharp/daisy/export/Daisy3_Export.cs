@@ -134,21 +134,71 @@ namespace urakawa.daisy.export
 
 
             Channel publishChannel = PublishAudioFiles();
+            try
+            {
+                bool isHTML = "body".Equals(m_Presentation.RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase);
+                if (isHTML)
+                {
+                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                    //TODO: CreateHTMLDocument();
 
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateDTBookDocument();
+                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                    CreateExternalFiles();
 
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateNcxAndSmilDocuments();
+                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                    //TODO: CreateNavigationDocuments();
 
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateExternalFiles();
+                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                    //TODO: CreateSmilMediaOverlays();
 
-            if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            CreateOpfDocument();
+                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                    //TODO: CreateOpfEPUBPackage();
 
-            //m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
-            RemovePublishChannel(publishChannel);
+                    FileDataProvider.CreateDirectory(Path.Combine(m_OutputDirectory, "OPS"));
+                    //TODO: move m_OutputDirectory contents to m_OutputDirectory/OPS
+
+                    FileDataProvider.CreateDirectory(Path.Combine(m_OutputDirectory, "META-INF"));
+
+                    StreamWriter writer = File.CreateText(Path.Combine(m_OutputDirectory, "mimetype"));
+                    try
+                    {
+                        writer.Write("application/epub+zip");
+                    }
+                    finally
+                    {
+                        writer.Close();
+                    }
+
+                    string parentDirectory = Directory.GetParent(m_OutputDirectory).FullName;
+                    string fileName = Path.GetFileName(m_OutputDirectory);
+                    string filePath = Path.Combine(parentDirectory, fileName + ".epub");
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+
+                    PackageToZip(filePath);
+                }
+                else
+                {
+                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                    CreateDTBookDocument();
+
+                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                    CreateNcxAndSmilDocuments();
+
+                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                    CreateExternalFiles();
+
+                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                    CreateOpfDocument();
+                }
+            }
+            finally
+            {
+                //m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
+                RemovePublishChannel(publishChannel);
+            }
             //}
             //catch (System.Exception ex)
             //{
@@ -250,8 +300,14 @@ namespace urakawa.daisy.export
             if (node.HasXmlProperty)
             {
                 string localName = node.GetXmlElementLocalName();
-                return localName.StartsWith("level")
-                    || localName == "section";
+
+                if ("body".Equals(node.Presentation.RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase))
+                {
+                    return localName.Equals("body", StringComparison.OrdinalIgnoreCase);
+                }
+
+                return localName.StartsWith("level", StringComparison.OrdinalIgnoreCase)
+                    || localName.Equals("section", StringComparison.OrdinalIgnoreCase);
             }
             return false;
         }
