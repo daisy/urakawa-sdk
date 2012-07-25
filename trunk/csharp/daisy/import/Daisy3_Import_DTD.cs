@@ -931,7 +931,7 @@ namespace urakawa.daisy.import
 
         public void ElementDecl(string name, string model)
         {
-            Console.WriteLine(name + " ===> " + model);
+            //Console.WriteLine(name + " ===> " + model);
 
             if (model.Contains("#PCDATA") && !m_listOfMixedContentXmlElementNames.Contains(name))
             {
@@ -952,13 +952,15 @@ namespace urakawa.daisy.import
 
         public void ExternalEntityDecl(string name, string publicId, string systemId)
         {
-            const string pubIdStr = "<!ENTITY {0} PUBLIC \"{1}\" SYSTEM \"{2}\">";
-            const string sysIdStr = "<!ENTITY {0} SYSTEM \"{1}\">";
-            string declStr;
-            if (publicId != String.Empty)
-                declStr = String.Format(pubIdStr, name, publicId, systemId);
-            else
-                declStr = String.Format(sysIdStr, name, systemId);
+            //const string pubIdStr = "<!ENTITY {0} PUBLIC \"{1}\" SYSTEM \"{2}\">";
+            //const string sysIdStr = "<!ENTITY {0} SYSTEM \"{1}\">";
+            //string declStr;
+            //if (publicId != String.Empty)
+            //    declStr = String.Format(pubIdStr, name, publicId, systemId);
+            //else
+            //    declStr = String.Format(sysIdStr, name, systemId);
+
+            bool debug = true;
         }
     }
 
