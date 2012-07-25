@@ -18,13 +18,19 @@ namespace urakawa.daisy.export.visitor
 
         public override bool TreeNodeTriggersNewAudioFile(TreeNode node)
         {
-            if (mTreeNodeTriggersNewAudioFileDelegate != null) return mTreeNodeTriggersNewAudioFileDelegate(node);
+            if (mTreeNodeTriggersNewAudioFileDelegate != null)
+            {
+                return mTreeNodeTriggersNewAudioFileDelegate(node);
+            }
             return false;
         }
 
         public override bool TreeNodeMustBeSkipped(TreeNode node)
         {
-            if (mTreeNodeMustBeSkippedDelegate != null) return mTreeNodeMustBeSkippedDelegate(node);
+            if (mTreeNodeMustBeSkippedDelegate != null)
+            {
+                return mTreeNodeMustBeSkippedDelegate(node);
+            }
             return false;
         }
 

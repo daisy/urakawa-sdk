@@ -97,7 +97,6 @@ namespace urakawa.daisy.export
             {
                 m_NavListElementNamesList.Add("note");
             }
-
         }
 
 
@@ -164,7 +163,6 @@ namespace urakawa.daisy.export
         /// <returns></returns>
         protected Channel PublishAudioFiles()
         {
-
             // if publish channel exists remove it.
             List<Channel> previousChannelsList = m_Presentation.ChannelsManager.GetChannelsByName(PUBLISH_AUDIO_CHANNEL_NAME);
 
