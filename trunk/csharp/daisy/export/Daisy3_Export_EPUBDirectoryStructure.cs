@@ -23,6 +23,8 @@ namespace urakawa.daisy.export
     {
         public void PackageToZip(string filePath)
         {
+            reportProgress(-1, @"Compressing EPUB file: " + filePath); //UrakawaSDK_daisy_Lang.BLAbla
+
 #if ENABLE_SHARPZIP
             FastZipEvents zipEvents = new FastZipEvents();
             zipEvents.ProcessFile = ProcessEvents;
