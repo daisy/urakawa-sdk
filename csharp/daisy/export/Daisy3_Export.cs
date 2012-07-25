@@ -154,6 +154,8 @@ namespace urakawa.daisy.export
                     if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
                     //TODO: CreateOpfEPUBPackage();
 
+                    reportProgress(-1, @"Creating EPUB directory structure..."); //UrakawaSDK_daisy_Lang.BLAbla
+
                     FileDataProvider.CreateDirectory(Path.Combine(m_OutputDirectory, "OPS"));
                     //TODO: move m_OutputDirectory contents to m_OutputDirectory/OPS
 
@@ -172,6 +174,7 @@ namespace urakawa.daisy.export
                     string parentDirectory = Directory.GetParent(m_OutputDirectory).FullName;
                     string fileName = Path.GetFileName(m_OutputDirectory);
                     string filePath = Path.Combine(parentDirectory, fileName + ".epub");
+
                     if (File.Exists(filePath))
                     {
                         File.Delete(filePath);
@@ -364,6 +367,5 @@ namespace urakawa.daisy.export
             if (File.Exists(source)) File.Move(source, dest);
             return audioFileName;
         }
-
     }
 }
