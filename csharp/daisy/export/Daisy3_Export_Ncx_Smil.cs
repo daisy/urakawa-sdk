@@ -963,6 +963,7 @@ namespace urakawa.daisy.export
             if (externalAudio != null) return false;
             
             bool isChildWithoutElement = false;
+            bool isAudioInChildren = false;
             if (node.GetXmlProperty() != null && node.Children.Count > 0
                 && !IsSkippableNode(node) && !IsEscapableNode(node))
             {   
@@ -973,9 +974,22 @@ namespace urakawa.daisy.export
                             isChildWithoutElement = true;
                         
                     }
+              
                 }
             }
-            return isChildWithoutElement ;
+            if (isChildWithoutElement)
+            {
+                node.AcceptDepthFirst(
+                delegate(urakawa.core.TreeNode n)
+                {
+                    if (isAudioInChildren) return false;
+                    if (GetExternalAudioMedia(n) != null) isAudioInChildren = true;
+                    return true;
+                },
+                delegate(urakawa.core.TreeNode n) { }
+                        );
+            }
+            return isChildWithoutElement  && !isAudioInChildren;
         }
 
         private XmlNode CreateDocTitle(XmlDocument ncxDocument, XmlNode ncxRootNode, urakawa.core.TreeNode n)
