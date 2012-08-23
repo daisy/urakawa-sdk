@@ -167,18 +167,20 @@ namespace urakawa.daisy.export.visitor
             }
 
 
-            string sourceName = Path.GetFileNameWithoutExtension(sourceFilePath);
-            string destName = Path.GetFileNameWithoutExtension(destinationFilePath);
+            //string sourceName = Path.GetFileNameWithoutExtension(sourceFilePath);
+            //string destName = Path.GetFileNameWithoutExtension(destinationFilePath);
 
-            foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
-            {
-                if (ext != null)
-                {
-                    ext.Src = ext.Src.Replace(sourceName, destName);
-                }
-            }
+            //foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
+            //{
+                //if (ext != null)
+                //{
+                    //ext.Src = ext.Src.Replace(sourceName, destName);
+                //}
+            //}
 
             File.Delete(sourceFilePath);
+            File.Move(destinationFilePath, sourceFilePath);
+            
             m_ExternalAudioMediaList.Clear();
         }
 
