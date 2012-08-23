@@ -43,16 +43,18 @@ namespace AudioLib
  
     SpeechAudioFormatInfo formatInfo = new SpeechAudioFormatInfo((int)m_PcmFormat.SampleRate, AudioBitsPerSample.Sixteen, m_PcmFormat.NumberOfChannels == 2 ? AudioChannel.Stereo : AudioChannel.Mono);
     m_SpeechSynthesizer.SelectVoice(voice);
-                  
+    
             if (fileFullPath != null)
                   {
+                      
                       m_SpeechSynthesizer.SetOutputToWaveFile(fileFullPath, formatInfo);
-                      m_SpeechSynthesizer.SpeakAsync(input);
+                      m_SpeechSynthesizer.Speak(input);
                       m_SpeechSynthesizer.SetOutputToNull(); 
 }
 
 else
 {
+    m_SpeechSynthesizer.SetOutputToDefaultAudioDevice();
     m_SpeechSynthesizer.SpeakAsync(input);
 //speech.Speak(input, SpFlags);
 }
