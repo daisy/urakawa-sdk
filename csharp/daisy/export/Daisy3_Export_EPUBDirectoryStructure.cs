@@ -21,8 +21,17 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        public void PackageToZip(string filePath)
+        public void PackageToZip()
         {
+            string parentDirectory = Directory.GetParent(m_OutputDirectory).FullName;
+            string parentDirectoryFileName = Path.GetFileName(m_OutputDirectory);
+            string filePath = Path.Combine(parentDirectory, parentDirectoryFileName + ".epub");
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
             reportProgress(-1, @"Compressing EPUB file: " + filePath); //UrakawaSDK_daisy_Lang.BLAbla
 
 #if ENABLE_SHARPZIP
@@ -80,21 +89,44 @@ namespace urakawa.daisy.export
             {
                 zip.EncodeUTF8 = true;
 
+
+
                 string mimeTypePath = Path.Combine(m_OutputDirectory, "mimetype");
+                StreamWriter writer = File.CreateText(mimeTypePath);
+                try
+                {
+                    writer.Write("application/epub+zip");
+                }
+                finally
+                {
+                    writer.Close();
+                }
                 zip.AddFile(ZipStorer.Compression.Store, mimeTypePath, "mimetype", "");
 
-                string basePath = Directory.GetParent(m_OutputDirectory).FullName;
 
                 string[] allFiles = Directory.GetFiles(m_OutputDirectory, "*.*", SearchOption.AllDirectories);
                 for (int i = 0; i < allFiles.Length; i++)
                 {
                     string fileName = Path.GetFileName(allFiles[i]);
+                    
                     if (allFiles[i] != mimeTypePath
                         && fileName != ".DS_Store" && fileName != ".svn")
                     {
-                        zip.AddFile(ZipStorer.Compression.Deflate, allFiles[i], allFiles[i].Replace(basePath, ""), "");
+                        zip.AddFile(ZipStorer.Compression.Deflate, allFiles[i], allFiles[i].Replace(parentDirectory, ""), "");
                     }
                 }
+
+                //string[] allDirectories = Directory.GetDirectories(m_OutputDirectory, "*.*", SearchOption.AllDirectories);
+                //for (int i = 0; i < allDirectories.Length; i++)
+                //{
+                //    string fileName = Path.GetFileName(allDirectories[i]);
+
+                //    if (fileName != ".svn")
+                //    {
+                //        // TODO: if DIR is empty...problem: ZIP API doesn't handle empty folders, only file storage methods.
+                //        zip.AddFile(ZipStorer.Compression.Deflate, allDirectories[i], allDirectories[i].Replace(parentDirectory, ""), "");
+                //    }
+                //}
             }
 #endif
 

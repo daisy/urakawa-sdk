@@ -156,31 +156,59 @@ namespace urakawa.daisy.export
 
                     reportProgress(-1, @"Creating EPUB directory structure..."); //UrakawaSDK_daisy_Lang.BLAbla
 
-                    FileDataProvider.CreateDirectory(Path.Combine(m_OutputDirectory, "OPS"));
-                    //TODO: move m_OutputDirectory contents to m_OutputDirectory/OPS
+                    string opsDirectoryPath = Path.Combine(m_OutputDirectory, "OPS");
+                    FileDataProvider.CreateDirectory(opsDirectoryPath);
 
-                    FileDataProvider.CreateDirectory(Path.Combine(m_OutputDirectory, "META-INF"));
+#if false && DEBUG
+                    // Empty directories will not be included in ZIP
 
-                    StreamWriter writer = File.CreateText(Path.Combine(m_OutputDirectory, "mimetype"));
+                    string dir_empty = Path.Combine(m_OutputDirectory, "dir-empty");
+                    FileDataProvider.CreateDirectory(dir_empty);
+
+                    string dir_non_empty = Path.Combine(m_OutputDirectory, "dir-non-empty");
+                    FileDataProvider.CreateDirectory(dir_non_empty);
+
+                    string subdir_empty = Path.Combine(dir_non_empty, "subdir-empty");
+                    FileDataProvider.CreateDirectory(subdir_empty);
+
+                    string subdir_non_empty = Path.Combine(dir_non_empty, "subdir-non-empty");
+                    FileDataProvider.CreateDirectory(subdir_non_empty);
+
+                    string testFile = Path.Combine(subdir_non_empty, "testFile.txt");
+                    StreamWriter writer = File.CreateText(testFile);
                     try
                     {
-                        writer.Write("application/epub+zip");
+                        writer.Write("Hello world!");
                     }
                     finally
                     {
                         writer.Close();
                     }
+#endif
 
-                    string parentDirectory = Directory.GetParent(m_OutputDirectory).FullName;
-                    string fileName = Path.GetFileName(m_OutputDirectory);
-                    string filePath = Path.Combine(parentDirectory, fileName + ".epub");
-
-                    if (File.Exists(filePath))
+                    string[] allFiles = Directory.GetFileSystemEntries(m_OutputDirectory, "*.*", SearchOption.TopDirectoryOnly);
+                    for (int i = 0; i < allFiles.Length; i++)
                     {
-                        File.Delete(filePath);
+                        string fileName = Path.GetFileName(allFiles[i]);
+                        
+                        if (allFiles[i] != opsDirectoryPath
+                            && fileName != ".DS_Store" && fileName != ".svn")
+                        {
+                            string dest = allFiles[i].Replace(m_OutputDirectory, opsDirectoryPath);
+                            if (Directory.Exists(allFiles[i]))
+                            {
+                                Directory.Move(allFiles[i], dest);
+                            }
+                            else
+                            {
+                                File.Move(allFiles[i], dest);
+                            }
+                        }
                     }
 
-                    PackageToZip(filePath);
+                    FileDataProvider.CreateDirectory(Path.Combine(m_OutputDirectory, "META-INF"));
+
+                    PackageToZip();
                 }
                 else
                 {
