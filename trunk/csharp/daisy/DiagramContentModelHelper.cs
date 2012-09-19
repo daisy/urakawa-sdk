@@ -29,7 +29,17 @@ namespace urakawa.daisy
         public const string URI_Help_Tour = "http://www.daisy.org/z3998/2012/auth/profiles/descriptions/1.0/schemadoc/subfiles/e-tour01.html";
 
 
-        public const string EPUB_DescribedAt = "epub:describedAt";
+        public const string EPUB_DescribedAt = NS_PREFIX_EPUB + ":describedAt";
+
+        // -------------------------------------------------
+
+        public const string NS_PREFIX_EPUB = "epub";
+        public const string NS_URL_EPUB = "http://www.idpf.org/2007/ops";
+
+        // -------------------------------------------------
+
+        public const string NS_PREFIX_XHTML = "html";
+        public const string NS_URL_XHTML = "http://www.w3.org/1999/xhtml";
 
         // -------------------------------------------------
 

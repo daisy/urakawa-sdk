@@ -66,7 +66,7 @@ namespace urakawa.daisy.import
 
                 Presentation presentation = project.AddNewPresentation(new Uri(Path.GetDirectoryName(filepath), UriKind.Absolute), Path.GetFileName(filepath));
 
-                XmlNode bodyNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(sourceNode, true, @"body", @"http://www.w3.org/1999/xhtml");
+                XmlNode bodyNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(sourceNode, true, @"body", DiagramContentModelHelper.NS_URL_XHTML);
 
                 parseContentDocument(filepath, project, bodyNode, null, filepath, null, DocumentMarkupType.NA);
 
@@ -94,7 +94,7 @@ namespace urakawa.daisy.import
                 Console.WriteLine(debugOutline);
 
                 string expectedText = expectedNode.InnerXml;
-                expectedText = expectedText.Replace(" xmlns=\"" + @"http://www.w3.org/1999/xhtml" + "\"", @"");
+                expectedText = expectedText.Replace(" xmlns=\"" + DiagramContentModelHelper.NS_URL_XHTML + "\"", @"");
                 expectedText = Regex.Replace(expectedText, @"\s+", @" ");
                 expectedText = expectedText.Trim();
                 expectedText = expectedText.Replace("> <", "><");

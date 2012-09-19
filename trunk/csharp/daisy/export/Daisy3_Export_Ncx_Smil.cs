@@ -1403,7 +1403,6 @@ namespace urakawa.daisy.export
             XmlNode smilRootNode = smilDocument.CreateElement(null,
                 "smil", "http://www.w3.org/2001/SMIL20/");
 
-            //"http://www.w3.org/1999/xhtml" );
             smilDocument.AppendChild(smilRootNode);
 
             XmlNode headNode = smilDocument.CreateElement(null, "head", smilRootNode.NamespaceURI);
