@@ -620,7 +620,7 @@ namespace urakawa.core
             return last;
         }
 
-        private static bool atLeastOneSiblingIsSignificantTextOnly(TreeNode parent)
+        public static bool atLeastOneSiblingIsSignificantTextOnly(TreeNode parent)
         {
             foreach (TreeNode child in parent.Children.ContentsAs_Enumerable)
             {
