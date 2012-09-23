@@ -186,7 +186,11 @@ namespace urakawa.daisy.export
                     }
 #endif
 
-                    string[] allFiles = Directory.GetFileSystemEntries(m_OutputDirectory, "*.*", SearchOption.TopDirectoryOnly);
+                    string[] allFiles = Directory.GetFileSystemEntries(m_OutputDirectory, "*.*"
+#if NET40
+                        , SearchOption.TopDirectoryOnly
+#endif
+                        );
                     for (int i = 0; i < allFiles.Length; i++)
                     {
                         string fileName = Path.GetFileName(allFiles[i]);
