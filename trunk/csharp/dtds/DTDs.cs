@@ -27,7 +27,13 @@ namespace DTDs
             // DTBOOK
 
             ENTITIES_MAPPING.Add("dtbook110.dtd", "DTDs.Resources.dtbook110.dtd");
+            ENTITIES_MAPPING.Add("//NISO//DTD dtbook v1.1.0//EN", "DTDs.Resources.dtbook110.dtd");
+
+            ENTITIES_MAPPING.Add("dtbook-2005.dtd", "DTDs.Resources.dtbook-2005-1.dtd");
+            ENTITIES_MAPPING.Add("dtbook-2005-1.dtd", "DTDs.Resources.dtbook-2005-1.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbook 2005-1//EN", "DTDs.Resources.dtbook-2005-1.dtd");
+
+            ENTITIES_MAPPING.Add("dtbook-2005-2.dtd", "DTDs.Resources.dtbook-2005-2.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbook 2005-2//EN", "DTDs.Resources.dtbook-2005-2.dtd");
 
             ENTITIES_MAPPING.Add("dtbook-2005-3.dtd", "DTDs.Resources.dtbook-2005-3.dtd");

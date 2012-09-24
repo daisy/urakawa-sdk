@@ -315,7 +315,9 @@ namespace urakawa.daisy.import
                         }
                     }
                 }
-                else if (attrMediaType.Value == "application/x-dtbook+xml")
+                else if (attrMediaType.Value == "application/x-dtbook+xml"
+                    || attrMediaType.Value == DataProviderFactory.XML_MIME_TYPE
+                        && attrHref.Value.EndsWith(".xml"))
                 {
                     dtbookPath = attrHref.Value;
                 }
