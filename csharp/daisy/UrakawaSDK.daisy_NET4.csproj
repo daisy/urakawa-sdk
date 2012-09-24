@@ -84,6 +84,8 @@
     <Compile Include="export\Daisy3_Export_ImageDescription_DTBook.cs" />
     <Compile Include="export\Daisy3_Export_ImageDescription_Metadata.cs" />
     <Compile Include="export\Daisy3_Export_ImageDescription_Smil.cs" />
+    <Compile Include="export\Daisy3_Export_Ncx_Smil_MainTraversal.cs" />
+    <Compile Include="export\Daisy3_Export_Ncx_Smil_NoteAnnoRefs.cs" />
     <Compile Include="export\Daisy3_Export_Xhtml.cs" />
     <Compile Include="export\tree-visitor\AbstractBasePublishAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\AbstractPublishFlattenedManagedAudioVisitor.cs" />

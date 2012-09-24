@@ -1287,17 +1287,17 @@ namespace urakawa
                 //System.Diagnostics.Debug.Fail("! ValueEquals !");
                 return false;
             }
-            ReadOnlyCollection<Metadata> thisMetadata = Metadatas.ContentsAs_ListAsReadOnly;
-            ReadOnlyCollection<Metadata> otherMetadata = other.Metadatas.ContentsAs_ListAsReadOnly;
-            if (thisMetadata.Count != otherMetadata.Count)
+            //ReadOnlyCollection<Metadata> thisMetadata = Metadatas.ContentsAs_ListAsReadOnly;
+            //ReadOnlyCollection<Metadata> otherMetadata = other.Metadatas.ContentsAs_ListAsReadOnly;
+            if (Metadatas.Count != other.Metadatas.Count)
             {
                 //System.Diagnostics.Debug.Fail("! ValueEquals !");
                 return false;
             }
-            foreach (Metadata m in thisMetadata)
+            foreach (Metadata m in Metadatas.ContentsAs_Enumerable)
             {
                 bool found = false;
-                foreach (Metadata om in otherMetadata)
+                foreach (Metadata om in other.Metadatas.ContentsAs_Enumerable)
                 {
                     if (m.ValueEquals(om)) found = true;
                 }

@@ -188,13 +188,13 @@ namespace urakawa.daisy.export
 
                     string[] allFiles = Directory.GetFileSystemEntries(m_OutputDirectory, "*.*"
 #if NET40
-                        , SearchOption.TopDirectoryOnly
+, SearchOption.TopDirectoryOnly
 #endif
-                        );
+);
                     for (int i = 0; i < allFiles.Length; i++)
                     {
                         string fileName = Path.GetFileName(allFiles[i]);
-                        
+
                         if (allFiles[i] != opsDirectoryPath
                             && fileName != ".DS_Store" && fileName != ".svn")
                         {
@@ -358,11 +358,10 @@ namespace urakawa.daisy.export
 
             Channel publishChannel = channelsList[0];
 
-            ChannelsProperty mediaProperty = node.GetChannelsProperty();
+            ChannelsProperty channelsProperty = node.GetChannelsProperty();
+            if (channelsProperty == null) return null;
 
-            if (mediaProperty == null) return null;
-
-            return (ExternalAudioMedia)mediaProperty.GetMedia(publishChannel);
+            return channelsProperty.GetMedia(publishChannel) as ExternalAudioMedia;
         }
 
         protected const string ID_DTBPrefix = "dtb_";

@@ -133,6 +133,9 @@ namespace urakawa.daisy.import
                     {
                         XmlDocument xmlDoc = ((XmlDocument)xmlNode);
 
+                        // old DAISY books have no default namespace! :(  (e.g. GH sample books)
+                        DebugFix.Assert(!string.IsNullOrEmpty(xmlDoc.DocumentElement.NamespaceURI));
+
                         docMarkupType = parseContentDocument_DTD(book_FilePath, project, xmlDoc, parentTreeNode, filePath, out dtdUniqueResourceId);
 
                         bool isHTML = docMarkupType == DocumentMarkupType.XHTML || docMarkupType == DocumentMarkupType.XHTML5;
@@ -260,6 +263,10 @@ namespace urakawa.daisy.import
 
                         if (parentTreeNode == null)
                         {
+                            DebugFix.Assert(!string.IsNullOrEmpty(xmlNode.NamespaceURI;));
+
+                            DebugFix.Assert(xmlNode.LocalName.Equals("book", StringComparison.OrdinalIgnoreCase) || xmlNode.LocalName.Equals("body", StringComparison.OrdinalIgnoreCase));
+
                             presentation.PropertyFactory.DefaultXmlNamespaceUri = xmlNode.NamespaceURI;
 
                             presentation.RootNode = treeNode;

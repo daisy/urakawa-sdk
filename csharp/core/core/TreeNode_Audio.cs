@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using AudioLib;
 using urakawa.data;
 using urakawa.media;
 using urakawa.media.data.audio;
@@ -186,6 +187,58 @@ struct
 
     public partial class TreeNode
     {
+        public bool NeedsAudio()
+        {
+            if (HasXmlProperty)
+            {
+                string localName = GetXmlElementLocalName();
+
+                bool isMath = localName.Equals("math", //DiagramContentModelHelper.Math
+                    StringComparison.OrdinalIgnoreCase);
+
+                bool isSVG = localName.Equals("svg", //DiagramContentModelHelper.Svg
+                    StringComparison.OrdinalIgnoreCase);
+
+                if (!isMath
+                    && GetXmlNamespaceUri() == "http://www.w3.org/1998/Math/MathML"
+                    //DiagramContentModelHelper.NS_URL_MATHML
+                )
+                {
+                    return false;
+                }
+
+                if (!isSVG
+                    && GetXmlNamespaceUri() == "http://www.w3.org/2000/svg"
+                    //DiagramContentModelHelper.NS_URL_SVG
+                    )
+                {
+                    return false;
+                }
+
+                if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                     || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                     || isMath
+                    || isSVG
+                    )
+                {
+                    //if (!isMath && !isSVG)
+                    //{
+                    //    DebugFix.Assert(Children.Count == 0);
+                    //}
+                    return true;
+                }
+            }
+
+            if (GetTextMedia() != null
+                && !TextOnlyContainsPunctuation(GetTextFlattened_()))
+            {
+                DebugFix.Assert(Children.Count == 0);
+                return true;
+            }
+
+            return false;
+        }
+
         public bool HasOrInheritsAudio()
         {
             ManagedAudioMedia media = GetManagedAudioMedia();

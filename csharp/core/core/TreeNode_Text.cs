@@ -583,7 +583,7 @@ namespace urakawa.core
                 return proposed;
             }
 
-            if (atLeastOneSiblingIsSignificantTextOnly(proposed.Parent))
+            if (proposed.Parent.AtLeastOneSiblingIsSignificantTextOnly())
             {
                 return EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, rootBoundary, proposed.Parent);
             }
@@ -598,7 +598,7 @@ namespace urakawa.core
             TreeNode parent = child.Parent;
             while (parent != null)
             {
-                if (atLeastOneSiblingIsSignificantTextOnly(parent))
+                if (parent.AtLeastOneSiblingIsSignificantTextOnly())
                 {
                     if (parent == rootBoundary
                         || parent.IsDescendantOf(rootBoundary))
@@ -620,9 +620,9 @@ namespace urakawa.core
             return last;
         }
 
-        public static bool atLeastOneSiblingIsSignificantTextOnly(TreeNode parent)
+        public bool AtLeastOneSiblingIsSignificantTextOnly()
         {
-            foreach (TreeNode child in parent.Children.ContentsAs_Enumerable)
+            foreach (TreeNode child in Children.ContentsAs_Enumerable)
             {
                 //if (child == proposed)
                 //{
