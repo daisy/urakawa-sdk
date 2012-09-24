@@ -263,7 +263,7 @@ namespace urakawa.daisy.import
 
                         if (parentTreeNode == null)
                         {
-                            DebugFix.Assert(!string.IsNullOrEmpty(xmlNode.NamespaceURI;));
+                            DebugFix.Assert(!string.IsNullOrEmpty(xmlNode.NamespaceURI));
 
                             DebugFix.Assert(xmlNode.LocalName.Equals("book", StringComparison.OrdinalIgnoreCase) || xmlNode.LocalName.Equals("body", StringComparison.OrdinalIgnoreCase));
 
