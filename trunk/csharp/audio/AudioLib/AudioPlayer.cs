@@ -104,6 +104,9 @@ namespace AudioLib
         }
 
 #if USE_SOUNDTOUCH
+
+        private bool m_UseSoundTouchBackup = false;
+
         private bool m_UseSoundTouch = false;
         public bool UseSoundTouch
         {
@@ -111,6 +114,7 @@ namespace AudioLib
             set
             {
                 m_UseSoundTouch = value;
+                m_UseSoundTouchBackup = m_UseSoundTouch;
             }
         }
 #else
@@ -388,7 +392,11 @@ namespace AudioLib
 #if USE_SOUNDTOUCH
             if (pcmInfo.NumberOfChannels > 1)
             {
-                UseSoundTouch = false; //TODO: stereo all scrambled with SoundTouch !!
+                m_UseSoundTouch = false; //TODO: stereo all scrambled with SoundTouch !!
+            }
+            else
+            {
+                m_UseSoundTouch = m_UseSoundTouchBackup;
             }
 #endif // USE_SOUNDTOUCH
 
