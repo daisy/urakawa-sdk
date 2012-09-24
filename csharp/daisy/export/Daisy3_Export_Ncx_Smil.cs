@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using urakawa.core;
+using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
 using urakawa.metadata;
@@ -34,7 +36,7 @@ namespace urakawa.daisy.export
 
             XmlNode ncxRootNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(ncxDocument, true, "ncx", null); //ncxDocument.GetElementsByTagName("ncx")[0];
             XmlNode navMapNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(ncxDocument, true, "navMap", null); //ncxDocument.GetElementsByTagName("navMap")[0];
-            Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap = new Dictionary<urakawa.core.TreeNode, XmlNode>();
+            Dictionary<TreeNode, XmlNode> treeNode_NavNodeMap = new Dictionary<TreeNode, XmlNode>();
             m_FilesList_Smil = new List<string>();
             m_FilesList_Audio = new List<string>();
             m_SmilFileNameCounter = 0;
@@ -44,23 +46,23 @@ namespace urakawa.daisy.export
             int maxDepth = 1;
             Time smilElapseTime = new Time();
             List<string> ncxCustomTestList = new List<string>();
-            List<urakawa.core.TreeNode> specialParentNodesAddedToNavList = new List<urakawa.core.TreeNode>();
+            List<TreeNode> specialParentNodesAddedToNavList = new List<TreeNode>();
             bool isDocTitleAdded = false;
 
             //m_ProgressPercentage = 20;
             reportProgress(-1, UrakawaSDK_daisy_Lang.CreateSmilAndNcxFiles);
 
-            foreach (urakawa.core.TreeNode urakawaNode in m_ListOfLevels)
+            foreach (TreeNode levelNode in m_ListOfLevels)
             //for ( int nodeCounter = 0 ; nodeCounter < m_ListOfLevels.Count ; nodeCounter++ )
             {
-                //urakawa.core.TreeNode urakawaNode  = m_ListOfLevels[nodeCounter] ;
+                //TreeNode urakawaNode  = m_ListOfLevels[nodeCounter] ;
 
                 bool IsNcxNativeNodeAdded = false;
                 XmlDocument smilDocument = null;
                 string smilFileName = null;
                 XmlNode navPointNode = null;
-                urakawa.core.TreeNode currentHeadingTreeNode = null;
-                urakawa.core.TreeNode special_UrakawaNode = null;
+                TreeNode currentHeadingTreeNode = null;
+                TreeNode special_UrakawaNode = null;
                 Time durationOfCurrentSmil = new Time();
                 XmlNode mainSeq = null;
                 XmlNode Seq_SpecialNode = null;
@@ -69,51 +71,51 @@ namespace urakawa.daisy.export
                 bool shouldAddNewSeq = false;
                 string par_id = null;
                 List<string> currentSmilCustomTestList = new List<string>();
-                Stack<urakawa.core.TreeNode> specialParentNodeStack = new Stack<urakawa.core.TreeNode>();
+                Stack<TreeNode> specialParentNodeStack = new Stack<TreeNode>();
                 Stack<XmlNode> specialSeqNodeStack = new Stack<XmlNode>();
 
                 bool isBranchingActive = false;
-                urakawa.core.TreeNode branchStartTreeNode = null;
+                TreeNode branchStartTreeNode = null;
                 bool isTextOnlyMixedContent = false;
 
-                urakawaNode.AcceptDepthFirst(
-            delegate(urakawa.core.TreeNode n)
+                levelNode.AcceptDepthFirst(
+            delegate(TreeNode levelNodeDescendant)
             {
-
                 if (RequestCancellation) return false;
 
-                if (IsHeadingNode(n))
+
+                if (IsHeadingNode(levelNodeDescendant))
                 {
-                    currentHeadingTreeNode = n;
+                    currentHeadingTreeNode = levelNodeDescendant;
                 }
 
-                if (n.HasXmlProperty &&
-                        n.GetXmlElementLocalName() != urakawaNode.GetXmlElementLocalName()
-                        && doesTreeNodeTriggerNewSmil(n))
+                if (levelNodeDescendant.HasXmlProperty &&
+                        levelNodeDescendant.GetXmlElementLocalName() != levelNode.GetXmlElementLocalName()
+                        && doesTreeNodeTriggerNewSmil(levelNodeDescendant))
                 {
-                    if (m_ListOfLevels.IndexOf(n) > m_ListOfLevels.IndexOf(urakawaNode))
+                    if (m_ListOfLevels.IndexOf(levelNodeDescendant) > m_ListOfLevels.IndexOf(levelNode))
                     {
                         return false;
                     }
                 }
 
-                bool nodeIsImageAndHasDescriptionProdnotes = m_includeImageDescriptions && m_Image_ProdNoteMap.ContainsKey(n);
+                bool nodeIsImageAndHasDescriptionProdnotes = m_includeImageDescriptions && m_Image_ProdNoteMap.ContainsKey(levelNodeDescendant);
 
-                if ((IsHeadingNode(n) || IsEscapableNode(n) || IsSkippableNode(n) || nodeIsImageAndHasDescriptionProdnotes)
-                    && (special_UrakawaNode != n))
+                if ((IsHeadingNode(levelNodeDescendant) || IsEscapableNode(levelNodeDescendant) || IsSkippableNode(levelNodeDescendant) || nodeIsImageAndHasDescriptionProdnotes)
+                    && (special_UrakawaNode != levelNodeDescendant))
                 {
                     // if this candidate special node is child of existing special node then ad existing special node to stack for nesting.
                     if (special_UrakawaNode != null && Seq_SpecialNode != null
-                        && n.IsDescendantOf(special_UrakawaNode))
+                        && levelNodeDescendant.IsDescendantOf(special_UrakawaNode))
                     {
                         specialParentNodeStack.Push(special_UrakawaNode);
                         specialSeqNodeStack.Push(Seq_SpecialNode);
                     }
-                    special_UrakawaNode = n;
+                    special_UrakawaNode = levelNodeDescendant;
                     shouldAddNewSeq = true;
                 }
 
-                urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
+                ExternalAudioMedia externalAudio = GetExternalAudioMedia(levelNodeDescendant);
                 /*
                 if (externalAudio == null)
                     {
@@ -132,7 +134,7 @@ namespace urakawa.daisy.export
                     if (currentHeadingTreeNodeDur == null
                         || currentHeadingTreeNodeDur.AsLocalUnits == 0)
                     {
-                        CreateDocTitle(ncxDocument, ncxRootNode, n);
+                        CreateDocTitle(ncxDocument, ncxRootNode, levelNodeDescendant);
                         isDocTitleAdded = true;
                         IsNcxNativeNodeAdded = true;
                     }
@@ -140,7 +142,7 @@ namespace urakawa.daisy.export
 
 
 
-                Time urakawaNodeDur = urakawaNode.GetDurationOfManagedAudioMediaFlattened();
+                Time urakawaNodeDur = levelNode.GetDurationOfManagedAudioMediaFlattened();
                 if (currentHeadingTreeNode == null && urakawaNodeDur != null && urakawaNodeDur.AsTimeSpan == TimeSpan.Zero)
                 {
                     return true;
@@ -177,7 +179,7 @@ namespace urakawa.daisy.export
                     // specific handling of IDs for notes for allowing predetermined refered IDs
                     if (special_UrakawaNode.GetXmlElementLocalName() == "note" || special_UrakawaNode.GetXmlElementLocalName() == "annotation")
                     {
-                        strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value;
+                        strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes.GetNamedItem("id").Value;
                     }
                     else
                     {
@@ -201,7 +203,7 @@ namespace urakawa.daisy.export
                             XmlNode anchorNode = smilDocument.CreateElement(null, "a", Seq_SpecialNode.NamespaceURI);
                             Seq_SpecialNode.AppendChild(anchorNode);
                             XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, anchorNode, "external", "false");
-                            XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, anchorNode, "href", "#" + ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("idref").Value.Replace("#", ""));
+                            XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, anchorNode, "href", "#" + ID_SmilPrefix + m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes.GetNamedItem("idref").Value.Replace("#", ""));
 
                             isBranchingActive = true;
 
@@ -231,7 +233,7 @@ namespace urakawa.daisy.export
                     }
                     if (nodeIsImageAndHasDescriptionProdnotes)
                     {
-                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[n][0], "smilref", smilFileName + "#" + strSeqID, m_DTBDocument.DocumentElement.NamespaceURI);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[levelNodeDescendant][0], "smilref", smilFileName + "#" + strSeqID, m_DTBDocument.DocumentElement.NamespaceURI);
                     }
                     // decide the parent node to which this new seq node is to be appended.
                     if (specialSeqNodeStack.Count == 0)
@@ -246,19 +248,20 @@ namespace urakawa.daisy.export
                     shouldAddNewSeq = false;
                 }
 
-                bool noAudioInAncestor = (n.GetFirstAncestorWithManagedAudio() == null);
-                isTextOnlyMixedContent = noAudioInAncestor && IsTextOnlyMixedContent(n, externalAudio);
+                bool noAudioInAncestor = (levelNodeDescendant.GetFirstAncestorWithManagedAudio() == null);
+
+                isTextOnlyMixedContent = externalAudio == null && noAudioInAncestor && IsTextOnlyMixedContent(levelNodeDescendant);
 
                 if (
                     externalAudio != null
                     || nodeIsImageAndHasDescriptionProdnotes
                     ||
-                    (externalAudio == null && noAudioInAncestor && n.GetTextMedia () != null )
+                    (externalAudio == null && noAudioInAncestor && levelNodeDescendant.GetTextMedia() != null)
                     ||
                     isTextOnlyMixedContent
                     ||
                     (
-                    n.GetTextMedia() != null
+                    levelNodeDescendant.GetTextMedia() != null
                     && special_UrakawaNode != null
                     &&
                     (
@@ -272,8 +275,8 @@ namespace urakawa.daisy.export
                     )
                     &&
                     (
-                    m_TreeNode_XmlNodeMap[n].Attributes != null
-                    || m_TreeNode_XmlNodeMap[n.Parent].Attributes != null
+                    m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes != null
+                    || m_TreeNode_XmlNodeMap[levelNodeDescendant.Parent].Attributes != null
                     )
                     )
                     )
@@ -287,12 +290,12 @@ namespace urakawa.daisy.export
                     return true;
                 }
 
-                
 
-                if (n.HasXmlProperty
+
+                if (levelNodeDescendant.HasXmlProperty
                     &&
                     (externalAudio != null
-                    || n.GetFirstAncestorWithManagedAudio() == null) //write the element with text but no audio to smil
+                    || levelNodeDescendant.GetFirstAncestorWithManagedAudio() == null) //write the element with text but no audio to smil
                     || isTextOnlyMixedContent
                     )
                 {
@@ -302,7 +305,7 @@ namespace urakawa.daisy.export
                     // if node n is child of current specialParentNode than append to it 
                     //else check if it has to be appended to parent of this special node in stack or to main seq.
                     if (special_UrakawaNode != null &&
-                        (special_UrakawaNode == n || n.IsDescendantOf(special_UrakawaNode)))
+                        (special_UrakawaNode == levelNodeDescendant || levelNodeDescendant.IsDescendantOf(special_UrakawaNode)))
                     {
                         Seq_SpecialNode.AppendChild(parNode);
                     }
@@ -314,7 +317,7 @@ namespace urakawa.daisy.export
                         {
                             // check and pop stack till specialParentNode of   iterating node n is found in stack
                             // the loop is also used to assign value of last imidiate seq or par to end attribute of parent seq while pop up
-                            while (specialParentNodeStack.Count > 0 && !n.IsDescendantOf(special_UrakawaNode))
+                            while (specialParentNodeStack.Count > 0 && !levelNodeDescendant.IsDescendantOf(special_UrakawaNode))
                             {
                                 if (Seq_SpecialNode != null
                                     &&
@@ -329,7 +332,7 @@ namespace urakawa.daisy.export
                             }
 
                             // if parent of node n is retrieved from stack, apend the par node to it.
-                            if (n.IsDescendantOf(special_UrakawaNode))
+                            if (levelNodeDescendant.IsDescendantOf(special_UrakawaNode))
                             {
                                 Seq_SpecialNode.AppendChild(parNode);
                                 IsParNodeAppended = true;
@@ -370,8 +373,8 @@ namespace urakawa.daisy.export
                     // check and assign first par ID
                     if (firstPar_id == null)
                     {
-                        if (n.HasXmlProperty && currentHeadingTreeNode != null
-                            && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
+                        if (levelNodeDescendant.HasXmlProperty && currentHeadingTreeNode != null
+                            && (levelNodeDescendant.IsDescendantOf(currentHeadingTreeNode) || levelNodeDescendant == currentHeadingTreeNode))
                         {
                             firstPar_id = par_id;
                         }
@@ -384,14 +387,14 @@ namespace urakawa.daisy.export
                     XmlNode dtBookNode = null;
                     if (nodeIsImageAndHasDescriptionProdnotes)
                     {
-                        dtBookNode = m_Image_ProdNoteMap[n][0];
+                        dtBookNode = m_Image_ProdNoteMap[levelNodeDescendant][0];
                         XmlNode attr = dtBookNode.Attributes != null ?
                                         dtBookNode.Attributes.GetNamedItem("smilref") : null;
                         dtbookSmilRef = attr != null ? attr.Value : null;
                     }
                     else
                     {
-                        dtBookNode = m_TreeNode_XmlNodeMap[n];
+                        dtBookNode = m_TreeNode_XmlNodeMap[levelNodeDescendant];
                         XmlNode attr = dtBookNode.Attributes != null ?
                                         dtBookNode.Attributes.GetNamedItem("smilref") : null;
                         dtbookSmilRef = attr != null ? attr.Value : null;
@@ -410,7 +413,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id",
                                                                GetNextID(ID_SmilPrefix));
 
-                    bool isMath = m_TreeNode_XmlNodeMap[n].LocalName == DiagramContentModelHelper.Math;
+                    bool isMath = m_TreeNode_XmlNodeMap[levelNodeDescendant].LocalName == DiagramContentModelHelper.Math;
                     if (isMath)
                     {
                         XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "type", DiagramContentModelHelper.NS_URL_MATHML);
@@ -419,13 +422,13 @@ namespace urakawa.daisy.export
                     string dtbookID = null;
                     if (nodeIsImageAndHasDescriptionProdnotes)
                     {
-                        dtbookID = m_Image_ProdNoteMap[n][0].Attributes.GetNamedItem("id").Value;
+                        dtbookID = m_Image_ProdNoteMap[levelNodeDescendant][0].Attributes.GetNamedItem("id").Value;
                     }
                     else
                     {
-                        dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null && m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id") != null
-                                       ? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value
-                                       : m_TreeNode_XmlNodeMap[n.Parent].Attributes.GetNamedItem("id").Value;
+                        dtbookID = m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes != null && m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes.GetNamedItem("id") != null
+                                       ? m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes.GetNamedItem("id").Value
+                                       : m_TreeNode_XmlNodeMap[levelNodeDescendant.Parent].Attributes.GetNamedItem("id").Value;
                     }
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
                                                                m_Filename_Content + "#" + dtbookID);
@@ -452,11 +455,11 @@ namespace urakawa.daisy.export
 
                 if (nodeIsImageAndHasDescriptionProdnotes)
                 {
-                    CreateSmilNodesForImageDescription(n, smilDocument, mainSeq, durationOfCurrentSmil, n.GetAlternateContentProperty(), smilFileName);
+                    CreateSmilNodesForImageDescription(levelNodeDescendant, smilDocument, mainSeq, durationOfCurrentSmil, levelNodeDescendant.GetAlternateContentProperty(), smilFileName);
                 }
                 // if node n is pagenum, add to pageList
-                if (n.HasXmlProperty
-                    && n.GetXmlElementLocalName() == "pagenum")
+                if (levelNodeDescendant.HasXmlProperty
+                    && levelNodeDescendant.GetXmlElementLocalName() == "pagenum")
                 {
                     if (!currentSmilCustomTestList.Contains("pagenum"))
                     {
@@ -477,9 +480,9 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "id", GetNextID(ID_NcxPrefix));
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "class", "pagenum");
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "playOrder", "");
-                    string strTypeVal = n.GetXmlProperty().GetAttribute("page").Value;
+                    string strTypeVal = levelNodeDescendant.GetXmlProperty().GetAttribute("page").Value;
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "type", strTypeVal);
-                    string strPageValue = n.GetTextFlattened();
+                    string strPageValue = levelNodeDescendant.GetTextFlattened();
                     ++totalPageCount;
 
                     playOrderList_Sorted.Add(pageTargetNode);
@@ -529,8 +532,8 @@ namespace urakawa.daisy.export
                         }
                      */
                 }
-                else if (n.HasXmlProperty
-                    && n.GetXmlElementLocalName() == DiagramContentModelHelper.Math)
+                else if (levelNodeDescendant.HasXmlProperty
+                    && levelNodeDescendant.GetXmlElementLocalName() == DiagramContentModelHelper.Math)
                 {
                     string idValue = ID_NcxPrefix + DiagramContentModelHelper.Math;
 
@@ -581,7 +584,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "class", DiagramContentModelHelper.Math);
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "playOrder", "");
 
-                    string strMathML = n.GetTextFlattened(); // grabs alttext, if any
+                    string strMathML = levelNodeDescendant.GetTextFlattened(); // grabs alttext, if any
 
                     playOrderList_Sorted.Add(navTargetNode);
 
@@ -657,7 +660,7 @@ namespace urakawa.daisy.export
                     XmlNode txtNode = ncxDocument.CreateElement(null, "text", navTargetNode.NamespaceURI);
                     navLabelNode.AppendChild(txtNode);
                     txtNode.AppendChild(
-                        ncxDocument.CreateTextNode(n.GetTextFlattened()));
+                        ncxDocument.CreateTextNode(levelNodeDescendant.GetTextFlattened()));
 
                     // create audio node only if external audio media is not null
                     if (externalAudio != null)
@@ -682,7 +685,7 @@ namespace urakawa.daisy.export
                         && currentHeadingTreeNode.HasXmlProperty
                         && currentHeadingTreeNode.GetXmlElementLocalName() == "doctitle")
                     {
-                        CreateDocTitle(ncxDocument, ncxRootNode, n);
+                        CreateDocTitle(ncxDocument, ncxRootNode, levelNodeDescendant);
                         isDocTitleAdded = true;
                         IsNcxNativeNodeAdded = true;
                     }
@@ -693,7 +696,7 @@ namespace urakawa.daisy.export
 
                         int indexOf_n = 0;
 
-                        if (n.HasXmlProperty && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
+                        if (levelNodeDescendant.HasXmlProperty && (levelNodeDescendant.IsDescendantOf(currentHeadingTreeNode) || levelNodeDescendant == currentHeadingTreeNode))
                         {
                             //indexOf_n = audioNodeIndex;
                             //indexOf_n = 0;
@@ -706,7 +709,7 @@ namespace urakawa.daisy.export
                         // -- start copying from here to function
 
 
-                        navPointNode = CreateNavPointWithoutContentNode(ncxDocument, urakawaNode, currentHeadingTreeNode, n, treeNode_NavNodeMap);
+                        navPointNode = CreateNavPointWithoutContentNode(ncxDocument, levelNode, currentHeadingTreeNode, levelNodeDescendant, treeNode_NavNodeMap);
                         playOrderList_Sorted.Add(navPointNode);
 
 
@@ -728,7 +731,7 @@ namespace urakawa.daisy.export
                         IsNcxNativeNodeAdded = true;
                     }
                 }
-                
+
                 if (isBranchingActive)
                 {
                     //IsBranchAssigned = true;
@@ -738,7 +741,7 @@ namespace urakawa.daisy.export
                     isBranchingActive = false;
 
                 }
-                if (n.HasXmlProperty && n.GetXmlElementLocalName() == "sent"
+                if (levelNodeDescendant.HasXmlProperty && levelNodeDescendant.GetXmlElementLocalName() == "sent"
                         && special_UrakawaNode != null
                         && (special_UrakawaNode.GetXmlElementLocalName() == "note"
                         || special_UrakawaNode.GetXmlElementLocalName() == "annotation"))
@@ -761,7 +764,7 @@ namespace urakawa.daisy.export
 
 
 
-                    delegate(urakawa.core.TreeNode n) { }
+                    delegate(TreeNode n) { }
                     );
 
 
@@ -866,7 +869,7 @@ namespace urakawa.daisy.export
             XmlReaderWriterHelper.WriteXmlDocument(ncxDocument, Path.Combine(m_OutputDirectory, m_Filename_Ncx));
         }
 
-        private bool IsHeadingNode(urakawa.core.TreeNode node)
+        private bool IsHeadingNode(TreeNode node)
         {
             if (node.HasXmlProperty)
             {
@@ -889,7 +892,7 @@ namespace urakawa.daisy.export
             return false;
         }
 
-        private bool IsEscapableNode(urakawa.core.TreeNode node)
+        private bool IsEscapableNode(TreeNode node)
         {
             if (node.HasXmlProperty)
             {
@@ -914,7 +917,7 @@ namespace urakawa.daisy.export
             return false;
         }
 
-        private bool IsSkippableNode(urakawa.core.TreeNode node)
+        private bool IsSkippableNode(TreeNode node)
         {
             if (node.HasXmlProperty)
             {
@@ -934,7 +937,7 @@ namespace urakawa.daisy.export
             return false;
         }
 
-        private bool IsOptionalSidebarOrProducerNote(urakawa.core.TreeNode node)
+        private bool IsOptionalSidebarOrProducerNote(TreeNode node)
         {
             if (node.HasXmlProperty)
             {
@@ -958,41 +961,41 @@ namespace urakawa.daisy.export
             return false;
         }
 
-        private bool IsTextOnlyMixedContent(urakawa.core.TreeNode node, media.ExternalAudioMedia externalAudio)
+        private bool IsTextOnlyMixedContent(TreeNode node)
         {
-            if (externalAudio != null) return false;
-            
             bool isChildWithoutElement = false;
-            bool isAudioInChildren = false;
+            
             if (node.GetXmlProperty() != null && node.Children.Count > 0
                 && !IsSkippableNode(node) && !IsEscapableNode(node))
-            {   
-                foreach (urakawa.core.TreeNode n in node.Children.ContentsAs_ListAsReadOnly)
+            {
+                foreach (TreeNode n in node.Children.ContentsAs_ListAsReadOnly)
                 {
-                    if (n.GetTextMedia () != null  && n.GetXmlProperty() == null)
+                    if (n.GetTextMedia() != null && n.GetXmlProperty() == null)
                     {
-                            isChildWithoutElement = true;
-                        
+                        isChildWithoutElement = true;
+
                     }
-              
+
                 }
             }
+
+            bool isAudioInChildren = false;
             if (isChildWithoutElement)
             {
                 node.AcceptDepthFirst(
-                delegate(urakawa.core.TreeNode n)
+                delegate(TreeNode n)
                 {
                     if (isAudioInChildren) return false;
                     if (GetExternalAudioMedia(n) != null) isAudioInChildren = true;
                     return true;
                 },
-                delegate(urakawa.core.TreeNode n) { }
+                delegate(TreeNode n) { }
                         );
             }
-            return isChildWithoutElement  && !isAudioInChildren;
+            return isChildWithoutElement && !isAudioInChildren;
         }
 
-        private XmlNode CreateDocTitle(XmlDocument ncxDocument, XmlNode ncxRootNode, urakawa.core.TreeNode n)
+        private XmlNode CreateDocTitle(XmlDocument ncxDocument, XmlNode ncxRootNode, TreeNode n)
         {
             XmlNode docNode = ncxDocument.CreateElement(null,
                 "docTitle",
@@ -1008,7 +1011,7 @@ namespace urakawa.daisy.export
             ncxDocument.CreateTextNode(n.GetTextFlattened()));
 
 
-            urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
+            ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
             if (externalAudio != null)
             {
@@ -1023,11 +1026,11 @@ namespace urakawa.daisy.export
         }
 
 
-        private XmlNode CreateNavPointWithoutContentNode(XmlDocument ncxDocument, urakawa.core.TreeNode urakawaNode, urakawa.core.TreeNode currentHeadingTreeNode, urakawa.core.TreeNode n, Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap)
+        private XmlNode CreateNavPointWithoutContentNode(XmlDocument ncxDocument, TreeNode urakawaNode, TreeNode currentHeadingTreeNode, TreeNode n, Dictionary<TreeNode, XmlNode> treeNode_NavNodeMap)
         {
             XmlNode navMapNode = ncxDocument.GetElementsByTagName("navMap")[0];
 
-            urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
+            ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
             // first create navPoints
             XmlNode navPointNode = ncxDocument.CreateElement(null, "navPoint", navMapNode.NamespaceURI);
@@ -1035,7 +1038,7 @@ namespace urakawa.daisy.export
             XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navPointNode, "id", GetNextID(ID_NcxPrefix));
             XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navPointNode, "playOrder", "");
 
-            urakawa.core.TreeNode parentNode = GetParentLevelNode(urakawaNode);
+            TreeNode parentNode = GetParentLevelNode(urakawaNode);
 
             if (parentNode == null)
             {
@@ -1107,9 +1110,9 @@ namespace urakawa.daisy.export
             return navPointNode;
         }
 
-        private urakawa.core.TreeNode GetParentLevelNode(urakawa.core.TreeNode node)
+        private TreeNode GetParentLevelNode(TreeNode node)
         {
-            urakawa.core.TreeNode parentNode = node.Parent;
+            TreeNode parentNode = node.Parent;
 
             while (parentNode != null)
             {
@@ -1324,14 +1327,14 @@ namespace urakawa.daisy.export
             return metaNode;
         }
 
-        private urakawa.core.TreeNode GetReferedTreeNode(urakawa.core.TreeNode node)
+        private TreeNode GetReferedTreeNode(TreeNode node)
         {
             string noteRefID = node.GetXmlProperty().GetAttribute("idref").Value;
 
             //System.Windows.Forms.MessageBox.Show ( "Attributes xml " + noteRefID );
 
             noteRefID = noteRefID.Replace("#", "");
-            foreach (urakawa.core.TreeNode n in m_NotesNodeList)
+            foreach (TreeNode n in m_NotesNodeList)
             {
                 string id = n.GetXmlElementId();
 
@@ -1416,10 +1419,10 @@ namespace urakawa.daisy.export
         }
 
 
-        private Time CreateFollowupNoteAndAnnotationNodes(XmlDocument smilDocument, XmlNode mainSeq, urakawa.core.TreeNode urakawaNode, string smilFileName, List<string> currentSmilCustomTestList, List<string> ncxCustomTestList)
+        private Time CreateFollowupNoteAndAnnotationNodes(XmlDocument smilDocument, XmlNode mainSeq, TreeNode urakawaNode, string smilFileName, List<string> currentSmilCustomTestList, List<string> ncxCustomTestList)
         {
 
-            //Dictionary<urakawa.core.TreeNode, XmlNode> treeNode_NavNodeMap = new Dictionary<urakawa.core.TreeNode, XmlNode>();
+            //Dictionary<TreeNode, XmlNode> treeNode_NavNodeMap = new Dictionary<TreeNode, XmlNode>();
 
             //List<XmlNode> playOrderList_Sorted = new List<XmlNode>();
             //int totalPageCount = 0;
@@ -1427,15 +1430,15 @@ namespace urakawa.daisy.export
             //int maxDepth = 1;
             //Time smilElapseTime = new Time();
             //List<string> ncxCustomTestList = new List<string> ();
-            //List<urakawa.core.TreeNode> specialParentNodesAddedToNavList = new List<urakawa.core.TreeNode>();
+            //List<TreeNode> specialParentNodesAddedToNavList = new List<TreeNode>();
             //m_ProgressPercentage = 20;
             reportProgress(-1, UrakawaSDK_daisy_Lang.CreateSmilAndNcxFiles);
 
 
 
             XmlNode navPointNode = null;
-            urakawa.core.TreeNode currentHeadingTreeNode = null;
-            urakawa.core.TreeNode special_UrakawaNode = null;
+            TreeNode currentHeadingTreeNode = null;
+            TreeNode special_UrakawaNode = null;
             Time durOfCurrentSmil = new Time();
 
             XmlNode Seq_SpecialNode = null;
@@ -1444,12 +1447,12 @@ namespace urakawa.daisy.export
             bool shouldAddNewSeq = false;
             string par_id = null;
             //List<string> currentSmilCustomTestList = new List<string> ();
-            Stack<urakawa.core.TreeNode> specialParentNodeStack = new Stack<urakawa.core.TreeNode>();
+            Stack<TreeNode> specialParentNodeStack = new Stack<TreeNode>();
             Stack<XmlNode> specialSeqNodeStack = new Stack<XmlNode>();
 
 
             urakawaNode.AcceptDepthFirst(
-        delegate(urakawa.core.TreeNode n)
+        delegate(TreeNode n)
         {//1
 
             if (RequestCancellation) return false;
@@ -1480,7 +1483,7 @@ namespace urakawa.daisy.export
                 shouldAddNewSeq = true;
             }//-2
 
-            urakawa.media.ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
+            ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
 
 
             //bool isDoctitle_1 = currentHeadingTreeNode != null && currentHeadingTreeNode.HasXmlProperty &&
@@ -1735,7 +1738,7 @@ namespace urakawa.daisy.export
 
             return true;
         },
-                delegate(urakawa.core.TreeNode n) { });
+                delegate(TreeNode n) { });
 
             // make specials to null
             special_UrakawaNode = null;
