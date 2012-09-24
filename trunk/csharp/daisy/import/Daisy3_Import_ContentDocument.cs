@@ -134,7 +134,7 @@ namespace urakawa.daisy.import
                         XmlDocument xmlDoc = ((XmlDocument)xmlNode);
 
                         // old DAISY books have no default namespace! :(  (e.g. GH sample books)
-                        DebugFix.Assert(!string.IsNullOrEmpty(xmlDoc.DocumentElement.NamespaceURI));
+                        //DebugFix.Assert(!string.IsNullOrEmpty(xmlDoc.DocumentElement.NamespaceURI));
 
                         docMarkupType = parseContentDocument_DTD(book_FilePath, project, xmlDoc, parentTreeNode, filePath, out dtdUniqueResourceId);
 
@@ -194,14 +194,25 @@ namespace urakawa.daisy.import
                             presentation.Language = lang;
                         }
 
+                        string defaultUri = DiagramContentModelHelper.NS_URL_XHTML;
                         XmlNode bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "body", null);
                         if (bodyElement == null)
                         {
+                            defaultUri = "http://www.daisy.org/z3986/2005/dtbook/";
                             bodyElement = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlNode, true, "book", null);
                         }
                         if (bodyElement != null)
                         {
-                            presentation.PropertyFactory.DefaultXmlNamespaceUri = bodyElement.NamespaceURI;
+                            //DebugFix.Assert(!string.IsNullOrEmpty(bodyElement.NamespaceURI));
+
+                            if (!string.IsNullOrEmpty(bodyElement.NamespaceURI))
+                            {
+                                presentation.PropertyFactory.DefaultXmlNamespaceUri = bodyElement.NamespaceURI;
+                            }
+                            else
+                            {
+                                presentation.PropertyFactory.DefaultXmlNamespaceUri = defaultUri;
+                            }
 
                             // preserve internal DTD if it exists in dtbook 
                             string strInternalDTD = ExtractInternalDTD(((XmlDocument)xmlNode).DocumentType);
@@ -263,11 +274,32 @@ namespace urakawa.daisy.import
 
                         if (parentTreeNode == null)
                         {
-                            DebugFix.Assert(!string.IsNullOrEmpty(xmlNode.NamespaceURI));
+                            //DebugFix.Assert(!string.IsNullOrEmpty(xmlNode.NamespaceURI));
+
+                            DebugFix.Assert(!string.IsNullOrEmpty(presentation.PropertyFactory.DefaultXmlNamespaceUri));
 
                             DebugFix.Assert(xmlNode.LocalName.Equals("book", StringComparison.OrdinalIgnoreCase) || xmlNode.LocalName.Equals("body", StringComparison.OrdinalIgnoreCase));
 
-                            presentation.PropertyFactory.DefaultXmlNamespaceUri = xmlNode.NamespaceURI;
+                            if (string.IsNullOrEmpty(presentation.PropertyFactory.DefaultXmlNamespaceUri))
+                            {
+                                if (!string.IsNullOrEmpty(xmlNode.NamespaceURI))
+                                {
+                                    presentation.PropertyFactory.DefaultXmlNamespaceUri = xmlNode.NamespaceURI;
+                                }
+                                else
+                                {
+                                    string defaultUri = "";
+                                    if (xmlNode.LocalName.Equals("body", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        defaultUri = DiagramContentModelHelper.NS_URL_XHTML;
+                                    }
+                                    if (xmlNode.LocalName.Equals("book", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        defaultUri = "http://www.daisy.org/z3986/2005/dtbook/";
+                                    }
+                                    presentation.PropertyFactory.DefaultXmlNamespaceUri = defaultUri;
+                                }
+                            }
 
                             presentation.RootNode = treeNode;
                             parentTreeNode = presentation.RootNode;
@@ -292,13 +324,17 @@ namespace urakawa.daisy.import
                         // we get rid of element name prefixes, we use namespace URIs instead.
                         // check inherited NS URI
 
-                        string nsUri = treeNode.Parent != null ?
-                            treeNode.Parent.GetXmlNamespaceUri() :
-                            xmlNode.NamespaceURI; //presentation.PropertyFactory.DefaultXmlNamespaceUri
+                        string adjustedBlankNsUri = (string.IsNullOrEmpty(xmlNode.NamespaceURI)
+                                                   ? presentation.PropertyFactory.DefaultXmlNamespaceUri
+                                                   : xmlNode.NamespaceURI);
 
-                        if (xmlNode.NamespaceURI != nsUri)
+                        string nsUri = treeNode.Parent != null
+                                           ? treeNode.Parent.GetXmlNamespaceUri()
+                                           : adjustedBlankNsUri;
+
+                        if (adjustedBlankNsUri != nsUri)
                         {
-                            nsUri = xmlNode.NamespaceURI;
+                            nsUri = adjustedBlankNsUri;
                             xmlProp.SetQName(xmlNode.LocalName, nsUri == null ? "" : nsUri);
                         }
                         else

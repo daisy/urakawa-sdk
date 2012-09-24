@@ -247,7 +247,8 @@ namespace urakawa.daisy.export
                         //string elementName = name.Contains(":") ? name.Split(':')[1] : name;
                         //currentXmlNode = DTBookDocument.CreateElement(prefix, elementName, bookNode.NamespaceURI);
 
-                        bool notBookRoot = xmlProp.LocalName != "book" && xmlProp.LocalName != "body";
+                        bool notBookRoot = !"book".Equals(xmlProp.LocalName, StringComparison.OrdinalIgnoreCase)
+                                           && !"body".Equals(xmlProp.LocalName, StringComparison.OrdinalIgnoreCase);
 
                         if (!notBookRoot)
                         {
@@ -258,6 +259,29 @@ namespace urakawa.daisy.export
                             XmlNode xmlNodeParent = m_TreeNode_XmlNodeMap[n.Parent];
 
                             string nsUri = n.GetXmlNamespaceUri();
+
+                            if (string.IsNullOrEmpty(nsUri))
+                            {
+                                nsUri = xmlNodeParent.NamespaceURI;
+                            }
+
+                            DebugFix.Assert(!string.IsNullOrEmpty(nsUri));
+
+                            if (string.IsNullOrEmpty(nsUri))
+                            {
+                                nsUri = bookNode.NamespaceURI;
+                            }
+
+                            if (string.IsNullOrEmpty(nsUri))
+                            {
+                                nsUri = DTBookDocument.DocumentElement.NamespaceURI;
+                            }
+
+                            if (string.IsNullOrEmpty(nsUri))
+                            {
+                                nsUri = DTBookDocument.NamespaceURI;
+                            }
+                            
 
                             string prefix = n.NeedsXmlNamespacePrefix() ? n.GetXmlNamespacePrefix(nsUri) : null;
 

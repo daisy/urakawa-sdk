@@ -128,8 +128,12 @@ namespace urakawa.daisy.export
             m_FilesList_ExternalFiles = new List<string>();
             RequestCancellation = false;
 
+            m_Counter_ID_DTBPrefix = 0;
+            m_Counter_ID_SmilPrefix = 0;
+            m_Counter_ID_NcxPrefix = 0;
+            m_Counter_ID_OpfPrefix = 0;
+            m_Counter_ID_Generic = 0;
 
-            m_ID_Counter = 0;
             if (RequestCancellation) return;
 
 
@@ -365,15 +369,50 @@ namespace urakawa.daisy.export
         }
 
         protected const string ID_DTBPrefix = "dtb_";
+        protected long m_Counter_ID_DTBPrefix = 0;
+
         protected const string ID_SmilPrefix = "sm_";
+        protected long m_Counter_ID_SmilPrefix = 0;
+
         protected const string ID_NcxPrefix = "ncx_";
+        protected long m_Counter_ID_NcxPrefix = 0;
+
         protected const string ID_OpfPrefix = "opf_";
-        protected long m_ID_Counter;
+        protected long m_Counter_ID_OpfPrefix = 0;
+
+        protected long m_Counter_ID_Generic = 0;
 
         protected string GetNextID(string prefix)
         {
-            string strNumericFrag = (++m_ID_Counter).ToString();
-            return prefix + strNumericFrag;
+            long counter = 0;
+
+            if (prefix == ID_DTBPrefix)
+            {
+                m_Counter_ID_DTBPrefix++;
+                counter = m_Counter_ID_DTBPrefix;
+            }
+            else if (prefix == ID_SmilPrefix)
+            {
+                m_Counter_ID_SmilPrefix++;
+                counter = m_Counter_ID_SmilPrefix;
+            }
+            else if (prefix == ID_NcxPrefix)
+            {
+                m_Counter_ID_NcxPrefix++;
+                counter = m_Counter_ID_NcxPrefix;
+            }
+            else if (prefix == ID_OpfPrefix)
+            {
+                m_Counter_ID_OpfPrefix++;
+                counter = m_Counter_ID_OpfPrefix;
+            }
+            else
+            {
+                m_Counter_ID_Generic++;
+                counter = m_Counter_ID_Generic;
+            }
+
+            return prefix + counter.ToString();
         }
 
         private bool m_AddSectionNameToAudioFile = false;
