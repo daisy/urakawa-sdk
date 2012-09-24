@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using urakawa.core;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
 using urakawa.metadata;
@@ -27,7 +28,7 @@ namespace urakawa.daisy.export
 
         private Dictionary<AlternateContent, string> m_Map_AltContentAudio_TO_RelativeExportedFilePath =
             new Dictionary<AlternateContent, string>();
-        public void CreateSmilNodesForImageDescription(urakawa.core.TreeNode n, XmlDocument smilDocument, XmlNode mainSeq, Time durationOfCurrentSmil, AlternateContentProperty altProperty, string smilFileName)
+        public void CreateSmilNodesForImageDescription(TreeNode levelNodeDescendant, XmlDocument smilDocument, XmlNode smilBodySeq, Time durationOfCurrentSmil, AlternateContentProperty altProperty, string smilFileName)
         {
             //try
             //{
@@ -37,26 +38,26 @@ namespace urakawa.daisy.export
                 AlternateContent altContent = m_Map_AltProperty_TO_Description[altProperty].Map_DiagramElementName_TO_AltContent[diagramDescriptionElementName];
                 if (altContent.Text == null) continue;
                 counter++;
-                if (m_Image_ProdNoteMap[n].Count <= counter)
+                if (m_Image_ProdNoteMap[levelNodeDescendant].Count <= counter)
                 {
                     break;
                 }
-                XmlNode seqNode = smilDocument.CreateElement("seq", mainSeq.NamespaceURI);
-                mainSeq.AppendChild(seqNode);
+                XmlNode seqNode = smilDocument.CreateElement("seq", smilBodySeq.NamespaceURI);
+                smilBodySeq.AppendChild(seqNode);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "class", "prodnote");
                 string strSeqID = GetNextID(ID_SmilPrefix);
                 //System.Windows.Forms.MessageBox.Show(counter.ToString ()  + " : " + m_Image_ProdNoteMap[n].Count.ToString());
-                string dtbookID = m_Image_ProdNoteMap[n][counter].Attributes.GetNamedItem("id").Value;
+                string dtbookID = m_Image_ProdNoteMap[levelNodeDescendant][counter].Attributes.GetNamedItem("id").Value;
                 string par_id = GetNextID(ID_SmilPrefix);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "id", strSeqID);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "class", "prodnote");
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "customTest", "prodnote");
-                XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[n][counter], "smilref", smilFileName + "#" + strSeqID);
+                XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[levelNodeDescendant][counter], "smilref", smilFileName + "#" + strSeqID);
 
-                XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
+                XmlNode parNode = smilDocument.CreateElement(null, "par", smilBodySeq.NamespaceURI);
                 seqNode.AppendChild(parNode);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
-                XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
+                XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", smilBodySeq.NamespaceURI);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id", GetNextID(ID_SmilPrefix));
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
                                                                            m_Filename_Content + "#" + dtbookID);
@@ -70,7 +71,7 @@ namespace urakawa.daisy.export
 
                     DebugFix.Assert(!string.IsNullOrEmpty(srcPath));
 
-                    XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
+                    XmlNode audioNode = smilDocument.CreateElement(null, "audio", smilBodySeq.NamespaceURI);
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
                     "00:00:00");
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
