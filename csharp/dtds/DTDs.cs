@@ -22,32 +22,49 @@ namespace DTDs
 
             // NCX
 
+            //http://www.daisy.org/z3986/2005/ncx-2005-1.dtd
+            ENTITIES_MAPPING.Add("ncx-2005-1.dtd", "DTDs.Resources.ncx-2005-1.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD ncx 2005-1//EN", "DTDs.Resources.ncx-2005-1.dtd");
 
             // DTBOOK
 
+            //http://www.loc.gov/nls/z3986/v100/dtbook110.dtd
             ENTITIES_MAPPING.Add("dtbook110.dtd", "DTDs.Resources.dtbook110.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbook v1.1.0//EN", "DTDs.Resources.dtbook110.dtd");
 
+            //http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd
             ENTITIES_MAPPING.Add("dtbook-2005.dtd", "DTDs.Resources.dtbook-2005-1.dtd");
             ENTITIES_MAPPING.Add("dtbook-2005-1.dtd", "DTDs.Resources.dtbook-2005-1.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbook 2005-1//EN", "DTDs.Resources.dtbook-2005-1.dtd");
 
+            //http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd
             ENTITIES_MAPPING.Add("dtbook-2005-2.dtd", "DTDs.Resources.dtbook-2005-2.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbook 2005-2//EN", "DTDs.Resources.dtbook-2005-2.dtd");
 
+            //http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd
             ENTITIES_MAPPING.Add("dtbook-2005-3.dtd", "DTDs.Resources.dtbook-2005-3.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbook 2005-3//EN", "DTDs.Resources.dtbook-2005-3.dtd");
 
             // SMIL
 
-            ENTITIES_MAPPING.Add("//NISO//DTD dtbsmil 2005-2//EN", "DTDs.Resources.dtbsmil-2005-2.dtd");
+            //http://www.loc.gov/nls/z3986/v100/dtbsmil110.dtd
+            ENTITIES_MAPPING.Add("dtbsmil110.dtd", "DTDs.Resources.dtbsmil110.dtd");
+            ENTITIES_MAPPING.Add("//NISO//DTD dtbsmil v1.1.0//EN", "DTDs.Resources.dtbsmil110.dtd");
+
+            //http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd
+            ENTITIES_MAPPING.Add("dtbsmil-2005-1.dtd", "DTDs.Resources.dtbsmil-2005-1.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbsmil 2005-1//EN", "DTDs.Resources.dtbsmil-2005-1.dtd");
+
+            //http://www.daisy.org/z3986/2005/dtbsmil-2005-2.dtd
+            ENTITIES_MAPPING.Add("dtbsmil-2005-2.dtd", "DTDs.Resources.dtbsmil-2005-2.dtd");
+            ENTITIES_MAPPING.Add("//NISO//DTD dtbsmil 2005-2//EN", "DTDs.Resources.dtbsmil-2005-2.dtd");
 
             // OPF
 
             ENTITIES_MAPPING.Add("//ISBN 0-9673008-1-9//DTD OEB 1.0.1 Package//EN", "DTDs.Resources.oebpkg101.dtd");
 
+            //http://openebook.org/dtds/oeb-1.2/oebpkg12.dtd
+            ENTITIES_MAPPING.Add("oebpkg12.dtd", "DTDs.Resources.oebpkg12.dtd");
             ENTITIES_MAPPING.Add("//ISBN 0-9673008-1-9//DTD OEB 1.2 Package//EN", "DTDs.Resources.oebpkg12.dtd");
 
             ENTITIES_MAPPING.Add("oeb1.ent", "DTDs.Resources.oeb1.ent"); 
