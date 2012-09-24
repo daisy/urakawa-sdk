@@ -91,12 +91,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\mp3-sharp\Mp3Sharp_NET4.csproj">
-      <Project>{834CAB58-648D-47CC-AC6F-D01C08C809A4}</Project>
-      <Name>Mp3Sharp</Name>
+      <Project>{834cab58-648d-47cc-ac6f-d01c08c809a4}</Project>
+      <Name>Mp3Sharp_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\NAudio\NAudio_NET4.csproj">
-      <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
-      <Name>NAudio</Name>
+      <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
+      <Name>NAudio_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoundTouch.NET\SoundTouch.Net_NET4.csproj">
       <Project>{EA570592-1FAB-412F-AA0C-159C947608CD}</Project>
