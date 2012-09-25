@@ -122,7 +122,10 @@ namespace urakawa.data
                     {
                         if (RequestCancellation) return;
 
-                        if (!usedDataProviders.Contains(dp)) usedDataProviders.Add(dp);
+                        if (!usedDataProviders.Contains(dp))
+                        {
+                            usedDataProviders.Add(dp);
+                        }
                     }
                 }
                 else
