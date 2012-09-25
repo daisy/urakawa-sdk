@@ -65,6 +65,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="mathml-fallback-transform.xslt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="tpbnarrator_res.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
