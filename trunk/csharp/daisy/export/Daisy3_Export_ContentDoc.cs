@@ -24,7 +24,6 @@ namespace urakawa.daisy.export
         private List<string> m_TempImageId = null;
         private Dictionary<TreeNode, List<XmlNode>> m_Image_ProdNoteMap = new Dictionary<TreeNode, List<XmlNode>>();
 
-        // to do regenerate ids
         protected virtual void CreateDTBookDocument()
         {
             // check if there is preserved internal DTD 
@@ -67,7 +66,7 @@ namespace urakawa.daisy.export
             reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingXMLFile);
             XmlDocument DTBookDocument = XmlDocumentHelper.CreateStub_DTBDocument(m_Presentation.Language, strInternalDTD, list_ExternalStyleSheets);
 
-            bool hasMathML = false;
+            string mathML_XSLT = null;
 
             foreach (ExternalFileData efd in list_ExternalStyleSheets)
             {
@@ -76,7 +75,7 @@ namespace urakawa.daisy.export
                 {
                     filename = filename.Substring(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA.Length);
 
-                    hasMathML = true;
+                    mathML_XSLT = filename;
                 }
 
                 filename = FileDataProvider.EliminateForbiddenFileNameCharacters(filename);
@@ -87,6 +86,22 @@ namespace urakawa.daisy.export
                     string filePath = Path.Combine(m_OutputDirectory, filename);
                     efd.DataProvider.ExportDataStreamToFile(filePath, true);
                     m_FilesList_ExternalFiles.Add(filename);
+                }
+            }
+
+            string mathPrefix = m_Presentation.RootNode.GetXmlNamespacePrefix(DiagramContentModelHelper.NS_URL_MATHML);
+
+
+            if (!string.IsNullOrEmpty(mathPrefix) && string.IsNullOrEmpty(mathML_XSLT))
+            {
+                string appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+                string xsltFileName = FileDataProvider.EliminateForbiddenFileNameCharacters(SupportedMetadata_Z39862005._builtInMathMLXSLT);
+                string xsltFullPath = Path.Combine(appDir, xsltFileName);
+
+                if (File.Exists(xsltFullPath))
+                {
+                    File.Copy(xsltFullPath, Path.Combine(m_OutputDirectory, xsltFileName), true);
+                    m_FilesList_ExternalFiles.Add(xsltFileName);
                 }
             }
 
@@ -103,6 +118,9 @@ namespace urakawa.daisy.export
 
             AddMetadata_Generator(DTBookDocument, headNode);
 
+            bool hasMathML_z39_86_extension_version = false;
+            bool hasMathML_DTBook_XSLTFallback = false;
+
             // todo: filter-out unecessary metadata for DTBOOK (e.g. dtb:multimediatype)
             foreach (Metadata m in m_Presentation.Metadatas.ContentsAs_Enumerable)
             {
@@ -112,6 +130,15 @@ namespace urakawa.daisy.export
                 headNode.AppendChild(metaNode);
 
                 string name = m.NameContentAttribute.Name;
+
+                if (name == SupportedMetadata_Z39862005._z39_86_extension_version)
+                {
+                    hasMathML_z39_86_extension_version = true;
+                }
+                else if (name == SupportedMetadata_Z39862005.MATHML_XSLT_METADATA)
+                {
+                    hasMathML_DTBook_XSLTFallback = true;
+                }
 
                 string prefix;
                 string localName;
@@ -138,11 +165,34 @@ namespace urakawa.daisy.export
                 }
             }
 
+            if (!string.IsNullOrEmpty(mathML_XSLT))
+            {
+                DebugFix.Assert(hasMathML_z39_86_extension_version);
+                DebugFix.Assert(hasMathML_DTBook_XSLTFallback);
+            }
+
+            if (!string.IsNullOrEmpty(mathPrefix) && !hasMathML_z39_86_extension_version)
+            {
+                XmlNode metaNode = DTBookDocument.CreateElement(null, "meta", headNode.NamespaceURI);
+                headNode.AppendChild(metaNode);
+                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, metaNode, "name", SupportedMetadata_Z39862005._z39_86_extension_version);
+                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, metaNode, "content", "1.0");
+                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, metaNode, "scheme", DiagramContentModelHelper.NS_URL_MATHML);
+            }
+
+            if (!string.IsNullOrEmpty(mathPrefix) && !hasMathML_DTBook_XSLTFallback)
+            {
+                XmlNode metaNode = DTBookDocument.CreateElement(null, "meta", headNode.NamespaceURI);
+                headNode.AppendChild(metaNode);
+                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, metaNode, "name", SupportedMetadata_Z39862005.MATHML_XSLT_METADATA);
+                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, metaNode, "content", string.IsNullOrEmpty(mathML_XSLT) ? SupportedMetadata_Z39862005._builtInMathMLXSLT : mathML_XSLT);
+                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, metaNode, "scheme", DiagramContentModelHelper.NS_URL_MATHML);
+            }
+
             // add elements to book body
             m_TreeNode_XmlNodeMap = new Dictionary<TreeNode, XmlNode>();
 
 
-            TreeNode rNode = m_Presentation.RootNode;
 
             XmlNode bookNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(DTBookDocument, true, "book", null); //DTBookDocument.GetElementsByTagName("book")[0];
             if (bookNode == null)
@@ -157,7 +207,7 @@ namespace urakawa.daisy.export
                 docRootNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(DTBookDocument, true, "html", null);
             }
 
-            if (false && hasMathML) // namespace prefix attribute automatically added for each m:math element because of MathML DTD
+            if (false && !string.IsNullOrEmpty(mathML_XSLT)) // namespace prefix attribute automatically added for each m:math element because of MathML DTD
             {
                 XmlDocumentHelper.CreateAppendXmlAttribute(
                 DTBookDocument,
@@ -170,11 +220,11 @@ namespace urakawa.daisy.export
 
             m_ListOfLevels.Add(m_Presentation.RootNode);
 
-            m_TreeNode_XmlNodeMap.Add(rNode, bookNode);
+            m_TreeNode_XmlNodeMap.Add(m_Presentation.RootNode, bookNode);
             XmlNode currentXmlNode = null;
             bool isHeadingNodeAvailable = true;
 
-            rNode.AcceptDepthFirst(
+            m_Presentation.RootNode.AcceptDepthFirst(
                     delegate(TreeNode n)
                     {
                         if (RequestCancellation) return false;

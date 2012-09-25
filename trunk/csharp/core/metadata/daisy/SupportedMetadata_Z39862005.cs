@@ -7,6 +7,9 @@ namespace urakawa.metadata.daisy
     public static class SupportedMetadata_Z39862005
     {
         public static readonly string MATHML_XSLT_METADATA = "DTBook-XSLTFallback";
+        public static readonly string _z39_86_extension_version = "z39-86-extension-version";
+        public static readonly string _builtInMathMLXSLT = "mathml-fallback-transform.xslt";
+
         
         public const string NS_PREFIX_DUBLIN_CORE = "dc";
         public const string NS_URL_DUBLIN_CORE = "http://purl/dc";
@@ -300,7 +303,7 @@ namespace urakawa.metadata.daisy
                            null));
              //from mathML
             m_MetadataDefinitions.Add(new MetadataDefinition(
-                           "z39-86-extension-version",
+                           _z39_86_extension_version,
                            MetadataDataType.Number,
                            MetadataOccurrence.Optional,
                            false,
@@ -308,7 +311,7 @@ namespace urakawa.metadata.daisy
                            UrakawaSDK_core_Lang.Metadata_desc_z3986ExtensionVersion,
                            null));
             m_MetadataDefinitions.Add(new MetadataDefinition(
-                           "DTBook-XSLTFallback",
+                           MATHML_XSLT_METADATA,
                            MetadataDataType.FileUri,
                            MetadataOccurrence.Optional,
                            false,

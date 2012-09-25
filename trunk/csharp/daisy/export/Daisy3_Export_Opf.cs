@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
+using AudioLib;
+using urakawa.ExternalFiles;
 using urakawa.data;
 using urakawa.media.timing;
 using urakawa.metadata;
@@ -224,14 +226,28 @@ namespace urakawa.daisy.export
             AddMetadataAsInnerText(opfDocument, dc_metadataNode, SupportedMetadata_Z39862005.DC_Format.ToLower(), "ANSI/NISO Z39.86-2005");
 
 
+            bool hasMathML_z39_86_extension_version = false;
+            bool hasMathML_DTBook_XSLTFallback = false;
+
             foreach (Metadata m in m_Presentation.Metadatas.ContentsAs_Enumerable)
             {
+                string name = m.NameContentAttribute.Name;
+
+                if (name == SupportedMetadata_Z39862005._z39_86_extension_version)
+                {
+                    hasMathML_z39_86_extension_version = true;
+                }
+                else if (name == SupportedMetadata_Z39862005.MATHML_XSLT_METADATA)
+                {
+                    hasMathML_DTBook_XSLTFallback = true;
+                }
+
                 //string lowerName = m.NameContentAttribute.Name.ToLower();
                 if (mdId == m
-                    || SupportedMetadata_Z39862005.DTB_TOTAL_TIME.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase)
-                    || SupportedMetadata_Z39862005.DC_Format.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase)
-                    || SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase)
-                    || SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase)
+                    || SupportedMetadata_Z39862005.DTB_TOTAL_TIME.Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || SupportedMetadata_Z39862005.DC_Format.Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE.Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT.Equals(name, StringComparison.OrdinalIgnoreCase)
                     )
                     continue;
 
@@ -241,7 +257,7 @@ namespace urakawa.daisy.export
                 bool contains = false;
                 foreach (string str in m_AllowedInDcMetadata)
                 {
-                    if (str.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
+                    if (str.Equals(name, StringComparison.OrdinalIgnoreCase))
                     {
                         contains = true;
                         break;
@@ -251,7 +267,7 @@ namespace urakawa.daisy.export
                 bool containsDtb = false;
                 foreach (string str in m_DtbAllowedInXMetadata)
                 {
-                    if (str.Equals(m.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
+                    if (str.Equals(name, StringComparison.OrdinalIgnoreCase))
                     {
                         containsDtb = true;
                         break;
@@ -260,7 +276,7 @@ namespace urakawa.daisy.export
 
                 if (contains)
                 {
-                    metadataNodeCreated = AddMetadataAsInnerText(opfDocument, dc_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
+                    metadataNodeCreated = AddMetadataAsInnerText(opfDocument, dc_metadataNode, name, m.NameContentAttribute.Value);
                     // add other metadata attributes if any
                     foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_Enumerable)
                     {
@@ -279,7 +295,8 @@ namespace urakawa.daisy.export
                     || !m.NameContentAttribute.Name.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DTB + ":", StringComparison.OrdinalIgnoreCase)
                     )
                 {
-                    metadataNodeCreated = AddMetadataAsAttributes(opfDocument, x_metadataNode, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
+                    metadataNodeCreated = AddMetadataAsAttributes(opfDocument, x_metadataNode, name, m.NameContentAttribute.Value);
+
                     // add other metadata attributes if any
                     foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_Enumerable)
                     {
@@ -290,6 +307,48 @@ namespace urakawa.daisy.export
 
             } // end of metadata for each loop
 
+            string mathML_XSLT = null;
+
+            foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
+            {
+                if (efd is XSLTExternalFileData)
+                {
+                    string filename = efd.OriginalRelativePath;
+                    if (filename.StartsWith(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA))
+                    {
+                        filename = filename.Substring(SupportedMetadata_Z39862005.MATHML_XSLT_METADATA.Length);
+
+                        mathML_XSLT = filename;
+                        break;
+                    }
+                }
+            }
+
+            string mathPrefix = m_Presentation.RootNode.GetXmlNamespacePrefix(DiagramContentModelHelper.NS_URL_MATHML);
+
+            if (!string.IsNullOrEmpty(mathML_XSLT))
+            {
+                DebugFix.Assert(hasMathML_z39_86_extension_version);
+                DebugFix.Assert(hasMathML_DTBook_XSLTFallback);
+            }
+
+            if (!string.IsNullOrEmpty(mathPrefix) && !hasMathML_z39_86_extension_version)
+            {
+                XmlNode metaNode = opfDocument.CreateElement(null, "meta", x_metadataNode.NamespaceURI);
+                x_metadataNode.AppendChild(metaNode);
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metaNode, "name", SupportedMetadata_Z39862005._z39_86_extension_version);
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metaNode, "content", "1.0");
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metaNode, "scheme", DiagramContentModelHelper.NS_URL_MATHML);
+            }
+
+            if (!string.IsNullOrEmpty(mathPrefix) && !hasMathML_DTBook_XSLTFallback)
+            {
+                XmlNode metaNode = opfDocument.CreateElement(null, "meta", x_metadataNode.NamespaceURI);
+                x_metadataNode.AppendChild(metaNode);
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metaNode, "name", SupportedMetadata_Z39862005.MATHML_XSLT_METADATA);
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metaNode, "content", string.IsNullOrEmpty(mathML_XSLT) ? SupportedMetadata_Z39862005._builtInMathMLXSLT : mathML_XSLT);
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metaNode, "scheme", DiagramContentModelHelper.NS_URL_MATHML);
+            }
 
             //XmlNodeList totalTimeNodesList = opfDocument.GetElementsByTagName("dtb:totaltime");
             //if (totalTimeNodesList == null || (totalTimeNodesList != null && totalTimeNodesList.Count == 0))
