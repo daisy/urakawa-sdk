@@ -109,6 +109,11 @@ namespace urakawa.media.data.audio.codec
         }
 
 
+        public DataProvider ForceSingleDataProvider()
+        {
+            return ForceSingleDataProvider(true);
+        }
+
         /// <summary>
         /// Forces the PCM data to be stored in a single <see cref="DataProvider"/>.
         /// </summary>
@@ -116,11 +121,11 @@ namespace urakawa.media.data.audio.codec
         /// This effectively copies the data, 
         /// since the <see cref="DataProvider"/>(s) previously used to store the PCM data are left untouched
         /// </remarks>
-        public DataProvider ForceSingleDataProvider()
+        public DataProvider ForceSingleDataProvider(bool reuseSingleWavClip)
         {
             if (mWavClips.Count == 0) return null;
 
-            if (mWavClips.Count == 1)
+            if (reuseSingleWavClip && mWavClips.Count == 1)
             {
                 WavClip theChosenOne = mWavClips[0];
                 if (theChosenOne.ClipBegin.IsEqualTo(Time.Zero)
