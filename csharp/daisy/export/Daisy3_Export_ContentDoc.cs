@@ -78,7 +78,7 @@ namespace urakawa.daisy.export
 
                     hasMathML = true;
                 }
-                
+
                 filename = FileDataProvider.EliminateForbiddenFileNameCharacters(filename);
 
                 if (efd.IsPreservedForOutputFile
@@ -250,6 +250,19 @@ namespace urakawa.daisy.export
                         bool notBookRoot = !"book".Equals(xmlProp.LocalName, StringComparison.OrdinalIgnoreCase)
                                            && !"body".Equals(xmlProp.LocalName, StringComparison.OrdinalIgnoreCase);
 
+
+                        bool forceXmlNamespacePrefix = false;
+
+                        if (//xmlProp.LocalName.Equals("math", StringComparison.OrdinalIgnoreCase)
+                            xmlProp.GetNamespaceUri() == DiagramContentModelHelper.NS_URL_MATHML
+                            && bookNode.LocalName.Equals("book", StringComparison.OrdinalIgnoreCase)
+                        )
+                        {
+                            // Hack, because some MathML in DAISY is produced
+                            // with redundant (and DTD-invalid) xmlns="http://MATHML"
+                            forceXmlNamespacePrefix = true;
+                        }
+
                         if (!notBookRoot)
                         {
                             currentXmlNode = bookNode;
@@ -281,19 +294,16 @@ namespace urakawa.daisy.export
                             {
                                 nsUri = DTBookDocument.NamespaceURI;
                             }
-                            
 
-                            string prefix = n.NeedsXmlNamespacePrefix() ? n.GetXmlNamespacePrefix(nsUri) : null;
+                            string prefix = (forceXmlNamespacePrefix || n.NeedsXmlNamespacePrefix()) ? n.GetXmlNamespacePrefix(nsUri) : null;
 
                             currentXmlNode = DTBookDocument.CreateElement(
                                 prefix,
                                 xmlProp.LocalName,
                                 nsUri);
 
-                            // add current node to its parent
                             xmlNodeParent.AppendChild(currentXmlNode);
 
-                            // add nodes to dictionary 
                             m_TreeNode_XmlNodeMap.Add(n, currentXmlNode);
                         }
 
@@ -368,11 +378,21 @@ namespace urakawa.daisy.export
                                     xmlNd = currentXmlNode;
                                 }
 
-                                XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument,
-                                xmlNd,
-                                xmlAttr.LocalName,
-                                xmlAttr.Value,
-                                xmlAttr.GetNamespaceUri());
+                                if (forceXmlNamespacePrefix
+                                    && nameWithoutPrefix == XmlReaderWriterHelper.NS_PREFIX_XMLNS
+                                    && xmlAttr.Value == DiagramContentModelHelper.NS_URL_MATHML
+                                    )
+                                {
+                                    bool debug = true; // skip xmlns="http://MATH"
+                                }
+                                else
+                                {
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument,
+                                                        xmlNd,
+                                                        xmlAttr.LocalName,
+                                                        xmlAttr.Value,
+                                                        xmlAttr.GetNamespaceUri());
+                                }
                             }
                         } // for loop ends
 
