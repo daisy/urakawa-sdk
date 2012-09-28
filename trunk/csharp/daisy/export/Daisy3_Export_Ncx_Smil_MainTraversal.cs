@@ -66,6 +66,11 @@ namespace urakawa.daisy.export
                 bool specialNodeIsNoteAnnoRef = false;
                 TreeNode specialNodeReferredNoteAnno = null;
 
+                bool levelDoesNotContainSignificantText = TreeNode.TextOnlyContainsPunctuation(levelNode.GetTextFlattened_());
+                if (levelDoesNotContainSignificantText)
+                {
+                    continue;
+                }
 
                 levelNode.AcceptDepthFirst(
             delegate(TreeNode levelNodeDescendant)
