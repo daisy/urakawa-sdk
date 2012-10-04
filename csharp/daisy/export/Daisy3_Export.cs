@@ -428,9 +428,31 @@ namespace urakawa.daisy.export
             }
         }
 
+        private int m_AudioFileNameCharsLimit = -1;
+        /// <summary>
+        /// < Truncates audio file name containing section name from right side. Minimum acceptable value is 4.
+        /// </summary>
+        public int AudioFileNameCharsLimit
+        {
+            get
+            {
+                return m_AudioFileNameCharsLimit;
+            }
+            set
+            {
+                if (value >= 4)  m_AudioFileNameCharsLimit = value;
+            }
+        }
+
         protected string AddSectionNameToAudioFileName(string externalAudioSrc, string sectionName)
         {
-            string audioFileName = Path.GetFileNameWithoutExtension(externalAudioSrc) + "_" + FileDataProvider.EliminateForbiddenFileNameCharacters(sectionName.Replace(" ", "_")) + Path.GetExtension(externalAudioSrc);
+            string audioFileName = Path.GetFileNameWithoutExtension(externalAudioSrc) + "_" + FileDataProvider.EliminateForbiddenFileNameCharacters(sectionName.Replace(" ", "_")) ;
+            if (AudioFileNameCharsLimit > 0)
+            {
+                audioFileName = audioFileName.Replace("aud", "");
+                if (audioFileName.Length > AudioFileNameCharsLimit ) audioFileName =  audioFileName.Substring(0, AudioFileNameCharsLimit);
+            }
+            audioFileName = audioFileName + Path.GetExtension(externalAudioSrc);
             string source = Path.Combine(m_OutputDirectory, Path.GetFileName(externalAudioSrc));
             string dest = Path.Combine(m_OutputDirectory, audioFileName);
 
