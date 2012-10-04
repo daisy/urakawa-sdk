@@ -440,7 +440,7 @@ namespace urakawa.daisy.export
             }
             set
             {
-                if (value >= 4)  m_AudioFileNameCharsLimit = value;
+                m_AudioFileNameCharsLimit =value >= 4? value:-1;
             }
         }
 
