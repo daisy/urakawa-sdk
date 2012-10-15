@@ -1,24 +1,19 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security;
 using System.Windows.Forms;
 using System.Threading;
 using System.Collections.Generic;
 
-#if USE_SLIMDX
-using SlimDX.DirectSound;
-using SlimDX.Multimedia;
+#if USE_SHARPDX
+using SharpDX.DirectSound;
 #else
 using Microsoft.DirectX.DirectSound;
 #endif
 
 #if USE_SOUNDTOUCH
-
+using SharpDX.Multimedia;
 using SoundTouch;
-using SoundTouch.Utility;
-using Buffer = System.Buffer;
 #if true || SOUNDTOUCH_INTEGER_SAMPLES
 using TSampleType = System.Int16; // short (System.Int32 == int)
 using TLongSampleType = System.Int64; // long
@@ -177,19 +172,79 @@ namespace AudioLib
 #endif //USE_SOUNDTOUCH
                 {
                     if (m_CircularBuffer != null &&
-#if USE_SLIMDX
- m_CircularBuffer.Capabilities.ControlFrequency
+#if USE_SHARPDX
+ true //m_CircularBuffer.Capabilities.??
 #else
  m_CircularBuffer.Caps.ControlFrequency
 #endif
 )
                     {
-                        int fastPlaySamplesPerSecond = (int)Math.Round(m_CircularBuffer.Format.SamplesPerSecond * m_FastPlayFactor);
+#if USE_SHARPDX
+                        //m_CircularBuffer.Format.SampleRate
+                        int sampleRatePerSecond = -1;
+
+                        if (m_CurrentAudioPCMFormat != null)
+                        {
+                            sampleRatePerSecond = (int)m_CurrentAudioPCMFormat.SampleRate;
+                        }
+                        else
+                        {
+                            int size = 0;
+                            try
+                            {
+                                m_CircularBuffer.GetFormat(null, 0, out size);
+                            }
+                            catch (Exception ex)
+                            {
+                                // Ignore
+                                bool debug_ = true;
+                            }
+
+                            int size_ = size;
+                            WaveFormat[] formats = new WaveFormat[1];
+                            formats[0] = new WaveFormat(22500, 16, 2);
+                            try
+                            {
+                                m_CircularBuffer.GetFormat(formats, size_, out size);
+
+                                sampleRatePerSecond = formats[0].SampleRate;
+                            }
+                            catch (Exception ex)
+                            {
+                                // Ignore
+                                bool debug_ = true;
+                            }
+                        }
+#endif
+
+                        DebugFix.Assert(sampleRatePerSecond > 0);
+                        if (sampleRatePerSecond > 0)
+                        {
+                            int fastPlaySamplesPerSecond = (int)Math.Round(
+#if USE_SHARPDX
+sampleRatePerSecond
+#else
+ m_CircularBuffer.Format.SamplesPerSecond
+#endif
+
+ * m_FastPlayFactor);
+
 #if DEBUG
-                        DebugFix.Assert(m_CurrentAudioPCMFormat.SampleRate == m_CircularBuffer.Format.SamplesPerSecond);
-#endif //DEBUG
-                        // accelerated samples per second
-                        m_CircularBuffer.Frequency = fastPlaySamplesPerSecond;
+                            if (m_CurrentAudioPCMFormat != null)
+                            {
+                                DebugFix.Assert(m_CurrentAudioPCMFormat.SampleRate ==
+#if USE_SHARPDX
+ sampleRatePerSecond
+#else
+ m_CircularBuffer.Format.SamplesPerSecond
+#endif
+);
+                            }
+#endif
+                            //DEBUG
+                            // accelerated samples per second
+                            m_CircularBuffer.Frequency = fastPlaySamplesPerSecond;
+                        }
                     }
                 }
             }
@@ -241,7 +296,13 @@ namespace AudioLib
             lock (LOCK_DEVICES)
             {
                 if (m_CachedOutputDevices != null
-                    && OutputDevice != null && OutputDevice.Name == name && !OutputDevice.Device.Disposed)
+                    && OutputDevice != null && OutputDevice.Name == name && !OutputDevice.Device.
+#if USE_SHARPDX
+IsDisposed
+#else
+Disposed
+#endif
+)
                 {
                     return;
                 }
@@ -250,7 +311,13 @@ namespace AudioLib
                 {
                     OutputDevice foundCached =
                         m_CachedOutputDevices.Find(delegate(OutputDevice d) { return d.Name == name; });
-                    if (foundCached != null && !foundCached.Device.Disposed)
+                    if (foundCached != null && !foundCached.Device.
+#if USE_SHARPDX
+IsDisposed
+#else
+Disposed
+#endif
+)
                     {
                         SetOutputDevice(handle, foundCached);
                         return;
@@ -286,9 +353,8 @@ namespace AudioLib
             {
                 lock (LOCK_DEVICES)
                 {
-#if USE_SLIMDX
-                DeviceCollection devices = DirectSound.GetDevices();
-                    // new DeviceCollection();
+#if USE_SHARPDX
+                    List<DeviceInformation> devices = DirectSound.GetDevices();
 #else
                     DevicesCollection devices = new DevicesCollection();
 #endif
@@ -327,7 +393,7 @@ namespace AudioLib
 
             if (handle != null)
             {
-#if USE_SLIMDX
+#if USE_SHARPDX
                 device.Device.SetCooperativeLevel(handle.Handle, CooperativeLevel.Priority);
 #else
                 device.Device.SetCooperativeLevel(handle, CooperativeLevel.Priority);
@@ -653,12 +719,13 @@ namespace AudioLib
             m_CurrentAudioStream = m_CurrentAudioStreamProvider();
             m_CurrentAudioStream.Position = m_PlaybackStartPositionInCurrentAudioStream;
 
-            int circularBufferLength =
-#if USE_SLIMDX
- m_CircularBuffer.Capabilities.BufferSize
+            int circularBufferLength = m_CircularBuffer.
+#if USE_SHARPDX
+Capabilities
 #else
- m_CircularBuffer.Caps.BufferBytes
+ Caps
 #endif
+.BufferBytes
 ;
 
             int bytesWrittenToCirularBuffer =
@@ -671,7 +738,7 @@ namespace AudioLib
             try
             {
                 m_CircularBuffer.Play(0,
-#if USE_SLIMDX
+#if USE_SHARPDX
  PlayFlags.Looping
 #else
  BufferPlayFlags.Looping // this makes it a circular buffer (which we manage manually, by tracking playback versus writing positions)

@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
@@ -44,3 +45,9 @@ using System.Runtime.InteropServices;
 #endif
 
 [assembly:ComVisible(false)]
+
+[assembly: CLSCompliant(true)]
+
+#if NET40
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#endif
