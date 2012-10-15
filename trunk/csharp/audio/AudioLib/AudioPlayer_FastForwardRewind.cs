@@ -7,9 +7,9 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Collections.Generic;
 
-#if USE_SLIMDX
-using SlimDX.DirectSound;
-using SlimDX.Multimedia;
+#if USE_SHARPDX
+using SharpDX.DirectSound;
+using SharpDX.Multimedia;
 #else
 using Microsoft.DirectX.DirectSound;
 #endif

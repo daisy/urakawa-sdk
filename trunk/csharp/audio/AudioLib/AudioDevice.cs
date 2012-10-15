@@ -1,8 +1,6 @@
-#if USE_SLIMDX
-using SlimDX.DirectSound;
+#if USE_SHARPDX
+using SharpDX.DirectSound;
 #else
-using System;
-using System.Security;
 using Microsoft.DirectX.DirectSound;
 #endif
 
@@ -11,9 +9,9 @@ namespace AudioLib
     /// <summary>
     /// Small wrapper around DirectX devices to make it a little more friendly.
     /// </summary>
-//#if NET40
-//    [SecuritySafeCritical]
-//#endif
+    //#if NET40
+    //    [SecuritySafeCritical]
+    //#endif
     public abstract class AudioDevice
     {
         private DeviceInformation mDevInfo;
@@ -36,28 +34,26 @@ namespace AudioLib
         }
     }
 
-//#if NET40
-//    [SecuritySafeCritical]
-//#endif
+    //#if NET40
+    //    [SecuritySafeCritical]
+    //#endif
     public class OutputDevice : AudioDevice
     {
-#if USE_SLIMDX
-        private DirectSound mDevice;
-
-        public DirectSound Device
-        {
-            get { return mDevice; }
-        }
-
-        public OutputDevice(DeviceInformation devInfo)
-            : base(devInfo)
-        {
-            mDevice = new DirectSound(devInfo.DriverGuid);
-        }
+        private
+#if USE_SHARPDX
+ DirectSound
 #else
-        private Device mDevice;
+ Device
+#endif
+ mDevice;
 
-        public Device Device
+        public
+#if USE_SHARPDX
+ DirectSound
+#else
+ Device
+#endif
+ Device
         {
             get { return mDevice; }
         }
@@ -65,33 +61,36 @@ namespace AudioLib
         public OutputDevice(DeviceInformation devInfo)
             : base(devInfo)
         {
-            mDevice = new Device(devInfo.DriverGuid);
-        }
+            mDevice = new
+#if USE_SHARPDX
+ DirectSound
+#else
+ Device
 #endif
+(devInfo.DriverGuid);
+        }
     }
 
-//#if NET40
-//    [SecuritySafeCritical]
-//#endif
+    //#if NET40
+    //    [SecuritySafeCritical]
+    //#endif
     public class InputDevice : AudioDevice
     {
-#if USE_SLIMDX
-        private DirectSoundCapture mCapture;
-
-        public DirectSoundCapture Capture
-        {
-            get { return mCapture; }
-        }
-
-        public InputDevice(DeviceInformation devInfo)
-            : base(devInfo)
-        {
-            mCapture = new DirectSoundCapture(devInfo.DriverGuid);
-        }
+        private
+#if USE_SHARPDX
+ DirectSoundCapture
 #else
-        private Capture mCapture;
+ Capture
+#endif
+ mCapture;
 
-        public Capture Capture
+        public
+#if USE_SHARPDX
+ DirectSoundCapture
+#else
+ Capture
+#endif
+ Capture
         {
             get { return mCapture; }
         }
@@ -99,8 +98,13 @@ namespace AudioLib
         public InputDevice(DeviceInformation devInfo)
             : base(devInfo)
         {
-            mCapture = new Capture(devInfo.DriverGuid);
-        }
+            mCapture = new
+#if USE_SHARPDX
+ DirectSoundCapture
+#else
+ Capture
 #endif
+(devInfo.DriverGuid);
+        }
     }
 }
