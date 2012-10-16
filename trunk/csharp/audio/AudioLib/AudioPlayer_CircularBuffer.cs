@@ -400,7 +400,10 @@ Capabilities
 
 #if USE_SHARPDX
             SoundBufferDescription bufferDescription = new SoundBufferDescription();
-            bufferDescription.Flags = BufferFlags.ControlVolume | BufferFlags.ControlFrequency | BufferFlags.GlobalFocus;
+            bufferDescription.Flags =
+                BufferFlags.GetCurrentPosition2 |
+                //BufferFlags.ControlPositionNotify | 
+                BufferFlags.ControlVolume | BufferFlags.ControlFrequency | BufferFlags.GlobalFocus;
 #else
             BufferDescription bufferDescription = new BufferDescription();
 
