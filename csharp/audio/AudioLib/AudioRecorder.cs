@@ -28,7 +28,14 @@ namespace AudioLib
 
         private CaptureBuffer m_CircularBuffer;
         private int m_CircularBufferReadPositon;
+
+#if FORCE_SINGLE_NOTIFICATION_EVENT
         private AutoResetEvent m_CircularBufferNotificationEvent;
+#else
+        private AutoResetEvent[] m_CircularBufferNotificationEvents;
+#endif
+
+
 
 
         private readonly Object LOCK_THREAD_INSTANCE = new object();
@@ -199,7 +206,7 @@ IsDisposed
 #else
  Disposed
 #endif
-                        )
+)
                     {
                         InputDevice = foundCached;
                         return;
@@ -312,36 +319,79 @@ IsDisposed
                     return 0;
                 }
 
+                int circularBufferBytesAvailableForReading = 0;
+
                 Monitor.Enter(LOCK);
                 try
                 {
-                    m_CircularBuffer.Stop();
+#if FORCE_SINGLE_NOTIFICATION_EVENT
 
-                    int remainingBytesToRead = 0;
-                    do
+                                        m_CircularBuffer.Stop();
+
+                                        int remainingBytesToRead = 0;
+                                        do
+                                        {
+                                            try
+                                            {
+                                                remainingBytesToRead = circularBufferTransferData();
+                                            }
+                                            catch (Exception ex)
+                                            {
+#if DEBUG
+                                                Debugger.Break();
+#endif
+                                                Console.WriteLine(ex.Message);
+                                                Console.WriteLine(ex.StackTrace);
+                                                break;
+                                            }
+#if DEBUG
+                if (remainingBytesToRead>0)
+                {
+                    Console.WriteLine(string.Format("REMAINING buffer bytes (STOP RECORD): {0}", remainingBytesToRead));
+                }
+#endif
+                                        } while (remainingBytesToRead > 0);
+
+                                        m_CircularBuffer.Start(true);
+
+#else
+
+#if USE_SHARPDX
+                    int circularBufferCapturePosition = m_CircularBuffer.CurrentCapturePosition;
+                    int readPosition = m_CircularBuffer.CurrentRealPosition;
+#else
+            int circularBufferCapturePosition;
+            int readPosition;
+            m_CircularBuffer.GetCurrentPosition(out circularBufferCapturePosition, out readPosition);
+#endif
+                    int circularBufferBytes = m_CircularBuffer.
+#if USE_SHARPDX
+Capabilities
+#else
+Caps
+#endif
+.BufferBytes
+        ;
+                    circularBufferBytesAvailableForReading = (circularBufferCapturePosition == m_CircularBufferReadPositon ? 0
+                                            : (circularBufferCapturePosition < m_CircularBufferReadPositon
+                                      ? circularBufferCapturePosition + (circularBufferBytes - m_CircularBufferReadPositon)
+                                      : circularBufferCapturePosition - m_CircularBufferReadPositon));
+
+
+#if DEBUG
+                    if (circularBufferBytesAvailableForReading > 0)
                     {
-                        try
-                        {
-                            remainingBytesToRead = circularBufferTransferData();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                            Console.WriteLine(ex.StackTrace);
-                            break;
-                        }
-
-                        //Console.WriteLine(string.Format("circularBufferTransferData: fetched remaining bytes: {0}", remainingBytesToRead));
-                    } while (remainingBytesToRead > 0);
-
-                    m_CircularBuffer.Start(true);
+                        Console.WriteLine(string.Format("REMAINING buffer bytes (STOP RECORD AND CONTINUE): {0}", circularBufferBytesAvailableForReading));
+                    }
+#endif
+#endif
                 }
                 finally
                 {
                     Monitor.Exit(LOCK);
                 }
 
-                return m_TotalRecordedBytes;
+                return m_TotalRecordedBytes + (ulong)circularBufferBytesAvailableForReading;
             }
         }
 
@@ -434,33 +484,61 @@ IsDisposed
             bufferDescription.BufferBytes = circularBufferSize;
             bufferDescription.Format = waveFormat;
 #if USE_SHARPDX
+            bufferDescription.Flags = CaptureBufferCapabilitiesFlags.WaveMapped; //CaptureBufferCapabilitiesFlags.ControlEffects
+
             m_CircularBuffer = new CaptureBuffer(InputDevice.Capture, bufferDescription);
 #else
             m_CircularBuffer = new CaptureBuffer(bufferDescription, InputDevice.Capture);
 #endif
 
+#if FORCE_SINGLE_NOTIFICATION_EVENT
             m_CircularBufferNotificationEvent = new AutoResetEvent(false);
+#endif
 
 #if USE_SHARPDX
             NotificationPosition[] m_BufferPositionNotify = new NotificationPosition[NOTIFICATIONS];
 #else
             BufferPositionNotify[] m_BufferPositionNotify = new BufferPositionNotify[NOTIFICATIONS];
 #endif
+
+#if !FORCE_SINGLE_NOTIFICATION_EVENT
+            m_CircularBufferNotificationEvents = new AutoResetEvent[NOTIFICATIONS];
+#endif
+
             for (int i = 0; i < NOTIFICATIONS; i++)
             {
+#if !FORCE_SINGLE_NOTIFICATION_EVENT
+                m_CircularBufferNotificationEvents[i] = new AutoResetEvent(false);
+#endif
+
 #if USE_SHARPDX
                 m_BufferPositionNotify[i] = new NotificationPosition();
 #endif
 
                 m_BufferPositionNotify[i].Offset = (m_PcmDataBufferLength * i) + m_PcmDataBufferLength - 1;
 
+#if FORCE_SINGLE_NOTIFICATION_EVENT
+                
 #if USE_SHARPDX
                 m_BufferPositionNotify[i].WaitHandle = m_CircularBufferNotificationEvent;
                 //m_BufferPositionNotify[i].EventNotifyHandlePointer = m_CircularBufferNotificationEvent.SafeWaitHandle.DangerousGetHandle();
 #else
                 m_BufferPositionNotify[i].EventNotifyHandle = m_CircularBufferNotificationEvent.SafeWaitHandle.DangerousGetHandle();
 #endif
+
+#else
+
+#if USE_SHARPDX
+                m_BufferPositionNotify[i].WaitHandle = m_CircularBufferNotificationEvents[i];
+                //m_BufferPositionNotify[i].EventNotifyHandlePointer = m_CircularBufferNotificationEvent.SafeWaitHandle.DangerousGetHandle();
+#else
+                m_BufferPositionNotify[i].EventNotifyHandle = m_CircularBufferNotificationEvents[i].SafeWaitHandle.DangerousGetHandle();
+#endif
+
+#endif
+
             }
+
 #if USE_SHARPDX
             m_CircularBuffer.SetNotificationPositions(m_BufferPositionNotify);
 #else
@@ -562,7 +640,11 @@ IsDisposed
         {
             while (true)
             {
+#if FORCE_SINGLE_NOTIFICATION_EVENT
                 m_CircularBufferNotificationEvent.WaitOne(Timeout.Infinite, true);
+#else
+                int eventIndex = WaitHandle.WaitAny(m_CircularBufferNotificationEvents);
+#endif
 
                 Monitor.Enter(LOCK);
                 try
@@ -574,11 +656,18 @@ IsDisposed
                     }
                     else
                     {
-                        circularBufferTransferData();
+                        circularBufferTransferData(
+#if !FORCE_SINGLE_NOTIFICATION_EVENT
+eventIndex
+#endif
+);
                     }
                 }
                 catch (Exception ex)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     Console.WriteLine(ex.Message);
                     Console.WriteLine(ex.StackTrace);
                     //Console.WriteLine(@"circularBufferRefreshThreadMethod EXCEPTION: " + ex.Message);
@@ -597,7 +686,11 @@ IsDisposed
         private byte[] incomingPcmData;
 #endif
 
-        private int circularBufferTransferData()
+        private int circularBufferTransferData(
+#if !FORCE_SINGLE_NOTIFICATION_EVENT
+int eventIndex
+#endif
+)
         {
 #if USE_SHARPDX
             int circularBufferCapturePosition = m_CircularBuffer.CurrentCapturePosition;
@@ -607,7 +700,7 @@ IsDisposed
             int readPosition;
             m_CircularBuffer.GetCurrentPosition(out circularBufferCapturePosition, out readPosition);
 #endif
-            int sizeBytes = m_CircularBuffer.
+            int circularBufferBytes = m_CircularBuffer.
 #if USE_SHARPDX
 Capabilities
 #else
@@ -615,21 +708,46 @@ Caps
 #endif
 .BufferBytes
 ;
+            int notifyChunk = circularBufferBytes / NOTIFICATIONS;
+
 
             int circularBufferBytesAvailableForReading = (circularBufferCapturePosition == m_CircularBufferReadPositon ? 0
                                     : (circularBufferCapturePosition < m_CircularBufferReadPositon
-                              ? circularBufferCapturePosition + (sizeBytes - m_CircularBufferReadPositon)
+                              ? circularBufferCapturePosition + (circularBufferBytes - m_CircularBufferReadPositon)
                               : circularBufferCapturePosition - m_CircularBufferReadPositon));
 
-            circularBufferBytesAvailableForReading -= (circularBufferBytesAvailableForReading % (sizeBytes / NOTIFICATIONS));
+#if FORCE_SINGLE_NOTIFICATION_EVENT
+            circularBufferBytesAvailableForReading -= (circularBufferBytesAvailableForReading % notifyChunk);
+#else
+            if (eventIndex >= 0)
+            {
+                //circularBufferBytesAvailableForReading -= (circularBufferBytesAvailableForReading % notifyChunk);
+                //#if DEBUG
+                //                Console.WriteLine("[2] " + circularBufferBytesAvailableForReading);
+                //#endif
 
-            int circularBufferBytesAvailableForCapturing = sizeBytes - circularBufferBytesAvailableForReading;
+                circularBufferBytesAvailableForReading = notifyChunk;
+            }
+            else
+            {
+#if DEBUG
+                Console.WriteLine("m_CircularBufferReadPositon: " + m_CircularBufferReadPositon);
+                Console.WriteLine("circularBufferBytesAvailableForReading; " + circularBufferBytesAvailableForReading);
+#endif
+            }
+#endif
 
             if (circularBufferBytesAvailableForReading <= 0)
             {
                 //Console.WriteLine(string.Format("circularBufferTransferData: no more bytes to fetch {0}", circularBufferBytesAvailableForReading));
                 return circularBufferBytesAvailableForReading;
             }
+
+
+            int circularBufferBytesAvailableForCapturing = circularBufferBytes - circularBufferBytesAvailableForReading;
+
+
+            DebugFix.Assert(circularBufferBytesAvailableForReading <= circularBufferBytes);
 
             //int toRead = readPosition - m_CircularBufferReadPositon;
             //if (toRead < 0)
@@ -642,6 +760,24 @@ Caps
             //    continue;
             //}
 
+#if !FORCE_SINGLE_NOTIFICATION_EVENT
+            if (eventIndex >= 0)
+            {
+                DebugFix.Assert(circularBufferBytesAvailableForReading == notifyChunk);
+
+                int pos = eventIndex * notifyChunk;
+
+                //DebugFix.Assert(pos == m_CircularBufferReadPositon);
+                if (m_CircularBufferReadPositon != pos)
+                {
+#if DEBUG
+                    Console.WriteLine("READ POS ADJUST: " + m_CircularBufferReadPositon + " != " + pos);
+#endif
+                    m_CircularBufferReadPositon = pos;
+                }
+            }
+#endif
+
 #if USE_SHARPDX
             if (incomingPcmData == null)
             {
@@ -653,33 +789,40 @@ Caps
                 Console.WriteLine("incomingPcmData.resize");
                 Array.Resize(ref incomingPcmData, circularBufferBytesAvailableForReading);
             }
+
+            DebugFix.Assert(circularBufferBytesAvailableForReading <= incomingPcmData.Length);
+
+
             m_CircularBuffer.Read(incomingPcmData, 0, circularBufferBytesAvailableForReading, m_CircularBufferReadPositon, LockFlags.None);
 
-            //byte[] incomingPcmData = SharpDX_IntermediaryTransferBuffer;
-#else
-            byte[] incomingPcmData =
-                (byte[])
-                m_CircularBuffer.Read(m_CircularBufferReadPositon, typeof(byte),
-                LockFlag.None,
-                circularBufferBytesAvailableForReading);
+#else //  !USE_SHARPDX
+
+            byte[] incomingPcmData = (byte[]) m_CircularBuffer.Read(m_CircularBufferReadPositon, typeof(byte), LockFlag.None, circularBufferBytesAvailableForReading);
+
+            DebugFix.Assert(circularBufferBytesAvailableForReading == incomingPcmData.Length);
 #endif
 
-            /*
-             * 
-    if (m_CircularBuffer != null && m_CircularBuffer.Capturing)
-    {
-        int capturePosition;
-        int readPosition;
-        m_CircularBuffer.GetCurrentPosition(out capturePosition, out readPosition);
 
-        return
-            RecordingPCMFormat.ConvertBytesToTime(m_TotalRecordedBytes + capturePosition -
-                                                    m_CircularBufferReadPositon);
-    }
-             */
-            //DebugFix.Assert(circularBufferBytesAvailableForReading == incomingPcmData.Length);
+            //if (m_CircularBuffer != null && m_CircularBuffer.Capturing)
+            //{
+            //    int capturePosition;
+            //    int readPosition;
+            //    m_CircularBuffer.GetCurrentPosition(out capturePosition, out readPosition);
 
-            if (m_TotalRecordedBytes >= (ulong.MaxValue - (ulong)incomingPcmData.Length))
+            //    return
+            //        RecordingPCMFormat.ConvertBytesToTime(m_TotalRecordedBytes + capturePosition -
+            //                                                m_CircularBufferReadPositon);
+            //}
+
+            int length = circularBufferBytesAvailableForReading;
+
+            DebugFix.Assert(length <= incomingPcmData.Length);
+            if (length > incomingPcmData.Length)
+            {
+                length = incomingPcmData.Length;
+            }
+
+            if (m_TotalRecordedBytes >= (ulong.MaxValue - (ulong)length))
             {
 #if DEBUG
                 Debugger.Break();
@@ -693,26 +836,26 @@ Caps
             }
             else
             {
-                m_TotalRecordedBytes += (ulong)incomingPcmData.Length;
-            }
-
-            m_CircularBufferReadPositon += incomingPcmData.Length;
-            m_CircularBufferReadPositon %= sizeBytes;
-
-            if (CurrentState == State.Recording)
-            {
-                if (m_RecordingFileWriter == null)
+                if (CurrentState == State.Recording)
                 {
-                    //FileInfo fi = new FileInfo(m_RecordedFilePath);
-                    //fi.FullName
-                    m_RecordingFileWriter = new BinaryWriter(File.OpenWrite(m_RecordedFilePath));
+                    if (m_RecordingFileWriter == null)
+                    {
+                        //FileInfo fi = new FileInfo(m_RecordedFilePath);
+                        //fi.FullName
+                        m_RecordingFileWriter = new BinaryWriter(File.OpenWrite(m_RecordedFilePath));
+                    }
+
+                    m_RecordingFileWriter.BaseStream.Position = (long)m_TotalRecordedBytes +
+                                                                (long)m_RecordedFileRiffHeaderSize;
+                    // m_RecordingFileWriter.BaseStream.Length;
+                    m_RecordingFileWriter.Write(incomingPcmData, 0, length);
                 }
 
-                m_RecordingFileWriter.BaseStream.Position = (long)m_TotalRecordedBytes +
-                                                            (long)m_RecordedFileRiffHeaderSize;
-                // m_RecordingFileWriter.BaseStream.Length;
-                m_RecordingFileWriter.Write(incomingPcmData, 0, incomingPcmData.Length);
+                m_TotalRecordedBytes += (ulong)length;
             }
+
+            m_CircularBufferReadPositon += length;
+            m_CircularBufferReadPositon %= circularBufferBytes;
 
             PcmDataBufferAvailableHandler del = PcmDataBufferAvailable;
             if (del != null)
@@ -725,7 +868,7 @@ Caps
                 //}
                 //Array.Copy(incomingPcmData, m_PcmDataBuffer, m_PcmDataBuffer.Length);
 
-                int min = Math.Min(m_PcmDataBufferLength, incomingPcmData.Length);
+                int min = Math.Min(m_PcmDataBufferLength, length);
 
                 //Array.Copy(incomingPcmData, m_PcmDataBuffer, min);
                 Buffer.BlockCopy(incomingPcmData, 0,
@@ -737,7 +880,7 @@ Caps
                 del(this, m_PcmDataBufferAvailableEventArgs);
             }
 
-            return circularBufferBytesAvailableForReading;
+            return length;
         }
 
         public void StopRecording()
@@ -776,8 +919,17 @@ Caps
                 Monitor.Exit(LOCK);
             }
 
+#if FORCE_SINGLE_NOTIFICATION_EVENT
             m_CircularBufferNotificationEvent.Set();
             m_CircularBufferNotificationEvent.Close();
+#else
+            for (int i = 0; i < NOTIFICATIONS; i++)
+            {
+                m_CircularBufferNotificationEvents[i].Set();
+                m_CircularBufferNotificationEvents[i].Close();
+            }
+#endif
+
 
             //lock (LOCK_THREAD_INSTANCE)
             //{
@@ -829,16 +981,27 @@ Caps
             {
                 try
                 {
-                    remainingBytesToRead = circularBufferTransferData();
+                    remainingBytesToRead = circularBufferTransferData(
+#if !FORCE_SINGLE_NOTIFICATION_EVENT
+-1
+#endif
+);
                 }
                 catch (Exception ex)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     Console.WriteLine(ex.Message);
                     Console.WriteLine(ex.StackTrace);
                     break;
                 }
-
-                //Console.WriteLine(string.Format("circularBufferTransferData: fetched remaining bytes: {0}", remainingBytesToRead));
+#if DEBUG
+                if (remainingBytesToRead > 0)
+                {
+                    Console.WriteLine(string.Format("REMAINING buffer bytes (STOP RECORD): {0}", remainingBytesToRead));
+                }
+#endif
             } while (remainingBytesToRead > 0);
 
             if (m_RecordingFileWriter != null)
