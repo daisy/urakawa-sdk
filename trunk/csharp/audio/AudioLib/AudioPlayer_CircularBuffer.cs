@@ -261,14 +261,14 @@ Capabilities
 
                 m_SoundTouch_ByteBuffer_Stream.Position = 0;
 
-                if (totalBytesReceivedFromSoundTouch > 0)
+                if (totalBytesReceivedFromSoundTouch > 0
+                    && totalBytesReceivedFromSoundTouch <= circularBufferBytesAvailableForWriting)
                 {
 #if DEBUG
                     //double ratio = bytesReadFromAudioStream / (double)totalBytesReceivedFromSoundTouch;
                     //Console.WriteLine("FAST: " + ratio + " -- " + m_FastPlayFactor);
 
                     DebugFix.Assert(totalBytesReceivedFromSoundTouch <= circularBufferLength);
-                    DebugFix.Assert(totalBytesReceivedFromSoundTouch <= circularBufferBytesAvailableForWriting);
                     DebugFix.Assert(totalBytesReceivedFromSoundTouch <= bytesReadFromAudioStream);
 #endif // DEBUG
 
@@ -339,7 +339,7 @@ Capabilities
                 //    m_CircularBufferWritePosition -= m_CircularBuffer.Caps.BufferBytes;
                 //}
 
-                return circularBufferBytesAvailableForWriting;
+                return bytesToTransferToCircularBuffer;
             }
 
             //int afterWriteCursor = m_CircularBuffer.Caps.BufferBytes - m_CircularBufferWritePosition;
@@ -750,23 +750,24 @@ Caps
 #endif //DEBUG
                     if (min >= m_CurrentAudioPCMFormat.BlockAlign)
                     {
+
+#if FETCH_PCM_FROM_CIRCULAR_BUFFER
+
 #if USE_SHARPDX
                         if (SharpDX_IntermediaryTransferBuffer != null)
                         {
                             Array.Copy(SharpDX_IntermediaryTransferBuffer, m_PcmDataBuffer, Math.Min(m_PcmDataBuffer.Length, SharpDX_IntermediaryTransferBuffer.Length));
-                            m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
-                            del(this, m_PcmDataBufferAvailableEventArgs);
                         }
 #else
-
-#if FETCH_PCM_FROM_CIRCULAR_BUFFER
                     byte[] array = (byte[])m_CircularBuffer.Read(
                         circularBufferPlayPosition, typeof(byte), LockFlag.None, min);
                     //Array.Copy(array, m_PcmDataBuffer, min);
                     Buffer.BlockCopy(array, 0,
                             m_PcmDataBuffer, 0,
                             min);
-#else
+#endif
+#else // !FETCH_PCM_FROM_CIRCULAR_BUFFER
+
                         long pos = m_CurrentAudioStream.Position;
 
                         m_CurrentAudioStream.Position = m_CurrentBytePosition;
@@ -775,14 +776,14 @@ Caps
 
                         m_CurrentAudioStream.Position = pos;
 #endif
-                        // FETCH_PCM_FROM_CIRCULAR_BUFFER
+
 
                         m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
                         m_PcmDataBufferAvailableEventArgs.PcmDataBufferLength = min;
                         del(this, m_PcmDataBufferAvailableEventArgs);
-#endif
                     }
                 }
+
                 //var del_ = PcmDataBufferAvailable;
                 //if (del_ != null
                 //&& m_PcmDataBuffer.Length <= circularBufferBytesAvailableForPlaying)
