@@ -44,19 +44,19 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\ReleaseNET4\</OutputPath>
-    <DefineConstants>TRACE;_USE_SLIMDX_;NET40;USE_SOUNDTOUCH</DefineConstants>
+    <DefineConstants>TRACE;USE_SHARPDX;NET40;USE_SOUNDTOUCH</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.DirectX.DirectSound, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+    <Reference Include="Microsoft.DirectX.DirectSound">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>..\SharpDX.DirectSound\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.DirectSound, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SharpDX.DirectSound">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SharpDX.DirectSound\SharpDX.DirectSound.dll</HintPath>
     </Reference>
