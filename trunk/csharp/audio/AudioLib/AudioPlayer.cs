@@ -456,7 +456,7 @@ Disposed
 
 
 #if USE_SOUNDTOUCH
-            if (pcmInfo.NumberOfChannels > 1)
+            if (false && pcmInfo.NumberOfChannels > 1)
             {
                 m_UseSoundTouch = false; //TODO: stereo all scrambled with SoundTouch !!
             }

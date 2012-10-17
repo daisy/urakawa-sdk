@@ -56,7 +56,10 @@ namespace AudioLib
 
 #if USE_SOUNDTOUCH
         private byte[] m_SoundTouch_ByteBuffer = null;
+
+#if !USE_SHARPDX
         private MemoryStream m_SoundTouch_ByteBuffer_Stream = null;
+#endif
 
         private TSampleType[] m_SoundTouch_SampleBuffer = null;
 #endif //USE_SOUNDTOUCH
@@ -111,21 +114,25 @@ Capabilities
 
             if (UseSoundTouch && NotNormalPlayFactor())
             {
-                int nBytesPerSample = m_CurrentAudioPCMFormat.BitDepth / 8; // 16bits => 2 bytes per sample
+                int sampleSizePerChannel = m_CurrentAudioPCMFormat.BitDepth / 8;
+                // == m_CurrentAudioPCMFormat.BlockAlign / m_CurrentAudioPCMFormat.NumberOfChannels;
 
 #if DEBUG
                 int sizeOfTypeInBytes = Marshal.SizeOf(typeof(TSampleType));
-                DebugFix.Assert(sizeOfTypeInBytes == nBytesPerSample);
+                DebugFix.Assert(sizeOfTypeInBytes == sampleSizePerChannel);
 
                 sizeOfTypeInBytes = sizeof(TSampleType);
-                DebugFix.Assert(sizeOfTypeInBytes == nBytesPerSample);
+                DebugFix.Assert(sizeOfTypeInBytes == sampleSizePerChannel);
 #endif // DEBUG
 
                 if (m_SoundTouch_ByteBuffer == null)
                 {
                     Console.WriteLine("ALLOCATING m_SoundTouch_ByteBuffer");
                     m_SoundTouch_ByteBuffer = new byte[bytesToTransferToCircularBuffer];
-                    m_SoundTouch_ByteBuffer_Stream = new MemoryStream(m_SoundTouch_ByteBuffer);
+
+#if !USE_SHARPDX
+        m_SoundTouch_ByteBuffer_Stream = new MemoryStream(m_SoundTouch_ByteBuffer);
+#endif
                 }
                 else if (m_SoundTouch_ByteBuffer.Length < bytesToTransferToCircularBuffer)
                 {
@@ -135,36 +142,33 @@ Capabilities
                     //m_SoundTouch_ByteBuffer_Stream.Capacity = nbytes;
                     //m_SoundTouch_ByteBuffer_Stream.SetLength(nbytes);
 
-                    m_SoundTouch_ByteBuffer_Stream = new MemoryStream(m_SoundTouch_ByteBuffer);
+#if !USE_SHARPDX
+        m_SoundTouch_ByteBuffer_Stream = new MemoryStream(m_SoundTouch_ByteBuffer);
+#endif
                 }
 
-                int bytesToReadFromAudioStream = bytesToTransferToCircularBuffer;
-                int totalBytesReceivedFromSoundTouch = 0;
+                //int bytesToReadFromAudioStream = bytesToTransferToCircularBuffer;
+                //DebugFix.Assert(bytesToReadFromAudioStream <= bytesToTransferToCircularBuffer);
 
-            fetchMore:
+                int bytesReadFromAudioStream = m_CurrentAudioStream.Read(m_SoundTouch_ByteBuffer, 0, bytesToTransferToCircularBuffer);
+                DebugFix.Assert(bytesReadFromAudioStream == bytesToTransferToCircularBuffer);
 
-                DebugFix.Assert(bytesToReadFromAudioStream <= bytesToTransferToCircularBuffer);
-
-                int bytesReadFromAudioStream = m_CurrentAudioStream.Read(m_SoundTouch_ByteBuffer, 0, bytesToReadFromAudioStream);
-                DebugFix.Assert(bytesReadFromAudioStream == bytesToReadFromAudioStream);
-
-                int nSamplesInBuffer = (bytesReadFromAudioStream * 8) / m_CurrentAudioPCMFormat.BitDepth; // 16
+                int soundTouch_SampleBufferLength = (bytesReadFromAudioStream * 8) / m_CurrentAudioPCMFormat.BitDepth; // 16
 
 
                 if (m_SoundTouch_SampleBuffer == null)
                 {
                     Console.WriteLine("ALLOCATING m_SoundTouch_SampleBuffer");
-                    m_SoundTouch_SampleBuffer = new TSampleType[nSamplesInBuffer];
+                    m_SoundTouch_SampleBuffer = new TSampleType[soundTouch_SampleBufferLength];
                 }
-                else if (m_SoundTouch_SampleBuffer.Length < nSamplesInBuffer)
+                else if (m_SoundTouch_SampleBuffer.Length < soundTouch_SampleBufferLength)
                 {
                     Console.WriteLine("m_SoundTouch_SampleBuffer.resize");
-                    Array.Resize(ref m_SoundTouch_SampleBuffer, nSamplesInBuffer);
+                    Array.Resize(ref m_SoundTouch_SampleBuffer, soundTouch_SampleBufferLength);
                 }
 
                 int sampleBufferIndex = 0;
-                int byteStep = nBytesPerSample * m_CurrentAudioPCMFormat.NumberOfChannels;
-                for (int i = 0; i < bytesReadFromAudioStream; i += byteStep)
+                for (int i = 0; i < bytesReadFromAudioStream; i += m_CurrentAudioPCMFormat.BlockAlign)
                 {
                     for (int channel = 0; channel < m_CurrentAudioPCMFormat.NumberOfChannels; channel++)
                     {
@@ -196,70 +200,170 @@ Capabilities
                     }
                 }
 
-                int soundTouchSampleBufferLength = (int)Math.Round(nSamplesInBuffer / (double)m_CurrentAudioPCMFormat.NumberOfChannels);
+                int soundTouch_SampleBufferLength_Channels = soundTouch_SampleBufferLength /
+                                                             m_CurrentAudioPCMFormat.NumberOfChannels;
 
+                int soundTouch_SampleBufferLength_Channels_FULL = m_SoundTouch_SampleBuffer.Length /
+                                                             m_CurrentAudioPCMFormat.NumberOfChannels;
 
-                m_SoundTouch.Flush();
-
-                m_SoundTouch.PutSamples((ArrayPtr<TSampleType>)m_SoundTouch_SampleBuffer, soundTouchSampleBufferLength);
-
+                //m_SoundTouch.Flush();
 
                 int samplesReceived = -1;
+
+                //while (
+                //    (samplesReceived = m_SoundTouch.ReceiveSamples(
+                //        (ArrayPtr<TSampleType>)m_SoundTouch_SampleBuffer,
+                //        soundTouch_SampleBufferLength_Channels_FULL
+                //        )) > 0)
+                //{
+                //    // Ignore.
+                //    bool debug = true;
+                //}
+
+                m_SoundTouch.PutSamples((ArrayPtr<TSampleType>)m_SoundTouch_SampleBuffer,
+                                        soundTouch_SampleBufferLength_Channels);
+
+                int totalBytesReceivedFromSoundTouch = 0;
                 while (
                     (samplesReceived = m_SoundTouch.ReceiveSamples(
-                    (ArrayPtr<TSampleType>)m_SoundTouch_SampleBuffer,
-                    soundTouchSampleBufferLength)) > 0)
+                        (ArrayPtr<TSampleType>)m_SoundTouch_SampleBuffer,
+                        soundTouch_SampleBufferLength_Channels_FULL
+                        )) > 0)
                 {
-                    int actualSamples = samplesReceived * m_CurrentAudioPCMFormat.NumberOfChannels;
-                    int bytesReceivedFromSoundTouch = nBytesPerSample * actualSamples;
+                    samplesReceived *= m_CurrentAudioPCMFormat.NumberOfChannels;
+
+                    int bytesReceivedFromSoundTouch = samplesReceived * sampleSizePerChannel;
 
                     int predictedTotal = totalBytesReceivedFromSoundTouch + bytesReceivedFromSoundTouch;
-                    if (predictedTotal > bytesReadFromAudioStream)
+                    if (//predictedTotal > bytesReadFromAudioStream ||
+                        predictedTotal > m_SoundTouch_ByteBuffer.Length)
                     {
 #if DEBUG
                         // The breakpoint should never hit,
                         // because the output audio data is smaller than the source
                         // due to the time stretching making the playback faster.
                         // (the ratio is about the same as m_FastPlayFactor)
-                        DebugFix.Assert(m_FastPlayFactor < 1);
+
+                        //DebugFix.Assert(m_FastPlayFactor < 1);
+
                         if (m_FastPlayFactor >= 1)
                         {
                             Debugger.Break();
                         }
-#endif // DEBUG
+#endif
                         break;
                     }
 
-                    if (BitConverter.IsLittleEndian)
+                    //unsafe
+                    //{
+                    //    fixed (short* pShorts = m_SoundTouch_SampleBuffer)
+                    //        Marshal.Copy((IntPtr)pShorts, 0, m_SoundTouch_ByteBuffer, actualSamples);
+                    //}
+
+                    if (false)
                     {
-                        Buffer.BlockCopy(m_SoundTouch_SampleBuffer, 0,
-                        m_SoundTouch_ByteBuffer, totalBytesReceivedFromSoundTouch,
-                        bytesReceivedFromSoundTouch);
-
-
-                        //unsafe
-                        //{
-                        //    fixed (short* pShorts = m_SoundTouch_SampleBuffer)
-                        //        Marshal.Copy((IntPtr)pShorts, 0, m_SoundTouch_ByteBuffer, actualSamples);
-                        //}
+                        // TODO: check little / big endian
+                        Buffer.BlockCopy(m_SoundTouch_SampleBuffer,
+                                         0,
+                                         m_SoundTouch_ByteBuffer,
+                                         totalBytesReceivedFromSoundTouch,
+                                         bytesReceivedFromSoundTouch);
                     }
                     else
                     {
-#if DEBUG
-                        Debugger.Break();
-#endif // DEBUG
+                        //try
+                        //{
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    Debugger.Break();
+                        //}
+
+                        int checkTotalBytes = 0;
+
+                        for (int s = 0; s < samplesReceived; s += m_CurrentAudioPCMFormat.NumberOfChannels)
+                        {
+                            if (false)
+                            {
+                                int sampleSizePerChannels = sampleSizePerChannel * m_CurrentAudioPCMFormat.NumberOfChannels;
+
+                                checkTotalBytes += sampleSizePerChannels;
+
+                                // TODO: check little / big endian
+                                Buffer.BlockCopy(m_SoundTouch_SampleBuffer,
+                                                 s * sampleSizePerChannel,
+                                                 m_SoundTouch_ByteBuffer,
+                                                 totalBytesReceivedFromSoundTouch
+                                                 + s * sampleSizePerChannel,
+                                                 sampleSizePerChannels);
+                            }
+                            else
+                            {
+                                for (int channel = 0; channel < m_CurrentAudioPCMFormat.NumberOfChannels; channel++)
+                                {
+                                    if (true)
+                                    {
+                                        checkTotalBytes += sampleSizePerChannel;
+
+                                        // TODO: check little / big endian
+                                        Buffer.BlockCopy(m_SoundTouch_SampleBuffer,
+
+                                                         // TODO: weird! only first sample (left channel) is correct :(
+                                                         //(s + channel) * sampleSizePerChannel,
+                                                         (s + 0) * sampleSizePerChannel,
+
+                                                         m_SoundTouch_ByteBuffer,
+                                                         totalBytesReceivedFromSoundTouch
+                                                         + (s + channel) * sampleSizePerChannel,
+                                                         sampleSizePerChannel);
+                                    }
+                                    else
+                                    {
+                                        TSampleType sample = m_SoundTouch_SampleBuffer[s + channel];
+
+                                        byte[] sampleBytes;
+                                        if (BitConverter.IsLittleEndian)
+                                        {
+                                            sampleBytes = BitConverter.GetBytes(sample);
+                                        }
+                                        else
+                                        {
+                                            sampleBytes =
+                                                BitConverter.GetBytes(
+                                                    (short)((sample & 0xFF) << 8 | (sample & 0xFF00) >> 8));
+                                        }
+
+                                        DebugFix.Assert(sampleSizePerChannel == sampleBytes.Length);
+
+                                        checkTotalBytes += sampleSizePerChannel;
+
+                                        Buffer.BlockCopy(sampleBytes,
+                                                         0,
+                                                         m_SoundTouch_ByteBuffer,
+                                                         totalBytesReceivedFromSoundTouch
+                                                         + (s + channel) * sampleSizePerChannel,
+                                                         sampleSizePerChannel);
+                                    }
+                                }
+                            }
+                        }
+
+                        DebugFix.Assert(checkTotalBytes == bytesReceivedFromSoundTouch);
                     }
 
                     totalBytesReceivedFromSoundTouch += bytesReceivedFromSoundTouch;
 
-                    if (totalBytesReceivedFromSoundTouch >= bytesReadFromAudioStream
-                        || totalBytesReceivedFromSoundTouch >= circularBufferBytesAvailableForWriting)
+                    if (//totalBytesReceivedFromSoundTouch >= bytesReadFromAudioStream ||
+                        totalBytesReceivedFromSoundTouch >= circularBufferBytesAvailableForWriting)
                     {
                         break;
                     }
                 }
 
-                m_SoundTouch_ByteBuffer_Stream.Position = 0;
+
+#if !USE_SHARPDX
+        m_SoundTouch_ByteBuffer_Stream.Position = 0;
+#endif
 
                 if (totalBytesReceivedFromSoundTouch > 0
                     && totalBytesReceivedFromSoundTouch <= circularBufferBytesAvailableForWriting)
@@ -269,7 +373,7 @@ Capabilities
                     //Console.WriteLine("FAST: " + ratio + " -- " + m_FastPlayFactor);
 
                     DebugFix.Assert(totalBytesReceivedFromSoundTouch <= circularBufferLength);
-                    DebugFix.Assert(totalBytesReceivedFromSoundTouch <= bytesReadFromAudioStream);
+                    //DebugFix.Assert(totalBytesReceivedFromSoundTouch <= bytesReadFromAudioStream);
 #endif // DEBUG
 
 #if USE_SHARPDX
@@ -281,10 +385,13 @@ Capabilities
                         m_SoundTouch_ByteBuffer,
                         0,
                         totalBytesReceivedFromSoundTouch,
-                        m_CircularBufferWritePosition, LockFlags.None);
+                        m_CircularBufferWritePosition,
+                        LockFlags.None);
 #else
-                    m_CircularBuffer.Write(m_CircularBufferWritePosition, m_SoundTouch_ByteBuffer_Stream,
-                                           totalBytesReceivedFromSoundTouch, LockFlag.None);
+                    m_CircularBuffer.Write(m_CircularBufferWritePosition,
+                            m_SoundTouch_ByteBuffer_Stream,
+                                           totalBytesReceivedFromSoundTouch,
+                    LockFlag.None);
 #endif
 
                     m_CircularBufferWritePosition += totalBytesReceivedFromSoundTouch;
@@ -296,17 +403,16 @@ Capabilities
                     //}
                 }
 
-#if DEBUG
-                if (
-#if USE_SOUNDTOUCH
-!UseSoundTouch ||
-#endif
-                    //USE_SOUNDTOUCH
-                    !NotNormalPlayFactor())
-                {
-                    DebugFix.Assert(totalBytesReceivedFromSoundTouch == bytesToTransferToCircularBuffer);
-                }
-#endif//DEBUG
+                //#if DEBUG
+                //                if (
+                //#if USE_SOUNDTOUCH
+                //!UseSoundTouch ||
+                //#endif
+                //                    !NotNormalPlayFactor())
+                //                {
+                //                    DebugFix.Assert(totalBytesReceivedFromSoundTouch == bytesToTransferToCircularBuffer);
+                //                }
+                //#endif//DEBUG
                 return totalBytesReceivedFromSoundTouch;
             }
             else
@@ -891,7 +997,7 @@ Caps
                     bool skip = circularBufferBytesAvailableForWriting <
                         (int)Math.Round(circularBufferLength * ratio);
 
-                    if (skip)
+                    if (false && skip)
                     {
                         totalWriteSkips++;
                     }
