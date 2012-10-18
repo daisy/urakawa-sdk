@@ -168,18 +168,20 @@ Capabilities
                 }
 
                 int sampleBufferIndex = 0;
-                for (int i = 0; i < bytesReadFromAudioStream; i += m_CurrentAudioPCMFormat.BlockAlign)
+                for (int i = 0; i < bytesReadFromAudioStream; ) //i += m_CurrentAudioPCMFormat.BlockAlign)
                 {
+                    //short sampleLeft = 0;
+                    //short sampleRight = 0;
+
                     for (int channel = 0; channel < m_CurrentAudioPCMFormat.NumberOfChannels; channel++)
                     {
-                        byte byte1 = m_SoundTouch_ByteBuffer[i + channel];
-                        byte byte2 = m_SoundTouch_ByteBuffer[i + channel + 1];
+                        byte byte1 = m_SoundTouch_ByteBuffer[i++];
+                        byte byte2 = m_SoundTouch_ByteBuffer[i++];
+
                         short sample =
                             BitConverter.IsLittleEndian
                             ? (short)(byte1 | (byte2 << 8))
                             : (short)((byte1 << 8) | byte2);
-                        m_SoundTouch_SampleBuffer[sampleBufferIndex] = sample;
-
 
 #if DEBUG
                         //// Little Indian
@@ -190,15 +192,29 @@ Capabilities
                         //short s3 = (short)((byte1 << 8) | byte2);
                         //short s4 = (short)(byte1 * 256 + byte2);
 
-                        short checkedSample = BitConverter.ToInt16(m_SoundTouch_ByteBuffer, i + channel);
+                        short checkedSample = BitConverter.ToInt16(m_SoundTouch_ByteBuffer, i - 2);
                         DebugFix.Assert(checkedSample == sample);
 
                         checkedSample = (short)(byte1 + byte2 * 256);
                         DebugFix.Assert(checkedSample == sample);
 #endif //DEBUG
-                        sampleBufferIndex++;
+
+                        //if (channel == 0)
+                        //{
+                        //    sampleLeft = sample;
+                        //}
+                        //else
+                        //{
+                        //    sampleRight = sample;
+                        //}
+
+                        m_SoundTouch_SampleBuffer[sampleBufferIndex++] = sample;
                     }
+
+                    //m_SoundTouch_SampleBuffer[sampleBufferIndex - 2] = sampleRight; // sampleLeft;
+                    //m_SoundTouch_SampleBuffer[sampleBufferIndex - 1] = 0; // sampleRight;
                 }
+
 
                 int soundTouch_SampleBufferLength_Channels = soundTouch_SampleBufferLength /
                                                              m_CurrentAudioPCMFormat.NumberOfChannels;
@@ -224,6 +240,9 @@ Capabilities
                                         soundTouch_SampleBufferLength_Channels);
 
                 int totalBytesReceivedFromSoundTouch = 0;
+
+                //totalBytesReceivedFromSoundTouch = soundTouch_SampleBufferLength * sampleSizePerChannel;
+
                 while (
                     (samplesReceived = m_SoundTouch.ReceiveSamples(
                         (ArrayPtr<TSampleType>)m_SoundTouch_SampleBuffer,
@@ -305,17 +324,17 @@ Capabilities
                                     {
                                         checkTotalBytes += sampleSizePerChannel;
 
+                                        sampleBufferIndex = (s + channel);
+                                        //TSampleType sample = m_SoundTouch_SampleBuffer[sampleBufferIndex];
+
+                                        int byteIndex = sampleBufferIndex * sampleSizePerChannel;
+
                                         // TODO: check little / big endian
                                         Buffer.BlockCopy(m_SoundTouch_SampleBuffer,
-
-                                                         // TODO: weird! only first sample (left channel) is correct :(
-                                                         //(s + channel) * sampleSizePerChannel,
-                                                         (s + 0) * sampleSizePerChannel,
-
-                                                         m_SoundTouch_ByteBuffer,
-                                                         totalBytesReceivedFromSoundTouch
-                                                         + (s + channel) * sampleSizePerChannel,
-                                                         sampleSizePerChannel);
+                                            byteIndex,
+                                            m_SoundTouch_ByteBuffer,
+                                            totalBytesReceivedFromSoundTouch + byteIndex,
+                                            sampleSizePerChannel);
                                     }
                                     else
                                     {
@@ -531,8 +550,9 @@ Capabilities
             {
                 m_SoundTouch = new SoundTouch<TSampleType, TLongSampleType>();
 
-                m_SoundTouch.SetSetting(SettingId.UseAntiAliasFilter, 0);
+                m_SoundTouch.SetSetting(SettingId.UseAntiAliasFilter, 1);
 
+                // Speech optimised
                 m_SoundTouch.SetSetting(SettingId.SequenceDurationMs, 40);
                 m_SoundTouch.SetSetting(SettingId.SeekwindowDurationMs, 15);
                 m_SoundTouch.SetSetting(SettingId.OverlapDurationMs, 8);

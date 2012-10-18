@@ -164,8 +164,10 @@ namespace AudioLib
                 if (m_SoundTouch != null)
                 {
                     m_SoundTouch.SetTempo(m_FastPlayFactor);
-                    //m_SoundTouch.SetPitchSemiTones(xxx);
-                    //m_SoundTouch.SetRateChange(xxx);
+                    //m_SoundTouch.SetTempoChange(m_FastPlayFactor * 100);
+                    
+                    m_SoundTouch.SetPitchSemiTones(0);
+                    m_SoundTouch.SetRateChange(0);
                 }
 
                 if (!UseSoundTouch)
