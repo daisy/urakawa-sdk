@@ -59,7 +59,7 @@ namespace SoundTouch
         private bool _useAliasFilter;
 
         protected RateTransposer()
-            : this(new FifoSampleBuffer<TSampleType>())
+            : this(new FifoSampleBuffer<TSampleType>(2))
         {
         }
 
@@ -70,8 +70,8 @@ namespace SoundTouch
             _useAliasFilter = true;
             Rate = 0f;
 
-            _storeBuffer = new FifoSampleBuffer<TSampleType>();
-            _tempBuffer = new FifoSampleBuffer<TSampleType>();
+            _storeBuffer = new FifoSampleBuffer<TSampleType>(2);
+            _tempBuffer = new FifoSampleBuffer<TSampleType>(2);
             _outputBuffer = outputBuffer;
 
             _antiAliasFilter = new AntiAliasFilter<TSampleType>(32);
