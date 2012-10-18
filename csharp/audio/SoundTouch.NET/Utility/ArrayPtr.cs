@@ -99,9 +99,7 @@ namespace SoundTouch.Utility
         /// <param name="byteCount">The amount of bytes to copy.</param>
         public static void CopyBytes(ArrayPtr<T> to, ArrayPtr<T> from, int byteCount)
         {
-            Buffer.BlockCopy(from._buffer, from._index * SIZEOF_SAMPLETYPE,
-                to._buffer, to._index * SIZEOF_SAMPLETYPE,
-                byteCount);
+            Buffer.BlockCopy(from._buffer, from._index * SIZEOF_SAMPLETYPE, to._buffer, to._index * Marshal.SizeOf(typeof(T)), byteCount);
         }
 
         /// <summary>

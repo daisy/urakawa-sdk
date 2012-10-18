@@ -152,7 +152,7 @@ namespace SoundTouch
             Xcorr = new float[WindowLen];
 
             // allocate processing buffer
-            Buffer = new FifoSampleBuffer<TSampleType>(2);
+            Buffer = new FifoSampleBuffer<TSampleType>();
             // we do processing in mono mode
             Buffer.SetChannels(1);
             Buffer.Clear();
