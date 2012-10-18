@@ -67,7 +67,7 @@ namespace SoundTouch
         /// </summary>
         /// <param name="numChannels">Number of channels, 1=mono, 2=stereo.
         /// Default is stereo.</param>
-        public FifoSampleBuffer(int numChannels )
+        public FifoSampleBuffer(int numChannels = 2)
         {
             Debug.Assert(numChannels > 0);
 

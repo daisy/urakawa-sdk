@@ -90,13 +90,13 @@ namespace SoundTouch
         private float _tempo;
 
         protected TimeStretch()
-            : this(new FifoSampleBuffer<TSampleType>(2))
+            : this(new FifoSampleBuffer<TSampleType>())
         {
         }
 
         private TimeStretch(FifoSampleBuffer<TSampleType> outputBuffer)  : base(outputBuffer)
         {
-            _inputBuffer = new FifoSampleBuffer<TSampleType>(2);
+            _inputBuffer = new FifoSampleBuffer<TSampleType>();
             _outputBuffer = outputBuffer;
 
             _quickSeek = false;
@@ -152,7 +152,7 @@ namespace SoundTouch
         /// <param name="seekWindowDuration">seeking window length for scanning
         /// the best overlapping position</param>
         /// <param name="overlapDuration">overlapping length</param>
-        public void SetParameters(int sampleRate, int sequenceDuration , int seekWindowDuration , int overlapDuration  )
+        public void SetParameters(int sampleRate, int sequenceDuration = -1, int seekWindowDuration = -1, int overlapDuration = -1)
         {
             // accept only positive parameter values - if zero or negative, use old values instead
             if (sampleRate > 0) _sampleRate = sampleRate;
