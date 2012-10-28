@@ -40,7 +40,9 @@ namespace urakawa.daisy.import
             {
                 if (!string.IsNullOrEmpty(extData.OriginalRelativePath))
                 {
-                    string relPath = Path.GetFullPath(extData.OriginalRelativePath);
+                    string fullPath = Path.Combine(Path.GetDirectoryName(rootFilePath), extData.OriginalRelativePath);
+                    string relPath = FileDataProvider.NormaliseFullFilePath(fullPath);
+
                     if (!externalFileRelativePaths.Contains(relPath))
                     {
                         externalFileRelativePaths.Add(relPath);
@@ -86,7 +88,8 @@ namespace urakawa.daisy.import
                         && !string.IsNullOrEmpty(xAttr.Value)
                         && !FileDataProvider.isHTTPFile(xAttr.Value))
                     {
-                        string pathFromAttr = Path.GetFullPath(xAttr.Value);
+                        string fullPath = Path.Combine(Path.GetDirectoryName(rootFilePath), xAttr.Value);
+                        string pathFromAttr = FileDataProvider.NormaliseFullFilePath(fullPath);
 
                         if (!externalFileRelativePaths.Contains(pathFromAttr))
                         {
@@ -95,11 +98,12 @@ namespace urakawa.daisy.import
 
                             if (extData != null)
                             {
-                                externalFileRelativePaths.Add(Path.GetFullPath(extData.OriginalRelativePath));
+                                externalFileRelativePaths.Add(pathFromAttr);
                             }
                         }
                     }
                 }
+
                 string innerText = linkNode.InnerText; // includes CDATA sections! (merges "//" javascript comment markers too)
 
                 if (!string.IsNullOrEmpty(innerText))
@@ -159,6 +163,12 @@ namespace urakawa.daisy.import
                 }
                 return efd;
             }
+#if DEBUG
+            else
+            {
+                Debugger.Break();
+            }
+#endif
 
             return null;
         }
@@ -297,8 +307,7 @@ namespace urakawa.daisy.import
 
                 //DirectoryInfo opfParentDir = Directory.GetParent(m_Book_FilePath);
                 //string dirPath = opfParentDir.ToString();
-                string dirPath = Path.GetDirectoryName(m_Book_FilePath);
-                string fullDocPath = Path.Combine(dirPath, docPath);
+                string fullDocPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), docPath);
                 if (!File.Exists(fullDocPath))
                 {
 #if DEBUG
@@ -471,7 +480,7 @@ namespace urakawa.daisy.import
                 string title = null;
 
 
-                if (parseContentDocParts(spineItemProject, xmlDoc, fullDocPath, docPath, DocumentMarkupType.NA))
+                if (parseContentDocParts(fullDocPath, spineItemProject, xmlDoc, docPath, DocumentMarkupType.NA))
                 {
                     return; // user cancel
                 }

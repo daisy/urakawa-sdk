@@ -1077,6 +1077,12 @@ namespace urakawa.daisy.import
                         efd.InitializeWithData(styleSheetPath, relativePath, true);
                     }
                 }
+#if DEBUG
+                else
+                {
+                    Debugger.Break();
+                }
+#endif
             }
         }
     }
