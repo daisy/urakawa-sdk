@@ -338,11 +338,11 @@ namespace urakawa.daisy.import
             parseMetadata(filePath, project, xmlDoc);
 
             if (RequestCancellation) return true;
-            ParseHeadLinks(filePath, project, xmlDoc);
+            parseHeadLinks(filePath, project, xmlDoc);
 
             if (RequestCancellation) return true;
             reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, displayPath));
-            parseContentDocument(project, xmlDoc, null, filePath, null, type);
+            parseContentDocument(filePath, project, xmlDoc, null, null, type);
 
             return false;
         }

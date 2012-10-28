@@ -28,7 +28,7 @@ namespace urakawa.daisy.import
     /// </summary>
     public partial class Daisy3_Import
     {
-        private void ParseHeadLinks(string rootFilePath, Project project, XmlDocument contentDoc)
+        private void parseHeadLinks(string rootFilePath, Project project, XmlDocument contentDoc)
         {
             XmlNode headXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(contentDoc.DocumentElement, true, "head", null);
             if (headXmlNode == null) return;
