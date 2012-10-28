@@ -68,7 +68,7 @@ namespace urakawa.daisy.import
 
                 XmlNode bodyNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(sourceNode, true, @"body", DiagramContentModelHelper.NS_URL_XHTML);
 
-                parseContentDocument(filepath, project, bodyNode, null, filepath, null, DocumentMarkupType.NA);
+                parseContentDocument(project, bodyNode, null, filepath, null, DocumentMarkupType.NA);
 
                 List<TreeNode.Section> outline = presentation.RootNode.GetOrCreateOutline();
 
@@ -115,7 +115,7 @@ namespace urakawa.daisy.import
         //    //string strMultipleWhiteSpacesCollapsedToOneSpace = Regex.Replace(str, @"\s+", " ");
         //}
 
-        protected virtual void parseContentDocument(string book_FilePath, Project project, XmlNode xmlNode, TreeNode parentTreeNode, string filePath, string dtdUniqueResourceId, DocumentMarkupType docMarkupType)
+        protected virtual void parseContentDocument(Project project, XmlNode xmlNode, TreeNode parentTreeNode, string filePath, string dtdUniqueResourceId, DocumentMarkupType docMarkupType)
         {
             Presentation presentation = project.Presentations.Get(0);
 
@@ -136,7 +136,7 @@ namespace urakawa.daisy.import
                         // old DAISY books have no default namespace! :(  (e.g. GH sample books)
                         //DebugFix.Assert(!string.IsNullOrEmpty(xmlDoc.DocumentElement.NamespaceURI));
 
-                        docMarkupType = parseContentDocument_DTD(book_FilePath, project, xmlDoc, parentTreeNode, filePath, out dtdUniqueResourceId);
+                        docMarkupType = parseContentDocument_DTD(project, xmlDoc, parentTreeNode, filePath, out dtdUniqueResourceId);
 
                         bool isHTML = docMarkupType == DocumentMarkupType.XHTML || docMarkupType == DocumentMarkupType.XHTML5;
 
@@ -231,7 +231,7 @@ namespace urakawa.daisy.import
                                 dtdEfd.InitializeWithData(ms, INTERNAL_DTD_NAME, false);
                             }
 
-                            parseContentDocument(book_FilePath, project, bodyElement, parentTreeNode, filePath, dtdUniqueResourceId, docMarkupType);
+                            parseContentDocument(project, bodyElement, parentTreeNode, filePath, dtdUniqueResourceId, docMarkupType);
 
                             //Presentation presentation = m_Project.Presentations.Get(0);
                             if (presentation.RootNode != null)
@@ -751,7 +751,7 @@ namespace urakawa.daisy.import
                         if (RequestCancellation) return;
                         foreach (XmlNode childXmlNode in xmlNode.ChildNodes)
                         {
-                            parseContentDocument(book_FilePath, project, childXmlNode, treeNode, filePath, dtdUniqueResourceId, docMarkupType);
+                            parseContentDocument(project, childXmlNode, treeNode, filePath, dtdUniqueResourceId, docMarkupType);
                         }
 
                         if (treeNode.Children.Count > 1)

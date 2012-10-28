@@ -111,7 +111,6 @@ namespace urakawa.daisy.import
             action.Progress += new EventHandler<urakawa.events.progress.ProgressEventArgs>(
                 delegate(object sender, ProgressEventArgs e)
                 {
-
                     double val = e.Current;
                     double max = e.Total;
 
@@ -233,16 +232,10 @@ namespace urakawa.daisy.import
 
                     XmlDocument contentXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, true, true);
 
-                    if (RequestCancellation) return;
-                    reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, Path.GetFileName(m_Book_FilePath)));
-                    parseMetadata(m_Book_FilePath, m_Project, contentXmlDoc);
-
-                    if (RequestCancellation) return;
-                    ParseHeadLinks(m_Book_FilePath, m_Project, contentXmlDoc);
-
-                    if (RequestCancellation) return;
-                    reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, Path.GetFileName(m_Book_FilePath)));
-                    parseContentDocument(m_Book_FilePath, m_Project, contentXmlDoc, null, m_Book_FilePath, null, DocumentMarkupType.NA);
+                    if (parseContentDocParts(m_Project, contentXmlDoc, m_Book_FilePath, Path.GetFileName(m_Book_FilePath), DocumentMarkupType.NA))
+                    {
+                        return; // user cancel
+                    }
                 }
                 else if (extension.Equals(".epub", StringComparison.OrdinalIgnoreCase)
                     || extension.Equals(".zip", StringComparison.OrdinalIgnoreCase))
@@ -336,6 +329,20 @@ namespace urakawa.daisy.import
             if (RequestCancellation) return;
 
             reportProgress(100, UrakawaSDK_daisy_Lang.TransformComplete);
+        }
+
+        private bool parseContentDocParts(Project project, XmlDocument xmlDoc, string filePath, string displayPath, DocumentMarkupType type)
+        {
+            if (RequestCancellation) return true;
+            reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, displayPath));
+            parseMetadata(filePath, project, xmlDoc);
+
+            if (RequestCancellation) return true;
+            ParseHeadLinks(filePath, project, xmlDoc);
+
+            if (RequestCancellation) return true;
+            reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, displayPath));
+            parseContentDocument(project, xmlDoc, null, filePath, null, type);
         }
     }
 }

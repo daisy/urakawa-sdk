@@ -67,16 +67,21 @@ namespace urakawa.daisy.import
                 string fullDtbookPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), dtbookPath);
                 XmlDocument dtbookXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullDtbookPath, true, true);
 
-                if (RequestCancellation) return;
-                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, dtbookPath));
-                parseMetadata(m_Book_FilePath, m_Project, dtbookXmlDoc);
+                if (parseContentDocParts(m_Project, dtbookXmlDoc, fullDtbookPath, dtbookPath, DocumentMarkupType.DTBOOK))
+                {
+                    return; // user cancel
+                }
 
-                if (RequestCancellation) return;
-                ParseHeadLinks(m_Book_FilePath, m_Project, dtbookXmlDoc);
+                //if (RequestCancellation) return;
+                //reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, dtbookPath));
+                //parseMetadata(m_Book_FilePath, m_Project, dtbookXmlDoc);
 
-                if (RequestCancellation) return;
-                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, dtbookPath));
-                parseContentDocument(m_Book_FilePath, m_Project, dtbookXmlDoc, null, fullDtbookPath, null, DocumentMarkupType.DTBOOK);
+                //if (RequestCancellation) return;
+                //ParseHeadLinks(m_Book_FilePath, m_Project, dtbookXmlDoc);
+
+                //if (RequestCancellation) return;
+                //reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, dtbookPath));
+                //parseContentDocument(m_Book_FilePath, m_Project, dtbookXmlDoc, null, fullDtbookPath, null, DocumentMarkupType.DTBOOK);
             }
 
             //if (false && ncxPath != null) //we skip NCX metadata parsing (we get publication metadata only from OPF and DTBOOK/XHTMLs)
@@ -91,7 +96,7 @@ namespace urakawa.daisy.import
 
                 if (RequestCancellation) return;
                 reportProgress(-1, "Parsing metadata: [" + ncxPath + "]");
-                parseMetadata(m_Book_FilePath, m_Project, ncxXmlDoc);
+                parseMetadata(fullNcxPath, m_Project, ncxXmlDoc);
 
                 if (AudioNCXImport)
                 {
