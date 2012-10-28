@@ -343,6 +343,8 @@ namespace urakawa.daisy.import
             if (RequestCancellation) return true;
             reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, displayPath));
             parseContentDocument(project, xmlDoc, null, filePath, null, type);
+
+            return false;
         }
     }
 }
