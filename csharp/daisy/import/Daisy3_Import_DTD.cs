@@ -34,7 +34,7 @@ namespace urakawa.daisy.import
             XHTML5
         }
 
-        protected DocumentMarkupType parseContentDocument_DTD(string book_FilePath, Project project, XmlDocument xmlDoc, TreeNode parentTreeNode, string filePath, out string dtdUniqueResourceId)
+        protected DocumentMarkupType parseContentDocument_DTD(Project project, XmlDocument xmlDoc, TreeNode parentTreeNode, string filePath, out string dtdUniqueResourceId)
         {
             dtdUniqueResourceId = null;
 

@@ -16,49 +16,49 @@ namespace urakawa.daisy.import
         private List<string> m_MetadataItemsToExclude = new List<string>();
         protected virtual List<string> MetadataItemsToExclude { get { return m_MetadataItemsToExclude; } }
 
-        private void parseMetadata(string book_FilePath, Project project, XmlDocument xmlDoc)
+        private void parseMetadata(string rootFilePath, Project project, XmlDocument xmlDoc)
         {
-            parseMetadata_NameContentAll(book_FilePath, project, xmlDoc);
-            parseMetadata_ElementInnerTextAll(book_FilePath, project, xmlDoc);
+            parseMetadata_NameContentAll(rootFilePath, project, xmlDoc);
+            parseMetadata_ElementInnerTextAll(rootFilePath, project, xmlDoc);
             RemoveMetadataItemsToBeExcluded(project);
         }
 
-        private void parseMetadata_ElementInnerTextAll(string book_FilePath, Project project, XmlDocument xmlDoc)
+        private void parseMetadata_ElementInnerTextAll(string rootFilePath, Project project, XmlDocument xmlDoc)
         {
             if (RequestCancellation) return;
 
             foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "metadata", null, false))
             {
                 if (RequestCancellation) return;
-                parseMetadata_ElementInnerText(book_FilePath, project, node);
+                parseMetadata_ElementInnerText(rootFilePath, project, node);
             }
 
             if (RequestCancellation) return;
             foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "dc-metadata", null, false))
             {
                 if (RequestCancellation) return;
-                parseMetadata_ElementInnerText(book_FilePath, project, node);
+                parseMetadata_ElementInnerText(rootFilePath, project, node);
             }
 
             if (RequestCancellation) return;
             foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "x-metadata", null, false))
             {
                 if (RequestCancellation) return;
-                parseMetadata_ElementInnerText(book_FilePath, project, node);
+                parseMetadata_ElementInnerText(rootFilePath, project, node);
             }
         }
 
-        private void parseMetadata_NameContentAll(string book_FilePath, Project project, XmlDocument xmlDoc)
+        private void parseMetadata_NameContentAll(string rootFilePath, Project project, XmlDocument xmlDoc)
         {
             if (RequestCancellation) return;
             foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "meta", null, false))
             {
                 if (RequestCancellation) return;
-                parseMetadata_NameContent(book_FilePath, project, node);
+                parseMetadata_NameContent(rootFilePath, project, node);
             }
         }
 
-        private void parseMetadata_ElementInnerText(string book_FilePath, Project project, XmlNode metadataContainer)
+        private void parseMetadata_ElementInnerText(string rootFilePath, Project project, XmlNode metadataContainer)
         {
             foreach (XmlNode mdNode in metadataContainer.ChildNodes)
             {
@@ -75,7 +75,7 @@ namespace urakawa.daisy.import
                 {
                     XmlNode mdIdentifier = mdNode.Attributes.GetNamedItem("id");
 
-                    handleMetaData(book_FilePath, project, mdNode, mdNode.Name, mdNode.InnerText, (mdIdentifier == null ? null : mdIdentifier.Value));
+                    handleMetaData(rootFilePath, project, mdNode, mdNode.Name, mdNode.InnerText, (mdIdentifier == null ? null : mdIdentifier.Value));
                 }
             }
         }
@@ -136,7 +136,7 @@ namespace urakawa.daisy.import
             }
         }
 
-        private void handleMetaData(string book_FilePath, Project project, XmlNode mdNode, string name, string content, string id)
+        private void handleMetaData(string rootFilePath, Project project, XmlNode mdNode, string name, string content, string id)
         {
             if (RequestCancellation) return;
 
@@ -167,7 +167,7 @@ namespace urakawa.daisy.import
                 else if (!metadataUidValueAlreadyExists(project, content)
                     && (String.IsNullOrEmpty(m_PublicationUniqueIdentifier) || content != m_PublicationUniqueIdentifier))
                 {
-                    Metadata meta = addMetadata(book_FilePath, project, name, content, mdNode);
+                    Metadata meta = addMetadata(rootFilePath, project, name, content, mdNode);
                 }
             }
             else
@@ -179,7 +179,7 @@ namespace urakawa.daisy.import
                     || (md != null && !md.IsRepeatable && !metadataNameAlreadyExists(project, name))
                     )
                 {
-                    Metadata meta = addMetadata(book_FilePath, project, name, content, mdNode);
+                    Metadata meta = addMetadata(rootFilePath, project, name, content, mdNode);
                 }
             }
         }
@@ -199,7 +199,7 @@ namespace urakawa.daisy.import
                                 }) != null;
         }
 
-        private void parseMetadata_NameContent(string book_FilePath, Project project, XmlNode metaDataNode)
+        private void parseMetadata_NameContent(string rootFilePath, Project project, XmlNode metaDataNode)
         {
             if (RequestCancellation) return;
 
@@ -234,14 +234,14 @@ namespace urakawa.daisy.import
             {
                 XmlNode mdIdentifier = mdAttributes.GetNamedItem("id");
 
-                handleMetaData(book_FilePath, project, metaDataNode,
+                handleMetaData(rootFilePath, project, metaDataNode,
                     attrName != null ? attrName.Value : attrProperty.Value,
                     attrContent != null ? attrContent.Value : metaDataNode.InnerText,
                     (mdIdentifier == null ? null : mdIdentifier.Value));
             }
         }
 
-        private Metadata addMetadata(string book_FilePath, Project project, string name, string content, XmlNode node)
+        private Metadata addMetadata(string rootFilePath, Project project, string name, string content, XmlNode node)
         {
             Presentation presentation = project.Presentations.Get(0);
 
@@ -263,8 +263,18 @@ namespace urakawa.daisy.import
             if (name == SupportedMetadata_Z39862005.MATHML_XSLT_METADATA)
             {
                 string styleSheetPath = Path.Combine(
-                    Path.GetDirectoryName(book_FilePath),
+                    Path.GetDirectoryName(rootFilePath),
                     content);
+
+                if (!File.Exists(styleSheetPath))
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    styleSheetPath = Path.Combine(
+                       Path.GetDirectoryName(m_Book_FilePath),
+                       content);
+                }
 
                 if (File.Exists(styleSheetPath))
                 {
@@ -275,7 +285,19 @@ namespace urakawa.daisy.import
                         ExternalFiles.ExternalFileData efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
                         efd.InitializeWithData(styleSheetPath, SupportedMetadata_Z39862005.MATHML_XSLT_METADATA + content, true);
                     }
+#if DEBUG
+                    else
+                    {
+                        Debugger.Break();
+                    }
+#endif
                 }
+#if DEBUG
+                else
+                {
+                    Debugger.Break();
+                }
+#endif
             }
             return md;
         }

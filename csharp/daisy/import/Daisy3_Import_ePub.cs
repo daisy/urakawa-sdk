@@ -28,7 +28,7 @@ namespace urakawa.daisy.import
     /// </summary>
     public partial class Daisy3_Import
     {
-        private void ParseHeadLinks(string book_FilePath, Project project, XmlDocument contentDoc)
+        private void ParseHeadLinks(string rootFilePath, Project project, XmlDocument contentDoc)
         {
             XmlNode headXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(contentDoc.DocumentElement, true, "head", null);
             if (headXmlNode == null) return;
@@ -90,8 +90,9 @@ namespace urakawa.daisy.import
 
                         if (!externalFileRelativePaths.Contains(pathFromAttr))
                         {
-                            ExternalFiles.ExternalFileData extData = CreateAndAddExternalFileData(book_FilePath, project,
-                                                                                                  xAttr.Value);
+                            ExternalFiles.ExternalFileData extData = CreateAndAddExternalFileData(
+                                rootFilePath, project, xAttr.Value);
+
                             if (extData != null)
                             {
                                 externalFileRelativePaths.Add(Path.GetFullPath(extData.OriginalRelativePath));
@@ -113,12 +114,22 @@ namespace urakawa.daisy.import
             }
         }
 
-        private ExternalFiles.ExternalFileData CreateAndAddExternalFileData(string book_FilePath, Project project, string relativePath)
+        private ExternalFiles.ExternalFileData CreateAndAddExternalFileData(string rootFilePath, Project project, string relativePath)
         {
             Presentation presentation = project.Presentations.Get(0);
             string fullPath = Path.Combine(
-                    Path.GetDirectoryName(book_FilePath),
+                    Path.GetDirectoryName(rootFilePath),
                     relativePath);
+            
+            if (!File.Exists(fullPath))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                fullPath = Path.Combine(
+                    Path.GetDirectoryName(m_Book_FilePath),
+                    relativePath);
+            }
 
             if (File.Exists(fullPath))
             {
@@ -382,10 +393,10 @@ namespace urakawa.daisy.import
                 m_PublicationUniqueIdentifier = null;
                 m_PublicationUniqueIdentifierNode = null;
 
-                Project project = new Project();
-                project.SetPrettyFormat(m_XukPrettyFormat);
+                Project spineItemProject = new Project();
+                spineItemProject.SetPrettyFormat(m_XukPrettyFormat);
 
-                spineItemPresentation = project.AddNewPresentation(new Uri(m_outDirectory), Path.GetFileName(fullDocPath));
+                spineItemPresentation = spineItemProject.AddNewPresentation(new Uri(m_outDirectory), Path.GetFileName(fullDocPath));
 
                 PCMFormatInfo pcmFormat = spineItemPresentation.MediaDataManager.DefaultPCMFormat; //.Copy();
                 pcmFormat.Data.SampleRate = (ushort)m_audioProjectSampleRate;
@@ -459,9 +470,26 @@ namespace urakawa.daisy.import
 
                 string title = null;
 
-                if (RequestCancellation) return;
-                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, docPath));
-                parseMetadata(fullDocPath, project, xmlDoc);
+
+                if (parseContentDocParts(spineItemProject, xmlDoc, fullDocPath, docPath, DocumentMarkupType.NA))
+                {
+                    return; // user cancel
+                }
+
+
+                //if (RequestCancellation) return;
+                //reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, docPath));
+                //parseMetadata(fullDocPath, project, xmlDoc);
+
+                //if (RequestCancellation) return;
+                //ParseHeadLinks(fullDocPath, project, xmlDoc);
+
+                //reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, docPath));
+                //parseContentDocument(fullDocPath, project, xmlDoc, null, fullDocPath, null, DocumentMarkupType.NA);
+
+
+
+
 
                 if (spineItemPresentation.Metadatas.Count > 0)
                 {
@@ -490,9 +518,6 @@ namespace urakawa.daisy.import
                     spineItemPresentation.Metadatas.Insert(spineItemPresentation.Metadatas.Count, md);
                 }
 
-
-                if (RequestCancellation) return;
-                ParseHeadLinks(fullDocPath, project, xmlDoc);
 
                 if (spineItemPresentation.HeadNode != null && spineItemPresentation.HeadNode.Children != null && spineItemPresentation.HeadNode.Children.Count > 0)
                 {
@@ -524,7 +549,6 @@ namespace urakawa.daisy.import
                 }
 
 
-                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, docPath));
 
                 //XmlNodeList listOfBodies = xmlDoc.GetElementsByTagName("body");
                 //if (listOfBodies.Count == 0)
@@ -544,7 +568,6 @@ namespace urakawa.daisy.import
                 //}
 
                 // TODO: return hierarchical outline where each node points to a XUK relative path, + XukAble.Uid (TreeNode are not corrupted during XukAbleManager.RegenerateUids();
-                parseContentDocument(fullDocPath, project, xmlDoc, null, fullDocPath, null, DocumentMarkupType.NA);
 
 
                 foreach (KeyValuePair<string, string> spineItemAttribute in spineItemsAttributes[index])
@@ -662,7 +685,7 @@ namespace urakawa.daisy.import
 
 
                 string xuk_FilePath = GetXukFilePath(m_outDirectory, fullDocPath, false);
-                SaveXukAction action = new SaveXukAction(project, project, new Uri(xuk_FilePath));
+                SaveXukAction action = new SaveXukAction(spineItemProject, spineItemProject, new Uri(xuk_FilePath));
                 action.ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile;
                 action.LongDescription = UrakawaSDK_daisy_Lang.SerializeDOMIntoXUKFile;
 
