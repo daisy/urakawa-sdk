@@ -68,7 +68,7 @@ namespace urakawa.daisy.import
 
                 XmlNode bodyNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(sourceNode, true, @"body", DiagramContentModelHelper.NS_URL_XHTML);
 
-                parseContentDocument(project, bodyNode, null, filepath, null, DocumentMarkupType.NA);
+                parseContentDocument(filepath, project, bodyNode, null, null, DocumentMarkupType.NA);
 
                 List<TreeNode.Section> outline = presentation.RootNode.GetOrCreateOutline();
 
@@ -115,7 +115,7 @@ namespace urakawa.daisy.import
         //    //string strMultipleWhiteSpacesCollapsedToOneSpace = Regex.Replace(str, @"\s+", " ");
         //}
 
-        protected virtual void parseContentDocument(Project project, XmlNode xmlNode, TreeNode parentTreeNode, string filePath, string dtdUniqueResourceId, DocumentMarkupType docMarkupType)
+        protected virtual void parseContentDocument(string filePath, Project project, XmlNode xmlNode, TreeNode parentTreeNode, string dtdUniqueResourceId, DocumentMarkupType docMarkupType)
         {
             Presentation presentation = project.Presentations.Get(0);
 
@@ -231,7 +231,7 @@ namespace urakawa.daisy.import
                                 dtdEfd.InitializeWithData(ms, INTERNAL_DTD_NAME, false);
                             }
 
-                            parseContentDocument(project, bodyElement, parentTreeNode, filePath, dtdUniqueResourceId, docMarkupType);
+                            parseContentDocument(filePath, project, bodyElement, parentTreeNode, dtdUniqueResourceId, docMarkupType);
 
                             //Presentation presentation = m_Project.Presentations.Get(0);
                             if (presentation.RootNode != null)
@@ -751,7 +751,7 @@ namespace urakawa.daisy.import
                         if (RequestCancellation) return;
                         foreach (XmlNode childXmlNode in xmlNode.ChildNodes)
                         {
-                            parseContentDocument(project, childXmlNode, treeNode, filePath, dtdUniqueResourceId, docMarkupType);
+                            parseContentDocument(filePath, project, childXmlNode, treeNode, dtdUniqueResourceId, docMarkupType);
                         }
 
                         if (treeNode.Children.Count > 1)
