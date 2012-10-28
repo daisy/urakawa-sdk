@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
@@ -67,7 +68,7 @@ namespace urakawa.daisy.import
                 string fullDtbookPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), dtbookPath);
                 XmlDocument dtbookXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(fullDtbookPath, true, true);
 
-                if (parseContentDocParts(m_Project, dtbookXmlDoc, fullDtbookPath, dtbookPath, DocumentMarkupType.DTBOOK))
+                if (parseContentDocParts(fullDtbookPath, m_Project, dtbookXmlDoc, dtbookPath, DocumentMarkupType.DTBOOK))
                 {
                     return; // user cancel
                 }
@@ -118,31 +119,61 @@ namespace urakawa.daisy.import
                         if (!string.IsNullOrEmpty(coverImagePath) && !spine.Contains(coverImagePath))
                         {
                             string fullCoverImagePath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), coverImagePath);
-                            ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.CoverImageExternalFileData>();
-                            if (externalData != null)
+
+                            if (File.Exists(fullCoverImagePath))
                             {
-                                externalData.InitializeWithData(fullCoverImagePath, coverImagePath, true);
+                                ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.CoverImageExternalFileData>();
+                                if (externalData != null)
+                                {
+                                    externalData.InitializeWithData(fullCoverImagePath, coverImagePath, true);
+                                }
                             }
+#if DEBUG
+                            else
+                            {
+                                Debugger.Break();
+                            }
+#endif
                         }
 
                         if (!string.IsNullOrEmpty(navDocPath) && !spine.Contains(navDocPath))
                         {
                             string fullNavDocPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), navDocPath);
-                            ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.NavDocExternalFileData>();
-                            if (externalData != null)
+
+                            if (File.Exists(fullNavDocPath))
                             {
-                                externalData.InitializeWithData(fullNavDocPath, navDocPath, true);
+                                ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.NavDocExternalFileData>();
+                                if (externalData != null)
+                                {
+                                    externalData.InitializeWithData(fullNavDocPath, navDocPath, true);
+                                }
                             }
+#if DEBUG
+                            else
+                            {
+                                Debugger.Break();
+                            }
+#endif
                         }
 
                         if (!string.IsNullOrEmpty(ncxPath))
                         {
                             string fullNcxPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), ncxPath);
-                            ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.NCXExternalFileData>();
-                            if (externalData != null)
+
+                            if (File.Exists(fullNcxPath))
                             {
-                                externalData.InitializeWithData(fullNcxPath, ncxPath, true);
+                                ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.NCXExternalFileData>();
+                                if (externalData != null)
+                                {
+                                    externalData.InitializeWithData(fullNcxPath, ncxPath, true);
+                                }
                             }
+#if DEBUG
+                            else
+                            {
+                                Debugger.Break();
+                            }
+#endif
                         }
 
                         parseContentDocuments(spine, spineAttributes, spineItemsAttributes, coverImagePath, navDocPath);

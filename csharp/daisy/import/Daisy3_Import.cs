@@ -232,7 +232,7 @@ namespace urakawa.daisy.import
 
                     XmlDocument contentXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, true, true);
 
-                    if (parseContentDocParts(m_Project, contentXmlDoc, m_Book_FilePath, Path.GetFileName(m_Book_FilePath), DocumentMarkupType.NA))
+                    if (parseContentDocParts(m_Book_FilePath, m_Project, contentXmlDoc, Path.GetFileName(m_Book_FilePath), DocumentMarkupType.NA))
                     {
                         return; // user cancel
                     }
@@ -331,7 +331,7 @@ namespace urakawa.daisy.import
             reportProgress(100, UrakawaSDK_daisy_Lang.TransformComplete);
         }
 
-        private bool parseContentDocParts(Project project, XmlDocument xmlDoc, string filePath, string displayPath, DocumentMarkupType type)
+        private bool parseContentDocParts(string filePath, Project project, XmlDocument xmlDoc, string displayPath, DocumentMarkupType type)
         {
             if (RequestCancellation) return true;
             reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, displayPath));
