@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using AudioLib;
 using urakawa.xuk;
 
 namespace urakawa.data
@@ -94,6 +95,140 @@ namespace urakawa.data
             }
 
             return m_StrBuilder.ToString();
+        }
+
+#if DEBUG
+        static FileDataProvider()
+        {
+            string str1 = @"C:/dir/file.txt";
+            string str2 = @"C:/dir/../dir/file.txt";
+            string str3 = @"C:/dir/./file.txt";
+            string str4 = @"C:/dir/../dir/./file.txt";
+            string str5 = @"C:/dir/subdir/../file.txt";
+            string str6 = @"C:/dir/subdir/./../file.txt";
+            string str7 = @"C:/dir/subdir/.././file.txt";
+
+            string p1 = NormaliseFullFilePath(str1);
+            string p2 = NormaliseFullFilePath(str2);
+            string p3 = NormaliseFullFilePath(str3);
+            string p4 = NormaliseFullFilePath(str4);
+            string p5 = NormaliseFullFilePath(str5);
+            string p6 = NormaliseFullFilePath(str6);
+            string p7 = NormaliseFullFilePath(str7);
+
+            DebugFix.Assert(p1 == p2);
+            DebugFix.Assert(p2 == p3);
+            DebugFix.Assert(p3 == p4);
+            DebugFix.Assert(p4 == p5);
+            DebugFix.Assert(p5 == p6);
+            DebugFix.Assert(p6 == p7);
+
+            str1 = str1.Replace('/', '\\');
+            str2 = str2.Replace('/', '\\');
+            str3 = str3.Replace('/', '\\');
+            str4 = str4.Replace('/', '\\');
+            str5 = str5.Replace('/', '\\');
+            str6 = str6.Replace('/', '\\');
+            str7 = str7.Replace('/', '\\');
+
+            p1 = NormaliseFullFilePath(str1);
+            p2 = NormaliseFullFilePath(str2);
+            p3 = NormaliseFullFilePath(str3);
+            p4 = NormaliseFullFilePath(str4);
+            p5 = NormaliseFullFilePath(str5);
+            p6 = NormaliseFullFilePath(str6);
+            p7 = NormaliseFullFilePath(str7);
+
+            DebugFix.Assert(p1 == p2);
+            DebugFix.Assert(p2 == p3);
+            DebugFix.Assert(p3 == p4);
+            DebugFix.Assert(p4 == p5);
+            DebugFix.Assert(p5 == p6);
+            DebugFix.Assert(p6 == p7);
+
+            string pp1 = NormaliseFullFilePath(@"C:/dir/subdir/");
+            string pp2 = NormaliseFullFilePath(@"C:/dir/subdir");
+
+            DebugFix.Assert(pp1 == pp2);
+
+            string pp3 = NormaliseFullFilePath(@"\\\\network-share/dir\\subdir/");
+            string pp4 = NormaliseFullFilePath(@"//network-share\\dir/subdir");
+
+            DebugFix.Assert(pp3 == pp4);
+        }
+#endif
+
+        public static string NormaliseFullFilePath(string fullPath)
+        {
+            bool absolute = Path.IsPathRooted(fullPath);
+
+            DebugFix.Assert(absolute);
+            if (!absolute)
+            {
+                return fullPath;
+            }
+
+            char sep = Path.DirectorySeparatorChar;
+            DebugFix.Assert(sep == '\\'); // We're on Windows!
+
+            if (sep == '\\' && fullPath.IndexOf('/') >= 0)
+            {
+                fullPath = fullPath.Replace('/', sep);
+            }
+            else if (sep == '/' && fullPath.IndexOf('\\') >= 0)
+            {
+                fullPath = fullPath.Replace('\\', sep);
+            }
+
+            //fullPath = fullPath.TrimEnd(new char[] {sep});
+            //fullPath = fullPath.TrimEnd(sep);
+            if (
+                fullPath.Length > 1 &&
+                fullPath[fullPath.Length - 1] == sep
+                //fullPath.LastIndexOf(sep) == fullPath.Length - 1
+                )
+            {
+                fullPath = fullPath.Substring(0, fullPath.Length - 1);
+            }
+
+            // Path.GetFullPath accesses the filesystem when the file exists.
+            // fullPath = Path.GetFullPath(fullPath);
+
+            //DirectoryInfo dirInfo = new DirectoryInfo(fullPath);
+            //string str0 = dirInfo.FullName;
+
+            FileInfo fileInfo = new FileInfo(fullPath);
+            fullPath = fileInfo.FullName;
+
+            // Replaces '\\' with '/'
+            //Uri uri = new Uri(fullPath, UriKind.Absolute);
+            //string fullPath1 = uri.AbsolutePath; // LocalPath
+
+            //UriBuilder uriBuilder = new UriBuilder();
+            //uriBuilder.Host = String.Empty;
+            //uriBuilder.Scheme = Uri.UriSchemeFile;
+            //uriBuilder.Path = fullPath;
+            //Uri fileUri = uriBuilder.Uri;
+            //fullPath = fileUri.ToString();
+
+            if (
+                fullPath.Length > 1 &&
+                fullPath[fullPath.Length - 1] == sep
+                //fullPath.LastIndexOf(sep) == fullPath.Length - 1
+                )
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                fullPath = fullPath.Substring(0, fullPath.Length - 1);
+            }
+
+            if (sep == '\\')
+            {
+                fullPath = fullPath.Replace(sep, '/');
+            }
+
+            return fullPath;
         }
 
         private static int MAX_ATTEMPTS = 10;
