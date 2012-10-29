@@ -507,7 +507,9 @@ namespace urakawa.daisy.export
 
                         if (currentXmlNodeAttrs != null && currentXmlNode.LocalName != null)
                         {
-                            // if QName is img and img src is on disk, copy it to output dir
+                            bool isHTML = @"body".Equals(m_Presentation.RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase); //n.Presentation
+                            // TODO: special treatment of subfolders in file paths (restore full hierarchy, including OPF, XHTMLs, etc., not just referenced media assets)
+
                             if (currentXmlNode.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
                             {
                                 XmlAttribute imgSrcAttribute =
@@ -600,6 +602,9 @@ namespace urakawa.daisy.export
                                             managedVideo.VideoMediaData.OriginalRelativePath);
 
                                     string destPath = Path.Combine(m_OutputDirectory, exportVideoName);
+
+
+
                                     if (!File.Exists(destPath))
                                     {
                                         if (RequestCancellation) return false;
