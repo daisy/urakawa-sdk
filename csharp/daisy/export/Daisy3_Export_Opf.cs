@@ -64,15 +64,15 @@ namespace urakawa.daisy.export
             m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_TOTAL_TIME);
             m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_AUDIO_FORMAT);
 
-            // add all files to manifest
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
+            
             if (m_Filename_Content != null)
             {
                 AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), mediaType_Dtbook);
             }
+
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Opf, GetNextID(ID_OpfPrefix), DataProviderFactory.XML_MIME_TYPE);
 
-            // add external files to manifest
             foreach (string externalFileName in m_FilesList_ExternalFiles)
             {
                 // ALREADY escaped!
@@ -97,12 +97,13 @@ namespace urakawa.daisy.export
             }
 
             if (RequestCancellation) return;
-            // add smil files to manifest
+
             List<string> smilIDListInPlayOrder = new List<string>();
 
             foreach (string smilFileName in m_FilesList_Smil)
             {
                 string strID = GetNextID(ID_OpfPrefix);
+
                 AddFilenameToManifest(opfDocument, manifestNode, smilFileName, strID, mediaType_Smil);
                 smilIDListInPlayOrder.Add(strID);
             }
@@ -112,6 +113,7 @@ namespace urakawa.daisy.export
             foreach (string audioFileName in m_FilesList_Audio)
             {
                 string strID = GetNextID(ID_OpfPrefix);
+
                 string ext = Path.GetExtension(audioFileName);
                 string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
                 AddFilenameToManifest(opfDocument, manifestNode, audioFileName, strID, mime);
@@ -127,6 +129,9 @@ namespace urakawa.daisy.export
                 string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
                 AddFilenameToManifest(opfDocument, manifestNode, imageFileName, strID, mime);
             }
+
+            if (RequestCancellation) return;
+
             foreach (string videoFileName in m_FilesList_Video)
             {
                 string strID = GetNextID(ID_OpfPrefix);
@@ -135,6 +140,8 @@ namespace urakawa.daisy.export
                 string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
                 AddFilenameToManifest(opfDocument, manifestNode, videoFileName, strID, mime);
             }
+
+            if (RequestCancellation) return;
 
             // copy resource files and place entry in manifest
             string sourceDirectoryPath = System.AppDomain.CurrentDomain.BaseDirectory;
@@ -166,6 +173,7 @@ namespace urakawa.daisy.export
             }
 
             if (RequestCancellation) return;
+
             AddMetadata_Opf(opfDocument);
 
             if (RequestCancellation)
@@ -173,6 +181,7 @@ namespace urakawa.daisy.export
                 opfDocument = null;
                 return;
             }
+
             XmlReaderWriterHelper.WriteXmlDocument(opfDocument, Path.Combine(m_OutputDirectory, m_Filename_Opf));
         }
 
