@@ -140,98 +140,17 @@ namespace urakawa.daisy.export
             Channel publishChannel = PublishAudioFiles();
             try
             {
-                bool isHTML = "body".Equals(m_Presentation.RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase);
-                if (isHTML)
-                {
-                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                    //TODO: CreateHTMLDocument();
+                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                CreateDTBookDocument();
 
-                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                    CreateExternalFiles();
+                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                CreateNcxAndSmilDocuments();
 
-                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                    //TODO: CreateNavigationDocuments();
+                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                CreateExternalFiles();
 
-                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                    //TODO: CreateSmilMediaOverlays();
-
-                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                    //TODO: CreateOpfEPUBPackage();
-
-                    reportProgress(-1, @"Creating EPUB directory structure..."); //UrakawaSDK_daisy_Lang.BLAbla
-
-                    string opsDirectoryPath = Path.Combine(m_OutputDirectory, "OPS");
-                    FileDataProvider.CreateDirectory(opsDirectoryPath);
-
-#if false && DEBUG
-                    // Empty directories will not be included in ZIP
-
-                    string dir_empty = Path.Combine(m_OutputDirectory, "dir-empty");
-                    FileDataProvider.CreateDirectory(dir_empty);
-
-                    string dir_non_empty = Path.Combine(m_OutputDirectory, "dir-non-empty");
-                    FileDataProvider.CreateDirectory(dir_non_empty);
-
-                    string subdir_empty = Path.Combine(dir_non_empty, "subdir-empty");
-                    FileDataProvider.CreateDirectory(subdir_empty);
-
-                    string subdir_non_empty = Path.Combine(dir_non_empty, "subdir-non-empty");
-                    FileDataProvider.CreateDirectory(subdir_non_empty);
-
-                    string testFile = Path.Combine(subdir_non_empty, "testFile.txt");
-                    StreamWriter writer = File.CreateText(testFile);
-                    try
-                    {
-                        writer.Write("Hello world!");
-                    }
-                    finally
-                    {
-                        writer.Close();
-                    }
-#endif
-
-                    string[] allFiles = Directory.GetFileSystemEntries(m_OutputDirectory, "*.*"
-#if NET40
-, SearchOption.TopDirectoryOnly
-#endif
-);
-                    for (int i = 0; i < allFiles.Length; i++)
-                    {
-                        string fileName = Path.GetFileName(allFiles[i]);
-
-                        if (allFiles[i] != opsDirectoryPath
-                            && fileName != ".DS_Store" && fileName != ".svn")
-                        {
-                            string dest = allFiles[i].Replace(m_OutputDirectory, opsDirectoryPath);
-                            if (Directory.Exists(allFiles[i]))
-                            {
-                                Directory.Move(allFiles[i], dest);
-                            }
-                            else
-                            {
-                                File.Move(allFiles[i], dest);
-                            }
-                        }
-                    }
-
-                    FileDataProvider.CreateDirectory(Path.Combine(m_OutputDirectory, "META-INF"));
-
-                    PackageToZip();
-                }
-                else
-                {
-                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                    CreateDTBookDocument();
-
-                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                    CreateNcxAndSmilDocuments();
-
-                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                    CreateExternalFiles();
-
-                    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-                    CreateOpfDocument();
-                }
+                if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
+                CreateOpfDocument();
             }
             finally
             {
@@ -250,7 +169,7 @@ namespace urakawa.daisy.export
         /// Creates audio files for export, it is important to call  function RemovePublishChannel after all export operations are complete
         /// </summary>
         /// <returns></returns>
-        protected Channel PublishAudioFiles()
+        internal Channel PublishAudioFiles()
         {
             // if publish channel exists remove it.
             List<Channel> previousChannelsList = m_Presentation.ChannelsManager.GetChannelsByName(PUBLISH_AUDIO_CHANNEL_NAME);

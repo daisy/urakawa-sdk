@@ -78,6 +78,10 @@ namespace urakawa.ExternalFiles
                 if (m_OriginalRelativePath != null)
                 {
                     m_OriginalRelativePath = m_OriginalRelativePath.Replace('\\', '/');
+                    //if (m_OriginalRelativePath.StartsWith(@"./"))
+                    //{
+                    //    m_OriginalRelativePath = m_OriginalRelativePath.Substring(2);
+                    //}
                 }
             }
         }

@@ -87,6 +87,13 @@ namespace urakawa.data
         public const string IMAGE_GIF_EXTENSION = ".gif";
 
 
+        public const string RDF_MIME_TYPE = "application/rdf+xml";
+        public const string RDF_EXTENSION = ".xmp";
+
+        public const string FONT_TTF_MIME_TYPE = "application/x-font-ttf";
+        public const string FONT_TTF_MIME_TYPE_ = "application/vnd.ms-opentype";
+        public const string FONT_TTF_EXTENSION = ".ttf";
+
         /// <summary>
         /// MIME type for WMV videos
         /// </summary>
@@ -188,6 +195,10 @@ namespace urakawa.data
         public const string XHTML_MIME_TYPE = "application/xhtml+xml";
         public const string XHTML_EXTENSION = ".xhtml";
 
+        public const string SMIL_MIME_TYPE = "application/smil+xml";
+        public const string SMIL_MIME_TYPE_ = "application/smil";
+        public const string SMIL_EXTENSION = ".smil";
+
         //public const string HTML_MIME_TYPE = "text/html";
         //public const string HTML_EXTENSION = ".html";
 
@@ -249,6 +260,14 @@ namespace urakawa.data
                     extension = IMAGE_SVG_EXTENSION;
                     break;
 
+                case RDF_MIME_TYPE:
+                    extension = RDF_EXTENSION;
+                    break;
+
+                case FONT_TTF_MIME_TYPE:
+                case FONT_TTF_MIME_TYPE_:
+                    extension = FONT_TTF_EXTENSION;
+                    break;
 
                 case CSS_MIME_TYPE:
                     extension = CSS_EXTENSION;
@@ -276,6 +295,10 @@ namespace urakawa.data
                     break;
                 case XHTML_MIME_TYPE:
                     extension = XHTML_EXTENSION;
+                    break;
+                case SMIL_MIME_TYPE:
+                case SMIL_MIME_TYPE_:
+                    extension = SMIL_EXTENSION;
                     break;
                 default:
 #if DEBUG
@@ -350,6 +373,13 @@ namespace urakawa.data
                     mime = IMAGE_SVG_MIME_TYPE;
                     break;
 
+                case RDF_EXTENSION:
+                    mime = RDF_MIME_TYPE;
+                    break;
+
+                case FONT_TTF_EXTENSION:
+                    mime = FONT_TTF_MIME_TYPE;
+                    break;
 
                 case CSS_EXTENSION:
                     mime = CSS_MIME_TYPE;
@@ -380,6 +410,9 @@ namespace urakawa.data
                     break;
                 case XHTML_EXTENSION:
                     mime = XHTML_MIME_TYPE;
+                    break;
+                case SMIL_EXTENSION:
+                    mime = SMIL_MIME_TYPE;
                     break;
                 default:
 #if DEBUG

@@ -35,7 +35,7 @@ namespace urakawa.ExternalFiles
         {
             get
             {
-                return "application/xhtml+xml";
+                return DataProviderFactory.XHTML_MIME_TYPE;
             }
         }
 

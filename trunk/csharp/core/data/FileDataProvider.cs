@@ -231,6 +231,57 @@ namespace urakawa.data
             return fullPath;
         }
 
+        private static void recursiveDeleteDirectory(string rootDirPath)
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(rootDirPath);
+
+            IEnumerable<DirectoryInfo> allDirs = dirInfo.EnumerateDirectories("*.*", SearchOption.TopDirectoryOnly);
+            foreach (DirectoryInfo subDirInfo in allDirs)
+            {
+                string subDirPath = Path.Combine(rootDirPath, subDirInfo.Name);
+                //recursiveDeleteDirectory(subDirInfo.FullName);
+                recursiveDeleteDirectory(subDirPath);
+            }
+
+            IEnumerable<FileInfo> allFiles = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
+            foreach (FileInfo fileInfo in allFiles)
+            {
+                try
+                {
+                    string filePath = Path.Combine(rootDirPath, fileInfo.Name);
+                    File.Delete(filePath);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+
+                    try
+                    {
+                        fileInfo.Delete();
+                    }
+                    catch (Exception ee)
+                    {
+                        Console.WriteLine(ee.Message);
+
+                        string filePath = fileInfo.FullName;
+                        FileInfo fi = new FileInfo(filePath);
+                        fi.Delete();
+                    }
+                }
+            }
+
+            try
+            {
+                Directory.Delete(rootDirPath, false);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                dirInfo.Delete(false);
+            }
+        }
+
         private static int MAX_ATTEMPTS = 10;
         public static void DeleteDirectory(string path)
         {
@@ -244,7 +295,22 @@ namespace urakawa.data
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e.Message);
                     Thread.Sleep(200);
+
+                    //if (Directory.Exists(path))
+                    //{
+                    //    try
+                    //    {
+                    //        recursiveDeleteDirectory(path);
+                    //        break;
+                    //    }
+                    //    catch (Exception ee)
+                    //    {
+                    //        Console.WriteLine(ee.Message);
+                    //        Thread.Sleep(200);
+                    //    }
+                    //}
                 }
             }
 
@@ -255,6 +321,7 @@ namespace urakawa.data
 #endif // DEBUG
             }
         }
+
         public static void CreateDirectory(string path)
         {
             int attempt = MAX_ATTEMPTS;
@@ -267,6 +334,7 @@ namespace urakawa.data
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e.Message);
                     Thread.Sleep(200);
                 }
             }

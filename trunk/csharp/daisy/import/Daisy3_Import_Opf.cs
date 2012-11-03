@@ -17,6 +17,31 @@ namespace urakawa.daisy.import
         private string m_PublicationUniqueIdentifier;
         private XmlNode m_PublicationUniqueIdentifierNode;
 
+        private string m_PublicationUniqueIdentifier_OPF;
+        private XmlNode m_PublicationUniqueIdentifierNode_OPF;
+
+        private void deleteDataDirectoryIfEmpty()
+        {
+            string dataDir = m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+            if (Directory.Exists(dataDir))
+            {
+                string[] files = Directory.GetFiles(dataDir);
+                if (files == null || files.Length == 0)
+                {
+                    FileDataProvider.DeleteDirectory(dataDir);
+                }
+            }
+        }
+
+        private void reInitialiseProjectSpine()
+        {
+            m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, null, true);
+
+            deleteDataDirectoryIfEmpty();
+
+            initializeProject(@"__" + Path.GetFileName(m_Book_FilePath));
+        }
+
         private void parseOpf(XmlDocument opfXmlDoc)
         {
             List<string> spine;
@@ -29,25 +54,6 @@ namespace urakawa.daisy.import
             string coverImagePath;
 
             if (RequestCancellation) return;
-            parseOpfManifest(opfXmlDoc, out spine, out spineAttributes, out spineItemsAttributes, out spineMimeType, out dtbookPath, out ncxPath, out navDocPath, out coverImagePath);
-
-            if (spineMimeType == "application/xhtml+xml"
-                || spineMimeType == DataProviderFactory.IMAGE_SVG_MIME_TYPE)
-            {
-                m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, true);
-
-                string dataDir = m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
-                if (Directory.Exists(dataDir))
-                {
-                    string[] files = Directory.GetFiles(dataDir);
-                    if (files == null || files.Length == 0)
-                    {
-                        FileDataProvider.DeleteDirectory(dataDir);
-                    }
-                }
-
-                initializeProject();
-            }
 
             XmlNode packageNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlDoc, true, "package", null);
             if (packageNode != null)
@@ -59,10 +65,54 @@ namespace urakawa.daisy.import
                 }
             }
 
+            string idCoverImageFromMetadata = null;
+            IEnumerable<XmlNode> metaElements = XmlDocumentHelper.GetChildrenElementsOrSelfWithName(opfXmlDoc, true, "meta", null, false);
+            foreach (XmlNode metaElement in metaElements)
+            {
+                XmlAttributeCollection metaElementAttributes = metaElement.Attributes;
+
+                if (metaElementAttributes == null || metaElementAttributes.Count <= 0)
+                {
+                    continue;
+                }
+
+                XmlNode attrName = metaElementAttributes.GetNamedItem("name");
+                if (attrName == null || string.IsNullOrEmpty(attrName.Value)
+                    || attrName.Value != @"cover")
+                {
+                    continue;
+                }
+
+                XmlNode attrContent = metaElementAttributes.GetNamedItem("content");
+                if (attrContent == null && string.IsNullOrEmpty(attrContent.Value))
+                {
+                    continue;
+                }
+
+                idCoverImageFromMetadata = attrContent.Value;
+                break;
+            }
+
+            parseOpfManifest(opfXmlDoc, out spine, out spineAttributes, out spineItemsAttributes, out spineMimeType, out dtbookPath, out ncxPath, out navDocPath, out coverImagePath, idCoverImageFromMetadata);
+
             if (RequestCancellation) return;
+
+            m_IsSpine = spineMimeType == DataProviderFactory.XHTML_MIME_TYPE
+                        || spineMimeType == DataProviderFactory.IMAGE_SVG_MIME_TYPE;
+            DebugFix.Assert(m_IsSpine == !(spineMimeType == DataProviderFactory.SMIL_MIME_TYPE_));
+
+            if (m_IsSpine)
+            {
+                reInitialiseProjectSpine();
+            }
+
             parseMetadata(m_Book_FilePath, m_Project, opfXmlDoc);
 
-            if (dtbookPath != null && !AudioNCXImport)
+            m_PublicationUniqueIdentifier_OPF = m_PublicationUniqueIdentifier;
+            m_PublicationUniqueIdentifierNode_OPF = m_PublicationUniqueIdentifierNode;
+
+            if (dtbookPath != null && !m_IsSpine
+                && !AudioNCXImport)
             {
                 if (RequestCancellation) return;
                 string fullDtbookPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), dtbookPath);
@@ -97,6 +147,7 @@ namespace urakawa.daisy.import
 
                 if (RequestCancellation) return;
                 reportProgress(-1, "Parsing metadata: [" + ncxPath + "]");
+
                 parseMetadata(fullNcxPath, m_Project, ncxXmlDoc);
 
                 if (AudioNCXImport)
@@ -108,24 +159,36 @@ namespace urakawa.daisy.import
             if (RequestCancellation) return;
             switch (spineMimeType)
             {
-                case "application/smil":
+                case DataProviderFactory.SMIL_MIME_TYPE_:
                     {
                         parseSmiles(spine);
                         break;
                     }
-                case "application/xhtml+xml":
+                case DataProviderFactory.XHTML_MIME_TYPE:
                 case DataProviderFactory.IMAGE_SVG_MIME_TYPE:
                     {
                         if (!string.IsNullOrEmpty(coverImagePath) && !spine.Contains(coverImagePath))
                         {
                             string fullCoverImagePath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), coverImagePath);
+                            fullCoverImagePath = FileDataProvider.NormaliseFullFilePath(fullCoverImagePath).Replace('/', '\\');
 
                             if (File.Exists(fullCoverImagePath))
                             {
                                 ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.CoverImageExternalFileData>();
-                                if (externalData != null)
+                                try
                                 {
                                     externalData.InitializeWithData(fullCoverImagePath, coverImagePath, true);
+
+                                    addOPF_GlobalAssetPath(fullCoverImagePath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex.Message);
+                                    Console.WriteLine(ex.StackTrace);
+
+#if DEBUG
+                                    Debugger.Break();
+#endif
                                 }
                             }
 #if DEBUG
@@ -139,13 +202,25 @@ namespace urakawa.daisy.import
                         if (!string.IsNullOrEmpty(navDocPath) && !spine.Contains(navDocPath))
                         {
                             string fullNavDocPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), navDocPath);
+                            fullNavDocPath = FileDataProvider.NormaliseFullFilePath(fullNavDocPath).Replace('/', '\\');
 
                             if (File.Exists(fullNavDocPath))
                             {
                                 ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.NavDocExternalFileData>();
-                                if (externalData != null)
+                                try
                                 {
                                     externalData.InitializeWithData(fullNavDocPath, navDocPath, true);
+
+                                    addOPF_GlobalAssetPath(fullNavDocPath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex.Message);
+                                    Console.WriteLine(ex.StackTrace);
+
+#if DEBUG
+                                    Debugger.Break();
+#endif
                                 }
                             }
 #if DEBUG
@@ -159,13 +234,25 @@ namespace urakawa.daisy.import
                         if (!string.IsNullOrEmpty(ncxPath))
                         {
                             string fullNcxPath = Path.Combine(Path.GetDirectoryName(m_Book_FilePath), ncxPath);
+                            fullNcxPath = FileDataProvider.NormaliseFullFilePath(fullNcxPath).Replace('/', '\\');
 
                             if (File.Exists(fullNcxPath))
                             {
                                 ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.NCXExternalFileData>();
-                                if (externalData != null)
+                                try
                                 {
                                     externalData.InitializeWithData(fullNcxPath, ncxPath, true);
+
+                                    addOPF_GlobalAssetPath(fullNcxPath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex.Message);
+                                    Console.WriteLine(ex.StackTrace);
+
+#if DEBUG
+                                    Debugger.Break();
+#endif
                                 }
                             }
 #if DEBUG
@@ -191,7 +278,8 @@ namespace urakawa.daisy.import
                                 out string dtbookPath,
                                 out string ncxPath,
                                 out string navDocPath,
-                                out string coverImagePath)
+                                out string coverImagePath,
+            string idCoverImageFromMetadata)
         {
             spine = new List<string>();
             spineAttributes = new Dictionary<string, string>();
@@ -297,18 +385,26 @@ namespace urakawa.daisy.import
                     coverImagePath = attrHref.Value;
                 }
 
-                if (attrMediaType.Value == "application/smil"
-                    || attrMediaType.Value == "application/xhtml+xml"
-                    || attrMediaType.Value == DataProviderFactory.IMAGE_SVG_MIME_TYPE)
+                XmlNode attrId = manifItemAttributes.GetNamedItem("id");
+                if (string.IsNullOrEmpty(coverImagePath)
+                    && attrId != null && attrId.Value == idCoverImageFromMetadata)
+                {
+                    coverImagePath = attrHref.Value;
+                }
+
+                if (attrMediaType.Value != DataProviderFactory.SMIL_MIME_TYPE // yep! (EPUB3)
+                    &&
+                    (attrMediaType.Value == DataProviderFactory.SMIL_MIME_TYPE_
+                    || attrMediaType.Value == DataProviderFactory.XHTML_MIME_TYPE
+                    || attrMediaType.Value == DataProviderFactory.IMAGE_SVG_MIME_TYPE))
                 {
                     if (attrProperties != null && attrProperties.Value.Contains("nav"))
                     {
-                        DebugFix.Assert(attrMediaType.Value == "application/xhtml+xml");
+                        DebugFix.Assert(attrMediaType.Value == DataProviderFactory.XHTML_MIME_TYPE);
 
                         navDocPath = attrHref.Value;
                     }
 
-                    XmlNode attrId = manifItemAttributes.GetNamedItem("id");
                     if (attrId != null)
                     {
                         int i = spine.IndexOf(attrId.Value);
