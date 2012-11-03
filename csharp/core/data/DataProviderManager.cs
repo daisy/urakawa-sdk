@@ -198,7 +198,7 @@ namespace urakawa.data
         }
 
         public const string DefaultDataFileDirectory = "Data";
-        public const string DefaultDataFileDirectorySeparator = "___";
+        public const string DefaultDataFileDirectorySeparator = "_";
 
         // it's only public because XukIn needs it !
         public string DataFileDirectory = DefaultDataFileDirectory;

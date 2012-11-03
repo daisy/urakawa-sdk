@@ -246,21 +246,29 @@ namespace urakawa.daisy.import
             Presentation presentation = treeNode.Presentation; // m_Project.Presentations.Get(0);
             ManagedAudioMedia media = null;
 
+
+
+
+            string fullPath = Path.Combine(dirPath, audioAttrSrc.Value);
+            fullPath = FileDataProvider.NormaliseFullFilePath(fullPath).Replace('/', '\\');
+            addOPF_GlobalAssetPath(fullPath);
+
+
+
             if (audioAttrSrc.Value.EndsWith("wav", StringComparison.OrdinalIgnoreCase))
             {
-                string dirPathSmil = Path.GetDirectoryName(fullSmilPath); //m_Book_FilePath);
                 FileDataProvider dataProv = null;
-                string fullWavPathOriginal = Path.Combine(dirPathSmil, audioAttrSrc.Value);
-                if (!File.Exists(fullWavPathOriginal))
+
+                if (!File.Exists(fullPath))
                 {
-                    Debug.Fail("File not found: {0}", fullWavPathOriginal);
+                    Debug.Fail("File not found: {0}", fullPath);
                     media = null;
                 }
                 else
                 {
                     //bool deleteSrcAfterCompletion = false;
 
-                    string fullWavPath = fullWavPathOriginal;
+                    string fullWavPath = fullPath;
 
                     FileDataProvider obj;
                     m_OriginalAudioFile_FileDataProviderMap.TryGetValue(fullWavPath, out obj);
@@ -392,19 +400,20 @@ namespace urakawa.daisy.import
             else if (audioAttrSrc.Value.EndsWith("mp3", StringComparison.OrdinalIgnoreCase)
                 || audioAttrSrc.Value.EndsWith("mp4", StringComparison.OrdinalIgnoreCase))
             {
-                string fullMp34PathOriginal = Path.Combine(dirPath, audioAttrSrc.Value);
-                if (!File.Exists(fullMp34PathOriginal))
+                if (!File.Exists(fullPath))
                 {
-                    Debug.Fail("File not found: {0}", fullMp34PathOriginal);
+                    Debug.Fail("File not found: {0}", fullPath);
                     return;
                 }
 
                 if (RequestCancellation) return;
 
-                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.DecodingAudio, Path.GetFileName(fullMp34PathOriginal)));
+                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.DecodingAudio, Path.GetFileName(fullPath)));
 
 
                 if (RequestCancellation) return;
+
+                string fullMp34PathOriginal = fullPath;
 
                 FileDataProvider obj;
                 m_OriginalAudioFile_FileDataProviderMap.TryGetValue(fullMp34PathOriginal, out obj);

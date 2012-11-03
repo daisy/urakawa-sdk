@@ -384,6 +384,8 @@ namespace urakawa.daisy.import
                                     string parentPath = Directory.GetParent(filePath).FullName;
                                     imgSourceFullpath = Path.Combine(parentPath, relativePath);
 
+                                    imgSourceFullpath = FileDataProvider.NormaliseFullFilePath(imgSourceFullpath).Replace('/', '\\');
+
                                     //string fullPath = Path.GetFullPath(imgSourceFullpath);
                                     //string toReplace = Path.GetDirectoryName(filePath);
                                     //toReplace = Path.GetFullPath(toReplace);
@@ -412,6 +414,8 @@ namespace urakawa.daisy.import
                                         presentation.MediaFactory.CreateManagedImageMedia();
                                     managedImage.MediaData = imageData;
                                     chProp.SetMedia(presentation.ChannelsManager.GetOrCreateImageChannel(), managedImage);
+
+                                    addOPF_GlobalAssetPath(imgSourceFullpath);
                                 }
                                 else
                                 {
@@ -475,6 +479,8 @@ namespace urakawa.daisy.import
                                     string parentPath = Directory.GetParent(filePath).FullName;
                                     videoSourceFullpath = Path.Combine(parentPath, relativePath);
 
+                                    videoSourceFullpath = FileDataProvider.NormaliseFullFilePath(videoSourceFullpath).Replace('/', '\\');
+
                                     //updatedSRC = Path.GetFullPath(videoSourceFullpath).Replace(
                                     //    Path.GetDirectoryName(filePath), "");
 
@@ -502,6 +508,8 @@ namespace urakawa.daisy.import
                                         presentation.MediaFactory.CreateManagedVideoMedia();
                                     managedVideo.MediaData = videoData;
                                     chProp.SetMedia(presentation.ChannelsManager.GetOrCreateVideoChannel(), managedVideo);
+
+                                    addOPF_GlobalAssetPath(videoSourceFullpath);
                                 }
                                 else
                                 {
@@ -539,6 +547,8 @@ namespace urakawa.daisy.import
                                     string parentPath = Directory.GetParent(filePath).FullName;
                                     imgSourceFullpath = Path.Combine(parentPath, relativePath);
 
+                                    imgSourceFullpath = FileDataProvider.NormaliseFullFilePath(imgSourceFullpath).Replace('/', '\\');
+
                                     //updatedSRC = Path.GetFullPath(imgSourceFullpath).Replace(
                                     //    Path.GetDirectoryName(filePath), "");
 
@@ -566,6 +576,8 @@ namespace urakawa.daisy.import
                                         presentation.MediaFactory.CreateManagedImageMedia();
                                     managedImage.MediaData = imageData;
                                     chProp.SetMedia(presentation.ChannelsManager.GetOrCreateImageChannel(), managedImage);
+
+                                    addOPF_GlobalAssetPath(imgSourceFullpath);
                                 }
                                 else
                                 {
@@ -1057,6 +1069,7 @@ namespace urakawa.daisy.import
                 string styleSheetPath = Path.Combine(
                     Path.GetDirectoryName(book_FilePath),
                     relativePath);
+                styleSheetPath = FileDataProvider.NormaliseFullFilePath(styleSheetPath).Replace('/', '\\');
 
                 if (File.Exists(styleSheetPath))
                 {
@@ -1075,6 +1088,8 @@ namespace urakawa.daisy.import
                     if (efd != null)
                     {
                         efd.InitializeWithData(styleSheetPath, relativePath, true);
+
+                        addOPF_GlobalAssetPath(styleSheetPath);
                     }
                 }
 #if DEBUG

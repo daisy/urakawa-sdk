@@ -179,7 +179,14 @@ namespace urakawa.daisy.import
                     || (md != null && !md.IsRepeatable && !metadataNameAlreadyExists(project, name))
                     )
                 {
-                    Metadata meta = addMetadata(rootFilePath, project, name, content, mdNode);
+                    if (name != "dtb:totalTime"
+                        && name != "dtb:totalElapsedTime"
+                        && name != "media:duration"
+                        && name != "cover"
+                        )
+                    {
+                        Metadata meta = addMetadata(rootFilePath, project, name, content, mdNode);
+                    }
                 }
             }
         }
@@ -276,6 +283,9 @@ namespace urakawa.daisy.import
                        content);
                 }
 
+                styleSheetPath = FileDataProvider.NormaliseFullFilePath(styleSheetPath).Replace('/', '\\');
+
+
                 if (File.Exists(styleSheetPath))
                 {
                     string ext = Path.GetExtension(content);
@@ -284,6 +294,8 @@ namespace urakawa.daisy.import
                     {
                         ExternalFiles.ExternalFileData efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
                         efd.InitializeWithData(styleSheetPath, SupportedMetadata_Z39862005.MATHML_XSLT_METADATA + content, true);
+
+                        addOPF_GlobalAssetPath(styleSheetPath);
                     }
 #if DEBUG
                     else
@@ -432,7 +444,18 @@ namespace urakawa.daisy.import
         {
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
             {
-                Metadata meta = addMetadata(book_FilePath, project, SupportedMetadata_Z39862005.DC_Identifier, m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);
+                string id = SupportedMetadata_Z39862005.DC_Identifier;
+
+                if (@"spine".Equals(
+                    project.Presentations.Get(0).RootNode.GetXmlElementLocalName(),
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    id = id.ToLower();
+                }
+
+                Metadata meta = addMetadata(book_FilePath, project,
+                    id,
+                    m_PublicationUniqueIdentifier, m_PublicationUniqueIdentifierNode);
                 meta.IsMarkedAsPrimaryIdentifier = true;
             }
             //if no unique publication identifier could be determined, see how many identifiers there are

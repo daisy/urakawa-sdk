@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using AudioLib;
@@ -7,6 +9,8 @@ using urakawa.data;
 using urakawa.events.progress;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
+using urakawa.metadata;
+using urakawa.metadata.daisy;
 using urakawa.property.channel;
 using urakawa.xuk;
 
@@ -16,6 +20,8 @@ namespace urakawa.daisy.import
     {
         protected readonly string m_outDirectory;
         private string m_Book_FilePath;
+
+        private string m_OPF_ContainerRelativePath;
 
 
         private string m_Xuk_FilePath;
@@ -75,7 +81,7 @@ namespace urakawa.daisy.import
                 FileDataProvider.CreateDirectory(m_outDirectory);
             }
 
-            m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, false);
+            m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, null, false);
 
             if (RequestCancellation) return;
             //initializeProject();
@@ -83,15 +89,58 @@ namespace urakawa.daisy.import
             reportProgress(100, UrakawaSDK_daisy_Lang.ImportInitialized);
         }
 
-        public static string GetXukFilePath(string outputDirectory, string bookFilePath, bool isSpine)
+        public const string XUK_DIR = "_XUK"; // prepend with '_' so it appears at the top of the alphabetical sorting in the file explorer window
+
+        public static string GetXukDirectory(string docPath)
         {
-            return Path.Combine(outputDirectory, Path.GetFileName(bookFilePath) + (isSpine ? OpenXukAction.XUK_SPINE_EXTENSION : OpenXukAction.XUK_EXTENSION));
+            return XUK_DIR
+                   + Path.DirectorySeparatorChar
+                   + Path.GetFileName(docPath)
+                   + XUK_DIR;
         }
+
+        private static string cleanupTitle(string title)
+        {
+            string cleaned =
+                FileDataProvider.EliminateForbiddenFileNameCharacters(
+                    title.Replace(" ", "").Replace("'", "").Replace("\"", ""));
+
+            if (cleaned.Length > 20)
+            {
+                cleaned = cleaned.Substring(0, 20);
+            }
+
+            return cleaned;
+        }
+
+        public static string GetXukFilePath(string outputDirectory, string bookFilePath, string title, bool isSpine)
+        {
+            return Path.Combine(outputDirectory,
+                (isSpine ? @"_" : "")
+                + Path.GetFileName(bookFilePath)
+                + (!string.IsNullOrEmpty(title) ? "["
+                + cleanupTitle(title)
+                + "]" : "")
+                + (isSpine ? OpenXukAction.XUK_SPINE_EXTENSION : OpenXukAction.XUK_EXTENSION));
+        }
+
+        public static string GetXukFilePath_SpineItem(string outputDirectory, string relativeFilePath, string title)
+        {
+            return Path.Combine(outputDirectory,
+                FileDataProvider.EliminateForbiddenFileNameCharacters(relativeFilePath)
+                + (!string.IsNullOrEmpty(title) ? "["
+                + cleanupTitle(title)
+                + "]" : "")
+                + OpenXukAction.XUK_EXTENSION);
+        }
+
+        private bool m_IsSpine = false;
 
         public override void DoWork()
         {
             if (RequestCancellation) return;
-            initializeProject(); //initialization moved from constructor to allow derived class to implement project construction
+
+            initializeProject(Path.GetFileName(m_Book_FilePath)); //initialization moved from constructor to allow derived class to implement project construction
 
             transformBook();
 
@@ -102,6 +151,32 @@ namespace urakawa.daisy.import
             if (RequestCancellation) return;
 
             //m_Project.SaveXuk(new Uri(m_Xuk_FilePath));
+
+
+            string title = GetTitle(m_Project.Presentations.Get(0));
+            if (!string.IsNullOrEmpty(title))
+            {
+                m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, title, m_IsSpine);
+
+                //deleteDataDirectoryIfEmpty();
+                //m_Project.Presentations.Get(0).DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
+
+                Presentation presentation = m_Project.Presentations.Get(0);
+
+                string dataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
+                presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
+
+                string newDataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath; // creates it!
+                if (Directory.Exists(newDataFolderPath))
+                {
+                    FileDataProvider.DeleteDirectory(newDataFolderPath);
+                }
+
+                if (newDataFolderPath != dataFolderPath)
+                {
+                    Directory.Move(dataFolderPath, newDataFolderPath);
+                }
+            }
 
 
             SaveXukAction action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath));
@@ -153,12 +228,13 @@ namespace urakawa.daisy.import
             }
         }
 
-        protected virtual void initializeProject()
+        protected virtual void initializeProject(string dataFolderPrefix)
         {
             m_Project = new Project();
             m_Project.SetPrettyFormat(m_XukPrettyFormat);
 
-            Presentation presentation = m_Project.AddNewPresentation(new Uri(m_outDirectory), Path.GetFileName(m_Book_FilePath));
+            Presentation presentation = m_Project.AddNewPresentation(new Uri(m_outDirectory),
+                dataFolderPrefix);
 
             PCMFormatInfo pcmFormat = presentation.MediaDataManager.DefaultPCMFormat; //.Copy();
             pcmFormat.Data.SampleRate = (ushort)m_audioProjectSampleRate;
@@ -212,29 +288,53 @@ namespace urakawa.daisy.import
             {
                 bool isHTML = extension.Equals(".xhtml", StringComparison.OrdinalIgnoreCase)
                             || extension.Equals(".html", StringComparison.OrdinalIgnoreCase);
+
+                bool isXML = extension.Equals(".xml", StringComparison.OrdinalIgnoreCase);
+
                 if (extension.Equals(".opf", StringComparison.OrdinalIgnoreCase))
                 {
-                    XmlDocument opfXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, false, false);
+                    m_OPF_ContainerRelativePath = null;
 
-                    if (RequestCancellation) return;
-                    reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingOPF, Path.GetFileName(m_Book_FilePath)));
-                    parseOpf(opfXmlDoc);
+                    openAndParseOPF(m_Book_FilePath);
                 }
                 else if (
                     isHTML
-                    || extension.Equals(".xml", StringComparison.OrdinalIgnoreCase)
+                    || isXML
                     )
                 {
                     if (isHTML)
                     {
                         MessageBox.Show("(X)HTML support is experimental and incomplete, please use with caution!");
+
+                        reInitialiseProjectSpine();
+
+                        List<string> spineOfContentDocuments = new List<string>();
+                        spineOfContentDocuments.Add(Path.GetFileName(m_Book_FilePath));
+
+                        List<Dictionary<string, string>> spineItemsAttributes = new List<Dictionary<string, string>>();
+                        spineItemsAttributes.Add(new Dictionary<string, string>());
+
+                        parseContentDocuments(spineOfContentDocuments, new Dictionary<string, string>(),
+                                              spineItemsAttributes, null, null);
                     }
-
-                    XmlDocument contentXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, true, true);
-
-                    if (parseContentDocParts(m_Book_FilePath, m_Project, contentXmlDoc, Path.GetFileName(m_Book_FilePath), DocumentMarkupType.NA))
+                    else if (isXML &&
+                        FileDataProvider.NormaliseFullFilePath(m_Book_FilePath).IndexOf(
+                        @"META-INF"
+                        //+ Path.DirectorySeparatorChar
+                        + '/'
+                        + @"container.xml"
+                        , StringComparison.OrdinalIgnoreCase) >= 0)
                     {
-                        return; // user cancel
+                        parseContainerXML(m_Book_FilePath);
+                    }
+                    else
+                    {
+                        XmlDocument contentXmlDoc = XmlReaderWriterHelper.ParseXmlDocument(m_Book_FilePath, true, true);
+
+                        if (parseContentDocParts(m_Book_FilePath, m_Project, contentXmlDoc, Path.GetFileName(m_Book_FilePath), DocumentMarkupType.NA))
+                        {
+                            return; // user cancel
+                        }
                     }
                 }
                 else if (extension.Equals(".epub", StringComparison.OrdinalIgnoreCase)
@@ -254,6 +354,12 @@ namespace urakawa.daisy.import
 
 
             if (RequestCancellation) return;
+
+            if (m_PackageUniqueIdAttr != null)
+            {
+                m_PublicationUniqueIdentifier = m_PublicationUniqueIdentifier_OPF;
+                m_PublicationUniqueIdentifierNode = m_PublicationUniqueIdentifierNode_OPF;
+            }
 
             metadataPostProcessing(m_Book_FilePath, m_Project);
 
@@ -335,6 +441,7 @@ namespace urakawa.daisy.import
         {
             if (RequestCancellation) return true;
             reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, displayPath));
+
             parseMetadata(filePath, project, xmlDoc);
 
             if (RequestCancellation) return true;
@@ -345,6 +452,67 @@ namespace urakawa.daisy.import
             parseContentDocument(filePath, project, xmlDoc, null, null, type);
 
             return false;
+        }
+
+        public string GetTitle()
+        {
+            return GetTitle(m_Project.Presentations.Get(0));
+        }
+
+        public static string GetTitle(Presentation pres)
+        {
+            string title = null;
+
+            if (pres.Metadatas.Count > 0)
+            {
+                foreach (Metadata metadata in pres.Metadatas.ContentsAs_Enumerable)
+                {
+                    if (metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DC_Title, StringComparison.OrdinalIgnoreCase)
+                        || metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DTB_TITLE, StringComparison.OrdinalIgnoreCase))
+                    {
+                        title = metadata.NameContentAttribute.Value;
+                        if (!string.IsNullOrEmpty(title))
+                        {
+                            title = Regex.Replace(title, @"\s+", " ");
+                            title = title.Trim();
+                            break;
+                        }
+#if DEBUG
+                        else
+                        {
+                            //Debugger.Break();
+                            bool debug = true;
+                        }
+#endif //DEBUG
+                    }
+                }
+            }
+
+            if (pres.HeadNode != null && pres.HeadNode.Children != null && pres.HeadNode.Children.Count > 0)
+            {
+                foreach (urakawa.core.TreeNode treeNode in pres.HeadNode.Children.ContentsAs_Enumerable)
+                {
+                    if (treeNode.GetXmlElementLocalName() == "title")
+                    {
+                        title = treeNode.GetTextFlattened();
+                        if (!string.IsNullOrEmpty(title))
+                        {
+                            title = Regex.Replace(title, @"\s+", " ");
+                            title = title.Trim();
+                            break;
+                        }
+#if DEBUG
+                        else
+                        {
+                            //Debugger.Break();
+                            bool debug = true;
+                        }
+#endif //DEBUG
+                    }
+                }
+            }
+
+            return title;
         }
     }
 }

@@ -468,7 +468,7 @@ namespace urakawa.daisy.export
             return document;
         }
 
-        private void CreateExternalFiles()
+        internal void CreateExternalFiles()
         {
             foreach (ExternalFiles.ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
             {
