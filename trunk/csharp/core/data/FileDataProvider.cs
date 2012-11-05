@@ -235,7 +235,11 @@ namespace urakawa.data
         {
             DirectoryInfo dirInfo = new DirectoryInfo(rootDirPath);
 
+#if NET40
             IEnumerable<DirectoryInfo> allDirs = dirInfo.EnumerateDirectories("*.*", SearchOption.TopDirectoryOnly);
+#else
+            DirectoryInfo[] allDirs = dirInfo.GetDirectories("*.*", SearchOption.TopDirectoryOnly);
+#endif
             foreach (DirectoryInfo subDirInfo in allDirs)
             {
                 string subDirPath = Path.Combine(rootDirPath, subDirInfo.Name);
@@ -243,7 +247,11 @@ namespace urakawa.data
                 recursiveDeleteDirectory(subDirPath);
             }
 
+#if NET40
             IEnumerable<FileInfo> allFiles = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
+#else
+            FileInfo[] allFiles = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
+#endif
             foreach (FileInfo fileInfo in allFiles)
             {
                 try
