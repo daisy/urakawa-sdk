@@ -169,7 +169,7 @@ namespace urakawa.daisy.export
         /// Creates audio files for export, it is important to call  function RemovePublishChannel after all export operations are complete
         /// </summary>
         /// <returns></returns>
-        internal Channel PublishAudioFiles()
+        public Channel PublishAudioFiles()
         {
             // if publish channel exists remove it.
             List<Channel> previousChannelsList = m_Presentation.ChannelsManager.GetChannelsByName(PUBLISH_AUDIO_CHANNEL_NAME);
