@@ -124,8 +124,11 @@ namespace urakawa.daisy.import
 #endif
                 DirectoryInfo dirInfo = new DirectoryInfo(unzipDirectory);
 
-                //FileInfo[] opfFiles = dirInfo.GetFiles("*.opf", SearchOption.AllDirectories);
+#if NET40
                 IEnumerable<FileInfo> opfFiles = dirInfo.EnumerateFiles("*.opf", SearchOption.AllDirectories);
+#else
+                FileInfo[] opfFiles = dirInfo.GetFiles("*.opf", SearchOption.AllDirectories);
+#endif
 
                 //                string[] fileNames = Directory.GetFiles(unzipDirectory, "*.opf",
                 //#if NET40
@@ -241,7 +244,12 @@ namespace urakawa.daisy.import
             string metaInfDir = Path.GetDirectoryName(containerPath);
 
             DirectoryInfo dirInfo = new DirectoryInfo(metaInfDir);
+
+#if NET40
             IEnumerable<FileInfo> fileInfos = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
+#else
+            FileInfo[] fileInfos = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
+#endif
             foreach (FileInfo fileInfo in fileInfos)
             {
                 ExternalFiles.ExternalFileData efd = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.GenericExternalFileData>();
@@ -330,7 +338,7 @@ namespace urakawa.daisy.import
 
                 string fullPath = Path.Combine(Path.GetDirectoryName(opfPath), attrHref.Value);
                 fullPath = FileDataProvider.NormaliseFullFilePath(fullPath).Replace('/', '\\');
-                
+
                 bool alreadyPreserved = false;
                 foreach (
                     //ExternalFiles.ExternalFileData exfiledata in m_Project.Presentations.Get(0).ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable
