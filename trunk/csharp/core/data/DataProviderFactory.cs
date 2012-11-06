@@ -90,9 +90,17 @@ namespace urakawa.data
         public const string RDF_MIME_TYPE = "application/rdf+xml";
         public const string RDF_EXTENSION = ".xmp";
 
-        public const string FONT_TTF_MIME_TYPE = "application/x-font-ttf";
-        public const string FONT_TTF_MIME_TYPE_ = "application/vnd.ms-opentype";
+        public const string FONT_TTF_MIME_TYPE = "application/vnd.ms-opentype";
+        public const string FONT_TTF_MIME_TYPE_ = "application/x-font-ttf";
         public const string FONT_TTF_EXTENSION = ".ttf";
+
+        public const string FONT_OTF_MIME_TYPE = FONT_TTF_MIME_TYPE;
+        public const string FONT_OTF_MIME_TYPE_ = "application/x-font-otf";
+        public const string FONT_OTF_EXTENSION = ".otf";
+
+        public const string FONT_WOFF_MIME_TYPE = "application/font-woff";
+        public const string FONT_WOFF_MIME_TYPE_ = "application/x-font-woff";
+        public const string FONT_WOFF_EXTENSION = ".woff";
 
         /// <summary>
         /// MIME type for WMV videos
@@ -269,6 +277,16 @@ namespace urakawa.data
                     extension = FONT_TTF_EXTENSION;
                     break;
 
+                case FONT_OTF_MIME_TYPE:
+                case FONT_OTF_MIME_TYPE_:
+                    extension = FONT_OTF_EXTENSION;
+                    break;
+
+                case FONT_WOFF_MIME_TYPE:
+                case FONT_WOFF_MIME_TYPE_:
+                    extension = FONT_WOFF_EXTENSION;
+                    break;
+
                 case CSS_MIME_TYPE:
                     extension = CSS_EXTENSION;
                     break;
@@ -379,6 +397,14 @@ namespace urakawa.data
 
                 case FONT_TTF_EXTENSION:
                     mime = FONT_TTF_MIME_TYPE;
+                    break;
+
+                case FONT_OTF_EXTENSION:
+                    mime = FONT_OTF_MIME_TYPE;
+                    break;
+
+                case FONT_WOFF_EXTENSION:
+                    mime = FONT_WOFF_MIME_TYPE;
                     break;
 
                 case CSS_EXTENSION:
