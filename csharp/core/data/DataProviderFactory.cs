@@ -277,7 +277,7 @@ namespace urakawa.data
                     extension = FONT_TTF_EXTENSION;
                     break;
 
-                case FONT_OTF_MIME_TYPE:
+                //case FONT_OTF_MIME_TYPE: ==> same as FONT_TTF_MIME_TYPE
                 case FONT_OTF_MIME_TYPE_:
                     extension = FONT_OTF_EXTENSION;
                     break;
