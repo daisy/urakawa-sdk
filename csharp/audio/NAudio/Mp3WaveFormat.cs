@@ -9,13 +9,28 @@ namespace NAudio.Wave
     /// MP3 WaveFormat, MPEGLAYER3WAVEFORMAT from mmreg.h
     /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 2)]
-    class Mp3WaveFormat : WaveFormat
+    public class Mp3WaveFormat : WaveFormat
     {
-        public Mp3WaveFormatId id; // wID;
-        public Mp3WaveFormatFlags flags; // fdwFlags;
-        public ushort blockSize; // nBlockSize
-        public ushort framesPerBlock; // nFramesPerBlock;
-        public ushort codecDelay; // nCodecDelay
+        /// <summary>
+        /// Wave format ID (wID)
+        /// </summary>
+        public Mp3WaveFormatId id;
+        /// <summary>
+        /// Padding flags (fdwFlags)
+        /// </summary>
+        public Mp3WaveFormatFlags flags;
+        /// <summary>
+        /// Block Size (nBlockSize)
+        /// </summary>
+        public ushort blockSize;
+        /// <summary>
+        /// Frames per block (nFramesPerBlock)
+        /// </summary>
+        public ushort framesPerBlock;
+        /// <summary>
+        /// Codec Delay (nCodecDelay)
+        /// </summary>
+        public ushort codecDelay;
 
         private const short Mp3WaveFormatExtraBytes = 12; // MPEGLAYER3_WFX_EXTRA_BYTES
 
@@ -26,33 +41,26 @@ namespace NAudio.Wave
         {
             waveFormatTag = WaveFormatEncoding.MpegLayer3;
             this.channels = (short)channels;
-            this.averageBytesPerSecond = bitRate * (1024 / 8);  // not really used but must be one of 64, 96, 112, 128, 160kbps
+            this.averageBytesPerSecond = bitRate / 8;
             this.bitsPerSample = 0; // must be zero
             this.blockAlign = 1; // must be 1
             this.sampleRate = sampleRate;
 
             this.extraSize = Mp3WaveFormatExtraBytes;
             this.id = Mp3WaveFormatId.Mpeg;
-            this.flags = Mp3WaveFormatFlags.PaddingOff;
+            this.flags = Mp3WaveFormatFlags.PaddingIso;
             this.blockSize = (ushort)blockSize;
             this.framesPerBlock = 1;
             this.codecDelay = 0;
         }
-
-        public override int BlockAlign
-        {
-            get
-            {
-                return blockSize;
-            }
-        }
-
     }
 
+    /// <summary>
+    /// Wave Format Padding Flags
+    /// </summary>
     [Flags]
-    enum Mp3WaveFormatFlags
+    public enum Mp3WaveFormatFlags
     {
-
         /// <summary>
         /// MPEGLAYER3_FLAG_PADDING_ISO
         /// </summary>
@@ -67,8 +75,10 @@ namespace NAudio.Wave
         PaddingOff = 2,
     }
 
-
-    enum Mp3WaveFormatId : ushort
+    /// <summary>
+    /// Wave Format ID
+    /// </summary>
+    public enum Mp3WaveFormatId : ushort
     {
         /// <summary>MPEGLAYER3_ID_UNKNOWN</summary>
         Unknown = 0,

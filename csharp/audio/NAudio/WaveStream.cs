@@ -73,25 +73,6 @@ namespace NAudio.Wave
         }
 
         /// <summary>
-        /// Recommends a number of bytes to read, given a desired number of
-        /// milliseconds. Use this in subsequent calls to Read, to ensure that
-        /// full blocks are read
-        /// </summary>
-        /// <param name="milliseconds">Number of milliseconds desired</param>
-        /// <returns>Number of bytes to read</returns>
-        public virtual int GetReadSize(int milliseconds)
-        {
-            int bytes = (int)((WaveFormat.AverageBytesPerSecond / 1000.0) * milliseconds);
-            if ((bytes % BlockAlign) != 0)
-            {
-                // Return the upper BlockAligned
-                bytes = bytes + BlockAlign - (bytes % BlockAlign);
-            }
-            return bytes;
-            //return WaveFormat.ConvertLatencyToByteSize(milliseconds);
-        }
-
-        /// <summary>
         /// The block alignment for this wavestream. Do not modify the Position
         /// to anything that is not a whole multiple of this value
         /// </summary>
@@ -124,7 +105,7 @@ namespace NAudio.Wave
         /// <summary>
         /// The current position in the stream in Time format
         /// </summary>
-        public TimeSpan CurrentTime
+        public virtual TimeSpan CurrentTime
         {
             get
             {
@@ -139,7 +120,7 @@ namespace NAudio.Wave
         /// <summary>
         /// Total length in real-time of the stream (may be an estimate for compressed files)
         /// </summary>
-        public TimeSpan TotalTime
+        public virtual TimeSpan TotalTime
         {
             get
             {
