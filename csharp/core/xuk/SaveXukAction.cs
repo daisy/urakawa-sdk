@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using urakawa.command;
+using urakawa.data;
 using urakawa.events.progress;
 using urakawa.ExternalFiles;
 using urakawa.progress;
@@ -163,7 +164,14 @@ namespace urakawa.xuk
                 Progress -= progressing;
             };
 
-            mDestStream = new FileStream(mDestUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
+            string path = mDestUri.LocalPath;
+            string parentdir = Path.GetDirectoryName(path);
+            if (!Directory.Exists(parentdir))
+            {
+                FileDataProvider.CreateDirectory(parentdir);
+            }
+
+            mDestStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
 
             XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
             mXmlWriter = XmlWriter.Create(mDestStream, settings);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using AudioLib;
@@ -200,11 +201,32 @@ namespace urakawa.data
                 throw new exception.InputStreamIsTooShortException("The data provider has no data to export to external file");
             }
 
-            FileStream exportFileStream = File.Create(exportFilePath);
+            const uint BUFFER_SIZE = 1024 * 1024; // 1 MB MAX BUFFER
+
+            string parentdir = Path.GetDirectoryName(exportFilePath);
+            if (!Directory.Exists(parentdir))
+            {
+                FileDataProvider.CreateDirectory(parentdir);
+            }
+
+            FileStream exportFileStream = null;
+            try
+            {
+                //exportFileStream = File.Create(exportFilePath);
+                exportFileStream = new FileStream(exportFilePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+            }
+            catch(Exception ex)
+            {
+                source.Close();
+
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw;
+            }
 
             try
             {
-                const uint BUFFER_SIZE = 1024 * 1024; // 1 MB MAX BUFFER
                 StreamUtils.Copy(source, 0, exportFileStream, BUFFER_SIZE);
 
                 //if (source.Length <= BUFFER_SIZE)
