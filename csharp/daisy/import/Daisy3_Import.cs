@@ -99,15 +99,39 @@ namespace urakawa.daisy.import
                    + XUK_DIR;
         }
 
-        private static string cleanupTitle(string title)
+        public static string CleanupTitle(string title, int maxLength)
         {
-            string cleaned =
-                FileDataProvider.EliminateForbiddenFileNameCharacters(
-                    title.Replace(" ", "").Replace("'", "").Replace("\"", ""));
+            string cleaned = title.Replace('.', ' ')
+                .Replace(':', ' ')
+                .Replace('—', ' ')
+                .Replace('\'', ' ')
+                .Replace('"', ' ')
+                //.Replace('/', ' ')
+                .Replace('\\', ' ')
+                .Replace('!', ' ')
+                .Replace('?', ' ');
 
-            if (cleaned.Length > 20)
+            cleaned = Regex.Replace(cleaned, @"\s+", " ");
+            cleaned = cleaned.Trim();
+
+            if (cleaned.IndexOf(' ') > 0)
             {
-                cleaned = cleaned.Substring(0, 20);
+                string[] split = cleaned.Split(' ');
+                cleaned = "";
+                foreach (string s in split)
+                {
+                    char c = char.ToUpper(s[0]);
+                    string ss = c
+                        + (s.Length > 1 ? s.ToLower().Substring(1) : "");
+                    cleaned += ss;
+                }
+            }
+
+            cleaned = FileDataProvider.EliminateForbiddenFileNameCharacters(cleaned);
+
+            if (cleaned.Length > maxLength)
+            {
+                cleaned = cleaned.Substring(0, maxLength);
             }
 
             return cleaned;
@@ -119,7 +143,7 @@ namespace urakawa.daisy.import
                 (isSpine ? @"_" : "")
                 + Path.GetFileName(bookFilePath)
                 + (!string.IsNullOrEmpty(title) ? "["
-                + cleanupTitle(title)
+                + CleanupTitle(title, 20)
                 + "]" : "")
                 + (isSpine ? OpenXukAction.XUK_SPINE_EXTENSION : OpenXukAction.XUK_EXTENSION));
         }
@@ -129,7 +153,7 @@ namespace urakawa.daisy.import
             return Path.Combine(outputDirectory,
                 FileDataProvider.EliminateForbiddenFileNameCharacters(relativeFilePath)
                 + (!string.IsNullOrEmpty(title) ? "["
-                + cleanupTitle(title)
+                + CleanupTitle(title, 20)
                 + "]" : "")
                 + OpenXukAction.XUK_EXTENSION);
         }
