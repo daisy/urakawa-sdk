@@ -207,7 +207,7 @@ namespace urakawa.daisy.import
             //            openAndParseOPF(opfPath);
         }
 
-        private const string META_INF_prefix = @"META-INF_";
+        internal const string META_INF_prefix = @"META-INF_";
 
         private void parseContainerXML(string containerPath)
         {
