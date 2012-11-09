@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
+using System.Xml;
 using AudioLib;
 using urakawa.core;
 using urakawa.daisy.export.visitor;
@@ -20,6 +21,7 @@ using ICSharpCode.SharpZipLib.Core;
 using Jaime.Olivares;
 using urakawa.property.xml;
 using urakawa.xuk;
+using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 #endif
 
@@ -164,16 +166,21 @@ namespace urakawa.daisy.export
             }
 
             string opfFilePath = Path.Combine(m_UnzippedOutputDirectory, opfRelativeFilePath);
+
 #if DEBUG
-            StreamWriter opfWriter = File.CreateText(opfFilePath);
-            try
-            {
-                opfWriter.WriteLine(opfFilePath);
-            }
-            finally
-            {
-                opfWriter.Close();
-            }
+            XmlDocument opfXmlDoc = createXmlDocument_OPF();
+            XmlReaderWriterHelper.WriteXmlDocument(opfXmlDoc, opfFilePath);
+
+
+            //StreamWriter opfWriter = File.CreateText(opfFilePath);
+            //try
+            //{
+            //    opfWriter.WriteLine(opfFilePath);
+            //}
+            //finally
+            //{
+            //    opfWriter.Close();
+            //}
 #endif //DEBUG
 
             if (isXukSpine)
@@ -282,7 +289,6 @@ namespace urakawa.daisy.export
                     }
 
                     string body = spineItemPresentation.RootNode.GetXmlFragment(false);
-
                     StreamWriter spineItemWriter = File.CreateText(fullSpineItemPath);
                     try
                     {
@@ -613,5 +619,36 @@ namespace urakawa.daisy.export
         {
         }
 #endif //ENABLE_SHARPZIP
+
+
+        private XmlDocument createXmlDocument_OPF()
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.XmlResolver = null;
+
+            xmlDoc.CreateXmlDeclaration("1.0", "utf-8", null);
+
+            XmlNode package = xmlDoc.CreateElement(null,
+                "package",
+                "http://www.idpf.org/2007/opf");
+
+            xmlDoc.AppendChild(package);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, package, "unique-identifier", "uid");
+            XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, package, "version", "3.0");
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, package, "prefix", "rendition: http://www.idpf.org/vocab/rendition/# cc: http://creativecommons.org/ns#");
+
+            XmlNode metadata = xmlDoc.CreateElement(null, "metadata", package.NamespaceURI);
+            package.AppendChild(metadata);
+
+            XmlNode manifest = xmlDoc.CreateElement(null, "manifest", package.NamespaceURI);
+            package.AppendChild(manifest);
+
+            XmlNode spine = xmlDoc.CreateElement(null, "spine", package.NamespaceURI);
+            package.AppendChild(spine);
+
+            return xmlDoc;
+        }
     }
 }
