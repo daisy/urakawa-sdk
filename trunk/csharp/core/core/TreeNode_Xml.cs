@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Xml;
 using AudioLib;
 using urakawa.data;
 using urakawa.media;
 using urakawa.media.data.image;
+using urakawa.media.data.video;
 using urakawa.property.xml;
 using urakawa.xuk;
 using XmlAttribute = urakawa.property.xml.XmlAttribute;
@@ -347,7 +349,7 @@ namespace urakawa.core
             return GetXmlNamespaceUri(null);
         }
 
-        protected void GetXmlFragment_(XmlTextWriter xmlWriter)
+        protected void GetXmlFragment_(XmlWriter xmlWriter, bool absoluteLinks)
         {
             if (HasXmlProperty)
             {
@@ -394,7 +396,8 @@ namespace urakawa.core
                     }
                 }
 
-                ManagedImageMedia manMedia = GetImageMedia() as ManagedImageMedia;
+                ManagedImageMedia manImageMedia = GetImageMedia() as ManagedImageMedia;
+                ManagedVideoMedia manVideoMedia = GetVideoMedia() as ManagedVideoMedia;
 
                 foreach (XmlAttribute xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
                 {
@@ -405,12 +408,26 @@ namespace urakawa.core
                     string attrNSPrefix = xmlAttr.Prefix;
                     string nameWithoutPrefix = xmlAttr.PrefixedLocalName != null ? xmlAttr.PrefixedLocalName : xmlAttr.LocalName;
 
-                    if (manMedia != null &&
+                    if (manImageMedia != null &&
                         (nameWithoutPrefix == "href" || nameWithoutPrefix == "src"))
                     {
-                        DebugFix.Assert(manMedia.ImageMediaData.OriginalRelativePath == value);
-                        value = ((FileDataProvider)manMedia.ImageMediaData.DataProvider).DataFileFullPath;
+                        DebugFix.Assert(manImageMedia.ImageMediaData.OriginalRelativePath == value);
+                        if (absoluteLinks)
+                        {
+                            value = ((FileDataProvider)manImageMedia.ImageMediaData.DataProvider).DataFileFullPath;
+                        }
                     }
+
+                    if (manVideoMedia != null &&
+                        (nameWithoutPrefix == "href" || nameWithoutPrefix == "src"))
+                    {
+                        DebugFix.Assert(manVideoMedia.VideoMediaData.OriginalRelativePath == value);
+                        if (absoluteLinks)
+                        {
+                            value = ((FileDataProvider)manVideoMedia.VideoMediaData.DataProvider).DataFileFullPath;
+                        }
+                    }
+
 
                     if (String.IsNullOrEmpty(attrNSPrefix))
                     {
@@ -480,7 +497,7 @@ namespace urakawa.core
                 {
                     TreeNode child = mChildren.Get(i);
 
-                    child.GetXmlFragment_(xmlWriter);
+                    child.GetXmlFragment_(xmlWriter, absoluteLinks);
                 }
             }
             else
@@ -520,25 +537,37 @@ namespace urakawa.core
                 }
             }
 
-            xmlWriter.WriteEndElement();
+            if (HasXmlProperty)
+            {
+                xmlWriter.WriteEndElement();
+            }
         }
 
-        public string GetXmlFragment()
+        public string GetXmlFragment(bool absoluteLinks)
         {
             if (!HasXmlProperty)
             {
                 return null;
             }
 
-            StringWriter strWriter = new StringWriter();
-            XmlTextWriter xmlWriter = new XmlTextWriter(strWriter);
-            xmlWriter.Formatting = Formatting.Indented;
-            xmlWriter.Indentation = 4;
-            xmlWriter.IndentChar = ' ';
-            xmlWriter.Namespaces = true;
-            xmlWriter.QuoteChar = '"';
+            //StringWriter strWriter = new StringWriter();
+            //strWriter.NewLine = Environment.NewLine;
+            ////strWriter.NewLine = @"\n";
+            ////strWriter.Encoding = Encoding.UTF8;
+            
+            StringBuilder strWriter = new StringBuilder();
 
-            GetXmlFragment_(xmlWriter);
+            XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(true);
+            XmlWriter xmlWriter = XmlWriter.Create(strWriter, settings);
+
+            //XmlTextWriter xmlWriter = new XmlTextWriter(strWriter);
+            //xmlWriter.Formatting = Formatting.Indented;
+            //xmlWriter.Indentation = 4;
+            //xmlWriter.IndentChar = ' ';
+            //xmlWriter.Namespaces = true;
+            //xmlWriter.QuoteChar = '"';
+
+            GetXmlFragment_(xmlWriter, absoluteLinks);
 
             xmlWriter.Flush();
             xmlWriter.Close();
