@@ -16,42 +16,56 @@ namespace urakawa.daisy.import
         private List<string> m_MetadataItemsToExclude = new List<string>();
         protected virtual List<string> MetadataItemsToExclude { get { return m_MetadataItemsToExclude; } }
 
-        private void parseMetadata(string rootFilePath, Project project, XmlDocument xmlDoc)
+        private void parseMetadata(string rootFilePath, Project project, XmlDocument xmlDoc, XmlNode rootElement)
         {
-            parseMetadata_NameContentAll(rootFilePath, project, xmlDoc);
-            parseMetadata_ElementInnerTextAll(rootFilePath, project, xmlDoc);
+            parseMetadata_NameContentAll(rootFilePath, project, xmlDoc, rootElement);
+            parseMetadata_ElementInnerTextAll(rootFilePath, project, xmlDoc, rootElement);
+            if (rootElement != null && @"metadata".Equals(rootElement.LocalName, StringComparison.OrdinalIgnoreCase))
+            {
+                foreach (XmlNode node in rootElement.ChildNodes)
+                {
+                    if (RequestCancellation) return;
+
+                    if (node.NodeType == XmlNodeType.Element
+                        && node.LocalName.Equals("link", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Metadata meta = addMetadata(rootFilePath, project, "link", "link", node);
+                    }
+                }
+            }
+
             RemoveMetadataItemsToBeExcluded(project);
         }
 
-        private void parseMetadata_ElementInnerTextAll(string rootFilePath, Project project, XmlDocument xmlDoc)
+        private void parseMetadata_ElementInnerTextAll(string rootFilePath, Project project, XmlDocument xmlDoc, XmlNode rootElement)
         {
             if (RequestCancellation) return;
 
-            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "metadata", null, false))
+            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(rootElement != null ? rootElement : xmlDoc, true, "metadata", null, false))
             {
                 if (RequestCancellation) return;
                 parseMetadata_ElementInnerText(rootFilePath, project, node);
             }
 
             if (RequestCancellation) return;
-            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "dc-metadata", null, false))
+            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(rootElement != null ? rootElement : xmlDoc, true, "dc-metadata", null, false))
             {
                 if (RequestCancellation) return;
                 parseMetadata_ElementInnerText(rootFilePath, project, node);
             }
 
             if (RequestCancellation) return;
-            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "x-metadata", null, false))
+            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(rootElement != null ? rootElement : xmlDoc, true, "x-metadata", null, false))
             {
                 if (RequestCancellation) return;
                 parseMetadata_ElementInnerText(rootFilePath, project, node);
             }
         }
 
-        private void parseMetadata_NameContentAll(string rootFilePath, Project project, XmlDocument xmlDoc)
+        private void parseMetadata_NameContentAll(string rootFilePath, Project project, XmlDocument xmlDoc, XmlNode rootElement)
         {
             if (RequestCancellation) return;
-            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(xmlDoc, true, "meta", null, false))
+            foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(rootElement != null ? rootElement : xmlDoc, true, "meta", null, false))
             {
                 if (RequestCancellation) return;
                 parseMetadata_NameContent(rootFilePath, project, node);
@@ -311,6 +325,7 @@ namespace urakawa.daisy.import
                 }
 #endif
             }
+
             return md;
         }
 
