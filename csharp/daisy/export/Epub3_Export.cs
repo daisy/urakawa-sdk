@@ -121,17 +121,20 @@ namespace urakawa.daisy.export
 
 
             string opsRelativeDirectoryPath = @"OPS"; //OEBPS
+            string opfRelativeFilePath = @"OPS/content.opf";
 
             if (isXukSpine)
             {
                 XmlAttribute xmlAttr = m_Presentation.RootNode.GetXmlProperty().GetAttribute(Daisy3_Import.OPF_ContainerRelativePath);
                 if (xmlAttr != null)
                 {
-                    opsRelativeDirectoryPath = xmlAttr.Value.Replace('\\', '/');
-                    if (opsRelativeDirectoryPath.StartsWith(@"./"))
+                    opfRelativeFilePath = xmlAttr.Value.Replace('\\', '/');
+                    if (opfRelativeFilePath.StartsWith(@"./"))
                     {
-                        opsRelativeDirectoryPath = opsRelativeDirectoryPath.Substring(2);
+                        opfRelativeFilePath = opfRelativeFilePath.Substring(2);
                     }
+
+                    opsRelativeDirectoryPath = opfRelativeFilePath;
 
                     int index = opsRelativeDirectoryPath.LastIndexOf('/');
                     if (index < 0)
@@ -159,6 +162,19 @@ namespace urakawa.daisy.export
                     FileDataProvider.CreateDirectory(opsDirectoryPath);
                 }
             }
+
+            string opfFilePath = Path.Combine(m_UnzippedOutputDirectory, opfRelativeFilePath);
+#if DEBUG
+            StreamWriter opfWriter = File.CreateText(opfFilePath);
+            try
+            {
+                opfWriter.WriteLine(opfFilePath);
+            }
+            finally
+            {
+                opfWriter.Close();
+            }
+#endif //DEBUG
 
             if (isXukSpine)
             {
@@ -265,14 +281,16 @@ namespace urakawa.daisy.export
                         FileDataProvider.CreateDirectory(parentdir);
                     }
 
-                    StreamWriter writer = File.CreateText(fullSpineItemPath);
+                    string body = spineItemPresentation.RootNode.GetXmlFragment(false);
+
+                    StreamWriter spineItemWriter = File.CreateText(fullSpineItemPath);
                     try
                     {
-                        writer.WriteLine(fullSpineItemPath);
+                        spineItemWriter.Write(body);
                     }
                     finally
                     {
-                        writer.Close();
+                        spineItemWriter.Close();
                     }
 #endif //DEBUG
 
