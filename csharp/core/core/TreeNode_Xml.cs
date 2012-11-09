@@ -557,8 +557,15 @@ namespace urakawa.core
             
             StringBuilder strWriter = new StringBuilder();
 
-            XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(true);
+            bool pretty = true;
+
+            XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(pretty);
             XmlWriter xmlWriter = XmlWriter.Create(strWriter, settings);
+
+            if (pretty && xmlWriter is XmlTextWriter)
+            {
+                ((XmlTextWriter)xmlWriter).Formatting = Formatting.Indented;
+            }
 
             //XmlTextWriter xmlWriter = new XmlTextWriter(strWriter);
             //xmlWriter.Formatting = Formatting.Indented;

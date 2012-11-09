@@ -26,8 +26,8 @@ namespace urakawa.daisy.export
 
             XmlNode manifestNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfDocument, true, "manifest", null); //opfDocument.GetElementsByTagName("manifest")[0];
 
-            const string mediaType_Smil = "application/smil";
-            const string mediaType_Ncx = "application/x-dtbncx+xml";
+            const string mediaType_Smil = DataProviderFactory.SMIL_MIME_TYPE_;
+            const string mediaType_Ncx = DataProviderFactory.NCX_MIME_TYPE;
             const string mediaType_Dtbook = "application/x-dtbook+xml";
             const string mediaType_Resource = "application/x-dtbresource+xml";
 
