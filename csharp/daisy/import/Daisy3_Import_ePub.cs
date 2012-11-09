@@ -592,6 +592,11 @@ namespace urakawa.daisy.import
                 spinePresentation.RootNode.GetOrCreateXmlProperty().SetAttribute(spineAttribute.Key, "", spineAttribute.Value);
             }
 
+            if (m_PackagePrefixAttr != null)
+            {
+                spinePresentation.RootNode.GetOrCreateXmlProperty().SetAttribute("prefix", "", m_PackagePrefixAttr.Value);
+            }
+
             // Audio files may be shared between chapters of a book!
             m_OriginalAudioFile_FileDataProviderMap.Clear();
 

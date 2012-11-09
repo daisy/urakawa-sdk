@@ -13,6 +13,7 @@ namespace urakawa.daisy.import
     public partial class Daisy3_Import
     {
         private XmlNode m_PackageUniqueIdAttr;
+        private XmlNode m_PackagePrefixAttr;
 
         private string m_PublicationUniqueIdentifier;
         private XmlNode m_PublicationUniqueIdentifierNode;
@@ -62,6 +63,7 @@ namespace urakawa.daisy.import
                 if (packageNodeAttrs != null && packageNodeAttrs.Count > 0)
                 {
                     m_PackageUniqueIdAttr = packageNodeAttrs.GetNamedItem("unique-identifier");
+                    m_PackagePrefixAttr = packageNodeAttrs.GetNamedItem("prefix");
                 }
             }
 
@@ -105,8 +107,8 @@ namespace urakawa.daisy.import
             {
                 reInitialiseProjectSpine();
             }
-
-            parseMetadata(m_Book_FilePath, m_Project, opfXmlDoc);
+            XmlNode metadataXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlDoc.DocumentElement, true, "metadata", null);
+            parseMetadata(m_Book_FilePath, m_Project, opfXmlDoc, metadataXmlNode);
 
             m_PublicationUniqueIdentifier_OPF = m_PublicationUniqueIdentifier;
             m_PublicationUniqueIdentifierNode_OPF = m_PublicationUniqueIdentifierNode;
@@ -148,7 +150,8 @@ namespace urakawa.daisy.import
                 if (RequestCancellation) return;
                 reportProgress(-1, "Parsing metadata: [" + ncxPath + "]");
 
-                parseMetadata(fullNcxPath, m_Project, ncxXmlDoc);
+                XmlNode headXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(ncxXmlDoc.DocumentElement, true, "head", null);
+                parseMetadata(fullNcxPath, m_Project, ncxXmlDoc, headXmlNode);
 
                 if (AudioNCXImport)
                 {

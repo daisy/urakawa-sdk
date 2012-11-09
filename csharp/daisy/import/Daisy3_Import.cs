@@ -466,7 +466,8 @@ namespace urakawa.daisy.import
             if (RequestCancellation) return true;
             reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, displayPath));
 
-            parseMetadata(filePath, project, xmlDoc);
+            XmlNode headXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDoc.DocumentElement, true, "head", null);
+            parseMetadata(filePath, project, xmlDoc, headXmlNode);
 
             if (RequestCancellation) return true;
             parseHeadLinks(filePath, project, xmlDoc);
