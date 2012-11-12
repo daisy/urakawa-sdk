@@ -12,6 +12,9 @@ using urakawa.media;
 using urakawa.media.data;
 using urakawa.media.data.image;
 using urakawa.media.data.video;
+using urakawa.media.timing;
+using urakawa.metadata;
+using urakawa.metadata.daisy;
 using urakawa.property.channel;
 
 #if ENABLE_SHARPZIP
@@ -166,25 +169,136 @@ namespace urakawa.daisy.export
             }
 
             string opfFilePath = Path.Combine(m_UnzippedOutputDirectory, opfRelativeFilePath);
-
-#if DEBUG
             XmlDocument opfXmlDoc = createXmlDocument_OPF();
-            XmlReaderWriterHelper.WriteXmlDocument(opfXmlDoc, opfFilePath);
-
-
-            //StreamWriter opfWriter = File.CreateText(opfFilePath);
-            //try
-            //{
-            //    opfWriter.WriteLine(opfFilePath);
-            //}
-            //finally
-            //{
-            //    opfWriter.Close();
-            //}
-#endif //DEBUG
 
             if (isXukSpine)
             {
+                XmlNode opfXmlNode_package = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlDoc, false, "package", DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                XmlNode opfXmlNode_spine = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlNode_package, false, "spine", DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                XmlNode opfXmlNode_manifest = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlNode_package, false, "manifest", DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                XmlNode opfXmlNode_metadata = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlNode_package, false, "metadata", DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+
+
+                foreach (XmlAttribute xmlAttribute in m_Presentation.RootNode.GetXmlProperty().Attributes.ContentsAs_Enumerable)
+                {
+                    string localName = xmlAttribute.LocalName;
+
+                    if (localName == Daisy3_Import.OPF_ContainerRelativePath)
+                    {
+                        continue;
+                    }
+
+                    string value = xmlAttribute.Value;
+
+                    if (localName == @"prefix")
+                    {
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_package, @"prefix", value);
+                        continue;
+                    }
+
+                    if (!string.IsNullOrEmpty(xmlAttribute.Prefix))
+                    {
+                        string nsUri = xmlAttribute.GetNamespaceUri();
+
+                        DebugFix.Assert(!string.IsNullOrEmpty(nsUri));
+
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spine, xmlAttribute.PrefixedLocalName, value, nsUri);
+                    }
+                    else
+                    {
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spine, localName, value);
+                    }
+                }
+
+                foreach (Metadata metadata in m_Presentation.Metadatas.ContentsAs_Enumerable)
+                {
+                    string name = metadata.NameContentAttribute.Name;
+                    string value = metadata.NameContentAttribute.Value;
+                    string nsUri = metadata.NameContentAttribute.NamespaceUri;
+
+                    if (metadata.IsMarkedAsPrimaryIdentifier)
+                    {
+                        DebugFix.Assert(SupportedMetadata_Z39862005.DC_Identifier.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+                        if (metadata.OtherAttributes != null)
+                        {
+                            foreach (MetadataAttribute metadataAttribute in metadata.OtherAttributes.ContentsAs_Enumerable)
+                            {
+                                if (metadataAttribute.Name.Equals(@"id", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    //DebugFix.Assert(nsUri == XmlReaderWriterHelper.NS_URL_XML);
+                                    //DebugFix.Assert(nsUri == DiagramContentModelHelper.NS_URL_DC);
+
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_package, "unique-identifier", metadataAttribute.Value);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    XmlNode opfXmlNode_meta = null;
+
+                    if (name == @"link" && value == @"link")
+                    {
+                        DebugFix.Assert(metadata.OtherAttributes != null);
+
+                        opfXmlNode_meta = opfXmlDoc.CreateElement(null,
+                            "link",
+                            DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                        opfXmlNode_metadata.AppendChild(opfXmlNode_meta);
+                    }
+                    else if (name.IndexOf(':') > 0)
+                    {
+                        DebugFix.Assert(!string.IsNullOrEmpty(nsUri));
+
+                        string prefix;
+                        string localName;
+                        XmlProperty.SplitLocalName(name, out prefix, out localName);
+
+                        if (prefix == @"dc")
+                        {
+                            DebugFix.Assert(nsUri == DiagramContentModelHelper.NS_URL_DC);
+
+                            opfXmlNode_meta = opfXmlDoc.CreateElement(prefix, localName, nsUri);
+                            opfXmlNode_metadata.AppendChild(opfXmlNode_meta);
+                        }
+                        else
+                        {
+                            opfXmlNode_meta = opfXmlDoc.CreateElement(null,
+                                @"meta",
+                                DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                            opfXmlNode_metadata.AppendChild(opfXmlNode_meta);
+
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_meta, "property", name);
+                        }
+
+                        XmlNode contentNode = opfXmlDoc.CreateTextNode(value);
+                        opfXmlNode_meta.AppendChild(contentNode);
+                    }
+                    else
+                    {
+                        DebugFix.Assert(string.IsNullOrEmpty(nsUri));
+
+                        opfXmlNode_meta = opfXmlDoc.CreateElement(null,
+                            "meta",
+                            DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                        opfXmlNode_metadata.AppendChild(opfXmlNode_meta);
+
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_meta, "name", name);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_meta, "content", value);
+                    }
+
+                    if (metadata.OtherAttributes != null)
+                    {
+                        foreach (MetadataAttribute metadataAttribute in metadata.OtherAttributes.ContentsAs_Enumerable)
+                        {
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_meta, metadataAttribute.Name, metadataAttribute.Value);
+                        }
+                    }
+                }
+
+
+
                 foreach (ExternalFiles.ExternalFileData extFileData in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
                 {
                     if (!extFileData.IsPreservedForOutputFile)
@@ -224,31 +338,95 @@ namespace urakawa.daisy.export
                 foreach (TreeNode treeNode in m_Presentation.RootNode.Children.ContentsAs_Enumerable)
                 {
                     TextMedia txtMedia = treeNode.GetTextMedia() as TextMedia;
-                    if (txtMedia == null) continue;
+                    if (txtMedia == null)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        continue;
+                    }
                     string path = txtMedia.Text;
 
                     XmlProperty xmlProp = treeNode.GetXmlProperty();
-                    if (xmlProp == null) continue;
+                    if (xmlProp == null)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        continue;
+                    }
 
                     string name = treeNode.GetXmlElementLocalName();
-                    if (name != "metadata") continue;
+                    if (name != "metadata")
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        continue;
+                    }
+
+                    XmlNode opfXmlNode_itemRef = opfXmlDoc.CreateElement(null,
+                        "itemref",
+                        DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                    opfXmlNode_spine.AppendChild(opfXmlNode_itemRef);
+
+
+                    XmlNode opfXmlNode_item = opfXmlDoc.CreateElement(null,
+                        "item",
+                        DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                    opfXmlNode_manifest.AppendChild(opfXmlNode_item);
+
+
+                    string uid = GetNextID(ID_OpfPrefix);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef, @"idref", uid);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", uid);
+
+                    string ext = Path.GetExtension(path);
+
+                    string type = DataProviderFactory.GetMimeTypeFromExtension(ext);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
+
+                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", path);
+
 
                     string title = null;
                     bool hasXuk = false;
                     foreach (XmlAttribute xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
                     {
-                        if (xmlAttr.LocalName == "xuk" && xmlAttr.Value == "true")
+                        if (xmlAttr.LocalName == @"xuk" && xmlAttr.Value == @"true")
                         {
                             hasXuk = true;
                         }
-
-                        if (xmlAttr.LocalName == "title")
+                        else if (xmlAttr.LocalName == @"title")
                         {
                             title = xmlAttr.Value;
                         }
+                        else if (xmlAttr.LocalName == @"media-overlay")
+                        {
+                            // NOP
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(xmlAttr.Prefix))
+                            {
+                                string nsUri = xmlAttr.GetNamespaceUri();
+
+                                DebugFix.Assert(!string.IsNullOrEmpty(nsUri));
+
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef, xmlAttr.PrefixedLocalName, xmlAttr.Value, nsUri);
+                            }
+                            else
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef, xmlAttr.LocalName, xmlAttr.Value);
+                            }
+                        }
                     }
 
-                    if (!hasXuk) continue;
+                    if (!hasXuk)
+                    {
+                        continue;
+                    }
+
 
                     string fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title);
                     if (!File.Exists(fullXukPath))
@@ -280,6 +458,47 @@ namespace urakawa.daisy.export
 
                     string fullSpineItemPath = Path.Combine(opsDirectoryPath, path);
                     fullSpineItemPath = FileDataProvider.NormaliseFullFilePath(fullSpineItemPath).Replace('/', '\\');
+
+                    Time time = spineItemPresentation.RootNode.GetDurationOfManagedAudioMediaFlattened();
+                    if (time != null)
+                    {
+                        uid = GetNextID(ID_OpfPrefix);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-overlay", uid);
+
+                        opfXmlNode_item = opfXmlDoc.CreateElement(null,
+                            "item",
+                            DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                        opfXmlNode_manifest.AppendChild(opfXmlNode_item);
+
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", uid);
+
+                        type = DataProviderFactory.SMIL_MIME_TYPE; // GetMimeTypeFromExtension(Path.GetExtension(@".smil"));
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
+
+                        string smilPath = path.Replace(ext, ".smil");
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", smilPath);
+
+                        string fullSmilPath = Path.Combine(opsDirectoryPath, smilPath);
+                        fullSmilPath = FileDataProvider.NormaliseFullFilePath(fullSmilPath).Replace('/', '\\');
+
+#if DEBUG
+                        string parentdirSmil = Path.GetDirectoryName(fullSmilPath);
+                        if (!Directory.Exists(parentdirSmil))
+                        {
+                            FileDataProvider.CreateDirectory(parentdirSmil);
+                        }
+
+                        StreamWriter spineItemWriterSmil = File.CreateText(fullSmilPath);
+                        try
+                        {
+                            spineItemWriterSmil.WriteLine(time.ToString());
+                        }
+                        finally
+                        {
+                            spineItemWriterSmil.Close();
+                        }
+#endif //DEBUG
+                    }
 
 #if DEBUG
                     string parentdir = Path.GetDirectoryName(fullSpineItemPath);
@@ -387,7 +606,12 @@ namespace urakawa.daisy.export
                     }
                 }
             }
+            else // NOT XukSpine
+            {
+                //TODO
+            }
 
+            XmlReaderWriterHelper.WriteXmlDocument(opfXmlDoc, opfFilePath);
 
 #if false && DEBUG
                     // Empty directories will not be included in ZIP
@@ -630,14 +854,25 @@ namespace urakawa.daisy.export
 
             XmlNode package = xmlDoc.CreateElement(null,
                 "package",
-                "http://www.idpf.org/2007/opf");
+                DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
 
             xmlDoc.AppendChild(package);
 
-            XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, package, "unique-identifier", "uid");
+            // get from metadata
+            //XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, package, "unique-identifier", "uid");
+
             XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, package, "version", "3.0");
 
-            XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, package, "prefix", "rendition: http://www.idpf.org/vocab/rendition/# cc: http://creativecommons.org/ns#");
+
+            if (isXukSpine)
+            {
+                XmlAttribute xmlAttr = m_Presentation.RootNode.GetXmlProperty().GetAttribute("prefix");
+                if (xmlAttr != null)
+                {
+                    //"rendition: http://www.idpf.org/vocab/rendition/# cc: http://creativecommons.org/ns#"
+                    XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, package, "prefix", xmlAttr.Value);
+                }
+            }
 
             XmlNode metadata = xmlDoc.CreateElement(null, "metadata", package.NamespaceURI);
             package.AppendChild(metadata);
@@ -649,6 +884,54 @@ namespace urakawa.daisy.export
             package.AppendChild(spine);
 
             return xmlDoc;
+        }
+
+
+        protected const string ID_DTBPrefix = "dtb_";
+        protected long m_Counter_ID_DTBPrefix = 0;
+
+        protected const string ID_SmilPrefix = "sm_";
+        protected long m_Counter_ID_SmilPrefix = 0;
+
+        protected const string ID_NcxPrefix = "ncx_";
+        protected long m_Counter_ID_NcxPrefix = 0;
+
+        protected const string ID_OpfPrefix = "opf_";
+        protected long m_Counter_ID_OpfPrefix = 0;
+
+        protected long m_Counter_ID_Generic = 0;
+        
+        protected string GetNextID(string prefix)
+        {
+            long counter = 0;
+
+            if (prefix == ID_DTBPrefix)
+            {
+                m_Counter_ID_DTBPrefix++;
+                counter = m_Counter_ID_DTBPrefix;
+            }
+            else if (prefix == ID_SmilPrefix)
+            {
+                m_Counter_ID_SmilPrefix++;
+                counter = m_Counter_ID_SmilPrefix;
+            }
+            else if (prefix == ID_NcxPrefix)
+            {
+                m_Counter_ID_NcxPrefix++;
+                counter = m_Counter_ID_NcxPrefix;
+            }
+            else if (prefix == ID_OpfPrefix)
+            {
+                m_Counter_ID_OpfPrefix++;
+                counter = m_Counter_ID_OpfPrefix;
+            }
+            else
+            {
+                m_Counter_ID_Generic++;
+                counter = m_Counter_ID_Generic;
+            }
+
+            return prefix + counter.ToString();
         }
     }
 }

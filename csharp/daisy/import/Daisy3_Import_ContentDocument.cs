@@ -236,12 +236,13 @@ namespace urakawa.daisy.import
                             //Presentation presentation = m_Project.Presentations.Get(0);
                             if (presentation.RootNode != null)
                             {
+                                XmlProperty xmlProp = presentation.RootNode.GetXmlProperty();
+
                                 string lang_ = presentation.RootNode.GetXmlElementLang();
                                 if (string.IsNullOrEmpty(lang_))
                                 {
                                     if (!string.IsNullOrEmpty(lang)) //presentation.Language
                                     {
-                                        XmlProperty xmlProp = presentation.RootNode.GetXmlProperty();
                                         if (true || isHTML)
                                         {
                                             xmlProp.SetAttribute(XmlReaderWriterHelper.XmlLang,
@@ -256,6 +257,34 @@ namespace urakawa.daisy.import
                                 else
                                 {
                                     presentation.Language = lang_; // override existing lang from dtbook/html element
+                                }
+
+
+                                if (rootElement != null)
+                                {
+                                    XmlNode xmlAttr = rootElement.Attributes.GetNamedItem("prefix", DiagramContentModelHelper.NS_URL_EPUB);
+                                    if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
+                                    {
+                                        string newValue = xmlAttr.Value;
+
+                                        XmlAttribute prefixAttr = xmlProp.GetAttribute("prefix", DiagramContentModelHelper.NS_URL_EPUB);
+                                        if (prefixAttr != null)
+                                        {
+                                            newValue = newValue + @" " + prefixAttr.Value;
+#if DEBUG
+                                            Debugger.Break();
+#endif
+                                        }
+
+                                        xmlProp.SetAttribute("prefix", DiagramContentModelHelper.NS_URL_EPUB, newValue);
+
+                                        //Metadata md = presentation.MetadataFactory.CreateMetadata();
+                                        //md.NameContentAttribute = new MetadataAttribute();
+                                        //md.NameContentAttribute.Name = "epub:prefix"; //.ToLower();
+                                        //md.NameContentAttribute.Value = xmlAttr.Value;
+
+                                        //presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
+                                    }
                                 }
                             }
                         }
