@@ -202,6 +202,7 @@ namespace urakawa.data
 
         public const string XHTML_MIME_TYPE = "application/xhtml+xml";
         public const string XHTML_EXTENSION = ".xhtml";
+        public const string HTML_EXTENSION = ".html";
 
         public const string SMIL_MIME_TYPE = "application/smil+xml";
         public const string SMIL_MIME_TYPE_ = "application/smil";
@@ -435,6 +436,7 @@ namespace urakawa.data
                     mime = JS_MIME_TYPE;
                     break;
                 case XHTML_EXTENSION:
+                case HTML_EXTENSION:
                     mime = XHTML_MIME_TYPE;
                     break;
                 case SMIL_EXTENSION:
