@@ -35,6 +35,7 @@ namespace urakawa.daisy
 
         public const string NS_PREFIX_EPUB = "epub";
         public const string NS_URL_EPUB = "http://www.idpf.org/2007/ops";
+        public const string NS_URL_EPUB_PACKAGE = "http://www.idpf.org/2007/opf";
 
         // -------------------------------------------------
 

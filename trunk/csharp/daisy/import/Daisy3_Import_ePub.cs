@@ -817,19 +817,21 @@ namespace urakawa.daisy.import
                 }
 
 
-
-                foreach (Metadata metadata in m_Project.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
+                if (false) // do not copy metadata from project to individual chapter
                 {
-                    Metadata md = spineItemPresentation.MetadataFactory.CreateMetadata();
-                    md.NameContentAttribute = metadata.NameContentAttribute.Copy();
-
-                    foreach (MetadataAttribute metadataAttribute in metadata.OtherAttributes.ContentsAs_Enumerable)
+                    foreach (Metadata metadata in m_Project.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                     {
-                        MetadataAttribute mdAttr = metadataAttribute.Copy();
-                        md.OtherAttributes.Insert(md.OtherAttributes.Count, mdAttr);
-                    }
+                        Metadata md = spineItemPresentation.MetadataFactory.CreateMetadata();
+                        md.NameContentAttribute = metadata.NameContentAttribute.Copy();
 
-                    spineItemPresentation.Metadatas.Insert(spineItemPresentation.Metadatas.Count, md);
+                        foreach (MetadataAttribute metadataAttribute in metadata.OtherAttributes.ContentsAs_Enumerable)
+                        {
+                            MetadataAttribute mdAttr = metadataAttribute.Copy();
+                            md.OtherAttributes.Insert(md.OtherAttributes.Count, mdAttr);
+                        }
+
+                        spineItemPresentation.Metadatas.Insert(spineItemPresentation.Metadatas.Count, md);
+                    }
                 }
 
 
