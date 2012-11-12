@@ -337,7 +337,14 @@ namespace urakawa.daisy.import
                         {
                             if (spineItemAttr.LocalName != "id" && spineItemAttr.LocalName != "idref")
                             {
-                                dict.Add(spineItemAttr.Name, spineItemAttr.Value);
+                                if (spineItemAttr.Name == @"properties")
+                                {
+                                    dict.Add(@"properties_spine", spineItemAttr.Value);
+                                }
+                                else
+                                {
+                                    dict.Add(spineItemAttr.Name, spineItemAttr.Value);
+                                }
                             }
                         }
                     }
@@ -376,6 +383,7 @@ namespace urakawa.daisy.import
                 }
 
                 XmlNode attrProperties = manifItemAttributes.GetNamedItem("properties");
+
                 if (attrProperties != null && attrProperties.Value.Contains("cover-image"))
                 {
                     DebugFix.Assert(attrMediaType.Value == DataProviderFactory.IMAGE_SVG_MIME_TYPE
@@ -424,7 +432,23 @@ namespace urakawa.daisy.import
                             if (attrProperties != null)
                             {
                                 Dictionary<string, string> dict = spineItemsAttributes[i];
-                                dict.Add(attrProperties.Name, attrProperties.Value);
+                                
+                                dict.Add(
+                                    @"properties_manifest"
+                                    //attrProperties.Name
+                                    , attrProperties.Value);
+
+                                //string val;
+                                //dict.TryGetValue(attrProperties.Name, out val);
+                                //if (!string.IsNullOrEmpty(val))
+                                //{
+                                //    dict.Remove(attrProperties.Name);
+                                //    dict.Add(attrProperties.Name, val + @" " + attrProperties.Value);
+                                //}
+                                //else
+                                //{
+                                //    dict.Add(attrProperties.Name, attrProperties.Value);
+                                //}
                             }
 
                             XmlNode attrMediaOverlay = manifItemAttributes.GetNamedItem("media-overlay");

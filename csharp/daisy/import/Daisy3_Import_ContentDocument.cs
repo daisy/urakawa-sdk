@@ -265,25 +265,51 @@ namespace urakawa.daisy.import
                                     XmlNode xmlAttr = rootElement.Attributes.GetNamedItem("prefix", DiagramContentModelHelper.NS_URL_EPUB);
                                     if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
                                     {
-                                        string newValue = xmlAttr.Value;
-
-                                        XmlAttribute prefixAttr = xmlProp.GetAttribute("prefix", DiagramContentModelHelper.NS_URL_EPUB);
+                                        property.xml.XmlAttribute prefixAttr = xmlProp.GetAttribute("prefix", DiagramContentModelHelper.NS_URL_EPUB);
                                         if (prefixAttr != null)
                                         {
-                                            newValue = newValue + @" " + prefixAttr.Value;
+                                            string newValue = xmlAttr.Value + @" " + prefixAttr.Value;
 #if DEBUG
                                             Debugger.Break();
 #endif
+                                            xmlProp.SetAttribute("prefix", DiagramContentModelHelper.NS_URL_EPUB, newValue);
                                         }
+                                        else
+                                        {
+                                            if (xmlAttr.Name.IndexOf(':') > 0)
+                                            {
+                                                string epubPrefix = xmlProp.GetXmlNamespacePrefix(DiagramContentModelHelper.NS_URL_EPUB);
+                                                if (string.IsNullOrEmpty(epubPrefix))
+                                                {
+                                                    string prefix;
+                                                    string localName;
+                                                    XmlProperty.SplitLocalName(xmlAttr.Name, out prefix, out localName);
 
-                                        xmlProp.SetAttribute("prefix", DiagramContentModelHelper.NS_URL_EPUB, newValue);
+                                                    epubPrefix = prefix;
 
-                                        //Metadata md = presentation.MetadataFactory.CreateMetadata();
-                                        //md.NameContentAttribute = new MetadataAttribute();
-                                        //md.NameContentAttribute.Name = "epub:prefix"; //.ToLower();
-                                        //md.NameContentAttribute.Value = xmlAttr.Value;
+                                                    DebugFix.Assert(epubPrefix == @"epub"); // that's the norm
+                                                    DebugFix.Assert(localName == @"prefix");
 
-                                        //presentation.Metadatas.Insert(presentation.Metadatas.Count, md);
+                                                    xmlProp.SetAttribute(XmlReaderWriterHelper.NS_PREFIX_XMLNS + @":" + prefix, XmlReaderWriterHelper.NS_URL_XMLNS, DiagramContentModelHelper.NS_URL_EPUB);
+
+#if DEBUG
+                                                    string check =
+                                                        xmlProp.GetXmlNamespacePrefix(
+                                                            DiagramContentModelHelper.NS_URL_EPUB);
+                                                    DebugFix.Assert(epubPrefix == check);
+#endif
+                                                }
+
+                                                xmlProp.SetAttribute(epubPrefix + ":prefix", DiagramContentModelHelper.NS_URL_EPUB, xmlAttr.Value);
+                                            }
+                                            else
+                                            {
+#if DEBUG
+                                                Debugger.Break();
+#endif
+                                                xmlProp.SetAttribute("prefix", DiagramContentModelHelper.NS_URL_EPUB, xmlAttr.Value);
+                                            }
+                                        }
                                     }
                                 }
                             }
