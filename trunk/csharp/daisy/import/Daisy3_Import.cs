@@ -328,7 +328,7 @@ namespace urakawa.daisy.import
                 {
                     if (isHTML)
                     {
-                        MessageBox.Show("(X)HTML support is experimental and incomplete, please use with caution!");
+                        //MessageBox.Show("(X)HTML support is experimental and incomplete, please use with caution!");
 
                         reInitialiseProjectSpine();
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Xml;
 using AudioLib;
+using urakawa.ExternalFiles;
 using urakawa.core;
 using urakawa.daisy.export.visitor;
 using urakawa.daisy.import;
@@ -249,8 +250,6 @@ namespace urakawa.daisy.export
                     }
                     else if (name.IndexOf(':') > 0)
                     {
-                        DebugFix.Assert(!string.IsNullOrEmpty(nsUri));
-
                         string prefix;
                         string localName;
                         XmlProperty.SplitLocalName(name, out prefix, out localName);
@@ -259,11 +258,21 @@ namespace urakawa.daisy.export
                         {
                             DebugFix.Assert(nsUri == DiagramContentModelHelper.NS_URL_DC);
 
+                            string nsUri_ = opfXmlNode_package.GetNamespaceOfPrefix(@"dc");
+                            if (string.IsNullOrEmpty(nsUri_))
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_package,
+                                    XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":dc",
+                                    DiagramContentModelHelper.NS_URL_DC, XmlReaderWriterHelper.NS_URL_XMLNS);
+                            }
+
                             opfXmlNode_meta = opfXmlDoc.CreateElement(prefix, localName, nsUri);
                             opfXmlNode_metadata.AppendChild(opfXmlNode_meta);
                         }
                         else
                         {
+                            DebugFix.Assert(string.IsNullOrEmpty(nsUri));
+
                             opfXmlNode_meta = opfXmlDoc.CreateElement(null,
                                 @"meta",
                                 DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
@@ -313,6 +322,10 @@ namespace urakawa.daisy.export
                         Debugger.Break();
 #endif
                     }
+                    
+                    bool isCover = extFileData is CoverImageExternalFileData;
+                    bool isNCX = extFileData is NCXExternalFileData;
+                    bool isNav = extFileData is NavDocExternalFileData;
 
                     string fullPath = null;
                     if (relativePath.StartsWith(Daisy3_Import.META_INF_prefix))
@@ -330,9 +343,50 @@ namespace urakawa.daisy.export
                     if (!File.Exists(fullPath))
                     {
                         extFileData.DataProvider.ExportDataStreamToFile(fullPath, false);
+
+
+                        XmlNode opfXmlNode_itemExt = opfXmlDoc.CreateElement(null,
+                            "item",
+                            DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                        opfXmlNode_manifest.AppendChild(opfXmlNode_itemExt);
+
+                        string ext = Path.GetExtension(relativePath);
+
+                        string type = DataProviderFactory.GetMimeTypeFromExtension(ext);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"media-type", type);
+
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"href", relativePath);
+
+                        if (isCover)
+                        {
+                            //string uid = GetNextID(ID_OpfPrefix);
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"id", @"cover-image");
+
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"properties", @"cover-image");
+
+                            XmlNode opfXmlNode_metaCover = opfXmlDoc.CreateElement(null,
+                                @"meta",
+                                DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                            opfXmlNode_metadata.AppendChild(opfXmlNode_metaCover);
+
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaCover, @"name", "cover");
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaCover, @"content", "cover-image");
+                        }
+                        else if (isNCX)
+                        {
+                            //string uid = GetNextID(ID_OpfPrefix);
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"id", "ncx");
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spine, @"toc", "ncx");
+                        }
+                        else if (isNav) // Note: when NavDoc is external data, it is not in spine (and vice versa)
+                        {
+                            //string uid = GetNextID(ID_OpfPrefix);
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"properties", "nav");
+                        }
                     }
                 }
 
+                Time timeTotal = new Time();
 
                 string rootDir = Path.GetDirectoryName(m_XukPath);
                 foreach (TreeNode treeNode in m_Presentation.RootNode.Children.ContentsAs_Enumerable)
@@ -377,9 +431,9 @@ namespace urakawa.daisy.export
                     opfXmlNode_manifest.AppendChild(opfXmlNode_item);
 
 
-                    string uid = GetNextID(ID_OpfPrefix);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef, @"idref", uid);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", uid);
+                    string uid_OPF_SpineItem = GetNextID(ID_OpfPrefix);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef, @"idref", uid_OPF_SpineItem);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", uid_OPF_SpineItem);
 
                     string ext = Path.GetExtension(path);
 
@@ -404,6 +458,18 @@ namespace urakawa.daisy.export
                         else if (xmlAttr.LocalName == @"media-overlay")
                         {
                             // NOP
+                        }
+                        else if (xmlAttr.LocalName == @"nav")
+                        {
+                            // NOP
+                        }
+                        else if (xmlAttr.LocalName == @"properties_spine")
+                        {
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef, @"properties", xmlAttr.Value);
+                        }
+                        else if (xmlAttr.LocalName == @"properties_manifest")
+                        {
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"properties", xmlAttr.Value);
                         }
                         else
                         {
@@ -462,15 +528,18 @@ namespace urakawa.daisy.export
                     Time time = spineItemPresentation.RootNode.GetDurationOfManagedAudioMediaFlattened();
                     if (time != null)
                     {
-                        uid = GetNextID(ID_OpfPrefix);
-                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-overlay", uid);
+                        timeTotal.Add(time);
+                        
+                        //uid = GetNextID(ID_MoPrefix);
+                        string uid_OPF_SpineItemMO = uid_OPF_SpineItem + @"_mo";
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-overlay", uid_OPF_SpineItemMO);
 
                         opfXmlNode_item = opfXmlDoc.CreateElement(null,
                             "item",
                             DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
                         opfXmlNode_manifest.AppendChild(opfXmlNode_item);
 
-                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", uid);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", uid_OPF_SpineItemMO);
 
                         type = DataProviderFactory.SMIL_MIME_TYPE; // GetMimeTypeFromExtension(Path.GetExtension(@".smil"));
                         XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
@@ -481,6 +550,17 @@ namespace urakawa.daisy.export
                         string fullSmilPath = Path.Combine(opsDirectoryPath, smilPath);
                         fullSmilPath = FileDataProvider.NormaliseFullFilePath(fullSmilPath).Replace('/', '\\');
 
+
+                        XmlNode opfXmlNode_metaItemDur = opfXmlDoc.CreateElement(null,
+                            @"meta",
+                            DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                        opfXmlNode_metadata.AppendChild(opfXmlNode_metaItemDur);
+
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaItemDur, @"property", "media:duration");
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaItemDur, @"refines", "#" + uid_OPF_SpineItemMO);
+
+                        XmlNode timeNodeItemDur = opfXmlDoc.CreateTextNode(time.ToString());
+                        opfXmlNode_metaItemDur.AppendChild(timeNodeItemDur);
 #if DEBUG
                         string parentdirSmil = Path.GetDirectoryName(fullSmilPath);
                         if (!Directory.Exists(parentdirSmil))
@@ -605,6 +685,17 @@ namespace urakawa.daisy.export
 #endif
                     }
                 }
+
+
+                XmlNode opfXmlNode_metaTotalDur = opfXmlDoc.CreateElement(null,
+                    @"meta",
+                    DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                opfXmlNode_metadata.AppendChild(opfXmlNode_metaTotalDur);
+
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaTotalDur, @"property", "media:duration");
+
+                XmlNode timeNodeTotalDur = opfXmlDoc.CreateTextNode(timeTotal.ToString());
+                opfXmlNode_metaTotalDur.AppendChild(timeNodeTotalDur);
             }
             else // NOT XukSpine
             {
@@ -887,38 +978,25 @@ namespace urakawa.daisy.export
         }
 
 
-        protected const string ID_DTBPrefix = "dtb_";
-        protected long m_Counter_ID_DTBPrefix = 0;
-
-        protected const string ID_SmilPrefix = "sm_";
-        protected long m_Counter_ID_SmilPrefix = 0;
-
-        protected const string ID_NcxPrefix = "ncx_";
-        protected long m_Counter_ID_NcxPrefix = 0;
+        protected const string ID_HtmlPrefix = "h_";
+        protected long m_Counter_ID_HtmlPrefix = 0;
 
         protected const string ID_OpfPrefix = "opf_";
         protected long m_Counter_ID_OpfPrefix = 0;
 
+        protected const string ID_MoPrefix = "mo_";
+        protected long m_Counter_ID_MoPrefix = 0;
+
         protected long m_Counter_ID_Generic = 0;
-        
+
         protected string GetNextID(string prefix)
         {
             long counter = 0;
 
-            if (prefix == ID_DTBPrefix)
+            if (prefix == ID_HtmlPrefix)
             {
-                m_Counter_ID_DTBPrefix++;
-                counter = m_Counter_ID_DTBPrefix;
-            }
-            else if (prefix == ID_SmilPrefix)
-            {
-                m_Counter_ID_SmilPrefix++;
-                counter = m_Counter_ID_SmilPrefix;
-            }
-            else if (prefix == ID_NcxPrefix)
-            {
-                m_Counter_ID_NcxPrefix++;
-                counter = m_Counter_ID_NcxPrefix;
+                m_Counter_ID_HtmlPrefix++;
+                counter = m_Counter_ID_HtmlPrefix;
             }
             else if (prefix == ID_OpfPrefix)
             {
