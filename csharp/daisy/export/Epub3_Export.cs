@@ -122,6 +122,8 @@ namespace urakawa.daisy.export
 
         protected bool processSingleSpineItem_2(XmlDocument opfXmlDoc, XmlNode opfXmlNode_spine, XmlNode opfXmlNode_manifest, string path, XmlNode opfXmlNode_item, XmlNode opfXmlNode_metadata, string uid_OPF_SpineItem, Presentation spineItemPresentation, string opsDirectoryPath, string fullSpineItemPath, Time timeTotal)
         {
+            string smilPath = null;
+            string audioPath = null;
             Time time = spineItemPresentation.RootNode.GetDurationOfManagedAudioMediaFlattened();
             if (time != null)
             {
@@ -142,12 +144,8 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
 
                 string ext = Path.GetExtension(path);
-                string smilPath = path.Replace(ext, ".smil");
+                smilPath = path.Replace(ext, ".smil");
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", smilPath);
-
-                string fullSmilPath = Path.Combine(opsDirectoryPath, smilPath);
-                fullSmilPath = FileDataProvider.NormaliseFullFilePath(fullSmilPath).Replace('/', '\\');
-
 
                 XmlNode opfXmlNode_metaItemDur = opfXmlDoc.CreateElement(null,
                     @"meta",
@@ -159,23 +157,6 @@ namespace urakawa.daisy.export
 
                 XmlNode timeNodeItemDur = opfXmlDoc.CreateTextNode(time.ToString());
                 opfXmlNode_metaItemDur.AppendChild(timeNodeItemDur);
-#if DEBUG
-                string parentdirSmil = Path.GetDirectoryName(fullSmilPath);
-                if (!Directory.Exists(parentdirSmil))
-                {
-                    FileDataProvider.CreateDirectory(parentdirSmil);
-                }
-
-                StreamWriter spineItemWriterSmil = File.CreateText(fullSmilPath);
-                try
-                {
-                    spineItemWriterSmil.WriteLine(time.ToString());
-                }
-                finally
-                {
-                    spineItemWriterSmil.Close();
-                }
-#endif //DEBUG
 
                 opfXmlNode_item = opfXmlDoc.CreateElement(null,
                     "item",
@@ -194,7 +175,7 @@ namespace urakawa.daisy.export
                 }
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
 
-                string audioPath = path.Replace(ext, m_encodeToMp3 ? @".mp3" : @".wav");
+                audioPath = path.Replace(ext, m_encodeToMp3 ? @".mp3" : @".wav");
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", audioPath);
 
                 string fullAudioPath = Path.Combine(opsDirectoryPath, audioPath);
@@ -366,8 +347,7 @@ namespace urakawa.daisy.export
                 }
             }
 
-
-            XmlDocument xmlDocHTML = createXmlDocument_HTML();
+            XmlDocument xmlDocHTML = createXmlDocument_HTML(spineItemPresentation);
             XmlNode xmlDocHTML_head = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDocHTML, false, "head", DiagramContentModelHelper.NS_URL_XHTML);
 
             if (spineItemPresentation.HeadNode != null && spineItemPresentation.HeadNode.Children != null && spineItemPresentation.HeadNode.Children.Count > 0)
@@ -418,6 +398,70 @@ namespace urakawa.daisy.export
 
             generateMetadata(spineItemPresentation, xmlDocHTML, xmlDocHTML.DocumentElement, xmlDocHTML_head);
 
+            XmlDocument xmlDocSMIL = null;
+            XmlNode xmlDocSMIL_body = null;
+            if (time != null)
+            {
+                xmlDocSMIL = createXmlDocument_SMIL();
+                xmlDocSMIL_body = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDocSMIL, false, "body",
+                                                                                       "http://www.w3.org/ns/SMIL");
+            }
+
+
+            //TODO: serialize body TreeNode content into XML + parallel-generate SMIL
+            //audioPath
+
+            //TreeNode currentTreeNode = spineItemPresentation.RootNode;
+            //Stack<TreeNode> currentTreeNodeStack = new Stack<TreeNode>();
+            //currentTreeNodeStack.Push(currentTreeNode);
+            //XmlNode currentXmlNode_SMIL = xmlDocSMIL_body;
+            //XmlNode currentXmlNode_HTML = xmlDocHTML_head._body;
+
+            //while (currentTreeNodeStack.Count > 0) //nodeStack.Peek() != null
+            //{
+            //    if (RequestCancellation)
+            //    {
+            //        return true;
+            //    }
+
+            //    currentTreeNode = currentTreeNodeStack.Pop();
+            //    string name = currentTreeNode.GetXmlElementLocalName();
+
+            //    if (currentTreeNode.Parent == null)
+            //    {
+            //        XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocSMIL, currentXmlNode_SMIL, "epub:textref", path, DiagramContentModelHelper.NS_URL_EPUB);
+            //    }
+            //    else if (@"section".Equals(name, StringComparison.OrdinalIgnoreCase))
+            //    {
+            //        xmlNode newXmlNode = xmlDocSMIL.CreateElement(null, "seq", currentXmlNode_SMIL.NamespaceURI);
+            //        currentXmlNode_SMIL.AppendChild(newXmlNode);
+
+            //        string id = currentTreeNode.GetXmlProperty().GetIdFromAttributes();
+            //        if (string.IsNullOrEmpty(id))
+            //        {
+            //            id = GetNextID(ID_HtmlPrefix);
+            //            //TODO: html ID attribute add
+            //        }
+
+            //        XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocSMIL, currentXmlNode_SMIL, "epub:textref", path + "#" + id, DiagramContentModelHelper.NS_URL_EPUB);
+
+            //        currentXmlNode_SMIL = newXmlNode;
+            //    }
+
+            //    ManagedAudioMedia manAudioMedia = node.GetManagedAudioMedia();
+            //    if (manAudioMedia != null && manAudioMedia.HasActualAudioMediaData)
+            //    {
+            //    }
+            //    else
+            //    {
+            //    }
+
+            //    foreach (TreeNode child in currentTreeNode.Children.ContentsAs_YieldEnumerableReversed)
+            //    {
+            //        currentTreeNodeStack.Push(child);
+            //    }
+            //}
+
 
             string parentdir = Path.GetDirectoryName(fullSpineItemPath);
             if (!Directory.Exists(parentdir))
@@ -437,7 +481,31 @@ namespace urakawa.daisy.export
             {
                 spineItemWriter.Close();
             }
-#endif //DEBUG
+#endif
+
+            if (time != null)
+            {
+                string fullSmilPath = Path.Combine(opsDirectoryPath, smilPath);
+                fullSmilPath = FileDataProvider.NormaliseFullFilePath(fullSmilPath).Replace('/', '\\');
+                string parentdirSmil = Path.GetDirectoryName(fullSmilPath);
+                if (!Directory.Exists(parentdirSmil))
+                {
+                    FileDataProvider.CreateDirectory(parentdirSmil);
+                }
+                XmlReaderWriterHelper.WriteXmlDocument(xmlDocSMIL, fullSmilPath);
+
+#if false && DEBUG
+                StreamWriter spineItemWriterSmil = File.CreateText(fullSmilPath);
+                try
+                {
+                    spineItemWriterSmil.WriteLine(time.ToString());
+                }
+                finally
+                {
+                    spineItemWriterSmil.Close();
+                }
+#endif
+            }
 
             string fullSpineItemDirectory = Path.GetDirectoryName(fullSpineItemPath);
 
@@ -1499,7 +1567,29 @@ namespace urakawa.daisy.export
             return xmlDoc;
         }
 
-        private XmlDocument createXmlDocument_HTML()
+        private XmlDocument createXmlDocument_SMIL()
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.XmlResolver = null;
+
+            xmlDoc.CreateXmlDeclaration("1.0", "utf-8", null);
+
+            XmlNode smil = xmlDoc.CreateElement(null,
+                "smil",
+                "http://www.w3.org/ns/SMIL");
+            xmlDoc.AppendChild(smil);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, smil, "version", "3.0");
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, smil, XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":epub", DiagramContentModelHelper.NS_URL_EPUB, XmlReaderWriterHelper.NS_URL_XMLNS);
+
+            XmlNode body = xmlDoc.CreateElement(null, "body", smil.NamespaceURI);
+            smil.AppendChild(body);
+
+            return xmlDoc;
+        }
+
+        private XmlDocument createXmlDocument_HTML(Presentation presentation)
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.XmlResolver = null;
@@ -1511,6 +1601,16 @@ namespace urakawa.daisy.export
                 DiagramContentModelHelper.NS_URL_XHTML);
 
             xmlDoc.AppendChild(html);
+
+            if (isXukSpine)
+            {
+                XmlAttribute xmlAttr = presentation.RootNode.GetXmlProperty().GetAttribute("prefix");
+                if (xmlAttr != null)
+                {
+                    //"rendition: http://www.idpf.org/vocab/rendition/# cc: http://creativecommons.org/ns#"
+                    XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, html, "prefix", xmlAttr.Value);
+                }
+            }
 
             XmlNode head = xmlDoc.CreateElement(null, "head", html.NamespaceURI);
             html.AppendChild(head);
