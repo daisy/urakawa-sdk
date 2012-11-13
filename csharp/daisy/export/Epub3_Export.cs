@@ -662,11 +662,16 @@ namespace urakawa.daisy.export
                         }
 
                         DebugFix.Assert((long)totalBytesWritten == audioStream.Position - (long)audioStreamRiffOffset);
-                        
+
                         audioStream.Position = 0;
                         spineItemPresentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(audioStream, totalBytesWritten);
-                        
+
                         audioStream.Close();
+
+                        if (RequestCancellation)
+                        {
+                            return;
+                        }
 
                         ushort nChannels = (ushort)(m_audioStereo ? 2 : 1);
 
@@ -697,6 +702,12 @@ namespace urakawa.daisy.export
 
                                 File.Delete(fullAudioPath_);
                             }
+#if DEBUG
+                            else
+                            {
+                                Debugger.Break();
+                            }
+#endif
                         }
                         else
                         {
@@ -723,8 +734,17 @@ namespace urakawa.daisy.export
                                     RemoveSubCancellable(formatConverter);
                                 }
 
-                                File.Delete(fullAudioPath_);
-                                File.Move(destinationFilePath, fullAudioPath);
+                                if (!string.IsNullOrEmpty(destinationFilePath))
+                                {
+                                    File.Delete(fullAudioPath_);
+                                    File.Move(destinationFilePath, fullAudioPath);
+                                }
+#if DEBUG
+                                else
+                                {
+                                    Debugger.Break();
+                                }
+#endif
                             }
                             else
                             {
