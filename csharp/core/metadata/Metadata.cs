@@ -27,6 +27,8 @@ namespace urakawa.metadata
             m_firstXukInAttribute = true;
         }
 
+        public static readonly string PrimaryIdentifierMark = @"MarkedAsPrimaryIdentifier";
+
         //easily set and get the id attribute (in "OtherAttributes")
         //in Metadata, this Id is used to mark the publication's primary unique identifier
         //multiple identifiers are allowed but only one can be the primary UID.
@@ -36,7 +38,7 @@ namespace urakawa.metadata
             {
                 foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_Enumerable)
                 {
-                    if (attr.Name == "id")
+                    if (attr.Name == PrimaryIdentifierMark)
                     {
                         return true;
                     }
@@ -53,7 +55,7 @@ namespace urakawa.metadata
                     
                     foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_Enumerable)
                     {
-                        if (attr.Name == "id")
+                        if (attr.Name == PrimaryIdentifierMark)
                         {
                             foundID = true;
                             break;
@@ -62,8 +64,8 @@ namespace urakawa.metadata
                     if (!foundID)
                     {
                         MetadataAttribute newIdAttr = new MetadataAttribute();
-                        newIdAttr.Name = "id";
-                        newIdAttr.Value = "I'm an Unique Identifier marker !";
+                        newIdAttr.Name = PrimaryIdentifierMark;
+                        newIdAttr.Value = PrimaryIdentifierMark;
                         OtherAttributes.Insert(0, newIdAttr);
                     }
                 }
@@ -71,7 +73,7 @@ namespace urakawa.metadata
                 {
                     foreach (MetadataAttribute attr in OtherAttributes.ContentsAs_ListCopy)
                     {
-                        if (attr.Name == "id")
+                        if (attr.Name == PrimaryIdentifierMark)
                         {
                             OtherAttributes.Remove(attr);
                         }

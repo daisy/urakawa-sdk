@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Xml;
 using System.Collections.Generic;
 using AudioLib;
@@ -9,6 +10,7 @@ using urakawa.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
 using urakawa.media.data.video;
+using urakawa.metadata.daisy;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
@@ -292,6 +294,70 @@ namespace urakawa
             mProject = project;
             XukIn(source, handler);
             mProject = null;
+
+
+            List<Metadata> identifiers = new List<Metadata>();
+
+            foreach (Metadata md in this.Metadatas.ContentsAs_Enumerable)
+            {
+                if (SupportedMetadata_Z39862005.DC_Identifier.Equals(md.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    identifiers.Add(md);
+                }
+            }
+
+            if (identifiers.Count == 0)
+            {
+                // NOP
+                return;
+            }
+            else if (identifiers.Count == 1)
+            {
+                if (identifiers[0].IsMarkedAsPrimaryIdentifier)
+                {
+                    return;
+                }
+
+#if DEBUG
+                Debugger.Break();
+#endif
+                identifiers[0].IsMarkedAsPrimaryIdentifier = true;
+                return;
+            }
+            else if (identifiers.Count > 1)
+            {
+                foreach (Metadata md in identifiers)
+                {
+                    if (md.IsMarkedAsPrimaryIdentifier)
+                    {
+                        return;
+                    }
+                }
+                foreach (Metadata md in identifiers)
+                {
+                    Metadata toMark = null;
+                    foreach (MetadataAttribute metadataAttribute in md.OtherAttributes.ContentsAs_Enumerable)
+                    {
+                        if (@"id".Equals(metadataAttribute.Name, StringComparison.OrdinalIgnoreCase)
+                            || @"xml:id".Equals(metadataAttribute.Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            toMark = md;
+                            break;
+                        }
+                    }
+                    if (toMark != null)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        toMark.IsMarkedAsPrimaryIdentifier = true;
+                        return;
+                    }
+                }
+            }
+#if DEBUG
+            Debugger.Break();
+#endif
         }
 
 
@@ -380,8 +446,8 @@ namespace urakawa
                             "The head TreeNode of a Presentation has to belong to that Presentation");
                     }
                 }
-                    mHeadNode = value;
-                    notifyChanged(new DataModelChangedEventArgs(this));
+                mHeadNode = value;
+                notifyChanged(new DataModelChangedEventArgs(this));
             }
         }
 
@@ -986,7 +1052,7 @@ namespace urakawa
             }
         }
 
-        
+
 
         /// <summary>
         /// Reads the root <see cref="TreeNode"/> of <c>this</c> from a <c>mRootNode</c> xuk xml element
@@ -1152,7 +1218,7 @@ namespace urakawa
                 }
                 else if (source.LocalName == XukStrings.HeadNode)
                 {
-                    
+
                     XukInHeadNode(source, handler);
                 }
                 else
@@ -1402,7 +1468,7 @@ namespace urakawa
             ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
             manMedia.MediaData = mdAudio;
             TreeNodeSetManagedAudioMediaCommand cmd1 = CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia, treeNode);
-            
+
             foreach (MediaData mediaData in cmd1.UsedMediaData)
             {
                 DebugFix.Assert(mediaData == cmd1.ManagedAudioMedia.AudioMediaData);
@@ -1416,7 +1482,7 @@ namespace urakawa
             ManagedAudioMedia manMedia2 = MediaFactory.CreateManagedAudioMedia();
             manMedia2.MediaData = mdAudio.Copy();
             ManagedAudioMediaInsertDataCommand cmd2 = CommandFactory.CreateManagedAudioMediaInsertDataCommand(treeNode, manMedia2, 0, treeNode);
-            
+
             foreach (MediaData mediaData in cmd2.UsedMediaData)
             {
                 DebugFix.Assert(mediaData == cmd2.OriginalManagedAudioMedia.AudioMediaData
@@ -1430,7 +1496,7 @@ namespace urakawa
             selection.m_LocalStreamLeftMark = -1;
             selection.m_LocalStreamRightMark = -1;
             TreeNodeAudioStreamDeleteCommand cmd3 = CommandFactory.CreateTreeNodeAudioStreamDeleteCommand(selection, treeNode);
-            
+
             foreach (MediaData mediaData in cmd3.UsedMediaData)
             {
                 DebugFix.Assert(mediaData == cmd3.OriginalManagedAudioMedia.AudioMediaData);
@@ -1489,13 +1555,13 @@ namespace urakawa
 
             CommandFactory.CreateAlternateContentMetadataAddCommand(treeNode, null, altContent, meta, null);
             CommandFactory.CreateAlternateContentMetadataRemoveCommand(treeNode, null, altContent, meta, null);
-            CommandFactory.CreateAlternateContentMetadataSetNameCommand(null, altContent, meta.NameContentAttribute, "sample name"); 
+            CommandFactory.CreateAlternateContentMetadataSetNameCommand(null, altContent, meta.NameContentAttribute, "sample name");
             CommandFactory.CreateAlternateContentMetadataSetContentCommand(null, altContent, meta.NameContentAttribute, "sample content");
             //CommandFactory.CreateAlternateContentMetadataSetIdCommand(null, altContent, meta, false);
-            
+
             CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode, altContent, txtMedia);
             CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(treeNode, altContent, txtMedia);
-            
+
             //
             //
             GenericExternalFileData exFileDataGeneric = ExternalFilesDataFactory.Create<GenericExternalFileData>();
