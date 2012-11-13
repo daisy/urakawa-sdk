@@ -127,7 +127,7 @@ namespace urakawa.daisy.export
             {
                 timeTotal.Add(time);
 
-                string uid_OPF_SpineItemMO = uid_OPF_SpineItem + @"_mo";
+                string uid_OPF_SpineItemMO = uid_OPF_SpineItem + @"_smil";
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-overlay", uid_OPF_SpineItemMO);
 
 
@@ -181,6 +181,11 @@ namespace urakawa.daisy.export
                     "item",
                     DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
                 opfXmlNode_manifest.AppendChild(opfXmlNode_item);
+
+
+                string uid_OPF_SpineItemAudio = uid_OPF_SpineItem + @"_audio";
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", uid_OPF_SpineItemAudio);
+
 
                 type = DataProviderFactory.AUDIO_WAV_MIME_TYPE;
                 if (m_encodeToMp3)
@@ -410,6 +415,10 @@ namespace urakawa.daisy.export
                                                                              NS_URL_EPUB_PACKAGE);
                     opfXmlNode_manifest.AppendChild(opfXmlNode_spineItemExt);
 
+                    string uid_item = GetNextID(ID_ItemPrefix);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spineItemExt, @"id", uid_item);
+
+
                     string spineItemExt = Path.GetExtension(relativePath);
 
                     string spineItemType = DataProviderFactory.GetMimeTypeFromExtension(spineItemExt);
@@ -479,6 +488,9 @@ namespace urakawa.daisy.export
                                                                      DiagramContentModelHelper.
                                                                          NS_URL_EPUB_PACKAGE);
                     opfXmlNode_manifest.AppendChild(opfXmlNode_spineItemMedia);
+
+                    string uid_item = GetNextID(ID_ItemPrefix);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spineItemMedia, @"id", uid_item);
 
                     string spineItemExt = Path.GetExtension(relativePath);
 
@@ -776,6 +788,12 @@ namespace urakawa.daisy.export
                                                                                      NS_URL_EPUB_PACKAGE);
                             opfXmlNode_manifest.AppendChild(opfXmlNode_itemExt);
 
+                            if (!isCover)
+                            {
+                                string uid_item = GetNextID(ID_ItemPrefix);
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"id", uid_item);
+                            }
+
                             string ext = Path.GetExtension(relativePath);
 
                             string type = DataProviderFactory.GetMimeTypeFromExtension(ext);
@@ -1032,6 +1050,9 @@ namespace urakawa.daisy.export
                                                                      DiagramContentModelHelper.
                                                                          NS_URL_EPUB_PACKAGE);
                 opfXmlNode_manifest.AppendChild(opfXmlNode_navDoc);
+
+                string uid_item = GetNextID(ID_ItemPrefix);
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_navDoc, @"id", uid_item);
 
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_navDoc, @"media-type", DataProviderFactory.XHTML_MIME_TYPE);
 
@@ -1426,11 +1447,14 @@ namespace urakawa.daisy.export
         protected long m_Counter_ID_HtmlPrefix = 0;
 
         protected const string ID_SpinePrefix = "spine_";
-        protected long m_Counter_ID_OpfPrefix = 0;
-
+        protected long m_Counter_ID_SpinePrefix = 0;
+        
         protected const string ID_MoPrefix = "mo_";
         protected long m_Counter_ID_MoPrefix = 0;
 
+        protected const string ID_ItemPrefix = "item_";
+        protected long m_Counter_ID_ItemPrefix = 0;
+        
         protected long m_Counter_ID_Generic = 0;
 
         protected string GetNextID(string prefix)
@@ -1444,8 +1468,13 @@ namespace urakawa.daisy.export
             }
             else if (prefix == ID_SpinePrefix)
             {
-                m_Counter_ID_OpfPrefix++;
-                counter = m_Counter_ID_OpfPrefix;
+                m_Counter_ID_SpinePrefix++;
+                counter = m_Counter_ID_SpinePrefix;
+            }
+            else if (prefix == ID_ItemPrefix)
+            {
+                m_Counter_ID_ItemPrefix++;
+                counter = m_Counter_ID_ItemPrefix;
             }
             else
             {

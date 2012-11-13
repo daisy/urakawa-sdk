@@ -521,7 +521,7 @@ namespace urakawa.daisy.import
                 {
                     List<Metadata> identifiers = new List<Metadata>();
 
-                    foreach (Metadata md in this.Metadatas.ContentsAs_Enumerable)
+                    foreach (Metadata md in presentation.Metadatas.ContentsAs_Enumerable)
                     {
                         if (SupportedMetadata_Z39862005.DC_Identifier.Equals(md.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
                         {
