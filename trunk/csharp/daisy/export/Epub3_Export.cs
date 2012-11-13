@@ -987,13 +987,13 @@ namespace urakawa.daisy.export
                 if (!string.IsNullOrEmpty(hasNCX)
                     && File.Exists(hasNCX))
                 {
-                    fixNavReferencesSingleChapterExport(hasNCX, "content", "src");
+                    fixNavReferencesSingleChapterExport(hasNCX, "content", "src", hasNavDoc);
                 }
 
                 if (!string.IsNullOrEmpty(hasNavDoc)
                     && File.Exists(hasNavDoc))
                 {
-                    fixNavReferencesSingleChapterExport(hasNavDoc, "a", "href");
+                    fixNavReferencesSingleChapterExport(hasNavDoc, "a", "href", hasNavDoc);
                 }
             }
 
@@ -1132,17 +1132,17 @@ namespace urakawa.daisy.export
             PackageToZip();
         }
 
-        protected void fixNavReferencesSingleChapterExport(string path, string element, string attribute)
+        protected void fixNavReferencesSingleChapterExport(string path, string element, string attribute, string navdoc)
         {
             string xml = File.ReadAllText(path);
             xml = xml.Replace("\r\n", "\n");
 
             string targetFileName = Path.GetFileName(m_exportSpineItemPath);
-            string regexp = element + "\\s*" + attribute + "\\s*=\\s*\"[^\"]*" + Regex.Escape(targetFileName) + "[^\"]*\"";
+            string regexp1 = element + "\\s*" + attribute + "\\s*=\\s*\"[^\"]*" + Regex.Escape(targetFileName) + "[^\"]*\"";
 
-            xml = Regex.Replace(xml, regexp, "TOBI1$&TOBI2", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            xml = Regex.Replace(xml, regexp1, "TOBI1$&TOBI2", RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
-#if DEBUG
+#if false && DEBUG
             StreamWriter containerWriter = File.CreateText(path);
             try
             {
@@ -1153,11 +1153,18 @@ namespace urakawa.daisy.export
                 containerWriter.Close();
             }
 #endif
+            bool checkNavDoc = !string.IsNullOrEmpty(navdoc)
+                               && targetFileName != Path.GetFileName(navdoc);
+            string regexp1_ = null;
+            if (checkNavDoc)
+            {
+                targetFileName = Path.GetFileName(navdoc);
+                regexp1_ = element + "\\s*" + attribute + "\\s*=\\s*\"[^\"]*" + Regex.Escape(targetFileName) +
+                                  "[^\"]*\"";
 
-            string regexp2 = "(<" + element + "\\s*" + attribute + "\\s*=\\s*\")([^\"]*)(\")";
-            xml = Regex.Replace(xml, regexp2, "$1#$3", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                xml = Regex.Replace(xml, regexp1_, "TOBI1$&TOBI2", RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
-#if DEBUG
+#if false && DEBUG
             containerWriter = File.CreateText(path);
             try
             {
@@ -1168,13 +1175,46 @@ namespace urakawa.daisy.export
                 containerWriter.Close();
             }
 #endif
-            string regexp3 = "TOBI1(" + regexp + ")TOBI2";
+            }
+            string regexp2 = "(<" + element + "\\s*" + attribute + "\\s*=\\s*\")([^\"]*)(\")";
+            xml = Regex.Replace(xml, regexp2, "$1#$3", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
+#if false && DEBUG
+            containerWriter = File.CreateText(path);
+            try
+            {
+                containerWriter.Write(xml);
+            }
+            finally
+            {
+                containerWriter.Close();
+            }
+#endif
+            string regexp3 = "TOBI1(" + regexp1 + ")TOBI2";
             xml = Regex.Replace(xml, regexp3, "$1", RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
-#if !DEBUG
+#if false && DEBUG
+            containerWriter = File.CreateText(path);
+            try
+            {
+                containerWriter.Write(xml);
+            }
+            finally
+            {
+                containerWriter.Close();
+            }
+#endif
+
+            if (checkNavDoc)
+            {
+                string regexp4 = "TOBI1(" + regexp1_ + ")TOBI2";
+                xml = Regex.Replace(xml, regexp4, "$1", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            }
+
+#if true || !DEBUG
             StreamWriter
 #endif
-            containerWriter = File.CreateText(path);
+ containerWriter = File.CreateText(path);
             try
             {
                 containerWriter.Write(xml);
