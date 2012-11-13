@@ -40,7 +40,7 @@ namespace urakawa.daisy.import
 
             deleteDataDirectoryIfEmpty();
 
-            initializeProject(@"__" + Path.GetFileName(m_Book_FilePath));
+            initializeProject(@"_" + Path.GetFileName(m_Book_FilePath));
         }
 
         private void parseOpf(XmlDocument opfXmlDoc)

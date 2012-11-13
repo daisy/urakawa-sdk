@@ -330,10 +330,16 @@ namespace urakawa.daisy.import
                     {
                         //MessageBox.Show("(X)HTML support is experimental and incomplete, please use with caution!");
 
+                        string htmlPath = m_Book_FilePath;
+
+                        string parent = Path.GetDirectoryName(m_Book_FilePath);
+                        string fileName = Path.GetFileNameWithoutExtension(m_Book_FilePath);
+                        m_Book_FilePath = Path.Combine(parent, fileName + ".opf");
+
                         reInitialiseProjectSpine();
 
                         List<string> spineOfContentDocuments = new List<string>();
-                        spineOfContentDocuments.Add(Path.GetFileName(m_Book_FilePath));
+                        spineOfContentDocuments.Add(Path.GetFileName(htmlPath));
 
                         List<Dictionary<string, string>> spineItemsAttributes = new List<Dictionary<string, string>>();
                         spineItemsAttributes.Add(new Dictionary<string, string>());

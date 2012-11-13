@@ -64,6 +64,11 @@ namespace urakawa.daisy.export
             {
                 foreach (MetadataAttribute metaAttribute in metaAttrs)
                 {
+                    if (metaAttribute.Name == Metadata.PrimaryIdentifierMark)
+                    {
+                        continue;
+                    }
+
                     if (metaAttribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":"))
                     {
                         XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, metaNode,
@@ -162,6 +167,11 @@ namespace urakawa.daisy.export
                         bool hasOtherAttrs = false;
                         foreach (MetadataAttribute mdAttr in md.OtherAttributes.ContentsAs_Enumerable)
                         {
+                            if (mdAttr.Name == Metadata.PrimaryIdentifierMark)
+                            {
+                                continue;
+                            }
+
                             if (mdAttr.Name == DiagramContentModelHelper.Rel)
                             {
                                 mdAttr_Rel = mdAttr;
@@ -236,6 +246,11 @@ namespace urakawa.daisy.export
 
                     foreach (MetadataAttribute metadataAttribute in md.OtherAttributes.ContentsAs_Enumerable)
                     {
+                        if (metadataAttribute.Name == Metadata.PrimaryIdentifierMark)
+                        {
+                            continue;
+                        }
+
                         if (metadataAttribute.Name == XmlReaderWriterHelper.XmlId)
                         {
                             hasId = metadataAttribute.Value;
@@ -299,6 +314,11 @@ namespace urakawa.daisy.export
 
                         foreach (MetadataAttribute metadataAttribute in md.OtherAttributes.ContentsAs_Enumerable)
                         {
+                            if (metadataAttribute.Name == Metadata.PrimaryIdentifierMark)
+                            {
+                                continue;
+                            }
+
                             if (metadataAttribute.Name == XmlReaderWriterHelper.XmlId)
                             {
                                 DebugFix.Assert(metadataAttribute.Value == key);

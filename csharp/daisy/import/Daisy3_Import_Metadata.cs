@@ -381,8 +381,18 @@ namespace urakawa.daisy.import
         private void metadataPostProcessing(string book_FilePath, Project project)
         {
             ensureCorrectMetadataIdentifier(book_FilePath, project);
-            checkAllMetadataSynonyms(project);
-            addMissingRequiredMetadata(project);
+            
+            Presentation presentation = project.Presentations.Get(0);
+            string name = presentation.RootNode.GetXmlElementLocalName();
+            bool isEPUB =
+                @"body".Equals(name, StringComparison.OrdinalIgnoreCase)
+                || @"spine".Equals(name, StringComparison.OrdinalIgnoreCase);
+
+            if (!isEPUB)
+            {
+                checkAllMetadataSynonyms(project);
+                addMissingRequiredMetadata(project);
+            }
         }
 
         private void checkAllMetadataSynonyms(Project project)
@@ -433,7 +443,6 @@ namespace urakawa.daisy.import
                     }
                 }
             }
-
         }
 
         //find all metadata items with the given name (case-insensitive)
@@ -457,13 +466,17 @@ namespace urakawa.daisy.import
 
         private void ensureCorrectMetadataIdentifier(string book_FilePath, Project project)
         {
+            Presentation presentation = project.Presentations.Get(0);
+            string name = presentation.RootNode.GetXmlElementLocalName();
+            bool isEPUB =
+                @"body".Equals(name, StringComparison.OrdinalIgnoreCase)
+                || @"spine".Equals(name, StringComparison.OrdinalIgnoreCase);
+
             if (!String.IsNullOrEmpty(m_PublicationUniqueIdentifier))
             {
                 string id = SupportedMetadata_Z39862005.DC_Identifier;
 
-                if (@"spine".Equals(
-                    project.Presentations.Get(0).RootNode.GetXmlElementLocalName(),
-                    StringComparison.OrdinalIgnoreCase))
+                if (isEPUB)
                 {
                     id = id.ToLower();
                 }
@@ -477,7 +490,7 @@ namespace urakawa.daisy.import
             //if there is only one, then make that the unique publication identifier
             else
             {
-                if (project.Presentations.Count > 0)
+                if (!isEPUB)
                 {
                     List<Metadata> identifiers = new List<Metadata>();
 
@@ -504,10 +517,68 @@ namespace urakawa.daisy.import
                             identifiers[0].NameContentAttribute.Name = "dc:Identifier";*/
                     }
                 }
+                else
+                {
+                    List<Metadata> identifiers = new List<Metadata>();
+
+                    foreach (Metadata md in this.Metadatas.ContentsAs_Enumerable)
+                    {
+                        if (SupportedMetadata_Z39862005.DC_Identifier.Equals(md.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            identifiers.Add(md);
+                        }
+                    }
+
+                    if (identifiers.Count == 0)
+                    {
+                        // NOP
+                        return;
+                    }
+                    else if (identifiers.Count == 1)
+                    {
+                        if (identifiers[0].IsMarkedAsPrimaryIdentifier)
+                        {
+                            return;
+                        }
+
+                        identifiers[0].IsMarkedAsPrimaryIdentifier = true;
+                        return;
+                    }
+                    else if (identifiers.Count > 1)
+                    {
+                        foreach (Metadata md in identifiers)
+                        {
+                            if (md.IsMarkedAsPrimaryIdentifier)
+                            {
+                                return;
+                            }
+                        }
+                        foreach (Metadata md in identifiers)
+                        {
+                            Metadata toMark = null;
+                            foreach (MetadataAttribute metadataAttribute in md.OtherAttributes.ContentsAs_Enumerable)
+                            {
+                                if (@"id".Equals(metadataAttribute.Name, StringComparison.OrdinalIgnoreCase)
+                                    || @"xml:id".Equals(metadataAttribute.Name, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    toMark = md;
+                                    break;
+                                }
+                            }
+                            if (toMark != null)
+                            {
+                                toMark.IsMarkedAsPrimaryIdentifier = true;
+                                return;
+                            }
+                        }
+                    }
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
             }
-
-
         }
+
         private void addMissingRequiredMetadata(Project project)
         {
             Presentation presentation = project.Presentations.Get(0);
