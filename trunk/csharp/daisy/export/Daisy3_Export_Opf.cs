@@ -289,7 +289,10 @@ namespace urakawa.daisy.export
                     // add other metadata attributes if any
                     foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_Enumerable)
                     {
-                        if (ma.Name == "id") continue;
+                        if (ma.Name == "id" || ma.Name == Metadata.PrimaryIdentifierMark)
+                        {
+                            continue;
+                        }
                         XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metadataNodeCreated, ma.Name, ma.Value);
                     }
                 }
@@ -309,7 +312,10 @@ namespace urakawa.daisy.export
                     // add other metadata attributes if any
                     foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_Enumerable)
                     {
-                        if (ma.Name == "id") continue;
+                        if (ma.Name == "id" || ma.Name == Metadata.PrimaryIdentifierMark)
+                        {
+                            continue;
+                        }
                         XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, metadataNodeCreated, ma.Name, ma.Value);
                     }
                 }

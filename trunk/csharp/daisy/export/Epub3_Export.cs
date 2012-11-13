@@ -627,6 +627,11 @@ namespace urakawa.daisy.export
                         {
                             foreach (MetadataAttribute metadataAttribute in metadata.OtherAttributes.ContentsAs_Enumerable)
                             {
+                                if (metadataAttribute.Name == Metadata.PrimaryIdentifierMark)
+                                {
+                                    continue;
+                                }
+
                                 if (metadataAttribute.Name.Equals(@"id", StringComparison.OrdinalIgnoreCase))
                                 {
                                     //DebugFix.Assert(nsUri == XmlReaderWriterHelper.NS_URL_XML);
@@ -668,7 +673,7 @@ namespace urakawa.daisy.export
                                     DiagramContentModelHelper.NS_URL_DC, XmlReaderWriterHelper.NS_URL_XMLNS);
                             }
 
-                            opfXmlNode_meta = opfXmlDoc.CreateElement(prefix, localName, nsUri);
+                            opfXmlNode_meta = opfXmlDoc.CreateElement(prefix, localName, DiagramContentModelHelper.NS_URL_DC);
                             opfXmlNode_metadata.AppendChild(opfXmlNode_meta);
                         }
                         else
@@ -703,6 +708,11 @@ namespace urakawa.daisy.export
                     {
                         foreach (MetadataAttribute metadataAttribute in metadata.OtherAttributes.ContentsAs_Enumerable)
                         {
+                            if (metadataAttribute.Name == Metadata.PrimaryIdentifierMark)
+                            {
+                                continue;
+                            }
+
                             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_meta, metadataAttribute.Name, metadataAttribute.Value);
                         }
                     }

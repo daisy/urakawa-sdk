@@ -159,7 +159,10 @@ namespace urakawa.daisy.export
                 // add metadata optional attributes if any
                 foreach (MetadataAttribute ma in m.OtherAttributes.ContentsAs_Enumerable)
                 {
-                    if (ma.Name == "id") continue;
+                    if (ma.Name == "id" || ma.Name == Metadata.PrimaryIdentifierMark)
+                    {
+                        continue;
+                    }
 
                     XmlDocumentHelper.CreateAppendXmlAttribute(DTBookDocument, metaNode, ma.Name, ma.Value);
                 }
