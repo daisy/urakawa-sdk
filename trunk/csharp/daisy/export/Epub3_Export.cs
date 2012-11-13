@@ -668,22 +668,42 @@ namespace urakawa.daisy.export
                         
                         audioStream.Close();
 
+                        ushort nChannels = (ushort)(m_audioStereo ? 2 : 1);
+
+                        AudioLibPCMFormat pcmFormat = new AudioLibPCMFormat();
+                        pcmFormat.CopyFrom(node.Presentation.MediaDataManager.DefaultPCMFormat.Data);
+                        pcmFormat.SampleRate = (ushort)m_sampleRate;
+                        pcmFormat.NumberOfChannels = nChannels;
+
                         if (m_encodeToMp3)
                         {
-                            //EncodeTransientFileToMp3();
+                            WavFormatConverter formatConverter = new WavFormatConverter(true, m_SkipACM);
+
+                            AddSubCancellable(formatConverter);
+
+                            bool result = false;
+                            try
+                            {
+                                result = formatConverter.CompressWavToMp3(fullAudioPath_, fullAudioPath, pcmFormat, m_BitRate_Mp3);
+                            }
+                            finally
+                            {
+                                RemoveSubCancellable(formatConverter);
+                            }
+
+                            if (result)
+                            {
+                                //double compressionRatio = (new FileInfo(fullAudioPath_).Length) / (new FileInfo(fullAudioPath).Length);
+
+                                File.Delete(fullAudioPath_);
+                            }
                         }
                         else
                         {
-                            ushort nChannels = (ushort)(m_audioStereo ? 2 : 1);
                             if ((ushort)m_sampleRate != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
                                 ||
                                 nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels)
                             {
-                                AudioLibPCMFormat pcmFormat = new AudioLibPCMFormat();
-                                pcmFormat.CopyFrom(node.Presentation.MediaDataManager.DefaultPCMFormat.Data);
-                                pcmFormat.SampleRate = (ushort)m_sampleRate;
-                                pcmFormat.NumberOfChannels = nChannels;
-
                                 WavFormatConverter formatConverter = new WavFormatConverter(true, m_SkipACM);
 
                                 AddSubCancellable(formatConverter);
