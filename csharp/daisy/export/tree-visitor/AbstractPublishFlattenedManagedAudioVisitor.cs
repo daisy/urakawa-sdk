@@ -196,7 +196,10 @@ namespace urakawa.daisy.export.visitor
             //reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(destinationFilePath), GetSizeInfo(m_RootNode)));
 
             PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
-            AudioLibPCMFormat pcmFormat = audioFormat.Data;
+
+            //AudioLibPCMFormat pcmFormat = audioFormat.Data;
+            AudioLibPCMFormat pcmFormat = new AudioLibPCMFormat();
+            pcmFormat.CopyFrom(audioFormat.Data);
             pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
             pcmFormat.NumberOfChannels = (ushort)(base.EncodePublishedAudioFilesStereo ? 2 : 1);
 
