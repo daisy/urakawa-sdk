@@ -452,7 +452,7 @@ namespace urakawa.daisy.import
                         continue;
                     }
 
-                    xmlProp.SetAttribute(xAttr.LocalName,
+                    xmlProp.SetAttribute(xAttr.Name,
                         linkNode.NamespaceURI == xAttr.NamespaceURI ? "" : xAttr.NamespaceURI,
                         xAttr.Value);
 
