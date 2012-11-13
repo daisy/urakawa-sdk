@@ -11,22 +11,22 @@ using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.media;
 using urakawa.media.data;
+using urakawa.media.data.audio;
 using urakawa.media.data.image;
 using urakawa.media.data.video;
 using urakawa.media.timing;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.property.channel;
+using urakawa.property.xml;
+using urakawa.xuk;
+using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 #if ENABLE_SHARPZIP
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
 #else
 using Jaime.Olivares;
-using urakawa.property.xml;
-using urakawa.xuk;
-using XmlAttribute = urakawa.property.xml.XmlAttribute;
-
 #endif
 
 namespace urakawa.daisy.export
@@ -78,7 +78,7 @@ namespace urakawa.daisy.export
             m_BitRate_Mp3 = bitRate_Mp3;
             m_Presentation = presentation;
 
-            m_UnzippedOutputDirectory = Path.Combine(exportDirectory, @"___UNZIPPED");
+            m_UnzippedOutputDirectory = Path.Combine(exportDirectory, @"_UNZIPPED");
             if (!Directory.Exists(m_UnzippedOutputDirectory))
             {
                 FileDataProvider.CreateDirectory(m_UnzippedOutputDirectory);
@@ -94,30 +94,6 @@ namespace urakawa.daisy.export
 
             reportProgress(-1, @"Creating EPUB directory structure..."); //UrakawaSDK_daisy_Lang.BLAbla
 
-            //Channel publishChannel = m_Daisy3_Export.PublishAudioFiles();
-            //try
-            //{
-            //    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            //    //TODO: CreateHTMLDocument();
-
-            //    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            //    //TODO: m_Daisy3_Export.CreateExternalFiles();
-
-            //    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            //    //TODO: CreateNavigationDocuments();
-
-            //    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            //    //TODO: CreateSmilMediaOverlays();
-
-            //    if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
-            //    //TODO: CreateOpfEPUBPackage();
-
-            //}
-            //finally
-            //{
-            //    //m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
-            //    RemovePublishChannel(publishChannel);
-            //}
 
             string metainfDirectoryPath = Path.Combine(m_UnzippedOutputDirectory, "META-INF");
             if (!Directory.Exists(metainfDirectoryPath))
@@ -322,14 +298,18 @@ namespace urakawa.daisy.export
                         Debugger.Break();
 #endif
                     }
-                    
+
                     bool isCover = extFileData is CoverImageExternalFileData;
                     bool isNCX = extFileData is NCXExternalFileData;
                     bool isNav = extFileData is NavDocExternalFileData;
 
+                    bool isMetaInf = false;
+
                     string fullPath = null;
                     if (relativePath.StartsWith(Daisy3_Import.META_INF_prefix))
                     {
+                        isMetaInf = true;
+
                         relativePath = relativePath.Substring(Daisy3_Import.META_INF_prefix.Length);
 
                         fullPath = Path.Combine(m_UnzippedOutputDirectory, "META-INF/" + relativePath);
@@ -344,44 +324,52 @@ namespace urakawa.daisy.export
                     {
                         extFileData.DataProvider.ExportDataStreamToFile(fullPath, false);
 
-
-                        XmlNode opfXmlNode_itemExt = opfXmlDoc.CreateElement(null,
-                            "item",
-                            DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
-                        opfXmlNode_manifest.AppendChild(opfXmlNode_itemExt);
-
-                        string ext = Path.GetExtension(relativePath);
-
-                        string type = DataProviderFactory.GetMimeTypeFromExtension(ext);
-                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"media-type", type);
-
-                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"href", relativePath);
-
-                        if (isCover)
+                        if (!isMetaInf)
                         {
-                            //string uid = GetNextID(ID_OpfPrefix);
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"id", @"cover-image");
+                            XmlNode opfXmlNode_itemExt = opfXmlDoc.CreateElement(null,
+                                                                                 "item",
+                                                                                 DiagramContentModelHelper.
+                                                                                     NS_URL_EPUB_PACKAGE);
+                            opfXmlNode_manifest.AppendChild(opfXmlNode_itemExt);
 
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"properties", @"cover-image");
+                            string ext = Path.GetExtension(relativePath);
 
-                            XmlNode opfXmlNode_metaCover = opfXmlDoc.CreateElement(null,
-                                @"meta",
-                                DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
-                            opfXmlNode_metadata.AppendChild(opfXmlNode_metaCover);
+                            string type = DataProviderFactory.GetMimeTypeFromExtension(ext);
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"media-type",
+                                                                       type);
 
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaCover, @"name", "cover");
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaCover, @"content", "cover-image");
-                        }
-                        else if (isNCX)
-                        {
-                            //string uid = GetNextID(ID_OpfPrefix);
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"id", "ncx");
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spine, @"toc", "ncx");
-                        }
-                        else if (isNav) // Note: when NavDoc is external data, it is not in spine (and vice versa)
-                        {
-                            //string uid = GetNextID(ID_OpfPrefix);
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"properties", "nav");
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"href",
+                                                                       relativePath);
+
+                            if (isCover)
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"id",
+                                                                           @"cover-image");
+
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"properties",
+                                                                           @"cover-image");
+
+                                XmlNode opfXmlNode_metaCover = opfXmlDoc.CreateElement(null,
+                                                                                       @"meta",
+                                                                                       DiagramContentModelHelper.
+                                                                                           NS_URL_EPUB_PACKAGE);
+                                opfXmlNode_metadata.AppendChild(opfXmlNode_metaCover);
+
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaCover, @"name",
+                                                                           "cover");
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaCover, @"content",
+                                                                           "cover-image");
+                            }
+                            else if (isNCX)
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"id", "ncx");
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spine, @"toc", "ncx");
+                            }
+                            else if (isNav) // Note: when NavDoc is external data, it is not in spine (and vice versa)
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"properties",
+                                                                           "nav");
+                            }
                         }
                     }
                 }
@@ -431,7 +419,7 @@ namespace urakawa.daisy.export
                     opfXmlNode_manifest.AppendChild(opfXmlNode_item);
 
 
-                    string uid_OPF_SpineItem = GetNextID(ID_OpfPrefix);
+                    string uid_OPF_SpineItem = GetNextID(ID_SpinePrefix);
                     XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef, @"idref", uid_OPF_SpineItem);
                     XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", uid_OPF_SpineItem);
 
@@ -529,10 +517,10 @@ namespace urakawa.daisy.export
                     if (time != null)
                     {
                         timeTotal.Add(time);
-                        
-                        //uid = GetNextID(ID_MoPrefix);
+
                         string uid_OPF_SpineItemMO = uid_OPF_SpineItem + @"_mo";
                         XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-overlay", uid_OPF_SpineItemMO);
+
 
                         opfXmlNode_item = opfXmlDoc.CreateElement(null,
                             "item",
@@ -578,6 +566,151 @@ namespace urakawa.daisy.export
                             spineItemWriterSmil.Close();
                         }
 #endif //DEBUG
+
+                        opfXmlNode_item = opfXmlDoc.CreateElement(null,
+                            "item",
+                            DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                        opfXmlNode_manifest.AppendChild(opfXmlNode_item);
+
+                        type = DataProviderFactory.AUDIO_WAV_MIME_TYPE;
+                        if (m_encodeToMp3)
+                        {
+                            type = DataProviderFactory.AUDIO_MP3_MIME_TYPE;
+                        }
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
+
+                        string audioPath = path.Replace(ext, m_encodeToMp3 ? @".mp3" : @".wav");
+                        XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", audioPath);
+
+                        string fullAudioPath = Path.Combine(opsDirectoryPath, audioPath);
+                        fullAudioPath = FileDataProvider.NormaliseFullFilePath(fullAudioPath).Replace('/', '\\');
+
+                        //spineItemPresentation.RootNode.OpenPcmInputStreamOfManagedAudioMediaFlattened()
+
+                        string fullAudioPath_ = fullAudioPath.Replace(@".mp3", @".wav").Replace(@".wav",
+                                                                        @"_"
+                            //+ spineItemPresentation.MediaDataManager.DefaultPCMFormat.ToString()
+                                                                        + spineItemPresentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
+                                                                        + "-"
+                                                                        + (spineItemPresentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels == 1 ? @"mono" : @"stereo")
+                                                                            + @".wav");
+
+                        string audioFileName = Path.GetFileName(fullAudioPath_);
+
+                        long bytes =
+                            spineItemPresentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(
+                                time.AsLocalUnits) / (1024 * 1024);
+                        decimal bytes_ = Math.Round((decimal)bytes, 5, MidpointRounding.ToEven);
+                        string sizeStr = bytes_ + @"MB";
+                        reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, audioFileName, sizeStr));
+
+                        if (RequestCancellation)
+                        {
+                            return;
+                        }
+
+                        FileStream audioStream = new FileStream(fullAudioPath_, FileMode.Create, FileAccess.Write, FileShare.None);
+                        ulong audioStreamRiffOffset = spineItemPresentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(audioStream, 0);
+
+                        DebugFix.Assert((long)audioStreamRiffOffset == audioStream.Position);
+
+                        uint totalBytesWritten = 0;
+
+                        TreeNode node = spineItemPresentation.RootNode;
+                        Stack<TreeNode> nodeStack = new Stack<TreeNode>();
+                        nodeStack.Push(node);
+
+                        while (nodeStack.Count > 0) //nodeStack.Peek() != null
+                        {
+                            if (RequestCancellation)
+                            {
+                                audioStream.Close();
+                                return;
+                            }
+
+                            node = nodeStack.Pop();
+
+                            ManagedAudioMedia manAudioMedia = node.GetManagedAudioMedia();
+                            if (manAudioMedia != null && manAudioMedia.HasActualAudioMediaData)
+                            {
+                                Stream manAudioStream = manAudioMedia.AudioMediaData.OpenPcmInputStream();
+                                try
+                                {
+                                    const uint BUFFER_SIZE = 1024 * 1024 * 3; // 3 MB MAX BUFFER
+                                    uint bytesWritten = StreamUtils.Copy(manAudioStream, 0, audioStream, BUFFER_SIZE);
+
+                                    totalBytesWritten += bytesWritten;
+                                }
+                                catch
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                }
+                                finally
+                                {
+                                    manAudioStream.Close();
+                                }
+                            }
+                            else
+                            {
+                                foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerableReversed)
+                                {
+                                    nodeStack.Push(child);
+                                }
+                            }
+                        }
+
+                        DebugFix.Assert((long)totalBytesWritten == audioStream.Position - (long)audioStreamRiffOffset);
+                        
+                        audioStream.Position = 0;
+                        spineItemPresentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(audioStream, totalBytesWritten);
+                        
+                        audioStream.Close();
+
+                        if (m_encodeToMp3)
+                        {
+                            //EncodeTransientFileToMp3();
+                        }
+                        else
+                        {
+                            ushort nChannels = (ushort)(m_audioStereo ? 2 : 1);
+                            if ((ushort)m_sampleRate != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
+                                ||
+                                nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels)
+                            {
+                                AudioLibPCMFormat pcmFormat = new AudioLibPCMFormat();
+                                pcmFormat.CopyFrom(node.Presentation.MediaDataManager.DefaultPCMFormat.Data);
+                                pcmFormat.SampleRate = (ushort)m_sampleRate;
+                                pcmFormat.NumberOfChannels = nChannels;
+
+                                WavFormatConverter formatConverter = new WavFormatConverter(true, m_SkipACM);
+
+                                AddSubCancellable(formatConverter);
+
+                                string destinationFilePath = null;
+                                try
+                                {
+                                    AudioLibPCMFormat originalPcmFormat;
+                                    destinationFilePath = formatConverter.ConvertSampleRate(fullAudioPath_, Path.GetDirectoryName(fullAudioPath_), pcmFormat, out originalPcmFormat);
+                                    if (originalPcmFormat != null)
+                                    {
+                                        DebugFix.Assert(node.Presentation.MediaDataManager.DefaultPCMFormat.Data.Equals(originalPcmFormat));
+                                    }
+                                }
+                                finally
+                                {
+                                    RemoveSubCancellable(formatConverter);
+                                }
+
+                                File.Delete(fullAudioPath_);
+                                File.Move(destinationFilePath, fullAudioPath);
+                            }
+                            else
+                            {
+                                File.Move(fullAudioPath_, fullAudioPath);
+                            }
+                        }
                     }
 
 #if DEBUG
@@ -622,6 +755,21 @@ namespace urakawa.daisy.export
                         if (!File.Exists(fullPath))
                         {
                             extFileData.DataProvider.ExportDataStreamToFile(fullPath, false);
+
+                            XmlNode opfXmlNode_spineItemExt = opfXmlDoc.CreateElement(null,
+                                                                                 "item",
+                                                                                 DiagramContentModelHelper.
+                                                                                     NS_URL_EPUB_PACKAGE);
+                            opfXmlNode_manifest.AppendChild(opfXmlNode_spineItemExt);
+
+                            string spineItemExt = Path.GetExtension(relativePath);
+
+                            string spineItemType = DataProviderFactory.GetMimeTypeFromExtension(spineItemExt);
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spineItemExt, @"media-type",
+                                                                       spineItemType);
+
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spineItemExt, @"href",
+                                                                       relativePath);
                         }
 #if DEBUG
                         else
@@ -676,6 +824,22 @@ namespace urakawa.daisy.export
                                 Debugger.Break();
 #endif
                             }
+
+
+                            XmlNode opfXmlNode_spineItemMedia = opfXmlDoc.CreateElement(null,
+                                                                             "item",
+                                                                             DiagramContentModelHelper.
+                                                                                 NS_URL_EPUB_PACKAGE);
+                            opfXmlNode_manifest.AppendChild(opfXmlNode_spineItemMedia);
+
+                            string spineItemExt = Path.GetExtension(relativePath);
+
+                            string spineItemType = DataProviderFactory.GetMimeTypeFromExtension(spineItemExt);
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spineItemMedia, @"media-type",
+                                                                       spineItemType);
+
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spineItemMedia, @"href",
+                                                                       relativePath);
                         }
 #if DEBUG
                         else
@@ -774,22 +938,6 @@ namespace urakawa.daisy.export
 
             PackageToZip();
         }
-
-        protected void RemovePublishChannel(Channel publishChannel)
-        {
-            m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
-        }
-
-        protected bool RequestCancellation_RemovePublishChannel(Channel publishChannel)
-        {
-            if (RequestCancellation)
-            {
-                m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
-                return true;
-            }
-            return false;
-        }
-
 
         public void PackageToZip()
         {
@@ -981,7 +1129,7 @@ namespace urakawa.daisy.export
         protected const string ID_HtmlPrefix = "h_";
         protected long m_Counter_ID_HtmlPrefix = 0;
 
-        protected const string ID_OpfPrefix = "opf_";
+        protected const string ID_SpinePrefix = "spine_";
         protected long m_Counter_ID_OpfPrefix = 0;
 
         protected const string ID_MoPrefix = "mo_";
@@ -998,7 +1146,7 @@ namespace urakawa.daisy.export
                 m_Counter_ID_HtmlPrefix++;
                 counter = m_Counter_ID_HtmlPrefix;
             }
-            else if (prefix == ID_OpfPrefix)
+            else if (prefix == ID_SpinePrefix)
             {
                 m_Counter_ID_OpfPrefix++;
                 counter = m_Counter_ID_OpfPrefix;
