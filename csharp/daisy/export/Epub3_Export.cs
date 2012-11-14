@@ -155,7 +155,7 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaItemDur, @"property", "media:duration");
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaItemDur, @"refines", "#" + uid_OPF_SpineItemMO);
 
-                XmlNode timeNodeItemDur = opfXmlDoc.CreateTextNode(time.ToString());
+                XmlNode timeNodeItemDur = opfXmlDoc.CreateTextNode(time.Format_StandardExpanded());
                 opfXmlNode_metaItemDur.AppendChild(timeNodeItemDur);
 
                 opfXmlNode_item = opfXmlDoc.CreateElement(null,
@@ -398,6 +398,7 @@ namespace urakawa.daisy.export
 
             generateMetadata(spineItemPresentation, xmlDocHTML, xmlDocHTML.DocumentElement, xmlDocHTML_head);
 
+            Stack<XmlNode> stack_XmlNode_SMIL = null;
             XmlDocument xmlDocSMIL = null;
             XmlNode xmlDocSMIL_body = null;
             if (time != null)
@@ -405,36 +406,48 @@ namespace urakawa.daisy.export
                 xmlDocSMIL = createXmlDocument_SMIL();
                 xmlDocSMIL_body = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDocSMIL, false, "body",
                                                                                        "http://www.w3.org/ns/SMIL");
+
+                XmlDocumentHelper.CreateAppendXmlAttribute(
+                    xmlDocSMIL,
+                    xmlDocSMIL_body,
+                    "epub:textref",
+                    path,
+                    DiagramContentModelHelper.NS_URL_EPUB);
+
+                stack_XmlNode_SMIL = new Stack<XmlNode>();
+                stack_XmlNode_SMIL.Push(xmlDocSMIL_body);
             }
-
-
-            //TODO: serialize body TreeNode content into XML + parallel-generate SMIL
-            //audioPath
 
             TreeNode currentTreeNode = spineItemPresentation.RootNode;
 
-            Stack<TreeNode> currentTreeNodeStack = new Stack<TreeNode>();
-            currentTreeNodeStack.Push(currentTreeNode);
+            Stack<TreeNode> stack_TreeNode = new Stack<TreeNode>();
+            stack_TreeNode.Push(currentTreeNode);
 
-            //XmlNode currentXmlNode_SMIL = xmlDocSMIL_body;
+            Stack<XmlNode> stack_XmlNode_HTML = new Stack<XmlNode>();
+            stack_XmlNode_HTML.Push(xmlDocHTML.DocumentElement);
 
-            Stack<XmlNode> currentXmlNodeStack = new Stack<XmlNode>();
-            currentXmlNodeStack.Push(xmlDocHTML.DocumentElement);
+            Time timeAccumulated = new Time();
 
-            while (currentTreeNodeStack.Count > 0) //nodeStack.Peek() != null
+            while (stack_TreeNode.Count > 0) //nodeStack.Peek() != null
             {
                 if (RequestCancellation)
                 {
                     return true;
                 }
 
-                currentTreeNode = currentTreeNodeStack.Pop();
+                currentTreeNode = stack_TreeNode.Pop();
 
-                XmlNode currentXmlNode_HTML = currentXmlNodeStack.Peek();
+                XmlNode currentXmlNode_HTML = stack_XmlNode_HTML.Peek();
+
+                XmlNode currentXmlNode_SMIL = null;
+                if (time != null)
+                {
+                    currentXmlNode_SMIL = stack_XmlNode_SMIL.Peek();
+                }
 
                 ManagedAudioMedia audioMedia = currentTreeNode.GetManagedAudioMedia();
                 AbstractTextMedia textMedia = currentTreeNode.GetTextMedia();
-                
+
                 bool hasXmlProperty = currentTreeNode.HasXmlProperty;
 #if DEBUG
                 if (!hasXmlProperty || textMedia != null)
@@ -464,7 +477,7 @@ namespace urakawa.daisy.export
                 {
                     foreach (TreeNode child in currentTreeNode.Children.ContentsAs_YieldEnumerableReversed)
                     {
-                        currentTreeNodeStack.Push(child);
+                        stack_TreeNode.Push(child);
                     }
 
                     XmlProperty xmlProp = currentTreeNode.GetXmlProperty();
@@ -574,23 +587,122 @@ namespace urakawa.daisy.export
                             xmlAttr.GetNamespaceUri());
                     }
 
-                    // TODO need ID for smilref?
-                    if (false && string.IsNullOrEmpty(xmlId))
+                    string epubType = null;
+                    XmlAttribute xmlAttrEpubType = currentTreeNode.GetXmlProperty().GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
+                    if (xmlAttrEpubType != null)
                     {
-                        xmlId = GetNextID(ID_HtmlPrefix);
-
-                        XmlDocumentHelper.CreateAppendXmlAttribute(
-                            xmlDocHTML,
-                            newXmlNode,
-                            "id", //XmlReaderWriterHelper.XmlId,
-                            xmlId
-                            //,XmlReaderWriterHelper.NS_URL_XML
-                            );
+                        epubType = xmlAttrEpubType.Value;
                     }
 
-                    if (audioMedia != null && audioMedia.HasActualAudioMediaData)
+                    bool hasAudio = audioMedia != null && audioMedia.HasActualAudioMediaData;
+                    bool triggersSeq =
+                        time != null && (
+                        @"section".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        || @"aside".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        || @"sidebar".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        || @"list".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        || @"figure".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        || @"table".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        || @"footnote".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        || @"rearnote".Equals(name, StringComparison.OrdinalIgnoreCase)
+
+                        //TODO: JUST FOR TESTING !!!!!
+                        || @"div".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        )
+                        ;
+
+                    if (hasAudio || triggersSeq)
                     {
-                        //TODO SMiL gen
+                        if (string.IsNullOrEmpty(xmlId))
+                        {
+                            xmlId = GetNextID(ID_HtmlPrefix);
+
+                            XmlDocumentHelper.CreateAppendXmlAttribute(
+                                xmlDocHTML,
+                                newXmlNode,
+                                "id", //XmlReaderWriterHelper.XmlId,
+                                xmlId
+                                //,XmlReaderWriterHelper.NS_URL_XML
+                                );
+                        }
+                    }
+
+                    //TODO: implement stack pop! (when HTML element leaves scope of current seq SMIL container)
+                    if (false && triggersSeq)
+                    {
+                        XmlNode seq = xmlDocSMIL.CreateElement(null, "seq", currentXmlNode_SMIL.NamespaceURI);
+
+                        if (!string.IsNullOrEmpty(epubType))
+                        {
+                            XmlDocumentHelper.CreateAppendXmlAttribute(
+                                xmlDocSMIL,
+                                seq,
+                                "epub:type",
+                                epubType,
+                                DiagramContentModelHelper.NS_URL_EPUB);
+                        }
+
+                        XmlDocumentHelper.CreateAppendXmlAttribute(
+                            xmlDocSMIL,
+                            seq,
+                            "epub:textref",
+                            path + "#" + xmlId,
+                            DiagramContentModelHelper.NS_URL_EPUB);
+
+                        stack_XmlNode_SMIL.Push(seq);
+                    }
+
+                    if (hasAudio)
+                    {
+                        DebugFix.Assert(time != null);
+
+
+                        string textSrc = path + "#" + xmlId;
+                        string audioSrc = audioPath;
+                        string clipBegin = timeAccumulated.Format_StandardExpanded();
+
+                        timeAccumulated.Add(audioMedia.Duration); //audioMedia.AudioMediaData.AudioDuration
+                        string clipEnd = timeAccumulated.Format_StandardExpanded();
+
+                        XmlNode text = xmlDocSMIL.CreateElement(null, "text", currentXmlNode_SMIL.NamespaceURI);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(
+                            xmlDocSMIL,
+                            text,
+                            "src",
+                            textSrc);
+
+                        XmlNode audio = xmlDocSMIL.CreateElement(null, "audio", currentXmlNode_SMIL.NamespaceURI);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(
+                            xmlDocSMIL,
+                            audio,
+                            "src",
+                            audioSrc);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(
+                            xmlDocSMIL,
+                            audio,
+                            "clipBegin",
+                            clipBegin);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(
+                            xmlDocSMIL,
+                            audio,
+                            "clipEnd",
+                            clipEnd);
+
+                        XmlNode par = xmlDocSMIL.CreateElement(null, "par", currentXmlNode_SMIL.NamespaceURI);
+
+                        if (!string.IsNullOrEmpty(epubType))
+                        {
+                            XmlDocumentHelper.CreateAppendXmlAttribute(
+                            xmlDocSMIL,
+                            par,
+                            "epub:type",
+                            epubType,
+                            DiagramContentModelHelper.NS_URL_EPUB);
+                        }
+
+                        par.AppendChild(text);
+                        par.AppendChild(audio);
+                        currentXmlNode_SMIL.AppendChild(par);
                     }
                 }
 
@@ -615,37 +727,14 @@ namespace urakawa.daisy.export
                     // last one of the siblings
                     || currentTreeNode == currentTreeNode.Parent.Children.Get(currentTreeNode.Parent.Children.Count - 1))
                 {
-                    XmlNode pop = currentXmlNodeStack.Pop();
+                    XmlNode pop = stack_XmlNode_HTML.Pop();
                     DebugFix.Assert(pop == currentXmlNode_HTML);
                 }
 
                 if (currentTreeNode.Children != null && currentTreeNode.Children.Count > 0)
                 {
-                    currentXmlNodeStack.Push(newXmlNode);
+                    stack_XmlNode_HTML.Push(newXmlNode);
                 }
-
-
-
-                //if (currentTreeNode.Parent == null)
-                //{
-                //    XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocSMIL, currentXmlNode_SMIL, "epub:textref", path, DiagramContentModelHelper.NS_URL_EPUB);
-                //}
-                //else if (@"section".Equals(name, StringComparison.OrdinalIgnoreCase))
-                //{
-                //    xmlNode newXmlNode = xmlDocSMIL.CreateElement(null, "seq", currentXmlNode_SMIL.NamespaceURI);
-                //    currentXmlNode_SMIL.AppendChild(newXmlNode);
-
-                //    string id = currentTreeNode.GetXmlProperty().GetIdFromAttributes();
-                //    if (string.IsNullOrEmpty(id))
-                //    {
-                //        id = GetNextID(ID_HtmlPrefix);
-                //        //TODO: html ID attribute add
-                //    }
-
-                //    XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocSMIL, currentXmlNode_SMIL, "epub:textref", path + "#" + id, DiagramContentModelHelper.NS_URL_EPUB);
-
-                //    currentXmlNode_SMIL = newXmlNode;
-                //}
             }
 
 
@@ -684,7 +773,7 @@ namespace urakawa.daisy.export
                 StreamWriter spineItemWriterSmil = File.CreateText(fullSmilPath);
                 try
                 {
-                    spineItemWriterSmil.WriteLine(time.ToString());
+                    spineItemWriterSmil.WriteLine(time.Format_StandardExpanded());
                 }
                 finally
                 {
@@ -1401,7 +1490,7 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaTotalDur, @"property",
                                                            "media:duration");
 
-                XmlNode timeNodeTotalDur = opfXmlDoc.CreateTextNode(timeTotal.ToString());
+                XmlNode timeNodeTotalDur = opfXmlDoc.CreateTextNode(timeTotal.Format_StandardExpanded());
                 opfXmlNode_metaTotalDur.AppendChild(timeNodeTotalDur);
             }
 
