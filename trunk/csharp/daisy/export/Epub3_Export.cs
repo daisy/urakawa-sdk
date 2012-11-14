@@ -45,6 +45,7 @@ namespace urakawa.daisy.export
 
         protected string m_exportSpineItemProjectPath;
         protected string m_exportSpineItemPath;
+        protected List<string> m_exportSpineItemPath_REMOVED = new List<string>(); 
 
         private string m_XukPath;
 
@@ -588,10 +589,38 @@ namespace urakawa.daisy.export
                     }
 
                     string epubType = null;
-                    XmlAttribute xmlAttrEpubType = currentTreeNode.GetXmlProperty().GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
+
+                    XmlAttribute xmlAttrEpubType = null;
+                    TreeNode treeNode = currentTreeNode;
+                tryAgain:
+                    xmlAttrEpubType = treeNode.GetXmlProperty().GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
                     if (xmlAttrEpubType != null)
                     {
                         epubType = xmlAttrEpubType.Value;
+                    }
+                    else if (treeNode.Children != null && treeNode.Children.Count > 0)
+                    {
+                        TreeNode electedChild = null;
+                        foreach (TreeNode child in treeNode.Children.ContentsAs_Enumerable)
+                        {
+                            if (child.HasXmlProperty)
+                            {
+                                if (electedChild == null)
+                                {
+                                    electedChild = child;
+                                }
+                                else
+                                {
+                                    electedChild = null;
+                                    break;
+                                }
+                            }
+                        }
+                        if (electedChild != null)
+                        {
+                            treeNode = electedChild;
+                            goto tryAgain;
+                        }
                     }
 
                     bool hasAudio = audioMedia != null && audioMedia.HasActualAudioMediaData;
@@ -601,10 +630,14 @@ namespace urakawa.daisy.export
                         || @"aside".Equals(name, StringComparison.OrdinalIgnoreCase)
                         || @"sidebar".Equals(name, StringComparison.OrdinalIgnoreCase)
                         || @"list".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        || @"ol".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        || @"ul".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        || @"dl".Equals(name, StringComparison.OrdinalIgnoreCase)
                         || @"figure".Equals(name, StringComparison.OrdinalIgnoreCase)
                         || @"table".Equals(name, StringComparison.OrdinalIgnoreCase)
                         || @"footnote".Equals(name, StringComparison.OrdinalIgnoreCase)
                         || @"rearnote".Equals(name, StringComparison.OrdinalIgnoreCase)
+                        || @"nav".Equals(name, StringComparison.OrdinalIgnoreCase)
 
                         //TODO: JUST FOR TESTING !!!!!
                         || @"div".Equals(name, StringComparison.OrdinalIgnoreCase)
@@ -1365,6 +1398,8 @@ namespace urakawa.daisy.export
                             opfXmlNode_spine.RemoveChild(opfXmlNode_itemRef);
                             opfXmlNode_manifest.RemoveChild(opfXmlNode_item);
 
+                            m_exportSpineItemPath_REMOVED.Add(fullSpineItemPath);
+
                             continue;
                         }
                     }
@@ -1426,6 +1461,12 @@ namespace urakawa.daisy.export
                     && File.Exists(hasNavDoc))
                 {
                     fixNavReferencesSingleChapterExport(hasNavDoc, "a", "href", hasNavDoc);
+                }
+
+                if (!string.IsNullOrEmpty(m_exportSpineItemPath)
+                    && File.Exists(m_exportSpineItemPath))
+                {
+                    fixNavReferencesSingleChapterExport(m_exportSpineItemPath, "a", "href", hasNavDoc);
                 }
             }
 
@@ -1569,11 +1610,20 @@ namespace urakawa.daisy.export
 
         protected void fixNavReferencesSingleChapterExport(string path, string element, string attribute, string navdoc)
         {
+            //m_exportSpineItemPath_REMOVED
+
             string xml = File.ReadAllText(path);
             xml = xml.Replace("\r\n", "\n");
 
             string targetFileName = Path.GetFileName(m_exportSpineItemPath);
-            string regexp1 = element + "\\s*" + attribute + "\\s*=\\s*\"[^\"]*" + Regex.Escape(targetFileName) + "[^\"]*\"";
+            string regexp1 =
+                //element
+                //+ "\\s*"
+                //+ 
+                attribute
+                + "\\s*=\\s*\"[^\"]*"
+                + Regex.Escape(targetFileName)
+                + "[^\"]*\"";
 
             xml = Regex.Replace(xml, regexp1, "TOBI1$&TOBI2", RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
@@ -1594,8 +1644,14 @@ namespace urakawa.daisy.export
             if (checkNavDoc)
             {
                 targetFileName = Path.GetFileName(navdoc);
-                regexp1_ = element + "\\s*" + attribute + "\\s*=\\s*\"[^\"]*" + Regex.Escape(targetFileName) +
-                                  "[^\"]*\"";
+                regexp1_ =
+                    //element
+                    //+ "\\s*"
+                    //+
+                    attribute
+                    + "\\s*=\\s*\"[^\"]*"
+                    + Regex.Escape(targetFileName)
+                    + "[^\"]*\"";
 
                 xml = Regex.Replace(xml, regexp1_, "TOBI1$&TOBI2", RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
@@ -1611,8 +1667,26 @@ namespace urakawa.daisy.export
             }
 #endif
             }
-            string regexp2 = "(<" + element + "\\s*" + attribute + "\\s*=\\s*\")([^\"]*)(\")";
-            xml = Regex.Replace(xml, regexp2, "$1#$3", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
+            foreach (string fullPath in m_exportSpineItemPath_REMOVED)
+            {
+                targetFileName = Path.GetFileName(fullPath);
+
+                string regexp2 =
+                    //"(<"
+                    "("
+                    //+ element
+                    //+ "\\s*"
+                    + attribute
+                    //+ "\\s*=\\s*\")"
+                    //+ "(\\s*[^#][^\"]*)"
+                    //+ "(\")";
+                    + "\\s*=\\s*\")([^\"]*"
+                    + Regex.Escape(targetFileName)
+                    + "[^\"]*)(\")";
+
+                xml = Regex.Replace(xml, regexp2, "$1#$3", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            }
 
 #if false && DEBUG
             containerWriter = File.CreateText(path);
