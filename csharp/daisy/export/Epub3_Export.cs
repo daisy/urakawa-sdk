@@ -411,56 +411,242 @@ namespace urakawa.daisy.export
             //TODO: serialize body TreeNode content into XML + parallel-generate SMIL
             //audioPath
 
-            //TreeNode currentTreeNode = spineItemPresentation.RootNode;
-            //Stack<TreeNode> currentTreeNodeStack = new Stack<TreeNode>();
-            //currentTreeNodeStack.Push(currentTreeNode);
+            TreeNode currentTreeNode = spineItemPresentation.RootNode;
+
+            Stack<TreeNode> currentTreeNodeStack = new Stack<TreeNode>();
+            currentTreeNodeStack.Push(currentTreeNode);
+
             //XmlNode currentXmlNode_SMIL = xmlDocSMIL_body;
-            //XmlNode currentXmlNode_HTML = xmlDocHTML_head._body;
 
-            //while (currentTreeNodeStack.Count > 0) //nodeStack.Peek() != null
-            //{
-            //    if (RequestCancellation)
-            //    {
-            //        return true;
-            //    }
+            Stack<XmlNode> currentXmlNodeStack = new Stack<XmlNode>();
+            currentXmlNodeStack.Push(xmlDocHTML.DocumentElement);
 
-            //    currentTreeNode = currentTreeNodeStack.Pop();
-            //    string name = currentTreeNode.GetXmlElementLocalName();
+            while (currentTreeNodeStack.Count > 0) //nodeStack.Peek() != null
+            {
+                if (RequestCancellation)
+                {
+                    return true;
+                }
 
-            //    if (currentTreeNode.Parent == null)
-            //    {
-            //        XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocSMIL, currentXmlNode_SMIL, "epub:textref", path, DiagramContentModelHelper.NS_URL_EPUB);
-            //    }
-            //    else if (@"section".Equals(name, StringComparison.OrdinalIgnoreCase))
-            //    {
-            //        xmlNode newXmlNode = xmlDocSMIL.CreateElement(null, "seq", currentXmlNode_SMIL.NamespaceURI);
-            //        currentXmlNode_SMIL.AppendChild(newXmlNode);
+                currentTreeNode = currentTreeNodeStack.Pop();
 
-            //        string id = currentTreeNode.GetXmlProperty().GetIdFromAttributes();
-            //        if (string.IsNullOrEmpty(id))
-            //        {
-            //            id = GetNextID(ID_HtmlPrefix);
-            //            //TODO: html ID attribute add
-            //        }
+                XmlNode currentXmlNode_HTML = currentXmlNodeStack.Peek();
 
-            //        XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocSMIL, currentXmlNode_SMIL, "epub:textref", path + "#" + id, DiagramContentModelHelper.NS_URL_EPUB);
+                ManagedAudioMedia audioMedia = currentTreeNode.GetManagedAudioMedia();
+                AbstractTextMedia textMedia = currentTreeNode.GetTextMedia();
+                
+                bool hasXmlProperty = currentTreeNode.HasXmlProperty;
+#if DEBUG
+                if (!hasXmlProperty || textMedia != null)
+                {
+                    DebugFix.Assert(currentTreeNode.Children == null || currentTreeNode.Children.Count == 0);
+                }
 
-            //        currentXmlNode_SMIL = newXmlNode;
-            //    }
+                if (!hasXmlProperty)
+                {
+                    DebugFix.Assert(audioMedia == null);
+                }
 
-            //    ManagedAudioMedia manAudioMedia = node.GetManagedAudioMedia();
-            //    if (manAudioMedia != null && manAudioMedia.HasActualAudioMediaData)
-            //    {
-            //    }
-            //    else
-            //    {
-            //    }
+                if (audioMedia != null)
+                {
+                    DebugFix.Assert(audioMedia.HasActualAudioMediaData);
+                }
 
-            //    foreach (TreeNode child in currentTreeNode.Children.ContentsAs_YieldEnumerableReversed)
-            //    {
-            //        currentTreeNodeStack.Push(child);
-            //    }
-            //}
+                if (textMedia != null)
+                {
+                    DebugFix.Assert(!string.IsNullOrEmpty(textMedia.Text));
+                }
+
+#endif
+                XmlNode newXmlNode = null;
+
+                if (hasXmlProperty)
+                {
+                    foreach (TreeNode child in currentTreeNode.Children.ContentsAs_YieldEnumerableReversed)
+                    {
+                        currentTreeNodeStack.Push(child);
+                    }
+
+                    XmlProperty xmlProp = currentTreeNode.GetXmlProperty();
+
+                    string nsUri = xmlProp.GetNamespaceUri(); //currentTreeNode.GetXmlNamespaceUri();
+                    if (string.IsNullOrEmpty(nsUri))
+                    {
+                        nsUri = currentXmlNode_HTML.NamespaceURI;
+                    }
+                    DebugFix.Assert(!string.IsNullOrEmpty(nsUri));
+
+                    if (string.IsNullOrEmpty(nsUri))
+                    {
+                        nsUri = xmlDocHTML.DocumentElement.NamespaceURI;
+                    }
+                    if (string.IsNullOrEmpty(nsUri))
+                    {
+                        nsUri = xmlDocHTML.NamespaceURI;
+                    }
+                    DebugFix.Assert(!string.IsNullOrEmpty(nsUri));
+
+                    string prefix = currentTreeNode.NeedsXmlNamespacePrefix()
+                        ? xmlProp.GetXmlNamespacePrefix(nsUri) //currentTreeNode.GetXmlNamespacePrefix(nsUri)
+                        : null;
+
+                    string name = xmlProp.LocalName; //currentTreeNode.GetXmlElementLocalName();
+                    if (name.IndexOf(':') > 0)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        //string name = currentTreeNode.GetXmlElementPrefixedLocalName();
+                        string prefix_;
+                        string name_;
+                        XmlProperty.SplitLocalName(name, out prefix_, out name_);
+
+                        DebugFix.Assert(prefix_ == prefix);
+                        name = name_;
+                    }
+
+                    newXmlNode = xmlDocHTML.CreateElement(prefix, name, nsUri);
+                    currentXmlNode_HTML.AppendChild(newXmlNode);
+
+                    //string nsUri_XmlDoc = currentXmlNode_HTML.GetNamespaceOfPrefix(prefix);
+                    //if (string.IsNullOrEmpty(nsUri_XmlDoc))
+
+                    string xmlId = null;
+
+                    for (int i = 0; i < xmlProp.Attributes.Count; i++)
+                    {
+                        XmlAttribute xmlAttr = xmlProp.Attributes.Get(i);
+
+                        string attrPrefix = xmlAttr.Prefix;
+                        string nameWithoutPrefix =
+                            xmlAttr.PrefixedLocalName != null
+                            ? xmlAttr.PrefixedLocalName
+                            : xmlAttr.LocalName;
+
+                        if (!string.IsNullOrEmpty(attrPrefix))
+                        {
+                            string nsUriPrefix = xmlProp.GetNamespaceUri(attrPrefix);
+
+                            if (string.IsNullOrEmpty(nsUriPrefix))
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif //DEBUG
+                                nsUriPrefix = newXmlNode.GetNamespaceOfPrefix(attrPrefix);
+                            }
+
+                            if (!string.IsNullOrEmpty(nsUriPrefix)
+                                && string.IsNullOrEmpty(xmlDocHTML.DocumentElement.GetNamespaceOfPrefix(attrPrefix)))
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(
+                                    xmlDocHTML,
+                                    xmlDocHTML.DocumentElement,
+                                    XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + attrPrefix,
+                                    nsUriPrefix,
+                                    XmlReaderWriterHelper.NS_URL_XMLNS
+                                    );
+                            }
+                        }
+
+                        if (nameWithoutPrefix == "id") //XmlReaderWriterHelper.XmlId
+                        {
+                            xmlId = xmlAttr.Value;
+                        }
+
+                        XmlNode xmlNd = newXmlNode;
+                        if (currentXmlNode_HTML == xmlDocHTML.DocumentElement)
+                        {
+                            DebugFix.Assert(@"body".Equals(name, StringComparison.OrdinalIgnoreCase));
+
+                            // Hack: to make sure DTD validation passes.
+                            if (attrPrefix == XmlReaderWriterHelper.NS_PREFIX_XMLNS
+                            || nameWithoutPrefix == "lang")
+                            {
+                                xmlNd = xmlDocHTML.DocumentElement;
+                            }
+                        }
+
+                        XmlDocumentHelper.CreateAppendXmlAttribute(
+                            xmlDocHTML,
+                            xmlNd,
+                            xmlAttr.LocalName,
+                            xmlAttr.Value,
+                            xmlAttr.GetNamespaceUri());
+                    }
+
+                    // TODO need ID for smilref?
+                    if (false && string.IsNullOrEmpty(xmlId))
+                    {
+                        xmlId = GetNextID(ID_HtmlPrefix);
+
+                        XmlDocumentHelper.CreateAppendXmlAttribute(
+                            xmlDocHTML,
+                            newXmlNode,
+                            "id", //XmlReaderWriterHelper.XmlId,
+                            xmlId
+                            //,XmlReaderWriterHelper.NS_URL_XML
+                            );
+                    }
+
+                    if (audioMedia != null && audioMedia.HasActualAudioMediaData)
+                    {
+                        //TODO SMiL gen
+                    }
+                }
+
+                if (textMedia != null && !string.IsNullOrEmpty(textMedia.Text))
+                {
+                    XmlNode textNode = xmlDocHTML.CreateTextNode(textMedia.Text);
+
+                    if (newXmlNode == null)
+                    {
+                        DebugFix.Assert(!hasXmlProperty);
+
+                        newXmlNode = textNode;
+                        currentXmlNode_HTML.AppendChild(newXmlNode);
+                    }
+                    else
+                    {
+                        newXmlNode.AppendChild(textNode);
+                    }
+                }
+
+                if (currentTreeNode.Parent == null
+                    // last one of the siblings
+                    || currentTreeNode == currentTreeNode.Parent.Children.Get(currentTreeNode.Parent.Children.Count - 1))
+                {
+                    XmlNode pop = currentXmlNodeStack.Pop();
+                    DebugFix.Assert(pop == currentXmlNode_HTML);
+                }
+
+                if (currentTreeNode.Children != null && currentTreeNode.Children.Count > 0)
+                {
+                    currentXmlNodeStack.Push(newXmlNode);
+                }
+
+
+
+                //if (currentTreeNode.Parent == null)
+                //{
+                //    XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocSMIL, currentXmlNode_SMIL, "epub:textref", path, DiagramContentModelHelper.NS_URL_EPUB);
+                //}
+                //else if (@"section".Equals(name, StringComparison.OrdinalIgnoreCase))
+                //{
+                //    xmlNode newXmlNode = xmlDocSMIL.CreateElement(null, "seq", currentXmlNode_SMIL.NamespaceURI);
+                //    currentXmlNode_SMIL.AppendChild(newXmlNode);
+
+                //    string id = currentTreeNode.GetXmlProperty().GetIdFromAttributes();
+                //    if (string.IsNullOrEmpty(id))
+                //    {
+                //        id = GetNextID(ID_HtmlPrefix);
+                //        //TODO: html ID attribute add
+                //    }
+
+                //    XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocSMIL, currentXmlNode_SMIL, "epub:textref", path + "#" + id, DiagramContentModelHelper.NS_URL_EPUB);
+
+                //    currentXmlNode_SMIL = newXmlNode;
+                //}
+            }
 
 
             string parentdir = Path.GetDirectoryName(fullSpineItemPath);
