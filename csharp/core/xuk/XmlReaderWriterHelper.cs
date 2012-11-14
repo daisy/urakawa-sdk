@@ -416,7 +416,7 @@ namespace urakawa.xuk
             settings.Encoding = Encoding.UTF8;
 
             settings.NewLineHandling = NewLineHandling.Replace;
-            settings.NewLineChars = Environment.NewLine;
+            settings.NewLineChars = "\n"; // Environment.NewLine;
 
             if (!pretty)
             {
