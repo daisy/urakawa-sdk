@@ -45,7 +45,7 @@ namespace urakawa.daisy.export
 
         protected string m_exportSpineItemProjectPath;
         protected string m_exportSpineItemPath;
-        protected List<string> m_exportSpineItemPath_REMOVED = new List<string>(); 
+        protected List<string> m_exportSpineItemPath_REMOVED = new List<string>();
 
         private string m_XukPath;
 
@@ -82,7 +82,7 @@ namespace urakawa.daisy.export
             m_BitRate_Mp3 = bitRate_Mp3;
             m_Presentation = presentation;
 
-            m_UnzippedOutputDirectory = Path.Combine(exportDirectory, @"_UNZIPPED");
+            m_UnzippedOutputDirectory = Path.Combine(exportDirectory, @"_ZIP");
             if (!Directory.Exists(m_UnzippedOutputDirectory))
             {
                 FileDataProvider.CreateDirectory(m_UnzippedOutputDirectory);
@@ -121,7 +121,7 @@ namespace urakawa.daisy.export
         }
 
 
-        protected bool processSingleSpineItem_2(XmlDocument opfXmlDoc, XmlNode opfXmlNode_spine, XmlNode opfXmlNode_manifest, string path, XmlNode opfXmlNode_item, XmlNode opfXmlNode_metadata, string uid_OPF_SpineItem, Presentation spineItemPresentation, string opsDirectoryPath, string fullSpineItemPath, Time timeTotal)
+        protected bool processSingleSpineItem_2(XmlDocument opfXmlDoc, XmlNode opfXmlNode_spine, XmlNode opfXmlNode_manifest, string path, XmlNode opfXmlNode_item, XmlNode opfXmlNode_metadata, string uid_OPF_SpineItem, Presentation spineItemPresentation, string opsDirectoryPath, string fullSpineItemPath, Time timeTotal, string opfFilePath)
         {
             string smilPath = null;
             string audioPath = null;
@@ -372,7 +372,16 @@ namespace urakawa.daisy.export
                     AbstractTextMedia textMed = child.GetTextMedia();
                     if (textMed != null)
                     {
-                        XmlNode textNode = xmlDocHTML.CreateTextNode(textMed.Text);
+                        XmlNode textNode = null;
+                        if (localName.Equals(@"script", StringComparison.OrdinalIgnoreCase))
+                        {
+                            textNode = xmlDocHTML.CreateCDataSection(textMed.Text);
+                        }
+                        else
+                        {
+                            textNode = xmlDocHTML.CreateTextNode(textMed.Text);
+                        }
+
                         xmlChild.AppendChild(textNode);
                     }
 
@@ -574,7 +583,8 @@ namespace urakawa.daisy.export
 
                             // Hack: to make sure DTD validation passes.
                             if (attrPrefix == XmlReaderWriterHelper.NS_PREFIX_XMLNS
-                            || nameWithoutPrefix == "lang")
+                                || nameWithoutPrefix == "lang"
+                                || nameWithoutPrefix == "prefix")
                             {
                                 xmlNd = xmlDocHTML.DocumentElement;
                             }
@@ -588,40 +598,6 @@ namespace urakawa.daisy.export
                             xmlAttr.GetNamespaceUri());
                     }
 
-                    string epubType = null;
-
-                    XmlAttribute xmlAttrEpubType = null;
-                    TreeNode treeNode = currentTreeNode;
-                tryAgain:
-                    xmlAttrEpubType = treeNode.GetXmlProperty().GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
-                    if (xmlAttrEpubType != null)
-                    {
-                        epubType = xmlAttrEpubType.Value;
-                    }
-                    else if (treeNode.Children != null && treeNode.Children.Count > 0)
-                    {
-                        TreeNode electedChild = null;
-                        foreach (TreeNode child in treeNode.Children.ContentsAs_Enumerable)
-                        {
-                            if (child.HasXmlProperty)
-                            {
-                                if (electedChild == null)
-                                {
-                                    electedChild = child;
-                                }
-                                else
-                                {
-                                    electedChild = null;
-                                    break;
-                                }
-                            }
-                        }
-                        if (electedChild != null)
-                        {
-                            treeNode = electedChild;
-                            goto tryAgain;
-                        }
-                    }
 
                     bool hasAudio = audioMedia != null && audioMedia.HasActualAudioMediaData;
                     bool triggersSeq =
@@ -644,6 +620,9 @@ namespace urakawa.daisy.export
                         )
                         ;
 
+
+                    string epubType = null;
+
                     if (hasAudio || triggersSeq)
                     {
                         if (string.IsNullOrEmpty(xmlId))
@@ -657,6 +636,40 @@ namespace urakawa.daisy.export
                                 xmlId
                                 //,XmlReaderWriterHelper.NS_URL_XML
                                 );
+                        }
+
+
+                        XmlAttribute xmlAttrEpubType = null;
+                        TreeNode treeNode = currentTreeNode;
+                    tryAgain:
+                        xmlAttrEpubType = treeNode.GetXmlProperty().GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
+                        if (xmlAttrEpubType != null)
+                        {
+                            epubType = xmlAttrEpubType.Value;
+                        }
+                        else if (treeNode.Children != null && treeNode.Children.Count > 0)
+                        {
+                            TreeNode electedChild = null;
+                            foreach (TreeNode child in treeNode.Children.ContentsAs_Enumerable)
+                            {
+                                if (child.HasXmlProperty)
+                                {
+                                    if (electedChild == null)
+                                    {
+                                        electedChild = child;
+                                    }
+                                    else
+                                    {
+                                        electedChild = null;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (electedChild != null)
+                            {
+                                treeNode = electedChild;
+                                goto tryAgain;
+                            }
                         }
                     }
 
@@ -835,6 +848,31 @@ namespace urakawa.daisy.export
                 string fullPath = Path.Combine(fullSpineItemDirectory, relativePath);
                 fullPath = FileDataProvider.NormaliseFullFilePath(fullPath).Replace('/', '\\');
 
+                string pathRelativeToOPF = relativePath;
+
+
+
+                string opfParent = Path.GetDirectoryName(opfFilePath);
+                opfParent = FileDataProvider.NormaliseFullFilePath(opfParent).Replace('/', '\\');
+                fullSpineItemDirectory = FileDataProvider.NormaliseFullFilePath(fullSpineItemDirectory).Replace('/', '\\');
+
+                //string fullPathTest = Path.Combine(opfParent, relativePath);
+                //fullPathTest = FileDataProvider.NormaliseFullFilePath(fullPathTest).Replace('/', '\\');
+                if (opfParent != fullSpineItemDirectory)
+                {
+                    if (fullPath.Contains(opfParent))
+                    {
+                        pathRelativeToOPF = fullPath.Substring(opfParent.Length + 1).Replace('\\', '/');
+                    }
+                    else
+                    {
+                        Uri uri = (new Uri(opfParent + "\\")).MakeRelativeUri(new Uri(fullPath));
+                        pathRelativeToOPF = Uri.UnescapeDataString(uri.ToString());
+                    }
+                }
+
+
+
                 if (!File.Exists(fullPath))
                 {
                     extFileData.DataProvider.ExportDataStreamToFile(fullPath, false);
@@ -856,7 +894,7 @@ namespace urakawa.daisy.export
                                                                spineItemType);
 
                     XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spineItemExt, @"href",
-                                                               relativePath);
+                                                               pathRelativeToOPF);
                 }
 #if DEBUG
                 else
@@ -975,11 +1013,39 @@ namespace urakawa.daisy.export
                     }
                 }
 
+                bool hasMajorAttributes = metadata.OtherAttributes != null && metadata.OtherAttributes.Count > 0;
+                if (hasMajorAttributes)
+                {
+                    bool major = false;
+                    foreach (MetadataAttribute metadataAttribute in metadata.OtherAttributes.ContentsAs_Enumerable)
+                    {
+                        if (metadataAttribute.Name != null
+                            && (
+                            metadataAttribute.Name.Equals(@"id", StringComparison.OrdinalIgnoreCase)
+                            || metadataAttribute.Name == Metadata.PrimaryIdentifierMark
+                            )
+                            )
+                        {
+                            continue;
+                        }
+
+                        major = true;
+                        break;
+                    }
+
+                    if (!major)
+                    {
+                        hasMajorAttributes = false;
+                    }
+                }
+
+                bool nameHasPrefix = name.IndexOf(':') > 0;
+
                 XmlNode opfXmlNode_meta = null;
 
                 if (name == @"link" && value == @"link")
                 {
-                    DebugFix.Assert(metadata.OtherAttributes != null);
+                    DebugFix.Assert(metadata.OtherAttributes != null && metadata.OtherAttributes.Count > 0);
 
                     opfXmlNode_meta = xmlDoc.CreateElement(null,
                         "link",
@@ -988,13 +1054,16 @@ namespace urakawa.daisy.export
                         );
                     xmlNodeParent.AppendChild(opfXmlNode_meta);
                 }
-                else if (name.IndexOf(':') > 0)
+                else if (nameHasPrefix || hasMajorAttributes)
                 {
-                    string prefix;
-                    string localName;
-                    XmlProperty.SplitLocalName(name, out prefix, out localName);
+                    string prefix = null;
+                    string localName = null;
+                    if (nameHasPrefix)
+                    {
+                        XmlProperty.SplitLocalName(name, out prefix, out localName);
+                    }
 
-                    if (prefix == @"dc")
+                    if (nameHasPrefix && prefix == @"dc")
                     {
                         DebugFix.Assert(nsUri == DiagramContentModelHelper.NS_URL_DC);
 
@@ -1423,7 +1492,7 @@ namespace urakawa.daisy.export
 
                     Presentation spineItemPresentation = project.Presentations.Get(0);
 
-                    bool cancel = processSingleSpineItem_2(opfXmlDoc, opfXmlNode_spine, opfXmlNode_manifest, path, opfXmlNode_item, opfXmlNode_metadata, uid_OPF_SpineItem, spineItemPresentation, opsDirectoryPath, fullSpineItemPath, timeTotal);
+                    bool cancel = processSingleSpineItem_2(opfXmlDoc, opfXmlNode_spine, opfXmlNode_manifest, path, opfXmlNode_item, opfXmlNode_metadata, uid_OPF_SpineItem, spineItemPresentation, opsDirectoryPath, fullSpineItemPath, timeTotal, opfFilePath);
                     if (cancel) return;
                 }
             }
@@ -1443,7 +1512,7 @@ namespace urakawa.daisy.export
                 string fullSpineItemPath = Path.Combine(opsDirectoryPath, path);
                 fullSpineItemPath = FileDataProvider.NormaliseFullFilePath(fullSpineItemPath).Replace('/', '\\');
 
-                bool cancel = processSingleSpineItem_2(opfXmlDoc, opfXmlNode_spine, opfXmlNode_manifest, path, opfXmlNode_item, opfXmlNode_metadata, uid_OPF_SpineItem, m_Presentation, opsDirectoryPath, fullSpineItemPath, timeTotal);
+                bool cancel = processSingleSpineItem_2(opfXmlDoc, opfXmlNode_spine, opfXmlNode_manifest, path, opfXmlNode_item, opfXmlNode_metadata, uid_OPF_SpineItem, m_Presentation, opsDirectoryPath, fullSpineItemPath, timeTotal, opfFilePath);
                 if (cancel) return;
             }
 
@@ -1454,19 +1523,19 @@ namespace urakawa.daisy.export
                 if (!string.IsNullOrEmpty(hasNCX)
                     && File.Exists(hasNCX))
                 {
-                    fixNavReferencesSingleChapterExport(hasNCX, "content", "src", hasNavDoc);
-                }
-
-                if (!string.IsNullOrEmpty(hasNavDoc)
-                    && File.Exists(hasNavDoc))
-                {
-                    fixNavReferencesSingleChapterExport(hasNavDoc, "a", "href", hasNavDoc);
+                    removeSkippedSpineItemsReferences_SingleChapterExport(hasNCX, "content", "src");
                 }
 
                 if (!string.IsNullOrEmpty(m_exportSpineItemPath)
                     && File.Exists(m_exportSpineItemPath))
                 {
-                    fixNavReferencesSingleChapterExport(m_exportSpineItemPath, "a", "href", hasNavDoc);
+                    removeSkippedSpineItemsReferences_SingleChapterExport(m_exportSpineItemPath, "a", "href");
+                }
+
+                if (!string.IsNullOrEmpty(hasNavDoc)
+                    && File.Exists(hasNavDoc))
+                {
+                    removeSkippedSpineItemsReferences_SingleChapterExport(hasNavDoc, "a", "href");
                 }
             }
 
@@ -1608,131 +1677,219 @@ namespace urakawa.daisy.export
             PackageToZip();
         }
 
-        protected void fixNavReferencesSingleChapterExport(string path, string element, string attribute, string navdoc)
+        protected void removeSkippedSpineItemsReferences_SingleChapterExport(string path, string element, string attribute)
         {
-            //m_exportSpineItemPath_REMOVED
+            string HREF = "tobi-removed-link";
 
-            string xml = File.ReadAllText(path);
-            xml = xml.Replace("\r\n", "\n");
+            string parentDir = Path.GetDirectoryName(path);
 
-            string targetFileName = Path.GetFileName(m_exportSpineItemPath);
-            string regexp1 =
-                //element
-                //+ "\\s*"
-                //+ 
-                attribute
-                + "\\s*=\\s*\"[^\"]*"
-                + Regex.Escape(targetFileName)
-                + "[^\"]*\"";
+            XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocument(
+                path,
+                path.EndsWith(".ncx", StringComparison.OrdinalIgnoreCase) ? false : true,
+                false);
 
-            xml = Regex.Replace(xml, regexp1, "TOBI1$&TOBI2", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            XmlNode id = xmlDoc.DocumentElement.Attributes.GetNamedItem("id");
+            if (id == null)
+            {
+                XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, xmlDoc.DocumentElement, "id", HREF);
+            }
+            else
+            {
+                HREF = id.Value;
+            }
 
-#if false && DEBUG
+            Stack<XmlNode> nodeStack = new Stack<XmlNode>();
+            nodeStack.Push(xmlDoc.DocumentElement);
+
+            XmlNode node = null;
+            while (nodeStack.Count > 0) //nodeStack.Peek() != null
+            {
+                node = nodeStack.Pop();
+                DebugFix.Assert(node is XmlElement);
+
+                XmlNodeList children = node.ChildNodes;
+                for (int i = children.Count - 1; i >= 0; i--)
+                {
+                    XmlNode child = children.Item(i);
+                    if (child is XmlElement)
+                    {
+                        nodeStack.Push(child);
+                    }
+                }
+
+                if (node.LocalName != element)
+                {
+                    continue;
+                }
+
+                XmlNode attr = node.Attributes.GetNamedItem(attribute);
+                if (attr == null)
+                {
+                    continue;
+                }
+
+                string val = attr.Value.Trim();
+                if (val.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                    ||
+                    val.StartsWith("#")
+                    )
+                {
+                    continue;
+                }
+
+                string fullPath = Path.Combine(parentDir, val);
+                fullPath = FileDataProvider.NormaliseFullFilePath(fullPath).Replace('/', '\\');
+
+                foreach (string fullPath_removedSpineItem in m_exportSpineItemPath_REMOVED)
+                {
+                    if (fullPath == fullPath_removedSpineItem)
+                    {
+                        attr.Value = "#" + HREF;
+                        break;
+                    }
+                }
+            }
+
             StreamWriter containerWriter = File.CreateText(path);
             try
             {
-                containerWriter.Write(xml);
+                containerWriter.Write(path);
             }
             finally
             {
                 containerWriter.Close();
             }
-#endif
-            bool checkNavDoc = !string.IsNullOrEmpty(navdoc)
-                               && targetFileName != Path.GetFileName(navdoc);
-            string regexp1_ = null;
-            if (checkNavDoc)
-            {
-                targetFileName = Path.GetFileName(navdoc);
-                regexp1_ =
-                    //element
-                    //+ "\\s*"
-                    //+
-                    attribute
-                    + "\\s*=\\s*\"[^\"]*"
-                    + Regex.Escape(targetFileName)
-                    + "[^\"]*\"";
 
-                xml = Regex.Replace(xml, regexp1_, "TOBI1$&TOBI2", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-
-#if false && DEBUG
-            containerWriter = File.CreateText(path);
-            try
-            {
-                containerWriter.Write(xml);
-            }
-            finally
-            {
-                containerWriter.Close();
-            }
-#endif
-            }
-
-            foreach (string fullPath in m_exportSpineItemPath_REMOVED)
-            {
-                targetFileName = Path.GetFileName(fullPath);
-
-                string regexp2 =
-                    //"(<"
-                    "("
-                    //+ element
-                    //+ "\\s*"
-                    + attribute
-                    //+ "\\s*=\\s*\")"
-                    //+ "(\\s*[^#][^\"]*)"
-                    //+ "(\")";
-                    + "\\s*=\\s*\")([^\"]*"
-                    + Regex.Escape(targetFileName)
-                    + "[^\"]*)(\")";
-
-                xml = Regex.Replace(xml, regexp2, "$1#$3", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            }
-
-#if false && DEBUG
-            containerWriter = File.CreateText(path);
-            try
-            {
-                containerWriter.Write(xml);
-            }
-            finally
-            {
-                containerWriter.Close();
-            }
-#endif
-            string regexp3 = "TOBI1(" + regexp1 + ")TOBI2";
-            xml = Regex.Replace(xml, regexp3, "$1", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-
-#if false && DEBUG
-            containerWriter = File.CreateText(path);
-            try
-            {
-                containerWriter.Write(xml);
-            }
-            finally
-            {
-                containerWriter.Close();
-            }
-#endif
-
-            if (checkNavDoc)
-            {
-                string regexp4 = "TOBI1(" + regexp1_ + ")TOBI2";
-                xml = Regex.Replace(xml, regexp4, "$1", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            }
-
-#if true || !DEBUG
-            StreamWriter
-#endif
- containerWriter = File.CreateText(path);
-            try
-            {
-                containerWriter.Write(xml);
-            }
-            finally
-            {
-                containerWriter.Close();
-            }
+            XmlReaderWriterHelper.WriteXmlDocument(xmlDoc, path);
         }
+
+        //        protected void fixNavReferencesSingleChapterExport(string path, string element, string attribute, string navdoc)
+        //        {
+        //            string xml = File.ReadAllText(path);
+        //            xml = xml.Replace("\r\n", "\n");
+
+        //            const string HREF = "tobi-removed-link";
+        //            xml = xml.Replace("<html", "<html id=\"" + HREF + "\"");
+
+        //            //            string targetFileName = Path.GetFileName(m_exportSpineItemPath);
+        //            //            string regexp1 =
+        //            //                //element
+        //            //                //+ "\\s*"
+        //            //                //+ 
+        //            //                attribute
+        //            //                + "\\s*=\\s*\"[^\"]*"
+        //            //                + Regex.Escape(targetFileName)
+        //            //                + "[^\"]*\"";
+
+        //            //            xml = Regex.Replace(xml, regexp1, "TOBI1$&TOBI2", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
+        //            //#if false && DEBUG
+        //            //            StreamWriter containerWriter = File.CreateText(path);
+        //            //            try
+        //            //            {
+        //            //                containerWriter.Write(xml);
+        //            //            }
+        //            //            finally
+        //            //            {
+        //            //                containerWriter.Close();
+        //            //            }
+        //            //#endif
+        //            //            bool checkNavDoc = !string.IsNullOrEmpty(navdoc)
+        //            //                               && targetFileName != Path.GetFileName(navdoc);
+        //            //            string regexp1_ = null;
+        //            //            if (checkNavDoc)
+        //            //            {
+        //            //                targetFileName = Path.GetFileName(navdoc);
+        //            //                regexp1_ =
+        //            //                    //element
+        //            //                    //+ "\\s*"
+        //            //                    //+
+        //            //                    attribute
+        //            //                    + "\\s*=\\s*\"[^\"]*"
+        //            //                    + Regex.Escape(targetFileName)
+        //            //                    + "[^\"]*\"";
+
+        //            //                xml = Regex.Replace(xml, regexp1_, "TOBI1$&TOBI2", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
+        //            //#if false && DEBUG
+        //            //            containerWriter = File.CreateText(path);
+        //            //            try
+        //            //            {
+        //            //                containerWriter.Write(xml);
+        //            //            }
+        //            //            finally
+        //            //            {
+        //            //                containerWriter.Close();
+        //            //            }
+        //            //#endif
+        //            //            }
+
+
+        //            foreach (string fullPath in m_exportSpineItemPath_REMOVED)
+        //            {
+        //                string relativePath = Path.GetFileName(fullPath);
+
+        //                string regexp2 =
+        //                    //"(<"
+        //                    "("
+        //                    //+ element
+        //                    //+ "\\s*"
+        //                    + attribute
+        //                    //+ "\\s*=\\s*\")"
+        //                    //+ "(\\s*[^#][^\"]*)"
+        //                    //+ "(\")";
+        //                    + "\\s*=\\s*\")([^\"]*"
+        //                    + Regex.Escape(relativePath)
+        //                    + "[^\"]*)(\")";
+
+        //                xml = Regex.Replace(xml, regexp2, "$1#" + HREF + "$3", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        //            }
+
+        //            //#if false && DEBUG
+        //            //            containerWriter = File.CreateText(path);
+        //            //            try
+        //            //            {
+        //            //                containerWriter.Write(xml);
+        //            //            }
+        //            //            finally
+        //            //            {
+        //            //                containerWriter.Close();
+        //            //            }
+        //            //#endif
+        //            //            string regexp3 = "TOBI1(" + regexp1 + ")TOBI2";
+        //            //            xml = Regex.Replace(xml, regexp3, "$1", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
+        //            //#if false && DEBUG
+        //            //            containerWriter = File.CreateText(path);
+        //            //            try
+        //            //            {
+        //            //                containerWriter.Write(xml);
+        //            //            }
+        //            //            finally
+        //            //            {
+        //            //                containerWriter.Close();
+        //            //            }
+        //            //#endif
+
+        //            //            if (checkNavDoc)
+        //            //            {
+        //            //                string regexp4 = "TOBI1(" + regexp1_ + ")TOBI2";
+        //            //                xml = Regex.Replace(xml, regexp4, "$1", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        //            //            }
+
+        //#if true || !DEBUG
+        //            StreamWriter
+        //#endif
+        // containerWriter = File.CreateText(path);
+        //            try
+        //            {
+        //                containerWriter.Write(xml);
+        //            }
+        //            finally
+        //            {
+        //                containerWriter.Close();
+        //            }
+        //        }
 
         public void PackageToZip()
         {
@@ -1944,6 +2101,9 @@ namespace urakawa.daisy.export
             xmlDoc.XmlResolver = null;
 
             xmlDoc.CreateXmlDeclaration("1.0", "utf-8", null);
+
+            XmlDocumentType doctype = xmlDoc.CreateDocumentType("html", null, null, null);
+            xmlDoc.AppendChild(doctype);
 
             XmlNode html = xmlDoc.CreateElement(null,
                 "html",

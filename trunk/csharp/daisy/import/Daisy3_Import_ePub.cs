@@ -43,7 +43,7 @@ namespace urakawa.daisy.import
                 //m_outDirectory,
                 //FileDataProvider.EliminateForbiddenFileNameCharacters(m_Book_FilePath)
                 //m_Book_FilePath.Replace('.', '_')
-                m_Book_FilePath + "_UNZIPPED"
+                m_Book_FilePath + "_ZIP"
             );
             if (Directory.Exists(unzipDirectory))
             {
