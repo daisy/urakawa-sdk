@@ -120,6 +120,31 @@ namespace urakawa.daisy.export
             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", path);
         }
 
+        protected void makeRelativePathToOPF(string fullPath, string fullSpineItemDirectory, string relativePath, string opfFilePath)
+        {
+            string pathRelativeToOPF = relativePath;
+
+            string opfParent = Path.GetDirectoryName(opfFilePath);
+            opfParent = FileDataProvider.NormaliseFullFilePath(opfParent).Replace('/', '\\');
+            fullSpineItemDirectory = FileDataProvider.NormaliseFullFilePath(fullSpineItemDirectory).Replace('/', '\\');
+
+            //string fullPathTest = Path.Combine(opfParent, relativePath);
+            //fullPathTest = FileDataProvider.NormaliseFullFilePath(fullPathTest).Replace('/', '\\');
+            if (opfParent != fullSpineItemDirectory)
+            {
+                if (fullPath.Contains(opfParent))
+                {
+                    pathRelativeToOPF = fullPath.Substring(opfParent.Length + 1).Replace('\\', '/');
+                }
+                else
+                {
+                    Uri uri = (new Uri(opfParent + "\\")).MakeRelativeUri(new Uri(fullPath));
+                    pathRelativeToOPF = Uri.UnescapeDataString(uri.ToString());
+                }
+            }
+
+            return pathRelativeToOPF;
+        }
 
         protected bool processSingleSpineItem_2(XmlDocument opfXmlDoc, XmlNode opfXmlNode_spine, XmlNode opfXmlNode_manifest, string path, XmlNode opfXmlNode_item, XmlNode opfXmlNode_metadata, string uid_OPF_SpineItem, Presentation spineItemPresentation, string opsDirectoryPath, string fullSpineItemPath, Time timeTotal, string opfFilePath)
         {
@@ -375,7 +400,12 @@ namespace urakawa.daisy.export
                         XmlNode textNode = null;
                         if (localName.Equals(@"script", StringComparison.OrdinalIgnoreCase))
                         {
-                            textNode = xmlDocHTML.CreateCDataSection(textMed.Text);
+                            //textNode = xmlDocHTML.CreateCDataSection(textMed.Text);
+                            textNode = xmlDocHTML.CreateTextNode(
+                                @"\n// <![CDATA[\n"
+                                + textMed.Text
+                                + @"\n// ]]>\n"
+                                );
                         }
                         else
                         {
@@ -848,33 +878,10 @@ namespace urakawa.daisy.export
                 string fullPath = Path.Combine(fullSpineItemDirectory, relativePath);
                 fullPath = FileDataProvider.NormaliseFullFilePath(fullPath).Replace('/', '\\');
 
-                string pathRelativeToOPF = relativePath;
-
-
-
-                string opfParent = Path.GetDirectoryName(opfFilePath);
-                opfParent = FileDataProvider.NormaliseFullFilePath(opfParent).Replace('/', '\\');
-                fullSpineItemDirectory = FileDataProvider.NormaliseFullFilePath(fullSpineItemDirectory).Replace('/', '\\');
-
-                //string fullPathTest = Path.Combine(opfParent, relativePath);
-                //fullPathTest = FileDataProvider.NormaliseFullFilePath(fullPathTest).Replace('/', '\\');
-                if (opfParent != fullSpineItemDirectory)
-                {
-                    if (fullPath.Contains(opfParent))
-                    {
-                        pathRelativeToOPF = fullPath.Substring(opfParent.Length + 1).Replace('\\', '/');
-                    }
-                    else
-                    {
-                        Uri uri = (new Uri(opfParent + "\\")).MakeRelativeUri(new Uri(fullPath));
-                        pathRelativeToOPF = Uri.UnescapeDataString(uri.ToString());
-                    }
-                }
-
-
-
                 if (!File.Exists(fullPath))
                 {
+                    string pathRelativeToOPF = makeRelativePathToOPF(fullPath, fullSpineItemDirectory, relativePath, opfFilePath);
+
                     extFileData.DataProvider.ExportDataStreamToFile(fullPath, false);
 
                     XmlNode opfXmlNode_spineItemExt = opfXmlDoc.CreateElement(null,
@@ -935,6 +942,8 @@ namespace urakawa.daisy.export
 
                 if (!File.Exists(fullPath))
                 {
+                    string pathRelativeToOPF = makeRelativePathToOPF(fullPath, fullSpineItemDirectory, relativePath, opfFilePath);
+
                     if (imgMediaData != null)
                     {
                         imgMediaData.DataProvider.ExportDataStreamToFile(fullPath, false);
@@ -967,7 +976,7 @@ namespace urakawa.daisy.export
                                                                spineItemType);
 
                     XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spineItemMedia, @"href",
-                                                               relativePath);
+                                                               pathRelativeToOPF);
                 }
 #if DEBUG
                 else
@@ -1575,7 +1584,7 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_navDoc, @"properties", "nav");
 
                 // TODO: auto-generate NavDoc (HTML5 outline algorithm)
-                string navDocPath = Path.Combine(opsDirectoryPath, navDocRelativePath);
+                string navDocPath = Path.Combine(Path.GetDirectoryName(opfFilePath), navDocRelativePath);
 
 #if DEBUG
                 StreamWriter navDocWriter = File.CreateText(navDocPath);
@@ -1748,16 +1757,6 @@ namespace urakawa.daisy.export
                         break;
                     }
                 }
-            }
-
-            StreamWriter containerWriter = File.CreateText(path);
-            try
-            {
-                containerWriter.Write(path);
-            }
-            finally
-            {
-                containerWriter.Close();
             }
 
             XmlReaderWriterHelper.WriteXmlDocument(xmlDoc, path);
