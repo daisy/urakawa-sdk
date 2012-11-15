@@ -748,7 +748,7 @@ namespace urakawa.daisy.export
                     if (false && triggersSeq)
                     {
                         XmlNode seq = xmlDocSMIL.CreateElement(null, "seq", currentXmlNode_SMIL.NamespaceURI);
-
+                        currentXmlNode_SMIL.AppendChild(seq);
                         if (!string.IsNullOrEmpty(epubType))
                         {
                             XmlDocumentHelper.CreateAppendXmlAttribute(
@@ -758,7 +758,6 @@ namespace urakawa.daisy.export
                                 epubType,
                                 DiagramContentModelHelper.NS_URL_EPUB);
                         }
-
                         XmlDocumentHelper.CreateAppendXmlAttribute(
                             xmlDocSMIL,
                             seq,
@@ -781,14 +780,34 @@ namespace urakawa.daisy.export
                         timeAccumulated.Add(audioMedia.Duration); //audioMedia.AudioMediaData.AudioDuration
                         string clipEnd = timeAccumulated.Format_StandardExpanded();
 
+
+
+                        XmlNode par = xmlDocSMIL.CreateElement(null, "par", currentXmlNode_SMIL.NamespaceURI);
+                        currentXmlNode_SMIL.AppendChild(par);
+                        if (!string.IsNullOrEmpty(epubType))
+                        {
+                            XmlDocumentHelper.CreateAppendXmlAttribute(
+                            xmlDocSMIL,
+                            par,
+                            "epub:type",
+                            epubType,
+                            DiagramContentModelHelper.NS_URL_EPUB);
+                        }
+
+
+
                         XmlNode text = xmlDocSMIL.CreateElement(null, "text", currentXmlNode_SMIL.NamespaceURI);
+                        par.AppendChild(text);
                         XmlDocumentHelper.CreateAppendXmlAttribute(
                             xmlDocSMIL,
                             text,
                             "src",
                             textSrc);
 
+
+
                         XmlNode audio = xmlDocSMIL.CreateElement(null, "audio", currentXmlNode_SMIL.NamespaceURI);
+                        par.AppendChild(audio);
                         XmlDocumentHelper.CreateAppendXmlAttribute(
                             xmlDocSMIL,
                             audio,
@@ -804,22 +823,6 @@ namespace urakawa.daisy.export
                             audio,
                             "clipEnd",
                             clipEnd);
-
-                        XmlNode par = xmlDocSMIL.CreateElement(null, "par", currentXmlNode_SMIL.NamespaceURI);
-
-                        if (!string.IsNullOrEmpty(epubType))
-                        {
-                            XmlDocumentHelper.CreateAppendXmlAttribute(
-                            xmlDocSMIL,
-                            par,
-                            "epub:type",
-                            epubType,
-                            DiagramContentModelHelper.NS_URL_EPUB);
-                        }
-
-                        par.AppendChild(text);
-                        par.AppendChild(audio);
-                        currentXmlNode_SMIL.AppendChild(par);
                     }
                 }
 
