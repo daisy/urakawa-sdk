@@ -86,6 +86,18 @@ namespace urakawa.ExternalFiles
             }
         }
 
+        private string m_OptionalInfo;
+        public string OptionalInfo
+        {
+            get
+            {
+                return m_OptionalInfo;
+            }
+            private set
+            {
+                m_OptionalInfo = value;
+            }
+        }
 
         public IEnumerable<DataProvider> UsedDataProviders
         {
@@ -113,20 +125,21 @@ namespace urakawa.ExternalFiles
             ExternalFileData fileDataCopy = (ExternalFileData)Presentation.ExternalFilesDataFactory.Create(GetType());
             // We do not Copy the FileDataProvider,
             // because the file stream is read-only by design.
-            fileDataCopy.InitializeWithData(m_DataProvider, OriginalRelativePath, IsPreservedForOutputFile);
+            fileDataCopy.InitializeWithData(m_DataProvider, OriginalRelativePath, IsPreservedForOutputFile, OptionalInfo);
             return fileDataCopy;
         }
 
         protected ExternalFileData ExportProtected(Presentation destPres)
         {
             ExternalFileData exportFileData = (ExternalFileData)Presentation.ExternalFilesDataFactory.Create(GetType());
-            exportFileData.InitializeWithData(m_DataProvider.Export(destPres), OriginalRelativePath, IsPreservedForOutputFile);
+            exportFileData.InitializeWithData(m_DataProvider.Export(destPres), OriginalRelativePath, IsPreservedForOutputFile, OptionalInfo);
             return exportFileData;
         }
 
 
-        public void InitializeWithData(string path, string originalRelativePath, bool preserveForOutput)
+        public void InitializeWithData(string path, string originalRelativePath, bool preserveForOutput, string optionalInfo)
         {
+            OptionalInfo = optionalInfo;
             OriginalRelativePath = originalRelativePath;
             m_PreserveForOutputFile = preserveForOutput;
 
@@ -149,11 +162,12 @@ namespace urakawa.ExternalFiles
             DataProvider externalFileDataProvider = Presentation.DataProviderFactory.Create(MimeType);
             ((FileDataProvider)externalFileDataProvider).InitByCopyingExistingFile(path);
 
-            InitializeWithData(externalFileDataProvider, originalRelativePath, preserveForOutput);
+            InitializeWithData(externalFileDataProvider, originalRelativePath, preserveForOutput, optionalInfo);
         }
 
-        public void InitializeWithData(Stream dataStream, string originalRelativePath, bool preserveForOutput)
+        public void InitializeWithData(Stream dataStream, string originalRelativePath, bool preserveForOutput, string optionalInfo)
         {
+            OptionalInfo = optionalInfo;
             OriginalRelativePath = originalRelativePath;
             m_PreserveForOutputFile = preserveForOutput;
 
@@ -175,12 +189,13 @@ namespace urakawa.ExternalFiles
             DataProvider externalFileDataProvider = Presentation.DataProviderFactory.Create(MimeType);
             externalFileDataProvider.AppendData(dataStream, dataStream.Length);
 
-            InitializeWithData(externalFileDataProvider, originalRelativePath, preserveForOutput);
+            InitializeWithData(externalFileDataProvider, originalRelativePath, preserveForOutput, optionalInfo);
         }
 
 
-        public void InitializeWithData(DataProvider dataProv, string originalRelativePath, bool preserveForOutput)
+        public void InitializeWithData(DataProvider dataProv, string originalRelativePath, bool preserveForOutput, string optionalInfo)
         {
+            OptionalInfo = optionalInfo;
             OriginalRelativePath = originalRelativePath;
             m_PreserveForOutputFile = preserveForOutput;
 
@@ -254,9 +269,14 @@ namespace urakawa.ExternalFiles
             {
                 throw new XukException("For preserving files for output, the OriginalRelativePath of an ExternalFileData cannot be null or empty !");
             }
-            if (OriginalRelativePath == null) OriginalRelativePath = "";
 
+            if (OriginalRelativePath == null) OriginalRelativePath = "";
             destination.WriteAttributeString(XukStrings.OriginalRelativePath, OriginalRelativePath);
+
+            if (OptionalInfo == null) OptionalInfo = "";
+            destination.WriteAttributeString(XukStrings.OptionalInfo, OptionalInfo);
+
+
             destination.WriteAttributeString(XukStrings.IsPreservedForOutputFile,
                 IsPreservedForOutputFile == true ? "true" : "false");
 
@@ -272,6 +292,8 @@ namespace urakawa.ExternalFiles
         protected override void XukInAttributes(XmlReader source)
         {
             base.XukInAttributes(source);
+
+            string optionalInfo = source.GetAttribute(XukStrings.OptionalInfo);
 
             string strPreserve = source.GetAttribute(XukStrings.IsPreservedForOutputFile);
             bool isPreserved = strPreserve == "true" ? true : false;
@@ -295,11 +317,7 @@ namespace urakawa.ExternalFiles
             //}
             DataProvider prov = Presentation.DataProviderManager.GetManagedObject(uid);
 
-            InitializeWithData(prov, path, isPreserved);
+            InitializeWithData(prov, path, isPreserved, optionalInfo);
         }
-
-
-
-
     }
 }
