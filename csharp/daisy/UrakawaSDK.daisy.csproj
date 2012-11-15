@@ -84,7 +84,6 @@
     <Compile Include="export\Daisy3_Export_ImageDescription_Smil.cs" />
     <Compile Include="export\Daisy3_Export_Ncx_Smil_MainTraversal.cs" />
     <Compile Include="export\Daisy3_Export_Ncx_Smil_NoteAnnoRefs.cs" />
-    <Compile Include="export\Daisy3_Export_Xhtml.cs" />
     <Compile Include="export\Epub3_Export.cs" />
     <Compile Include="export\tree-visitor\AbstractBasePublishAudioVisitor.cs" />
     <Compile Include="export\tree-visitor\AbstractPublishFlattenedManagedAudioVisitor.cs" />
@@ -110,7 +109,6 @@
     <Compile Include="import\Daisy3_Import_ePub.cs" />
     <Compile Include="import\Daisy3_Import_Metadata.cs" />
     <Compile Include="import\Daisy3_Import_Opf.cs" />
-    <Compile Include="import\Daisy3_Import_XmlParsing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZipStorer.cs" />
   </ItemGroup>
