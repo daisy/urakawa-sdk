@@ -2150,7 +2150,8 @@ namespace urakawa.daisy.export
             xmlDoc.CreateXmlDeclaration("1.0", "utf-8", null);
 
             //XmlDocumentType doctype = xmlDoc.CreateDocumentType("html", "", "", null);
-            XmlDocumentType doctype = xmlDoc.CreateDocumentType("html", null, null, "");
+            //XmlDocumentType doctype = xmlDoc.CreateDocumentType("html", null, null, "");
+            XmlDocumentType doctype = xmlDoc.CreateDocumentType("html", null, null, null);
             xmlDoc.AppendChild(doctype);
 
             XmlNode html = xmlDoc.CreateElement(null,
