@@ -120,7 +120,7 @@ namespace urakawa.daisy.export
             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", path);
         }
 
-        protected void makeRelativePathToOPF(string fullPath, string fullSpineItemDirectory, string relativePath, string opfFilePath)
+        protected string makeRelativePathToOPF(string fullPath, string fullSpineItemDirectory, string relativePath, string opfFilePath)
         {
             string pathRelativeToOPF = relativePath;
 
