@@ -667,6 +667,7 @@ namespace urakawa.daisy.import
                     !ext.Equals(".xhtml", StringComparison.OrdinalIgnoreCase)
                     && !ext.Equals(".html", StringComparison.OrdinalIgnoreCase)
                     && !ext.Equals(".dtbook", StringComparison.OrdinalIgnoreCase)
+                    && !ext.Equals(".xml", StringComparison.OrdinalIgnoreCase)
                     )
                 {
                     DebugFix.Assert(ext.Equals(".svg", StringComparison.OrdinalIgnoreCase));
