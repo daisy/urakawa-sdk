@@ -479,7 +479,13 @@ namespace urakawa.daisy.export
 
             generateMetadata(spineItemPresentation, xmlDocHTML, xmlDocHTML.DocumentElement, xmlDocHTML_head);
 
+
+
+
+            TreeNode currentTreeNode = spineItemPresentation.RootNode;
+
             Stack<XmlNode> stack_XmlNode_SMIL = null;
+            Stack<TreeNode> stack_TreeNode_SMIL = null;
             XmlDocument xmlDocSMIL = null;
             XmlNode xmlDocSMIL_body = null;
             if (time != null)
@@ -497,9 +503,10 @@ namespace urakawa.daisy.export
 
                 stack_XmlNode_SMIL = new Stack<XmlNode>();
                 stack_XmlNode_SMIL.Push(xmlDocSMIL_body);
-            }
 
-            TreeNode currentTreeNode = spineItemPresentation.RootNode;
+                stack_TreeNode_SMIL = new Stack<TreeNode>();
+                stack_TreeNode_SMIL.Push(currentTreeNode);
+            }
 
             Stack<TreeNode> stack_TreeNode = new Stack<TreeNode>();
             stack_TreeNode.Push(currentTreeNode);
@@ -518,18 +525,62 @@ namespace urakawa.daisy.export
 
                 currentTreeNode = stack_TreeNode.Pop();
 
-                XmlNode currentXmlNode_HTML = stack_XmlNode_HTML.Peek();
-
-                XmlNode currentXmlNode_SMIL = null;
-                if (time != null)
-                {
-                    currentXmlNode_SMIL = stack_XmlNode_SMIL.Peek();
-                }
+                string name = currentTreeNode.GetXmlElementLocalName();
 
                 ManagedAudioMedia audioMedia = currentTreeNode.GetManagedAudioMedia();
                 AbstractTextMedia textMedia = currentTreeNode.GetTextMedia();
 
+                bool hasAudio = audioMedia != null && audioMedia.HasActualAudioMediaData;
+
                 bool hasXmlProperty = currentTreeNode.HasXmlProperty;
+
+                bool triggersSeq =
+                    time != null && hasXmlProperty && (
+                    @"section".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"aside".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"sidebar".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"list".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"ol".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"ul".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"dl".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"figure".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"table".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"footnote".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"rearnote".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"nav".Equals(name, StringComparison.OrdinalIgnoreCase)
+
+                    // JUST FOR TESTING !!!!!
+                    //|| @"div".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    )
+                    ;
+
+
+                XmlNode currentXmlNode_HTML = stack_XmlNode_HTML.Peek();
+
+                XmlNode currentXmlNode_SMIL = null;
+                TreeNode currentTreeNode_SMIL = null;
+                if (time != null)
+                {
+                tryAgain:
+                    currentXmlNode_SMIL = stack_XmlNode_SMIL.Peek();
+                    currentTreeNode_SMIL = stack_TreeNode_SMIL.Peek();
+
+                    if (hasXmlProperty && hasAudio
+                        || triggersSeq)
+                    {
+                        bool okay = currentTreeNode == currentTreeNode_SMIL
+                                    || currentTreeNode.IsDescendantOf(currentTreeNode_SMIL);
+
+                        if (!okay)
+                        {
+                            currentXmlNode_SMIL = stack_XmlNode_SMIL.Pop();
+                            currentTreeNode_SMIL = stack_TreeNode_SMIL.Pop();
+
+                            goto tryAgain;
+                        }
+                    }
+                }
+
 #if DEBUG
                 if (!hasXmlProperty || textMedia != null)
                 {
@@ -584,7 +635,7 @@ namespace urakawa.daisy.export
                         ? xmlProp.GetXmlNamespacePrefix(nsUri) //currentTreeNode.GetXmlNamespacePrefix(nsUri)
                         : null;
 
-                    string name = xmlProp.LocalName; //currentTreeNode.GetXmlElementLocalName();
+                    //string name = xmlProp.LocalName;
                     if (name.IndexOf(':') > 0)
                     {
 #if DEBUG
@@ -669,29 +720,6 @@ namespace urakawa.daisy.export
                             xmlAttr.GetNamespaceUri());
                     }
 
-
-                    bool hasAudio = audioMedia != null && audioMedia.HasActualAudioMediaData;
-                    bool triggersSeq =
-                        time != null && (
-                        @"section".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        || @"aside".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        || @"sidebar".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        || @"list".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        || @"ol".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        || @"ul".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        || @"dl".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        || @"figure".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        || @"table".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        || @"footnote".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        || @"rearnote".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        || @"nav".Equals(name, StringComparison.OrdinalIgnoreCase)
-
-                        //TODO: JUST FOR TESTING !!!!!
-                        || @"div".Equals(name, StringComparison.OrdinalIgnoreCase)
-                        )
-                        ;
-
-
                     string epubType = null;
 
                     if (hasAudio || triggersSeq)
@@ -744,8 +772,7 @@ namespace urakawa.daisy.export
                         }
                     }
 
-                    //TODO: implement stack pop! (when HTML element leaves scope of current seq SMIL container)
-                    if (false && triggersSeq)
+                    if (triggersSeq)
                     {
                         XmlNode seq = xmlDocSMIL.CreateElement(null, "seq", currentXmlNode_SMIL.NamespaceURI);
                         currentXmlNode_SMIL.AppendChild(seq);
@@ -766,6 +793,7 @@ namespace urakawa.daisy.export
                             DiagramContentModelHelper.NS_URL_EPUB);
 
                         stack_XmlNode_SMIL.Push(seq);
+                        stack_TreeNode_SMIL.Push(currentTreeNode);
                     }
 
                     if (hasAudio)
