@@ -58,6 +58,31 @@ namespace urakawa.daisy.export
             }
         }
 
+        protected string augmentSpaceSeparatedProperties(string prop, string merge)
+        {
+            string props = prop;
+
+            if (!string.IsNullOrEmpty(merge))
+            {
+                string addon = merge.Trim();
+                addon = Regex.Replace(addon, @"\s+", " ");
+
+                if (addon.StartsWith(props + " "))
+                {
+                    addon = addon.Substring(props.Length);
+                }
+                if (addon.EndsWith(" " + props))
+                {
+                    addon = addon.Substring(0, addon.Length - props.Length);
+                }
+                addon = addon.Replace(" " + props + " ", "");
+
+                props = props + " " + addon;
+            }
+
+            return props;
+        }
+
         public Epub3_Export(string xukPath,
             Presentation presentation,
             string exportDirectory,
@@ -394,25 +419,41 @@ namespace urakawa.daisy.export
 
                     xmlDocHTML_head.AppendChild(xmlChild);
 
+                    bool isScript = localName.Equals(@"script", StringComparison.OrdinalIgnoreCase);
+
                     AbstractTextMedia textMed = child.GetTextMedia();
-                    if (textMed != null)
+                    if (textMed == null)
                     {
-                        XmlNode textNode = null;
-                        if (localName.Equals(@"script", StringComparison.OrdinalIgnoreCase))
+                        if (isScript)
                         {
-                            //textNode = xmlDocHTML.CreateCDataSection(textMed.Text);
-                            textNode = xmlDocHTML.CreateTextNode(
-                                @"\n// <![CDATA[\n"
-                                + textMed.Text
-                                + @"\n// ]]>\n"
-                                );
+                            XmlNode textNode = xmlDocHTML.CreateTextNode(" ");
+                            xmlChild.AppendChild(textNode);
+                        }
+                    }
+                    else
+                    {
+                        if (isScript)
+                        {
+                            XmlNode textNode = xmlDocHTML.CreateTextNode("\n//");
+                            xmlChild.AppendChild(textNode);
+
+                            textNode = xmlDocHTML.CreateCDataSection(textMed.Text + "//");
+                            xmlChild.AppendChild(textNode);
+
+                            textNode = xmlDocHTML.CreateTextNode("\n");
+                            xmlChild.AppendChild(textNode);
+
+                            //textNode = xmlDocHTML.CreateTextNode(
+                            //    "\n// &lt;![CDATA[\n"
+                            //    + textMed.Text
+                            //    + "\n// ]]&gt;\n"
+                            //    );
                         }
                         else
                         {
-                            textNode = xmlDocHTML.CreateTextNode(textMed.Text);
+                            XmlNode textNode = xmlDocHTML.CreateTextNode(textMed.Text);
+                            xmlChild.AppendChild(textNode);
                         }
-
-                        xmlChild.AppendChild(textNode);
                     }
 
                     foreach (XmlAttribute xmlAttribute in child.GetXmlProperty().Attributes.ContentsAs_Enumerable)
@@ -1297,6 +1338,8 @@ namespace urakawa.daisy.export
 
                         if (!isMetaInf)
                         {
+                            bool addedProperties = false;
+
                             XmlNode opfXmlNode_itemExt = opfXmlDoc.CreateElement(null,
                                                                                  "item",
                                                                                  DiagramContentModelHelper.
@@ -1312,19 +1355,18 @@ namespace urakawa.daisy.export
                             string ext = Path.GetExtension(relativePath);
 
                             string type = DataProviderFactory.GetMimeTypeFromExtension(ext);
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"media-type",
-                                                                       type);
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"media-type", type);
 
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"href",
-                                                                       relativePath);
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"href", relativePath);
 
                             if (isCover)
                             {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"id",
-                                                                           @"cover-image");
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"id", @"cover-image");
 
-                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"properties",
-                                                                           @"cover-image");
+                                addedProperties = true;
+                                string props = augmentSpaceSeparatedProperties("cover-image", extFileData.OptionalInfo);
+
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"properties", props);
 
                                 XmlNode opfXmlNode_metaCover = opfXmlDoc.CreateElement(null,
                                                                                        @"meta",
@@ -1332,10 +1374,8 @@ namespace urakawa.daisy.export
                                                                                            NS_URL_EPUB_PACKAGE);
                                 opfXmlNode_metadata.AppendChild(opfXmlNode_metaCover);
 
-                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaCover, @"name",
-                                                                           "cover");
-                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaCover, @"content",
-                                                                           "cover-image");
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaCover, @"name", "cover");
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_metaCover, @"content", "cover-image");
                             }
                             else if (isNCX)
                             {
@@ -1346,10 +1386,18 @@ namespace urakawa.daisy.export
                             }
                             else if (isNav) // Note: when NavDoc is external data, it is not in spine (and vice versa)
                             {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"properties",
-                                                                           "nav");
+                                addedProperties = true;
+                                string props = augmentSpaceSeparatedProperties("nav", extFileData.OptionalInfo);
+
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"properties", props);
 
                                 hasNavDoc = fullPath;
+                            }
+
+                            if (!string.IsNullOrEmpty(extFileData.OptionalInfo)
+                                && !addedProperties)
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"properties", extFileData.OptionalInfo);
                             }
                         }
                     }
@@ -2101,7 +2149,7 @@ namespace urakawa.daisy.export
 
             xmlDoc.CreateXmlDeclaration("1.0", "utf-8", null);
 
-            XmlDocumentType doctype = xmlDoc.CreateDocumentType("html", null, null, null);
+            XmlDocumentType doctype = xmlDoc.CreateDocumentType("html", "", "", null);
             xmlDoc.AppendChild(doctype);
 
             XmlNode html = xmlDoc.CreateElement(null,

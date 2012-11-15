@@ -228,7 +228,7 @@ namespace urakawa.daisy.import
                                 //strInternalDTD);
 
                                 ExternalFiles.ExternalFileData dtdEfd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.DTDExternalFileData>();
-                                dtdEfd.InitializeWithData(ms, INTERNAL_DTD_NAME, false);
+                                dtdEfd.InitializeWithData(ms, INTERNAL_DTD_NAME, false, null);
                             }
 
                             parseContentDocument(filePath, project, bodyElement, parentTreeNode, dtdUniqueResourceId, docMarkupType);
@@ -983,9 +983,23 @@ namespace urakawa.daisy.import
                                 ||
                             xmlNode.ParentNode != null &&
                             (xmlNode.ParentNode.LocalName == @"script"
-                             || xmlNode.ParentNode.LocalName == @"pre"
                              || xmlNode.ParentNode.LocalName == @"style"
                              || xmlNode.ParentNode.LocalName == @"textarea");
+
+
+                            if (!preserveTextAsIs)
+                            {
+                                XmlNode parentNode = xmlNode.ParentNode;
+                                while (parentNode != null)
+                                {
+                                    if (parentNode.LocalName == @"pre")
+                                    {
+                                        preserveTextAsIs = true;
+                                        break;
+                                    }
+                                    parentNode = parentNode.ParentNode;
+                                }
+                            }
 
                             if (!preserveTextAsIs)
                             {
@@ -1142,7 +1156,7 @@ namespace urakawa.daisy.import
 
                     if (efd != null)
                     {
-                        efd.InitializeWithData(styleSheetPath, relativePath, true);
+                        efd.InitializeWithData(styleSheetPath, relativePath, true, null);
 
                         addOPF_GlobalAssetPath(styleSheetPath);
                     }

@@ -180,7 +180,7 @@ namespace urakawa.daisy.import
                                 ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.CoverImageExternalFileData>();
                                 try
                                 {
-                                    externalData.InitializeWithData(fullCoverImagePath, coverImagePath, true);
+                                    externalData.InitializeWithData(fullCoverImagePath, coverImagePath, true, null);
 
                                     addOPF_GlobalAssetPath(fullCoverImagePath);
                                 }
@@ -212,7 +212,7 @@ namespace urakawa.daisy.import
                                 ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.NavDocExternalFileData>();
                                 try
                                 {
-                                    externalData.InitializeWithData(fullNavDocPath, navDocPath, true);
+                                    externalData.InitializeWithData(fullNavDocPath, navDocPath, true, null);
 
                                     addOPF_GlobalAssetPath(fullNavDocPath);
                                 }
@@ -244,7 +244,7 @@ namespace urakawa.daisy.import
                                 ExternalFiles.ExternalFileData externalData = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.NCXExternalFileData>();
                                 try
                                 {
-                                    externalData.InitializeWithData(fullNcxPath, ncxPath, true);
+                                    externalData.InitializeWithData(fullNcxPath, ncxPath, true, null);
 
                                     addOPF_GlobalAssetPath(fullNcxPath);
                                 }

@@ -307,7 +307,7 @@ namespace urakawa.daisy.import
                     || DataProviderFactory.XSL_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
                     {
                         ExternalFiles.ExternalFileData efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
-                        efd.InitializeWithData(styleSheetPath, SupportedMetadata_Z39862005.MATHML_XSLT_METADATA + content, true);
+                        efd.InitializeWithData(styleSheetPath, SupportedMetadata_Z39862005.MATHML_XSLT_METADATA + content, true, null);
 
                         addOPF_GlobalAssetPath(styleSheetPath);
                     }

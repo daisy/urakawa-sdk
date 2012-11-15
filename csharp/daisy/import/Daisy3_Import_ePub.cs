@@ -257,7 +257,7 @@ namespace urakawa.daisy.import
                 {
                     string relativePath = META_INF_prefix + fileInfo.Name;
 
-                    efd.InitializeWithData(fileInfo.FullName, relativePath, true);
+                    efd.InitializeWithData(fileInfo.FullName, relativePath, true, null);
                 }
                 catch (Exception ex)
                 {
@@ -371,10 +371,17 @@ namespace urakawa.daisy.import
                     continue;
                 }
 
+                string optionalInfo = null;
+                XmlNode attrProperties = manifItemAttributes.GetNamedItem("properties");
+                if (attrProperties != null)
+                {
+                    optionalInfo = attrProperties.Value;
+                }
+
                 ExternalFiles.ExternalFileData efd = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.GenericExternalFileData>();
                 try
                 {
-                    efd.InitializeWithData(fullPath, attrHref.Value, true);
+                    efd.InitializeWithData(fullPath, attrHref.Value, true, optionalInfo);
                 }
                 catch (Exception ex)
                 {
@@ -471,7 +478,7 @@ namespace urakawa.daisy.import
                                 ExternalFiles.ExternalFileData efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.GenericExternalFileData>();
                                 try
                                 {
-                                    efd.InitializeWithData(pathFromAttr, xAttr.Value, true);
+                                    efd.InitializeWithData(pathFromAttr, xAttr.Value, true, null);
 
                                     externalFileRelativePaths.Add(pathFromAttr);
 
@@ -695,7 +702,7 @@ namespace urakawa.daisy.import
                         }
                         if (externalData != null)
                         {
-                            externalData.InitializeWithData(fullDocPath, docPath, true);
+                            externalData.InitializeWithData(fullDocPath, docPath, true, null);
 
                             addOPF_GlobalAssetPath(fullDocPath);
                         }
