@@ -773,8 +773,8 @@ namespace urakawa.daisy.export
                         DebugFix.Assert(time != null);
 
 
-                        string textSrc = path + "#" + xmlId;
-                        string audioSrc = audioPath;
+                        string textSrc = Path.GetFileName(path) + "#" + xmlId;
+                        string audioSrc = Path.GetFileName(audioPath);
                         string clipBegin = timeAccumulated.Format_StandardExpanded();
 
                         timeAccumulated.Add(audioMedia.Duration); //audioMedia.AudioMediaData.AudioDuration
