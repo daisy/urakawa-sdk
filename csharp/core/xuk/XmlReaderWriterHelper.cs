@@ -362,18 +362,18 @@ namespace urakawa.xuk
 
             XmlReaderSettings settings = GetDefaultXmlReaderConfiguration(true, preserveWhiteSpace, validate);
 
-            XmlReader xmlReader = null;
+            Stream stream = null;
             try
             {
                 DebugFix.Assert(File.Exists(filePath));
 
-                Stream stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                 TextReader reader = new StreamReader(stream, Encoding.UTF8);
 
                 Uri uri = new Uri(@"file:///" + filePath.Replace('\\', '/'), UriKind.Absolute);
                 string uriStr = uri.ToString();
 
-                xmlReader = XmlReader.Create(reader, settings, uriStr);
+                XmlReader xmlReader = XmlReader.Create(reader, settings, uriStr);
 
                 if (xmlReader is XmlTextReader)
                 {
@@ -400,9 +400,9 @@ namespace urakawa.xuk
             }
             finally
             {
-                if (xmlReader != null)
+                if (stream != null)
                 {
-                    xmlReader.Close();
+                    stream.Close();
                 }
             }
 
