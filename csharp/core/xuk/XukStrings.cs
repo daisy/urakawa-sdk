@@ -819,6 +819,11 @@ namespace urakawa.xuk
             get { return ((mProject == null || IsPrettyFormat) ? "OriginalRelativePath" : "orgPth"); }
         }
 
+        public static string OptionalInfo
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "OptionalInfo" : "opInf"); }
+        }
+
         public static string CSSExternalFileData
         {
             get { return ((mProject == null || IsPrettyFormat) ? "CssExternalFileData" : "cssExFl"); }
