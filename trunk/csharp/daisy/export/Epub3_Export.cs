@@ -1436,152 +1436,172 @@ namespace urakawa.daisy.export
 
                 string rootDir = Path.GetDirectoryName(m_XukPath);
 
-                foreach (TreeNode treeNode in m_Presentation.RootNode.Children.ContentsAs_Enumerable)
+                try
                 {
-                    TextMedia txtMedia = treeNode.GetTextMedia() as TextMedia;
-                    if (txtMedia == null)
+                    foreach (TreeNode treeNode in m_Presentation.RootNode.Children.ContentsAs_Enumerable)
                     {
+                        TextMedia txtMedia = treeNode.GetTextMedia() as TextMedia;
+                        if (txtMedia == null)
+                        {
 #if DEBUG
-                        Debugger.Break();
+                            Debugger.Break();
 #endif
-                        continue;
-                    }
-                    string path = txtMedia.Text;
+                            continue;
+                        }
+                        string path = txtMedia.Text;
 
-                    XmlProperty xmlProp = treeNode.GetXmlProperty();
-                    if (xmlProp == null)
-                    {
+                        XmlProperty xmlProp = treeNode.GetXmlProperty();
+                        if (xmlProp == null)
+                        {
 #if DEBUG
-                        Debugger.Break();
+                            Debugger.Break();
 #endif
-                        continue;
-                    }
+                            continue;
+                        }
 
-                    string name = treeNode.GetXmlElementLocalName();
-                    if (name != "metadata")
-                    {
+                        string name = treeNode.GetXmlElementLocalName();
+                        if (name != "metadata")
+                        {
 #if DEBUG
-                        Debugger.Break();
+                            Debugger.Break();
 #endif
-                        continue;
-                    }
+                            continue;
+                        }
 
-                    XmlNode opfXmlNode_itemRef;
-                    XmlNode opfXmlNode_item;
-                    string uid_OPF_SpineItem;
-                    processSingleSpineItem_1(opfXmlDoc, opfXmlNode_spine, opfXmlNode_manifest, path, out opfXmlNode_itemRef, out opfXmlNode_item, out uid_OPF_SpineItem);
+                        XmlNode opfXmlNode_itemRef;
+                        XmlNode opfXmlNode_item;
+                        string uid_OPF_SpineItem;
+                        processSingleSpineItem_1(opfXmlDoc, opfXmlNode_spine, opfXmlNode_manifest, path,
+                                                 out opfXmlNode_itemRef, out opfXmlNode_item, out uid_OPF_SpineItem);
 
 
-                    string title = null;
-                    bool hasXuk = false;
-                    bool isNavDocItem = false;
-                    foreach (XmlAttribute xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
-                    {
-                        if (xmlAttr.LocalName == @"xuk" && xmlAttr.Value == @"true")
+                        string title = null;
+                        bool hasXuk = false;
+                        bool isNavDocItem = false;
+                        foreach (XmlAttribute xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
                         {
-                            hasXuk = true;
-                        }
-                        else if (xmlAttr.LocalName == @"title")
-                        {
-                            title = xmlAttr.Value;
-                        }
-                        else if (xmlAttr.LocalName == @"media-overlay")
-                        {
-                            // NOP
-                        }
-                        else if (xmlAttr.LocalName == @"nav")
-                        {
-                            isNavDocItem = true;
-                        }
-                        else if (xmlAttr.LocalName == @"properties_spine")
-                        {
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef, @"properties", xmlAttr.Value);
-                        }
-                        else if (xmlAttr.LocalName == @"properties_manifest")
-                        {
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"properties", xmlAttr.Value);
-                        }
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(xmlAttr.Prefix))
+                            if (xmlAttr.LocalName == @"xuk" && xmlAttr.Value == @"true")
                             {
-                                string nsUri = xmlAttr.GetNamespaceUri();
-
-                                DebugFix.Assert(!string.IsNullOrEmpty(nsUri));
-
-                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef, xmlAttr.PrefixedLocalName, xmlAttr.Value, nsUri);
+                                hasXuk = true;
+                            }
+                            else if (xmlAttr.LocalName == @"title")
+                            {
+                                title = xmlAttr.Value;
+                            }
+                            else if (xmlAttr.LocalName == @"media-overlay")
+                            {
+                                // NOP
+                            }
+                            else if (xmlAttr.LocalName == @"nav")
+                            {
+                                isNavDocItem = true;
+                            }
+                            else if (xmlAttr.LocalName == @"properties_spine")
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef, @"properties",
+                                                                           xmlAttr.Value);
+                            }
+                            else if (xmlAttr.LocalName == @"properties_manifest")
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"properties",
+                                                                           xmlAttr.Value);
                             }
                             else
                             {
-                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef, xmlAttr.LocalName, xmlAttr.Value);
+                                if (!string.IsNullOrEmpty(xmlAttr.Prefix))
+                                {
+                                    string nsUri = xmlAttr.GetNamespaceUri();
+
+                                    DebugFix.Assert(!string.IsNullOrEmpty(nsUri));
+
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef,
+                                                                               xmlAttr.PrefixedLocalName, xmlAttr.Value,
+                                                                               nsUri);
+                                }
+                                else
+                                {
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemRef,
+                                                                               xmlAttr.LocalName, xmlAttr.Value);
+                                }
                             }
                         }
-                    }
 
-                    if (!hasXuk)
-                    {
-                        continue;
-                    }
-
-
-                    string fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title);
-                    if (!File.Exists(fullXukPath))
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif //DEBUG
-                        continue;
-                    }
-
-                    string fullSpineItemPath = Path.Combine(opsDirectoryPath, path);
-                    fullSpineItemPath = FileDataProvider.NormaliseFullFilePath(fullSpineItemPath).Replace('/', '\\');
-
-                    if (isNavDocItem)
-                    {
-                        hasNavDoc = fullSpineItemPath;
-                    }
-
-                    if (!string.IsNullOrEmpty(m_exportSpineItemProjectPath))
-                    {
-                        string fullXukPathNormalised = FileDataProvider.NormaliseFullFilePath(fullXukPath).
-                            Replace('/', '\\');
-
-                        if (m_exportSpineItemProjectPath.Equals(fullXukPathNormalised, StringComparison.OrdinalIgnoreCase))
+                        if (!hasXuk)
                         {
-                            m_exportSpineItemPath = fullSpineItemPath;
-                        }
-                        else if (!isNavDocItem)
-                        {
-                            opfXmlNode_spine.RemoveChild(opfXmlNode_itemRef);
-                            opfXmlNode_manifest.RemoveChild(opfXmlNode_item);
-
-                            m_exportSpineItemPath_REMOVED.Add(fullSpineItemPath);
-
                             continue;
                         }
-                    }
 
-                    Uri uri = new Uri(fullXukPath, UriKind.Absolute);
 
-                    Project project = new Project();
-
-                    OpenXukAction action = new OpenXukAction(project, uri);
-                    action.ShortDescription = "...";
-                    action.LongDescription = "...";
-                    action.Execute();
-
-                    if (project.Presentations.Count <= 0)
-                    {
+                        string fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title);
+                        if (!File.Exists(fullXukPath))
+                        {
 #if DEBUG
-                        Debugger.Break();
-#endif //DEBUG
-                        continue;
+                            Debugger.Break();
+#endif
+                            //DEBUG
+                            continue;
+                        }
+
+                        string fullSpineItemPath = Path.Combine(opsDirectoryPath, path);
+                        fullSpineItemPath = FileDataProvider.NormaliseFullFilePath(fullSpineItemPath).Replace('/', '\\');
+
+                        if (isNavDocItem)
+                        {
+                            hasNavDoc = fullSpineItemPath;
+                        }
+
+                        if (!string.IsNullOrEmpty(m_exportSpineItemProjectPath))
+                        {
+                            string fullXukPathNormalised = FileDataProvider.NormaliseFullFilePath(fullXukPath).
+                                                                            Replace('/', '\\');
+
+                            if (m_exportSpineItemProjectPath.Equals(fullXukPathNormalised,
+                                                                    StringComparison.OrdinalIgnoreCase))
+                            {
+                                m_exportSpineItemPath = fullSpineItemPath;
+                            }
+                            else if (!isNavDocItem)
+                            {
+                                opfXmlNode_spine.RemoveChild(opfXmlNode_itemRef);
+                                opfXmlNode_manifest.RemoveChild(opfXmlNode_item);
+
+                                m_exportSpineItemPath_REMOVED.Add(fullSpineItemPath);
+
+                                continue;
+                            }
+                        }
+
+                        Uri uri = new Uri(fullXukPath, UriKind.Absolute);
+
+                        Project project = new Project();
+
+                        OpenXukAction action = new OpenXukAction(project, uri);
+                        action.ShortDescription = "...";
+                        action.LongDescription = "...";
+                        action.Execute();
+
+                        if (project.Presentations.Count <= 0)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                            //DEBUG
+                            continue;
+                        }
+
+                        Presentation spineItemPresentation = project.Presentations.Get(0);
+
+                        bool cancel = processSingleSpineItem_2(opfXmlDoc, opfXmlNode_spine, opfXmlNode_manifest, path,
+                                                               opfXmlNode_item, opfXmlNode_metadata, uid_OPF_SpineItem,
+                                                               spineItemPresentation, opsDirectoryPath,
+                                                               fullSpineItemPath, timeTotal, opfFilePath);
+                        if (cancel) return;
                     }
-
-                    Presentation spineItemPresentation = project.Presentations.Get(0);
-
-                    bool cancel = processSingleSpineItem_2(opfXmlDoc, opfXmlNode_spine, opfXmlNode_manifest, path, opfXmlNode_item, opfXmlNode_metadata, uid_OPF_SpineItem, spineItemPresentation, opsDirectoryPath, fullSpineItemPath, timeTotal, opfFilePath);
-                    if (cancel) return;
+                }
+                finally
+                {
+                    // XukStrings maintains a pointer to the last-created Project instance!
+                    XukStrings.RelocateProjectReference(m_Presentation.Project);
                 }
             }
             else // NOT XukSpine
