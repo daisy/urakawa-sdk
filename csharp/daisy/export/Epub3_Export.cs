@@ -266,6 +266,11 @@ namespace urakawa.daisy.export
                     return true;
                 }
 
+                string parentDir = Path.GetDirectoryName(fullAudioPath_);
+                if (!Directory.Exists(parentDir))
+                {
+                    FileDataProvider.CreateDirectory(parentDir);
+                }
                 FileStream audioStream = new FileStream(fullAudioPath_, FileMode.Create, FileAccess.Write, FileShare.None);
                 ulong audioStreamRiffOffset = spineItemPresentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(audioStream, 0);
 
