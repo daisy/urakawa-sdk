@@ -840,6 +840,13 @@ Caps
                 {
                     if (m_RecordingFileWriter == null)
                     {
+                        string parentDir = Path.GetDirectoryName(m_RecordedFilePath);
+                        if (!Directory.Exists(parentDir))
+                        {
+                            Directory.CreateDirectory(parentDir);
+                            //FileDataProvider.CreateDirectory(parentDir);
+                        }
+
                         //FileInfo fi = new FileInfo(m_RecordedFilePath);
                         //fi.FullName
                         m_RecordingFileWriter = new BinaryWriter(File.OpenWrite(m_RecordedFilePath));
