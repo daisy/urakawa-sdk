@@ -83,6 +83,8 @@ namespace urakawa.daisy.export
             return props;
         }
 
+        private string m_MediaOverlayActiveCSS = null;
+
         public Epub3_Export(string xukPath,
             Presentation presentation,
             string exportDirectory,
@@ -90,10 +92,20 @@ namespace urakawa.daisy.export
             SampleRate sampleRate, bool stereo,
             bool skipACM,
             bool includeImageDescriptions,
-            string exportSpineItemProjectPath)
+            string exportSpineItemProjectPath,
+            string mediaOverlayActiveCSS)
         {
             //m_Daisy3_Export = new Daisy3_Export(presentation, exportDirectory, null, encodeToMp3, bitRate_Mp3, sampleRate, stereo, skipACM, includeImageDescriptions);
             //AddSubCancellable(m_Daisy3_Export);
+
+            m_MediaOverlayActiveCSS = mediaOverlayActiveCSS;
+            if (string.IsNullOrEmpty(m_MediaOverlayActiveCSS))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                m_MediaOverlayActiveCSS = "background-color: #FF0000;";
+            }
 
             RequestCancellation = false;
 
@@ -171,7 +183,7 @@ namespace urakawa.daisy.export
             return pathRelativeToOPF;
         }
 
-        protected bool processSingleSpineItem_2(XmlDocument opfXmlDoc, XmlNode opfXmlNode_spine, XmlNode opfXmlNode_manifest, string path, XmlNode opfXmlNode_item, XmlNode opfXmlNode_metadata, string uid_OPF_SpineItem, Presentation spineItemPresentation, string opsDirectoryPath, string fullSpineItemPath, Time timeTotal, string opfFilePath)
+        protected bool processSingleSpineItem_2(XmlDocument opfXmlDoc, XmlNode opfXmlNode_spine, XmlNode opfXmlNode_manifest, string path, XmlNode opfXmlNode_item, XmlNode opfXmlNode_metadata, string uid_OPF_SpineItem, Presentation spineItemPresentation, string opsDirectoryPath, string fullSpineItemPath, Time timeTotal, string opfFilePath, bool hasMediaActiveClass)
         {
             string smilPath = null;
             string audioPath = null;
@@ -475,6 +487,18 @@ namespace urakawa.daisy.export
                         }
                     }
                 }
+            }
+
+
+            if (time != null && !hasMediaActiveClass)
+            {
+                string css_ = ".-epub-media-overlay-active {" + m_MediaOverlayActiveCSS + "}";
+
+                XmlNode style = xmlDocHTML.CreateElement(@"style", xmlDocHTML.DocumentElement.NamespaceURI);
+                xmlDocHTML_head.AppendChild(style);
+                XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocHTML, style, @"type", @"text/css");
+                XmlNode contentNode = xmlDocHTML.CreateTextNode(css_);
+                style.AppendChild(contentNode);
             }
 
             generateMetadata(spineItemPresentation, xmlDocHTML, xmlDocHTML.DocumentElement, xmlDocHTML_head);
@@ -1307,6 +1331,7 @@ namespace urakawa.daisy.export
             XmlNode opfXmlNode_metadata = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlNode_package, false, "metadata", DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
 
             Time timeTotal = new Time();
+            bool hasMediaActiveClass = false;
 
             if (isXukSpine)
             {
@@ -1343,6 +1368,15 @@ namespace urakawa.daisy.export
 
                 generateMetadata(m_Presentation, opfXmlDoc, opfXmlNode_package, opfXmlNode_metadata);
 
+                foreach (Metadata metadata in m_Presentation.Metadatas.ContentsAs_Enumerable)
+                {
+                    string name = metadata.NameContentAttribute.Name;
+                    if (@"media:active-class".Equals(name))
+                    {
+                        hasMediaActiveClass = true;
+                        break;
+                    }
+                }
 
                 foreach (ExternalFiles.ExternalFileData extFileData in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
                 {
@@ -1460,6 +1494,7 @@ namespace urakawa.daisy.export
                 }
 
                 string rootDir = Path.GetDirectoryName(m_XukPath);
+
 
                 try
                 {
@@ -1619,7 +1654,7 @@ namespace urakawa.daisy.export
                         bool cancel = processSingleSpineItem_2(opfXmlDoc, opfXmlNode_spine, opfXmlNode_manifest, path,
                                                                opfXmlNode_item, opfXmlNode_metadata, uid_OPF_SpineItem,
                                                                spineItemPresentation, opsDirectoryPath,
-                                                               fullSpineItemPath, timeTotal, opfFilePath);
+                                                               fullSpineItemPath, timeTotal, opfFilePath, hasMediaActiveClass);
                         if (cancel) return;
                     }
                 }
@@ -1645,7 +1680,7 @@ namespace urakawa.daisy.export
                 string fullSpineItemPath = Path.Combine(opsDirectoryPath, path);
                 fullSpineItemPath = FileDataProvider.NormaliseFullFilePath(fullSpineItemPath).Replace('/', '\\');
 
-                bool cancel = processSingleSpineItem_2(opfXmlDoc, opfXmlNode_spine, opfXmlNode_manifest, path, opfXmlNode_item, opfXmlNode_metadata, uid_OPF_SpineItem, m_Presentation, opsDirectoryPath, fullSpineItemPath, timeTotal, opfFilePath);
+                bool cancel = processSingleSpineItem_2(opfXmlDoc, opfXmlNode_spine, opfXmlNode_manifest, path, opfXmlNode_item, opfXmlNode_metadata, uid_OPF_SpineItem, m_Presentation, opsDirectoryPath, fullSpineItemPath, timeTotal, opfFilePath, true);
                 if (cancel) return;
             }
 
@@ -1735,6 +1770,15 @@ namespace urakawa.daisy.export
 
                 XmlNode timeNodeTotalDur = opfXmlDoc.CreateTextNode(timeTotal.Format_StandardExpanded());
                 opfXmlNode_metaTotalDur.AppendChild(timeNodeTotalDur);
+
+                if (!hasMediaActiveClass)
+                {
+                    XmlNode opfXmlNode_meta = opfXmlDoc.CreateElement(@"meta", opfXmlDoc.DocumentElement.NamespaceURI);
+                    opfXmlNode_metadata.AppendChild(opfXmlNode_meta);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_meta, "property", @"media:active-class");
+                    XmlNode contentNode = opfXmlDoc.CreateTextNode(@"-epub-media-overlay-active");
+                    opfXmlNode_meta.AppendChild(contentNode);
+                }
             }
 
             XmlReaderWriterHelper.WriteXmlDocument(opfXmlDoc, opfFilePath);
@@ -2254,16 +2298,16 @@ namespace urakawa.daisy.export
 
 
 
-        protected const string ID_HtmlPrefix = "h_";
+        protected const string ID_HtmlPrefix = "tobi_h_";
         protected long m_Counter_ID_HtmlPrefix = 0;
 
-        protected const string ID_SpinePrefix = "spine_";
+        protected const string ID_SpinePrefix = "tobi_spine_";
         protected long m_Counter_ID_SpinePrefix = 0;
 
-        protected const string ID_MoPrefix = "mo_";
+        protected const string ID_MoPrefix = "tobi_mo_";
         protected long m_Counter_ID_MoPrefix = 0;
 
-        protected const string ID_ItemPrefix = "item_";
+        protected const string ID_ItemPrefix = "tobi_item_";
         protected long m_Counter_ID_ItemPrefix = 0;
 
         protected long m_Counter_ID_Generic = 0;
