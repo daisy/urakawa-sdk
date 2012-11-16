@@ -351,6 +351,7 @@ namespace AudioLib
 
             mp4_AACDecodeProcess.StartInfo.FileName = Path.Combine(workingDir, "faad.exe");
             mp4_AACDecodeProcess.StartInfo.RedirectStandardOutput = false;
+            mp4_AACDecodeProcess.StartInfo.RedirectStandardError = false;
             mp4_AACDecodeProcess.StartInfo.UseShellExecute = true;
             mp4_AACDecodeProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             mp4_AACDecodeProcess.StartInfo.Arguments = "-o \"" + destinationFile + "\" \"" + sourceFile + "\"";
@@ -665,6 +666,7 @@ namespace AudioLib
 
             mp3encodeProcess.StartInfo.FileName = Path.Combine(LameWorkingDir, "lame.exe");
             mp3encodeProcess.StartInfo.RedirectStandardOutput = false;
+            mp3encodeProcess.StartInfo.RedirectStandardError = false;
             mp3encodeProcess.StartInfo.UseShellExecute = true;
             mp3encodeProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             mp3encodeProcess.StartInfo.Arguments = argumentString;
