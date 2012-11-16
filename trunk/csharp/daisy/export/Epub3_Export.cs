@@ -185,6 +185,7 @@ namespace urakawa.daisy.export
 
         protected bool processSingleSpineItem_2(XmlDocument opfXmlDoc, XmlNode opfXmlNode_spine, XmlNode opfXmlNode_manifest, string path, XmlNode opfXmlNode_item, XmlNode opfXmlNode_metadata, string uid_OPF_SpineItem, Presentation spineItemPresentation, string opsDirectoryPath, string fullSpineItemPath, Time timeTotal, string opfFilePath, bool hasMediaActiveClass)
         {
+            string path_FileOnly = Path.GetFileName(path);
             string smilPath = null;
             string audioPath = null;
             Time time = spineItemPresentation.RootNode.GetDurationOfManagedAudioMediaFlattened();
@@ -527,7 +528,7 @@ namespace urakawa.daisy.export
                     xmlDocSMIL,
                     xmlDocSMIL_body,
                     "epub:textref",
-                    path,
+                    path_FileOnly,
                     DiagramContentModelHelper.NS_URL_EPUB);
 
                 stack_XmlNode_SMIL = new Stack<XmlNode>();
@@ -843,7 +844,7 @@ namespace urakawa.daisy.export
                             xmlDocSMIL,
                             seq,
                             "epub:textref",
-                            path + "#" + xmlId,
+                            path_FileOnly + "#" + xmlId,
                             DiagramContentModelHelper.NS_URL_EPUB);
 
                         stack_XmlNode_SMIL.Push(seq);
@@ -855,7 +856,7 @@ namespace urakawa.daisy.export
                         DebugFix.Assert(time != null);
 
 
-                        string textSrc = Path.GetFileName(path) + "#" + xmlId;
+                        string textSrc = path_FileOnly + "#" + xmlId;
                         string audioSrc = Path.GetFileName(audioPath);
                         string clipBegin = timeAccumulated.Format_StandardExpanded();
 
