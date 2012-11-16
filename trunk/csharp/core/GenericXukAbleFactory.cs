@@ -31,9 +31,9 @@ namespace urakawa
                 }
                 else
                 {
-#if DEBUG
-                    Debugger.Break();
-#endif
+//#if DEBUG
+//                    Debugger.Break();
+//#endif
                     BaseQName = null;
                 }
                 AssemblyName = new AssemblyName(rd.GetAttribute(XukStrings.AssemblyName));
