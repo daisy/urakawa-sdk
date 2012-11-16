@@ -65,7 +65,9 @@ namespace urakawa.xuk
                     }
                 }
             }
-
+#if DEBUG
+            Debugger.Break();
+#endif
             System.Diagnostics.Debug.Fail("Type name not found ??");
             return name;
         }

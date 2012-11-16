@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
@@ -9,6 +10,74 @@ namespace urakawa.xuk
     //todo: add all the XukIn / XukOut strings here !!!!
     public class XukStrings
     {
+#if DEBUG
+        static XukStrings()
+        {
+            Project project = new Project();
+
+            project.SetPrettyFormat(true);
+            checkData(true);
+
+            project.SetPrettyFormat(false);
+            checkData(false);
+        }
+
+        private static void checkData(bool pretty)
+        {
+            Type type = typeof(XukStrings); //instance.GetType();
+
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Static;
+            PropertyInfo[] properties = type.GetProperties(flags);
+
+            List<string> list = new List<string>(properties.Length);
+
+            foreach (PropertyInfo property in properties)
+            {
+                if (property.PropertyType == typeof(string))
+                {
+                    if (property.Name == "XukCompressed"
+                        || property.Name == "XukPretty"
+                        || property.Name == "Xuk")
+                    {
+                        continue;
+                    }
+
+                    if (list.Contains(property.Name))
+                    {
+                        Debugger.Break();
+                    }
+                    else
+                    {
+                        list.Add(property.Name);
+                    }
+
+                    if (pretty
+                        && property.Name != "CSSExternalFileData"
+                        && property.Name != "XSLTExternalFileData")
+                    {
+                        string val = (string)property.GetValue(type, null);
+                        bool okay = property.Name == val;
+                        if (!okay)
+                        {
+                            Debugger.Break();
+                        }
+                    }
+                }
+                else if (property.PropertyType == typeof(bool))
+                {
+                    bool okay = property.Name == "IsPrettyFormat";
+                    if (!okay)
+                    {
+                        Debugger.Break();
+                    }
+                }
+                else
+                {
+                    Debugger.Break();
+                }
+            }
+        }
+#endif
         private static Project mProject;
 
         public XukStrings(Project proj)
@@ -299,24 +368,24 @@ namespace urakawa.xuk
             get { return ((mProject == null || IsPrettyFormat) ? "MetadataSetIdCommand" : "metaSetIdCmd"); }
         }
 
-        public static string AlternateContentMetadataAttributeAddCommand
-        {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataAttributeAddCommand" : "metaAttrAddCmd"); }
-        }
+        //public static string AlternateContentMetadataAttributeAddCommand
+        //{
+        //    get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataAttributeAddCommand" : "acMetaAttrAddCmd"); }
+        //}
 
-        public static string AlternateContentMetadataAttributeRemoveCommand
-        {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataAttributeRemoveCommand" : "metaAttrRemoveCmd"); }
-        }
+        //public static string AlternateContentMetadataAttributeRemoveCommand
+        //{
+        //    get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataAttributeRemoveCommand" : "acMetaAttrRemoveCmd"); }
+        //}
 
-        public static string AlternateContentMetadataAttributeSetNameCommand
-        {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataAttributeSetNameCommand" : "metaAttrNameSetCmd"); }
-        }
-        public static string AlternateContentMetadataAttributeSetContentCommand
-        {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataAttributeSetContentCommand" : "metaAttrContentSetCmd"); }
-        }
+        //public static string AlternateContentMetadataAttributeSetNameCommand
+        //{
+        //    get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataAttributeSetNameCommand" : "acMetaAttrNameSetCmd"); }
+        //}
+        //public static string AlternateContentMetadataAttributeSetContentCommand
+        //{
+        //    get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataAttributeSetContentCommand" : "acMetaAttrContentSetCmd"); }
+        //}
 
         public static string AlternateContentMetadataAddCommand
         {
