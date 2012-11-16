@@ -435,6 +435,12 @@ namespace urakawa.xuk
 
         public static void WriteXmlDocument(XmlDocument xmlDoc, string path)
         {
+            string parentDir = Path.GetDirectoryName(path);
+            if (!Directory.Exists(parentDir))
+            {
+                FileDataProvider.CreateDirectory(parentDir);
+            }
+
             const bool pretty = true;
 
             xmlDoc.PreserveWhitespace = false;
