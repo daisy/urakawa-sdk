@@ -1922,7 +1922,11 @@ namespace urakawa.daisy.export
 
                 string fullPath = Path.Combine(parentDir, val);
                 fullPath = FileDataProvider.NormaliseFullFilePath(fullPath).Replace('/', '\\');
-
+                int index = fullPath.LastIndexOf('#');
+                if (index > 0)
+                {
+                    fullPath = fullPath.Substring(0, index);
+                }
                 foreach (string fullPath_removedSpineItem in m_exportSpineItemPath_REMOVED)
                 {
                     if (fullPath == fullPath_removedSpineItem)
