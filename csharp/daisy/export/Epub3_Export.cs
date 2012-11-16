@@ -2068,6 +2068,12 @@ namespace urakawa.daisy.export
         //            }
         //        }
 
+        private string m_EpubFilePath = null;
+        public string EpubFilePath
+        {
+            get { return m_EpubFilePath; }
+        }
+
         public void PackageToZip()
         {
             string zipOutputDirectory = Path.GetDirectoryName(m_UnzippedOutputDirectory);
@@ -2184,6 +2190,8 @@ namespace urakawa.daisy.export
                 //}
             }
 #endif
+
+            m_EpubFilePath = FileDataProvider.NormaliseFullFilePath(epubFilePath).Replace('/', '\\');
 
 #if DEBUG
             DisplayZipHeaderForVerification(epubFilePath);
