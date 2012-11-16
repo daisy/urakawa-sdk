@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml;
@@ -30,6 +31,9 @@ namespace urakawa
                 }
                 else
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     BaseQName = null;
                 }
                 AssemblyName = new AssemblyName(rd.GetAttribute(XukStrings.AssemblyName));
@@ -49,20 +53,32 @@ namespace urakawa
                         }
                         catch (ArgumentException)
                         {
+#if DEBUG
+                            Debugger.Break();
+#endif
                             Type = null;
                         }
                     }
                     catch (FileLoadException)
                     {
+#if DEBUG
+                        Debugger.Break();
+#endif
                         Type = null;
                     }
                     catch (FileNotFoundException)
                     {
+#if DEBUG
+                        Debugger.Break();
+#endif
                         Type = null;
                     }
                 }
                 else
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     Type = null;
                 }
             }
