@@ -13,12 +13,21 @@ namespace urakawa.xuk
 
         public XukStrings(Project proj)
         {
+            RelocateProjectReference(proj);
+        }
+
+        public static void NullifyProjectReference()
+        {
+            mProject = null;
+        }
+        public static void RelocateProjectReference(Project proj)
+        {
             mProject = proj;
         }
 
         public static bool IsPrettyFormat
         {
-            get { return mProject.IsPrettyFormat(); }
+            get { return mProject == null || mProject.IsPrettyFormat(); }
         }
 
         #region low occurence
