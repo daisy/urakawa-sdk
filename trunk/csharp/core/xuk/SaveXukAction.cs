@@ -127,7 +127,7 @@ namespace urakawa.xuk
             {
                 double val = e.Current;
                 double max = e.Total;
-                
+
                 int percent = (int)((val / max) * 100);
 
                 if (percent != currentPercentage)
@@ -271,13 +271,20 @@ namespace urakawa.xuk
             }
         }
 
-        public static void GenerateXukSchemas()
+        public static void GenerateXukSchemas(Project currentProject)
         {
             //<?oxygen RNGSchema="file.rnc" type="compact"?>
             //<?oxygen SCHSchema="file.sch"?>
-
-            GenerateXukSchema(true);
-            GenerateXukSchema(false);
+            try
+            {
+                GenerateXukSchema(true);
+                GenerateXukSchema(false);
+            }
+            finally
+            {
+                // XukStrings maintains a pointer to the last-created Project instance!
+                XukStrings.RelocateProjectReference(currentProject);
+            }
         }
 
 
@@ -313,7 +320,7 @@ namespace urakawa.xuk
                 //streamWriter.WriteLine("start = element " + XukStrings.Xuk + " { " + XukStrings.Xuk + ".attlist & " + XukStrings.Xuk + ".content }");
                 //streamWriter.WriteLine(XukStrings.Xuk + ".attlist = " + XukStrings.Xuk + ".NOOP.attr");
 
-                streamWriter.WriteLine("start = element " + XukStrings.Xuk + " { " + XukStrings .Project + " }");
+                streamWriter.WriteLine("start = element " + XukStrings.Xuk + " { " + XukStrings.Project + " }");
 
                 streamWriter.Write(Project.GetXukSchema(isPrettyFormat));
             }
