@@ -20,16 +20,62 @@ namespace urakawa.daisy.import
         {
             parseMetadata_NameContentAll(rootFilePath, project, xmlDoc, rootElement);
             parseMetadata_ElementInnerTextAll(rootFilePath, project, xmlDoc, rootElement);
-            if (rootElement != null && @"metadata".Equals(rootElement.LocalName, StringComparison.OrdinalIgnoreCase))
+            if (rootElement != null
+                && @"metadata".Equals(rootElement.LocalName, StringComparison.OrdinalIgnoreCase))
             {
+                List<string> ids = new List<string>();
+
                 foreach (XmlNode node in rootElement.ChildNodes)
                 {
                     if (RequestCancellation) return;
 
-                    if (node.NodeType == XmlNodeType.Element
-                        && node.LocalName.Equals("link", StringComparison.OrdinalIgnoreCase))
+                    if (node.NodeType == XmlNodeType.Element)
                     {
-                        Metadata meta = addMetadata(rootFilePath, project, "link", "link", node);
+                        if (node.LocalName.Equals("link", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Metadata meta = addMetadata(rootFilePath, project, "link", "link", node);
+                        }
+
+                        XmlNode idAttr = node.Attributes.GetNamedItem("id");
+                        if (idAttr != null)
+                        {
+                            string id = idAttr.Value;
+                            if (ids.Contains(id))
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                            else
+                            {
+                                ids.Add(id);
+                            }
+                        }
+                    }
+                }
+
+
+                Presentation pres = project.Presentations.Get(0);
+                foreach (metadata.Metadata m in pres.Metadatas.ContentsAs_ListCopy)
+                {
+                    if (m.OtherAttributes != null)
+                    {
+                        foreach (MetadataAttribute metadataAttribute in m.OtherAttributes.ContentsAs_Enumerable)
+                        {
+                            if (metadataAttribute.Name == "refines")
+                            {
+                                string id = metadataAttribute.Value;
+                                if (id.StartsWith("#") && id.Length > 1)
+                                {
+                                    id = id.Substring(1);
+                                }
+                                if (!ids.Contains(id))
+                                {
+                                    pres.Metadatas.Remove(m);
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -381,7 +427,7 @@ namespace urakawa.daisy.import
         private void metadataPostProcessing(string book_FilePath, Project project)
         {
             ensureCorrectMetadataIdentifier(book_FilePath, project);
-            
+
             Presentation presentation = project.Presentations.Get(0);
             string name = presentation.RootNode.GetXmlElementLocalName();
             bool isEPUB =
