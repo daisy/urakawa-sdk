@@ -172,15 +172,15 @@ namespace urakawa.daisy.export.visitor
 
             //foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
             //{
-                //if (ext != null)
-                //{
-                    //ext.Src = ext.Src.Replace(sourceName, destName);
-                //}
+            //if (ext != null)
+            //{
+            //ext.Src = ext.Src.Replace(sourceName, destName);
+            //}
             //}
 
             File.Delete(sourceFilePath);
             File.Move(destinationFilePath, sourceFilePath);
-            
+
             m_ExternalAudioMediaList.Clear();
         }
 
@@ -374,7 +374,14 @@ namespace urakawa.daisy.export.visitor
 #endif //ENABLE_SEQ_MEDIA
 )
             {
-                if (m_TotalTimeInLocalUnits == 0) m_TotalTimeInLocalUnits = node.Root.GetDurationOfManagedAudioMediaFlattened().AsLocalUnits;
+                if (m_TotalTimeInLocalUnits == 0)
+                {
+                    Time dur = node.Root.GetDurationOfManagedAudioMediaFlattened();
+                    if (dur != null)
+                    {
+                        m_TotalTimeInLocalUnits = dur.AsLocalUnits;
+                    }
+                }
 
                 m_TimeElapsedInLocalUnits += manAudioMedia != null ? manAudioMedia.Duration.AsLocalUnits :
 #if ENABLE_SEQ_MEDIA

@@ -535,7 +535,10 @@ namespace urakawa.daisy.export
                 bool hasXmlProperty = currentTreeNode.HasXmlProperty;
 
                 bool triggersSeq =
-                    time != null && hasXmlProperty && (
+                    //time != null
+                    currentTreeNode.GetDurationOfManagedAudioMediaFlattened() != null
+                    && hasXmlProperty
+                    && (
                     @"section".Equals(name, StringComparison.OrdinalIgnoreCase)
                     || @"aside".Equals(name, StringComparison.OrdinalIgnoreCase)
                     || @"sidebar".Equals(name, StringComparison.OrdinalIgnoreCase)
@@ -575,6 +578,14 @@ namespace urakawa.daisy.export
                         {
                             currentXmlNode_SMIL = stack_XmlNode_SMIL.Pop();
                             currentTreeNode_SMIL = stack_TreeNode_SMIL.Pop();
+
+                            if (!currentXmlNode_SMIL.HasChildNodes)
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                                currentXmlNode_SMIL.ParentNode.RemoveChild(currentXmlNode_SMIL);
+                            }
 
                             goto tryAgain;
                         }
@@ -768,6 +779,20 @@ namespace urakawa.daisy.export
                             {
                                 treeNode = electedChild;
                                 goto tryAgain;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(epubType)
+                            && epubType.IndexOf(':') > 0)
+                        {
+                            XmlAttribute xmlAttr = currentTreeNode.Presentation.RootNode.GetXmlProperty().GetAttribute("prefix", DiagramContentModelHelper.NS_URL_EPUB);
+                            if (xmlAttr != null)
+                            {
+                                if (null ==
+                                    xmlDocSMIL.DocumentElement.Attributes.GetNamedItem("prefix", DiagramContentModelHelper.NS_URL_EPUB))
+                                {
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocSMIL, xmlDocSMIL.DocumentElement, "epub:prefix", xmlAttr.Value, DiagramContentModelHelper.NS_URL_EPUB);
+                                }
                             }
                         }
                     }
