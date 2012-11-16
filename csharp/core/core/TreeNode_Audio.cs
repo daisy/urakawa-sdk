@@ -696,7 +696,12 @@ new
             ManagedAudioMedia audioMedia = GetManagedAudioMedia();
             if (audioMedia != null && audioMedia.HasActualAudioMediaData)
             {
-                return audioMedia.Duration;
+                Time dur_ = audioMedia.Duration;
+                if (dur_.AsLocalUnits <= 0)
+                {
+                    return null;
+                }
+                return dur_;
             }
 
 #if ENABLE_SEQ_MEDIA
