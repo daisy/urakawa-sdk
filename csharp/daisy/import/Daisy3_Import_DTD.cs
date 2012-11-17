@@ -22,6 +22,15 @@ namespace urakawa.daisy.import
 {
     public partial class Daisy3_Import
     {
+        private static bool IsRunning64()
+        {
+            bool is64 = IntPtr.Size == 8;
+#if NET40
+            DebugFix.Assert(is64 == Environment.Is64BitProcess);
+#endif
+            return is64; //4 in x86 / 32 bits arch
+        }
+
         public static readonly string INTERNAL_DTD_NAME = "DTBookLocalDTD.dtd";
 
         private Dictionary<string, List<string>> m_listOfMixedContentXmlElementNames = new Dictionary<string, List<string>>();
@@ -200,7 +209,7 @@ namespace urakawa.daisy.import
             //#endif
             //                            }
 
-            bool useCSharpSaxImpl = false; // docMarkupType == DocumentMarkupType.XHTML5;
+            bool useCSharpSaxImpl = IsRunning64(); // docMarkupType == DocumentMarkupType.XHTML5;
             if (useCSharpSaxImpl)
             {
                 reader = new SaxDriver();
