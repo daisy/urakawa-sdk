@@ -509,7 +509,25 @@ namespace urakawa.daisy.export
 
             generateMetadata(spineItemPresentation, xmlDocHTML, xmlDocHTML.DocumentElement, xmlDocHTML_head);
 
+            bool hasCharsetMetaData = false;
+            foreach (Metadata metadata in presentation.Metadatas.ContentsAs_Enumerable)
+            {
+                string name = metadata.NameContentAttribute.Name;
+                string value = metadata.NameContentAttribute.Value;
+                string nsUri = metadata.NameContentAttribute.NamespaceUri;
 
+                if (@"charset".Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    hasCharsetMetaData = true;
+                    break;
+                }
+            }
+            if (!hasCharsetMetaData)
+            {
+                XmlNode metaCharsetNode = xmlDocHTML.CreateElement(@"meta", xmlDocHTML.DocumentElement.NamespaceURI);
+                xmlDocHTML_head.AppendChild(metaCharsetNode);
+                XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocHTML, metaCharsetNode, @"charset", @"utf-8");
+            }
 
 
             TreeNode currentTreeNode = spineItemPresentation.RootNode;
@@ -581,6 +599,8 @@ namespace urakawa.daisy.export
                     || @"footnote".Equals(name, StringComparison.OrdinalIgnoreCase)
                     || @"rearnote".Equals(name, StringComparison.OrdinalIgnoreCase)
                     || @"nav".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"footer".Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || @"hgroup".Equals(name, StringComparison.OrdinalIgnoreCase)
 
                     // JUST FOR TESTING !!!!!
                     //|| @"div".Equals(name, StringComparison.OrdinalIgnoreCase)

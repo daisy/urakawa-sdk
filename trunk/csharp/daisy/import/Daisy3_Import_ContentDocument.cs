@@ -516,7 +516,15 @@ namespace urakawa.daisy.import
                             }
                         }
 
-                        if (attributeCol != null && xmlNode.LocalName != null && xmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase))
+                        if (attributeCol != null && xmlNode.LocalName != null
+                            && xmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                            ||
+                            (
+                            xmlNode.LocalName.Equals("source", StringComparison.OrdinalIgnoreCase)
+                            && xmlNode.ParentNode != null
+                            && xmlNode.ParentNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                            )
+                            )
                         {
                             XmlNode srcAttr = attributeCol.GetNamedItem("src");
                             if (srcAttr != null)
@@ -525,7 +533,8 @@ namespace urakawa.daisy.import
                                 string relativePath = srcAttr.Value;
                                 if (FileDataProvider.isHTTPFile(relativePath))
                                 {
-                                    videoSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
+                                    // STAYS NULL! (then => ExternalVideoMedia instead of ManagedVideoMedia)
+                                    //videoSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
 
                                     //updatedSRC = relativePath;
                                 }
@@ -584,7 +593,8 @@ namespace urakawa.daisy.import
 
                         //updatedSRC = null;
 
-                        if (attributeCol != null && xmlNode.LocalName != null && xmlNode.LocalName.Equals(DiagramContentModelHelper.Math, StringComparison.OrdinalIgnoreCase))
+                        if (attributeCol != null && xmlNode.LocalName != null
+                            && xmlNode.LocalName.Equals(DiagramContentModelHelper.Math, StringComparison.OrdinalIgnoreCase))
                         {
                             XmlNode srcAttr = attributeCol.GetNamedItem("altimg");
                             if (srcAttr != null)
