@@ -119,7 +119,8 @@ namespace urakawa.daisy.import
                 {
                     continue;
                 }
-                AbstractAudioMedia textTreeNodeAudio = textTreeNode.GetAudioMedia();
+                
+                ManagedAudioMedia textTreeNodeAudio = textTreeNode.GetManagedAudioMedia();
                 if (textTreeNodeAudio != null)
                 {
                     //Ignore.

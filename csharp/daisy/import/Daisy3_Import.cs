@@ -13,6 +13,7 @@ using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.property.channel;
 using urakawa.xuk;
+using System.Diagnostics;
 
 namespace urakawa.daisy.import
 {

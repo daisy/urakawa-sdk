@@ -241,7 +241,7 @@ namespace urakawa.daisy.import
 
                 //System.Windows.Forms.MessageBox.Show(parNode.LocalName);
 
-                AbstractAudioMedia textTreeNodeAudio = navPointTreeNode.GetAudioMedia();
+                ManagedAudioMedia textTreeNodeAudio = navPointTreeNode.GetManagedAudioMedia();
                 if (textTreeNodeAudio != null)
                 {
                     //Ignore.
