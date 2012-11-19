@@ -17,6 +17,11 @@ namespace urakawa.media.data.audio.codec
     /// </summary>
     public class WavAudioMediaData : AudioMediaData
     {
+        public override string MimeType
+        {
+            get { return DataProviderFactory.AUDIO_WAV_MIME_TYPE; }
+        }
+
         public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
@@ -252,6 +257,7 @@ namespace urakawa.media.data.audio.codec
             mWavClips.Clear();
             base.Delete();
         }
+
 
         /// <summary>
         /// Gets a <see cref="List{IDataProvider}"/> of the <see cref="DataProvider"/>s

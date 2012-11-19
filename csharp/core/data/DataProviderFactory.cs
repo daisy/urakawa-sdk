@@ -54,6 +54,10 @@ namespace urakawa.data
         public const string AUDIO_MP4_MIME_TYPE = "audio/mp4";
         public const string AUDIO_MP4_EXTENSION = ".mp4";
 
+
+        public const string AUDIO_OGG_MIME_TYPE = "application/ogg";
+        public const string AUDIO_OGG_EXTENSION = ".ogg";
+
         /// <summary>
         /// MIME type for linear PCM RIFF WAVE format audio (wav)
         /// </summary>
@@ -248,6 +252,9 @@ namespace urakawa.data
                 case AUDIO_MP4_MIME_TYPE:
                     extension = AUDIO_MP4_EXTENSION;
                     break;
+                case AUDIO_OGG_MIME_TYPE:
+                    extension = AUDIO_OGG_EXTENSION;
+                    break;
                 case AUDIO_WAV_MIME_TYPE:
                     extension = AUDIO_WAV_EXTENSION;
                     break;
@@ -368,6 +375,9 @@ namespace urakawa.data
                     break;
                 case AUDIO_MP4_EXTENSION:
                     mime = AUDIO_MP4_MIME_TYPE;
+                    break;
+                case AUDIO_OGG_EXTENSION:
+                    mime = AUDIO_OGG_MIME_TYPE;
                     break;
                 case AUDIO_WAV_EXTENSION:
                     mime = AUDIO_WAV_MIME_TYPE;
