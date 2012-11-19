@@ -1415,6 +1415,15 @@ namespace urakawa
             DataProvider dpAudio = DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
             DataProviderManager.RemoveDataProvider(dpAudio, true);
             //
+            dpAudio = DataProviderFactory.Create(DataProviderFactory.AUDIO_MP3_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpAudio, true);
+            //
+            dpAudio = DataProviderFactory.Create(DataProviderFactory.AUDIO_MP4_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpAudio, true);
+            //
+            dpAudio = DataProviderFactory.Create(DataProviderFactory.AUDIO_OGG_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpAudio, true);
+            //
             DataProvider dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_BMP_MIME_TYPE);
             DataProviderManager.RemoveDataProvider(dpImage, true);
             //
@@ -1428,9 +1437,6 @@ namespace urakawa
             DataProviderManager.RemoveDataProvider(dpImage, true);
             //
             dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_SVG_MIME_TYPE);
-            DataProviderManager.RemoveDataProvider(dpImage, true);
-            //
-            dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_SVGZ_MIME_TYPE);
             DataProviderManager.RemoveDataProvider(dpImage, true);
             //
             DataProvider dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_AVI_MIME_TYPE);
@@ -1452,15 +1458,6 @@ namespace urakawa
             DataProviderManager.RemoveDataProvider(dpVideo, true);
             //
             dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_OGG_MIME_TYPE);
-            DataProviderManager.RemoveDataProvider(dpVideo, true);
-            //
-            dpVideo = DataProviderFactory.Create(DataProviderFactory.AUDIO_MP3_EXTENSION);
-            DataProviderManager.RemoveDataProvider(dpVideo, true);
-            //
-            dpVideo = DataProviderFactory.Create(DataProviderFactory.AUDIO_MP4_EXTENSION);
-            DataProviderManager.RemoveDataProvider(dpVideo, true);
-            //
-            dpVideo = DataProviderFactory.Create(DataProviderFactory.AUDIO_OGG_EXTENSION);
             DataProviderManager.RemoveDataProvider(dpVideo, true);
             //
             CommandFactory.CreateCompositeCommand();
@@ -1629,7 +1626,7 @@ namespace urakawa
             NavDocExternalFileData exFileDataNavDoc = ExternalFilesDataFactory.Create<NavDocExternalFileData>();
             ExternalFilesDataManager.RemoveManagedObject(exFileDataNavDoc);
             //
-            NavDocExternalFileData exFileDataCoverImage = ExternalFilesDataFactory.Create<CoverImageExternalFileData>();
+            CoverImageExternalFileData exFileDataCoverImage = ExternalFilesDataFactory.Create<CoverImageExternalFileData>();
             ExternalFilesDataManager.RemoveManagedObject(exFileDataCoverImage);
             ///
             //PLSExternalFileData exFileDataPLS = ExternalFilesDataFactory.Create<PLSExternalFileData>();
