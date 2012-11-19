@@ -1296,6 +1296,21 @@ namespace urakawa.daisy.export
 
         public override void DoWork()
         {
+            try
+            {
+                DoExport();
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw ex;
+            }
+        }
+
+        public void DoExport()
+        {
             RequestCancellation = false;
 
             if (RequestCancellation) return;

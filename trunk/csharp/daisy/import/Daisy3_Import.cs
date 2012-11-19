@@ -166,7 +166,17 @@ namespace urakawa.daisy.import
 
             initializeProject(Path.GetFileName(m_Book_FilePath)); //initialization moved from constructor to allow derived class to implement project construction
 
-            transformBook();
+            try
+            {
+                transformBook();
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw ex;
+            }
 
 
 
