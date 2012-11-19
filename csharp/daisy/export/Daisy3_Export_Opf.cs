@@ -110,7 +110,7 @@ namespace urakawa.daisy.export
 
             if (RequestCancellation) return;
 
-            foreach (string audioFileName in m_FilesList_Audio)
+            foreach (string audioFileName in m_FilesList_SmilAudio)
             {
                 string strID = GetNextID(ID_OpfPrefix);
 
@@ -139,6 +139,15 @@ namespace urakawa.daisy.export
                 string ext = Path.GetExtension(videoFileName);
                 string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
                 AddFilenameToManifest(opfDocument, manifestNode, videoFileName, strID, mime);
+            }
+
+            foreach (string audioFileName in m_FilesList_Audio)
+            {
+                string strID = GetNextID(ID_OpfPrefix);
+
+                string ext = Path.GetExtension(audioFileName);
+                string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
+                AddFilenameToManifest(opfDocument, manifestNode, audioFileName, strID, mime);
             }
 
             if (RequestCancellation) return;

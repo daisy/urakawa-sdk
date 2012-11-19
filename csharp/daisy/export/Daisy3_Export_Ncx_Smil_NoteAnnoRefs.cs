@@ -322,7 +322,7 @@ namespace urakawa.daisy.export
 
                     // add audio file name in audio files list for use in opf creation 
                     string audioFileName = Path.GetFileName(externalAudio.Src);
-                    if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
+                    if (!m_FilesList_SmilAudio.Contains(audioFileName)) m_FilesList_SmilAudio.Add(audioFileName);
 
                     // add to duration 
                     durOfCurrentSmil.Add(externalAudio.Duration);
