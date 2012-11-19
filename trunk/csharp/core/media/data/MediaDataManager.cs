@@ -4,6 +4,7 @@ using System.Xml;
 using urakawa.data;
 using urakawa.exception;
 using urakawa.media.data.audio;
+using urakawa.media.data.audio.codec;
 using urakawa.progress;
 using urakawa.xuk;
 
@@ -30,7 +31,7 @@ namespace urakawa.media.data
         {
             foreach (MediaData md in ManagedObjects.ContentsAs_Enumerable)
             {
-                AudioMediaData amd = md as AudioMediaData;
+                WavAudioMediaData amd = md as WavAudioMediaData;
                 if (amd != null
                     && !amd.PCMFormat.Data.IsCompatibleWith(newDefault.Data))
                 {
@@ -171,7 +172,7 @@ namespace urakawa.media.data
 
         public override bool CanAddManagedObject(MediaData data)
         {
-            if (data is AudioMediaData)
+            if (data is WavAudioMediaData)
             {
                 AudioMediaData amdata = (AudioMediaData)data;
                 if (EnforceSinglePCMFormat
