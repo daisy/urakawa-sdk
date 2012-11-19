@@ -587,7 +587,13 @@ namespace urakawa.daisy.export
                                     }
                                 }
                             }
-                            else if (currentXmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase))
+                            else if (currentXmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                                || (
+                                currentXmlNode.LocalName.Equals("source", StringComparison.OrdinalIgnoreCase)
+                                && currentXmlNode.ParentNode != null
+                                && currentXmlNode.ParentNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                                )
+                                )
                             {
                                 XmlAttribute videoSrcAttribute =
                                     (XmlAttribute)currentXmlNodeAttrs.GetNamedItem("src");
