@@ -154,6 +154,13 @@ namespace urakawa.daisy.export
                 if (RequestCancellation_RemovePublishChannel(publishChannel)) return;
                 CreateOpfDocument();
             }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw ex;
+            }
             finally
             {
                 //m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
