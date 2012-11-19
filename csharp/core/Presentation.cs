@@ -1408,6 +1408,9 @@ namespace urakawa
 
             ch = ChannelFactory.CreateVideoChannel();
             ChannelsManager.RemoveManagedObject(ch);
+
+            ch = ChannelFactory.CreateAudioXChannel();
+            ChannelsManager.RemoveManagedObject(ch);
             //
             DataProvider dpAudio = DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
             DataProviderManager.RemoveDataProvider(dpAudio, true);
@@ -1425,6 +1428,9 @@ namespace urakawa
             DataProviderManager.RemoveDataProvider(dpImage, true);
             //
             dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_SVG_MIME_TYPE);
+            DataProviderManager.RemoveDataProvider(dpImage, true);
+            //
+            dpImage = DataProviderFactory.Create(DataProviderFactory.IMAGE_SVGZ_MIME_TYPE);
             DataProviderManager.RemoveDataProvider(dpImage, true);
             //
             DataProvider dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_AVI_MIME_TYPE);
@@ -1448,21 +1454,62 @@ namespace urakawa
             dpVideo = DataProviderFactory.Create(DataProviderFactory.VIDEO_OGG_MIME_TYPE);
             DataProviderManager.RemoveDataProvider(dpVideo, true);
             //
+            dpVideo = DataProviderFactory.Create(DataProviderFactory.AUDIO_MP3_EXTENSION);
+            DataProviderManager.RemoveDataProvider(dpVideo, true);
+            //
+            dpVideo = DataProviderFactory.Create(DataProviderFactory.AUDIO_MP4_EXTENSION);
+            DataProviderManager.RemoveDataProvider(dpVideo, true);
+            //
+            dpVideo = DataProviderFactory.Create(DataProviderFactory.AUDIO_OGG_EXTENSION);
+            DataProviderManager.RemoveDataProvider(dpVideo, true);
+            //
             CommandFactory.CreateCompositeCommand();
             //
-            MediaData mdImage = MediaDataFactory.CreateImageMediaData();
+            MediaData mdImage = MediaDataFactory.CreateImageMediaData(DataProviderFactory.IMAGE_JPG_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdImage);
+            mdImage = MediaDataFactory.CreateImageMediaData(DataProviderFactory.IMAGE_JPEG_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdImage);
+            mdImage = MediaDataFactory.CreateImageMediaData(DataProviderFactory.IMAGE_BMP_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdImage);
+            mdImage = MediaDataFactory.CreateImageMediaData(DataProviderFactory.IMAGE_PNG_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdImage);
+            mdImage = MediaDataFactory.CreateImageMediaData(DataProviderFactory.IMAGE_GIF_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdImage);
+            mdImage = MediaDataFactory.CreateImageMediaData(DataProviderFactory.IMAGE_SVG_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdImage);
+            mdImage = MediaDataFactory.CreateImageMediaData(DataProviderFactory.IMAGE_SVGZ_EXTENSION);
             MediaDataManager.RemoveManagedObject(mdImage);
             //
             ManagedImageMedia manImgMedia = MediaFactory.CreateManagedImageMedia();
             manImgMedia.MediaData = mdImage;
             //
-            MediaData mdVideo = MediaDataFactory.CreateVideoMediaData();
+            MediaData mdVideo = MediaDataFactory.CreateVideoMediaData(DataProviderFactory.VIDEO_MPG_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdVideo);
+            mdVideo = MediaDataFactory.CreateVideoMediaData(DataProviderFactory.VIDEO_MPEG_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdVideo);
+            mdVideo = MediaDataFactory.CreateVideoMediaData(DataProviderFactory.VIDEO_MP4_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdVideo);
+            mdVideo = MediaDataFactory.CreateVideoMediaData(DataProviderFactory.VIDEO_AVI_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdVideo);
+            mdVideo = MediaDataFactory.CreateVideoMediaData(DataProviderFactory.VIDEO_WEBM_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdVideo);
+            mdVideo = MediaDataFactory.CreateVideoMediaData(DataProviderFactory.VIDEO_OGG_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdVideo);
+            mdVideo = MediaDataFactory.CreateVideoMediaData(DataProviderFactory.VIDEO_MOV_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdVideo);
+            mdVideo = MediaDataFactory.CreateVideoMediaData(DataProviderFactory.VIDEO_WMV_EXTENSION);
             MediaDataManager.RemoveManagedObject(mdVideo);
             //
             ManagedVideoMedia manVideoMedia = MediaFactory.CreateManagedVideoMedia();
             manVideoMedia.MediaData = mdVideo;
             //
-            MediaData mdAudio = MediaDataFactory.CreateAudioMediaData();
+            MediaData mdAudio = MediaDataFactory.CreateAudioMediaData(DataProviderFactory.AUDIO_MP3_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdAudio);
+            mdAudio = MediaDataFactory.CreateAudioMediaData(DataProviderFactory.AUDIO_MP4_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdAudio);
+            mdAudio = MediaDataFactory.CreateAudioMediaData(DataProviderFactory.AUDIO_OGG_EXTENSION);
+            MediaDataManager.RemoveManagedObject(mdAudio);
+            mdAudio = MediaDataFactory.CreateAudioMediaData(DataProviderFactory.AUDIO_WAV_EXTENSION);
             //
             TreeNode treeNode = TreeNodeFactory.Create();
             ManagedAudioMedia manMedia = MediaFactory.CreateManagedAudioMedia();
@@ -1581,6 +1628,10 @@ namespace urakawa
             //
             NavDocExternalFileData exFileDataNavDoc = ExternalFilesDataFactory.Create<NavDocExternalFileData>();
             ExternalFilesDataManager.RemoveManagedObject(exFileDataNavDoc);
+            //
+            NavDocExternalFileData exFileDataCoverImage = ExternalFilesDataFactory.Create<CoverImageExternalFileData>();
+            ExternalFilesDataManager.RemoveManagedObject(exFileDataCoverImage);
+            ///
             //PLSExternalFileData exFileDataPLS = ExternalFilesDataFactory.Create<PLSExternalFileData>();
             //ExternalFilesDataManager.RemoveManagedObject(exFileDataPLS);
             //JSExternalFileData exFileDataJS = ExternalFilesDataFactory.Create<JSExternalFileData>();

@@ -54,6 +54,10 @@ namespace urakawa.property.channel
         {
             get { return HasChannel<AudioChannel>(); }
         }
+        public bool HasAudioXChannel
+        {
+            get { return HasChannel<AudioXChannel>(); }
+        }
         public bool HasImageChannel
         {
             get { return HasChannel<ImageChannel>(); }
@@ -86,6 +90,10 @@ namespace urakawa.property.channel
         public AudioChannel GetOrCreateAudioChannel()
         {
             return GetOrCreateChannel<AudioChannel>();
+        }
+        public AudioXChannel GetOrCreateAudioXChannel()
+        {
+            return GetOrCreateChannel<AudioXChannel>();
         }
         public TextChannel GetOrCreateTextChannel()
         {

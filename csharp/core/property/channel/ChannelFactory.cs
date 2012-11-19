@@ -61,6 +61,10 @@ namespace urakawa.property.channel
         {
             return Create<AudioChannel>();
         }
+        public AudioXChannel CreateAudioXChannel()
+        {
+            return Create<AudioXChannel>();
+        }
         public TextChannel CreateTextChannel()
         {
             return Create<TextChannel>();

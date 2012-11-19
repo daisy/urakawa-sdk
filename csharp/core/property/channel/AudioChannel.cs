@@ -3,6 +3,14 @@ using urakawa.xuk;
 
 namespace urakawa.property.channel
 {
+    public class AudioXChannel : AudioChannel
+    {
+        public override string GetTypeNameFormatted()
+        {
+            return XukStrings.AudioXChannel;
+        }
+    }
+
     /// <summary>
     /// A <see cref="Channel"/> that only accepts <see cref="AbstractAudioMedia"/>
     /// </summary>
