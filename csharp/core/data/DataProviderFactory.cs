@@ -55,7 +55,7 @@ namespace urakawa.data
         public const string AUDIO_MP4_EXTENSION = ".mp4";
 
 
-        public const string AUDIO_OGG_MIME_TYPE = "application/ogg";
+        public const string AUDIO_OGG_MIME_TYPE = "audio/ogg";
         public const string AUDIO_OGG_EXTENSION = ".ogg";
 
         /// <summary>
@@ -198,9 +198,12 @@ namespace urakawa.data
         public const string DTD_MIME_TYPE = "application/xml-dtd";
         public const string DTD_EXTENSION = ".dtd";
 
-        /// <summary>
-        /// MIME type for xml
-        /// </summary>
+        public const string VTT_MIME_TYPE = "text/vtt";
+        public const string VTT_EXTENSION = ".vtt";
+
+        public const string TTML_MIME_TYPE = "application/ttml+xml";
+        public const string TTML_EXTENSION = ".ttml";
+
         public const string XML_MIME_TYPE = "text/xml";
         public const string XML_EXTENSION = ".xml";
 
@@ -312,6 +315,12 @@ namespace urakawa.data
                     break;
                 case XML_MIME_TYPE:
                     extension = XML_EXTENSION;
+                    break;
+                case VTT_MIME_TYPE:
+                    extension = VTT_EXTENSION;
+                    break;
+                case TTML_MIME_TYPE:
+                    extension = TTML_EXTENSION;
                     break;
                 case NCX_MIME_TYPE:
                     extension = NCX_EXTENSION;
@@ -438,6 +447,12 @@ namespace urakawa.data
                     break;
                 case XML_EXTENSION:
                     mime = XML_MIME_TYPE;
+                    break;
+                case VTT_EXTENSION:
+                    mime = VTT_MIME_TYPE;
+                    break;
+                case TTML_EXTENSION:
+                    mime = TTML_MIME_TYPE;
                     break;
                 case NCX_EXTENSION:
                     mime = NCX_MIME_TYPE;

@@ -104,10 +104,18 @@ namespace urakawa.media.data
             {
                 return Create<WavAudioMediaData>();
             }
-            //else if (String.Equals(extension, DataProviderFactory.AUDIO_MP3_EXTENSION, StringComparison.OrdinalIgnoreCase))
-            //{
-            //    return Create<Mp3AudioMediaData>();
-            //}
+            else if (String.Equals(extension, DataProviderFactory.AUDIO_MP3_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<Mp3AudioMediaData>();
+            }
+            else if (String.Equals(extension, DataProviderFactory.AUDIO_MP4_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<Mp4AudioMediaData>();
+            }
+            else if (String.Equals(extension, DataProviderFactory.AUDIO_OGG_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                return Create<OggAudioMediaData>();
+            }
 
             return null;
         }
