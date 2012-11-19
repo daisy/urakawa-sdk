@@ -96,8 +96,12 @@ namespace urakawa.daisy.export
 
                 bool noAudioInAncestor = (levelNodeDescendant.GetFirstAncestorWithManagedAudio() == null);
                 bool noAudioInDescendants = (levelNodeDescendant.GetFirstDescendantWithManagedAudio() == null);
-                bool noAudioLocal = (levelNodeDescendant.GetManagedAudioMediaOrSequenceMedia() == null);
-
+                
+#if ENABLE_SEQ_MEDIA
+            bool noAudioLocal = (levelNodeDescendant.GetManagedAudioMediaOrSequenceMedia() == null);
+#else
+                bool noAudioLocal = (levelNodeDescendant.GetManagedAudioMedia() == null);
+#endif
                 DebugFix.Assert(noAudioLocal == (externalAudio == null));
 
                 if (!noAudioLocal)

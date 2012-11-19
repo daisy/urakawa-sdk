@@ -639,11 +639,10 @@ namespace urakawa.daisy.export
                             {
                                 XmlAttribute audioSrcAttribute =
                                     (XmlAttribute)currentXmlNodeAttrs.GetNamedItem("src");
+                                ManagedAudioMedia managedAudio = n.GetManagedAudioMedia();
                                 if (audioSrcAttribute != null &&
-                                    n.GetAudioMedia() != null
-                                    && n.GetAudioMedia() is ManagedAudioMedia)
+                                    managedAudio != null)
                                 {
-                                    ManagedAudioMedia managedAudio = (ManagedAudioMedia)n.GetAudioMedia();
 
                                     //if (FileDataProvider.isHTTPFile(managedAudio.AudioMediaData.OriginalRelativePath))                                
                                     //exportAudioName = Path.GetFileName(managedAudio.AudioMediaData.OriginalRelativePath);

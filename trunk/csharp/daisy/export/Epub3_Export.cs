@@ -295,7 +295,7 @@ namespace urakawa.daisy.export
                     node = nodeStack.Pop();
 
                     ManagedAudioMedia manAudioMedia = node.GetManagedAudioMedia();
-                    if (manAudioMedia != null && manAudioMedia.HasActualAudioMediaData)
+                    if (manAudioMedia != null) // && manAudioMedia.HasActualAudioMediaData)
                     {
                         Stream manAudioStream = manAudioMedia.AudioMediaData.OpenPcmInputStream();
                         try
@@ -579,7 +579,7 @@ namespace urakawa.daisy.export
                 ManagedAudioMedia audioMedia = currentTreeNode.GetManagedAudioMedia();
                 AbstractTextMedia textMedia = currentTreeNode.GetTextMedia();
 
-                bool hasAudio = audioMedia != null && audioMedia.HasActualAudioMediaData;
+                bool hasAudio = audioMedia != null; // && audioMedia.HasActualAudioMediaData;
 
                 bool hasXmlProperty = currentTreeNode.HasXmlProperty;
 
@@ -1113,6 +1113,10 @@ namespace urakawa.daisy.export
                     else if (vidMediaData != null)
                     {
                         vidMediaData.DataProvider.ExportDataStreamToFile(fullPath, false);
+                    }
+                    else if (audMediaData != null)
+                    {
+                        audMediaData.DataProvider.ExportDataStreamToFile(fullPath, false);
                     }
                     else
                     {

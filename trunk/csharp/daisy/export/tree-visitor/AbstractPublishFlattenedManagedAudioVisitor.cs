@@ -284,17 +284,21 @@ namespace urakawa.daisy.export.visitor
                 throw new Exception("! EnforceSinglePCMFormat ???");
             }
 
+#if ENABLE_SEQ_MEDIA
             Media media = node.GetManagedAudioMediaOrSequenceMedia();
+            
             if (media == null)
             {
                 return true;
             }
+#endif
+            
 
             ManagedAudioMedia manAudioMedia = node.GetManagedAudioMedia();
-            if (manAudioMedia != null && !manAudioMedia.HasActualAudioMediaData)
-            {
-                return true;
-            }
+            //if (manAudioMedia != null && !manAudioMedia.HasActualAudioMediaData)
+            //{
+            //    return true;
+            //}
 
             if (m_TransientWavFileStream == null)
             {
