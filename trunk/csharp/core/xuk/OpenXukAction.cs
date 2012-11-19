@@ -299,6 +299,9 @@ namespace urakawa.xuk
             }
             catch (Exception ex)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 throw ex;
             }
             finally

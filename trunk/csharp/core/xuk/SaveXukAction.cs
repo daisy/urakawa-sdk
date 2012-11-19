@@ -247,9 +247,9 @@ namespace urakawa.xuk
                             "noNamespaceSchemaLocation",
                             "http://www.w3.org/2001/XMLSchema-instance",
                             String.Format("{0}{1}",
-                            m_Project.XukNamespaceUri
-                            + (m_Project.XukNamespaceUri.EndsWith("/") ? "" : "/"),
-                            XukAble.XUK_XSD_PATH));
+                                          m_Project.XukNamespaceUri
+                                          + (m_Project.XukNamespaceUri.EndsWith("/") ? "" : "/"),
+                                          XukAble.XUK_XSD_PATH));
                     }
                 }
                 mSourceXukAble.XukOut(mXmlWriter, mDestUri, this);
@@ -259,6 +259,13 @@ namespace urakawa.xuk
             catch (exception.ProgressCancelledException)
             {
                 canceled = true;
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw ex;
             }
             finally
             {
