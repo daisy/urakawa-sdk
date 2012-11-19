@@ -587,6 +587,77 @@ namespace urakawa.daisy.import
                         }
 
 
+                        if (attributeCol != null && xmlNode.LocalName != null
+                            && xmlNode.LocalName.Equals("audio", StringComparison.OrdinalIgnoreCase)
+                            ||
+                            (
+                            xmlNode.LocalName.Equals("source", StringComparison.OrdinalIgnoreCase)
+                            && xmlNode.ParentNode != null
+                            && xmlNode.ParentNode.LocalName.Equals("audio", StringComparison.OrdinalIgnoreCase)
+                            )
+                            )
+                        {
+                            XmlNode srcAttr = attributeCol.GetNamedItem("src");
+                            if (srcAttr != null)
+                            {
+                                string audioSourceFullpath = null;
+                                string relativePath = srcAttr.Value;
+                                if (FileDataProvider.isHTTPFile(relativePath))
+                                {
+                                    // STAYS NULL! (then => ExternalAudioMedia instead of ManagedAudioMedia)
+                                    //audioSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
+
+                                    //updatedSRC = relativePath;
+                                }
+                                else
+                                {
+                                    string parentPath = Directory.GetParent(filePath).FullName;
+                                    audioSourceFullpath = Path.Combine(parentPath, relativePath);
+
+                                    audioSourceFullpath = FileDataProvider.NormaliseFullFilePath(audioSourceFullpath).Replace('/', '\\');
+
+                                    //updatedSRC = Path.GetFullPath(audioSourceFullpath).Replace(
+                                    //    Path.GetDirectoryName(filePath), "");
+
+                                    //if (updatedSRC.StartsWith("" + Path.DirectorySeparatorChar))
+                                    //{
+                                    //    updatedSRC = updatedSRC.Remove(0, 1);
+                                    //}
+                                }
+
+                                if (audioSourceFullpath != null && File.Exists(audioSourceFullpath))
+                                {
+
+                                    //ChannelsProperty chProp = presentation.PropertyFactory.CreateChannelsProperty();
+                                    //treeNode.AddProperty(chProp);
+                                    ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
+
+                                    urakawa.media.data.audio.AudioMediaData audioData =
+                                        presentation.MediaDataFactory.CreateAudioMediaData(Path.GetExtension(audioSourceFullpath));
+                                    if (audioData == null)
+                                    {
+                                        throw new NotSupportedException(audioSourceFullpath);
+                                    }
+                                    audioData.InitializeAudio(audioSourceFullpath, relativePath); //updatedSRC
+                                    media.data.audio.ManagedAudioMedia managedAudio =
+                                        presentation.MediaFactory.CreateManagedAudioMedia();
+                                    managedAudio.MediaData = audioData;
+                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateAudioChannel(), managedAudio);
+
+                                    addOPF_GlobalAssetPath(audioSourceFullpath);
+                                }
+                                else
+                                {
+                                    ExternalAudioMedia externalAudio = presentation.MediaFactory.CreateExternalAudioMedia();
+                                    externalAudio.Src = relativePath;
+
+                                    ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
+                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateAudioChannel(), externalAudio);
+                                }
+                            }
+                        }
+
+
 
 
 

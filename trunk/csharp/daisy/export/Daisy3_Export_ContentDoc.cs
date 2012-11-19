@@ -13,6 +13,7 @@ using urakawa.core;
 using urakawa.ExternalFiles;
 using urakawa.metadata.daisy;
 using urakawa.xuk;
+using urakawa.media.data.audio;
 
 namespace urakawa.daisy.export
 {
@@ -625,6 +626,47 @@ namespace urakawa.daisy.export
                                     if (!m_FilesList_Video.Contains(exportVideoName))
                                     {
                                         m_FilesList_Video.Add(exportVideoName);
+                                    }
+                                }
+                            }
+                            else if (currentXmlNode.LocalName.Equals("audio", StringComparison.OrdinalIgnoreCase)
+                                || (
+                                currentXmlNode.LocalName.Equals("source", StringComparison.OrdinalIgnoreCase)
+                                && currentXmlNode.ParentNode != null
+                                && currentXmlNode.ParentNode.LocalName.Equals("audio", StringComparison.OrdinalIgnoreCase)
+                                )
+                                )
+                            {
+                                XmlAttribute audioSrcAttribute =
+                                    (XmlAttribute)currentXmlNodeAttrs.GetNamedItem("src");
+                                if (audioSrcAttribute != null &&
+                                    n.GetAudioMedia() != null
+                                    && n.GetAudioMedia() is ManagedAudioMedia)
+                                {
+                                    ManagedAudioMedia managedAudio = (ManagedAudioMedia)n.GetAudioMedia();
+
+                                    //if (FileDataProvider.isHTTPFile(managedAudio.AudioMediaData.OriginalRelativePath))                                
+                                    //exportAudioName = Path.GetFileName(managedAudio.AudioMediaData.OriginalRelativePath);
+
+                                    string exportAudioName =
+                                        FileDataProvider.EliminateForbiddenFileNameCharacters(
+                                            managedAudio.AudioMediaData.OriginalRelativePath);
+
+                                    string destPath = Path.Combine(m_OutputDirectory, exportAudioName);
+
+
+
+                                    if (!File.Exists(destPath))
+                                    {
+                                        if (RequestCancellation) return false;
+                                        managedAudio.AudioMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
+                                    }
+
+                                    audioSrcAttribute.Value = exportAudioName;
+
+                                    if (!m_FilesList_Audio.Contains(exportAudioName))
+                                    {
+                                        m_FilesList_Audio.Add(exportAudioName);
                                     }
                                 }
                             }

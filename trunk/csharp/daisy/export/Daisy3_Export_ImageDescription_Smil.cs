@@ -80,9 +80,9 @@ namespace urakawa.daisy.export
                                                                srcPath);
                     parNode.AppendChild(audioNode);
 
-                    if (!m_FilesList_Audio.Contains(srcPath))
+                    if (!m_FilesList_SmilAudio.Contains(srcPath))
                     {
-                        m_FilesList_Audio.Add(srcPath);
+                        m_FilesList_SmilAudio.Add(srcPath);
                     }
 
                     // add to duration 

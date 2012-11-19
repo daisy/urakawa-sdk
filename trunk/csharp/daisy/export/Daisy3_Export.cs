@@ -31,9 +31,10 @@ namespace urakawa.daisy.export
         protected List<TreeNode> m_ListOfLevels; // list of level anddoctitle, docauthor nodes collected in createContentDoc function, for creating equivalent navPoints in create NCX funtion 
 
         protected List<string> m_FilesList_Smil; //xmils files list generated in createNcx function
-        protected List<string> m_FilesList_Audio; // list of audio files generated in create ncx function.
+        protected List<string> m_FilesList_SmilAudio; // list of audio files generated in create ncx function.
         protected List<string> m_FilesList_Image; // list of images, populated in create content document function
         protected List<string> m_FilesList_Video; // list of videos, populated in create content document function
+        protected List<string> m_FilesList_Audio; // list of audios, populated in create content document function
         protected List<string> m_FilesList_ExternalFiles; // list of external files like css, xslt etc. 
         protected Time m_TotalTime;
 
@@ -125,6 +126,7 @@ namespace urakawa.daisy.export
             //{
             m_FilesList_Image = new List<string>();
             m_FilesList_Video = new List<string>();
+            m_FilesList_Audio = new List<string>();
             m_FilesList_ExternalFiles = new List<string>();
             RequestCancellation = false;
 

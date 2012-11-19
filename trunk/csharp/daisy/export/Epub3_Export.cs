@@ -28,6 +28,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
 #else
 using Jaime.Olivares;
+using urakawa.media.data.audio.codec;
 #endif
 
 namespace urakawa.daisy.export
@@ -510,7 +511,7 @@ namespace urakawa.daisy.export
             generateMetadata(spineItemPresentation, xmlDocHTML, xmlDocHTML.DocumentElement, xmlDocHTML_head);
 
             bool hasCharsetMetaData = false;
-            foreach (Metadata metadata in presentation.Metadatas.ContentsAs_Enumerable)
+            foreach (Metadata metadata in spineItemPresentation.Metadatas.ContentsAs_Enumerable)
             {
                 string name = metadata.NameContentAttribute.Name;
                 string value = metadata.NameContentAttribute.Value;
@@ -1062,6 +1063,7 @@ namespace urakawa.daisy.export
             {
                 ImageMediaData imgMediaData = mediaData as ImageMediaData;
                 VideoMediaData vidMediaData = mediaData as VideoMediaData;
+                AudioMediaData audMediaData = mediaData as AudioMediaData;
 
                 string relativePath = null;
                 if (imgMediaData != null)
@@ -1071,6 +1073,19 @@ namespace urakawa.daisy.export
                 else if (vidMediaData != null)
                 {
                     relativePath = vidMediaData.OriginalRelativePath;
+                }
+                else if (audMediaData != null)
+                {
+                    if (!string.IsNullOrEmpty(audMediaData.OriginalRelativePath))
+                    {
+                        relativePath = audMediaData.OriginalRelativePath;
+                    }
+#if DEBUG
+                    else
+                    {
+                        DebugFix.Assert(audMediaData is WavAudioMediaData);
+                    }
+#endif
                 }
                 else
                 {
