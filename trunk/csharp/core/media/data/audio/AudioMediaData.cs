@@ -1,9 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Xml;
 using AudioLib;
 using urakawa.data;
+using urakawa.exception;
 using urakawa.media.timing;
+using urakawa.xuk;
 
 namespace urakawa.media.data.audio
 {
@@ -14,6 +18,137 @@ namespace urakawa.media.data.audio
     /// </summary>
     public abstract class AudioMediaData : MediaData
     {
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
+        {
+            base.XukOutAttributes(destination, baseUri);
+
+            if (!String.IsNullOrEmpty(OriginalRelativePath))
+            {
+                destination.WriteAttributeString(XukStrings.OriginalRelativePath, OriginalRelativePath);
+            }
+
+            if (DataProvider != null && !String.IsNullOrEmpty(DataProvider.Uid))
+            {
+                destination.WriteAttributeString(XukStrings.DataProvider, DataProvider.Uid);
+            }
+
+            //if (!Presentation.Project.IsPrettyFormat())
+            //{
+            //    //destination.WriteAttributeString(XukStrings.Uid, Uid);
+            //}
+        }
+
+        protected override void XukInAttributes(XmlReader source)
+        {
+            base.XukInAttributes(source);
+
+            string path = source.GetAttribute(XukStrings.OriginalRelativePath);
+            string uid = source.GetAttribute(XukStrings.DataProvider);
+
+            if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(uid))
+            {
+                DataProvider prov = Presentation.DataProviderManager.GetManagedObject(uid);
+
+                InitializeAudio(prov, path);
+            }
+
+            //if (!Presentation.DataProviderManager.IsManagerOf(uid))
+            //{
+            //    throw new IsNotManagerOfException(
+            //            String.Format("DataProvider cannot be found {0}", uid));
+            //}
+        }
+
+        public void InitializeAudio(string path, string originalRelativePath)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new MethodParameterIsNullException("The path of a audio can not be null");
+            }
+
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("File not found at " + path);
+            }
+
+            DataProvider imgDataProvider = Presentation.DataProviderFactory.Create(MimeType);
+            ((FileDataProvider)imgDataProvider).InitByCopyingExistingFile(path);
+
+            InitializeAudio(imgDataProvider, originalRelativePath);
+        }
+
+        public void InitializeAudio(DataProvider dataProv, string imgOriginalName)
+        {
+            if (dataProv == null)
+            {
+                throw new MethodParameterIsNullException("The data provider of a audio can not be null");
+            }
+
+            if (dataProv.MimeType != MimeType)
+            {
+                throw new OperationNotValidException("The mime type of the given DataProvider is not correct !");
+            }
+
+            if (string.IsNullOrEmpty(imgOriginalName))
+            {
+                throw new MethodParameterIsEmptyStringException("original name of audio cannot be null!");
+            }
+
+            DataProvider = dataProv;
+            OriginalRelativePath = imgOriginalName;
+        }
+
+        public Stream OpenInputStream()
+        {
+            if (m_DataProvider != null)
+            {
+                return m_DataProvider.OpenInputStream();
+            }
+
+            return null;
+        }
+
+        public abstract string MimeType { get; }
+
+        private DataProvider m_DataProvider;
+        public DataProvider DataProvider
+        {
+            get
+            {
+                return m_DataProvider;
+            }
+            private set
+            {
+                m_DataProvider = value;
+            }
+        }
+
+        public override IEnumerable<DataProvider> UsedDataProviders
+        {
+            get
+            {
+                yield return m_DataProvider;
+                yield break;
+            }
+        }
+
+        private string m_OriginalRelativePath;
+        public string OriginalRelativePath
+        {
+            get
+            {
+                return m_OriginalRelativePath;
+            }
+            private set
+            {
+                m_OriginalRelativePath = value;
+                if (m_OriginalRelativePath != null)
+                {
+                    m_OriginalRelativePath = m_OriginalRelativePath.Replace('\\', '/');
+                }
+            }
+        }
+
         #region Event related members
 
         /// <summary>
@@ -107,6 +242,11 @@ namespace urakawa.media.data.audio
         /// <returns>A <see cref="bool"/> indicating if the change is ok</returns>
         protected virtual bool IsPCMFormatChangeOk(PCMFormatInfo newFormat, out string failReason)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             failReason = "";
 
             if (Presentation.MediaDataManager.EnforceSinglePCMFormat
@@ -129,6 +269,11 @@ namespace urakawa.media.data.audio
         {
             get
             {
+                if (OriginalRelativePath != null && DataProvider != null)
+                {
+                    throw new NotImplementedException();
+                }
+
                 if (mPCMFormat == null)
                 {
                     mPCMFormat = Presentation.MediaDataManager.DefaultPCMFormat;
@@ -137,6 +282,11 @@ namespace urakawa.media.data.audio
             }
             set
             {
+                if (OriginalRelativePath != null && DataProvider != null)
+                {
+                    throw new NotImplementedException();
+                }
+
                 if (value == null)
                 {
                     throw new exception.MethodParameterIsNullException("The new PCMFormatInfo can not be null");
@@ -169,6 +319,11 @@ namespace urakawa.media.data.audio
         /// <returns>The input <see cref="Stream"/></returns>
         public Stream OpenPcmInputStream()
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             return OpenPcmInputStream(Time.Zero);
         }
 
@@ -184,6 +339,11 @@ namespace urakawa.media.data.audio
         /// </remarks>
         public Stream OpenPcmInputStream(Time clipBegin)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             return OpenPcmInputStream(clipBegin, new Time(AudioDuration));
         }
 
@@ -214,6 +374,11 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration of the audio to add</param>
         public virtual void AppendPcmData(Stream pcmData, Time duration)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             InsertPcmData(pcmData, new Time(AudioDuration.AsLocalUnits), duration);
         }
 
@@ -226,6 +391,11 @@ namespace urakawa.media.data.audio
         /// <param name="riffWaveStream">The RIFF Wave file</param>
         public void AppendPcmData_RiffHeader(Stream riffWaveStream)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             uint dataLength;
             AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(riffWaveStream, out dataLength);
 
@@ -249,6 +419,11 @@ namespace urakawa.media.data.audio
         /// <param name="path">The path of the RIFF Wave file</param>
         public void AppendPcmData_RiffHeader(string path)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             Stream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             try
             {
@@ -277,6 +452,11 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration - if <c>null</c> the entire RIFF Wave file is inserted</param>
         public void InsertPcmData_RiffHeader(Stream riffWaveStream, Time insertPoint, Time duration)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
 
             uint dataLength;
             AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(riffWaveStream, out dataLength);
@@ -308,6 +488,11 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration - if <c>null</c> the entire RIFF Wave file is inserted</param>
         public void InsertPcmData_RiffHeader(string path, Time insertPoint, Time duration)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             Stream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             try
             {
@@ -327,6 +512,11 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration of the audio to replace</param>
         public void ReplacePcmData(Stream pcmData, Time replacePoint, Time duration)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             RemovePcmData(replacePoint, new Time(replacePoint.AsTimeSpan + duration.AsTimeSpan));
             InsertPcmData(pcmData, replacePoint, duration);
         }
@@ -339,6 +529,11 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration of the audio to replace</param>
         public void ReplacePcmData_RiffHeader(Stream riffWaveStream, Time replacePoint, Time duration)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             uint dataLength;
             AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(riffWaveStream, out dataLength);
 
@@ -367,6 +562,11 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration of the audio to replace</param>
         public void ReplacePcmData_RiffHeader(string path, Time replacePoint, Time duration)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             Stream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             try
             {
@@ -384,6 +584,11 @@ namespace urakawa.media.data.audio
         /// <param name="clipBegin">The clip begin</param>
         public virtual void RemovePcmData(Time clipBegin)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             RemovePcmData(clipBegin, new Time(AudioDuration));
         }
 
@@ -401,23 +606,39 @@ namespace urakawa.media.data.audio
         ///// <returns>The copy</returns>
         //protected abstract AudioMediaData AudioMediaDataCopy();
 
-        /// <summary>
-        /// Part of technical solution to make copy method return correct type. 
-        /// In implementing classes this method should return a copy of the class instances
-        /// </summary>
-        /// <returns>The copy</returns>
-        protected abstract override MediaData CopyProtected();
 
-        /// <summary>
-        /// Gets a copy of <c>this</c>
-        /// </summary>
-        /// <returns>The copy</returns>
+        protected override MediaData CopyProtected()
+        {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                AudioMediaData copyVideoMediaData = (AudioMediaData)Presentation.MediaDataFactory.Create(GetType());
+                // We do not Copy the FileDataProvider,
+                // it is shared amongst AudioMediaData instances without concurrent access problems
+                // because the file stream is read-only by design.
+                copyVideoMediaData.InitializeAudio(m_DataProvider, OriginalRelativePath);
+                return copyVideoMediaData;
+            }
+            return null;
+        }
+
+        protected override MediaData ExportProtected(Presentation destPres)
+        {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                AudioMediaData expImgData = (AudioMediaData)Presentation.MediaDataFactory.Create(GetType());
+                expImgData.InitializeAudio(m_DataProvider.Export(destPres), OriginalRelativePath);
+                return expImgData;
+            }
+            return null;
+        }
+
+        //protected abstract override MediaData ExportProtected(Presentation destPres);
+        //protected abstract override MediaData CopyProtected();
+
         public new AudioMediaData Copy()
         {
             return CopyProtected() as AudioMediaData;
         }
-
-        protected abstract override MediaData ExportProtected(Presentation destPres);
 
         public new AudioMediaData Export(Presentation destPres)
         {
@@ -439,6 +660,11 @@ namespace urakawa.media.data.audio
         /// </exception>
         public virtual AudioMediaData Split(Time splitPoint)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             //throw new NotImplementedException("AudioMediaData.Split() should never be called ! (WavAudioMediaData instead)");
 
             if (splitPoint == null)
@@ -492,6 +718,11 @@ namespace urakawa.media.data.audio
         /// </exception>
         public virtual void MergeWith(AudioMediaData other)
         {
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                throw new NotImplementedException();
+            }
+
             //throw new NotImplementedException("AudioMediaData.MergeWith() should never be called ! (WavAudioMediaData instead)");
 
             if (other == null)
@@ -535,6 +766,23 @@ namespace urakawa.media.data.audio
             if (otherz == null)
             {
                 return false;
+            }
+
+            if (OriginalRelativePath != null && DataProvider != null)
+            {
+                if (OriginalRelativePath != otherz.OriginalRelativePath)
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
+
+                if (!DataProvider.ValueEquals(otherz.DataProvider))
+                {
+                    //System.Diagnostics.Debug.Fail("! ValueEquals !"); 
+                    return false;
+                }
+
+                return true;
             }
 
             if (!PCMFormat.ValueEquals(otherz.PCMFormat))

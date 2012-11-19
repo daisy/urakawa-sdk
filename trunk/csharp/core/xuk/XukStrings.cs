@@ -842,6 +842,18 @@ namespace urakawa.xuk
         {
             get { return ((mProject == null || IsPrettyFormat) ? "MovVideoMediaData" : "movVd"); }
         }
+        public static string Mp3AudioMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "Mp3AudioMediaData" : "mp3Au"); }
+        }
+        public static string OggAudioMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "OggAudioMediaData" : "oggAu"); }
+        }
+        public static string Mp4AudioMediaData
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "Mp4AudioMediaData" : "mp4Au"); }
+        }
         public static string MpgVideoMediaData
         {
             get { return ((mProject == null || IsPrettyFormat) ? "MpgVideoMediaData" : "mpgVd"); }

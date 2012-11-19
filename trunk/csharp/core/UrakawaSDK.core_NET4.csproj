@@ -222,6 +222,7 @@
     <Compile Include="ExternalFiles\XSLTExternalFileData.cs" />
     <Compile Include="GenericWithPresentationFactory.cs" />
     <Compile Include="GenericXukAbleFactory.cs" />
+    <Compile Include="media\data\audio\codec\Mp3AudioMediaData.cs" />
     <Compile Include="media\data\audio\codec\WavClip.cs" />
     <Compile Include="media\data\image\codec\BmpImageMediaData.cs" />
     <Compile Include="media\data\image\codec\GifImageMediaData.cs" />
