@@ -642,7 +642,7 @@ namespace urakawa.daisy.import
                                     media.data.audio.ManagedAudioMedia managedAudio =
                                         presentation.MediaFactory.CreateManagedAudioMedia();
                                     managedAudio.MediaData = audioData;
-                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateAudioChannel(), managedAudio);
+                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateAudioXChannel(), managedAudio);
 
                                     addOPF_GlobalAssetPath(audioSourceFullpath);
                                 }
@@ -652,7 +652,7 @@ namespace urakawa.daisy.import
                                     externalAudio.Src = relativePath;
 
                                     ChannelsProperty chProp = treeNode.GetOrCreateChannelsProperty();
-                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateAudioChannel(), externalAudio);
+                                    chProp.SetMedia(presentation.ChannelsManager.GetOrCreateAudioXChannel(), externalAudio);
                                 }
                             }
                         }
