@@ -724,6 +724,11 @@ namespace urakawa.xuk
             get { return ((mProject == null || IsPrettyFormat) ? "AudioChannel" : "auCh"); }
         }
 
+        public static string AudioXChannel
+        {
+            get { return ((mProject == null || IsPrettyFormat) ? "AudioXChannel" : "auXCh"); }
+        }
+
         public static string ChannelMappings
         {
             get { return ((mProject == null || IsPrettyFormat) ? "ChannelMappings" : "cMps"); }
