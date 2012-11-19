@@ -1,6 +1,7 @@
 using System;
 using System.Xml;
 using System.IO;
+using urakawa.media.data.audio.codec;
 using urakawa.media.timing;
 using urakawa.events.media.data;
 using urakawa.xuk;
@@ -314,6 +315,14 @@ namespace urakawa.media.data.audio
             get
             {
                 return mAudioMediaData != null;
+            }
+        }
+
+        public bool IsWavAudioMediaData
+        {
+            get
+            {
+                return HasActualAudioMediaData && mAudioMediaData is WavAudioMediaData;
             }
         }
 

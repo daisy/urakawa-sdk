@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -48,36 +49,63 @@ namespace urakawa.media.data.audio.codec
 
         public override Time AudioDuration
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw new NotImplementedException();
+            }
         }
 
         public override Stream OpenPcmInputStream(Time clipBegin, Time clipEnd)
         {
+#if DEBUG
+            Debugger.Break();
+#endif
             throw new NotImplementedException();
         }
 
         public override bool HasActualPcmData
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw new NotImplementedException();
+            }
         }
 
         public override void AppendPcmData(DataProvider fileDataProvider)
         {
+#if DEBUG
+            Debugger.Break();
+#endif
             throw new NotImplementedException();
         }
 
         public override void AppendPcmData(DataProvider fileDataProvider, Time clipBegin, Time clipEnd)
         {
+#if DEBUG
+            Debugger.Break();
+#endif
             throw new NotImplementedException();
         }
 
         public override void InsertPcmData(Stream pcmData, Time insertPoint, Time duration)
         {
+#if DEBUG
+            Debugger.Break();
+#endif
             throw new NotImplementedException();
         }
 
         public override void RemovePcmData(Time clipBegin, Time clipEnd)
         {
+#if DEBUG
+            Debugger.Break();
+#endif
             throw new NotImplementedException();
         }
     }

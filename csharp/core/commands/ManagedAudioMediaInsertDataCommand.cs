@@ -110,7 +110,7 @@ namespace urakawa.commands
                 throw new NodeInDifferentPresentationException("TreeNode vs ManagedAudioMedia");
             }
 
-            if (!managedAudioMediaSource.HasActualAudioMediaData || !manMedia.HasActualAudioMediaData)
+            if (!managedAudioMediaSource.HasActualAudioMediaData) // || !manMedia.HasActualAudioMediaData)
             {
                 throw new ArgumentException("HasActualAudioMediaData");
             }
