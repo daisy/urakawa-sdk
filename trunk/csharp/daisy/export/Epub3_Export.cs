@@ -1080,12 +1080,13 @@ namespace urakawa.daisy.export
                     {
                         relativePath = audMediaData.OriginalRelativePath;
                     }
-#if DEBUG
                     else
                     {
+#if DEBUG
                         DebugFix.Assert(audMediaData is WavAudioMediaData);
-                    }
 #endif
+                        continue;
+                    }
                 }
                 else
                 {
