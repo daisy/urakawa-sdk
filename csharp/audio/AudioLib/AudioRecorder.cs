@@ -223,10 +223,13 @@ IsDisposed
             else if (devices.Count > 0)
             {
                 InputDevice = devices[0]; //devices.Count-1
+
+                Console.WriteLine("InputDevice name not found, defaulting: [[" + name + "]] ==> [[" + InputDevice.Name + "]]");
             }
             else
             {
-                throw new Exception("No input device available.");
+                //throw new Exception("No input device available.");
+                Console.WriteLine("ERROR: InputDevices empty!!");
             }
         }
 
@@ -247,6 +250,8 @@ IsDisposed
         {
             get
             {
+                Console.WriteLine("=== InputDevices");
+
                 lock (LOCK_DEVICES)
                 {
 #if USE_SHARPDX
@@ -257,8 +262,13 @@ IsDisposed
                     List<InputDevice> inputDevices = new List<InputDevice>(devices.Count);
                     foreach (DeviceInformation info in devices)
                     {
+                        Console.WriteLine("InputDevice ModuleName:");
                         Console.WriteLine(info.ModuleName);
+
+                        Console.WriteLine("InputDevice Description:");
                         Console.WriteLine(info.Description);
+
+                        Console.WriteLine("InputDevice DriverGuid:");
                         Console.WriteLine(info.DriverGuid);
                         try
                         {
@@ -266,12 +276,15 @@ IsDisposed
                         }
                         catch (Exception ex)
                         {
+                            Console.WriteLine("InputDevice FAILED:");
                             Console.WriteLine(ex.Message);
                             Console.WriteLine(ex.StackTrace);
                             continue;
                         }
                     }
                     m_CachedInputDevices = inputDevices;
+
+                    Console.WriteLine(">>> InputDevices: " + inputDevices.Count);
                     return inputDevices;
                 }
             }
@@ -485,6 +498,17 @@ Caps
             bufferDescription.Format = waveFormat;
 #if USE_SHARPDX
             bufferDescription.Flags = CaptureBufferCapabilitiesFlags.WaveMapped; //CaptureBufferCapabilitiesFlags.ControlEffects
+
+            if (InputDevice == null)
+            {
+                Console.WriteLine("/// InputDevice NULL, attempting reset...");
+
+                List<InputDevice> inputDevices = InputDevices;
+
+                Console.WriteLine("/// InputDevices: " + inputDevices.Count);
+
+                SetInputDevice("dummy");
+            }
 
             m_CircularBuffer = new CaptureBuffer(InputDevice.Capture, bufferDescription);
 #else

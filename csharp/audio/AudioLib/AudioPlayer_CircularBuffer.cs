@@ -539,6 +539,18 @@ Capabilities
             bufferDescription.BufferBytes = dxBufferSize;
             bufferDescription.Format = waveFormat;
 
+
+            if (OutputDevice == null)
+            {
+                Console.WriteLine("/// OutputDevice NULL, attempting reset...");
+
+                List<OutputDevice> outputDevices = OutputDevices;
+
+                Console.WriteLine("/// OutputDevices: " + outputDevices.Count);
+
+                SetOutputDevice(m_OutputDeviceControl, "dummy");
+            }
+
 #if USE_SHARPDX
             m_CircularBuffer = new SecondarySoundBuffer(OutputDevice.Device, bufferDescription);
 #else

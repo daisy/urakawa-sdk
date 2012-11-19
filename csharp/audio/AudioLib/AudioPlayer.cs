@@ -165,7 +165,7 @@ namespace AudioLib
                 {
                     m_SoundTouch.SetTempo(m_FastPlayFactor);
                     //m_SoundTouch.SetTempoChange(m_FastPlayFactor * 100);
-                    
+
                     m_SoundTouch.SetPitchSemiTones(0);
                     m_SoundTouch.SetRateChange(0);
                 }
@@ -340,11 +340,15 @@ Disposed
             else if (devices.Count > 0)
             {
                 SetOutputDevice(handle, devices[0]);
+
+                Console.WriteLine("OutputDevice name not found, defaulting: [[" + name + "]] ==> [[" + OutputDevice.Name + "]]");
             }
             else
             {
                 CurrentState = State.NotReady;
-                throw new Exception("No output device available.");
+
+                //throw new Exception("No output device available.");
+                Console.WriteLine("ERROR: OutputDevices empty!!");
             }
         }
 
@@ -353,6 +357,8 @@ Disposed
         {
             get
             {
+                Console.WriteLine("=== OutputDevices");
+
                 lock (LOCK_DEVICES)
                 {
 #if USE_SHARPDX
@@ -363,8 +369,13 @@ Disposed
                     List<OutputDevice> outputDevices = new List<OutputDevice>(devices.Count);
                     foreach (DeviceInformation info in devices)
                     {
+                        Console.WriteLine("OutputDevice ModuleName:");
                         Console.WriteLine(info.ModuleName);
+
+                        Console.WriteLine("OutputDevice Description:");
                         Console.WriteLine(info.Description);
+
+                        Console.WriteLine("OutputDevice DriverGuid:");
                         Console.WriteLine(info.DriverGuid);
                         try
                         {
@@ -372,12 +383,15 @@ Disposed
                         }
                         catch (Exception ex)
                         {
+                            Console.WriteLine("OutputDevice FAILED:");
                             Console.WriteLine(ex.Message);
                             Console.WriteLine(ex.StackTrace);
                             continue;
                         }
                     }
                     m_CachedOutputDevices = outputDevices;
+
+                    Console.WriteLine(">>> OutputDevices: " + outputDevices.Count);
                     return outputDevices;
                 }
             }
