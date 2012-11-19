@@ -43,7 +43,9 @@ namespace urakawa.core
 
         TreeNode Root { get; }
 
+#if ENABLE_SEQ_MEDIA
         Media GetManagedAudioMediaOrSequenceMedia();
+#endif
 
 #if USE_NORMAL_LIST
 StreamWithMarkers?

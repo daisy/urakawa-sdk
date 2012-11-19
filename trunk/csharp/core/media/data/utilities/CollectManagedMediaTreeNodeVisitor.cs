@@ -46,7 +46,10 @@ namespace urakawa.media.data.utilities
                         if (chProp.GetMedia(ch) is IManaged)
                         {
                             IManaged mm = (IManaged)chProp.GetMedia(ch);
-                            if (!mCollectedMedia.Contains(mm)) mCollectedMedia.Add(mm);
+                            if (!mCollectedMedia.Contains(mm))
+                            {
+                                mCollectedMedia.Add(mm);
+                            }
                         }
                     }
                 }
@@ -56,8 +59,14 @@ namespace urakawa.media.data.utilities
 
                     foreach (AlternateContent ac in altProp.AlternateContents.ContentsAs_Enumerable)
                     {
-                        if (ac.Audio != null && !mCollectedMedia.Contains(ac.Audio)) mCollectedMedia.Add(ac.Audio);
-                        if (ac.Image != null && !mCollectedMedia.Contains(ac.Image)) mCollectedMedia.Add(ac.Image);
+                        if (ac.Audio != null && !mCollectedMedia.Contains(ac.Audio))
+                        {
+                            mCollectedMedia.Add(ac.Audio);
+                        }
+                        if (ac.Image != null && !mCollectedMedia.Contains(ac.Image))
+                        {
+                            mCollectedMedia.Add(ac.Image);
+                        }
                     }
                 }
 

@@ -492,7 +492,7 @@ namespace urakawa.core
                     if (beforeAdjust == null
                         || beforeAdjust == next
                         || !next.IsAncestorOf(beforeAdjust)
-                        || next.GetAudioMedia() != null
+                        || next.GetManagedAudioMedia() != null
                         || next.GetFirstDescendantWithManagedAudio() == null)
                     {
                         nested = null;

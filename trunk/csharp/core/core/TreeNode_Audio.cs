@@ -58,7 +58,12 @@ namespace urakawa.core
 
         public ManagedAudioMedia ExtractManagedAudioMedia()
         {
+
+#if ENABLE_SEQ_MEDIA
             Media audioMedia = m_TreeNode.GetManagedAudioMediaOrSequenceMedia();
+#else
+            ManagedAudioMedia audioMedia = m_TreeNode.GetManagedAudioMedia();
+#endif
             if (audioMedia == null)
             {
                 Debug.Fail("This should never happen !");
@@ -97,11 +102,15 @@ namespace urakawa.core
                 //}
             }
                         
-#endif //ENABLE_SEQ_MEDIA
-
             else if (audioMedia is ManagedAudioMedia)
             {
                 AudioMediaData mediaData = ((ManagedAudioMedia)audioMedia).AudioMediaData;
+#else
+            else
+            {
+                AudioMediaData mediaData = audioMedia.AudioMediaData;
+#endif //ENABLE_SEQ_MEDIA
+
                 if (mediaData == null)
                 {
                     Debug.Fail("This should never happen !");
@@ -242,7 +251,7 @@ struct
         public bool HasOrInheritsAudio()
         {
             ManagedAudioMedia media = GetManagedAudioMedia();
-            if (media != null)
+            if (media != null && media.IsWavAudioMediaData)
             {
                 return true;
             }
@@ -273,7 +282,12 @@ struct
                 return null;
             }
 
+#if ENABLE_SEQ_MEDIA
             Media manMedia = Parent.GetManagedAudioMediaOrSequenceMedia();
+#else
+            Media manMedia = Parent.GetManagedAudioMedia();
+#endif
+            
             if (manMedia != null)
             {
                 return Parent;
@@ -291,7 +305,12 @@ struct
 
             foreach (TreeNode child in Children.ContentsAs_Enumerable)
             {
-                Media manMedia = child.GetManagedAudioMediaOrSequenceMedia();
+#if ENABLE_SEQ_MEDIA
+            Media manMedia = child.GetManagedAudioMediaOrSequenceMedia();
+#else
+                Media manMedia = child.GetManagedAudioMedia();
+#endif
+                
                 if (manMedia != null)
                 {
                     return child;
@@ -315,7 +334,13 @@ struct
             TreeNode previous = this;
             while ((previous = previous.PreviousSibling) != null)
             {
-                Media manMedia = previous.GetManagedAudioMediaOrSequenceMedia();
+
+#if ENABLE_SEQ_MEDIA
+            Media manMedia = previous.GetManagedAudioMediaOrSequenceMedia();
+#else
+                Media manMedia = previous.GetManagedAudioMedia();
+#endif
+                
                 if (manMedia != null)
                 {
                     return previous;
@@ -340,7 +365,13 @@ struct
             TreeNode next = this;
             while ((next = next.NextSibling) != null)
             {
-                Media manMedia = next.GetManagedAudioMediaOrSequenceMedia();
+
+#if ENABLE_SEQ_MEDIA
+            Media manMedia = next.GetManagedAudioMediaOrSequenceMedia();
+#else
+                Media manMedia = next.GetManagedAudioMedia();
+#endif
+                
                 if (manMedia != null)
                 {
                     return next;
@@ -385,7 +416,7 @@ StreamWithMarkers?
 //#endif //USE_NORMAL_LIST
 
             ManagedAudioMedia audioMedia = GetManagedAudioMedia();
-            if (audioMedia != null && audioMedia.HasActualAudioMediaData)
+            if (audioMedia != null && audioMedia.IsWavAudioMediaData)
             {
                 val.m_Stream = audioMedia.AudioMediaData.OpenPcmInputStream();
                 if (openSecondaryStream)
@@ -612,28 +643,32 @@ new
 
             return returnVal;
         }
+         
+#if ENABLE_SEQ_MEDIA
 
         public Media GetManagedAudioMediaOrSequenceMedia()
         {
             ManagedAudioMedia managedAudioMedia = GetManagedAudioMedia();
-                    
-#if ENABLE_SEQ_MEDIA
-
+                   
             if (managedAudioMedia == null)
             {
                 return GetManagedAudioSequenceMedia();
             }
-                    
-#endif //ENABLE_SEQ_MEDIA
 
             return managedAudioMedia;
         }
+                    
+#endif //ENABLE_SEQ_MEDIA
 
         public ManagedAudioMedia GetManagedAudioMedia()
         {
             AbstractAudioMedia media = GetAudioMedia();
-            if (media != null)
+            if (media != null
+                && media is ManagedAudioMedia
+                && ((ManagedAudioMedia)media).IsWavAudioMediaData)
             {
+                DebugFix.Assert(((ManagedAudioMedia)media).HasActualAudioMediaData);
+
                 return media as ManagedAudioMedia;
             }
             return null;
@@ -694,7 +729,7 @@ new
         public Time GetDurationOfManagedAudioMediaFlattened()
         {
             ManagedAudioMedia audioMedia = GetManagedAudioMedia();
-            if (audioMedia != null && audioMedia.HasActualAudioMediaData)
+            if (audioMedia != null)
             {
                 Time dur_ = audioMedia.Duration;
                 if (dur_.AsLocalUnits <= 0)

@@ -83,10 +83,18 @@ namespace urakawa.commands
                 throw new ArgumentException("HasActualAudioMediaData");
             }
 
+#if ENABLE_SEQ_MEDIA
+            
             if (treeNode.GetManagedAudioMediaOrSequenceMedia() != null)
             {
                 throw new ArgumentException("treeNode.GetManagedAudioMediaOrSequenceMedia");
             }
+#else
+            if (treeNode.GetManagedAudioMedia() != null)
+            {
+                throw new ArgumentException("treeNode.GetManagedAudioMediaOrSequenceMedia");
+            }
+#endif
             CurrentTreeNode = currentTreeNode;
             TreeNode = treeNode;
             ManagedAudioMedia = managedMedia;
