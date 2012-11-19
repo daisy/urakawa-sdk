@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using AudioLib;
 using urakawa.command;
@@ -21,7 +22,17 @@ namespace urakawa.data
 
         public override void DoWork()
         {
-            Cleanup();
+            try
+            {
+                Cleanup();
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw ex;
+            }
         }
 
         /// <summary>
