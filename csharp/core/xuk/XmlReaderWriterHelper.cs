@@ -362,6 +362,7 @@ namespace urakawa.xuk
 
             XmlReaderSettings settings = GetDefaultXmlReaderConfiguration(true, preserveWhiteSpace, validate);
 
+            XmlReader xmlReader = null;
             Stream stream = null;
             try
             {
@@ -373,7 +374,7 @@ namespace urakawa.xuk
                 Uri uri = new Uri(@"file:///" + filePath.Replace('\\', '/'), UriKind.Absolute);
                 string uriStr = uri.ToString();
 
-                XmlReader xmlReader = XmlReader.Create(reader, settings, uriStr);
+                xmlReader = XmlReader.Create(reader, settings, uriStr);
 
                 if (xmlReader is XmlTextReader)
                 {
@@ -390,6 +391,7 @@ namespace urakawa.xuk
                 xmldoc.PreserveWhitespace = preserveWhiteSpace;
                 xmldoc.XmlResolver = null;
                 xmldoc.Load(xmlReader);
+
             }
             catch (Exception ex)
             {
@@ -400,8 +402,27 @@ namespace urakawa.xuk
             }
             finally
             {
+                if (xmlReader != null)
+                {
+                    try
+                    {
+                        xmlReader.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("!! xmlReader.Close();" + ex.Message);
+                    }
+                }
                 if (stream != null)
                 {
+                    try
+                    {
+                        stream.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("!! stream.Close();" + ex.Message);
+                    }
                     stream.Close();
                 }
             }
