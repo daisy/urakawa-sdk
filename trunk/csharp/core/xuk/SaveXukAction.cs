@@ -171,6 +171,28 @@ namespace urakawa.xuk
                 FileDataProvider.CreateDirectory(parentdir);
             }
 
+            try
+            {
+                if (File.Exists(path))
+                {
+                    string fileName = Path.GetFileName(path);
+                    string pathBackup = path;
+                    do
+                    {
+                        //pathBackup = Path.ChangeExtension(Path.GetRandomFileName(), ".BAK");
+                        string timeStamp = DateTime.UtcNow.ToString();
+                        pathBackup = Path.Combine(parentdir, fileName + "_" + timeStamp + ".BAK");
+                    } while (File.Exists(pathBackup));
+
+                    File.Copy(path, pathBackup);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+
             mDestStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
 
             XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
