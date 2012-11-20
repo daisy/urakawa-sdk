@@ -316,8 +316,10 @@ namespace urakawa.media.data.audio.codec
                 || subClipEnd.IsGreaterThan(new Time(Duration))
                 )
             {
-                throw new exception.MethodParameterIsOutOfBoundsException(
-                    "The interval [subClipBegin;subClipEnd] must be non-empty and contained in [0;GetDuration()]");
+                string msg = String.Format(
+                    "subClipBegin/subClipEnd [{0};{1}] not within ([0;{2}])",
+                    subClipBegin, subClipEnd, new Time(Duration));
+                throw new exception.MethodParameterIsOutOfBoundsException(msg);
             }
 
             Stream raw = DataProvider.OpenInputStream();
