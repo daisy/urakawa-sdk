@@ -171,17 +171,31 @@ namespace urakawa.xuk
                 FileDataProvider.CreateDirectory(parentdir);
             }
 
+            Backup(path);
+
+            mDestStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+
+            XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
+            mXmlWriter = XmlWriter.Create(mDestStream, settings);
+        }
+
+        public static void Backup(string path)
+        {
             try
             {
                 if (File.Exists(path))
                 {
+                    string parentdir = Path.GetDirectoryName(path);
+
                     string fileName = Path.GetFileName(path);
+
                     string pathBackup = path;
                     do
                     {
                         //pathBackup = Path.ChangeExtension(Path.GetRandomFileName(), ".BAK");
                         string timeStamp = DateTime.UtcNow.ToString();
-                        pathBackup = Path.Combine(parentdir, fileName + "_" + timeStamp + ".BAK");
+                        timeStamp = FileDataProvider.EliminateForbiddenFileNameCharacters(timeStamp);
+                        pathBackup = Path.Combine(parentdir, fileName + "_" + timeStamp);
                     } while (File.Exists(pathBackup));
 
                     File.Copy(path, pathBackup);
@@ -189,14 +203,12 @@ namespace urakawa.xuk
             }
             catch (Exception ex)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
             }
-
-            mDestStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-
-            XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
-            mXmlWriter = XmlWriter.Create(mDestStream, settings);
         }
 
         private void closeOutput()
