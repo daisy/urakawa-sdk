@@ -304,8 +304,7 @@ namespace urakawa.daisy.export.visitor
             {
                 mCurrentAudioFileNumber++;
                 Uri waveFileUri = GetCurrentAudioFileUri();
-                m_TransientWavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write,
-                                                          FileShare.None);
+                m_TransientWavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
 
                 m_TransientWavFileStreamRiffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(m_TransientWavFileStream, 0);
             }
