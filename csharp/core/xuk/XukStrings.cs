@@ -96,7 +96,7 @@ namespace urakawa.xuk
 
         public static bool IsPrettyFormat
         {
-            get { return mProject == null || mProject.IsPrettyFormat(); }
+            get { return mProject != null && mProject.IsPrettyFormat(); }
         }
 
         #region low occurence
@@ -116,55 +116,55 @@ namespace urakawa.xuk
 
         public static string Xuk
         {
-            get { return ((mProject == null || IsPrettyFormat) ? XukPretty : XukCompressed); }
+            get { return (IsPrettyFormat ? XukPretty : XukCompressed); }
         }
 
         #endregion
 
         public static string Presentations
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Presentations" : "prez"); }
+            get { return (IsPrettyFormat ? "Presentations" : "prez"); }
         }
 
         public static string RootNode
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "RootNode" : "root"); }
+            get { return (IsPrettyFormat ? "RootNode" : "root"); }
         }
 
 
         public static string RootUri
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "RootUri" : "rootUri"); }
+            get { return (IsPrettyFormat ? "RootUri" : "rootUri"); }
         }
 
         public static string HeadNode
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "HeadNode" : "head"); }
+            get { return (IsPrettyFormat ? "HeadNode" : "head"); }
         }
 
         public static string Metadatas
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Metadatas" : "mtdts"); }
+            get { return (IsPrettyFormat ? "Metadatas" : "mtdts"); }
         }
 
         public static string MediaDatas
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MediaDatas" : "medDts"); }
+            get { return (IsPrettyFormat ? "MediaDatas" : "medDts"); }
         }
 
 
         public static string Height
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Height" : "h"); }
+            get { return (IsPrettyFormat ? "Height" : "h"); }
         }
         public static string Width
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Width" : "w"); }
+            get { return (IsPrettyFormat ? "Width" : "w"); }
         }
 
         public static string DataProviders
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "DataProviders" : "dataProvs"); }
+            get { return (IsPrettyFormat ? "DataProviders" : "dataProvs"); }
         }
 
 
@@ -172,40 +172,40 @@ namespace urakawa.xuk
 
         public static string PCMFormatInfo
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "PCMFormatInfo" : "PCMInf"); }
+            get { return (IsPrettyFormat ? "PCMFormatInfo" : "PCMInf"); }
         }
 
         public static string DefaultPCMFormat
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "DefaultPCMFormat" : "dfltPCM"); }
+            get { return (IsPrettyFormat ? "DefaultPCMFormat" : "dfltPCM"); }
         }
 
         public static string NumberOfChannels
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "NumberOfChannels" : "ch"); }
+            get { return (IsPrettyFormat ? "NumberOfChannels" : "ch"); }
         }
         public static string SampleRate
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "SampleRate" : "rate"); }
+            get { return (IsPrettyFormat ? "SampleRate" : "rate"); }
         }
         public static string BitDepth
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "BitDepth" : "depth"); }
+            get { return (IsPrettyFormat ? "BitDepth" : "depth"); }
         }
 
         public static string enforceSinglePCMFormat
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "enforceSinglePCMFormat" : "frceSglePCM"); }
+            get { return (IsPrettyFormat ? "enforceSinglePCMFormat" : "frceSglePCM"); }
         }
 
         public static string IsMarked
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "IsMarked" : "mrkd"); }
+            get { return (IsPrettyFormat ? "IsMarked" : "mrkd"); }
         }
 
         public static string PCMFormat
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "PCMFormat" : "PCM"); }
+            get { return (IsPrettyFormat ? "PCMFormat" : "PCM"); }
         }
 
         #endregion
@@ -213,12 +213,12 @@ namespace urakawa.xuk
 
         public static string DataFileDirectoryPath
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "DataFileDirectoryPath" : "dtDir"); }
+            get { return (IsPrettyFormat ? "DataFileDirectoryPath" : "dtDir"); }
         }
 
         public static string DataFileRelativePath
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "DataFileRelativePath" : "dtPath"); }
+            get { return (IsPrettyFormat ? "DataFileRelativePath" : "dtPath"); }
         }
 
 
@@ -226,12 +226,12 @@ namespace urakawa.xuk
 
         public static string ChannelItem
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ChannelItem" : "chItm"); }
+            get { return (IsPrettyFormat ? "ChannelItem" : "chItm"); }
         }
 
         public static string Channels
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Channels" : "chs"); }
+            get { return (IsPrettyFormat ? "Channels" : "chs"); }
         }
 
         #endregion
@@ -240,17 +240,17 @@ namespace urakawa.xuk
 
         public static string UndoStack
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "UndoStack" : "udo"); }
+            get { return (IsPrettyFormat ? "UndoStack" : "udo"); }
         }
 
         public static string RedoStack
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "RedoStack" : "rdo"); }
+            get { return (IsPrettyFormat ? "RedoStack" : "rdo"); }
         }
 
         public static string ActiveTransactions
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ActiveTransactions" : "trns"); }
+            get { return (IsPrettyFormat ? "ActiveTransactions" : "trns"); }
         }
 
         #endregion
@@ -263,56 +263,56 @@ namespace urakawa.xuk
 
         public static string TreeNodeFactory
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "TreeNodeFactory" : "nodFct"); }
+            get { return (IsPrettyFormat ? "TreeNodeFactory" : "nodFct"); }
         }
 
         public static string PropertyFactory
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "PropertyFactory" : "prpFct"); }
+            get { return (IsPrettyFormat ? "PropertyFactory" : "prpFct"); }
         }
 
         public static string ChannelFactory
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ChannelFactory" : "chFct"); }
+            get { return (IsPrettyFormat ? "ChannelFactory" : "chFct"); }
         }
 
         public static string MediaFactory
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MediaFactory" : "medFct"); }
+            get { return (IsPrettyFormat ? "MediaFactory" : "medFct"); }
         }
 
         public static string MediaDataFactory
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MediaDataFactory" : "medDtFct"); }
+            get { return (IsPrettyFormat ? "MediaDataFactory" : "medDtFct"); }
         }
 
         public static string DataProviderFactory
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "DataProviderFactory" : "dtPrvFct"); }
+            get { return (IsPrettyFormat ? "DataProviderFactory" : "dtPrvFct"); }
         }
         public static string CommandFactory
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "CommandFactory" : "cmdFct"); }
+            get { return (IsPrettyFormat ? "CommandFactory" : "cmdFct"); }
         }
 
         public static string MetadataFactory
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataFactory" : "metadtFct"); }
+            get { return (IsPrettyFormat ? "MetadataFactory" : "metadtFct"); }
         }
 
         public static string PresentationFactory
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "PresentationFactory" : "presFct"); }
+            get { return (IsPrettyFormat ? "PresentationFactory" : "presFct"); }
         }
 
         public static string ExternalFileDataFactory
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ExternalFileDataFactory" : "ExFlDtFct"); }
+            get { return (IsPrettyFormat ? "ExternalFileDataFactory" : "ExFlDtFct"); }
         }
 
         public static string AlternateContentFactory
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentFactory" : "acFct"); }
+            get { return (IsPrettyFormat ? "AlternateContentFactory" : "acFct"); }
         }
 
 
@@ -324,106 +324,106 @@ namespace urakawa.xuk
 
         public static string TreeNodeChangeTextCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "TreeNodeChangeTextCommand" : "nodChTxtCmd"); }
+            get { return (IsPrettyFormat ? "TreeNodeChangeTextCommand" : "nodChTxtCmd"); }
         }
 
         public static string TreeNodeSetIsMarkedCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "TreeNodeSetIsMarkedCommand" : "nodSetMrkCmd"); }
+            get { return (IsPrettyFormat ? "TreeNodeSetIsMarkedCommand" : "nodSetMrkCmd"); }
         }
 
         public static string TreeNodeSetManagedAudioMediaCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "TreeNodeSetManagedAudioMediaCommand" : "nodSetManAudMedCmd"); }
+            get { return (IsPrettyFormat ? "TreeNodeSetManagedAudioMediaCommand" : "nodSetManAudMedCmd"); }
         }
 
         public static string ManagedAudioMediaInsertDataCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ManagedAudioMediaInsertDataCommand" : "manAudMedInsertCmd"); }
+            get { return (IsPrettyFormat ? "ManagedAudioMediaInsertDataCommand" : "manAudMedInsertCmd"); }
         }
 
         public static string TreeNodeAudioStreamDeleteCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "TreeNodeAudioStreamDeleteCommand" : "nodAudDelCmd"); }
+            get { return (IsPrettyFormat ? "TreeNodeAudioStreamDeleteCommand" : "nodAudDelCmd"); }
         }
 
         public static string MetadataAddCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataAddCommand" : "metaAddCmd"); }
+            get { return (IsPrettyFormat ? "MetadataAddCommand" : "metaAddCmd"); }
         }
         public static string MetadataRemoveCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataRemoveCommand" : "metaRemoveCmd"); }
+            get { return (IsPrettyFormat ? "MetadataRemoveCommand" : "metaRemoveCmd"); }
         }
         public static string MetadataSetNameCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataSetNameCommand" : "metaSetNameCmd"); }
+            get { return (IsPrettyFormat ? "MetadataSetNameCommand" : "metaSetNameCmd"); }
         }
         public static string MetadataSetContentCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataSetContentCommand" : "metaSetContentCmd"); }
+            get { return (IsPrettyFormat ? "MetadataSetContentCommand" : "metaSetContentCmd"); }
         }
         public static string MetadataSetIdCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataSetIdCommand" : "metaSetIdCmd"); }
+            get { return (IsPrettyFormat ? "MetadataSetIdCommand" : "metaSetIdCmd"); }
         }
 
         //public static string AlternateContentMetadataAttributeAddCommand
         //{
-        //    get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataAttributeAddCommand" : "acMetaAttrAddCmd"); }
+        //    get { return (IsPrettyFormat ? "AlternateContentMetadataAttributeAddCommand" : "acMetaAttrAddCmd"); }
         //}
 
         //public static string AlternateContentMetadataAttributeRemoveCommand
         //{
-        //    get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataAttributeRemoveCommand" : "acMetaAttrRemoveCmd"); }
+        //    get { return (IsPrettyFormat ? "AlternateContentMetadataAttributeRemoveCommand" : "acMetaAttrRemoveCmd"); }
         //}
 
         //public static string AlternateContentMetadataAttributeSetNameCommand
         //{
-        //    get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataAttributeSetNameCommand" : "acMetaAttrNameSetCmd"); }
+        //    get { return (IsPrettyFormat ? "AlternateContentMetadataAttributeSetNameCommand" : "acMetaAttrNameSetCmd"); }
         //}
         //public static string AlternateContentMetadataAttributeSetContentCommand
         //{
-        //    get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataAttributeSetContentCommand" : "acMetaAttrContentSetCmd"); }
+        //    get { return (IsPrettyFormat ? "AlternateContentMetadataAttributeSetContentCommand" : "acMetaAttrContentSetCmd"); }
         //}
 
         public static string AlternateContentMetadataAddCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataAddCommand" : "acMetaAddCmd"); }
+            get { return (IsPrettyFormat ? "AlternateContentMetadataAddCommand" : "acMetaAddCmd"); }
         }
         public static string AlternateContentMetadataRemoveCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataRemoveCommand" : "acMetaRemoveCmd"); }
+            get { return (IsPrettyFormat ? "AlternateContentMetadataRemoveCommand" : "acMetaRemoveCmd"); }
         }
         public static string AlternateContentMetadataSetNameCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataSetNameCommand" : "acMetaSetNameCmd"); }
+            get { return (IsPrettyFormat ? "AlternateContentMetadataSetNameCommand" : "acMetaSetNameCmd"); }
         }
         public static string AlternateContentMetadataSetContentCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataSetContentCommand" : "acMetaSetContentCmd"); }
+            get { return (IsPrettyFormat ? "AlternateContentMetadataSetContentCommand" : "acMetaSetContentCmd"); }
         }
         public static string AlternateContentMetadataSetIdCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentMetadataSetIdCommand" : "acMetaSetIdCmd"); }
+            get { return (IsPrettyFormat ? "AlternateContentMetadataSetIdCommand" : "acMetaSetIdCmd"); }
         }
 
         public static string AlternateContentSetManagedMediaCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentSetManagedMediaCommand" : "acSetManMedCmd"); }
+            get { return (IsPrettyFormat ? "AlternateContentSetManagedMediaCommand" : "acSetManMedCmd"); }
         }
         public static string AlternateContentRemoveManagedMediaCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentRemoveManagedMediaCommand" : "acRemManMedCmd"); }
+            get { return (IsPrettyFormat ? "AlternateContentRemoveManagedMediaCommand" : "acRemManMedCmd"); }
         }
 
         public static string AlternateContentAddCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentAddCommand" : "acAddCmd"); }
+            get { return (IsPrettyFormat ? "AlternateContentAddCommand" : "acAddCmd"); }
         }
         public static string AlternateContentRemoveCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentRemoveCommand" : "acRemCmd"); }
+            get { return (IsPrettyFormat ? "AlternateContentRemoveCommand" : "acRemCmd"); }
         }
 
         #endregion
@@ -433,30 +433,30 @@ namespace urakawa.xuk
 
         public static string ChannelsManager
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ChannelsManager" : "chsMan"); }
+            get { return (IsPrettyFormat ? "ChannelsManager" : "chsMan"); }
         }
 
 
         public static string MediaDataManager
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MediaDataManager" : "medDtMan"); }
+            get { return (IsPrettyFormat ? "MediaDataManager" : "medDtMan"); }
         }
 
 
         public static string DataProviderManager
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "DataProviderManager" : "dtProvMan"); }
+            get { return (IsPrettyFormat ? "DataProviderManager" : "dtProvMan"); }
         }
 
 
         public static string UndoRedoManager
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "UndoRedoManager" : "udoRdoMan"); }
+            get { return (IsPrettyFormat ? "UndoRedoManager" : "udoRdoMan"); }
         }
 
         public static string ExternalFileDataManager
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ExternalFileDataManager" : "ExFlDtMan"); }
+            get { return (IsPrettyFormat ? "ExternalFileDataManager" : "ExFlDtMan"); }
         }
 
 
@@ -469,12 +469,12 @@ namespace urakawa.xuk
 
         public static string Sequence
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Sequence" : "sq"); }
+            get { return (IsPrettyFormat ? "Sequence" : "sq"); }
         }
 
         public static string AllowMultipleMediaTypes
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AllowMultipleMediaTypes" : "alwMulTypes"); }
+            get { return (IsPrettyFormat ? "AllowMultipleMediaTypes" : "alwMulTypes"); }
         }
 
 
@@ -483,17 +483,17 @@ namespace urakawa.xuk
 
         public static string ShortDescription
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ShortDescription" : "shrtDsc"); }
+            get { return (IsPrettyFormat ? "ShortDescription" : "shrtDsc"); }
         }
 
         public static string LongDescription
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "LongDescription" : "lngDsc"); }
+            get { return (IsPrettyFormat ? "LongDescription" : "lngDsc"); }
         }
 
         public static string Commands
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Commands" : "cmds"); }
+            get { return (IsPrettyFormat ? "Commands" : "cmds"); }
         }
 
         #endregion
@@ -503,82 +503,82 @@ namespace urakawa.xuk
 
         public static string RegisteredTypes
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "RegisteredTypes" : "types"); }
+            get { return (IsPrettyFormat ? "RegisteredTypes" : "types"); }
         }
 
         public static string Type
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Type" : "type"); }
+            get { return (IsPrettyFormat ? "Type" : "type"); }
         }
 
         public static string XukLocalName
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "XukLocalName" : "name"); }
+            get { return (IsPrettyFormat ? "XukLocalName" : "name"); }
         }
 
         public static string BaseXukLocalName
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "BaseXukLocalName" : "baseName"); }
+            get { return (IsPrettyFormat ? "BaseXukLocalName" : "baseName"); }
         }
 
         public static string XukNamespaceUri
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "XukNamespaceUri" : "ns"); }
+            get { return (IsPrettyFormat ? "XukNamespaceUri" : "ns"); }
         }
 
         public static string BaseXukNamespaceUri
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "BaseXukNamespaceUri" : "baseNs"); }
+            get { return (IsPrettyFormat ? "BaseXukNamespaceUri" : "baseNs"); }
         }
 
         public static string AssemblyName
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AssemblyName" : "assbly"); }
+            get { return (IsPrettyFormat ? "AssemblyName" : "assbly"); }
         }
 
         public static string AssemblyVersion
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AssemblyVersion" : "assblyVer"); }
+            get { return (IsPrettyFormat ? "AssemblyVersion" : "assblyVer"); }
         }
 
         public static string FullName
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "FullName" : "fName"); }
+            get { return (IsPrettyFormat ? "FullName" : "fName"); }
         }
         #endregion
 
 
         public static string Metadata
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Metadata" : "metadt"); }
+            get { return (IsPrettyFormat ? "Metadata" : "metadt"); }
         }
         public static string MetadataAttribute
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataAttribute" : "metadtattr"); }
+            get { return (IsPrettyFormat ? "MetadataAttribute" : "metadtattr"); }
         }
         public static string MetadataOtherAttributes
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MetadataOtherAttributes" : "metadtattrs"); }
+            get { return (IsPrettyFormat ? "MetadataOtherAttributes" : "metadtattrs"); }
         }
 
         public static string Name
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Name" : "n"); }
+            get { return (IsPrettyFormat ? "Name" : "n"); }
         }
 
         public static string Value
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Value" : "v"); }
+            get { return (IsPrettyFormat ? "Value" : "v"); }
         }
 
         public static string LocalName
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "LocalName" : "n"); }
+            get { return (IsPrettyFormat ? "LocalName" : "n"); }
         }
 
         public static string NamespaceUri
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "NamespaceUri" : "ns"); }
+            get { return (IsPrettyFormat ? "NamespaceUri" : "ns"); }
         }
 
 
@@ -589,17 +589,17 @@ namespace urakawa.xuk
 
         public static string Language
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Language" : "lang"); }
+            get { return (IsPrettyFormat ? "Language" : "lang"); }
         }
 
         public static string Uid
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Uid" : "uid"); }
+            get { return (IsPrettyFormat ? "Uid" : "uid"); }
         }
 
         public static string Src
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Src" : "s"); }
+            get { return (IsPrettyFormat ? "Src" : "s"); }
         }
 
 
@@ -608,12 +608,12 @@ namespace urakawa.xuk
 
         public static string Children
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Children" : "childs"); }
+            get { return (IsPrettyFormat ? "Children" : "childs"); }
         }
 
         public static string Properties
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Properties" : "ps"); }
+            get { return (IsPrettyFormat ? "Properties" : "ps"); }
         }
 
         #endregion
@@ -622,12 +622,12 @@ namespace urakawa.xuk
 
         public static string XmlAttributes
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "XmlAttributes" : "xmlAtts"); }
+            get { return (IsPrettyFormat ? "XmlAttributes" : "xmlAtts"); }
         }
 
         public static string XmlAttribute
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "XmlAttribute" : "xAt"); }
+            get { return (IsPrettyFormat ? "XmlAttribute" : "xAt"); }
         }
         #endregion
 
@@ -637,61 +637,61 @@ namespace urakawa.xuk
 
         public static string MediaDataUid
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MediaDataUid" : "medDtUid"); }
+            get { return (IsPrettyFormat ? "MediaDataUid" : "medDtUid"); }
         }
 
         public static string DataProviderItem
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "DataProviderItem" : "dtPrvItm"); }
+            get { return (IsPrettyFormat ? "DataProviderItem" : "dtPrvItm"); }
         }
 
         public static string DataLength
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "DataLength" : "dtLen"); }
+            get { return (IsPrettyFormat ? "DataLength" : "dtLen"); }
         }
 
         public static string MimeType
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MimeType" : "mime"); }
+            get { return (IsPrettyFormat ? "MimeType" : "mime"); }
         }
 
         public static string DataProvider
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "DataProvider" : "dtPrv"); }
+            get { return (IsPrettyFormat ? "DataProvider" : "dtPrv"); }
         }
 
         public static string WavClips
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "WavClips" : "wvCls"); }
+            get { return (IsPrettyFormat ? "WavClips" : "wvCls"); }
         }
 
         public static string WavClip
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "WavClip" : "wvCl"); }
+            get { return (IsPrettyFormat ? "WavClip" : "wvCl"); }
         }
 
         public static string ClipBegin
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ClipBegin" : "cB"); }
+            get { return (IsPrettyFormat ? "ClipBegin" : "cB"); }
         }
         public static string ClipEnd
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ClipEnd" : "cE"); }
+            get { return (IsPrettyFormat ? "ClipEnd" : "cE"); }
         }
 
         public static string Text
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Text" : "txt"); }
+            get { return (IsPrettyFormat ? "Text" : "txt"); }
         }
 
         public static string MediaDataItem
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MediaDataItem" : "medDtItm"); }
+            get { return (IsPrettyFormat ? "MediaDataItem" : "medDtItm"); }
         }
 
         public static string Medias
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Medias" : "meds"); }
+            get { return (IsPrettyFormat ? "Medias" : "meds"); }
         }
 
         #endregion
@@ -701,283 +701,283 @@ namespace urakawa.xuk
 
         public static string Channel
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Channel" : "c"); }
+            get { return (IsPrettyFormat ? "Channel" : "c"); }
         }
 
         public static string TextChannel
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "TextChannel" : "txCh"); }
+            get { return (IsPrettyFormat ? "TextChannel" : "txCh"); }
         }
 
         public static string ImageChannel
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ImageChannel" : "imgCh"); }
+            get { return (IsPrettyFormat ? "ImageChannel" : "imgCh"); }
         }
 
         public static string VideoChannel
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "VideoChannel" : "vidCh"); }
+            get { return (IsPrettyFormat ? "VideoChannel" : "vidCh"); }
         }
 
         public static string AudioChannel
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AudioChannel" : "auCh"); }
+            get { return (IsPrettyFormat ? "AudioChannel" : "auCh"); }
         }
 
         public static string AudioXChannel
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AudioXChannel" : "auXCh"); }
+            get { return (IsPrettyFormat ? "AudioXChannel" : "auXCh"); }
         }
 
         public static string ChannelMappings
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ChannelMappings" : "cMps"); }
+            get { return (IsPrettyFormat ? "ChannelMappings" : "cMps"); }
         }
 
         public static string ChannelMapping
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ChannelMapping" : "cM"); }
+            get { return (IsPrettyFormat ? "ChannelMapping" : "cM"); }
         }
 
         public static string TextMedia
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "TextMedia" : "tx"); }
+            get { return (IsPrettyFormat ? "TextMedia" : "tx"); }
         }
 
         public static string ExternalImageMedia
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ExternalImageMedia" : "exImgMed"); }
+            get { return (IsPrettyFormat ? "ExternalImageMedia" : "exImgMed"); }
         }
 
         public static string ExternalVideoMedia
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ExternalVideoMedia" : "exVidMed"); }
+            get { return (IsPrettyFormat ? "ExternalVideoMedia" : "exVidMed"); }
         }
 
         public static string ExternalAudioMedia
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ExternalAudioMedia" : "exAuMed"); }
+            get { return (IsPrettyFormat ? "ExternalAudioMedia" : "exAuMed"); }
         }
         public static string ExternalTextMedia
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ExternalTextMedia" : "exTxtMed"); }
+            get { return (IsPrettyFormat ? "ExternalTextMedia" : "exTxtMed"); }
         }
 
         public static string Property
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Property" : "prp"); }
+            get { return (IsPrettyFormat ? "Property" : "prp"); }
         }
         public static string XmlProperty
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "XmlProperty" : "xP"); }
+            get { return (IsPrettyFormat ? "XmlProperty" : "xP"); }
         }
         public static string ChannelsProperty
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ChannelsProperty" : "cP"); }
+            get { return (IsPrettyFormat ? "ChannelsProperty" : "cP"); }
         }
 
 
         public static string AlternateContentProperty
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContentProperty" : "acP"); }
+            get { return (IsPrettyFormat ? "AlternateContentProperty" : "acP"); }
         }
         public static string AlternateContents
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContents" : "ACs"); }
+            get { return (IsPrettyFormat ? "AlternateContents" : "ACs"); }
         }
         public static string AlternateContent
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AlternateContent" : "AC"); }
+            get { return (IsPrettyFormat ? "AlternateContent" : "AC"); }
         }
 
         public static string Description
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Description" : "Desc"); }
+            get { return (IsPrettyFormat ? "Description" : "Desc"); }
         }
 
         public static string ManagedAudioMedia
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ManagedAudioMedia" : "mAu"); }
+            get { return (IsPrettyFormat ? "ManagedAudioMedia" : "mAu"); }
         }
         public static string TreeNode
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "TreeNode" : "n"); }
+            get { return (IsPrettyFormat ? "TreeNode" : "n"); }
         }
 
         public static string FileDataProvider
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "FileDataProvider" : "fdp"); }
+            get { return (IsPrettyFormat ? "FileDataProvider" : "fdp"); }
         }
         public static string Presentation
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Presentation" : "prs"); }
+            get { return (IsPrettyFormat ? "Presentation" : "prs"); }
         }
         public static string SequenceMedia
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "SequenceMedia" : "sqMed"); }
+            get { return (IsPrettyFormat ? "SequenceMedia" : "sqMed"); }
         }
         public static string WavAudioMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "WavAudioMediaData" : "wvAu"); }
+            get { return (IsPrettyFormat ? "WavAudioMediaData" : "wvAu"); }
         }
         public static string Project
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Project" : "proj"); }
+            get { return (IsPrettyFormat ? "Project" : "proj"); }
         }
         public static string CompositeCommand
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "CompositeCommand" : "cmpCmd"); }
+            get { return (IsPrettyFormat ? "CompositeCommand" : "cmpCmd"); }
         }
 
         public static string DefaultXmlNamespaceUri
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "DefaultXmlNamespaceUri" : "xmlNS"); }
+            get { return (IsPrettyFormat ? "DefaultXmlNamespaceUri" : "xmlNS"); }
         }
 
         public static string ManagedImageMedia
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ManagedImageMedia" : "mIm"); }
+            get { return (IsPrettyFormat ? "ManagedImageMedia" : "mIm"); }
         }
         public static string ManagedVideoMedia
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "ManagedVideoMedia" : "mVd"); }
+            get { return (IsPrettyFormat ? "ManagedVideoMedia" : "mVd"); }
         }
 
         public static string MovVideoMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MovVideoMediaData" : "movVd"); }
+            get { return (IsPrettyFormat ? "MovVideoMediaData" : "movVd"); }
         }
         public static string Mp3AudioMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Mp3AudioMediaData" : "mp3Au"); }
+            get { return (IsPrettyFormat ? "Mp3AudioMediaData" : "mp3Au"); }
         }
         public static string OggAudioMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "OggAudioMediaData" : "oggAu"); }
+            get { return (IsPrettyFormat ? "OggAudioMediaData" : "oggAu"); }
         }
         public static string Mp4AudioMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Mp4AudioMediaData" : "mp4Au"); }
+            get { return (IsPrettyFormat ? "Mp4AudioMediaData" : "mp4Au"); }
         }
         public static string MpgVideoMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "MpgVideoMediaData" : "mpgVd"); }
+            get { return (IsPrettyFormat ? "MpgVideoMediaData" : "mpgVd"); }
         }
         public static string Mp4VideoMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "Mp4VideoMediaData" : "mp4Vd"); }
+            get { return (IsPrettyFormat ? "Mp4VideoMediaData" : "mp4Vd"); }
         }
         public static string WebmVideoMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "WebmVideoMediaData" : "webmVd"); }
+            get { return (IsPrettyFormat ? "WebmVideoMediaData" : "webmVd"); }
         }
         public static string OggVideoMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "OggVideoMediaData" : "oggVd"); }
+            get { return (IsPrettyFormat ? "OggVideoMediaData" : "oggVd"); }
         }
         public static string AviVideoMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "AviVideoMediaData" : "aviVd"); }
+            get { return (IsPrettyFormat ? "AviVideoMediaData" : "aviVd"); }
         }
         public static string WmvVideoMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "WmvVideoMediaData" : "wmvVd"); }
+            get { return (IsPrettyFormat ? "WmvVideoMediaData" : "wmvVd"); }
         }
 
         public static string JpgImageMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "JpgImageMediaData" : "jpgIm"); }
+            get { return (IsPrettyFormat ? "JpgImageMediaData" : "jpgIm"); }
         }
 
         public static string PngImageMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "PngImageMediaData" : "pngIm"); }
+            get { return (IsPrettyFormat ? "PngImageMediaData" : "pngIm"); }
         }
 
         public static string SvgImageMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "SvgImageMediaData" : "svgIm"); }
+            get { return (IsPrettyFormat ? "SvgImageMediaData" : "svgIm"); }
         }
 
         public static string GifImageMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "GifImageMediaData" : "gifIm"); }
+            get { return (IsPrettyFormat ? "GifImageMediaData" : "gifIm"); }
         }
 
         public static string BmpImageMediaData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "BmpImageMediaData" : "bmpIm"); }
+            get { return (IsPrettyFormat ? "BmpImageMediaData" : "bmpIm"); }
         }
 
         public static string OriginalRelativePath
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "OriginalRelativePath" : "orgPth"); }
+            get { return (IsPrettyFormat ? "OriginalRelativePath" : "orgPth"); }
         }
 
         public static string OptionalInfo
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "OptionalInfo" : "opInf"); }
+            get { return (IsPrettyFormat ? "OptionalInfo" : "opInf"); }
         }
 
         public static string CSSExternalFileData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "CssExternalFileData" : "cssExFl"); }
+            get { return (IsPrettyFormat ? "CssExternalFileData" : "cssExFl"); }
         }
 
         public static string XSLTExternalFileData
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "XsltExternalFileData" : "XsltExFl"); }
+            get { return (IsPrettyFormat ? "XsltExternalFileData" : "XsltExFl"); }
         }
 
 
         public static string DTDExternalFileData
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "DTDExternalFileData" : "dtdExFl"); }
+            get { return (IsPrettyFormat ? "DTDExternalFileData" : "dtdExFl"); }
         }
 
         //public static string PLSExternalFileData
         //{
-        //    get { return ((mProject == null || IsPrettyFormat) ? "PlsExternalFileData" : "plsExFl"); }
+        //    get { return (IsPrettyFormat ? "PlsExternalFileData" : "plsExFl"); }
         //}
 
         public static string NCXExternalFileData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "NCXExternalFileData" : "NCXExFl"); }
+            get { return (IsPrettyFormat ? "NCXExternalFileData" : "NCXExFl"); }
         }
 
         public static string CoverImageExternalFileData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "CoverImageExternalFileData" : "CovrImgExFl"); }
+            get { return (IsPrettyFormat ? "CoverImageExternalFileData" : "CovrImgExFl"); }
         }
 
         public static string NavDocExternalFileData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "NavDocExternalFileData" : "NavExFl"); }
+            get { return (IsPrettyFormat ? "NavDocExternalFileData" : "NavExFl"); }
         }
 
         //public static string JSExternalFileData
         //{
-        //    get { return ((mProject == null || IsPrettyFormat) ? "JSExternalFileData" : "JSExFl"); }
+        //    get { return (IsPrettyFormat ? "JSExternalFileData" : "JSExFl"); }
         //}
         public static string GenericExternalFileData
         {
-            get { return ((mProject == null || IsPrettyFormat) ? "GenericExternalFileData" : "GenExFl"); }
+            get { return (IsPrettyFormat ? "GenericExternalFileData" : "GenExFl"); }
         }
 
         public static string ExternalFileDatas
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ExternalFileDatas" : "exFlDts"); }
+            get { return (IsPrettyFormat ? "ExternalFileDatas" : "exFlDts"); }
         }
 
         public static string ExternalFileDataItem
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "ExternalFileDataItem" : "exFlDtItm"); }
+            get { return (IsPrettyFormat ? "ExternalFileDataItem" : "exFlDtItm"); }
         }
 
 
         public static string IsPreservedForOutputFile
         {
-            get { return ((mProject == null || mProject.IsPrettyFormat()) ? "IsPreservedForOutputFile" : "preOutFl"); }
+            get { return (IsPrettyFormat ? "IsPreservedForOutputFile" : "preOutFl"); }
         }
 
 

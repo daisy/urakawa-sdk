@@ -423,7 +423,14 @@ namespace urakawa.xuk
                     {
                         Console.WriteLine("!! stream.Close();" + ex.Message);
                     }
-                    stream.Close();
+                    try
+                    {
+                        stream.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("!! stream.Dispose();" + ex.Message);
+                    }
                 }
             }
 
