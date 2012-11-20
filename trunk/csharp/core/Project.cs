@@ -35,6 +35,8 @@ namespace urakawa
 
         public override void SetPrettyFormat(bool pretty)
         {
+            //XukStrings.RelocateProjectReference(this);
+
             if (m_PrettyFormat != pretty)
             {
                 m_PrettyFormat = pretty;
