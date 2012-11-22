@@ -381,8 +381,29 @@ namespace urakawa.core
 
         public static bool TextIsPunctuation(char c)
         {
-            return Char.IsWhiteSpace(c) || c == '.' || c == ',' || c == '?' || c == '!' || c == '"' || c == '\'' ||
-                   c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']';
+            return Char.IsWhiteSpace(c)
+                || c == '.'
+                || c == ','
+                || c == ';'
+                || c == ':'
+                || c == '|'
+                || c == '-'
+                || c == '~'
+                || c == '#'
+                || c == '^'
+                || c == '_'
+                || c == '/'
+                || c == '\\'
+                || c == '?'
+                || c == '!'
+                || c == '"'
+                || c == '\''
+                || c == '('
+                || c == ')'
+                || c == '{'
+                || c == '}'
+                || c == '['
+                || c == ']';
         }
 
         public static bool TextOnlyContainsPunctuation(StringChunkRange range)
