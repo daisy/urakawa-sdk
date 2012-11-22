@@ -474,12 +474,14 @@ namespace urakawa.xuk
             xmlDoc.PreserveWhitespace = false;
             xmlDoc.XmlResolver = null;
 
+            FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+
             XmlWriterSettings settings = GetDefaultXmlWriterConfiguration(pretty);
 
             XmlWriter xmlWriter = null;
             try
             {
-                xmlWriter = XmlWriter.Create(path, settings);
+                xmlWriter = XmlWriter.Create(fileStream, settings);
 
                 if (pretty && xmlWriter is XmlTextWriter)
                 {
@@ -493,6 +495,12 @@ namespace urakawa.xuk
                 if (xmlWriter != null)
                 {
                     xmlWriter.Close();
+                }
+
+                if (fileStream != null)
+                {
+                    fileStream.Close();
+                    fileStream.Dispose();
                 }
             }
         }
