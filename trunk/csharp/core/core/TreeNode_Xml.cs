@@ -237,6 +237,12 @@ namespace urakawa.core
                 string nsUri = GetXmlNamespaceUri();
                 string prefix = GetXmlNamespacePrefix(nsUri);
 
+#if DEBUG
+                if (string.IsNullOrEmpty(prefix))
+                {
+                    Debugger.Break();
+                }
+#endif
                 return prefix + ":" + localName;
             }
 
