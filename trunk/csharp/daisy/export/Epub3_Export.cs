@@ -1392,8 +1392,12 @@ namespace urakawa.daisy.export
             XmlNode opfXmlNode_metadata = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfXmlNode_package, false, "metadata", DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
 
             Time timeTotal = new Time();
+            
             bool hasMediaActiveClass = false;
 
+            bool hasTobiGeneratorMetaData = false;
+            const string TOBI_GENERATOR = @"Tobi, authoring tool for DAISY and EPUB talking books";
+            
             if (isXukSpine)
             {
                 foreach (XmlAttribute xmlAttribute in m_Presentation.RootNode.GetXmlProperty().Attributes.ContentsAs_Enumerable)
@@ -1432,10 +1436,16 @@ namespace urakawa.daisy.export
                 foreach (Metadata metadata in m_Presentation.Metadatas.ContentsAs_Enumerable)
                 {
                     string name = metadata.NameContentAttribute.Name;
+                    string value = metadata.NameContentAttribute.Value;
+
                     if (@"media:active-class".Equals(name))
                     {
                         hasMediaActiveClass = true;
-                        break;
+                    }
+                    else if (@"generator".Equals(name)
+                        && TOBI_GENERATOR.Equals(value))
+                    {
+                        hasTobiGeneratorMetaData = true;
                     }
                 }
 
@@ -1840,6 +1850,14 @@ namespace urakawa.daisy.export
                     XmlNode contentNode = opfXmlDoc.CreateTextNode(@"-epub-media-overlay-active");
                     opfXmlNode_meta.AppendChild(contentNode);
                 }
+            }
+
+            if (!hasTobiGeneratorMetaData)
+            {
+                XmlNode opfXmlNode_meta = opfXmlDoc.CreateElement(@"meta", opfXmlDoc.DocumentElement.NamespaceURI);
+                opfXmlNode_metadata.AppendChild(opfXmlNode_meta);
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_meta, "name", @"generator");
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_meta, "content", TOBI_GENERATOR);
             }
 
             XmlReaderWriterHelper.WriteXmlDocument(opfXmlDoc, opfFilePath);
