@@ -56,6 +56,7 @@ namespace urakawa.xuk
                 mDestStream = txtWriter.BaseStream;
             }
         }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -75,8 +76,16 @@ namespace urakawa.xuk
             mSourceXukAble = xukAble;
             mDestStream = destStream;
 
-            XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
+            bool pretty = mSourceXukAble.IsPrettyFormat();
+
+            XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(pretty);
+
             mXmlWriter = XmlWriter.Create(mDestStream, settings);
+
+            if (pretty && mXmlWriter is XmlTextWriter)
+            {
+                ((XmlTextWriter)mXmlWriter).Formatting = Formatting.Indented;
+            }
         }
 
 
@@ -175,8 +184,16 @@ namespace urakawa.xuk
 
             mDestStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
 
-            XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(mSourceXukAble.IsPrettyFormat());
+            bool pretty = mSourceXukAble.IsPrettyFormat();
+
+            XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(pretty);
+            
             mXmlWriter = XmlWriter.Create(mDestStream, settings);
+
+            if (pretty && mXmlWriter is XmlTextWriter)
+            {
+                ((XmlTextWriter)mXmlWriter).Formatting = Formatting.Indented;
+            }
         }
 
         public static void Backup(string path)
@@ -213,11 +230,17 @@ namespace urakawa.xuk
 
         private void closeOutput()
         {
-            mXmlWriter.Close();
-            mXmlWriter = null;
-            mDestStream.Close();
-            mDestStream.Dispose();
-            mDestStream = null;
+            if (mXmlWriter != null)
+            {
+                mXmlWriter.Close();
+                mXmlWriter = null;
+            }
+            if (mDestStream != null)
+            {
+                mDestStream.Close();
+                mDestStream.Dispose();
+                mDestStream = null;
+            }
         }
 
         #region Overrides of ProgressAction
@@ -286,7 +309,7 @@ namespace urakawa.xuk
                                           XukAble.XUK_XSD_PATH));
                     }
                 }
-                
+
                 mSourceXukAble.XukOut(mXmlWriter, mDestUri, this);
                 mXmlWriter.WriteEndElement();
                 mXmlWriter.WriteEndDocument();
