@@ -2169,8 +2169,16 @@ namespace urakawa.daisy.export
 
             reportProgress(-1, @"Creating EPUB file archive: " + epubFilePath); //UrakawaSDK_daisy_Lang.BLAbla
 
+            ZipEpub(epubFilePath, m_UnzippedOutputDirectory);
 
-            string unzippedOutputDirectory_Normalised = FileDataProvider.NormaliseFullFilePath(m_UnzippedOutputDirectory).Replace('/', '\\');
+
+            m_EpubFilePath = FileDataProvider.NormaliseFullFilePath(epubFilePath).Replace('/', '\\');
+
+        }
+
+        public static void ZipEpub(string epubFilePath, string unzippedOutputDirectory)
+        {
+            string unzippedOutputDirectory_Normalised = FileDataProvider.NormaliseFullFilePath(unzippedOutputDirectory).Replace('/', '\\');
 
 #if ENABLE_SHARPZIP
             FastZipEvents zipEvents = new FastZipEvents();
@@ -2227,7 +2235,7 @@ namespace urakawa.daisy.export
             {
                 zip.EncodeUTF8 = true;
 
-                string[] allFiles = Directory.GetFiles(m_UnzippedOutputDirectory, "*.*", SearchOption.AllDirectories);
+                string[] allFiles = Directory.GetFiles(unzippedOutputDirectory_Normalised, "*.*", SearchOption.AllDirectories);
                 for (int i = 0; i < allFiles.Length; i++)
                 {
                     string filePath = allFiles[i];
@@ -2263,17 +2271,13 @@ namespace urakawa.daisy.export
                 //}
             }
 #endif
-
-            m_EpubFilePath = FileDataProvider.NormaliseFullFilePath(epubFilePath).Replace('/', '\\');
-
 #if DEBUG
             DisplayZipHeaderForVerification(epubFilePath);
 #endif //DEBUG
         }
 
-
 #if DEBUG
-        private void DisplayZipHeaderForVerification(string zipFilePath)
+        private static void DisplayZipHeaderForVerification(string zipFilePath)
         {
             BinaryReader reader = new BinaryReader(File.OpenRead(zipFilePath));
             Console.WriteLine("1-4. Signatures: " + reader.ReadInt32());
