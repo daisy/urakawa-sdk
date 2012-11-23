@@ -356,6 +356,61 @@ namespace urakawa.xuk
             bool debug = true; // ignore
         }
 
+        public static XmlDocument ParseXmlDocumentFromString(string content, bool preserveWhiteSpace, bool validate)
+        {
+            XmlDocument xmldoc = null;
+
+            XmlReaderSettings settings = GetDefaultXmlReaderConfiguration(true, preserveWhiteSpace, validate);
+
+            XmlReader xmlReader = null;
+            try
+            {
+                TextReader reader = new StringReader(content);
+
+                xmlReader = XmlReader.Create(reader, settings);
+
+                if (xmlReader is XmlTextReader)
+                {
+                    if (preserveWhiteSpace)
+                    {
+                        ((XmlTextReader)xmlReader).WhitespaceHandling = WhitespaceHandling.All;
+                    }
+                    else
+                    {
+                        ((XmlTextReader)xmlReader).WhitespaceHandling = WhitespaceHandling.None;
+                    }
+                }
+                xmldoc = new XmlDocument();
+                xmldoc.PreserveWhitespace = preserveWhiteSpace;
+                xmldoc.XmlResolver = null;
+                xmldoc.Load(xmlReader);
+
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw ex;
+            }
+            finally
+            {
+                if (xmlReader != null)
+                {
+                    try
+                    {
+                        xmlReader.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("!! xmlReader.Close();" + ex.Message);
+                    }
+                }
+            }
+
+            return xmldoc;
+        }
+
         public static XmlDocument ParseXmlDocument(string filePath, bool preserveWhiteSpace, bool validate)
         {
             XmlDocument xmldoc = null;
