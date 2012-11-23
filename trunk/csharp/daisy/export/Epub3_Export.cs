@@ -1604,7 +1604,9 @@ namespace urakawa.daisy.export
 
                     XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_meta, "property", "dcterms:modified");
 
-                    XmlNode opfXmlNode_meta_content = opfXmlDoc.CreateTextNode(DateTime.UtcNow.ToString());
+                    DateTime dateTime = DateTime.UtcNow;
+
+                    XmlNode opfXmlNode_meta_content = opfXmlDoc.CreateTextNode(dateTime.Year + "-" + dateTime.Month + "-" + dateTime.Day + "T" + dateTime.Hour + ":" + dateTime.Minute + ":" + dateTime.Second + "Z");
                     opfXmlNode_meta.AppendChild(opfXmlNode_meta_content);
                 }
 
@@ -2046,7 +2048,7 @@ namespace urakawa.daisy.export
 
             if (string.IsNullOrEmpty(hasNavDoc))
             {
-                string navDocRelativePath = @"nav.xhtml";
+                string navDocRelativePath = @"nav-tobi.xhtml";
 
                 XmlNode opfXmlNode_navDoc = opfXmlDoc.CreateElement(null,
                                                                      "item",
@@ -2133,9 +2135,10 @@ namespace urakawa.daisy.export
                     a.AppendChild(label);
 
 
-                    if (sexion.Parent == null
-                        // last one of the siblings
-                        || sexion == sexion.Parent.SubSections[sexion.Parent.SubSections.Count - 1])
+                    // last one of the siblings
+                    if (sexion.Parent == null && sexion == m_Outline[m_Outline.Count - 1]
+                        ||
+                        sexion.Parent != null && sexion == sexion.Parent.SubSections[sexion.Parent.SubSections.Count - 1])
                     {
                         XmlNode pop = xmlNodeStack.Pop();
                         DebugFix.Assert(pop == ol);
