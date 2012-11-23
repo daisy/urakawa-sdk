@@ -292,10 +292,15 @@ namespace urakawa.daisy.export.visitor
                 return true;
             }
 #endif
-            
+
 
             ManagedAudioMedia manAudioMedia = node.GetManagedAudioMedia();
-            //if (manAudioMedia != null && !manAudioMedia.HasActualAudioMediaData)
+            if (manAudioMedia == null)
+            {
+                return true;
+            }
+
+            //if (!manAudioMedia.HasActualAudioMediaData)
             //{
             //    return true;
             //}
@@ -333,6 +338,7 @@ namespace urakawa.daisy.export.visitor
                 Debug.Fail("This should never happen !!");
                 return false;
             }
+
             if (RequestCancellation)
             {
                 checkTransientWavFileAndClose(node);
