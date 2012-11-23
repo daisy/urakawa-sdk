@@ -191,7 +191,12 @@ namespace urakawa.daisy.export
                 return;
             }
 
-            XmlReaderWriterHelper.WriteXmlDocument(opfDocument, Path.Combine(m_OutputDirectory, m_Filename_Opf));
+            XmlReaderWriterHelper.WriteXmlDocument(opfDocument, OpfFilePath);
+        }
+
+        public string OpfFilePath
+        {
+            get { return Path.Combine(m_OutputDirectory, m_Filename_Opf); }
         }
 
         private XmlNode AddFilenameToManifest(XmlDocument opfDocument, XmlNode manifestNode, string filename, string strID, string mediaType)
