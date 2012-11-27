@@ -107,12 +107,12 @@ namespace urakawa
                 if (tq.Type != null)
                 {
                     tq.QName = GetXukQualifiedName(tq.Type);
-                }
 
-                if (tq.BaseQName != null
-                    && tq.Type != null && tq.Type.BaseType != null)
-                {
-                    tq.BaseQName = GetXukQualifiedName(tq.Type.BaseType);
+                    if (tq.BaseQName != null
+                        && tq.Type.BaseType != null)
+                    {
+                        tq.BaseQName = GetXukQualifiedName(tq.Type.BaseType);
+                    }
                 }
             }
             {
@@ -180,7 +180,10 @@ namespace urakawa
         {
             mRegisteredTypeAndQNames.Add(tq);
             mRegisteredTypeAndQNamesByQualifiedName.Add(tq.QName.FullyQualifiedName, tq);
-            if (tq.Type != null) mRegisteredTypeAndQNamesByType.Add(tq.Type, tq);
+            if (tq.Type != null)
+            {
+                mRegisteredTypeAndQNamesByType.Add(tq.Type, tq);
+            }
         }
 
         private TypeAndQNames RegisterType(Type t)
@@ -215,24 +218,34 @@ namespace urakawa
 
         private Type LookupType(string qname)
         {
-            TypeAndQNames obj;
-            mRegisteredTypeAndQNamesByQualifiedName.TryGetValue(qname, out obj);
-
-            if (obj != null) //mRegisteredTypeAndQNamesByQualifiedName.ContainsKey(qname))
+            if (string.IsNullOrEmpty(qname))
             {
-                TypeAndQNames t = obj; // mRegisteredTypeAndQNamesByQualifiedName[qname];
-                if (t.Type != null)
-                {
-                    return t.Type;
-                }
-                return LookupType(t.BaseQName);
+                return null;
             }
+
+            TypeAndQNames obj;
+            
+            if (mRegisteredTypeAndQNamesByQualifiedName.TryGetValue(qname, out obj)
+                && obj != null) //mRegisteredTypeAndQNamesByQualifiedName.ContainsKey(qname))
+            {
+                // obj = mRegisteredTypeAndQNamesByQualifiedName[qname];
+                if (obj.Type != null)
+                {
+                    return obj.Type;
+                }
+
+                return LookupType(obj.BaseQName);
+            }
+
             return null;
         }
 
         private Type LookupType(QualifiedName qname)
         {
-            if (qname == null) return null;
+            if (qname == null)
+            {
+                return null;
+            }
             return LookupType(qname.FullyQualifiedName);
         }
 
@@ -260,7 +273,10 @@ namespace urakawa
             U res = new U();
             InitializeInstance(res);
             Type t = typeof(U);
-            if (!mRegisteredTypeAndQNamesByType.ContainsKey(t)) RegisterType(t);
+            if (!mRegisteredTypeAndQNamesByType.ContainsKey(t))
+            {
+                RegisterType(t);
+            }
             return res;
         }
 
@@ -278,16 +294,25 @@ namespace urakawa
         /// </returns>
         public T Create(Type t)
         {
-            if (t == null) throw new MethodParameterIsNullException("Cannot create an instnce of a null Type");
+            if (t == null)
+            {
+                throw new MethodParameterIsNullException("Cannot create an instnce of a null Type");
+            }
             ConstructorInfo ci = t.GetConstructor(new Type[] { });
             if (ci != null)
             {
-                if (!ci.IsPublic) return null;
+                if (!ci.IsPublic)
+                {
+                    return null;
+                }
                 T res = ci.Invoke(new object[] { }) as T;
                 if (res != null)
                 {
                     InitializeInstance(res);
-                    if (!mRegisteredTypeAndQNamesByType.ContainsKey(t)) RegisterType(t);
+                    if (!mRegisteredTypeAndQNamesByType.ContainsKey(t))
+                    {
+                        RegisterType(t);
+                    }
                     return res;
                 }
             }
@@ -308,7 +333,10 @@ namespace urakawa
         {
             string qname = String.Format("{0}:{1}", xukNS, xukLN);
             Type t = LookupType(qname);
-            if (t == null) return null;
+            if (t == null)
+            {
+                return null;
+            }
             T obj = Create(t);
             TypeAndQNames tt = mRegisteredTypeAndQNamesByQualifiedName[qname];
             if (tt.Type == null)
@@ -341,7 +369,10 @@ namespace urakawa
                     destination.WriteAttributeString(XukStrings.AssemblyName, tp.AssemblyName.Name);
                     destination.WriteAttributeString(XukStrings.AssemblyVersion, tp.AssemblyName.Version.ToString());
                 }
-                if (tp.ClassName != null) destination.WriteAttributeString(XukStrings.FullName, tp.ClassName);
+                if (tp.ClassName != null)
+                {
+                    destination.WriteAttributeString(XukStrings.FullName, tp.ClassName);
+                }
                 destination.WriteEndElement();
             }
         }
