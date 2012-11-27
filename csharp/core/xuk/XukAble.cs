@@ -24,12 +24,19 @@ namespace urakawa.xuk
         private string GetTypeNameFormatted(Type t)
         {
             XukNameAndPrettyFlag xuk;
-            m_TypeNameMap.TryGetValue(t, out xuk);
-            if (!string.IsNullOrEmpty(xuk.name))
+            bool update = false;
+
+            if (m_TypeNameMap.TryGetValue(t, out xuk)
+                //&& xuk != null
+                && !string.IsNullOrEmpty(xuk.name))
             {
                 if (IsPrettyFormat() == xuk.isPretty)
                 {
                     return xuk.name;
+                }
+                else
+                {
+                    update = true;
                 }
             }
 
@@ -46,12 +53,22 @@ namespace urakawa.xuk
                     string n = (info.GetValue(null, null) as string) ?? name;
                     xuk.name = n;
                     xuk.isPretty = IsPrettyFormat();
+
+                    if (update)
+                    {
+                        m_TypeNameMap.Remove(t);
+                    }
                     m_TypeNameMap.Add(t, xuk);
+
                     return n;
                 }
             }
             else
             {
+#if DEBUG
+                Debugger.Break();
+#endif
+
                 FieldInfo info2 = t.GetField("XukString", BindingFlags.Static | BindingFlags.Public);
                 if (info2 != null)
                 {
@@ -60,7 +77,13 @@ namespace urakawa.xuk
                         string n = (info2.GetValue(null) as string) ?? name;
                         xuk.name = n;
                         xuk.isPretty = IsPrettyFormat();
+
+                        if (update)
+                        {
+                            m_TypeNameMap.Remove(t);
+                        }
                         m_TypeNameMap.Add(t, xuk);
+
                         return n;
                     }
                 }
@@ -355,8 +378,17 @@ namespace urakawa.xuk
         private static string GetNamespacePrefix(string namespaceUri)
         {
             string str;
-            m_NamespacePrefixMap.TryGetValue(namespaceUri, out str);
-            if (!string.IsNullOrEmpty(str)) return str;
+            if (m_NamespacePrefixMap.TryGetValue(namespaceUri, out str))
+            {
+                if (string.IsNullOrEmpty(str))
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    str = "nsfix";
+                }
+                return str;
+            }
 
             //if (m_NamespacePrefixMap.ContainsKey(namespaceUri))
             //{
@@ -549,8 +581,18 @@ namespace urakawa.xuk
             }
 
             string str;
-            m_TypeNamespaceUriMap.TryGetValue(t, out str);
-            if (!string.IsNullOrEmpty(str)) return str;
+            if (m_TypeNamespaceUriMap.TryGetValue(t, out str))
+            {
+                if (string.IsNullOrEmpty(str))
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    str = XukAble.XUK_NS;
+                }
+
+                return str;
+            }
 
             //if (m_TypeNamespaceUriMap.ContainsKey(t)) return m_TypeNamespaceUriMap[t];
 
@@ -564,6 +606,7 @@ namespace urakawa.xuk
                     return uri;
                 }
             }
+
             return GetXukNamespaceUri(t.BaseType);
         }
 
