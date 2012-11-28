@@ -950,15 +950,18 @@ namespace urakawa.daisy.import
                                 {
                                     continue;
                                 }
-                                string fileNameOnly = Path.GetFileName(srcParts[0]);
 
-#if DEBUG
-                                string refFileName = Path.GetFileName(fullDocPath);
-                                if (refFileName != fileNameOnly)
+                                string fullTextRefPath = Path.Combine(Path.GetDirectoryName(fullOverlayPath), srcParts[0]);
+                                fullTextRefPath = FileDataProvider.NormaliseFullFilePath(fullTextRefPath).Replace('/', '\\');
+
+                                if (!fullTextRefPath.Equals(fullDocPath, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    Debugger.Break();
+                                    //#if DEBUG
+                                    //                                Debugger.Break();
+                                    //#endif //DEBUG
+
+                                    continue;
                                 }
-#endif //DEBUG
 
                                 string txtId = srcParts[1];
 
@@ -983,7 +986,7 @@ namespace urakawa.daisy.import
                 spineItemPresentation.DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(xuk_FilePath));
 
                 string newDataFolderPath = spineItemPresentation.DataProviderManager.DataFileDirectoryFullPath; // creates it!
-                
+
                 if (newDataFolderPath != dataFolderPath)
                 {
                     if (Directory.Exists(newDataFolderPath))
@@ -999,7 +1002,7 @@ namespace urakawa.daisy.import
                 action.ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile;
                 action.LongDescription = UrakawaSDK_daisy_Lang.SerializeDOMIntoXUKFile;
 
-                action.Progress += new EventHandler<urakawa.events.progress.ProgressEventArgs>(
+                action.Progress += new EventHandler<ProgressEventArgs>(
                     delegate(object sender, ProgressEventArgs e)
                     {
 
@@ -1040,12 +1043,6 @@ namespace urakawa.daisy.import
 
 
 
-
-
-
-
-
-                //TODO: add XHTML outline to m_BundleProject TreeNodes
 
 
 
