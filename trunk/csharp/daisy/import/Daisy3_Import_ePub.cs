@@ -45,10 +45,8 @@ namespace urakawa.daisy.import
                 //m_Book_FilePath.Replace('.', '_')
                 m_Book_FilePath + "_ZIP"
             );
-            if (Directory.Exists(unzipDirectory))
-            {
-                FileDataProvider.DeleteDirectory(unzipDirectory);
-            }
+
+            FileDataProvider.TryDeleteDirectory(unzipDirectory, true);
 
 #if ENABLE_SHARPZIP
             ZipInputStream zipInputStream = new ZipInputStream(File.OpenRead(m_Book_FilePath));
@@ -724,9 +722,10 @@ namespace urakawa.daisy.import
                 Project spineItemProject = new Project();
                 spineItemProject.SetPrettyFormat(m_XukPrettyFormat);
 
+                string dataFolderPrefix = FileDataProvider.EliminateForbiddenFileNameCharacters(docPath);
                 spineItemPresentation = spineItemProject.AddNewPresentation(new Uri(m_outDirectory),
                     //Path.GetFileName(fullDocPath)
-                    FileDataProvider.EliminateForbiddenFileNameCharacters(docPath)
+                    dataFolderPrefix
                     );
 
                 PCMFormatInfo pcmFormat = spineItemPresentation.MediaDataManager.DefaultPCMFormat; //.Copy();
@@ -978,7 +977,7 @@ namespace urakawa.daisy.import
 
 
                 spinePresentation.MediaDataManager.DefaultPCMFormat = spineItemPresentation.MediaDataManager.DefaultPCMFormat; //copied!
-
+                
                 string xuk_FilePath = GetXukFilePath_SpineItem(m_outDirectory, docPath, title);
 
                 //deleteDataDirectoryIfEmpty();
@@ -989,12 +988,22 @@ namespace urakawa.daisy.import
 
                 if (newDataFolderPath != dataFolderPath)
                 {
-                    if (Directory.Exists(newDataFolderPath))
+                    try
                     {
-                        FileDataProvider.DeleteDirectory(newDataFolderPath);
-                    }
+                        FileDataProvider.TryDeleteDirectory(newDataFolderPath, false);
 
-                    Directory.Move(dataFolderPath, newDataFolderPath);
+                        Directory.Move(dataFolderPath, newDataFolderPath);
+                    }
+                    catch (Exception ex)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif // DEBUG
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine(ex.StackTrace);
+
+                        spineItemPresentation.DataProviderManager.SetDataFileDirectoryWithPrefix(dataFolderPrefix);
+                    }
                 }
 
 

@@ -165,7 +165,7 @@ namespace urakawa.daisy.import
         {
             if (RequestCancellation) return;
 
-            initializeProject(Path.GetFileName(m_Book_FilePath)); //initialization moved from constructor to allow derived class to implement project construction
+            initializeProject(Path.GetFileName(m_Book_FilePath));
 
             try
             {
@@ -191,6 +191,7 @@ namespace urakawa.daisy.import
             string title = GetTitle(m_Project.Presentations.Get(0));
             if (!string.IsNullOrEmpty(title))
             {
+                string originalXukFilePath = m_Xuk_FilePath;
                 m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, title, m_IsSpine);
 
                 //deleteDataDirectoryIfEmpty();
@@ -202,14 +203,25 @@ namespace urakawa.daisy.import
                 presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
 
                 string newDataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath; // creates it!
-                if (Directory.Exists(newDataFolderPath))
-                {
-                    FileDataProvider.DeleteDirectory(newDataFolderPath);
-                }
 
                 if (newDataFolderPath != dataFolderPath)
                 {
-                    Directory.Move(dataFolderPath, newDataFolderPath);
+                    try
+                    {
+                        FileDataProvider.TryDeleteDirectory(newDataFolderPath, false);
+
+                        Directory.Move(dataFolderPath, newDataFolderPath);
+                    }
+                    catch (Exception ex)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif // DEBUG
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine(ex.StackTrace);
+
+                        presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(m_dataFolderPrefix);
+                    }
                 }
             }
 
@@ -263,8 +275,11 @@ namespace urakawa.daisy.import
             }
         }
 
+        private string m_dataFolderPrefix = null;
         protected virtual void initializeProject(string dataFolderPrefix)
         {
+            m_dataFolderPrefix = dataFolderPrefix;
+
             m_Project = new Project();
             m_Project.SetPrettyFormat(m_XukPrettyFormat);
 
