@@ -984,13 +984,17 @@ namespace urakawa.daisy.import
                 string dataFolderPath = spineItemPresentation.DataProviderManager.DataFileDirectoryFullPath;
                 spineItemPresentation.DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(xuk_FilePath));
 
-                string newDataFolderPath = spineItemPresentation.DataProviderManager.DataFileDirectoryFullPath; // creates it!
+                string newDataFolderPath = spineItemPresentation.DataProviderManager.DataFileDirectoryFullPath;
+                DebugFix.Assert(Directory.Exists(newDataFolderPath));
 
                 if (newDataFolderPath != dataFolderPath)
                 {
                     try
                     {
-                        FileDataProvider.TryDeleteDirectory(newDataFolderPath, false);
+                        if (Directory.Exists(newDataFolderPath))
+                        {
+                            FileDataProvider.TryDeleteDirectory(newDataFolderPath, false);
+                        }
 
                         Directory.Move(dataFolderPath, newDataFolderPath);
                     }

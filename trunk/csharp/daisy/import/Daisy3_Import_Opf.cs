@@ -21,9 +21,14 @@ namespace urakawa.daisy.import
         private string m_PublicationUniqueIdentifier_OPF;
         private XmlNode m_PublicationUniqueIdentifierNode_OPF;
 
-        private void deleteDataDirectoryIfEmpty()
+        private void reInitialiseProjectSpine()
         {
+            m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, null, true);
+
+            //deleteDataDirectoryIfEmpty();
             string dataDir = m_Project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+            DebugFix.Assert(Directory.Exists(dataDir)); // because the call to DataFileDirectoryFullPath creates it!!
+
             if (Directory.Exists(dataDir))
             {
                 string[] files = Directory.GetFiles(dataDir);
@@ -36,13 +41,6 @@ namespace urakawa.daisy.import
                     }
                 }
             }
-        }
-
-        private void reInitialiseProjectSpine()
-        {
-            m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, null, true);
-
-            deleteDataDirectoryIfEmpty();
 
             initializeProject(@"_" + Path.GetFileName(m_Book_FilePath));
         }
