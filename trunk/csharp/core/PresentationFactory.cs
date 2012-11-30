@@ -24,7 +24,9 @@ namespace urakawa
             pres.RootUri = uri;
 
             if (!String.IsNullOrEmpty(dataFolderPrefix))
+            {
                 pres.DataProviderManager.SetDataFileDirectoryWithPrefix(dataFolderPrefix);
+            }
 
             if (pres.IsPrettyFormat())
             {
