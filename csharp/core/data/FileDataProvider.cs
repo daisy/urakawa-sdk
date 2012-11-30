@@ -290,9 +290,35 @@ namespace urakawa.data
             }
         }
 
-        private static int MAX_ATTEMPTS = 10;
-        public static void DeleteDirectory(string path)
+        public static void TryDeleteDirectory(string dir, bool showDirIfError)
         {
+            if (Directory.Exists(dir))
+            {
+                string error = DeleteDirectory(dir);
+                if (!string.IsNullOrEmpty(error))
+                {
+                    if (showDirIfError)
+                    {
+                        Process process = new Process();
+                        process.StartInfo.FileName = dir;
+                        process.StartInfo.RedirectStandardError = false;
+                        process.StartInfo.RedirectStandardOutput = false;
+                        process.StartInfo.UseShellExecute = true;
+                        process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                        process.StartInfo.Arguments = "";
+                        process.Start();
+                    }
+
+                    throw new IOException("Problem trying to delete folder (" + error + "): " + dir);
+                }
+            }
+        }
+
+        private static int MAX_ATTEMPTS = 3;
+        public static string DeleteDirectory(string path)
+        {
+            string error = String.Empty;
+
             int attempt = MAX_ATTEMPTS;
             while (attempt-- >= 0)
             {
@@ -305,6 +331,11 @@ namespace urakawa.data
                 {
                     Console.WriteLine(e.Message);
                     Thread.Sleep(200);
+
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        error = e.Message;
+                    }
 
                     //if (Directory.Exists(path))
                     //{
@@ -328,6 +359,8 @@ namespace urakawa.data
                 Debugger.Break();
 #endif // DEBUG
             }
+
+            return error;
         }
 
         public static void CreateDirectory(string path)
