@@ -214,7 +214,7 @@ namespace urakawa.daisy.import
             }
 
 
-            SaveXukAction action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath));
+            SaveXukAction action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath), true);
             action.ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile;
             action.LongDescription = UrakawaSDK_daisy_Lang.SerializeDOMIntoXUKFile;
 
