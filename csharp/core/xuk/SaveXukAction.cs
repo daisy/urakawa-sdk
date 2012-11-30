@@ -94,7 +94,7 @@ namespace urakawa.xuk
         /// </summary>
         /// <param name="destUri">The <see cref="Uri"/> of the destination (cannot be null)</param>
         /// <param name="xukAble">The source <see cref="IXukAble"/>(cannot be null)</param>
-        public SaveXukAction(Project proj, IXukAble xukAble, Uri destUri)
+        public SaveXukAction(Project proj, IXukAble xukAble, Uri destUri, bool skipBackup)
         {
             if (proj == null)
                 throw new exception.MethodParameterIsNullException(
@@ -180,7 +180,10 @@ namespace urakawa.xuk
                 FileDataProvider.CreateDirectory(parentdir);
             }
 
-            Backup(path);
+            if (!skipBackup)
+            {
+                Backup(path);
+            }
 
             mDestStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
 
