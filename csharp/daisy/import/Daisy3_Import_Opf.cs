@@ -29,7 +29,11 @@ namespace urakawa.daisy.import
                 string[] files = Directory.GetFiles(dataDir);
                 if (files == null || files.Length == 0)
                 {
-                    FileDataProvider.DeleteDirectory(dataDir);
+                    string error = FileDataProvider.DeleteDirectory(dataDir);
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        Console.WriteLine("Problem trying to delete folder (" + error + "): " + dataDir);
+                    }
                 }
             }
         }
