@@ -65,7 +65,7 @@ namespace urakawa.xuk
             }
             else
             {
-#if DEBUG
+#if NET4 && DEBUG
                 Debugger.Break();
 #endif
 
