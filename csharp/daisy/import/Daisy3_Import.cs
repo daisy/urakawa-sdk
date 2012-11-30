@@ -202,13 +202,17 @@ namespace urakawa.daisy.import
                 string dataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
                 presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
 
-                string newDataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath; // creates it!
+                string newDataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
+                DebugFix.Assert(Directory.Exists(newDataFolderPath));
 
                 if (newDataFolderPath != dataFolderPath)
                 {
                     try
                     {
-                        FileDataProvider.TryDeleteDirectory(newDataFolderPath, false);
+                        if (Directory.Exists(newDataFolderPath))
+                        {
+                            FileDataProvider.TryDeleteDirectory(newDataFolderPath, false);
+                        }
 
                         Directory.Move(dataFolderPath, newDataFolderPath);
                     }
