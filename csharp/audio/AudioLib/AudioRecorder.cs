@@ -1037,30 +1037,101 @@ Caps
 
             if (m_RecordingFileWriter != null)
             {
-                m_RecordingFileWriter.Close();
-
-                //FileInfo fileInfo = new FileInfo(m_RecordedFilePath);
-                Stream stream = File.OpenWrite(m_RecordedFilePath);
+                // overwrite the existing RIFF header, this time with correct data length
                 long length = 0;
+                Stream stream = null;
                 try
                 {
-                    length = stream.Length;
-                    // overriding the existing RIFF header, this time with correct data length
-                    m_RecordedFileRiffHeaderSize = RecordingPCMFormat.RiffHeaderWrite(stream,
-                                                            (uint)
-                                                            (length -
-                                                             (long)
-                                                             m_RecordedFileRiffHeaderSize));
+                    stream = m_RecordingFileWriter.BaseStream;
+                    stream.Position = 0;
                 }
-                finally
+                catch (Exception ex)
                 {
-                    stream.Close();
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+
+
+                    try
+                    {
+                        m_RecordingFileWriter.Close();
+                        m_RecordingFileWriter = null;
+
+                        Thread.Sleep(100);
+
+                        //FileInfo fileInfo = new FileInfo(m_RecordedFilePath);
+                        stream = File.OpenWrite(m_RecordedFilePath);
+                    }
+                    catch (Exception ex2)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        Console.WriteLine("WTF?!");
+                        Console.WriteLine(ex2.Message);
+                        Console.WriteLine(ex2.StackTrace);
+
+                        stream = null;
+                    }
                 }
 
-                if (length <= (long)m_RecordedFileRiffHeaderSize) // no PCM data, just RIFF header
+                if (stream != null)
                 {
-                    File.Delete(m_RecordedFilePath);
-                    m_RecordedFilePath = null;
+                    try
+                    {
+                        length = stream.Length;
+
+                        m_RecordedFileRiffHeaderSize = RecordingPCMFormat.RiffHeaderWrite(
+                                                stream,
+                                                (uint)
+                                                (length -
+                                                (long)
+                                                m_RecordedFileRiffHeaderSize));
+                    }
+                    catch (Exception ex3)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        Console.WriteLine("Erm ?!");
+                        Console.WriteLine(ex3.Message);
+                        Console.WriteLine(ex3.StackTrace);
+                    }
+                    finally
+                    {
+                        if (m_RecordingFileWriter != null)
+                        {
+                            m_RecordingFileWriter.Close();
+                        }
+                        else
+                        {
+                            stream.Close();
+                        }
+                    }
+
+                    if (length <= (long)m_RecordedFileRiffHeaderSize) // no PCM data, just RIFF header
+                    {
+                        File.Delete(m_RecordedFilePath);
+                        m_RecordedFilePath = null;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        m_RecordingFileWriter.Close();
+                    }
+                    catch (Exception ex4)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        Console.WriteLine("WHAT ?!");
+                        Console.WriteLine(ex4.Message);
+                        Console.WriteLine(ex4.StackTrace);
+                    }
                 }
             }
 
