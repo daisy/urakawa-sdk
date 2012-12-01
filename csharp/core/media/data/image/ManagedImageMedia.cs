@@ -6,6 +6,7 @@ using urakawa.xuk;
 
 namespace urakawa.media.data.image
 {
+    [XukNameUglyPrettyAttribute("mIm", "ManagedImageMedia")]
     public class ManagedImageMedia : AbstractImageMedia, IManaged
     {
         public ManagedImageMedia()
@@ -24,12 +25,7 @@ namespace urakawa.media.data.image
             EventHandler<MediaDataChangedEventArgs> d = MediaDataChanged;
             if (d != null) d(this, new MediaDataChangedEventArgs(source, newData, prevData));
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return xuk.XukStrings.ManagedImageMedia;
-        }
-
+        
         private ImageMediaData m_ImageMediaData;
 
         private void Reset()

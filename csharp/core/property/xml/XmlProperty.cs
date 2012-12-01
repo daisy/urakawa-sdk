@@ -10,9 +10,7 @@ using urakawa.xuk;
 
 namespace urakawa.property.xml
 {
-    /// <summary>
-    /// Default implementation of <see cref="XmlProperty"/> interface
-    /// </summary>
+    [XukNameUglyPrettyAttribute("xP", "XmlProperty")]
     public class XmlProperty : Property
     {
         //public override TreeNode TreeNodeOwner
@@ -32,11 +30,8 @@ namespace urakawa.property.xml
         //        }
         //    }
         //}
+        
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.XmlProperty;
-        }
         #region Event related members
 
         /// <summary>
@@ -658,8 +653,8 @@ namespace urakawa.property.xml
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The property factory can not create an XmlProperty matching QName {0}:{1}",
-                                                                         XukNamespaceUri,
-                                                                         GetTypeNameFormatted()));
+                                                                         GetXukNamespace(),
+                                                                         GetXukName()));
             }
             string nsUri = GetNamespaceUri();
 
@@ -715,11 +710,11 @@ namespace urakawa.property.xml
             if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
-                if (IsPrettyFormat() && source.LocalName == XukStrings.XmlAttributes)
+                if (PrettyFormat && source.LocalName == XukStrings.XmlAttributes)
                 {
                     XukInXmlAttributes(source, handler);
                 }
-                else if (!IsPrettyFormat() && source.LocalName == XukStrings.XmlAttribute)
+                else if (!PrettyFormat && source.LocalName == XukStrings.XmlAttribute)
                 {
                     XukInXmlAttribute(source, handler);
                 }
@@ -807,7 +802,7 @@ namespace urakawa.property.xml
             ObjectListProvider<XmlAttribute> attrs = Attributes;
             if (attrs.Count > 0)
             {
-                if (IsPrettyFormat())
+                if (PrettyFormat)
                 {
                     destination.WriteStartElement(XukStrings.XmlAttributes, XukAble.XUK_NS);
                 }
@@ -815,7 +810,7 @@ namespace urakawa.property.xml
                 {
                     a.XukOut(destination, baseUri, handler);
                 }
-                if (IsPrettyFormat())
+                if (PrettyFormat)
                 {
                     destination.WriteEndElement();
                 }

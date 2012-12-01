@@ -886,7 +886,7 @@ namespace urakawa.data
 
             destination.WriteAttributeString(XukStrings.DataFileRelativePath, DataFileRelativePath);
 
-            if (!Presentation.Project.IsPrettyFormat())
+            if (!Presentation.Project.PrettyFormat)
             {
                 //destination.WriteAttributeString(XukStrings.Uid, Uid);
             }

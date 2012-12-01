@@ -7,15 +7,9 @@ using urakawa.xuk;
 
 namespace urakawa.property
 {
-    /// <summary>
-    /// Factory for creating <see cref="Property"/>s and derived types
-    /// </summary>
+    [XukNameUglyPrettyAttribute("prpFct", "PropertyFactory")]
     public sealed class PropertyFactory : GenericWithPresentationFactory<Property>
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.PropertyFactory;
-        }
         public PropertyFactory(Presentation pres) : base(pres)
         {
         }

@@ -7,11 +7,18 @@ using urakawa.xuk;
 
 namespace urakawa.property.xml
 {
-    /// <summary>
-    /// Default implementation of <see cref="XmlAttribute"/>
-    /// </summary>
+    [XukNameUglyPrettyAttribute("xAt", "XmlAttribute")]
     public class XmlAttribute : XukAble, IValueEquatable<XmlAttribute>
     {
+        public override bool PrettyFormat
+        {
+            set { throw new NotImplementedException("PrettyFormat"); }
+            get
+            {
+                return XukAble.m_PrettyFormat_STATIC;
+            }
+        }
+
         public bool ValueEquals(XmlAttribute otherz)
         {
             if (otherz == null)
@@ -308,12 +315,7 @@ namespace urakawa.property.xml
                 destination.WriteAttributeString(XukStrings.NamespaceUri, mNamespaceUri);
             }
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.XmlAttribute;
-        }
-
+        
         #endregion
 
         /// <summary>

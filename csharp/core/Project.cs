@@ -11,9 +11,7 @@ using urakawa.events;
 
 namespace urakawa
 {
-    /// <summary>
-    /// Represents a projects - part of the facade API, provides methods for opening and saving XUK files
-    /// </summary>
+    [XukNameUglyPrettyAttribute("proj", "Project")]
     public class Project : XukAble, IValueEquatable<Project>, IChangeNotifier
     {
         public static string GetXukSchema(bool isPrettyFormat)
@@ -21,33 +19,21 @@ namespace urakawa
             return ""; // TODO 
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.Project;
-        }
-
         private bool m_PrettyFormat = true;
-
-        public override bool IsPrettyFormat()
+        public override bool PrettyFormat
         {
-            return m_PrettyFormat;
-        }
-
-        public override void SetPrettyFormat(bool pretty)
-        {
-            //XukStrings.RelocateProjectReference(this);
-
-            if (//true || // force refresh?
-                m_PrettyFormat != pretty)
+            set
             {
-                m_PrettyFormat = pretty;
-
-                //foreach (Presentation pres in mPresentations.ContentsAs_Enumerable)
-                //{
-                //    pres.RefreshFactoryQNames();
-                //}
+                m_PrettyFormat = value;
+                m_PrettyFormat_STATIC = m_PrettyFormat;
+            }
+            get
+            {
+                m_PrettyFormat_STATIC = m_PrettyFormat;
+                return m_PrettyFormat;
             }
         }
+
 
         static void Main()
         {

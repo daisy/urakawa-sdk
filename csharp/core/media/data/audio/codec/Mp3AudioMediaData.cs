@@ -9,6 +9,7 @@ using urakawa.media.timing;
 
 namespace urakawa.media.data.audio.codec
 {
+    [XukNameUglyPrettyAttribute("mp4Au", "Mp4AudioMediaData")]
     public class Mp4AudioMediaData : Mp3AudioMediaData
     {
         public override string MimeType
@@ -16,12 +17,8 @@ namespace urakawa.media.data.audio.codec
             get { return DataProviderFactory.AUDIO_MP4_MIME_TYPE; }
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return xuk.XukStrings.Mp4AudioMediaData;
-        }
     }
-
+    [XukNameUglyPrettyAttribute("oggAu", "OggAudioMediaData")]
     public class OggAudioMediaData : Mp3AudioMediaData
     {
         public override string MimeType
@@ -29,22 +26,14 @@ namespace urakawa.media.data.audio.codec
             get { return DataProviderFactory.AUDIO_OGG_MIME_TYPE; }
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return xuk.XukStrings.OggAudioMediaData;
-        }
     }
 
+    [XukNameUglyPrettyAttribute("mp3Au", "Mp3AudioMediaData")]
     public class Mp3AudioMediaData : AudioMediaData
     {
         public override string MimeType
         {
             get { return DataProviderFactory.AUDIO_MP3_MIME_TYPE; }
-        }
-
-        public override string GetTypeNameFormatted()
-        {
-            return xuk.XukStrings.Mp3AudioMediaData;
         }
 
         public override Time AudioDuration

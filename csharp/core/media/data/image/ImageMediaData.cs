@@ -174,7 +174,7 @@ namespace urakawa.media.data.image
             }
             destination.WriteAttributeString(XukStrings.DataProvider, DataProvider.Uid);
 
-            //if (!Presentation.Project.IsPrettyFormat())
+            //if (!Presentation.Project.PrettyFormat)
             //{
             //    //destination.WriteAttributeString(XukStrings.Uid, Uid);
             //}

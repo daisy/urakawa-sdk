@@ -82,12 +82,13 @@ namespace urakawa.xuk
 
                     if (type == typeof(XukAble) || typeof(XukAble).IsAssignableFrom(type))
                     {
+                        Console.WriteLine("-----------");
                         Console.WriteLine(type.FullName);
 
                         FieldInfo[] fields = type.GetFields(BindingFlags.Static);
                         foreach (FieldInfo field in fields)
                         {
-                            if (field.FieldType == typeof (UglyPrettyName))
+                            if (field.FieldType == typeof(UglyPrettyName))
                             {
                                 const string NAME = "_NAME";
                                 bool okay = field.Name.EndsWith(NAME);
@@ -139,6 +140,11 @@ namespace urakawa.xuk
                             Console.WriteLine("abstract");
                             continue;
                         }
+                        
+                        if (type.Name == "DummyCommand")
+                        {
+                            continue;
+                        }
 
                         string pretty = GetXukName(type, true);
                         if (!string.IsNullOrEmpty(pretty))
@@ -161,6 +167,10 @@ namespace urakawa.xuk
                             else if (type.Name == "XSLTExternalFileData")
                             {
                                 DebugFix.Assert(pretty == "XsltExternalFileData");
+                            }
+                            else if (type.Name == "ExternalFilesDataManager")
+                            {
+                                DebugFix.Assert(pretty == "ExternalFileDataManager");
                             }
                             else
                             {
@@ -197,7 +207,11 @@ namespace urakawa.xuk
                         foreach (PropertyInfo property in properties)
                         {
                             if (property.PropertyType == typeof(string)
-                                && property.Name == type.Name)
+                                && (property.Name == type.Name
+                                ||
+                                (type.Name == "ExternalFilesDataManager"
+                                && property.Name == "ExternalFileDataManager")
+                                ))
                             {
                                 found = property;
                                 break;
@@ -301,6 +315,8 @@ namespace urakawa.xuk
             return new QualifiedName(GetXukName(type), GetXukNamespace(type));
         }
 
+        //TODO: terrible HACK!! :(
+        public static bool m_PrettyFormat_STATIC;
 
         public abstract bool PrettyFormat { get; set; }
 
@@ -814,7 +830,7 @@ namespace urakawa.xuk
         //                //&& xuk != null
         //                && !string.IsNullOrEmpty(xuk.name))
         //            {
-        //                if (IsPrettyFormat() == xuk.isPretty)
+        //                if (PrettyFormat == xuk.isPretty)
         //                {
         //                    return xuk.name;
         //                }
@@ -836,7 +852,7 @@ namespace urakawa.xuk
         //                {
         //                    string n = (info.GetValue(null, null) as string) ?? name;
         //                    xuk.name = n;
-        //                    xuk.isPretty = IsPrettyFormat();
+        //                    xuk.isPretty = PrettyFormat;
 
         //                    if (update)
         //                    {
@@ -860,7 +876,7 @@ namespace urakawa.xuk
         //                    {
         //                        string n = (info2.GetValue(null) as string) ?? name;
         //                        xuk.name = n;
-        //                        xuk.isPretty = IsPrettyFormat();
+        //                        xuk.isPretty = PrettyFormat;
 
         //                        if (update)
         //                        {

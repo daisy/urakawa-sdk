@@ -9,15 +9,9 @@ using urakawa.xuk;
 
 namespace urakawa.property.channel
 {
-    /// <summary>
-    /// Default implementation of <see cref="ChannelsProperty"/>
-    /// </summary>
+    [XukNameUglyPrettyAttribute("cP", "ChannelsProperty")]
     public class ChannelsProperty : Property
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.ChannelsProperty;
-        }
         #region Event related members
 
         /// <summary>
@@ -221,8 +215,8 @@ namespace urakawa.property.channel
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The property factory can not create a ChannelsProperty matching QName {0}:{1}",
-                                                                         XukNamespaceUri,
-                                                                         GetTypeNameFormatted()));
+                                                                         GetXukNamespace(),
+                                                                         GetXukName()));
             }
             foreach (Channel ch in UsedChannels)
             {
@@ -290,11 +284,11 @@ namespace urakawa.property.channel
             if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
-                if (IsPrettyFormat() && source.LocalName == XukStrings.ChannelMappings)
+                if (PrettyFormat && source.LocalName == XukStrings.ChannelMappings)
                 {
                     XukInChannelMappings(source, handler);
                 }
-                else if (!IsPrettyFormat())
+                else if (!PrettyFormat)
                 {
                     XukInChannelMapping(source, handler);
                 }
@@ -391,7 +385,7 @@ namespace urakawa.property.channel
         {
             base.XukOutChildren(destination, baseUri, handler);
 
-            if (IsPrettyFormat())
+            if (PrettyFormat)
             {
                 destination.WriteStartElement(XukStrings.ChannelMappings, XukAble.XUK_NS);
             }
@@ -409,7 +403,7 @@ namespace urakawa.property.channel
 
                 destination.WriteEndElement();
             }
-            if (IsPrettyFormat())
+            if (PrettyFormat)
             {
                 destination.WriteEndElement();
             }

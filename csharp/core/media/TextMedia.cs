@@ -123,7 +123,7 @@ namespace urakawa.media
         /// <param name="handler">The handler for progress</param>
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
-            if (IsPrettyFormat())
+            if (PrettyFormat)
             {
                 if (source.LocalName == XukStrings.Text && source.NamespaceURI == XukAble.XUK_NS)
                 {
@@ -163,12 +163,12 @@ namespace urakawa.media
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
-            if (IsPrettyFormat())
+            if (PrettyFormat)
             {
                 destination.WriteStartElement(XukStrings.Text, XukAble.XUK_NS);
             }
             destination.WriteString(Text == " " ? SPACE : Text);
-            if (IsPrettyFormat())
+            if (PrettyFormat)
             {
                 destination.WriteEndElement();
             }

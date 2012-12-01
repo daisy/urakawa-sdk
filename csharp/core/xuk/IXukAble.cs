@@ -11,6 +11,11 @@ namespace urakawa.xuk
     {
         string Uid { get; set; }
 
+        string GetXukNamespace();
+        string GetXukName();
+        XukAble.UglyPrettyName GetXukName_();
+        QualifiedName GetXukQualifiedName();
+
         /// <summary>
         /// The implementation of XUKIn is expected to read and remove all tags
         /// up to and including the closing tag matching the element the reader was at when passed to it.

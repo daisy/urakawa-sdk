@@ -10,18 +10,20 @@ using urakawa.xuk;
 
 namespace urakawa.undo
 {
-    /// <summary>
-    /// The command manager.
-    /// </summary>
+    [XukNameUglyPrettyAttribute("udoRdoMan", "UndoRedoManager")]
     public sealed class UndoRedoManager : XukAble, IUsingMediaData //IChangeNotifier
     {
+        public override bool PrettyFormat
+        {
+            set { throw new NotImplementedException("PrettyFormat"); }
+            get
+            {
+                return XukAble.m_PrettyFormat_STATIC;
+            }
+        }
+
         class DummyCommand : Command
         {
-            public override string GetTypeNameFormatted()
-            {
-                throw new NotImplementedException();
-            }
-
             public override bool CanExecute
             {
                 get { throw new NotImplementedException(); }
@@ -42,11 +44,8 @@ namespace urakawa.undo
                 get { throw new NotImplementedException(); }
             }
         }
+        
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.UndoRedoManager;
-        }
         private Presentation mPresentation;
 
         /// <summary>

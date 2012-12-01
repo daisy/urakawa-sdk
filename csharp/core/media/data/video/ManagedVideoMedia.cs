@@ -7,6 +7,7 @@ using urakawa.xuk;
 
 namespace urakawa.media.data.video
 {
+    [XukNameUglyPrettyAttribute("mVd", "ManagedVideoMedia")]
     public class ManagedVideoMedia : AbstractVideoMedia, IManaged
     {
         public override Time Duration
@@ -60,12 +61,7 @@ namespace urakawa.media.data.video
             EventHandler<MediaDataChangedEventArgs> d = MediaDataChanged;
             if (d != null) d(this, new MediaDataChangedEventArgs(source, newData, prevData));
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return xuk.XukStrings.ManagedVideoMedia;
-        }
-
+        
         private VideoMediaData m_VideoMediaData;
 
         private void Reset()

@@ -3,20 +3,18 @@ using urakawa.xuk;
 
 namespace urakawa
 {
-    /// <summary>
-    /// Factory creating <see cref="Presentation"/>s
-    /// </summary>
+    [XukNameUglyPrettyAttribute("presFct", "PresentationFactory")]
     public class PresentationFactory : GenericXukAbleFactory<Presentation>
     {
-        public override string GetTypeNameFormatted()
+        public override bool PrettyFormat
         {
-            return XukStrings.PresentationFactory;
+            set { throw new NotImplementedException("PrettyFormat"); }
+            get
+            {
+                return XukAble.m_PrettyFormat_STATIC;
+            }
         }
 
-        /// <summary>
-        /// Creates a <see cref="Presentation"/> of default type (that is <see cref="Presentation"/>
-        /// </summary>
-        /// <returns>The created <see cref="Presentation"/></returns>
         public virtual Presentation Create(Project proj, Uri uri, string dataFolderPrefix)
         {
             Presentation pres = Create<Presentation>();
@@ -28,7 +26,7 @@ namespace urakawa
                 pres.DataProviderManager.SetDataFileDirectoryWithPrefix(dataFolderPrefix);
             }
 
-            if (pres.IsPrettyFormat())
+            if (pres.PrettyFormat)
             {
                 pres.WarmUpAllFactories();
             }

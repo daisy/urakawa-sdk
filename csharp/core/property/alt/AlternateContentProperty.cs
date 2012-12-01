@@ -6,13 +6,9 @@ using urakawa.progress;
 
 namespace urakawa.property.alt
 {
+    [XukNameUglyPrettyAttribute("acP", "AlternateContentProperty")]
     public class AlternateContentProperty : Property
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.AlternateContentProperty;
-        }
-
 
         public AlternateContentProperty()
         {

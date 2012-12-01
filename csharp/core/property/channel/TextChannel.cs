@@ -3,16 +3,9 @@ using urakawa.xuk;
 
 namespace urakawa.property.channel
 {
-    /// <summary>
-    /// A <see cref="Channel"/> that only accepts <see cref="AbstractTextMedia"/>
-    /// </summary>
+    [XukNameUglyPrettyAttribute("txCh", "TextChannel")]
     public class TextChannel : Channel
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.TextChannel;
-        }
-
         /// <summary>
         /// Determines if a given <see cref="Media"/> can be accepted by the channel,
         /// which it can if it implements interface <see cref="AbstractTextMedia"/>
