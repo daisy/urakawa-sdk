@@ -14,6 +14,8 @@ namespace urakawa.data
     /// </summary>
     public abstract class DataProvider : WithPresentation
     {
+        public static readonly UglyPrettyName DataProvider_NAME = new UglyPrettyName("dtPrv", "DataProvider");
+
         private Object m_AppData = null;
         public Object AppData
         {

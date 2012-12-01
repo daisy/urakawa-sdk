@@ -895,7 +895,7 @@ namespace urakawa.media.data.audio.codec
                         e);
                 }
             }
-            string dataProviderUid = source.GetAttribute(XukStrings.DataProvider);
+            string dataProviderUid = XukAble.readXmlAttribute(source, DataProvider.DataProvider_NAME);
             if (String.IsNullOrEmpty(dataProviderUid))
             {
                 throw new exception.XukException("dataProvider attribute is missing from WavClip element");
@@ -970,7 +970,7 @@ namespace urakawa.media.data.audio.codec
             foreach (WavClip clip in mWavClips)
             {
                 destination.WriteStartElement(XukStrings.WavClip, XukAble.XUK_NS);
-                destination.WriteAttributeString(XukStrings.DataProvider, clip.DataProvider.Uid);
+                destination.WriteAttributeString(DataProvider.DataProvider_NAME.z(PrettyFormat), clip.DataProvider.Uid);
                 if (!clip.ClipBegin.IsEqualTo(Time.Zero))
                 {
                     destination.WriteAttributeString(XukStrings.ClipBegin, clip.ClipBegin.ToString());

@@ -309,7 +309,7 @@ namespace urakawa.ExternalFiles
             ExternalFileData data = null;
             if (!source.IsEmptyElement)
             {
-                string uid = source.GetAttribute(XukStrings.Uid);
+                string uid = XukAble.readXmlAttribute(source, XukAble.Uid_NAME);
 
                 while (source.Read())
                 {
@@ -318,7 +318,7 @@ namespace urakawa.ExternalFiles
                         data = Presentation.ExternalFilesDataFactory.Create_SkipManagerInitialization(source.LocalName, source.NamespaceURI);
                         if (data != null)
                         {
-                            string uid_ = source.GetAttribute(XukStrings.Uid);
+                            string uid_ = XukAble.readXmlAttribute(source, XukAble.Uid_NAME);
 
                             data.XukIn(source, handler);
 

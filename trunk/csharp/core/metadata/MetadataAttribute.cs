@@ -145,17 +145,17 @@ namespace urakawa.metadata
         {
             base.XukInAttributes(source);
 
-            string name = source.GetAttribute(XukStrings.Name);
+            string name = XukAble.readXmlAttribute(source, XukAble.Name_NAME);
             if (string.IsNullOrEmpty(name))
             {
                 throw new exception.XukException("Name attribute of MetadataAttribute element is missing");
             }
             Name = name;
 
-            string ns = source.GetAttribute(XukStrings.NamespaceUri);
+            string ns = XukAble.readXmlAttribute(source, XukAble.NamespaceUri_NAME);
             NamespaceUri = ns;
 
-            string value = source.GetAttribute(XukStrings.Value);
+            string value = XukAble.readXmlAttribute(source, XukAble.Value_NAME);
             //if (string.IsNullOrEmpty(value))
             //{   
             //    throw new exception.XukException("Value attribute of MetadataAttribute element is missing");
@@ -171,17 +171,17 @@ namespace urakawa.metadata
             {
                 throw new exception.XukException("The MetadataAttribute has no name");
             }
-            destination.WriteAttributeString(XukStrings.Name, Name);
+            destination.WriteAttributeString(XukAble.Name_NAME.z(PrettyFormat), Name);
 
             if (!String.IsNullOrEmpty(Value))
             {
-                destination.WriteAttributeString(XukStrings.Value, Value);
+                destination.WriteAttributeString(XukAble.Value_NAME.z(PrettyFormat), Value);
                 //throw new exception.XukException("The MetadataAttribute has no value");
             }
             
             if (!String.IsNullOrEmpty(NamespaceUri))
             {
-                destination.WriteAttributeString(XukStrings.NamespaceUri, NamespaceUri);
+                destination.WriteAttributeString(XukAble.NamespaceUri_NAME.z(PrettyFormat), NamespaceUri);
             }
         }
         

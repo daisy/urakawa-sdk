@@ -11,6 +11,12 @@ namespace urakawa.xuk
     [XukNamespaceAttribute("http://www.daisy.org/urakawa/xuk/2.0")]
     public abstract class XukAble : IXukAble
     {
+        protected static readonly UglyPrettyName Language_NAME = new UglyPrettyName("lang", "Language");
+        protected static readonly UglyPrettyName Name_NAME = new UglyPrettyName("n", "Name");
+        protected static readonly UglyPrettyName Value_NAME = new UglyPrettyName("v", "Value");
+        protected static readonly UglyPrettyName LocalName_NAME = new UglyPrettyName("n", "LocalName");
+        protected static readonly UglyPrettyName NamespaceUri_NAME = new UglyPrettyName("ns", "NamespaceUri");
+
         public sealed class UglyPrettyName
         {
             public readonly string Ugly;
@@ -493,7 +499,7 @@ namespace urakawa.xuk
 
 #endif //UidStringComparisonNoHashCodeOptimization
 
-        private static readonly UglyPrettyName Uid_NAME = new UglyPrettyName("uid", "Uid");
+        protected static readonly UglyPrettyName Uid_NAME = new UglyPrettyName("uid", "Uid");
 
         private string m_Uid = null;
         public string Uid

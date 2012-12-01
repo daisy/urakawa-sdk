@@ -690,12 +690,12 @@ namespace urakawa.property.xml
         {
             base.XukInAttributes(source);
 
-            string ln = source.GetAttribute(XukStrings.LocalName);
+            string ln = XukAble.readXmlAttribute(source, XukAble.LocalName_NAME);
             if (string.IsNullOrEmpty(ln))
             {
                 throw new exception.XukException("LocalName attribute is missing from XmlProperty element");
             }
-            string nsUri = source.GetAttribute(XukStrings.NamespaceUri);
+            string nsUri = XukAble.readXmlAttribute(source, XukAble.NamespaceUri_NAME);
             SetQName(ln, nsUri == null ? "" : nsUri);
         }
 
@@ -781,10 +781,10 @@ namespace urakawa.property.xml
         {
             base.XukOutAttributes(destination, baseUri);
 
-            destination.WriteAttributeString(XukStrings.LocalName, LocalName);
+            destination.WriteAttributeString(XukAble.LocalName_NAME.z(PrettyFormat), LocalName);
             if (!String.IsNullOrEmpty(NamespaceUri))
             {
-                destination.WriteAttributeString(XukStrings.NamespaceUri, NamespaceUri);
+                destination.WriteAttributeString(XukAble.NamespaceUri_NAME.z(PrettyFormat), NamespaceUri);
             }
         }
 
