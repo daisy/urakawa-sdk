@@ -26,18 +26,7 @@ using urakawa.property.alt;
 
 namespace urakawa
 {
-    /// <summary>
-    /// The primary container for a document tree consisting of <see cref="TreeNode"/>s,
-    /// includes factories and managers for:
-    /// <list type="bullet">
-    /// <item><see cref="Property"/>s</item>
-    /// <item><see cref="Channel"/>s</item>
-    /// <item><see cref="Media"/></item>
-    /// <item><see cref="MediaData"/></item>
-    /// <item><see cref="DataProvider"/>s</item>
-    /// <item><see cref="Metadata"/></item>
-    /// </list>
-    /// </summary>
+    [XukNameUglyPrettyAttribute("prs", "Presentation")]
     public class Presentation : XukAble, IValueEquatable<Presentation>, IChangeNotifier
     {
         //public string GetNewUid(string prefix, ref ulong startIndex)
@@ -61,20 +50,18 @@ namespace urakawa
         //    throw new OverflowException("YOU HAVE WAY TOO MANY UIDs !!!");
         //}
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.Presentation;
-        }
 
-
-        public override bool IsPrettyFormat()
+        public override bool PrettyFormat
         {
-            return Project.IsPrettyFormat();
-        }
-
-        public override void SetPrettyFormat(bool pretty)
-        {
-            Project.SetPrettyFormat(pretty);
+            set
+            {
+                throw new NotImplementedException("PrettyFormat");
+                //Project.PrettyFormat = value;
+            }
+            get
+            {
+                return Project.PrettyFormat;
+            }
         }
 
         //public void RefreshFactoryQNames()
@@ -968,7 +955,8 @@ namespace urakawa
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == xukAble.GetTypeNameFormatted() && source.NamespaceURI == xukAble.XukNamespaceUri)
+                        if (source.NamespaceURI == xukAble.GetXukNamespace()
+                            && xukAble.GetXukName_().Match(source.LocalName))
                         {
                             xukAble.XukIn(source, handler);
                         }

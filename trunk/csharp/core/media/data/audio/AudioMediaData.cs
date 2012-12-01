@@ -32,7 +32,7 @@ namespace urakawa.media.data.audio
                 destination.WriteAttributeString(XukStrings.DataProvider, DataProvider.Uid);
             }
 
-            //if (!Presentation.Project.IsPrettyFormat())
+            //if (!Presentation.Project.PrettyFormat)
             //{
             //    //destination.WriteAttributeString(XukStrings.Uid, Uid);
             //}
@@ -687,7 +687,7 @@ namespace urakawa.media.data.audio
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The MediaDataFactory can not create a AudioMediaData matching Xuk QName {1}:{0}",
-                                                                         GetTypeNameFormatted(), XukNamespaceUri));
+                                                                         GetXukName(), GetXukNamespace()));
             }
             AudioMediaData secondPartAMD = (AudioMediaData)md;
             Time spDur = new Time(AudioDuration).GetDifference(splitPoint);

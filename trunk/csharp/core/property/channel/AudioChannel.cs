@@ -3,25 +3,14 @@ using urakawa.xuk;
 
 namespace urakawa.property.channel
 {
+    [XukNameUglyPrettyAttribute("auXCh", "AudioXChannel")]
     public class AudioXChannel : AudioChannel
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.AudioXChannel;
-        }
     }
 
-    /// <summary>
-    /// A <see cref="Channel"/> that only accepts <see cref="AbstractAudioMedia"/>
-    /// </summary>
+    [XukNameUglyPrettyAttribute("auCh", "AudioChannel")]
     public class AudioChannel : Channel
     {
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.AudioChannel;
-        }
-
         /// <summary>
         /// Determines if a given <see cref="Media"/> can be accepted by the channel,
         /// which it can if it implements interface <see cref="AbstractAudioMedia"/>

@@ -2,13 +2,9 @@ using urakawa.xuk;
 
 namespace urakawa.property.alt
 {
+    [XukNameUglyPrettyAttribute("acFct", "AlternateContentFactory")]
     public sealed class AlternateContentFactory : GenericWithPresentationFactory<AlternateContent>
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.AlternateContentFactory;
-        }
-
         public AlternateContentFactory(Presentation pres)
             : base(pres)
         {

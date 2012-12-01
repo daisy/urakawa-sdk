@@ -122,16 +122,17 @@ namespace urakawa.xuk
             };
             */
             //dotnet2
-            EventHandler<ProgressEventArgs> progressing = delegate (object sender, ProgressEventArgs e) {
+            EventHandler<ProgressEventArgs> progressing = delegate(object sender, ProgressEventArgs e)
+            {
                 double val = e.Current;
                 double max = e.Total;
-                
+
                 int percent = (int)((val / max) * 100);
-                
+
                 if (percent != currentPercentage)
                 {
                     currentPercentage = percent;
-                    reportProgress  (currentPercentage, val + " / " + max);
+                    reportProgress(currentPercentage, val + " / " + max);
                     //backWorker.ReportProgress(currentPercentage);
                 }
                 if (RequestCancellation)
@@ -139,25 +140,25 @@ namespace urakawa.xuk
                     e.Cancel();
                 }
             };
-                
+
             Progress += progressing;
             //Finished += (sender, e) =>
             //{
-                //Progress -= progressing;
+            //Progress -= progressing;
             //};
 
             //dotnet2
-            Finished += delegate (object sender,FinishedEventArgs e) 
+            Finished += delegate(object sender, FinishedEventArgs e)
             {
                 Progress -= progressing;
             };
             //Cancelled += (sender, e) =>
             //{
-                //Progress -= progressing;
+            //Progress -= progressing;
             //};
 
             //dotnet2
-            Cancelled += delegate (object sender,CancelledEventArgs e) 
+            Cancelled += delegate(object sender, CancelledEventArgs e)
             {
                 Progress -= progressing;
             };
@@ -168,7 +169,7 @@ namespace urakawa.xuk
 
             XmlReaderSettings settings = XmlReaderWriterHelper.GetDefaultXmlReaderConfiguration(false, false, false);
 
-            if (!mDestXukAble.IsPrettyFormat())
+            if (!mDestXukAble.PrettyFormat)
             {
                 //
             }
@@ -237,15 +238,17 @@ namespace urakawa.xuk
                 {
                     if (mXmlReader.NodeType == XmlNodeType.Element)
                     {
+                        DebugFix.Assert(mDestXukAble is Project);
+
                         if (mXmlReader.LocalName == "Xuk")
                         {
-                            mDestXukAble.SetPrettyFormat(true);
+                            mDestXukAble.PrettyFormat = true;
                             foundRoot = true;
                             break;
                         }
                         else if (mXmlReader.LocalName == "xuk")
                         {
-                            mDestXukAble.SetPrettyFormat(false);
+                            mDestXukAble.PrettyFormat = false;
                             foundRoot = true;
                             break;
                         }
@@ -269,8 +272,8 @@ namespace urakawa.xuk
                         if (mXmlReader.NodeType == XmlNodeType.Element)
                         {
                             //If the element QName matches the Xuk QName equivalent of this, Xuk it in using this.XukIn
-                            if (mXmlReader.LocalName == mDestXukAble.GetTypeNameFormatted() &&
-                                mXmlReader.NamespaceURI == mDestXukAble.XukNamespaceUri)
+                            if (mXmlReader.NamespaceURI == mDestXukAble.GetXukNamespace()
+                                && mDestXukAble.GetXukName_().Match(mXmlReader.LocalName))
                             {
                                 foundXukAble = true;
                                 mDestXukAble.XukIn(mXmlReader, this);

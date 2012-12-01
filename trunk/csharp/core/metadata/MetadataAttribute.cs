@@ -8,6 +8,15 @@ namespace urakawa.metadata
     [XukNameUglyPrettyAttribute("metadtattr", "MetadataAttribute")]
     public class MetadataAttribute : XukAble, IValueEquatable<MetadataAttribute>
     {
+        public override bool PrettyFormat
+        {
+            set { throw new NotImplementedException("PrettyFormat"); }
+            get
+            {
+                return XukAble.m_PrettyFormat_STATIC;
+            }
+        }
+
         public bool ValueEquals(MetadataAttribute otherz)
         {
             if (otherz == null)

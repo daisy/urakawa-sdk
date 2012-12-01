@@ -6,18 +6,9 @@ using urakawa.xuk;
 
 namespace urakawa.property.channel
 {
-    /// <summary>
-    /// Default implementation of <see cref="ChannelsManager"/>
-    /// Can only manage channels that inherit <see cref="Channel"/>
-    /// TODO: Check XUKIn/XukOut implementation
-    /// </summary>
+    [XukNameUglyPrettyAttribute("chsMan", "ChannelsManager")]
     public sealed class ChannelsManager : XukAbleManager<Channel>
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.ChannelsManager;
-        }
-
         public ChannelsManager(Presentation pres) : base(pres, "CH")
         {
         }
@@ -154,7 +145,7 @@ namespace urakawa.property.channel
                 {
                     XukInChannels(source, handler);
                 }
-                else if (true || !Presentation.Project.IsPrettyFormat()
+                else if (true || !Presentation.Project.PrettyFormat
                     // && source.LocalName == XukStrings.ChannelItem
                     )
                 {
@@ -313,13 +304,13 @@ namespace urakawa.property.channel
         {
             if (ManagedObjects.Count > 0)
             {
-                if (Presentation.Project.IsPrettyFormat())
+                if (Presentation.Project.PrettyFormat)
                 {
                     destination.WriteStartElement(XukStrings.Channels);
                 }
                 foreach (Channel ch in ManagedObjects.ContentsAs_Enumerable)
                 {
-                    if (false && Presentation.Project.IsPrettyFormat())
+                    if (false && Presentation.Project.PrettyFormat)
                     {
                         destination.WriteStartElement(XukStrings.ChannelItem);
                         //destination.WriteAttributeString(XukStrings.Uid, uid);
@@ -327,12 +318,12 @@ namespace urakawa.property.channel
 
                     ch.XukOut(destination, baseUri, handler);
 
-                    if (false && Presentation.Project.IsPrettyFormat())
+                    if (false && Presentation.Project.PrettyFormat)
                     {
                         destination.WriteEndElement();
                     }
                 }
-                if (Presentation.Project.IsPrettyFormat())
+                if (Presentation.Project.PrettyFormat)
                 {
                     destination.WriteEndElement();
                 }

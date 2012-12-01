@@ -499,11 +499,11 @@ namespace urakawa.core
             {
                 XukInProperties(source, handler);
             }
-            else if (IsPrettyFormat() && source.NamespaceURI == XUK_NS && source.LocalName == XukStrings.Children)
+            else if (PrettyFormat && source.NamespaceURI == XUK_NS && source.LocalName == XukStrings.Children)
             {
                 XukInChildren(source, handler);
             }
-            else if (!IsPrettyFormat())
+            else if (!PrettyFormat)
             {
                 XukInChildNode(source, handler);
             }
@@ -535,7 +535,7 @@ namespace urakawa.core
             }
             destination.WriteEndElement();
 
-            if (IsPrettyFormat())
+            if (PrettyFormat)
             {
                 destination.WriteStartElement(XukStrings.Children, XUK_NS);
             }
@@ -543,7 +543,7 @@ namespace urakawa.core
             {
                 mChildren.Get(i).XukOut(destination, baseUri, handler);
             }
-            if (IsPrettyFormat())
+            if (PrettyFormat)
             {
                 destination.WriteEndElement();
             }
@@ -809,7 +809,7 @@ namespace urakawa.core
             {
                 string msg = String.Format(
                     "The TreeNodeFactory of the export destination Presentation can not create a TreeNode matching Xuk QName {1}:{0}",
-                    GetTypeNameFormatted(), XukNamespaceUri);
+                    GetXukName(), GetXukNamespace());
                 throw new FactoryCannotCreateTypeException(msg);
             }
             foreach (Property prop in Properties.ContentsAs_Enumerable)

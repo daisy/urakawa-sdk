@@ -16,7 +16,7 @@ namespace urakawa
             {
                 XukInRegisteredTypes(source, handler);
             }
-            else if (!Presentation.Project.IsPrettyFormat())
+            else if (!Presentation.Project.PrettyFormat)
             {
                 XukInRegisteredType(source);
             }
@@ -26,14 +26,14 @@ namespace urakawa
         }
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, progress.IProgressHandler handler)
         {
-            if (Presentation.Project.IsPrettyFormat())
+            if (Presentation.Project.PrettyFormat)
             {
                 destination.WriteStartElement(XukStrings.RegisteredTypes, XukAble.XUK_NS);
             }
 
             XukOutRegisteredTypes(destination, baseUri, handler);
 
-            if (Presentation.Project.IsPrettyFormat())
+            if (Presentation.Project.PrettyFormat)
             {
                 destination.WriteEndElement();
             }
@@ -46,11 +46,12 @@ namespace urakawa
         {
             set
             {
-                Presentation.SetPrettyFormat(value);
+                throw new NotImplementedException("PrettyFormat");
+                //Presentation.PrettyFormat = value;
             }
             get
             {
-                return Presentation.IsPrettyFormat();
+                return Presentation.PrettyFormat;
             }
         }
 

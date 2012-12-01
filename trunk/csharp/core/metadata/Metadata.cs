@@ -185,7 +185,7 @@ namespace urakawa.metadata
 
             if (OtherAttributes.Count > 0)
             {
-                if (IsPrettyFormat())
+                if (PrettyFormat)
                 {
                     destination.WriteStartElement(XukStrings.MetadataOtherAttributes, XukAble.XUK_NS);
                 }
@@ -193,7 +193,7 @@ namespace urakawa.metadata
                 {
                     a.XukOut(destination, baseUri, handler);
                 }
-                if (IsPrettyFormat())
+                if (PrettyFormat)
                 {
                     destination.WriteEndElement();
                 }
@@ -209,11 +209,11 @@ namespace urakawa.metadata
                 {
                     XukInMetadataAttribute(source, handler);
                 }
-                else if (IsPrettyFormat() && source.LocalName == XukStrings.MetadataOtherAttributes)
+                else if (PrettyFormat && source.LocalName == XukStrings.MetadataOtherAttributes)
                 {
                     XukInMetadataOtherAttributes(source, handler);
                 }
-                else if (!IsPrettyFormat() && source.LocalName == XukStrings.MetadataAttribute)
+                else if (!PrettyFormat && source.LocalName == XukStrings.MetadataAttribute)
                 {
                     XukInMetadataAttribute(source, handler);
                 }

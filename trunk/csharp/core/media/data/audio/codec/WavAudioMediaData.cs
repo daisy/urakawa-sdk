@@ -789,7 +789,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     XukInWavClips(source);
                 }
-                else if (!Presentation.Project.IsPrettyFormat() && source.LocalName == XukStrings.WavClip)
+                else if (!Presentation.Project.PrettyFormat && source.LocalName == XukStrings.WavClip)
                 {
                     XukInWavClip(source);
                 }
@@ -935,7 +935,7 @@ namespace urakawa.media.data.audio.codec
         {
             base.XukOutAttributes(destination, baseUri);
 
-            if (!Presentation.Project.IsPrettyFormat())
+            if (!Presentation.Project.PrettyFormat)
             {
                 //destination.WriteAttributeString(XukStrings.Uid, Uid);
             }
@@ -959,7 +959,7 @@ namespace urakawa.media.data.audio.codec
                 PCMFormat.XukOut(destination, baseUri, handler);
                 destination.WriteEndElement();
             }
-            if (Presentation.Project.IsPrettyFormat())
+            if (Presentation.Project.PrettyFormat)
             {
                 destination.WriteStartElement(XukStrings.WavClips, XukAble.XUK_NS);
             }
@@ -977,7 +977,7 @@ namespace urakawa.media.data.audio.codec
                 }
                 destination.WriteEndElement();
             }
-            if (Presentation.Project.IsPrettyFormat())
+            if (Presentation.Project.PrettyFormat)
             {
                 destination.WriteEndElement();
             }
@@ -1061,7 +1061,7 @@ namespace urakawa.media.data.audio.codec
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "Thrown if the MediaDataFactory can not create a WacAudioMediaData matching Xuk QName {1}:{0}",
-                                                                         GetTypeNameFormatted(), XukNamespaceUri));
+                                                                         GetXukName(), GetXukNamespace()));
             }
             oWAMD.PCMFormat = PCMFormat.Copy();
 

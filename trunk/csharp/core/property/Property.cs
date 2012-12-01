@@ -8,16 +8,9 @@ using urakawa.xuk;
 
 namespace urakawa.property
 {
-    /// <summary>
-    /// Implementation of <see cref="Property"/> that in it self does nothing. 
-    /// This class is intended as a base class for built-in or custom implementations of <see cref="Property"/>
-    /// </summary>
+    [XukNameUglyPrettyAttribute("prp", "Property")]
     public abstract class Property : WithPresentation, IXukAble, urakawa.events.IChangeNotifier
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.Property;
-        }
         #region IChangeNotifier Members
 
         /// <summary>
@@ -101,7 +94,7 @@ namespace urakawa.property
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The PropertyFactory can not create a Property of type matching QName {1}:{0}",
-                                                                         GetTypeNameFormatted(), XukNamespaceUri));
+                                                                         GetXukName(), GetXukNamespace()));
             }
             return theCopy;
         }
@@ -129,7 +122,7 @@ namespace urakawa.property
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The PropertyFactory of the export destination Presentation can not create a Property of type matching QName {1}:{0}",
-                                                                         GetTypeNameFormatted(), XukNamespaceUri));
+                                                                         GetXukName(), GetXukNamespace()));
             }
             return exportedProp;
         }

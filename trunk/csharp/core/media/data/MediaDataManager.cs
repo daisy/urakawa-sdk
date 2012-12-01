@@ -298,7 +298,7 @@ namespace urakawa.media.data
                 {
                     XukInMediaDatas(source, handler);
                 }
-                else if (true || !Presentation.Project.IsPrettyFormat()
+                else if (true || !Presentation.Project.PrettyFormat
                     // && source.LocalName == XukStrings.MediaDataItem
                     )
                 {
@@ -511,14 +511,14 @@ namespace urakawa.media.data
             DefaultPCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            if (Presentation.Project.IsPrettyFormat())
+            if (Presentation.Project.PrettyFormat)
             {
                 destination.WriteStartElement(XukStrings.MediaDatas, XukAble.XUK_NS);
             }
             //foreach (string uid in mMediaDataDictionary.Keys)
             foreach (MediaData md in ManagedObjects.ContentsAs_Enumerable)
             {
-                if (false && Presentation.Project.IsPrettyFormat())
+                if (false && Presentation.Project.PrettyFormat)
                 {
                     destination.WriteStartElement(XukStrings.MediaDataItem, XukAble.XUK_NS);
                     //destination.WriteAttributeString(XukStrings.Uid, uid);
@@ -527,12 +527,12 @@ namespace urakawa.media.data
                 //mMediaDataDictionary[uid].XukOut(destination, baseUri, handler);
                 md.XukOut(destination, baseUri, handler);
 
-                if (false && Presentation.Project.IsPrettyFormat())
+                if (false && Presentation.Project.PrettyFormat)
                 {
                     destination.WriteEndElement();
                 }
             }
-            if (Presentation.Project.IsPrettyFormat())
+            if (Presentation.Project.PrettyFormat)
             {
                 destination.WriteEndElement();
             }

@@ -7,16 +7,9 @@ using urakawa.xuk;
 
 namespace urakawa.property.channel
 {
-    /// <summary>
-    /// A <see cref="Channel"/> is used to associate <see cref="Media"/> 
-    /// with <see cref="core.TreeNode"/>s via <see cref="ChannelsProperty"/>
-    /// </summary>
+    [XukNameUglyPrettyAttribute("c", "Channel")]
     public class Channel : WithPresentation
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.Channel;
-        }
         private string mName = "";
         private string mLanguage = null;
 
@@ -68,8 +61,8 @@ namespace urakawa.property.channel
             if (exportedCh == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The ChannelsFacotry of the destination Presentation can not create a Channel matching Xuk QName {0}:{0}",
-                                                                         GetTypeNameFormatted(), XukNamespaceUri));
+                                                                         "The ChannelsFactory of the destination Presentation can not create a Channel matching Xuk QName {0}:{0}",
+                                                                         GetXukName(), GetXukNamespace()));
             }
             exportedCh.Name = Name;
             exportedCh.Language = Language;
@@ -90,7 +83,7 @@ namespace urakawa.property.channel
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The ChannelsFacotry of the destination Presentation can not create a Channel matching Xuk QName {0}:{0}",
-                                                                         GetTypeNameFormatted(), XukNamespaceUri));
+                                                                         GetXukName(), GetXukNamespace()));
             }
             copy.Name = Name;
             copy.Language = Language;
@@ -276,7 +269,7 @@ namespace urakawa.property.channel
             {
                 destination.WriteAttributeString(XukStrings.Language, Language);
             }
-            if (!Presentation.Project.IsPrettyFormat())
+            if (!Presentation.Project.PrettyFormat)
             {
                 //destination.WriteAttributeString(XukStrings.Uid, Uid);
             }

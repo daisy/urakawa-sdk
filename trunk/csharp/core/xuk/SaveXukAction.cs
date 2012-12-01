@@ -76,7 +76,7 @@ namespace urakawa.xuk
             mSourceXukAble = xukAble;
             mDestStream = destStream;
 
-            bool pretty = mSourceXukAble.IsPrettyFormat();
+            bool pretty = mSourceXukAble.PrettyFormat;
 
             XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(pretty);
 
@@ -187,10 +187,10 @@ namespace urakawa.xuk
 
             mDestStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
 
-            bool pretty = mSourceXukAble.IsPrettyFormat();
+            bool pretty = mSourceXukAble.PrettyFormat;
 
             XmlWriterSettings settings = XmlReaderWriterHelper.GetDefaultXmlWriterConfiguration(pretty);
-            
+
             mXmlWriter = XmlWriter.Create(mDestStream, settings);
 
             if (pretty && mXmlWriter is XmlTextWriter)
@@ -293,7 +293,7 @@ namespace urakawa.xuk
                 mXmlWriter.WriteStartElement(m_Project.PrettyFormat ? "Xuk" : "xuk", XukAble.XUK_NS);
                 if (!string.IsNullOrEmpty(XukAble.XUK_XSD_PATH))
                 {
-                    if (m_Project.XukNamespaceUri == String.Empty)
+                    if (string.IsNullOrEmpty(m_Project.GetXukNamespace()))
                     {
                         mXmlWriter.WriteAttributeString(
                             "xsi", "noNamespaceSchemaLocation",
@@ -307,8 +307,8 @@ namespace urakawa.xuk
                             "noNamespaceSchemaLocation",
                             "http://www.w3.org/2001/XMLSchema-instance",
                             String.Format("{0}{1}",
-                                          m_Project.XukNamespaceUri
-                                          + (m_Project.XukNamespaceUri.EndsWith("/") ? "" : "/"),
+                                          m_Project.GetXukNamespace()
+                                          + (m_Project.GetXukNamespace().EndsWith("/") ? "" : "/"),
                                           XukAble.XUK_XSD_PATH));
                     }
                 }
@@ -367,7 +367,7 @@ namespace urakawa.xuk
             //xsi:noNamespaceSchemaLocation ===> XukAble.XUK_NS + "/" + XukAble.XUK_XSD_PATH
 
             Project project = new Project();
-            project.SetPrettyFormat(isPrettyFormat);
+            project.PrettyFormat = isPrettyFormat;
 
             StreamWriter streamWriter = new StreamWriter(isPrettyFormat ? schema_PrettyXuk_FilePath : schema_CompressedXuk_FilePath, false, Encoding.UTF8);
             try

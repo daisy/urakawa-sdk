@@ -2,6 +2,7 @@
 
 namespace urakawa.media.data.video.codec
 {
+    [XukNameUglyPrettyAttribute("movVd", "MovVideoMediaData")]
     public class MovVideoMediaData : VideoMediaData
     {
         public override string MimeType
@@ -9,10 +10,6 @@ namespace urakawa.media.data.video.codec
             get { return DataProviderFactory.VIDEO_MOV_MIME_TYPE; }
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return xuk.XukStrings.MovVideoMediaData;
-        }
     }
 }
 

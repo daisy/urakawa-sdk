@@ -403,7 +403,7 @@ namespace urakawa.data
                 {
                     XukInDataProviders(source, handler);
                 }
-                else if (true || !Presentation.Project.IsPrettyFormat()
+                else if (true || !Presentation.Project.PrettyFormat
                     //&& source.LocalName == XukStrings.DataProviderItem
                     )
                 {
@@ -626,13 +626,13 @@ namespace urakawa.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
-            if (Presentation.Project.IsPrettyFormat())
+            if (Presentation.Project.PrettyFormat)
             {
                 destination.WriteStartElement(XukStrings.DataProviders, XukAble.XUK_NS);
             }
             foreach (DataProvider prov in ManagedObjects.ContentsAs_Enumerable)
             {
-                if (false && Presentation.Project.IsPrettyFormat())
+                if (false && Presentation.Project.PrettyFormat)
                 {
                     destination.WriteStartElement(XukStrings.DataProviderItem, XukAble.XUK_NS);
                     //destination.WriteAttributeString(XukStrings.Uid, prov.Uid);
@@ -640,12 +640,12 @@ namespace urakawa.data
 
                 prov.XukOut(destination, baseUri, handler);
 
-                if (false && Presentation.Project.IsPrettyFormat())
+                if (false && Presentation.Project.PrettyFormat)
                 {
                     destination.WriteEndElement();
                 }
             }
-            if (Presentation.Project.IsPrettyFormat())
+            if (Presentation.Project.PrettyFormat)
             {
                 destination.WriteEndElement();
             }

@@ -3,13 +3,9 @@ using urakawa.xuk;
 
 namespace urakawa.property.channel
 {
+    [XukNameUglyPrettyAttribute("vidCh", "VideoChannel")]
     public class VideoChannel : Channel
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.VideoChannel;
-        }
-
         public override bool CanAccept(urakawa.media.Media m)
         {
             if (!base.CanAccept(m)) return false;

@@ -8,6 +8,15 @@ namespace urakawa.media.data.audio
     [XukNameUglyPrettyAttribute("PCMInf", "PCMFormatInfo")]
     public class PCMFormatInfo : XukAble, IValueEquatable<PCMFormatInfo>
     {
+        public override bool PrettyFormat
+        {
+            set { throw new NotImplementedException("PrettyFormat"); }
+            get
+            {
+                return XukAble.m_PrettyFormat_STATIC;
+            }
+        }
+
         private AudioLibPCMFormat m_Data;
         public AudioLibPCMFormat Data
         {
