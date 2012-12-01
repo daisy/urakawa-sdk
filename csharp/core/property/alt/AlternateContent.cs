@@ -9,13 +9,9 @@ using urakawa.media;
 
 namespace urakawa.property.alt
 {
+    [XukNameUglyPrettyAttribute("AC", "AlternateContent")]
     public class AlternateContent : WithPresentation
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.AlternateContent;
-        }
-
         public AlternateContent()
         {
             m_Metadata = new ObjectListProvider<Metadata>(this, true);

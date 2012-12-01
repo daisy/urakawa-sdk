@@ -9,6 +9,7 @@ using urakawa.property.alt;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("acMetaSetContentCmd", "AlternateContentMetadataSetContentCommand")]
     public class AlternateContentMetadataSetContentCommand : Command
     {
         
@@ -30,10 +31,6 @@ namespace urakawa.commands
             return true;
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.AlternateContentMetadataSetContentCommand;
-        }
 
         private string m_OriginalContent;
         private string m_NewContent;

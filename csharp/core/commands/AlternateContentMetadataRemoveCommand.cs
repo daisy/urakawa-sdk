@@ -10,6 +10,7 @@ using urakawa.property.alt;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("acMetaRemoveCmd", "AlternateContentMetadataRemoveCommand")]
     public class AlternateContentMetadataRemoveCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -30,11 +31,7 @@ namespace urakawa.commands
             return true;
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.AlternateContentMetadataRemoveCommand;
-        }
-
+    
         private int m_Index;
         private Metadata m_Metadata;
         public Metadata Metadata

@@ -121,7 +121,8 @@ namespace urakawa.property.alt
             {
                 if (source.NodeType == XmlNodeType.Element)
                 {
-                    if (source.NamespaceURI == XukAble.XUK_NS && source.LocalName == XukStrings.AlternateContent)
+                    if (source.NamespaceURI == XukAble.XUK_NS
+                        && GetXukName(typeof(AlternateContent)).Match(source.LocalName))
                     {
                         AlternateContent ac = Presentation.AlternateContentFactory.CreateAlternateContent();
                         ac.XukIn(source, handler);

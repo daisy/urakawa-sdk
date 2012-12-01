@@ -12,6 +12,7 @@ using urakawa.property.alt;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("acAddCmd", "AlternateContentAddCommand")]
     public class AlternateContentAddCommand: Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -32,10 +33,6 @@ namespace urakawa.commands
             return true;
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.AlternateContentAddCommand;
-        }
 
         private TreeNode m_TreeNode;
         public TreeNode TreeNode
