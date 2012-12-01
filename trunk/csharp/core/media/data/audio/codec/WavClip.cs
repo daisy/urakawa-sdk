@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using AudioLib;
 using urakawa.data;
@@ -7,10 +6,7 @@ using urakawa.media.timing;
 
 namespace urakawa.media.data.audio.codec
 {
-    /// <summary>
-    /// Represents a generic media clip
-    /// </summary>
-    public abstract class Clip
+    public abstract class Clip // : XukAble
     {
         private Time mClipBegin = new Time();
 
@@ -109,11 +105,18 @@ namespace urakawa.media.data.audio.codec
         public abstract Time MediaDuration { get; }
     }
 
-    /// <summary>
-    /// Represents a RIFF WAVE PCM audio data clip
-    /// </summary>
+    //[XukNameUglyPrettyAttribute("wvCl", "WavClip")]
     public class WavClip : Clip, IValueEquatable<WavClip>
     {
+        //public override bool PrettyFormat
+        //{
+        //    set { throw new NotImplementedException("PrettyFormat"); }
+        //    get
+        //    {
+        //        return XukAble.m_PrettyFormat_STATIC;
+        //    }
+        //}
+
         public struct PcmFormatAndTime
         {
             public AudioLibPCMFormat mFormat;

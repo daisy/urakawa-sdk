@@ -26,6 +26,8 @@ namespace urakawa
             {
                 m_PrettyFormat = value;
                 m_PrettyFormat_STATIC = m_PrettyFormat;
+
+                XukStrings.IsPrettyFormat = m_PrettyFormat;
             }
             get
             {

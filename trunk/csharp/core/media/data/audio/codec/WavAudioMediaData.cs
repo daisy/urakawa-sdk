@@ -15,6 +15,8 @@ namespace urakawa.media.data.audio.codec
     [XukNameUglyPrettyAttribute("wvAu", "WavAudioMediaData")]
     public class WavAudioMediaData : AudioMediaData
     {
+        public static readonly XukAble.UglyPrettyName WavClip_NAME = new XukAble.UglyPrettyName("wvCl", "WavClip");
+
         public override string MimeType
         {
             get { return DataProviderFactory.AUDIO_WAV_MIME_TYPE; }
@@ -39,7 +41,7 @@ namespace urakawa.media.data.audio.codec
             return true;
         }
 
-    
+
 
         /// <summary>
         /// Stores the <see cref="WavClip"/>s of <c>this</c>
@@ -764,15 +766,15 @@ namespace urakawa.media.data.audio.codec
             mWavClips.Clear();
             base.Clear();
         }
-        
-//#if DEBUG
-//        public override void XukIn(XmlReader source, IProgressHandler handler)
-//        {
-//            base.XukIn(source, handler);
 
-//            checkWavClips();
-//        }
-//#endif //DEBUG
+        //#if DEBUG
+        //        public override void XukIn(XmlReader source, IProgressHandler handler)
+        //        {
+        //            base.XukIn(source, handler);
+
+        //            checkWavClips();
+        //        }
+        //#endif //DEBUG
 
         /// <summary>
         /// Reads a child of a WavAudioMediaData xuk element. 
@@ -790,7 +792,9 @@ namespace urakawa.media.data.audio.codec
                     XukInWavClips(source);
                 }
                 else if (!Presentation.Project.PrettyFormat
-                    && XukAble.GetXukName(typeof(WavClip)).Match(source.LocalName))
+                    && WavClip_NAME.Match(source.LocalName)
+                    //XukAble.GetXukName(typeof(WavClip))
+                    )
                 {
                     XukInWavClip(source);
                 }
@@ -845,7 +849,9 @@ namespace urakawa.media.data.audio.codec
                     if (source.NodeType == XmlNodeType.Element)
                     {
                         if (source.NamespaceURI == XukAble.XUK_NS
-                            && XukAble.GetXukName(typeof(WavClip)).Match(source.LocalName))
+                            && WavClip_NAME.Match(source.LocalName)
+                            //XukAble.GetXukName(typeof(WavClip))
+                            )
                         {
                             XukInWavClip(source);
                         }
@@ -969,7 +975,7 @@ namespace urakawa.media.data.audio.codec
             }
             foreach (WavClip clip in mWavClips)
             {
-                destination.WriteStartElement(XukStrings.WavClip, XukAble.XUK_NS);
+                destination.WriteStartElement(WavClip_NAME.z(PrettyFormat), XukAble.XUK_NS);
                 destination.WriteAttributeString(DataProvider.DataProvider_NAME.z(PrettyFormat), clip.DataProvider.Uid);
                 if (!clip.ClipBegin.IsEqualTo(Time.Zero))
                 {
@@ -1130,11 +1136,11 @@ namespace urakawa.media.data.audio.codec
             return oWAMD;
         }
 
-//#if DEBUG
-//        public void checkWavClips()
-//        {
-//            DebugFix.Assert(mWavClips != null && mWavClips.Count > 0);
-//        }
-//#endif //DEBUG
+        //#if DEBUG
+        //        public void checkWavClips()
+        //        {
+        //            DebugFix.Assert(mWavClips != null && mWavClips.Count > 0);
+        //        }
+        //#endif //DEBUG
     }
 }

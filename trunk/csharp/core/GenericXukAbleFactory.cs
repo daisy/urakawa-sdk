@@ -243,11 +243,19 @@ namespace urakawa
 
         private void RegisterType(TypeAndQNames tq)
         {
-            mRegisteredTypeAndQNames.Add(tq);
+            DebugFix.Assert(tq.Type != null);
 
+            bool isTypeAlreadyRegistered = false;
             if (tq.Type != null)
             {
-                DebugFix.Assert(!typeAlreadyRegistered(tq.Type));
+                isTypeAlreadyRegistered = typeAlreadyRegistered(tq.Type);
+            }
+
+            DebugFix.Assert(!isTypeAlreadyRegistered);
+
+            if (!isTypeAlreadyRegistered)
+            {
+                mRegisteredTypeAndQNames.Add(tq);
             }
         }
 
