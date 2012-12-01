@@ -6,17 +6,11 @@ using urakawa.xuk;
 
 namespace urakawa.media
 {
-    /// <summary>
-    /// Implementation of <see cref="AbstractVideoMedia"/> based on an external file
-    /// </summary>
+    [XukNameUglyPrettyAttribute("exVidMed", "ExternalVideoMedia")]
     public class ExternalVideoMedia : AbstractVideoMedia, IClipped, ILocated
     {
         public const string DEFAULT_SRC = "file.ext";
         
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.ExternalVideoMedia;
-        }
         private string mSrc;
         private int mWidth;
         private int mHeight;

@@ -6,17 +6,11 @@ using urakawa.xuk;
 
 namespace urakawa.media
 {
-    /// <summary>
-    /// Implementation of <see cref="AbstractImageMedia"/> based on an external image file
-    /// </summary>
+    [XukNameUglyPrettyAttribute("exImgMed", "ExternalImageMedia")]
     public class ExternalImageMedia : AbstractImageMedia, ILocated
     {
         public const string DEFAULT_SRC = "file.ext";
         
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.ExternalImageMedia;
-        }
         private string mSrc;
         private int mWidth;
         private int mHeight;

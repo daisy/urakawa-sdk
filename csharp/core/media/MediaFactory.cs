@@ -5,16 +5,9 @@ using urakawa.xuk;
 
 namespace urakawa.media
 {
-    /// <summary>
-    /// The media factory will create any media object of MediaType.xxx
-    /// </summary>
+    [XukNameUglyPrettyAttribute("medFct", "MediaFactory")]
     public sealed class MediaFactory : GenericWithPresentationFactory<Media>
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.MediaFactory;
-        }
-
         public MediaFactory(Presentation pres)
             : base(pres)
         {
