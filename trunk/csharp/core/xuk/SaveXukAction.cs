@@ -290,7 +290,7 @@ namespace urakawa.xuk
             try
             {
                 mXmlWriter.WriteStartDocument();
-                mXmlWriter.WriteStartElement(XukStrings.Xuk, XukAble.XUK_NS);
+                mXmlWriter.WriteStartElement(m_Project.PrettyFormat ? "Xuk" : "xuk", XukAble.XUK_NS);
                 if (!string.IsNullOrEmpty(XukAble.XUK_XSD_PATH))
                 {
                     if (m_Project.XukNamespaceUri == String.Empty)
@@ -381,7 +381,7 @@ namespace urakawa.xuk
                 //streamWriter.WriteLine("start = element " + XukStrings.Xuk + " { " + XukStrings.Xuk + ".attlist & " + XukStrings.Xuk + ".content }");
                 //streamWriter.WriteLine(XukStrings.Xuk + ".attlist = " + XukStrings.Xuk + ".NOOP.attr");
 
-                streamWriter.WriteLine("start = element " + XukStrings.Xuk + " { " + XukStrings.Project + " }");
+                streamWriter.WriteLine("start = element " + (isPrettyFormat ? "Xuk" : "xuk") + " { " + XukStrings.Project + " }");
 
                 streamWriter.Write(Project.GetXukSchema(isPrettyFormat));
             }

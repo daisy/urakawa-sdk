@@ -237,13 +237,13 @@ namespace urakawa.xuk
                 {
                     if (mXmlReader.NodeType == XmlNodeType.Element)
                     {
-                        if (mXmlReader.LocalName == XukStrings.XukPretty)
+                        if (mXmlReader.LocalName == "Xuk")
                         {
                             mDestXukAble.SetPrettyFormat(true);
                             foundRoot = true;
                             break;
                         }
-                        else if (mXmlReader.LocalName == XukStrings.XukCompressed)
+                        else if (mXmlReader.LocalName == "xuk")
                         {
                             mDestXukAble.SetPrettyFormat(false);
                             foundRoot = true;

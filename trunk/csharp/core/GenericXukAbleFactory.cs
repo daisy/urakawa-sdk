@@ -147,14 +147,23 @@ namespace urakawa
         protected override void Clear()
         {
             mRegisteredTypeAndQNames.Clear();
-            mRegisteredTypeAndQNamesByQualifiedName.Clear();
-            mRegisteredTypeAndQNamesByType.Clear();
             base.Clear();
         }
 
         private List<TypeAndQNames> mRegisteredTypeAndQNames = new List<TypeAndQNames>();
-        private Dictionary<string, TypeAndQNames> mRegisteredTypeAndQNamesByQualifiedName = new Dictionary<string, TypeAndQNames>();
-        private Dictionary<Type, TypeAndQNames> mRegisteredTypeAndQNamesByType = new Dictionary<Type, TypeAndQNames>();
+
+        private bool typeAlreadyRegistered(Type t)
+        {
+            foreach (TypeAndQNames typeAndQNames in mRegisteredTypeAndQNames)
+            {
+                if (t == typeAndQNames.Type)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         //public void RefreshQNames()
         //{
@@ -235,10 +244,10 @@ namespace urakawa
         private void RegisterType(TypeAndQNames tq)
         {
             mRegisteredTypeAndQNames.Add(tq);
-            mRegisteredTypeAndQNamesByQualifiedName.Add(tq.QName.GetFlatString(PrettyFormat), tq);
+
             if (tq.Type != null)
             {
-                mRegisteredTypeAndQNamesByType.Add(tq.Type, tq);
+                DebugFix.Assert(!typeAlreadyRegistered(tq.Type));
             }
         }
 
@@ -263,8 +272,9 @@ namespace urakawa
             tq.AssemblyName = t.Assembly.GetName();
 
             if (typeof(T).IsAssignableFrom(t.BaseType)
-                && !mRegisteredTypeAndQNamesByType.ContainsKey(t.BaseType)
-                && !t.BaseType.IsAbstract)
+                && !t.BaseType.IsAbstract
+                && !typeAlreadyRegistered(t.BaseType)
+                )
             {
                 tq.BaseQName = RegisterType(t.BaseType).QName;
             }
@@ -272,25 +282,17 @@ namespace urakawa
             return tq;
         }
 
-        private Type LookupType(string qname)
+        private TypeAndQNames LookupTypeAndQNames(QualifiedName qname)
         {
-            if (string.IsNullOrEmpty(qname))
+            foreach (TypeAndQNames typeAndQNames in mRegisteredTypeAndQNames)
             {
-                return null;
-            }
-
-            TypeAndQNames obj;
-
-            if (mRegisteredTypeAndQNamesByQualifiedName.TryGetValue(qname, out obj)
-                && obj != null) //mRegisteredTypeAndQNamesByQualifiedName.ContainsKey(qname))
-            {
-                // obj = mRegisteredTypeAndQNamesByQualifiedName[qname];
-                if (obj.Type != null)
+                if (typeAndQNames.QName.NamespaceUri == qname.NamespaceUri
+                    && (typeAndQNames.QName.LocalName.Ugly == qname.LocalName.Ugly
+                    || typeAndQNames.QName.LocalName.Pretty == qname.LocalName.Pretty)
+                    )
                 {
-                    return obj.Type;
+                    return typeAndQNames;
                 }
-
-                return LookupType(obj.BaseQName);
             }
 
             return null;
@@ -302,7 +304,19 @@ namespace urakawa
             {
                 return null;
             }
-            return LookupType(qname.GetFlatString(PrettyFormat));
+
+            TypeAndQNames typeAndQNames = LookupTypeAndQNames(qname);
+            if (typeAndQNames != null)
+            {
+                if (typeAndQNames.Type != null)
+                {
+                    return typeAndQNames.Type;
+                }
+
+                return LookupType(typeAndQNames.BaseQName);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -329,7 +343,7 @@ namespace urakawa
             U res = new U();
             InitializeInstance(res);
             Type t = typeof(U);
-            if (!mRegisteredTypeAndQNamesByType.ContainsKey(t))
+            if (!typeAlreadyRegistered(t))
             {
                 RegisterType(t);
             }
@@ -365,7 +379,7 @@ namespace urakawa
                 if (res != null)
                 {
                     InitializeInstance(res);
-                    if (!mRegisteredTypeAndQNamesByType.ContainsKey(t))
+                    if (!typeAlreadyRegistered(t))
                     {
                         RegisterType(t);
                     }
@@ -375,31 +389,28 @@ namespace urakawa
             return null;
         }
 
-        /// <summary>
-        /// Creates an instance of a <see cref="Type"/>
-        /// registered with a given xuk qualified name
-        /// </summary>
-        /// <param name="xukLN">The local name part of the xuk qualified name</param>
-        /// <param name="xukNS">The lnamespace uri part of the xuk qualified name</param>
-        /// <returns>
-        /// The instance or <c>null</c> if the given xuk qualified name
-        /// is not recognized by the factory as matching a <see cref="Type"/> that can be instantiated
-        /// </returns>
         public T Create(string xukLN, string xukNS)
         {
-            string qname = String.Format("{0}:{1}", xukNS, xukLN);
+            //string qname = String.Format("{0}:{1}", xukNS, xukLN);
+            UglyPrettyName name = new UglyPrettyName(!PrettyFormat ? xukLN : null, PrettyFormat ? xukLN : null);
+            QualifiedName qname = new QualifiedName(name, xukNS);
+
             Type t = LookupType(qname);
             if (t == null)
             {
                 return null;
             }
+
             T obj = Create(t);
-            TypeAndQNames tt = mRegisteredTypeAndQNamesByQualifiedName[qname];
+
+            TypeAndQNames tt = LookupTypeAndQNames(qname);
+            DebugFix.Assert(tt != null);
             if (tt.Type == null)
             {
                 // not real type of qname => type of first available ancestor in the type inheritance chain.
                 obj.MissingTypeOriginalXukedName = tt.QName;
             }
+
             return obj;
         }
 

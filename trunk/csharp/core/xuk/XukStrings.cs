@@ -9,81 +9,81 @@ namespace urakawa.xuk
 {
     public static class XukStrings
     {
-#if DEBUG
-        static XukStrings()
-        {
-            //Project project = new Project();
+        //#if DEBUG
+        //        static XukStrings()
+        //        {
+        //            //Project project = new Project();
 
-            //project.SetPrettyFormat(true);
-            //checkData(true);
+        //            //project.SetPrettyFormat(true);
+        //            //checkData(true);
 
-            //project.SetPrettyFormat(false);
-            //checkData(false);
+        //            //project.SetPrettyFormat(false);
+        //            //checkData(false);
 
 
-            checkData(true);
+        //            checkData(true);
 
-            checkData(false);
-        }
+        //            checkData(false);
+        //        }
 
-        private static void checkData(bool pretty)
-        {
-            IsPrettyFormat = pretty;
+        //        private static void checkData(bool pretty)
+        //        {
+        //            IsPrettyFormat = pretty;
 
-            Type type = typeof(XukStrings); //instance.GetType();
+        //            Type type = typeof(XukStrings); //instance.GetType();
 
-            BindingFlags flags = BindingFlags.Public | BindingFlags.Static;
-            PropertyInfo[] properties = type.GetProperties(flags);
+        //            BindingFlags flags = BindingFlags.Public | BindingFlags.Static;
+        //            PropertyInfo[] properties = type.GetProperties(flags);
 
-            List<string> list = new List<string>(properties.Length);
+        //            List<string> list = new List<string>(properties.Length);
 
-            foreach (PropertyInfo property in properties)
-            {
-                if (property.PropertyType == typeof(string))
-                {
-                    if (property.Name == "XukCompressed"
-                        || property.Name == "XukPretty"
-                        || property.Name == "Xuk")
-                    {
-                        continue;
-                    }
+        //            foreach (PropertyInfo property in properties)
+        //            {
+        //                if (property.PropertyType == typeof(string))
+        //                {
+        //                    if (property.Name == "XukCompressed"
+        //                        || property.Name == "XukPretty"
+        //                        || property.Name == "Xuk")
+        //                    {
+        //                        continue;
+        //                    }
 
-                    if (list.Contains(property.Name))
-                    {
-                        Debugger.Break();
-                    }
-                    else
-                    {
-                        list.Add(property.Name);
-                    }
+        //                    if (list.Contains(property.Name))
+        //                    {
+        //                        Debugger.Break();
+        //                    }
+        //                    else
+        //                    {
+        //                        list.Add(property.Name);
+        //                    }
 
-                    if (pretty
-                        && property.Name != "CSSExternalFileData"
-                        && property.Name != "XSLTExternalFileData")
-                    {
-                        string val = (string)property.GetValue(type, null);
-                        bool okay = property.Name == val;
-                        if (!okay)
-                        {
-                            Debugger.Break();
-                        }
-                    }
-                }
-                else if (property.PropertyType == typeof(bool))
-                {
-                    bool okay = property.Name == "IsPrettyFormat";
-                    if (!okay)
-                    {
-                        Debugger.Break();
-                    }
-                }
-                else
-                {
-                    Debugger.Break();
-                }
-            }
-        }
-#endif
+        //                    if (pretty
+        //                        && property.Name != "CSSExternalFileData"
+        //                        && property.Name != "XSLTExternalFileData")
+        //                    {
+        //                        string val = (string)property.GetValue(type, null);
+        //                        bool okay = property.Name == val;
+        //                        if (!okay)
+        //                        {
+        //                            Debugger.Break();
+        //                        }
+        //                    }
+        //                }
+        //                else if (property.PropertyType == typeof(bool))
+        //                {
+        //                    bool okay = property.Name == "IsPrettyFormat";
+        //                    if (!okay)
+        //                    {
+        //                        Debugger.Break();
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    Debugger.Break();
+        //                }
+        //            }
+        //        }
+        //#endif
         //private static Project mProject;
 
         ////public XukStrings(Project proj)
@@ -105,30 +105,30 @@ namespace urakawa.xuk
         //    get { return mProject != null && mProject.IsPrettyFormat(); }
         //}
 
-        public static bool IsPrettyFormat = true;
-        
+        //public static bool IsPrettyFormat = true;
+
 
         #region low occurence
 
 
-        #region the root
+        //#region the root
 
-        public static string XukPretty
-        {
-            get { return "Xuk"; }
-        }
+        //public static string XukPretty
+        //{
+        //    get { return "Xuk"; }
+        //}
 
-        public static string XukCompressed
-        {
-            get { return "xuk"; }
-        }
+        //public static string XukCompressed
+        //{
+        //    get { return "xuk"; }
+        //}
 
-        public static string Xuk
-        {
-            get { return (IsPrettyFormat ? XukPretty : XukCompressed); }
-        }
+        //public static string Xuk
+        //{
+        //    get { return (IsPrettyFormat ? XukPretty : XukCompressed); }
+        //}
 
-        #endregion
+        //#endregion
 
         public static string Presentations
         {
