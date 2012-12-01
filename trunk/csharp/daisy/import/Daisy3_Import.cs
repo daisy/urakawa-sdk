@@ -229,7 +229,7 @@ namespace urakawa.daisy.import
                 }
             }
 
-            m_Project.SetPrettyFormat(m_XukPrettyFormat);
+            m_Project.PrettyFormat = m_XukPrettyFormat;
 
             SaveXukAction action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath), true);
             action.ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile;
@@ -286,7 +286,7 @@ namespace urakawa.daisy.import
             m_dataFolderPrefix = dataFolderPrefix;
 
             m_Project = new Project();
-            m_Project.SetPrettyFormat(m_XukPrettyFormat);
+            m_Project.PrettyFormat = m_XukPrettyFormat;
 
             Presentation presentation = m_Project.AddNewPresentation(new Uri(m_outDirectory),
                 dataFolderPrefix);
