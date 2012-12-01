@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using AudioLib;
 using urakawa.exception;
 using urakawa.xuk;
 
@@ -14,6 +15,11 @@ namespace urakawa
     ///<typeparam name="T"></typeparam>
     public abstract class GenericXukAbleFactory<T> : XukAble where T : XukAble
     {
+        private static readonly UglyPrettyName XukLocalName_NAME = new UglyPrettyName("name", "XukLocalName");
+        private static readonly UglyPrettyName XukNamespaceUri_NAME = new UglyPrettyName("ns", "XukNamespaceUri");
+        private static readonly UglyPrettyName BaseXukLocalName_NAME = new UglyPrettyName("baseName", "BaseXukLocalName");
+        private static readonly UglyPrettyName BaseXukNamespaceUri_NAME = new UglyPrettyName("baseNs", "BaseXukNamespaceUri");
+
         private class TypeAndQNames
         {
             public QualifiedName QName;
@@ -22,26 +28,17 @@ namespace urakawa
             public string ClassName;
             public Type Type;
 
-            public void ReadFromXmlReader(XmlReader rd)
+            public void ReadFromXmlReader(XmlReader rd, bool pretty)
             {
-                QName = new QualifiedName(rd.GetAttribute(XukStrings.XukLocalName), rd.GetAttribute(XukStrings.XukNamespaceUri) ?? "");
-                if (rd.GetAttribute(XukStrings.BaseXukLocalName) != null)
-                {
-                    BaseQName = new QualifiedName(rd.GetAttribute(XukStrings.BaseXukLocalName), rd.GetAttribute(XukStrings.BaseXukNamespaceUri) ?? "");
-                }
-                else
-                {
-//#if DEBUG
-//                    Debugger.Break();
-//#endif
-                    BaseQName = null;
-                }
                 AssemblyName = new AssemblyName(rd.GetAttribute(XukStrings.AssemblyName));
+
                 if (rd.GetAttribute(XukStrings.AssemblyVersion) != null)
                 {
                     AssemblyName.Version = new Version(rd.GetAttribute(XukStrings.AssemblyVersion));
                 }
+
                 ClassName = rd.GetAttribute(XukStrings.FullName);
+
                 if (AssemblyName != null && ClassName != null)
                 {
                     try
@@ -51,26 +48,26 @@ namespace urakawa
                         {
                             Type = a.GetType(ClassName);
                         }
-                        catch (ArgumentException)
+                        catch (Exception ex)
                         {
 #if DEBUG
                             Debugger.Break();
 #endif
+                            Console.WriteLine("ClassName: " + ClassName);
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine(ex.StackTrace);
+
                             Type = null;
                         }
                     }
-                    catch (FileLoadException)
+                    catch (Exception ex)
                     {
 #if DEBUG
                         Debugger.Break();
 #endif
-                        Type = null;
-                    }
-                    catch (FileNotFoundException)
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif
+                        Console.WriteLine("AssemblyName: " + AssemblyName);
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine(ex.StackTrace);
                         Type = null;
                     }
                 }
@@ -79,7 +76,63 @@ namespace urakawa
 #if DEBUG
                     Debugger.Break();
 #endif
+                    Console.WriteLine("Type XukIn error?!");
+                    Console.WriteLine("AssemblyName: " + AssemblyName);
+                    Console.WriteLine("ClassName: " + ClassName);
+
                     Type = null;
+                }
+
+                string xukLocalName = readXmlAttribute(rd, XukLocalName_NAME);
+
+                UglyPrettyName name = null;
+
+                if (Type != null)
+                {
+                    UglyPrettyName nameCheck = GetXukName(Type);
+                    DebugFix.Assert(nameCheck != null);
+
+                    if (nameCheck != null)
+                    {
+                        if (pretty)
+                        {
+                            DebugFix.Assert(xukLocalName == nameCheck.Pretty);
+                        }
+                        else
+                        {
+                            DebugFix.Assert(xukLocalName == nameCheck.Ugly);
+                        }
+
+                        name = nameCheck;
+                    }
+                }
+
+                DebugFix.Assert(name != null);
+                if (name == null)
+                {
+                    name = new UglyPrettyName(
+                     !pretty ? xukLocalName : null,
+                     pretty ? xukLocalName : null);
+                }
+
+                QName = new QualifiedName(
+                    name,
+                    readXmlAttribute(rd, XukNamespaceUri_NAME) ?? "");
+
+                string baseXukLocalName = readXmlAttribute(rd, BaseXukLocalName_NAME);
+                if (!string.IsNullOrEmpty(baseXukLocalName))
+                {
+                    UglyPrettyName nameBase = new UglyPrettyName(
+                    !pretty ? baseXukLocalName : null,
+                    pretty ? baseXukLocalName : null);
+
+                    BaseQName = new QualifiedName(
+                        nameBase,
+                        readXmlAttribute(rd, BaseXukNamespaceUri_NAME) ?? "");
+                }
+                else
+                {
+                    BaseQName = null;
                 }
             }
         }
@@ -100,86 +153,86 @@ namespace urakawa
         private Dictionary<string, TypeAndQNames> mRegisteredTypeAndQNamesByQualifiedName = new Dictionary<string, TypeAndQNames>();
         private Dictionary<Type, TypeAndQNames> mRegisteredTypeAndQNamesByType = new Dictionary<Type, TypeAndQNames>();
 
-        public void RefreshQNames()
-        {
-            foreach (TypeAndQNames tq in mRegisteredTypeAndQNames)
-            {
-                if (tq.Type != null)
-                {
-                    tq.QName = GetXukQualifiedName(tq.Type);
+        //public void RefreshQNames()
+        //{
+        //    foreach (TypeAndQNames tq in mRegisteredTypeAndQNames)
+        //    {
+        //        if (tq.Type != null)
+        //        {
+        //            tq.QName = GetXukQualifiedName(tq.Type);
 
-                    if (tq.BaseQName != null
-                        && tq.Type.BaseType != null)
-                    {
-                        tq.BaseQName = GetXukQualifiedName(tq.Type.BaseType);
-                    }
-                }
-            }
-            {
-                Dictionary<string, TypeAndQNames> newDict = new Dictionary<string, TypeAndQNames>();
-                Dictionary<string, TypeAndQNames>.Enumerator enu = mRegisteredTypeAndQNamesByQualifiedName.GetEnumerator();
-                while (enu.MoveNext())
-                {
-                    KeyValuePair<string, TypeAndQNames> pair = enu.Current;
-                    TypeAndQNames tq = new TypeAndQNames();
-                    if (pair.Value.Type != null)
-                    {
-                        tq.QName = GetXukQualifiedName(pair.Value.Type);
-                        tq.Type = pair.Value.Type;
-                        tq.ClassName = pair.Value.Type.FullName;
-                        tq.AssemblyName = pair.Value.Type.Assembly.GetName();
-                        if (pair.Value.BaseQName != null)
-                        {
-                            tq.BaseQName = GetXukQualifiedName(pair.Value.Type.BaseType);
-                        }
-                    }
-                    else
-                    {
-                        tq.QName = new QualifiedName(pair.Value.QName.LocalName, pair.Value.QName.NamespaceUri);
-                        tq.Type = null;
-                        tq.ClassName = pair.Value.ClassName;
-                        tq.AssemblyName = pair.Value.AssemblyName;
-                        if (pair.Value.BaseQName != null)
-                        {
-                            tq.BaseQName = new QualifiedName(pair.Value.BaseQName.LocalName, pair.Value.BaseQName.NamespaceUri);
-                        }
-                    }
-                    newDict.Add(tq.QName.FullyQualifiedName, tq);
-                }
-                mRegisteredTypeAndQNamesByQualifiedName.Clear();
-                mRegisteredTypeAndQNamesByQualifiedName = newDict;
-            }
+        //            if (tq.BaseQName != null
+        //                && tq.Type.BaseType != null)
+        //            {
+        //                tq.BaseQName = GetXukQualifiedName(tq.Type.BaseType);
+        //            }
+        //        }
+        //    }
+        //    {
+        //        Dictionary<string, TypeAndQNames> newDict = new Dictionary<string, TypeAndQNames>();
+        //        Dictionary<string, TypeAndQNames>.Enumerator enu = mRegisteredTypeAndQNamesByQualifiedName.GetEnumerator();
+        //        while (enu.MoveNext())
+        //        {
+        //            KeyValuePair<string, TypeAndQNames> pair = enu.Current;
+        //            TypeAndQNames tq = new TypeAndQNames();
+        //            if (pair.Value.Type != null)
+        //            {
+        //                tq.QName = GetXukQualifiedName(pair.Value.Type);
+        //                tq.Type = pair.Value.Type;
+        //                tq.ClassName = pair.Value.Type.FullName;
+        //                tq.AssemblyName = pair.Value.Type.Assembly.GetName();
+        //                if (pair.Value.BaseQName != null)
+        //                {
+        //                    tq.BaseQName = GetXukQualifiedName(pair.Value.Type.BaseType);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                tq.QName = new QualifiedName(pair.Value.QName.LocalName, pair.Value.QName.NamespaceUri);
+        //                tq.Type = null;
+        //                tq.ClassName = pair.Value.ClassName;
+        //                tq.AssemblyName = pair.Value.AssemblyName;
+        //                if (pair.Value.BaseQName != null)
+        //                {
+        //                    tq.BaseQName = new QualifiedName(pair.Value.BaseQName.LocalName, pair.Value.BaseQName.NamespaceUri);
+        //                }
+        //            }
+        //            newDict.Add(tq.QName.FullyQualifiedName, tq);
+        //        }
+        //        mRegisteredTypeAndQNamesByQualifiedName.Clear();
+        //        mRegisteredTypeAndQNamesByQualifiedName = newDict;
+        //    }
 
-            {
-                Dictionary<Type, TypeAndQNames> newDict = new Dictionary<Type, TypeAndQNames>();
-                Dictionary<Type, TypeAndQNames>.Enumerator enu = mRegisteredTypeAndQNamesByType.GetEnumerator();
-                while (enu.MoveNext())
-                {
-                    KeyValuePair<Type, TypeAndQNames> pair = enu.Current;
-                    TypeAndQNames tq = new TypeAndQNames();
+        //    {
+        //        Dictionary<Type, TypeAndQNames> newDict = new Dictionary<Type, TypeAndQNames>();
+        //        Dictionary<Type, TypeAndQNames>.Enumerator enu = mRegisteredTypeAndQNamesByType.GetEnumerator();
+        //        while (enu.MoveNext())
+        //        {
+        //            KeyValuePair<Type, TypeAndQNames> pair = enu.Current;
+        //            TypeAndQNames tq = new TypeAndQNames();
 
-                    if (pair.Value.Type != null)
-                    {
-                        tq.QName = GetXukQualifiedName(pair.Value.Type);
-                        tq.Type = pair.Value.Type;
-                        tq.ClassName = pair.Value.Type.FullName;
-                        tq.AssemblyName = pair.Value.Type.Assembly.GetName();
-                        if (pair.Value.BaseQName != null)
-                        {
-                            tq.BaseQName = GetXukQualifiedName(pair.Value.Type.BaseType);
-                        }
-                        newDict.Add(pair.Value.Type, tq);
-                    }
-                }
-                mRegisteredTypeAndQNamesByType.Clear();
-                mRegisteredTypeAndQNamesByType = newDict;
-            }
-        }
+        //            if (pair.Value.Type != null)
+        //            {
+        //                tq.QName = GetXukQualifiedName(pair.Value.Type);
+        //                tq.Type = pair.Value.Type;
+        //                tq.ClassName = pair.Value.Type.FullName;
+        //                tq.AssemblyName = pair.Value.Type.Assembly.GetName();
+        //                if (pair.Value.BaseQName != null)
+        //                {
+        //                    tq.BaseQName = GetXukQualifiedName(pair.Value.Type.BaseType);
+        //                }
+        //                newDict.Add(pair.Value.Type, tq);
+        //            }
+        //        }
+        //        mRegisteredTypeAndQNamesByType.Clear();
+        //        mRegisteredTypeAndQNamesByType = newDict;
+        //    }
+        //}
 
         private void RegisterType(TypeAndQNames tq)
         {
             mRegisteredTypeAndQNames.Add(tq);
-            mRegisteredTypeAndQNamesByQualifiedName.Add(tq.QName.FullyQualifiedName, tq);
+            mRegisteredTypeAndQNamesByQualifiedName.Add(tq.QName.GetFlatString(PrettyFormat), tq);
             if (tq.Type != null)
             {
                 mRegisteredTypeAndQNamesByType.Add(tq.Type, tq);
@@ -205,7 +258,7 @@ namespace urakawa
             tq.Type = t;
             tq.ClassName = t.FullName;
             tq.AssemblyName = t.Assembly.GetName();
-            
+
             if (typeof(T).IsAssignableFrom(t.BaseType)
                 && !mRegisteredTypeAndQNamesByType.ContainsKey(t.BaseType)
                 && !t.BaseType.IsAbstract)
@@ -224,7 +277,7 @@ namespace urakawa
             }
 
             TypeAndQNames obj;
-            
+
             if (mRegisteredTypeAndQNamesByQualifiedName.TryGetValue(qname, out obj)
                 && obj != null) //mRegisteredTypeAndQNamesByQualifiedName.ContainsKey(qname))
             {
@@ -246,7 +299,7 @@ namespace urakawa
             {
                 return null;
             }
-            return LookupType(qname.FullyQualifiedName);
+            return LookupType(qname.GetFlatString(PrettyFormat));
         }
 
         /// <summary>
@@ -352,12 +405,12 @@ namespace urakawa
             foreach (TypeAndQNames tp in mRegisteredTypeAndQNames)
             {
                 destination.WriteStartElement(XukStrings.Type, XukAble.XUK_NS);
-                destination.WriteAttributeString(XukStrings.XukLocalName, tp.QName.LocalName);
-                destination.WriteAttributeString(XukStrings.XukNamespaceUri, tp.QName.NamespaceUri);
+                destination.WriteAttributeString(XukLocalName_NAME.z(PrettyFormat), tp.QName.LocalName.z(PrettyFormat));
+                destination.WriteAttributeString(XukNamespaceUri_NAME.z(PrettyFormat), tp.QName.NamespaceUri);
                 if (tp.BaseQName != null)
                 {
-                    destination.WriteAttributeString(XukStrings.BaseXukLocalName, tp.BaseQName.LocalName);
-                    destination.WriteAttributeString(XukStrings.BaseXukNamespaceUri, tp.BaseQName.NamespaceUri);
+                    destination.WriteAttributeString(BaseXukLocalName_NAME.z(PrettyFormat), tp.BaseQName.LocalName.z(PrettyFormat));
+                    destination.WriteAttributeString(BaseXukNamespaceUri_NAME.z(PrettyFormat), tp.BaseQName.NamespaceUri);
                 }
                 if (tp.Type != null)
                 {
@@ -417,7 +470,7 @@ namespace urakawa
             if (source.LocalName == XukStrings.Type && source.NamespaceURI == XukAble.XUK_NS)
             {
                 TypeAndQNames tq = new TypeAndQNames();
-                tq.ReadFromXmlReader(source);
+                tq.ReadFromXmlReader(source, PrettyFormat);
                 RegisterType(tq);
             }
             if (!source.IsEmptyElement)

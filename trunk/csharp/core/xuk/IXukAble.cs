@@ -32,23 +32,9 @@ namespace urakawa.xuk
         /// <param name="handler">The handler for progress</param>
         void XukOut(XmlWriter destination, Uri baseUri, IProgressHandler handler);
 
-        /// <summary>
-        /// Gets the local localName part of the QName identifying the type of the instance
-        /// </summary>
-        /// <returns>The local localName</returns>
-        string XukLocalName { get; }
-
-        /// <summary>
-        /// Gets the namespace uri part of the QName identifying the type of the instance
-        /// </summary>
-        /// <returns>The namespace uri</returns>
-        string XukNamespaceUri { get; }
-
         ///<summary>
-        /// Determines whether the XUK output is ugly/compressed or pretty/expanded.
+        /// Determines whether the XUK output is ugly/compressed or pretty/expanded/indented/formatted.
         ///</summary>
-        bool IsPrettyFormat();
-
-        void SetPrettyFormat(bool pretty);
+        bool PrettyFormat { get; set; }
     }
 }

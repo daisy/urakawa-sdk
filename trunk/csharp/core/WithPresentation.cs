@@ -9,14 +9,10 @@ namespace urakawa
     /// </summary>
     public abstract class WithPresentation : XukAble, IValueEquatable<WithPresentation>
     {
-        public override bool IsPrettyFormat()
-        {
-            return Presentation.IsPrettyFormat();
-        }
 
-        public override void SetPrettyFormat(bool pretty)
-        {
-            Presentation.SetPrettyFormat(pretty);
+        public override bool PrettyFormat {
+            get { return Presentation.IsPrettyFormat(); }
+            set { Presentation.SetPrettyFormat(value); }
         }
 
         private Presentation mPresentation;

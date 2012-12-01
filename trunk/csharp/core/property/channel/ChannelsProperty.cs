@@ -221,7 +221,8 @@ namespace urakawa.property.channel
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The property factory can not create a ChannelsProperty matching QName {0}:{1}",
-                                                                         XukNamespaceUri, XukLocalName));
+                                                                         XukNamespaceUri,
+                                                                         GetTypeNameFormatted()));
             }
             foreach (Channel ch in UsedChannels)
             {

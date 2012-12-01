@@ -3,117 +3,242 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Xml;
+using AudioLib;
 using urakawa.exception;
 using urakawa.progress;
 
 namespace urakawa.xuk
 {
-    /// <summary>
-    /// Common base class for classes that implement <see cref="IXukAble"/>
-    /// </summary>
+    [XukNamespaceAttribute("http://www.daisy.org/urakawa/xuk/2.0")]
     public abstract class XukAble : IXukAble
     {
-        private struct XukNameAndPrettyFlag
+        public sealed class UglyPrettyName
         {
-            public string name;
-            public bool isPretty;
+            public readonly string Ugly;
+            public readonly string Pretty;
+
+            public UglyPrettyName(string ugly, string pretty)
+            {
+                Ugly = ugly;
+                Pretty = pretty;
+            }
+
+            public string z(bool pretty)
+            {
+                return pretty ? Pretty : Ugly;
+            }
         }
 
-        private readonly Dictionary<Type, XukNameAndPrettyFlag> m_TypeNameMap = new Dictionary<Type, XukNameAndPrettyFlag>();
-
-        private string GetTypeNameFormatted(Type t)
+        public static string readXmlAttribute(XmlReader xmlReader, UglyPrettyName name)
         {
-            XukNameAndPrettyFlag xuk;
-            bool update = false;
-
-            if (m_TypeNameMap.TryGetValue(t, out xuk)
-                //&& xuk != null
-                && !string.IsNullOrEmpty(xuk.name))
+            string attrValue = xmlReader.GetAttribute(name.Ugly);
+            if (string.IsNullOrEmpty(attrValue))
             {
-                if (IsPrettyFormat() == xuk.isPretty)
-                {
-                    return xuk.name;
-                }
-                else
-                {
-                    update = true;
-                }
+                attrValue = xmlReader.GetAttribute(name.Pretty);
             }
+            return attrValue;
+        }
 
-
-            //if (m_TypeNameMap.ContainsKey(t)) return m_TypeNameMap[t];
-
-            string name = t.Name;
-
-            PropertyInfo info = typeof(XukStrings).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
-            if (info != null)
+        [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+        protected sealed class XukNameUglyPrettyAttribute : Attribute
+        {
+            public readonly UglyPrettyName Name;
+            public XukNameUglyPrettyAttribute(string ugly, string pretty)
             {
-                if (info.PropertyType == typeof(string))
-                {
-                    string n = (info.GetValue(null, null) as string) ?? name;
-                    xuk.name = n;
-                    xuk.isPretty = IsPrettyFormat();
-
-                    if (update)
-                    {
-                        m_TypeNameMap.Remove(t);
-                    }
-                    m_TypeNameMap.Add(t, xuk);
-
-                    return n;
-                }
+                Name = new UglyPrettyName(ugly, pretty);
             }
-            else
+        }
+
+        [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+        protected sealed class XukNamespaceAttribute : Attribute
+        {
+            public readonly string Namespace;
+            public XukNamespaceAttribute(string str)
             {
-#if NET4 && DEBUG
-                Debugger.Break();
-#endif
-
-                FieldInfo info2 = t.GetField("XukString", BindingFlags.Static | BindingFlags.Public);
-                if (info2 != null)
-                {
-                    if (info2.FieldType == typeof(string))
-                    {
-                        string n = (info2.GetValue(null) as string) ?? name;
-                        xuk.name = n;
-                        xuk.isPretty = IsPrettyFormat();
-
-                        if (update)
-                        {
-                            m_TypeNameMap.Remove(t);
-                        }
-                        m_TypeNameMap.Add(t, xuk);
-
-                        return n;
-                    }
-                }
+                Namespace = str;
             }
+        }
+
 #if DEBUG
-            Debugger.Break();
+        static XukAble()
+        {
+            DebugFix.Assert(!string.IsNullOrEmpty(XUK_NS));
+
+            List<string> list = new List<string>();
+
+            foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Console.WriteLine(ass.FullName);
+
+                foreach (Type type in ass.GetTypes())
+                {
+                    if (type == typeof(XukAble))
+                    {
+                        Console.WriteLine(type.FullName);
+
+                        string ns = GetXukNamespace(type);
+                        if (!string.IsNullOrEmpty(ns))
+                        {
+                            Console.WriteLine(ns);
+                        }
+                        else
+                        {
+                            Debugger.Break();
+                        }
+                    }
+                    else if (typeof(XukAble).IsAssignableFrom(type))
+                    {
+                        Console.WriteLine(type.FullName);
+
+                        string ns = GetXukNamespace(type);
+                        DebugFix.Assert(!string.IsNullOrEmpty(ns));
+
+                        if (type.IsAbstract)
+                        {
+                            Console.WriteLine("abstract");
+                            continue;
+                        }
+
+                        string pretty = GetXukName(type, true);
+                        if (!string.IsNullOrEmpty(pretty))
+                        {
+                            Console.WriteLine(pretty);
+
+                            if (list.Contains(pretty))
+                            {
+                                Debugger.Break();
+                            }
+                            else
+                            {
+                                list.Add(pretty);
+                            }
+
+                            if (type.Name == "CSSExternalFileData")
+                            {
+                                DebugFix.Assert(pretty == "CssExternalFileData");
+                            }
+                            else if (type.Name == "XSLTExternalFileData")
+                            {
+                                DebugFix.Assert(pretty == "XsltExternalFileData");
+                            }
+                            else
+                            {
+                                DebugFix.Assert(type.Name == pretty);
+                            }
+                        }
+                        else
+                        {
+                            Debugger.Break();
+                        }
+
+
+                        string ugly = GetXukName(type, false);
+                        if (!string.IsNullOrEmpty(ugly))
+                        {
+                            Console.WriteLine(ugly);
+
+                            if (list.Contains(ugly))
+                            {
+                                Debugger.Break();
+                            }
+                            else
+                            {
+                                list.Add(ugly);
+                            }
+                        }
+                        else
+                        {
+                            Debugger.Break();
+                        }
+                    }
+                }
+            }
+        }
 #endif
-            System.Diagnostics.Debug.Fail("Type name not found ??");
-            return name;
-        }
 
-        public virtual bool IsPrettyFormat()
+        public static readonly string XUK_NS = GetXukNamespace(typeof(XukAble));
+
+        public static string GetXukNamespace(Type type)
         {
-            return XukStrings.IsPrettyFormat;
+            Attribute attribute = Attribute.GetCustomAttribute(
+                type,
+                typeof(XukNamespaceAttribute));
+
+            DebugFix.Assert(attribute != null);
+
+            return attribute == null ? string.Empty
+                : ((XukNamespaceAttribute)attribute).Namespace;
         }
 
-        public virtual void SetPrettyFormat(bool pretty)
+        private string m_XukNamespace;
+        public string GetXukNamespace()
         {
-            throw new NotImplementedException();
+            if (m_XukNamespace == null)
+            {
+                m_XukNamespace = GetXukNamespace(GetType());
+            }
+            return m_XukNamespace;
         }
 
-        public static readonly string XUK_NS = "http://www.daisy.org/urakawa/xuk/2.0";
+        public string GetXukName()
+        {
+            UglyPrettyName xukName = GetXukName_();
+            if (xukName == null)
+            {
+                return null;
+            }
+            return PrettyFormat ? xukName.Pretty : xukName.Ugly;
+        }
+
+        private UglyPrettyName m_XukName;
+        public UglyPrettyName GetXukName_()
+        {
+            if (m_XukName == null)
+            {
+                m_XukName = GetXukName(GetType());
+            }
+            return m_XukName;
+        }
+
+        public static UglyPrettyName GetXukName(Type type)
+        {
+            Attribute attribute = Attribute.GetCustomAttribute(
+                type,
+                typeof(XukNameUglyPrettyAttribute));
+
+            DebugFix.Assert(attribute != null);
+
+            if (attribute == null)
+            {
+                return null;
+            }
+
+            return ((XukNameUglyPrettyAttribute)attribute).Name;
+        }
+
+        public static string GetXukName(Type type, bool pretty)
+        {
+            UglyPrettyName xukName = GetXukName(type);
+            if (xukName == null)
+            {
+                return null;
+            }
+            return pretty ? xukName.Pretty : xukName.Ugly;
+        }
+
+        public QualifiedName GetXukQualifiedName()
+        {
+            return new QualifiedName(GetXukName_(), GetXukNamespace());
+        }
+
+        public static QualifiedName GetXukQualifiedName(Type type)
+        {
+            return new QualifiedName(GetXukName(type), GetXukNamespace(type));
+        }
 
 
-        /// <summary>
-        /// The path of the W3C XmlSchema defining the XUK namespace
-        /// </summary>
-        public static readonly string XUK_XSD_PATH = "xuk.xsd";
+        public abstract bool PrettyFormat { get; set; }
 
-        #region IXUKAble members
 
         private QualifiedName m_MissingTypeOriginalXukedName = null;
         public QualifiedName MissingTypeOriginalXukedName
@@ -123,6 +248,40 @@ namespace urakawa.xuk
         }
 
 
+
+        private static int m_NamespacePrefixIndex = 0;
+        private static readonly Dictionary<string, string> m_NamespacePrefixMap = new Dictionary<string, string>();
+        private static string getXukNamespacePrefix(string namespaceUri)
+        {
+            string str;
+            if (m_NamespacePrefixMap.TryGetValue(namespaceUri, out str))
+            {
+                if (string.IsNullOrEmpty(str))
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    str = "nsfix";
+                }
+                return str;
+            }
+
+            //if (m_NamespacePrefixMap.ContainsKey(namespaceUri))
+            //{
+            //    return m_NamespacePrefixMap[namespaceUri];
+            //}
+
+            m_NamespacePrefixIndex++;
+            string prefix = "ns" + m_NamespacePrefixIndex;
+            m_NamespacePrefixMap.Add(namespaceUri, prefix);
+            return prefix;
+        }
+
+
+
+
+
+        public static readonly string XUK_XSD_PATH = "xuk.xsd";
 
         //public static ulong ComputeUidHash(string uid)
         //{
@@ -253,6 +412,8 @@ namespace urakawa.xuk
 
 #endif //UidStringComparisonNoHashCodeOptimization
 
+        private static readonly UglyPrettyName Uid_NAME = new UglyPrettyName("uid", "Uid");
+
         private string m_Uid = null;
         public string Uid
         {
@@ -307,8 +468,9 @@ namespace urakawa.xuk
             {
                 if (handler.NotifyProgress())
                 {
-                    string msg = String.Format("XukIn cancelled at element {0}:{1}", XukLocalName,
-                                               XukNamespaceUri);
+                    string msg = String.Format("XukIn cancelled at element {0}:{1}",
+                        GetXukName(),
+                        GetXukNamespace());
                     throw new exception.ProgressCancelledException(msg);
                 }
             }
@@ -359,8 +521,11 @@ namespace urakawa.xuk
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected virtual void XukInAttributes(XmlReader source)
         {
-            string uid = source.GetAttribute(XukStrings.Uid);
-            if (!string.IsNullOrEmpty(uid)) Uid = uid;
+            string uid = readXmlAttribute(source, Uid_NAME);
+            if (!string.IsNullOrEmpty(uid))
+            {
+                Uid = uid;
+            }
         }
 
         /// <summary>
@@ -370,35 +535,10 @@ namespace urakawa.xuk
         /// <param name="handler">The handler of progress</param>
         protected virtual void XukInChild(XmlReader source, IProgressHandler handler)
         {
-            if (source.NodeType == XmlNodeType.Element && !source.IsEmptyElement) source.ReadSubtree().Close(); //Read past unknown child 
-        }
-
-        private static int m_NamespacePrefixIndex = 0;
-        private static readonly Dictionary<string, string> m_NamespacePrefixMap = new Dictionary<string, string>();
-        private static string GetNamespacePrefix(string namespaceUri)
-        {
-            string str;
-            if (m_NamespacePrefixMap.TryGetValue(namespaceUri, out str))
+            if (source.NodeType == XmlNodeType.Element && !source.IsEmptyElement)
             {
-                if (string.IsNullOrEmpty(str))
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                    str = "nsfix";
-                }
-                return str;
+                source.ReadSubtree().Close(); //Read past unknown child 
             }
-
-            //if (m_NamespacePrefixMap.ContainsKey(namespaceUri))
-            //{
-            //    return m_NamespacePrefixMap[namespaceUri];
-            //}
-
-            m_NamespacePrefixIndex++;
-            string prefix = "ns" + m_NamespacePrefixIndex;
-            m_NamespacePrefixMap.Add(namespaceUri, prefix);
-            return prefix;
         }
 
         /// <summary>
@@ -431,24 +571,24 @@ namespace urakawa.xuk
                 {
                     if (MissingTypeOriginalXukedName.NamespaceUri == XukAble.XUK_NS)
                     {
-                        destination.WriteStartElement(MissingTypeOriginalXukedName.LocalName, MissingTypeOriginalXukedName.NamespaceUri);
+                        destination.WriteStartElement(MissingTypeOriginalXukedName.LocalName.z(PrettyFormat), MissingTypeOriginalXukedName.NamespaceUri);
                     }
                     else
                     {
-                        string prefix = GetNamespacePrefix(MissingTypeOriginalXukedName.NamespaceUri);
-                        destination.WriteStartElement(prefix, MissingTypeOriginalXukedName.LocalName, MissingTypeOriginalXukedName.NamespaceUri);
+                        string prefix = getXukNamespacePrefix(MissingTypeOriginalXukedName.NamespaceUri);
+                        destination.WriteStartElement(prefix, MissingTypeOriginalXukedName.LocalName.z(PrettyFormat), MissingTypeOriginalXukedName.NamespaceUri);
                     }
                 }
                 else
                 {
-                    if (XukNamespaceUri == XukAble.XUK_NS)
+                    if (GetXukNamespace() == XukAble.XUK_NS)
                     {
-                        destination.WriteStartElement(XukLocalName, XukNamespaceUri);
+                        destination.WriteStartElement(GetXukName(), XukAble.XUK_NS);
                     }
                     else
                     {
-                        string prefix = GetNamespacePrefix(XukNamespaceUri);
-                        destination.WriteStartElement(prefix, XukLocalName, XukNamespaceUri);
+                        string prefix = getXukNamespacePrefix(GetXukNamespace());
+                        destination.WriteStartElement(prefix, GetXukName(), GetXukNamespace());
                     }
                 }
                 XukOutAttributes(destination, baseUri);
@@ -483,7 +623,7 @@ namespace urakawa.xuk
         {
             if (!string.IsNullOrEmpty(Uid))
             {
-                destination.WriteAttributeString(XukStrings.Uid, Uid);
+                destination.WriteAttributeString(Uid_NAME.z(PrettyFormat), Uid);
             }
         }
 
@@ -500,35 +640,71 @@ namespace urakawa.xuk
         {
         }
 
-        /// <summary>
-        /// Gets the local name part of the QName representing a <see cref="XukAble"/> in Xuk. 
-        /// This will always be the name of the <see cref="Type"/> of <c>this</c>
-        /// </summary>
-        /// <returns>The local name part</returns>
-        public string XukLocalName
-        {
-            get
-            {
-                return GetTypeNameFormatted();
-                //return GetTypeNameFormatted(GetType());
-                //return GetType().Name;
-            }
-        }
+        //public string XukLocalName
+        //{
+        //    get
+        //    {
+        //        return GetTypeNameFormatted();
+        //        //return GetTypeNameFormatted(GetType());
+        //        //return GetType().Name;
+        //    }
+        //}
 
-        public abstract string GetTypeNameFormatted();
+        //public abstract string GetTypeNameFormatted();
 
-        /// <summary>
-        /// Gets the namespace uri part of the QName representing a <see cref="XukAble"/> in Xuk
-        /// </summary>
-        /// <returns>The namespace uri part</returns>
-        public string XukNamespaceUri
-        {
-            get
-            {
-                //return XUK_NS;
-                return GetXukNamespaceUri(GetType());
-            }
-        }
+        //public string XukNamespaceUri
+        //{
+        //    get
+        //    {
+        //        //return XUK_NS;
+        //        return GetXukNamespaceUri(GetType());
+        //    }
+        //}
+
+        //public virtual string GetXukNamespaceUri()
+        //{
+        //    return XUK_NS;
+        //}
+
+        //        private static readonly Dictionary<Type, string> m_TypeNamespaceUriMap = new Dictionary<Type, string>();
+
+        //        private static string GetXukNamespaceUri(Type t)
+        //        {
+        //            if (!typeof(XukAble).IsAssignableFrom(t))
+        //            {
+        //                throw new exception.MethodParameterIsWrongTypeException(
+        //                    "Cannot get the XukNamespaceUri of a type that does not inherit XukAble");
+        //            }
+
+        //            string str;
+        //            if (m_TypeNamespaceUriMap.TryGetValue(t, out str))
+        //            {
+        //                if (string.IsNullOrEmpty(str))
+        //                {
+        //#if DEBUG
+        //                    Debugger.Break();
+        //#endif
+        //                    str = XukAble.XUK_NS;
+        //                }
+
+        //                return str;
+        //            }
+
+        //            //if (m_TypeNamespaceUriMap.ContainsKey(t)) return m_TypeNamespaceUriMap[t];
+
+        //            FieldInfo fi = t.GetField("XUK_NS", BindingFlags.Static | BindingFlags.Public);
+        //            if (fi != null)
+        //            {
+        //                if (fi.FieldType == typeof(string))
+        //                {
+        //                    string uri = (fi.GetValue(null) as string) ?? "";
+        //                    m_TypeNamespaceUriMap.Add(t, uri);
+        //                    return uri;
+        //                }
+        //            }
+
+        //            return GetXukNamespaceUri(t.BaseType);
+        //        }
 
         //public QualifiedName XukQualifiedName
         //{
@@ -540,77 +716,175 @@ namespace urakawa.xuk
         //    }
         //}
 
-        /// <summary>
-        /// Gets the Xuk QName of a <see cref="XukAble"/> <see cref="Type"/> in the form <c>[NS_URI:]LOCALNAME</c>,
-        /// calls method <see cref="GetXukNamespaceUri"/> to get the xuk namespace uri
-        /// </summary>
-        /// <param name="t">The <see cref="Type"/>, must inherit <see cref="XukAble"/></param>
-        /// <returns>The qname</returns>
-        /// <exception cref="MethodParameterIsNullException">Thrown when <paramref name="t"/> is <c>null</c></exception>
-        public QualifiedName GetXukQualifiedName(Type t)
-        {
-            if (!typeof(XukAble).IsAssignableFrom(t))
-            {
-                string msg = String.Format(
-                    "Only Types deriving {0} can be given here !", typeof(XukAble).FullName);
-                throw new MethodParameterIsWrongTypeException(msg);
-            }
-            if (t == null)
-            {
-                throw new MethodParameterIsNullException("Cannot get the Xuk QualifiedName of a null Type");
-            }
-            return new QualifiedName(GetTypeNameFormatted(t), GetXukNamespaceUri(t));
-        }
+        //public QualifiedName GetXukQualifiedName(Type t)
+        //{
+        //    if (!typeof(XukAble).IsAssignableFrom(t))
+        //    {
+        //        string msg = String.Format(
+        //            "Only Types deriving {0} can be given here !", typeof(XukAble).FullName);
+        //        throw new MethodParameterIsWrongTypeException(msg);
+        //    }
+        //    if (t == null)
+        //    {
+        //        throw new MethodParameterIsNullException("Cannot get the Xuk QualifiedName of a null Type");
+        //    }
+        //    return new QualifiedName(GetTypeNameFormatted(t), GetXukNamespaceUri(t));
+        //}
 
 
-        private static readonly Dictionary<Type, string> m_TypeNamespaceUriMap = new Dictionary<Type, string>();
+        //        private struct XukNameAndPrettyFlag
+        //        {
+        //            public string name;
+        //            public bool isPretty;
+        //        }
 
-        /// <summary>
-        /// Gets the Xuk namespace uri of a <see cref="XukAble"/> <see cref="Type"/>,
-        /// by searching up the class heirarchy for a <see cref="Type"/> 
-        /// with a <c>public static</c> field names <c>XUK_NS</c>
-        /// </summary>
-        /// <param name="t">The <see cref="Type"/>, must inherit <see cref="XukAble"/></param>
-        /// <returns>The xuk namespace uri</returns>
-        private static string GetXukNamespaceUri(Type t)
-        {
-            if (!typeof(XukAble).IsAssignableFrom(t))
-            {
-                throw new exception.MethodParameterIsWrongTypeException(
-                    "Cannot get the XukNamespaceUri of a type that does not inherit XukAble");
-            }
+        //        private readonly Dictionary<Type, XukNameAndPrettyFlag> m_TypeNameMap = new Dictionary<Type, XukNameAndPrettyFlag>();
 
-            string str;
-            if (m_TypeNamespaceUriMap.TryGetValue(t, out str))
-            {
-                if (string.IsNullOrEmpty(str))
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                    str = XukAble.XUK_NS;
-                }
+        //        private string GetTypeNameFormatted(Type t)
+        //        {
+        //            XukNameAndPrettyFlag xuk;
+        //            bool update = false;
 
-                return str;
-            }
-
-            //if (m_TypeNamespaceUriMap.ContainsKey(t)) return m_TypeNamespaceUriMap[t];
-
-            FieldInfo fi = t.GetField("XUK_NS", BindingFlags.Static | BindingFlags.Public);
-            if (fi != null)
-            {
-                if (fi.FieldType == typeof(string))
-                {
-                    string uri = (fi.GetValue(null) as string) ?? "";
-                    m_TypeNamespaceUriMap.Add(t, uri);
-                    return uri;
-                }
-            }
-
-            return GetXukNamespaceUri(t.BaseType);
-        }
+        //            if (m_TypeNameMap.TryGetValue(t, out xuk)
+        //                //&& xuk != null
+        //                && !string.IsNullOrEmpty(xuk.name))
+        //            {
+        //                if (IsPrettyFormat() == xuk.isPretty)
+        //                {
+        //                    return xuk.name;
+        //                }
+        //                else
+        //                {
+        //                    update = true;
+        //                }
+        //            }
 
 
-        #endregion
+        //            //if (m_TypeNameMap.ContainsKey(t)) return m_TypeNameMap[t];
+
+        //            string name = t.Name;
+
+        //            PropertyInfo info = typeof(XukStrings).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
+        //            if (info != null)
+        //            {
+        //                if (info.PropertyType == typeof(string))
+        //                {
+        //                    string n = (info.GetValue(null, null) as string) ?? name;
+        //                    xuk.name = n;
+        //                    xuk.isPretty = IsPrettyFormat();
+
+        //                    if (update)
+        //                    {
+        //                        m_TypeNameMap.Remove(t);
+        //                    }
+        //                    m_TypeNameMap.Add(t, xuk);
+
+        //                    return n;
+        //                }
+        //            }
+        //            else
+        //            {
+        //#if NET4 && DEBUG
+        //                Debugger.Break();
+        //#endif
+
+        //                FieldInfo info2 = t.GetField("XukString", BindingFlags.Static | BindingFlags.Public);
+        //                if (info2 != null)
+        //                {
+        //                    if (info2.FieldType == typeof(string))
+        //                    {
+        //                        string n = (info2.GetValue(null) as string) ?? name;
+        //                        xuk.name = n;
+        //                        xuk.isPretty = IsPrettyFormat();
+
+        //                        if (update)
+        //                        {
+        //                            m_TypeNameMap.Remove(t);
+        //                        }
+        //                        m_TypeNameMap.Add(t, xuk);
+
+        //                        return n;
+        //                    }
+        //                }
+        //            }
+        //#if DEBUG
+        //            Debugger.Break();
+        //#endif
+        //            System.Diagnostics.Debug.Fail("Type name not found ??");
+        //            return name;
+        //        }
+
+
+        //        public static readonly string XUK_NS = "http://www.daisy.org/urakawa/xuk/2.0";
+
+        //        public static readonly string XUK_NAME_PRETTY = "XukAble";
+        //        public static readonly string XUK_NAME_UGLY = "xukA";
+
+        //        public string XUK_NAME
+        //        {
+        //            get
+        //            {
+        //                return PrettyFormat ? XUK_NAME_PRETTY : XUK_NAME_UGLY;
+        //            }
+        //        }
+
+        //        public QualifiedName getXUK_QNAME()
+        //        {
+        //            return new QualifiedName(XUK_NAME, XUK_NS);
+        //        }
+
+        //        public static string getXUK_NAME<T>(bool pretty) where T : XukAble
+        //        {
+        //            Type t = typeof(T);
+        //            return getXUK_NAME(t, pretty);
+        //        }
+
+        //        public static string getXUK_NAME(Type t, bool pretty)
+        //        {
+        //            if (t == null)
+        //            {
+        //                throw new MethodParameterIsNullException("XUK_NAME(Type t is null!)");
+        //            }
+
+        //            //if (t == typeof (XukAble))
+        //            //{
+        //            //    return pretty ? XUK_NAME_PRETTY : XUK_NAME_UGLY;
+        //            //}
+
+        //            if (!typeof(XukAble).IsAssignableFrom(t))
+        //            {
+        //                string msg = String.Format("XUK_NAME(Type t must derive {0})", typeof(XukAble).FullName);
+        //                throw new MethodParameterIsWrongTypeException(msg);
+        //            }
+
+        //            FieldInfo fi = t.GetField(pretty ? "XUK_NAME_PRETTY" : "XUK_NAME_UGLY", BindingFlags.Static | BindingFlags.Public);
+
+        //            if (fi == null || fi.FieldType != typeof(string))
+        //            {
+        //#if DEBUG
+        //                Debugger.Break();
+        //#endif
+        //                //return getXUK_NAME(t.BaseType, pretty);
+        //                return null;
+        //            }
+
+        //            string name = fi.GetValue(null) as string;
+        //            if (string.IsNullOrEmpty(name))
+        //            {
+        //#if DEBUG
+        //                Debugger.Break();
+        //#endif
+        //                return null;
+        //            }
+
+        //            return name;
+        //        }
+
+        //        public static QualifiedName getXUK_QNAME(Type t, bool pretty)
+        //        {
+        //            return new QualifiedName(getXUK_NAME(t, pretty), XUK_NS);
+        //        }
+
+
     }
 }

@@ -3,9 +3,10 @@ using urakawa.data;
 
 namespace urakawa.ExternalFiles
 {
+    //typeof(CSSExternalFileData).Name
+    [XukNameUglyPrettyAttribute("cssExFl", "CssExternalFileData")]
     public class CSSExternalFileData : ExternalFileData
     {
-
         public override string MimeType
         {
             get
@@ -13,11 +14,5 @@ namespace urakawa.ExternalFiles
                 return DataProviderFactory.CSS_MIME_TYPE;
             }
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.CSSExternalFileData;
-        }
-
     }
 }

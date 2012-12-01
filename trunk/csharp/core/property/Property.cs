@@ -101,7 +101,7 @@ namespace urakawa.property
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The PropertyFactory can not create a Property of type matching QName {1}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
+                                                                         GetTypeNameFormatted(), XukNamespaceUri));
             }
             return theCopy;
         }
@@ -129,7 +129,7 @@ namespace urakawa.property
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The PropertyFactory of the export destination Presentation can not create a Property of type matching QName {1}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
+                                                                         GetTypeNameFormatted(), XukNamespaceUri));
             }
             return exportedProp;
         }

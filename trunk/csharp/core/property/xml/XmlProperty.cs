@@ -658,7 +658,8 @@ namespace urakawa.property.xml
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The property factory can not create an XmlProperty matching QName {0}:{1}",
-                                                                         XukNamespaceUri, XukLocalName));
+                                                                         XukNamespaceUri,
+                                                                         GetTypeNameFormatted()));
             }
             string nsUri = GetNamespaceUri();
 

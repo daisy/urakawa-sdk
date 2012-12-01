@@ -69,7 +69,7 @@ namespace urakawa.property.channel
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The ChannelsFacotry of the destination Presentation can not create a Channel matching Xuk QName {0}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
+                                                                         GetTypeNameFormatted(), XukNamespaceUri));
             }
             exportedCh.Name = Name;
             exportedCh.Language = Language;
@@ -90,7 +90,7 @@ namespace urakawa.property.channel
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The ChannelsFacotry of the destination Presentation can not create a Channel matching Xuk QName {0}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
+                                                                         GetTypeNameFormatted(), XukNamespaceUri));
             }
             copy.Name = Name;
             copy.Language = Language;

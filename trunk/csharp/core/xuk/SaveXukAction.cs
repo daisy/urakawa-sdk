@@ -291,7 +291,7 @@ namespace urakawa.xuk
             {
                 mXmlWriter.WriteStartDocument();
                 mXmlWriter.WriteStartElement(XukStrings.Xuk, XukAble.XUK_NS);
-                if (XukAble.XUK_XSD_PATH != String.Empty)
+                if (!string.IsNullOrEmpty(XukAble.XUK_XSD_PATH))
                 {
                     if (m_Project.XukNamespaceUri == String.Empty)
                     {
@@ -351,7 +351,7 @@ namespace urakawa.xuk
             finally
             {
                 // XukStrings maintains a pointer to the last-created Project instance!
-                XukStrings.RelocateProjectReference(currentProject);
+                //XukStrings.RelocateProjectReference(currentProject);
             }
         }
 
@@ -367,14 +367,7 @@ namespace urakawa.xuk
             //xsi:noNamespaceSchemaLocation ===> XukAble.XUK_NS + "/" + XukAble.XUK_XSD_PATH
 
             Project project = new Project();
-            if (isPrettyFormat)
-            {
-                project.SetPrettyFormat(true);
-            }
-            else
-            {
-                project.SetPrettyFormat(false);
-            }
+            project.SetPrettyFormat(isPrettyFormat);
 
             StreamWriter streamWriter = new StreamWriter(isPrettyFormat ? schema_PrettyXuk_FilePath : schema_CompressedXuk_FilePath, false, Encoding.UTF8);
             try

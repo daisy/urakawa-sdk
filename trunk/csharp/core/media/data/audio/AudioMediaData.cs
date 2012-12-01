@@ -687,7 +687,7 @@ namespace urakawa.media.data.audio
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "The MediaDataFactory can not create a AudioMediaData matching Xuk QName {1}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
+                                                                         GetTypeNameFormatted(), XukNamespaceUri));
             }
             AudioMediaData secondPartAMD = (AudioMediaData)md;
             Time spDur = new Time(AudioDuration).GetDifference(splitPoint);
