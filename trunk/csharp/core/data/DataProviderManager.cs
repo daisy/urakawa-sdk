@@ -8,16 +8,9 @@ using urakawa.xuk;
 
 namespace urakawa.data
 {
-    /// <summary>
-    /// Manager for <see cref="DataProvider"/>s
-    /// </summary>
+    [XukNameUglyPrettyAttribute("dtProvMan", "DataProviderManager")]
     public sealed class DataProviderManager : XukAbleManager<DataProvider>
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.DataProviderManager;
-        }
-
         public DataProviderManager(Presentation pres)
             : base(pres, "DP")
         {

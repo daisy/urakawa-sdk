@@ -12,9 +12,7 @@ using urakawa.xuk;
 
 namespace urakawa.media.data.audio.codec
 {
-    /// <summary>
-    /// Implementation of <see cref="AudioMediaData"/> that supports sequences of RIFF WAVE PCM audio data clips
-    /// </summary>
+    [XukNameUglyPrettyAttribute("wvAu", "WavAudioMediaData")]
     public class WavAudioMediaData : AudioMediaData
     {
         public override string MimeType
@@ -41,10 +39,7 @@ namespace urakawa.media.data.audio.codec
             return true;
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.WavAudioMediaData;
-        }
+    
 
         /// <summary>
         /// Stores the <see cref="WavClip"/>s of <c>this</c>

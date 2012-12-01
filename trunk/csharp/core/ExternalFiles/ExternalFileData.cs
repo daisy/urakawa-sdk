@@ -9,6 +9,7 @@ using urakawa.xuk;
 
 namespace urakawa.ExternalFiles
 {
+    [XukNameUglyPrettyAttribute("GenExFl", "GenericExternalFileData")]
     public class GenericExternalFileData : ExternalFileData
     {
         public override string MimeType
@@ -31,10 +32,7 @@ namespace urakawa.ExternalFiles
             }
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.GenericExternalFileData;
-        }
+    
 
     }
 

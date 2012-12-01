@@ -5,15 +5,10 @@ using urakawa.xuk;
 
 namespace urakawa.data
 {
-    /// <summary>
-    /// Factory for creating <see cref="DataProvider"/>s
-    /// </summary>
+    [XukNameUglyPrettyAttribute("dtPrvFct", "DataProviderFactory")]
     public sealed class DataProviderFactory : GenericWithPresentationFactory<DataProvider>
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.DataProviderFactory;
-        }
+        
         public DataProviderFactory(Presentation pres)
             : base(pres)
         {

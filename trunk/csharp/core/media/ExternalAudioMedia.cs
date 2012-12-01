@@ -6,9 +6,7 @@ using urakawa.xuk;
 
 namespace urakawa.media
 {
-    /// <summary>
-    /// Implementation of <see cref="AbstractAudioMedia"/> based on an external file and clip begin/end values
-    /// </summary>
+    [XukNameUglyPrettyAttribute("exAuMed", "ExternalAudioMedia")]
     public class ExternalAudioMedia : AbstractAudioMedia, ILocated, IClipped
     {
 
@@ -47,10 +45,6 @@ namespace urakawa.media
 
         public const string DEFAULT_SRC = "file.ext";
         
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.ExternalAudioMedia;
-        }
         private string mSrc;
         private Time mClipBegin;
         private Time mClipEnd;

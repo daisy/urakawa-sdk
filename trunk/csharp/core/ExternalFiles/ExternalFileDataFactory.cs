@@ -2,13 +2,9 @@
 
 namespace urakawa.ExternalFiles
 {
+    [XukNameUglyPrettyAttribute("ExFlDtFct", "ExternalFileDataFactory")]
     public class ExternalFileDataFactory : GenericWithPresentationFactory<ExternalFileData>
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.ExternalFileDataFactory;
-        }
-
         public ExternalFileDataFactory(Presentation pres)
             : base(pres)
         {

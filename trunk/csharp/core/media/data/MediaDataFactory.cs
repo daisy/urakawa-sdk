@@ -11,20 +11,9 @@ using urakawa.xuk;
 
 namespace urakawa.media.data
 {
-    /// <summary>
-    /// <para>Factory for creating <see cref="MediaData"/>.</para>
-    /// <para>Supports creation of the following <see cref="MediaData"/> types:
-    /// <list type="ul">
-    /// <item><see cref="audio.codec.WavAudioMediaData"/></item>
-    /// </list>
-    /// </para>
-    /// </summary>
+    [XukNameUglyPrettyAttribute("medDtFct", "MediaDataFactory")]
     public sealed class MediaDataFactory : GenericWithPresentationFactory<MediaData>
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.MediaDataFactory;
-        }
 
         public MediaDataFactory(Presentation pres)
             : base(pres)
