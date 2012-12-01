@@ -933,7 +933,7 @@ namespace urakawa
             //{
             //    RootUri = new Uri(baseUri, rootUri);
             //}
-            string lang = source.GetAttribute(XukStrings.Language);
+            string lang = XukAble.readXmlAttribute(source, XukAble.Language_NAME);
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
@@ -1284,7 +1284,7 @@ namespace urakawa
             //}
             if (!String.IsNullOrEmpty(Language))
             {
-                destination.WriteAttributeString(XukStrings.Language, Language);
+                destination.WriteAttributeString(XukAble.Language_NAME.z(PrettyFormat), Language);
             }
         }
 

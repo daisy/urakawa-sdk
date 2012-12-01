@@ -206,10 +206,10 @@ namespace urakawa.property.channel
         {
             base.XukInAttributes(source);
 
-            string name = source.GetAttribute(XukStrings.Name);
+            string name = XukAble.readXmlAttribute(source, XukAble.Name_NAME);
             if (name == null) name = "";
             Name = name;
-            string lang = source.GetAttribute(XukStrings.Language);
+            string lang = XukAble.readXmlAttribute(source, XukAble.Language_NAME);
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
@@ -264,10 +264,10 @@ namespace urakawa.property.channel
         {
             base.XukOutAttributes(destination, baseUri);
 
-            destination.WriteAttributeString(XukStrings.Name, Name);
+            destination.WriteAttributeString(XukAble.Name_NAME.z(PrettyFormat), Name);
             if (!String.IsNullOrEmpty(Language))
             {
-                destination.WriteAttributeString(XukStrings.Language, Language);
+                destination.WriteAttributeString(XukAble.Language_NAME.z(PrettyFormat), Language);
             }
             if (!Presentation.Project.PrettyFormat)
             {

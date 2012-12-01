@@ -29,7 +29,7 @@ namespace urakawa.media.data.audio
 
             if (DataProvider != null && !String.IsNullOrEmpty(DataProvider.Uid))
             {
-                destination.WriteAttributeString(XukStrings.DataProvider, DataProvider.Uid);
+                destination.WriteAttributeString(DataProvider.DataProvider_NAME.z(PrettyFormat), DataProvider.Uid);
             }
 
             //if (!Presentation.Project.PrettyFormat)
@@ -43,7 +43,7 @@ namespace urakawa.media.data.audio
             base.XukInAttributes(source);
 
             string path = source.GetAttribute(XukStrings.OriginalRelativePath);
-            string uid = source.GetAttribute(XukStrings.DataProvider);
+            string uid = XukAble.readXmlAttribute(source, DataProvider.DataProvider_NAME);
 
             if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(uid))
             {

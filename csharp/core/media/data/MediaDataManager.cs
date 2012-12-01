@@ -437,7 +437,7 @@ namespace urakawa.media.data
             MediaData data = null;
             if (!source.IsEmptyElement)
             {
-                string uid = source.GetAttribute(XukStrings.Uid);
+                string uid = XukAble.readXmlAttribute(source, XukAble.Uid_NAME);
 
                 while (source.Read())
                 {

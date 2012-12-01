@@ -521,7 +521,7 @@ namespace urakawa.data
         {
             if (!source.IsEmptyElement)
             {
-                string uid = source.GetAttribute(XukStrings.Uid);
+                string uid = XukAble.readXmlAttribute(source, XukAble.Uid_NAME);
 
                 bool addedProvider = false;
                 while (source.Read())

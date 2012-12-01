@@ -172,7 +172,7 @@ namespace urakawa.media.data.video
             {
                 throw new XukException("The DataProvider of an VideoMediaData cannot be null or empty !");
             }
-            destination.WriteAttributeString(XukStrings.DataProvider, DataProvider.Uid);
+            destination.WriteAttributeString(DataProvider.DataProvider_NAME.z(PrettyFormat), DataProvider.Uid);
 
             //if (!Presentation.Project.PrettyFormat)
             //{
@@ -190,7 +190,7 @@ namespace urakawa.media.data.video
                 throw new XukException("The OriginalRelativePath of an VideoMediaData cannot be null or empty !");
             }
 
-            string uid = source.GetAttribute(XukStrings.DataProvider);
+            string uid = XukAble.readXmlAttribute(source, DataProvider.DataProvider_NAME);
             if (String.IsNullOrEmpty(uid))
             {
                 throw new XukException("The DataProvider of an VideoMediaData cannot be null or empty !");

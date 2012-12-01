@@ -267,20 +267,20 @@ namespace urakawa.property.xml
         {
             base.XukInAttributes(source);
 
-            string name = source.GetAttribute(XukStrings.LocalName);
+            string name = XukAble.readXmlAttribute(source, XukAble.LocalName_NAME);
             if (string.IsNullOrEmpty(name))
             {
                 throw new exception.XukException("LocalName attribute of XmlAttribute element is missing");
             }
 
-            string value = source.GetAttribute(XukStrings.Value);
+            string value = XukAble.readXmlAttribute(source, XukAble.Value_NAME);
             if (value == null)
             {
                 throw new exception.XukException("Value attribute of XmlAttribute element is missing");
             }
             Value = value;
 
-            string ns = source.GetAttribute(XukStrings.NamespaceUri);
+            string ns = XukAble.readXmlAttribute(source, XukAble.NamespaceUri_NAME);
 
             SetQName(name, ns == null ? "" : ns);
         }
@@ -302,17 +302,17 @@ namespace urakawa.property.xml
             {
                 throw new exception.XukException("The XmlAttribute has no name");
             }
-            destination.WriteAttributeString(XukStrings.LocalName, mLocalName);
+            destination.WriteAttributeString(XukAble.LocalName_NAME.z(PrettyFormat), mLocalName);
 
             if (mValue == null)
             {
                 throw new exception.XukException("The XmlAttribute has no value");
             }
-            destination.WriteAttributeString(XukStrings.Value, mValue);
+            destination.WriteAttributeString(XukAble.Value_NAME.z(PrettyFormat), mValue);
 
             if (mNamespaceUri != "")
             {
-                destination.WriteAttributeString(XukStrings.NamespaceUri, mNamespaceUri);
+                destination.WriteAttributeString(XukAble.NamespaceUri_NAME.z(PrettyFormat), mNamespaceUri);
             }
         }
         

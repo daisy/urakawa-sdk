@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using urakawa.data;
 using urakawa.exception;
+using urakawa.media.data;
 using urakawa.xuk;
 
 namespace urakawa.ExternalFiles
@@ -282,7 +283,7 @@ namespace urakawa.ExternalFiles
             {
                 throw new XukException("The DataProvider of an ExternalFileData cannot be null or empty !");
             }
-            destination.WriteAttributeString(XukStrings.DataProvider, DataProvider.Uid);
+            destination.WriteAttributeString(DataProvider.DataProvider_NAME.z(PrettyFormat), DataProvider.Uid);
 
 
         }
@@ -302,7 +303,7 @@ namespace urakawa.ExternalFiles
                 throw new XukException("For preserved files, the OriginalRelativePath of an ExternalFileData cannot be null or empty !");
             }
 
-            string uid = source.GetAttribute(XukStrings.DataProvider);
+            string uid = XukAble.readXmlAttribute(source, DataProvider.DataProvider_NAME);
             if (String.IsNullOrEmpty(uid))
             {
                 throw new XukException("The DataProvider of an ExternalFileData cannot be null or empty !");
