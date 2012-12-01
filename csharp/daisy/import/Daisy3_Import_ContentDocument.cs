@@ -62,7 +62,7 @@ namespace urakawa.daisy.import
                 }
 
                 Project project = new Project();
-                project.SetPrettyFormat(m_XukPrettyFormat);
+                project.PrettyFormat = m_XukPrettyFormat;
 
                 Presentation presentation = project.AddNewPresentation(new Uri(Path.GetDirectoryName(filepath), UriKind.Absolute), Path.GetFileName(filepath));
 

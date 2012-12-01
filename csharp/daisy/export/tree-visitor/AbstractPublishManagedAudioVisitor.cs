@@ -6,6 +6,7 @@ using urakawa.property.channel;
 using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
+using urakawa.xuk;
 
 namespace urakawa.daisy.export.visitor
 {
@@ -116,7 +117,9 @@ namespace urakawa.daisy.export.visitor
                     {
                         throw new exception.FactoryCannotCreateTypeException(String.Format(
                                 "The media facotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
-                                typeof(ExternalAudioMedia).Name, node.Presentation.Project.XukNamespaceUri));
+                                
+                                XukAble.GetXukName(typeof(ExternalAudioMedia), true) ?? typeof(ExternalAudioMedia).Name,
+                                node.Presentation.Project.GetXukNamespace()));
                     }
 
                     eam.Language = mam.Language;

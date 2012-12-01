@@ -720,7 +720,7 @@ namespace urakawa.daisy.import
                 m_PublicationUniqueIdentifierNode = null;
 
                 Project spineItemProject = new Project();
-                spineItemProject.SetPrettyFormat(m_XukPrettyFormat);
+                spineItemProject.PrettyFormat = m_XukPrettyFormat;
 
                 string dataFolderPrefix = FileDataProvider.EliminateForbiddenFileNameCharacters(docPath);
                 spineItemPresentation = spineItemProject.AddNewPresentation(new Uri(m_outDirectory),
@@ -977,7 +977,7 @@ namespace urakawa.daisy.import
 
 
                 spinePresentation.MediaDataManager.DefaultPCMFormat = spineItemPresentation.MediaDataManager.DefaultPCMFormat; //copied!
-                
+
                 string xuk_FilePath = GetXukFilePath_SpineItem(m_outDirectory, docPath, title);
 
                 //deleteDataDirectoryIfEmpty();
@@ -1010,7 +1010,7 @@ namespace urakawa.daisy.import
                     }
                 }
 
-                spineItemProject.SetPrettyFormat(m_XukPrettyFormat);
+                spineItemProject.PrettyFormat = m_XukPrettyFormat;
 
                 SaveXukAction action = new SaveXukAction(spineItemProject, spineItemProject, new Uri(xuk_FilePath), true);
                 action.ShortDescription = UrakawaSDK_daisy_Lang.SavingXUKFile;
