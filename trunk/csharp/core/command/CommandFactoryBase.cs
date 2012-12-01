@@ -1,15 +1,7 @@
 namespace urakawa.command
 {
-    /// <summary>
-    /// Factory for creating <see cref="Command"/>s
-    /// </summary>
     public abstract class CommandFactoryBase : GenericWithPresentationFactory<Command>
     {
-        public override string GetTypeNameFormatted()
-        {
-            return "CommandFactoryBase";
-        }
-
         protected CommandFactoryBase(Presentation pres) : base(pres)
         {
         }

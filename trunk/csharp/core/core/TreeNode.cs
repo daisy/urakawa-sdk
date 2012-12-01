@@ -16,9 +16,7 @@ using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 namespace urakawa.core
 {
-    /// <summary>
-    /// A node in the core tree of the SDK
-    /// </summary>
+    [XukNameUglyPrettyAttribute("n", "TreeNode")]
     public partial class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IChangeNotifier
     {
         private object m_Tag = null;
@@ -104,12 +102,7 @@ namespace urakawa.core
             }
             return null;
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.TreeNode;
-        }
-
+        
         #region Event related members
 
         /// <summary>

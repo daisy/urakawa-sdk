@@ -8,13 +8,9 @@ using urakawa.metadata;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("cmdFct", "CommandFactory")]
     public class CommandFactory : CommandFactoryBase
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.CommandFactory;
-        }
-
         public CommandFactory(Presentation pres)
             : base(pres)
         {

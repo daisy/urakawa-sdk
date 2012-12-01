@@ -11,6 +11,7 @@ using urakawa.xuk;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("nodChTxtCmd", "TreeNodeChangeTextCommand")]
     public class TreeNodeChangeTextCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -30,11 +31,7 @@ namespace urakawa.commands
 
             return true;
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.TreeNodeChangeTextCommand;
-        }
+        
 
         private TreeNode m_TreeNode;
         public TreeNode TreeNode
@@ -251,6 +248,7 @@ namespace urakawa.commands
         }
     }
 
+    [XukNameUglyPrettyAttribute("nodSetMrkCmd", "TreeNodeSetIsMarkedCommand")]
     public class TreeNodeSetIsMarkedCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -270,12 +268,7 @@ namespace urakawa.commands
 
             return true;
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.TreeNodeSetIsMarkedCommand;
-        }
-
+        
         private TreeNode m_TreeNode;
         public TreeNode TreeNode
         {

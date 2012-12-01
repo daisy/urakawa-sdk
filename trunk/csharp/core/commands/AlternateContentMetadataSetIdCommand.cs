@@ -8,6 +8,7 @@ using urakawa.xuk;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("acMetaSetIdCmd", "AlternateContentMetadataSetIdCommand")]
     public class AlternateContentMetadataSetIdCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -27,11 +28,7 @@ namespace urakawa.commands
 
             return true;
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.AlternateContentMetadataSetIdCommand;
-        }
+            
 
         private bool m_OriginalId;
         private bool m_NewId;

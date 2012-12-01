@@ -7,7 +7,7 @@ using urakawa.metadata;
 
 namespace urakawa.commands
 {
-
+    [XukNameUglyPrettyAttribute("metaAddCmd", "MetadataAddCommand")]
     public class MetadataAddCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -27,12 +27,7 @@ namespace urakawa.commands
 
             return true;
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.MetadataAddCommand;
-        }
-
+        
         private Metadata m_Metadata;
         public Metadata Metadata
         {

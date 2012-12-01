@@ -41,14 +41,17 @@ namespace urakawa
             //base.XukOutChildren(destination, baseUri, handler);
         }
 
-        public override bool IsPrettyFormat()
-        {
-            return Presentation.IsPrettyFormat();
-        }
 
-        public override void SetPrettyFormat(bool pretty)
+        public override bool PrettyFormat
         {
-            Presentation.SetPrettyFormat(pretty);
+            set
+            {
+                Presentation.SetPrettyFormat(value);
+            }
+            get
+            {
+                return Presentation.IsPrettyFormat();
+            }
         }
 
         private Presentation mPresentation;
