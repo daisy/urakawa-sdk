@@ -11,6 +11,8 @@ namespace urakawa.command
     /// A composite command made of a series of sub commands. Useful for merging small commands into one such as:
     /// user typing text letter by letter (the exception/redo would work on full word or sentence, not for each character.)
     /// </summary>
+
+    [XukNameUglyPrettyAttribute("cmpCmd", "CompositeCommand")]
     public class CompositeCommand : Command
     {
         public List<T> GetChildCommandsAllType<T>() where T : Command
@@ -83,10 +85,7 @@ namespace urakawa.command
             return true;
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.CompositeCommand;
-        }
+    
 
 
         private ObjectListProvider<Command> mCommands;

@@ -66,6 +66,9 @@ namespace urakawa.xuk
 #if DEBUG
         static XukAble()
         {
+            PropertyInfo[] properties = typeof(XukStrings).GetProperties(BindingFlags.Public | BindingFlags.Static);
+
+
             DebugFix.Assert(!string.IsNullOrEmpty(XUK_NS));
 
             List<string> list = new List<string>();
@@ -153,6 +156,30 @@ namespace urakawa.xuk
                         else
                         {
                             Debugger.Break();
+                        }
+
+
+                        PropertyInfo found = null;
+                        foreach (PropertyInfo property in properties)
+                        {
+                            if (property.PropertyType == typeof(string)
+                                && property.Name == type.Name)
+                            {
+                                found = property;
+                                break;
+                            }
+                        }
+
+                        DebugFix.Assert(found != null);
+                        if (found != null)
+                        {
+                            XukStrings.IsPrettyFormat = false;
+                            string uglyCheck = (string)found.GetValue(typeof(XukStrings), null);
+                            DebugFix.Assert(ugly == uglyCheck);
+
+                            XukStrings.IsPrettyFormat = true;
+                            string prettyCheck = (string)found.GetValue(typeof(XukStrings), null);
+                            DebugFix.Assert(pretty == prettyCheck);
                         }
                     }
                 }

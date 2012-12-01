@@ -1,134 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Reflection;
-using System.Text;
-
-namespace urakawa.xuk
+﻿namespace urakawa.xuk
 {
-    public static class XukStrings
+#if DEBUG
+    public class XukStrings
     {
-        //#if DEBUG
-        //        static XukStrings()
-        //        {
-        //            //Project project = new Project();
-
-        //            //project.SetPrettyFormat(true);
-        //            //checkData(true);
-
-        //            //project.SetPrettyFormat(false);
-        //            //checkData(false);
-
-
-        //            checkData(true);
-
-        //            checkData(false);
-        //        }
-
-        //        private static void checkData(bool pretty)
-        //        {
-        //            IsPrettyFormat = pretty;
-
-        //            Type type = typeof(XukStrings); //instance.GetType();
-
-        //            BindingFlags flags = BindingFlags.Public | BindingFlags.Static;
-        //            PropertyInfo[] properties = type.GetProperties(flags);
-
-        //            List<string> list = new List<string>(properties.Length);
-
-        //            foreach (PropertyInfo property in properties)
-        //            {
-        //                if (property.PropertyType == typeof(string))
-        //                {
-        //                    if (property.Name == "XukCompressed"
-        //                        || property.Name == "XukPretty"
-        //                        || property.Name == "Xuk")
-        //                    {
-        //                        continue;
-        //                    }
-
-        //                    if (list.Contains(property.Name))
-        //                    {
-        //                        Debugger.Break();
-        //                    }
-        //                    else
-        //                    {
-        //                        list.Add(property.Name);
-        //                    }
-
-        //                    if (pretty
-        //                        && property.Name != "CSSExternalFileData"
-        //                        && property.Name != "XSLTExternalFileData")
-        //                    {
-        //                        string val = (string)property.GetValue(type, null);
-        //                        bool okay = property.Name == val;
-        //                        if (!okay)
-        //                        {
-        //                            Debugger.Break();
-        //                        }
-        //                    }
-        //                }
-        //                else if (property.PropertyType == typeof(bool))
-        //                {
-        //                    bool okay = property.Name == "IsPrettyFormat";
-        //                    if (!okay)
-        //                    {
-        //                        Debugger.Break();
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    Debugger.Break();
-        //                }
-        //            }
-        //        }
-        //#endif
-        //private static Project mProject;
-
-        ////public XukStrings(Project proj)
-        ////{
-        ////    RelocateProjectReference(proj);
-        ////}
-
-        //public static void NullifyProjectReference()
-        //{
-        //    mProject = null;
-        //}
-        //public static void RelocateProjectReference(Project proj)
-        //{
-        //    mProject = proj;
-        //}
-
-        //public static bool IsPrettyFormat
-        //{
-        //    get { return mProject != null && mProject.IsPrettyFormat(); }
-        //}
-
-        //public static bool IsPrettyFormat = true;
+        private static bool m_IsPrettyFormat;
+        public static bool IsPrettyFormat
+        {
+            get { return m_IsPrettyFormat; }
+            set { m_IsPrettyFormat = value; }
+        }
 
 
         #region low occurence
 
 
-        //#region the root
+        #region the root
 
-        //public static string XukPretty
-        //{
-        //    get { return "Xuk"; }
-        //}
+        public static string XukPretty
+        {
+            get { return "Xuk"; }
+        }
 
-        //public static string XukCompressed
-        //{
-        //    get { return "xuk"; }
-        //}
+        public static string XukCompressed
+        {
+            get { return "xuk"; }
+        }
 
-        //public static string Xuk
-        //{
-        //    get { return (IsPrettyFormat ? XukPretty : XukCompressed); }
-        //}
+        public static string Xuk
+        {
+            get { return (IsPrettyFormat ? XukPretty : XukCompressed); }
+        }
 
-        //#endregion
+        #endregion
 
         public static string Presentations
         {
@@ -510,50 +413,50 @@ namespace urakawa.xuk
 
         #region factories
 
-        //public static string RegisteredTypes
-        //{
-        //    get { return (IsPrettyFormat ? "RegisteredTypes" : "types"); }
-        //}
+        public static string RegisteredTypes
+        {
+            get { return (IsPrettyFormat ? "RegisteredTypes" : "types"); }
+        }
 
-        //public static string Type
-        //{
-        //    get { return (IsPrettyFormat ? "Type" : "type"); }
-        //}
+        public static string Type
+        {
+            get { return (IsPrettyFormat ? "Type" : "type"); }
+        }
 
-        //public static string XukLocalName
-        //{
-        //    get { return (IsPrettyFormat ? "XukLocalName" : "name"); }
-        //}
+        public static string XukLocalName
+        {
+            get { return (IsPrettyFormat ? "XukLocalName" : "name"); }
+        }
 
-        //public static string BaseXukLocalName
-        //{
-        //    get { return (IsPrettyFormat ? "BaseXukLocalName" : "baseName"); }
-        //}
+        public static string BaseXukLocalName
+        {
+            get { return (IsPrettyFormat ? "BaseXukLocalName" : "baseName"); }
+        }
 
-        //public static string XukNamespaceUri
-        //{
-        //    get { return (IsPrettyFormat ? "XukNamespaceUri" : "ns"); }
-        //}
+        public static string XukNamespaceUri
+        {
+            get { return (IsPrettyFormat ? "XukNamespaceUri" : "ns"); }
+        }
 
-        //public static string BaseXukNamespaceUri
-        //{
-        //    get { return (IsPrettyFormat ? "BaseXukNamespaceUri" : "baseNs"); }
-        //}
+        public static string BaseXukNamespaceUri
+        {
+            get { return (IsPrettyFormat ? "BaseXukNamespaceUri" : "baseNs"); }
+        }
 
-        //public static string AssemblyName
-        //{
-        //    get { return (IsPrettyFormat ? "AssemblyName" : "assbly"); }
-        //}
+        public static string AssemblyName
+        {
+            get { return (IsPrettyFormat ? "AssemblyName" : "assbly"); }
+        }
 
-        //public static string AssemblyVersion
-        //{
-        //    get { return (IsPrettyFormat ? "AssemblyVersion" : "assblyVer"); }
-        //}
+        public static string AssemblyVersion
+        {
+            get { return (IsPrettyFormat ? "AssemblyVersion" : "assblyVer"); }
+        }
 
-        //public static string FullName
-        //{
-        //    get { return (IsPrettyFormat ? "FullName" : "fName"); }
-        //}
+        public static string FullName
+        {
+            get { return (IsPrettyFormat ? "FullName" : "fName"); }
+        }
         #endregion
 
 
@@ -928,15 +831,15 @@ namespace urakawa.xuk
             get { return (IsPrettyFormat ? "OptionalInfo" : "opInf"); }
         }
 
-        //public static string CSSExternalFileData
-        //{
-        //    get { return (IsPrettyFormat ? "CssExternalFileData" : "cssExFl"); }
-        //}
+        public static string CSSExternalFileData
+        {
+            get { return (IsPrettyFormat ? "CssExternalFileData" : "cssExFl"); }
+        }
 
-        //public static string XSLTExternalFileData
-        //{
-        //    get { return (IsPrettyFormat ? "XsltExternalFileData" : "XsltExFl"); }
-        //}
+        public static string XSLTExternalFileData
+        {
+            get { return (IsPrettyFormat ? "XsltExternalFileData" : "XsltExFl"); }
+        }
 
 
         public static string DTDExternalFileData
@@ -996,4 +899,6 @@ namespace urakawa.xuk
         #endregion
 
     }
+
+#endif
 }
