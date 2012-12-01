@@ -10,16 +10,9 @@ using urakawa.xuk;
 
 namespace urakawa.media.data
 {
-    /// <summary>
-    /// Default implementation of a <see cref="MediaDataManager"/>
-    /// </summary>
+    [XukNameUglyPrettyAttribute("medDtMan", "MediaDataManager")]
     public sealed class MediaDataManager : XukAbleManager<MediaData>
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.MediaDataManager;
-        }
-
         public MediaDataManager(Presentation pres)
             : base(pres, "MD")
         {

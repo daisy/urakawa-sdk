@@ -8,16 +8,9 @@ using urakawa.xuk;
 
 namespace urakawa.media.data.audio
 {
-    /// <summary>
-    /// Managed implementation of <see cref="AbstractAudioMedia"/>, that uses <see cref="audio.AudioMediaData"/> to store audio data
-    /// </summary>
+    [XukNameUglyPrettyAttribute("mAu", "ManagedAudioMedia")]
     public class ManagedAudioMedia : AbstractAudioMedia, IManaged
     {
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.ManagedAudioMedia;
-        }
 
         private AudioMediaData mAudioMediaData;
 

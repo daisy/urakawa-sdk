@@ -3,15 +3,13 @@ using urakawa.data;
 
 namespace urakawa.ExternalFiles
 {
+    [XukNameUglyPrettyAttribute("CovrImgExFl", "CoverImageExternalFileData")]
     public class CoverImageExternalFileData : GenericExternalFileData
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.CoverImageExternalFileData;
-        }
 
     }
 
+    [XukNameUglyPrettyAttribute("NCXExFl", "NCXExternalFileData")]
     public class NCXExternalFileData : ExternalFileData
     {
         public override string MimeType
@@ -22,13 +20,9 @@ namespace urakawa.ExternalFiles
             }
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.NCXExternalFileData;
-        }
-
     }
 
+    [XukNameUglyPrettyAttribute("NavExFl", "NavDocExternalFileData")]
     public class NavDocExternalFileData : ExternalFileData
     {
         public override string MimeType
@@ -37,11 +31,6 @@ namespace urakawa.ExternalFiles
             {
                 return DataProviderFactory.XHTML_MIME_TYPE;
             }
-        }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.NavDocExternalFileData;
         }
 
     }

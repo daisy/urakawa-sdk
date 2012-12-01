@@ -12,6 +12,7 @@ using System.IO.IsolatedStorage;
 
 namespace urakawa.ExternalFiles
 {
+    [XukNameUglyPrettyAttribute("ExFlDtMan", "ExternalFileDataManager")]
     public sealed class ExternalFilesDataManager : XukAbleManager<ExternalFileData>
     {
         public static readonly string STORAGE_FOLDER_PATH;
@@ -46,11 +47,7 @@ namespace urakawa.ExternalFiles
             : base(pres, "EF")
         {
         }
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.ExternalFileDataManager;
-        }
-
+        
         public override bool CanAddManagedObject(ExternalFileData fileDataObject)
         {
             return true;

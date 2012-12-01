@@ -3,6 +3,7 @@ using urakawa.data;
 
 namespace urakawa.ExternalFiles
 {
+    [XukNameUglyPrettyAttribute("dtdExFl", "DTDExternalFileData")]
     public class DTDExternalFileData : ExternalFileData
     {
 
@@ -14,9 +15,5 @@ namespace urakawa.ExternalFiles
             }
         }
 
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.DTDExternalFileData;
-        }
     }
 }

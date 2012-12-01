@@ -11,16 +11,7 @@ using urakawa.xuk;
 
 namespace urakawa.data
 {
-    /// <summary>
-    /// Implementation of interface <see cref="DataProvider"/> using files as data storage.
-    /// <remarks>
-    /// Note that the <see cref="DataProviderManager"/> owning a <see cref="FileDataProvider"/> 
-    /// must be a <see cref="urakawa.data.DataProviderManager"/>. 
-    /// Trying to initialize a <see cref="FileDataProvider"/> with a non-<see cref="DataProviderManager"/>
-    /// implementation of <see cref="DataProviderManager"/> 
-    /// will cause a <see cref="exception.MethodParameterIsWrongTypeException"/>
-    /// </remarks>
-    /// </summary>
+    [XukNameUglyPrettyAttribute("fdp", "FileDataProvider")]
     public class FileDataProvider : DataProvider
     {
         private const char UNDERSCORE = '_';
@@ -419,11 +410,7 @@ namespace urakawa.data
             return localpath;
         }
 
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.FileDataProvider;
-        }
+        
         private object m_lock = new object();
 
         /// <summary>

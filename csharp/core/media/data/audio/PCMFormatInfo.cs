@@ -5,9 +5,7 @@ using urakawa.xuk;
 
 namespace urakawa.media.data.audio
 {
-    /// <summary>
-    /// Represents information describing a RAW PCM format
-    /// </summary>
+    [XukNameUglyPrettyAttribute("PCMInf", "PCMFormatInfo")]
     public class PCMFormatInfo : XukAble, IValueEquatable<PCMFormatInfo>
     {
         private AudioLibPCMFormat m_Data;
@@ -23,12 +21,7 @@ namespace urakawa.media.data.audio
         {
             return Data.BitDepth + " bits " + String.Format("{0:0.###}", Data.SampleRate / 1000.0) + " KHz " + (Data.NumberOfChannels == 1 ? "Mono" : (Data.NumberOfChannels == 2 ? "Stereo" : "" + Data.NumberOfChannels));
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.PCMFormatInfo;
-        }
-
+        
         /// <summary>
         /// Default constructor
         /// </summary>
