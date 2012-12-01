@@ -14,6 +14,7 @@ using urakawa.property.alt;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("acRemManMedCmd", "AlternateContentRemoveManagedMediaCommand")]
     public class AlternateContentRemoveManagedMediaCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -33,11 +34,7 @@ namespace urakawa.commands
 
             return true;
         }
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.AlternateContentRemoveManagedMediaCommand;
-        }
-
+        
         private AlternateContent m_AlternateContent;
         public AlternateContent AlternateContent
         {

@@ -7,6 +7,7 @@ using urakawa.metadata;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("metaRemoveCmd", "MetadataRemoveCommand")]
     public class MetadataRemoveCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -26,11 +27,7 @@ namespace urakawa.commands
 
             return true;
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.MetadataRemoveCommand;
-        }
+        
 
         private int m_Index;
         private Metadata m_Metadata;

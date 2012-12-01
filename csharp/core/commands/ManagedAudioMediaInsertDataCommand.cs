@@ -16,6 +16,7 @@ using urakawa.xuk;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("manAudMedInsertCmd", "ManagedAudioMediaInsertDataCommand")]
     public class ManagedAudioMediaInsertDataCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -35,11 +36,8 @@ namespace urakawa.commands
 
             return true;
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.ManagedAudioMediaInsertDataCommand;
-        }
+        
+        
 
         private TreeNode m_TreeNode;
         public TreeNode TreeNode

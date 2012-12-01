@@ -14,6 +14,7 @@ using urakawa.xuk;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("nodAudDelCmd", "TreeNodeAudioStreamDeleteCommand")]
     public class TreeNodeAudioStreamDeleteCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -33,12 +34,7 @@ namespace urakawa.commands
 
             return true;
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.TreeNodeAudioStreamDeleteCommand;
-        }
-
+        
         private Channel m_ChannelOfOriginalMedia;
         public Channel ChannelOfOriginalMedia
         {

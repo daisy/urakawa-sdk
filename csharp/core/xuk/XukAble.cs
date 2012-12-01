@@ -79,26 +79,60 @@ namespace urakawa.xuk
 
                 foreach (Type type in ass.GetTypes())
                 {
-                    if (type == typeof(XukAble))
+
+                    if (type == typeof(XukAble) || typeof(XukAble).IsAssignableFrom(type))
                     {
                         Console.WriteLine(type.FullName);
 
-                        string ns = GetXukNamespace(type);
-                        if (!string.IsNullOrEmpty(ns))
+                        FieldInfo[] fields = type.GetFields(BindingFlags.Static);
+                        foreach (FieldInfo field in fields)
                         {
-                            Console.WriteLine(ns);
+                            if (field.FieldType == typeof (UglyPrettyName))
+                            {
+                                const string NAME = "_NAME";
+                                bool okay = field.Name.EndsWith(NAME);
+                                DebugFix.Assert(okay);
+                                if (okay)
+                                {
+                                    Console.WriteLine(field.Name);
+
+                                    UglyPrettyName name = (UglyPrettyName)field.GetValue(type);
+                                    string fieldName = field.Name.Substring(0, field.Name.Length - NAME.Length);
+
+
+                                    PropertyInfo found_ = null;
+                                    foreach (PropertyInfo property in properties)
+                                    {
+                                        if (property.PropertyType == typeof(string)
+                                            && property.Name == fieldName)
+                                        {
+                                            found_ = property;
+                                            break;
+                                        }
+                                    }
+
+                                    DebugFix.Assert(found_ != null);
+                                    if (found_ != null)
+                                    {
+                                        XukStrings.IsPrettyFormat = false;
+                                        string uglyCheck = (string)found_.GetValue(typeof(XukStrings), null);
+                                        DebugFix.Assert(name.Ugly == uglyCheck);
+
+                                        XukStrings.IsPrettyFormat = true;
+                                        string prettyCheck = (string)found_.GetValue(typeof(XukStrings), null);
+                                        DebugFix.Assert(name.Pretty == prettyCheck);
+                                    }
+                                }
+                            }
                         }
-                        else
-                        {
-                            Debugger.Break();
-                        }
-                    }
-                    else if (typeof(XukAble).IsAssignableFrom(type))
-                    {
-                        Console.WriteLine(type.FullName);
 
                         string ns = GetXukNamespace(type);
                         DebugFix.Assert(!string.IsNullOrEmpty(ns));
+
+                        if (type == typeof(XukAble))
+                        {
+                            Console.WriteLine(ns);
+                        }
 
                         if (type.IsAbstract)
                         {

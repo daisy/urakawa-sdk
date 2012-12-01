@@ -7,6 +7,7 @@ using urakawa.metadata;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("metaSetIdCmd", "MetadataSetIdCommand")]
     public class MetadataSetIdCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -26,11 +27,7 @@ namespace urakawa.commands
 
             return true;
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.MetadataSetIdCommand;
-        }
+        
 
         private bool m_OriginalId;
         private bool m_NewId;

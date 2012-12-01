@@ -7,6 +7,7 @@ using urakawa.metadata;
 
 namespace urakawa.commands
 {
+    [XukNameUglyPrettyAttribute("metaSetNameCmd", "MetadataSetNameCommand")]
     public class MetadataSetNameCommand : Command
     {
         public override bool ValueEquals(WithPresentation other)
@@ -25,11 +26,6 @@ namespace urakawa.commands
             // TODO: test local equality
 
             return true;
-        }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.MetadataSetNameCommand;
         }
 
         private string m_OriginalName;

@@ -2,21 +2,9 @@ using urakawa.xuk;
 
 namespace urakawa.core
 {
-    /// <summary>
-    /// Default implementation of <see cref="TreeNodeFactory"/>.
-    /// Creates <see cref="TreeNode"/>s belonging to a specific <see cref="Presentation"/>
-    /// </summary>
-    /// <remarks>
-    /// A <see cref="TreeNodeFactory"/> can not create <see cref="TreeNode"/>s
-    /// until it has been associated with a <see cref="Presentation"/> using the
-    /// <see cref="WithPresentation.Presentation"/> method
-    /// </remarks>
+    [XukNameUglyPrettyAttribute("nodFct", "TreeNodeFactory")]
     public sealed class TreeNodeFactory : GenericWithPresentationFactory<TreeNode>
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.TreeNodeFactory;
-        }
         public TreeNodeFactory(Presentation pres) : base(pres)
         {
         }
