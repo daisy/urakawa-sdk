@@ -5,6 +5,7 @@ using urakawa.xuk;
 
 namespace urakawa.metadata
 {
+    [XukNameUglyPrettyAttribute("metadtattr", "MetadataAttribute")]
     public class MetadataAttribute : XukAble, IValueEquatable<MetadataAttribute>
     {
         public bool ValueEquals(MetadataAttribute otherz)
@@ -174,12 +175,7 @@ namespace urakawa.metadata
                 destination.WriteAttributeString(XukStrings.NamespaceUri, NamespaceUri);
             }
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.MetadataAttribute;
-        }
-
+        
         #endregion
     }
 }

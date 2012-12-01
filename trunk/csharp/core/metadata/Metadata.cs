@@ -8,15 +8,9 @@ using urakawa.xuk;
 
 namespace urakawa.metadata
 {
-    /// <summary>
-    /// Represents <see cref="Metadata"/> of a <see cref="Presentation"/>
-    /// </summary>
+    [XukNameUglyPrettyAttribute("metadt", "Metadata")]
     public class Metadata : WithPresentation, IChangeNotifier
     {
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.Metadata;
-        }
 
         /// <summary>
         /// Default constructor - for system use only, 

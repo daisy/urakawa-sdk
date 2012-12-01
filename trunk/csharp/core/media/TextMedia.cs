@@ -6,16 +6,9 @@ using urakawa.xuk;
 
 namespace urakawa.media
 {
-    /// <summary>
-    /// TextMedia represents a text string
-    /// </summary>
+    [XukNameUglyPrettyAttribute("tx", "TextMedia")]
     public class TextMedia : AbstractTextMedia
     {
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.TextMedia;
-        }
 
         private string mText;
 

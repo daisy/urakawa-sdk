@@ -9,17 +9,11 @@ using urakawa.xuk;
 
 namespace urakawa.media
 {
-    /// <summary>
-    /// An implementation of <see cref="AbstractTextMedia"/> based on text storage in an external file/uri
-    /// </summary>
+    [XukNameUglyPrettyAttribute("exTxtMed", "ExternalTextMedia")]
     public class ExternalTextMedia : AbstractTextMedia, ILocated
     {
         public const string DEFAULT_SRC = "file.ext";
         
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.ExternalTextMedia;
-        }
         private string mSrc;
 
         private void Reset()
