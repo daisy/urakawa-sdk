@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Xml;
 using AudioLib;
@@ -10,15 +9,19 @@ using urakawa.xuk;
 
 namespace urakawa
 {
-    ///<summary>
-    ///</summary>
-    ///<typeparam name="T"></typeparam>
     public abstract class GenericXukAbleFactory<T> : XukAble where T : XukAble
     {
         private static readonly UglyPrettyName XukLocalName_NAME = new UglyPrettyName("name", "XukLocalName");
         private static readonly UglyPrettyName XukNamespaceUri_NAME = new UglyPrettyName("ns", "XukNamespaceUri");
         private static readonly UglyPrettyName BaseXukLocalName_NAME = new UglyPrettyName("baseName", "BaseXukLocalName");
         private static readonly UglyPrettyName BaseXukNamespaceUri_NAME = new UglyPrettyName("baseNs", "BaseXukNamespaceUri");
+
+        private static readonly UglyPrettyName AssemblyName_NAME = new UglyPrettyName("assbly", "AssemblyName");
+        private static readonly UglyPrettyName AssemblyVersion_NAME = new UglyPrettyName("assblyVer", "AssemblyVersion");
+        private static readonly UglyPrettyName FullName_NAME = new UglyPrettyName("fName", "FullName");
+
+        private static readonly UglyPrettyName Type_NAME = new UglyPrettyName("type", "Type");
+        private static readonly UglyPrettyName RegisteredTypes_NAME = new UglyPrettyName("types", "RegisteredTypes");
 
         private class TypeAndQNames
         {
@@ -30,14 +33,14 @@ namespace urakawa
 
             public void ReadFromXmlReader(XmlReader rd, bool pretty)
             {
-                AssemblyName = new AssemblyName(rd.GetAttribute(XukStrings.AssemblyName));
+                AssemblyName = new AssemblyName(readXmlAttribute(rd, AssemblyName_NAME));
 
-                if (rd.GetAttribute(XukStrings.AssemblyVersion) != null)
+                if (readXmlAttribute(rd, AssemblyVersion_NAME) != null)
                 {
-                    AssemblyName.Version = new Version(rd.GetAttribute(XukStrings.AssemblyVersion));
+                    AssemblyName.Version = new Version(readXmlAttribute(rd, AssemblyVersion_NAME));
                 }
 
-                ClassName = rd.GetAttribute(XukStrings.FullName);
+                ClassName = readXmlAttribute(rd, FullName_NAME);
 
                 if (AssemblyName != null && ClassName != null)
                 {
@@ -404,7 +407,7 @@ namespace urakawa
         {
             foreach (TypeAndQNames tp in mRegisteredTypeAndQNames)
             {
-                destination.WriteStartElement(XukStrings.Type, XukAble.XUK_NS);
+                destination.WriteStartElement(Type_NAME.z(PrettyFormat), XukAble.XUK_NS);
                 destination.WriteAttributeString(XukLocalName_NAME.z(PrettyFormat), tp.QName.LocalName.z(PrettyFormat));
                 destination.WriteAttributeString(XukNamespaceUri_NAME.z(PrettyFormat), tp.QName.NamespaceUri);
                 if (tp.BaseQName != null)
@@ -419,12 +422,12 @@ namespace urakawa
                 }
                 if (tp.AssemblyName != null)
                 {
-                    destination.WriteAttributeString(XukStrings.AssemblyName, tp.AssemblyName.Name);
-                    destination.WriteAttributeString(XukStrings.AssemblyVersion, tp.AssemblyName.Version.ToString());
+                    destination.WriteAttributeString(AssemblyName_NAME.z(PrettyFormat), tp.AssemblyName.Name);
+                    destination.WriteAttributeString(AssemblyVersion_NAME.z(PrettyFormat), tp.AssemblyName.Version.ToString());
                 }
                 if (tp.ClassName != null)
                 {
-                    destination.WriteAttributeString(XukStrings.FullName, tp.ClassName);
+                    destination.WriteAttributeString(FullName_NAME.z(PrettyFormat), tp.ClassName);
                 }
                 destination.WriteEndElement();
             }
@@ -441,7 +444,7 @@ namespace urakawa
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, progress.IProgressHandler handler)
         {
-            destination.WriteStartElement(XukStrings.RegisteredTypes, XukAble.XUK_NS);
+            destination.WriteStartElement(RegisteredTypes_NAME.z(PrettyFormat), XukAble.XUK_NS);
 
             XukOutRegisteredTypes(destination, baseUri, handler);
 
@@ -457,7 +460,8 @@ namespace urakawa
         /// <param name="handler">The handler of progress</param>
         protected override void XukInChild(XmlReader source, progress.IProgressHandler handler)
         {
-            if (source.LocalName == XukStrings.RegisteredTypes && source.NamespaceURI == XukAble.XUK_NS)
+            if (RegisteredTypes_NAME.Match(source.LocalName)
+                && source.NamespaceURI == XukAble.XUK_NS)
             {
                 XukInRegisteredTypes(source, handler);
                 return;
@@ -467,7 +471,8 @@ namespace urakawa
 
         protected void XukInRegisteredType(XmlReader source)
         {
-            if (source.LocalName == XukStrings.Type && source.NamespaceURI == XukAble.XUK_NS)
+            if (Type_NAME.Match(source.LocalName)
+                && source.NamespaceURI == XukAble.XUK_NS)
             {
                 TypeAndQNames tq = new TypeAndQNames();
                 tq.ReadFromXmlReader(source, PrettyFormat);

@@ -510,15 +510,15 @@ namespace urakawa.xuk
 
         #region factories
 
-        public static string RegisteredTypes
-        {
-            get { return (IsPrettyFormat ? "RegisteredTypes" : "types"); }
-        }
+        //public static string RegisteredTypes
+        //{
+        //    get { return (IsPrettyFormat ? "RegisteredTypes" : "types"); }
+        //}
 
-        public static string Type
-        {
-            get { return (IsPrettyFormat ? "Type" : "type"); }
-        }
+        //public static string Type
+        //{
+        //    get { return (IsPrettyFormat ? "Type" : "type"); }
+        //}
 
         //public static string XukLocalName
         //{
@@ -540,20 +540,20 @@ namespace urakawa.xuk
         //    get { return (IsPrettyFormat ? "BaseXukNamespaceUri" : "baseNs"); }
         //}
 
-        public static string AssemblyName
-        {
-            get { return (IsPrettyFormat ? "AssemblyName" : "assbly"); }
-        }
+        //public static string AssemblyName
+        //{
+        //    get { return (IsPrettyFormat ? "AssemblyName" : "assbly"); }
+        //}
 
-        public static string AssemblyVersion
-        {
-            get { return (IsPrettyFormat ? "AssemblyVersion" : "assblyVer"); }
-        }
+        //public static string AssemblyVersion
+        //{
+        //    get { return (IsPrettyFormat ? "AssemblyVersion" : "assblyVer"); }
+        //}
 
-        public static string FullName
-        {
-            get { return (IsPrettyFormat ? "FullName" : "fName"); }
-        }
+        //public static string FullName
+        //{
+        //    get { return (IsPrettyFormat ? "FullName" : "fName"); }
+        //}
         #endregion
 
 
