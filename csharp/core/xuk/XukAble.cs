@@ -152,6 +152,11 @@ namespace urakawa.xuk
                             continue;
                         }
 
+                        if (type.FullName.StartsWith("Obi."))
+                        {
+                            continue;
+                        }
+
                         string pretty = GetXukName(type, true);
                         if (!string.IsNullOrEmpty(pretty))
                         {
