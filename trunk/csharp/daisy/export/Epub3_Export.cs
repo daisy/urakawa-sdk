@@ -1978,8 +1978,8 @@ namespace urakawa.daisy.export
                 }
                 finally
                 {
-                    // XukStrings maintains a pointer to the last-created Project instance!
-                    XukStrings.RelocateProjectReference(m_Presentation.Project);
+                    //// XukStrings maintains a pointer to the last-created Project instance!
+                    //XukStrings.RelocateProjectReference(m_Presentation.Project);
                 }
             }
             else // NOT XukSpine
