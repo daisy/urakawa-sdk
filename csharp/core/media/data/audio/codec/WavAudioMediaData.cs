@@ -1066,7 +1066,7 @@ namespace urakawa.media.data.audio.codec
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                          "Thrown if the MediaDataFactory can not create a WacAudioMediaData matching Xuk QName {1}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
+                                                                         GetTypeNameFormatted(), XukNamespaceUri));
             }
             oWAMD.PCMFormat = PCMFormat.Copy();
 

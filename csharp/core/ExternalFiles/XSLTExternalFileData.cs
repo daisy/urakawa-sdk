@@ -2,10 +2,10 @@
 using urakawa.xuk;
 namespace urakawa.ExternalFiles
 {
+    //typeof(XSLTExternalFileData).Name
+    [XukNameUglyPrettyAttribute("XsltExFl", "XsltExternalFileData")]
     public class XSLTExternalFileData : ExternalFileData
     {
-
-
         public override string MimeType
         {
             get
@@ -13,11 +13,5 @@ namespace urakawa.ExternalFiles
                 return DataProviderFactory.XSLT_MIME_TYPE;
             }
         }
-
-        public override string GetTypeNameFormatted()
-        {
-            return XukStrings.XSLTExternalFileData;
-        }
-
     }
 }

@@ -77,19 +77,19 @@ namespace urakawa
             Project.SetPrettyFormat(pretty);
         }
 
-        public void RefreshFactoryQNames()
-        {
-            Project.PresentationFactory.RefreshQNames();
-            ChannelFactory.RefreshQNames();
-            DataProviderFactory.RefreshQNames();
-            MediaDataFactory.RefreshQNames();
-            CommandFactory.RefreshQNames();
-            MediaFactory.RefreshQNames();
-            MetadataFactory.RefreshQNames();
-            PropertyFactory.RefreshQNames();
-            TreeNodeFactory.RefreshQNames();
-            ExternalFilesDataFactory.RefreshQNames();
-        }
+        //public void RefreshFactoryQNames()
+        //{
+        //    Project.PresentationFactory.RefreshQNames();
+        //    ChannelFactory.RefreshQNames();
+        //    DataProviderFactory.RefreshQNames();
+        //    MediaDataFactory.RefreshQNames();
+        //    CommandFactory.RefreshQNames();
+        //    MediaFactory.RefreshQNames();
+        //    MetadataFactory.RefreshQNames();
+        //    PropertyFactory.RefreshQNames();
+        //    TreeNodeFactory.RefreshQNames();
+        //    ExternalFilesDataFactory.RefreshQNames();
+        //}
 
         #region Event related members
 
@@ -968,7 +968,7 @@ namespace urakawa
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == xukAble.XukLocalName && source.NamespaceURI == xukAble.XukNamespaceUri)
+                        if (source.LocalName == xukAble.GetTypeNameFormatted() && source.NamespaceURI == xukAble.XukNamespaceUri)
                         {
                             xukAble.XukIn(source, handler);
                         }

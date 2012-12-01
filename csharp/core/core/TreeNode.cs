@@ -816,7 +816,7 @@ namespace urakawa.core
             {
                 string msg = String.Format(
                     "The TreeNodeFactory of the export destination Presentation can not create a TreeNode matching Xuk QName {1}:{0}",
-                    XukLocalName, XukNamespaceUri);
+                    GetTypeNameFormatted(), XukNamespaceUri);
                 throw new FactoryCannotCreateTypeException(msg);
             }
             foreach (Property prop in Properties.ContentsAs_Enumerable)

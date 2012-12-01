@@ -37,14 +37,15 @@ namespace urakawa
         {
             //XukStrings.RelocateProjectReference(this);
 
-            if (m_PrettyFormat != pretty)
+            if (//true || // force refresh?
+                m_PrettyFormat != pretty)
             {
                 m_PrettyFormat = pretty;
-                //PresentationFactory.RefreshQNames();
-                foreach (Presentation pres in mPresentations.ContentsAs_Enumerable)
-                {
-                    pres.RefreshFactoryQNames();
-                }
+
+                //foreach (Presentation pres in mPresentations.ContentsAs_Enumerable)
+                //{
+                //    pres.RefreshFactoryQNames();
+                //}
             }
         }
 
@@ -150,19 +151,20 @@ namespace urakawa
         /// </summary>
         public Project()
         {
-            mXukStrings = new XukStrings(this);
+            ////mXukStrings = new XukStrings(this);
+            //XukStrings.RelocateProjectReference(this);
+
             mPresentations = new ObjectListProvider<Presentation>(this, false);
             mPresentations.ObjectAdded += this_presentationAdded;
             mPresentations.ObjectRemoved += this_presentationRemoved;
         }
 
-        private XukStrings mXukStrings;
-
-        public XukStrings XukStrings
-        {
-            get { return mXukStrings; }
-            set { mXukStrings = value; }
-        }
+        //private XukStrings mXukStrings;
+        //public XukStrings XukStrings
+        //{
+        //    get { return mXukStrings; }
+        //    set { mXukStrings = value; }
+        //}
 
         private PresentationFactory mPresentationFactory;
 

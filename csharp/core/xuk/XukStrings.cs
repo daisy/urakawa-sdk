@@ -7,23 +7,29 @@ using System.Text;
 
 namespace urakawa.xuk
 {
-    //todo: add all the XukIn / XukOut strings here !!!!
-    public class XukStrings
+    public static class XukStrings
     {
 #if DEBUG
         static XukStrings()
         {
-            Project project = new Project();
+            //Project project = new Project();
 
-            project.SetPrettyFormat(true);
+            //project.SetPrettyFormat(true);
+            //checkData(true);
+
+            //project.SetPrettyFormat(false);
+            //checkData(false);
+
+
             checkData(true);
 
-            project.SetPrettyFormat(false);
             checkData(false);
         }
 
         private static void checkData(bool pretty)
         {
+            IsPrettyFormat = pretty;
+
             Type type = typeof(XukStrings); //instance.GetType();
 
             BindingFlags flags = BindingFlags.Public | BindingFlags.Static;
@@ -78,26 +84,29 @@ namespace urakawa.xuk
             }
         }
 #endif
-        private static Project mProject;
+        //private static Project mProject;
 
-        public XukStrings(Project proj)
-        {
-            RelocateProjectReference(proj);
-        }
+        ////public XukStrings(Project proj)
+        ////{
+        ////    RelocateProjectReference(proj);
+        ////}
 
-        public static void NullifyProjectReference()
-        {
-            mProject = null;
-        }
-        public static void RelocateProjectReference(Project proj)
-        {
-            mProject = proj;
-        }
+        //public static void NullifyProjectReference()
+        //{
+        //    mProject = null;
+        //}
+        //public static void RelocateProjectReference(Project proj)
+        //{
+        //    mProject = proj;
+        //}
 
-        public static bool IsPrettyFormat
-        {
-            get { return mProject != null && mProject.IsPrettyFormat(); }
-        }
+        //public static bool IsPrettyFormat
+        //{
+        //    get { return mProject != null && mProject.IsPrettyFormat(); }
+        //}
+
+        public static bool IsPrettyFormat = true;
+        
 
         #region low occurence
 
@@ -511,25 +520,25 @@ namespace urakawa.xuk
             get { return (IsPrettyFormat ? "Type" : "type"); }
         }
 
-        public static string XukLocalName
-        {
-            get { return (IsPrettyFormat ? "XukLocalName" : "name"); }
-        }
+        //public static string XukLocalName
+        //{
+        //    get { return (IsPrettyFormat ? "XukLocalName" : "name"); }
+        //}
 
-        public static string BaseXukLocalName
-        {
-            get { return (IsPrettyFormat ? "BaseXukLocalName" : "baseName"); }
-        }
+        //public static string BaseXukLocalName
+        //{
+        //    get { return (IsPrettyFormat ? "BaseXukLocalName" : "baseName"); }
+        //}
 
-        public static string XukNamespaceUri
-        {
-            get { return (IsPrettyFormat ? "XukNamespaceUri" : "ns"); }
-        }
+        //public static string XukNamespaceUri
+        //{
+        //    get { return (IsPrettyFormat ? "XukNamespaceUri" : "ns"); }
+        //}
 
-        public static string BaseXukNamespaceUri
-        {
-            get { return (IsPrettyFormat ? "BaseXukNamespaceUri" : "baseNs"); }
-        }
+        //public static string BaseXukNamespaceUri
+        //{
+        //    get { return (IsPrettyFormat ? "BaseXukNamespaceUri" : "baseNs"); }
+        //}
 
         public static string AssemblyName
         {
@@ -919,15 +928,15 @@ namespace urakawa.xuk
             get { return (IsPrettyFormat ? "OptionalInfo" : "opInf"); }
         }
 
-        public static string CSSExternalFileData
-        {
-            get { return (IsPrettyFormat ? "CssExternalFileData" : "cssExFl"); }
-        }
+        //public static string CSSExternalFileData
+        //{
+        //    get { return (IsPrettyFormat ? "CssExternalFileData" : "cssExFl"); }
+        //}
 
-        public static string XSLTExternalFileData
-        {
-            get { return (IsPrettyFormat ? "XsltExternalFileData" : "XsltExFl"); }
-        }
+        //public static string XSLTExternalFileData
+        //{
+        //    get { return (IsPrettyFormat ? "XsltExternalFileData" : "XsltExFl"); }
+        //}
 
 
         public static string DTDExternalFileData

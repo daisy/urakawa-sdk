@@ -269,7 +269,7 @@ namespace urakawa.xuk
                         if (mXmlReader.NodeType == XmlNodeType.Element)
                         {
                             //If the element QName matches the Xuk QName equivalent of this, Xuk it in using this.XukIn
-                            if (mXmlReader.LocalName == mDestXukAble.XukLocalName &&
+                            if (mXmlReader.LocalName == mDestXukAble.GetTypeNameFormatted() &&
                                 mXmlReader.NamespaceURI == mDestXukAble.XukNamespaceUri)
                             {
                                 foundXukAble = true;
