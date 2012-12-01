@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Xml;
 using AudioLib;
-using urakawa.exception;
 using urakawa.progress;
 
 namespace urakawa.xuk
@@ -26,6 +25,11 @@ namespace urakawa.xuk
             public string z(bool pretty)
             {
                 return pretty ? Pretty : Ugly;
+            }
+
+            public bool Match(string str)
+            {
+                return str == Ugly || str == Pretty;
             }
         }
 
