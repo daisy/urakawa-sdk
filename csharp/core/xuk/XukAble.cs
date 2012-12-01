@@ -238,6 +238,10 @@ namespace urakawa.xuk
                     }
                 }
             }
+
+            // Make sure default is false, to at least open exising projects whilst testing.
+            // (for as long as the refactoring goes on to remove dependency on static XukStrings)
+            XukStrings.IsPrettyFormat = false;
         }
 #endif
 
