@@ -218,18 +218,18 @@ namespace AudioLib
                             }
                         }
 #endif
-
-                        DebugFix.Assert(sampleRatePerSecond > 0);
-                        if (sampleRatePerSecond > 0)
-                        {
-                            int fastPlaySamplesPerSecond = (int)Math.Round(
-#if USE_SHARPDX
-sampleRatePerSecond
-#else
- m_CircularBuffer.Format.SamplesPerSecond
+                        
+                        #if USE_SHARPDX
+                             int sampleRate  = sampleRatePerSecond ;
+                                               #else
+                           int sampleRate  =   m_CircularBuffer.Format.SamplesPerSecond ;
+                        
 #endif
-
- * m_FastPlayFactor);
+                        
+                        DebugFix.Assert(sampleRate > 0);
+                        if (sampleRate > 0)
+                        {
+                        int fastPlaySamplesPerSecond = (int)Math.Round(sampleRate  * m_FastPlayFactor);
 
 #if DEBUG
                             if (m_CurrentAudioPCMFormat != null)
