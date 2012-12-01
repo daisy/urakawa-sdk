@@ -205,15 +205,18 @@ namespace urakawa.metadata
             if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
-                if (m_firstXukInAttribute && source.LocalName == XukStrings.MetadataAttribute)
+                if (m_firstXukInAttribute
+                    && XukAble.GetXukName(typeof(MetadataAttribute)).Match(source.LocalName))
                 {
                     XukInMetadataAttribute(source, handler);
                 }
-                else if (PrettyFormat && source.LocalName == XukStrings.MetadataOtherAttributes)
+                else if (PrettyFormat
+                    && source.LocalName == XukStrings.MetadataOtherAttributes)
                 {
                     XukInMetadataOtherAttributes(source, handler);
                 }
-                else if (!PrettyFormat && source.LocalName == XukStrings.MetadataAttribute)
+                else if (!PrettyFormat
+                    && XukAble.GetXukName(typeof(MetadataAttribute)).Match(source.LocalName))
                 {
                     XukInMetadataAttribute(source, handler);
                 }
@@ -231,7 +234,8 @@ namespace urakawa.metadata
         private bool m_firstXukInAttribute;
         protected virtual void XukInMetadataAttribute(XmlReader source, IProgressHandler handler)
         {
-            if (source.LocalName == XukStrings.MetadataAttribute && source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS
+                && XukAble.GetXukName(typeof(MetadataAttribute)).Match(source.LocalName))
             {
                 MetadataAttribute attr = new MetadataAttribute();
                 attr.XukIn(source, handler);

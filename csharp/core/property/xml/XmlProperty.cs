@@ -714,7 +714,8 @@ namespace urakawa.property.xml
                 {
                     XukInXmlAttributes(source, handler);
                 }
-                else if (!PrettyFormat && source.LocalName == XukStrings.XmlAttribute)
+                else if (!PrettyFormat
+                    && XukAble.GetXukName(typeof(XmlAttribute)).Match(source.LocalName))
                 {
                     XukInXmlAttribute(source, handler);
                 }
@@ -736,7 +737,8 @@ namespace urakawa.property.xml
         /// <param name="handler">The handler for progress</param>
         protected virtual void XukInXmlAttribute(XmlReader source, IProgressHandler handler)
         {
-            if (source.LocalName == XukStrings.XmlAttribute && source.NamespaceURI == XukAble.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS
+                && XukAble.GetXukName(typeof(XmlAttribute)).Match(source.LocalName))
             {
                 XmlAttribute attr = new XmlAttribute();
                 attr.XukIn(source, handler);

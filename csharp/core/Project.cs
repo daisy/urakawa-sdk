@@ -325,7 +325,7 @@ namespace urakawa
             bool readItem = false;
             if (source.NamespaceURI == XukAble.XUK_NS)
             {
-                if (source.LocalName == XukStrings.PresentationFactory)
+                if (XukAble.GetXukName(typeof(PresentationFactory)).Match(source.LocalName))
                 {
                     PresentationFactory.XukIn(source, handler);
                     readItem = true;

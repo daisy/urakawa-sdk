@@ -92,7 +92,8 @@ namespace urakawa.property.alt
             {
                 if (source.NodeType == XmlNodeType.Element)
                 {
-                    if (source.NamespaceURI == XukAble.XUK_NS && source.LocalName == XukStrings.Metadata)
+                    if (source.NamespaceURI == XukAble.XUK_NS
+                        && XukAble.GetXukName(typeof(Metadata)).Match(source.LocalName))
                     {
                         Metadata md = Presentation.MetadataFactory.CreateMetadata();
                         md.XukIn(source, handler);

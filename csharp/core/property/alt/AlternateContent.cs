@@ -89,7 +89,8 @@ namespace urakawa.property.alt
             {
                 if (source.NodeType == XmlNodeType.Element)
                 {
-                    if (source.NamespaceURI == XukAble.XUK_NS && source.LocalName == XukStrings.Metadata)
+                    if (source.NamespaceURI == XukAble.XUK_NS
+                        && XukAble.GetXukName(typeof(Metadata)).Match(source.LocalName))
                     {
                         Metadata md = Presentation.MetadataFactory.CreateMetadata();
                         md.XukIn(source, handler);
@@ -117,7 +118,7 @@ namespace urakawa.property.alt
                 {
                     XukInMetadata(source, handler);
                 }
-                else if (source.LocalName == XukStrings.TextMedia)
+                else if (XukAble.GetXukName(typeof(TextMedia)).Match(source.LocalName))
                 {
                     if (m_Text != null)
                     {
@@ -126,7 +127,7 @@ namespace urakawa.property.alt
                     m_Text = Presentation.MediaFactory.CreateTextMedia();
                     m_Text.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.ManagedAudioMedia)
+                else if (XukAble.GetXukName(typeof(ManagedAudioMedia)).Match(source.LocalName))
                 {
                     if (m_Audio != null)
                     {
@@ -135,7 +136,7 @@ namespace urakawa.property.alt
                     m_Audio = Presentation.MediaFactory.CreateManagedAudioMedia();
                     m_Audio.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.ManagedImageMedia)
+                else if (XukAble.GetXukName(typeof(ManagedImageMedia)).Match(source.LocalName))
                 {
                     if (m_Image != null)
                     {

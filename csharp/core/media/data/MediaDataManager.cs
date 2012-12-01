@@ -324,7 +324,8 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.PCMFormatInfo && source.NamespaceURI == XukAble.XUK_NS)
+                        if (source.NamespaceURI == XukAble.XUK_NS
+                            && XukAble.GetXukName(typeof(PCMFormatInfo)).Match(source.LocalName))
                         {
                             PCMFormatInfo newInfo = new PCMFormatInfo();
                             newInfo.XukIn(source, handler);

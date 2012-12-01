@@ -381,7 +381,10 @@ namespace urakawa.xuk
                 //streamWriter.WriteLine("start = element " + XukStrings.Xuk + " { " + XukStrings.Xuk + ".attlist & " + XukStrings.Xuk + ".content }");
                 //streamWriter.WriteLine(XukStrings.Xuk + ".attlist = " + XukStrings.Xuk + ".NOOP.attr");
 
-                streamWriter.WriteLine("start = element " + (isPrettyFormat ? "Xuk" : "xuk") + " { " + XukStrings.Project + " }");
+                streamWriter.WriteLine("start = element " + (isPrettyFormat ? "Xuk" : "xuk")
+                    + " { " +
+                    XukAble.GetXukName(typeof(Project)).z(isPrettyFormat)
+                    + " }");
 
                 streamWriter.Write(Project.GetXukSchema(isPrettyFormat));
             }
