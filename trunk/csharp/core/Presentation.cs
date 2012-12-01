@@ -1133,52 +1133,88 @@ namespace urakawa
             if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
-                if (source.LocalName == XukStrings.TreeNodeFactory)
+                if (
+                    //XukAble.GetXukName(typeof(TreeNodeFactory))
+                    TreeNodeFactory.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     TreeNodeFactory.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.PropertyFactory)
+                else if (
+                    //XukAble.GetXukName(typeof(PropertyFactory))
+                    PropertyFactory.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     PropertyFactory.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.ChannelFactory)
+                else if (
+                    //XukAble.GetXukName(typeof(ChannelFactory))
+                    ChannelFactory.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     ChannelFactory.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.ChannelsManager)
+                else if (
+                    //XukAble.GetXukName(typeof(ChannelsManager))
+                    ChannelsManager.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     ChannelsManager.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.MediaFactory)
+                else if (
+                    //XukAble.GetXukName(typeof(MediaFactory))
+                    MediaFactory.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     MediaFactory.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.MediaDataFactory)
+                else if (
+                    //XukAble.GetXukName(typeof(MediaDataFactory))
+                    MediaDataFactory.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     MediaDataFactory.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.MediaDataManager)
+                else if (
+                    //XukAble.GetXukName(typeof(MediaDataManager))
+                    MediaDataManager.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     MediaDataManager.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.DataProviderFactory)
+                else if (
+                    //XukAble.GetXukName(typeof(DataProviderFactory))
+                    DataProviderFactory.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     DataProviderFactory.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.DataProviderManager)
+                else if (
+                    //XukAble.GetXukName(typeof(DataProviderManager))
+                    DataProviderManager.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     DataProviderManager.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.CommandFactory)
+                else if (
+                    //XukAble.GetXukName(typeof(CommandFactory))
+                    CommandFactory.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     CommandFactory.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.UndoRedoManager)
+                else if (
+                    //XukAble.GetXukName(typeof(UndoRedoManager))
+                    UndoRedoManager.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     if (!m_IgnoreUndoRedoStack)
                         UndoRedoManager.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.MetadataFactory)
+                else if (
+                    //XukAble.GetXukName(typeof(MetadataFactory))
+                    MetadataFactory.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     MetadataFactory.XukIn(source, handler);
                 }
@@ -1186,15 +1222,24 @@ namespace urakawa
                 {
                     XukInMetadata(source, handler);
                 }
-                else if (source.LocalName == XukStrings.ExternalFileDataFactory)
+                else if (
+                    //XukAble.GetXukName(typeof(ExternalFileDataFactory))
+                    ExternalFilesDataFactory.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     ExternalFilesDataFactory.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.ExternalFileDataManager)
+                else if (
+                    //XukAble.GetXukName(typeof(ExternalFileDataManager))
+                    ExternalFilesDataManager.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     ExternalFilesDataManager.XukIn(source, handler);
                 }
-                else if (source.LocalName == XukStrings.AlternateContentFactory)
+                else if (
+                    //XukAble.GetXukName(typeof(AlternateContentFactory))
+                    AlternateContentFactory.GetXukName_()
+                    .Match(source.LocalName))
                 {
                     AlternateContentFactory.XukIn(source, handler);
                 }

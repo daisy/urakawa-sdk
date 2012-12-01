@@ -789,7 +789,8 @@ namespace urakawa.media.data.audio.codec
                 {
                     XukInWavClips(source);
                 }
-                else if (!Presentation.Project.PrettyFormat && source.LocalName == XukStrings.WavClip)
+                else if (!Presentation.Project.PrettyFormat
+                    && XukAble.GetXukName(typeof(WavClip)).Match(source.LocalName))
                 {
                     XukInWavClip(source);
                 }
@@ -813,7 +814,9 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.PCMFormatInfo && source.NamespaceURI == XukAble.XUK_NS)
+                        if (source.NamespaceURI == XukAble.XUK_NS
+                            && XukAble.GetXukName(typeof(PCMFormatInfo)).Match(source.LocalName)
+                            )
                         {
                             PCMFormatInfo newInfo = new PCMFormatInfo();
                             newInfo.XukIn(source, handler);
@@ -841,7 +844,8 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == XukStrings.WavClip && source.NamespaceURI == XukAble.XUK_NS)
+                        if (source.NamespaceURI == XukAble.XUK_NS
+                            && XukAble.GetXukName(typeof(WavClip)).Match(source.LocalName))
                         {
                             XukInWavClip(source);
                         }
