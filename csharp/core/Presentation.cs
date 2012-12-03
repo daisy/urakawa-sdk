@@ -1341,9 +1341,12 @@ namespace urakawa
             if (!m_IgnoreUndoRedoStack)
                 UndoRedoManager.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement(XukStrings.HeadNode, XukAble.XUK_NS);
-            HeadNode.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
+            if (mHeadNode != null)
+            {
+                destination.WriteStartElement(XukStrings.HeadNode, XukAble.XUK_NS);
+                HeadNode.XukOut(destination, baseUri, handler);
+                destination.WriteEndElement();
+            }
 
             destination.WriteStartElement(XukStrings.RootNode, XukAble.XUK_NS);
             RootNode.XukOut(destination, baseUri, handler);
