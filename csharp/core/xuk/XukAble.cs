@@ -74,6 +74,8 @@ namespace urakawa.xuk
         {
             Debugger.Break();
 
+            return;
+
             try
             {
                 PropertyInfo[] properties = typeof(XukStrings).GetProperties(BindingFlags.Public | BindingFlags.Static);
