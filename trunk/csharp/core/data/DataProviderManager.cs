@@ -384,8 +384,7 @@ namespace urakawa.data
                     "dataFileDirectoryPath attribute is missing from DataProviderManager element");
             }
 
-            //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
-            DataFileDirectory = Uri.UnescapeDataString(dataFileDirectoryPath);
+            DataFileDirectory = FileDataProvider.UriDecode(dataFileDirectoryPath);
         }
 
         /// <summary>
