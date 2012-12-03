@@ -226,7 +226,7 @@ namespace urakawa.daisy.export
 
                     XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, objectNode,
                         DiagramContentModelHelper.Src,
-                        exportImageName,
+                        FileDataProvider.UriEncode(exportImageName),
                         objectNode.NamespaceURI);
 
                     string ext = Path.GetExtension(exportImageName);
@@ -607,7 +607,9 @@ namespace urakawa.daisy.export
                     }
 
                     XmlDocumentHelper.CreateAppendXmlAttribute(descriptionDocument, contentXmlNode,
-                    DiagramContentModelHelper.TOBI_Audio, exportAudioName, DiagramContentModelHelper.NS_URL_TOBI);
+                    DiagramContentModelHelper.TOBI_Audio,
+                    FileDataProvider.UriEncode(exportAudioName),
+                    DiagramContentModelHelper.NS_URL_TOBI);
 
 
                     if (map_AltContentAudio_TO_RelativeExportedFilePath != null)
