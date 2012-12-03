@@ -163,7 +163,9 @@ namespace urakawa.daisy.export
                 if (IsEscapableNode(special_UrakawaNode) || IsSkippableNode(special_UrakawaNode))
                 {//3
                     XmlNode dtbEscapableNode = m_TreeNode_XmlNodeMap[special_UrakawaNode];
-                    XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtbEscapableNode, "smilref", smilFileName + "#" + strSeqID, m_DTBDocument.DocumentElement.NamespaceURI);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtbEscapableNode, "smilref",
+                        FileDataProvider.UriEncode(smilFileName + "#" + strSeqID),
+                        m_DTBDocument.DocumentElement.NamespaceURI);
                 }//-3
 
                 // decide the parent node to which this new seq node is to be appended.

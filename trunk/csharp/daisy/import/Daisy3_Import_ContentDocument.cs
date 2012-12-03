@@ -474,6 +474,8 @@ namespace urakawa.daisy.import
                                 }
                                 else
                                 {
+                                    Console.WriteLine("IMPORT skipped media: " + relativePath);
+
                                     ExternalImageMedia externalImage = presentation.MediaFactory.CreateExternalImageMedia();
                                     externalImage.Src = relativePath;
 
@@ -577,6 +579,8 @@ namespace urakawa.daisy.import
                                 }
                                 else
                                 {
+                                    Console.WriteLine("IMPORT skipped media: " + relativePath);
+
                                     ExternalVideoMedia externalVideo = presentation.MediaFactory.CreateExternalVideoMedia();
                                     externalVideo.Src = relativePath;
 
@@ -648,6 +652,8 @@ namespace urakawa.daisy.import
                                 }
                                 else
                                 {
+                                    Console.WriteLine("IMPORT skipped media: " + relativePath);
+
                                     ExternalAudioMedia externalAudio = presentation.MediaFactory.CreateExternalAudioMedia();
                                     externalAudio.Src = relativePath;
 
@@ -717,6 +723,8 @@ namespace urakawa.daisy.import
                                 }
                                 else
                                 {
+                                    Console.WriteLine("IMPORT skipped media: " + relativePath);
+
                                     ExternalImageMedia externalImage = presentation.MediaFactory.CreateExternalImageMedia();
                                     externalImage.Src = relativePath;
 

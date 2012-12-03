@@ -66,7 +66,13 @@ namespace urakawa.daisy.export
                 bool specialNodeIsNoteAnnoRef = false;
                 TreeNode specialNodeReferredNoteAnno = null;
 
-                bool levelDoesNotContainSignificantText = TreeNode.TextOnlyContainsPunctuation(levelNode.GetTextFlattened_());
+                TreeNode.StringChunkRange range = levelNode.GetTextFlattened_();
+                if (range == null)
+                {
+                    continue;
+                }
+
+                bool levelDoesNotContainSignificantText = TreeNode.TextOnlyContainsPunctuation(range);
                 if (levelDoesNotContainSignificantText)
                 {
                     continue;
@@ -96,7 +102,7 @@ namespace urakawa.daisy.export
 
                 bool noAudioInAncestor = (levelNodeDescendant.GetFirstAncestorWithManagedAudio() == null);
                 bool noAudioInDescendants = (levelNodeDescendant.GetFirstDescendantWithManagedAudio() == null);
-                
+
 #if ENABLE_SEQ_MEDIA
             bool noAudioLocal = (levelNodeDescendant.GetManagedAudioMediaOrSequenceMedia() == null);
 #else
@@ -267,11 +273,15 @@ namespace urakawa.daisy.export
                     if (isSpecialNodeEscapable || isSpecialNodeSkippable) // || nodeIsImageAndHasDescriptionProdnotes) WE DON'T WANT THE IMAGE ITSELF TO SMIL-REF THE FIRST PRODNOTE (link to Diagram desc XML file)
                     {
                         XmlNode dtbEscapableNode = m_TreeNode_XmlNodeMap[specialNode];
-                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtbEscapableNode, "smilref", smilFileName + "#" + strSeqID, m_DTBDocument.DocumentElement.NamespaceURI);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtbEscapableNode, "smilref",
+                            FileDataProvider.UriEncode(smilFileName + "#" + strSeqID),
+                            m_DTBDocument.DocumentElement.NamespaceURI);
                     }
                     if (nodeIsImageAndHasDescriptionProdnotes)
                     {
-                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[levelNodeDescendant][0], "smilref", smilFileName + "#" + strSeqID, m_DTBDocument.DocumentElement.NamespaceURI);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[levelNodeDescendant][0], "smilref",
+                            FileDataProvider.UriEncode(smilFileName + "#" + strSeqID),
+                            m_DTBDocument.DocumentElement.NamespaceURI);
                     }
                     // decide the parent node to which this new seq node is to be appended.
                     if (specialNodeSeqStack.Count == 0)
@@ -434,7 +444,9 @@ namespace urakawa.daisy.export
                     }
                     if (dtBookNode != null && string.IsNullOrEmpty(dtbookSmilRef))
                     {
-                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtBookNode, "smilref", smilFileName + "#" + par_id, m_DTBDocument.DocumentElement.NamespaceURI);
+                        XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtBookNode, "smilref",
+                            FileDataProvider.UriEncode(smilFileName + "#" + par_id),
+                            m_DTBDocument.DocumentElement.NamespaceURI);
                     }
                     else
                     {
