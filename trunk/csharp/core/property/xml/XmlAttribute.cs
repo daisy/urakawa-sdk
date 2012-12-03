@@ -267,20 +267,20 @@ namespace urakawa.property.xml
         {
             base.XukInAttributes(source);
 
-            string name = XukAble.readXmlAttribute(source, XukAble.LocalName_NAME);
+            string name = XukAble.ReadXukAttribute(source, XukAble.LocalName_NAME);
             if (string.IsNullOrEmpty(name))
             {
                 throw new exception.XukException("LocalName attribute of XmlAttribute element is missing");
             }
 
-            string value = XukAble.readXmlAttribute(source, XukAble.Value_NAME);
+            string value = XukAble.ReadXukAttribute(source, XukAble.Value_NAME);
             if (value == null)
             {
                 throw new exception.XukException("Value attribute of XmlAttribute element is missing");
             }
             Value = value;
 
-            string ns = XukAble.readXmlAttribute(source, XukAble.NamespaceUri_NAME);
+            string ns = XukAble.ReadXukAttribute(source, XukAble.NamespaceUri_NAME);
 
             SetQName(name, ns == null ? "" : ns);
         }

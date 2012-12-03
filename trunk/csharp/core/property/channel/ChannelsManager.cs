@@ -235,7 +235,7 @@ namespace urakawa.property.channel
             bool foundChannel = false;
             if (!source.IsEmptyElement)
             {
-                string uid = XukAble.readXmlAttribute(source, XukAble.Uid_NAME);
+                string uid = XukAble.ReadXukAttribute(source, XukAble.Uid_NAME);
 
                 while (source.Read())
                 {
@@ -244,7 +244,7 @@ namespace urakawa.property.channel
                         Channel newCh = Presentation.ChannelFactory.Create_SkipManagerInitialization(source.LocalName, source.NamespaceURI);
                         if (newCh != null)
                         {
-                            string uid_ = XukAble.readXmlAttribute(source, XukAble.Uid_NAME);
+                            string uid_ = XukAble.ReadXukAttribute(source, XukAble.Uid_NAME);
 
                             newCh.XukIn(source, handler);
 

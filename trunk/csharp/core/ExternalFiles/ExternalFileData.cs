@@ -303,7 +303,7 @@ namespace urakawa.ExternalFiles
                 throw new XukException("For preserved files, the OriginalRelativePath of an ExternalFileData cannot be null or empty !");
             }
 
-            string uid = XukAble.readXmlAttribute(source, DataProvider.DataProvider_NAME);
+            string uid = XukAble.ReadXukAttribute(source, DataProvider.DataProvider_NAME);
             if (String.IsNullOrEmpty(uid))
             {
                 throw new XukException("The DataProvider of an ExternalFileData cannot be null or empty !");

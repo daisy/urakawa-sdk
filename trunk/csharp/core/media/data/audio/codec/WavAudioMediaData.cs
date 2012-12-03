@@ -15,7 +15,7 @@ namespace urakawa.media.data.audio.codec
     [XukNameUglyPrettyAttribute("wvAu", "WavAudioMediaData")]
     public class WavAudioMediaData : AudioMediaData
     {
-        public static readonly XukAble.UglyPrettyName WavClip_NAME = new XukAble.UglyPrettyName("wvCl", "WavClip");
+        public static readonly UglyPrettyName WavClip_NAME = new UglyPrettyName("wvCl", "WavClip");
 
         public override string MimeType
         {
@@ -901,7 +901,7 @@ namespace urakawa.media.data.audio.codec
                         e);
                 }
             }
-            string dataProviderUid = XukAble.readXmlAttribute(source, DataProvider.DataProvider_NAME);
+            string dataProviderUid = XukAble.ReadXukAttribute(source, DataProvider.DataProvider_NAME);
             if (String.IsNullOrEmpty(dataProviderUid))
             {
                 throw new exception.XukException("dataProvider attribute is missing from WavClip element");
