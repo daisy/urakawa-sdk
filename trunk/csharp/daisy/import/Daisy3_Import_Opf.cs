@@ -480,15 +480,15 @@ namespace urakawa.daisy.import
                 }
                 else if (attrMediaType.Value == "application/x-dtbook+xml"
                     || attrMediaType.Value == DataProviderFactory.XML_MIME_TYPE
-                        && attrHref.Value.EndsWith(".xml"))
+                        && href.EndsWith(".xml"))
                 {
-                    dtbookPath = attrHref.Value;
+                    dtbookPath = href;
                 }
                 else if (attrMediaType.Value == "application/x-dtbncx+xml"
                     || attrMediaType.Value == DataProviderFactory.XML_MIME_TYPE
-                        && attrHref.Value.EndsWith(".ncx"))
+                        && href.EndsWith(".ncx"))
                 {
-                    ncxPath = attrHref.Value;
+                    ncxPath = href;
                 }
                 //else if (attrMediaType.Value == DataProviderFactory.STYLE_CSS_MIME_TYPE
                 //    || attrMediaType.Value == DataProviderFactory.STYLE_PLS_MIME_TYPE)
