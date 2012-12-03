@@ -302,7 +302,9 @@ namespace urakawa
                     return typeAndQNames;
                 }
             }
-
+#if DEBUG
+            Debugger.Break();
+#endif
             return null;
         }
 
@@ -310,6 +312,9 @@ namespace urakawa
         {
             if (qname == null)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 return null;
             }
 
@@ -320,10 +325,14 @@ namespace urakawa
                 {
                     return typeAndQNames.Type;
                 }
-
+#if DEBUG
+                Debugger.Break();
+#endif
                 return LookupType(typeAndQNames.BaseQName);
             }
-
+#if DEBUG
+            Debugger.Break();
+#endif
             return null;
         }
 
@@ -406,6 +415,9 @@ namespace urakawa
             Type t = LookupType(qname);
             if (t == null)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 return null;
             }
 
