@@ -475,7 +475,13 @@ namespace urakawa.daisy.import
                                 else
                                 {
                                     Console.WriteLine("IMPORT skipped media: " + relativePath);
-
+                                    
+#if DEBUG
+                                    if (true || !FileDataProvider.isHTTPFile(relativePath))
+                                    {
+                                        Debugger.Break();
+                                    }
+#endif
                                     ExternalImageMedia externalImage = presentation.MediaFactory.CreateExternalImageMedia();
                                     externalImage.Src = relativePath;
 
@@ -581,6 +587,12 @@ namespace urakawa.daisy.import
                                 {
                                     Console.WriteLine("IMPORT skipped media: " + relativePath);
 
+#if DEBUG
+                                    if (!FileDataProvider.isHTTPFile(relativePath))
+                                    {
+                                        Debugger.Break();
+                                    }
+#endif
                                     ExternalVideoMedia externalVideo = presentation.MediaFactory.CreateExternalVideoMedia();
                                     externalVideo.Src = relativePath;
 
@@ -653,7 +665,13 @@ namespace urakawa.daisy.import
                                 else
                                 {
                                     Console.WriteLine("IMPORT skipped media: " + relativePath);
-
+                                    
+#if DEBUG
+                                    if (!FileDataProvider.isHTTPFile(relativePath))
+                                    {
+                                        Debugger.Break();
+                                    }
+#endif
                                     ExternalAudioMedia externalAudio = presentation.MediaFactory.CreateExternalAudioMedia();
                                     externalAudio.Src = relativePath;
 
@@ -724,7 +742,13 @@ namespace urakawa.daisy.import
                                 else
                                 {
                                     Console.WriteLine("IMPORT skipped media: " + relativePath);
-
+                                    
+#if DEBUG
+                                    if (true || !FileDataProvider.isHTTPFile(relativePath))
+                                    {
+                                        Debugger.Break();
+                                    }
+#endif
                                     ExternalImageMedia externalImage = presentation.MediaFactory.CreateExternalImageMedia();
                                     externalImage.Src = relativePath;
 
