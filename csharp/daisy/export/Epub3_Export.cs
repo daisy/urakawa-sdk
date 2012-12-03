@@ -578,7 +578,7 @@ namespace urakawa.daisy.export
                     xmlDocSMIL,
                     xmlDocSMIL_body,
                     "epub:textref",
-                    path_FileOnly,
+                    FileDataProvider.UriEncode(path_FileOnly),
                     DiagramContentModelHelper.NS_URL_EPUB);
 
                 stack_XmlNode_SMIL = new Stack<XmlNode>();
