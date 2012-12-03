@@ -148,7 +148,9 @@ namespace urakawa.daisy.export
                         XmlNode anchorNode = smilDocument.CreateElement(null, "a", Seq_SpecialNode.NamespaceURI);
                         Seq_SpecialNode.AppendChild(anchorNode);
                         XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, anchorNode, "external", "false");
-                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, anchorNode, "href", "#" + ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("idref").Value.Replace("#", ""));
+                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, anchorNode, "href",
+                            "#" + ID_SmilPrefix
+                            + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("idref").Value.Replace("#", ""));
 
                     }//-4
                     if (!currentSmilCustomTestList.Contains(special_UrakawaNode.GetXmlElementLocalName()))
@@ -306,7 +308,7 @@ namespace urakawa.daisy.export
                                       ? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value
                                       : m_TreeNode_XmlNodeMap[n.Parent].Attributes.GetNamedItem("id").Value;
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
-                                                           m_Filename_Content + "#" + dtbookID);
+                                                           FileDataProvider.UriEncode(m_Filename_Content + "#" + dtbookID));
                 parNode.AppendChild(SmilTextNode);
                 if (externalAudio != null)
                 {
@@ -317,7 +319,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
                                                                FormatTimeString(externalAudio.ClipEnd));
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src",
-                                                               Path.GetFileName(externalAudio.Src));
+                                                               FileDataProvider.UriEncode(Path.GetFileName(externalAudio.Src)));
                     parNode.AppendChild(audioNode);
 
                     // add audio file name in audio files list for use in opf creation 

@@ -156,7 +156,7 @@ namespace urakawa.daisy.export
             string type = DataProviderFactory.GetMimeTypeFromExtension(ext);
             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
 
-            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", path);
+            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(path));
         }
 
         protected string makeRelativePathToOPF(string fullPath, string fullSpineItemDirectory, string relativePath, string opfFilePath)
@@ -178,7 +178,7 @@ namespace urakawa.daisy.export
                 else
                 {
                     Uri uri = (new Uri(opfParent + "\\")).MakeRelativeUri(new Uri(fullPath));
-                    pathRelativeToOPF = Uri.UnescapeDataString(uri.ToString());
+                    pathRelativeToOPF = FileDataProvider.UriDecode(uri.ToString());
                 }
             }
 
@@ -213,7 +213,7 @@ namespace urakawa.daisy.export
 
                 string ext = Path.GetExtension(path);
                 smilPath = path.Replace(ext, ".smil");
-                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", smilPath);
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(smilPath));
 
                 XmlNode opfXmlNode_metaItemDur = opfXmlDoc.CreateElement(null,
                     @"meta",
@@ -244,7 +244,7 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
 
                 audioPath = path.Replace(ext, m_encodeToMp3 ? @".mp3" : @".wav");
-                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", audioPath);
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(audioPath));
 
                 string fullAudioPath = Path.Combine(opsDirectoryPath, audioPath);
                 fullAudioPath = FileDataProvider.NormaliseFullFilePath(fullAudioPath).Replace('/', '\\');
@@ -490,14 +490,19 @@ namespace urakawa.daisy.export
                         {
                             string val = xmlAttribute.Value;
 
-                            if (m_isDefaultOpfRelativePath
-                                &&
-                                (@"href".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
-                                || @"src".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
-                                )
-                                )
+                            bool needsUrlEncode = @"href".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
+                                                  || @"src".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
+                                //|| @"altimg".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
+                                                  ;
+
+                            if (m_isDefaultOpfRelativePath && needsUrlEncode)
                             {
                                 val = flattenPath(val);
+                            }
+
+                            if (needsUrlEncode)
+                            {
+                                val = FileDataProvider.UriEncode(val);
                             }
 
                             XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocHTML, xmlChild, xmlAttribute.LocalName, val);
@@ -802,14 +807,18 @@ namespace urakawa.daisy.export
 
                         string val = xmlAttr.Value;
 
-                        if (m_isDefaultOpfRelativePath
-                            &&
-                            (@"href".Equals(xmlAttr.LocalName, StringComparison.OrdinalIgnoreCase)
-                            || @"src".Equals(xmlAttr.LocalName, StringComparison.OrdinalIgnoreCase)
-                            )
-                            )
+                        bool needsUrlEncode = @"href".Equals(xmlAttr.LocalName, StringComparison.OrdinalIgnoreCase)
+                                              || @"src".Equals(xmlAttr.LocalName, StringComparison.OrdinalIgnoreCase)
+                                              || @"altimg".Equals(xmlAttr.LocalName, StringComparison.OrdinalIgnoreCase);
+
+                        if (m_isDefaultOpfRelativePath && needsUrlEncode)
                         {
                             val = flattenPath(val);
+                        }
+
+                        if (needsUrlEncode)
+                        {
+                            val = FileDataProvider.UriEncode(val);
                         }
 
                         XmlDocumentHelper.CreateAppendXmlAttribute(
@@ -914,9 +923,9 @@ namespace urakawa.daisy.export
                     {
                         DebugFix.Assert(time != null);
 
+                        string textSrc = FileDataProvider.UriEncode(path_FileOnly + "#" + xmlId);
+                        string audioSrc = FileDataProvider.UriEncode(Path.GetFileName(audioPath));
 
-                        string textSrc = path_FileOnly + "#" + xmlId;
-                        string audioSrc = Path.GetFileName(audioPath);
                         string clipBegin = timeAccumulated.Format_StandardExpanded();
 
                         timeAccumulated.Add(audioMedia.Duration); //audioMedia.AudioMediaData.AudioDuration
@@ -1133,7 +1142,7 @@ namespace urakawa.daisy.export
                                                                spineItemType);
 
                     XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spineItemExt, @"href",
-                                                               pathRelativeToOPF);
+                                                               FileDataProvider.UriEncode(pathRelativeToOPF));
                 }
 #if DEBUG
                 else
@@ -1232,7 +1241,7 @@ namespace urakawa.daisy.export
                                                                spineItemType);
 
                     XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spineItemMedia, @"href",
-                                                               pathRelativeToOPF);
+                                                               FileDataProvider.UriEncode(pathRelativeToOPF));
                 }
 #if DEBUG
                 else
@@ -1401,6 +1410,7 @@ namespace urakawa.daisy.export
                             )
                         {
                             val = flattenPath(val);
+                            val = FileDataProvider.UriEncode(val);
                         }
 
                         XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, opfXmlNode_meta, metadataAttribute.Name, val);
@@ -1733,7 +1743,7 @@ namespace urakawa.daisy.export
                             string type = DataProviderFactory.GetMimeTypeFromExtension(ext);
                             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"media-type", type);
 
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"href", relativePath);
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"href", FileDataProvider.UriEncode(relativePath));
 
                             if (isCover)
                             {
@@ -2061,7 +2071,7 @@ namespace urakawa.daisy.export
 
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_navDoc, @"media-type", DataProviderFactory.XHTML_MIME_TYPE);
 
-                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_navDoc, @"href", navDocRelativePath);
+                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_navDoc, @"href", FileDataProvider.UriEncode(navDocRelativePath));
 
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_navDoc, @"properties", "nav");
 
@@ -2130,7 +2140,7 @@ namespace urakawa.daisy.export
 
                     XmlNode a = xmlDoc.CreateElement(null, "a", html.NamespaceURI);
                     li.AppendChild(a);
-                    XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, a, "href", sexion.Path + "#" + sexion.Id);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(xmlDoc, a, "href", FileDataProvider.UriEncode(sexion.Path + "#" + sexion.Id));
                     XmlNode label = xmlDoc.CreateTextNode(sexion.Title);
                     a.AppendChild(label);
 
@@ -2330,6 +2340,8 @@ namespace urakawa.daisy.export
                 {
                     continue;
                 }
+                
+                val = FileDataProvider.UriDecode(val);
 
                 string fullPath = Path.Combine(parentDir, val);
                 fullPath = FileDataProvider.NormaliseFullFilePath(fullPath).Replace('/', '\\');

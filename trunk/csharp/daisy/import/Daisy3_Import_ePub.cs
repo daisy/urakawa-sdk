@@ -223,7 +223,7 @@ namespace urakawa.daisy.import
             string rootDirectory = Path.GetDirectoryName(containerPath);
             rootDirectory = rootDirectory.Substring(0, rootDirectory.IndexOf(@"META-INF"));
 
-            m_OPF_ContainerRelativePath = fullPathAttr.Value;
+            m_OPF_ContainerRelativePath = FileDataProvider.UriDecode(fullPathAttr.Value);
 
             if (m_OPF_ContainerRelativePath.StartsWith(@"./"))
             {
@@ -332,9 +332,9 @@ namespace urakawa.daisy.import
                 }
 
 
+                string href = FileDataProvider.UriDecode(attrHref.Value);
 
-
-                string fullPath = Path.Combine(Path.GetDirectoryName(opfPath), attrHref.Value);
+                string fullPath = Path.Combine(Path.GetDirectoryName(opfPath), href);
                 fullPath = FileDataProvider.NormaliseFullFilePath(fullPath).Replace('/', '\\');
 
                 bool alreadyPreserved = false;
@@ -379,7 +379,7 @@ namespace urakawa.daisy.import
                 ExternalFiles.ExternalFileData efd = m_Project.Presentations.Get(0).ExternalFilesDataFactory.Create<ExternalFiles.GenericExternalFileData>();
                 try
                 {
-                    efd.InitializeWithData(fullPath, attrHref.Value, true, optionalInfo);
+                    efd.InitializeWithData(fullPath, href, true, optionalInfo);
                 }
                 catch (Exception ex)
                 {
@@ -466,7 +466,9 @@ namespace urakawa.daisy.import
                         && !string.IsNullOrEmpty(xAttr.Value)
                         && !FileDataProvider.isHTTPFile(xAttr.Value))
                     {
-                        string fullPath = Path.Combine(Path.GetDirectoryName(rootFilePath), xAttr.Value);
+                        string urlDecoded = FileDataProvider.UriDecode(xAttr.Value);
+
+                        string fullPath = Path.Combine(Path.GetDirectoryName(rootFilePath), urlDecoded);
                         string pathFromAttr = FileDataProvider.NormaliseFullFilePath(fullPath).Replace('/', '\\');
 
                         if (!externalFileRelativePaths.Contains(pathFromAttr))
@@ -476,7 +478,7 @@ namespace urakawa.daisy.import
                                 ExternalFiles.ExternalFileData efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.GenericExternalFileData>();
                                 try
                                 {
-                                    efd.InitializeWithData(pathFromAttr, xAttr.Value, true, null);
+                                    efd.InitializeWithData(pathFromAttr, urlDecoded, true, null);
 
                                     externalFileRelativePaths.Add(pathFromAttr);
 
@@ -944,7 +946,8 @@ namespace urakawa.daisy.import
                                     continue;
                                 }
 
-                                string[] srcParts = textSrc.Value.Split('#');
+                                string urlDecoded = FileDataProvider.UriDecode(textSrc.Value);
+                                string[] srcParts = urlDecoded.Split('#');
                                 if (srcParts.Length != 2)
                                 {
                                     continue;

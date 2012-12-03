@@ -203,7 +203,7 @@ namespace urakawa.daisy.export
         {
             XmlNode itemNode = opfDocument.CreateElement(null, "item", manifestNode.NamespaceURI);
             manifestNode.AppendChild(itemNode);
-            XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, itemNode, "href", filename);
+            XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, itemNode, "href", FileDataProvider.UriEncode(filename));
             XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, itemNode, "id", strID);
             XmlDocumentHelper.CreateAppendXmlAttribute(opfDocument, itemNode, "media-type", mediaType);
 

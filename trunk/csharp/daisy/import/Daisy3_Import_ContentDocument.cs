@@ -427,10 +427,10 @@ namespace urakawa.daisy.import
                             if (srcAttr != null)
                             {
                                 string imgSourceFullpath = null;
-                                string relativePath = srcAttr.Value;
-                                if (FileDataProvider.isHTTPFile(relativePath))
+                                string relativePath = FileDataProvider.UriDecode(srcAttr.Value);
+                                if (FileDataProvider.isHTTPFile(srcAttr.Value))
                                 {
-                                    imgSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
+                                    imgSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(srcAttr.Value);
 
                                     //updatedSRC = relativePath;
                                 }
@@ -530,11 +530,11 @@ namespace urakawa.daisy.import
                             if (srcAttr != null)
                             {
                                 string videoSourceFullpath = null;
-                                string relativePath = srcAttr.Value;
-                                if (FileDataProvider.isHTTPFile(relativePath))
+                                string relativePath = FileDataProvider.UriDecode(srcAttr.Value);
+                                if (FileDataProvider.isHTTPFile(srcAttr.Value))
                                 {
                                     // STAYS NULL! (then => ExternalVideoMedia instead of ManagedVideoMedia)
-                                    //videoSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
+                                    //videoSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(srcAttr.Value);
 
                                     //updatedSRC = relativePath;
                                 }
@@ -601,11 +601,11 @@ namespace urakawa.daisy.import
                             if (srcAttr != null)
                             {
                                 string audioSourceFullpath = null;
-                                string relativePath = srcAttr.Value;
-                                if (FileDataProvider.isHTTPFile(relativePath))
+                                string relativePath = FileDataProvider.UriDecode(srcAttr.Value);
+                                if (FileDataProvider.isHTTPFile(srcAttr.Value))
                                 {
                                     // STAYS NULL! (then => ExternalAudioMedia instead of ManagedAudioMedia)
-                                    //audioSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
+                                    //audioSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(srcAttr.Value);
 
                                     //updatedSRC = relativePath;
                                 }
@@ -671,10 +671,10 @@ namespace urakawa.daisy.import
                             if (srcAttr != null)
                             {
                                 string imgSourceFullpath = null;
-                                string relativePath = srcAttr.Value;
-                                if (FileDataProvider.isHTTPFile(relativePath))
+                                string relativePath = FileDataProvider.UriDecode(srcAttr.Value);
+                                if (FileDataProvider.isHTTPFile(srcAttr.Value))
                                 {
-                                    imgSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(relativePath);
+                                    imgSourceFullpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(srcAttr.Value);
 
                                     //updatedSRC = relativePath;
                                 }
@@ -1205,49 +1205,52 @@ namespace urakawa.daisy.import
             {
                 XmlProcessingInstruction pi = (XmlProcessingInstruction)xn;
                 string[] styleStringArray = pi.Data.Split(' ');
-                string relativePath = null;
                 foreach (string s in styleStringArray)
                 {
                     if (s.Contains("href"))
                     {
-                        relativePath = s;
+                        string relativePath = s;
                         relativePath = relativePath.Split('=')[1];
                         relativePath = relativePath.Trim(new char[3] { '\'', '\"', ' ' });
+                        relativePath = FileDataProvider.UriDecode(relativePath);
+
+
+                        string styleSheetPath = Path.Combine(
+                            Path.GetDirectoryName(book_FilePath),
+                            relativePath);
+                        styleSheetPath = FileDataProvider.NormaliseFullFilePath(styleSheetPath).Replace('/', '\\');
+
+                        if (File.Exists(styleSheetPath))
+                        {
+                            ExternalFiles.ExternalFileData efd = null;
+                            string ext = Path.GetExtension(relativePath);
+                            if (DataProviderFactory.CSS_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
+                            {
+                                efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
+                            }
+                            else if (DataProviderFactory.XSLT_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                            || DataProviderFactory.XSL_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
+                            {
+                                efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
+                            }
+
+                            if (efd != null)
+                            {
+                                efd.InitializeWithData(styleSheetPath, relativePath, true, null);
+
+                                addOPF_GlobalAssetPath(styleSheetPath);
+                            }
+                        }
+#if DEBUG
+                        else
+                        {
+                            Debugger.Break();
+                        }
+#endif
+
                         break;
                     }
                 }
-                string styleSheetPath = Path.Combine(
-                    Path.GetDirectoryName(book_FilePath),
-                    relativePath);
-                styleSheetPath = FileDataProvider.NormaliseFullFilePath(styleSheetPath).Replace('/', '\\');
-
-                if (File.Exists(styleSheetPath))
-                {
-                    ExternalFiles.ExternalFileData efd = null;
-                    string ext = Path.GetExtension(relativePath);
-                    if (DataProviderFactory.CSS_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
-                    {
-                        efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.CSSExternalFileData>();
-                    }
-                    else if (DataProviderFactory.XSLT_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
-                    || DataProviderFactory.XSL_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
-                    {
-                        efd = presentation.ExternalFilesDataFactory.Create<ExternalFiles.XSLTExternalFileData>();
-                    }
-
-                    if (efd != null)
-                    {
-                        efd.InitializeWithData(styleSheetPath, relativePath, true, null);
-
-                        addOPF_GlobalAssetPath(styleSheetPath);
-                    }
-                }
-#if DEBUG
-                else
-                {
-                    Debugger.Break();
-                }
-#endif
             }
         }
     }

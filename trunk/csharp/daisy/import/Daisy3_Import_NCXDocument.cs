@@ -6,6 +6,7 @@ using System.Xml;
 using System.IO;
 
 using urakawa.core;
+using urakawa.data;
 using urakawa.xuk;
 using urakawa.property;
 using urakawa.property.channel;
@@ -73,7 +74,9 @@ namespace urakawa.daisy.import
                 foreach (XmlNode pageTargetNode in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(pageListNode, true, "pageTarget", navMap.NamespaceURI, false))
                 {
                     XmlNode contentNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(pageTargetNode, true, "content", pageTargetNode.NamespaceURI);
-                    m_PageReferencesMapDictionaryForNCX.Add(contentNode.Attributes.GetNamedItem("src").Value, pageTargetNode);
+
+                    string urlDecoded = FileDataProvider.UriDecode(contentNode.Attributes.GetNamedItem("src").Value);
+                    m_PageReferencesMapDictionaryForNCX.Add(urlDecoded, pageTargetNode);
 
                 }
             }
@@ -95,7 +98,10 @@ namespace urakawa.daisy.import
                 treeNode = CreateTreeNodeForNavPoint(tNode, node);
 
                 XmlNode contentNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(node, true, "content", node.NamespaceURI);
-                m_SmilRefToNavPointTreeNodeMap.Add(contentNode.Attributes.GetNamedItem("src").Value, treeNode);
+
+
+                string urlDecoded = FileDataProvider.UriDecode(contentNode.Attributes.GetNamedItem("src").Value);
+                m_SmilRefToNavPointTreeNodeMap.Add(urlDecoded, treeNode);
 
                 XmlNode navLabelXmlNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(node, true, "navLabel", node.NamespaceURI);
                 if (navLabelXmlNode != null) m_NavPointNode_NavLabelMap.Add(treeNode, navLabelXmlNode);

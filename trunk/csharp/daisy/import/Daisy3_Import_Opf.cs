@@ -384,6 +384,8 @@ namespace urakawa.daisy.import
                     continue;
                 }
 
+                string href = FileDataProvider.UriDecode(attrHref.Value);
+
                 XmlNode attrProperties = manifItemAttributes.GetNamedItem("properties");
 
                 if (attrProperties != null && attrProperties.Value.Contains("cover-image"))
@@ -395,14 +397,14 @@ namespace urakawa.daisy.import
                         || attrMediaType.Value == DataProviderFactory.IMAGE_GIF_MIME_TYPE
                         );
 
-                    coverImagePath = attrHref.Value;
+                    coverImagePath = href;
                 }
 
                 XmlNode attrId = manifItemAttributes.GetNamedItem("id");
                 if (string.IsNullOrEmpty(coverImagePath)
                     && attrId != null && attrId.Value == idCoverImageFromMetadata)
                 {
-                    coverImagePath = attrHref.Value;
+                    coverImagePath = href;
                 }
 
                 if (attrMediaType.Value != DataProviderFactory.SMIL_MIME_TYPE // yep! (EPUB3)
@@ -415,7 +417,7 @@ namespace urakawa.daisy.import
                     {
                         DebugFix.Assert(attrMediaType.Value == DataProviderFactory.XHTML_MIME_TYPE);
 
-                        navDocPath = attrHref.Value;
+                        navDocPath = href;
                     }
 
                     if (attrId != null)
@@ -423,7 +425,7 @@ namespace urakawa.daisy.import
                         int i = spine.IndexOf(attrId.Value);
                         if (i >= 0)
                         {
-                            spine[i] = attrHref.Value;
+                            spine[i] = href;
                             //if (!string.IsNullOrEmpty(spineMimeType)
                             //    && spineMimeType != attrMediaType.Value)
                             //{
@@ -469,7 +471,7 @@ namespace urakawa.daisy.import
                                         && attrHref2 != null && !string.IsNullOrEmpty(attrHref2.Value))
                                     {
                                         Dictionary<string, string> dict = spineItemsAttributes[i];
-                                        dict.Add(attrMediaOverlay.Name, attrHref2.Value);
+                                        dict.Add(attrMediaOverlay.Name, FileDataProvider.UriDecode(attrHref2.Value));
                                     }
                                 }
                             }
