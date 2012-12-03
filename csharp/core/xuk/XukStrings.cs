@@ -1,6 +1,5 @@
 ﻿namespace urakawa.xuk
 {
-#if DEBUG
     public class XukStrings
     {
         private static bool m_IsPrettyFormat;
@@ -899,6 +898,4 @@
         #endregion
 
     }
-
-#endif
 }
