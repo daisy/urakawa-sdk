@@ -25,8 +25,20 @@ namespace urakawa
 
         private class TypeAndQNames
         {
-            public QualifiedName QName;
-            public QualifiedName BaseQName;
+            private QualifiedName m_QName;
+            public QualifiedName QName
+            {
+                get { return m_QName; }
+                set { m_QName = value; }
+            }
+
+            private QualifiedName m_BaseQName;
+            public QualifiedName BaseQName
+            {
+                get { return m_BaseQName; }
+                set { m_BaseQName = value; }
+            }
+
             public AssemblyName AssemblyName;
             public string ClassName;
             public Type Type;
@@ -152,17 +164,17 @@ namespace urakawa
 
         private List<TypeAndQNames> mRegisteredTypeAndQNames = new List<TypeAndQNames>();
 
-        private bool typeAlreadyRegistered(Type t)
+        private TypeAndQNames typeAlreadyRegistered(Type t)
         {
             foreach (TypeAndQNames typeAndQNames in mRegisteredTypeAndQNames)
             {
                 if (t == typeAndQNames.Type)
                 {
-                    return true;
+                    return typeAndQNames;
                 }
             }
 
-            return false;
+            return null;
         }
 
         //public void RefreshQNames()
@@ -248,12 +260,12 @@ namespace urakawa
             bool isTypeAlreadyRegistered = false;
             if (tq.Type != null)
             {
-                isTypeAlreadyRegistered = typeAlreadyRegistered(tq.Type);
+                isTypeAlreadyRegistered = typeAlreadyRegistered(tq.Type) != null;
             }
 
-            // Does this QName resolve an existing registered BaseQName?
             foreach (TypeAndQNames typeAndQNames in mRegisteredTypeAndQNames)
             {
+                // Does this QName resolve an existing registered BaseQName?
                 if (typeAndQNames.BaseQName != null
 
                     && (string.IsNullOrEmpty(typeAndQNames.BaseQName.LocalName.Ugly)
@@ -324,13 +336,29 @@ namespace urakawa
             tq.ClassName = t.FullName;
             tq.AssemblyName = t.Assembly.GetName();
 
-            if (typeof(T).IsAssignableFrom(t.BaseType)
-                && !t.BaseType.IsAbstract
-                && !typeAlreadyRegistered(t.BaseType)
-                )
+        tryAgain:
+            if (t.BaseType != null && typeof(T).IsAssignableFrom(t.BaseType)) // && t.BaseType != typeof(T))
             {
-                tq.BaseQName = RegisterType(t.BaseType).QName;
+                if (t.BaseType.IsAbstract)
+                {
+                    t = t.BaseType;
+                    goto tryAgain;
+                }
+
+                TypeAndQNames existing = typeAlreadyRegistered(t.BaseType);
+                if (existing == null)
+                {
+                    existing = RegisterType(t.BaseType);
+                }
+
+                if (existing != null)
+                {
+                    tq.BaseQName = new QualifiedName(
+                        new UglyPrettyName(existing.QName.LocalName.Ugly, existing.QName.LocalName.Pretty),
+                        existing.QName.NamespaceUri);
+                }
             }
+
             RegisterType(tq);
             return tq;
         }
@@ -405,7 +433,7 @@ namespace urakawa
             U res = new U();
             InitializeInstance(res);
             Type t = typeof(U);
-            if (!typeAlreadyRegistered(t))
+            if (typeAlreadyRegistered(t) == null)
             {
                 RegisterType(t);
             }
@@ -441,7 +469,7 @@ namespace urakawa
                 if (res != null)
                 {
                     InitializeInstance(res);
-                    if (!typeAlreadyRegistered(t))
+                    if (typeAlreadyRegistered(t) == null)
                     {
                         RegisterType(t);
                     }
@@ -488,6 +516,9 @@ namespace urakawa
                 destination.WriteAttributeString(XukNamespaceUri_NAME.z(PrettyFormat), tp.QName.NamespaceUri);
                 if (tp.BaseQName != null)
                 {
+                    DebugFix.Assert(!string.IsNullOrEmpty(tp.BaseQName.LocalName.Pretty)
+                        || !string.IsNullOrEmpty(tp.BaseQName.LocalName.Ugly));
+
                     destination.WriteAttributeString(BaseXukLocalName_NAME.z(PrettyFormat), tp.BaseQName.LocalName.z(PrettyFormat));
                     destination.WriteAttributeString(BaseXukNamespaceUri_NAME.z(PrettyFormat), tp.BaseQName.NamespaceUri);
                 }
@@ -552,7 +583,43 @@ namespace urakawa
             {
                 TypeAndQNames tq = new TypeAndQNames();
                 tq.ReadFromXmlReader(source, PrettyFormat);
-                RegisterType(tq);
+                if (tq.Type == null)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    RegisterType(tq);
+                }
+                else
+                {
+                    TypeAndQNames tq_ = RegisterType(tq.Type);
+
+                    DebugFix.Assert(tq_.AssemblyName.Name == tq.AssemblyName.Name);
+                    //DebugFix.Assert(tq_.AssemblyName.Version == tq.AssemblyName.Version);
+
+                    DebugFix.Assert(tq_.ClassName == tq.ClassName);
+                    DebugFix.Assert(tq_.Type == tq.Type);
+
+                    DebugFix.Assert(tq_.QName.NamespaceUri == tq.QName.NamespaceUri);
+
+                    DebugFix.Assert(tq_.QName.LocalName.Ugly == tq.QName.LocalName.Ugly);
+                    DebugFix.Assert(tq_.QName.LocalName.Pretty == tq.QName.LocalName.Pretty);
+
+                    if (tq_.BaseQName != null && tq.BaseQName != null)
+                    {
+                        DebugFix.Assert(tq_.BaseQName.NamespaceUri == tq.BaseQName.NamespaceUri);
+
+                        if (!String.IsNullOrEmpty(tq.BaseQName.LocalName.Ugly))
+                        {
+                            DebugFix.Assert(tq_.BaseQName.LocalName.Ugly == tq.BaseQName.LocalName.Ugly);
+                        }
+
+                        if (!String.IsNullOrEmpty(tq.BaseQName.LocalName.Pretty))
+                        {
+                            DebugFix.Assert(tq_.BaseQName.LocalName.Pretty == tq.BaseQName.LocalName.Pretty);
+                        }
+                    }
+                }
             }
             if (!source.IsEmptyElement)
             {

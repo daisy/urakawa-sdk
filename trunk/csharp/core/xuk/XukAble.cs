@@ -72,6 +72,8 @@ namespace urakawa.xuk
 #if DEBUG
         static XukAble()
         {
+            Debugger.Break();
+
             PropertyInfo[] properties = typeof(XukStrings).GetProperties(BindingFlags.Public | BindingFlags.Static);
 
 
@@ -141,18 +143,66 @@ namespace urakawa.xuk
                             Console.WriteLine(ns);
                         }
 
+                        if (type.FullName.StartsWith("Obi."))
+                        {
+                            DebugFix.Assert(ns == "http://www.daisy.org/urakawa/obi");
+                        }
+                        else
+                        {
+                            DebugFix.Assert(ns == "http://www.daisy.org/urakawa/xuk/2.0");
+                        }
+
                         if (type.IsAbstract)
                         {
                             Console.WriteLine("abstract");
                             continue;
                         }
-                        
-                        if (type.Name == "DummyCommand")
+
+                        if (type.FullName.StartsWith("Obi."))
                         {
+                            if (!type.FullName.StartsWith("Obi.Commands"))
+                            {
+                                string pretty_ = GetXukName(type, true);
+                                string ugly_ = GetXukName(type, false);
+
+                                DebugFix.Assert(!string.IsNullOrEmpty(pretty_));
+                                DebugFix.Assert(!string.IsNullOrEmpty(ugly_));
+
+                                DebugFix.Assert(pretty_ == ugly_);
+                                if (type.Name == "ObiPresentation")
+                                {
+                                    DebugFix.Assert(pretty_ == type.Name);
+                                }
+                                else if (type.Name == "ObiNode")
+                                {
+                                    DebugFix.Assert(pretty_ == type.Name);
+                                }
+                                else if (type.Name == "PhraseNode")
+                                {
+                                    DebugFix.Assert(pretty_ == "phrase");
+                                }
+                                else if (type.Name == "SectionNode")
+                                {
+                                    DebugFix.Assert(pretty_ == "section");
+                                }
+                                else if (type.Name == "ObiRootNode")
+                                {
+                                    DebugFix.Assert(pretty_ == "root");
+                                }
+                                else if (type.Name == "EmptyNode")
+                                {
+                                    DebugFix.Assert(pretty_ == "empty");
+                                }
+                                else
+                                {
+                                    Debugger.Break();
+                                }
+                            }
+
                             continue;
                         }
 
-                        if (type.FullName.StartsWith("Obi."))
+                        if (type.Name == "DummyCommand")
                         {
                             continue;
                         }
@@ -247,6 +297,8 @@ namespace urakawa.xuk
             // Make sure default is false, to at least open exising projects whilst testing.
             // (for as long as the refactoring goes on to remove dependency on static XukStrings)
             XukStrings.IsPrettyFormat = false;
+
+            Debugger.Break();
         }
 #endif
 
@@ -601,10 +653,16 @@ namespace urakawa.xuk
             }
             catch (exception.XukException)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 throw;
             }
             catch (Exception e)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 throw new exception.XukException(
                     String.Format("An exception occured during XukIn of XukAble: {0}", e.Message),
                     e);
@@ -697,10 +755,16 @@ namespace urakawa.xuk
             }
             catch (exception.XukException)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 throw;
             }
             catch (Exception e)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 throw new exception.XukException(
                     String.Format("An exception occured during XukOut of XukAble: {0}", e.Message),
                     e);

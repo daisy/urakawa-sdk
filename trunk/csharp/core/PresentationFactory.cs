@@ -27,9 +27,9 @@ namespace urakawa
             }
 
             if (
-#if DEBUG
-                true ||
-#endif
+//#if DEBUG
+//                true ||
+//#endif
                 pres.PrettyFormat)
             {
                 pres.WarmUpAllFactories();
