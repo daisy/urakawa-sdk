@@ -387,8 +387,8 @@ namespace urakawa.data
 
         public static string UriEncode(string urlStr)
         {
-            return Uri.EscapeDataString(urlStr);
-            //return Uri.EscapeUriString(urlStr);
+            //return Uri.EscapeDataString(urlStr);
+            return Uri.EscapeUriString(urlStr);
         }
 
         public static string UriDecode(string urlStr)
