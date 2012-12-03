@@ -277,6 +277,9 @@ namespace urakawa
                     || tq.QName.LocalName.Pretty != null && typeAndQNames.BaseQName.LocalName.Pretty == tq.QName.LocalName.Pretty)
                     )
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     string ugly = typeAndQNames.BaseQName.LocalName.Ugly ?? tq.QName.LocalName.Ugly;
                     string pretty = typeAndQNames.BaseQName.LocalName.Pretty ?? tq.QName.LocalName.Pretty;
 
@@ -298,6 +301,9 @@ namespace urakawa
                     || typeAndQNames.QName.LocalName.Pretty != null && tq.BaseQName.LocalName.Pretty == typeAndQNames.QName.LocalName.Pretty)
                     )
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     string ugly = tq.BaseQName.LocalName.Ugly ?? typeAndQNames.QName.LocalName.Ugly;
                     string pretty = tq.BaseQName.LocalName.Pretty ?? typeAndQNames.QName.LocalName.Pretty;
 
