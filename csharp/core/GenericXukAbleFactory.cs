@@ -251,6 +251,51 @@ namespace urakawa
                 isTypeAlreadyRegistered = typeAlreadyRegistered(tq.Type);
             }
 
+            // Does this QName resolve an existing registered BaseQName?
+            foreach (TypeAndQNames typeAndQNames in mRegisteredTypeAndQNames)
+            {
+                if (typeAndQNames.BaseQName != null
+
+                    && (string.IsNullOrEmpty(typeAndQNames.BaseQName.LocalName.Ugly)
+                    || string.IsNullOrEmpty(typeAndQNames.BaseQName.LocalName.Pretty))
+
+                    && typeAndQNames.BaseQName.NamespaceUri == tq.QName.NamespaceUri
+
+                    && (tq.QName.LocalName.Ugly != null && typeAndQNames.BaseQName.LocalName.Ugly == tq.QName.LocalName.Ugly
+                    || tq.QName.LocalName.Pretty != null && typeAndQNames.BaseQName.LocalName.Pretty == tq.QName.LocalName.Pretty)
+                    )
+                {
+                    string ugly = typeAndQNames.BaseQName.LocalName.Ugly ?? tq.QName.LocalName.Ugly;
+                    string pretty = typeAndQNames.BaseQName.LocalName.Pretty ?? tq.QName.LocalName.Pretty;
+
+                    DebugFix.Assert(!string.IsNullOrEmpty(ugly));
+                    DebugFix.Assert(!string.IsNullOrEmpty(pretty));
+
+                    typeAndQNames.BaseQName = new QualifiedName(new UglyPrettyName(ugly, pretty), typeAndQNames.BaseQName.NamespaceUri);
+                }
+
+                // Can this BaseQName be resolved by an existing registered QName?
+                if (tq.BaseQName != null
+
+                    && (string.IsNullOrEmpty(tq.BaseQName.LocalName.Ugly)
+                    || string.IsNullOrEmpty(tq.BaseQName.LocalName.Pretty))
+
+                    && tq.BaseQName.NamespaceUri == typeAndQNames.QName.NamespaceUri
+
+                    && (typeAndQNames.QName.LocalName.Ugly != null && tq.BaseQName.LocalName.Ugly == typeAndQNames.QName.LocalName.Ugly
+                    || typeAndQNames.QName.LocalName.Pretty != null && tq.BaseQName.LocalName.Pretty == typeAndQNames.QName.LocalName.Pretty)
+                    )
+                {
+                    string ugly = tq.BaseQName.LocalName.Ugly ?? typeAndQNames.QName.LocalName.Ugly;
+                    string pretty = tq.BaseQName.LocalName.Pretty ?? typeAndQNames.QName.LocalName.Pretty;
+
+                    DebugFix.Assert(!string.IsNullOrEmpty(ugly));
+                    DebugFix.Assert(!string.IsNullOrEmpty(pretty));
+
+                    tq.BaseQName = new QualifiedName(new UglyPrettyName(ugly, pretty), tq.BaseQName.NamespaceUri);
+                }
+            }
+
             DebugFix.Assert(!isTypeAlreadyRegistered);
 
             if (!isTypeAlreadyRegistered)
