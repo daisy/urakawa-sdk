@@ -74,40 +74,56 @@ namespace urakawa.xuk
         {
             Debugger.Break();
 
-            PropertyInfo[] properties = typeof(XukStrings).GetProperties(BindingFlags.Public | BindingFlags.Static);
-
-
-            DebugFix.Assert(!string.IsNullOrEmpty(XUK_NS));
-
-            List<string> list = new List<string>();
-
-            foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
+            try
             {
-                Console.WriteLine(ass.FullName);
+                PropertyInfo[] properties = typeof(XukStrings).GetProperties(BindingFlags.Public | BindingFlags.Static);
 
-                foreach (Type type in ass.GetTypes())
+
+                DebugFix.Assert(!string.IsNullOrEmpty(XUK_NS));
+
+                List<string> list = new List<string>();
+
+                foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
                 {
+                    Console.WriteLine(ass.FullName);
 
-                    if (type == typeof(XukAble) || typeof(XukAble).IsAssignableFrom(type))
+                    foreach (Type type in ass.GetTypes())
                     {
-                        Console.WriteLine("-----------");
-                        Console.WriteLine(type.FullName);
-
-                        FieldInfo[] fields = type.GetFields(BindingFlags.Static);
-                        foreach (FieldInfo field in fields)
+                        if (type == typeof(XukAble) || typeof(XukAble).IsAssignableFrom(type))
                         {
-                            if (field.FieldType == typeof(UglyPrettyName))
+                            Console.WriteLine("-----------");
+                            Console.WriteLine(type.FullName);
+
+
+                            Type typeConcrete = type;
+                            if (type.ContainsGenericParameters)
                             {
+                                Type[] types = type.GetGenericArguments();
+                                DebugFix.Assert(types.Length == 1);
+
+                                typeConcrete = type.MakeGenericType(types[0].BaseType);
+                            }
+
+                            FieldInfo[] fields = typeConcrete.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                            foreach (FieldInfo field in fields)
+                            {
+                                if (field.FieldType != typeof(UglyPrettyName))
+                                {
+                                    continue;
+                                }
+
                                 const string NAME = "_NAME";
                                 bool okay = field.Name.EndsWith(NAME);
                                 DebugFix.Assert(okay);
                                 if (okay)
                                 {
+                                    Console.WriteLine(".....");
                                     Console.WriteLine(field.Name);
 
-                                    UglyPrettyName name = (UglyPrettyName)field.GetValue(type);
+                                    UglyPrettyName name = (UglyPrettyName)field.GetValue(typeConcrete);
                                     string fieldName = field.Name.Substring(0, field.Name.Length - NAME.Length);
 
+                                    Console.WriteLine(fieldName);
 
                                     PropertyInfo found_ = null;
                                     foreach (PropertyInfo property in properties)
@@ -127,176 +143,186 @@ namespace urakawa.xuk
                                         string uglyCheck = (string)found_.GetValue(typeof(XukStrings), null);
                                         DebugFix.Assert(name.Ugly == uglyCheck);
 
+                                        Console.WriteLine(uglyCheck);
+
+
                                         XukStrings.IsPrettyFormat = true;
                                         string prettyCheck = (string)found_.GetValue(typeof(XukStrings), null);
                                         DebugFix.Assert(name.Pretty == prettyCheck);
+
+                                        Console.WriteLine(prettyCheck);
                                     }
+                                    Console.WriteLine(".....");
                                 }
                             }
-                        }
 
-                        string ns = GetXukNamespace(type);
-                        DebugFix.Assert(!string.IsNullOrEmpty(ns));
+                            string ns = GetXukNamespace(type);
+                            DebugFix.Assert(!string.IsNullOrEmpty(ns));
 
-                        if (type == typeof(XukAble))
-                        {
-                            Console.WriteLine(ns);
-                        }
-
-                        if (type.FullName.StartsWith("Obi."))
-                        {
-                            DebugFix.Assert(ns == "http://www.daisy.org/urakawa/obi");
-                        }
-                        else
-                        {
-                            DebugFix.Assert(ns == "http://www.daisy.org/urakawa/xuk/2.0");
-                        }
-
-                        if (type.IsAbstract)
-                        {
-                            Console.WriteLine("abstract");
-                            continue;
-                        }
-
-                        if (type.FullName.StartsWith("Obi."))
-                        {
-                            if (!type.FullName.StartsWith("Obi.Commands"))
+                            if (type == typeof(XukAble))
                             {
-                                string pretty_ = GetXukName(type, true);
-                                string ugly_ = GetXukName(type, false);
+                                Console.WriteLine(ns);
+                            }
 
-                                DebugFix.Assert(!string.IsNullOrEmpty(pretty_));
-                                DebugFix.Assert(!string.IsNullOrEmpty(ugly_));
+                            if (type.FullName.StartsWith("Obi."))
+                            {
+                                DebugFix.Assert(ns == "http://www.daisy.org/urakawa/obi");
+                            }
+                            else
+                            {
+                                DebugFix.Assert(ns == "http://www.daisy.org/urakawa/xuk/2.0");
+                            }
 
-                                DebugFix.Assert(pretty_ == ugly_);
-                                if (type.Name == "ObiPresentation")
+                            if (type.IsAbstract)
+                            {
+                                Console.WriteLine("abstract");
+                                continue;
+                            }
+
+                            if (type.FullName.StartsWith("Obi."))
+                            {
+                                if (!type.FullName.StartsWith("Obi.Commands"))
                                 {
-                                    DebugFix.Assert(pretty_ == type.Name);
+                                    string pretty_ = GetXukName(type, true);
+                                    string ugly_ = GetXukName(type, false);
+
+                                    DebugFix.Assert(!string.IsNullOrEmpty(pretty_));
+                                    DebugFix.Assert(!string.IsNullOrEmpty(ugly_));
+
+                                    DebugFix.Assert(pretty_ == ugly_);
+                                    if (type.Name == "ObiPresentation")
+                                    {
+                                        DebugFix.Assert(pretty_ == type.Name);
+                                    }
+                                    else if (type.Name == "ObiNode")
+                                    {
+                                        DebugFix.Assert(pretty_ == type.Name);
+                                    }
+                                    else if (type.Name == "PhraseNode")
+                                    {
+                                        DebugFix.Assert(pretty_ == "phrase");
+                                    }
+                                    else if (type.Name == "SectionNode")
+                                    {
+                                        DebugFix.Assert(pretty_ == "section");
+                                    }
+                                    else if (type.Name == "ObiRootNode")
+                                    {
+                                        DebugFix.Assert(pretty_ == "root");
+                                    }
+                                    else if (type.Name == "EmptyNode")
+                                    {
+                                        DebugFix.Assert(pretty_ == "empty");
+                                    }
+                                    else
+                                    {
+                                        Debugger.Break();
+                                    }
                                 }
-                                else if (type.Name == "ObiNode")
-                                {
-                                    DebugFix.Assert(pretty_ == type.Name);
-                                }
-                                else if (type.Name == "PhraseNode")
-                                {
-                                    DebugFix.Assert(pretty_ == "phrase");
-                                }
-                                else if (type.Name == "SectionNode")
-                                {
-                                    DebugFix.Assert(pretty_ == "section");
-                                }
-                                else if (type.Name == "ObiRootNode")
-                                {
-                                    DebugFix.Assert(pretty_ == "root");
-                                }
-                                else if (type.Name == "EmptyNode")
-                                {
-                                    DebugFix.Assert(pretty_ == "empty");
-                                }
-                                else
+
+                                continue;
+                            }
+
+                            if (type.Name == "DummyCommand")
+                            {
+                                continue;
+                            }
+
+                            string pretty = GetXukName(type, true);
+                            if (!string.IsNullOrEmpty(pretty))
+                            {
+                                Console.WriteLine(pretty);
+
+                                if (list.Contains(pretty))
                                 {
                                     Debugger.Break();
                                 }
+                                else
+                                {
+                                    list.Add(pretty);
+                                }
+
+                                if (type.Name == "CSSExternalFileData")
+                                {
+                                    DebugFix.Assert(pretty == "CssExternalFileData");
+                                }
+                                else if (type.Name == "XSLTExternalFileData")
+                                {
+                                    DebugFix.Assert(pretty == "XsltExternalFileData");
+                                }
+                                else if (type.Name == "ExternalFilesDataManager")
+                                {
+                                    DebugFix.Assert(pretty == "ExternalFileDataManager");
+                                }
+                                else
+                                {
+                                    DebugFix.Assert(type.Name == pretty);
+                                }
                             }
-
-                            continue;
-                        }
-
-                        if (type.Name == "DummyCommand")
-                        {
-                            continue;
-                        }
-
-                        string pretty = GetXukName(type, true);
-                        if (!string.IsNullOrEmpty(pretty))
-                        {
-                            Console.WriteLine(pretty);
-
-                            if (list.Contains(pretty))
+                            else
                             {
                                 Debugger.Break();
                             }
+
+
+                            string ugly = GetXukName(type, false);
+                            if (!string.IsNullOrEmpty(ugly))
+                            {
+                                Console.WriteLine(ugly);
+
+                                if (list.Contains(ugly))
+                                {
+                                    Debugger.Break();
+                                }
+                                else
+                                {
+                                    list.Add(ugly);
+                                }
+                            }
                             else
-                            {
-                                list.Add(pretty);
-                            }
-
-                            if (type.Name == "CSSExternalFileData")
-                            {
-                                DebugFix.Assert(pretty == "CssExternalFileData");
-                            }
-                            else if (type.Name == "XSLTExternalFileData")
-                            {
-                                DebugFix.Assert(pretty == "XsltExternalFileData");
-                            }
-                            else if (type.Name == "ExternalFilesDataManager")
-                            {
-                                DebugFix.Assert(pretty == "ExternalFileDataManager");
-                            }
-                            else
-                            {
-                                DebugFix.Assert(type.Name == pretty);
-                            }
-                        }
-                        else
-                        {
-                            Debugger.Break();
-                        }
-
-
-                        string ugly = GetXukName(type, false);
-                        if (!string.IsNullOrEmpty(ugly))
-                        {
-                            Console.WriteLine(ugly);
-
-                            if (list.Contains(ugly))
                             {
                                 Debugger.Break();
                             }
-                            else
+
+
+                            PropertyInfo found = null;
+                            foreach (PropertyInfo property in properties)
                             {
-                                list.Add(ugly);
+                                if (property.PropertyType == typeof(string)
+                                    && (property.Name == type.Name
+                                        ||
+                                        (type.Name == "ExternalFilesDataManager"
+                                         && property.Name == "ExternalFileDataManager")
+                                       ))
+                                {
+                                    found = property;
+                                    break;
+                                }
                             }
-                        }
-                        else
-                        {
-                            Debugger.Break();
-                        }
 
-
-                        PropertyInfo found = null;
-                        foreach (PropertyInfo property in properties)
-                        {
-                            if (property.PropertyType == typeof(string)
-                                && (property.Name == type.Name
-                                ||
-                                (type.Name == "ExternalFilesDataManager"
-                                && property.Name == "ExternalFileDataManager")
-                                ))
+                            DebugFix.Assert(found != null);
+                            if (found != null)
                             {
-                                found = property;
-                                break;
+                                XukStrings.IsPrettyFormat = false;
+                                string uglyCheck = (string)found.GetValue(typeof(XukStrings), null);
+                                DebugFix.Assert(ugly == uglyCheck);
+
+                                XukStrings.IsPrettyFormat = true;
+                                string prettyCheck = (string)found.GetValue(typeof(XukStrings), null);
+                                DebugFix.Assert(pretty == prettyCheck);
                             }
-                        }
-
-                        DebugFix.Assert(found != null);
-                        if (found != null)
-                        {
-                            XukStrings.IsPrettyFormat = false;
-                            string uglyCheck = (string)found.GetValue(typeof(XukStrings), null);
-                            DebugFix.Assert(ugly == uglyCheck);
-
-                            XukStrings.IsPrettyFormat = true;
-                            string prettyCheck = (string)found.GetValue(typeof(XukStrings), null);
-                            DebugFix.Assert(pretty == prettyCheck);
                         }
                     }
                 }
-            }
 
-            // Make sure default is false, to at least open exising projects whilst testing.
-            // (for as long as the refactoring goes on to remove dependency on static XukStrings)
-            XukStrings.IsPrettyFormat = false;
+                // Make sure default is false, to at least open exising projects whilst testing.
+                // (for as long as the refactoring goes on to remove dependency on static XukStrings)
+                XukStrings.IsPrettyFormat = false;
+            }
+            catch (Exception ex)
+            {
+                Debugger.Break();
+            }
 
             Debugger.Break();
         }
