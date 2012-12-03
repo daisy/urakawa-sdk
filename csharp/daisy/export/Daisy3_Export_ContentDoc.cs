@@ -542,7 +542,7 @@ namespace urakawa.daisy.export
                                         managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
                                     }
 
-                                    imgSrcAttribute.Value = exportImageName;
+                                    imgSrcAttribute.Value = FileDataProvider.UriEncode(exportImageName);
 
                                     if (!m_FilesList_Image.Contains(exportImageName))
                                     {
@@ -580,7 +580,7 @@ namespace urakawa.daisy.export
                                         managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
                                     }
 
-                                    imgSrcAttribute.Value = exportImageName;
+                                    imgSrcAttribute.Value = FileDataProvider.UriEncode(exportImageName);
 
                                     if (!m_FilesList_Image.Contains(exportImageName))
                                     {
@@ -621,7 +621,7 @@ namespace urakawa.daisy.export
                                         managedVideo.VideoMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
                                     }
 
-                                    videoSrcAttribute.Value = exportVideoName;
+                                    videoSrcAttribute.Value = FileDataProvider.UriEncode(exportVideoName);
 
                                     if (!m_FilesList_Video.Contains(exportVideoName))
                                     {
@@ -661,7 +661,7 @@ namespace urakawa.daisy.export
                                         managedAudio.AudioMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
                                     }
 
-                                    audioSrcAttribute.Value = exportAudioName;
+                                    audioSrcAttribute.Value = FileDataProvider.UriEncode(exportAudioName);
 
                                     if (!m_FilesList_Audio.Contains(exportAudioName))
                                     {

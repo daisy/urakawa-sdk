@@ -108,12 +108,16 @@ namespace urakawa.daisy.import
                 {
                     continue;
                 }
-                int index = textNodeAttrSrc.Value.LastIndexOf('#');
-                if (index == textNodeAttrSrc.Value.Length - 1)
+
+                string src = FileDataProvider.UriDecode(textNodeAttrSrc.Value);
+
+
+                int index = src.LastIndexOf('#');
+                if (index == src.Length - 1)
                 {
                     return;
                 }
-                string srcFragmentId = textNodeAttrSrc.Value.Substring(index + 1);
+                string srcFragmentId = src.Substring(index + 1);
                 TreeNode textTreeNode = m_Project.Presentations.Get(0).RootNode.GetTreeNodeWithXmlElementId(srcFragmentId);
                 if (textTreeNode == null)
                 {
@@ -241,6 +245,9 @@ namespace urakawa.daisy.import
             {
                 return;
             }
+
+            string src = FileDataProvider.UriDecode(audioAttrSrc.Value);
+
             XmlNode audioAttrClipBegin = audioAttrs.GetNamedItem("clipBegin");
             XmlNode audioAttrClipEnd = audioAttrs.GetNamedItem("clipEnd");
 
@@ -250,13 +257,13 @@ namespace urakawa.daisy.import
 
 
 
-            string fullPath = Path.Combine(dirPath, audioAttrSrc.Value);
+            string fullPath = Path.Combine(dirPath, src);
             fullPath = FileDataProvider.NormaliseFullFilePath(fullPath).Replace('/', '\\');
             addOPF_GlobalAssetPath(fullPath);
 
 
 
-            if (audioAttrSrc.Value.EndsWith("wav", StringComparison.OrdinalIgnoreCase))
+            if (src.EndsWith("wav", StringComparison.OrdinalIgnoreCase))
             {
                 FileDataProvider dataProv = null;
 
@@ -398,8 +405,8 @@ namespace urakawa.daisy.import
                 //media = addAudioWav ( fullWavPath, deleteSrcAfterCompletion, audioAttrClipBegin, audioAttrClipEnd );
 
             }
-            else if (audioAttrSrc.Value.EndsWith("mp3", StringComparison.OrdinalIgnoreCase)
-                || audioAttrSrc.Value.EndsWith("mp4", StringComparison.OrdinalIgnoreCase))
+            else if (src.EndsWith("mp3", StringComparison.OrdinalIgnoreCase)
+                || src.EndsWith("mp4", StringComparison.OrdinalIgnoreCase))
             {
                 if (!File.Exists(fullPath))
                 {
@@ -529,7 +536,7 @@ namespace urakawa.daisy.import
                 Time timeClipBegin = null;
 
                 ExternalAudioMedia exmedia = presentation.MediaFactory.CreateExternalAudioMedia();
-                exmedia.Src = audioAttrSrc.Value;
+                exmedia.Src = src;
                 if (audioAttrClipBegin != null &&
                     !string.IsNullOrEmpty(audioAttrClipBegin.Value))
                 {

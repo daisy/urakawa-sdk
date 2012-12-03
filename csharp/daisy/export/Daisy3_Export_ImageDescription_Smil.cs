@@ -60,7 +60,7 @@ namespace urakawa.daisy.export
                 XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", smilBodySeq.NamespaceURI);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id", GetNextID(ID_SmilPrefix));
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
-                                                                           m_Filename_Content + "#" + dtbookID);
+                                                                           FileDataProvider.UriEncode(m_Filename_Content + "#" + dtbookID));
                 parNode.AppendChild(SmilTextNode);
 
 
@@ -77,7 +77,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
                     FormatTimeString(managedAudio.Duration));
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src",
-                                                               srcPath);
+                                                               FileDataProvider.UriEncode(srcPath));
                     parNode.AppendChild(audioNode);
 
                     if (!m_FilesList_SmilAudio.Contains(srcPath))
