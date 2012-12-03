@@ -43,7 +43,7 @@ namespace urakawa.media.data.audio
             base.XukInAttributes(source);
 
             string path = source.GetAttribute(XukStrings.OriginalRelativePath);
-            string uid = XukAble.readXmlAttribute(source, DataProvider.DataProvider_NAME);
+            string uid = XukAble.ReadXukAttribute(source, DataProvider.DataProvider_NAME);
 
             if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(uid))
             {

@@ -145,17 +145,17 @@ namespace urakawa.metadata
         {
             base.XukInAttributes(source);
 
-            string name = XukAble.readXmlAttribute(source, XukAble.Name_NAME);
+            string name = XukAble.ReadXukAttribute(source, XukAble.Name_NAME);
             if (string.IsNullOrEmpty(name))
             {
                 throw new exception.XukException("Name attribute of MetadataAttribute element is missing");
             }
             Name = name;
 
-            string ns = XukAble.readXmlAttribute(source, XukAble.NamespaceUri_NAME);
+            string ns = XukAble.ReadXukAttribute(source, XukAble.NamespaceUri_NAME);
             NamespaceUri = ns;
 
-            string value = XukAble.readXmlAttribute(source, XukAble.Value_NAME);
+            string value = XukAble.ReadXukAttribute(source, XukAble.Value_NAME);
             //if (string.IsNullOrEmpty(value))
             //{   
             //    throw new exception.XukException("Value attribute of MetadataAttribute element is missing");

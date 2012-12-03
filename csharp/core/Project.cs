@@ -352,8 +352,19 @@ namespace urakawa
                         Presentation pres = PresentationFactory.Create(source.LocalName, source.NamespaceURI);
                         if (pres != null)
                         {
-                            pres.XukIn(source, handler, this);
                             pres.Project = this;
+                            if (
+                                //#if DEBUG
+                                //                true ||
+                                //#endif
+                                pres.PrettyFormat)
+                            {
+                                pres.WarmUpAllFactories();
+                            }
+
+                            pres.XukIn(source, handler, this);
+                            //pres.Project = this;
+
                             mPresentations.Insert(mPresentations.Count, pres);
 
                             pres.ExternalFilesDataManager.RegenerateUids();

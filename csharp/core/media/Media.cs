@@ -174,7 +174,7 @@ namespace urakawa.media
         {
             base.XukInAttributes(source);
 
-            string lang = XukAble.readXmlAttribute(source, XukAble.Language_NAME);
+            string lang = XukAble.ReadXukAttribute(source, XukAble.Language_NAME);
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;

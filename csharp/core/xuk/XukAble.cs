@@ -17,29 +17,7 @@ namespace urakawa.xuk
         protected static readonly UglyPrettyName LocalName_NAME = new UglyPrettyName("n", "LocalName");
         protected static readonly UglyPrettyName NamespaceUri_NAME = new UglyPrettyName("ns", "NamespaceUri");
 
-        public sealed class UglyPrettyName
-        {
-            public readonly string Ugly;
-            public readonly string Pretty;
-
-            public UglyPrettyName(string ugly, string pretty)
-            {
-                Ugly = ugly;
-                Pretty = pretty;
-            }
-
-            public string z(bool pretty)
-            {
-                return pretty ? Pretty : Ugly;
-            }
-
-            public bool Match(string str)
-            {
-                return str == Ugly || str == Pretty;
-            }
-        }
-
-        public static string readXmlAttribute(XmlReader xmlReader, UglyPrettyName name)
+        public static string ReadXukAttribute(XmlReader xmlReader, UglyPrettyName name)
         {
             string attrValue = xmlReader.GetAttribute(name.Ugly);
             if (attrValue == null) //string.IsNullOrEmpty(attrValue))
@@ -69,12 +47,10 @@ namespace urakawa.xuk
             }
         }
 
-#if DEBUG
+#if false //DEBUG
         static XukAble()
         {
             Debugger.Break();
-
-            return;
 
             try
             {
@@ -100,6 +76,8 @@ namespace urakawa.xuk
                             Type typeConcrete = type;
                             if (type.ContainsGenericParameters)
                             {
+                                DebugFix.Assert(type.IsAbstract);
+
                                 Type[] types = type.GetGenericArguments();
                                 DebugFix.Assert(types.Length == 1);
 
@@ -192,6 +170,9 @@ namespace urakawa.xuk
                                     DebugFix.Assert(!string.IsNullOrEmpty(ugly_));
 
                                     DebugFix.Assert(pretty_ == ugly_);
+
+                                    Console.WriteLine(pretty_);
+
                                     if (type.Name == "ObiPresentation")
                                     {
                                         DebugFix.Assert(pretty_ == type.Name);
@@ -703,7 +684,7 @@ namespace urakawa.xuk
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected virtual void XukInAttributes(XmlReader source)
         {
-            string uid = readXmlAttribute(source, Uid_NAME);
+            string uid = ReadXukAttribute(source, Uid_NAME);
             if (!string.IsNullOrEmpty(uid))
             {
                 Uid = uid;

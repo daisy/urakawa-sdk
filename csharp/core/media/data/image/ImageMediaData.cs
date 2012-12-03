@@ -190,7 +190,7 @@ namespace urakawa.media.data.image
                 throw new XukException("The OriginalRelativePath of an ImageMediaData cannot be null or empty !");
             }
 
-            string uid = XukAble.readXmlAttribute(source, DataProvider.DataProvider_NAME);
+            string uid = XukAble.ReadXukAttribute(source, DataProvider.DataProvider_NAME);
             if (String.IsNullOrEmpty(uid))
             {
                 throw new XukException("The DataProvider of an ImageMediaData cannot be null or empty !");

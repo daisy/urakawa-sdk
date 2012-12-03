@@ -690,12 +690,12 @@ namespace urakawa.property.xml
         {
             base.XukInAttributes(source);
 
-            string ln = XukAble.readXmlAttribute(source, XukAble.LocalName_NAME);
+            string ln = XukAble.ReadXukAttribute(source, XukAble.LocalName_NAME);
             if (string.IsNullOrEmpty(ln))
             {
                 throw new exception.XukException("LocalName attribute is missing from XmlProperty element");
             }
-            string nsUri = XukAble.readXmlAttribute(source, XukAble.NamespaceUri_NAME);
+            string nsUri = XukAble.ReadXukAttribute(source, XukAble.NamespaceUri_NAME);
             SetQName(ln, nsUri == null ? "" : nsUri);
         }
 

@@ -13,7 +13,7 @@ namespace urakawa.xuk
 
         string GetXukNamespace();
         string GetXukName();
-        XukAble.UglyPrettyName GetXukName_();
+        UglyPrettyName GetXukName_();
         QualifiedName GetXukQualifiedName();
 
         /// <summary>

@@ -9,6 +9,28 @@ using urakawa.xuk;
 
 namespace urakawa
 {
+    public class TypeAndQNames
+    {
+        private QualifiedName m_QName;
+        public QualifiedName QName
+        {
+            get { return m_QName; }
+            set { m_QName = value; }
+        }
+
+        private QualifiedName m_BaseQName;
+        public QualifiedName BaseQName
+        {
+            get { return m_BaseQName; }
+            set { m_BaseQName = value; }
+        }
+
+        public AssemblyName AssemblyName;
+        public string ClassName;
+        public Type Type;
+    }
+
+
     public abstract class GenericXukAbleFactory<T> : XukAble where T : XukAble
     {
         private static readonly UglyPrettyName XukLocalName_NAME = new UglyPrettyName("name", "XukLocalName");
@@ -23,136 +45,6 @@ namespace urakawa
         private static readonly UglyPrettyName Type_NAME = new UglyPrettyName("type", "Type");
         private static readonly UglyPrettyName RegisteredTypes_NAME = new UglyPrettyName("types", "RegisteredTypes");
 
-        private class TypeAndQNames
-        {
-            private QualifiedName m_QName;
-            public QualifiedName QName
-            {
-                get { return m_QName; }
-                set { m_QName = value; }
-            }
-
-            private QualifiedName m_BaseQName;
-            public QualifiedName BaseQName
-            {
-                get { return m_BaseQName; }
-                set { m_BaseQName = value; }
-            }
-
-            public AssemblyName AssemblyName;
-            public string ClassName;
-            public Type Type;
-
-            public void ReadFromXmlReader(XmlReader rd, bool pretty)
-            {
-                AssemblyName = new AssemblyName(readXmlAttribute(rd, AssemblyName_NAME));
-
-                if (readXmlAttribute(rd, AssemblyVersion_NAME) != null)
-                {
-                    AssemblyName.Version = new Version(readXmlAttribute(rd, AssemblyVersion_NAME));
-                }
-
-                ClassName = readXmlAttribute(rd, FullName_NAME);
-
-                if (AssemblyName != null && ClassName != null)
-                {
-                    try
-                    {
-                        Assembly a = Assembly.Load(AssemblyName);
-                        try
-                        {
-                            Type = a.GetType(ClassName);
-                        }
-                        catch (Exception ex)
-                        {
-#if DEBUG
-                            Debugger.Break();
-#endif
-                            Console.WriteLine("ClassName: " + ClassName);
-                            Console.WriteLine(ex.Message);
-                            Console.WriteLine(ex.StackTrace);
-
-                            Type = null;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif
-                        Console.WriteLine("AssemblyName: " + AssemblyName);
-                        Console.WriteLine(ex.Message);
-                        Console.WriteLine(ex.StackTrace);
-                        Type = null;
-                    }
-                }
-                else
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                    Console.WriteLine("Type XukIn error?!");
-                    Console.WriteLine("AssemblyName: " + AssemblyName);
-                    Console.WriteLine("ClassName: " + ClassName);
-
-                    Type = null;
-                }
-
-                string xukLocalName = readXmlAttribute(rd, XukLocalName_NAME);
-
-                UglyPrettyName name = null;
-
-                if (Type != null)
-                {
-                    UglyPrettyName nameCheck = GetXukName(Type);
-                    DebugFix.Assert(nameCheck != null);
-
-                    if (nameCheck != null)
-                    {
-                        if (pretty)
-                        {
-                            DebugFix.Assert(xukLocalName == nameCheck.Pretty);
-                        }
-                        else
-                        {
-                            DebugFix.Assert(xukLocalName == nameCheck.Ugly);
-                        }
-
-                        name = nameCheck;
-                    }
-                }
-
-                DebugFix.Assert(name != null);
-                if (name == null)
-                {
-                    name = new UglyPrettyName(
-                     !pretty ? xukLocalName : null,
-                     pretty ? xukLocalName : null);
-                }
-
-                QName = new QualifiedName(
-                    name,
-                    readXmlAttribute(rd, XukNamespaceUri_NAME) ?? "");
-
-                string baseXukLocalName = readXmlAttribute(rd, BaseXukLocalName_NAME);
-                if (!string.IsNullOrEmpty(baseXukLocalName))
-                {
-                    UglyPrettyName nameBase = new UglyPrettyName(
-                    !pretty ? baseXukLocalName : null,
-                    pretty ? baseXukLocalName : null);
-
-                    BaseQName = new QualifiedName(
-                        nameBase,
-                        readXmlAttribute(rd, BaseXukNamespaceUri_NAME) ?? "");
-                }
-                else
-                {
-                    BaseQName = null;
-                }
-            }
-        }
-
-
         /// <summary>
         /// Clears the actory of any registered <see cref="Type"/>s
         /// </summary>
@@ -163,6 +55,16 @@ namespace urakawa
         }
 
         private List<TypeAndQNames> mRegisteredTypeAndQNames = new List<TypeAndQNames>();
+
+        public IEnumerable<TypeAndQNames> EnumerateRegisteredTypeAndQNames()
+        {
+            foreach (TypeAndQNames tq in mRegisteredTypeAndQNames)
+            {
+                yield return tq;
+            }
+
+            yield break;
+        }
 
         private TypeAndQNames typeAlreadyRegistered(Type t)
         {
@@ -595,13 +497,123 @@ namespace urakawa
             base.XukInChild(source, handler);
         }
 
+        private void readTypeAndQNamesFromXmlReader(TypeAndQNames tq, XmlReader rd, bool pretty)
+        {
+            tq.AssemblyName = new AssemblyName(ReadXukAttribute(rd, AssemblyName_NAME));
+
+            if (ReadXukAttribute(rd, AssemblyVersion_NAME) != null)
+            {
+                tq.AssemblyName.Version = new Version(ReadXukAttribute(rd, AssemblyVersion_NAME));
+            }
+
+            tq.ClassName = ReadXukAttribute(rd, FullName_NAME);
+
+            if (tq.AssemblyName != null && tq.ClassName != null)
+            {
+                try
+                {
+                    Assembly a = Assembly.Load(tq.AssemblyName);
+                    try
+                    {
+                        tq.Type = a.GetType(tq.ClassName);
+                    }
+                    catch (Exception ex)
+                    {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        Console.WriteLine("ClassName: " + tq.ClassName);
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine(ex.StackTrace);
+
+                        tq.Type = null;
+                    }
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    Console.WriteLine("AssemblyName: " + tq.AssemblyName);
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    tq.Type = null;
+                }
+            }
+            else
+            {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                Console.WriteLine("Type XukIn error?!");
+                Console.WriteLine("AssemblyName: " + tq.AssemblyName);
+                Console.WriteLine("ClassName: " + tq.ClassName);
+
+                tq.Type = null;
+            }
+
+            string xukLocalName = ReadXukAttribute(rd, XukLocalName_NAME);
+
+            UglyPrettyName name = null;
+
+            if (tq.Type != null)
+            {
+                UglyPrettyName nameCheck = GetXukName(tq.Type);
+                DebugFix.Assert(nameCheck != null);
+
+                if (nameCheck != null)
+                {
+                    if (pretty)
+                    {
+                        DebugFix.Assert(xukLocalName == nameCheck.Pretty);
+                    }
+                    else
+                    {
+                        DebugFix.Assert(xukLocalName == nameCheck.Ugly);
+                    }
+
+                    name = nameCheck;
+                }
+            }
+
+            DebugFix.Assert(name != null);
+            if (name == null)
+            {
+                name = new UglyPrettyName(
+                 !pretty ? xukLocalName : null,
+                 pretty ? xukLocalName : null);
+            }
+
+            tq.QName = new QualifiedName(
+                name,
+                ReadXukAttribute(rd, XukNamespaceUri_NAME) ?? "");
+
+            string baseXukLocalName = ReadXukAttribute(rd, BaseXukLocalName_NAME);
+            if (!string.IsNullOrEmpty(baseXukLocalName))
+            {
+                UglyPrettyName nameBase = new UglyPrettyName(
+                !pretty ? baseXukLocalName : null,
+                pretty ? baseXukLocalName : null);
+
+                tq.BaseQName = new QualifiedName(
+                    nameBase,
+                    ReadXukAttribute(rd, BaseXukNamespaceUri_NAME) ?? "");
+            }
+            else
+            {
+                tq.BaseQName = null;
+            }
+        }
+    
         protected void XukInRegisteredType(XmlReader source)
         {
             if (Type_NAME.Match(source.LocalName)
                 && source.NamespaceURI == XukAble.XUK_NS)
             {
                 TypeAndQNames tq = new TypeAndQNames();
-                tq.ReadFromXmlReader(source, PrettyFormat);
+
+                readTypeAndQNamesFromXmlReader(tq, source, PrettyFormat);
+
                 if (tq.Type == null)
                 {
 #if DEBUG

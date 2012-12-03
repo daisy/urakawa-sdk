@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Xml;
 using System.Collections.Generic;
 using AudioLib;
@@ -933,7 +934,7 @@ namespace urakawa
             //{
             //    RootUri = new Uri(baseUri, rootUri);
             //}
-            string lang = XukAble.readXmlAttribute(source, XukAble.Language_NAME);
+            string lang = XukAble.ReadXukAttribute(source, XukAble.Language_NAME);
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
@@ -1674,6 +1675,129 @@ namespace urakawa
             DebugFix.Assert(DataProviderManager.ManagedObjects.Count == 0);
             DebugFix.Assert(ChannelsManager.ManagedObjects.Count == 0);
             DebugFix.Assert(MediaDataManager.ManagedObjects.Count == 0);
+
+#if DEBUG
+            Debugger.Break();
+
+            try
+            {
+                List<TypeAndQNames> registeredTypeAndQNames = new List<TypeAndQNames>();
+
+                registeredTypeAndQNames.AddRange(Project.PresentationFactory.EnumerateRegisteredTypeAndQNames());
+                registeredTypeAndQNames.AddRange(ChannelFactory.EnumerateRegisteredTypeAndQNames());
+                registeredTypeAndQNames.AddRange(DataProviderFactory.EnumerateRegisteredTypeAndQNames());
+                registeredTypeAndQNames.AddRange(MediaDataFactory.EnumerateRegisteredTypeAndQNames());
+                registeredTypeAndQNames.AddRange(CommandFactory.EnumerateRegisteredTypeAndQNames());
+                registeredTypeAndQNames.AddRange(MediaFactory.EnumerateRegisteredTypeAndQNames());
+                registeredTypeAndQNames.AddRange(MetadataFactory.EnumerateRegisteredTypeAndQNames());
+                registeredTypeAndQNames.AddRange(PropertyFactory.EnumerateRegisteredTypeAndQNames());
+                registeredTypeAndQNames.AddRange(TreeNodeFactory.EnumerateRegisteredTypeAndQNames());
+                registeredTypeAndQNames.AddRange(ExternalFilesDataFactory.EnumerateRegisteredTypeAndQNames());
+
+
+                foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    Console.WriteLine(ass.FullName);
+
+                    foreach (Type type in ass.GetTypes())
+                    {
+                        if (type == typeof(XukAble) || typeof(XukAble).IsAssignableFrom(type))
+                        {
+                            Console.WriteLine("-----------");
+                            Console.WriteLine(type.FullName);
+
+
+                            if (type.ContainsGenericParameters)
+                            {
+                                DebugFix.Assert(type.IsAbstract);
+                            }
+
+                            string ns = GetXukNamespace(type);
+                            DebugFix.Assert(!string.IsNullOrEmpty(ns));
+
+                            if (type == typeof(XukAble))
+                            {
+                                Console.WriteLine(ns);
+                            }
+
+                            if (type.FullName.StartsWith("Obi."))
+                            {
+                                DebugFix.Assert(ns == "http://www.daisy.org/urakawa/obi");
+                            }
+                            else
+                            {
+                                DebugFix.Assert(ns == "http://www.daisy.org/urakawa/xuk/2.0");
+                            }
+
+                            if (type.IsAbstract)
+                            {
+                                Console.WriteLine("abstract");
+                                continue;
+                            }
+
+                            if (type.FullName.StartsWith("Obi.Commands"))
+                            {
+                                continue;
+                            }
+
+                            if (type.Name == "DummyCommand")
+                            {
+                                continue;
+                            }
+
+                            if (typeof(GenericXukAbleFactory<XukAble>).IsAssignableFrom(type)
+                                || typeof(XukAbleManager<XukAble>).IsAssignableFrom(type)
+                                )
+                            {
+                                continue;
+                            }
+
+                            TypeAndQNames foundType = null;
+                            foreach (TypeAndQNames tq in registeredTypeAndQNames)
+                            {
+                                if (tq.Type == type)
+                                {
+                                    DebugFix.Assert(foundType == null);
+                                    foundType = tq;
+                                }
+                            }
+
+                            DebugFix.Assert(foundType != null);
+
+                            if (foundType != null)
+                            {
+                                DebugFix.Assert(foundType.QName != null);
+
+                                if (foundType.QName != null)
+                                {
+                                    DebugFix.Assert(foundType.QName.NamespaceUri == ns);
+
+                                    DebugFix.Assert(foundType.QName.LocalName != null);
+
+                                    if (foundType.QName.LocalName != null)
+                                    {
+                                        string pretty = GetXukName(type, true);
+                                        string ugly = GetXukName(type, false);
+
+                                        DebugFix.Assert(!string.IsNullOrEmpty(pretty));
+                                        DebugFix.Assert(!string.IsNullOrEmpty(ugly));
+
+                                        DebugFix.Assert(foundType.QName.LocalName.Pretty == pretty);
+                                        DebugFix.Assert(foundType.QName.LocalName.Ugly == ugly);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.Break();
+            }
+
+            Debugger.Break();
+#endif
         }
     }
 }
