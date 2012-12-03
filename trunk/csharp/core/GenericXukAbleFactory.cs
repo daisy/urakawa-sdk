@@ -308,7 +308,7 @@ namespace urakawa
                 }
             }
 
-            DebugFix.Assert(!isTypeAlreadyRegistered);
+            //DebugFix.Assert(!isTypeAlreadyRegistered);
 
             if (!isTypeAlreadyRegistered)
             {
@@ -348,6 +348,19 @@ namespace urakawa
                 TypeAndQNames existing = typeAlreadyRegistered(t.BaseType);
                 if (existing == null)
                 {
+                    QualifiedName qCheck = XukAble.GetXukQualifiedName(t.BaseType);
+                    if (string.IsNullOrEmpty(qCheck.NamespaceUri)
+                        || qCheck.LocalName == null
+                        || string.IsNullOrEmpty(qCheck.LocalName.Pretty)
+                        || string.IsNullOrEmpty(qCheck.LocalName.Ugly))
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        t = t.BaseType;
+                        goto tryAgain;
+                    }
+
                     existing = RegisterType(t.BaseType);
                 }
 
