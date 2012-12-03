@@ -42,7 +42,7 @@ namespace urakawa.xuk
         public static string readXmlAttribute(XmlReader xmlReader, UglyPrettyName name)
         {
             string attrValue = xmlReader.GetAttribute(name.Ugly);
-            if (string.IsNullOrEmpty(attrValue))
+            if (attrValue == null) //string.IsNullOrEmpty(attrValue))
             {
                 attrValue = xmlReader.GetAttribute(name.Pretty);
             }
