@@ -52,7 +52,8 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "id", strSeqID);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "class", "prodnote");
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, seqNode, "customTest", "prodnote");
-                XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[levelNodeDescendant][counter], "smilref", smilFileName + "#" + strSeqID);
+                XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, m_Image_ProdNoteMap[levelNodeDescendant][counter], "smilref",
+                    FileDataProvider.UriEncode(smilFileName + "#" + strSeqID));
 
                 XmlNode parNode = smilDocument.CreateElement(null, "par", smilBodySeq.NamespaceURI);
                 seqNode.AppendChild(parNode);

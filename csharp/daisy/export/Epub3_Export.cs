@@ -490,20 +490,21 @@ namespace urakawa.daisy.export
                         {
                             string val = xmlAttribute.Value;
 
-                            bool needsUrlEncode = @"href".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
+                            bool needsRelativePathAdjustment = @"href".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
                                                   || @"src".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
                                 //|| @"altimg".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
                                                   ;
 
-                            if (m_isDefaultOpfRelativePath && needsUrlEncode)
+                            if (m_isDefaultOpfRelativePath && needsRelativePathAdjustment)
                             {
                                 val = flattenPath(val);
                             }
 
-                            if (needsUrlEncode)
-                            {
-                                val = FileDataProvider.UriEncode(val);
-                            }
+                            // Preserved originals at import time
+                            //if (needsRelativePathAdjustment)
+                            //{
+                            //    val = FileDataProvider.UriEncode(val);
+                            //}
 
                             XmlDocumentHelper.CreateAppendXmlAttribute(xmlDocHTML, xmlChild, xmlAttribute.LocalName, val);
                         }
@@ -807,19 +808,23 @@ namespace urakawa.daisy.export
 
                         string val = xmlAttr.Value;
 
-                        bool needsUrlEncode = @"href".Equals(xmlAttr.LocalName, StringComparison.OrdinalIgnoreCase)
+                        bool needsRelativePathAdjustment = @"href".Equals(xmlAttr.LocalName, StringComparison.OrdinalIgnoreCase)
                                               || @"src".Equals(xmlAttr.LocalName, StringComparison.OrdinalIgnoreCase)
                                               || @"altimg".Equals(xmlAttr.LocalName, StringComparison.OrdinalIgnoreCase);
 
-                        if (m_isDefaultOpfRelativePath && needsUrlEncode)
+                        if (m_isDefaultOpfRelativePath && needsRelativePathAdjustment)
                         {
                             val = flattenPath(val);
                         }
 
-                        if (needsUrlEncode)
-                        {
-                            val = FileDataProvider.UriEncode(val);
-                        }
+
+                        // Preserved originals at import time
+                        //bool needsUrlEncode = @"src".Equals(xmlAttr.LocalName, StringComparison.OrdinalIgnoreCase)
+                        //                      || @"altimg".Equals(xmlAttr.LocalName, StringComparison.OrdinalIgnoreCase);
+                        //if (needsUrlEncode)
+                        //{
+                        //    val = FileDataProvider.UriEncode(val);
+                        //}
 
                         XmlDocumentHelper.CreateAppendXmlAttribute(
                             xmlDocHTML,
