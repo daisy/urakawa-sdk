@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Web;
 using System.Xml;
 using AudioLib;
 using urakawa.xuk;
@@ -382,6 +383,20 @@ namespace urakawa.data
         public static bool isHTTPFile(string filepath)
         {
             return filepath.StartsWith("http://") || filepath.StartsWith("https://");
+        }
+
+        public static string UriEncode(string urlStr)
+        {
+            return Uri.EscapeDataString(urlStr);
+            //return Uri.EscapeUriString(urlStr);
+        }
+
+        public static string UriDecode(string urlStr)
+        {
+            //http://blogs.msdn.com/b/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
+            //return HttpUtility.UrlPathEncode(urlStr);
+            //return HttpUtility.UrlDecode(urlStr);
+            return Uri.UnescapeDataString(urlStr);
         }
 
         public static string EnsureLocalFilePathDownloadTempDirectory(string filepath)
