@@ -9,6 +9,11 @@ namespace urakawa.metadata
         {
         }
 
+        //public MetadataAttribute CreateMetadataAttribute()
+        //{
+        //    return Create<MetadataAttribute>();
+        //}
+
         public Metadata CreateMetadata()
         {
             return Create<Metadata>();

@@ -289,6 +289,9 @@ namespace urakawa
         {
             Presentation newPres = PresentationFactory.Create(this, uri, dataFolderPrefix);
 
+//#if DEBUG
+//            newPres.WarmUpAllFactories();
+//#endif
             mPresentations.Insert(mPresentations.Count, newPres);
 
             return newPres;
@@ -353,14 +356,9 @@ namespace urakawa
                         if (pres != null)
                         {
                             pres.Project = this;
-                            if (
-                                //#if DEBUG
-                                //                true ||
-                                //#endif
-                                pres.PrettyFormat)
-                            {
-                                pres.WarmUpAllFactories();
-                            }
+#if DEBUG
+                            pres.WarmUpAllFactories();
+#endif
 
                             pres.XukIn(source, handler, this);
                             //pres.Project = this;

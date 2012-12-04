@@ -1425,14 +1425,8 @@ namespace urakawa
 
         #endregion
 
-        /// <summary>
-        /// creates and immediately discards objects via each factory
-        /// in order to initialize and cache the mapping between XUK names (pretty or compressed) and actual types.
-        /// Calling this method is not required, it is provided for use-cases where the XUK XML is required to 
-        /// contain all the factory mappings, even though the types are not actually used in the document instance.
-        /// (useful for debugging factory types in XUK)
-        /// </summary>
-        public void WarmUpAllFactories()
+        [Conditional("DEBUG")]
+        public virtual void WarmUpAllFactories()
         {
             Channel ch = ChannelFactory.Create();
             ChannelsManager.RemoveManagedObject(ch);
@@ -1693,6 +1687,7 @@ namespace urakawa
                 registeredTypeAndQNames.AddRange(PropertyFactory.EnumerateRegisteredTypeAndQNames());
                 registeredTypeAndQNames.AddRange(TreeNodeFactory.EnumerateRegisteredTypeAndQNames());
                 registeredTypeAndQNames.AddRange(ExternalFilesDataFactory.EnumerateRegisteredTypeAndQNames());
+                registeredTypeAndQNames.AddRange(AlternateContentFactory.EnumerateRegisteredTypeAndQNames());
 
 
                 foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
@@ -1745,8 +1740,21 @@ namespace urakawa
                                 continue;
                             }
 
-                            if (typeof(GenericXukAbleFactory<XukAble>).IsAssignableFrom(type)
-                                || typeof(XukAbleManager<XukAble>).IsAssignableFrom(type)
+                            if (type.Name == typeof(UndoRedoManager).Name
+                                || type.Name == typeof(Project).Name)
+                            {
+                                continue;
+                            }
+
+                            if (type.Name == typeof(MetadataAttribute).Name
+                                || type.Name == typeof(XmlAttribute).Name
+                                || type.Name == typeof(PCMFormatInfo).Name)
+                            {
+                                continue;
+                            }
+
+                            if (IsAssignableFrom(type, typeof(GenericXukAbleFactory<>))
+                                || IsAssignableFrom(type, typeof(XukAbleManager<>))
                                 )
                             {
                                 continue;
@@ -1798,6 +1806,28 @@ namespace urakawa
 
             Debugger.Break();
 #endif
+        }
+
+        public static bool IsAssignableFrom(Type extendType, Type baseType)
+        {
+            while (extendType != null && !baseType.IsAssignableFrom(extendType))
+            {
+                if (extendType == typeof(object))
+                {
+                    return false;
+                }
+
+                if (extendType.IsGenericType && !extendType.IsGenericTypeDefinition)
+                {
+                    extendType = extendType.GetGenericTypeDefinition();
+                }
+                else
+                {
+                    extendType = extendType.BaseType;
+                }
+            }
+
+            return true;
         }
     }
 }

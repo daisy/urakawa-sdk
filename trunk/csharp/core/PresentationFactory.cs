@@ -26,14 +26,9 @@ namespace urakawa
                 pres.DataProviderManager.SetDataFileDirectoryWithPrefix(dataFolderPrefix);
             }
 
-            if (
-//#if DEBUG
-//                true ||
-//#endif
-                pres.PrettyFormat)
-            {
-                pres.WarmUpAllFactories();
-            }
+#if DEBUG
+            pres.WarmUpAllFactories();
+#endif
 
             return pres;
         }
