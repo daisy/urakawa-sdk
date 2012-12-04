@@ -361,7 +361,8 @@ namespace urakawa
 #endif
 
                             pres.XukIn(source, handler, this);
-                            //pres.Project = this;
+                            
+                            pres.Project = this;
 
                             mPresentations.Insert(mPresentations.Count, pres);
 
