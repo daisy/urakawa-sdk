@@ -1671,6 +1671,8 @@ namespace urakawa
             DebugFix.Assert(MediaDataManager.ManagedObjects.Count == 0);
 
 #if DEBUG
+            return;
+
             Debugger.Break();
 
             try
