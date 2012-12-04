@@ -355,13 +355,12 @@ namespace urakawa
                         Presentation pres = PresentationFactory.Create(source.LocalName, source.NamespaceURI);
                         if (pres != null)
                         {
-                            pres.Project = this;
 #if DEBUG
+                            pres.Project = this;
                             pres.WarmUpAllFactories();
 #endif
 
                             pres.XukIn(source, handler, this);
-                            
                             pres.Project = this;
 
                             mPresentations.Insert(mPresentations.Count, pres);
