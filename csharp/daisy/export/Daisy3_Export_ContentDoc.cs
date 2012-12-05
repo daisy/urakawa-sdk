@@ -588,6 +588,8 @@ namespace urakawa.daisy.export
                                     }
                                 }
                             }
+
+#if SUPPORT_AUDIO_VIDEO
                             else if (currentXmlNode.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
                                 || (
                                 currentXmlNode.LocalName.Equals("source", StringComparison.OrdinalIgnoreCase)
@@ -669,6 +671,8 @@ namespace urakawa.daisy.export
                                     }
                                 }
                             }
+
+#endif
                         }
 
 
