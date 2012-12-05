@@ -130,6 +130,8 @@ namespace urakawa.daisy.export
                 AddFilenameToManifest(opfDocument, manifestNode, imageFileName, strID, mime);
             }
 
+            
+#if SUPPORT_AUDIO_VIDEO
             if (RequestCancellation) return;
 
             foreach (string videoFileName in m_FilesList_Video)
@@ -149,6 +151,7 @@ namespace urakawa.daisy.export
                 string mime = DataProviderFactory.GetMimeTypeFromExtension(ext);
                 AddFilenameToManifest(opfDocument, manifestNode, audioFileName, strID, mime);
             }
+#endif
 
             if (RequestCancellation) return;
 
