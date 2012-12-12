@@ -544,7 +544,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "playOrder", "");
                     string strTypeVal = levelNodeDescendant.GetXmlProperty().GetAttribute("page").Value;
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "type", strTypeVal);
-                    string strPageValue = levelNodeDescendant.GetTextFlattened();
+                    string strPageValue = prepareNcxLabelText(levelNodeDescendant);
                     ++totalPageCount;
 
                     playOrderList_Sorted.Add(pageTargetNode);
@@ -646,7 +646,7 @@ namespace urakawa.daisy.export
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "class", DiagramContentModelHelper.Math);
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, navTargetNode, "playOrder", "");
 
-                    string strMathML = levelNodeDescendant.GetTextFlattened(); // grabs alttext, if any
+                    string strMathML = prepareNcxLabelText(levelNodeDescendant); // grabs alttext, if any
 
                     playOrderList_Sorted.Add(navTargetNode);
 
@@ -722,7 +722,7 @@ namespace urakawa.daisy.export
                     XmlNode txtNode = ncxDocument.CreateElement(null, "text", navTargetNode.NamespaceURI);
                     navLabelNode.AppendChild(txtNode);
                     txtNode.AppendChild(
-                        ncxDocument.CreateTextNode(levelNodeDescendant.GetTextFlattened()));
+                        ncxDocument.CreateTextNode(prepareNcxLabelText(levelNodeDescendant)));
 
                     // create audio node only if external audio media is not null
                     if (externalAudio != null)
