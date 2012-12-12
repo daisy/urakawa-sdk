@@ -2345,7 +2345,7 @@ namespace urakawa.daisy.export
                 {
                     continue;
                 }
-                
+
                 val = FileDataProvider.UriDecode(val);
 
                 string fullPath = Path.Combine(parentDir, val);
@@ -2870,7 +2870,14 @@ namespace urakawa.daisy.export
                     strBuilder.Append("No Heading");
                 }
 
-                sexion.Title = strBuilder == null ? "No Heading" : strBuilder.ToString().Trim();
+                string str = strBuilder.ToString();
+                if (!string.IsNullOrEmpty(str))
+                {
+                    str = Regex.Replace(str, @"\s+", " ");
+                    str = str.Trim();
+                }
+
+                sexion.Title = strBuilder == null ? "No Heading" : str;
 
                 processOutline(section.SubSections, path, sexion);
             }

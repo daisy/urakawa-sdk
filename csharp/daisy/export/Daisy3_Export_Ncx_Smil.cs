@@ -15,6 +15,7 @@ using urakawa.media.data.audio.codec;
 using urakawa.data;
 
 using AudioLib;
+using System.Text.RegularExpressions;
 
 namespace urakawa.daisy.export
 {
@@ -121,6 +122,17 @@ namespace urakawa.daisy.export
             return false;
         }
 
+        private string prepareNcxLabelText(TreeNode n)
+        {
+            string str = n.GetTextFlattened();
+            if (!string.IsNullOrEmpty(str))
+            {
+                str = Regex.Replace(str, @"\s+", " ");
+                return str.Trim();
+            }
+            return str;
+        }
+
         private XmlNode CreateDocTitle(XmlDocument ncxDocument, XmlNode ncxRootNode, TreeNode n)
         {
             XmlNode docNode = ncxDocument.CreateElement(null,
@@ -134,7 +146,7 @@ namespace urakawa.daisy.export
             XmlNode docTxtNode = ncxDocument.CreateElement(null, "text", docNode.NamespaceURI);
             docNode.AppendChild(docTxtNode);
             docTxtNode.AppendChild(
-            ncxDocument.CreateTextNode(n.GetTextFlattened()));
+            ncxDocument.CreateTextNode(prepareNcxLabelText(n)));
 
 
             ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
@@ -219,7 +231,7 @@ namespace urakawa.daisy.export
             navLabel.AppendChild(txtNode);
             if (currentHeadingTreeNode != null)
                 txtNode.AppendChild(
-                ncxDocument.CreateTextNode(n.GetTextFlattened()));
+                ncxDocument.CreateTextNode(prepareNcxLabelText(n)));
 
             if (externalAudio != null)
             {
