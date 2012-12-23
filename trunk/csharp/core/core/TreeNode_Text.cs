@@ -530,7 +530,10 @@ namespace urakawa.core
                    );
             }
 
-            if (next == null || !next.HasXmlProperty || TextOnlyContainsPunctuation(next.GetText()))
+            if (next == null
+                || !next.HasXmlProperty
+                || (next.GetText() != null && TextOnlyContainsPunctuation(next.GetText()))
+                || TextOnlyContainsPunctuation(next.GetTextFlattened_()))
             {
                 nested = null;
                 return null;
