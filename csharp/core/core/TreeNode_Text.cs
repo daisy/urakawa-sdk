@@ -452,17 +452,16 @@ namespace urakawa.core
         {
             TreeNode root = node.Root;
 
-            TreeNode nextDirect = null;
-
+            TreeNode nextDirect = node;
             do
             {
                 if (directionPrevious)
                 {
-                    nextDirect = node.GetPreviousSiblingWithText();
+                    nextDirect = nextDirect.GetPreviousSiblingWithText();
                 }
                 else
                 {
-                    nextDirect = node.GetNextSiblingWithText();
+                    nextDirect = nextDirect.GetNextSiblingWithText();
                 }
             } while (nextDirect != null
                 &&
@@ -512,15 +511,16 @@ namespace urakawa.core
             if (next == null ||
                 next != nextDirect && next.IsAncestorOf(node))
             {
+                next = node;
                 do
                 {
                     if (directionPrevious)
                     {
-                        next = node.GetPreviousSiblingWithText();
+                        next = next.GetPreviousSiblingWithText();
                     }
                     else
                     {
-                        next = node.GetNextSiblingWithText();
+                        next = next.GetNextSiblingWithText();
                     }
                 } while (next != null
                    &&
