@@ -140,7 +140,7 @@ namespace urakawa.daisy.export
                     (
                     levelNodeDescendant.NeedsAudio()
                     ||
-                    levelNodeDescendant.AtLeastOneSiblingIsSignificantTextOnly()
+                    levelNodeDescendant.AtLeastOneChildSiblingIsSignificantTextOnly()
                     );
 
 
