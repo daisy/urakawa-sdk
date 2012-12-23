@@ -453,91 +453,126 @@ namespace urakawa.core
             TreeNode root = node.Root;
 
             TreeNode nextDirect = null;
-            if (directionPrevious)
+
+            do
             {
-                nextDirect = node.GetPreviousSiblingWithText();
-            }
-            else
-            {
-                nextDirect = node.GetNextSiblingWithText();
-            }
+                if (directionPrevious)
+                {
+                    nextDirect = node.GetPreviousSiblingWithText();
+                }
+                else
+                {
+                    nextDirect = node.GetNextSiblingWithText();
+                }
+            } while (nextDirect != null
+                &&
+                (
+                //!nextDirect.HasXmlProperty ||
+                TextOnlyContainsPunctuation(nextDirect.GetText()))
+                );
 
             if (nextDirect == null)
             {
                 nested = null;
                 return null;
             }
-            else
+
+            TreeNode next = EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, nextDirect);
+            
+            //TreeNode next = nextDirect;
+            //TreeNode beforeAdjust = null;
+            //while (next != null)
+            //{
+            //    beforeAdjust = next;
+            //    next = EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, next);
+
+            //    if (next != null && next.HasXmlProperty)
+            //    {
+            //        break;
+            //    }
+
+            //    while (next != null
+            //        &&
+            //        (
+            //        //!next.HasXmlProperty ||
+            //        TextOnlyContainsPunctuation(next.GetText()))
+            //        )
+            //    {
+            //        if (directionPrevious)
+            //        {
+            //            next = next.GetPreviousSiblingWithText();
+            //        }
+            //        else
+            //        {
+            //            next = next.GetNextSiblingWithText();
+            //        }
+            //    }
+            //}
+
+            if (next == null ||
+                next != nextDirect && next.IsAncestorOf(node))
             {
-                TreeNode next = nextDirect;
-                TreeNode beforeAdjust = null;
-                while (next != null)
+                do
                 {
-                    if (!TextOnlyContainsPunctuation(next.GetText()))
-                    {
-                        beforeAdjust = next;
-                        next = EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, next);
-                        //m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode
-
-                        bool isXmlElement = next.HasXmlProperty;
-                        //bool isSignificantTextOnly = !isXmlElement && !TreeNode.TextOnlyContainsPunctuation(next.GetText());
-                        if (isXmlElement)
-                        {
-                            break;
-                        }
-                    }
-
                     if (directionPrevious)
                     {
-                        next = next.GetPreviousSiblingWithText();
+                        next = node.GetPreviousSiblingWithText();
                     }
                     else
                     {
-                        next = next.GetNextSiblingWithText();
+                        next = node.GetNextSiblingWithText();
                     }
-                }
-
-                if (next == null)
-                {
-                    next = nextDirect;
-                    if (TextOnlyContainsPunctuation(next.GetText()))
-                    {
-                        next = null;
-                    }
-                    nested = null;
-                    return next;
-                    //m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
-                }
-                else
-                {
-                    if (beforeAdjust == null
-                        || beforeAdjust == next
-                        || !next.IsAncestorOf(beforeAdjust)
-                        || next.GetManagedAudioMedia() != null
-                        || next.GetFirstDescendantWithManagedAudio() == null)
-                    {
-                        nested = null;
-                        return next;
-                        //m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
-                    }
-                    else
-                    {
-                        nested = beforeAdjust;
-                        return next;
-                        //m_UrakawaSession.PerformTreeNodeSelection(next, false, beforeAdjust);
-                    }
-                }
+                } while (next != null
+                   &&
+                   (
+                    !next.HasXmlProperty ||
+                    TextOnlyContainsPunctuation(next.GetText()))
+                   );
             }
+
+            if (next == null || !next.HasXmlProperty || TextOnlyContainsPunctuation(next.GetText()))
+            {
+                nested = null;
+                return null;
+            }
+
+            nested = null;
+            return next;
+
+            //if (beforeAdjust == null
+            //        || beforeAdjust == next
+            //        || !next.IsAncestorOf(beforeAdjust)
+            //        || next.GetManagedAudioMedia() != null
+            //    //|| next.GetFirstDescendantWithManagedAudio() == null
+            //        )
+            //{
+            //    nested = null;
+            //    return next;
+            //    //m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
+            //}
+            //else
+            //{
+            //    nested = beforeAdjust;
+            //    return next;
+            //    //m_UrakawaSession.PerformTreeNodeSelection(next, false, beforeAdjust);
+            //}
         }
 
         public static TreeNode EnsureTreeNodeHasNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode rootBoundary, TreeNode proposed)
         {
             if (rootBoundary == null)
             {
-                return null;
+                if (proposed != null)
+                {
+                    rootBoundary = proposed.Root;
+                }
+                else
+                {
+                    return null;
+                }
             }
 
-        checkProposed:
+            //checkProposed:
 
             if (proposed != null)
             {
@@ -561,6 +596,7 @@ namespace urakawa.core
                 {
                     proposed = rootBoundary.GetFirstDescendantWithText();
                 }
+
                 if (proposed == null)
                 {
                     StringChunkRange textRange = rootBoundary.GetText();
@@ -572,9 +608,11 @@ namespace urakawa.core
                     return rootBoundary;
                 }
 
-                while (proposed != null && (!proposed.HasXmlProperty
-                    || TextOnlyContainsPunctuation(proposed.GetText())
-                    ))
+                while (proposed != null &&
+                    //(!proposed.HasXmlProperty ||
+                    TextOnlyContainsPunctuation(proposed.GetText())
+                    //)
+                    )
                 {
                     if (directionPrevious)
                     {
@@ -591,7 +629,8 @@ namespace urakawa.core
                     return null;
                 }
 
-                goto checkProposed;
+                //goto checkProposed;
+                return EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, rootBoundary, proposed);
             }
 
             //if (rootBoundary == proposed)
@@ -604,7 +643,7 @@ namespace urakawa.core
                 return proposed;
             }
 
-            if (proposed.Parent.AtLeastOneSiblingIsSignificantTextOnly())
+            if (proposed.Parent.AtLeastOneChildSiblingIsSignificantTextOnly())
             {
                 return EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, rootBoundary, proposed.Parent);
             }
@@ -614,34 +653,44 @@ namespace urakawa.core
             //    return proposed;
             //}
 
-            TreeNode last = null;
+            TreeNode topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly = null;
+            TreeNode topMostAncestorWithoutSiblingIsSignificantTextOnly = null;
             TreeNode child = proposed.Parent;
             TreeNode parent = child.Parent;
-            while (parent != null)
+            while (parent != null
+                && (child == rootBoundary || child.IsDescendantOf(rootBoundary))
+                )
             {
-                if (parent.AtLeastOneSiblingIsSignificantTextOnly())
+                if (parent.AtLeastOneChildSiblingIsSignificantTextOnly())
                 {
-                    if (parent == rootBoundary
-                        || parent.IsDescendantOf(rootBoundary))
+                    topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly = child;
+                    topMostAncestorWithoutSiblingIsSignificantTextOnly = null;
+                }
+                else
+                {
+                    if (topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly != null
+                        //&& child.IsAncestorOf(topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly)
+                        )
                     {
-                        last = parent;
-                    }
-                    else
-                    {
-                        break;
+                        topMostAncestorWithoutSiblingIsSignificantTextOnly = child;
                     }
                 }
+
                 child = parent;
                 parent = child.Parent;
             }
-            if (last == null) // || last.Parent == null)
+            if (topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly == null) // || last.Parent == null)
             {
                 return proposed;
             }
-            return last;
+            if (topMostAncestorWithoutSiblingIsSignificantTextOnly != null)
+            {
+                return topMostAncestorWithoutSiblingIsSignificantTextOnly;
+            }
+            return rootBoundary;
         }
 
-        public bool AtLeastOneSiblingIsSignificantTextOnly()
+        public bool AtLeastOneChildSiblingIsSignificantTextOnly()
         {
             foreach (TreeNode child in Children.ContentsAs_Enumerable)
             {
