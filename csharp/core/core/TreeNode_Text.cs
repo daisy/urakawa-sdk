@@ -450,8 +450,6 @@ namespace urakawa.core
 
         public static TreeNode GetNextTreeNodeWithNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode node, out TreeNode nested)
         {
-            TreeNode root = node.Root;
-
             TreeNode nextDirect = node;
             do
             {
@@ -476,8 +474,36 @@ namespace urakawa.core
                 return null;
             }
 
+            TreeNode root = node.Root;
+
+            TreeNode firstCommonAncestor = null;
+
+            TreeNode parent = nextDirect.Parent;
+            while (parent != null)
+            {
+                if (parent.IsAncestorOf(node))
+                {
+                    firstCommonAncestor = parent;
+                    break;
+                }
+                parent = parent.Parent;
+            }
+
+            if (firstCommonAncestor != null)
+            {
+                foreach (TreeNode child in firstCommonAncestor.Children.ContentsAs_Enumerable)
+                {
+                    if (child == nextDirect || child.IsAncestorOf(nextDirect))
+                    {
+                        root = child;
+                        break;
+                    }
+                }
+            }
+
+
             TreeNode next = EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, nextDirect);
-            
+
             //TreeNode next = nextDirect;
             //TreeNode beforeAdjust = null;
             //while (next != null)
@@ -508,8 +534,9 @@ namespace urakawa.core
             //    }
             //}
 
-            if (next == null ||
-                next != nextDirect && next.IsAncestorOf(node))
+            if (next == null
+                //|| next != nextDirect && next.IsAncestorOf(node)
+                )
             {
                 next = node;
                 do
@@ -632,8 +659,22 @@ namespace urakawa.core
                     return null;
                 }
 
+
+                TreeNode root = rootBoundary;
+
+                TreeNode par = proposed;
+                while (par != null)
+                {
+                    if (!par.AtLeastOneChildSiblingIsSignificantTextOnly())
+                    {
+                        root = par;
+                        break;
+                    }
+                    par = par.Parent;
+                }
+
                 //goto checkProposed;
-                return EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, rootBoundary, proposed);
+                return EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, proposed);
             }
 
             //if (rootBoundary == proposed)
@@ -658,10 +699,12 @@ namespace urakawa.core
 
             TreeNode topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly = null;
             TreeNode topMostAncestorWithoutSiblingIsSignificantTextOnly = null;
-            TreeNode child = proposed.Parent;
+            TreeNode child = proposed; //.Parent;
             TreeNode parent = child.Parent;
             while (parent != null
-                && (child == rootBoundary || child.IsDescendantOf(rootBoundary))
+                && (
+                //child == rootBoundary ||
+                child.IsDescendantOf(rootBoundary))
                 )
             {
                 if (parent.AtLeastOneChildSiblingIsSignificantTextOnly())
