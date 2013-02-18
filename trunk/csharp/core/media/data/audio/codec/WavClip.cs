@@ -188,6 +188,13 @@ namespace urakawa.media.data.audio.codec
                     {
                         m_cachedPcmFormat = AudioLibPCMFormat.RiffHeaderParse(raw, out dataLength);
                     }
+                    catch (ArgumentOutOfRangeException ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                        throw new exception.DataMissingException(
+                        String.Format("The data file {0} does not exist", ((FileDataProvider)DataProvider).DataFileRelativePath));
+                        
+                    }
                     finally
                     {
                         raw.Close();
