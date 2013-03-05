@@ -47,6 +47,10 @@ namespace DTDs
 
             // SMIL
 
+            //http://www.w3.org/TR/REC-SMIL/SMIL10.dtd
+            ENTITIES_MAPPING.Add("SMIL10.dtd", "DTDs.Resources.SMIL10.dtd");
+            ENTITIES_MAPPING.Add("//W3C//DTD SMIL 1.0//EN", "DTDs.Resources.SMIL10.dtd");
+			
             //http://www.loc.gov/nls/z3986/v100/dtbsmil110.dtd
             ENTITIES_MAPPING.Add("dtbsmil110.dtd", "DTDs.Resources.dtbsmil110.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbsmil v1.1.0//EN", "DTDs.Resources.dtbsmil110.dtd");
@@ -55,8 +59,6 @@ namespace DTDs
             ENTITIES_MAPPING.Add("dtbsmil-2005-1.dtd", "DTDs.Resources.dtbsmil-2005-1.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbsmil 2005-1//EN", "DTDs.Resources.dtbsmil-2005-1.dtd");
 
-                        ENTITIES_MAPPING.Add("SMIL10.dtd", "DTDs.Resources.SMIL10.dtd");
-                        ENTITIES_MAPPING.Add("W3C//DTD SMIL 1.0//EN", "DTDs.Resources.dtbsmil-2005-1.dtd");
             //http://www.daisy.org/z3986/2005/dtbsmil-2005-2.dtd
             ENTITIES_MAPPING.Add("dtbsmil-2005-2.dtd", "DTDs.Resources.dtbsmil-2005-2.dtd");
             ENTITIES_MAPPING.Add("//NISO//DTD dtbsmil 2005-2//EN", "DTDs.Resources.dtbsmil-2005-2.dtd");
