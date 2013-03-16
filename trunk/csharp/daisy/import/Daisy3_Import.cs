@@ -96,8 +96,7 @@ namespace urakawa.daisy.import
         {
             return XUK_DIR
                    + Path.DirectorySeparatorChar
-                   + Path.GetFileName(docPath)
-                   + XUK_DIR;
+                   + Path.GetFileName(docPath).Replace('.', '_'); // +XUK_DIR;
         }
 
         public static string CleanupTitle(string title, int maxLength)
@@ -142,20 +141,22 @@ namespace urakawa.daisy.import
         {
             return Path.Combine(outputDirectory,
                 (isSpine ? @"_" : "")
-                + Path.GetFileName(bookFilePath)
-                + (!string.IsNullOrEmpty(title) ? "["
-                + CleanupTitle(title, 20)
-                + "]" : "")
+                + Path.GetFileName(bookFilePath).Replace('.', '_')
+                + (!string.IsNullOrEmpty(title) ? "-" //"["
+                + CleanupTitle(title, 12)
+                //+ "]"
+                : "")
                 + (isSpine ? OpenXukAction.XUK_SPINE_EXTENSION : OpenXukAction.XUK_EXTENSION));
         }
 
         public static string GetXukFilePath_SpineItem(string outputDirectory, string relativeFilePath, string title)
         {
             return Path.Combine(outputDirectory,
-                FileDataProvider.EliminateForbiddenFileNameCharacters(relativeFilePath)
-                + (!string.IsNullOrEmpty(title) ? "["
-                + CleanupTitle(title, 20)
-                + "]" : "")
+                FileDataProvider.EliminateForbiddenFileNameCharacters(relativeFilePath).Replace('.', '_')
+                + (!string.IsNullOrEmpty(title) ? "-" //"["
+                + CleanupTitle(title, 12)
+                //+ "]"
+                : "")
                 + OpenXukAction.XUK_EXTENSION);
         }
 
@@ -200,7 +201,7 @@ namespace urakawa.daisy.import
                 Presentation presentation = m_Project.Presentations.Get(0);
 
                 string dataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
-                presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
+                presentation.DataProviderManager.SetCustomDataFileDirectory(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
 
                 string newDataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
                 DebugFix.Assert(Directory.Exists(newDataFolderPath));
@@ -224,7 +225,7 @@ namespace urakawa.daisy.import
                         Console.WriteLine(ex.Message);
                         Console.WriteLine(ex.StackTrace);
 
-                        presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(m_dataFolderPrefix);
+                        presentation.DataProviderManager.SetCustomDataFileDirectory(m_dataFolderPrefix);
                     }
                 }
             }

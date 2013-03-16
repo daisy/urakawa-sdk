@@ -985,7 +985,7 @@ namespace urakawa.daisy.import
 
                 //deleteDataDirectoryIfEmpty();
                 string dataFolderPath = spineItemPresentation.DataProviderManager.DataFileDirectoryFullPath;
-                spineItemPresentation.DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(xuk_FilePath));
+                spineItemPresentation.DataProviderManager.SetCustomDataFileDirectory(Path.GetFileNameWithoutExtension(xuk_FilePath));
 
                 string newDataFolderPath = spineItemPresentation.DataProviderManager.DataFileDirectoryFullPath;
                 DebugFix.Assert(Directory.Exists(newDataFolderPath));
@@ -1009,7 +1009,7 @@ namespace urakawa.daisy.import
                         Console.WriteLine(ex.Message);
                         Console.WriteLine(ex.StackTrace);
 
-                        spineItemPresentation.DataProviderManager.SetDataFileDirectoryWithPrefix(dataFolderPrefix);
+                        spineItemPresentation.DataProviderManager.SetCustomDataFileDirectory(dataFolderPrefix);
                     }
                 }
 

@@ -2511,7 +2511,7 @@ namespace urakawa.daisy.export
             string title = Daisy3_Import.GetTitle(m_Presentation);
             if (!string.IsNullOrEmpty(title))
             {
-                title = Daisy3_Import.CleanupTitle(title, 40);
+                title = Daisy3_Import.CleanupTitle(title, 30);
 
                 epubFileName = title;
             }
