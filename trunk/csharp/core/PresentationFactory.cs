@@ -23,7 +23,7 @@ namespace urakawa
 
             if (!String.IsNullOrEmpty(dataFolderPrefix))
             {
-                pres.DataProviderManager.SetDataFileDirectoryWithPrefix(dataFolderPrefix);
+                pres.DataProviderManager.SetCustomDataFileDirectory(dataFolderPrefix);
             }
 
 #if DEBUG

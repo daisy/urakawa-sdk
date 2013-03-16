@@ -9,25 +9,40 @@ namespace urakawa.data
     public class DataFolderCopier : DualCancellableProgressReporter
     {
         private readonly Presentation m_Presentation;
-        private readonly string m_parentFolderPath;
-        private readonly string m_prefixforSubDataFolder;
-        public DataFolderCopier(Presentation presentation, string parentFolderPath, string prefixforSubDataFolder)
+
+        //private readonly string m_parentFolderPath;
+        //private readonly string m_prefixforSubDataFolder;
+
+        private readonly string m_destinationFolderPath;
+
+        public DataFolderCopier(Presentation presentation,
+            //string parentFolderPath, string prefixforSubDataFolder
+            string destinationFolderPath
+            )
         {
             m_Presentation = presentation;
-            m_parentFolderPath = parentFolderPath;
-            m_prefixforSubDataFolder = prefixforSubDataFolder;
+
+            //m_parentFolderPath = parentFolderPath;
+            //m_prefixforSubDataFolder = prefixforSubDataFolder;
+
+            m_destinationFolderPath = destinationFolderPath;
         }
 
         public override void DoWork()
         {
-            CopyFileDataProvidersToDataFolderWithPrefix(m_parentFolderPath, m_prefixforSubDataFolder);
+            CopyFileDataProvidersToDataFolderWithPrefix(m_destinationFolderPath
+                //m_parentFolderPath, m_prefixforSubDataFolder
+            );
         }
 
-        public string CopyFileDataProvidersToDataFolderWithPrefix(string parentFolderPath, string prefixforSubDataFolder)
+        public string CopyFileDataProvidersToDataFolderWithPrefix(string destinationFolderPath
+            //string parentFolderPath, string prefixforSubDataFolder
+            )
         {
-            string fullDataFolderPath = Path.Combine(parentFolderPath,
-                                                     prefixforSubDataFolder +
-                                                     DataProviderManager.DefaultDataFileDirectorySeparator + DataProviderManager.DefaultDataFileDirectory);
+            string fullDataFolderPath = destinationFolderPath;
+            //Path.Combine(parentFolderPath,
+            //                                          prefixforSubDataFolder +
+            //                                          DataProviderManager.DefaultDataFileDirectorySeparator + DataProviderManager.DefaultDataFileDirectory);
 
             CopyFileDataProvidersToDataFolder(fullDataFolderPath);
 
@@ -50,7 +65,7 @@ namespace urakawa.data
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            List<FileDataProvider > list = new List<FileDataProvider>(m_Presentation.DataProviderManager.ManagedFileDataProviders);
+            List<FileDataProvider> list = new List<FileDataProvider>(m_Presentation.DataProviderManager.ManagedFileDataProviders);
             foreach (FileDataProvider fdp in list)
             {
                 index++;
