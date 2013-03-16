@@ -184,16 +184,36 @@ namespace urakawa.data
             return localPath;
         }
 
-
+        // legacy for Obi?
         public void SetDataFileDirectoryWithPrefix(string dataFolderPrefix)
         {
-            DataFileDirectory = dataFolderPrefix + DefaultDataFileDirectorySeparator + DefaultDataFileDirectory;
+            if (string.IsNullOrEmpty(dataFolderPrefix))
+            {
+                DataFileDirectory = DefaultDataFileDirectory;
+            }
+            else
+            {
+                DataFileDirectory = dataFolderPrefix + DefaultDataFileDirectorySeparator + DefaultDataFileDirectory;
+            }
+        }
+
+        // Tobi doesn't use "_Data" anymore
+        public void SetCustomDataFileDirectory(string dataFolderPrefix)
+        {
+            if (string.IsNullOrEmpty(dataFolderPrefix))
+            {
+                DataFileDirectory = DefaultDataFileDirectory;
+            }
+            else
+            {
+                DataFileDirectory = dataFolderPrefix; // + DefaultDataFileDirectorySeparator + DefaultDataFileDirectory;
+            }
         }
 
         public const string DefaultDataFileDirectory = "Data";
         public const string DefaultDataFileDirectorySeparator = "_";
 
-        // it's only public because XukIn needs it !
+        // public read/write visibility => HACKY :(
         public string DataFileDirectory = DefaultDataFileDirectory;
 
         /// <summary>
