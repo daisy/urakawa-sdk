@@ -12,7 +12,9 @@ using Microsoft.DirectX.DirectSound;
 #endif
 
 #if USE_SOUNDTOUCH
+#if USE_SHARPDX
 using SharpDX.Multimedia;
+#endif
 using SoundTouch;
 #if true || SOUNDTOUCH_INTEGER_SAMPLES
 using TSampleType = System.Int16; // short (System.Int32 == int)
