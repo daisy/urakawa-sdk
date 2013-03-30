@@ -162,11 +162,11 @@ namespace urakawa.daisy.import
 
         private bool m_IsSpine = false;
 
-        private bool m_IsDataDirectoryWithCustomName = true;
-        public bool IsDataDirectoryWithCustomName
+        private bool m_IsRenameOfProjectFileAndDirsAllowedAfterImport = true;
+        public bool IsRenameOfProjectFileAndDirsAllowedAfterImport
         {
-            get { return m_IsDataDirectoryWithCustomName; }
-            set { m_IsDataDirectoryWithCustomName = value; }
+            get { return m_IsRenameOfProjectFileAndDirsAllowedAfterImport; }
+            set { m_IsRenameOfProjectFileAndDirsAllowedAfterImport = value; }
         }
 
         public override void DoWork()
@@ -195,48 +195,50 @@ namespace urakawa.daisy.import
 
             //m_Project.SaveXuk(new Uri(m_Xuk_FilePath));
 
-
-            string title = GetTitle(m_Project.Presentations.Get(0));
-            if (!string.IsNullOrEmpty(title))
+            if (IsRenameOfProjectFileAndDirsAllowedAfterImport)
             {
-                string originalXukFilePath = m_Xuk_FilePath;
-                m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, title, m_IsSpine);
-
-                //deleteDataDirectoryIfEmpty();
-                //m_Project.Presentations.Get(0).DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
-
-                Presentation presentation = m_Project.Presentations.Get(0);
-
-                string dataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
-                if(IsDataDirectoryWithCustomName)    presentation.DataProviderManager.SetCustomDataFileDirectory(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
-
-                string newDataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
-                DebugFix.Assert(Directory.Exists(newDataFolderPath));
-
-                if (newDataFolderPath != dataFolderPath)
+                string title = GetTitle(m_Project.Presentations.Get(0));
+                if (!string.IsNullOrEmpty(title))
                 {
-                    try
-                    {
-                        if (Directory.Exists(newDataFolderPath))
-                        {
-                            FileDataProvider.TryDeleteDirectory(newDataFolderPath, false);
-                        }
+                    string originalXukFilePath = m_Xuk_FilePath;
+                    m_Xuk_FilePath = GetXukFilePath(m_outDirectory, m_Book_FilePath, title, m_IsSpine);
 
-                        Directory.Move(dataFolderPath, newDataFolderPath);
-                    }
-                    catch (Exception ex)
+                    //deleteDataDirectoryIfEmpty();
+                    //m_Project.Presentations.Get(0).DataProviderManager.SetDataFileDirectoryWithPrefix(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
+
+                    Presentation presentation = m_Project.Presentations.Get(0);
+
+                    string dataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
+                    presentation.DataProviderManager.SetCustomDataFileDirectory(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
+
+                    string newDataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
+                    DebugFix.Assert(Directory.Exists(newDataFolderPath));
+
+                    if (newDataFolderPath != dataFolderPath)
                     {
+                        try
+                        {
+                            if (Directory.Exists(newDataFolderPath))
+                            {
+                                FileDataProvider.TryDeleteDirectory(newDataFolderPath, false);
+                            }
+
+                            Directory.Move(dataFolderPath, newDataFolderPath);
+                        }
+                        catch (Exception ex)
+                        {
 #if DEBUG
                         Debugger.Break();
 #endif // DEBUG
-                        Console.WriteLine(ex.Message);
-                        Console.WriteLine(ex.StackTrace);
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine(ex.StackTrace);
 
-                        presentation.DataProviderManager.SetCustomDataFileDirectory(m_dataFolderPrefix);
+                            presentation.DataProviderManager.SetCustomDataFileDirectory(m_dataFolderPrefix);
+                        }
                     }
                 }
-            }
-
+            }// end of rename code
+            
             m_Project.PrettyFormat = m_XukPrettyFormat;
 
             SaveXukAction action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath), true);
