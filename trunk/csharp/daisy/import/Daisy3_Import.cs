@@ -162,6 +162,13 @@ namespace urakawa.daisy.import
 
         private bool m_IsSpine = false;
 
+        private bool m_IsDataDirectoryWithCustomName = true;
+        public bool IsDataDirectoryWithCustomName
+        {
+            get { return m_IsDataDirectoryWithCustomName; }
+            set { m_IsDataDirectoryWithCustomName = value; }
+        }
+
         public override void DoWork()
         {
             if (RequestCancellation) return;
@@ -201,7 +208,7 @@ namespace urakawa.daisy.import
                 Presentation presentation = m_Project.Presentations.Get(0);
 
                 string dataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
-                presentation.DataProviderManager.SetCustomDataFileDirectory(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
+                if(IsDataDirectoryWithCustomName)    presentation.DataProviderManager.SetCustomDataFileDirectory(Path.GetFileNameWithoutExtension(m_Xuk_FilePath));
 
                 string newDataFolderPath = presentation.DataProviderManager.DataFileDirectoryFullPath;
                 DebugFix.Assert(Directory.Exists(newDataFolderPath));
