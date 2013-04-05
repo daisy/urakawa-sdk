@@ -139,25 +139,58 @@ namespace urakawa.daisy.import
 
         public static string GetXukFilePath(string outputDirectory, string bookFilePath, string title, bool isSpine)
         {
-            return Path.Combine(outputDirectory,
-                (isSpine ? @"_" : "")
-                + Path.GetFileName(bookFilePath).Replace('.', '_')
-                + (!string.IsNullOrEmpty(title) ? "-" //"["
-                + CleanupTitle(title, 12)
+            string extension = Path.GetExtension(bookFilePath);
+            string croppedFileName = Path.GetFileNameWithoutExtension(bookFilePath);
+            if (croppedFileName.Length > 12)
+            {
+                croppedFileName = croppedFileName.Substring(0, 12);
+            }
+            croppedFileName = croppedFileName + extension;
+
+            string xukFileName = (isSpine ? @"_" : "")
+                                 + croppedFileName.Replace('.', '_')
+                                 + (!string.IsNullOrEmpty(title)
+                                        ? "-" //"["
+                                          + CleanupTitle(title, 12)
                 //+ "]"
-                : "")
-                + (isSpine ? OpenXukAction.XUK_SPINE_EXTENSION : OpenXukAction.XUK_EXTENSION));
+                                        : "")
+                                 + (isSpine ? OpenXukAction.XUK_SPINE_EXTENSION : OpenXukAction.XUK_EXTENSION);
+
+#if DEBUG
+            DebugFix.Assert(xukFileName.Length <= (1 + 12 + 6 + 1 + 12 + 9));
+            DebugFix.Assert(outputDirectory.Length + xukFileName.Length <= 250);
+#endif
+
+            return Path.Combine(outputDirectory, xukFileName);
         }
 
         public static string GetXukFilePath_SpineItem(string outputDirectory, string relativeFilePath, string title)
         {
-            return Path.Combine(outputDirectory,
-                FileDataProvider.EliminateForbiddenFileNameCharacters(relativeFilePath).Replace('.', '_')
-                + (!string.IsNullOrEmpty(title) ? "-" //"["
-                + CleanupTitle(title, 12)
+            relativeFilePath = FileDataProvider.EliminateForbiddenFileNameCharacters(relativeFilePath);
+
+            string extension = Path.GetExtension(relativeFilePath);
+            string croppedFileName = Path.GetFileNameWithoutExtension(relativeFilePath);
+            if (croppedFileName.Length > 12)
+            {
+                croppedFileName = croppedFileName.Substring(0, 12);
+            }
+            croppedFileName = croppedFileName + extension;
+
+            string xukFileName =
+                croppedFileName.Replace('.', '_')
+                + (!string.IsNullOrEmpty(title)
+                       ? "-" //"["
+                         + CleanupTitle(title, 12)
                 //+ "]"
-                : "")
-                + OpenXukAction.XUK_EXTENSION);
+                       : "")
+                + OpenXukAction.XUK_EXTENSION;
+
+#if DEBUG
+            DebugFix.Assert(xukFileName.Length <= (1 + 12 + 6 + 1 + 12 + 4));
+            DebugFix.Assert(outputDirectory.Length + xukFileName.Length <= 250);
+#endif
+
+            return Path.Combine(outputDirectory, xukFileName);
         }
 
         private bool m_IsSpine = false;
