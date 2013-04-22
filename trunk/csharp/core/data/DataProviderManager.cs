@@ -198,15 +198,15 @@ namespace urakawa.data
         }
 
         // Tobi doesn't use "_Data" anymore
-        public void SetCustomDataFileDirectory(string dataFolderPrefix)
+        public void SetCustomDataFileDirectory(string dataFolderCustomName)
         {
-            if (string.IsNullOrEmpty(dataFolderPrefix))
+            if (string.IsNullOrEmpty(dataFolderCustomName))
             {
                 DataFileDirectory = DefaultDataFileDirectory;
             }
             else
             {
-                DataFileDirectory = dataFolderPrefix; // + DefaultDataFileDirectorySeparator + DefaultDataFileDirectory;
+                DataFileDirectory = dataFolderCustomName; // + DefaultDataFileDirectorySeparator + DefaultDataFileDirectory;
             }
         }
 
