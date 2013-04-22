@@ -15,15 +15,15 @@ namespace urakawa
             }
         }
 
-        public virtual Presentation Create(Project proj, Uri uri, string dataFolderPrefix)
+        public virtual Presentation Create(Project proj, Uri uri, string dataFolderCustomName)
         {
             Presentation pres = Create<Presentation>();
             pres.Project = proj;
             pres.RootUri = uri;
 
-            if (!String.IsNullOrEmpty(dataFolderPrefix))
+            if (!String.IsNullOrEmpty(dataFolderCustomName))
             {
-                pres.DataProviderManager.SetCustomDataFileDirectory(dataFolderPrefix);
+                pres.DataProviderManager.SetCustomDataFileDirectory(dataFolderCustomName);
             }
 
 #if DEBUG
