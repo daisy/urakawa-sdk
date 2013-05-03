@@ -51,8 +51,8 @@ namespace urakawa.daisy.export
             return has;
         }
 
-        private const string IMAGE_DESCRIPTION_XML_SUFFIX = "_DIAGRAM_Description";
-        private const string IMAGE_DESCRIPTION_DIRECTORY_SUFFIX = "_DIAGRAM_Description";
+        private const string IMAGE_DESCRIPTION_XML_SUFFIX = "_DIAGRAM";
+        private const string IMAGE_DESCRIPTION_DIRECTORY_SUFFIX = "_DIAGRAM";
 
         public static string GetAndCreateImageDescriptionDirectoryPath(bool create, string imageSRC, string outputDirectory)
         {
