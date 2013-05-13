@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml;
 using System.IO;
 using AudioLib;
@@ -65,7 +66,7 @@ namespace urakawa.daisy.export
             m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_AUDIO_FORMAT);
 
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
-            
+
             if (m_Filename_Content != null)
             {
                 AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), mediaType_Dtbook);
@@ -130,7 +131,7 @@ namespace urakawa.daisy.export
                 AddFilenameToManifest(opfDocument, manifestNode, imageFileName, strID, mime);
             }
 
-            
+
 #if SUPPORT_AUDIO_VIDEO
             if (RequestCancellation) return;
 
@@ -155,22 +156,77 @@ namespace urakawa.daisy.export
 
             if (RequestCancellation) return;
 
-            // copy resource files and place entry in manifest
-            string sourceDirectoryPath = System.AppDomain.CurrentDomain.BaseDirectory;
-            string ResourceRes_Filename = "tpbnarrator.res";
-            string resourceAudio_Filename = "tpbnarrator_res.mp3";
-
-            string ResourceRes_Filename_fullPath = Path.Combine(sourceDirectoryPath, ResourceRes_Filename);
-            string resourceAudio_Filename_fullPath = Path.Combine(sourceDirectoryPath, resourceAudio_Filename);
-            if (File.Exists(ResourceRes_Filename_fullPath) && File.Exists(resourceAudio_Filename_fullPath))
+            bool textOnly = m_TotalTime == null || m_TotalTime.AsLocalUnits == 0;
+            if (true || !textOnly)
             {
-                if (RequestCancellation) return;
-                File.Copy(ResourceRes_Filename_fullPath, Path.Combine(m_OutputDirectory, ResourceRes_Filename), true);
-                File.Copy(resourceAudio_Filename_fullPath, Path.Combine(m_OutputDirectory, resourceAudio_Filename), true);
+                // copy resource files and place entry in manifest
+                string sourceDirectoryPath = System.AppDomain.CurrentDomain.BaseDirectory;
+                string ResourceRes_Filename = "tpbnarrator.res";
+                string resourceAudio_Filename = "tpbnarrator_res.mp3";
 
-                // add entry to manifest
-                AddFilenameToManifest(opfDocument, manifestNode, ResourceRes_Filename, "resource", mediaType_Resource);
-                AddFilenameToManifest(opfDocument, manifestNode, resourceAudio_Filename, GetNextID(ID_OpfPrefix), DataProviderFactory.AUDIO_MP3_MIME_TYPE);
+                string ResourceRes_Filename_fullPath = Path.Combine(sourceDirectoryPath, ResourceRes_Filename);
+                string resourceAudio_Filename_fullPath = Path.Combine(sourceDirectoryPath, resourceAudio_Filename);
+                if (File.Exists(ResourceRes_Filename_fullPath) && File.Exists(resourceAudio_Filename_fullPath))
+                {
+                    if (RequestCancellation) return;
+
+                    string destRes = Path.Combine(m_OutputDirectory, ResourceRes_Filename);
+
+                    if (!textOnly)
+                    {
+                        File.Copy(ResourceRes_Filename_fullPath, destRes, true);
+                    }
+                    else
+                    {
+                        string resXml = File.ReadAllText(ResourceRes_Filename_fullPath);
+
+                        int i = -1;
+                        int j = 0;
+                        while ((i = resXml.IndexOf("<audio", j)) >= 0)
+                        {
+                            j = resXml.IndexOf("/>", i);
+                            if (j > i)
+                            {
+                                int len = j - i + 2;
+                                resXml = resXml.Remove(i, len);
+
+                                string fill = "";
+                                for (int k = 1; k <= len; k++)
+                                {
+                                    fill += ' '; //k.ToString();
+                                }
+
+                                resXml = resXml.Insert(i, fill);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                                break;
+                            }
+                        }
+
+                        StreamWriter streamWriter = File.CreateText(destRes);
+                        try
+                        {
+                            streamWriter.Write(resXml);
+                        }
+                        finally
+                        {
+                            streamWriter.Close();
+                        }
+                    }
+
+                    AddFilenameToManifest(opfDocument, manifestNode, ResourceRes_Filename, "resource", mediaType_Resource);
+
+                    if (!textOnly)
+                    {
+                        File.Copy(resourceAudio_Filename_fullPath, Path.Combine(m_OutputDirectory, resourceAudio_Filename), true);
+
+                        AddFilenameToManifest(opfDocument, manifestNode, resourceAudio_Filename, GetNextID(ID_OpfPrefix), DataProviderFactory.AUDIO_MP3_MIME_TYPE);
+                    }
+                }
             }
 
             // create spine
@@ -237,16 +293,33 @@ namespace urakawa.daisy.export
 
             //AddMetadata_Generator(opfDocument, x_metadataNode);
 
-            AddMetadataAsAttributes(opfDocument, x_metadataNode, SupportedMetadata_Z39862005.DTB_TOTAL_TIME, FormatTimeString(m_TotalTime));
+            bool textOnly = m_TotalTime == null || m_TotalTime.AsLocalUnits == 0;
 
-            if (true || m_Presentation.GetMetadata(SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE).Count == 0)
+            if (true || !textOnly)
             {
-                AddMetadataAsAttributes(opfDocument, x_metadataNode, SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE, m_Filename_Content != null ? "audioFullText" : "audioNCX");
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, SupportedMetadata_Z39862005.DTB_TOTAL_TIME, FormatTimeString(m_TotalTime));
             }
 
+            //type 1 "audioOnly"
+            //type 2 "audioNCX"
+            //type 3 "audioPartText"
+            //type 4 "audioFullText"
+            //type 5 "textPartAudio"
+            //type 6 "textNCX"
+            //http://www.daisy.org/z3986/specifications/daisy_202.html#dtbclass
+            if (true || m_Presentation.GetMetadata(SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE).Count == 0)
+            {
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, SupportedMetadata_Z39862005.DTB_MULTIMEDIA_TYPE, m_Filename_Content != null ?
+                    (textOnly ? "textNCX" : "audioFullText") //"textPartAudio"
+                    : "audioNCX");
+            }
+
+            //audio,text,image ???
             if (true || m_Presentation.GetMetadata(SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT).Count == 0)
             {
-                AddMetadataAsAttributes(opfDocument, x_metadataNode, SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT, m_Filename_Content != null ? "audio,text" : "audio");
+                AddMetadataAsAttributes(opfDocument, x_metadataNode, SupportedMetadata_Z39862005.DTB_MULTIMEDIA_CONTENT, m_Filename_Content != null ?
+                    (textOnly ? "text" : "audio,text") //"audio,text"
+                    : "audio");
             }
 
             AddMetadataAsInnerText(opfDocument, dc_metadataNode, SupportedMetadata_Z39862005.DC_Format.ToLower(), "ANSI/NISO Z39.86-2005");
@@ -504,7 +577,7 @@ namespace urakawa.daisy.export
                 }
 
                 filename = FileDataProvider.EliminateForbiddenFileNameCharacters(filename);
-                
+
                 if (efd.IsPreservedForOutputFile
                     && !m_FilesList_ExternalFiles.Contains(filename))
                 {
