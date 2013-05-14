@@ -20,7 +20,9 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private Time CreateFollowupNoteAndAnnotationNodes(XmlDocument smilDocument, XmlNode mainSeq, TreeNode urakawaNode, string smilFileName, List<string> currentSmilCustomTestList, List<string> ncxCustomTestList)
+        private Time OBSOLETE_CreateFollowupNoteAndAnnotationNodes(
+            XmlDocument smilDocument, XmlNode smilBodySeq, TreeNode specialNodeReferredNoteAnno, string smilFileName,
+            List<string> currentSmilCustomTestList, List<string> ncxCustomTestList)
         {
 
             //Dictionary<TreeNode, XmlNode> treeNode_NavNodeMap = new Dictionary<TreeNode, XmlNode>();
@@ -39,59 +41,59 @@ namespace urakawa.daisy.export
 
             XmlNode navPointNode = null;
             TreeNode currentHeadingTreeNode = null;
-            TreeNode special_UrakawaNode = null;
-            Time durOfCurrentSmil = new Time();
+            TreeNode specialNode = null;
+            Time durationOfCurrentSmil = new Time();
 
-            XmlNode Seq_SpecialNode = null;
+            XmlNode specialNodeSeq = null;
             //bool IsPageAdded = false;
             string firstPar_id = null;
             bool shouldAddNewSeq = false;
             string par_id = null;
             //List<string> currentSmilCustomTestList = new List<string> ();
-            Stack<TreeNode> specialParentNodeStack = new Stack<TreeNode>();
-            Stack<XmlNode> specialSeqNodeStack = new Stack<XmlNode>();
+            Stack<TreeNode> specialNodeStack = new Stack<TreeNode>();
+            Stack<XmlNode> specialNodeSeqStack = new Stack<XmlNode>();
 
 
-            urakawaNode.AcceptDepthFirst(
-        delegate(TreeNode n)
+            specialNodeReferredNoteAnno.AcceptDepthFirst(
+        delegate(TreeNode levelNodeDescendant)
         {//1
 
             if (RequestCancellation) return false;
 
-            if (IsHeadingNode(n))
+            if (IsHeadingNode(levelNodeDescendant))
             {//2
-                currentHeadingTreeNode = n;
+                currentHeadingTreeNode = levelNodeDescendant;
             }//-2
 
-            if (n.HasXmlProperty &&
-                    n.GetXmlElementLocalName() != urakawaNode.GetXmlElementLocalName()
-                    && doesTreeNodeTriggerNewSmil(n))
+            if (levelNodeDescendant.HasXmlProperty &&
+                    levelNodeDescendant.GetXmlElementLocalName() != specialNodeReferredNoteAnno.GetXmlElementLocalName()
+                    && doesTreeNodeTriggerNewSmil(levelNodeDescendant))
             {//2
                 return false;
             }//-2
 
-            if ((IsHeadingNode(n) || IsEscapableNode(n) || IsSkippableNode(n))
-                && (special_UrakawaNode != n))
+            if ((IsHeadingNode(levelNodeDescendant) || IsEscapableNode(levelNodeDescendant) || IsSkippableNode(levelNodeDescendant))
+                && (specialNode != levelNodeDescendant))
             {//2
                 // if this candidate special node is child of existing special node then ad existing special node to stack for nesting.
-                if (special_UrakawaNode != null && Seq_SpecialNode != null
-                    && n.IsDescendantOf(special_UrakawaNode))
+                if (specialNode != null && specialNodeSeq != null
+                    && levelNodeDescendant.IsDescendantOf(specialNode))
                 {
-                    specialParentNodeStack.Push(special_UrakawaNode);
-                    specialSeqNodeStack.Push(Seq_SpecialNode);
+                    specialNodeStack.Push(specialNode);
+                    specialNodeSeqStack.Push(specialNodeSeq);
                 }
-                special_UrakawaNode = n;
+                specialNode = levelNodeDescendant;
                 shouldAddNewSeq = true;
             }//-2
 
-            ExternalAudioMedia externalAudio = GetExternalAudioMedia(n);
+            ExternalAudioMedia externalAudio = GetExternalAudioMedia(levelNodeDescendant);
 
 
             //bool isDoctitle_1 = currentHeadingTreeNode != null && currentHeadingTreeNode.HasXmlProperty &&
             //                    currentHeadingTreeNode.GetXmlElementLocalName() == "doctitle";
 
 
-            Time urakawaNodeDur = urakawaNode.GetDurationOfManagedAudioMediaFlattened();
+            Time urakawaNodeDur = specialNodeReferredNoteAnno.GetDurationOfManagedAudioMediaFlattened();
             if (currentHeadingTreeNode == null && urakawaNodeDur != null && urakawaNodeDur.AsTimeSpan == TimeSpan.Zero)
             {
                 return true;
@@ -110,72 +112,70 @@ namespace urakawa.daisy.export
 
             if (shouldAddNewSeq)
             {//2
-                if (Seq_SpecialNode != null)
+                if (specialNodeSeq != null)
                 {//3
-                    if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
+                    if (par_id != null && specialNodeSeq.Attributes.GetNamedItem("end") != null)
                     {//4
-                        Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + par_id + ".end";
+                        specialNodeSeq.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + par_id + ".end";
                     }//-4
-                    Seq_SpecialNode = null;
+                    specialNodeSeq = null;
                 }//-3
 
-                Seq_SpecialNode = smilDocument.CreateElement(null, "seq", mainSeq.NamespaceURI);
+                specialNodeSeq = smilDocument.CreateElement(null, "seq", smilBodySeq.NamespaceURI);
                 string strSeqID = "";
                 // specific handling of IDs for notes for allowing predetermined refered IDs
-                if (special_UrakawaNode.GetXmlElementLocalName() == "note" || special_UrakawaNode.GetXmlElementLocalName() == "annotation")
+                if (specialNode.GetXmlElementLocalName() == "note" || specialNode.GetXmlElementLocalName() == "annotation")
                 {//3
-                    strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value + "_1";
+                    strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes.GetNamedItem("id").Value + "_1";
                 }//-3
                 else
                 {//3
                     strSeqID = GetNextID(ID_SmilPrefix);
                 }//-3
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "id", strSeqID);
-                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "class", special_UrakawaNode.GetXmlElementLocalName());
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, specialNodeSeq, "id", strSeqID);
+                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, specialNodeSeq, "class", specialNode.GetXmlElementLocalName());
 
-                if (IsEscapableNode(special_UrakawaNode))
+                if (IsEscapableNode(specialNode))
                 {//3
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "end", "");
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "fill", "remove");
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, specialNodeSeq, "end", "");
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, specialNodeSeq, "fill", "remove");
                 }//-3
 
-                if (IsSkippableNode(special_UrakawaNode))
+                if (IsSkippableNode(specialNode))
                 {//3
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, Seq_SpecialNode, "customTest", special_UrakawaNode.GetXmlElementLocalName());
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, specialNodeSeq, "customTest", specialNode.GetXmlElementLocalName());
 
-                    if (special_UrakawaNode.GetXmlElementLocalName() == "noteref" || special_UrakawaNode.GetXmlElementLocalName() == "annoref")
+                    if (specialNode.GetXmlElementLocalName() == "noteref" || specialNode.GetXmlElementLocalName() == "annoref")
                     {//4
-                        XmlNode anchorNode = smilDocument.CreateElement(null, "a", Seq_SpecialNode.NamespaceURI);
-                        Seq_SpecialNode.AppendChild(anchorNode);
+                        XmlNode anchorNode = smilDocument.CreateElement(null, "a", specialNodeSeq.NamespaceURI);
+                        specialNodeSeq.AppendChild(anchorNode);
                         XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, anchorNode, "external", "false");
                         XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, anchorNode, "href",
                             "#" + ID_SmilPrefix
-                            + m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("idref").Value.Replace("#", ""));
+                            + m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes.GetNamedItem("idref").Value.Replace("#", ""));
 
                     }//-4
-                    if (!currentSmilCustomTestList.Contains(special_UrakawaNode.GetXmlElementLocalName()))
+                    if (!currentSmilCustomTestList.Contains(specialNode.GetXmlElementLocalName()))
                     {//4
-                        currentSmilCustomTestList.Add(special_UrakawaNode.GetXmlElementLocalName());
+                        currentSmilCustomTestList.Add(specialNode.GetXmlElementLocalName());
                     }//-4
                 }//-3
 
                 // add smilref reference to seq_special  in dtbook document
-                if (IsEscapableNode(special_UrakawaNode) || IsSkippableNode(special_UrakawaNode))
+                if (IsEscapableNode(specialNode) || IsSkippableNode(specialNode))
                 {//3
-                    XmlNode dtbEscapableNode = m_TreeNode_XmlNodeMap[special_UrakawaNode];
-                    XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtbEscapableNode, "smilref",
-                        FileDataProvider.UriEncode(smilFileName + "#" + strSeqID),
-                        m_DTBDocument.DocumentElement.NamespaceURI);
+                    XmlNode dtbEscapableNode = m_TreeNode_XmlNodeMap[specialNode];
+                    XmlDocumentHelper.CreateAppendXmlAttribute(m_DTBDocument, dtbEscapableNode, "smilref", smilFileName + "#" + strSeqID, m_DTBDocument.DocumentElement.NamespaceURI);
                 }//-3
 
                 // decide the parent node to which this new seq node is to be appended.
-                if (specialSeqNodeStack.Count == 0)
+                if (specialNodeSeqStack.Count == 0)
                 {//3
-                    mainSeq.AppendChild(Seq_SpecialNode);
+                    smilBodySeq.AppendChild(specialNodeSeq);
                 }//-3
                 else
                 {//3
-                    specialSeqNodeStack.Peek().AppendChild(Seq_SpecialNode);
+                    specialNodeSeqStack.Peek().AppendChild(specialNodeSeq);
                 }//-3
 
                 shouldAddNewSeq = false;
@@ -185,22 +185,22 @@ namespace urakawa.daisy.export
                 externalAudio != null
                 ||
                 (
-                n.GetTextMedia() != null
+                levelNodeDescendant.GetTextMedia() != null
                 &&
-                special_UrakawaNode != null
+                specialNode != null
                 &&
                 (
-                IsEscapableNode(special_UrakawaNode)
-                || IsSkippableNode(special_UrakawaNode)
-                || (special_UrakawaNode.HasXmlProperty
+                IsEscapableNode(specialNode)
+                || IsSkippableNode(specialNode)
+                || (specialNode.HasXmlProperty
                 &&
-                special_UrakawaNode.GetXmlProperty().LocalName.Equals("doctitle", StringComparison.OrdinalIgnoreCase)
+                specialNode.GetXmlProperty().LocalName.Equals("doctitle", StringComparison.OrdinalIgnoreCase)
                 )
                 )
                 &&
                 (
-                m_TreeNode_XmlNodeMap[n].Attributes != null
-                || m_TreeNode_XmlNodeMap[n.Parent].Attributes != null
+                m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes != null
+                || m_TreeNode_XmlNodeMap[levelNodeDescendant.Parent].Attributes != null
                 )
                 )
                 )
@@ -214,74 +214,74 @@ namespace urakawa.daisy.export
 
             if (
                 externalAudio != null
-                || n.GetFirstAncestorWithManagedAudio() == null
+                || levelNodeDescendant.GetFirstAncestorWithManagedAudio() == null
                 )
             {
-                XmlNode parNode = smilDocument.CreateElement(null, "par", mainSeq.NamespaceURI);
+                XmlNode parNode = smilDocument.CreateElement(null, "par", smilBodySeq.NamespaceURI);
 
                 // decide the parent node for this new par node.
                 // if node n is child of current specialParentNode than append to it 
                 //else check if it has to be appended to parent of this special node in stack or to main seq.
-                if (special_UrakawaNode != null && (special_UrakawaNode == n || n.IsDescendantOf(special_UrakawaNode)))
+                if (specialNode != null && (specialNode == levelNodeDescendant || levelNodeDescendant.IsDescendantOf(specialNode)))
                 {
                     //2
-                    Seq_SpecialNode.AppendChild(parNode);
+                    specialNodeSeq.AppendChild(parNode);
                 } //-2
                 else
                 {
                     //2
                     bool IsParNodeAppended = false;
                     string strReferedID = par_id;
-                    if (specialParentNodeStack.Count > 0)
+                    if (specialNodeStack.Count > 0)
                     {
                         //3
                         // check and pop stack till specialParentNode of   iterating node n is found in stack
                         // the loop is also used to assign value of last imidiate seq or par to end attribute of parent seq while pop up
-                        while (specialParentNodeStack.Count > 0 && !n.IsDescendantOf(special_UrakawaNode))
+                        while (specialNodeStack.Count > 0 && !levelNodeDescendant.IsDescendantOf(specialNode))
                         {
                             //4
-                            if (Seq_SpecialNode != null
+                            if (specialNodeSeq != null
                                 &&
-                                strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
+                                strReferedID != null && specialNodeSeq.Attributes.GetNamedItem("end") != null)
                             {
                                 //5
-                                Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID +
+                                specialNodeSeq.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID +
                                                                                        ".end";
                             } //-5
-                            strReferedID = Seq_SpecialNode.Attributes.GetNamedItem("id").Value;
-                            special_UrakawaNode = specialParentNodeStack.Pop();
-                            Seq_SpecialNode = specialSeqNodeStack.Pop();
+                            strReferedID = specialNodeSeq.Attributes.GetNamedItem("id").Value;
+                            specialNode = specialNodeStack.Pop();
+                            specialNodeSeq = specialNodeSeqStack.Pop();
                         } //-4
 
                         // if parent of node n is retrieved from stack, apend the par node to it.
-                        if (n.IsDescendantOf(special_UrakawaNode))
+                        if (levelNodeDescendant.IsDescendantOf(specialNode))
                         {
                             //4
-                            Seq_SpecialNode.AppendChild(parNode);
+                            specialNodeSeq.AppendChild(parNode);
                             IsParNodeAppended = true;
 
                         } //-4
                         //System.Windows.Forms.MessageBox.Show ( "par_ id " + par_id + " count " + specialParentNodeStack.Count.ToString ());
                     } // stack > 0 check ends //-3
 
-                    if (specialSeqNodeStack.Count == 0 && !IsParNodeAppended)
+                    if (specialNodeSeqStack.Count == 0 && !IsParNodeAppended)
                     {
                         //3
-                        mainSeq.AppendChild(parNode);
-                        special_UrakawaNode = null;
-                        if (Seq_SpecialNode != null)
+                        smilBodySeq.AppendChild(parNode);
+                        specialNode = null;
+                        if (specialNodeSeq != null)
                         {
                             //4
                             //if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem ( "end" ) != null)
-                            if (strReferedID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
+                            if (strReferedID != null && specialNodeSeq.Attributes.GetNamedItem("end") != null)
                             {
                                 //5
                                 //System.Windows.Forms.MessageBox.Show ( par_id == null ? "null" : par_id );
                                 //Seq_SpecialNode.Attributes.GetNamedItem ( "end" ).Value = "DTBuserEscape;" + par_id + ".end";
-                                Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID +
+                                specialNodeSeq.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + strReferedID +
                                                                                        ".end";
                             } //-5
-                            Seq_SpecialNode = null;
+                            specialNodeSeq = null;
                         } //-4
                     } // check of append to main seq ends//-3
 
@@ -293,8 +293,8 @@ namespace urakawa.daisy.export
                 if (firstPar_id == null)
                 {
                     //2
-                    if (n.HasXmlProperty && currentHeadingTreeNode != null
-                        && (n.IsDescendantOf(currentHeadingTreeNode) || n == currentHeadingTreeNode))
+                    if (levelNodeDescendant.HasXmlProperty && currentHeadingTreeNode != null
+                        && (levelNodeDescendant.IsDescendantOf(currentHeadingTreeNode) || levelNodeDescendant == currentHeadingTreeNode))
                     {
                         //3
                         firstPar_id = par_id;
@@ -304,18 +304,18 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, parNode, "id", par_id);
 
 
-                XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", mainSeq.NamespaceURI);
+                XmlNode SmilTextNode = smilDocument.CreateElement(null, "text", smilBodySeq.NamespaceURI);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "id", GetNextID(ID_SmilPrefix));
-                string dtbookID = m_TreeNode_XmlNodeMap[n].Attributes != null
-                                      ? m_TreeNode_XmlNodeMap[n].Attributes.GetNamedItem("id").Value
-                                      : m_TreeNode_XmlNodeMap[n.Parent].Attributes.GetNamedItem("id").Value;
+                string dtbookID = m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes != null
+                                      ? m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes.GetNamedItem("id").Value
+                                      : m_TreeNode_XmlNodeMap[levelNodeDescendant.Parent].Attributes.GetNamedItem("id").Value;
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, SmilTextNode, "src",
                                                            FileDataProvider.UriEncode(m_Filename_Content + "#" + dtbookID));
                 parNode.AppendChild(SmilTextNode);
                 if (externalAudio != null)
                 {
                     //2
-                    XmlNode audioNode = smilDocument.CreateElement(null, "audio", mainSeq.NamespaceURI);
+                    XmlNode audioNode = smilDocument.CreateElement(null, "audio", smilBodySeq.NamespaceURI);
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
                                                                FormatTimeString(externalAudio.ClipBegin));
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
@@ -329,13 +329,13 @@ namespace urakawa.daisy.export
                     if (!m_FilesList_SmilAudio.Contains(audioFileName)) m_FilesList_SmilAudio.Add(audioFileName);
 
                     // add to duration 
-                    durOfCurrentSmil.Add(externalAudio.Duration);
+                    durationOfCurrentSmil.Add(externalAudio.Duration);
                 } //-2
 
             }
 
             //}//-1
-            if (n.HasXmlProperty && n.GetXmlElementLocalName() == "sent")
+            if (levelNodeDescendant.HasXmlProperty && levelNodeDescendant.GetXmlElementLocalName() == "sent")
             {
                 return false;
             }
@@ -346,25 +346,25 @@ namespace urakawa.daisy.export
                 delegate(TreeNode n) { });
 
             // make specials to null
-            special_UrakawaNode = null;
-            if (Seq_SpecialNode != null)
+            specialNode = null;
+            if (specialNodeSeq != null)
             {//1
-                if (par_id != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
+                if (par_id != null && specialNodeSeq.Attributes.GetNamedItem("end") != null)
                 {//2
-                    Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + par_id + ".end";
+                    specialNodeSeq.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + par_id + ".end";
                 }//-2
             }//-1
-            while (specialSeqNodeStack.Count > 0)
+            while (specialNodeSeqStack.Count > 0)
             {//1
-                string str_RefferedSeqID = Seq_SpecialNode.Attributes.GetNamedItem("id").Value;
-                Seq_SpecialNode = specialSeqNodeStack.Pop();
-                if (str_RefferedSeqID != null && Seq_SpecialNode.Attributes.GetNamedItem("end") != null)
-                    Seq_SpecialNode.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + str_RefferedSeqID + ".end";
+                string str_RefferedSeqID = specialNodeSeq.Attributes.GetNamedItem("id").Value;
+                specialNodeSeq = specialNodeSeqStack.Pop();
+                if (str_RefferedSeqID != null && specialNodeSeq.Attributes.GetNamedItem("end") != null)
+                    specialNodeSeq.Attributes.GetNamedItem("end").Value = "DTBuserEscape;" + str_RefferedSeqID + ".end";
                 //System.Windows.Forms.MessageBox.Show ( "last " + smilFileName + " id " + par_id);
             }//-1
-            Seq_SpecialNode = null;
+            specialNodeSeq = null;
 
-            return durOfCurrentSmil;
+            return durationOfCurrentSmil;
         }
     }
 }
