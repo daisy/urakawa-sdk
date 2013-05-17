@@ -60,9 +60,6 @@ namespace urakawa.daisy.export
             Stack<TreeNode> specialNodeStack = new Stack<TreeNode>();
             Stack<XmlNode> specialNodeSeqStack = new Stack<XmlNode>();
 
-            bool specialNodeIsNoteAnnoRef = false;
-            TreeNode specialNodeReferredNoteAnno = null;
-
             TreeNode.StringChunkRange range = levelNode.GetTextFlattened_();
             if (range == null)
             {
@@ -185,8 +182,9 @@ namespace urakawa.daisy.export
             //    return true;
             //}
 
+            bool specialNodeIsNoteAnnoRef = false;
+            bool specialNodeIsNoteAnno = false;
 
-            XmlNode smilAnchorNode = null;
 
             if ((specialNode == null || specialNode != levelNodeDescendant)
                 &&
@@ -213,21 +211,31 @@ namespace urakawa.daisy.export
                 }
 
                 specialNodeSeq = smilDocument.CreateElement(null, "seq", smilBodySeq.NamespaceURI);
+
+
+                specialNodeIsNoteAnnoRef = specialNode.GetXmlElementLocalName() == "noteref" || specialNode.GetXmlElementLocalName() == "annoref";
+                specialNodeIsNoteAnno = specialNode.GetXmlElementLocalName() == "note" || specialNode.GetXmlElementLocalName() == "annotation";
+
                 string strSeqID = "";
                 // specific handling of IDs for notes for allowing predetermined refered IDs
-                if (
-                    levelNode != m_Presentation.RootNode
-                && !doesTreeNodeTriggerNewSmil(levelNode)
+                if (specialNodeIsNoteAnno
                     &&
-                    (specialNode.GetXmlElementLocalName() == "note" || specialNode.GetXmlElementLocalName() == "annotation"))
+                    (
+                    !m_generateSmilNoteReferences
+                     ||
+                     (levelNode != m_Presentation.RootNode && !doesTreeNodeTriggerNewSmil(levelNode))
+                    )
+                    )
                 {
                     strSeqID = ID_SmilPrefix + m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes.GetNamedItem("id").Value
-                        + "_1";
+                        //+ "_1"
+                        ;
                 }
                 else
                 {
                     strSeqID = GetNextID(ID_SmilPrefix);
                 }
+
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, specialNodeSeq, "id", strSeqID);
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, specialNodeSeq, "class", nodeIsImageAndHasDescriptionProdnotes ? "prodnote" : specialNode.GetXmlElementLocalName());
 
@@ -243,24 +251,6 @@ namespace urakawa.daisy.export
                 if (isSpecialNodeSkippable || nodeIsImageAndHasDescriptionProdnotes)
                 {
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, specialNodeSeq, "customTest", nodeIsImageAndHasDescriptionProdnotes ? "prodnote" : specialNode.GetXmlElementLocalName());
-
-                    if (specialNode.GetXmlElementLocalName() == "noteref" || specialNode.GetXmlElementLocalName() == "annoref")
-                    {
-                        smilAnchorNode = smilDocument.CreateElement(null, "a", specialNodeSeq.NamespaceURI);
-
-                        //specialNodeSeq.AppendChild(smilAnchorNode);
-
-                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, smilAnchorNode, "external", "false");
-                        XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, smilAnchorNode, "href",
-                            "#" + ID_SmilPrefix
-                            + m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes.GetNamedItem("idref").Value.Replace("#", "")
-                             + "_1"
-                            );
-
-                        specialNodeIsNoteAnnoRef = true;
-
-                        specialNodeReferredNoteAnno = GetReferedTreeNode(specialNode);
-                    }
 
                     if (nodeIsImageAndHasDescriptionProdnotes)
                     {
@@ -486,11 +476,24 @@ namespace urakawa.daisy.export
                                                            FileDataProvider.UriEncode(m_Filename_Content + "#" + dtbookID));
                 parNode.AppendChild(SmilTextNode);
 
-                if (smilAnchorNode != null)
+
+                XmlNode smilAnchorNode = null;
+                if (specialNodeIsNoteAnnoRef)
                 {
                     DebugFix.Assert(parNode.ParentNode == specialNodeSeq);
-                    DebugFix.Assert(specialNodeIsNoteAnnoRef);
+
+                    smilAnchorNode = smilDocument.CreateElement(null, "a", specialNodeSeq.NamespaceURI);
+
+                    //specialNodeSeq.AppendChild(smilAnchorNode);
+
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, smilAnchorNode, "external", "false");
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, smilAnchorNode, "href",
+                        "#" + ID_SmilPrefix
+                        + m_TreeNode_XmlNodeMap[levelNodeDescendant].Attributes.GetNamedItem("idref").Value.Replace("#", "")
+                        //+ (m_generateSmilNoteReferences ? "_1" : "")
+                        );
                 }
+
 
                 if (externalAudio == null)
                 {
@@ -828,23 +831,26 @@ namespace urakawa.daisy.export
 
             if (specialNodeIsNoteAnnoRef)
             {
-                //IsBranchAssigned = true;
+                DebugFix.Assert(specialNode != null);
 
-                processLevelNode(
+                TreeNode specialNodeReferredNoteAnno = GetReferedTreeNode(specialNode);
+                DebugFix.Assert(specialNodeReferredNoteAnno != null);
+
+                if (specialNodeReferredNoteAnno != null && m_generateSmilNoteReferences)
+                {
+                    processLevelNode(
                      smilDocument, smilBodySeq, smilFileName, currentSmilCustomTestList, durationOfCurrentSmil,
                     data,
                 specialNodeReferredNoteAnno, smilElapseTime, ncxCustomTestList,
                     playOrderList_Sorted,
                     ncxDocument, ncxRootNode, navMapNode, treeNode_NavNodeMap, specialParentNodesAddedToNavList);
-
-                specialNodeIsNoteAnnoRef = false;
+                }
             }
 
             if (//levelNodeDescendant.HasXmlProperty && IMPLIED
                 levelNodeDescendant.GetXmlElementLocalName() == "sent"
                     && specialNode != null
-                    && (specialNode.GetXmlElementLocalName() == "note"
-                    || specialNode.GetXmlElementLocalName() == "annotation"))
+                    && specialNodeIsNoteAnno)
             {
                 return false;
             }
