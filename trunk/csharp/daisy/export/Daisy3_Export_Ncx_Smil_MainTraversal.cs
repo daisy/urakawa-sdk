@@ -505,6 +505,8 @@ namespace urakawa.daisy.export
                 else
                 {
                     XmlNode audioNode = smilDocument.CreateElement(null, "audio", smilBodySeq.NamespaceURI);
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "id",
+                                                           GetNextID(ID_SmilPrefix));
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipBegin",
                                                                FormatTimeString(externalAudio.ClipBegin));
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
