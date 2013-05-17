@@ -48,6 +48,7 @@ namespace urakawa.daisy.export
         protected readonly bool m_SkipACM;
         private readonly bool m_encodeToMp3;
         private readonly bool m_includeImageDescriptions;
+        private readonly bool m_generateSmilNoteReferences;
 
         protected readonly SampleRate m_sampleRate;
         protected readonly bool m_audioStereo;
@@ -71,9 +72,11 @@ namespace urakawa.daisy.export
             bool encodeToMp3, ushort bitRate_Mp3,
             SampleRate sampleRate, bool stereo,
             bool skipACM,
-            bool includeImageDescriptions)
+            bool includeImageDescriptions,
+            bool generateSmilNoteReferences)
         {
             m_includeImageDescriptions = includeImageDescriptions;
+            m_generateSmilNoteReferences = generateSmilNoteReferences;
             m_encodeToMp3 = encodeToMp3;
             m_sampleRate = sampleRate;
             m_audioStereo = stereo;
