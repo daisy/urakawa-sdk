@@ -213,7 +213,7 @@ namespace urakawa.xuk
                     do
                     {
                         //pathBackup = Path.ChangeExtension(Path.GetRandomFileName(), ".BAK");
-                        string timeStamp = DateTime.UtcNow.ToString();
+                        string timeStamp = DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss_K");
                         timeStamp = FileDataProvider.EliminateForbiddenFileNameCharacters(timeStamp).Replace(' ', '_');
                         pathBackup = Path.Combine(parentdir, fileName + "_" + timeStamp);
                     } while (File.Exists(pathBackup));
