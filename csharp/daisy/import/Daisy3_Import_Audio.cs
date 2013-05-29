@@ -123,7 +123,7 @@ namespace urakawa.daisy.import
                 {
                     continue;
                 }
-                
+
                 ManagedAudioMedia textTreeNodeAudio = textTreeNode.GetManagedAudioMedia();
                 if (textTreeNodeAudio != null)
                 {
@@ -286,9 +286,9 @@ namespace urakawa.daisy.import
                         if (m_AudioConversionSession.FirstDiscoveredPCMFormat == null)
                         {
                             DebugFix.Assert(obj.Presentation != presentation);
-                            
+
                             Object appData = obj.AppData;
-                            
+
                             DebugFix.Assert(appData != null);
 
                             if (appData != null && appData is WavClip.PcmFormatAndTime)
@@ -456,7 +456,7 @@ namespace urakawa.daisy.import
 
                         m_OriginalAudioFile_FileDataProviderMap.Remove(fullMp34PathOriginal);
                         m_OriginalAudioFile_FileDataProviderMap.Add(fullMp34PathOriginal, dataProv);
-                        
+
                         Object appData = obj.AppData;
 
                         DebugFix.Assert(appData != null);
@@ -514,9 +514,13 @@ namespace urakawa.daisy.import
                     //media = addAudioWav(newfullWavPath, true, audioAttrClipBegin, audioAttrClipEnd);
                     media = addAudioWav(dataProv, audioAttrClipBegin, audioAttrClipEnd, treeNode);
 
+                    if (RequestCancellation) return;
+
                     if (media == null)
                     {
+#if DEBUG
                         Debugger.Break();
+#endif
                     }
                 }
                 //}
