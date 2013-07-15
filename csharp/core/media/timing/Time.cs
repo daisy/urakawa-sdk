@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using AudioLib;
 
 namespace urakawa.media.timing
@@ -33,9 +32,21 @@ namespace urakawa.media.timing
             m_TimeSpan = TimeSpan.Zero;
         }
 
-        public Time(long timeInLocalUnits)
+        public Time(long time, bool ticks)
         {
-            m_TimeSpan = ConvertFromLocalUnitsToTimeSpan(timeInLocalUnits);
+            if (!ticks)
+            {
+                m_TimeSpan = ConvertFromLocalUnitsToTimeSpan(time);
+            }
+            else
+            {
+                m_TimeSpan = new TimeSpan(time);
+            }
+        }
+
+        public Time(long timeInLocalUnits)
+            : this(timeInLocalUnits, false)
+        {
         }
 
         public Time(TimeSpan timeSpan)
@@ -44,7 +55,8 @@ namespace urakawa.media.timing
             m_TimeSpan = new TimeSpan(timeSpan.Ticks);
         }
 
-        public Time(Time time) : this(time.m_TimeSpan)
+        public Time(Time time)
+            : this(time.m_TimeSpan)
         {
             //AsTimeSpan = ...
             //m_TimeSpan = new TimeSpan(time.m_TimeSpan.Ticks);
@@ -119,7 +131,7 @@ namespace urakawa.media.timing
             }
             private set
             {
-                AsTimeSpan = ConvertFromLocalUnitsToTimeSpan(value);
+                m_TimeSpan = ConvertFromLocalUnitsToTimeSpan(value);
             }
         }
 
@@ -155,17 +167,22 @@ namespace urakawa.media.timing
             return TimeSpan.FromTicks(ticksIntegral);
         }
 
-        public TimeSpan AsTimeSpan
+        //public TimeSpan AsTimeSpan
+        //{
+        //    get { return new TimeSpan(m_TimeSpan.Ticks); }
+        //    private set { m_TimeSpan = new TimeSpan(value.Ticks); }
+        //}
+
+        public double AsMilliseconds
         {
-            get { return new TimeSpan(m_TimeSpan.Ticks); }
-            private set { m_TimeSpan = new TimeSpan(value.Ticks); }
+            get { return m_TimeSpan.TotalMilliseconds; }
         }
 
-        public TimeSpan GetReadOnlyInternalTimeSpan()
+        public long AsTimeSpanTicks
         {
-            return m_TimeSpan;
+            get { return m_TimeSpan.Ticks; }
+            //private set { m_TimeSpan = new TimeSpan(value); }
         }
-
 
         public Time Copy()
         {
@@ -174,26 +191,16 @@ namespace urakawa.media.timing
 
         public void Add(Time other)
         {
-            //mTime = mTime.Add(other.AsTimeSpan);
-            m_TimeSpan += other.AsTimeSpan;
+            //m_TimeSpan = m_TimeSpan.Add(other.AsTimeSpan);
+
+            m_TimeSpan += other.m_TimeSpan;
         }
 
-        public void Substract(Time time)
+        public void Substract(Time other)
         {
-            //mTime = mTime.Subtract(other.AsTimeSpan);
-            m_TimeSpan -= time.AsTimeSpan;
+            //m_TimeSpan = m_TimeSpan.Subtract(other.AsTimeSpan);
+
+            m_TimeSpan -= other.m_TimeSpan;
         }
-
-        //public void Add(Time other)
-        //{
-        //    //mTime = mTime.Add(other.AsTimeSpan);
-        //    m_TimeSpan += other.AsTimeSpan;
-        //}
-
-        //public void Subtract(Time timeDelta)
-        //{
-        //    //mTime = mTime.Subtract(other.AsTimeSpan);
-        //    m_TimeSpan -= timeDelta.AsTimeSpan;
-        //}
     }
 }

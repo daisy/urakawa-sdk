@@ -187,7 +187,7 @@ namespace urakawa.media.data.audio
                 {
                     return AudioMediaData.AudioDuration;
                 }
-                return new Time(0);
+                return new Time();
             }
         }
 
