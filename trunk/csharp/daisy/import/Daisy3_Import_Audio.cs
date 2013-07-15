@@ -544,7 +544,7 @@ namespace urakawa.daisy.import
                 if (audioAttrClipBegin != null &&
                     !string.IsNullOrEmpty(audioAttrClipBegin.Value))
                 {
-                    timeClipBegin = new Time(0);
+                    timeClipBegin = new Time();
                     try
                     {
                         timeClipBegin = new Time(audioAttrClipBegin.Value);
@@ -696,7 +696,7 @@ namespace urakawa.daisy.import
                 }
                 catch (Exception ex)
                 {
-                    clipB = new Time(0);
+                    clipB = new Time();
                     string str = "CLIP BEGIN TIME PARSE FAIL: " + audioAttrClipBegin.Value;
                     Console.WriteLine(str);
                     Debug.Fail(str);
@@ -711,7 +711,7 @@ namespace urakawa.daisy.import
                 }
                 catch (Exception ex)
                 {
-                    clipE = new Time(0);
+                    clipE = new Time();
                     string str = "CLIP END TIME PARSE FAIL: " + audioAttrClipEnd.Value;
                     Console.WriteLine(str);
                     Debug.Fail(str);
