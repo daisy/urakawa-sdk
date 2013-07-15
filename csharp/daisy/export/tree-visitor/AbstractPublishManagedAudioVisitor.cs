@@ -97,7 +97,7 @@ namespace urakawa.daisy.export.visitor
                     Time durationFromRiffHeader = amd.AudioDuration;
 
                     Time clipBegin = new Time(mCurrentAudioFilePCMFormat.Data.ConvertBytesToTime(mCurrentAudioFileStream.Position - mCurrentAudioFileStreamRiffWaveHeaderLength));
-                    Time clipEnd = new Time(clipBegin.AsTimeSpan + durationFromRiffHeader.AsTimeSpan);
+                    Time clipEnd = new Time(clipBegin.AsTimeSpanTicks + durationFromRiffHeader.AsTimeSpanTicks, true);
 
                     //BinaryReader rd = new BinaryReader(stream);
 

@@ -592,7 +592,7 @@ m_Stream;
                 //extAudioMedia.ClipEnd = new Time(timeEnd);
 
                 Time durationFromRiffHeader = new Time(marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(marker.m_LocalStreamDataLength));
-                extAudioMedia.ClipEnd = new Time(extAudioMedia.ClipBegin.AsTimeSpan + durationFromRiffHeader.AsTimeSpan);
+                extAudioMedia.ClipEnd = new Time(extAudioMedia.ClipBegin.AsTimeSpanTicks + durationFromRiffHeader.AsTimeSpanTicks, true);
 
 
                 ChannelsProperty chProp = marker.m_TreeNode.GetOrCreateChannelsProperty();
