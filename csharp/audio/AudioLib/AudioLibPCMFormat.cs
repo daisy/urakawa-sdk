@@ -270,14 +270,14 @@ namespace AudioLib
         //}
         public bool BytesAreEqualWithMillisecondsTolerance(long bytes1, long bytes2)
         {
-            long oneMillisecondsInLocalUnits = MILLISECONDS_TOLERANCE * TIME_UNIT;
-            long bytesForOneMillisecond = ConvertTimeToBytes(oneMillisecondsInLocalUnits);
-            return Math.Abs(bytes1 - bytes2) <= bytesForOneMillisecond;
+            long msToleranceInLocalUnits = MILLISECONDS_TOLERANCE * TIME_UNIT;
+            long bytes = ConvertTimeToBytes(msToleranceInLocalUnits);
+            return Math.Abs(bytes1 - bytes2) <= bytes;
         }
         public static bool TimesAreEqualWithMillisecondsTolerance(long timeInLocalUnits1, long timeInLocalUnits2)
         {
-            long oneMillisecondsInLocalUnits = MILLISECONDS_TOLERANCE * TIME_UNIT;
-            return Math.Abs(timeInLocalUnits1 - timeInLocalUnits2) <= oneMillisecondsInLocalUnits;
+            long msToleranceInLocalUnits = MILLISECONDS_TOLERANCE * TIME_UNIT;
+            return Math.Abs(timeInLocalUnits1 - timeInLocalUnits2) <= msToleranceInLocalUnits;
         }
 
         //public bool AreBytePositionsApproximatelyEqual(long bytePos1, long bytePos2)
