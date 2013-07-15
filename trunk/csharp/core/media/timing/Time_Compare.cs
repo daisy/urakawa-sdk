@@ -36,17 +36,22 @@ namespace urakawa.media.timing
 
         public bool IsGreaterThan(Time time)
         {
-            TimeSpan t1 = AsTimeSpan;
-            TimeSpan t2 = time.AsTimeSpan;
+            //long msToleranceInLocalUnits = AudioLibPCMFormat.MILLISECONDS_TOLERANCE * TIME_UNIT;
 
             // one millisecond resolution
-            long t1ms = (long)Math.Truncate(t1.TotalMilliseconds);
-            long t2ms = (long)Math.Truncate(t2.TotalMilliseconds);
-            if (t1ms == t2ms) return false;
+            long t1ms = (long)Math.Truncate(AsLocalUnits / (double)AudioLibPCMFormat.TIME_UNIT); //t1.TotalMilliseconds
+            long t2ms = (long)Math.Truncate(time.AsLocalUnits / (double)AudioLibPCMFormat.TIME_UNIT); //t2.TotalMilliseconds
+            if (t1ms == t2ms)
+            {
+                return false;
+            }
 
-            if (Math.Abs(t1ms - t2ms) <= AudioLibPCMFormat.MILLISECONDS_TOLERANCE) return false;
+            if (Math.Abs(t1ms - t2ms) <= AudioLibPCMFormat.MILLISECONDS_TOLERANCE)
+            {
+                return false;
+            }
 
-            return t1.CompareTo(t2) > 0;
+            return m_TimeSpan.CompareTo(time.m_TimeSpan) > 0;
             //return AsLocalUnits > time.AsLocalUnits;
         }
 
@@ -57,7 +62,7 @@ namespace urakawa.media.timing
 
         public bool IsGreaterThanOrEqualTo(Time time)
         {
-            return !IsLessThan(time);
+            return IsEqualTo(time) || IsGreaterThan(time);
         }
 
         public bool IsLessThanOrEqualTo(Time time)
@@ -74,18 +79,19 @@ namespace urakawa.media.timing
         {
             if (m_TimeSpan > time.m_TimeSpan)
             {
-                return new Time(m_TimeSpan.Subtract(time.m_TimeSpan));
+                return new Time(
+                    m_TimeSpan.Ticks - time.m_TimeSpan.Ticks
+                    //AsLocalUnits - time.AsLocalUnits
+                    ,true
+                    //m_TimeSpan.Subtract(time.m_TimeSpan)
+                    );
             }
-            return new Time(time.m_TimeSpan.Subtract(m_TimeSpan));
+            return new Time(
+                time.m_TimeSpan.Ticks - m_TimeSpan.Ticks
+                    //time.AsLocalUnits - AsLocalUnits
+                    ,true
+                    //time.m_TimeSpan.Subtract(m_TimeSpan)
+            );
         }
-
-        //public Time GetDifference(Time time)
-        //{
-        //    if (m_TimeSpan > time.m_TimeSpan)
-        //    {
-        //        return new Time(m_TimeSpan.Subtract(time.m_TimeSpan));
-        //    }
-        //    return new Time(time.m_TimeSpan.Subtract(m_TimeSpan));
-        //}
     }
 }

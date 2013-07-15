@@ -24,12 +24,12 @@ namespace urakawa.media.timing
 
         public string Format_Standard()
         {
-            return Format_Standard(GetReadOnlyInternalTimeSpan());
+            return Format_Standard(m_TimeSpan);
         }
 
         public string Format_StandardExpanded()
         {
-            return Format_StandardExpanded(GetReadOnlyInternalTimeSpan());
+            return Format_StandardExpanded(m_TimeSpan);
         }
 
         public static string Format_StandardExpanded(TimeSpan time)
@@ -67,7 +67,7 @@ namespace urakawa.media.timing
 
         public string Format_H_MN_S_MS()
         {
-            return Format_H_MN_S_MS(GetReadOnlyInternalTimeSpan());
+            return Format_H_MN_S_MS(m_TimeSpan);
         }
 
         public static string Format_H_MN_S_MS(TimeSpan time)

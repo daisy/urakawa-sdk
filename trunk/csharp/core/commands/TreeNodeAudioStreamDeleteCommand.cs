@@ -140,7 +140,7 @@ namespace urakawa.commands
                 ChannelsProperty chProp = SelectionData.m_TreeNode.GetChannelsProperty();
                 chProp.SetMedia(ChannelOfOriginalMedia, null);
             }
-            else if (SelectionData.TimeBeginEndEqualClipDuration(new Time(0), timeEnd, mediaData))
+            else if (SelectionData.TimeBeginEndEqualClipDuration(new Time(), timeEnd, mediaData))
             {
                 mediaData.RemovePcmData(timeBegin);
             }

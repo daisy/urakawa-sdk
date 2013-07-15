@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using AudioLib;
 using urakawa.data;
@@ -68,7 +69,7 @@ namespace urakawa.media.data.audio.codec
                         throw new exception.MethodParameterIsOutOfBoundsException(
                             "The new clip end time is before current clip begin");
                     }
-                    if (value.IsGreaterThan(new Time(MediaDuration)))
+                    if (value.IsGreaterThan(MediaDuration))
                     {
                         throw new exception.MethodParameterIsOutOfBoundsException(
                             "The new clip end time is greater than the duration of the underlying media");
@@ -188,7 +189,7 @@ namespace urakawa.media.data.audio.codec
                     {
                         m_cachedPcmFormat = AudioLibPCMFormat.RiffHeaderParse(raw, out dataLength);
                     }
-                    catch (ArgumentOutOfRangeException ex)
+                    catch (Exception ex)
                     {
                         Console.WriteLine(ex.ToString());
                         throw new exception.DataMissingException(
@@ -289,7 +290,7 @@ namespace urakawa.media.data.audio.codec
         /// <seealso cref="OpenPcmInputStream(urakawa.media.timing.Time,urakawa.media.timing.Time)"/>
         public Stream OpenPcmInputStream(Time subClipBegin)
         {
-            return OpenPcmInputStream(subClipBegin, new Time(Duration));
+            return OpenPcmInputStream(subClipBegin, Duration);
         }
 
         /// <summary>
@@ -323,12 +324,12 @@ namespace urakawa.media.data.audio.codec
             if (
                 subClipBegin.IsLessThan(Time.Zero)
                 || subClipEnd.IsLessThan(subClipBegin)
-                || subClipEnd.IsGreaterThan(new Time(Duration))
+                || subClipEnd.IsGreaterThan(Duration)
                 )
             {
                 string msg = String.Format(
                     "subClipBegin/subClipEnd [{0};{1}] not within ([0;{2}])",
-                    subClipBegin, subClipEnd, new Time(Duration));
+                    subClipBegin, subClipEnd, Duration);
                 throw new exception.MethodParameterIsOutOfBoundsException(msg);
             }
 
@@ -336,6 +337,10 @@ namespace urakawa.media.data.audio.codec
             uint dataLength;
             AudioLibPCMFormat format = AudioLibPCMFormat.RiffHeaderParse(raw, out dataLength);
             Time rawEndTime = new Time(format.ConvertBytesToTime(dataLength));
+
+#if DEBUG
+            DebugFix.Assert(rawEndTime.IsEqualTo(MediaDuration));
+#endif
 
             //Time rawEndTime = Time.Zero.Add(MediaDuration); // We don't call this to avoid unnecessary I/O (Strem.Open() twice)
 
@@ -360,17 +365,34 @@ namespace urakawa.media.data.audio.codec
                 raw.Position, raw.Length - raw.Position); 
             }
             */
-            Time rawClipBegin = new Time(ClipBegin.AsTimeSpan + subClipBegin.AsTimeSpan);
-            Time rawClipEnd = new Time(ClipBegin.AsTimeSpan + subClipEnd.AsTimeSpan);
+            
+            //Time rawClipBegin = new Time(ClipBegin.AsTimeSpan + subClipBegin.AsTimeSpan);
+            //Time rawClipEnd = new Time(ClipBegin.AsTimeSpan + subClipEnd.AsTimeSpan);
 
-            long beginPos = raw.Position + format.ConvertTimeToBytes(rawClipBegin.AsLocalUnits);
+            long ClipBegin_AsLocalUnits = ClipBegin.AsLocalUnits;
 
-            long endPos = raw.Position + format.ConvertTimeToBytes(rawClipEnd.AsLocalUnits);
+            long posRiffHeader = raw.Position;
+
+            long beginPos = posRiffHeader + format.ConvertTimeToBytes(ClipBegin_AsLocalUnits + subClipBegin.AsLocalUnits);
+
+
+            long rawOffset = format.ConvertTimeToBytes(ClipBegin_AsLocalUnits + subClipEnd.AsLocalUnits);
+            if (rawOffset > dataLength)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                rawOffset = dataLength;
+            }
+            long endPos = posRiffHeader + rawOffset;
+
+
+            long len = endPos - beginPos;
 
             return new SubStream(
                 raw,
                 beginPos,
-                endPos - beginPos,
+                len,
                 DataProvider is FileDataProvider ? ((FileDataProvider)DataProvider).DataFileFullPath : null);
         }
 

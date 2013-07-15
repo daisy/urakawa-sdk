@@ -344,7 +344,7 @@ namespace urakawa.media.data.audio
                 throw new NotImplementedException();
             }
 
-            return OpenPcmInputStream(clipBegin, new Time(AudioDuration));
+            return OpenPcmInputStream(clipBegin, AudioDuration);
         }
 
         /// <summary>
@@ -379,7 +379,7 @@ namespace urakawa.media.data.audio
                 throw new NotImplementedException();
             }
 
-            InsertPcmData(pcmData, new Time(AudioDuration.AsLocalUnits), duration);
+            InsertPcmData(pcmData, AudioDuration, duration);
         }
 
         public abstract void AppendPcmData(DataProvider fileDataProvider);
@@ -517,7 +517,7 @@ namespace urakawa.media.data.audio
                 throw new NotImplementedException();
             }
 
-            RemovePcmData(replacePoint, new Time(replacePoint.AsTimeSpan + duration.AsTimeSpan));
+            RemovePcmData(replacePoint, new Time(replacePoint.AsTimeSpanTicks + duration.AsTimeSpanTicks, true));
             InsertPcmData(pcmData, replacePoint, duration);
         }
 
@@ -589,7 +589,7 @@ namespace urakawa.media.data.audio
                 throw new NotImplementedException();
             }
 
-            RemovePcmData(clipBegin, new Time(AudioDuration));
+            RemovePcmData(clipBegin, AudioDuration);
         }
 
         /// <summary>
@@ -677,7 +677,7 @@ namespace urakawa.media.data.audio
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The split point can not be negative");
             }
-            if (splitPoint.IsGreaterThan(new Time(AudioDuration)))
+            if (splitPoint.IsGreaterThan(AudioDuration))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The split point can not be beyond the end of the AudioMediaData");
@@ -690,7 +690,7 @@ namespace urakawa.media.data.audio
                                                                          GetXukName(), GetXukNamespace()));
             }
             AudioMediaData secondPartAMD = (AudioMediaData)md;
-            Time spDur = new Time(AudioDuration).GetDifference(splitPoint);
+            Time spDur = AudioDuration.GetDifference(splitPoint);
             Stream secondPartAudioStream = OpenPcmInputStream(splitPoint);
             try
             {
