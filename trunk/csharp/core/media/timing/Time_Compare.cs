@@ -36,17 +36,20 @@ namespace urakawa.media.timing
 
         public bool IsGreaterThan(Time time)
         {
-            //long msToleranceInLocalUnits = AudioLibPCMFormat.MILLISECONDS_TOLERANCE * TIME_UNIT;
-
             // one millisecond resolution
-            long t1ms = (long)Math.Truncate(AsLocalUnits / (double)AudioLibPCMFormat.TIME_UNIT); //t1.TotalMilliseconds
-            long t2ms = (long)Math.Truncate(time.AsLocalUnits / (double)AudioLibPCMFormat.TIME_UNIT); //t2.TotalMilliseconds
-            if (t1ms == t2ms)
-            {
-                return false;
-            }
+            //
+            //long t1ms = (long)Math.Truncate(AsLocalUnits / (double)AudioLibPCMFormat.TIME_UNIT); //t1.TotalMilliseconds
+            //long t2ms = (long)Math.Truncate(time.AsLocalUnits / (double)AudioLibPCMFormat.TIME_UNIT); //t2.TotalMilliseconds
+            //long t1ms = (long)Math.Truncate(AsMilliseconds);
+            //long t2ms = (long)Math.Truncate(time.AsMilliseconds);
+            //if (t1ms == t2ms)
+            //{
+            //    return false;
+            //}
+            long diffMS = (long)Math.Truncate(AsMilliseconds - time.AsMilliseconds);
 
-            if (Math.Abs(t1ms - t2ms) <= AudioLibPCMFormat.MILLISECONDS_TOLERANCE)
+            //long msToleranceInLocalUnits = AudioLibPCMFormat.MILLISECONDS_TOLERANCE * TIME_UNIT;
+            if (Math.Abs(diffMS) <= AudioLibPCMFormat.MILLISECONDS_TOLERANCE)
             {
                 return false;
             }
