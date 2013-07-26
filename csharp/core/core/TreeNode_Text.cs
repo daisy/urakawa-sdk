@@ -1026,6 +1026,20 @@ namespace urakawa.core
                             return null;
                         }
                     }
+
+                    if (Children.Count == 0)
+                    {
+                        XmlAttribute xmlAttr = GetXmlProperty().GetAttribute("title");
+                        if (xmlAttr != null)
+                        {
+                            if (!String.IsNullOrEmpty(xmlAttr.Value))
+                            {
+                                return new StringChunk(xmlAttr, GetTextDirectionality());
+                            }
+
+                            return null;
+                        }
+                    }
                 }
             }
 
