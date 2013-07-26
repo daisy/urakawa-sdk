@@ -1594,6 +1594,9 @@ namespace urakawa
             TextMedia txtMedia = MediaFactory.CreateTextMedia();
             txtMedia.Text = "ping";
             chPropTxt.SetMedia(textChannel, txtMedia);
+
+            treeNode.XukInAfter_TextMediaCache();
+
             CommandFactory.CreateTreeNodeChangeTextCommand(treeNode, "pong");
             ChannelsManager.RemoveManagedObject(textChannel);
             //

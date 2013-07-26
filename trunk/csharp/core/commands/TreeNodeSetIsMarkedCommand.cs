@@ -31,7 +31,7 @@ namespace urakawa.commands
 
             return true;
         }
-        
+
 
         private TreeNode m_TreeNode;
         public TreeNode TreeNode
@@ -82,7 +82,9 @@ namespace urakawa.commands
 
         public static string GetText(TreeNode node)
         {
-            TreeNode.StringChunk textLocal = node.GetTextChunk();
+            TreeNode.StringChunkRange txtChunkRange = node.GetText();
+            TreeNode.StringChunk textLocal = txtChunkRange != null ? txtChunkRange.First : null; //node.GetTextChunk();
+
             if (textLocal != null)
             {
                 //DebugFix.Assert(textMedia.First.IsAbstractTextMedia);
@@ -107,7 +109,9 @@ namespace urakawa.commands
 
         private static void SetText(TreeNode node, string txt)
         {
-            TreeNode.StringChunk textLocal = node.GetTextChunk();
+            TreeNode.StringChunkRange txtChunkRange = node.GetText();
+            TreeNode.StringChunk textLocal = txtChunkRange != null ? txtChunkRange.First : null; //node.GetTextChunk();
+
             DebugFix.Assert(textLocal != null);
             if (textLocal != null)
             {
@@ -137,6 +141,14 @@ namespace urakawa.commands
                             )
                         {
                             urakawa.property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute(isMath ? "alttext" : "alt");
+                            if (xmlAttr != null)
+                            {
+                                DebugFix.Assert(textLocal.m_XmlAttribute == xmlAttr);
+                            }
+                        }
+                        else if (node.Children.Count == 0)
+                        {
+                            urakawa.property.xml.XmlAttribute xmlAttr = node.GetXmlProperty().GetAttribute("title");
                             if (xmlAttr != null)
                             {
                                 DebugFix.Assert(textLocal.m_XmlAttribute == xmlAttr);
@@ -268,7 +280,7 @@ namespace urakawa.commands
 
             return true;
         }
-        
+
         private TreeNode m_TreeNode;
         public TreeNode TreeNode
         {
