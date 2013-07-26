@@ -164,7 +164,7 @@ namespace urakawa.daisy.import
             return Path.Combine(outputDirectory, xukFileName);
         }
 
-        public static string GetXukFilePath_SpineItem(string outputDirectory, string relativeFilePath, string title)
+        public static string GetXukFilePath_SpineItem(string outputDirectory, string relativeFilePath, string title, int index)
         {
             relativeFilePath = FileDataProvider.EliminateForbiddenFileNameCharacters(relativeFilePath);
 
@@ -175,6 +175,11 @@ namespace urakawa.daisy.import
                 croppedFileName = croppedFileName.Substring(0, 12);
             }
             croppedFileName = croppedFileName + extension;
+
+            if (index >= 0)
+            {
+                croppedFileName = "_" + index + "_" + croppedFileName;
+            }
 
             string xukFileName =
                 croppedFileName.Replace('.', '_')
@@ -261,7 +266,7 @@ namespace urakawa.daisy.import
                         catch (Exception ex)
                         {
 #if DEBUG
-                        Debugger.Break();
+                            Debugger.Break();
 #endif // DEBUG
                             Console.WriteLine(ex.Message);
                             Console.WriteLine(ex.StackTrace);
@@ -271,7 +276,7 @@ namespace urakawa.daisy.import
                     }
                 }
             }// end of rename code
-            
+
             m_Project.PrettyFormat = m_XukPrettyFormat;
 
             SaveXukAction action = new SaveXukAction(m_Project, m_Project, new Uri(m_Xuk_FilePath), true);

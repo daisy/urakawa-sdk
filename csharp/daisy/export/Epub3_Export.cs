@@ -1842,6 +1842,7 @@ namespace urakawa.daisy.export
                         bool alreadyMarkedAsScripted = false;
 
                         string title = null;
+                        string xukFileName = null;
                         bool hasXuk = false;
                         bool isNavDocItem = false;
                         foreach (XmlAttribute xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
@@ -1853,6 +1854,10 @@ namespace urakawa.daisy.export
                             else if (xmlAttr.LocalName == @"title")
                             {
                                 title = xmlAttr.Value;
+                            }
+                            else if (xmlAttr.LocalName == @"xukFileName")
+                            {
+                                xukFileName = xmlAttr.Value;
                             }
                             else if (xmlAttr.LocalName == @"media-overlay")
                             {
@@ -1899,8 +1904,17 @@ namespace urakawa.daisy.export
                             continue;
                         }
 
+                        string fullXukPath = null;
+                        if (!string.IsNullOrEmpty(xukFileName))
+                        {
+                            fullXukPath = Path.Combine(rootDir, xukFileName);
+                        }
+                        else
+                        {
+                            //old project format
+                            fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title, -1);
+                        }
 
-                        string fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title);
                         if (!File.Exists(fullXukPath))
                         {
 #if DEBUG
