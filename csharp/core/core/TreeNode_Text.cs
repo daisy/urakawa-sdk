@@ -476,30 +476,38 @@ namespace urakawa.core
 
             TreeNode root = node.Root;
 
-            TreeNode firstCommonAncestor = null;
+            //TreeNode firstCommonAncestor = null;
 
-            TreeNode parent = nextDirect.Parent;
-            while (parent != null)
-            {
-                if (parent.IsAncestorOf(node))
-                {
-                    firstCommonAncestor = parent;
-                    break;
-                }
-                parent = parent.Parent;
-            }
+            //TreeNode parent = nextDirect.Parent;
+            //while (parent != null)
+            //{
+            //    if (parent.IsAncestorOf(node))
+            //    {
+            //        firstCommonAncestor = parent;
+            //        break;
+            //    }
+            //    parent = parent.Parent;
+            //}
 
-            if (firstCommonAncestor != null)
-            {
-                foreach (TreeNode child in firstCommonAncestor.Children.ContentsAs_Enumerable)
-                {
-                    if (child == nextDirect || child.IsAncestorOf(nextDirect))
-                    {
-                        root = child;
-                        break;
-                    }
-                }
-            }
+            //if (firstCommonAncestor != null)
+            //{
+            //    root = firstCommonAncestor;
+
+            //    foreach (TreeNode child in firstCommonAncestor.Children.ContentsAs_Enumerable)
+            //    {
+            //        if (!child.HasXmlProperty)
+            //        {
+            //            continue;
+            //        }
+
+            //        if (child == nextDirect
+            //            || child.IsAncestorOf(nextDirect))
+            //        {
+            //            root = child;
+            //            break;
+            //        }
+            //    }
+            //}
 
 
             TreeNode next = EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, nextDirect);
@@ -662,16 +670,21 @@ namespace urakawa.core
 
                 TreeNode root = rootBoundary;
 
-                TreeNode par = proposed;
-                while (par != null)
-                {
-                    if (!par.AtLeastOneChildSiblingIsSignificantTextOnly())
-                    {
-                        root = par;
-                        break;
-                    }
-                    par = par.Parent;
-                }
+                //TreeNode par = proposed;
+                //while (par != null)
+                //{
+                //    if (par.HasXmlProperty &&
+                //        (
+                //        par.Parent == null ||
+                //        !par.Parent.AtLeastOneChildSiblingIsSignificantTextOnly()
+                //        )
+                //    )
+                //    {
+                //        root = par;
+                //        break;
+                //    }
+                //    par = par.Parent;
+                //}
 
                 //goto checkProposed;
                 return EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, proposed);
