@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using AudioLib;
@@ -448,306 +449,391 @@ namespace urakawa.core
             return true; // includes empty "text" (when whitespace is trimmed)
         }
 
-        public static TreeNode GetNextTreeNodeWithNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode node, out TreeNode nested)
-        {
-            TreeNode nextDirect = node;
-            do
-            {
-                if (directionPrevious)
-                {
-                    nextDirect = nextDirect.GetPreviousSiblingWithText();
-                }
-                else
-                {
-                    nextDirect = nextDirect.GetNextSiblingWithText();
-                }
-            } while (nextDirect != null
-                &&
-                (
-                //!nextDirect.HasXmlProperty ||
-                TextOnlyContainsPunctuation(nextDirect.GetText()))
-                );
+        //public static TreeNode GetNextTreeNodeWithNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode node, out TreeNode nested)
+        //{
+        //    TreeNode nextDirect = node;
+        //    do
+        //    {
+        //        if (directionPrevious)
+        //        {
+        //            nextDirect = nextDirect.GetPreviousSiblingWithText();
+        //        }
+        //        else
+        //        {
+        //            nextDirect = nextDirect.GetNextSiblingWithText();
+        //        }
+        //    } while (nextDirect != null
+        //        &&
+        //        (
+        //        //!nextDirect.HasXmlProperty ||
+        //        TextOnlyContainsPunctuation(nextDirect.GetText()))
+        //        );
 
-            if (nextDirect == null)
+        //    if (nextDirect == null)
+        //    {
+        //        nested = null;
+        //        return null;
+        //    }
+
+        //    TreeNode root = node.Root;
+
+        //    //TreeNode firstCommonAncestor = null;
+
+        //    //TreeNode parent = nextDirect.Parent;
+        //    //while (parent != null)
+        //    //{
+        //    //    if (parent.IsAncestorOf(node))
+        //    //    {
+        //    //        firstCommonAncestor = parent;
+        //    //        break;
+        //    //    }
+        //    //    parent = parent.Parent;
+        //    //}
+
+        //    //if (firstCommonAncestor != null)
+        //    //{
+        //    //    root = firstCommonAncestor;
+
+        //    //    foreach (TreeNode child in firstCommonAncestor.Children.ContentsAs_Enumerable)
+        //    //    {
+        //    //        if (!child.HasXmlProperty)
+        //    //        {
+        //    //            continue;
+        //    //        }
+
+        //    //        if (child == nextDirect
+        //    //            || child.IsAncestorOf(nextDirect))
+        //    //        {
+        //    //            root = child;
+        //    //            break;
+        //    //        }
+        //    //    }
+        //    //}
+
+
+        //    TreeNode next = EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, nextDirect);
+
+        //    //TreeNode next = nextDirect;
+        //    //TreeNode beforeAdjust = null;
+        //    //while (next != null)
+        //    //{
+        //    //    beforeAdjust = next;
+        //    //    next = EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, next);
+
+        //    //    if (next != null && next.HasXmlProperty)
+        //    //    {
+        //    //        break;
+        //    //    }
+
+        //    //    while (next != null
+        //    //        &&
+        //    //        (
+        //    //        //!next.HasXmlProperty ||
+        //    //        TextOnlyContainsPunctuation(next.GetText()))
+        //    //        )
+        //    //    {
+        //    //        if (directionPrevious)
+        //    //        {
+        //    //            next = next.GetPreviousSiblingWithText();
+        //    //        }
+        //    //        else
+        //    //        {
+        //    //            next = next.GetNextSiblingWithText();
+        //    //        }
+        //    //    }
+        //    //}
+
+        //    if (next == null
+        //        //|| next != nextDirect && next.IsAncestorOf(node)
+        //        )
+        //    {
+        //        next = node;
+        //        do
+        //        {
+        //            if (directionPrevious)
+        //            {
+        //                next = next.GetPreviousSiblingWithText();
+        //            }
+        //            else
+        //            {
+        //                next = next.GetNextSiblingWithText();
+        //            }
+        //        } while (next != null
+        //           &&
+        //           (
+        //            !next.HasXmlProperty ||
+        //            TextOnlyContainsPunctuation(next.GetText()))
+        //           );
+        //    }
+
+        //    if (next == null
+        //        || !next.HasXmlProperty
+        //        || (next.GetText() != null && TextOnlyContainsPunctuation(next.GetText()))
+        //        || TextOnlyContainsPunctuation(next.GetTextFlattened_()))
+        //    {
+        //        nested = null;
+        //        return null;
+        //    }
+
+        //    nested = null;
+        //    return next;
+
+        //    //if (beforeAdjust == null
+        //    //        || beforeAdjust == next
+        //    //        || !next.IsAncestorOf(beforeAdjust)
+        //    //        || next.GetManagedAudioMedia() != null
+        //    //    //|| next.GetFirstDescendantWithManagedAudio() == null
+        //    //        )
+        //    //{
+        //    //    nested = null;
+        //    //    return next;
+        //    //    //m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
+        //    //}
+        //    //else
+        //    //{
+        //    //    nested = beforeAdjust;
+        //    //    return next;
+        //    //    //m_UrakawaSession.PerformTreeNodeSelection(next, false, beforeAdjust);
+        //    //}
+        //}
+
+
+        public static TreeNode AdjustSignificantTextOnlyAncestors(TreeNode deepTreeNode)
+        {
+            List<TreeNode> parents = new List<TreeNode>();
+
+            TreeNode parent = deepTreeNode.Parent;
+            while (parent != null)
             {
-                nested = null;
+                parents.Insert(0, parent);
+                parent = parent.Parent;
+            }
+#if DEBUG
+            DebugFix.Assert(parents[0] == deepTreeNode.Root);
+#endif
+
+            foreach (TreeNode p in parents)
+            {
+                if (p.AtLeastOneChildSiblingIsSignificantTextOnly())
+                {
+                    return p;
+                }
+            }
+
+            StringChunkRange range = deepTreeNode.GetText();
+            if (range != null && range.First != null && !TreeNode.TextOnlyContainsPunctuation(range))
+            {
+#if DEBUG
+                DebugFix.Assert(deepTreeNode.HasXmlProperty);
+#endif
+                return deepTreeNode;
+            }
+
+            return null;
+        }
+
+        public static TreeNode NavigateInsideSignificantText(TreeNode userRootTreeNode)
+        {
+            TreeNode firstDescendantWithText = null;
+            StringChunkRange range = userRootTreeNode.GetText();
+            if (range != null && range.First != null && !TreeNode.TextOnlyContainsPunctuation(range))
+            {
+                firstDescendantWithText = userRootTreeNode;
+            }
+            if (firstDescendantWithText == null)
+            {
+                firstDescendantWithText = userRootTreeNode.GetFirstDescendantWithText();
+                if (firstDescendantWithText == null)
+                {
+                    return null;
+                }
+                while (firstDescendantWithText != null
+                && (range = firstDescendantWithText.GetText()) != null
+                && TreeNode.TextOnlyContainsPunctuation(range))
+                {
+                    firstDescendantWithText = firstDescendantWithText.GetNextSiblingWithText(userRootTreeNode);
+                }
+                if (firstDescendantWithText == null)
+                {
+                    return null;
+                }
+            }
+
+            return AdjustSignificantTextOnlyAncestors(firstDescendantWithText);
+        }
+
+        public static TreeNode NavigatePreviousNextSignificantText(bool goPrevious, TreeNode userTreeNode)
+        {
+            //Note: GetText() == GetTextFlattened_internal(false)
+
+            StringChunkRange range = null;
+            TreeNode nearestSignificantTextSibling = goPrevious ? userTreeNode.GetPreviousSiblingWithText() : userTreeNode.GetNextSiblingWithText();
+            while (nearestSignificantTextSibling != null
+                && (range = nearestSignificantTextSibling.GetText()) != null
+                && TreeNode.TextOnlyContainsPunctuation(range))
+            {
+                nearestSignificantTextSibling = goPrevious ? nearestSignificantTextSibling.GetPreviousSiblingWithText() : nearestSignificantTextSibling.GetNextSiblingWithText();
+            }
+            if (nearestSignificantTextSibling == null)
+            {
                 return null;
             }
 
-            TreeNode root = node.Root;
-
-            //TreeNode firstCommonAncestor = null;
-
-            //TreeNode parent = nextDirect.Parent;
-            //while (parent != null)
-            //{
-            //    if (parent.IsAncestorOf(node))
-            //    {
-            //        firstCommonAncestor = parent;
-            //        break;
-            //    }
-            //    parent = parent.Parent;
-            //}
-
-            //if (firstCommonAncestor != null)
-            //{
-            //    root = firstCommonAncestor;
-
-            //    foreach (TreeNode child in firstCommonAncestor.Children.ContentsAs_Enumerable)
-            //    {
-            //        if (!child.HasXmlProperty)
-            //        {
-            //            continue;
-            //        }
-
-            //        if (child == nextDirect
-            //            || child.IsAncestorOf(nextDirect))
-            //        {
-            //            root = child;
-            //            break;
-            //        }
-            //    }
-            //}
-
-
-            TreeNode next = EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, nextDirect);
-
-            //TreeNode next = nextDirect;
-            //TreeNode beforeAdjust = null;
-            //while (next != null)
-            //{
-            //    beforeAdjust = next;
-            //    next = EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, next);
-
-            //    if (next != null && next.HasXmlProperty)
-            //    {
-            //        break;
-            //    }
-
-            //    while (next != null
-            //        &&
-            //        (
-            //        //!next.HasXmlProperty ||
-            //        TextOnlyContainsPunctuation(next.GetText()))
-            //        )
-            //    {
-            //        if (directionPrevious)
-            //        {
-            //            next = next.GetPreviousSiblingWithText();
-            //        }
-            //        else
-            //        {
-            //            next = next.GetNextSiblingWithText();
-            //        }
-            //    }
-            //}
-
-            if (next == null
-                //|| next != nextDirect && next.IsAncestorOf(node)
-                )
-            {
-                next = node;
-                do
-                {
-                    if (directionPrevious)
-                    {
-                        next = next.GetPreviousSiblingWithText();
-                    }
-                    else
-                    {
-                        next = next.GetNextSiblingWithText();
-                    }
-                } while (next != null
-                   &&
-                   (
-                    !next.HasXmlProperty ||
-                    TextOnlyContainsPunctuation(next.GetText()))
-                   );
-            }
-
-            if (next == null
-                || !next.HasXmlProperty
-                || (next.GetText() != null && TextOnlyContainsPunctuation(next.GetText()))
-                || TextOnlyContainsPunctuation(next.GetTextFlattened_()))
-            {
-                nested = null;
-                return null;
-            }
-
-            nested = null;
-            return next;
-
-            //if (beforeAdjust == null
-            //        || beforeAdjust == next
-            //        || !next.IsAncestorOf(beforeAdjust)
-            //        || next.GetManagedAudioMedia() != null
-            //    //|| next.GetFirstDescendantWithManagedAudio() == null
-            //        )
-            //{
-            //    nested = null;
-            //    return next;
-            //    //m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
-            //}
-            //else
-            //{
-            //    nested = beforeAdjust;
-            //    return next;
-            //    //m_UrakawaSession.PerformTreeNodeSelection(next, false, beforeAdjust);
-            //}
+            return AdjustSignificantTextOnlyAncestors(nearestSignificantTextSibling);
         }
 
-        public static TreeNode EnsureTreeNodeHasNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode rootBoundary, TreeNode proposed)
-        {
-            if (rootBoundary == null)
-            {
-                if (proposed != null)
-                {
-                    rootBoundary = proposed.Root;
-                }
-                else
-                {
-                    return null;
-                }
-            }
+        //public static TreeNode EnsureTreeNodeHasNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode rootBoundary, TreeNode proposed)
+        //{
+        //    if (rootBoundary == null)
+        //    {
+        //        if (proposed != null)
+        //        {
+        //            rootBoundary = proposed.Root;
+        //        }
+        //        else
+        //        {
+        //            return null;
+        //        }
+        //    }
 
-            //checkProposed:
+        //    //checkProposed:
 
-            if (proposed != null)
-            {
-                if (proposed == rootBoundary)
-                {
-                    return rootBoundary;
-                }
+        //    if (proposed != null)
+        //    {
+        //        if (proposed == rootBoundary)
+        //        {
+        //            return rootBoundary;
+        //        }
 
-                if (!proposed.IsDescendantOf(rootBoundary))
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                if (directionPrevious)
-                {
-                    proposed = rootBoundary.GetLastDescendantWithText();
-                }
-                else
-                {
-                    proposed = rootBoundary.GetFirstDescendantWithText();
-                }
+        //        if (!proposed.IsDescendantOf(rootBoundary))
+        //        {
+        //            return null;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (directionPrevious)
+        //        {
+        //            proposed = rootBoundary.GetLastDescendantWithText();
+        //        }
+        //        else
+        //        {
+        //            proposed = rootBoundary.GetFirstDescendantWithText();
+        //        }
 
-                if (proposed == null)
-                {
-                    StringChunkRange textRange = rootBoundary.GetText();
-                    if (textRange == null || TextOnlyContainsPunctuation(textRange))
-                    {
-                        return null;
-                    }
-                    //proposed = rootBoundary;
-                    return rootBoundary;
-                }
+        //        if (proposed == null)
+        //        {
+        //            StringChunkRange textRange = rootBoundary.GetText();
+        //            if (textRange == null || TextOnlyContainsPunctuation(textRange))
+        //            {
+        //                return null;
+        //            }
+        //            //proposed = rootBoundary;
+        //            return rootBoundary;
+        //        }
 
-                while (proposed != null &&
-                    //(!proposed.HasXmlProperty ||
-                    TextOnlyContainsPunctuation(proposed.GetText())
-                    //)
-                    )
-                {
-                    if (directionPrevious)
-                    {
-                        proposed = proposed.GetPreviousSiblingWithText();
-                    }
-                    else
-                    {
-                        proposed = proposed.GetNextSiblingWithText();
-                    }
-                }
+        //        while (proposed != null &&
+        //            //(!proposed.HasXmlProperty ||
+        //            TextOnlyContainsPunctuation(proposed.GetText())
+        //            //)
+        //            )
+        //        {
+        //            if (directionPrevious)
+        //            {
+        //                proposed = proposed.GetPreviousSiblingWithText();
+        //            }
+        //            else
+        //            {
+        //                proposed = proposed.GetNextSiblingWithText();
+        //            }
+        //        }
 
-                if (proposed == null)
-                {
-                    return null;
-                }
+        //        if (proposed == null)
+        //        {
+        //            return null;
+        //        }
 
 
-                TreeNode root = rootBoundary;
+        //        TreeNode root = rootBoundary;
 
-                //TreeNode par = proposed;
-                //while (par != null)
-                //{
-                //    if (par.HasXmlProperty &&
-                //        (
-                //        par.Parent == null ||
-                //        !par.Parent.AtLeastOneChildSiblingIsSignificantTextOnly()
-                //        )
-                //    )
-                //    {
-                //        root = par;
-                //        break;
-                //    }
-                //    par = par.Parent;
-                //}
+        //        //TreeNode par = proposed;
+        //        //while (par != null)
+        //        //{
+        //        //    if (par.HasXmlProperty &&
+        //        //        (
+        //        //        par.Parent == null ||
+        //        //        !par.Parent.AtLeastOneChildSiblingIsSignificantTextOnly()
+        //        //        )
+        //        //    )
+        //        //    {
+        //        //        root = par;
+        //        //        break;
+        //        //    }
+        //        //    par = par.Parent;
+        //        //}
 
-                //goto checkProposed;
-                return EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, proposed);
-            }
+        //        //goto checkProposed;
+        //        return EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, root, proposed);
+        //    }
 
-            //if (rootBoundary == proposed)
-            //{
-            //    return rootBoundary;
-            //}
+        //    //if (rootBoundary == proposed)
+        //    //{
+        //    //    return rootBoundary;
+        //    //}
 
-            if (proposed.Parent == null)
-            {
-                return proposed;
-            }
+        //    if (proposed.Parent == null)
+        //    {
+        //        return proposed;
+        //    }
 
-            if (proposed.Parent.AtLeastOneChildSiblingIsSignificantTextOnly())
-            {
-                return EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, rootBoundary, proposed.Parent);
-            }
+        //    if (proposed.Parent.AtLeastOneChildSiblingIsSignificantTextOnly())
+        //    {
+        //        return EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, rootBoundary, proposed.Parent);
+        //    }
 
-            //if (!skipTextOnlyNodes)
-            //{
-            //    return proposed;
-            //}
+        //    //if (!skipTextOnlyNodes)
+        //    //{
+        //    //    return proposed;
+        //    //}
 
-            TreeNode topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly = null;
-            TreeNode topMostAncestorWithoutSiblingIsSignificantTextOnly = null;
-            TreeNode child = proposed; //.Parent;
-            TreeNode parent = child.Parent;
-            while (parent != null
-                && (
-                //child == rootBoundary ||
-                child.IsDescendantOf(rootBoundary))
-                )
-            {
-                if (parent.AtLeastOneChildSiblingIsSignificantTextOnly())
-                {
-                    topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly = child;
-                    topMostAncestorWithoutSiblingIsSignificantTextOnly = null;
-                }
-                else
-                {
-                    if (topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly != null
-                        //&& child.IsAncestorOf(topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly)
-                        )
-                    {
-                        topMostAncestorWithoutSiblingIsSignificantTextOnly = child;
-                    }
-                }
+        //    TreeNode topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly = null;
+        //    TreeNode topMostAncestorWithoutSiblingIsSignificantTextOnly = null;
+        //    TreeNode child = proposed; //.Parent;
+        //    TreeNode parent = child.Parent;
+        //    while (parent != null
+        //        && (
+        //        //child == rootBoundary ||
+        //        child.IsDescendantOf(rootBoundary))
+        //        )
+        //    {
+        //        if (parent.AtLeastOneChildSiblingIsSignificantTextOnly())
+        //        {
+        //            topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly = child;
+        //            topMostAncestorWithoutSiblingIsSignificantTextOnly = null;
+        //        }
+        //        else
+        //        {
+        //            if (topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly != null
+        //                //&& child.IsAncestorOf(topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly)
+        //                )
+        //            {
+        //                topMostAncestorWithoutSiblingIsSignificantTextOnly = child;
+        //            }
+        //        }
 
-                child = parent;
-                parent = child.Parent;
-            }
-            if (topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly == null) // || last.Parent == null)
-            {
-                return proposed;
-            }
-            if (topMostAncestorWithoutSiblingIsSignificantTextOnly != null)
-            {
-                return topMostAncestorWithoutSiblingIsSignificantTextOnly;
-            }
-            return rootBoundary;
-        }
+        //        child = parent;
+        //        parent = child.Parent;
+        //    }
+        //    if (topMostAncestorWithAtLeastOneSiblingIsSignificantTextOnly == null) // || last.Parent == null)
+        //    {
+        //        return proposed;
+        //    }
+        //    if (topMostAncestorWithoutSiblingIsSignificantTextOnly != null)
+        //    {
+        //        return topMostAncestorWithoutSiblingIsSignificantTextOnly;
+        //    }
+        //    return rootBoundary;
+        //}
 
         public bool AtLeastOneChildSiblingIsSignificantTextOnly()
         {
