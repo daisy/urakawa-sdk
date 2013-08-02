@@ -664,10 +664,16 @@ namespace urakawa.core
 
         public static TreeNode NavigatePreviousNextSignificantText(bool goPrevious, TreeNode userTreeNode)
         {
+            TreeNode nearestSignificantTextSibling;
+            return NavigatePreviousNextSignificantText(goPrevious, userTreeNode, out nearestSignificantTextSibling);
+        }
+
+        public static TreeNode NavigatePreviousNextSignificantText(bool goPrevious, TreeNode userTreeNode, out TreeNode nearestSignificantTextSibling)
+        {
             //Note: GetText() == GetTextFlattened_internal(false)
 
             StringChunkRange range = null;
-            TreeNode nearestSignificantTextSibling = goPrevious ? userTreeNode.GetPreviousSiblingWithText() : userTreeNode.GetNextSiblingWithText();
+            nearestSignificantTextSibling = goPrevious ? userTreeNode.GetPreviousSiblingWithText() : userTreeNode.GetNextSiblingWithText();
             while (nearestSignificantTextSibling != null
                 && (range = nearestSignificantTextSibling.GetText()) != null
                 && TreeNode.TextOnlyContainsPunctuation(range))
