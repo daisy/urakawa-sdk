@@ -186,7 +186,9 @@ namespace urakawa.daisy.export
             bool specialNodeIsNoteAnno = false;
 
 
-            if ((specialNode == null || specialNode != levelNodeDescendant)
+            if (
+                // TODO noAudioInAncestor &&
+                (specialNode == null || specialNode != levelNodeDescendant)
                 &&
                 (isLevelNodeDescendant_Heading || isLevelNodeDescendant_Escapable || isLevelNodeDescendant_Skippable || nodeIsImageAndHasDescriptionProdnotes))
             {
