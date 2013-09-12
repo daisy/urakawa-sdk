@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -213,7 +214,7 @@ namespace urakawa.xuk
                     do
                     {
                         //pathBackup = Path.ChangeExtension(Path.GetRandomFileName(), ".BAK");
-                        string timeStamp = DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss_K");
+                        string timeStamp = DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss_K", CultureInfo.InvariantCulture);
                         timeStamp = FileDataProvider.EliminateForbiddenFileNameCharacters(timeStamp).Replace(' ', '_');
                         pathBackup = Path.Combine(parentdir, fileName + "_" + timeStamp);
                     } while (File.Exists(pathBackup));
