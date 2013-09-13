@@ -180,6 +180,13 @@ namespace urakawa.daisy.export.visitor
 
             File.Delete(sourceFilePath);
             File.Move(destinationFilePath, sourceFilePath);
+            try
+            {
+                File.SetAttributes(sourceFilePath, FileAttributes.Normal);
+            }
+            catch
+            {
+            }
 
             m_ExternalAudioMediaList.Clear();
         }

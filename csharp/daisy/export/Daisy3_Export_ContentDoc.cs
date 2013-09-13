@@ -101,7 +101,15 @@ namespace urakawa.daisy.export
 
                 if (File.Exists(xsltFullPath))
                 {
-                    File.Copy(xsltFullPath, Path.Combine(m_OutputDirectory, xsltFileName), true);
+                    string destFile = Path.Combine(m_OutputDirectory, xsltFileName);
+                    File.Copy(xsltFullPath, destFile, true);
+                    try
+                    {
+                        File.SetAttributes(destFile, FileAttributes.Normal);
+                    }
+                    catch
+                    {
+                    }
                     m_FilesList_ExternalFiles.Add(xsltFileName);
                 }
             }

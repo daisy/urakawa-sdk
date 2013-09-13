@@ -394,7 +394,17 @@ namespace urakawa.daisy.export
             string source = Path.Combine(m_OutputDirectory, Path.GetFileName(externalAudioSrc));
             string dest = Path.Combine(m_OutputDirectory, audioFileName);
 
-            if (File.Exists(source)) File.Move(source, dest);
+            if (File.Exists(source))
+            {
+                File.Move(source, dest);
+                try
+                {
+                    File.SetAttributes(dest, FileAttributes.Normal);
+                }
+                catch
+                {
+                }
+            }
             return audioFileName;
         }
     }

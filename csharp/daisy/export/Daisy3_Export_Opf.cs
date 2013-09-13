@@ -175,6 +175,13 @@ namespace urakawa.daisy.export
                     if (!textOnly)
                     {
                         File.Copy(ResourceRes_Filename_fullPath, destRes, true);
+                        try
+                        {
+                            File.SetAttributes(destRes, FileAttributes.Normal);
+                        }
+                        catch
+                        {
+                        }
                     }
                     else
                     {
@@ -222,7 +229,15 @@ namespace urakawa.daisy.export
 
                     if (!textOnly)
                     {
-                        File.Copy(resourceAudio_Filename_fullPath, Path.Combine(m_OutputDirectory, resourceAudio_Filename), true);
+                        string destFile = Path.Combine(m_OutputDirectory, resourceAudio_Filename);
+                        File.Copy(resourceAudio_Filename_fullPath, destFile, true);
+                        try
+                        {
+                            File.SetAttributes(destFile, FileAttributes.Normal);
+                        }
+                        catch
+                        {
+                        }
 
                         AddFilenameToManifest(opfDocument, manifestNode, resourceAudio_Filename, GetNextID(ID_OpfPrefix), DataProviderFactory.AUDIO_MP3_MIME_TYPE);
                     }
