@@ -220,6 +220,13 @@ namespace urakawa.xuk
                     } while (File.Exists(pathBackup));
 
                     File.Copy(path, pathBackup);
+                    try
+                    {
+                        File.SetAttributes(pathBackup, FileAttributes.Normal);
+                    }
+                    catch
+                    {
+                    }
                 }
             }
             catch (Exception ex)
