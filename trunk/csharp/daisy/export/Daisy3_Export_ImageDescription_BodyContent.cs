@@ -668,6 +668,13 @@ namespace urakawa.daisy.export
                     Thread.Sleep(200);
 
                     File.Move(filePath, sourceFilePath);
+                    try
+                    {
+                        File.SetAttributes(sourceFilePath, FileAttributes.Normal);
+                    }
+                    catch
+                    {
+                    }
 
                     return sourceFilePath;
                 }

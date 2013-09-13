@@ -405,6 +405,13 @@ namespace urakawa.daisy.export
                         {
                             File.Delete(fullAudioPath_);
                             File.Move(destinationFilePath, fullAudioPath);
+                            try
+                            {
+                                File.SetAttributes(fullAudioPath, FileAttributes.Normal);
+                            }
+                            catch
+                            {
+                            }
                         }
 #if DEBUG
                         else
@@ -416,6 +423,13 @@ namespace urakawa.daisy.export
                     else
                     {
                         File.Move(fullAudioPath_, fullAudioPath);
+                        try
+                        {
+                            File.SetAttributes(fullAudioPath, FileAttributes.Normal);
+                        }
+                        catch
+                        {
+                        }
                     }
                 }
             }
