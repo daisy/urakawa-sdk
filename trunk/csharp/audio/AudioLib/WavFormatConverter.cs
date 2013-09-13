@@ -81,6 +81,13 @@ namespace AudioLib
                     Debugger.Break();
 #endif //DEBUG
                     File.Copy(sourceFile, destinationFilePath);
+                    try
+                    {
+                        File.SetAttributes(destinationFilePath, FileAttributes.Normal);
+                    }
+                    catch
+                    {
+                    }
                 }
                 else
                 {
@@ -420,6 +427,13 @@ namespace AudioLib
                     try
                     {
                         File.Move(destinationFile, destinationFileUPDATED);
+                        try
+                        {
+                            File.SetAttributes(destinationFileUPDATED, FileAttributes.Normal);
+                        }
+                        catch
+                        {
+                        }
                         destinationFile = destinationFileUPDATED;
                     }
                     catch
