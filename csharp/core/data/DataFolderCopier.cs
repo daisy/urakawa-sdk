@@ -94,6 +94,13 @@ namespace urakawa.data
                 if (!File.Exists(pathDest))
                 {
                     File.Copy(pathSource, pathDest);
+                    try
+                    {
+                        File.SetAttributes(pathDest, FileAttributes.Normal);
+                    }
+                    catch
+                    {
+                    }
                 }
             }
         }

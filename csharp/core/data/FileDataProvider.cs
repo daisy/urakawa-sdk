@@ -319,7 +319,7 @@ namespace urakawa.data
                     Directory.Delete(path, true);
                     break;
                 }
-                catch (Exception e)
+                catch (Exception e) //System.UnauthorizedAccessException
                 {
                     Console.WriteLine(e.Message);
                     Thread.Sleep(200);
@@ -347,6 +347,7 @@ namespace urakawa.data
 
             if (Directory.Exists(path))
             {
+                Console.WriteLine("Directory cannot be deleted! ... (" + MAX_ATTEMPTS + " attempts)");
 #if DEBUG
                 Debugger.Break();
 #endif // DEBUG
@@ -425,7 +426,7 @@ namespace urakawa.data
             return localpath;
         }
 
-        
+
         private object m_lock = new object();
 
         /// <summary>
@@ -516,6 +517,13 @@ namespace urakawa.data
             //}
 
             File.Copy(path, DataFileFullPath);
+            try
+            {
+                File.SetAttributes(DataFileFullPath, FileAttributes.Normal);
+            }
+            catch
+            {
+            }
 
             HasBeenInitialized = true;
         }
@@ -555,6 +563,13 @@ namespace urakawa.data
             //}
 
             File.Move(path, DataFileFullPath);
+            try
+            {
+                File.SetAttributes(DataFileFullPath, FileAttributes.Normal);
+            }
+            catch
+            {
+            }
 
             HasBeenInitialized = true;
         }
@@ -790,6 +805,13 @@ namespace urakawa.data
                     try
                     {
                         File.Move(DataFileFullPath, filePathDest);
+                        try
+                        {
+                            File.SetAttributes(filePathDest, FileAttributes.Normal);
+                        }
+                        catch
+                        {
+                        }
                     }
                     catch (Exception e)
                     {
