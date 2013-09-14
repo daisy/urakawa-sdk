@@ -310,7 +310,9 @@ namespace urakawa.property.xml
             }
             destination.WriteAttributeString(XukAble.Value_NAME.z(PrettyFormat), mValue);
 
-            if (mNamespaceUri != "")
+            if (!string.IsNullOrEmpty(mNamespaceUri)
+                && (mParent == null || !mNamespaceUri.Equals(mParent.GetNamespaceUri(), StringComparison.InvariantCulture))
+                )
             {
                 destination.WriteAttributeString(XukAble.NamespaceUri_NAME.z(PrettyFormat), mNamespaceUri);
             }

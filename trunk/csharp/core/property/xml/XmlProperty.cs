@@ -782,9 +782,18 @@ namespace urakawa.property.xml
             base.XukOutAttributes(destination, baseUri);
 
             destination.WriteAttributeString(XukAble.LocalName_NAME.z(PrettyFormat), LocalName);
-            if (!String.IsNullOrEmpty(NamespaceUri))
+
+            if (!string.IsNullOrEmpty(mNamespaceUri))
             {
-                destination.WriteAttributeString(XukAble.NamespaceUri_NAME.z(PrettyFormat), NamespaceUri);
+                string backup = mNamespaceUri;
+                mNamespaceUri = null;
+                string nsuri = GetNamespaceUri();
+                mNamespaceUri = backup;
+
+                if (!mNamespaceUri.Equals(nsuri, StringComparison.InvariantCulture))
+                {
+                    destination.WriteAttributeString(XukAble.NamespaceUri_NAME.z(PrettyFormat), NamespaceUri);
+                }
             }
         }
 
