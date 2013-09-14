@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using urakawa.data;
 using urakawa.events;
 
@@ -121,6 +122,10 @@ namespace urakawa.media.data
         /// <returns>The copy</returns>
         public MediaData Copy()
         {
+//#if DEBUG
+//            Debugger.Break();
+//#endif //DEBUG
+
             return CopyProtected();
         }
 
@@ -139,6 +144,10 @@ namespace urakawa.media.data
         /// <returns>The exported media data</returns>
         public MediaData Export(Presentation destPres)
         {
+//#if DEBUG
+//            Debugger.Break();
+//#endif //DEBUG
+
             return ExportProtected(destPres);
         }
 

@@ -73,7 +73,7 @@ namespace urakawa.media.data.video
 
         protected override MediaData ExportProtected(Presentation destPres)
         {
-            VideoMediaData expImgData = (VideoMediaData)Presentation.MediaDataFactory.Create(GetType());
+            VideoMediaData expImgData = (VideoMediaData)destPres.MediaDataFactory.Create(GetType());
             expImgData.InitializeVideo(m_DataProvider.Export(destPres), OriginalRelativePath);
             return expImgData;
         }

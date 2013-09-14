@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Xml;
 using urakawa.core;
@@ -80,6 +81,10 @@ namespace urakawa.property
         /// </remarks>
         public Property Copy()
         {
+//#if DEBUG
+//            Debugger.Break();
+//#endif //DEBUG
+
             return CopyProtected();
         }
 
@@ -89,6 +94,10 @@ namespace urakawa.property
         /// <returns>A copy of <c>this</c></returns>
         protected virtual Property CopyProtected()
         {
+//#if DEBUG
+//            Debugger.Break();
+//#endif //DEBUG
+
             Property theCopy = TreeNodeOwner.Presentation.PropertyFactory.Create(GetType());
             if (theCopy == null)
             {
@@ -106,6 +115,10 @@ namespace urakawa.property
         /// <returns>The exported property</returns>
         public Property Export(Presentation destPres)
         {
+//#if DEBUG
+//            Debugger.Break();
+//#endif //DEBUG
+
             return ExportProtected(destPres);
         }
 
@@ -117,6 +130,10 @@ namespace urakawa.property
         /// <returns>The exported property</returns>
         protected virtual Property ExportProtected(Presentation destPres)
         {
+//#if DEBUG
+//            Debugger.Break();
+//#endif //DEBUG
+
             Property exportedProp = destPres.PropertyFactory.Create(GetType());
             if (exportedProp == null)
             {

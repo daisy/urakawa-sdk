@@ -625,7 +625,7 @@ namespace urakawa.media.data.audio
         {
             if (OriginalRelativePath != null && DataProvider != null)
             {
-                AudioMediaData expImgData = (AudioMediaData)Presentation.MediaDataFactory.Create(GetType());
+                AudioMediaData expImgData = (AudioMediaData)destPres.MediaDataFactory.Create(GetType());
                 expImgData.InitializeAudio(m_DataProvider.Export(destPres), OriginalRelativePath);
                 return expImgData;
             }

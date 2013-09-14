@@ -176,6 +176,28 @@ namespace urakawa.metadata
             }
         }
 
+        public Metadata Copy()
+        {
+            Metadata md = Presentation.MetadataFactory.Create(GetType());
+            md.NameContentAttribute = NameContentAttribute.Copy();
+            foreach (MetadataAttribute a in OtherAttributes.ContentsAs_Enumerable)
+            {
+                md.OtherAttributes.Insert(md.OtherAttributes.Count, a.Copy());
+            }
+            return md;
+        }
+
+        public Metadata Export(Presentation destPres)
+        {
+            Metadata md = destPres.MetadataFactory.Create(GetType());
+            md.NameContentAttribute = NameContentAttribute.Copy();
+            foreach (MetadataAttribute a in OtherAttributes.ContentsAs_Enumerable)
+            {
+                md.OtherAttributes.Insert(md.OtherAttributes.Count, a.Copy());
+            }
+            return md;
+        }
+
 
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
@@ -199,6 +221,7 @@ namespace urakawa.metadata
                 }
             }
         }
+
         protected override void XukInChild(XmlReader source, IProgressHandler handler)
         {
             bool readItem = false;

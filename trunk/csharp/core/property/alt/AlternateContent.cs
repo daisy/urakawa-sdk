@@ -156,6 +156,55 @@ namespace urakawa.property.alt
             }
         }
 
+        public AlternateContent Copy()
+        {
+            AlternateContent ac = Presentation.AlternateContentFactory.Create(GetType());
+
+            foreach (Metadata md in m_Metadata.ContentsAs_Enumerable)
+            {
+                ac.m_Metadata.Insert(ac.m_Metadata.Count, md.Copy());
+            }
+
+            if (m_Text != null)
+            {
+                ac.m_Text = m_Text.Copy();
+            }
+            if (m_Audio != null)
+            {
+                ac.m_Audio = m_Audio.Copy();
+            }
+            if (m_Image != null)
+            {
+                ac.m_Image = m_Image.Copy();
+            }
+
+            return ac;
+        }
+        public AlternateContent Export(Presentation destPres)
+        {
+            AlternateContent ac = destPres.AlternateContentFactory.Create(GetType());
+
+            foreach (Metadata md in m_Metadata.ContentsAs_Enumerable)
+            {
+                ac.m_Metadata.Insert(ac.m_Metadata.Count, md.Export(destPres));
+            }
+
+            if (m_Text != null)
+            {
+                ac.m_Text = m_Text.Export(destPres);
+            }
+            if (m_Audio != null)
+            {
+                ac.m_Audio = m_Audio.Export(destPres);
+            }
+            if (m_Image != null)
+            {
+                ac.m_Image = m_Image.Export(destPres);
+            }
+
+            return ac;
+        }
+
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, IProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
