@@ -73,7 +73,7 @@ namespace urakawa.media.data.image
 
         protected override MediaData ExportProtected(Presentation destPres)
         {
-            ImageMediaData expImgData = (ImageMediaData)Presentation.MediaDataFactory.Create(GetType());
+            ImageMediaData expImgData = (ImageMediaData)destPres.MediaDataFactory.Create(GetType());
             expImgData.InitializeImage(m_DataProvider.Export(destPres), OriginalRelativePath);
             return expImgData;
         }

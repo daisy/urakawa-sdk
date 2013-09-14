@@ -9,6 +9,59 @@ namespace urakawa.property.alt
     [XukNameUglyPrettyAttribute("acP", "AlternateContentProperty")]
     public class AlternateContentProperty : Property
     {
+        public new AlternateContentProperty Copy()
+        {
+            return CopyProtected() as AlternateContentProperty;
+        }
+
+        protected virtual Property CopyProtected()
+        {
+            AlternateContentProperty theCopy = base.Copy() as AlternateContentProperty;
+            if (theCopy == null)
+            {
+                throw new exception.OperationNotValidException("The CopyProtected method of the base class unexpectedly did not return a AlternateContentProperty");
+            }
+
+            foreach (Metadata md in m_Metadata.ContentsAs_Enumerable)
+            {
+                theCopy.m_Metadata.Insert(theCopy.m_Metadata.Count, md.Copy());
+            }
+
+            foreach (AlternateContent ac in m_AlternateContents.ContentsAs_Enumerable)
+            {
+                theCopy.m_AlternateContents.Insert(theCopy.m_AlternateContents.Count, ac.Copy());
+            }
+
+            return theCopy;
+        }
+
+        public new AlternateContentProperty Export(Presentation destPres)
+        {
+            return ExportProtected(destPres) as AlternateContentProperty;
+        }
+
+        protected override Property ExportProtected(Presentation destPres)
+        {
+            AlternateContentProperty exported = base.ExportProtected(destPres) as AlternateContentProperty;
+            if (exported == null)
+            {
+                throw new exception.OperationNotValidException(
+                    "The ExportProtected method of the base class unexpectedly did not return a AlternateContentProperty");
+            }
+            
+            foreach (Metadata md in m_Metadata.ContentsAs_Enumerable)
+            {
+                exported.m_Metadata.Insert(exported.m_Metadata.Count, md.Export(destPres));
+            }
+
+            foreach (AlternateContent ac in m_AlternateContents.ContentsAs_Enumerable)
+            {
+                exported.m_AlternateContents.Insert(exported.m_AlternateContents.Count, ac.Export(destPres));
+            }
+
+
+            return exported;
+        }
 
         public AlternateContentProperty()
         {
