@@ -249,6 +249,13 @@ namespace urakawa.data
                 try
                 {
                     string filePath = Path.Combine(rootDirPath, fileInfo.Name);
+                    try
+                    {
+                        File.SetAttributes(filePath, FileAttributes.Normal);
+                    }
+                    catch
+                    {
+                    }
                     File.Delete(filePath);
                 }
                 catch (Exception e)
@@ -351,6 +358,8 @@ namespace urakawa.data
 #if DEBUG
                 Debugger.Break();
 #endif // DEBUG
+
+                recursiveDeleteDirectory(path);
             }
 
             return error;
