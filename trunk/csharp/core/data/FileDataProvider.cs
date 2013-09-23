@@ -283,9 +283,18 @@ namespace urakawa.data
             }
             catch (Exception ex)
             {
+                Console.WriteLine(rootDirPath);
+
                 Console.WriteLine(ex.Message);
 
-                dirInfo.Delete(false);
+                try
+                {
+                    dirInfo.Delete(false);
+                }
+                catch (Exception exx)
+                {
+                    Console.WriteLine(exx.Message);
+                }
             }
         }
 
@@ -355,6 +364,8 @@ namespace urakawa.data
             if (Directory.Exists(path))
             {
                 Console.WriteLine("Directory cannot be deleted! ... (" + MAX_ATTEMPTS + " attempts)");
+                Console.WriteLine(path);
+
 #if DEBUG
                 Debugger.Break();
 #endif // DEBUG
