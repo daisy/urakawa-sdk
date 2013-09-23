@@ -597,7 +597,27 @@ namespace urakawa.daisy.export
                         data.maxNormalPageNumber = tmp;
                     }
                 }
-                if (strTypeVal != "special")
+
+                if (strTypeVal == "front")
+                {
+                    try
+                    {
+                        int romanInt = Daisy3_Export.ParseRomanToInt(strPageValue);
+                        if (romanInt > 0)
+                        {
+                            XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "value",
+                                romanInt.ToString());
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        Console.WriteLine("ROMAN NUMBER PARSE ERROR: " + strPageValue);
+                    }
+                }
+                else if (strTypeVal != "special")
                 {
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, pageTargetNode, "value", strPageValue);
                 }

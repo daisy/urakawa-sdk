@@ -561,5 +561,22 @@ namespace urakawa.daisy.export
 
             return smilDocument;
         }
+
+        private static string[] m_RomansSTR = { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
+        private static int[] m_RomansINT = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
+        public static int ParseRomanToInt(string roman)
+        {
+            int j = 0;
+            int romanInt = 0;
+            for (int i = 0; i < m_RomansSTR.Length; i++)
+            {
+                while (roman.IndexOf(m_RomansSTR[i], j, StringComparison.InvariantCultureIgnoreCase) == j)
+                {
+                    romanInt += m_RomansINT[i];
+                    j += m_RomansSTR[i].Length;
+                }
+            }
+            return romanInt;
+        }
     }
 }
