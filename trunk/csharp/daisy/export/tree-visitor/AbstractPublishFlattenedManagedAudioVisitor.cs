@@ -215,7 +215,7 @@ namespace urakawa.daisy.export.visitor
             bool result = false;
             try
             {
-                result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat, BitRate_Mp3);
+                result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat, BitRate_Mp3, m_AdditionalMp3ParamChannels,m_AdditionalMp3ParamReSample, m_AdditionalMp3ParamReplayGain);
             }
             finally
             {

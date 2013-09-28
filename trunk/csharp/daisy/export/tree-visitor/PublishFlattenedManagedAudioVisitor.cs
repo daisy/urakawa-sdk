@@ -16,6 +16,8 @@ namespace urakawa.daisy.export.visitor
         private TreeNodeTestDelegate mTreeNodeTriggersNewAudioFileDelegate;
         private TreeNodeTestDelegate mTreeNodeMustBeSkippedDelegate;
 
+        
+
         public override bool TreeNodeTriggersNewAudioFile(TreeNode node)
         {
             if (mTreeNodeTriggersNewAudioFileDelegate != null)
