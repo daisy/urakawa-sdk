@@ -201,7 +201,16 @@ namespace urakawa.daisy.export.visitor
 
             }
         }
+        protected string m_AdditionalMp3ParamChannels;
+        protected bool m_AdditionalMp3ParamReSample = true;
+        protected bool m_AdditionalMp3ParamReplayGain = false;
 
+        public void SetAdditionalMp3EncodingParameters(string additionalParamChannel, bool additionalParamResample, bool additionalParamRePlayGain)
+        {
+            m_AdditionalMp3ParamChannels = additionalParamChannel;
+            m_AdditionalMp3ParamReSample = additionalParamResample;
+            m_AdditionalMp3ParamReplayGain = additionalParamRePlayGain;
+        }
 
         private string m_ErrorMessages = null;
         public string ErrorMessages
