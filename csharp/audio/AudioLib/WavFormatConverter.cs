@@ -650,6 +650,11 @@ namespace AudioLib
 
         public bool CompressWavToMp3(string sourceFile, string destinationFile, AudioLibPCMFormat pcmFormat, ushort bitRate_mp3Output)
         {
+            return CompressWavToMp3(sourceFile, destinationFile, pcmFormat, bitRate_mp3Output, null, true, false);
+        }
+
+        public bool CompressWavToMp3(string sourceFile, string destinationFile, AudioLibPCMFormat pcmFormat, ushort bitRate_mp3Output, string extraparamChannels, bool extraParamResample, bool extraParamReplayGain)
+        {
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path " + sourceFile);
 
@@ -667,15 +672,21 @@ namespace AudioLib
 
             string sampleRate = String.Format("{0}", pcmFormat.SampleRate); //Math.Round(pcmFormat.SampleRate / 1000.0, 3));
             sampleRate = sampleRate.Substring(0, 2) + '.' + sampleRate.Substring(2, 3);
+            string sampleRateArg = " --resample " + sampleRate;
+            if (!extraParamResample) sampleRateArg = "";
+
+            string replayGainArg = extraParamReplayGain ? "--replaygain-accurate" : "";
 
             string channelsArg = pcmFormat.NumberOfChannels == 1 ? "m" : "s";
+            if (!string.IsNullOrEmpty(extraparamChannels)) channelsArg = extraparamChannels;
             //string argumentString = "-b " + bitRate_mp3Output.ToString ()  + " --cbr --resample default -m m \"" + sourceFile + "\" \"" + destinationFile + "\"";
             string argumentString = "-b " + bitRate_mp3Output.ToString()
                 + " --cbr"
-                + " --resample " + sampleRate
+                + sampleRateArg
                 + " -m " + channelsArg
+                + replayGainArg
                 + " \"" + sourceFile + "\" \"" + destinationFile + "\"";
-
+            Console.WriteLine(argumentString);
             Process mp3encodeProcess = new Process();
 
             mp3encodeProcess.StartInfo.FileName = Path.Combine(LameWorkingDir, "lame.exe");
