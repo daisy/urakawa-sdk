@@ -54,6 +54,10 @@ namespace urakawa.daisy.export
         protected readonly bool m_audioStereo;
 
         protected readonly ushort m_BitRate_Mp3 = 64;
+        protected string m_AdditionalMp3ParamChannels;
+        protected bool m_AdditionalMp3ParamReSample = true;
+        protected bool m_AdditionalMp3ParamReplayGain = false;
+
         //public ushort BitRate_Mp3
         //{
         //    get { return m_BitRate_Mp3; }
@@ -184,6 +188,13 @@ namespace urakawa.daisy.export
 
         }
 
+        public void SetAdditionalMp3EncodingParameters(string additionalParamChannel, bool additionalParamResample, bool additionalParamRePlayGain)
+        {
+            m_AdditionalMp3ParamChannels = additionalParamChannel;
+            m_AdditionalMp3ParamReSample = additionalParamResample;
+            m_AdditionalMp3ParamReplayGain = additionalParamRePlayGain;
+        }
+
         /// <summary>
         /// Creates audio files for export, it is important to call  function RemovePublishChannel after all export operations are complete
         /// </summary>
@@ -209,6 +220,7 @@ namespace urakawa.daisy.export
             if (m_encodeToMp3) // && m_BitRate_Mp3 >= 32)
             {
                 m_PublishVisitor.BitRate_Mp3 = m_BitRate_Mp3;
+                m_PublishVisitor.SetAdditionalMp3EncodingParameters(m_AdditionalMp3ParamChannels, m_AdditionalMp3ParamReSample, m_AdditionalMp3ParamReplayGain);
             }
             m_PublishVisitor.EncodePublishedAudioFilesSampleRate = m_sampleRate;
             m_PublishVisitor.EncodePublishedAudioFilesStereo = m_audioStereo;
