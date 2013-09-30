@@ -675,7 +675,7 @@ namespace AudioLib
             string sampleRateArg = " --resample " + sampleRate;
             if (!extraParamResample) sampleRateArg = "";
 
-            string replayGainArg = extraParamReplayGain ? " --replaygain accurate" : "";
+            string replayGainArg = extraParamReplayGain ? " --replaygain-accurate" : "";
 
             string channelsArg = pcmFormat.NumberOfChannels == 1 ? "m" : "s";
             if (!string.IsNullOrEmpty(extraparamChannels)) channelsArg = extraparamChannels;
