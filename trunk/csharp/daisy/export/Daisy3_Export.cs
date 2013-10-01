@@ -56,7 +56,7 @@ namespace urakawa.daisy.export
         protected readonly ushort m_BitRate_Mp3 = 64;
         protected string m_AdditionalMp3ParamChannels;
         protected bool m_AdditionalMp3ParamReSample = true;
-        protected bool m_AdditionalMp3ParamReplayGain = false;
+        protected string m_AdditionalMp3ParamReplayGain = null;
 
         //public ushort BitRate_Mp3
         //{
@@ -188,7 +188,7 @@ namespace urakawa.daisy.export
 
         }
 
-        public void SetAdditionalMp3EncodingParameters(string additionalParamChannel, bool additionalParamResample, bool additionalParamRePlayGain)
+        public void SetAdditionalMp3EncodingParameters(string additionalParamChannel, bool additionalParamResample, string additionalParamRePlayGain)
         {
             m_AdditionalMp3ParamChannels = additionalParamChannel;
             m_AdditionalMp3ParamReSample = additionalParamResample;
