@@ -650,10 +650,10 @@ namespace AudioLib
 
         public bool CompressWavToMp3(string sourceFile, string destinationFile, AudioLibPCMFormat pcmFormat, ushort bitRate_mp3Output)
         {
-            return CompressWavToMp3(sourceFile, destinationFile, pcmFormat, bitRate_mp3Output, null, true, false);
+            return CompressWavToMp3(sourceFile, destinationFile, pcmFormat, bitRate_mp3Output, null, true, null);
         }
 
-        public bool CompressWavToMp3(string sourceFile, string destinationFile, AudioLibPCMFormat pcmFormat, ushort bitRate_mp3Output, string extraparamChannels, bool extraParamResample, bool extraParamReplayGain)
+        public bool CompressWavToMp3(string sourceFile, string destinationFile, AudioLibPCMFormat pcmFormat, ushort bitRate_mp3Output, string extraparamChannels, bool extraParamResample, string extraParamReplayGain)
         {
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path " + sourceFile);
@@ -675,7 +675,8 @@ namespace AudioLib
             string sampleRateArg = " --resample " + sampleRate;
             if (!extraParamResample) sampleRateArg = "";
 
-            string replayGainArg = extraParamReplayGain ? " --replaygain-accurate" : "";
+            string replayGainArg = !string.IsNullOrEmpty(extraParamReplayGain) ? (extraParamReplayGain.StartsWith(" ") ? extraParamReplayGain : " " + extraParamReplayGain) :
+                "";
 
             string channelsArg = pcmFormat.NumberOfChannels == 1 ? "m" : "s";
             if (!string.IsNullOrEmpty(extraparamChannels)) channelsArg = extraparamChannels;
