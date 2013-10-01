@@ -203,9 +203,9 @@ namespace urakawa.daisy.export.visitor
         }
         protected string m_AdditionalMp3ParamChannels;
         protected bool m_AdditionalMp3ParamReSample = true;
-        protected bool m_AdditionalMp3ParamReplayGain = false;
+        protected string m_AdditionalMp3ParamReplayGain = null;
 
-        public void SetAdditionalMp3EncodingParameters(string additionalParamChannel, bool additionalParamResample, bool additionalParamRePlayGain)
+        public void SetAdditionalMp3EncodingParameters(string additionalParamChannel, bool additionalParamResample, string additionalParamRePlayGain)
         {
             m_AdditionalMp3ParamChannels = additionalParamChannel;
             m_AdditionalMp3ParamReSample = additionalParamResample;
