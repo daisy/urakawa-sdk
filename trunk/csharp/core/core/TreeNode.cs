@@ -88,6 +88,96 @@ namespace urakawa.core
             }
         }
 
+
+        public TreeNode GetFirstAncestorWithMark()
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+
+            if (Parent.IsMarked)
+            {
+                return Parent;
+            }
+
+            return Parent.GetFirstAncestorWithMark();
+        }
+
+        public TreeNode GetFirstDescendantWithMark()
+        {
+            if (mChildren.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (TreeNode child in Children.ContentsAs_Enumerable)
+            {
+                if (child.IsMarked)
+                {
+                    return child;
+                }
+
+                TreeNode childIn = child.GetFirstDescendantWithMark();
+                if (childIn != null)
+                {
+                    return childIn;
+                }
+            }
+            return null;
+        }
+
+        public TreeNode GetPreviousSiblingWithMark()
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            TreeNode previous = this;
+            while ((previous = previous.PreviousSibling) != null)
+            {
+                if (previous.IsMarked)
+                {
+                    return previous;
+                }
+
+                TreeNode previousIn = previous.GetFirstDescendantWithMark();
+                if (previousIn != null)
+                {
+                    return previousIn;
+                }
+            }
+
+            return Parent.GetPreviousSiblingWithMark();
+        }
+
+        public TreeNode GetNextSiblingWithMark()
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            TreeNode next = this;
+            while ((next = next.NextSibling) != null)
+            {
+                if (next.IsMarked)
+                {
+                    return next;
+                }
+
+                TreeNode nextIn = next.GetFirstDescendantWithMark();
+                if (nextIn != null)
+                {
+                    return nextIn;
+                }
+            }
+
+            return Parent.GetNextSiblingWithMark();
+        }
+
+
+
+
         private TreeNode MeetFirst(TreeNode node1, TreeNode node2)
         {
             if (this == node1) return node1;
