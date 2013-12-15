@@ -291,6 +291,9 @@ namespace urakawa.core
 
         private void this_childAdded(object sender, ObjectAddedEventArgs<TreeNode> ev)
         {
+            this.TextLocal = null;
+            this.TextFlattened = null;
+
             ev.m_AddedObject.Changed += Child_Changed;
             NotifyChanged(ev);
         }
@@ -302,12 +305,18 @@ namespace urakawa.core
 
         private void this_childRemoved(object sender, ObjectRemovedEventArgs<TreeNode> ev)
         {
+            this.TextLocal = null;
+            this.TextFlattened = null;
+
             ev.m_RemovedObject.Changed -= Child_Changed;
             NotifyChanged(ev);
         }
 
         private void this_propertyAdded(object sender, ObjectAddedEventArgs<Property> ev)
         {
+            this.TextLocal = null;
+            this.TextFlattened = null;
+
             ev.m_AddedObject.Changed += Property_Changed;
             NotifyChanged(ev);
         }
@@ -319,6 +328,9 @@ namespace urakawa.core
 
         private void this_propertyRemoved(object sender, ObjectRemovedEventArgs<Property> ev)
         {
+            this.TextLocal = null;
+            this.TextFlattened = null;
+
             ev.m_RemovedObject.Changed -= Property_Changed;
             NotifyChanged(ev);
         }
