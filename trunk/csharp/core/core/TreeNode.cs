@@ -899,6 +899,8 @@ namespace urakawa.core
         {
             TreeNode theCopy = Presentation.TreeNodeFactory.Create(GetType());
 
+            theCopy.IsMarked = IsMarked;
+
             //copy the property
             if (inclProperties)
             {
@@ -939,6 +941,9 @@ namespace urakawa.core
                     GetXukName(), GetXukNamespace());
                 throw new FactoryCannotCreateTypeException(msg);
             }
+
+            exportedNode.IsMarked = IsMarked;
+
             foreach (Property prop in Properties.ContentsAs_Enumerable)
             {
                 exportedNode.AddProperty(prop.Export(destPres));
