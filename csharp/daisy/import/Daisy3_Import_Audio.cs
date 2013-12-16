@@ -118,7 +118,7 @@ namespace urakawa.daisy.import
                     return;
                 }
                 string srcFragmentId = src.Substring(index + 1);
-                TreeNode textTreeNode = m_Project.Presentations.Get(0).RootNode.GetTreeNodeWithXmlElementId(srcFragmentId);
+                TreeNode textTreeNode = m_Project.Presentations.Get(0).RootNode.GetFirstDescendantOrSelfWithXmlID(srcFragmentId);
                 if (textTreeNode == null)
                 {
                     continue;
