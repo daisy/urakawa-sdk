@@ -325,6 +325,37 @@ struct
             return null;
         }
 
+        public TreeNode GetLastDescendantWithManagedAudio()
+        {
+            if (mChildren.Count == 0)
+            {
+                return null;
+            }
+            
+            for (int i = Children.Count - 1; i >= 0; i--)
+            {
+                TreeNode child = Children.Get(i);
+
+#if ENABLE_SEQ_MEDIA
+            Media manMedia = child.GetManagedAudioMediaOrSequenceMedia();
+#else
+                Media manMedia = child.GetManagedAudioMedia();
+#endif
+
+                if (manMedia != null)
+                {
+                    return child;
+                }
+
+                TreeNode childIn = child.GetLastDescendantWithManagedAudio();
+                if (childIn != null)
+                {
+                    return childIn;
+                }
+            }
+            return null;
+        }
+
         public TreeNode GetPreviousSiblingWithManagedAudio()
         {
             if (Parent == null)
@@ -346,7 +377,7 @@ struct
                     return previous;
                 }
 
-                TreeNode previousIn = previous.GetFirstDescendantWithManagedAudio();
+                TreeNode previousIn = previous.GetLastDescendantWithManagedAudio();
                 if (previousIn != null)
                 {
                     return previousIn;

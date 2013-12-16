@@ -37,19 +37,24 @@ namespace urakawa.core
         }
 
 
-        public TreeNode GetFirstAncestorWithXmlElement(string localName)
+        public string GetXmlElementId()
         {
-            if (Parent == null)
+            XmlProperty xmlProp = GetXmlProperty();
+            if (xmlProp != null)
             {
-                return null;
+                return xmlProp.GetIdFromAttributes();
+            }
+            return null;
+        }
+
+        public TreeNode GetFirstDescendantOrSelfWithXmlID(string id)
+        {
+            if (HasXmlProperty && GetXmlElementId() == id)
+            {
+                return this;
             }
 
-            if (Parent.HasXmlProperty && Parent.GetXmlElementLocalName() == localName)
-            {
-                return Parent;
-            }
-
-            return Parent.GetFirstAncestorWithXmlElement(localName);
+            return GetFirstDescendantWithXmlID(id);
         }
 
         public TreeNode GetFirstDescendantWithXmlID(string id)
@@ -72,8 +77,43 @@ namespace urakawa.core
                     return childIn;
                 }
             }
+
             return null;
         }
+
+        public TreeNode GetFirstAncestorWithXmlElement(string localName)
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+
+            if (Parent.HasXmlProperty && Parent.GetXmlElementLocalName() == localName)
+            {
+                return Parent;
+            }
+
+            return Parent.GetFirstAncestorWithXmlElement(localName);
+        }
+
+        //public TreeNode GetFirstChildWithXmlElementName(string elemName)
+        //{
+        //    if (HasXmlProperty && GetXmlElementLocalName() == elemName)
+        //    {
+        //        return this;
+        //    }
+
+        //    for (int i = 0; i < mChildren.Count; i++)
+        //    {
+        //        TreeNode child = mChildren.Get(i).GetFirstChildWithXmlElementName(elemName);
+        //        if (child != null)
+        //        {
+        //            return child;
+        //        }
+        //    }
+
+        //    return null;
+        //}
 
         public TreeNode GetFirstDescendantWithXmlElement(string localName)
         {
@@ -95,6 +135,33 @@ namespace urakawa.core
                     return childIn;
                 }
             }
+
+            return null;
+        }
+
+        public TreeNode GetLastDescendantWithXmlElement(string localName)
+        {
+            if (mChildren.Count == 0)
+            {
+                return null;
+            }
+
+            for (int i = Children.Count - 1; i >= 0; i--)
+            {
+                TreeNode child = Children.Get(i);
+
+                if (child.HasXmlProperty && child.GetXmlElementLocalName() == localName)
+                {
+                    return child;
+                }
+
+                TreeNode childIn = child.GetLastDescendantWithXmlElement(localName);
+                if (childIn != null)
+                {
+                    return childIn;
+                }
+            }
+
             return null;
         }
 
@@ -112,7 +179,7 @@ namespace urakawa.core
                     return previous;
                 }
 
-                TreeNode previousIn = previous.GetFirstDescendantWithXmlElement(localName);
+                TreeNode previousIn = previous.GetLastDescendantWithXmlElement(localName);
                 if (previousIn != null)
                 {
                     return previousIn;
@@ -147,6 +214,104 @@ namespace urakawa.core
         }
 
 
+        public TreeNode GetFirstDescendantWithXmlAttribute(string attrName)
+        {
+            if (mChildren.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (TreeNode child in Children.ContentsAs_Enumerable)
+            {
+                if (child.HasXmlProperty && child.GetXmlProperty().GetAttribute(attrName) != null)
+                {
+                    return child;
+                }
+
+                TreeNode childIn = child.GetFirstDescendantWithXmlAttribute(attrName);
+                if (childIn != null)
+                {
+                    return childIn;
+                }
+            }
+
+            return null;
+        }
+
+        public TreeNode GetLastDescendantWithXmlAttribute(string attrName)
+        {
+            if (mChildren.Count == 0)
+            {
+                return null;
+            }
+
+            for (int i = Children.Count - 1; i >= 0; i--)
+            {
+                TreeNode child = Children.Get(i);
+
+                if (child.HasXmlProperty && child.GetXmlProperty().GetAttribute(attrName) != null)
+                {
+                    return child;
+                }
+
+                TreeNode childIn = child.GetLastDescendantWithXmlAttribute(attrName);
+                if (childIn != null)
+                {
+                    return childIn;
+                }
+            }
+
+            return null;
+        }
+
+        public TreeNode GetPreviousSiblingWithXmlAttribute(string attrName)
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            TreeNode previous = this;
+            while ((previous = previous.PreviousSibling) != null)
+            {
+                if (previous.HasXmlProperty && previous.GetXmlProperty().GetAttribute(attrName) != null)
+                {
+                    return previous;
+                }
+
+                TreeNode previousIn = previous.GetLastDescendantWithXmlAttribute(attrName);
+                if (previousIn != null)
+                {
+                    return previousIn;
+                }
+            }
+
+            return Parent.GetPreviousSiblingWithXmlAttribute(attrName);
+        }
+
+        public TreeNode GetNextSiblingWithXmlAttribute(string attrName)
+        {
+            if (Parent == null)
+            {
+                return null;
+            }
+            TreeNode next = this;
+            while ((next = next.NextSibling) != null)
+            {
+                if (next.HasXmlProperty && next.GetXmlProperty().GetAttribute(attrName) != null)
+                {
+                    return next;
+                }
+
+                TreeNode nextIn = next.GetFirstDescendantWithXmlAttribute(attrName);
+                if (nextIn != null)
+                {
+                    return nextIn;
+                }
+            }
+
+            return Parent.GetNextSiblingWithXmlAttribute(attrName);
+        }
+
         public bool HasXmlProperty
         {
             get { return GetXmlProperty() != null; }
@@ -158,21 +323,6 @@ namespace urakawa.core
         public XmlProperty GetXmlProperty()
         {
             return GetProperty<XmlProperty>();
-        }
-
-        public TreeNode GetTreeNodeWithXmlElementId(string id)
-        {
-            if (GetXmlElementId() == id) return this;
-
-            for (int i = 0; i < Children.Count; i++)
-            {
-                TreeNode child = Children.Get(i).GetTreeNodeWithXmlElementId(id);
-                if (child != null)
-                {
-                    return child;
-                }
-            }
-            return null;
         }
 
         public bool NeedsXmlNamespacePrefix()
@@ -289,19 +439,7 @@ namespace urakawa.core
 
         //    return m_QualifiedName;
         //}
-        ///<summary>
-        /// returns the ID attribute value of the attached XmlProperty, if any
-        ///</summary>
-        ///<returns>null of there is no ID attribute</returns>
-        public string GetXmlElementId()
-        {
-            XmlProperty xmlProp = GetXmlProperty();
-            if (xmlProp != null)
-            {
-                return xmlProp.GetIdFromAttributes();
-            }
-            return null;
-        }
+
 
         public string GetXmlElementLang()
         {
@@ -313,20 +451,6 @@ namespace urakawa.core
             return null;
         }
 
-        public TreeNode GetFirstChildWithXmlElementName(string elemName)
-        {
-            if (HasXmlProperty && GetXmlElementLocalName() == elemName) return this;
-
-            for (int i = 0; i < mChildren.Count; i++)
-            {
-                TreeNode child = mChildren.Get(i).GetFirstChildWithXmlElementName(elemName);
-                if (child != null)
-                {
-                    return child;
-                }
-            }
-            return null;
-        }
 
         public string GetXmlNamespacePrefix(string uri)
         {

@@ -127,6 +127,31 @@ namespace urakawa.core
             return null;
         }
 
+        public TreeNode GetLastDescendantWithMark()
+        {
+            if (mChildren.Count == 0)
+            {
+                return null;
+            }
+            
+            for (int i = Children.Count - 1; i >= 0; i--)
+            {
+                TreeNode child = Children.Get(i);
+
+                if (child.IsMarked)
+                {
+                    return child;
+                }
+
+                TreeNode childIn = child.GetLastDescendantWithMark();
+                if (childIn != null)
+                {
+                    return childIn;
+                }
+            }
+            return null;
+        }
+
         public TreeNode GetPreviousSiblingWithMark()
         {
             if (Parent == null)
@@ -141,7 +166,7 @@ namespace urakawa.core
                     return previous;
                 }
 
-                TreeNode previousIn = previous.GetFirstDescendantWithMark();
+                TreeNode previousIn = previous.GetLastDescendantWithMark();
                 if (previousIn != null)
                 {
                     return previousIn;
