@@ -1067,6 +1067,10 @@ namespace urakawa.core
 
         public bool IsBefore(TreeNode node)
         {
+            if (node == this)
+            {
+                return false;
+            }
             return !IsAfter(node);
         }
 
