@@ -365,12 +365,20 @@ namespace urakawa.data
             {
                 Console.WriteLine("Directory cannot be deleted! ... (" + MAX_ATTEMPTS + " attempts)");
                 Console.WriteLine(path);
-
+                Console.WriteLine(error);
 #if DEBUG
                 Debugger.Break();
 #endif // DEBUG
-
-                recursiveDeleteDirectory(path);
+                try
+                {
+                    recursiveDeleteDirectory(path);
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif // DEBUG
+                }
             }
 
             return error;
