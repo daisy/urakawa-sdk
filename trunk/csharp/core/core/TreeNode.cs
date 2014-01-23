@@ -10,6 +10,7 @@ using urakawa.navigation;
 using urakawa.progress;
 using urakawa.property;
 using urakawa.property.alt;
+using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
 using XmlAttribute = urakawa.property.xml.XmlAttribute;
@@ -339,8 +340,17 @@ namespace urakawa.core
 
         private void this_propertyAdded(object sender, ObjectAddedEventArgs<Property> ev)
         {
-            this.TextLocal = null;
-            this.TextFlattened = null;
+            //ChannelsProperty cProp = ev.m_AddedObject as ChannelsProperty;
+            //if (cProp != null)
+            //{
+            //    foreach (Channel ch in cProp.UsedChannels)
+            //    {
+            //        media.Media med = cProp.GetMedia(ch);
+            //        if (med is media.AbstractTextMedia)
+            //    }
+            //}
+            //this.TextLocal = null;
+            //this.TextFlattened = null;
 
             ev.m_AddedObject.Changed += Property_Changed;
             NotifyChanged(ev);
@@ -353,8 +363,8 @@ namespace urakawa.core
 
         private void this_propertyRemoved(object sender, ObjectRemovedEventArgs<Property> ev)
         {
-            this.TextLocal = null;
-            this.TextFlattened = null;
+            //this.TextLocal = null;
+            //this.TextFlattened = null;
 
             ev.m_RemovedObject.Changed -= Property_Changed;
             NotifyChanged(ev);

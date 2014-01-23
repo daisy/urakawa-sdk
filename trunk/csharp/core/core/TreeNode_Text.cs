@@ -37,6 +37,7 @@ namespace urakawa.core
             RTL = 2
         }
 
+        [DebuggerDisplay("{ToString()}")]
         public sealed class StringChunk
         {
             public readonly TextDirection Direction = TextDirection.Unsure;
@@ -81,15 +82,11 @@ namespace urakawa.core
 
             public override string ToString()
             {
-                return ToString(null);
-            }
-
-            public string ToString(StringChunk last)
-            {
-                return ConcatStringChunks(this, last, -1, null);
+                return ConcatStringChunks(this, this, -1, null);
             }
         }
 
+        [DebuggerDisplay("{ToString()}")]
         public sealed class StringChunkRange
         {
             public StringChunkRange(StringChunk first, StringChunk last)
@@ -1247,7 +1244,8 @@ namespace urakawa.core
             if (first != null && last != null)
             {
 #if DEBUG
-                Debugger.Break();
+                //Debugger.Break();
+                bool debug = true;
 #endif
 
                 return new StringChunkRange(first, last);
