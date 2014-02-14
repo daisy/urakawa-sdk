@@ -323,9 +323,9 @@ namespace urakawa.daisy.import
 
                 if (attrMediaType.Value == DataProviderFactory.SMIL_MIME_TYPE
                     || attrMediaType.Value == DataProviderFactory.SMIL_MIME_TYPE_
-                    || attrMediaType.Value == "application/x-dtbook+xml"
-                    || attrMediaType.Value == "application/x-dtbresource+xml"
-                    || attrMediaType.Value == "application/x-dtbncx+xml"
+                    || attrMediaType.Value == DataProviderFactory.DTBOOK_MIME_TYPE
+                    || attrMediaType.Value == DataProviderFactory.DTB_RES_MIME_TYPE
+                    || attrMediaType.Value == DataProviderFactory.NCX_MIME_TYPE
                     )
                 {
                     continue;

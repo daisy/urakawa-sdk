@@ -27,11 +27,6 @@ namespace urakawa.daisy.export
 
             XmlNode manifestNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfDocument, true, "manifest", null); //opfDocument.GetElementsByTagName("manifest")[0];
 
-            const string mediaType_Smil = DataProviderFactory.SMIL_MIME_TYPE_;
-            const string mediaType_Ncx = DataProviderFactory.NCX_MIME_TYPE;
-            const string mediaType_Dtbook = "application/x-dtbook+xml";
-            const string mediaType_Resource = "application/x-dtbresource+xml";
-
 
             m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Title);
             m_AllowedInDcMetadata.Add(SupportedMetadata_Z39862005.DC_Creator);
@@ -65,11 +60,11 @@ namespace urakawa.daisy.export
             m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_TOTAL_TIME);
             m_DtbAllowedInXMetadata.Add(SupportedMetadata_Z39862005.DTB_AUDIO_FORMAT);
 
-            AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", mediaType_Ncx);
+            AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Ncx, "ncx", DataProviderFactory.NCX_MIME_TYPE);
 
             if (m_Filename_Content != null)
             {
-                AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), mediaType_Dtbook);
+                AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Content, GetNextID(ID_OpfPrefix), DataProviderFactory.DTBOOK_MIME_TYPE);
             }
 
             AddFilenameToManifest(opfDocument, manifestNode, m_Filename_Opf, GetNextID(ID_OpfPrefix), DataProviderFactory.XML_MIME_TYPE);
@@ -105,7 +100,7 @@ namespace urakawa.daisy.export
             {
                 string strID = GetNextID(ID_OpfPrefix);
 
-                AddFilenameToManifest(opfDocument, manifestNode, smilFileName, strID, mediaType_Smil);
+                AddFilenameToManifest(opfDocument, manifestNode, smilFileName, strID, DataProviderFactory.SMIL_MIME_TYPE_);
                 smilIDListInPlayOrder.Add(strID);
             }
 
@@ -225,7 +220,7 @@ namespace urakawa.daisy.export
                         }
                     }
 
-                    AddFilenameToManifest(opfDocument, manifestNode, ResourceRes_Filename, "resource", mediaType_Resource);
+                    AddFilenameToManifest(opfDocument, manifestNode, ResourceRes_Filename, "resource", DataProviderFactory.DTB_RES_MIME_TYPE);
 
                     if (!textOnly)
                     {

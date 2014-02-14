@@ -478,13 +478,13 @@ namespace urakawa.daisy.import
                         }
                     }
                 }
-                else if (attrMediaType.Value == "application/x-dtbook+xml"
+                else if (attrMediaType.Value == DataProviderFactory.DTBOOK_MIME_TYPE
                     || attrMediaType.Value == DataProviderFactory.XML_MIME_TYPE
                         && href.EndsWith(".xml"))
                 {
                     dtbookPath = href;
                 }
-                else if (attrMediaType.Value == "application/x-dtbncx+xml"
+                else if (attrMediaType.Value == DataProviderFactory.NCX_MIME_TYPE
                     || attrMediaType.Value == DataProviderFactory.XML_MIME_TYPE
                         && href.EndsWith(".ncx"))
                 {
@@ -500,7 +500,7 @@ namespace urakawa.daisy.import
                 //|| attrMediaType.Value == DataProviderFactory.XML_TEXT_MIME_TYPE
                 //|| attrMediaType.Value == "application/vnd.adobe.page-template+xml"
                 //|| attrMediaType.Value == "application/oebps-page-map+xml"
-                //|| attrMediaType.Value == "application/x-dtbresource+xml")
+                //|| attrMediaType.Value == DataProviderFactory.DTB_RES_MIME_TYPE)
                 //{
                 //    // Ignore
                 //}
