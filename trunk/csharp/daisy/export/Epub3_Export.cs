@@ -1370,6 +1370,9 @@ namespace urakawa.daisy.export
                                 DiagramContentModelHelper.NS_URL_DC, XmlReaderWriterHelper.NS_URL_XMLNS);
                         }
 
+                        string lowerCase = localName.ToLowerInvariant();
+                        localName = lowerCase.Substring(0, 1) + localName.Substring(1, localName.Length - 1);
+
                         opfXmlNode_meta = xmlDoc.CreateElement(prefix, localName, DiagramContentModelHelper.NS_URL_DC);
                         xmlNodeParent.AppendChild(opfXmlNode_meta);
                     }
