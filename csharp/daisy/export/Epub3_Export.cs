@@ -1760,6 +1760,10 @@ namespace urakawa.daisy.export
                             string ext = Path.GetExtension(relativePath);
 
                             string type = DataProviderFactory.GetMimeTypeFromExtension(ext);
+                            if (isNCX) // .xml extension but NCX mime type
+                            {
+                                type = DataProviderFactory.NCX_MIME_TYPE;
+                            }
                             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"media-type", type);
 
                             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_itemExt, @"href", FileDataProvider.UriEncode(relativePath));
