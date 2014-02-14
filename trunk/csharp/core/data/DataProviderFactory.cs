@@ -173,6 +173,12 @@ namespace urakawa.data
         public const string NCX_MIME_TYPE = "application/x-dtbncx+xml";
         public const string NCX_EXTENSION = ".ncx";
 
+        public const string DTBOOK_MIME_TYPE = "application/x-dtbook+xml";
+        public const string DTBOOK_EXTENSION = ".dtbook";
+
+        public const string DTB_RES_MIME_TYPE = "application/x-dtbresource+xml";
+        public const string DTB_RES_EXTENSION = ".res";
+
 
         /// <summary>
         /// MIME type for Java Script
@@ -199,6 +205,9 @@ namespace urakawa.data
         public const string TTML_MIME_TYPE = "application/ttml+xml";
         public const string TTML_EXTENSION = ".ttml";
 
+        public const string EPUB_MIME_TYPE = "application/epub+zip";
+        public const string EPUB_EXTENSION = ".epub";
+
         public const string XML_MIME_TYPE = "text/xml";
         public const string XML_EXTENSION = ".xml";
 
@@ -209,6 +218,9 @@ namespace urakawa.data
         public const string SMIL_MIME_TYPE = "application/smil+xml";
         public const string SMIL_MIME_TYPE_ = "application/smil";
         public const string SMIL_EXTENSION = ".smil";
+
+        public const string ICO_MIME_TYPE = "image/vnd.microsoft.icon";
+        public const string ICO_EXTENSION = ".ico";
 
         //public const string HTML_MIME_TYPE = "text/html";
         //public const string HTML_EXTENSION = ".html";
@@ -241,6 +253,10 @@ namespace urakawa.data
 
                 case VIDEO_WEBM_MIME_TYPE:
                     extension = VIDEO_WEBM_EXTENSION;
+                    break;
+
+                case DTB_RES_MIME_TYPE:
+                    extension = DTB_RES_EXTENSION;
                     break;
 
 
@@ -276,6 +292,11 @@ namespace urakawa.data
 
                 case RDF_MIME_TYPE:
                     extension = RDF_EXTENSION;
+                    break;
+
+                case DTBOOK_MIME_TYPE:
+                    //extension = DTBOOK_EXTENSION;
+                    extension = XML_EXTENSION;
                     break;
 
                 case FONT_TTF_MIME_TYPE:
@@ -330,6 +351,12 @@ namespace urakawa.data
                 case SMIL_MIME_TYPE_:
                     extension = SMIL_EXTENSION;
                     break;
+                case ICO_MIME_TYPE:
+                    extension = ICO_EXTENSION;
+                    break;
+                case EPUB_MIME_TYPE:
+                    extension = EPUB_EXTENSION;
+                    break;
                 default:
 #if DEBUG
                     Debugger.Break();
@@ -370,6 +397,14 @@ namespace urakawa.data
                     break;
                 case VIDEO_MOV_EXTENSION:
                     mime = VIDEO_MOV_MIME_TYPE;
+                    break;
+
+                case DTBOOK_EXTENSION:
+                    mime = DTBOOK_MIME_TYPE;
+                    break;
+
+                case DTB_RES_EXTENSION:
+                    mime = DTB_RES_MIME_TYPE;
                     break;
 
 
@@ -461,6 +496,12 @@ namespace urakawa.data
                     break;
                 case SMIL_EXTENSION:
                     mime = SMIL_MIME_TYPE;
+                    break;
+                case ICO_EXTENSION:
+                    mime = ICO_MIME_TYPE;
+                    break;
+                case EPUB_EXTENSION:
+                    mime = EPUB_MIME_TYPE;
                     break;
                 default:
 #if DEBUG
