@@ -41,7 +41,7 @@ namespace urakawa.media.data.image
             {
                 return m_OriginalRelativePath;
             }
-            private set
+            set
             {
                 m_OriginalRelativePath = value;
                 if (m_OriginalRelativePath != null)
