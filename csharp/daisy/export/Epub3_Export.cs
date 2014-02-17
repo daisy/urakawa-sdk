@@ -18,6 +18,7 @@ using urakawa.media.data.video;
 using urakawa.media.timing;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
+using urakawa.property.alt;
 using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
@@ -106,7 +107,7 @@ namespace urakawa.daisy.export
 #if DEBUG
                 Debugger.Break();
 #endif
-                m_MediaOverlayActiveCSS = "background-color: #FF0000;";
+                m_MediaOverlayActiveCSS = "background-color: black !important; color: white !important; border-radius: 0.2em;";
             }
 
             RequestCancellation = false;
@@ -188,6 +189,8 @@ namespace urakawa.daisy.export
         protected bool processSingleSpineItem_2(XmlDocument opfXmlDoc, XmlNode opfXmlNode_spine, XmlNode opfXmlNode_manifest, string path, XmlNode opfXmlNode_item, XmlNode opfXmlNode_metadata, string uid_OPF_SpineItem, Presentation spineItemPresentation, string opsDirectoryPath, string fullSpineItemPath, Time timeTotal, string opfFilePath, bool hasMediaActiveClass, out bool scripted)
         {
             scripted = false;
+
+            string fullSpineItemDirectory = Path.GetDirectoryName(fullSpineItemPath);
 
             string path_FileOnly = Path.GetFileName(path);
             string smilPath = null;
@@ -994,6 +997,117 @@ namespace urakawa.daisy.export
                             "clipEnd",
                             clipEnd);
                     }
+
+
+                    if (@"img".Equals(name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        AlternateContentProperty altProp = currentTreeNode.GetAlternateContentProperty();
+                        ManagedImageMedia manImg = currentTreeNode.GetImageMedia() as ManagedImageMedia;
+                        System.Xml.XmlAttribute imgSrcAttribute = (System.Xml.XmlAttribute)newXmlNode.Attributes.GetNamedItem("src");
+
+                        if (altProp != null && !altProp.IsEmpty && imgSrcAttribute != null && manImg != null)
+                        {
+                            string exportImageName = FileDataProvider.EliminateForbiddenFileNameCharacters(manImg.ImageMediaData.OriginalRelativePath);
+
+                            PCMFormatInfo audioFormat = m_Presentation.MediaDataManager.DefaultPCMFormat;
+                            AudioLibPCMFormat pcmFormat = audioFormat.Data;
+                            pcmFormat.SampleRate = (ushort)m_sampleRate;
+                            pcmFormat.NumberOfChannels = (ushort)(m_audioStereo ? 2 : 1);
+
+
+                            if (!Directory.Exists(fullSpineItemDirectory))
+                            {
+                                FileDataProvider.CreateDirectory(fullSpineItemDirectory);
+                            }
+
+                            string fullImagePath = Path.Combine(fullSpineItemDirectory, manImg.ImageMediaData.OriginalRelativePath);
+                            fullImagePath = FileDataProvider.NormaliseFullFilePath(fullImagePath).Replace('/', '\\');
+                            
+                            string imageParentDir = Path.GetDirectoryName(fullImagePath);
+                            string imageDescriptionDirectoryPath = Daisy3_Export.GetAndCreateImageDescriptionDirectoryPath(true, exportImageName, imageParentDir);
+                            
+            
+                            Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath = new Dictionary<AlternateContent, string>();
+
+                            string descriptionFile = Daisy3_Export.CreateImageDescription(m_SkipACM, pcmFormat, m_encodeToMp3, m_BitRate_Mp3,
+                                imageDescriptionDirectoryPath, exportImageName,
+                                altProp,
+                                null, //map_DiagramElementName_TO_TextualDescriptions,
+                                null, //m_Map_AltProperty_TO_Description,
+                                map_AltContentAudio_TO_RelativeExportedFilePath
+                                );
+
+
+                            opfXmlNode_item = opfXmlDoc.CreateElement(null,
+                                "item",
+                                DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                            opfXmlNode_manifest.AppendChild(opfXmlNode_item);
+
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", GetNextID(ID_DiagramXmlPrefix));
+
+                            string type = DataProviderFactory.XML_MIME_TYPE; // GetMimeTypeFromExtension(Path.GetExtension(descriptionFile));
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
+
+                            string fullPath = FileDataProvider.NormaliseFullFilePath(Path.Combine(imageParentDir, descriptionFile)).Replace('/', '\\');
+                            string pathRelativeToOPF = makeRelativePathToOPF(fullPath, fullSpineItemDirectory, Path.GetFileName(descriptionFile), opfFilePath);
+
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(pathRelativeToOPF));
+
+                            foreach (AlternateContent altContent in altProp.AlternateContents.ContentsAs_Enumerable)
+                            {
+                                if (altContent.Audio != null)
+                                {
+                                    string audioDescPath = map_AltContentAudio_TO_RelativeExportedFilePath[altContent];
+                                    DebugFix.Assert(!string.IsNullOrEmpty(audioDescPath));
+
+
+                                    opfXmlNode_item = opfXmlDoc.CreateElement(null,
+                                        "item",
+                                        DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                                    opfXmlNode_manifest.AppendChild(opfXmlNode_item);
+
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", GetNextID(ID_DiagramXmlPrefix));
+
+                                    type = DataProviderFactory.GetMimeTypeFromExtension(Path.GetExtension(audioDescPath));
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
+
+                                    fullPath = FileDataProvider.NormaliseFullFilePath(Path.Combine(imageParentDir, audioDescPath)).Replace('/', '\\');
+                                    pathRelativeToOPF = makeRelativePathToOPF(fullPath, fullSpineItemDirectory, Path.GetFileName(audioDescPath), opfFilePath);
+
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(pathRelativeToOPF));
+                                }
+
+                                if (altContent.Image != null)
+                                {
+                                    DebugFix.Assert(altContent.Image.ImageMediaData != null);
+
+                                    string imgDescPath = altContent.Image.ImageMediaData.OriginalRelativePath;
+
+                                    DebugFix.Assert(!string.IsNullOrEmpty(imgDescPath));
+
+                                    imgDescPath = Path.Combine(imageDescriptionDirectoryPath, imgDescPath);
+
+                                    opfXmlNode_item = opfXmlDoc.CreateElement(null,
+                                        "item",
+                                        DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                                    opfXmlNode_manifest.AppendChild(opfXmlNode_item);
+
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", GetNextID(ID_DiagramXmlPrefix));
+
+                                    type = DataProviderFactory.GetMimeTypeFromExtension(Path.GetExtension(imgDescPath));
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
+
+                                    fullPath = FileDataProvider.NormaliseFullFilePath(imgDescPath).Replace('/', '\\');
+                                    pathRelativeToOPF = makeRelativePathToOPF(fullPath, fullSpineItemDirectory, Path.GetFileName(imgDescPath), opfFilePath);
+
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(pathRelativeToOPF));
+
+                                    // to avoid OPF manifest item redundant in root dir
+                                    altContent.Image.ImageMediaData.OriginalRelativePath = null;
+                                }
+                            }
+                        }
+                    }
                 }
 
 
@@ -1054,6 +1168,7 @@ namespace urakawa.daisy.export
                     }
                 }
 
+
                 if (currentTreeNode.Parent == null
                     // last one of the siblings
                     || currentTreeNode == currentTreeNode.Parent.Children.Get(currentTreeNode.Parent.Children.Count - 1))
@@ -1112,8 +1227,6 @@ namespace urakawa.daisy.export
                 }
 #endif
             }
-
-            string fullSpineItemDirectory = Path.GetDirectoryName(fullSpineItemPath);
 
             foreach (ExternalFiles.ExternalFileData extFileData in spineItemPresentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
             {
@@ -1181,6 +1294,15 @@ namespace urakawa.daisy.export
                 if (imgMediaData != null)
                 {
                     relativePath = imgMediaData.OriginalRelativePath;
+
+                    if (string.IsNullOrEmpty(relativePath))
+                    {
+//#if DEBUG
+//                        Debugger.Break();
+//#endif
+
+                        continue; // DIAGRAM image description alternative
+                    }
                 }
                 else if (vidMediaData != null)
                 {
@@ -2795,6 +2917,9 @@ namespace urakawa.daisy.export
         protected const string ID_ItemPrefix = "tobi_item_";
         protected long m_Counter_ID_ItemPrefix = 0;
 
+        protected const string ID_DiagramXmlPrefix = "tobi_diagramXML_";
+        protected long m_Counter_ID_DiagramXmlPrefix = 0;
+
         protected long m_Counter_ID_Generic = 0;
 
         protected string GetNextID(string prefix)
@@ -2815,6 +2940,11 @@ namespace urakawa.daisy.export
             {
                 m_Counter_ID_ItemPrefix++;
                 counter = m_Counter_ID_ItemPrefix;
+            }
+            else if (prefix == ID_DiagramXmlPrefix)
+            {
+                m_Counter_ID_DiagramXmlPrefix++;
+                counter = m_Counter_ID_DiagramXmlPrefix;
             }
             else
             {
