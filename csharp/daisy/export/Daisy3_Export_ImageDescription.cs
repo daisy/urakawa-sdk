@@ -69,6 +69,62 @@ namespace urakawa.daisy.export
         }
 
 
+        public static string CreateImageDescriptionHTML(string imageDescriptionDirectoryPath, string imageSRC, AlternateContentProperty altProperty)
+        {
+#if DEBUG
+            DebugFix.Assert(!altProperty.IsEmpty);
+#endif //DEBUG
+
+            XmlDocument htmlDocument = new XmlDocument();
+            htmlDocument.XmlResolver = null;
+
+            htmlDocument.CreateXmlDeclaration("1.0", "utf-8", null);
+
+            //XmlDocumentType doctype = xmlDoc.CreateDocumentType("html", "", "", null);
+            //XmlDocumentType doctype = xmlDoc.CreateDocumentType("html", null, null, "");
+            XmlDocumentType doctype = htmlDocument.CreateDocumentType("html", null, null, null);
+            htmlDocument.AppendChild(doctype);
+
+
+            XmlNode htmlNode = htmlDocument.CreateElement(null, @"html", DiagramContentModelHelper.NS_URL_XHTML);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, htmlNode,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS,
+                DiagramContentModelHelper.NS_URL_XHTML);
+
+            htmlDocument.AppendChild(htmlNode);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, htmlNode,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM,
+                DiagramContentModelHelper.NS_URL_DIAGRAM);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, htmlNode,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM_METADATA,
+                DiagramContentModelHelper.NS_URL_DIAGRAM);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, htmlNode,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DC,
+                DiagramContentModelHelper.NS_URL_DC);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, htmlNode,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DCTERMS,
+                DiagramContentModelHelper.NS_URL_DCTERMS);
+
+            //createDiagramHeadMetadata(descriptionDocument, descriptionNode, altProperty);
+            XmlNode head = htmlDocument.CreateElement(null, @"head", htmlNode.NamespaceURI);
+            htmlNode.AppendChild(head);
+
+            createDiagramBodyContentHTML(htmlDocument, htmlNode, altProperty, imageDescriptionDirectoryPath);
+
+            string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + IMAGE_DESCRIPTION_XML_SUFFIX + DataProviderFactory.XHTML_EXTENSION;
+            XmlReaderWriterHelper.WriteXmlDocument(htmlDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName));
+
+            string relativePath = Path.GetFileName(imageDescriptionDirectoryPath);
+            DirectoryInfo d = new DirectoryInfo(imageDescriptionDirectoryPath);
+            DebugFix.Assert(relativePath == d.Name);
+
+            return Path.Combine(relativePath, descFileName);
+        }
 
         public static string CreateImageDescription(
             bool skipACM,

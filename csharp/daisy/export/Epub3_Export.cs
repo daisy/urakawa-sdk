@@ -1049,6 +1049,7 @@ namespace urakawa.daisy.export
                                 map_AltContentAudio_TO_RelativeExportedFilePath
                                 );
 
+                            string descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp);
 
                             opfXmlNode_item = opfXmlDoc.CreateElement(null,
                                 "item",
@@ -1060,10 +1061,36 @@ namespace urakawa.daisy.export
                             string type = DataProviderFactory.XML_MIME_TYPE; // GetMimeTypeFromExtension(Path.GetExtension(descriptionFile));
                             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
 
+                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"properties", "mathml svg");
+
                             string fullPath = FileDataProvider.NormaliseFullFilePath(Path.Combine(imageParentDir, descriptionFile)).Replace('/', '\\');
                             string pathRelativeToOPF = makeRelativePathToOPF(fullPath, fullSpineItemDirectory, Path.GetFileName(descriptionFile), opfFilePath);
 
                             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(pathRelativeToOPF));
+
+                            if (m_includeImageDescriptions)
+                            {
+                                //string descriptionFileHTML = Path.GetDirectoryName(descriptionFile) +
+                                //                             Path.DirectorySeparatorChar +
+                                //                             Path.GetFileNameWithoutExtension(descriptionFile) +
+                                //                             ".xhtml" //Path.GetExtension(descriptionFile)
+                                //                             ;
+
+                                opfXmlNode_item = opfXmlDoc.CreateElement(null,
+                                    "item",
+                                    DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                                opfXmlNode_manifest.AppendChild(opfXmlNode_item);
+
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", GetNextID(ID_DiagramXmlPrefix));
+
+                                type = DataProviderFactory.XHTML_MIME_TYPE; // GetMimeTypeFromExtension(Path.GetExtension(descriptionFile));
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
+
+                                fullPath = FileDataProvider.NormaliseFullFilePath(Path.Combine(imageParentDir, descriptionFileHTML)).Replace('/', '\\');
+                                pathRelativeToOPF = makeRelativePathToOPF(fullPath, fullSpineItemDirectory, Path.GetFileName(descriptionFileHTML), opfFilePath);
+
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(pathRelativeToOPF));
+                            }
 
                             foreach (AlternateContent altContent in altProp.AlternateContents.ContentsAs_Enumerable)
                             {
@@ -1134,13 +1161,13 @@ namespace urakawa.daisy.export
 
 
                                 }
-                                
+
                                 if (m_imageDescriptions_useAriaDescribedBy)
                                 {
 
 
                                 }
-                                
+
                                 if (m_imageDescriptions_useHtmlLongDesc)
                                 {
 
