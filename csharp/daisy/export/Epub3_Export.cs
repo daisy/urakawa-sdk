@@ -38,6 +38,10 @@ namespace urakawa.daisy.export
     public partial class Epub3_Export : DualCancellableProgressReporter
     {
         protected readonly bool m_includeImageDescriptions;
+        protected readonly bool m_imageDescriptions_useAriaDescribedBy;
+        protected readonly bool m_imageDescriptions_useAriaDescribedAt;
+        protected readonly bool m_imageDescriptions_useHtmlLongDesc;
+
         protected readonly bool m_encodeToMp3;
         protected readonly SampleRate m_sampleRate;
         protected readonly bool m_audioStereo;
@@ -96,7 +100,10 @@ namespace urakawa.daisy.export
             bool skipACM,
             bool includeImageDescriptions,
             string exportSpineItemProjectPath,
-            string mediaOverlayActiveCSS)
+            string mediaOverlayActiveCSS,
+            bool imageDescriptions_useAriaDescribedAt,
+            bool imageDescriptions_useAriaDescribedBy,
+            bool imageDescriptions_useHtmlLongDesc)
         {
             //m_Daisy3_Export = new Daisy3_Export(presentation, exportDirectory, null, encodeToMp3, bitRate_Mp3, sampleRate, stereo, skipACM, includeImageDescriptions);
             //AddSubCancellable(m_Daisy3_Export);
@@ -115,6 +122,11 @@ namespace urakawa.daisy.export
             m_XukPath = xukPath;
 
             m_includeImageDescriptions = includeImageDescriptions;
+
+            m_imageDescriptions_useAriaDescribedAt = imageDescriptions_useAriaDescribedAt;
+            m_imageDescriptions_useAriaDescribedBy = imageDescriptions_useAriaDescribedBy;
+            m_imageDescriptions_useHtmlLongDesc = imageDescriptions_useHtmlLongDesc;
+
             m_encodeToMp3 = encodeToMp3;
             m_sampleRate = sampleRate;
             m_audioStereo = stereo;
@@ -1022,11 +1034,11 @@ namespace urakawa.daisy.export
 
                             string fullImagePath = Path.Combine(fullSpineItemDirectory, manImg.ImageMediaData.OriginalRelativePath);
                             fullImagePath = FileDataProvider.NormaliseFullFilePath(fullImagePath).Replace('/', '\\');
-                            
+
                             string imageParentDir = Path.GetDirectoryName(fullImagePath);
                             string imageDescriptionDirectoryPath = Daisy3_Export.GetAndCreateImageDescriptionDirectoryPath(true, exportImageName, imageParentDir);
-                            
-            
+
+
                             Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath = new Dictionary<AlternateContent, string>();
 
                             string descriptionFile = Daisy3_Export.CreateImageDescription(m_SkipACM, pcmFormat, m_encodeToMp3, m_BitRate_Mp3,
@@ -1104,6 +1116,35 @@ namespace urakawa.daisy.export
 
                                     // to avoid OPF manifest item redundant in root dir
                                     altContent.Image.ImageMediaData.OriginalRelativePath = null;
+                                }
+                            }
+
+                            if (m_includeImageDescriptions)
+                            {
+                                //TODO generate HTML5 doc based on DIAGRAM XML (no XSLT)
+                                //
+
+                                //http://www.idpf.org/accessibility/guidelines/content/xhtml/descriptions.php
+                                //http://diagramcenter.org/standards-and-practices/html-standards.html
+                                //http://www.w3.org/TR/wai-aria-1.1/states_and_properties#aria-describedat
+                                //http://www.w3.org/TR/html-longdesc/
+
+                                if (m_imageDescriptions_useAriaDescribedAt)
+                                {
+
+
+                                }
+                                
+                                if (m_imageDescriptions_useAriaDescribedBy)
+                                {
+
+
+                                }
+                                
+                                if (m_imageDescriptions_useHtmlLongDesc)
+                                {
+
+
                                 }
                             }
                         }
@@ -1297,9 +1338,9 @@ namespace urakawa.daisy.export
 
                     if (string.IsNullOrEmpty(relativePath))
                     {
-//#if DEBUG
-//                        Debugger.Break();
-//#endif
+                        //#if DEBUG
+                        //                        Debugger.Break();
+                        //#endif
 
                         continue; // DIAGRAM image description alternative
                     }
