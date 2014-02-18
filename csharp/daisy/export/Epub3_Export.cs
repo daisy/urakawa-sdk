@@ -1061,8 +1061,6 @@ namespace urakawa.daisy.export
                             string type = DataProviderFactory.XML_MIME_TYPE; // GetMimeTypeFromExtension(Path.GetExtension(descriptionFile));
                             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
 
-                            XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"properties", "mathml svg");
-
                             string fullPath = FileDataProvider.NormaliseFullFilePath(Path.Combine(imageParentDir, descriptionFile)).Replace('/', '\\');
                             string pathRelativeToOPF = makeRelativePathToOPF(fullPath, fullSpineItemDirectory, Path.GetFileName(descriptionFile), opfFilePath);
 
@@ -1085,6 +1083,8 @@ namespace urakawa.daisy.export
 
                                 type = DataProviderFactory.XHTML_MIME_TYPE; // GetMimeTypeFromExtension(Path.GetExtension(descriptionFile));
                                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
+
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"properties", "mathml svg"); // scripted?
 
                                 fullPath = FileDataProvider.NormaliseFullFilePath(Path.Combine(imageParentDir, descriptionFileHTML)).Replace('/', '\\');
                                 pathRelativeToOPF = makeRelativePathToOPF(fullPath, fullSpineItemDirectory, Path.GetFileName(descriptionFileHTML), opfFilePath);
