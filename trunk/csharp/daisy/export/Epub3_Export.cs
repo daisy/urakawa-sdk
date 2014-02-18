@@ -1049,8 +1049,6 @@ namespace urakawa.daisy.export
                                 map_AltContentAudio_TO_RelativeExportedFilePath
                                 );
 
-                            string descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp);
-
                             opfXmlNode_item = opfXmlDoc.CreateElement(null,
                                 "item",
                                 DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
@@ -1073,6 +1071,10 @@ namespace urakawa.daisy.export
                                 //                             Path.GetFileNameWithoutExtension(descriptionFile) +
                                 //                             ".xhtml" //Path.GetExtension(descriptionFile)
                                 //                             ;
+                                bool hasMathML = false;
+                                bool hasSVG = false;
+                                string descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp, out hasMathML, out hasSVG);
+
 
                                 opfXmlNode_item = opfXmlDoc.CreateElement(null,
                                     "item",
@@ -1084,7 +1086,11 @@ namespace urakawa.daisy.export
                                 type = DataProviderFactory.XHTML_MIME_TYPE; // GetMimeTypeFromExtension(Path.GetExtension(descriptionFile));
                                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
 
-                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"properties", "mathml svg"); // scripted?
+                                if (hasMathML || hasSVG)
+                                {
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"properties",
+                                        (hasMathML ? "mathml " : "") + (hasSVG ? "svg" : "")); // scripted?
+                                }
 
                                 fullPath = FileDataProvider.NormaliseFullFilePath(Path.Combine(imageParentDir, descriptionFileHTML)).Replace('/', '\\');
                                 pathRelativeToOPF = makeRelativePathToOPF(fullPath, fullSpineItemDirectory, Path.GetFileName(descriptionFileHTML), opfFilePath);

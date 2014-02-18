@@ -16,8 +16,11 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private static void createDiagramBodyContentHTML(XmlDocument htmlDocument, XmlNode htmlNode, AlternateContentProperty altProperty, string imageDescriptionDirectoryPath)
+        private static void createDiagramBodyContentHTML(XmlDocument htmlDocument, XmlNode htmlNode, AlternateContentProperty altProperty, string imageDescriptionDirectoryPath, out bool hasMathML, out bool hasSVG)
         {
+            hasSVG = false;
+            hasMathML = false;
+
             XmlNode bodyNode = htmlDocument.CreateElement(null, @"body", htmlNode.NamespaceURI);
             htmlNode.AppendChild(bodyNode);
 
@@ -158,7 +161,10 @@ namespace urakawa.daisy.export
 
                     if (!File.Exists(destPath))
                     {
-                        managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        //managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
                     }
 
                     XmlNode imgNode = htmlDocument.CreateElement(null, @"img", DiagramContentModelHelper.NS_URL_XHTML);
@@ -181,6 +187,11 @@ namespace urakawa.daisy.export
                         DiagramContentModelHelper.Src,
                         FileDataProvider.UriEncode(exportImageName),
                         imgNode.NamespaceURI);
+
+                    if (Path.GetExtension(exportImageName) == @".svg")
+                    {
+                        hasSVG = true;
+                    }
                 }
 
 
@@ -231,11 +242,13 @@ namespace urakawa.daisy.export
                             string xmlns_z_select = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ZAI_SELECT + "=\"" + DiagramContentModelHelper.NS_URL_ZAI_SELECT + "\"";
 
                             string xmlns_diagram = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM + "=\"" + DiagramContentModelHelper.NS_URL_DIAGRAM + "\"";
-                            string xmlns_zai = "xmlns=\"" + DiagramContentModelHelper.NS_URL_ZAI + "\"";
+
+                            //string xmlns_zai = "xmlns=\"" + DiagramContentModelHelper.NS_URL_ZAI + "\"";
+                            string xmlns_xhtml = "xmlns=\"" + DiagramContentModelHelper.NS_URL_XHTML + "\"";
 
                             string xmlSourceString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
                             xmlSourceString += "<zed "
-                                + xmlns_zai
+                                + xmlns_xhtml
                                 + " "
                                 + xmlns_diagram
                                 + " "
@@ -259,7 +272,7 @@ namespace urakawa.daisy.export
                             //    xmlSourceString += "<p xmlns=\"http://www.daisy.org/ns/z3998/authoring/\">";
                             //}
 
-                            string strippedNS = normalizedDescriptionText.Replace(xmlns_zai, " ");
+                            string strippedNS = normalizedDescriptionText.Replace(xmlns_xhtml, " ");
                             strippedNS = strippedNS.Replace(xmlns_diagram, " ");
                             strippedNS = strippedNS.Replace(xmlns_z_rend, " ");
                             strippedNS = strippedNS.Replace(xmlns_z_select, " ");
@@ -336,6 +349,23 @@ namespace urakawa.daisy.export
 
                             //normalizedDescriptionText = textParentNode.InnerText;
                         }
+
+                        XmlNode mathNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(textParentNode, true,
+                            @"math",
+                            DiagramContentModelHelper.NS_URL_MATHML);
+                        if (mathNode != null)
+                        {
+                            hasMathML = true;
+                        }
+
+                        XmlNode svgNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(textParentNode, true,
+                            @"svg",
+                            DiagramContentModelHelper.NS_URL_SVG);
+                        if (svgNode != null)
+                        {
+                            hasSVG = true;
+                        }
+
                     }
                     else
                     {

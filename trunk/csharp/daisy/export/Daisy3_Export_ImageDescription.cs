@@ -69,7 +69,7 @@ namespace urakawa.daisy.export
         }
 
 
-        public static string CreateImageDescriptionHTML(string imageDescriptionDirectoryPath, string imageSRC, AlternateContentProperty altProperty)
+        public static string CreateImageDescriptionHTML(string imageDescriptionDirectoryPath, string imageSRC, AlternateContentProperty altProperty, out bool hasMathML, out bool hasSVG)
         {
 #if DEBUG
             DebugFix.Assert(!altProperty.IsEmpty);
@@ -114,7 +114,7 @@ namespace urakawa.daisy.export
             XmlNode head = htmlDocument.CreateElement(null, @"head", htmlNode.NamespaceURI);
             htmlNode.AppendChild(head);
 
-            createDiagramBodyContentHTML(htmlDocument, htmlNode, altProperty, imageDescriptionDirectoryPath);
+            createDiagramBodyContentHTML(htmlDocument, htmlNode, altProperty, imageDescriptionDirectoryPath, out hasMathML, out hasSVG);
 
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + IMAGE_DESCRIPTION_XML_SUFFIX + DataProviderFactory.XHTML_EXTENSION;
             XmlReaderWriterHelper.WriteXmlDocument(htmlDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName));
