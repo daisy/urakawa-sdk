@@ -16,6 +16,485 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
+        private static void createDiagramBodyContentHTML(XmlDocument htmlDocument, XmlNode htmlNode, AlternateContentProperty altProperty, string imageDescriptionDirectoryPath)
+        {
+            XmlNode bodyNode = htmlDocument.CreateElement(null, @"body", htmlNode.NamespaceURI);
+            htmlNode.AppendChild(bodyNode);
+
+            //XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, bodyNode,
+            //    XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ITS,
+            //    DiagramContentModelHelper.NS_URL_ITS);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, bodyNode,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_MATHML,
+                DiagramContentModelHelper.NS_URL_MATHML);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, bodyNode,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_SSML,
+                DiagramContentModelHelper.NS_URL_SSML);
+
+            XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, bodyNode,
+                XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_SVG,
+                DiagramContentModelHelper.NS_URL_SVG);
+
+            //XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, bodyNode,
+            //    XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_XFORMS,
+            //    DiagramContentModelHelper.NS_URL_XFORMS);
+
+            //XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, bodyNode,
+            //    XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ZAI_REND,
+            //    DiagramContentModelHelper.NS_URL_ZAI_REND);
+
+            //XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, bodyNode,
+            //    XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ZAI_SELECT,
+            //    DiagramContentModelHelper.NS_URL_ZAI_SELECT);
+
+            foreach (AlternateContent altContent in altProperty.AlternateContents.ContentsAs_Enumerable)
+            {
+                XmlNode contentXmlNode = htmlDocument.CreateElement(null, @"div", DiagramContentModelHelper.NS_URL_XHTML);
+                string xmlNodeName = null;
+
+                if (altContent.Metadatas != null && altContent.Metadatas.Count > 0)
+                {
+                    string xmlNodeId = null;
+
+                    foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
+                    {
+                        if (m.NameContentAttribute.Name == XmlReaderWriterHelper.XmlId)
+                        {
+                            xmlNodeId = m.NameContentAttribute.Value;
+                        }
+                        else if (m.NameContentAttribute.Name == DiagramContentModelHelper.DiagramElementName
+                            || m.NameContentAttribute.Name == DiagramContentModelHelper.DiagramElementName_OBSOLETE)
+                        {
+                            xmlNodeName = m.NameContentAttribute.Value;
+                        }
+
+                        if (xmlNodeName != null && xmlNodeId != null)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (!String.IsNullOrEmpty(xmlNodeId))
+                    {
+                        //XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, contentXmlNode,
+                        //    XmlReaderWriterHelper.XmlId, xmlNodeId, XmlReaderWriterHelper.NS_URL_XML);
+
+                        XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, contentXmlNode,
+                            @"id", xmlNodeId, DiagramContentModelHelper.NS_URL_XHTML);
+                    }
+
+                    if (xmlNodeName != null)
+                    {
+                        XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, contentXmlNode,
+                            @"class", xmlNodeName, DiagramContentModelHelper.NS_URL_XHTML);
+
+                        foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
+                        {
+                            if (m.NameContentAttribute.Name == XmlReaderWriterHelper.XmlId
+                                || m.NameContentAttribute.Name == DiagramContentModelHelper.DiagramElementName
+                                || m.NameContentAttribute.Name == DiagramContentModelHelper.DiagramElementName_OBSOLETE
+                                )
+                            {
+                                continue;
+                            }
+
+                            string metadataName = m.NameContentAttribute.Name;
+
+                            //TODO: OBJECT ROLE!?
+                            if (altContent.Image != null && DiagramContentModelHelper.Role.Equals(metadataName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                // skip, used for object role!
+                            }
+                            else if (metadataName.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":"))
+                            {
+                                XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, contentXmlNode,
+                                    metadataName,
+                                    m.NameContentAttribute.Value,
+                                    XmlReaderWriterHelper.NS_URL_XML);
+                            }
+                            //else if (metadataName.StartsWith(DiagramContentModelHelper.NS_PREFIX_DIAGRAM + ":"))
+                            //{
+                            //    XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, contentXmlNode,
+                            //        metadataName,
+                            //        m.NameContentAttribute.Value,
+                            //        DiagramContentModelHelper.NS_URL_DIAGRAM);
+                            //}
+                            //else if (metadataName.IndexOf(':') == -1)
+                            //{
+                            //    XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, contentXmlNode,
+                            //        metadataName,
+                            //        m.NameContentAttribute.Value,
+                            //        contentXmlNode.NamespaceURI);
+                            //}
+                            //else
+                            //{
+                            //    XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, contentXmlNode,
+                            //        metadataName.Replace(':', '_'),
+                            //        m.NameContentAttribute.Value,
+                            //        contentXmlNode.NamespaceURI);
+                            //}
+                        }
+                    }
+                }
+
+
+
+
+                if (altContent.Image != null)
+                {
+                    media.data.image.ManagedImageMedia managedImage = altContent.Image;
+
+                    //if (FileDataProvider.isHTTPFile(managedImage.ImageMediaData.OriginalRelativePath))                                
+                    //exportImageName = Path.GetFileName(managedImage.ImageMediaData.OriginalRelativePath);
+
+                    string exportImageName =
+                        //Path.GetFileName
+                        FileDataProvider.EliminateForbiddenFileNameCharacters
+                        (managedImage.ImageMediaData.OriginalRelativePath)
+                        ;
+                    string destPath = Path.Combine(imageDescriptionDirectoryPath, exportImageName);
+
+                    if (!File.Exists(destPath))
+                    {
+                        managedImage.ImageMediaData.DataProvider.ExportDataStreamToFile(destPath, false);
+                    }
+
+                    XmlNode imgNode = htmlDocument.CreateElement(null, @"img", DiagramContentModelHelper.NS_URL_XHTML);
+
+                    contentXmlNode.AppendChild(imgNode);
+
+                    foreach (Metadata metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                    {
+                        //TODO: OBJECT ROLE!?
+                        if (DiagramContentModelHelper.Role.Equals(metadata.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, imgNode,
+                                @"class",
+                                metadata.NameContentAttribute.Value,
+                                imgNode.NamespaceURI);
+                        }
+                    }
+
+                    XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, imgNode,
+                        DiagramContentModelHelper.Src,
+                        FileDataProvider.UriEncode(exportImageName),
+                        imgNode.NamespaceURI);
+                }
+
+
+                bool mergedObjectForExistingTourDescription = false;
+                string normalizedDescriptionText = null;
+
+                bool descriptionTextContainsMarkup = false;
+                string descriptionTextEscaped = null;
+
+                if (altContent.Text != null && !string.IsNullOrEmpty(altContent.Text.Text))
+                {
+                    descriptionTextEscaped = altContent.Text.Text;
+
+                    XmlNode textParentNode = contentXmlNode;
+
+                    if (altContent.Image != null)
+                    {
+                        XmlNode tourNode = htmlDocument.CreateElement(null, @"div", DiagramContentModelHelper.NS_URL_XHTML);
+
+                        XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, tourNode,
+                            @"class",
+                            DiagramContentModelHelper.D_Tour,
+                            tourNode.NamespaceURI);
+
+                        contentXmlNode.AppendChild(tourNode);
+
+                        textParentNode = tourNode;
+                    }
+
+                    normalizedDescriptionText = altContent.Text.Text;
+
+                    descriptionTextContainsMarkup = normalizedDescriptionText.IndexOf('<') >= 0; // normalizedDescriptionText.Contains("<");
+
+                    if (descriptionTextContainsMarkup)
+                    {
+                        try
+                        {
+                            // NO! Adds xmlns attributes all over the place even though there is a global namespace already.
+                            // textParentNode.InnerXml = normalizedDescriptionText;
+
+                            string xmlns_mathml = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_MATHML + "=\"" + DiagramContentModelHelper.NS_URL_MATHML + "\"";
+                            //string xmlns_svg = XmlReaderWriterHelper.NS_PREFIX_XMLNS+":" + DiagramContentModelHelper.NS_PREFIX_SVG + "=\"" + DiagramContentModelHelper.NS_URL_SVG + "\"";
+                            string xmlns_xforms = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_XFORMS + "=\"" + DiagramContentModelHelper.NS_URL_XFORMS + "\"";
+                            string xmlns_ssml = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_SSML + "=\"" + DiagramContentModelHelper.NS_URL_SSML + "\"";
+                            string xmlns_its = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ITS + "=\"" + DiagramContentModelHelper.NS_URL_ITS + "\"";
+
+                            string xmlns_z_rend = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ZAI_REND + "=\"" + DiagramContentModelHelper.NS_URL_ZAI_REND + "\"";
+                            string xmlns_z_select = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_ZAI_SELECT + "=\"" + DiagramContentModelHelper.NS_URL_ZAI_SELECT + "\"";
+
+                            string xmlns_diagram = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_DIAGRAM + "=\"" + DiagramContentModelHelper.NS_URL_DIAGRAM + "\"";
+                            string xmlns_zai = "xmlns=\"" + DiagramContentModelHelper.NS_URL_ZAI + "\"";
+
+                            string xmlSourceString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+                            xmlSourceString += "<zed "
+                                + xmlns_zai
+                                + " "
+                                + xmlns_diagram
+                                + " "
+                                + xmlns_z_rend
+                                + " "
+                                + xmlns_z_select
+                                + " "
+                                + xmlns_mathml
+                                + " "
+                                + xmlns_ssml
+                                + " "
+                                //+ xmlns_svg
+                                //+ " "
+                                + xmlns_xforms
+                                + " "
+                                + xmlns_its
+                                + " >";
+                            //bool needsWrap = !normalizedDescriptionText.StartsWith("<");
+                            //if (needsWrap)
+                            //{
+                            //    xmlSourceString += "<p xmlns=\"http://www.daisy.org/ns/z3998/authoring/\">";
+                            //}
+
+                            string strippedNS = normalizedDescriptionText.Replace(xmlns_zai, " ");
+                            strippedNS = strippedNS.Replace(xmlns_diagram, " ");
+                            strippedNS = strippedNS.Replace(xmlns_z_rend, " ");
+                            strippedNS = strippedNS.Replace(xmlns_z_select, " ");
+                            strippedNS = strippedNS.Replace(xmlns_mathml, " ");
+                            strippedNS = strippedNS.Replace(xmlns_ssml, " ");
+                            //strippedNS = strippedNS.Replace(xmlns_svg, " ");
+                            strippedNS = strippedNS.Replace(xmlns_xforms, " ");
+                            strippedNS = strippedNS.Replace(xmlns_its, " ");
+                            xmlSourceString += strippedNS;
+
+                            //if (needsWrap)
+                            //{
+                            //    xmlSourceString += "</p>";
+                            //}
+                            xmlSourceString += "</zed>";
+
+                            byte[] xmlSourceString_RawEncoded = Encoding.UTF8.GetBytes(xmlSourceString);
+                            MemoryStream stream = new MemoryStream();
+                            stream.Write(xmlSourceString_RawEncoded, 0, xmlSourceString_RawEncoded.Length);
+
+                            stream.Flush();
+
+                            stream.Seek(0, SeekOrigin.Begin);
+                            stream.Position = 0;
+
+                            XmlDocument fragmentDoc = new XmlDocument();
+                            fragmentDoc.XmlResolver = null;
+
+                            //XmlTextReader reader = new XmlTextReader(stream);
+                            //fragmentDoc.Load(reader);
+
+                            fragmentDoc.Load(stream);
+
+                            //fragmentDoc.LoadXml(xmlSourceString);
+
+
+                            XmlNode tobi = fragmentDoc.ChildNodes[1]; // skip XML declaration
+                            XmlNodeList children = tobi.ChildNodes;
+                            XmlNode[] xmlNodes = new XmlNode[children.Count];
+                            int i = 0;
+                            foreach (XmlNode child in children)
+                            {
+                                xmlNodes[i] = child;
+                                i++;
+                            }
+                            for (i = 0; i < xmlNodes.Length; i++)
+                            {
+                                XmlNode child = xmlNodes[i];
+                                XmlNode imported = htmlDocument.ImportNode(child, true);
+                                tobi.RemoveChild(child);
+                                textParentNode.AppendChild(imported);
+                            }
+
+                            normalizedDescriptionText = textParentNode.InnerXml;
+                        }
+                        catch (Exception e)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif //DEBUG
+
+                            descriptionTextContainsMarkup = false;
+                            descriptionTextEscaped = DIAGRAM_XML_PARSE_FAIL + normalizedDescriptionText; //xmlText.InnerText; // normalizedDescriptionText;
+
+                            XmlText xmlText = htmlDocument.CreateTextNode(normalizedDescriptionText);
+
+                            XmlNode code = htmlDocument.CreateElement(
+                                null,
+                                DiagramContentModelHelper.CODE,
+                                DiagramContentModelHelper.NS_URL_XHTML);
+
+                            code.AppendChild(xmlText);
+                            textParentNode.AppendChild(code);
+
+                            //normalizedDescriptionText = textParentNode.InnerText;
+                        }
+                    }
+                    else
+                    {
+                        // NOT NEEDED, the "p" elements are added without namespace prefix or explicit xmlns attribute.
+                        //XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, textParentNode,
+                        //XmlReaderWriterHelper.NS_PREFIX_XMLNS+":z", DiagramContentModelHelper.NS_URL_ZAI);
+
+                        string normalizedText = normalizedDescriptionText.Replace("\r\n", "\n");
+
+                        string[] parasText = normalizedText.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                        //string[] parasText = System.Text.RegularExpressions.Regex.Split(normalizedText, "\n");
+
+                        for (int i = 0; i < parasText.Length; i++)
+                        {
+                            string paraText = parasText[i].Trim();
+                            if (string.IsNullOrEmpty(paraText))
+                            {
+                                continue;
+                            }
+
+                            XmlNode paragraph = htmlDocument.CreateElement(
+                                null,
+                                DiagramContentModelHelper.P,
+                                DiagramContentModelHelper.NS_URL_XHTML);
+
+                            paragraph.InnerText = paraText;
+
+                            textParentNode.AppendChild(paragraph);
+                        }
+
+                        normalizedDescriptionText = textParentNode.InnerXml;
+                    }
+
+
+
+
+                    if (xmlNodeName != null &&
+                        (DiagramContentModelHelper.D_Tactile.Equals(xmlNodeName, StringComparison.OrdinalIgnoreCase)
+                        || DiagramContentModelHelper.D_SimplifiedImage.Equals(xmlNodeName, StringComparison.OrdinalIgnoreCase))
+                        )
+                    {
+                        XmlNode imgNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(contentXmlNode, false,
+                            @"img",
+                            DiagramContentModelHelper.NS_URL_XHTML);
+
+                        if (imgNode != null)
+                        {
+                            foreach (
+                                XmlNode existingNode in
+                                    XmlDocumentHelper.GetChildrenElementsOrSelfWithName(bodyNode, false,
+                                    @"div", DiagramContentModelHelper.NS_URL_XHTML,
+                                                                                        false))
+                            {
+                                if (existingNode.NodeType != XmlNodeType.Element ||
+                                    existingNode.Name != @"div")
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    // DEBUG
+                                    continue;
+                                }
+
+                                XmlNode classAttr = existingNode.Attributes.GetNamedItem(@"class");
+                                if (classAttr == null || classAttr.Value != xmlNodeName)
+                                {
+                                    continue;
+                                }
+
+                                XmlNode tourNode = null;
+                                foreach (
+                                    XmlNode child in
+                                        XmlDocumentHelper.GetChildrenElementsOrSelfWithName(existingNode, false,
+                                            @"div", DiagramContentModelHelper.NS_URL_XHTML,
+                                            false))
+                                {
+                                    if (child.NodeType != XmlNodeType.Element ||
+                                        child.Name != @"div")
+                                    {
+#if DEBUG
+                                        Debugger.Break();
+#endif
+                                        // DEBUG
+                                        continue;
+                                    }
+
+                                    XmlNode classAttribute = child.Attributes.GetNamedItem(@"class");
+                                    if (classAttribute == null || classAttribute.Value != DiagramContentModelHelper.D_Tour)
+                                    {
+                                        continue;
+                                    }
+
+                                    tourNode = child;
+                                    break;
+                                }
+
+                                if (tourNode != null && normalizedDescriptionText == tourNode.InnerXml)
+                                {
+                                    bool idConflict = false;
+                                    XmlNode idAttr1 =
+                                        contentXmlNode.Attributes.GetNamedItem(@"id"); //XmlReaderWriterHelper.XmlId
+                                    if (idAttr1 != null)
+                                    {
+                                        XmlNode idAttr2 =
+                                            existingNode.Attributes.GetNamedItem(@"id"); //XmlReaderWriterHelper.XmlId
+                                        if (idAttr2 == null)
+                                        {
+                                            //XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument,
+                                            //                                           existingNode,
+                                            //                                           XmlReaderWriterHelper
+                                            //                                               .XmlId,
+                                            //                                           idAttr1.Value,
+                                            //                                           XmlReaderWriterHelper
+                                            //                                               .NS_URL_XML);
+                                            XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument,
+                                                                                       existingNode,
+                                                                                       @"id",
+                                                                                       idAttr1.Value,
+                                                                                       DiagramContentModelHelper.NS_URL_XHTML);
+                                        }
+                                        else
+                                        {
+                                            if (idAttr1.Value != idAttr2.Value)
+                                            {
+                                                idConflict = true;
+                                            }
+                                        }
+                                    }
+
+                                    if (!idConflict)
+                                    {
+                                        XmlNode img1 = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(existingNode, false,
+                            @"img",
+                            DiagramContentModelHelper.NS_URL_XHTML);
+
+                                        if (img1 != null)
+                                        {
+                                            contentXmlNode.RemoveChild(imgNode);
+
+                                            existingNode.InsertBefore(imgNode, img1);
+                                            //existingNode.AppendChild(imgNode);
+
+                                            //bodyNode.RemoveChild(contentXmlNode);
+                                            mergedObjectForExistingTourDescription = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!mergedObjectForExistingTourDescription)
+                {
+                    bodyNode.AppendChild(contentXmlNode);
+                }
+            }
+        }
+
         private static void createDiagramBodyContent(
             bool skipACM,
             XmlDocument descriptionDocument,
@@ -659,7 +1138,7 @@ namespace urakawa.daisy.export
                 {
                     //TODO: DebugFix.Assert(wavPcmFormat.Equals(originalPcmFormat));
                 }
-                
+
 
                 if (!string.IsNullOrEmpty(filePath))
                 {
