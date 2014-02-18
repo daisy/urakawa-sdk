@@ -451,6 +451,8 @@ namespace urakawa.daisy.export
 
             XmlDocument xmlDocHTML = createXmlDocument_HTML(spineItemPresentation);
             XmlNode xmlDocHTML_head = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDocHTML, false, "head", DiagramContentModelHelper.NS_URL_XHTML);
+            XmlNode xmlDocHTML_body = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDocHTML, false, "body", DiagramContentModelHelper.NS_URL_XHTML);
+            ArrayList<XmlNode> iframes = new ArrayList<XmlNode>();
 
             if (spineItemPresentation.HeadNode != null && spineItemPresentation.HeadNode.Children != null && spineItemPresentation.HeadNode.Children.Count > 0)
             {
@@ -1218,7 +1220,9 @@ namespace urakawa.daisy.export
                                                                             @"hidden",
                                                                             DiagramContentModelHelper.NS_URL_XHTML);
 
-                                    newXmlNode.ParentNode.AppendChild(iframeNode);
+                                    //newXmlNode.ParentNode.AppendChild(iframeNode);
+                                    //xmlDocHTML_body.InsertBefore(iframeNode, bodyNode.FirstChild);
+                                    iframes.Add(iframeNode);
                                 }
                             }
                         }
@@ -1298,6 +1302,10 @@ namespace urakawa.daisy.export
                 }
             }
 
+            foreach (XmlNode iframeNode in iframes)
+            {
+                xmlDocHTML_body.InsertAfter(iframeNode, bodyNode.LastChild);
+            } 
 
             string parentdir = Path.GetDirectoryName(fullSpineItemPath);
             if (!Directory.Exists(parentdir))
