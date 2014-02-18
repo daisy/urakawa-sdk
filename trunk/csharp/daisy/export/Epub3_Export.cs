@@ -451,8 +451,8 @@ namespace urakawa.daisy.export
 
             XmlDocument xmlDocHTML = createXmlDocument_HTML(spineItemPresentation);
             XmlNode xmlDocHTML_head = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDocHTML, false, "head", DiagramContentModelHelper.NS_URL_XHTML);
-            XmlNode xmlDocHTML_body = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDocHTML, false, "body", DiagramContentModelHelper.NS_URL_XHTML);
-            ArrayList<XmlNode> iframes = new ArrayList<XmlNode>();
+            
+            List<XmlNode> iframes = new List<XmlNode>();
 
             if (spineItemPresentation.HeadNode != null && spineItemPresentation.HeadNode.Children != null && spineItemPresentation.HeadNode.Children.Count > 0)
             {
@@ -1221,6 +1221,7 @@ namespace urakawa.daisy.export
                                                                             DiagramContentModelHelper.NS_URL_XHTML);
 
                                     //newXmlNode.ParentNode.AppendChild(iframeNode);
+                                    //XmlNode xmlDocHTML_body = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDocHTML, false, "body", DiagramContentModelHelper.NS_URL_XHTML);
                                     //xmlDocHTML_body.InsertBefore(iframeNode, bodyNode.FirstChild);
                                     iframes.Add(iframeNode);
                                 }
@@ -1302,9 +1303,10 @@ namespace urakawa.daisy.export
                 }
             }
 
+            XmlNode xmlDocHTML_body = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDocHTML, false, "body", DiagramContentModelHelper.NS_URL_XHTML);
             foreach (XmlNode iframeNode in iframes)
             {
-                xmlDocHTML_body.InsertAfter(iframeNode, bodyNode.LastChild);
+                xmlDocHTML_body.InsertAfter(iframeNode, xmlDocHTML_body.LastChild);
             } 
 
             string parentdir = Path.GetDirectoryName(fullSpineItemPath);
