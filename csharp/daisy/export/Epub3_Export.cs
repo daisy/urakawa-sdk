@@ -1013,6 +1013,11 @@ namespace urakawa.daisy.export
 
                     if (@"img".Equals(name, StringComparison.OrdinalIgnoreCase))
                     {
+                        //http://www.idpf.org/accessibility/guidelines/content/xhtml/descriptions.php
+                        //http://diagramcenter.org/standards-and-practices/html-standards.html
+                        //http://www.w3.org/TR/wai-aria-1.1/states_and_properties#aria-describedat
+                        //http://www.w3.org/TR/html-longdesc/
+
                         AlternateContentProperty altProp = currentTreeNode.GetAlternateContentProperty();
                         ManagedImageMedia manImg = currentTreeNode.GetImageMedia() as ManagedImageMedia;
                         System.Xml.XmlAttribute imgSrcAttribute = (System.Xml.XmlAttribute)newXmlNode.Attributes.GetNamedItem("src");
@@ -1064,6 +1069,7 @@ namespace urakawa.daisy.export
 
                             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(pathRelativeToOPF));
 
+                            string descriptionFileHTML = null;
                             if (m_includeImageDescriptions)
                             {
                                 //string descriptionFileHTML = Path.GetDirectoryName(descriptionFile) +
@@ -1073,8 +1079,7 @@ namespace urakawa.daisy.export
                                 //                             ;
                                 bool hasMathML = false;
                                 bool hasSVG = false;
-                                string descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp, out hasMathML, out hasSVG);
-
+                                descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp, out hasMathML, out hasSVG);
 
                                 opfXmlNode_item = opfXmlDoc.CreateElement(null,
                                     "item",
@@ -1154,30 +1159,66 @@ namespace urakawa.daisy.export
 
                             if (m_includeImageDescriptions)
                             {
-                                //TODO generate HTML5 doc based on DIAGRAM XML (no XSLT)
-                                //
+                                DebugFix.Assert(!String.IsNullOrEmpty(descriptionFileHTML));
 
-                                //http://www.idpf.org/accessibility/guidelines/content/xhtml/descriptions.php
-                                //http://diagramcenter.org/standards-and-practices/html-standards.html
-                                //http://www.w3.org/TR/wai-aria-1.1/states_and_properties#aria-describedat
-                                //http://www.w3.org/TR/html-longdesc/
+                                string descriptionFileHTMLRelativeToHTML = FileDataProvider.UriEncode(Path.Combine(Path.GetDirectoryName(manImg.ImageMediaData.OriginalRelativePath), descriptionFileHTML).Replace('\\', '/'));
 
                                 if (m_imageDescriptions_useAriaDescribedAt)
                                 {
-
-
-                                }
-
-                                if (m_imageDescriptions_useAriaDescribedBy)
-                                {
-
-
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                        xmlDocHTML,
+                                        newXmlNode,
+                                        @"aria-describedat",
+                                        descriptionFileHTMLRelativeToHTML,
+                                        DiagramContentModelHelper.NS_URL_XHTML);
                                 }
 
                                 if (m_imageDescriptions_useHtmlLongDesc)
                                 {
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                        xmlDocHTML,
+                                        newXmlNode,
+                                        @"longdesc",
+                                        descriptionFileHTMLRelativeToHTML,
+                                        DiagramContentModelHelper.NS_URL_XHTML);
+                                }
+
+                                if (m_imageDescriptions_useAriaDescribedBy)
+                                {
+                                    string descIndirectID = "tobi_" +
+                                        FileDataProvider.EliminateForbiddenFileNameCharacters(
+                                            descriptionFileHTMLRelativeToHTML);
+
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                        xmlDocHTML,
+                                        newXmlNode,
+                                        @"aria-describedby",
+                                        descIndirectID,
+                                        DiagramContentModelHelper.NS_URL_XHTML);
 
 
+                                    XmlNode iframeNode = xmlDocHTML.CreateElement(null, @"iframe", newXmlNode.NamespaceURI);
+
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                                                            xmlDocHTML,
+                                                                            iframeNode,
+                                                                            @"id",
+                                                                            descIndirectID,
+                                                                            DiagramContentModelHelper.NS_URL_XHTML);
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                                                            xmlDocHTML,
+                                                                            iframeNode,
+                                                                            @"src",
+                                                                            descriptionFileHTMLRelativeToHTML,
+                                                                            DiagramContentModelHelper.NS_URL_XHTML);
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                                                            xmlDocHTML,
+                                                                            iframeNode,
+                                                                            @"hidden",
+                                                                            @"hidden",
+                                                                            DiagramContentModelHelper.NS_URL_XHTML);
+
+                                    newXmlNode.ParentNode.AppendChild(iframeNode);
                                 }
                             }
                         }
