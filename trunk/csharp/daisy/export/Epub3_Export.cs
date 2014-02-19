@@ -41,6 +41,7 @@ namespace urakawa.daisy.export
         protected readonly bool m_imageDescriptions_useAriaDescribedBy;
         protected readonly bool m_imageDescriptions_useAriaDescribedAt;
         protected readonly bool m_imageDescriptions_useHtmlLongDesc;
+        protected readonly bool m_imageDescriptions_inlineTextAudio;
 
         protected readonly bool m_encodeToMp3;
         protected readonly SampleRate m_sampleRate;
@@ -103,7 +104,8 @@ namespace urakawa.daisy.export
             string mediaOverlayActiveCSS,
             bool imageDescriptions_useAriaDescribedAt,
             bool imageDescriptions_useAriaDescribedBy,
-            bool imageDescriptions_useHtmlLongDesc)
+            bool imageDescriptions_useHtmlLongDesc,
+            bool imageDescriptions_inlineTextAudio)
         {
             //m_Daisy3_Export = new Daisy3_Export(presentation, exportDirectory, null, encodeToMp3, bitRate_Mp3, sampleRate, stereo, skipACM, includeImageDescriptions);
             //AddSubCancellable(m_Daisy3_Export);
@@ -122,6 +124,8 @@ namespace urakawa.daisy.export
             m_XukPath = xukPath;
 
             m_includeImageDescriptions = includeImageDescriptions;
+
+            m_imageDescriptions_inlineTextAudio = imageDescriptions_inlineTextAudio;
 
             m_imageDescriptions_useAriaDescribedAt = imageDescriptions_useAriaDescribedAt;
             m_imageDescriptions_useAriaDescribedBy = imageDescriptions_useAriaDescribedBy;
@@ -1081,7 +1085,7 @@ namespace urakawa.daisy.export
                                 //                             ;
                                 bool hasMathML = false;
                                 bool hasSVG = false;
-                                descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp, out hasMathML, out hasSVG);
+                                descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp, out hasMathML, out hasSVG, map_AltContentAudio_TO_RelativeExportedFilePath);
 
                                 opfXmlNode_item = opfXmlDoc.CreateElement(null,
                                     "item",
@@ -1162,6 +1166,10 @@ namespace urakawa.daisy.export
                             if (m_includeImageDescriptions)
                             {
                                 DebugFix.Assert(!String.IsNullOrEmpty(descriptionFileHTML));
+
+                                if (m_imageDescriptions_inlineTextAudio)
+                                {
+                                }
 
                                 string descriptionFileHTMLRelativeToHTML = FileDataProvider.UriEncode(Path.Combine(Path.GetDirectoryName(manImg.ImageMediaData.OriginalRelativePath), descriptionFileHTML).Replace('\\', '/'));
 

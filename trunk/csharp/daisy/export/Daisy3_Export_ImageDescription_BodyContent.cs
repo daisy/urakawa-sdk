@@ -16,7 +16,8 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private static void createDiagramBodyContentHTML(XmlDocument htmlDocument, XmlNode htmlNode, AlternateContentProperty altProperty, string imageDescriptionDirectoryPath, out bool hasMathML, out bool hasSVG)
+        private static void createDiagramBodyContentHTML(XmlDocument htmlDocument, XmlNode htmlNode, AlternateContentProperty altProperty, string imageDescriptionDirectoryPath, out bool hasMathML, out bool hasSVG,
+            Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath, string divCssClass)
         {
             hasSVG = false;
             hasMathML = false;
@@ -91,7 +92,7 @@ namespace urakawa.daisy.export
                     if (xmlNodeName != null)
                     {
                         XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, contentXmlNode,
-                            @"class", xmlNodeName, DiagramContentModelHelper.NS_URL_XHTML);
+                            @"class", divCssClass + xmlNodeName, DiagramContentModelHelper.NS_URL_XHTML);
 
                         foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
                         {
@@ -142,6 +143,26 @@ namespace urakawa.daisy.export
                     }
                 }
 
+                if (altContent.Audio != null)
+                {
+                    string audioPath = map_AltContentAudio_TO_RelativeExportedFilePath[altContent];
+                    string exportAudioName = Path.GetFileName(audioPath);
+
+
+                    XmlNode audioNode = htmlDocument.CreateElement(null, @"audio", DiagramContentModelHelper.NS_URL_XHTML);
+
+                    XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, audioNode,
+                        @"src",
+                        FileDataProvider.UriEncode(exportAudioName),
+                        audioNode.NamespaceURI);
+
+                    XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, audioNode,
+                        @"controls",
+                        @"controls",
+                        audioNode.NamespaceURI);
+
+                    contentXmlNode.AppendChild(audioNode);
+                }
 
 
 
@@ -430,9 +451,21 @@ namespace urakawa.daisy.export
                                 }
 
                                 XmlNode classAttr = existingNode.Attributes.GetNamedItem(@"class");
-                                if (classAttr == null || classAttr.Value != xmlNodeName)
+                                if (classAttr == null)
                                 {
                                     continue;
+                                }
+                                else
+                                {
+                                    string clazz = classAttr.Value;
+                                    if (clazz.StartsWith(divCssClass))
+                                    {
+                                        clazz = clazz.Substring(divCssClass.Length);
+                                    }
+                                    if (clazz != xmlNodeName)
+                                    {
+                                        continue;
+                                    }
                                 }
 
                                 XmlNode tourNode = null;
@@ -453,6 +486,23 @@ namespace urakawa.daisy.export
                                     }
 
                                     XmlNode classAttribute = child.Attributes.GetNamedItem(@"class");
+                                    //if (classAttribute == null)
+                                    //{
+                                    //    continue;
+                                    //}
+                                    //else
+                                    //{
+                                    //    string clazz = classAttribute.Value;
+                                    //    if (clazz.StartsWith(divCssClass))
+                                    //    {
+                                    //        clazz = clazz.Substring(divCssClass.Length);
+                                    //    }
+                                    //    if (clazz != DiagramContentModelHelper.D_Tour)
+                                    //    {
+                                    //        continue;
+                                    //    }
+                                    //}
+
                                     if (classAttribute == null || classAttribute.Value != DiagramContentModelHelper.D_Tour)
                                     {
                                         continue;
