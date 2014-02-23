@@ -95,9 +95,9 @@ namespace urakawa.xuk
                 &&
                 (
                 DataProviderFactory.XML_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
-                || ".html".Equals(ext, StringComparison.OrdinalIgnoreCase)
-                || ".xhtml".Equals(ext, StringComparison.OrdinalIgnoreCase)
-                || ".ncx".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.HTML_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.XHTML_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.NCX_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
                 || ".opf".Equals(ext, StringComparison.OrdinalIgnoreCase)
                 || DataProviderFactory.IMAGE_SVG_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
                 || DataProviderFactory.XSLT_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
