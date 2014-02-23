@@ -389,10 +389,10 @@ namespace urakawa.daisy.import
 
             if (!string.IsNullOrEmpty(extension))
             {
-                bool isHTML = extension.Equals(".xhtml", StringComparison.OrdinalIgnoreCase)
-                            || extension.Equals(".html", StringComparison.OrdinalIgnoreCase);
+                bool isHTML = extension.Equals(DataProviderFactory.XHTML_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                            || extension.Equals(DataProviderFactory.HTML_EXTENSION, StringComparison.OrdinalIgnoreCase);
 
-                bool isXML = extension.Equals(".xml", StringComparison.OrdinalIgnoreCase);
+                bool isXML = extension.Equals(DataProviderFactory.XML_EXTENSION, StringComparison.OrdinalIgnoreCase);
 
                 if (extension.Equals(".opf", StringComparison.OrdinalIgnoreCase))
                 {
@@ -446,7 +446,7 @@ namespace urakawa.daisy.import
                         }
                     }
                 }
-                else if (extension.Equals(".epub", StringComparison.OrdinalIgnoreCase)
+                else if (extension.Equals(DataProviderFactory.EPUB_EXTENSION, StringComparison.OrdinalIgnoreCase)
                     || extension.Equals(".zip", StringComparison.OrdinalIgnoreCase))
                 {
                     unzipEPubAndParseOpf();
