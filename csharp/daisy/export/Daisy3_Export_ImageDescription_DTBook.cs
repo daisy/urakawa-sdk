@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml;
 using System.IO;
 using AudioLib;
@@ -98,18 +99,34 @@ namespace urakawa.daisy.export
                             bool descriptionTextContainsMarkup = !xmlParseFail && descText.IndexOf('<') >= 0; // descText.Contains("<");
                             if (descriptionTextContainsMarkup)
                             {
-                                XmlNode wrapperNode = DTBookDocument.CreateElement("code", currentXmlNode.NamespaceURI);
+                                try
+                                {
+                                    prodNoteDesc.InnerXml = descText;
+                                }
+                                catch (Exception ex)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    Console.WriteLine(@"Cannot set DIAGRAM XML: " + descText);
+
+                                    XmlNode wrapperNode = DTBookDocument.CreateElement(DiagramContentModelHelper.CODE,
+                                        currentXmlNode.NamespaceURI);
+                                    prodNoteDesc.AppendChild(wrapperNode);
+                                    wrapperNode.AppendChild(DTBookDocument.CreateTextNode(descText));
+                                }
+                            }
+                            else if (xmlParseFail)
+                            {
+                                //descText = descText.Replace(DIAGRAM_XML_PARSE_FAIL, "");
+                                descText = descText.Substring(DIAGRAM_XML_PARSE_FAIL.Length);
+
+                                XmlNode wrapperNode = DTBookDocument.CreateElement(DiagramContentModelHelper.CODE, currentXmlNode.NamespaceURI);
                                 prodNoteDesc.AppendChild(wrapperNode);
                                 wrapperNode.AppendChild(DTBookDocument.CreateTextNode(descText));
                             }
                             else
                             {
-                                if (xmlParseFail)
-                                {
-                                    //descText = descText.Replace(DIAGRAM_XML_PARSE_FAIL, "");
-                                    descText = descText.Substring(DIAGRAM_XML_PARSE_FAIL.Length);
-                                }
-
                                 string normalizedText = descText.Replace("\r\n", "\n");
 
                                 string[] parasText = normalizedText.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
