@@ -649,7 +649,7 @@ namespace urakawa.daisy.import
 
                 if (docPath == coverImagePath)
                 {
-                    DebugFix.Assert(ext.Equals(".svg", StringComparison.OrdinalIgnoreCase));
+                    DebugFix.Assert(ext.Equals(DataProviderFactory.IMAGE_SVG_EXTENSION, StringComparison.OrdinalIgnoreCase));
 
                     spineChild.GetOrCreateXmlProperty().SetAttribute("cover-image", "", "true");
                 }
@@ -657,20 +657,20 @@ namespace urakawa.daisy.import
                 if (docPath == navDocPath)
                 {
                     DebugFix.Assert(
-                        ext.Equals(".xhtml", StringComparison.OrdinalIgnoreCase)
-                        || ext.Equals(".html", StringComparison.OrdinalIgnoreCase));
+                        ext.Equals(DataProviderFactory.XHTML_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                        || ext.Equals(DataProviderFactory.HTML_EXTENSION, StringComparison.OrdinalIgnoreCase));
 
                     spineChild.GetOrCreateXmlProperty().SetAttribute("nav", "", "true");
                 }
 
                 if (
-                    !ext.Equals(".xhtml", StringComparison.OrdinalIgnoreCase)
-                    && !ext.Equals(".html", StringComparison.OrdinalIgnoreCase)
-                    && !ext.Equals(".dtbook", StringComparison.OrdinalIgnoreCase)
-                    && !ext.Equals(".xml", StringComparison.OrdinalIgnoreCase)
+                    !ext.Equals(DataProviderFactory.XHTML_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                    && !ext.Equals(DataProviderFactory.HTML_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                    && !ext.Equals(DataProviderFactory.DTBOOK_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                    && !ext.Equals(DataProviderFactory.XML_EXTENSION, StringComparison.OrdinalIgnoreCase)
                     )
                 {
-                    DebugFix.Assert(ext.Equals(".svg", StringComparison.OrdinalIgnoreCase));
+                    DebugFix.Assert(ext.Equals(DataProviderFactory.IMAGE_SVG_EXTENSION, StringComparison.OrdinalIgnoreCase));
 
                     bool notExistYet = true;
                     foreach (ExternalFiles.ExternalFileData externalFileData in m_Project.Presentations.Get(0).ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
