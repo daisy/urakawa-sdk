@@ -15,7 +15,7 @@ namespace urakawa.daisy.export
 {
     public partial class Daisy3_Export
     {
-        private const string DIAGRAM_XML_PARSE_FAIL = "_DIAGRAM_XML_PARSE_FAIL_";
+        public const string DIAGRAM_XML_PARSE_FAIL = "_DIAGRAM_XML_PARSE_FAIL_";
 
         private void generateImageDescriptionInDTBook(TreeNode n, XmlNode currentXmlNode, string exportImageName, XmlDocument DTBookDocument)
         {

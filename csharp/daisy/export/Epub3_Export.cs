@@ -1054,11 +1054,17 @@ namespace urakawa.daisy.export
 
                             Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath = new Dictionary<AlternateContent, string>();
 
+                            Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions = new Dictionary<string, List<string>>();
+
+                            Dictionary<AlternateContentProperty, Daisy3_Export.Description> map_AltProperty_TO_Description = new Dictionary<AlternateContentProperty, Daisy3_Export.Description>();
+                            map_AltProperty_TO_Description.Add(altProp, new Daisy3_Export.Description());
+
+
                             string descriptionFile = Daisy3_Export.CreateImageDescription(m_SkipACM, pcmFormat, m_encodeToMp3, m_BitRate_Mp3,
                                 imageDescriptionDirectoryPath, exportImageName,
                                 altProp,
-                                null, //map_DiagramElementName_TO_TextualDescriptions,
-                                null, //m_Map_AltProperty_TO_Description,
+                                map_DiagramElementName_TO_TextualDescriptions,
+                                map_AltProperty_TO_Description,
                                 map_AltContentAudio_TO_RelativeExportedFilePath
                                 );
 
@@ -1087,9 +1093,12 @@ namespace urakawa.daisy.export
                                 //                             Path.GetFileNameWithoutExtension(descriptionFile) +
                                 //                             DataProviderFactory.XHTML_EXTENSION //Path.GetExtension(descriptionFile)
                                 //                             ;
+
+                                map_DiagramElementName_TO_TextualDescriptions = new Dictionary<string, List<string>>();
+
                                 bool hasMathML = false;
                                 bool hasSVG = false;
-                                descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp, out hasMathML, out hasSVG, map_AltContentAudio_TO_RelativeExportedFilePath);
+                                descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp, out hasMathML, out hasSVG, map_AltContentAudio_TO_RelativeExportedFilePath, map_DiagramElementName_TO_TextualDescriptions);
 
                                 opfXmlNode_item = opfXmlDoc.CreateElement(null,
                                     "item",
@@ -1177,8 +1186,178 @@ namespace urakawa.daisy.export
                             {
                                 DebugFix.Assert(!String.IsNullOrEmpty(descriptionFileHTML));
 
+                                string descIndirectID = "tobi_" +
+                                    FileDataProvider.EliminateForbiddenFileNameCharacters(
+                                        descriptionFileHTMLRelativeToHTML);
+
                                 if (m_imageDescriptions_inlineTextAudio)
                                 {
+                                    if (map_DiagramElementName_TO_TextualDescriptions.Count > 0)
+                                    {
+                                        foreach (string diagramDescriptionElementName in map_DiagramElementName_TO_TextualDescriptions.Keys)
+                                        {
+                                            XmlNode textDescNode = xmlDocHTML.CreateElement(null, @"div", newXmlNode.NamespaceURI);
+
+                                            XmlDocumentHelper.CreateAppendXmlAttribute(
+                                                                                    xmlDocHTML,
+                                                                                    textDescNode,
+                                                                                    @"class",
+                                                                                    Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX + diagramDescriptionElementName,
+                                                                                    DiagramContentModelHelper.NS_URL_XHTML);
+
+                                            string idInjectedDiv = descIndirectID + "_" + diagramDescriptionElementName.Replace(':', '_');
+                                            XmlDocumentHelper.CreateAppendXmlAttribute(
+                                                                                    xmlDocHTML,
+                                                                                    textDescNode,
+                                                                                    @"id",
+                                                                                    idInjectedDiv,
+                                                                                    DiagramContentModelHelper.NS_URL_XHTML);
+
+                                            newXmlNode.ParentNode.AppendChild(textDescNode);
+
+                                            foreach (string txt in map_DiagramElementName_TO_TextualDescriptions[diagramDescriptionElementName])
+                                            {
+                                                string descText = txt;
+
+                                                bool xmlParseFail = descText.StartsWith(Daisy3_Export.DIAGRAM_XML_PARSE_FAIL);
+
+                                                bool descriptionTextContainsMarkup = !xmlParseFail && descText.IndexOf('<') >= 0; // descText.Contains("<");
+                                                if (descriptionTextContainsMarkup)
+                                                {
+                                                    try
+                                                    {
+                                                        textDescNode.InnerXml = descText;
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+#if DEBUG
+                                                        Debugger.Break();
+#endif
+                                                        Console.WriteLine(@"Cannot set DIAGRAM XML: " + descText);
+
+                                                        XmlNode wrapperNode = xmlDocHTML.CreateElement(null, @"code", newXmlNode.NamespaceURI);
+                                                        textDescNode.AppendChild(wrapperNode);
+                                                        wrapperNode.AppendChild(xmlDocHTML.CreateTextNode(descText));
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (xmlParseFail)
+                                                    {
+                                                        //descText = descText.Replace(DIAGRAM_XML_PARSE_FAIL, "");
+                                                        descText = descText.Substring(Daisy3_Export.DIAGRAM_XML_PARSE_FAIL.Length);
+                                                    }
+
+                                                    string normalizedText = descText.Replace("\r\n", "\n");
+
+                                                    string[] parasText = normalizedText.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                                                    //string[] parasText = System.Text.RegularExpressions.Regex.Split(normalizedText, "\n");
+
+                                                    for (int i = 0; i < parasText.Length; i++)
+                                                    {
+                                                        string paraText = parasText[i].Trim();
+                                                        if (string.IsNullOrEmpty(paraText))
+                                                        {
+                                                            continue;
+                                                        }
+
+                                                        XmlNode paragraph = xmlDocHTML.CreateElement(null, @"p", newXmlNode.NamespaceURI);
+
+                                                        paragraph.InnerText = paraText;
+
+                                                        textDescNode.AppendChild(paragraph);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    //foreach (AlternateContent altContent in altProp.AlternateContents.ContentsAs_Enumerable)
+                                    //{
+                                    //    if (altContent.Text != null)
+                                    //    {
+                                    //        string xmlNodeName = null;
+
+                                    //        if (altContent.Metadatas != null && altContent.Metadatas.Count > 0)
+                                    //        {
+                                    //            foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
+                                    //            {
+                                    //                if (m.NameContentAttribute.Name ==
+                                    //                         DiagramContentModelHelper.DiagramElementName
+                                    //                         ||
+                                    //                         m.NameContentAttribute.Name ==
+                                    //                         DiagramContentModelHelper.DiagramElementName_OBSOLETE)
+                                    //                {
+                                    //                    xmlNodeName = m.NameContentAttribute.Value;
+                                    //                }
+
+                                    //                if (xmlNodeName != null)
+                                    //                {
+                                    //                    break;
+                                    //                }
+                                    //            }
+                                    //        }
+
+                                    //        if (xmlNodeName == null)
+                                    //        {
+                                    //            continue;
+                                    //        }
+
+                                    //        bool isTextDescription = DiagramContentModelHelper.D_Summary.Equals(
+                                    //            xmlNodeName, StringComparison.OrdinalIgnoreCase)
+                                    //                                 ||
+                                    //                                 DiagramContentModelHelper.D_LondDesc.Equals(
+                                    //                                     xmlNodeName, StringComparison.OrdinalIgnoreCase)
+                                    //                                 ||
+                                    //                                 DiagramContentModelHelper
+                                    //                                     .D_SimplifiedLanguageDescription.Equals(
+                                    //                                         xmlNodeName,
+                                    //                                         StringComparison.OrdinalIgnoreCase);
+
+                                    //        if (!isTextDescription)
+                                    //        {
+                                    //            continue;
+                                    //        }
+
+
+
+                                    //        //if (altContent.Audio != null)
+                                    //        //{
+                                    //        //    string audioDescPath =
+                                    //        //        map_AltContentAudio_TO_RelativeExportedFilePath[altContent];
+                                    //        //    DebugFix.Assert(!string.IsNullOrEmpty(audioDescPath));
+
+
+                                    //        //    opfXmlNode_item = opfXmlDoc.CreateElement(null,
+                                    //        //        "item",
+                                    //        //        DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                                    //        //    opfXmlNode_manifest.AppendChild(opfXmlNode_item);
+
+                                    //        //    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item,
+                                    //        //        @"id",
+                                    //        //        GetNextID(ID_DiagramXmlPrefix));
+
+                                    //        //    type =
+                                    //        //        DataProviderFactory.GetMimeTypeFromExtension(
+                                    //        //            Path.GetExtension(audioDescPath));
+                                    //        //    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item,
+                                    //        //        @"media-type", type);
+
+                                    //        //    relPath = Path.Combine(originalRelativeParentDir, audioDescPath);
+                                    //        //    //Path.Combine(Path.GetDirectoryName(descriptionFile), ));
+
+                                    //        //    fullPath =
+                                    //        //        FileDataProvider.NormaliseFullFilePath(Path.Combine(imageParentDir,
+                                    //        //            audioDescPath)).Replace('/', '\\');
+                                    //        //    pathRelativeToOPF = makeRelativePathToOPF(fullPath,
+                                    //        //        fullSpineItemDirectory,
+                                    //        //        relPath, opfFilePath);
+
+                                    //        //    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item,
+                                    //        //        @"href", FileDataProvider.UriEncode(pathRelativeToOPF));
+                                    //        //}
+                                    //    }
+                                    //}
                                 }
 
                                 string descriptionFileHTMLRelativeToHTML = FileDataProvider.UriEncode(Path.Combine(Path.GetDirectoryName(manImg.ImageMediaData.OriginalRelativePath), descriptionFileHTML).Replace('\\', '/'));
@@ -1205,10 +1384,6 @@ namespace urakawa.daisy.export
 
                                 if (m_imageDescriptions_useAriaDescribedBy)
                                 {
-                                    string descIndirectID = "tobi_" +
-                                        FileDataProvider.EliminateForbiddenFileNameCharacters(
-                                            descriptionFileHTMLRelativeToHTML);
-
                                     XmlDocumentHelper.CreateAppendXmlAttribute(
                                         xmlDocHTML,
                                         newXmlNode,
@@ -2693,13 +2868,13 @@ namespace urakawa.daisy.export
                         //    DebugFix.Assert(attrPlayOrder == null);
 
                         //    System.Xml.XmlAttribute attributePlayOrder = node.ParentNode.OwnerDocument.CreateAttribute(@"playOrder");
-                            
+
                         //    attributePlayOrder.Value = "" + playOrder;
                         //    playOrder++;
 
                         //    node.ParentNode.Attributes.Append(attributePlayOrder);
                         //}
-                        
+
                         break;
                     }
                 }

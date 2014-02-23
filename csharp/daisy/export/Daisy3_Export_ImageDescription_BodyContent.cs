@@ -17,7 +17,8 @@ namespace urakawa.daisy.export
     public partial class Daisy3_Export
     {
         private static void createDiagramBodyContentHTML(XmlDocument htmlDocument, XmlNode htmlNode, AlternateContentProperty altProperty, string imageDescriptionDirectoryPath, out bool hasMathML, out bool hasSVG,
-            Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath, string divCssClass)
+            Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath,
+            Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions)
         {
             hasSVG = false;
             hasMathML = false;
@@ -92,7 +93,7 @@ namespace urakawa.daisy.export
                     if (xmlNodeName != null)
                     {
                         XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, contentXmlNode,
-                            @"class", divCssClass + xmlNodeName, DiagramContentModelHelper.NS_URL_XHTML);
+                            @"class", Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX + xmlNodeName, DiagramContentModelHelper.NS_URL_XHTML);
 
                         foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
                         {
@@ -458,9 +459,9 @@ namespace urakawa.daisy.export
                                 else
                                 {
                                     string clazz = classAttr.Value;
-                                    if (clazz.StartsWith(divCssClass))
+                                    if (clazz.StartsWith(Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX))
                                     {
-                                        clazz = clazz.Substring(divCssClass.Length);
+                                        clazz = clazz.Substring(Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX.Length);
                                     }
                                     if (clazz != xmlNodeName)
                                     {
@@ -493,9 +494,9 @@ namespace urakawa.daisy.export
                                     //else
                                     //{
                                     //    string clazz = classAttribute.Value;
-                                    //    if (clazz.StartsWith(divCssClass))
+                                    //    if (clazz.StartsWith(Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX))
                                     //    {
-                                    //        clazz = clazz.Substring(divCssClass.Length);
+                                    //        clazz = clazz.Substring(Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX.Length);
                                     //    }
                                     //    if (clazz != DiagramContentModelHelper.D_Tour)
                                     //    {
@@ -571,6 +572,64 @@ namespace urakawa.daisy.export
                 if (!mergedObjectForExistingTourDescription)
                 {
                     bodyNode.AppendChild(contentXmlNode);
+
+                    string clazz = null;
+
+                    XmlNode classAttr = contentXmlNode.Attributes.GetNamedItem(@"class");
+                    if (classAttr != null)
+                    {
+                        clazz = classAttr.Value;
+                        if (clazz.StartsWith(Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX))
+                        {
+                            clazz = clazz.Substring(Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX.Length);
+                        }
+                    }
+
+
+                    if (!string.IsNullOrEmpty(clazz)
+                        && map_DiagramElementName_TO_TextualDescriptions != null
+                        && normalizedDescriptionText != null
+                        && IsIncludedInDTBook(clazz)
+
+                        //                        (string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
+                        //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_LondDesc, StringComparison.OrdinalIgnoreCase)
+                        //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedLanguageDescription, StringComparison.OrdinalIgnoreCase)
+                        //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
+                        //                        || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.D_SimplifiedImage, StringComparison.OrdinalIgnoreCase)
+                        //#if true || SUPPORT_ANNOTATION_ELEMENT
+                        // || string.Equals(contentXmlNode.Name, DiagramContentModelHelper.Annotation, StringComparison.OrdinalIgnoreCase)
+                        //#endif //SUPPORT_ANNOTATION_ELEMENT
+                        //)
+                        )
+                    {
+                        List<string> list;
+                        map_DiagramElementName_TO_TextualDescriptions.TryGetValue(clazz, out list);
+
+                        if (list == null)
+                        {
+                            list = new List<string>(1);
+                            map_DiagramElementName_TO_TextualDescriptions.Add(clazz, list);
+
+                            //if (map_AltProperty_TO_Description != null)
+                            //{
+                            //    map_AltProperty_TO_Description[altProperty]
+                            //        .Map_DiagramElementName_TO_AltContent
+                            //        .Add(contentXmlNode.Name, altContent);
+                            //}
+                        }
+
+                        string text = null;
+                        if (descriptionTextContainsMarkup)
+                        {
+                            text = normalizedDescriptionText;
+                        }
+                        else
+                        {
+                            text = descriptionTextEscaped; //  altContent.Text.Text;
+                        }
+
+                        list.Add(text);
+                    }
                 }
             }
         }

@@ -69,9 +69,11 @@ namespace urakawa.daisy.export
             return imageDescriptionDirectoryPath;
         }
 
+        public const string DIAGRAM_CSS_CLASS_PREFIX = @"DIAGRAM "; // space character is crucial! 
 
         public static string CreateImageDescriptionHTML(string imageDescriptionDirectoryPath, string imageSRC, AlternateContentProperty altProperty, out bool hasMathML, out bool hasSVG,
-            Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath)
+            Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath,
+            Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions)
         {
 #if DEBUG
             DebugFix.Assert(!altProperty.IsEmpty);
@@ -116,16 +118,15 @@ namespace urakawa.daisy.export
             XmlNode head = htmlDocument.CreateElement(null, @"head", htmlNode.NamespaceURI);
             htmlNode.AppendChild(head);
 
-            const string divCssClass = @"DIAGRAM "; // space character is crucial!
 
             string css =
                 "body { margin: 0; padding: 0; background: white; color: black; font-size: 130%; font-family: serif; } ."
-                + divCssClass.Substring(0, divCssClass.Length - 1) + ":before { content: attr(class); font-family: sans-serif; font-weight: bold; display: block; border: 1px dashed black; padding: 0.5em; margin: 0; margin-bottom: 0.5em; } ."
-                + divCssClass + "{ border: 2px solid black; padding: 0.5em; margin: 0; margin-top: 1em; } ."
-                + divCssClass + ".d\\:tour { border: 2px solid green; padding: 0.5em; margin: 0; margin-top: 1em; } ."
-                + divCssClass + ".d\\:tour:before { content: \"DIAGRAM d\\:tour\"; font-family: sans-serif; font-weight: bold; display: block; border: 1px dashed green; padding: 0.5em; margin: 0; margin-bottom: 0.5em; } ."
-                + divCssClass + "img { display: block; padding: 0; margin: 0; margin-top: 1em; margin-bottom: 0.5em; } ."
-                + divCssClass + "audio { display: block; padding: 0; margin: 0; margin-top: 1em; margin-bottom: 0.5em; }";
+                + Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX.Substring(0, Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX.Length - 1) + ":before { content: attr(class); font-family: sans-serif; font-weight: bold; display: block; border: 1px dashed black; padding: 0.5em; margin: 0; margin-bottom: 0.5em; } ."
+                + Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX + "{ border: 2px solid black; padding: 0.5em; margin: 0; margin-top: 1em; } ."
+                + Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX + ".d\\:tour { border: 2px solid green; padding: 0.5em; margin: 0; margin-top: 1em; } ."
+                + Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX + ".d\\:tour:before { content: \"DIAGRAM d\\:tour\"; font-family: sans-serif; font-weight: bold; display: block; border: 1px dashed green; padding: 0.5em; margin: 0; margin-bottom: 0.5em; } ."
+                + Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX + "img { display: block; padding: 0; margin: 0; margin-top: 1em; margin-bottom: 0.5em; } ."
+                + Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX + "audio { display: block; padding: 0; margin: 0; margin-top: 1em; margin-bottom: 0.5em; }";
 
             XmlNode style = htmlDocument.CreateElement(@"style", htmlDocument.DocumentElement.NamespaceURI);
             head.AppendChild(style);
@@ -133,7 +134,7 @@ namespace urakawa.daisy.export
             XmlNode cssNode = htmlDocument.CreateTextNode(css);
             style.AppendChild(cssNode);
 
-            createDiagramBodyContentHTML(htmlDocument, htmlNode, altProperty, imageDescriptionDirectoryPath, out hasMathML, out hasSVG, map_AltContentAudio_TO_RelativeExportedFilePath, divCssClass);
+            createDiagramBodyContentHTML(htmlDocument, htmlNode, altProperty, imageDescriptionDirectoryPath, out hasMathML, out hasSVG, map_AltContentAudio_TO_RelativeExportedFilePath, map_DiagramElementName_TO_TextualDescriptions);
 
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + IMAGE_DESCRIPTION_XML_SUFFIX + DataProviderFactory.XHTML_EXTENSION;
             XmlReaderWriterHelper.WriteXmlDocument(htmlDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName));
