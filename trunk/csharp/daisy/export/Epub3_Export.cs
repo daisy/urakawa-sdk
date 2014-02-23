@@ -1186,9 +1186,11 @@ namespace urakawa.daisy.export
                             {
                                 DebugFix.Assert(!String.IsNullOrEmpty(descriptionFileHTML));
 
+                                string descriptionFileHTMLRelativeToHTML = FileDataProvider.UriEncode(Path.Combine(Path.GetDirectoryName(manImg.ImageMediaData.OriginalRelativePath), descriptionFileHTML).Replace('\\', '/'));
+
                                 string descIndirectID = "tobi_" +
                                     FileDataProvider.EliminateForbiddenFileNameCharacters(
-                                        descriptionFileHTMLRelativeToHTML);
+                                        descriptionFileHTMLRelativeToHTML).Replace('.', '_');
 
                                 if (m_imageDescriptions_inlineTextAudio)
                                 {
@@ -1235,19 +1237,22 @@ namespace urakawa.daisy.export
 #endif
                                                         Console.WriteLine(@"Cannot set DIAGRAM XML: " + descText);
 
-                                                        XmlNode wrapperNode = xmlDocHTML.CreateElement(null, @"code", newXmlNode.NamespaceURI);
+                                                        XmlNode wrapperNode = xmlDocHTML.CreateElement(null, DiagramContentModelHelper.CODE, newXmlNode.NamespaceURI);
                                                         textDescNode.AppendChild(wrapperNode);
                                                         wrapperNode.AppendChild(xmlDocHTML.CreateTextNode(descText));
                                                     }
                                                 }
+                                                else if (xmlParseFail)
+                                                {
+                                                    //descText = descText.Replace(DIAGRAM_XML_PARSE_FAIL, "");
+                                                    descText = descText.Substring(Daisy3_Export.DIAGRAM_XML_PARSE_FAIL.Length);
+
+                                                    XmlNode wrapperNode = xmlDocHTML.CreateElement(null, DiagramContentModelHelper.CODE, newXmlNode.NamespaceURI);
+                                                    textDescNode.AppendChild(wrapperNode);
+                                                    wrapperNode.AppendChild(xmlDocHTML.CreateTextNode(descText));
+                                                }
                                                 else
                                                 {
-                                                    if (xmlParseFail)
-                                                    {
-                                                        //descText = descText.Replace(DIAGRAM_XML_PARSE_FAIL, "");
-                                                        descText = descText.Substring(Daisy3_Export.DIAGRAM_XML_PARSE_FAIL.Length);
-                                                    }
-
                                                     string normalizedText = descText.Replace("\r\n", "\n");
 
                                                     string[] parasText = normalizedText.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -1261,7 +1266,7 @@ namespace urakawa.daisy.export
                                                             continue;
                                                         }
 
-                                                        XmlNode paragraph = xmlDocHTML.CreateElement(null, @"p", newXmlNode.NamespaceURI);
+                                                        XmlNode paragraph = xmlDocHTML.CreateElement(null, DiagramContentModelHelper.P, newXmlNode.NamespaceURI);
 
                                                         paragraph.InnerText = paraText;
 
@@ -1359,8 +1364,6 @@ namespace urakawa.daisy.export
                                     //    }
                                     //}
                                 }
-
-                                string descriptionFileHTMLRelativeToHTML = FileDataProvider.UriEncode(Path.Combine(Path.GetDirectoryName(manImg.ImageMediaData.OriginalRelativePath), descriptionFileHTML).Replace('\\', '/'));
 
                                 if (m_imageDescriptions_useAriaDescribedAt)
                                 {
