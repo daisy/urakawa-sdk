@@ -2594,7 +2594,7 @@ namespace urakawa.daisy.export
 
             XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocument(
                 path,
-                (path.EndsWith(DataProviderFactory.NCX_EXTENSION, StringComparison.OrdinalIgnoreCase) || path.Contains("NCX", StringComparison.OrdinalIgnoreCase)) ? false : true,
+                (path.EndsWith(DataProviderFactory.NCX_EXTENSION, StringComparison.OrdinalIgnoreCase) || path.IndexOf("NCX", StringComparison.OrdinalIgnoreCase) >= 0) ? false : true,
                 false);
 
             if (!string.IsNullOrEmpty(navDoc))
@@ -2670,7 +2670,7 @@ namespace urakawa.daisy.export
                 {
                     if (fullPath == fullPath_removedSpineItem)
                     {
-                        attr.Value = (!string.IsNullOrEmpty(navDoc) ? navDoc : "") + "#" + HREF;
+                        attr.Value = (!string.IsNullOrEmpty(navDoc) ? navDoc : "") + (!string.IsNullOrEmpty(HREF) ? ("#" + HREF) : "");
                         break;
                     }
                 }
