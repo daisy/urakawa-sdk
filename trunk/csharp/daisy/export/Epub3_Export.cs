@@ -2335,7 +2335,7 @@ namespace urakawa.daisy.export
                 if (!string.IsNullOrEmpty(m_exportSpineItemPath)
                     && File.Exists(m_exportSpineItemPath))
                 {
-                    removeSkippedSpineItemsReferences_SingleChapterExport(m_exportSpineItemPath, "a", "href", null);
+                    removeSkippedSpineItemsReferences_SingleChapterExport(m_exportSpineItemPath, "a", "href", hasNavDoc);
                 }
 
                 if (!string.IsNullOrEmpty(hasNavDoc)
@@ -2600,7 +2600,7 @@ namespace urakawa.daisy.export
             if (!string.IsNullOrEmpty(navDoc))
             {
                 navDoc = FileDataProvider.NormaliseFullFilePath(navDoc).Replace('/', '\\');
-                navDoc = makeRelativePathToOPF(navDoc, Path.GetDirectoryName(path), Path.GetFileName(navDoc), path);
+                navDoc = makeRelativePathToOPF(navDoc, Path.GetDirectoryName(navDoc), Path.GetFileName(navDoc), path);
                 HREF = "";
             }
             else
@@ -2617,6 +2617,8 @@ namespace urakawa.daisy.export
             }
 
             string parentDir = Path.GetDirectoryName(path);
+
+            int playOrder = 1;
 
             Stack<XmlNode> nodeStack = new Stack<XmlNode>();
             nodeStack.Push(xmlDoc.DocumentElement);
@@ -2648,8 +2650,21 @@ namespace urakawa.daisy.export
                     continue;
                 }
 
+                if (node.ParentNode != null)
+                {
+                    XmlNode attrPlayOrder = node.ParentNode.Attributes.GetNamedItem(@"playOrder");
+                    if (attrPlayOrder != null)
+                    {
+                        DebugFix.Assert(node.ParentNode.Name == @"navPoint");
+
+                        node.ParentNode.Attributes.RemoveNamedItem(@"playOrder");
+                    }
+                }
+
                 string val = attr.Value.Trim();
                 if (val.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                    ||
+                    val.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)
                     ||
                     val.StartsWith("#")
                     )
@@ -2671,6 +2686,20 @@ namespace urakawa.daisy.export
                     if (fullPath == fullPath_removedSpineItem)
                     {
                         attr.Value = (!string.IsNullOrEmpty(navDoc) ? navDoc : "") + (!string.IsNullOrEmpty(HREF) ? ("#" + HREF) : "");
+
+                        //if (node.ParentNode != null && node.ParentNode.Name == @"navPoint")
+                        //{
+                        //    XmlNode attrPlayOrder = node.ParentNode.Attributes.GetNamedItem(@"playOrder");
+                        //    DebugFix.Assert(attrPlayOrder == null);
+
+                        //    System.Xml.XmlAttribute attributePlayOrder = node.ParentNode.OwnerDocument.CreateAttribute(@"playOrder");
+                            
+                        //    attributePlayOrder.Value = "" + playOrder;
+                        //    playOrder++;
+
+                        //    node.ParentNode.Attributes.Append(attributePlayOrder);
+                        //}
+                        
                         break;
                     }
                 }
