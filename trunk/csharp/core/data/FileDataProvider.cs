@@ -305,7 +305,7 @@ namespace urakawa.data
                 string error = DeleteDirectory(dir);
                 if (!string.IsNullOrEmpty(error))
                 {
-                    if (showDirIfError)
+                    if (showDirIfError && Directory.Exists(dir))
                     {
                         Process process = new Process();
                         process.StartInfo.FileName = dir;
