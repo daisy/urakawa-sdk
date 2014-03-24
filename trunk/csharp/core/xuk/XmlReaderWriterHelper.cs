@@ -516,7 +516,7 @@ namespace urakawa.xuk
             return settings;
         }
 
-        public static void WriteXmlDocument(XmlDocument xmlDoc, string path)
+        public static void WriteXmlDocument(XmlDocument xmlDoc, string path, XmlWriterSettings settings)
         {
             string parentDir = Path.GetDirectoryName(path);
             if (!Directory.Exists(parentDir))
@@ -530,9 +530,10 @@ namespace urakawa.xuk
             xmlDoc.XmlResolver = null;
 
             FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-
-            XmlWriterSettings settings = GetDefaultXmlWriterConfiguration(pretty);
-
+            if (settings == null)
+            {
+                settings = GetDefaultXmlWriterConfiguration(pretty);
+            }
             XmlWriter xmlWriter = null;
             try
             {
