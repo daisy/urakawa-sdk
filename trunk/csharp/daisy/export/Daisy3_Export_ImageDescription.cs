@@ -137,7 +137,7 @@ namespace urakawa.daisy.export
             createDiagramBodyContentHTML(htmlDocument, htmlNode, altProperty, imageDescriptionDirectoryPath, out hasMathML, out hasSVG, map_AltContentAudio_TO_RelativeExportedFilePath, map_DiagramElementName_TO_TextualDescriptions);
 
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + IMAGE_DESCRIPTION_XML_SUFFIX + DataProviderFactory.XHTML_EXTENSION;
-            XmlReaderWriterHelper.WriteXmlDocument(htmlDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName));
+            XmlReaderWriterHelper.WriteXmlDocument(htmlDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName),null);
 
             string relativePath = Path.GetFileName(imageDescriptionDirectoryPath);
             DirectoryInfo d = new DirectoryInfo(imageDescriptionDirectoryPath);
@@ -210,7 +210,7 @@ namespace urakawa.daisy.export
                 map_AltContentAudio_TO_RelativeExportedFilePath);
 
             string descFileName = Path.GetFileNameWithoutExtension(imageSRC) + IMAGE_DESCRIPTION_XML_SUFFIX + DataProviderFactory.XML_EXTENSION;
-            XmlReaderWriterHelper.WriteXmlDocument(descriptionDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName));
+            XmlReaderWriterHelper.WriteXmlDocument(descriptionDocument, Path.Combine(imageDescriptionDirectoryPath, descFileName),null);
 
             string relativePath = Path.GetFileName(imageDescriptionDirectoryPath);
             DirectoryInfo d = new DirectoryInfo(imageDescriptionDirectoryPath);

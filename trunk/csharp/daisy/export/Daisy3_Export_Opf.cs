@@ -260,7 +260,7 @@ namespace urakawa.daisy.export
                 return;
             }
 
-            XmlReaderWriterHelper.WriteXmlDocument(opfDocument, OpfFilePath);
+            XmlReaderWriterHelper.WriteXmlDocument(opfDocument, OpfFilePath, null);
         }
 
         public string OpfFilePath

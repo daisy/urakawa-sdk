@@ -1510,7 +1510,7 @@ namespace urakawa.daisy.export
             {
                 FileDataProvider.CreateDirectory(parentdir);
             }
-            XmlReaderWriterHelper.WriteXmlDocument(xmlDocHTML, fullSpineItemPath);
+            XmlReaderWriterHelper.WriteXmlDocument(xmlDocHTML, fullSpineItemPath, null);
 
 #if false && DEBUG
             string body = spineItemPresentation.RootNode.GetXmlFragment(false);
@@ -1534,7 +1534,7 @@ namespace urakawa.daisy.export
                 {
                     FileDataProvider.CreateDirectory(parentdirSmil);
                 }
-                XmlReaderWriterHelper.WriteXmlDocument(xmlDocSMIL, fullSmilPath);
+                XmlReaderWriterHelper.WriteXmlDocument(xmlDocSMIL, fullSmilPath, null);
 
 #if false && DEBUG
                 StreamWriter spineItemWriterSmil = File.CreateText(fullSmilPath);
@@ -2646,7 +2646,7 @@ namespace urakawa.daisy.export
                     }
                 }
 
-                XmlReaderWriterHelper.WriteXmlDocument(xmlDoc, navDocPath);
+                XmlReaderWriterHelper.WriteXmlDocument(xmlDoc, navDocPath, null);
 
 
                 //StreamWriter navDocWriter = File.CreateText(navDocPath);
@@ -2691,7 +2691,7 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_meta, "content", TOBI_GENERATOR);
             }
 
-            XmlReaderWriterHelper.WriteXmlDocument(opfXmlDoc, opfFilePath);
+            XmlReaderWriterHelper.WriteXmlDocument(opfXmlDoc, opfFilePath, null);
 
 #if false && DEBUG
                     // Empty directories will not be included in ZIP
@@ -2883,7 +2883,7 @@ namespace urakawa.daisy.export
                 }
             }
 
-            XmlReaderWriterHelper.WriteXmlDocument(xmlDoc, path);
+            XmlReaderWriterHelper.WriteXmlDocument(xmlDoc, path, null);
         }
 
         //        protected void fixNavReferencesSingleChapterExport(string path, string element, string attribute, string navdoc)

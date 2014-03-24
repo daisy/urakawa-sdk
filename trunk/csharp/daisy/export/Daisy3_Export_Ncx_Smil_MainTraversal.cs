@@ -943,7 +943,7 @@ namespace urakawa.daisy.export
                 XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, mainSeqNode, "fill", "remove");
                 AddMetadata_Smil(smilDocument, FormatTimeString(smilElapseTime), currentSmilCustomTestList);
 
-                XmlReaderWriterHelper.WriteXmlDocument(smilDocument, Path.Combine(m_OutputDirectory, smilFileName));
+                XmlReaderWriterHelper.WriteXmlDocument(smilDocument, Path.Combine(m_OutputDirectory, smilFileName), null);
 
                 m_FilesList_Smil.Add(smilFileName);
                 smilDocument = null;
@@ -1030,7 +1030,7 @@ namespace urakawa.daisy.export
                 ncxDocument = null;
                 return;
             }
-            XmlReaderWriterHelper.WriteXmlDocument(m_DTBDocument, Path.Combine(m_OutputDirectory, m_Filename_Content));
+            XmlReaderWriterHelper.WriteXmlDocument(m_DTBDocument, Path.Combine(m_OutputDirectory, m_Filename_Content), null);
 
             if (RequestCancellation)
             {
@@ -1041,7 +1041,7 @@ namespace urakawa.daisy.export
             // write ncs document to file
             m_TotalTime = new Time(smilElapseTime);
             AddMetadata_Ncx(ncxDocument, data.totalPageCount.ToString(), data.maxNormalPageNumber.ToString(), data.maxDepth.ToString(), ncxCustomTestList);
-            XmlReaderWriterHelper.WriteXmlDocument(ncxDocument, Path.Combine(m_OutputDirectory, m_Filename_Ncx));
+            XmlReaderWriterHelper.WriteXmlDocument(ncxDocument, Path.Combine(m_OutputDirectory, m_Filename_Ncx),null);
         }
     }
 }
