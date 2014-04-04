@@ -18,7 +18,7 @@ namespace urakawa.daisy.export
     {
         private static void createDiagramBodyContentHTML(XmlDocument htmlDocument, XmlNode htmlNode, AlternateContentProperty altProperty, string imageDescriptionDirectoryPath, out bool hasMathML, out bool hasSVG,
             Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath,
-            Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions)
+            Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions, bool onlyLongDesc)
         {
             hasSVG = false;
             hasMathML = false;
@@ -92,6 +92,11 @@ namespace urakawa.daisy.export
 
                     if (xmlNodeName != null)
                     {
+                        if (onlyLongDesc && xmlNodeName != DiagramContentModelHelper.D_LondDesc)
+                        {
+                            continue;
+                        }
+
                         XmlDocumentHelper.CreateAppendXmlAttribute(htmlDocument, contentXmlNode,
                             @"class", Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX + xmlNodeName, DiagramContentModelHelper.NS_URL_XHTML);
 
