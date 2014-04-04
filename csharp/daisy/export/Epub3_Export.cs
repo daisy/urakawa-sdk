@@ -1131,7 +1131,7 @@ namespace urakawa.daisy.export
 
                                 hasMathML = false;
                                 hasSVG = false;
-                                descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp, out hasMathML, out hasSVG, map_AltContentAudio_TO_RelativeExportedFilePath, map_DiagramElementName_TO_TextualDescriptions, true);
+                                descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp, out hasMathML, out hasSVG, map_AltContentAudio_TO_RelativeExportedFilePath, map_DiagramElementName_TO_TextualDescriptions, false);
 
                                 opfXmlNode_item = opfXmlDoc.CreateElement(null,
                                     "item",
