@@ -1086,6 +1086,7 @@ namespace urakawa.daisy.export
                             XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(pathRelativeToOPF));
 
                             string descriptionFileHTML = null;
+                            string longDescFileHTML = null;
                             if (m_includeImageDescriptions)
                             {
                                 //string descriptionFileHTML = Path.GetDirectoryName(descriptionFile) +
@@ -1098,7 +1099,39 @@ namespace urakawa.daisy.export
 
                                 bool hasMathML = false;
                                 bool hasSVG = false;
-                                descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp, out hasMathML, out hasSVG, map_AltContentAudio_TO_RelativeExportedFilePath, map_DiagramElementName_TO_TextualDescriptions);
+                                longDescFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, "LD_" + exportImageName, altProp, out hasMathML, out hasSVG, map_AltContentAudio_TO_RelativeExportedFilePath, map_DiagramElementName_TO_TextualDescriptions, true);
+
+                                opfXmlNode_item = opfXmlDoc.CreateElement(null,
+                                    "item",
+                                    DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                                opfXmlNode_manifest.AppendChild(opfXmlNode_item);
+
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"id", GetNextID(ID_DiagramXmlPrefix));
+
+                                type = DataProviderFactory.XHTML_MIME_TYPE; // GetMimeTypeFromExtension(Path.GetExtension(descriptionFile));
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
+
+                                if (hasMathML || hasSVG)
+                                {
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"properties",
+                                        (hasMathML ? "mathml " : "") + (hasSVG ? "svg" : "")); // scripted?
+                                }
+
+                                relPath = Path.Combine(originalRelativeParentDir, longDescFileHTML);
+
+                                fullPath = FileDataProvider.NormaliseFullFilePath(Path.Combine(imageParentDir, longDescFileHTML)).Replace('/', '\\');
+                                pathRelativeToOPF = makeRelativePathToOPF(fullPath, fullSpineItemDirectory, relPath, opfFilePath);
+
+                                XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(pathRelativeToOPF));
+
+
+
+
+                                map_DiagramElementName_TO_TextualDescriptions = new Dictionary<string, List<string>>();
+
+                                hasMathML = false;
+                                hasSVG = false;
+                                descriptionFileHTML = Daisy3_Export.CreateImageDescriptionHTML(imageDescriptionDirectoryPath, exportImageName, altProp, out hasMathML, out hasSVG, map_AltContentAudio_TO_RelativeExportedFilePath, map_DiagramElementName_TO_TextualDescriptions, true);
 
                                 opfXmlNode_item = opfXmlDoc.CreateElement(null,
                                     "item",
@@ -1191,6 +1224,17 @@ namespace urakawa.daisy.export
                                 string descIndirectID = "tobi_" +
                                     FileDataProvider.EliminateForbiddenFileNameCharacters(
                                         descriptionFileHTMLRelativeToHTML).Replace('.', '_');
+                                
+
+                                DebugFix.Assert(!String.IsNullOrEmpty(longDescFileHTML));
+
+                                string longDescFileHTMLRelativeToHTML = FileDataProvider.UriEncode(Path.Combine(Path.GetDirectoryName(manImg.ImageMediaData.OriginalRelativePath), longDescFileHTML).Replace('\\', '/'));
+
+                                //string longDescIndirectID = "tobi_" +
+                                //    FileDataProvider.EliminateForbiddenFileNameCharacters(
+                                //        longDescFileHTMLRelativeToHTML).Replace('.', '_');
+                                
+                                
 
                                 if (m_imageDescriptions_inlineTextAudio)
                                 {
@@ -1381,7 +1425,7 @@ namespace urakawa.daisy.export
                                         xmlDocHTML,
                                         newXmlNode,
                                         @"longdesc",
-                                        descriptionFileHTMLRelativeToHTML,
+                                        longDescFileHTMLRelativeToHTML,
                                         DiagramContentModelHelper.NS_URL_XHTML);
                                 }
 
