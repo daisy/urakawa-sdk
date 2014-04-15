@@ -1600,6 +1600,10 @@ namespace urakawa.daisy.export
                     continue;
                 }
 
+                bool isCover = extFileData is CoverImageExternalFileData;
+                bool isNCX = extFileData is NCXExternalFileData;
+                bool isNav = extFileData is NavDocExternalFileData;
+
                 string relativePath = extFileData.OriginalRelativePath;
                 if (string.IsNullOrEmpty(relativePath))
                 {
@@ -1635,6 +1639,11 @@ namespace urakawa.daisy.export
                     string spineItemExt = Path.GetExtension(relativePath);
 
                     string spineItemType = DataProviderFactory.GetMimeTypeFromExtension(spineItemExt);
+                    if (isNCX) // .xml extension but NCX mime type
+                    {
+                        spineItemType = DataProviderFactory.NCX_MIME_TYPE;
+                    }
+
                     XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_spineItemExt, @"media-type",
                                                                spineItemType);
 
