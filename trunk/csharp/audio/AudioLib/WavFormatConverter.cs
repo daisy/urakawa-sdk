@@ -20,20 +20,31 @@ using TLongSampleType = System.Double;
 namespace AudioLib
 {
 
-    public class WavSoundTouch
+    public class WavSoundTouch : DualCancellableProgressReporter
     {
         SoundTouch<TSampleType, TLongSampleType> m_SoundTouch;
 
         private byte[] m_SoundTouch_ByteBuffer = null;
         private TSampleType[] m_SoundTouch_SampleBuffer = null;
 
+        private string m_fullpath = null;
+        private float m_factor = 0.0f;
+
         public WavSoundTouch(string fullpath, float factor
             //, AudioLibPCMFormat audioPCMFormat
             )
         {
+            m_fullpath = fullpath;
+            m_factor = factor;
+        }
+
+        public override void DoWork()
+        {
+            RequestCancellation = false;
+
             AudioLibPCMFormat audioPCMFormat = null;
 
-            string fullpath_ = fullpath + "_.wav";
+            string fullpath_ = m_fullpath + "_.wav";
 
             m_SoundTouch = new SoundTouch<TSampleType, TLongSampleType>();
 
@@ -50,8 +61,8 @@ namespace AudioLib
             m_SoundTouch.SetSetting(SettingId.UseQuickseek, 0);
 
 
-            m_SoundTouch.SetTempo(factor);
-            //m_SoundTouch.SetTempoChange(factor * 100);
+            m_SoundTouch.SetTempo(m_factor);
+            //m_SoundTouch.SetTempoChange(m_factor * 100);
 
             m_SoundTouch.SetPitchSemiTones(0);
             m_SoundTouch.SetRateChange(0);
@@ -60,10 +71,10 @@ namespace AudioLib
             ulong audioStreamRiffOffset = 0;
             Stream destStream = null;
 
-            bool okay = true;
+            bool okay = false;
             try
             {
-                audioStream = File.Open(fullpath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                audioStream = File.Open(m_fullpath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                 uint dataLength;
                 AudioLibPCMFormat pcmInfo = null;
@@ -79,29 +90,29 @@ namespace AudioLib
                 {
                     m_SoundTouch.SetSetting(SettingId.UseQuickseek, 1);
                 }
-                m_SoundTouch.SetSampleRate((int) audioPCMFormat.SampleRate);
-                m_SoundTouch.SetChannels((int) audioPCMFormat.NumberOfChannels);
+                m_SoundTouch.SetSampleRate((int)audioPCMFormat.SampleRate);
+                m_SoundTouch.SetChannels((int)audioPCMFormat.NumberOfChannels);
 
                 //destStream = File.Open(fullpath_, FileMode.CreateNew, FileAccess.Write, FileShare.Write);
                 destStream = new FileStream(fullpath_, FileMode.Create, FileAccess.Write, FileShare.None);
                 audioStreamRiffOffset = audioPCMFormat.RiffHeaderWrite(destStream, 0);
-                DebugFix.Assert((long) audioStreamRiffOffset == destStream.Position);
+                DebugFix.Assert((long)audioStreamRiffOffset == destStream.Position);
 
 
-                int sampleSizePerChannel = audioPCMFormat.BitDepth/8;
+                int sampleSizePerChannel = audioPCMFormat.BitDepth / 8;
                 // == audioPCMFormat.BlockAlign / audioPCMFormat.NumberOfChannels;
 
 #if DEBUG
-                int sizeOfTypeInBytes = Marshal.SizeOf(typeof (TSampleType));
+                int sizeOfTypeInBytes = Marshal.SizeOf(typeof(TSampleType));
                 DebugFix.Assert(sizeOfTypeInBytes == sampleSizePerChannel);
 
-                sizeOfTypeInBytes = sizeof (TSampleType);
+                sizeOfTypeInBytes = sizeof(TSampleType);
                 DebugFix.Assert(sizeOfTypeInBytes == sampleSizePerChannel);
 #endif // DEBUG
 
                 int bytesToTransfer =
                     (int)
-                        Math.Min(audioStream.Length, audioPCMFormat.ConvertTimeToBytes(1000*AudioLibPCMFormat.TIME_UNIT));
+                        Math.Min(audioStream.Length, audioPCMFormat.ConvertTimeToBytes(2000 * AudioLibPCMFormat.TIME_UNIT));
 
                 if (m_SoundTouch_ByteBuffer == null)
                 {
@@ -118,12 +129,27 @@ namespace AudioLib
                 //DebugFix.Assert(bytesToReadFromAudioStream <= bytesToTransferToCircularBuffer);
 
                 int bytesReadFromAudioStream = 0;
+                
+                long totalAudioBytes = audioStream.Length;
+                long currentAudioBytes = 0;
+                int previousPercent = -100;
 
                 while ((bytesReadFromAudioStream = audioStream.Read(m_SoundTouch_ByteBuffer, 0, bytesToTransfer)) > 0)
                 {
+                    if (RequestCancellation) return;
+                    currentAudioBytes += bytesReadFromAudioStream;
+                    int percent = (int) Math.Round(currentAudioBytes/(float) totalAudioBytes);
+                    if (percent - previousPercent > 5)
+                    {
+                        previousPercent = percent;
+                        reportProgress(percent, "[ " + percent + "% ]" +
+                            Math.Round(currentAudioBytes/(double) 1024, 2) + " / " +
+                            Math.Round(totalAudioBytes/(double) 1024, 2) + " (kB)");
+                    }
+
                     DebugFix.Assert(bytesReadFromAudioStream <= bytesToTransfer);
 
-                    int soundTouch_SampleBufferLength = (bytesReadFromAudioStream*8)/audioPCMFormat.BitDepth; // 16
+                    int soundTouch_SampleBufferLength = (bytesReadFromAudioStream * 8) / audioPCMFormat.BitDepth; // 16
 
 
                     if (m_SoundTouch_SampleBuffer == null)
@@ -138,20 +164,24 @@ namespace AudioLib
                     //}
 
                     int sampleBufferIndex = 0;
-                    for (int i = 0; i < bytesReadFromAudioStream;) //i += m_CurrentAudioPCMFormat.BlockAlign)
+                    for (int i = 0; i < bytesReadFromAudioStream; ) //i += m_CurrentAudioPCMFormat.BlockAlign)
                     {
+                        if (RequestCancellation) return;
+
                         //short sampleLeft = 0;
                         //short sampleRight = 0;
 
                         for (int channel = 0; channel < audioPCMFormat.NumberOfChannels; channel++)
                         {
+                            if (RequestCancellation) return;
+
                             byte byte1 = m_SoundTouch_ByteBuffer[i++];
                             byte byte2 = m_SoundTouch_ByteBuffer[i++];
 
                             short sample =
                                 BitConverter.IsLittleEndian
-                                    ? (short) (byte1 | (byte2 << 8))
-                                    : (short) ((byte1 << 8) | byte2);
+                                    ? (short)(byte1 | (byte2 << 8))
+                                    : (short)((byte1 << 8) | byte2);
 
 #if DEBUG
                             //// Little Indian
@@ -165,7 +195,7 @@ namespace AudioLib
                             short checkedSample = BitConverter.ToInt16(m_SoundTouch_ByteBuffer, i - 2);
                             DebugFix.Assert(checkedSample == sample);
 
-                            checkedSample = (short) (byte1 + byte2*256);
+                            checkedSample = (short)(byte1 + byte2 * 256);
                             DebugFix.Assert(checkedSample == sample);
 #endif //DEBUG
 
@@ -186,10 +216,10 @@ namespace AudioLib
                     }
 
 
-                    int soundTouch_SampleBufferLength_Channels = soundTouch_SampleBufferLength/
+                    int soundTouch_SampleBufferLength_Channels = soundTouch_SampleBufferLength /
                                                                  audioPCMFormat.NumberOfChannels;
 
-                    int soundTouch_SampleBufferLength_Channels_FULL = m_SoundTouch_SampleBuffer.Length/
+                    int soundTouch_SampleBufferLength_Channels_FULL = m_SoundTouch_SampleBuffer.Length /
                                                                       audioPCMFormat.NumberOfChannels;
 
                     //m_SoundTouch.Flush();
@@ -206,7 +236,7 @@ namespace AudioLib
                     //    bool debug = true;
                     //}
 
-                    m_SoundTouch.PutSamples((ArrayPtr<TSampleType>) m_SoundTouch_SampleBuffer,
+                    m_SoundTouch.PutSamples((ArrayPtr<TSampleType>)m_SoundTouch_SampleBuffer,
                         soundTouch_SampleBufferLength_Channels);
 
                     int totalBytesReceivedFromSoundTouch = 0;
@@ -215,13 +245,15 @@ namespace AudioLib
 
                     while (
                         (samplesReceived = m_SoundTouch.ReceiveSamples(
-                            (ArrayPtr<TSampleType>) m_SoundTouch_SampleBuffer,
+                            (ArrayPtr<TSampleType>)m_SoundTouch_SampleBuffer,
                             soundTouch_SampleBufferLength_Channels_FULL
                             )) > 0)
                     {
+                        if (RequestCancellation) return;
+
                         samplesReceived *= audioPCMFormat.NumberOfChannels;
 
-                        int bytesReceivedFromSoundTouch = samplesReceived*sampleSizePerChannel;
+                        int bytesReceivedFromSoundTouch = samplesReceived * sampleSizePerChannel;
 
                         int predictedTotal = totalBytesReceivedFromSoundTouch + bytesReceivedFromSoundTouch;
                         if ( //predictedTotal > bytesReadFromAudioStream ||
@@ -235,7 +267,7 @@ namespace AudioLib
 
                             //DebugFix.Assert(factor < 1);
 
-                            if (factor >= 1)
+                            if (m_factor >= 1)
                             {
                                 Debugger.Break();
                             }
@@ -272,24 +304,28 @@ namespace AudioLib
 
                             for (int s = 0; s < samplesReceived; s += audioPCMFormat.NumberOfChannels)
                             {
+                                if (RequestCancellation) return;
+
                                 if (false)
                                 {
-                                    int sampleSizePerChannels = sampleSizePerChannel*audioPCMFormat.NumberOfChannels;
+                                    int sampleSizePerChannels = sampleSizePerChannel * audioPCMFormat.NumberOfChannels;
 
                                     checkTotalBytes += sampleSizePerChannels;
 
                                     // TODO: check little / big endian
                                     Buffer.BlockCopy(m_SoundTouch_SampleBuffer,
-                                        s*sampleSizePerChannel,
+                                        s * sampleSizePerChannel,
                                         m_SoundTouch_ByteBuffer,
                                         totalBytesReceivedFromSoundTouch
-                                        + s*sampleSizePerChannel,
+                                        + s * sampleSizePerChannel,
                                         sampleSizePerChannels);
                                 }
                                 else
                                 {
                                     for (int channel = 0; channel < audioPCMFormat.NumberOfChannels; channel++)
                                     {
+                                        if (RequestCancellation) return;
+
                                         if (true)
                                         {
                                             checkTotalBytes += sampleSizePerChannel;
@@ -297,7 +333,7 @@ namespace AudioLib
                                             sampleBufferIndex = (s + channel);
                                             //TSampleType sample = m_SoundTouch_SampleBuffer[sampleBufferIndex];
 
-                                            int byteIndex = sampleBufferIndex*sampleSizePerChannel;
+                                            int byteIndex = sampleBufferIndex * sampleSizePerChannel;
 
                                             // TODO: check little / big endian
                                             Buffer.BlockCopy(m_SoundTouch_SampleBuffer,
@@ -319,7 +355,7 @@ namespace AudioLib
                                             {
                                                 sampleBytes =
                                                     BitConverter.GetBytes(
-                                                        (short) ((sample & 0xFF) << 8 | (sample & 0xFF00) >> 8));
+                                                        (short)((sample & 0xFF) << 8 | (sample & 0xFF00) >> 8));
                                             }
 
                                             DebugFix.Assert(sampleSizePerChannel == sampleBytes.Length);
@@ -330,7 +366,7 @@ namespace AudioLib
                                                 0,
                                                 m_SoundTouch_ByteBuffer,
                                                 totalBytesReceivedFromSoundTouch
-                                                + (s + channel)*sampleSizePerChannel,
+                                                + (s + channel) * sampleSizePerChannel,
                                                 sampleSizePerChannel);
                                         }
                                     }
@@ -364,6 +400,8 @@ namespace AudioLib
                         destStream.Write(m_SoundTouch_ByteBuffer, 0, totalBytesReceivedFromSoundTouch);
                     }
                 }
+
+                okay = true;
             }
             catch (Exception ex)
             {
@@ -390,8 +428,8 @@ namespace AudioLib
 
             if (okay && File.Exists(fullpath_))
             {
-                File.Delete(fullpath);
-                File.Move(fullpath_, fullpath);
+                File.Delete(m_fullpath);
+                File.Move(fullpath_, m_fullpath);
             }
         }
     }
