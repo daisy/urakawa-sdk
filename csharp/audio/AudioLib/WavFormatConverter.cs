@@ -138,13 +138,15 @@ namespace AudioLib
                 {
                     if (RequestCancellation) return;
                     currentAudioBytes += bytesReadFromAudioStream;
-                    int percent = (int)Math.Round((double)currentAudioBytes / (double)totalAudioBytes);
+                    double div = (double) currentAudioBytes/(double) totalAudioBytes;
+                    double p = Math.Round(div);
+                    int percent = (int) p;
                     if (percent - previousPercent > 5)
                     {
                         previousPercent = percent;
                         reportProgress(percent, "[ " + percent + "% ] " +
-                            Math.Round(currentAudioBytes / (double)1024, 2) + " / " +
-                            Math.Round(totalAudioBytes / (double)1024, 2) + " (kB)");
+                            Math.Round(currentAudioBytes / (double)1024) + " / " +
+                            Math.Round(totalAudioBytes / (double)1024) + " (kB)");
                     }
 
                     DebugFix.Assert(bytesReadFromAudioStream <= bytesToTransfer);
