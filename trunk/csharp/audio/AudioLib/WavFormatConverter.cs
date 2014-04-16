@@ -129,7 +129,7 @@ namespace AudioLib
                 //DebugFix.Assert(bytesToReadFromAudioStream <= bytesToTransferToCircularBuffer);
 
                 int bytesReadFromAudioStream = 0;
-                
+
                 long totalAudioBytes = audioStream.Length;
                 long currentAudioBytes = 0;
                 int previousPercent = -100;
@@ -138,13 +138,13 @@ namespace AudioLib
                 {
                     if (RequestCancellation) return;
                     currentAudioBytes += bytesReadFromAudioStream;
-                    int percent = (int) Math.Round(currentAudioBytes/(float) totalAudioBytes);
+                    int percent = (int)Math.Round((double)currentAudioBytes / (double)totalAudioBytes);
                     if (percent - previousPercent > 5)
                     {
                         previousPercent = percent;
-                        reportProgress(percent, "[ " + percent + "% ]" +
-                            Math.Round(currentAudioBytes/(double) 1024, 2) + " / " +
-                            Math.Round(totalAudioBytes/(double) 1024, 2) + " (kB)");
+                        reportProgress(percent, "[ " + percent + "% ] " +
+                            Math.Round(currentAudioBytes / (double)1024, 2) + " / " +
+                            Math.Round(totalAudioBytes / (double)1024, 2) + " (kB)");
                     }
 
                     DebugFix.Assert(bytesReadFromAudioStream <= bytesToTransfer);
