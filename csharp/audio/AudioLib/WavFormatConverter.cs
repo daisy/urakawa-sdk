@@ -138,9 +138,9 @@ namespace AudioLib
                 {
                     if (RequestCancellation) return;
                     currentAudioBytes += bytesReadFromAudioStream;
-                    double div = (double) currentAudioBytes/(double) totalAudioBytes;
+                    double div = 100.0f * currentAudioBytes / (double)totalAudioBytes;
                     double p = Math.Round(div);
-                    int percent = (int) p;
+                    int percent = (int)p;
                     if (percent - previousPercent > 5)
                     {
                         previousPercent = percent;
