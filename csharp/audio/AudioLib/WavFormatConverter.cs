@@ -19,6 +19,101 @@ using TLongSampleType = System.Double;
 
 namespace AudioLib
 {
+    public class WavNormalize : DualCancellableProgressReporter
+    {
+        private string m_fullpath = null;
+        private float m_amp = 0;
+
+        public WavNormalize(string fullpath, float amp)
+        {
+            m_fullpath = fullpath;
+            m_amp = amp;
+        }
+
+        public override void DoWork()
+        {
+            RequestCancellation = false;
+
+            string fullpath_ = m_fullpath + "_.wav";
+
+            string workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string normalizeExe = Path.Combine(workingDir, "normalize.exe"); ;
+            if (!File.Exists(normalizeExe))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+
+                RequestCancellation = true;
+                return;
+            }
+
+            bool okay = false;
+            try
+            {
+                string msg = Path.GetFileName(m_fullpath);
+                reportProgress(-1, msg);
+
+                //https://neon1.net/prog/normalizer.html
+                string argumentString = (m_amp != 0 ? ("-l " + m_amp) : "") //"-m 50.00 -s 98.00"
+                    + " -o \"" + fullpath_ + "\" \"" + m_fullpath + "\"";
+                Console.WriteLine(normalizeExe + " " + argumentString);
+
+                Process process = new Process();
+
+                process.StartInfo.FileName = normalizeExe;
+                process.StartInfo.RedirectStandardOutput = false;
+                process.StartInfo.RedirectStandardError = false;
+                process.StartInfo.UseShellExecute = true;
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo.Arguments = argumentString;
+                process.Start();
+                process.WaitForExit();
+
+                if (!process.StartInfo.UseShellExecute && process.ExitCode != 0)
+                {
+                    StreamReader stdErr = process.StandardError;
+                    if (!stdErr.EndOfStream)
+                    {
+                        string toLog = stdErr.ReadToEnd();
+                        if (!string.IsNullOrEmpty(toLog))
+                        {
+                            Console.WriteLine(toLog);
+                        }
+                    }
+                }
+                else if (!process.StartInfo.UseShellExecute)
+                {
+                    StreamReader stdOut = process.StandardOutput;
+                    if (!stdOut.EndOfStream)
+                    {
+                        string toLog = stdOut.ReadToEnd();
+                        if (!string.IsNullOrEmpty(toLog))
+                        {
+                            Console.WriteLine(toLog);
+                        }
+                    }
+                }
+
+
+                okay = true;
+            }
+            catch (Exception ex)
+            {
+                okay = false;
+            }
+            finally
+            {
+                //noop
+            }
+
+            if (okay && File.Exists(fullpath_))
+            {
+                File.Delete(m_fullpath);
+                File.Move(fullpath_, m_fullpath);
+            }
+        }
+    }
 
     public class WavSoundTouch : DualCancellableProgressReporter
     {
@@ -72,8 +167,11 @@ namespace AudioLib
             Stream destStream = null;
 
             bool okay = false;
+            Stopwatch watch = new Stopwatch();
             try
             {
+                watch.Start();
+                
                 audioStream = File.Open(m_fullpath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                 uint dataLength;
@@ -85,11 +183,12 @@ namespace AudioLib
                 audioPCMFormat = new AudioLibPCMFormat();
                 audioPCMFormat.CopyFrom(pcmInfo);
 
-                //AudioLib.SampleRate.Hz22050
-                if (audioPCMFormat.SampleRate > 22050)
-                {
-                    m_SoundTouch.SetSetting(SettingId.UseQuickseek, 1);
-                }
+                ////AudioLib.SampleRate.Hz22050
+                //if (audioPCMFormat.SampleRate > 22050)
+                //{
+                //    m_SoundTouch.SetSetting(SettingId.UseQuickseek, 1);
+                //}
+
                 m_SoundTouch.SetSampleRate((int)audioPCMFormat.SampleRate);
                 m_SoundTouch.SetChannels((int)audioPCMFormat.NumberOfChannels);
 
@@ -137,16 +236,25 @@ namespace AudioLib
                 while ((bytesReadFromAudioStream = audioStream.Read(m_SoundTouch_ByteBuffer, 0, bytesToTransfer)) > 0)
                 {
                     if (RequestCancellation) return;
+
                     currentAudioBytes += bytesReadFromAudioStream;
-                    double div = 100.0f * currentAudioBytes / (double)totalAudioBytes;
-                    double p = Math.Round(div);
-                    int percent = (int)p;
-                    if (percent - previousPercent > 5)
+
+                    if (watch.ElapsedMilliseconds >= 500)
                     {
-                        previousPercent = percent;
-                        reportProgress(percent, "[ " + percent + "% ] " +
-                            Math.Round(currentAudioBytes / (double)1024) + " / " +
-                            Math.Round(totalAudioBytes / (double)1024) + " (kB)");
+                        watch.Stop();
+
+                        int percent = (int)Math.Round(100.0 * currentAudioBytes / (double)totalAudioBytes);
+                        if (true) //percent - previousPercent > 5)
+                        {
+                            previousPercent = percent;
+
+                            reportProgress(percent, "[ " + percent + "% ] " +
+                                Math.Round(currentAudioBytes / (double)1024) + " / " +
+                                Math.Round(totalAudioBytes / (double)1024) + " (kB)");
+                        }
+
+                        watch.Reset();
+                        watch.Start();
                     }
 
                     DebugFix.Assert(bytesReadFromAudioStream <= bytesToTransfer);
@@ -407,6 +515,7 @@ namespace AudioLib
             }
             catch (Exception ex)
             {
+                watch.Stop();
                 okay = false;
             }
             finally
