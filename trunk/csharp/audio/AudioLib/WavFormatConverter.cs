@@ -19,6 +19,190 @@ using TLongSampleType = System.Double;
 
 namespace AudioLib
 {
+    //public class WavAmplify : WavNormalize
+    //{
+    //    public WavAmplify(string fullpath, double amp)
+    //        : base(fullpath, amp)
+    //    {
+    //    }
+    //}
+
+    public class WavAmplify : DualCancellableProgressReporter
+    {
+        private string m_fullpath = null;
+        private double m_amp = 0;
+
+        public WavAmplify(string fullpath, double amp)
+        {
+            m_fullpath = fullpath;
+            m_amp = amp;
+        }
+
+        public override void DoWork()
+        {
+            RequestCancellation = false;
+
+            AudioLibPCMFormat audioPCMFormat = null;
+
+            string fullpath_ = m_fullpath + "_.wav";
+
+            Stream audioStream = null;
+            ulong audioStreamRiffOffset = 0;
+            Stream destStream = null;
+
+            bool okay = false;
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+
+                audioStream = File.Open(m_fullpath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                uint dataLength;
+                AudioLibPCMFormat pcmInfo = null;
+
+                pcmInfo = AudioLibPCMFormat.RiffHeaderParse(audioStream, out dataLength);
+
+                //audioPCMFormat = new PCMFormatInfo(pcmInfo);
+                audioPCMFormat = new AudioLibPCMFormat();
+                audioPCMFormat.CopyFrom(pcmInfo);
+
+                //destStream = File.Open(fullpath_, FileMode.CreateNew, FileAccess.Write, FileShare.Write);
+                destStream = new FileStream(fullpath_, FileMode.Create, FileAccess.Write, FileShare.None);
+                audioStreamRiffOffset = audioPCMFormat.RiffHeaderWrite(destStream, 0);
+                DebugFix.Assert((long)audioStreamRiffOffset == destStream.Position);
+
+                int bytesToTransfer =
+                    (int)
+                        Math.Min(audioStream.Length - (long)audioStreamRiffOffset, audioPCMFormat.ConvertTimeToBytes(2000 * AudioLibPCMFormat.TIME_UNIT)); // automatically block-aligned to frame size (sample bytes * number of channels)
+                byte[] byteBuffer = new byte[bytesToTransfer];
+
+                int bytesReadFromAudioStream = 0;
+
+                long totalAudioBytes = audioStream.Length;
+                long currentAudioBytes = 0;
+                int previousPercent = -100;
+
+                while ((bytesReadFromAudioStream = audioStream.Read(byteBuffer, 0, bytesToTransfer)) > 0)
+                {
+                    DebugFix.Assert(bytesReadFromAudioStream <= bytesToTransfer);
+
+                    if (RequestCancellation) return;
+
+                    currentAudioBytes += bytesReadFromAudioStream;
+
+                    if (watch.ElapsedMilliseconds >= 500)
+                    {
+                        watch.Stop();
+
+                        int percent = (int)Math.Round(100.0 * currentAudioBytes / (double)totalAudioBytes);
+                        if (true) //percent - previousPercent > 5)
+                        {
+                            previousPercent = percent;
+
+                            reportProgress(percent, "[ " + percent + "% ] " +
+                                                    Math.Round(currentAudioBytes / (double)1024) + " / " +
+                                                    Math.Round(totalAudioBytes / (double)1024) + " (kB)");
+                        }
+
+                        watch.Reset();
+                        watch.Start();
+                    }
+
+                    for (int i = 0; i < bytesReadFromAudioStream; ) //i += m_CurrentAudioPCMFormat.BlockAlign)
+                    {
+                        if (RequestCancellation) return;
+
+                        for (int channel = 0; channel < audioPCMFormat.NumberOfChannels; channel++)
+                        {
+                            if (RequestCancellation) return;
+
+                            byte byte1 = byteBuffer[i++];
+                            byte byte2 = byteBuffer[i++];
+
+                            short sample =
+                                BitConverter.IsLittleEndian
+                                    ? (short)(byte1 | (byte2 << 8))
+                                    : (short)((byte1 << 8) | byte2);
+
+#if DEBUG
+                            //// Little Endian
+                            //short s1 = (short)(byte1 | (byte2 << 8));
+                            //short s2 = (short)(byte1 + byte2 * 256);
+
+                            //// Big Endian
+                            //short s3 = (short)((byte1 << 8) | byte2);
+                            //short s4 = (short)(byte1 * 256 + byte2);
+
+                            short checkedSample = BitConverter.ToInt16(byteBuffer, i - 2);
+                            DebugFix.Assert(checkedSample == sample);
+
+                            checkedSample = (short)(byte1 + byte2 * 256);
+                            DebugFix.Assert(checkedSample == sample);
+#endif //DEBUG
+
+                            const short MaxValue = short.MaxValue; // Int 16 signed 32767
+                            const short MinValue = short.MinValue; // Int 16 signed -32768
+
+                            int sample_ = (int)Math.Round(sample * m_amp);
+                            if (sample_ > MaxValue)
+                            {
+                                sample = MaxValue;
+                            }
+                            else if (sample_ < MinValue) //short.MinValue
+                            {
+                                sample = MinValue;
+                            }
+                            else
+                            {
+                                sample = (short)sample_;
+                            }
+
+                            byte[] sampleBytes = BitConverter.GetBytes(sample);
+                            //BitConverter.IsLittleEndian
+                            // byte order is already-handled by BitConverter
+                            byteBuffer[i - 2] = sampleBytes[0];
+                            byteBuffer[i - 1] = sampleBytes[1];
+                        }
+                    }
+
+                    destStream.Write(byteBuffer, 0, bytesReadFromAudioStream);
+                }
+
+                okay = true;
+            }
+            catch (Exception ex)
+            {
+                watch.Stop();
+                okay = false;
+            }
+            finally
+            {
+                if (audioStream != null)
+                {
+                    audioStream.Close();
+                }
+                if (destStream != null)
+                {
+                    destStream.Position = 0;
+                    audioStreamRiffOffset = audioPCMFormat.RiffHeaderWrite(
+                        destStream,
+                        (uint)
+                            (destStream.Length -
+                             (long)
+                                 audioStreamRiffOffset));
+                    destStream.Close();
+                }
+            }
+
+            if (okay && File.Exists(fullpath_))
+            {
+                File.Delete(m_fullpath);
+                File.Move(fullpath_, m_fullpath);
+            }
+        }
+    }
+
     public class WavNormalize : DualCancellableProgressReporter
     {
         private string m_fullpath = null;
@@ -123,9 +307,9 @@ namespace AudioLib
         private TSampleType[] m_SoundTouch_SampleBuffer = null;
 
         private string m_fullpath = null;
-        private float m_factor = 0.0f;
+        private double m_factor = 0.0f;
 
-        public WavSoundTouch(string fullpath, float factor
+        public WavSoundTouch(string fullpath, double factor
             //, AudioLibPCMFormat audioPCMFormat
             )
         {
@@ -156,7 +340,7 @@ namespace AudioLib
             m_SoundTouch.SetSetting(SettingId.UseQuickseek, 0);
 
 
-            m_SoundTouch.SetTempo(m_factor);
+            m_SoundTouch.SetTempo((float)m_factor);
             //m_SoundTouch.SetTempoChange(m_factor * 100);
 
             m_SoundTouch.SetPitchSemiTones(0);
@@ -171,7 +355,7 @@ namespace AudioLib
             try
             {
                 watch.Start();
-                
+
                 audioStream = File.Open(m_fullpath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                 uint dataLength;
@@ -211,7 +395,7 @@ namespace AudioLib
 
                 int bytesToTransfer =
                     (int)
-                        Math.Min(audioStream.Length, audioPCMFormat.ConvertTimeToBytes(2000 * AudioLibPCMFormat.TIME_UNIT));
+                        Math.Min(audioStream.Length - (long)audioStreamRiffOffset, audioPCMFormat.ConvertTimeToBytes(2000 * AudioLibPCMFormat.TIME_UNIT)); // automatically block-aligned to frame size (sample bytes * number of channels)
 
                 if (m_SoundTouch_ByteBuffer == null)
                 {
@@ -294,11 +478,11 @@ namespace AudioLib
                                     : (short)((byte1 << 8) | byte2);
 
 #if DEBUG
-                            //// Little Indian
+                            //// Little Endian
                             //short s1 = (short)(byte1 | (byte2 << 8));
                             //short s2 = (short)(byte1 + byte2 * 256);
 
-                            //// Big Indian
+                            //// Big Endian
                             //short s3 = (short)((byte1 << 8) | byte2);
                             //short s4 = (short)(byte1 * 256 + byte2);
 
