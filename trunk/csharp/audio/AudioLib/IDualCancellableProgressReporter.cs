@@ -95,20 +95,20 @@ namespace AudioLib
             {
                 m_RequestCancellation = value;
 
+                lock (m_subCancellables)
+                {
+                    foreach (IDualCancellableProgressReporter cancellable in m_subCancellables)
+                    {
+                        cancellable.RequestCancellation = value;
+                    }
+                }
+
                 if (m_RequestCancellation)
                 {
                     CancellationRequestedEventHandler d = CancellationRequestedEvent;
                     if (d != null)
                     {
                         d(this, new CancellationRequestedEventArgs());
-                    }
-                }
-
-                lock (m_subCancellables)
-                {
-                    foreach (IDualCancellableProgressReporter cancellable in m_subCancellables)
-                    {
-                        cancellable.RequestCancellation = value;
                     }
                 }
             }
