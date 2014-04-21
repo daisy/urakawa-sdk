@@ -222,6 +222,12 @@ namespace urakawa.daisy.export.visitor
                 RemoveSubCancellable(formatConverter);
             }
 
+            if (RequestCancellation)
+            {
+                m_ExternalAudioMediaList.Clear();
+                return;
+            }
+
             if (result)
             {
                 m_EncodingFileCompressionRatio = (new FileInfo(sourceFilePath).Length) / (new FileInfo(destinationFilePath).Length);
