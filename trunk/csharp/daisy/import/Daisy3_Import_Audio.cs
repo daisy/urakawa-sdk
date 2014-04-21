@@ -261,9 +261,10 @@ namespace urakawa.daisy.import
             fullPath = FileDataProvider.NormaliseFullFilePath(fullPath).Replace('/', '\\');
             addOPF_GlobalAssetPath(fullPath);
 
+            string ext = Path.GetExtension(src);
 
 
-            if (src.EndsWith("wav", StringComparison.OrdinalIgnoreCase))
+            if (ext.Equals(DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase))
             {
                 FileDataProvider dataProv = null;
 
@@ -405,8 +406,9 @@ namespace urakawa.daisy.import
                 //media = addAudioWav ( fullWavPath, deleteSrcAfterCompletion, audioAttrClipBegin, audioAttrClipEnd );
 
             }
-            else if (src.EndsWith("mp3", StringComparison.OrdinalIgnoreCase)
-                || src.EndsWith("mp4", StringComparison.OrdinalIgnoreCase))
+            else if (ext.Equals(DataProviderFactory.AUDIO_MP3_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || ext.Equals(DataProviderFactory.AUDIO_MP4_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || ext.Equals(DataProviderFactory.AUDIO_MP4_EXTENSION_, StringComparison.OrdinalIgnoreCase))
             {
                 if (!File.Exists(fullPath))
                 {
