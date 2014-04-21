@@ -305,7 +305,7 @@ namespace urakawa.xuk
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw ex;
+                throw new Exception("OpenXuk", ex);
             }
             finally
             {

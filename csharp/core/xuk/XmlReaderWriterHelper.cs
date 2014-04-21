@@ -391,7 +391,7 @@ namespace urakawa.xuk
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw ex;
+                throw new Exception("ParseXmlFromString", ex);
             }
             finally
             {
@@ -453,7 +453,7 @@ namespace urakawa.xuk
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw ex;
+                throw new Exception("ParseXmlFromFile", ex);
             }
             finally
             {

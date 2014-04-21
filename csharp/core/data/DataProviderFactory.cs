@@ -47,7 +47,8 @@ namespace urakawa.data
         public const string AUDIO_MP3_EXTENSION = ".mp3";
 
         public const string AUDIO_MP4_MIME_TYPE = "audio/mp4";
-        public const string AUDIO_MP4_EXTENSION = ".mp4";
+        public const string AUDIO_MP4_EXTENSION_ = ".mp4";
+        public const string AUDIO_MP4_EXTENSION = ".m4a";
 
 
         public const string AUDIO_OGG_MIME_TYPE = "audio/ogg";
@@ -417,6 +418,7 @@ namespace urakawa.data
                     mime = AUDIO_MP3_MIME_TYPE;
                     break;
                 case AUDIO_MP4_EXTENSION:
+                case AUDIO_MP4_EXTENSION_:
                     mime = AUDIO_MP4_MIME_TYPE;
                     break;
                 case AUDIO_OGG_EXTENSION:
