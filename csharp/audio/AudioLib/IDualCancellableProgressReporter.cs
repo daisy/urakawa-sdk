@@ -61,6 +61,17 @@ namespace AudioLib
             }
         }
 
+
+        public event CancellationRequestedEventHandler CancellationRequestedEvent;
+        public delegate void CancellationRequestedEventHandler(object sender, CancellationRequestedEventArgs e);
+        public class CancellationRequestedEventArgs : EventArgs
+        {
+            public CancellationRequestedEventArgs()
+            {
+            }
+        }
+
+
         private bool m_RequestCancellation;
         public bool RequestCancellation
         {
@@ -83,6 +94,15 @@ namespace AudioLib
             set
             {
                 m_RequestCancellation = value;
+
+                if (m_RequestCancellation)
+                {
+                    CancellationRequestedEventHandler d = CancellationRequestedEvent;
+                    if (d != null)
+                    {
+                        d(this, new CancellationRequestedEventArgs());
+                    }
+                }
 
                 lock (m_subCancellables)
                 {
