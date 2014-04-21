@@ -159,7 +159,7 @@ namespace AudioLib
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw ex;
+                throw new Exception("Tobi catch level #1", ex);
             }
             finally
             {
