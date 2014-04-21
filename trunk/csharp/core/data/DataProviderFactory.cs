@@ -228,6 +228,8 @@ namespace urakawa.data
 
         public static string GetExtensionFromMimeType(string mimeType)
         {
+            if (mimeType != null) mimeType = mimeType.ToLowerInvariant();
+
             string extension;
             switch (mimeType)
             {
@@ -370,6 +372,8 @@ namespace urakawa.data
 
         public static string GetMimeTypeFromExtension(string extension)
         {
+            if (extension != null) extension = extension.ToLowerInvariant();
+
             string mime;
             switch (extension)
             {
