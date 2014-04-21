@@ -947,27 +947,51 @@ namespace urakawa.daisy.import
                                 }
 
                                 string urlDecoded = FileDataProvider.UriDecode(textSrc.Value);
-                                string[] srcParts = urlDecoded.Split('#');
-                                if (srcParts.Length != 2)
+
+                                if (urlDecoded.IndexOf('#') > 0)
                                 {
-                                    continue;
+                                    string[] srcParts = urlDecoded.Split('#');
+                                    if (srcParts.Length != 2)
+                                    {
+                                        continue;
+                                    }
+
+                                    string fullTextRefPath = Path.Combine(Path.GetDirectoryName(fullOverlayPath),
+                                        srcParts[0]);
+                                    fullTextRefPath =
+                                        FileDataProvider.NormaliseFullFilePath(fullTextRefPath).Replace('/', '\\');
+
+                                    if (!fullTextRefPath.Equals(fullDocPath, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        //#if DEBUG
+                                        //                                Debugger.Break();
+                                        //#endif //DEBUG
+
+                                        continue;
+                                    }
+
+                                    string txtId = srcParts[1];
+
+                                    textTreeNode = spineItemPresentation.RootNode.GetFirstDescendantWithXmlID(txtId);
                                 }
-
-                                string fullTextRefPath = Path.Combine(Path.GetDirectoryName(fullOverlayPath), srcParts[0]);
-                                fullTextRefPath = FileDataProvider.NormaliseFullFilePath(fullTextRefPath).Replace('/', '\\');
-
-                                if (!fullTextRefPath.Equals(fullDocPath, StringComparison.OrdinalIgnoreCase))
+                                else
                                 {
-                                    //#if DEBUG
-                                    //                                Debugger.Break();
-                                    //#endif //DEBUG
+                                    string fullTextRefPath = Path.Combine(Path.GetDirectoryName(fullOverlayPath),
+                                        urlDecoded);
+                                    fullTextRefPath =
+                                        FileDataProvider.NormaliseFullFilePath(fullTextRefPath).Replace('/', '\\');
 
-                                    continue;
+                                    if (!fullTextRefPath.Equals(fullDocPath, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        //#if DEBUG
+                                        //                                Debugger.Break();
+                                        //#endif //DEBUG
+
+                                        continue;
+                                    }
+
+                                    textTreeNode = spineItemPresentation.RootNode;
                                 }
-
-                                string txtId = srcParts[1];
-
-                                textTreeNode = spineItemPresentation.RootNode.GetFirstDescendantWithXmlID(txtId);
                             }
 
                             if (textTreeNode != null)
