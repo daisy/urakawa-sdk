@@ -214,9 +214,29 @@ namespace AudioLib
             m_amp = amp;
         }
 
+        private Process m_process = null;
+        private void cancellationRequestedEvent(object sender, DualCancellableProgressReporter.CancellationRequestedEventArgs e)
+        {
+            if (m_process != null)
+            {
+                try
+                {
+                    m_process.Kill();
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                }
+            }
+        }
+
         public override void DoWork()
         {
             RequestCancellation = false;
+            CancellationRequestedEvent += cancellationRequestedEvent;
+
 
             string fullpath_ = m_fullpath + "_.wav";
 
@@ -243,47 +263,56 @@ namespace AudioLib
                     + " -o \"" + fullpath_ + "\" \"" + m_fullpath + "\"";
                 Console.WriteLine(normalizeExe + " " + argumentString);
 
-                Process process = new Process();
+                m_process = new Process();
 
-                process.StartInfo.FileName = normalizeExe;
-                process.StartInfo.RedirectStandardOutput = false;
-                process.StartInfo.RedirectStandardError = false;
-                process.StartInfo.UseShellExecute = true;
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                process.StartInfo.Arguments = argumentString;
-                process.Start();
-                process.WaitForExit();
+                m_process.StartInfo.FileName = normalizeExe;
+                m_process.StartInfo.RedirectStandardOutput = false;
+                m_process.StartInfo.RedirectStandardError = false;
+                m_process.StartInfo.UseShellExecute = true;
+                m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                m_process.StartInfo.Arguments = argumentString;
+                m_process.Start();
+                m_process.WaitForExit();
 
-                if (!process.StartInfo.UseShellExecute && process.ExitCode != 0)
+                if (RequestCancellation)
                 {
-                    StreamReader stdErr = process.StandardError;
-                    if (!stdErr.EndOfStream)
+                    okay = false;
+                }
+                else
+                {
+                    okay = true;
+
+                    if (!m_process.StartInfo.UseShellExecute && m_process.ExitCode != 0)
                     {
-                        string toLog = stdErr.ReadToEnd();
-                        if (!string.IsNullOrEmpty(toLog))
+                        StreamReader stdErr = m_process.StandardError;
+                        if (!stdErr.EndOfStream)
                         {
-                            Console.WriteLine(toLog);
+                            string toLog = stdErr.ReadToEnd();
+                            if (!string.IsNullOrEmpty(toLog))
+                            {
+                                Console.WriteLine(toLog);
+                            }
+                        }
+                    }
+                    else if (!m_process.StartInfo.UseShellExecute)
+                    {
+                        StreamReader stdOut = m_process.StandardOutput;
+                        if (!stdOut.EndOfStream)
+                        {
+                            string toLog = stdOut.ReadToEnd();
+                            if (!string.IsNullOrEmpty(toLog))
+                            {
+                                Console.WriteLine(toLog);
+                            }
                         }
                     }
                 }
-                else if (!process.StartInfo.UseShellExecute)
-                {
-                    StreamReader stdOut = process.StandardOutput;
-                    if (!stdOut.EndOfStream)
-                    {
-                        string toLog = stdOut.ReadToEnd();
-                        if (!string.IsNullOrEmpty(toLog))
-                        {
-                            Console.WriteLine(toLog);
-                        }
-                    }
-                }
-
-
-                okay = true;
             }
             catch (Exception ex)
             {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
                 okay = false;
             }
             finally
