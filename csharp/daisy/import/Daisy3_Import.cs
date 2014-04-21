@@ -222,7 +222,7 @@ namespace urakawa.daisy.import
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw ex;
+                throw new Exception("Import", ex);
             }
 
 

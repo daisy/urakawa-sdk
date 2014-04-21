@@ -263,7 +263,7 @@ namespace urakawa.daisy.export
                 }
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"media-type", type);
 
-                audioPath = path.Replace(ext, m_encodeToMp3 ? @".mp3" : @".wav");
+                audioPath = path.Replace(ext, m_encodeToMp3 ? DataProviderFactory.AUDIO_MP3_EXTENSION : DataProviderFactory.AUDIO_WAV_EXTENSION);
                 XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item, @"href", FileDataProvider.UriEncode(audioPath));
 
                 string fullAudioPath = Path.Combine(opsDirectoryPath, audioPath);
@@ -271,13 +271,13 @@ namespace urakawa.daisy.export
 
                 //spineItemPresentation.RootNode.OpenPcmInputStreamOfManagedAudioMediaFlattened()
 
-                string fullAudioPath_ = fullAudioPath.Replace(@".mp3", @".wav").Replace(@".wav",
+                string fullAudioPath_ = fullAudioPath.Replace(DataProviderFactory.AUDIO_MP3_EXTENSION, DataProviderFactory.AUDIO_WAV_EXTENSION).Replace(DataProviderFactory.AUDIO_WAV_EXTENSION,
                                                                 @"_"
                     //+ spineItemPresentation.MediaDataManager.DefaultPCMFormat.ToString()
                                                                 + spineItemPresentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
                                                                 + "-"
                                                                 + (spineItemPresentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels == 1 ? @"mono" : @"stereo")
-                                                                    + @".wav");
+                                                                    + DataProviderFactory.AUDIO_WAV_EXTENSION);
 
                 string audioFileName = Path.GetFileName(fullAudioPath_);
 
@@ -1950,7 +1950,7 @@ namespace urakawa.daisy.export
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw ex;
+                throw new Exception("EPUB3 Export", ex);
             }
         }
 

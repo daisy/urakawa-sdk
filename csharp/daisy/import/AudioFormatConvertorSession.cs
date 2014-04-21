@@ -319,7 +319,7 @@ namespace urakawa.daisy.import
             {
                 sourceFileType = AudioFileType.Mp3;
             }
-            if (DataProviderFactory.AUDIO_MP4_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
+            if (DataProviderFactory.AUDIO_MP4_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase) || DataProviderFactory.AUDIO_MP4_EXTENSION_.Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
                 sourceFileType = AudioFileType.Mp4_AAC;
             }

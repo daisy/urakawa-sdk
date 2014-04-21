@@ -173,7 +173,7 @@ namespace urakawa.daisy.export
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw ex;
+                throw new Exception("DAISY3 Export", ex);
             }
             finally
             {
