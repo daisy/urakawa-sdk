@@ -310,6 +310,9 @@ namespace AudioLib
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
 #if DEBUG
                 Debugger.Break();
 #endif //DEBUG
@@ -777,11 +780,32 @@ namespace AudioLib
 #endif //DEBUG
         }
 
+
+        private Process m_process = null;
+        private void cancellationRequestedEvent(object sender, DualCancellableProgressReporter.CancellationRequestedEventArgs e)
+        {
+            if (m_process != null)
+            {
+                try
+                {
+                    m_process.Kill();
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                }
+            }
+        }
+
         public const string AUDIO_MP3_EXTENSION = ".mp3";
         public const string AUDIO_WAV_EXTENSION = ".wav";
 
         public override void DoWork()
         {
+            //RequestCancellation = false;
+            //CancellationRequestedEvent += cancellationRequestedEvent;
         }
 
         private bool m_OverwriteOutputFiles;
@@ -795,6 +819,8 @@ namespace AudioLib
         {
             OverwriteOutputFiles = overwriteOutputFiles;
             m_SkipACM = skipACM;
+
+            CancellationRequestedEvent += cancellationRequestedEvent;
         }
 
         private const uint PROGRESS_INTERVAL_MS = 500;
@@ -1084,7 +1110,10 @@ namespace AudioLib
             if (!Directory.Exists(destinationDirectory))
                 throw new FileNotFoundException("Invalid destination directory");
 
-            originalPcmFormat = null;
+            string destinationFile = GenerateOutputFileFullname(
+                                    sourceFile + WavFormatConverter.AUDIO_WAV_EXTENSION,
+                                    destinationDirectory,
+                                    null);
 
             //        AudioLibPCMFormat mp4PcmFormat = new AudioLibPCMFormat(
             //            (ushort)pcmStream.WaveFormat.Channels,
@@ -1097,53 +1126,84 @@ namespace AudioLib
             //    16);
 
 
-            string destinationFile = GenerateOutputFileFullname(
-                                    sourceFile + WavFormatConverter.AUDIO_WAV_EXTENSION,
-                                    destinationDirectory,
-                                    null);
-
             AudioLibPCMFormat mp4PcmFormat = null;
 
-            string workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            originalPcmFormat = null;
 
-            Process mp4_AACDecodeProcess = new Process();
-
-            mp4_AACDecodeProcess.StartInfo.FileName = Path.Combine(workingDir, "faad.exe");
-            mp4_AACDecodeProcess.StartInfo.RedirectStandardOutput = false;
-            mp4_AACDecodeProcess.StartInfo.RedirectStandardError = false;
-            mp4_AACDecodeProcess.StartInfo.UseShellExecute = true;
-            mp4_AACDecodeProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            mp4_AACDecodeProcess.StartInfo.Arguments = "-o \"" + destinationFile + "\" \"" + sourceFile + "\"";
-
-            mp4_AACDecodeProcess.Start();
-            mp4_AACDecodeProcess.WaitForExit();
-
-            if (!mp4_AACDecodeProcess.StartInfo.UseShellExecute && mp4_AACDecodeProcess.ExitCode != 0)
+            bool okay = false;
+            try
             {
-                StreamReader stdErr = mp4_AACDecodeProcess.StandardError;
-                if (!stdErr.EndOfStream)
+                string workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+                if (m_process != null)
                 {
-                    string toLog = stdErr.ReadToEnd();
-                    if (!string.IsNullOrEmpty(toLog))
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                }
+
+                m_process = new Process();
+
+                m_process.StartInfo.FileName = Path.Combine(workingDir, "faad.exe");
+                m_process.StartInfo.RedirectStandardOutput = false;
+                m_process.StartInfo.RedirectStandardError = false;
+                m_process.StartInfo.UseShellExecute = true;
+                m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                m_process.StartInfo.Arguments = "-o \"" + destinationFile + "\" \"" + sourceFile + "\"";
+
+                m_process.Start();
+                m_process.WaitForExit();
+
+                if (RequestCancellation)
+                {
+                    okay = false;
+                }
+                else
+                {
+                    okay = true;
+
+                    if (!m_process.StartInfo.UseShellExecute && m_process.ExitCode != 0)
                     {
-                        Console.WriteLine(toLog);
+                        StreamReader stdErr = m_process.StandardError;
+                        if (!stdErr.EndOfStream)
+                        {
+                            string toLog = stdErr.ReadToEnd();
+                            if (!string.IsNullOrEmpty(toLog))
+                            {
+                                Console.WriteLine(toLog);
+                            }
+                        }
+                    }
+                    else if (!m_process.StartInfo.UseShellExecute)
+                    {
+                        StreamReader stdOut = m_process.StandardOutput;
+                        if (!stdOut.EndOfStream)
+                        {
+                            string toLog = stdOut.ReadToEnd();
+                            if (!string.IsNullOrEmpty(toLog))
+                            {
+                                Console.WriteLine(toLog);
+                            }
+                        }
                     }
                 }
             }
-            else if (!mp4_AACDecodeProcess.StartInfo.UseShellExecute)
+            catch (Exception ex)
             {
-                StreamReader stdOut = mp4_AACDecodeProcess.StandardOutput;
-                if (!stdOut.EndOfStream)
-                {
-                    string toLog = stdOut.ReadToEnd();
-                    if (!string.IsNullOrEmpty(toLog))
-                    {
-                        Console.WriteLine(toLog);
-                    }
-                }
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                okay = false;
+            }
+            finally
+            {
+                //noop
             }
 
-            if (File.Exists(destinationFile))
+            if (okay && File.Exists(destinationFile))
             {
                 uint dataLength;
                 Stream stream = null;
@@ -1194,7 +1254,7 @@ namespace AudioLib
                 }
             }
 
-            if (mp4PcmFormat == null || RequestCancellation)
+            if (!okay || mp4PcmFormat == null || RequestCancellation)
             {
                 if (File.Exists(destinationFile))
                 {
@@ -1410,83 +1470,118 @@ namespace AudioLib
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path " + sourceFile);
 
-
-
-            string LameWorkingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            //string outputFilePath = Path.Combine (
-            //Path.GetDirectoryName ( sourceFile ),
-            //Path.GetFileNameWithoutExtension ( sourceFile ) + DataProviderFactory.AUDIO_MP3_EXTENSION );
-
-            if (pcmFormat.SampleRate < 22050)
+            bool okay = false;
+            try
             {
-                bitRate_mp3Output = 32;
-            }
+                string LameWorkingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                //string outputFilePath = Path.Combine (
+                //Path.GetDirectoryName ( sourceFile ),
+                //Path.GetFileNameWithoutExtension ( sourceFile ) + DataProviderFactory.AUDIO_MP3_EXTENSION );
 
-            string sampleRate = String.Format("{0}", pcmFormat.SampleRate); //Math.Round(pcmFormat.SampleRate / 1000.0, 3));
-            sampleRate = sampleRate.Substring(0, 2) + '.' + sampleRate.Substring(2, 3);
-            string sampleRateArg = " --resample " + sampleRate;
-            if (!extraParamResample) sampleRateArg = "";
-
-            string replayGainArg = !string.IsNullOrEmpty(extraParamReplayGain) ? (extraParamReplayGain.StartsWith(" ") ? extraParamReplayGain : " " + extraParamReplayGain) :
-                "";
-
-            string channelsArg = pcmFormat.NumberOfChannels == 1 ? "m" : "s";
-            if (!string.IsNullOrEmpty(extraparamChannels)) channelsArg = extraparamChannels;
-            //string argumentString = "-b " + bitRate_mp3Output.ToString ()  + " --cbr --resample default -m m \"" + sourceFile + "\" \"" + destinationFile + "\"";
-            string argumentString = "-b " + bitRate_mp3Output.ToString()
-                + " --cbr"
-                + sampleRateArg
-                + " -m " + channelsArg
-                + replayGainArg
-                + " \"" + sourceFile + "\" \"" + destinationFile + "\"";
-            Console.WriteLine(argumentString);
-            Process mp3encodeProcess = new Process();
-
-            mp3encodeProcess.StartInfo.FileName = Path.Combine(LameWorkingDir, "lame.exe");
-            mp3encodeProcess.StartInfo.RedirectStandardOutput = false;
-            mp3encodeProcess.StartInfo.RedirectStandardError = false;
-            mp3encodeProcess.StartInfo.UseShellExecute = true;
-            mp3encodeProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            mp3encodeProcess.StartInfo.Arguments = argumentString;
-            //{
-            //FileName = Path.Combine(LameWorkingDir, "lame.exe"),
-
-            //RedirectStandardError = false,
-            //RedirectStandardOutput = false,
-            //UseShellExecute = true,
-            //WindowStyle = ProcessWindowStyle.Hidden,
-            //Arguments = argumentString
-            //}
-            //};
-            mp3encodeProcess.Start();
-            mp3encodeProcess.WaitForExit();
-
-            if (!mp3encodeProcess.StartInfo.UseShellExecute && mp3encodeProcess.ExitCode != 0)
-            {
-                StreamReader stdErr = mp3encodeProcess.StandardError;
-                if (!stdErr.EndOfStream)
+                if (pcmFormat.SampleRate < 22050)
                 {
-                    string toLog = stdErr.ReadToEnd();
-                    if (!string.IsNullOrEmpty(toLog))
+                    bitRate_mp3Output = 32;
+                }
+
+                string sampleRate = String.Format("{0}", pcmFormat.SampleRate); //Math.Round(pcmFormat.SampleRate / 1000.0, 3));
+                sampleRate = sampleRate.Substring(0, 2) + '.' + sampleRate.Substring(2, 3);
+                string sampleRateArg = " --resample " + sampleRate;
+                if (!extraParamResample) sampleRateArg = "";
+
+                string replayGainArg = !string.IsNullOrEmpty(extraParamReplayGain) ? (extraParamReplayGain.StartsWith(" ") ? extraParamReplayGain : " " + extraParamReplayGain) :
+                    "";
+
+                string channelsArg = pcmFormat.NumberOfChannels == 1 ? "m" : "s";
+                if (!string.IsNullOrEmpty(extraparamChannels)) channelsArg = extraparamChannels;
+                //string argumentString = "-b " + bitRate_mp3Output.ToString ()  + " --cbr --resample default -m m \"" + sourceFile + "\" \"" + destinationFile + "\"";
+                string argumentString = "-b " + bitRate_mp3Output.ToString()
+                    + " --cbr"
+                    + sampleRateArg
+                    + " -m " + channelsArg
+                    + replayGainArg
+                    + " \"" + sourceFile + "\" \"" + destinationFile + "\"";
+                Console.WriteLine(argumentString);
+
+                if (m_process != null)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                }
+
+                m_process = new Process();
+
+                m_process.StartInfo.FileName = Path.Combine(LameWorkingDir, "lame.exe");
+                m_process.StartInfo.RedirectStandardOutput = false;
+                m_process.StartInfo.RedirectStandardError = false;
+                m_process.StartInfo.UseShellExecute = true;
+                m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                m_process.StartInfo.Arguments = argumentString;
+                //{
+                //FileName = Path.Combine(LameWorkingDir, "lame.exe"),
+
+                //RedirectStandardError = false,
+                //RedirectStandardOutput = false,
+                //UseShellExecute = true,
+                //WindowStyle = ProcessWindowStyle.Hidden,
+                //Arguments = argumentString
+                //}
+                //};
+                m_process.Start();
+                m_process.WaitForExit();
+
+
+                if (RequestCancellation)
+                {
+                    okay = false;
+                }
+                else
+                {
+                    okay = true;
+
+                    if (!m_process.StartInfo.UseShellExecute && m_process.ExitCode != 0)
                     {
-                        Console.WriteLine(toLog);
+                        StreamReader stdErr = m_process.StandardError;
+                        if (!stdErr.EndOfStream)
+                        {
+                            string toLog = stdErr.ReadToEnd();
+                            if (!string.IsNullOrEmpty(toLog))
+                            {
+                                Console.WriteLine(toLog);
+                            }
+                        }
+                    }
+                    else if (!m_process.StartInfo.UseShellExecute)
+                    {
+                        StreamReader stdOut = m_process.StandardOutput;
+                        if (!stdOut.EndOfStream)
+                        {
+                            string toLog = stdOut.ReadToEnd();
+                            if (!string.IsNullOrEmpty(toLog))
+                            {
+                                Console.WriteLine(toLog);
+                            }
+                        }
                     }
                 }
+
             }
-            else if (!mp3encodeProcess.StartInfo.UseShellExecute)
+            catch (Exception ex)
             {
-                StreamReader stdOut = mp3encodeProcess.StandardOutput;
-                if (!stdOut.EndOfStream)
-                {
-                    string toLog = stdOut.ReadToEnd();
-                    if (!string.IsNullOrEmpty(toLog))
-                    {
-                        Console.WriteLine(toLog);
-                    }
-                }
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                okay = false;
+            }
+            finally
+            {
+                //noop
             }
 
-            if (File.Exists(destinationFile))
+            if (okay && File.Exists(destinationFile))
             {
                 return true;
             }
