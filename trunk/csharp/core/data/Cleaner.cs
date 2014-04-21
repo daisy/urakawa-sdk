@@ -31,7 +31,7 @@ namespace urakawa.data
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw ex;
+                throw new Exception("Cleanup", ex);
             }
         }
 

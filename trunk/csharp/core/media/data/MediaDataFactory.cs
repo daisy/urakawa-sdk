@@ -97,7 +97,7 @@ namespace urakawa.media.data
             {
                 return Create<Mp3AudioMediaData>();
             }
-            else if (String.Equals(extension, DataProviderFactory.AUDIO_MP4_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            else if (String.Equals(extension, DataProviderFactory.AUDIO_MP4_EXTENSION, StringComparison.OrdinalIgnoreCase) || String.Equals(extension, DataProviderFactory.AUDIO_MP4_EXTENSION, StringComparison.OrdinalIgnoreCase))
             {
                 return Create<Mp4AudioMediaData>();
             }
