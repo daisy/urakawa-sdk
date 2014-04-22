@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using urakawa.core;
 using urakawa.core.visitor;
+using urakawa.exception;
 using urakawa.media;
 
 namespace urakawa.property.channel
@@ -45,18 +47,30 @@ namespace urakawa.property.channel
         /// </returns>
         public bool PreVisit(TreeNode node)
         {
-            bool foundMedia = false;
-
             ChannelsProperty chProp = node.GetChannelsProperty();
             if (chProp != null)
             {
-                urakawa.media.Media m = chProp.GetMedia(ChannelToClear);
+                urakawa.media.Media m = null;
+
+                //try
+                //{
+                    m = chProp.GetMedia(ChannelToClear);
+//                }
+//                catch (ChannelDoesNotExistException ex)
+//                {
+//#if DEBUG
+//                    Debugger.Break();
+//#endif
+//                    return false;
+//                }
+
                 if (m != null)
                 {
                     chProp.SetMedia(ChannelToClear, null);
                 }
             }
-            return !foundMedia;
+
+            return true;
         }
 
         /// <summary>
