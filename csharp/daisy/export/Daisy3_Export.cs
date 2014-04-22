@@ -8,6 +8,7 @@ using AudioLib;
 using urakawa.core;
 using urakawa.daisy.export.visitor;
 using urakawa.data;
+using urakawa.exception;
 using urakawa.media.timing;
 using urakawa.property.channel;
 using urakawa.media;
@@ -206,7 +207,8 @@ namespace urakawa.daisy.export
 
             foreach (Channel previousChannel in previousChannelsList)
             {
-                m_Presentation.ChannelsManager.RemoveManagedObject(previousChannel);
+                //m_Presentation.ChannelsManager.RemoveManagedObject(previousChannel);
+                RemovePublishChannel(previousChannel);
             }
 
             ////TreeNodeTestDelegate triggerDelegate  = delegate(urakawa.core.TreeNode node) { return node.GetManagedAudioMedia () != null ; };
@@ -264,14 +266,30 @@ namespace urakawa.daisy.export
 
         protected void RemovePublishChannel(Channel publishChannel)
         {
-            m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
+            try
+            {
+                m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
+            }
+            catch (ChannelDoesNotExistException ex1)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+            catch (IsNotManagerOfException ex2)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
         }
 
         protected bool RequestCancellation_RemovePublishChannel(Channel publishChannel)
         {
             if (RequestCancellation)
             {
-                m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
+                //m_Presentation.ChannelsManager.RemoveManagedObject(publishChannel);
+                RemovePublishChannel(publishChannel);
                 return true;
             }
             return false;
