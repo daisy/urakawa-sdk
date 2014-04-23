@@ -51,11 +51,8 @@ namespace AudioLib
             Stream destStream = null;
 
             bool okay = false;
-            Stopwatch watch = new Stopwatch();
             try
             {
-                watch.Start();
-
                 audioStream = File.Open(m_fullpath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                 uint dataLength;
@@ -91,23 +88,14 @@ namespace AudioLib
 
                     currentAudioBytes += bytesReadFromAudioStream;
 
-                    if (watch.ElapsedMilliseconds >= 500)
-                    {
-                        watch.Stop();
+                    int percent = (int)Math.Round(100.0 * currentAudioBytes / (double)totalAudioBytes);
 
-                        int percent = (int)Math.Round(100.0 * currentAudioBytes / (double)totalAudioBytes);
-                        if (true) //percent - previousPercent > 5)
-                        {
-                            previousPercent = percent;
+                    previousPercent = percent;
 
-                            reportProgress(percent, "[ " + percent + "% ] " +
-                                                    Math.Round(currentAudioBytes / (double)1024) + " / " +
-                                                    Math.Round(totalAudioBytes / (double)1024) + " (kB)");
-                        }
+                    reportProgress_Throttle(percent, "[ " + percent + "% ] " +
+                                            Math.Round(currentAudioBytes / (double)1024) + " / " +
+                                            Math.Round(totalAudioBytes / (double)1024) + " (kB)");
 
-                        watch.Reset();
-                        watch.Start();
-                    }
 
                     for (int i = 0; i < bytesReadFromAudioStream; ) //i += m_CurrentAudioPCMFormat.BlockAlign)
                     {
@@ -173,7 +161,6 @@ namespace AudioLib
             }
             catch (Exception ex)
             {
-                watch.Stop();
                 okay = false;
             }
             finally
@@ -397,11 +384,8 @@ namespace AudioLib
             Stream destStream = null;
 
             bool okay = false;
-            Stopwatch watch = new Stopwatch();
             try
             {
-                watch.Start();
-
                 audioStream = File.Open(m_fullpath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                 uint dataLength;
@@ -469,23 +453,13 @@ namespace AudioLib
 
                     currentAudioBytes += bytesReadFromAudioStream;
 
-                    if (watch.ElapsedMilliseconds >= 500)
-                    {
-                        watch.Stop();
+                    int percent = (int)Math.Round(100.0 * currentAudioBytes / (double)totalAudioBytes);
 
-                        int percent = (int)Math.Round(100.0 * currentAudioBytes / (double)totalAudioBytes);
-                        if (true) //percent - previousPercent > 5)
-                        {
-                            previousPercent = percent;
+                    previousPercent = percent;
 
-                            reportProgress(percent, "[ " + percent + "% ] " +
-                                Math.Round(currentAudioBytes / (double)1024) + " / " +
-                                Math.Round(totalAudioBytes / (double)1024) + " (kB)");
-                        }
-
-                        watch.Reset();
-                        watch.Start();
-                    }
+                    reportProgress_Throttle(percent, "[ " + percent + "% ] " +
+                        Math.Round(currentAudioBytes / (double)1024) + " / " +
+                        Math.Round(totalAudioBytes / (double)1024) + " (kB)");
 
                     DebugFix.Assert(bytesReadFromAudioStream <= bytesToTransfer);
 
@@ -745,7 +719,6 @@ namespace AudioLib
             }
             catch (Exception ex)
             {
-                watch.Stop();
                 okay = false;
             }
             finally
@@ -844,8 +817,6 @@ namespace AudioLib
             CancellationRequestedEvent += cancellationRequestedEvent;
         }
 
-        private const uint PROGRESS_INTERVAL_MS = 500;
-
         public string ConvertSampleRate(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat, out AudioLibPCMFormat originalPcmFormat)
         {
             if (!File.Exists(sourceFile))
@@ -857,7 +828,7 @@ namespace AudioLib
             string destinationFilePath = null;
             WaveStream sourceStream = null;
             WaveFormatConversionStream conversionStream = null;
-            Stopwatch watch = new Stopwatch();
+            
             try
             {
                 WaveFormat destFormat = new WaveFormat((int)pcmFormat.SampleRate,
@@ -904,7 +875,7 @@ namespace AudioLib
                         string msg = Path.GetFileName(sourceFile) + " / " + Path.GetFileName(destinationFilePath);
                         //"Resampling WAV audio...";
                         reportProgress(-1, msg);
-                        watch.Start();
+                        
                         while ((byteRead = conversionStream.Read(buffer, 0, buffer.Length)) > 0)
                         {
                             if (RequestCancellation)
@@ -917,16 +888,8 @@ namespace AudioLib
                                 return null;
                             }
 
-                            if (watch.ElapsedMilliseconds >= PROGRESS_INTERVAL_MS)
-                            {
-                                watch.Stop();
-
-                                int percent = (int)(100.0 * sourceStream.Position / sourceStream.Length);
-                                reportProgress(percent, msg); // + sourceStream.Position + "/" + sourceStream.Length);
-
-                                watch.Reset();
-                                watch.Start();
-                            }
+                            int percent = (int)(100.0 * sourceStream.Position / sourceStream.Length);
+                            reportProgress_Throttle(percent, msg); // + sourceStream.Position + "/" + sourceStream.Length);
 
                             writer.WriteData(buffer, 0, byteRead);
                         }
@@ -935,8 +898,6 @@ namespace AudioLib
             }
             finally
             {
-                watch.Stop();
-
                 if (conversionStream != null)
                 {
                     conversionStream.Close();
@@ -979,10 +940,9 @@ namespace AudioLib
 
             string msg = Path.GetFileName(mp3FilePath) + " / " + Path.GetFileName(wavFilePath); // "Decoding MP3 to WAV audio (CSharp Lib)..."
             reportProgress(-1, msg);
-            Stopwatch watch = new Stopwatch();
+
             try
             {
-                watch.Start();
                 while (true)
                 {
                     if (RequestCancellation)
@@ -995,17 +955,10 @@ namespace AudioLib
                         }
                         return null;
                     }
-
-                    if (watch.ElapsedMilliseconds >= PROGRESS_INTERVAL_MS)
-                    {
-                        watch.Stop();
-
+                    
                         int percent = (int)(100.0 * mp3Stream.Position / mp3Stream.Length);
-                        reportProgress(percent, msg); // + mp3Stream.Position + "/" + mp3Stream.Length);
+                        reportProgress_Throttle(percent, msg); // + mp3Stream.Position + "/" + mp3Stream.Length);
 
-                        watch.Reset();
-                        watch.Start();
-                    }
 
                     Header header = mp3BitStream.readFrame();
                     if (header == null)
@@ -1027,7 +980,6 @@ namespace AudioLib
             }
             finally
             {
-                watch.Stop();
             }
 
             mp3Stream.Close();
@@ -1082,10 +1034,9 @@ namespace AudioLib
 
                         string msg = Path.GetFileName(mp3FilePath) + " / " + Path.GetFileName(wavFilePath); //"Decoding MP3 to WAV audio (ACM Codec) ..."
                         reportProgress(-1, msg);
-                        Stopwatch watch = new Stopwatch();
+
                         try
                         {
-                            watch.Start();
                             while ((byteRead = pcmStream.Read(buffer, 0, buffer.Length)) > 0)
                             {
                                 if (RequestCancellation)
@@ -1098,23 +1049,15 @@ namespace AudioLib
                                     return null;
                                 }
 
-                                if (watch.ElapsedMilliseconds >= PROGRESS_INTERVAL_MS)
-                                {
-                                    watch.Stop();
-
-                                    int percent = (int)(100.0 * reader.Position / reader.Length);
-                                    reportProgress(percent, msg); // + reader.Position + "/" + reader.Length);
-
-                                    watch.Reset();
-                                    watch.Start();
-                                }
+                                int percent = (int)(100.0 * reader.Position / reader.Length);
+                                reportProgress_Throttle(percent, msg); // + reader.Position + "/" + reader.Length);
 
                                 writer.WriteData(buffer, 0, byteRead);
                             }
                         }
                         finally
                         {
-                            watch.Stop();
+                            
                         }
                     }
                 }
