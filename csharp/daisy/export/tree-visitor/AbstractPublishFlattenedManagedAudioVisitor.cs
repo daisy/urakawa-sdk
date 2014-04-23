@@ -417,11 +417,11 @@ namespace urakawa.daisy.export.visitor
 
                 if (EncodePublishedAudioFilesToMp3)
                 {
-                    reportProgress(percent, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(src).Replace(DataProviderFactory.AUDIO_WAV_EXTENSION, DataProviderFactory.AUDIO_MP3_EXTENSION), GetSizeInfo(node)));
+                    reportProgress_Throttle(percent, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(src).Replace(DataProviderFactory.AUDIO_WAV_EXTENSION, DataProviderFactory.AUDIO_MP3_EXTENSION), GetSizeInfo(node)));
                 }
                 else
                 {
-                    reportProgress(percent, String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName(src), GetSizeInfo(node)));
+                    reportProgress_Throttle(percent, String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, Path.GetFileName(src), GetSizeInfo(node)));
                 }
                 //Console.WriteLine("progress percent " + m_ProgressPercentage);
             }

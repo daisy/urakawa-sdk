@@ -56,7 +56,7 @@ namespace urakawa.daisy.import
                 if (RequestCancellation) return;
 
                 nSmil++;
-                reportProgress(100 * nSmil / spineOfSmilFiles.Count,
+                reportProgress_Throttle(100 * nSmil / spineOfSmilFiles.Count,
                     string.Format(UrakawaSDK_daisy_Lang.ParsingSmilFile, nSmil, spineOfSmilFiles.Count, smilPath));
 
                 string fullSmilPath = Path.Combine(dirPath, smilPath);

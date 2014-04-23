@@ -94,7 +94,7 @@ namespace urakawa.daisy.import
             foreach (ZipStorer.ZipFileEntry entry in dir)
             {
                 if (RequestCancellation) return;
-                reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.Unzipping, entry.FilenameInZip));
+                reportProgress_Throttle(-1, String.Format(UrakawaSDK_daisy_Lang.Unzipping, entry.FilenameInZip));
 
                 string unzippedFilePath = unzipDirectory + Path.DirectorySeparatorChar + entry.FilenameInZip;
                 string unzippedFileDir = Path.GetDirectoryName(unzippedFilePath);
@@ -1059,7 +1059,7 @@ namespace urakawa.daisy.import
                             percent = (int)((val / max) * 100);
                         }
 
-                        reportProgress(percent, val + "/" + max);
+                        reportProgress_Throttle(percent, val + "/" + max);
                         //reportProgress(-1, action.LongDescription);
 
                         if (RequestCancellation)
