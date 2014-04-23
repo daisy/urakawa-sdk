@@ -9,8 +9,13 @@ namespace AudioLib
     {
         event ProgressChangedEventHandler ProgressChangedEvent;
         void reportProgress(int percent, string msg);
+
         event ProgressChangedEventHandler SubProgressChangedEvent;
         void reportSubProgress(int percent, string msg);
+
+        void resetStopWatch();
+        void reportProgress_Throttle(int percent, string msg);
+
         bool RequestCancellation { get; set; }
 
         void AddSubCancellable(IDualCancellableProgressReporter other);
@@ -23,28 +28,45 @@ namespace AudioLib
 
     public abstract class DualCancellableProgressReporter : IDualCancellableProgressReporter
     {
-        private Stopwatch m_stopWatch = null;
+        private Stopwatch m_stopWatch = new Stopwatch();
+
+        public void resetStopWatch()
+        {
+            if (m_stopWatch.IsRunning)
+            {
+                m_stopWatch.Stop();
+            }
+            m_stopWatch.Reset();
+
+            lock (m_subCancellables)
+            {
+                foreach (IDualCancellableProgressReporter cancellable in m_subCancellables)
+                {
+                    cancellable.resetStopWatch();
+                }
+            }
+        }
 
         public event ProgressChangedEventHandler ProgressChangedEvent;
         public void reportProgress(int percent, string msg)
         {
-            if (m_stopWatch == null || m_stopWatch.ElapsedMilliseconds > 300)
+            resetStopWatch();
+
+            reportSubProgress(-1, null);
+
+            ProgressChangedEventHandler d = ProgressChangedEvent;
+            if (d != null)
             {
-                if (m_stopWatch != null)
-                {
-                    m_stopWatch.Stop();
-                }
-                reportSubProgress(-1, null);
-                ProgressChangedEventHandler d = ProgressChangedEvent;
-                if (d != null)
-                {
-                    d(this, new ProgressChangedEventArgs(percent, string.IsNullOrEmpty(msg) ? null : msg));
-                }
-                if (m_stopWatch == null)
-                {
-                    m_stopWatch = new Stopwatch();
-                }
-                m_stopWatch.Reset();
+                d(this, new ProgressChangedEventArgs(percent, string.IsNullOrEmpty(msg) ? null : msg));
+            }
+        }
+
+        public void reportProgress_Throttle(int percent, string msg)
+        {
+            if (!m_stopWatch.IsRunning || m_stopWatch.ElapsedMilliseconds > 300)
+            {
+                reportProgress(percent, msg);
+
                 m_stopWatch.Start();
             }
         }
