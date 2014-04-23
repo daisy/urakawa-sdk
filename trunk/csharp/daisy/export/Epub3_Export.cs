@@ -339,7 +339,7 @@ namespace urakawa.daisy.export
                             manAudioStream.Close();
                         }
 
-                        decimal bytesSoFar_ = Math.Round((decimal)totalBytesWritten, 5, MidpointRounding.ToEven);
+                        decimal bytesSoFar_ = Math.Round((decimal)totalBytesWritten / (decimal)(1024.0 * 1024.0), 5, MidpointRounding.ToEven);
                         reportProgress(-1, bytesSoFar_ + @"MB ... " + String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, audioFileName, sizeStr));
                     }
                     else
@@ -372,7 +372,7 @@ namespace urakawa.daisy.export
 
                 if (m_encodeToMp3)
                 {
-                    decimal bytesMP3 = Math.Round((decimal)bytes / 4, 5, MidpointRounding.ToEven);
+                    decimal bytesMP3 = Math.Round((decimal)bytes / (decimal)4, 5, MidpointRounding.ToEven);
                     reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, audioFileName, bytesMP3 + @"MB"));
 
                     WavFormatConverter formatConverter = new WavFormatConverter(true, m_SkipACM);
@@ -1232,7 +1232,7 @@ namespace urakawa.daisy.export
                                 string descIndirectID = "tobi_" +
                                     FileDataProvider.EliminateForbiddenFileNameCharacters(
                                         descriptionFileHTMLRelativeToHTML).Replace('.', '_');
-                                
+
 
                                 DebugFix.Assert(!String.IsNullOrEmpty(longDescFileHTML));
 
@@ -1241,8 +1241,8 @@ namespace urakawa.daisy.export
                                 //string longDescIndirectID = "tobi_" +
                                 //    FileDataProvider.EliminateForbiddenFileNameCharacters(
                                 //        longDescFileHTMLRelativeToHTML).Replace('.', '_');
-                                
-                                
+
+
 
                                 if (m_imageDescriptions_inlineTextAudio)
                                 {
@@ -2006,9 +2006,9 @@ namespace urakawa.daisy.export
                     int index = opsRelativeDirectoryPath.LastIndexOf('/');
                     if (index < 0)
                     {
-//#if DEBUG
-//                        Debugger.Break();
-//#endif
+                        //#if DEBUG
+                        //                        Debugger.Break();
+                        //#endif
                         opsRelativeDirectoryPath = "";
                     }
                     else
