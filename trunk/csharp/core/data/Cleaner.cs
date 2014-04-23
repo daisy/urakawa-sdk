@@ -102,8 +102,7 @@ namespace urakawa.data
             // We eliminate MediaData registered in the MediaDataManager that is unused
             // (not in the list of collected MediaData so far)
             // and we collect references of DataProviders used by the MediaData collected so far
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            
             index = 0;
 
             List<MediaData> list = m_Presentation.MediaDataManager.ManagedObjects.ContentsAs_ListCopy;
@@ -119,13 +118,7 @@ namespace urakawa.data
                 {
                     if (md is media.data.audio.codec.WavAudioMediaData)
                     {
-                        if (stopWatch.ElapsedMilliseconds > 500)
-                        {
-                            stopWatch.Stop();
-                            reportProgress(progress, index + " / " + list.Count);
-                            stopWatch.Reset();
-                            stopWatch.Start();
-                        }
+                        reportProgress_Throttle(progress, index + " / " + list.Count);
 
                         ((media.data.audio.codec.WavAudioMediaData)md).ForceSingleDataProvider();
                     }
@@ -145,7 +138,6 @@ namespace urakawa.data
                     md.Delete();
                 }
             }
-            stopWatch.Stop();
 
             // We collect references of DataProviders used by the registered ExternalFileData
             foreach (ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
@@ -165,11 +157,13 @@ namespace urakawa.data
             // (i.e. not in our list of collected used DataProviders so far)
 
             index = 0;
+
+            //int idx = 0; //to test exception handling and unmove of deleted files
             
             List<DataProvider> list2 = m_Presentation.DataProviderManager.ManagedObjects.ContentsAs_ListCopy;
             foreach (DataProvider dp in list2)
             {
-                progress = 100 * index / list2.Count;
+                progress = 100 * index++ / list2.Count;
                 string info = dp is FileDataProvider ? ((FileDataProvider)dp).DataFileRelativePath : "";
                 //reportProgress(progress, info);
 
@@ -177,6 +171,12 @@ namespace urakawa.data
 
                 if (!usedDataProviders.Contains(dp))
                 {
+                    //idx++;
+                    //if (idx > 5)
+                    //{
+                    //    throw new Exception("test");
+                    //}
+
                     if (dp is FileDataProvider)
                     {
                         ((FileDataProvider)dp).DeleteByMovingToFolder(m_FullPathToDeletedDataFolder);

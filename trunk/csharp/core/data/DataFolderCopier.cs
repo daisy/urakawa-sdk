@@ -62,8 +62,6 @@ namespace urakawa.data
             int index = 0;
             const int progressStep = 10;
             int progress = progressStep;
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
 
             List<FileDataProvider> list = new List<FileDataProvider>(m_Presentation.DataProviderManager.ManagedFileDataProviders);
             foreach (FileDataProvider fdp in list)
@@ -71,17 +69,8 @@ namespace urakawa.data
                 index++;
                 progress = 100 * index / list.Count;
 
-                if (stopWatch.ElapsedMilliseconds > 500)
-                {
-                    stopWatch.Stop();
+                reportProgress_Throttle(progress, string.Format("{1}/{2} ({0})", fdp.DataFileRelativePath, index, list.Count));
 
-                    //progress += progressStep;
-                    //if (progress > 100) progress = progressStep;
-                    reportProgress(progress, string.Format("{1}/{2} ({0})", fdp.DataFileRelativePath, index, list.Count));
-
-                    stopWatch.Reset();
-                    stopWatch.Start();
-                }
 
                 if (RequestCancellation) return;
 
