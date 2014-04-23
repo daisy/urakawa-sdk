@@ -199,6 +199,13 @@ namespace AudioLib
             {
                 File.Delete(m_fullpath);
                 File.Move(fullpath_, m_fullpath);
+                try
+                {
+                    File.SetAttributes(m_fullpath, FileAttributes.Normal);
+                }
+                catch
+                {
+                }
             }
         }
     }
@@ -327,6 +334,13 @@ namespace AudioLib
             {
                 File.Delete(m_fullpath);
                 File.Move(fullpath_, m_fullpath);
+                try
+                {
+                    File.SetAttributes(m_fullpath, FileAttributes.Normal);
+                }
+                catch
+                {
+                }
             }
         }
     }
@@ -757,6 +771,13 @@ namespace AudioLib
             {
                 File.Delete(m_fullpath);
                 File.Move(fullpath_, m_fullpath);
+                try
+                {
+                    File.SetAttributes(m_fullpath, FileAttributes.Normal);
+                }
+                catch
+                {
+                }
             }
         }
     }
