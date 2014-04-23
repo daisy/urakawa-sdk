@@ -144,6 +144,12 @@
   <data name="CreatingXMLFile" xml:space="preserve">
     <value>Creating DTBook.xml file</value>
   </data>
+  <data name="CreatingEPUB" xml:space="preserve">
+    <value>Creating EPUB files...</value>
+  </data>
+  <data name="CreatingEPUBZip" xml:space="preserve">
+    <value>Creating EPUB zip: </value>
+  </data>
   <data name="DecodingAudio" xml:space="preserve">
     <value>Decoding audio: [{0}]</value>
   </data>

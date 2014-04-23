@@ -338,6 +338,9 @@ namespace urakawa.daisy.export
                         {
                             manAudioStream.Close();
                         }
+
+                        decimal bytesSoFar_ = Math.Round((decimal)totalBytesWritten, 5, MidpointRounding.ToEven);
+                        reportProgress(-1, bytesSoFar_ + @"MB ... " + String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, audioFileName, sizeStr));
                     }
                     else
                     {
@@ -369,6 +372,9 @@ namespace urakawa.daisy.export
 
                 if (m_encodeToMp3)
                 {
+                    decimal bytesMP3 = Math.Round((decimal)bytes / 4, 5, MidpointRounding.ToEven);
+                    reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, audioFileName, bytesMP3 + @"MB"));
+
                     WavFormatConverter formatConverter = new WavFormatConverter(true, m_SkipACM);
 
                     AddSubCancellable(formatConverter);
@@ -402,6 +408,8 @@ namespace urakawa.daisy.export
                         ||
                         nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels)
                     {
+                        reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ConvertingAudio, audioFileName));
+
                         WavFormatConverter formatConverter = new WavFormatConverter(true, m_SkipACM);
 
                         AddSubCancellable(formatConverter);
@@ -1962,7 +1970,7 @@ namespace urakawa.daisy.export
 
             if (RequestCancellation) return;
 
-            reportProgress(-1, @"Creating EPUB directory structure..."); //UrakawaSDK_daisy_Lang.BLAbla
+            reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingEPUB);
 
             string hasNavDoc = null;
             string hasNCX = null;
@@ -1998,10 +2006,10 @@ namespace urakawa.daisy.export
                     int index = opsRelativeDirectoryPath.LastIndexOf('/');
                     if (index < 0)
                     {
-#if DEBUG
-                        Debugger.Break();
-#endif
-                        opsRelativeDirectoryPath = null;
+//#if DEBUG
+//                        Debugger.Break();
+//#endif
+                        opsRelativeDirectoryPath = "";
                     }
                     else
                     {
@@ -2022,10 +2030,10 @@ namespace urakawa.daisy.export
             if (!string.IsNullOrEmpty(opsRelativeDirectoryPath))
             {
                 opsDirectoryPath = Path.Combine(m_UnzippedOutputDirectory, opsRelativeDirectoryPath);
-                if (!Directory.Exists(opsDirectoryPath))
-                {
-                    FileDataProvider.CreateDirectory(opsDirectoryPath);
-                }
+            }
+            if (!Directory.Exists(opsDirectoryPath))
+            {
+                FileDataProvider.CreateDirectory(opsDirectoryPath);
             }
 
             string opfFilePath = Path.Combine(m_UnzippedOutputDirectory, opfRelativeFilePath);
@@ -3093,7 +3101,7 @@ namespace urakawa.daisy.export
                 File.Delete(epubFilePath);
             }
 
-            reportProgress(-1, @"Creating EPUB file archive: " + epubFilePath); //UrakawaSDK_daisy_Lang.BLAbla
+            reportProgress(-1, UrakawaSDK_daisy_Lang.CreatingEPUBZip + epubFilePath);
 
             ZipEpub(epubFilePath, m_UnzippedOutputDirectory);
 
@@ -3449,14 +3457,19 @@ namespace urakawa.daisy.export
                     strBuilder.Append("No Heading");
                 }
 
-                string str = strBuilder.ToString();
+                string str = strBuilder != null ? strBuilder.ToString() : null;
                 if (!string.IsNullOrEmpty(str))
                 {
                     str = Regex.Replace(str, @"\s+", " ");
                     str = str.Trim();
+
+                    if (string.IsNullOrEmpty(str))
+                    {
+                        str = null;
+                    }
                 }
 
-                sexion.Title = strBuilder == null ? "No Heading" : str;
+                sexion.Title = string.IsNullOrEmpty(str) ? "No Heading" : str;
 
                 processOutline(section.SubSections, path, sexion);
             }
