@@ -340,7 +340,7 @@ namespace urakawa.daisy.export
                         }
 
                         decimal bytesSoFar_ = Math.Round((decimal)totalBytesWritten / (decimal)(1024.0 * 1024.0), 5, MidpointRounding.ToEven);
-                        reportProgress(-1, bytesSoFar_ + @"MB ... " + String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, audioFileName, sizeStr));
+                        reportProgress_Throttle(-1, bytesSoFar_ + @"MB ... " + String.Format(UrakawaSDK_daisy_Lang.CreatingAudioFile, audioFileName, sizeStr));
                     }
                     else
                     {

@@ -87,7 +87,7 @@ namespace urakawa.daisy.import
             if (RequestCancellation) return;
             //initializeProject();
 
-            reportProgress(100, UrakawaSDK_daisy_Lang.ImportInitialized);
+            //reportProgress(100, UrakawaSDK_daisy_Lang.ImportInitialized);
         }
 
         public const string XUK_DIR = "_XUK"; // prepend with '_' so it appears at the top of the alphabetical sorting in the file explorer window
@@ -295,7 +295,7 @@ namespace urakawa.daisy.import
                         percent = (int)((val / max) * 100);
                     }
 
-                    reportProgress(percent, val + "/" + max);
+                    reportProgress_Throttle(percent, val + "/" + max);
                     //reportProgress(-1, action.LongDescription);
 
                     if (RequestCancellation)
