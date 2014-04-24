@@ -4,6 +4,7 @@ using System.Diagnostics;
 using AudioLib;
 using urakawa.command;
 using urakawa.core;
+using urakawa.exception;
 using urakawa.ExternalFiles;
 using urakawa.media.data;
 using urakawa.media.data.utilities;
@@ -79,8 +80,8 @@ namespace urakawa.data
             progress = 10;
 
             int index = 0;
-            
-            List<IManaged > list3 = collectorVisitor.CollectedMedia;
+
+            List<IManaged> list3 = collectorVisitor.CollectedMedia;
             foreach (IManaged mm in list3)
             {
                 index++;
@@ -102,7 +103,7 @@ namespace urakawa.data
             // We eliminate MediaData registered in the MediaDataManager that is unused
             // (not in the list of collected MediaData so far)
             // and we collect references of DataProviders used by the MediaData collected so far
-            
+
             index = 0;
 
             List<MediaData> list = m_Presentation.MediaDataManager.ManagedObjects.ContentsAs_ListCopy;
@@ -159,7 +160,7 @@ namespace urakawa.data
             index = 0;
 
             //int idx = 0; //to test exception handling and unmove of deleted files
-            
+
             List<DataProvider> list2 = m_Presentation.DataProviderManager.ManagedObjects.ContentsAs_ListCopy;
             foreach (DataProvider dp in list2)
             {
@@ -177,13 +178,29 @@ namespace urakawa.data
                     //    throw new Exception("test");
                     //}
 
-                    if (dp is FileDataProvider)
+                    try
                     {
-                        ((FileDataProvider)dp).DeleteByMovingToFolder(m_FullPathToDeletedDataFolder);
+
+                        if (dp is FileDataProvider)
+                        {
+                            ((FileDataProvider)dp).DeleteByMovingToFolder(m_FullPathToDeletedDataFolder);
+                        }
+                        else
+                        {
+                            dp.Delete();
+                        }
                     }
-                    else
+                    catch (OutputStreamOpenException ex1)
                     {
-                        dp.Delete();
+                        Console.WriteLine("OutputStreamOpenException === " + ((FileDataProvider)dp).DataFileFullPath);
+                    }
+                    catch (InputStreamsOpenException ex2)
+                    {
+                        Console.WriteLine("InputStreamsOpenException === " + ((FileDataProvider)dp).DataFileFullPath);
+                    }
+                    catch (OperationNotValidException ex3)
+                    {
+                        Console.WriteLine("OperationNotValidException === " + ((FileDataProvider)dp).DataFileFullPath);
                     }
                 }
             }

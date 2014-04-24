@@ -606,21 +606,23 @@ namespace urakawa.data
 
         private void CheckDataFile()
         {
-            if (File.Exists(DataFileFullPath))
+            string fp = DataFileFullPath;
+
+            if (File.Exists(fp))
             {
                 if (HasBeenInitialized)
                 {
                     return;
                 }
 
-                File.Delete(DataFileFullPath);
+                File.Delete(fp);
             }
             else
             {
                 if (HasBeenInitialized)
                 {
                     throw new exception.DataMissingException(
-                        String.Format("The data file {0} does not exist", DataFileFullPath));
+                        String.Format("The data file {0} does not exist", fp));
                 }
 
                 //string dirPath = Path.GetDirectoryName(DataFileFullPath);
@@ -634,12 +636,12 @@ namespace urakawa.data
 
             try
             {
-                File.Create(DataFileFullPath).Close();
+                File.Create(fp).Close();
             }
             catch (Exception e)
             {
                 throw new exception.OperationNotValidException(
-                    String.Format("Could not create data file {0}: {1}", DataFileFullPath, e.Message),
+                    String.Format("Could not create data file {0}: {1}", fp, e.Message),
                     e);
             }
 
@@ -668,13 +670,19 @@ namespace urakawa.data
         }
         private Stream OpenInputStream_NoLock()
         {
+            string fp = DataFileFullPath;
+
             if (mOpenOutputStream != null)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 throw new exception.OutputStreamOpenException(
-                    "Cannot open an input Stream while an output Stream is open");
+                    "Cannot open an input Stream while an output Stream is open: " + fp);
             }
+
             FileStream inputFS;
-            string fp = DataFileFullPath;
+
             CheckDataFile();
             try
             {
@@ -682,6 +690,9 @@ namespace urakawa.data
             }
             catch (Exception e)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
                 throw new exception.OperationNotValidException(
                     String.Format("Could not open file {0}", fp),
                     e);
@@ -725,18 +736,25 @@ namespace urakawa.data
         {
             lock (m_lock)
             {
+                string fp = DataFileFullPath;
+
                 if (mOpenOutputStream != null)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     throw new exception.OutputStreamOpenException(
-                        "Cannot open an output Stream while another output Stream is already open");
+                        "Cannot open an output Stream while another output Stream is already open: " + fp);
                 }
                 if (mOpenInputStreams.Count > 0)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     throw new exception.InputStreamsOpenException(
-                        "Cannot open an output Stream while one or more input Streams are open");
+                        "Cannot open an output Stream while one or more input Streams are open: " + fp);
                 }
                 CheckDataFile();
-                string fp = DataFileFullPath;
 
                 FileStream outputFS;
                 try
@@ -785,15 +803,23 @@ namespace urakawa.data
         {
             lock (m_lock)
             {
+                string fp = DataFileFullPath;
+
                 if (mOpenOutputStream != null)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     throw new exception.OutputStreamOpenException(
-                        "Cannot delete the FileDataProvider while an output Stream is still open");
+                        "Cannot delete the FileDataProvider while an output Stream is still open: " + fp);
                 }
                 if (mOpenInputStreams.Count > 0)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     throw new exception.InputStreamsOpenException(
-                        "Cannot delete the FileDataProvider while one or more input Streams are still open");
+                        "Cannot delete the FileDataProvider while one or more input Streams are still open: " + fp);
                 }
                 if (File.Exists(DataFileFullPath))
                 {
@@ -803,9 +829,12 @@ namespace urakawa.data
                     }
                     catch (Exception e)
                     {
+#if DEBUG
+                        Debugger.Break();
+#endif
                         throw new exception.OperationNotValidException(String.Format(
                                                                            "Could not delete data file {0}: {1}",
-                                                                           DataFileFullPath, e.Message), e);
+                                                                           fp, e.Message), e);
                     }
                 }
                 Presentation.DataProviderManager.RemoveDataProvider(this, false);
@@ -816,15 +845,23 @@ namespace urakawa.data
         {
             lock (m_lock)
             {
+                string fp = DataFileFullPath;
+
                 if (mOpenOutputStream != null)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     throw new exception.OutputStreamOpenException(
-                        "Cannot delete the FileDataProvider while an output Stream is still open");
+                        "Cannot delete the FileDataProvider while an output Stream is still open: " + fp);
                 }
                 if (mOpenInputStreams.Count > 0)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     throw new exception.InputStreamsOpenException(
-                        "Cannot delete the FileDataProvider while one or more input Streams are still open");
+                        "Cannot delete the FileDataProvider while one or more input Streams are still open: " + fp);
                 }
                 if (File.Exists(DataFileFullPath))
                 {
@@ -843,9 +880,12 @@ namespace urakawa.data
                     }
                     catch (Exception e)
                     {
+#if DEBUG
+                        Debugger.Break();
+#endif
                         throw new exception.OperationNotValidException(String.Format(
                                                                            "Could not delete data file {0}: {1}",
-                                                                           DataFileFullPath, e.Message), e);
+                                                                           fp, e.Message), e);
                     }
                 }
                 Presentation.DataProviderManager.RemoveDataProvider(this, false);
