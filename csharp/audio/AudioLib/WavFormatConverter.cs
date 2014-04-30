@@ -1,11 +1,14 @@
 using System;
+using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
+using System.Windows.Forms;
 using javazoom.jl.decoder;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System.Diagnostics;
-
+using NAudio.Wave.Asio;
 using SoundTouch;
 using SoundTouch.Utility;
 using Buffer = System.Buffer;
@@ -15,6 +18,15 @@ using TLongSampleType = System.Int64; // long
 #else
 using TSampleType = System.Single;
 using TLongSampleType = System.Double;
+#endif
+
+#if ENABLE_VST
+using Jacobi.Vst.Core;
+using Jacobi.Vst.Core.Host;
+using Jacobi.Vst.Interop.Host;
+
+//using Jacobi.Vst.Framework.Plugin;
+//using Jacobi.Vst.Interop.Plugin;
 #endif
 
 namespace AudioLib
@@ -50,6 +62,23 @@ namespace AudioLib
             ulong audioStreamRiffOffset = 0;
             Stream destStream = null;
 
+#if ENABLE_VST
+            VstPluginContext ctx = null;
+            Form form = null;
+
+            VstAudioBufferManager vstBufManIn = null;
+            VstAudioBufferManager vstBufManOut = null;
+
+            VstAudioBuffer[] vstBufIn = null;
+            VstAudioBuffer[] vstBufOut = null;
+
+            VstAudioPrecisionBufferManager vstBufManIn_ = null;
+            VstAudioPrecisionBufferManager vstBufManOut_ = null;
+
+            VstAudioPrecisionBuffer[] vstBufIn_ = null;
+            VstAudioPrecisionBuffer[] vstBufOut_ = null;
+#endif
+
             bool okay = false;
             try
             {
@@ -71,7 +100,7 @@ namespace AudioLib
 
                 int bytesToTransfer =
                     (int)
-                        Math.Min(audioStream.Length - (long)audioStreamRiffOffset, audioPCMFormat.ConvertTimeToBytes(2000 * AudioLibPCMFormat.TIME_UNIT)); // automatically block-aligned to frame size (sample bytes * number of channels)
+                        Math.Min(audioStream.Length - (long)audioStreamRiffOffset, audioPCMFormat.ConvertTimeToBytes(500 * AudioLibPCMFormat.TIME_UNIT)); // automatically block-aligned to frame size (sample bytes * number of channels)
                 byte[] byteBuffer = new byte[bytesToTransfer];
 
                 int bytesReadFromAudioStream = 0;
@@ -79,6 +108,132 @@ namespace AudioLib
                 long totalAudioBytes = audioStream.Length;
                 long currentAudioBytes = 0;
                 int previousPercent = -100;
+
+
+
+
+
+
+#if ENABLE_VST
+                string workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string fullPath = Path.Combine(workingDir, "VST\\xxx.dll");
+
+                fullPath = Microsoft.VisualBasic.Interaction.InputBox("DLL path or name", "VST audio plugin", fullPath, -1, -1);
+
+                IVstHostCommandStub stub = new VST.HostCommandStub();
+
+                try
+                {
+                    ctx = VstPluginContext.Create(fullPath, stub);
+                }
+                catch (Exception e)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
+
+                    return;
+                }
+
+                //ctx.Set("FullPath", fullPath);
+                //ctx.Set("IVstHostCommandStub", stub);
+
+                ctx.PluginCommandStub.Open();
+
+                if (ctx.PluginInfo.Flags.HasFlag(VstPluginFlags.CanReplacing))
+                //if ((ctx.PluginInfo.Flags & VstPluginFlags.CanReplacing) == 0)
+                //if (ctx.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.Bypass)) != VstCanDoResult.Yes) //"IVstPluginAudioProcessor"
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+
+                if (ctx.PluginInfo.Flags.HasFlag(VstPluginFlags.CanDoubleReplacing))
+                //if ((ctx.PluginInfo.Flags & VstPluginFlags.CanDoubleReplacing) == 0)
+                //if (ctx.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.Bypass)) != VstCanDoResult.Yes) //"IVstPluginAudioProcessor"
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+
+                form = new Form();
+                form.Show();
+
+                if (ctx.PluginInfo.Flags.HasFlag(VstPluginFlags.HasEditor))
+                //if ((ctx.PluginInfo.Flags & VstPluginFlags.HasEditor) == 0)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    IntPtr hWnd = form.Handle;
+                    ctx.PluginCommandStub.EditorOpen(hWnd);
+                }
+
+                try
+                {
+                    Rectangle rect = new Rectangle();
+                    ctx.PluginCommandStub.EditorGetRect(out rect);
+
+                    if (rect.Width > 0)
+                    {
+                        form.Size = new Size(rect.Width, rect.Height);
+                    }
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+
+                ctx.PluginCommandStub.SetSampleRate((float)audioPCMFormat.SampleRate);
+
+                ctx.PluginCommandStub.SetProcessPrecision(VstProcessPrecision.Process32);
+
+                //int nVSTSamples = (int)Math.Round(audioPCMFormat.SampleRate/100.0); // 100ms
+                int nVSTSamples = (int)Math.Round(bytesToTransfer / 2.0 / audioPCMFormat.NumberOfChannels);
+                ctx.PluginCommandStub.SetBlockSize(nVSTSamples);
+
+                int inputCount = ctx.PluginInfo.AudioInputCount;
+                if (inputCount <= 0)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    inputCount = audioPCMFormat.NumberOfChannels;
+                }
+                int outputCount = ctx.PluginInfo.AudioOutputCount;
+                if (outputCount <= 0)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    outputCount = audioPCMFormat.NumberOfChannels;
+                }
+
+                vstBufManIn = new VstAudioBufferManager(inputCount, nVSTSamples);
+                vstBufManOut = new VstAudioBufferManager(outputCount, nVSTSamples);
+
+                vstBufIn = vstBufManIn.ToArray();
+                vstBufOut = vstBufManOut.ToArray();
+
+                vstBufManIn_ = new VstAudioPrecisionBufferManager(inputCount, nVSTSamples);
+                vstBufManOut_ = new VstAudioPrecisionBufferManager(outputCount, nVSTSamples);
+
+                vstBufIn_ = vstBufManIn_.ToArray();
+                vstBufOut_ = vstBufManOut_.ToArray();
+
+                ctx.PluginCommandStub.MainsChanged(true);
+                ctx.PluginCommandStub.StartProcess();
+
+                //ctx.PluginCommandStub.ProcessEvents()
+#endif
+
+
 
                 while ((bytesReadFromAudioStream = audioStream.Read(byteBuffer, 0, bytesToTransfer)) > 0)
                 {
@@ -96,22 +251,83 @@ namespace AudioLib
                                             Math.Round(currentAudioBytes / (double)1024) + " / " +
                                             Math.Round(totalAudioBytes / (double)1024) + " (kB)");
 
+#if ENABLE_VST
+                    ctx.PluginCommandStub.EditorIdle();
+
+                    int iSample = -1;
+                    for (iSample = 0; iSample < nVSTSamples; iSample++)
+                    {
+                        for (int channel = 0; channel < inputCount; channel++) //audioPCMFormat.NumberOfChannels
+                        {
+                            vstBufIn[channel][iSample] = 0.0f;
+
+                            vstBufIn_[channel][iSample] = 0.0;
+                        }
+                        for (int channel = 0; channel < outputCount; channel++) //audioPCMFormat.NumberOfChannels
+                        {
+                            vstBufOut[channel][iSample] = 1.0f;
+
+                            vstBufOut_[channel][iSample] = 1.0;
+                        }
+                    }
+                    iSample = -1;
+#endif
 
                     for (int i = 0; i < bytesReadFromAudioStream; ) //i += m_CurrentAudioPCMFormat.BlockAlign)
                     {
                         if (RequestCancellation) return;
 
+#if ENABLE_VST
+                        iSample++;
+#endif
+
                         for (int channel = 0; channel < audioPCMFormat.NumberOfChannels; channel++)
                         {
                             if (RequestCancellation) return;
 
+                            if (i >= bytesReadFromAudioStream)
+                            {
+                                break;
+                            }
                             byte byte1 = byteBuffer[i++];
+
+                            if (i >= bytesReadFromAudioStream)
+                            {
+                                break;
+                            }
                             byte byte2 = byteBuffer[i++];
 
                             short sample =
                                 BitConverter.IsLittleEndian
                                     ? (short)(byte1 | (byte2 << 8))
                                     : (short)((byte1 << 8) | byte2);
+
+#if ENABLE_VST
+                            if (channel < outputCount)
+                            {
+                                float sampleF = (float)sample / 32768f;
+                                if (sampleF > 1.0f)
+                                {
+                                    sampleF = 1.0f;
+                                }
+                                if (sampleF < -1.0f)
+                                {
+                                    sampleF = -1.0f;
+                                }
+                                vstBufIn[channel][iSample] = sampleF;
+
+                                double sampleD = (double)sample / 32768d;
+                                if (sampleD > 1.0d)
+                                {
+                                    sampleD = 1.0d;
+                                }
+                                if (sampleD < -1.0d)
+                                {
+                                    sampleD = -1.0d;
+                                }
+                                vstBufIn_[channel][iSample] = sampleD;
+                            }
+#endif
 
 #if DEBUG
                             //// Little Endian
@@ -129,7 +345,7 @@ namespace AudioLib
                             DebugFix.Assert(checkedSample == sample);
 #endif //DEBUG
 
-                            const short MaxValue = short.MaxValue; // Int 16 signed 32767
+                            const short MaxValue = short.MaxValue; // Int 16 signed 32767 Int16.MaxValue
                             const short MinValue = short.MinValue; // Int 16 signed -32768
 
                             int sample_ = (int)Math.Round(sample * m_amp);
@@ -154,6 +370,90 @@ namespace AudioLib
                         }
                     }
 
+#if ENABLE_VST
+                    for (int i = 0; i < byteBuffer.Length; i++)
+                    {
+                        byteBuffer[i] = 0;
+                    }
+
+                    try
+                    {
+                        if (ctx.PluginInfo.Flags.HasFlag(VstPluginFlags.CanDoubleReplacing))
+                        {
+                            ctx.PluginCommandStub.ProcessReplacing(vstBufIn_, vstBufOut_);
+                        }
+                        if (ctx.PluginInfo.Flags.HasFlag(VstPluginFlags.CanReplacing))
+                        {
+                            ctx.PluginCommandStub.ProcessReplacing(vstBufIn, vstBufOut);
+                        }
+                    }
+                    catch (System.AccessViolationException ex1)
+                    {
+                        //noop
+                        bool debuggerBreak = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        //noop
+                        bool debuggerBreak = true;
+                    }
+
+                    int iByte = 0;
+                    for (iSample = 0; iSample < nVSTSamples; iSample++)
+                    {
+                        for (int channel = 0; channel < audioPCMFormat.NumberOfChannels; channel++)
+                        {
+                            short sample = 0;
+
+                            if (channel < outputCount)
+                            {
+                                float sampleF = vstBufOut[channel][iSample];
+                                sampleF *= 32768f;
+                                if (sampleF > Int16.MaxValue)
+                                {
+                                    sampleF = Int16.MaxValue;
+                                }
+                                if (sampleF < Int16.MinValue)
+                                {
+                                    sampleF = Int16.MinValue;
+                                }
+                                sample = (short) Math.Round(sampleF);
+
+                                if (ctx.PluginInfo.Flags.HasFlag(VstPluginFlags.CanDoubleReplacing))
+                                {
+                                    double sampleD = vstBufOut_[channel][iSample];
+                                    sampleD *= 32768d;
+                                    if (sampleD > Int16.MaxValue)
+                                    {
+                                        sampleD = Int16.MaxValue;
+                                    }
+                                    if (sampleD < Int16.MinValue)
+                                    {
+                                        sampleD = Int16.MinValue;
+                                    }
+                                    sample = (short) Math.Round(sampleD);
+                                }
+                            }
+
+                            byte[] sampleBytes = BitConverter.GetBytes(sample);
+                            //BitConverter.IsLittleEndian
+                            // byte order is already-handled by BitConverter
+
+                            if (iByte >= bytesReadFromAudioStream)
+                            {
+                                break;
+                            }
+                            byteBuffer[iByte++] = sampleBytes[0];
+
+                            if (iByte >= bytesReadFromAudioStream)
+                            {
+                                break;
+                            }
+                            byteBuffer[iByte++] = sampleBytes[1];
+                        }
+                    }
+#endif
+
                     destStream.Write(byteBuffer, 0, bytesReadFromAudioStream);
                 }
 
@@ -165,6 +465,45 @@ namespace AudioLib
             }
             finally
             {
+#if ENABLE_VST
+
+                if (ctx != null)
+                {
+                    ctx.PluginCommandStub.StopProcess();
+                    ctx.PluginCommandStub.MainsChanged(false);
+
+                    ctx.PluginCommandStub.EditorClose();
+
+                    //ctx.PluginCommandStub.Close();
+                    ctx.Dispose();
+                }
+
+                if (form != null)
+                {
+                    form.Close();
+                }
+
+
+                if (vstBufManIn != null)
+                {
+                    vstBufManIn.Dispose();
+                }
+                if (vstBufManOut != null)
+                {
+                    vstBufManOut.Dispose();
+                }
+
+                if (vstBufManIn_ != null)
+                {
+                    vstBufManIn_.Dispose();
+                }
+                if (vstBufManOut_ != null)
+                {
+                    vstBufManOut_.Dispose();
+                }
+
+#endif
+
                 if (audioStream != null)
                 {
                     audioStream.Close();
@@ -235,7 +574,7 @@ namespace AudioLib
             string fullpath_ = m_fullpath + "_.wav";
 
             string workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            string normalizeExe = Path.Combine(workingDir, "normalize.exe"); ;
+            string normalizeExe = Path.Combine(workingDir, "normalize.exe");
             if (!File.Exists(normalizeExe))
             {
 #if DEBUG
@@ -761,12 +1100,12 @@ namespace AudioLib
         {
 #if DEBUG
             string workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            string lameExe = Path.Combine(workingDir, "lame.exe"); ;
+            string lameExe = Path.Combine(workingDir, "lame.exe");
             if (!File.Exists(lameExe))
             {
                 Debugger.Break();
             }
-            string faadExe = Path.Combine(workingDir, "faad.exe"); ;
+            string faadExe = Path.Combine(workingDir, "faad.exe");
             if (!File.Exists(faadExe))
             {
                 Debugger.Break();
@@ -828,7 +1167,7 @@ namespace AudioLib
             string destinationFilePath = null;
             WaveStream sourceStream = null;
             WaveFormatConversionStream conversionStream = null;
-            
+
             try
             {
                 WaveFormat destFormat = new WaveFormat((int)pcmFormat.SampleRate,
@@ -875,7 +1214,7 @@ namespace AudioLib
                         string msg = Path.GetFileName(sourceFile) + " / " + Path.GetFileName(destinationFilePath);
                         //"Resampling WAV audio...";
                         reportProgress(-1, msg);
-                        
+
                         while ((byteRead = conversionStream.Read(buffer, 0, buffer.Length)) > 0)
                         {
                             if (RequestCancellation)
@@ -955,9 +1294,9 @@ namespace AudioLib
                         }
                         return null;
                     }
-                    
-                        int percent = (int)(100.0 * mp3Stream.Position / mp3Stream.Length);
-                        reportProgress_Throttle(percent, msg); // + mp3Stream.Position + "/" + mp3Stream.Length);
+
+                    int percent = (int)(100.0 * mp3Stream.Position / mp3Stream.Length);
+                    reportProgress_Throttle(percent, msg); // + mp3Stream.Position + "/" + mp3Stream.Length);
 
 
                     Header header = mp3BitStream.readFrame();
@@ -1057,7 +1396,7 @@ namespace AudioLib
                         }
                         finally
                         {
-                            
+
                         }
                     }
                 }
