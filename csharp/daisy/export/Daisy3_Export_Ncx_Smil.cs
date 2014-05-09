@@ -283,7 +283,7 @@ namespace urakawa.daisy.export
             return i;
         }
 
-        private Metadata AddMetadata_DtbUid(bool asInnerText, XmlDocument doc, XmlNode parentNode)
+        protected Metadata AddMetadata_DtbUid(bool asInnerText, XmlDocument doc, XmlNode parentNode)
         {
             Metadata mdUid = null;
             XmlNode metaNodeUid = null;
