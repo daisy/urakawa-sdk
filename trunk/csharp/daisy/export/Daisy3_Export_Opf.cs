@@ -15,8 +15,8 @@ namespace urakawa.daisy.export
 {
     partial class Daisy3_Export
     {
-        List<string> m_DtbAllowedInXMetadata = new List<string>();
-        List<string> m_AllowedInDcMetadata = new List<string>();
+        protected List<string> m_DtbAllowedInXMetadata = new List<string>();
+        protected List<string> m_AllowedInDcMetadata = new List<string>();
 
         private void CreateOpfDocument()
         {
@@ -294,7 +294,7 @@ namespace urakawa.daisy.export
             //reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.AllFilesCreated);                                       
         }
 
-        private void AddMetadata_Opf(XmlDocument opfDocument)
+        protected virtual void AddMetadata_Opf(XmlDocument opfDocument)
         {
             XmlNode dc_metadataNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfDocument, true, "dc-metadata", null); //opfDocument.GetElementsByTagName("dc-metadata")[0];
             XmlNode x_metadataNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(opfDocument, true, "x-metadata", null); //opfDocument.GetElementsByTagName("x-metadata")[0];
@@ -491,7 +491,7 @@ namespace urakawa.daisy.export
             //}
         }
 
-        private XmlNode AddMetadataAsInnerText(XmlDocument doc, XmlNode metadataParentNode, string name, string content)
+        protected XmlNode AddMetadataAsInnerText(XmlDocument doc, XmlNode metadataParentNode, string name, string content)
         {
             //string name = name_.ToLower();
             XmlNode node = null;
@@ -533,7 +533,7 @@ namespace urakawa.daisy.export
             return node;
         }
 
-        private XmlDocument CreateStub_OpfDocument()
+        protected virtual XmlDocument CreateStub_OpfDocument()
         {
             XmlDocument document = new XmlDocument();
             document.XmlResolver = null;
