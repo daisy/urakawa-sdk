@@ -18,7 +18,7 @@ namespace urakawa.daisy.export
         protected List<string> m_DtbAllowedInXMetadata = new List<string>();
         protected List<string> m_AllowedInDcMetadata = new List<string>();
 
-        private void CreateOpfDocument()
+        protected virtual void CreateOpfDocument()
         {
             //m_ProgressPercentage = 90;
             //reportProgress(m_ProgressPercentage, UrakawaSDK_daisy_Lang.AllFilesCreated);
@@ -268,7 +268,7 @@ namespace urakawa.daisy.export
             get { return Path.Combine(m_OutputDirectory, m_Filename_Opf); }
         }
 
-        private XmlNode AddFilenameToManifest(XmlDocument opfDocument, XmlNode manifestNode, string filename, string strID, string mediaType)
+        protected XmlNode AddFilenameToManifest(XmlDocument opfDocument, XmlNode manifestNode, string filename, string strID, string mediaType)
         {
             XmlNode itemNode = opfDocument.CreateElement(null, "item", manifestNode.NamespaceURI);
             manifestNode.AppendChild(itemNode);
