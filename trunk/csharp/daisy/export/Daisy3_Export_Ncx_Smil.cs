@@ -399,7 +399,7 @@ namespace urakawa.daisy.export
 
 
             // add custom test to headNode
-            if (ncxCustomTestList.Count > 0)
+            if (ncxCustomTestList != null && ncxCustomTestList.Count > 0)
             {
                 // create dictionary for custom test
                 Dictionary<string, string> bookStrucMap = new Dictionary<string, string>();
@@ -442,7 +442,8 @@ namespace urakawa.daisy.export
 
             //if (isCustomTestRequired)
             //{
-            if (currentSmilCustomTestList.Count > 0)
+            
+            if (currentSmilCustomTestList != null &&  currentSmilCustomTestList.Count > 0)
             {
                 XmlNode customAttributesNode = smilDocument.CreateElement(null, "customAttributes", headNode.NamespaceURI);
                 headNode.AppendChild(customAttributesNode);
@@ -458,7 +459,7 @@ namespace urakawa.daisy.export
                     //<customTest defaultState="false" id="note" override="visible" />
                 }
             }
-
+            
         }
 
         private XmlNode AddMetadataAsAttributes(XmlDocument doc, XmlNode headNode, string name, string content)
