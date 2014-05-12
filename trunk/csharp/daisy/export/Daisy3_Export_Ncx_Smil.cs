@@ -538,7 +538,7 @@ namespace urakawa.daisy.export
             return NcxDocument;
         }
 
-        protected XmlDocument CreateStub_SmilDocument()
+        protected virtual XmlDocument CreateStub_SmilDocument()
         {
             XmlDocument smilDocument = new XmlDocument();
             smilDocument.XmlResolver = null;
