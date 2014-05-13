@@ -491,7 +491,7 @@ namespace urakawa.daisy.export
             //}
         }
 
-        protected XmlNode AddMetadataAsInnerText(XmlDocument doc, XmlNode metadataParentNode, string name, string content)
+        protected virtual XmlNode AddMetadataAsInnerText(XmlDocument doc, XmlNode metadataParentNode, string name, string content)
         {
             //string name = name_.ToLower();
             XmlNode node = null;
