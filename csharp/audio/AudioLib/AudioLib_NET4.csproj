@@ -34,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\DebugNET4\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;USE_SHARPDX;NET40;USE_SOUNDTOUCH;ENABLE_VST</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;USE_SHARPDX;NET40;USE_SOUNDTOUCH;ENABLE_VST_</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
@@ -52,12 +52,15 @@
   <ItemGroup>
     <Reference Include="Jacobi.Vst.Core">
       <HintPath>.\Jacobi.Vst.Core.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Jacobi.Vst.Framework">
       <HintPath>.\Jacobi.Vst.Framework.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Jacobi.Vst.Interop">
       <HintPath>.\Jacobi.Vst.Interop.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.DirectX.DirectSound">
       <SpecificVersion>False</SpecificVersion>
