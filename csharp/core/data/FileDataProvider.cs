@@ -409,6 +409,62 @@ namespace urakawa.data
             }
         }
 
+        public static void CopyDirectory(string sourcePath, string destPath)
+        {
+            if (!Directory.Exists(destPath))
+            {
+                FileDataProvider.CreateDirectory(destPath);
+            }
+
+            foreach (string file in Directory.GetFiles(sourcePath))
+            {
+                string dest = Path.Combine(destPath, Path.GetFileName(file));
+                File.Copy(file, dest);
+                try
+                {
+                    File.SetAttributes(dest, FileAttributes.Normal);
+                }
+                catch
+                {
+                }
+            }
+
+            foreach (string folder in Directory.GetDirectories(sourcePath))
+            {
+                string dest = Path.Combine(destPath, Path.GetFileName(folder));
+                FileDataProvider.CopyDirectory(folder, dest);
+            }
+        }
+
+        public static void MoveDirectory(string sourcePath, string destPath)
+        {
+            if (!Directory.Exists(destPath))
+            {
+                FileDataProvider.CreateDirectory(destPath);
+            }
+
+            foreach (string file in Directory.GetFiles(sourcePath))
+            {
+                string dest = Path.Combine(destPath, Path.GetFileName(file));
+                File.Move(file, dest);
+                try
+                {
+                    File.SetAttributes(dest, FileAttributes.Normal);
+                }
+                catch
+                {
+                }
+            }
+
+            foreach (string folder in Directory.GetDirectories(sourcePath))
+            {
+                string dest = Path.Combine(destPath, Path.GetFileName(folder));
+                FileDataProvider.MoveDirectory(folder, dest);
+            }
+
+            FileDataProvider.DeleteDirectory(sourcePath);
+        }
+
         public static bool isHTTPFile(string filepath)
         {
             return filepath.StartsWith("http://") || filepath.StartsWith("https://");
