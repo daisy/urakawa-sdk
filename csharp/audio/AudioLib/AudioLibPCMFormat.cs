@@ -454,16 +454,18 @@ namespace AudioLib
                                 uint extraBytes = rd.ReadUInt16();
                                 if (extraBytes > 0)
                                 {
-                                    DebugFix.Assert(extraFormatBytes == extraBytes);
+                                    DebugFix.Assert(extraBytes <= (extraFormatBytes-2));
+                                }
 
-                                    // Skip (we ignore the extra information in this chunk field)
-                                    rd.ReadBytes((int)extraBytes);
+                                extraBytes = (uint)(extraFormatBytes - 2);
 
-                                    // check word-alignment
-                                    if ((extraBytes % 2) != 0)
-                                    {
-                                        rd.ReadByte();
-                                    }
+                                // Skip (we ignore the extra information in this chunk field)
+                                rd.ReadBytes((int)extraBytes);
+
+                                // check word-alignment
+                                if ((extraBytes % 2) != 0)
+                                {
+                                    rd.ReadByte();
                                 }
                             }
 
@@ -529,6 +531,12 @@ namespace AudioLib
                             }
                             break;
                         }
+                    case "JUNK":
+                    case "bext":
+                    case "minf":
+                    case "regn":
+                    case "umid":
+                    case "DGDA":
                     case "wavl":
                     case "slnt":
                     case "cue ":
