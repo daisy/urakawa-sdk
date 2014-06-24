@@ -457,15 +457,18 @@ namespace AudioLib
                                     DebugFix.Assert(extraBytes <= (extraFormatBytes-2));
                                 }
 
-                                extraBytes = (uint)(extraFormatBytes - 2);
-
-                                // Skip (we ignore the extra information in this chunk field)
-                                rd.ReadBytes((int)extraBytes);
-
-                                // check word-alignment
-                                if ((extraBytes % 2) != 0)
+                                if (extraFormatBytes > 2)
                                 {
-                                    rd.ReadByte();
+                                    extraBytes = (uint) (extraFormatBytes - 2);
+
+                                    // Skip (we ignore the extra information in this chunk field)
+                                    rd.ReadBytes((int) extraBytes);
+
+                                    // check word-alignment
+                                    if ((extraBytes%2) != 0)
+                                    {
+                                        rd.ReadByte();
+                                    }
                                 }
                             }
 
