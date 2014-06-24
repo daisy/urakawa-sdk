@@ -42,23 +42,28 @@ namespace urakawa.core
         {
             public readonly TextDirection Direction = TextDirection.Unsure;
 
-            public StringChunk Next;
+            public readonly TreeNode Owner = null;
+
+            public StringChunk Next = null;
+            public StringChunk Previous = null;
 
             private StringChunk()
             {
                 ;
             }
 
-            public StringChunk(XmlAttribute xmlAttr, TextDirection dir)
+            public StringChunk(TreeNode owner, XmlAttribute xmlAttr, TextDirection dir)
             {
                 Direction = dir;
                 m_XmlAttribute = xmlAttr;
+                Owner = owner;
             }
 
-            public StringChunk(AbstractTextMedia textMedia, TextDirection dir)
+            public StringChunk(TreeNode owner, AbstractTextMedia textMedia, TextDirection dir)
             {
                 Direction = dir;
                 m_TextMedia = textMedia;
+                Owner = owner;
             }
 
             internal readonly XmlAttribute m_XmlAttribute;
@@ -241,6 +246,129 @@ namespace urakawa.core
             return null;
         }
 
+        private void BeforeRemoveUpdateTextCache()
+        {
+            if (this.TextLocal != null) //text leaf
+            {
+                DebugFix.Assert(this.Children.Count == 0);
+
+                DebugFix.Assert(this.TextLocal.First == this.TextLocal.Last);
+
+                StringChunk previous = this.TextLocal.First.Previous;
+                StringChunk next = this.TextLocal.First.Next;
+
+                if (previous != null)
+                {
+                    previous.Next = next;
+                }
+                if (next != null)
+                {
+                    next.Previous = previous;
+                }
+
+                TreeNode parent = this.Parent;
+                while (parent != null)
+                {
+                    DebugFix.Assert(parent.TextLocal == null);
+
+                    if (parent.TextFlattened != null)
+                    {
+                        if (parent.TextFlattened.First == this.TextLocal.First)
+                        {
+                            if (next != null && next.Owner.IsDescendantOf(parent))
+                            {
+                                parent.TextFlattened.First = next;
+                            }
+                            else
+                            {
+                                parent.TextFlattened.First = null;
+                                parent.TextFlattened.Last = null;
+
+                                parent.TextFlattened = null;
+                            }
+                        }
+                        if (parent.TextFlattened != null)
+                        {
+                            if (parent.TextFlattened.Last == this.TextLocal.First)
+                            {
+                                if (previous != null && previous.Owner.IsDescendantOf(parent))
+                                {
+                                    parent.TextFlattened.Last = previous;
+                                }
+                                else
+                                {
+                                    parent.TextFlattened.First = null;
+                                    parent.TextFlattened.Last = null;
+
+                                    parent.TextFlattened = null;
+                                }
+                            }
+                        }
+                    }
+                    parent = parent.Parent;
+                }
+            }
+            else if (this.TextFlattened != null)
+            {
+                DebugFix.Assert(this.TextFlattened.First != null);
+                DebugFix.Assert(this.TextFlattened.Last != null);
+
+                StringChunk previous = this.TextFlattened.First.Previous;
+                StringChunk next = this.TextFlattened.Last.Next;
+
+                if (previous != null)
+                {
+                    previous.Next = next;
+                }
+                if (next != null)
+                {
+                    next.Previous = previous;
+                }
+
+                TreeNode parent = this.Parent;
+                while (parent != null)
+                {
+                    DebugFix.Assert(parent.TextLocal == null);
+
+                    if (parent.TextFlattened != null)
+                    {
+                        if (parent.TextFlattened.First == this.TextFlattened.First)
+                        {
+                            if (next != null && next.Owner.IsDescendantOf(parent))
+                            {
+                                parent.TextFlattened.First = next;
+                            }
+                            else
+                            {
+                                parent.TextFlattened.First = null;
+                                parent.TextFlattened.Last = null;
+
+                                parent.TextFlattened = null;
+                            }
+                        }
+                        if (parent.TextFlattened != null)
+                        {
+                            if (parent.TextFlattened.Last == this.TextFlattened.Last)
+                            {
+                                if (previous != null && previous.Owner.IsDescendantOf(parent))
+                                {
+                                    parent.TextFlattened.Last = previous;
+                                }
+                                else
+                                {
+                                    parent.TextFlattened.First = null;
+                                    parent.TextFlattened.Last = null;
+
+                                    parent.TextFlattened = null;
+                                }
+                            }
+                        }
+                    }
+                    parent = parent.Parent;
+                }
+            }
+        }
+
         private StringChunkRange m_TextFlattened;
         private StringChunkRange TextFlattened
         {
@@ -270,6 +398,7 @@ namespace urakawa.core
                 if (Presentation.m_PreviousTextLocal != null)
                 {
                     Presentation.m_PreviousTextLocal.Next = localText;
+                    localText.Previous = Presentation.m_PreviousTextLocal;
                 }
                 Presentation.m_PreviousTextLocal = localText;
 
@@ -1099,7 +1228,7 @@ namespace urakawa.core
             {
                 if (!String.IsNullOrEmpty(textMedia.Text))
                 {
-                    return new StringChunk(textMedia, GetTextDirectionality());
+                    return new StringChunk(this, textMedia, GetTextDirectionality());
                 }
 
                 return null;
@@ -1122,7 +1251,7 @@ namespace urakawa.core
                         {
                             if (!String.IsNullOrEmpty(xmlAttr.Value))
                             {
-                                return new StringChunk(xmlAttr, GetTextDirectionality());
+                                return new StringChunk(this, xmlAttr, GetTextDirectionality());
                             }
 
                             return null;
@@ -1136,7 +1265,7 @@ namespace urakawa.core
                         {
                             if (!String.IsNullOrEmpty(xmlAttr.Value))
                             {
-                                return new StringChunk(xmlAttr, GetTextDirectionality());
+                                return new StringChunk(this, xmlAttr, GetTextDirectionality());
                             }
 
                             return null;
@@ -1233,6 +1362,7 @@ namespace urakawa.core
                         else
                         {
                             previous.Next = range.First;
+                            range.First.Previous = previous;
                         }
                         previous = range.First;
                     }

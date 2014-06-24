@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using AudioLib;
 using urakawa.core.visitor;
 using urakawa.events;
 using urakawa.events.core;
@@ -317,9 +318,6 @@ namespace urakawa.core
 
         private void this_childAdded(object sender, ObjectAddedEventArgs<TreeNode> ev)
         {
-            this.TextLocal = null;
-            this.TextFlattened = null;
-
             ev.m_AddedObject.Changed += Child_Changed;
             NotifyChanged(ev);
         }
@@ -331,9 +329,6 @@ namespace urakawa.core
 
         private void this_childRemoved(object sender, ObjectRemovedEventArgs<TreeNode> ev)
         {
-            this.TextLocal = null;
-            this.TextFlattened = null;
-
             ev.m_RemovedObject.Changed -= Child_Changed;
             NotifyChanged(ev);
         }
@@ -1298,8 +1293,12 @@ namespace urakawa.core
         public TreeNode RemoveChild(int index)
         {
             TreeNode removedChild = mChildren.Get(index);
+
+            removedChild.BeforeRemoveUpdateTextCache();
+
             removedChild.mParent = null;
             mChildren.Remove(removedChild);
+            
             return removedChild;
         }
 
