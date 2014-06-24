@@ -360,7 +360,7 @@ namespace AudioLib
                 string chunkId = Encoding.ASCII.GetString(rd.ReadBytes(4));
                 if (chunkId != "RIFF")
                 {
-                    throw new ArgumentOutOfRangeException("ChunkId is not RIFF");
+                    throw new ArgumentOutOfRangeException("ChunkId is not RIFF: " + chunkId);
                 }
             }
             //Chunk Data Size (the wavEndPos variable is used further below as the upper limit position in the stream)
