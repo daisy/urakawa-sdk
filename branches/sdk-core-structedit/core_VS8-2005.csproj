@@ -1,0 +1,323 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{05DB208F-091E-41EC-B783-2C591FA8E936}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>urakawa</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>urakawa</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug\urakawa.XML</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\urakawa.XML</DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Minimal Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Minimal Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <DocumentationFile>bin\Minimal Debug\urakawa.XML</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App.ico" />
+    <Content Include="events\EventsClassDiagram.png" />
+    <Compile Include="command\IAction.cs" />
+    <Compile Include="events\media\data\DataIsMissingEventArgs.cs" />
+    <Compile Include="events\progress\CancellableEventArgs.cs" />
+    <Compile Include="events\progress\CancelledEventArgs.cs" />
+    <Compile Include="events\progress\FinishedEventArgs.cs" />
+    <Compile Include="events\progress\ProgressEventArgs.cs" />
+    <Compile Include="exception\CannotExecuteException.cs" />
+    <Compile Include="exception\CannotReadFromExternalFileException.cs" />
+    <Compile Include="exception\CannotRedoException.cs" />
+    <Compile Include="exception\CannotUndoException.cs" />
+    <Compile Include="exception\CannotWriteToExternalFileException.cs" />
+    <Compile Include="exception\ChannelAlreadyExistsException.cs" />
+    <Compile Include="exception\ChannelDoesNotExistException.cs" />
+    <Compile Include="exception\CheckedException.cs" />
+    <Compile Include="exception\DataMissingException.cs" />
+    <Compile Include="exception\FactoryCannotCreateTypeException.cs" />
+    <Compile Include="exception\FactoryIsMissingException.cs" />
+    <Compile Include="exception\IncompatibleManagerOrFactoryException.cs" />
+    <Compile Include="exception\InputStreamIsTooShortException.cs" />
+    <Compile Include="exception\InputStreamsOpenException.cs" />
+    <Compile Include="exception\InvalidDataFormatException.cs" />
+    <Compile Include="exception\InvalidUriException.cs" />
+    <Compile Include="exception\IrreversibleCommandDuringActiveUndoRedoTransactionException.cs" />
+    <Compile Include="exception\IsAlreadyInitializedException.cs" />
+    <Compile Include="exception\IsAlreadyManagerOfException.cs" />
+    <Compile Include="exception\IsNotInitializedException.cs" />
+    <Compile Include="exception\IsNotManagerOfException.cs" />
+    <Compile Include="exception\MediaNotAcceptable.cs" />
+    <Compile Include="exception\MediaNotInSequenceException.cs" />
+    <Compile Include="exception\MethodParameterHasNoItemsException.cs" />
+    <Compile Include="exception\MethodParameterIsEmptyStringException.cs" />
+    <Compile Include="exception\MethodParameterIsInvalidException.cs" />
+    <Compile Include="exception\MethodParameterIsNullException.cs" />
+    <Compile Include="exception\MethodParameterIsOutOfBoundsException.cs" />
+    <Compile Include="exception\MethodParameterIsWrongTypeException.cs" />
+    <Compile Include="exception\NodeAlreadyExistException.cs" />
+    <Compile Include="exception\NodeDoesNotExistException.cs" />
+    <Compile Include="exception\NodeHasNoParentException.cs" />
+    <Compile Include="exception\NodeHasParentException.cs" />
+    <Compile Include="exception\NodeInDifferentPresentationException.cs" />
+    <Compile Include="exception\NodeIsAncestorException.cs" />
+    <Compile Include="exception\NodeIsDescendantException.cs" />
+    <Compile Include="exception\NodeIsSelfException.cs" />
+    <Compile Include="exception\NodeNotDetachedException.cs" />
+    <Compile Include="exception\ProgressCancelledException.cs" />
+    <Compile Include="exception\OperationNotValidException.cs" />
+    <Compile Include="exception\OutputStreamOpenException.cs" />
+    <Compile Include="exception\PropertyAlreadyHasOwnerException.cs" />
+    <Compile Include="exception\PropertyCanNotBeAddedException.cs" />
+    <Compile Include="exception\PropertyTypeIsIllegalException.cs" />
+    <Compile Include="exception\TimeOffsetIsNegativeException.cs" />
+    <Compile Include="exception\TimeStringRepresentationIsInvalidException.cs" />
+    <Compile Include="exception\UncheckedException.cs" />
+    <Compile Include="exception\UndoRedoTransactionHasNotEndedException.cs" />
+    <Compile Include="exception\UndoRedoTransactionIsNotStartedException.cs" />
+    <Compile Include="exception\XmlAttributeDoesNotExistsException.cs" />
+    <Compile Include="exception\XukException.cs" />
+    <Compile Include="exception\XukQNameNotUniqueWithinFactoryException.cs" />
+    <Compile Include="GenericWithPresentationFactory.cs" />
+    <Compile Include="GenericXukAbleFactory.cs" />
+    <Compile Include="progress\ProgressAction.cs" />
+    <Compile Include="progress\ProgressHandler.cs" />
+    <Compile Include="properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="events\media\data\audio\AudioDataInsertedEventArgs.cs" />
+    <Compile Include="events\media\data\audio\AudioDataRemovedEventArgs.cs" />
+    <Compile Include="events\media\data\audio\AudioMediaDataEventArgs.cs" />
+    <Compile Include="events\media\data\audio\PCMFormatChangedEventArgs.cs" />
+    <Compile Include="events\media\data\MediaDataEventArgs.cs" />
+    <Compile Include="events\metadata\ContentChangedEventArgs.cs" />
+    <Compile Include="events\metadata\MetadataEventArgs.cs" />
+    <Compile Include="events\metadata\NameChangedEventArgs.cs" />
+    <Compile Include="events\metadata\OptionalAttributeChangedEventArgs.cs" />
+    <Compile Include="events\presentation\MetadataAddedEventArgs.cs" />
+    <Compile Include="events\presentation\MetadataDeletedEventArgs.cs" />
+    <Compile Include="events\property\channel\ChannelMediaMapEventArgs.cs" />
+    <Compile Include="events\property\channel\ChannelsPropertyEventArgs.cs" />
+    <Compile Include="events\media\ClipChangedEventArgs.cs" />
+    <Compile Include="events\IChangeNotifier.cs" />
+    <Compile Include="events\LanguageChangedEventArgs.cs" />
+    <Compile Include="events\media\data\MediaDataChangedEventArgs.cs" />
+    <Compile Include="events\media\MediaEventArgs.cs" />
+    <Compile Include="events\media\data\NameChangedEventArgs.cs" />
+    <Compile Include="events\project\PresentationAddedEventArgs.cs" />
+    <Compile Include="events\presentation\PresentationEventArgs.cs" />
+    <Compile Include="events\project\PresentationRemovedEventArgs.cs" />
+    <Compile Include="events\project\ProjectEventArgs.cs" />
+    <Compile Include="events\core\PropertyAddedEventArgs.cs" />
+    <Compile Include="events\core\ChildRemovedEventArgs.cs" />
+    <Compile Include="PresentationFactory.cs" />
+    <Compile Include="events\DataModelChangedEventArgs.cs" />
+    <Compile Include="events\core\ChildAddedEventArgs.cs" />
+    <Compile Include="events\property\PropertyEventArgs.cs" />
+    <Compile Include="events\core\PropertyRemovedEventArgs.cs" />
+    <Compile Include="events\property\xml\QNameChangedEventArgs.cs" />
+    <Compile Include="events\presentation\RootNodeChangedEventArgs.cs" />
+    <Compile Include="events\presentation\RootUriChangedEventArgs.cs" />
+    <Compile Include="events\media\SizeChangedEventArgs.cs" />
+    <Compile Include="events\media\SrcChangedEventArgs.cs" />
+    <Compile Include="events\media\TextChangedEventArgs.cs" />
+    <Compile Include="events\core\TreeNodeEventArgs.cs" />
+    <Compile Include="events\property\xml\XmlAttributeSetEventArgs.cs" />
+    <Compile Include="events\property\xml\XmlPropertyEventArgs.cs" />
+    <Compile Include="events\command\CommandAddedEventArgs.cs" />
+    <Compile Include="events\undo\DoneEventArgs.cs" />
+    <Compile Include="events\command\CommandEventArgs.cs" />
+    <Compile Include="events\command\ExecutedEventArgs.cs" />
+    <Compile Include="events\undo\ReDoneEventArgs.cs" />
+    <Compile Include="events\undo\UnDoneEventArgs.cs" />
+    <Compile Include="events\command\UnExecutedEventArgs.cs" />
+    <Compile Include="events\undo\TransactionCancelledEventArgs.cs" />
+    <Compile Include="events\undo\TransactionEndedEventArgs.cs" />
+    <Compile Include="events\undo\TransactionStartedEventArgs.cs" />
+    <Compile Include="events\undo\UndoRedoManagerEventArgs.cs" />
+    <Compile Include="media\data\utilities\CloseNotifyingStream.cs" />
+    <Compile Include="property\channel\AudioChannel.cs" />
+    <Compile Include="property\channel\ImageChannel.cs" />
+    <Compile Include="property\channel\ManagedAudioChannel.cs" />
+    <Compile Include="property\channel\TextChannel.cs" />
+    <Compile Include="property\Property.cs" />
+    <Compile Include="IValueEquatable.cs" />
+    <Compile Include="media\data\audio\AudioMediaData.cs" />
+    <Compile Include="media\data\audio\codec\WavAudioMediaData.cs" />
+    <Compile Include="media\data\DataProviderFactory.cs" />
+    <Compile Include="media\data\DataProviderManager.cs" />
+    <Compile Include="media\data\FileDataProvider.cs" />
+    <Compile Include="media\data\DataProvider.cs" />
+    <Compile Include="media\data\IManaged.cs" />
+    <Compile Include="media\data\audio\ManagedAudioMedia.cs" />
+    <Compile Include="media\data\MediaData.cs" />
+    <Compile Include="media\data\MediaDataFactory.cs" />
+    <Compile Include="media\data\MediaDataManager.cs" />
+    <Compile Include="media\data\utilities\Clip.cs" />
+    <Compile Include="media\data\utilities\CollectManagedMediaTreeNodeVisitor.cs" />
+    <Compile Include="media\data\audio\PCMDataInfo.cs" />
+    <Compile Include="media\data\audio\PCMFormatInfo.cs" />
+    <Compile Include="media\data\utilities\SequenceStream.cs" />
+    <Compile Include="media\data\utilities\SubStream.cs" />
+    <Compile Include="media\IContinuous.cs" />
+    <Compile Include="media\ExternalTextMedia.cs" />
+    <Compile Include="media\TextMedia.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="metadata\Metadata.cs" />
+    <Compile Include="metadata\MetadataFactory.cs" />
+    <Compile Include="navigation\TypeFilterNavigator.cs" />
+    <Compile Include="Project.cs" />
+    <Compile Include="property\channel\Channel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="property\channel\ChannelFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="property\channel\ChannelsManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="property\channel\ChannelsProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="property\channel\ClearChannelCoreNodeVisitor.cs" />
+    <Compile Include="property\PropertyFactory.cs" />
+    <Compile Include="Presentation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="publish\AbstractPublishManagedAudioVisitor.cs" />
+    <Compile Include="publish\PublishManagedAudioVisitor.cs" />
+    <Compile Include="core\TreeNode.cs" />
+    <Compile Include="core\TreeNodeFactory.cs" />
+    <Compile Include="core\ITreeNodeReadOnlyMethods.cs" />
+    <Compile Include="core\ITreeNodeWriteOnlyMethods.cs" />
+    <Compile Include="core\visitor\ITreeNodeVisitor.cs" />
+    <Compile Include="core\visitor\IVisitableTreeNode.cs" />
+    <Compile Include="exception\XmlAttributeDoesNotBelongException.cs" />
+    <Compile Include="media\ExternalAudioMedia.cs" />
+    <Compile Include="media\AbstractAudioMedia.cs" />
+    <Compile Include="media\IClipped.cs" />
+    <Compile Include="media\ILocated.cs" />
+    <Compile Include="media\AbstractImageMedia.cs" />
+    <Compile Include="media\ISized.cs" />
+    <Compile Include="media\ExternalImageMedia.cs" />
+    <Compile Include="media\Media.cs" />
+    <Compile Include="media\AbstractTextMedia.cs" />
+    <Compile Include="media\AbstractVideoMedia.cs" />
+    <Compile Include="media\MediaFactory.cs" />
+    <Compile Include="media\SequenceMedia.cs" />
+    <Compile Include="media\timing\Time.cs" />
+    <Compile Include="media\timing\TimeDelta.cs" />
+    <Compile Include="media\ExternalVideoMedia.cs" />
+    <Compile Include="navigation\AbstractFilterNavigator.cs" />
+    <Compile Include="navigation\INavigator.cs" />
+    <Compile Include="property\xml\XmlAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="property\xml\XmlProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="property\xml\XmlPropertyElementNameVisitor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="command\CommandFactory.cs" />
+    <Compile Include="command\CompositeCommand.cs" />
+    <Compile Include="command\Command.cs" />
+    <Compile Include="undo\UndoRedoManager.cs" />
+    <Compile Include="WithPresentation.cs" />
+    <Compile Include="xuk\OpenXukAction.cs" />
+    <Compile Include="xuk\QualifiedName.cs" />
+    <Compile Include="xuk\SaveXukAction.cs" />
+    <Compile Include="xuk\XukAble.cs" />
+    <Compile Include="xuk\IXUKable.cs" />
+    <Compile Include="xuk\XukStrings.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="events\EventsClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="project\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

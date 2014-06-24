@@ -1,0 +1,38 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core.csproj", "{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core_VS8-2005", "core_VS8-2005.csproj", "{05DB208F-091E-41EC-B783-2C591FA8E936}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaSDK.core", "UrakawaSDK.core.csproj", "{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Minimal Debug|Any CPU = Minimal Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05DB208F-091E-41EC-B783-2C591FA8E936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05DB208F-091E-41EC-B783-2C591FA8E936}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05DB208F-091E-41EC-B783-2C591FA8E936}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
+		{05DB208F-091E-41EC-B783-2C591FA8E936}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
+		{05DB208F-091E-41EC-B783-2C591FA8E936}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05DB208F-091E-41EC-B783-2C591FA8E936}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
