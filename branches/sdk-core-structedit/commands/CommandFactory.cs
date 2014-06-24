@@ -144,5 +144,12 @@ namespace urakawa.commands
             command.Init(treeNode, text);
             return command;
         }
+
+        public TreeNodeRemoveCommand CreateTreeNodeRemoveCommand(TreeNode treeNode)
+        {
+            TreeNodeRemoveCommand command = Create<TreeNodeRemoveCommand>();
+            command.Init(treeNode);
+            return command;
+        }
     }
 }
