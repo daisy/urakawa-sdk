@@ -246,7 +246,126 @@ namespace urakawa.core
             return null;
         }
 
-        private void BeforeRemoveUpdateTextCache()
+        public void UpdateTextCache_AfterInsert()
+        {
+            //int index = this.Parent.Children.IndexOf(this);
+
+            TreeNode previousTextLocalNode = this.GetPreviousSiblingWithText();
+            TreeNode nextTextLocalNode = this.GetNextSiblingWithText();
+
+            if (previousTextLocalNode != null)
+            {
+                DebugFix.Assert(previousTextLocalNode.TextLocal != null);
+                DebugFix.Assert(previousTextLocalNode.TextLocal.First != null);
+                DebugFix.Assert(previousTextLocalNode.TextLocal.First == previousTextLocalNode.TextLocal.Last);
+            }
+
+            if (nextTextLocalNode != null)
+            {
+                DebugFix.Assert(nextTextLocalNode.TextLocal != null);
+                DebugFix.Assert(nextTextLocalNode.TextLocal.First != null);
+                DebugFix.Assert(nextTextLocalNode.TextLocal.First == nextTextLocalNode.TextLocal.Last);
+            }
+
+            if (previousTextLocalNode != null && nextTextLocalNode != null)
+            {
+                DebugFix.Assert(previousTextLocalNode.TextLocal.First.Next == nextTextLocalNode.TextLocal.First);
+                DebugFix.Assert(nextTextLocalNode.TextLocal.First.Previous == previousTextLocalNode.TextLocal.First);
+            }
+
+            this.UpdateTextCache_Init();
+
+            if (this.TextLocal != null) //text leaf
+            {
+                DebugFix.Assert(this.Children.Count == 0);
+
+                DebugFix.Assert(this.TextLocal.First == this.TextLocal.Last);
+
+                StringChunk previous = this.TextLocal.First.Previous;
+                StringChunk next = this.TextLocal.First.Next;
+
+                DebugFix.Assert(previous == null);
+                DebugFix.Assert(next == null);
+
+                if (previousTextLocalNode != null)
+                {
+                    this.TextLocal.First.Previous = previousTextLocalNode.TextLocal.First;
+                    previousTextLocalNode.TextLocal.First.Next = this.TextLocal.First;
+                }
+
+                if (nextTextLocalNode != null)
+                {
+                    this.TextLocal.First.Next = nextTextLocalNode.TextLocal.First;
+                    nextTextLocalNode.TextLocal.First.Previous = this.TextLocal.First;
+                }
+
+
+                TreeNode parent = this.Parent;
+                while (parent != null)
+                {
+                    DebugFix.Assert(parent.TextLocal == null);
+
+                    if (parent.TextFlattened != null)
+                    {
+                        if (nextTextLocalNode != null && parent.TextFlattened.First == nextTextLocalNode.TextLocal.First)
+                        {
+                            parent.TextFlattened.First = this.TextLocal.First;
+                        }
+                        if (previousTextLocalNode != null && parent.TextFlattened.Last == previousTextLocalNode.TextLocal.First)
+                        {
+                            parent.TextFlattened.Last = this.TextLocal.First;
+                        }
+                    }
+                    parent = parent.Parent;
+                }
+            }
+            else if (this.TextFlattened != null)
+            {
+                DebugFix.Assert(this.TextFlattened.First != null);
+                DebugFix.Assert(this.TextFlattened.Last != null);
+
+                StringChunk previous = this.TextFlattened.First.Previous;
+                StringChunk next = this.TextFlattened.Last.Next;
+
+                DebugFix.Assert(previous == null);
+                DebugFix.Assert(next == null);
+
+                if (previousTextLocalNode != null)
+                {
+                    this.TextFlattened.First.Previous = previousTextLocalNode.TextLocal.First;
+                    previousTextLocalNode.TextLocal.First.Next = this.TextFlattened.First;
+                }
+
+                if (nextTextLocalNode != null)
+                {
+                    this.TextFlattened.Last.Next = nextTextLocalNode.TextLocal.First;
+                    nextTextLocalNode.TextLocal.First.Previous = this.TextFlattened.Last;
+                }
+
+
+                TreeNode parent = this.Parent;
+                while (parent != null)
+                {
+                    DebugFix.Assert(parent.TextLocal == null);
+
+                    if (parent.TextFlattened != null)
+                    {
+                        if (nextTextLocalNode != null && parent.TextFlattened.First == nextTextLocalNode.TextLocal.First)
+                        {
+                            parent.TextFlattened.First = this.TextFlattened.First;
+                        }
+                        if (previousTextLocalNode != null &&
+                            parent.TextFlattened.Last == previousTextLocalNode.TextLocal.First)
+                        {
+                            parent.TextFlattened.Last = this.TextFlattened.Last;
+                        }
+                    }
+                    parent = parent.Parent;
+                }
+            }
+        }
+
+        public void UpdateTextCache_BeforeRemove()
         {
             if (this.TextLocal != null) //text leaf
             {
@@ -265,6 +384,12 @@ namespace urakawa.core
                 {
                     next.Previous = previous;
                 }
+
+                this.TextLocal.First.Previous = null;
+                this.TextLocal.First.Next = null;
+                // No need, First and Last are the same pointers
+                //this.TextLocal.Last.Previous = null;
+                //this.TextLocal.Last.Next = null;
 
                 TreeNode parent = this.Parent;
                 while (parent != null)
@@ -324,6 +449,9 @@ namespace urakawa.core
                 {
                     next.Previous = previous;
                 }
+
+                this.TextFlattened.First.Previous = null;
+                this.TextFlattened.Last.Next = null;
 
                 TreeNode parent = this.Parent;
                 while (parent != null)
@@ -388,19 +516,28 @@ namespace urakawa.core
             get { return m_TextLocal; }
         }
 
-        public void XukInAfter_TextMediaCache()
+        private void UpdateTextCache_Init()
         {
+            if (this.TextLocal != null || this.TextFlattened != null)
+            {
+#if DEBUG
+                //.Break();
+                bool debug = true;
+#endif
+                return;
+            }
+
             StringChunk localText = GetTextChunk();
             if (localText != null)
             {
                 TextLocal = new StringChunkRange(localText, localText);
 
-                if (Presentation.m_PreviousTextLocal != null)
-                {
-                    Presentation.m_PreviousTextLocal.Next = localText;
-                    localText.Previous = Presentation.m_PreviousTextLocal;
-                }
-                Presentation.m_PreviousTextLocal = localText;
+                //if (Presentation.m_PreviousTextLocal != null)
+                //{
+                //    Presentation.m_PreviousTextLocal.Next = localText;
+                //    localText.Previous = Presentation.m_PreviousTextLocal;
+                //}
+                //Presentation.m_PreviousTextLocal = localText;
 
                 // NO NEED TO LISTEN TO CHANGES, BECAUSE STRINGCHUNK STORES POINTERS TO AbstractTextMedia and XmlAttribute :)
                 //AbstractTextMedia txtMedia = GetTextMedia();

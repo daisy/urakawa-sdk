@@ -119,6 +119,15 @@ namespace urakawa.commands
             {
                 TreeNodeParent.Insert(TreeNode, TreeNodePos);
             }
+
+            Console.WriteLine("=-------------------------=");
+            Console.WriteLine(TreeNode.GetTextFlattened());
+            Console.WriteLine("=-------------------------=");
+            Console.WriteLine("=-------------------------=");
+            if (TreeNodeParent != null)
+            {
+                Console.WriteLine(TreeNodeParent.GetTextFlattened());
+            }
         }
 
         public override bool CanExecute
