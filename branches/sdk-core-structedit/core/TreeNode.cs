@@ -549,7 +549,7 @@ namespace urakawa.core
             Presentation.m_XukedInTreeNodes++;
             base.XukIn(source, handler);
 
-            XukInAfter_TextMediaCache();
+            //XukInAfter_TextMediaCache();
         }
 
         private void XukInProperties(XmlReader source, IProgressHandler handler)
@@ -972,6 +972,7 @@ namespace urakawa.core
                 TreeNode p = Parent;
                 if (p == null) return null;
                 int i = p.Children.IndexOf(this);
+                if (i < 0) return null;
                 if (i + 1 >= p.mChildren.Count) return null;
                 return p.mChildren.Get(i + 1);
             }
@@ -988,6 +989,7 @@ namespace urakawa.core
                 TreeNode p = Parent;
                 if (p == null) return null;
                 int i = p.Children.IndexOf(this);
+                if (i < 0) return null;
                 if (i == 0) return null;
                 return p.mChildren.Get(i - 1);
             }
@@ -1268,6 +1270,8 @@ namespace urakawa.core
             }
             node.mParent = this;
             mChildren.Insert(insertIndex, node);
+
+            node.UpdateTextCache_AfterInsert();
         }
 
         /// <summary>
@@ -1294,7 +1298,7 @@ namespace urakawa.core
         {
             TreeNode removedChild = mChildren.Get(index);
 
-            removedChild.BeforeRemoveUpdateTextCache();
+            removedChild.UpdateTextCache_BeforeRemove();
 
             removedChild.mParent = null;
             mChildren.Remove(removedChild);

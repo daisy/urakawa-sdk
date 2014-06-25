@@ -479,7 +479,10 @@ namespace urakawa
                         prevRoot.Changed -= RootNode_Changed;
                     mRootNode = value;
                     if (mRootNode != null)
+                    {
+                        mRootNode.UpdateTextCache_AfterInsert();
                         mRootNode.Changed += RootNode_Changed;
+                    }
                     notifyRootNodeChanged(this, mRootNode, prevRoot);
                 }
             }
@@ -840,7 +843,7 @@ namespace urakawa
             }
         }
 
-        internal TreeNode.StringChunk m_PreviousTextLocal;
+        //internal TreeNode.StringChunk m_PreviousTextLocal;
 
         internal long m_XukedInTreeNodes;
         public long XukedInTreeNodes
@@ -1246,7 +1249,7 @@ namespace urakawa
                 }
                 else if (source.LocalName == XukStrings.RootNode)
                 {
-                    m_PreviousTextLocal = null;
+                    //m_PreviousTextLocal = null;
                     m_XukedInTreeNodes = 0;
                     XukInRootNode(source, handler);
                 }
@@ -1595,7 +1598,11 @@ namespace urakawa
             txtMedia.Text = "ping";
             chPropTxt.SetMedia(textChannel, txtMedia);
 
-            treeNode.XukInAfter_TextMediaCache();
+            TreeNode backup = this.RootNode; // lazy auto factory instance, never null
+
+            this.RootNode = treeNode;
+            //treeNode.XukInAfter_TextMediaCache();
+            this.RootNode = backup;
 
             CommandFactory.CreateTreeNodeChangeTextCommand(treeNode, "pong");
             ChannelsManager.RemoveManagedObject(textChannel);
@@ -1640,6 +1647,7 @@ namespace urakawa
             CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode, altContent, txtMedia);
             CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(treeNode, altContent, txtMedia);
 
+            CommandFactory.CreateTreeNodeRemoveCommand(treeNode);
             //
             //
             GenericExternalFileData exFileDataGeneric = ExternalFilesDataFactory.Create<GenericExternalFileData>();
