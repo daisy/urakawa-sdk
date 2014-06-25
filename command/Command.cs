@@ -17,6 +17,13 @@ namespace urakawa.command
     /// </summary>
     public abstract class Command : WithPresentation, IUndoableAction, IUsingMediaData //IChangeNotifier
     {
+        private object m_Tag = null;
+        public object Tag
+        {
+            set { m_Tag = value; }
+            get { return m_Tag; }
+        }
+
         public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
