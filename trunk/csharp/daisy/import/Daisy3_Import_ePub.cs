@@ -270,7 +270,7 @@ namespace urakawa.daisy.import
         }
 
         private List<string> m_OPF_GlobalAssetPaths = new List<string>();
-        private void addOPF_GlobalAssetPath(string path)
+        protected void addOPF_GlobalAssetPath(string path)
         {
             if (!m_OPF_GlobalAssetPaths.Contains(path))
             {
@@ -575,7 +575,7 @@ namespace urakawa.daisy.import
 
         internal const string OPF_ContainerRelativePath = @"OPF_ContainerRelativePath";
 
-        private void parseContentDocuments(List<string> spineOfContentDocuments,
+        protected virtual void parseContentDocuments(List<string> spineOfContentDocuments,
             Dictionary<string, string> spineAttributes,
             List<Dictionary<string, string>> spineItemsAttributes,
             string coverImagePath, string navDocPath)

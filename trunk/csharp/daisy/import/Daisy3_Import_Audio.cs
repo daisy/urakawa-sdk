@@ -17,8 +17,8 @@ namespace urakawa.daisy.import
 {
     public partial class Daisy3_Import
     {
-        private AudioFormatConvertorSession m_AudioConversionSession;
-        private Dictionary<string, FileDataProvider> m_OriginalAudioFile_FileDataProviderMap = new Dictionary<string, FileDataProvider>(); // maps original audio file refered by smil to FileDataProvider of sdk.
+        protected AudioFormatConvertorSession m_AudioConversionSession;
+        protected Dictionary<string, FileDataProvider> m_OriginalAudioFile_FileDataProviderMap = new Dictionary<string, FileDataProvider>(); // maps original audio file refered by smil to FileDataProvider of sdk.
         protected List<TreeNode> TreenodesWithoutManagedAudioMediaData;
 
         //private bool m_firstTimePCMFormat;
@@ -228,7 +228,7 @@ namespace urakawa.daisy.import
             }
         }
 
-        private void addAudio(TreeNode treeNode, XmlNode xmlNode, bool isSequence, string fullSmilPath)
+        protected void addAudio(TreeNode treeNode, XmlNode xmlNode, bool isSequence, string fullSmilPath)
         {
             if (RequestCancellation) return;
 
