@@ -20,7 +20,7 @@ namespace urakawa.daisy.import
     public partial class Daisy3_Import : DualCancellableProgressReporter
     {
         protected readonly string m_outDirectory;
-        private string m_Book_FilePath;
+        protected string m_Book_FilePath;
 
         private string m_OPF_ContainerRelativePath;
 
@@ -546,7 +546,7 @@ namespace urakawa.daisy.import
             reportProgress(100, UrakawaSDK_daisy_Lang.TransformComplete);
         }
 
-        private bool parseContentDocParts(string filePath, Project project, XmlDocument xmlDoc, string displayPath, DocumentMarkupType type)
+        protected bool parseContentDocParts(string filePath, Project project, XmlDocument xmlDoc, string displayPath, DocumentMarkupType type)
         {
             if (RequestCancellation) return true;
             reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingMetadata, displayPath));
