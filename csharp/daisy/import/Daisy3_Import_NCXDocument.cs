@@ -27,7 +27,7 @@ namespace urakawa.daisy.import
         protected XmlNode m_DocTitleXmlNode;
         private bool m_IsDocTitleCreated = false;
 
-        public void ParseNCXDocument(XmlDocument ncxDocument)
+        public virtual void ParseNCXDocument(XmlDocument ncxDocument)
         {
             m_SmilRefToNavPointTreeNodeMap = new Dictionary<string, TreeNode>();
             m_NavPointNode_NavLabelMap = new Dictionary<TreeNode, XmlNode>();
