@@ -1648,6 +1648,9 @@ namespace urakawa
             CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(treeNode, altContent, txtMedia);
 
             CommandFactory.CreateTreeNodeRemoveCommand(treeNode);
+
+            TreeNode parent = TreeNodeFactory.Create();
+            CommandFactory.CreateTreeNodeInsertCommand(treeNode, parent, 0);
             //
             //
             GenericExternalFileData exFileDataGeneric = ExternalFilesDataFactory.Create<GenericExternalFileData>();

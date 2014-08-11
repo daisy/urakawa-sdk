@@ -12,13 +12,8 @@ using urakawa.xuk;
 
 namespace urakawa.commands
 {
-    public abstract class TextNodeStructureEditCommand : Command
-    {
-        public abstract TreeNode TreeNode { protected set; get; }
-    }
-
-    [XukNameUglyPrettyAttribute("nodRmCmd", "TreeNodeRemoveCommand")]
-    public class TreeNodeRemoveCommand : TextNodeStructureEditCommand
+    [XukNameUglyPrettyAttribute("nodInsCmd", "TreeNodeInsertCommand")]
+    public class TreeNodeInsertCommand : TextNodeStructureEditCommand
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -27,7 +22,7 @@ namespace urakawa.commands
                 return false;
             }
 
-            TreeNodeRemoveCommand otherz = other as TreeNodeRemoveCommand;
+            TreeNodeInsertCommand otherz = other as TreeNodeInsertCommand;
             if (otherz == null)
             {
                 return false;
@@ -60,21 +55,26 @@ namespace urakawa.commands
             get { return m_TreeNodePos; }
         }
 
-        public void Init(TreeNode treeNode)
+        public void Init(TreeNode treeNode, TreeNode parent, int position)
         {
             if (treeNode == null)
             {
                 throw new ArgumentNullException("TreeNode");
             }
+            if (parent == null)
+            {
+                throw new ArgumentNullException("parent");
+            }
+            if (position < 0 || position > parent.Children.Count)
+            {
+                throw new ArgumentOutOfRangeException("position");
+            }
 
             TreeNode = treeNode;
 
-            TreeNodeParent = treeNode.Parent;
+            TreeNodeParent = parent;
 
-            if (treeNode.Parent != null)
-            {
-                TreeNodePos = treeNode.Parent.Children.IndexOf(treeNode);
-            }
+            TreeNodePos = position;
 
             CollectManagedMediaTreeNodeVisitor collectorVisitor = new CollectManagedMediaTreeNodeVisitor();
             treeNode.AcceptDepthFirst(collectorVisitor);
@@ -88,51 +88,19 @@ namespace urakawa.commands
                 }
             }
 
-            ShortDescription = "Remove TreeNode";
-            LongDescription = "Remove the TreeNode";
+            ShortDescription = "Insert TreeNode";
+            LongDescription = "Insert the TreeNode";
         }
 
         public override void Execute()
         {
-            if (TreeNode.Parent == null)
-            {
-                TreeNode.Presentation.RootNode = null;
-            }
-            else
-            {
-                //TreeNode.Parent.RemoveChild(TreeNode);
-                TreeNode.Detach();
-            }
-
-            //Console.WriteLine("======================");
-            //Console.WriteLine(TreeNode.GetTextFlattened());
-            //Console.WriteLine("======================");
-            //Console.WriteLine("======================");
-            //if (TreeNodeParent != null)
-            //{
-            //    Console.WriteLine(TreeNodeParent.GetTextFlattened());
-            //}
+            TreeNodeParent.Insert(TreeNode, TreeNodePos);
         }
 
         public override void UnExecute()
         {
-            if (TreeNodeParent == null)
-            {
-                TreeNode.Presentation.RootNode = TreeNode;
-            }
-            else
-            {
-                TreeNodeParent.Insert(TreeNode, TreeNodePos);
-            }
-
-            //Console.WriteLine("=-------------------------=");
-            //Console.WriteLine(TreeNode.GetTextFlattened());
-            //Console.WriteLine("=-------------------------=");
-            //Console.WriteLine("=-------------------------=");
-            //if (TreeNodeParent != null)
-            //{
-            //    Console.WriteLine(TreeNodeParent.GetTextFlattened());
-            //}
+            //TreeNode.Parent.RemoveChild(TreeNode);
+            TreeNode.Detach();
         }
 
         public override bool CanExecute

@@ -136,6 +136,7 @@
     <Compile Include="commands\TreeNodeAudioStreamDeleteCommand.cs" />
     <Compile Include="commands\AlternateContentRemoveCommand.cs" />
     <Compile Include="commands\TreeNodeChangeTextCommand.cs" />
+    <Compile Include="commands\TreeNodeInsertCommand.cs" />
     <Compile Include="commands\TreeNodeRemoveCommand.cs" />
     <Compile Include="commands\TreeNodeSetIsMarkedCommand.cs" />
     <Compile Include="commands\TreeNodeSetManagedAudioMediaCommand.cs" />
