@@ -18,8 +18,13 @@ using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 namespace urakawa.core
 {
+    public interface ObjectTag
+    {
+        object Tag { get; set; }
+    }
+
     [XukNameUglyPrettyAttribute("n", "TreeNode")]
-    public partial class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IChangeNotifier
+    public partial class TreeNode : WithPresentation, ObjectTag, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IChangeNotifier
     {
         private object m_Tag = null;
         public object Tag

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using urakawa.core;
 using urakawa.media.data;
 using urakawa.progress;
 using urakawa.xuk;
@@ -15,7 +16,7 @@ namespace urakawa.command
     /// execution (including exception/redo). Implementations may choose various techniques suitable in terms
     /// of performance and memory usage (storage of the transition or the full object snapshot.)
     /// </summary>
-    public abstract class Command : WithPresentation, IUndoableAction, IUsingMediaData //IChangeNotifier
+    public abstract class Command : WithPresentation, ObjectTag, IUndoableAction, IUsingMediaData //IChangeNotifier
     {
         private object m_Tag = null;
         public object Tag
