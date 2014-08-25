@@ -1417,6 +1417,8 @@ namespace AudioLib
                                     sourceFile + WavFormatConverter.AUDIO_WAV_EXTENSION,
                                     destinationDirectory,
                                     null);
+            string tempFile = Path.Combine(Path.GetTempPath(),
+                Path.GetFileName(destinationFile));
 
             //        AudioLibPCMFormat mp4PcmFormat = new AudioLibPCMFormat(
             //            (ushort)pcmStream.WaveFormat.Channels,
@@ -1436,6 +1438,10 @@ namespace AudioLib
             bool okay = false;
             try
             {
+                if (File.Exists(tempFile)) File.Delete(tempFile);
+                //Console.WriteLine("Temp: " + tempFileName);
+                //Console.WriteLine("Destination: " + destinationFile);
+
                 string workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
                 if (m_process != null)
@@ -1452,7 +1458,7 @@ namespace AudioLib
                 m_process.StartInfo.RedirectStandardError = false;
                 m_process.StartInfo.UseShellExecute = true;
                 m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                m_process.StartInfo.Arguments = "-o \"" + destinationFile + "\" \"" + sourceFile + "\"";
+                m_process.StartInfo.Arguments = "-o \"" + tempFile + "\" \"" + sourceFile + "\"";
 
                 m_process.Start();
                 m_process.WaitForExit();
@@ -1490,6 +1496,11 @@ namespace AudioLib
                         }
                     }
                 }
+                if (File.Exists(tempFile))
+                {
+                    File.Move(tempFile, destinationFile);
+                }
+
             }
             catch (Exception ex)
             {
