@@ -48,6 +48,7 @@ namespace urakawa.data
                     || c == '|'
                     || c == '\"'
                     || c == '\''
+                    || c == ','
                 )
                 {
                     m_StrBuilder.Append(HYPHEN);
