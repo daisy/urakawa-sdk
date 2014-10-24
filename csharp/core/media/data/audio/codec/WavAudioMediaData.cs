@@ -69,15 +69,21 @@ namespace urakawa.media.data.audio.codec
             return true;
         }
 
+        protected DataProvider CreateDataProviderFromRawPCMStream(Stream pcmData, Time duration)
+        {
+            return CreateDataProviderFromRawPCMStream(pcmData, duration, null);
+        }
+
         /// <summary>
         /// Gets a <see cref="WavClip"/> from a RAW PCM audio <see cref="Stream"/> of a given duration
         /// </summary>
         /// <param name="pcmData">The raw PCM data stream</param>
         /// <param name="duration">The duration</param>
         /// <returns>The <see cref="WavClip"/></returns>
-        protected DataProvider CreateDataProviderFromRawPCMStream(Stream pcmData, Time duration)
+        protected DataProvider CreateDataProviderFromRawPCMStream(Stream pcmData, Time duration, string fileNamePrefix)
         {
             DataProvider newSingleDataProvider = Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+            ((FileDataProvider)newSingleDataProvider).SetNamePrefix(fileNamePrefix);
 
             uint dataLength;
 
@@ -116,6 +122,11 @@ namespace urakawa.media.data.audio.codec
             return ForceSingleDataProvider(true);
         }
 
+        public DataProvider ForceSingleDataProvider(bool reuseSingleWavClip)
+        {
+            return ForceSingleDataProvider(reuseSingleWavClip, null);
+        }
+
         /// <summary>
         /// Forces the PCM data to be stored in a single <see cref="DataProvider"/>.
         /// </summary>
@@ -123,7 +134,7 @@ namespace urakawa.media.data.audio.codec
         /// This effectively copies the data, 
         /// since the <see cref="DataProvider"/>(s) previously used to store the PCM data are left untouched
         /// </remarks>
-        public DataProvider ForceSingleDataProvider(bool reuseSingleWavClip)
+        public DataProvider ForceSingleDataProvider(bool reuseSingleWavClip, string fileNamePrefix)
         {
             if (mWavClips.Count == 0) return null;
 
@@ -133,6 +144,10 @@ namespace urakawa.media.data.audio.codec
                 if (theChosenOne.ClipBegin.IsEqualTo(Time.Zero)
                     && theChosenOne.ClipEnd.IsEqualTo(theChosenOne.MediaDuration))
                 {
+                    if (!String.IsNullOrEmpty(fileNamePrefix))
+                    {
+                        ((FileDataProvider)theChosenOne.DataProvider).Rename(fileNamePrefix);
+                    }
                     return theChosenOne.DataProvider;
                 }
             }
@@ -144,7 +159,7 @@ namespace urakawa.media.data.audio.codec
             Stream audioData = OpenPcmInputStream();
             try
             {
-                dataProvider = CreateDataProviderFromRawPCMStream(audioData, null);
+                dataProvider = CreateDataProviderFromRawPCMStream(audioData, null, fileNamePrefix);
                 newSingleClip = new WavClip(dataProvider);
             }
             finally
