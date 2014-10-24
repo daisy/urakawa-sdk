@@ -262,16 +262,17 @@ namespace urakawa.data
         /// </summary>
         /// <param name="extension">The entension of the new data file path</param>
         /// <returns>The relative path</returns>
-        public string GetNewDataFileRelPath(string extension)
+        public string GetNewDataFileRelPath(string extension, string namePrefix)
         {
             string res;
             while (true)
             {
-                res = Path.ChangeExtension(Path.GetRandomFileName(), extension);
+                res = Path.ChangeExtension((String.IsNullOrEmpty(namePrefix) ? "" : namePrefix) + Path.GetRandomFileName(), extension);
 
                 string fullPath = Path.Combine(DataFileDirectoryFullPath, res);
                 if (File.Exists(fullPath)) continue;
 
+#if DEBUG
                 foreach (FileDataProvider prov in ManagedFileDataProviders)
                 {
                     if (!prov.IsDataFileInitialized) continue;
@@ -281,6 +282,8 @@ namespace urakawa.data
                         continue;
                     }
                 }
+#endif
+
                 break;
             }
 

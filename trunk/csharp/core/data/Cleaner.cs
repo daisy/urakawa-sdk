@@ -123,6 +123,8 @@ namespace urakawa.data
             index = 0;
 
             DataProvider curentAudioDataProvider = null;
+            long currentFileDataProviderIndex = 0;
+            string prefixFormat = @"{0:D4}_";
 
             long nMaxBytes = (m_cleanAudioMaxFileMegaBytes <= 0 ? 0 : (long)Math.Round(m_cleanAudioMaxFileMegaBytes * 1024 * 1024));
             long currentBytes = 0;
@@ -150,7 +152,7 @@ namespace urakawa.data
 
                         if (nMaxBytes <= 0 || thisAudioByteLength >= nMaxBytes)
                         {
-                            wMd.ForceSingleDataProvider();
+                            wMd.ForceSingleDataProvider(true, String.Format(prefixFormat, ++currentFileDataProviderIndex));
                         }
                         else
                         {
@@ -181,6 +183,7 @@ namespace urakawa.data
                             {
                                 currentBytes = 0;
                                 currentFileDataProvider = (FileDataProvider) m_Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                                currentFileDataProvider.SetNamePrefix(String.Format(prefixFormat, ++currentFileDataProviderIndex));
                                
                                 stream = currentFileDataProvider.OpenOutputStream();
                                 try
