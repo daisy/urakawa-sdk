@@ -192,8 +192,10 @@ namespace urakawa.media.data.audio.codec
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.ToString());
+
                         throw new exception.DataMissingException(
-                        String.Format("The data file {0} does not exist", ((FileDataProvider)DataProvider).DataFileRelativePath));
+                        String.Format("The data file {0} does not exist", ((FileDataProvider)DataProvider).DataFileRelativePath),
+                        ex);
                         
                     }
                     finally
