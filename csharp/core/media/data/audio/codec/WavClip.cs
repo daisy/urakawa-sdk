@@ -123,7 +123,7 @@ namespace urakawa.media.data.audio.codec
             public AudioLibPCMFormat mFormat;
             public Time mTime;
 
-            public PcmFormatAndTime( AudioLibPCMFormat format, Time time)
+            public PcmFormatAndTime(AudioLibPCMFormat format, Time time)
             {
                 mFormat = format;
                 mTime = time;

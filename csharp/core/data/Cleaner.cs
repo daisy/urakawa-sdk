@@ -129,6 +129,7 @@ namespace urakawa.data
             long nMaxBytes = (m_cleanAudioMaxFileMegaBytes <= 0 ? 0 : (long)Math.Round(m_cleanAudioMaxFileMegaBytes * 1024 * 1024));
             long currentBytes = 0;
             FileDataProvider currentFileDataProvider = null;
+            Stream currentFileDataProviderOutputStream = null;
             PCMFormatInfo pCMFormat = null;
             ulong riffHeaderLength = 0;
 
@@ -158,52 +159,53 @@ namespace urakawa.data
                         {
                             long nextSize = currentBytes + thisAudioByteLength;
 
-                            Stream stream = null;
-                            
                             if (nextSize > nMaxBytes)
                             {
                                 if (currentFileDataProvider != null)
                                 {
-                                    stream = currentFileDataProvider.OpenOutputStream();
+                                    //Stream stream = currentFileDataProvider.OpenOutputStream();
+                                    currentFileDataProviderOutputStream.Position = 0;
                                     try
                                     {
-                                        riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(stream, (uint)currentBytes);
+                                        riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)currentBytes);
                                     }
                                     finally
                                     {
-                                        stream.Close();
-                                        stream = null;
+                                        currentFileDataProviderOutputStream.Close();
+                                        currentFileDataProviderOutputStream = null;
                                     }
-                                }
 
-                                currentFileDataProvider = null;
+                                    currentFileDataProvider = null;
+                                }
                             }
-                            
+
                             if (currentFileDataProvider == null)
                             {
                                 currentBytes = 0;
-                                currentFileDataProvider = (FileDataProvider) m_Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                                currentFileDataProvider = (FileDataProvider)m_Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
                                 currentFileDataProvider.SetNamePrefix(String.Format(prefixFormat, ++currentFileDataProviderIndex));
-                               
-                                stream = currentFileDataProvider.OpenOutputStream();
+
+                                currentFileDataProviderOutputStream = currentFileDataProvider.OpenOutputStream();
                                 try
                                 {
-                                    riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(stream, (uint)0);
+                                    riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)0);
                                 }
-                                finally
+                                catch (Exception ex)
                                 {
-                                    stream.Close();
-                                    stream = null;
+                                    currentFileDataProviderOutputStream.Close();
+                                    currentFileDataProviderOutputStream = null;
+
+                                    throw ex;
                                 }
 
                                 pCMFormat = wMd.PCMFormat;
                             }
 
                             bool okay = false;
-                            stream = wMd.OpenPcmInputStream();
+                            Stream stream = wMd.OpenPcmInputStream();
 
                             long availableToRead = stream.Length - stream.Position;
-                            
+
                             //DebugFix.Assert(availableToRead == thisAudioByteLength);
                             if (thisAudioByteLength != availableToRead)
                             {
@@ -211,18 +213,30 @@ namespace urakawa.data
                                 long diff = thisAudioByteLength - availableToRead;
                                 if (Math.Abs(diff) > 2)
                                 {
+                                    Console.WriteLine(">> audio bytes diff: " + diff);
                                     Debugger.Break();
                                 }
-
-                                Console.WriteLine(">> audio bytes diff: " + diff);
 #endif
-                                thisAudioByteLength = (uint) availableToRead;
+                                thisAudioByteLength = (uint)availableToRead;
                             }
 
                             try
                             {
-                                currentFileDataProvider.AppendData(stream, availableToRead);
+                                //currentFileDataProvider.AppendData(stream, availableToRead);
+
+                                currentFileDataProviderOutputStream.Seek(0, SeekOrigin.End);
+
+                                const uint BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER
+                                StreamUtils.Copy(stream, (ulong)availableToRead, currentFileDataProviderOutputStream, BUFFER_SIZE);
+
                                 okay = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                currentFileDataProviderOutputStream.Close();
+                                currentFileDataProviderOutputStream = null;
+
+                                throw ex;
                             }
                             finally
                             {
@@ -240,17 +254,26 @@ namespace urakawa.data
                                         //((WavClip.PcmFormatAndTime)appData).mFormat;
                                     }
                                 }
+                                else
+                                {
+                                    DebugFix.Assert(currentBytes == 0);
+                                    Time dur = new Time(wMd.AudioDuration);
+                                    //DebugFix.Assert(currentBytes + thisAudioByteLength == wMd.PCMFormat.Data.ConvertTimeToBytes(dur.AsLocalUnits));
+                                    appData = new WavClip.PcmFormatAndTime(new AudioLibPCMFormat(wMd.PCMFormat.Data.NumberOfChannels, wMd.PCMFormat.Data.SampleRate, wMd.PCMFormat.Data.BitDepth), dur);
+                                    currentFileDataProvider.AppData = appData;
+                                }
 
-                                // TODO: to save precious I/O time, inject up-to-date RIFF header in AppendData() above.
-                                stream = currentFileDataProvider.OpenOutputStream();
+                                currentFileDataProviderOutputStream.Position = 0;
                                 try
                                 {
-                                    riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(stream, (uint)(currentBytes + thisAudioByteLength));
+                                    riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)(currentBytes + thisAudioByteLength));
                                 }
-                                finally
+                                catch (Exception ex)
                                 {
-                                    stream.Close();
-                                    stream = null;
+                                    currentFileDataProviderOutputStream.Close();
+                                    currentFileDataProviderOutputStream = null;
+
+                                    throw ex;
                                 }
 
                                 wMd.RemovePcmData(Time.Zero);
@@ -268,15 +291,15 @@ namespace urakawa.data
 #if DEBUG
                                 Debugger.Break();
 #endif
-                                stream = currentFileDataProvider.OpenOutputStream();
+                                currentFileDataProviderOutputStream.Position = 0;
                                 try
                                 {
-                                    riffHeaderLength = pCMFormat.Data.RiffHeaderWrite(stream, (uint)currentBytes);
+                                    riffHeaderLength = pCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)currentBytes);
                                 }
                                 finally
                                 {
-                                    stream.Close();
-                                    stream = null;
+                                    currentFileDataProviderOutputStream.Close();
+                                    currentFileDataProviderOutputStream = null;
                                 }
                                 currentFileDataProvider = null;
                             }
@@ -301,16 +324,18 @@ namespace urakawa.data
             }
             if (currentFileDataProvider != null)
             {
-                Stream stream = currentFileDataProvider.OpenOutputStream();
+                currentFileDataProviderOutputStream.Position = 0;
                 try
                 {
-                    riffHeaderLength = pCMFormat.Data.RiffHeaderWrite(stream, (uint)currentBytes);
+                    riffHeaderLength = pCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)currentBytes);
                 }
                 finally
                 {
-                    stream.Close();
-                    stream = null;
+                    currentFileDataProviderOutputStream.Close();
+                    currentFileDataProviderOutputStream = null;
                 }
+
+                currentFileDataProvider = null;
             }
 
             // We collect references of DataProviders used by the registered ExternalFileData
