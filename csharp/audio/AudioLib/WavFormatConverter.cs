@@ -1915,7 +1915,110 @@ namespace AudioLib
             //p.WaitForExit();
         }
 
+        public bool CompressWavToMP4And3GP(string sourceFile, string destinationFile, AudioLibPCMFormat pcmFormat, ushort bitRate_Output)
+        {
+            string ffmpegWorkingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string ffmpegPath = Path.Combine(ffmpegWorkingDir, "ffmpeg.exe");
+            if (!File.Exists(ffmpegPath))
+                throw new FileNotFoundException("Invalid compression library path " + ffmpegPath);
 
+            if (!File.Exists(sourceFile))
+                throw new FileNotFoundException("Invalid source file path " + sourceFile);
+
+            bool okay = false;
+            try
+            {
+
+                string sampleRate = String.Format("{0}", pcmFormat.SampleRate); //Math.Round(pcmFormat.SampleRate / 1000.0, 3));
+                sampleRate = sampleRate.Substring(0, 2) + '.' + sampleRate.Substring(2, 3);
+                string sampleRateArg = " --resample " + sampleRate;
+                
+
+                string channelsArg = pcmFormat.NumberOfChannels == 1 ? "m" : "s";
+                
+                string argumentString = "-i " + sourceFile + " -b:a " + bitRate_Output + " " + destinationFile;
+                    
+                    
+                Console.WriteLine(argumentString);
+
+                if (m_process != null)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                }
+
+                m_process = new Process();
+
+                m_process.StartInfo.FileName = ffmpegPath;
+                m_process.StartInfo.RedirectStandardOutput = false;
+                m_process.StartInfo.RedirectStandardError = false;
+                m_process.StartInfo.UseShellExecute = true;
+                m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                m_process.StartInfo.Arguments = argumentString;
+                
+                m_process.Start();
+                m_process.WaitForExit();
+
+
+                if (RequestCancellation)
+                {
+                    okay = false;
+                }
+                else
+                {
+                    okay = true;
+
+                    if (!m_process.StartInfo.UseShellExecute && m_process.ExitCode != 0)
+                    {
+                        StreamReader stdErr = m_process.StandardError;
+                        if (!stdErr.EndOfStream)
+                        {
+                            string toLog = stdErr.ReadToEnd();
+                            if (!string.IsNullOrEmpty(toLog))
+                            {
+                                Console.WriteLine(toLog);
+                            }
+                        }
+                    }
+                    else if (!m_process.StartInfo.UseShellExecute)
+                    {
+                        StreamReader stdOut = m_process.StandardOutput;
+                        if (!stdOut.EndOfStream)
+                        {
+                            string toLog = stdOut.ReadToEnd();
+                            if (!string.IsNullOrEmpty(toLog))
+                            {
+                                Console.WriteLine(toLog);
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                okay = false;
+            }
+            finally
+            {
+                //noop
+            }
+
+            if (okay && File.Exists(destinationFile))
+            {
+                return true;
+            }
+
+            return false;
+
+        }
 
         private string GenerateOutputFileFullname(string sourceFile, string destinationDirectory, AudioLibPCMFormat pcmFormat)
         {
