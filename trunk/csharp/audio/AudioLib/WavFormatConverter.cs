@@ -1936,7 +1936,7 @@ namespace AudioLib
 
                 string channelsArg = pcmFormat.NumberOfChannels == 1 ? "m" : "s";
                 
-                string argumentString = "-i " + sourceFile + " -b:a " + bitRate_Output + " " + destinationFile;
+                string argumentString = "-i " + "\"" + sourceFile + "\"" + " -b:a " + bitRate_Output + " \"" + destinationFile + "\"";
                     
                     
                 Console.WriteLine(argumentString);
@@ -1949,8 +1949,9 @@ namespace AudioLib
                 }
 
                 m_process = new Process();
-
+                
                 m_process.StartInfo.FileName = ffmpegPath;
+                
                 m_process.StartInfo.RedirectStandardOutput = false;
                 m_process.StartInfo.RedirectStandardError = false;
                 m_process.StartInfo.UseShellExecute = true;
