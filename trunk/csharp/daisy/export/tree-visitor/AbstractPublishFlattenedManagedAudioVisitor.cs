@@ -251,6 +251,69 @@ namespace urakawa.daisy.export.visitor
             m_ExternalAudioMediaList.Clear();
         }
 
+        private void EncodeTransientFileToMp4()
+        {
+            ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
+
+            AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, DisableAcmCodecs);
+            string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
+            string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
+                Path.GetFileNameWithoutExtension(sourceFilePath) +DataProviderFactory.AUDIO_MP4_EXTENSION);
+
+            //reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(destinationFilePath), GetSizeInfo(m_RootNode)));
+
+            PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
+
+            //AudioLibPCMFormat pcmFormat = audioFormat.Data;
+            AudioLibPCMFormat pcmFormat = new AudioLibPCMFormat();
+            pcmFormat.CopyFrom(audioFormat.Data);
+            pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
+            pcmFormat.NumberOfChannels = (ushort)(base.EncodePublishedAudioFilesStereo ? 2 : 1);
+
+            AddSubCancellable(formatConverter);
+            
+            bool result = false;
+            try
+            {
+                result = formatConverter.CompressWavToMP4And3GP(sourceFilePath, destinationFilePath, pcmFormat, BitRate_Mp3);
+            }
+            finally
+            {
+                RemoveSubCancellable(formatConverter);
+            }
+
+            if (RequestCancellation)
+            {
+                m_ExternalAudioMediaList.Clear();
+                return;
+            }
+
+            if (result)
+            {
+                m_EncodingFileCompressionRatio = (new FileInfo(sourceFilePath).Length) / (new FileInfo(destinationFilePath).Length);
+
+                foreach (ExternalAudioMedia ext in m_ExternalAudioMediaList)
+                {
+                    if (ext != null)
+                    {
+                        ext.Src = ext.Src.Replace(DataProviderFactory.AUDIO_WAV_EXTENSION, DataProviderFactory.AUDIO_MP4_EXTENSION);
+                    }
+                }
+
+                File.Delete(sourceFilePath);
+            }
+            else
+            {
+                // append error messages
+                base.ErrorMessages = base.ErrorMessages + String.Format(UrakawaSDK_daisy_Lang.ErrorInEncoding, Path.GetFileName(sourceFilePath));
+                
+            }
+
+            m_ExternalAudioMediaList.Clear();
+        }
+
+
+
         private TreeNode m_RootNode = null;
 
         #region ITreeNodeVisitor Members
