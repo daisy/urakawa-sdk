@@ -140,18 +140,26 @@ namespace urakawa.daisy.export.visitor
                 m_SkipACM = value;
             }
         }
-        private bool m_EncodePublishedAudioFilesToMp3 = false;
-        public bool EncodePublishedAudioFilesToMp3
+        private bool m_EncodePublishedAudioFiles = false;
+        public bool EncodePublishedAudioFiles
         {
             get
             {
-                return m_EncodePublishedAudioFilesToMp3;
+                return m_EncodePublishedAudioFiles;
             }
             set
             {
-                m_EncodePublishedAudioFilesToMp3 = value;
+                m_EncodePublishedAudioFiles = value;
             }
         }
+
+        private AudioFileFormats m_EncodingFileFormat ;
+        public AudioFileFormats EncodingFileFormat
+        {
+            get { return m_EncodingFileFormat; }
+            set { m_EncodingFileFormat = value; }
+        }
+
         private SampleRate m_EncodePublishedAudioFilesSampleRate = SampleRate.Hz44100;
         public SampleRate EncodePublishedAudioFilesSampleRate
         {
@@ -179,7 +187,7 @@ namespace urakawa.daisy.export.visitor
 
 
         private ushort m_BitRate_Mp3 = 64;
-        public ushort BitRate_Mp3
+        public ushort BitRate_Encoding
         {
             get
             {

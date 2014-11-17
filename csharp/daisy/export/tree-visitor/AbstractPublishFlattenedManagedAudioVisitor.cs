@@ -50,18 +50,18 @@ namespace urakawa.daisy.export.visitor
                     ||
                     nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels)
                 {
-                    if (base.EncodePublishedAudioFilesToMp3)
+                    if (base.EncodePublishedAudioFiles)
                     {
-                        EncodeTransientFileToMp3();
+                        EncodeTransientFile();
                     }
                     else
                     {
                         EncodeTransientFileResample();
                     }
                 }
-                else if (base.EncodePublishedAudioFilesToMp3)
+                else if (base.EncodePublishedAudioFiles)
                 {
-                    EncodeTransientFileToMp3();
+                    EncodeTransientFile();
                 }
             }
         }
@@ -191,6 +191,21 @@ namespace urakawa.daisy.export.visitor
             m_ExternalAudioMediaList.Clear();
         }
 
+        private void EncodeTransientFile ()
+        {
+            if (EncodingFileFormat == AudioFileFormats.MP3)
+            {
+                EncodeTransientFileToMp3();
+            }
+            else if (EncodingFileFormat == AudioFileFormats.MP4 ||
+                EncodingFileFormat == AudioFileFormats.AMR ||
+                EncodingFileFormat == AudioFileFormats.GP3)
+            {
+                EncodeTransientFileToMp4OrAMR();
+            }
+        }
+
+
         private void EncodeTransientFileToMp3()
         {
             ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
@@ -215,7 +230,7 @@ namespace urakawa.daisy.export.visitor
             bool result = false;
             try
             {
-                result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat, BitRate_Mp3, m_AdditionalMp3ParamChannels,m_AdditionalMp3ParamReSample, m_AdditionalMp3ParamReplayGain);
+                result = formatConverter.CompressWavToMp3(sourceFilePath, destinationFilePath, pcmFormat, BitRate_Encoding, m_AdditionalMp3ParamChannels,m_AdditionalMp3ParamReSample, m_AdditionalMp3ParamReplayGain);
             }
             finally
             {
@@ -251,7 +266,7 @@ namespace urakawa.daisy.export.visitor
             m_ExternalAudioMediaList.Clear();
         }
 
-        private void EncodeTransientFileToMp4()
+        private void EncodeTransientFileToMp4OrAMR()
         {
             ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
 
@@ -275,7 +290,7 @@ namespace urakawa.daisy.export.visitor
             bool result = false;
             try
             {
-                result = formatConverter.CompressWavToMP4And3GP(sourceFilePath, destinationFilePath, pcmFormat, BitRate_Mp3);
+                result = formatConverter.CompressWavToMP4And3GP(sourceFilePath, destinationFilePath, pcmFormat, BitRate_Encoding);
             }
             finally
             {
@@ -478,7 +493,7 @@ namespace urakawa.daisy.export.visitor
 
                 int percent = Convert.ToInt32((m_TimeElapsedInLocalUnits * 100) / m_TotalTimeInLocalUnits);
 
-                if (EncodePublishedAudioFilesToMp3)
+                if (EncodePublishedAudioFiles)
                 {
                     reportProgress_Throttle(percent, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(src).Replace(DataProviderFactory.AUDIO_WAV_EXTENSION, DataProviderFactory.AUDIO_MP3_EXTENSION), GetSizeInfo(node)));
                 }
@@ -492,7 +507,7 @@ namespace urakawa.daisy.export.visitor
             ExternalAudioMedia extAudioMedia = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
 
             ushort nChannels = (ushort)(EncodePublishedAudioFilesStereo ? 2 : 1);
-            if ((EncodePublishedAudioFilesToMp3
+            if ((EncodePublishedAudioFiles
                 ||
                 (ushort)EncodePublishedAudioFilesSampleRate != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
                 || nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels
@@ -533,13 +548,13 @@ namespace urakawa.daisy.export.visitor
             int elapsedSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TimeElapsedInLocalUnits) / (1024 * 1024);
             int totalSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TotalTimeInLocalUnits) / (1024 * 1024);
             string sizeInfo = "";
-            if (EncodePublishedAudioFilesToMp3 && m_EncodingFileCompressionRatio > 1)
+            if (EncodePublishedAudioFiles && m_EncodingFileCompressionRatio > 1)
             {
                 sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo,
                     Math.Round((decimal)(elapsedSizeInMB / m_EncodingFileCompressionRatio), 4, MidpointRounding.ToEven),
                     Math.Round((decimal)(totalSizeInMB / m_EncodingFileCompressionRatio), 4, MidpointRounding.ToEven));
             }
-            else if (!EncodePublishedAudioFilesToMp3)
+            else if (!EncodePublishedAudioFiles)
             {
 
                 sizeInfo = String.Format(UrakawaSDK_daisy_Lang.TreeNode_SizeInfo, Math.Round((decimal)elapsedSizeInMB, 5, MidpointRounding.ToEven), Math.Round((decimal)totalSizeInMB, 5, MidpointRounding.ToEven));
@@ -647,7 +662,7 @@ m_Stream;
 
                 ushort nChannels = (ushort)(EncodePublishedAudioFilesStereo ? 2 : 1);
 
-                if ((EncodePublishedAudioFilesToMp3
+                if ((EncodePublishedAudioFiles
                 ||
                 (ushort)EncodePublishedAudioFilesSampleRate != marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
                 || nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels
