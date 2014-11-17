@@ -39,7 +39,7 @@ namespace urakawa.daisy.export
             Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions = new Dictionary<string, List<string>>();
 
             string imageDescriptionDirectoryPath = GetAndCreateImageDescriptionDirectoryPath(true, exportImageName, m_OutputDirectory);
-            string descriptionFile = CreateImageDescription(m_SkipACM, pcmFormat, m_encodeToMp3, m_BitRate_Mp3,
+            string descriptionFile = CreateImageDescription(m_SkipACM, pcmFormat, m_encodeAudioFiles, m_BitRate_Encoding,
                 imageDescriptionDirectoryPath, exportImageName,
                 altProp,
                 map_DiagramElementName_TO_TextualDescriptions,
