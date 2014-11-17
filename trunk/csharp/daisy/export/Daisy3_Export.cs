@@ -47,17 +47,24 @@ namespace urakawa.daisy.export
         protected TreeNodeTestDelegate m_SkipDelegate;
 
         protected readonly bool m_SkipACM;
-        private readonly bool m_encodeToMp3;
+        private readonly bool m_encodeAudioFiles;
         private readonly bool m_includeImageDescriptions;
         private readonly bool m_generateSmilNoteReferences;
 
         protected readonly SampleRate m_sampleRate;
         protected readonly bool m_audioStereo;
 
-        protected readonly ushort m_BitRate_Mp3 = 64;
+        protected readonly ushort m_BitRate_Encoding = 64;
         protected string m_AdditionalMp3ParamChannels;
         protected bool m_AdditionalMp3ParamReSample = true;
         protected string m_AdditionalMp3ParamReplayGain = null;
+
+        private AudioFileFormats m_EncodingFileFormat = AudioFileFormats.MP3;
+        public AudioFileFormats EncodingFileFormat
+        {
+            get { return m_EncodingFileFormat; }
+            set { m_EncodingFileFormat = value; }
+        }
 
         //public ushort BitRate_Mp3
         //{
@@ -74,7 +81,7 @@ namespace urakawa.daisy.export
         public Daisy3_Export(Presentation presentation,
             string exportDirectory,
             List<string> navListElementNamesList,
-            bool encodeToMp3, ushort bitRate_Mp3,
+            bool encodeAudioFiles, ushort bitRate_Encoding,
             SampleRate sampleRate, bool stereo,
             bool skipACM,
             bool includeImageDescriptions,
@@ -82,11 +89,11 @@ namespace urakawa.daisy.export
         {
             m_includeImageDescriptions = includeImageDescriptions;
             m_generateSmilNoteReferences = generateSmilNoteReferences;
-            m_encodeToMp3 = encodeToMp3;
+            m_encodeAudioFiles = encodeAudioFiles;
             m_sampleRate = sampleRate;
             m_audioStereo = stereo;
             m_SkipACM = skipACM;
-            m_BitRate_Mp3 = bitRate_Mp3;
+            m_BitRate_Encoding = bitRate_Encoding;
 
             RequestCancellation = false;
             if (!Directory.Exists(exportDirectory))
@@ -218,11 +225,13 @@ namespace urakawa.daisy.export
 
             m_PublishVisitor = new PublishFlattenedManagedAudioVisitor(m_TriggerDelegate, m_SkipDelegate);
 
-            m_PublishVisitor.EncodePublishedAudioFilesToMp3 = m_encodeToMp3;
-            if (m_encodeToMp3) // && m_BitRate_Mp3 >= 32)
+            m_PublishVisitor.EncodePublishedAudioFiles = m_encodeAudioFiles;
+            m_PublishVisitor.EncodingFileFormat = EncodingFileFormat;
+            
+            if (m_encodeAudioFiles) 
             {
-                m_PublishVisitor.BitRate_Mp3 = m_BitRate_Mp3;
-                m_PublishVisitor.SetAdditionalMp3EncodingParameters(m_AdditionalMp3ParamChannels, m_AdditionalMp3ParamReSample, m_AdditionalMp3ParamReplayGain);
+                m_PublishVisitor.BitRate_Encoding = m_BitRate_Encoding;
+                if(EncodingFileFormat == AudioFileFormats.MP3)  m_PublishVisitor.SetAdditionalMp3EncodingParameters(m_AdditionalMp3ParamChannels, m_AdditionalMp3ParamReSample, m_AdditionalMp3ParamReplayGain);
             }
             m_PublishVisitor.EncodePublishedAudioFilesSampleRate = m_sampleRate;
             m_PublishVisitor.EncodePublishedAudioFilesStereo = m_audioStereo;
@@ -242,7 +251,7 @@ namespace urakawa.daisy.export
             m_Presentation.RootNode.AcceptDepthFirst(m_PublishVisitor);
 
 #if DEBUG_TREE
-            if (!m_PublishVisitor.EncodePublishedAudioFilesToMp3)
+            if (!m_PublishVisitor.EncodePublishedAudioFiles)
                 m_PublishVisitor.VerifyTree(m_Presentation.RootNode);
 
             //Debugger.Break();
