@@ -31,6 +31,7 @@ using Jacobi.Vst.Interop.Host;
 
 namespace AudioLib
 {
+    public enum AudioFileFormats {WAV, MP3, MP4, AMR, GP3} 
     //public class WavAmplify : WavNormalize
     //{
     //    public WavAmplify(string fullpath, double amp)
