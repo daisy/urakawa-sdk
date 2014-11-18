@@ -54,6 +54,12 @@ namespace urakawa.data
         public const string AUDIO_OGG_MIME_TYPE = "audio/ogg";
         public const string AUDIO_OGG_EXTENSION = ".ogg";
 
+        public const string AUDIO_AMR_MIME_TYPE = "audio/amr";
+        public const string AUDIO_AMR_EXTENSION = ".amr";
+
+        public const string AUDIO_3GPP_MIME_TYPE = "audio/3gpp";
+        public const string AUDIO_3GPP_EXTENSION = ".3gp";
+
         /// <summary>
         /// MIME type for linear PCM RIFF WAVE format audio (wav)
         /// </summary>
@@ -275,8 +281,12 @@ namespace urakawa.data
                 case AUDIO_WAV_MIME_TYPE:
                     extension = AUDIO_WAV_EXTENSION;
                     break;
-
-
+                case AUDIO_3GPP_MIME_TYPE:
+                    extension = AUDIO_3GPP_EXTENSION;
+                    break;
+                case AUDIO_AMR_MIME_TYPE:
+                    extension = AUDIO_AMR_EXTENSION;
+                    break;
                 case IMAGE_JPG_MIME_TYPE:
                     extension = IMAGE_JPG_EXTENSION;
                     break;
@@ -427,7 +437,12 @@ namespace urakawa.data
                 case AUDIO_WAV_EXTENSION:
                     mime = AUDIO_WAV_MIME_TYPE;
                     break;
-
+                case AUDIO_3GPP_EXTENSION:
+                    mime = AUDIO_3GPP_MIME_TYPE;
+                    break;
+                case AUDIO_AMR_EXTENSION:
+                    mime = AUDIO_AMR_MIME_TYPE;
+                    break;
 
                 case IMAGE_JPG_EXTENSION:
                 case IMAGE_JPEG_EXTENSION:
