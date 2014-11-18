@@ -1936,8 +1936,21 @@ namespace AudioLib
                 
 
                 string channelsArg = pcmFormat.NumberOfChannels == 1 ? "m" : "s";
-                
-                string argumentString = "-i " + "\"" + sourceFile + "\"" + " -b:a " + bitRate_Output + " \"" + destinationFile + "\"";
+                string argumentString = null;
+                string extension = Path.GetExtension (destinationFile ).ToLower() ;
+
+                if (extension == ".mp4" || extension == ".m4a")
+                {
+                    argumentString = "-i " + "\"" + sourceFile + "\"" + " -b:a " + bitRate_Output + " \"" + destinationFile + "\"";
+                }
+                else if (extension == ".3gp")
+                {
+                    argumentString =  String.Format(@"-i {0} -b 400k -acodec aac -strict experimental  -ac 1 -ar 16000 -ab 24k {1}", "\"" +sourceFile + "\"", "\"" +destinationFile + "\"");
+                }
+                else if (extension == ".amr")
+                {
+                    argumentString = String.Format(@"-i {0} -ar 8000 -ab 12.2k {1}", "\"" + sourceFile + "\"" , "\"" + destinationFile + "\"" );
+                }
                     
                     
                 Console.WriteLine(argumentString);
