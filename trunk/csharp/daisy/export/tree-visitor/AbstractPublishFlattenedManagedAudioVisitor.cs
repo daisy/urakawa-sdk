@@ -192,7 +192,7 @@ namespace urakawa.daisy.export.visitor
         }
 
         private void EncodeTransientFile ()
-        {
+        {   
             if (EncodingFileFormat == AudioFileFormats.MP3)
             {
                 EncodeTransientFileToMp3();
@@ -272,9 +272,13 @@ namespace urakawa.daisy.export.visitor
 
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, DisableAcmCodecs);
             string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
-            string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
-                Path.GetFileNameWithoutExtension(sourceFilePath) +DataProviderFactory.AUDIO_MP4_EXTENSION);
 
+            string extension = EncodingFileFormat == AudioFileFormats.MP4 ? DataProviderFactory.AUDIO_MP4_EXTENSION :
+                EncodingFileFormat == AudioFileFormats.AMR ? DataProviderFactory.AUDIO_AMR_EXTENSION :
+                DataProviderFactory.AUDIO_3GPP_EXTENSION;
+            string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
+                Path.GetFileNameWithoutExtension(sourceFilePath) + extension);
+            
             //reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.CreateMP3File, Path.GetFileName(destinationFilePath), GetSizeInfo(m_RootNode)));
 
             PCMFormatInfo audioFormat = extMedia.Presentation.MediaDataManager.DefaultPCMFormat;
@@ -311,7 +315,7 @@ namespace urakawa.daisy.export.visitor
                 {
                     if (ext != null)
                     {
-                        ext.Src = ext.Src.Replace(DataProviderFactory.AUDIO_WAV_EXTENSION, DataProviderFactory.AUDIO_MP4_EXTENSION);
+                        ext.Src = ext.Src.Replace(DataProviderFactory.AUDIO_WAV_EXTENSION,extension );
                     }
                 }
 
