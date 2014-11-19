@@ -195,10 +195,17 @@ namespace urakawa.daisy.export.visitor
             }
             set
             {
-                if (value == 32 || value == 40 || value == 48 || value == 56 || value == 64 || value == 80 || value == 96 ||
+                if (EncodingFileFormat == AudioFileFormats.MP3 || EncodingFileFormat == AudioFileFormats.MP4)
+                {
+                    if (value == 32 || value == 40 || value == 48 || value == 56 || value == 64 || value == 80 || value == 96 ||
                     value == 112 || value == 128 || value == 160 || value == 196 ||
                     value == 224 || value == 256 ||
                     value == 320)
+                    {
+                        m_BitRate_Mp3 = value;
+                    }
+                }
+                if (EncodingFileFormat == AudioFileFormats.AMR || EncodingFileFormat == AudioFileFormats.GP3)
                 {
                     m_BitRate_Mp3 = value;
                 }
