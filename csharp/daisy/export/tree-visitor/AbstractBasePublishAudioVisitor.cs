@@ -205,7 +205,7 @@ namespace urakawa.daisy.export.visitor
                         m_BitRate_Mp3 = value;
                     }
                 }
-                if (EncodingFileFormat == AudioFileFormats.AMR || EncodingFileFormat == AudioFileFormats.GP3)
+                else if (EncodingFileFormat == AudioFileFormats.AMR || EncodingFileFormat == AudioFileFormats.GP3)
                 {
                     m_BitRate_Mp3 = value;
                 }
