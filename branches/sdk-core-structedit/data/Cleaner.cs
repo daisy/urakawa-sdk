@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using AudioLib;
 using urakawa.command;
 using urakawa.core;
 using urakawa.exception;
 using urakawa.ExternalFiles;
 using urakawa.media.data;
+using urakawa.media.data.audio;
+using urakawa.media.data.audio.codec;
 using urakawa.media.data.utilities;
+using urakawa.media.timing;
 
 namespace urakawa.data
 {
@@ -15,10 +19,12 @@ namespace urakawa.data
     {
         private readonly Presentation m_Presentation;
         private readonly string m_FullPathToDeletedDataFolder;
-        public Cleaner(Presentation presentation, string fullPathToDeletedDataFolder)
+        private readonly double m_cleanAudioMaxFileMegaBytes;
+        public Cleaner(Presentation presentation, string fullPathToDeletedDataFolder, double cleanAudioMaxFileMegaBytes)
         {
             m_Presentation = presentation;
             m_FullPathToDeletedDataFolder = fullPathToDeletedDataFolder;
+            m_cleanAudioMaxFileMegaBytes = cleanAudioMaxFileMegaBytes;
         }
 
         public override void DoWork()
@@ -60,6 +66,10 @@ namespace urakawa.data
 
                 if (!usedMediaData.Contains(md))
                 {
+#if DEBUG
+                    //DebugFix.Assert();
+                    Debugger.Break();
+#endif
                     usedMediaData.Add(md);
                 }
             }
@@ -94,6 +104,12 @@ namespace urakawa.data
                 {
                     usedMediaData.Add(mm.MediaData);
                 }
+#if DEBUG
+                else
+                {
+                    Debugger.Break();
+                }
+#endif
             }
 
             progress = progressStep;
@@ -106,6 +122,17 @@ namespace urakawa.data
 
             index = 0;
 
+            DataProvider curentAudioDataProvider = null;
+            long currentFileDataProviderIndex = 0;
+            string prefixFormat = @"{0:D4}_";
+
+            long nMaxBytes = (m_cleanAudioMaxFileMegaBytes <= 0 ? 0 : (long)Math.Round(m_cleanAudioMaxFileMegaBytes * 1024 * 1024));
+            long currentBytes = 0;
+            FileDataProvider currentFileDataProvider = null;
+            Stream currentFileDataProviderOutputStream = null;
+            PCMFormatInfo pCMFormat = null;
+            ulong riffHeaderLength = 0;
+
             List<MediaData> list = m_Presentation.MediaDataManager.ManagedObjects.ContentsAs_ListCopy;
             foreach (MediaData md in list)
             {
@@ -117,12 +144,168 @@ namespace urakawa.data
 
                 if (usedMediaData.Contains(md))
                 {
-                    if (md is media.data.audio.codec.WavAudioMediaData)
+                    if (md is WavAudioMediaData)
                     {
                         reportProgress_Throttle(progress, index + " / " + list.Count);
 
-                        ((media.data.audio.codec.WavAudioMediaData)md).ForceSingleDataProvider();
+                        WavAudioMediaData wMd = (WavAudioMediaData)md;
+                        uint thisAudioByteLength = (uint)wMd.PCMFormat.Data.ConvertTimeToBytes(wMd.AudioDuration.AsLocalUnits);
+
+                        if (nMaxBytes <= 0 || thisAudioByteLength >= nMaxBytes)
+                        {
+                            wMd.ForceSingleDataProvider(true, String.Format(prefixFormat, ++currentFileDataProviderIndex));
+                        }
+                        else
+                        {
+                            long nextSize = currentBytes + thisAudioByteLength;
+
+                            if (nextSize > nMaxBytes)
+                            {
+                                if (currentFileDataProvider != null)
+                                {
+                                    //Stream stream = currentFileDataProvider.OpenOutputStream();
+                                    currentFileDataProviderOutputStream.Position = 0;
+                                    try
+                                    {
+                                        riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)currentBytes);
+                                    }
+                                    finally
+                                    {
+                                        currentFileDataProviderOutputStream.Close();
+                                        currentFileDataProviderOutputStream = null;
+                                    }
+
+                                    currentFileDataProvider = null;
+                                }
+                            }
+
+                            if (currentFileDataProvider == null)
+                            {
+                                currentBytes = 0;
+                                currentFileDataProvider = (FileDataProvider)m_Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                                currentFileDataProvider.SetNamePrefix(String.Format(prefixFormat, ++currentFileDataProviderIndex));
+
+                                currentFileDataProviderOutputStream = currentFileDataProvider.OpenOutputStream();
+                                try
+                                {
+                                    riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)0);
+                                }
+                                catch (Exception ex)
+                                {
+                                    currentFileDataProviderOutputStream.Close();
+                                    currentFileDataProviderOutputStream = null;
+
+                                    throw ex;
+                                }
+
+                                pCMFormat = wMd.PCMFormat;
+                            }
+
+                            bool okay = false;
+                            Stream stream = wMd.OpenPcmInputStream();
+
+                            long availableToRead = stream.Length - stream.Position;
+
+                            //DebugFix.Assert(availableToRead == thisAudioByteLength);
+                            if (thisAudioByteLength != availableToRead)
+                            {
+#if DEBUG
+                                long diff = thisAudioByteLength - availableToRead;
+                                if (Math.Abs(diff) > 2)
+                                {
+                                    Console.WriteLine(">> audio bytes diff: " + diff);
+                                    Debugger.Break();
+                                }
+#endif
+                                thisAudioByteLength = (uint)availableToRead;
+                            }
+
+                            try
+                            {
+                                //currentFileDataProvider.AppendData(stream, availableToRead);
+
+                                currentFileDataProviderOutputStream.Seek(0, SeekOrigin.End);
+
+                                const uint BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER
+                                StreamUtils.Copy(stream, (ulong)availableToRead, currentFileDataProviderOutputStream, BUFFER_SIZE);
+
+                                okay = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                currentFileDataProviderOutputStream.Close();
+                                currentFileDataProviderOutputStream = null;
+
+                                throw ex;
+                            }
+                            finally
+                            {
+                                stream.Close();
+                                stream = null;
+                            }
+                            if (okay)
+                            {
+                                Object appData = currentFileDataProvider.AppData;
+                                if (appData != null)
+                                {
+                                    if (appData is WavClip.PcmFormatAndTime)
+                                    {
+                                        ((WavClip.PcmFormatAndTime)appData).mTime.Add(wMd.AudioDuration);
+                                        //((WavClip.PcmFormatAndTime)appData).mFormat;
+                                    }
+                                }
+                                else
+                                {
+                                    DebugFix.Assert(currentBytes == 0);
+                                    Time dur = new Time(wMd.AudioDuration);
+                                    //DebugFix.Assert(currentBytes + thisAudioByteLength == wMd.PCMFormat.Data.ConvertTimeToBytes(dur.AsLocalUnits));
+                                    appData = new WavClip.PcmFormatAndTime(new AudioLibPCMFormat(wMd.PCMFormat.Data.NumberOfChannels, wMd.PCMFormat.Data.SampleRate, wMd.PCMFormat.Data.BitDepth), dur);
+                                    currentFileDataProvider.AppData = appData;
+                                }
+
+                                currentFileDataProviderOutputStream.Position = 0;
+                                try
+                                {
+                                    riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)(currentBytes + thisAudioByteLength));
+                                }
+                                catch (Exception ex)
+                                {
+                                    currentFileDataProviderOutputStream.Close();
+                                    currentFileDataProviderOutputStream = null;
+
+                                    throw ex;
+                                }
+
+                                wMd.RemovePcmData(Time.Zero);
+
+                                Time clipBegin = new Time(wMd.PCMFormat.Data.ConvertBytesToTime(currentBytes));
+                                Time clipEnd =
+                                    new Time(wMd.PCMFormat.Data.ConvertBytesToTime(currentBytes + thisAudioByteLength));
+
+                                wMd.AppendPcmData(currentFileDataProvider, clipBegin, clipEnd);
+
+                                currentBytes += thisAudioByteLength;
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                                currentFileDataProviderOutputStream.Position = 0;
+                                try
+                                {
+                                    riffHeaderLength = pCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)currentBytes);
+                                }
+                                finally
+                                {
+                                    currentFileDataProviderOutputStream.Close();
+                                    currentFileDataProviderOutputStream = null;
+                                }
+                                currentFileDataProvider = null;
+                            }
+                        }
                     }
+
                     foreach (DataProvider dp in md.UsedDataProviders)
                     {
                         if (RequestCancellation) return;
@@ -138,6 +321,21 @@ namespace urakawa.data
                     // Does not actually delete any file, just frees references.
                     md.Delete();
                 }
+            }
+            if (currentFileDataProvider != null)
+            {
+                currentFileDataProviderOutputStream.Position = 0;
+                try
+                {
+                    riffHeaderLength = pCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)currentBytes);
+                }
+                finally
+                {
+                    currentFileDataProviderOutputStream.Close();
+                    currentFileDataProviderOutputStream = null;
+                }
+
+                currentFileDataProvider = null;
             }
 
             // We collect references of DataProviders used by the registered ExternalFileData
