@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace urakawa.exception
 {
@@ -14,6 +15,9 @@ namespace urakawa.exception
         /// <param name="msg">The message</param>
         public CheckedException(string msg) : base(msg)
         {
+#if DEBUG
+            Debugger.Break();
+#endif
         }
 
         /// <summary>
@@ -23,6 +27,9 @@ namespace urakawa.exception
         /// <param name="inner">The inner exception</param>
         public CheckedException(string msg, Exception inner) : base(msg, inner)
         {
+#if DEBUG
+            Debugger.Break();
+#endif
         }
     }
 }

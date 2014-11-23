@@ -123,7 +123,7 @@ namespace urakawa.media.data.audio.codec
             public AudioLibPCMFormat mFormat;
             public Time mTime;
 
-            public PcmFormatAndTime( AudioLibPCMFormat format, Time time)
+            public PcmFormatAndTime(AudioLibPCMFormat format, Time time)
             {
                 mFormat = format;
                 mTime = time;
@@ -192,8 +192,10 @@ namespace urakawa.media.data.audio.codec
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.ToString());
+
                         throw new exception.DataMissingException(
-                        String.Format("The data file {0} does not exist", ((FileDataProvider)DataProvider).DataFileRelativePath));
+                        String.Format("The data file {0} does not exist", ((FileDataProvider)DataProvider).DataFileRelativePath),
+                        ex);
                         
                     }
                     finally

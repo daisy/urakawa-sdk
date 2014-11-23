@@ -48,6 +48,7 @@ namespace urakawa.data
                     || c == '|'
                     || c == '\"'
                     || c == '\''
+                    || c == ','
                 )
                 {
                     m_StrBuilder.Append(HYPHEN);
@@ -528,6 +529,95 @@ namespace urakawa.data
 
         private CloseNotifyingStream mOpenOutputStream = null;
 
+        private String m_NamePrefix = null;
+        public void SetNamePrefix(String str)
+        {
+            m_NamePrefix = str;
+        }
+
+        public void Rename(string prefix)
+        {
+            if (mOpenOutputStream != null)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+            if (mOpenInputStreams.Count > 0)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            string oldPrefix = m_NamePrefix;
+            string oldName = DataFileRelativePath;
+            string oldPath = DataFileFullPath;
+
+            m_NamePrefix = prefix;
+            
+            mDataFileRelativePath = null;
+
+            string newName = DataFileRelativePath;
+            string newPath = DataFileFullPath;
+
+#if DEBUG
+            DebugFix.Assert(!File.Exists(newPath));
+#endif
+
+#if DEBUG
+            foreach (DataProvider dp in Presentation.DataProviderManager.ManagedObjects.ContentsAs_Enumerable)
+            {
+                if (dp is FileDataProvider)
+                {
+                    FileDataProvider fdp = (FileDataProvider)dp;
+                    if (fdp == this) continue;
+
+                    if (fdp.DataFileFullPath == newPath)
+                    {
+                        Debugger.Break();
+                    }
+                }
+            }
+#endif
+
+            if (!File.Exists(oldPath))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                HasBeenInitialized = false;
+                return;
+            }
+
+            try
+            {
+                File.Move(oldPath, DataFileFullPath);
+                try
+                {
+                    File.SetAttributes(DataFileFullPath, FileAttributes.Normal);
+                }
+                catch
+                {
+                }
+
+                HasBeenInitialized = true;
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                m_NamePrefix = oldPrefix;
+                mDataFileRelativePath = oldName;
+
+                newName = DataFileRelativePath;
+                newPath = DataFileFullPath;
+            }
+        }
+
         /// <summary>
         /// Gets the path of the file storing the data of the instance, realtive to the path of data file directory
         /// of the owning <see cref="DataProviderManager"/>
@@ -540,7 +630,7 @@ namespace urakawa.data
                 {
                     //Lazy initialization
                     mDataFileRelativePath = Presentation.DataProviderManager.GetNewDataFileRelPath(
-                        DataProviderFactory.GetExtensionFromMimeType(MimeType));
+                        DataProviderFactory.GetExtensionFromMimeType(MimeType), m_NamePrefix);
                 }
                 return mDataFileRelativePath;
             }
@@ -659,6 +749,7 @@ namespace urakawa.data
         }
 
         private bool HasBeenInitialized;
+
 
         private void CheckDataFile()
         {
