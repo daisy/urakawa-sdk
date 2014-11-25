@@ -248,7 +248,79 @@ namespace urakawa.core
 
         public void UpdateTextCache_AfterInsert()
         {
-            //int index = this.Parent.Children.IndexOf(this);
+            // Check for already-existing local text in ancestor chain (for example, "title" attribute on originally-empty elements, now inserting additional children so need to update)
+            StringChunk localInParent = null;
+            TreeNode p = this.Parent;
+            while (p != null)
+            {
+                if (p.TextLocal != null)
+                {
+                    DebugFix.Assert(p.TextLocal.First != null);
+                    if (p.TextLocal.First != null)
+                    {
+                        if (localInParent != null)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
+                        localInParent = p.TextLocal.First;
+
+                        StringChunk prev = p.TextLocal.First.Previous;
+                        StringChunk next = p.TextLocal.First.Next;
+                        if (prev != null)
+                        {
+                            prev.Next = next; // can be null
+                        }
+                        if (next != null)
+                        {
+                            next.Previous = prev; // can be null
+                        }
+                    }
+                    p.UpdateTextCache_Reset();
+                }
+
+                if (p.TextFlattened != null)
+                {
+                    if (localInParent != null)
+                    {
+                        StringChunk prev = localInParent.Previous;
+                        StringChunk next = localInParent.Next;
+
+                        if (p.TextFlattened.First == localInParent)
+                        {
+                            if (next != null && p.IsAncestorOf(next.Owner))
+                            {
+                                p.TextFlattened.First = next;
+                            }
+                            else
+                            {
+                                p.TextFlattened.First = null;
+                                p.TextFlattened.Last = null;
+                            }
+                        }
+
+                        if (p.TextFlattened.Last == localInParent)
+                        {
+                            if (prev != null && p.IsAncestorOf(prev.Owner))
+                            {
+                                p.TextFlattened.Last = prev;
+                            }
+                            else
+                            {
+                                p.TextFlattened.Last = p.TextFlattened.First;
+                            }
+                        }
+
+                        if (p.TextFlattened.First == null && p.TextFlattened.Last == null)
+                        {
+                            p.TextFlattened = null;
+                        }
+                    }
+                }
+
+                p = p.Parent;
+            }
 
             TreeNode previousTextLocalNode = this.GetPreviousSiblingWithText();
             TreeNode nextTextLocalNode = this.GetNextSiblingWithText();
@@ -307,7 +379,8 @@ namespace urakawa.core
 
                     if (parent.TextFlattened != null)
                     {
-                        if (nextTextLocalNode != null && parent.TextFlattened.First == nextTextLocalNode.TextLocal.First)
+                        if (nextTextLocalNode != null &&
+                            parent.TextFlattened.First == nextTextLocalNode.TextLocal.First)
                         {
                             parent.TextFlattened.First = this.TextLocal.First;
                         }
@@ -1414,6 +1487,7 @@ namespace urakawa.core
                         }
                     }
 
+                    // useful for epub3 page breaks
                     if (Children.Count == 0)
                     {
                         XmlAttribute xmlAttr = GetXmlProperty().GetAttribute("title");
