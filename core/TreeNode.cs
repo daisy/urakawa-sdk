@@ -1305,6 +1305,9 @@ namespace urakawa.core
 
             removedChild.UpdateTextCache_BeforeRemove();
 
+            // Too early! (may be used on calling side of this API)
+            //removedChild.Tag = null;
+
             removedChild.mParent = null;
             mChildren.Remove(removedChild);
             

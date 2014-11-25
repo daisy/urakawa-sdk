@@ -516,6 +516,12 @@ namespace urakawa.core
             get { return m_TextLocal; }
         }
 
+        public void UpdateTextCache_Reset()
+        {
+            m_TextLocal = null;
+            m_TextFlattened = null;
+        }
+
         private void UpdateTextCache_Init()
         {
             if (this.TextLocal != null || this.TextFlattened != null)
