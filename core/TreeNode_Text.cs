@@ -311,10 +311,16 @@ namespace urakawa.core
                         {
                             parent.TextFlattened.First = this.TextLocal.First;
                         }
-                        if (previousTextLocalNode != null && parent.TextFlattened.Last == previousTextLocalNode.TextLocal.First)
+                        if (previousTextLocalNode != null &&
+                            parent.TextFlattened.Last == previousTextLocalNode.TextLocal.First)
                         {
                             parent.TextFlattened.Last = this.TextLocal.First;
                         }
+                    }
+                    else
+                    {
+                        parent.UpdateTextCache_Init();
+                        //parent.TextFlattened = new StringChunkRange(this.TextLocal.First, this.TextLocal.First);
                     }
                     parent = parent.Parent;
                 }
@@ -350,15 +356,22 @@ namespace urakawa.core
 
                     if (parent.TextFlattened != null)
                     {
-                        if (nextTextLocalNode != null && parent.TextFlattened.First == nextTextLocalNode.TextLocal.First)
+                        if (nextTextLocalNode != null &&
+                            parent.TextFlattened.First == nextTextLocalNode.TextLocal.First)
                         {
                             parent.TextFlattened.First = this.TextFlattened.First;
                         }
+
                         if (previousTextLocalNode != null &&
                             parent.TextFlattened.Last == previousTextLocalNode.TextLocal.First)
                         {
                             parent.TextFlattened.Last = this.TextFlattened.Last;
                         }
+                    }
+                    else
+                    {
+                        parent.UpdateTextCache_Init();
+                        //parent.TextFlattened = new StringChunkRange(this.TextFlattened.First, this.TextFlattened.Last);
                     }
                     parent = parent.Parent;
                 }
@@ -527,7 +540,7 @@ namespace urakawa.core
             if (this.TextLocal != null || this.TextFlattened != null)
             {
 #if DEBUG
-                //.Break();
+                //Debugger.Break();
                 bool debug = true;
 #endif
                 return;
