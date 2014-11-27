@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using AudioLib;
 using urakawa.command;
 using urakawa.progress;
 using urakawa.media.data;
@@ -13,6 +14,144 @@ namespace urakawa.undo
     [XukNameUglyPrettyAttribute("udoRdoMan", "UndoRedoManager")]
     public sealed class UndoRedoManager : XukAble, IUsingMediaData //IChangeNotifier
     {
+        public sealed class Hooker
+        {
+            public interface Host
+            {
+                void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command);
+            }
+
+            private UndoRedoManager m_UndoRedoManager = null;
+            private Host m_Host = null;
+            private EventHandler<DoneEventArgs> m_onCommandDone;
+            private EventHandler<ReDoneEventArgs> m_onCommandReDone;
+            private EventHandler<UnDoneEventArgs> m_onCommandUnDone;
+            private EventHandler<TransactionEndedEventArgs> m_onTransactionEnded;
+            private EventHandler<TransactionCancelledEventArgs> m_onTransactionCancelled;
+
+            public Hooker(UndoRedoManager undoRedoManager, Host host, EventHandler<DoneEventArgs> onCommandDone, EventHandler<ReDoneEventArgs> onCommandReDone, EventHandler<UnDoneEventArgs> onCommandUnDone, EventHandler<TransactionEndedEventArgs> onTransactionEnded, EventHandler<TransactionCancelledEventArgs> onTransactionCancelled)
+            {
+                m_UndoRedoManager = undoRedoManager;
+                m_Host = host;
+
+                m_onCommandDone = onCommandDone;
+                m_onCommandReDone = onCommandReDone;
+                m_onCommandUnDone = onCommandUnDone;
+                m_onTransactionEnded = onTransactionEnded;
+                m_onTransactionCancelled = onTransactionCancelled;
+
+                ReHook();
+            }
+
+            private bool m_hooked = false;
+            public bool Hooked
+            {
+                get
+                {
+                    return m_hooked;
+                }
+                set
+                {
+                    m_hooked = value;
+                }
+            }
+
+            public void UnHook()
+            {
+                if (!Hooked)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    return;
+                }
+
+                m_onCommandDone -= OnUndoRedoManagerChanged;
+                m_onCommandReDone -= OnUndoRedoManagerChanged;
+                m_onCommandUnDone -= OnUndoRedoManagerChanged;
+                m_onTransactionEnded -= OnUndoRedoManagerChanged;
+                m_onTransactionCancelled -= OnUndoRedoManagerChanged;
+
+                Hooked = false;
+            }
+
+            public void ReHook()
+            {
+                if (Hooked)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    return;
+                }
+
+                m_onCommandDone += OnUndoRedoManagerChanged;
+                m_onCommandReDone += OnUndoRedoManagerChanged;
+                m_onCommandUnDone += OnUndoRedoManagerChanged;
+                m_onTransactionEnded += OnUndoRedoManagerChanged;
+                m_onTransactionCancelled += OnUndoRedoManagerChanged;
+
+                Hooked = true;
+            }
+
+            private void OnUndoRedoManagerChanged_CompositeCommandDispatch(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
+            {
+                if (command is CompositeCommand)
+                {
+                    CompositeCommand compo = (CompositeCommand)command;
+                    IEnumerable<Command> enumerable = done
+                        ? compo.ChildCommands.ContentsAs_Enumerable
+                        : compo.ChildCommands.ContentsAs_YieldEnumerableReversed;
+                    foreach (Command childCommand in enumerable)
+                    {
+                        m_Host.OnUndoRedoManagerChanged(eventt, isTransactionActive, done, childCommand);
+                    }
+                }
+                else
+                {
+                    m_Host.OnUndoRedoManagerChanged(eventt, isTransactionActive, done, command);
+                }
+            }
+
+            public void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
+            {
+                if (!(eventt is DoneEventArgs
+                    || eventt is UnDoneEventArgs
+                    || eventt is ReDoneEventArgs
+                    || eventt is TransactionEndedEventArgs
+                    || eventt is TransactionCancelledEventArgs
+                    ))
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    return;
+                }
+
+                bool isTransactionActive = m_UndoRedoManager.IsTransactionActive;
+                if (isTransactionActive)
+                {
+                    DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+                }
+
+                bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
+                DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
+
+                if (eventt is TransactionEndedEventArgs)
+                {
+                    // we have already processed each DoneEventArgs, no need to repeat for the final resulting CompositeCommand
+                    return;
+                }
+
+                OnUndoRedoManagerChanged_CompositeCommandDispatch(eventt, isTransactionActive, done, eventt.Command);
+            }
+        }
+
+        public Hooker Hook(Hooker.Host host)
+        {
+            return new Hooker(this, host, CommandDone, CommandReDone, CommandUnDone, TransactionEnded, TransactionCancelled);
+        }
+
         public override bool PrettyFormat
         {
             set { throw new NotImplementedException("PrettyFormat"); }
