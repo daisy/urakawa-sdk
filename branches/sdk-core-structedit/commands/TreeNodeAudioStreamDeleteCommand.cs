@@ -84,6 +84,8 @@ namespace urakawa.commands
             TreeNode = currentTreeNode;
             SelectionData = selection;
 
+            DebugFix.Assert(SelectionData.m_TreeNode == TreeNode);
+
             ShortDescription = "Delete audio portion";
             LongDescription = "Delete a portion of audio for a given treenode";
 
