@@ -18,19 +18,17 @@ namespace urakawa.undo
         {
             public interface Host
             {
-                void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command);
+                void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand);
             }
 
             private UndoRedoManager m_UndoRedoManager = null;
             private Host m_Host = null;
-            private bool m_notifyLiveTransaction = false;
-
-            public Hooker(UndoRedoManager undoRedoManager, Host host, bool notifyLiveTransaction)
+            
+            public Hooker(UndoRedoManager undoRedoManager, Host host)
             {
                 m_UndoRedoManager = undoRedoManager;
                 m_Host = host;
-                m_notifyLiveTransaction = notifyLiveTransaction;
-
+            
                 ReHook();
             }
 
@@ -85,13 +83,8 @@ namespace urakawa.undo
                 }
             }
 
-            private void OnUndoRedoManagerChanged_CompositeCommandDispatch(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
+            private void OnUndoRedoManagerChanged_CompositeCommandDispatch(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
             {
-                if (!m_notifyLiveTransaction)
-                {
-                    DebugFix.Assert(!isTransactionActive);
-                }
-
                 if (command is CompositeCommand)
                 {
                     CompositeCommand compo = (CompositeCommand)command;
@@ -100,12 +93,18 @@ namespace urakawa.undo
                         : compo.ChildCommands.ContentsAs_YieldEnumerableReversed;
                     foreach (Command childCommand in enumerable)
                     {
-                        m_Host.OnUndoRedoManagerChanged(eventt, isTransactionActive, done, childCommand);
+                        OnUndoRedoManagerChanged_CompositeCommandDispatch(eventt, done, childCommand, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
                     }
                 }
                 else
                 {
-                    m_Host.OnUndoRedoManagerChanged(eventt, isTransactionActive, done, command);
+                    if (isTransactionEndEvent)
+                    {
+#if DEBUG
+                        DebugFix.Assert(command.IsTransaction());
+#endif
+                    }
+                    m_Host.OnUndoRedoManagerChanged(eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
                 }
             }
 
@@ -124,33 +123,34 @@ namespace urakawa.undo
                     return;
                 }
 
+                Command command = eventt.Command;
+
                 bool isTransactionActive = m_UndoRedoManager.IsTransactionActive;
                 if (isTransactionActive)
                 {
                     DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs); // latter => nested transaction!
-
-                    if (eventt is DoneEventArgs && !m_notifyLiveTransaction)
-                    {
-                        // we do not process each DoneEventArgs, instead we wait for the final resulting CompositeCommand
-                        return;
-                    }
-                    //if (eventt is TransactionEndedEventArgs && m_notifyLiveTransaction)
-                    //{
-                    //    // we do not process the final resulting CompositeCommand, as we have already notified each DoneEventArgs
-                    //    return;
-                    //}
                 }
 
                 bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
                 DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
 
-                OnUndoRedoManagerChanged_CompositeCommandDispatch(eventt, isTransactionActive, done, eventt.Command);
+                bool isTransactionEndEvent = eventt is TransactionEndedEventArgs; // one transaction has ended (composite command pushed, but already processed during each isTransactionActive DoneEventArgs)
+                
+                bool isTransactionExitEvent = isTransactionEndEvent && !isTransactionActive; // finished nested transactions
+
+                bool isHeadOrTailOfTransactionOrSingleCommand =
+                    !isTransactionActive &&
+                    (!command.IsTransaction() ||
+                    done && command.IsTransactionLast() ||
+                    !done && command.IsTransactionFirst()
+                    );
+                OnUndoRedoManagerChanged_CompositeCommandDispatch(eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
             }
         }
 
-        public Hooker Hook(Hooker.Host host, bool notifyLiveTransaction)
+        public Hooker Hook(Hooker.Host host)
         {
-            return new Hooker(this, host, notifyLiveTransaction);
+            return new Hooker(this, host);
         }
 
         public override bool PrettyFormat
@@ -611,20 +611,19 @@ namespace urakawa.undo
             CompositeCommand command = mActiveTransactions.Pop();
             if (command.ChildCommands.Count > 0)
             {
-                if (command.ChildCommands.Count == 1)
+                for (int i = 0; i < command.ChildCommands.Count; i++)
                 {
-                    pushCommand(command.ChildCommands.Get(0));
+                    Command childCommand = command.ChildCommands.Get(i);
+                    childCommand.TransactionIndex = i;
+                    childCommand.TransactionTotalCount = command.ChildCommands.Count;
                 }
-                else
-                {
-                    for (int i = 0; i < command.ChildCommands.Count; i++)
-                    {
-                        Command childCommand = command.ChildCommands.Get(i);
-                        childCommand.TransactionIndex = i;
-                        childCommand.TransactionTotalCount = command.ChildCommands.Count;
-                    }
-                    pushCommand(command);
-                }
+                pushCommand(command);
+            }
+            else
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
             }
             NotifyTransactionEnded(command);
 
