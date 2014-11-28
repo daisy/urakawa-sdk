@@ -1916,7 +1916,7 @@ namespace AudioLib
             //p.WaitForExit();
         }
 
-        public bool CompressWavToMP4And3GP(string sourceFile, string destinationFile, AudioLibPCMFormat pcmFormat, ushort bitRate_Output)
+        public bool CompressWavToMP4And3GP(string sourceFile, string destinationFile, AudioLibPCMFormat pcmFormat, double bitRate_Output)
         {
             string ffmpegWorkingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             string ffmpegPath = Path.Combine(ffmpegWorkingDir, "ffmpeg.exe");
@@ -1925,6 +1925,10 @@ namespace AudioLib
 
             if (!File.Exists(sourceFile))
                 throw new FileNotFoundException("Invalid source file path " + sourceFile);
+
+            string configFilePath = Path.Combine(ffmpegWorkingDir, "fmpeg_config.xml");
+            if (!File.Exists(configFilePath))
+                throw new FileNotFoundException("Invalid compression configuration file path " + configFilePath);
 
             bool okay = false;
             try
@@ -1939,17 +1943,30 @@ namespace AudioLib
                 string argumentString = null;
                 string extension = Path.GetExtension (destinationFile ).ToLower() ;
 
+                System.Xml.XmlDocument configurationDocument = new System.Xml.XmlDocument();
+                configurationDocument.Load(configFilePath);
+                System.Collections.Generic.Dictionary<string, string> configDictionary = new System.Collections.Generic.Dictionary<string, string>();
+                foreach (System.Xml.XmlNode n in configurationDocument.DocumentElement.ChildNodes)
+                {
+                    configDictionary.Add(n.Name, n.InnerText);
+                    Console.WriteLine("inner text : " + n.Name + " : " + configDictionary[n.Name]);
+                }
+
                 if (extension == ".mp4" || extension == ".m4a")
                 {
-                    argumentString = "-i " + "\"" + sourceFile + "\"" + " -b:a " + bitRate_Output + " \"" + destinationFile + "\"";
+                    //argumentString = "-i " + "\"" + sourceFile + "\"" + " -b:a " + bitRate_Output + " \"" + destinationFile + "\"";
+                    //argumentString = String.Format(@"-i {0} -b:a {1} {2}", "\"" + sourceFile + "\"", bitRate_Output, "\"" + destinationFile + "\"");
+                    argumentString = String.Format(configDictionary["mp4"] , "\"" + sourceFile + "\"", bitRate_Output, "\"" + destinationFile + "\"");
                 }
                 else if (extension == ".3gp")
                 {
-                    argumentString =  String.Format(@"-i {0} -b 400k -acodec aac -strict experimental  -ac 1 -ar 16000 -ab 24k {1}", "\"" +sourceFile + "\"", "\"" +destinationFile + "\"");
+                    //argumentString =  String.Format(@"-i {0} -b 400k -acodec aac -strict experimental  -ac 1 -ar 16000 -ab {1} {2}", "\"" +sourceFile + "\"", "24k" , "\"" +destinationFile + "\"");
+                    argumentString = String.Format(configDictionary ["gpp_3"], "\"" + sourceFile + "\"", bitRate_Output.ToString()+"k" , "\"" + destinationFile + "\"");
                 }
                 else if (extension == ".amr")
                 {
-                    argumentString = String.Format(@"-i {0} -ar 8000 -ab 12.2k {1}", "\"" + sourceFile + "\"" , "\"" + destinationFile + "\"" );
+                    //argumentString = String.Format(@"-i {0} -ar 8000 -ab {1} {2}", "\"" + sourceFile + "\"" ,"12.2k", "\"" + destinationFile + "\"" );
+                    argumentString = String.Format(configDictionary["amr"], "\"" + sourceFile + "\"", bitRate_Output.ToString() + "k", "\"" + destinationFile + "\"");
                 }
                     
                     
