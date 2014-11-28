@@ -29,18 +29,50 @@ namespace urakawa.undo
             private EventHandler<TransactionEndedEventArgs> m_onTransactionEnded;
             private EventHandler<TransactionCancelledEventArgs> m_onTransactionCancelled;
 
-            public Hooker(UndoRedoManager undoRedoManager, Host host, EventHandler<DoneEventArgs> onCommandDone, EventHandler<ReDoneEventArgs> onCommandReDone, EventHandler<UnDoneEventArgs> onCommandUnDone, EventHandler<TransactionEndedEventArgs> onTransactionEnded, EventHandler<TransactionCancelledEventArgs> onTransactionCancelled)
+            public Hooker(UndoRedoManager undoRedoManager, Host host)
             {
                 m_UndoRedoManager = undoRedoManager;
                 m_Host = host;
 
-                m_onCommandDone = onCommandDone;
-                m_onCommandReDone = onCommandReDone;
-                m_onCommandUnDone = onCommandUnDone;
-                m_onTransactionEnded = onTransactionEnded;
-                m_onTransactionCancelled = onTransactionCancelled;
-
                 ReHook();
+            }
+
+            public void ReHook()
+            {
+                if (Hooked)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    return;
+                }
+
+                m_UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
+                m_UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
+                m_UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
+                m_UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
+                m_UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+
+                Hooked = true;
+            }
+
+            public void UnHook()
+            {
+                if (!Hooked)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    return;
+                }
+
+                m_UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
+                m_UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
+                m_UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
+                m_UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
+                m_UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
+
+                Hooked = false;
             }
 
             private bool m_hooked = false;
@@ -54,44 +86,6 @@ namespace urakawa.undo
                 {
                     m_hooked = value;
                 }
-            }
-
-            public void UnHook()
-            {
-                if (!Hooked)
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                    return;
-                }
-
-                m_onCommandDone -= OnUndoRedoManagerChanged;
-                m_onCommandReDone -= OnUndoRedoManagerChanged;
-                m_onCommandUnDone -= OnUndoRedoManagerChanged;
-                m_onTransactionEnded -= OnUndoRedoManagerChanged;
-                m_onTransactionCancelled -= OnUndoRedoManagerChanged;
-
-                Hooked = false;
-            }
-
-            public void ReHook()
-            {
-                if (Hooked)
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                    return;
-                }
-
-                m_onCommandDone += OnUndoRedoManagerChanged;
-                m_onCommandReDone += OnUndoRedoManagerChanged;
-                m_onCommandUnDone += OnUndoRedoManagerChanged;
-                m_onTransactionEnded += OnUndoRedoManagerChanged;
-                m_onTransactionCancelled += OnUndoRedoManagerChanged;
-
-                Hooked = true;
             }
 
             private void OnUndoRedoManagerChanged_CompositeCommandDispatch(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
@@ -149,7 +143,7 @@ namespace urakawa.undo
 
         public Hooker Hook(Hooker.Host host)
         {
-            return new Hooker(this, host, CommandDone, CommandReDone, CommandUnDone, TransactionEnded, TransactionCancelled);
+            return new Hooker(this, host);
         }
 
         public override bool PrettyFormat
