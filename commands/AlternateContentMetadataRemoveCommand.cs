@@ -11,7 +11,7 @@ using urakawa.property.alt;
 namespace urakawa.commands
 {
     [XukNameUglyPrettyAttribute("acMetaRemoveCmd", "AlternateContentMetadataRemoveCommand")]
-    public class AlternateContentMetadataRemoveCommand : Command
+    public class AlternateContentMetadataRemoveCommand : AlternateContentCommand
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -48,9 +48,9 @@ namespace urakawa.commands
         }
 
         private TreeNode m_TreeNode;
-        public TreeNode TreeNode
+        public override TreeNode TreeNode
         {
-            private set { m_TreeNode = value; }
+            protected set { m_TreeNode = value; }
             get { return m_TreeNode; }
         }
 

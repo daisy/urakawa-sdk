@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using urakawa.command;
+using urakawa.core;
 using urakawa.progress;
 using urakawa.xuk;
 using urakawa.metadata;
@@ -10,7 +11,7 @@ using urakawa.property.alt;
 namespace urakawa.commands
 {
     [XukNameUglyPrettyAttribute("acMetaSetNameCmd", "AlternateContentMetadataSetNameCommand")]
-    public class AlternateContentMetadataSetNameCommand : Command
+    public class AlternateContentMetadataSetNameCommand : AlternateContentCommand
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -45,6 +46,13 @@ namespace urakawa.commands
             get { return m_MetadataAttribute; }
         }
 
+        private TreeNode m_TreeNode;
+        public override TreeNode TreeNode
+        {
+            protected set { m_TreeNode = value; }
+            get { return m_TreeNode; }
+        }
+
         private AlternateContentProperty m_AlternateContentProperty;
         public AlternateContentProperty AlternateContentProperty { get { return m_AlternateContentProperty; } }
 
@@ -76,6 +84,10 @@ namespace urakawa.commands
             Name = name;
             m_AlternateContent = altContent;
             m_AlternateContentProperty = altContentProperty;
+            if (m_AlternateContentProperty != null)
+            {
+                m_TreeNode = m_AlternateContentProperty.TreeNodeOwner;
+            }
 
             ShortDescription = "Set metadata name";
             LongDescription = "Set the Name of the Metadata object in AlternateContent";

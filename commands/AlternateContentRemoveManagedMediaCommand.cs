@@ -15,7 +15,7 @@ using urakawa.property.alt;
 namespace urakawa.commands
 {
     [XukNameUglyPrettyAttribute("acRemManMedCmd", "AlternateContentRemoveManagedMediaCommand")]
-    public class AlternateContentRemoveManagedMediaCommand : Command
+    public class AlternateContentRemoveManagedMediaCommand : AlternateContentCommand
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -50,9 +50,9 @@ namespace urakawa.commands
         }
 
         private TreeNode m_TreeNode;
-        public TreeNode TreeNode
+        public override TreeNode TreeNode
         {
-            private set { m_TreeNode = value; }
+            protected set { m_TreeNode = value; }
             get { return m_TreeNode; }
         }
         public void Init(TreeNode treeNode, AlternateContent altContent, Media media)

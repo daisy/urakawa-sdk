@@ -13,7 +13,7 @@ using urakawa.property.alt;
 namespace urakawa.commands
 {
     [XukNameUglyPrettyAttribute("acRemCmd", "AlternateContentRemoveCommand")]
-    public class AlternateContentRemoveCommand: Command
+    public class AlternateContentRemoveCommand : AlternateContentCommand
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -34,9 +34,9 @@ namespace urakawa.commands
         }
         
         private TreeNode m_TreeNode;
-        public TreeNode TreeNode
+        public override TreeNode TreeNode
         {
-            private set { m_TreeNode = value; }
+            protected set { m_TreeNode = value; }
             get { return m_TreeNode; }
         }
 
