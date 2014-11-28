@@ -87,6 +87,11 @@ namespace urakawa.undo
 
             private void OnUndoRedoManagerChanged_CompositeCommandDispatch(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
             {
+                if (!m_notifyLiveTransaction)
+                {
+                    DebugFix.Assert(!isTransactionActive);
+                }
+
                 if (command is CompositeCommand)
                 {
                     CompositeCommand compo = (CompositeCommand)command;
