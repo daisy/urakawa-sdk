@@ -51,7 +51,26 @@ namespace urakawa.commands
         public override TreeNode TreeNode
         {
             protected set { m_TreeNode = value; }
-            get { return m_TreeNode; }
+            get
+            {
+                if (m_TreeNode == null && m_AlternateContentProperty != null)
+                {
+                    try
+                    {
+                        m_TreeNode = m_AlternateContentProperty.TreeNodeOwner;
+                    }
+                    catch (Exception ex)
+                    {
+#if DEBUG
+                        // occurs during factories warm up, as the dummy command is "detached"
+                        //Debugger.Break();
+                        bool breakpoint = true;
+#endif
+                    }
+                }
+
+                return m_TreeNode;
+            }
         }
 
         private AlternateContentProperty m_AlternateContentProperty;
@@ -85,21 +104,6 @@ namespace urakawa.commands
             Name = name;
             m_AlternateContent = altContent;
             m_AlternateContentProperty = altContentProperty;
-            if (m_AlternateContentProperty != null)
-            {
-                try
-                {
-                    m_TreeNode = m_AlternateContentProperty.TreeNodeOwner;
-                }
-                catch (Exception ex)
-                {
-#if DEBUG
-                    // occurs during factories warm up, as the dummy command is "detached"
-                    //Debugger.Break();
-                    bool breakpoint = true;
-#endif
-                }
-            }
 
             ShortDescription = "Set metadata name";
             LongDescription = "Set the Name of the Metadata object in AlternateContent";
