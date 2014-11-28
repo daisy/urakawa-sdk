@@ -7,8 +7,13 @@ using urakawa.metadata;
 
 namespace urakawa.commands
 {
+    public abstract class MetadataCommand : Command
+    {
+        public abstract Metadata Metadata { protected set; get; }
+    }
+
     [XukNameUglyPrettyAttribute("metaAddCmd", "MetadataAddCommand")]
-    public class MetadataAddCommand : Command
+    public class MetadataAddCommand : MetadataCommand
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -29,9 +34,9 @@ namespace urakawa.commands
         }
         
         private Metadata m_Metadata;
-        public Metadata Metadata
+        public override Metadata Metadata
         {
-            private set { m_Metadata = value; }
+            protected set { m_Metadata = value; }
             get { return m_Metadata; }
         }
 
