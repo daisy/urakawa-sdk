@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Xml;
 using urakawa.command;
 using urakawa.core;
@@ -86,7 +87,18 @@ namespace urakawa.commands
             m_AlternateContentProperty = altContentProperty;
             if (m_AlternateContentProperty != null)
             {
-                m_TreeNode = m_AlternateContentProperty.TreeNodeOwner;
+                try
+                {
+                    m_TreeNode = m_AlternateContentProperty.TreeNodeOwner;
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    // occurs during factories warm up, as the dummy command is "detached"
+                    //Debugger.Break();
+                    bool breakpoint = true;
+#endif
+                }
             }
 
             ShortDescription = "Set metadata name";
