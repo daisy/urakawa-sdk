@@ -15,7 +15,7 @@ using urakawa.xuk;
 namespace urakawa.commands
 {
     [XukNameUglyPrettyAttribute("nodAudDelCmd", "TreeNodeAudioStreamDeleteCommand")]
-    public class TreeNodeAudioStreamDeleteCommand : Command
+    public class TreeNodeAudioStreamDeleteCommand : AudioEditCommand
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -56,11 +56,11 @@ namespace urakawa.commands
             get { return m_SelectionData; }
         }
 
-        private TreeNode m_CurrentTreeNode;
-        public TreeNode CurrentTreeNode
+        private TreeNode m_TreeNode;
+        public override TreeNode TreeNode
         {
-            private set { m_CurrentTreeNode = value; }
-            get { return m_CurrentTreeNode; }
+            protected set { m_TreeNode = value; }
+            get { return m_TreeNode; }
         }
 
 
@@ -81,7 +81,7 @@ namespace urakawa.commands
 
             //TreeNode = selection.m_TreeNode;
 
-            CurrentTreeNode = currentTreeNode;
+            TreeNode = currentTreeNode;
             SelectionData = selection;
 
             ShortDescription = "Delete audio portion";

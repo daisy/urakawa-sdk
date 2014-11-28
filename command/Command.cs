@@ -11,6 +11,11 @@ using UnExecutedEventArgs = urakawa.events.command.UnExecutedEventArgs;
 
 namespace urakawa.command
 {
+    public abstract class CommandWithTreeNode : Command
+    {
+        public abstract TreeNode TreeNode { protected set; get; }
+    }
+
     /// <summary>
     /// Classes realizing this interface must store the state of the object(s) affected by the command
     /// execution (including exception/redo). Implementations may choose various techniques suitable in terms
