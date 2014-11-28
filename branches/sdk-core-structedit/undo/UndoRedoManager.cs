@@ -23,11 +23,13 @@ namespace urakawa.undo
 
             private UndoRedoManager m_UndoRedoManager = null;
             private Host m_Host = null;
+            private bool m_notifyLiveTransaction = false;
 
-            public Hooker(UndoRedoManager undoRedoManager, Host host)
+            public Hooker(UndoRedoManager undoRedoManager, Host host, bool notifyLiveTransaction)
             {
                 m_UndoRedoManager = undoRedoManager;
                 m_Host = host;
+                m_notifyLiveTransaction = notifyLiveTransaction;
 
                 ReHook();
             }
@@ -122,11 +124,16 @@ namespace urakawa.undo
                 {
                     DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
 
-                    if (eventt is DoneEventArgs)
+                    if (eventt is DoneEventArgs && !m_notifyLiveTransaction)
                     {
                         // we do not process each DoneEventArgs, instead we wait for the final resulting CompositeCommand
                         return;
                     }
+                    //if (eventt is TransactionEndedEventArgs && m_notifyLiveTransaction)
+                    //{
+                    //    // we do not process the final resulting CompositeCommand, as we have already notified each DoneEventArgs
+                    //    return;
+                    //}
                 }
 
                 bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
@@ -136,9 +143,9 @@ namespace urakawa.undo
             }
         }
 
-        public Hooker Hook(Hooker.Host host)
+        public Hooker Hook(Hooker.Host host, bool notifyLiveTransaction)
         {
-            return new Hooker(this, host);
+            return new Hooker(this, host, notifyLiveTransaction);
         }
 
         public override bool PrettyFormat
