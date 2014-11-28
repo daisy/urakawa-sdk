@@ -122,7 +122,7 @@ namespace urakawa.undo
                 bool isTransactionActive = m_UndoRedoManager.IsTransactionActive;
                 if (isTransactionActive)
                 {
-                    DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+                    DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs); // latter => nested transaction!
 
                     if (eventt is DoneEventArgs && !m_notifyLiveTransaction)
                     {
@@ -563,9 +563,11 @@ namespace urakawa.undo
         public void StartTransaction(string shortDesc, string longDesc)
         {
 #if DEBUG
+            // nested transaction?
             if (IsTransactionActive)
             {
-                Debugger.Break();
+                //Debugger.Break();
+                bool breakpoint = true;
             }
 #endif
             CompositeCommand newTrans = Presentation.CommandFactory.CreateCompositeCommand();
