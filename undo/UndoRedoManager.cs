@@ -23,11 +23,6 @@ namespace urakawa.undo
 
             private UndoRedoManager m_UndoRedoManager = null;
             private Host m_Host = null;
-            private EventHandler<DoneEventArgs> m_onCommandDone;
-            private EventHandler<ReDoneEventArgs> m_onCommandReDone;
-            private EventHandler<UnDoneEventArgs> m_onCommandUnDone;
-            private EventHandler<TransactionEndedEventArgs> m_onTransactionEnded;
-            private EventHandler<TransactionCancelledEventArgs> m_onTransactionCancelled;
 
             public Hooker(UndoRedoManager undoRedoManager, Host host)
             {
@@ -126,16 +121,16 @@ namespace urakawa.undo
                 if (isTransactionActive)
                 {
                     DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+
+                    if (eventt is DoneEventArgs)
+                    {
+                        // we do not process each DoneEventArgs, instead we wait for the final resulting CompositeCommand
+                        return;
+                    }
                 }
 
                 bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
                 DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
-
-                if (eventt is TransactionEndedEventArgs)
-                {
-                    // we have already processed each DoneEventArgs, no need to repeat for the final resulting CompositeCommand
-                    return;
-                }
 
                 OnUndoRedoManagerChanged_CompositeCommandDispatch(eventt, isTransactionActive, done, eventt.Command);
             }
@@ -560,6 +555,12 @@ namespace urakawa.undo
         /// </param>
         public void StartTransaction(string shortDesc, string longDesc)
         {
+#if DEBUG
+            if (IsTransactionActive)
+            {
+                Debugger.Break();
+            }
+#endif
             CompositeCommand newTrans = Presentation.CommandFactory.CreateCompositeCommand();
             newTrans.ShortDescription = shortDesc;
             newTrans.LongDescription = longDesc;
@@ -602,6 +603,12 @@ namespace urakawa.undo
                 }
                 else
                 {
+                    for (int i = 0; i < command.ChildCommands.Count; i++)
+                    {
+                        Command childCommand = command.ChildCommands.Get(i);
+                        childCommand.TransactionIndex = i;
+                        childCommand.TransactionTotalCount = command.ChildCommands.Count;
+                    }
                     pushCommand(command);
                 }
             }

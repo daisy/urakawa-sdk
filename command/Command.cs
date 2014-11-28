@@ -18,6 +18,22 @@ namespace urakawa.command
     /// </summary>
     public abstract class Command : WithPresentation, ObjectTag, IUndoableAction, IUsingMediaData //IChangeNotifier
     {
+        public int TransactionTotalCount = -1;
+        public int TransactionIndex = -1;
+        
+        public bool IsTransaction()
+        {
+            return TransactionTotalCount > 0 && TransactionIndex >= 0;
+        }
+        public bool IsTransactionFirst()
+        {
+            return IsTransaction() && TransactionIndex == 0;
+        }
+        public bool IsTransactionLast()
+        {
+            return IsTransaction() && TransactionIndex == (TransactionTotalCount - 1);
+        }
+
         private object m_Tag = null;
         public object Tag
         {
