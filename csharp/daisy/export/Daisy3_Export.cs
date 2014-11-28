@@ -54,7 +54,7 @@ namespace urakawa.daisy.export
         protected readonly SampleRate m_sampleRate;
         protected readonly bool m_audioStereo;
 
-        protected readonly ushort m_BitRate_Encoding = 64;
+        protected readonly double m_BitRate_Encoding = 64;
         protected string m_AdditionalMp3ParamChannels;
         protected bool m_AdditionalMp3ParamReSample = true;
         protected string m_AdditionalMp3ParamReplayGain = null;
@@ -81,7 +81,7 @@ namespace urakawa.daisy.export
         public Daisy3_Export(Presentation presentation,
             string exportDirectory,
             List<string> navListElementNamesList,
-            bool encodeAudioFiles, ushort bitRate_Encoding,
+            bool encodeAudioFiles, double bitRate_Encoding,
             SampleRate sampleRate, bool stereo,
             bool skipACM,
             bool includeImageDescriptions,

@@ -150,7 +150,7 @@ namespace urakawa.daisy.export
             bool skipACM,
             AudioLibPCMFormat pcmFormat,
             bool encodeToMp3,
-            int bitRate_Mp3,
+            double bitRate_Mp3,
             string imageDescriptionDirectoryPath,
             string imageSRC,
             AlternateContentProperty altProperty,

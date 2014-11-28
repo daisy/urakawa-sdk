@@ -186,12 +186,12 @@ namespace urakawa.daisy.export.visitor
         }
 
 
-        private ushort m_BitRate_Mp3 = 64;
-        public ushort BitRate_Encoding
+        private double m_BitRate_Encoding = 64;
+        public double BitRate_Encoding
         {
             get
             {
-                return m_BitRate_Mp3;
+                return m_BitRate_Encoding;
             }
             set
             {
@@ -202,12 +202,12 @@ namespace urakawa.daisy.export.visitor
                     value == 224 || value == 256 ||
                     value == 320)
                     {
-                        m_BitRate_Mp3 = value;
+                        m_BitRate_Encoding = value;
                     }
                 }
                 else if (EncodingFileFormat == AudioFileFormats.AMR || EncodingFileFormat == AudioFileFormats.GP3)
                 {
-                    m_BitRate_Mp3 = value;
+                    m_BitRate_Encoding = value;
                 }
                 else
                 {
