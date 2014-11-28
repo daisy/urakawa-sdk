@@ -648,7 +648,7 @@ namespace urakawa.daisy.export
             string imageDescriptionDirectoryPath,
             Dictionary<AlternateContentProperty, Description> map_AltProperty_TO_Description,
             bool encodeToMp3,
-            int bitRate_Mp3,
+            double bitRate_Mp3,
             AudioLibPCMFormat pcmFormat,
             Dictionary<AlternateContent, string> map_AltContentAudio_TO_RelativeExportedFilePath
             )
@@ -1252,7 +1252,7 @@ namespace urakawa.daisy.export
                     || name == DiagramContentModelHelper.D_Summary);
         }
 
-        private static string EncodeWavFileToMp3(bool skipACM, string sourceFilePath, bool encodeToMp3, AudioLibPCMFormat pcmFormat, int bitRate_Mp3)
+        private static string EncodeWavFileToMp3(bool skipACM, string sourceFilePath, bool encodeToMp3, AudioLibPCMFormat pcmFormat, double bitRate_Mp3)
         {
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, skipACM);
 
