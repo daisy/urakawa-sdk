@@ -12,9 +12,8 @@ using urakawa.xuk;
 
 namespace urakawa.commands
 {
-    public abstract class TextNodeStructureEditCommand : Command
+    public abstract class TextNodeStructureEditCommand : CommandWithTreeNode
     {
-        public abstract TreeNode TreeNode { protected set; get; }
     }
 
     [XukNameUglyPrettyAttribute("nodRmCmd", "TreeNodeRemoveCommand")]

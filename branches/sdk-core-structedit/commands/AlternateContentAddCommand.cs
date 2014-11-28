@@ -12,9 +12,8 @@ using urakawa.property.alt;
 
 namespace urakawa.commands
 {
-    public abstract class AlternateContentCommand : Command
+    public abstract class AlternateContentCommand : CommandWithTreeNode
     {
-        public abstract TreeNode TreeNode { protected set; get; }
     }
 
     [XukNameUglyPrettyAttribute("acAddCmd", "AlternateContentAddCommand")]
