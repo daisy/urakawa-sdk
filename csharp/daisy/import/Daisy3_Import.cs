@@ -559,7 +559,16 @@ namespace urakawa.daisy.import
 
             if (RequestCancellation) return true;
             reportProgress(-1, String.Format(UrakawaSDK_daisy_Lang.ParsingContent, displayPath));
-            parseContentDocument(filePath, project, xmlDoc, null, null, type);
+
+            try
+            {
+                urakawa.core.TreeNode.EnableTextCache = false;
+                parseContentDocument(filePath, project, xmlDoc, null, null, type);
+            }
+            finally
+            {
+                urakawa.core.TreeNode.EnableTextCache = true;
+            }
 
             return false;
         }
