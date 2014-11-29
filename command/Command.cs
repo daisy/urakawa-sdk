@@ -23,20 +23,76 @@ namespace urakawa.command
     /// </summary>
     public abstract class Command : WithPresentation, ObjectTag, IUndoableAction, IUsingMediaData //IChangeNotifier
     {
-        public int TransactionTotalCount = -1;
-        public int TransactionIndex = -1;
-        
-        public bool IsTransaction()
+        public CompositeCommand ParentComposite = null;
+
+        public bool IsInTransaction()
         {
-            return TransactionTotalCount > 0 && TransactionIndex >= 0;
+            return ParentComposite != null;
         }
+
         public bool IsTransactionFirst()
         {
-            return IsTransaction() && TransactionIndex == 0;
+            return ParentComposite != null && ParentComposite.ChildCommands.IndexOf(this) == 0;
         }
         public bool IsTransactionLast()
         {
-            return IsTransaction() && TransactionIndex == (TransactionTotalCount - 1);
+            return ParentComposite != null && ParentComposite.ChildCommands.IndexOf(this) == (ParentComposite.ChildCommands.Count-1);
+        }
+
+        public string TransactionId()
+        {
+            if (ParentComposite == null)
+            {
+                return null;
+            }
+            return ParentComposite.Identifier;
+        }
+        public string TopTransactionId()
+        {
+            string id = null;
+            CompositeCommand parent = ParentComposite;
+            while (parent != null)
+            {
+                id = parent.Identifier;
+                parent = parent.ParentComposite;
+            }
+            return id;
+        }
+
+        public bool IsTransactionBegin()
+        {
+            Command parent = this;
+            while (parent != null)
+            {
+                if (!parent.IsInTransaction())
+                {
+                    return true;
+                }
+                if (!parent.IsTransactionFirst())
+                {
+                    return false;
+                }
+                parent = parent.ParentComposite;
+            }
+            return true;
+        }
+
+        public bool IsTransactionEnd()
+        {
+            Command parent = this;
+            while (parent != null)
+            {
+                if (!parent.IsInTransaction())
+                {
+                    return true;
+                }
+                if (!parent.IsTransactionLast())
+                {
+                    return false;
+                }
+                parent = parent.ParentComposite;
+            }
+            return true;
         }
 
         private object m_Tag = null;
@@ -76,6 +132,7 @@ namespace urakawa.command
 
             mLongDescription = source.GetAttribute(XukStrings.LongDescription);
             mShortDescription = source.GetAttribute(XukStrings.ShortDescription);
+            mIdentifier = source.GetAttribute(XukStrings.Identifier);
 
         }
 
@@ -96,6 +153,10 @@ namespace urakawa.command
             if (ShortDescription != null)
             {
                 destination.WriteAttributeString(XukStrings.ShortDescription, ShortDescription);
+            }
+            if (Identifier != null)
+            {
+                destination.WriteAttributeString(XukStrings.Identifier, Identifier);
             }
         }
 
@@ -190,6 +251,7 @@ namespace urakawa.command
 
         protected string mLongDescription;
         protected string mShortDescription;
+        protected string mIdentifier;
 
         /// <summary>
         /// Get a long uman-readable description of the command
@@ -218,6 +280,18 @@ namespace urakawa.command
             set
             {
                 mShortDescription = value;
+            }
+        }
+
+        public virtual string Identifier
+        {
+            get
+            {
+                return mIdentifier;
+            }
+            set
+            {
+                mIdentifier = value;
             }
         }
     }
