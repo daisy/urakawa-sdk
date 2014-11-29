@@ -18,6 +18,7 @@ namespace urakawa.commands
 {
     public abstract class AudioEditCommand : CommandWithTreeNode
     {
+        public abstract TreeNode CurrentTreeNode { protected set; get; }
     }
 
     [XukNameUglyPrettyAttribute("manAudMedInsertCmd", "ManagedAudioMediaInsertDataCommand")]
@@ -50,9 +51,9 @@ namespace urakawa.commands
             get { return m_TreeNode; }
         }
         private TreeNode m_CurrentTreeNode;
-        public TreeNode CurrentTreeNode
+        public override TreeNode CurrentTreeNode
         {
-            private set { m_CurrentTreeNode = value; }
+            protected set { m_CurrentTreeNode = value; }
             get { return m_CurrentTreeNode; }
         }
 
