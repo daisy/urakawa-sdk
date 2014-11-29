@@ -1286,7 +1286,8 @@ namespace urakawa.core
             node.mParent = this;
             mChildren.Insert(insertIndex, node);
 
-            node.UpdateTextCache_AfterInsert();
+            if (EnableTextCache)
+                node.UpdateTextCache_AfterInsert();
         }
 
         /// <summary>
@@ -1313,7 +1314,8 @@ namespace urakawa.core
         {
             TreeNode removedChild = mChildren.Get(index);
 
-            removedChild.UpdateTextCache_BeforeRemove();
+            if (EnableTextCache)
+                removedChild.UpdateTextCache_BeforeRemove();
 
             // Too early! (may be used on calling side of this API)
             //removedChild.Tag = null;

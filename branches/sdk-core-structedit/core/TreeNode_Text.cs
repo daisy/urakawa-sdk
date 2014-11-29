@@ -13,6 +13,9 @@ namespace urakawa.core
 {
     public partial class TreeNode
     {
+        //can be used to temporarily disable text caching, for example when building the tree at import time (i.e. not when parsing XUK, or during dynamic in-app custom trees)
+        public static bool EnableTextCache = true;
+
         public const bool ACCEPT_IMG_ALT_TEXT = true;
 
         // determined at XukIn time
@@ -661,6 +664,11 @@ namespace urakawa.core
                 //StringChunk lastNoAltText = null;
                 foreach (TreeNode child in Children.ContentsAs_Enumerable)
                 {
+                    if (child.TextLocal == null && child.TextFlattened == null)
+                    {
+                        child.UpdateTextCache_Init();
+                    }
+
                     if (child.TextLocal != null)
                     {
                         DebugFix.Assert(child.TextFlattened == null);
