@@ -117,14 +117,14 @@ namespace urakawa.property.xml
 
         public string GetIdFromAttributes()
         {
-            XmlAttribute langAttr = GetAttribute(XmlReaderWriterHelper.XmlId, XmlReaderWriterHelper.NS_URL_XML);
-            if (langAttr == null)
+            XmlAttribute idAttr = GetAttribute(XmlReaderWriterHelper.XmlId, XmlReaderWriterHelper.NS_URL_XML);
+            if (idAttr == null)
             {
-                langAttr = GetAttribute("id");
+                idAttr = GetAttribute("id");
             }
-            if (langAttr != null)
+            if (idAttr != null)
             {
-                return (string.IsNullOrEmpty(langAttr.Value) ? null : langAttr.Value);
+                return (string.IsNullOrEmpty(idAttr.Value) ? null : idAttr.Value);
             }
             return null;
         }
