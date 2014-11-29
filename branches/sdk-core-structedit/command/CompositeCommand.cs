@@ -106,6 +106,8 @@ namespace urakawa.command
         /// </summary>
         public static string LongDescriptionFormatString = "{0:0} commands: {1}";
 
+        public static string IdentifierFormatString = "{0:0} commands: {1}";
+
         /// <summary>
         /// Create an empty composite command.
         /// </summary>
@@ -159,6 +161,28 @@ namespace urakawa.command
                     }
                 }
                 return String.Format(ShortDescriptionFormatString, mCommands.Count, cmds);
+            }
+        }
+
+
+        public override string Identifier
+        {
+            set
+            {
+                base.Identifier = value;
+            }
+            get
+            {
+                if (mIdentifier != null) return mIdentifier;
+                string cmds = "";
+                if (mCommands.Count > 0)
+                {
+                    for (int i = 0; i < mCommands.Count; i++)
+                    {
+                        cmds += "//" + mCommands.Get(0).Identifier;
+                    }
+                }
+                return String.Format(IdentifierFormatString, mCommands.Count, cmds);
             }
         }
 
@@ -286,6 +310,7 @@ namespace urakawa.command
             }
             mShortDescription = null;
             mLongDescription = null;
+            mIdentifier = null;
             base.Clear();
         }
 

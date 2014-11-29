@@ -392,6 +392,11 @@
 
         #region undo-redo
 
+        public static string Identifier
+        {
+            get { return (IsPrettyFormat ? "Identifier" : "idntf"); }
+        }
+
         public static string ShortDescription
         {
             get { return (IsPrettyFormat ? "ShortDescription" : "shrtDsc"); }
