@@ -328,21 +328,30 @@ namespace urakawa.core
             if (previousTextLocalNode != null)
             {
                 DebugFix.Assert(previousTextLocalNode.TextLocal != null);
-                DebugFix.Assert(previousTextLocalNode.TextLocal.First != null);
-                DebugFix.Assert(previousTextLocalNode.TextLocal.First == previousTextLocalNode.TextLocal.Last);
+                if (previousTextLocalNode.TextLocal != null)
+                {
+                    DebugFix.Assert(previousTextLocalNode.TextLocal.First != null);
+                    DebugFix.Assert(previousTextLocalNode.TextLocal.First == previousTextLocalNode.TextLocal.Last);
+                }
             }
 
             if (nextTextLocalNode != null)
             {
                 DebugFix.Assert(nextTextLocalNode.TextLocal != null);
-                DebugFix.Assert(nextTextLocalNode.TextLocal.First != null);
-                DebugFix.Assert(nextTextLocalNode.TextLocal.First == nextTextLocalNode.TextLocal.Last);
+                if (nextTextLocalNode.TextLocal != null)
+                {
+                    DebugFix.Assert(nextTextLocalNode.TextLocal.First != null);
+                    DebugFix.Assert(nextTextLocalNode.TextLocal.First == nextTextLocalNode.TextLocal.Last);
+                }
             }
 
             if (previousTextLocalNode != null && nextTextLocalNode != null)
             {
-                DebugFix.Assert(previousTextLocalNode.TextLocal.First.Next == nextTextLocalNode.TextLocal.First);
-                DebugFix.Assert(nextTextLocalNode.TextLocal.First.Previous == previousTextLocalNode.TextLocal.First);
+                if (previousTextLocalNode.TextLocal != null && nextTextLocalNode.TextLocal != null)
+                {
+                    DebugFix.Assert(previousTextLocalNode.TextLocal.First.Next == nextTextLocalNode.TextLocal.First);
+                    DebugFix.Assert(nextTextLocalNode.TextLocal.First.Previous == previousTextLocalNode.TextLocal.First);
+                }
             }
 
             this.UpdateTextCache_Init();
@@ -359,13 +368,13 @@ namespace urakawa.core
                 DebugFix.Assert(previous == null);
                 DebugFix.Assert(next == null);
 
-                if (previousTextLocalNode != null)
+                if (previousTextLocalNode != null && previousTextLocalNode.TextLocal != null)
                 {
                     this.TextLocal.First.Previous = previousTextLocalNode.TextLocal.First;
                     previousTextLocalNode.TextLocal.First.Next = this.TextLocal.First;
                 }
 
-                if (nextTextLocalNode != null)
+                if (nextTextLocalNode != null && nextTextLocalNode.TextLocal != null)
                 {
                     this.TextLocal.First.Next = nextTextLocalNode.TextLocal.First;
                     nextTextLocalNode.TextLocal.First.Previous = this.TextLocal.First;
@@ -379,12 +388,12 @@ namespace urakawa.core
 
                     if (parent.TextFlattened != null)
                     {
-                        if (nextTextLocalNode != null &&
+                        if (nextTextLocalNode != null && nextTextLocalNode.TextLocal != null &&
                             parent.TextFlattened.First == nextTextLocalNode.TextLocal.First)
                         {
                             parent.TextFlattened.First = this.TextLocal.First;
                         }
-                        if (previousTextLocalNode != null &&
+                        if (previousTextLocalNode != null && previousTextLocalNode.TextLocal != null &&
                             parent.TextFlattened.Last == previousTextLocalNode.TextLocal.First)
                         {
                             parent.TextFlattened.Last = this.TextLocal.First;
@@ -409,13 +418,13 @@ namespace urakawa.core
                 DebugFix.Assert(previous == null);
                 DebugFix.Assert(next == null);
 
-                if (previousTextLocalNode != null)
+                if (previousTextLocalNode != null && previousTextLocalNode.TextLocal != null)
                 {
                     this.TextFlattened.First.Previous = previousTextLocalNode.TextLocal.First;
                     previousTextLocalNode.TextLocal.First.Next = this.TextFlattened.First;
                 }
 
-                if (nextTextLocalNode != null)
+                if (nextTextLocalNode != null && nextTextLocalNode.TextLocal != null)
                 {
                     this.TextFlattened.Last.Next = nextTextLocalNode.TextLocal.First;
                     nextTextLocalNode.TextLocal.First.Previous = this.TextFlattened.Last;
@@ -429,13 +438,13 @@ namespace urakawa.core
 
                     if (parent.TextFlattened != null)
                     {
-                        if (nextTextLocalNode != null &&
+                        if (nextTextLocalNode != null && nextTextLocalNode.TextLocal != null &&
                             parent.TextFlattened.First == nextTextLocalNode.TextLocal.First)
                         {
                             parent.TextFlattened.First = this.TextFlattened.First;
                         }
 
-                        if (previousTextLocalNode != null &&
+                        if (previousTextLocalNode != null && previousTextLocalNode.TextLocal != null &&
                             parent.TextFlattened.Last == previousTextLocalNode.TextLocal.First)
                         {
                             parent.TextFlattened.Last = this.TextFlattened.Last;
@@ -1530,12 +1539,7 @@ namespace urakawa.core
                 return TextLocal;
             }
 
-            if (!deep)
-            {
-                return null;
-            }
-
-            if (TextFlattened != null)
+            if (TextFlattened != null && deep)
             {
                 DebugFix.Assert(TextFlattened.First != null);
                 DebugFix.Assert(!String.IsNullOrEmpty(TextFlattened.First.Str));
