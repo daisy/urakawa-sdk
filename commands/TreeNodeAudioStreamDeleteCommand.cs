@@ -56,11 +56,18 @@ namespace urakawa.commands
             get { return m_SelectionData; }
         }
 
+        private TreeNode m_CurrentTreeNode;
+        public override TreeNode CurrentTreeNode
+        {
+            protected set { m_CurrentTreeNode = value; }
+            get { return m_CurrentTreeNode; }
+        }
+
         private TreeNode m_TreeNode;
         public override TreeNode TreeNode
         {
-            protected set { m_TreeNode = value; }
-            get { return m_TreeNode; }
+            protected set {  }
+            get { return m_SelectionData.m_TreeNode; }
         }
 
 
@@ -81,18 +88,18 @@ namespace urakawa.commands
 
             //TreeNode = selection.m_TreeNode;
 
-            TreeNode = currentTreeNode;
+            CurrentTreeNode = currentTreeNode;
             SelectionData = selection;
 
-            //DebugFix.Assert(SelectionData.m_TreeNode == TreeNode);
+            //DebugFix.Assert(m_SelectionData.m_TreeNode == TreeNode);
 
             ShortDescription = "Delete audio portion";
             LongDescription = "Delete a portion of audio for a given treenode";
 
-            ManagedAudioMedia manMedia = SelectionData.m_TreeNode.GetManagedAudioMedia();
+            ManagedAudioMedia manMedia = m_SelectionData.m_TreeNode.GetManagedAudioMedia();
             if (manMedia == null)
             {
-                throw new NullReferenceException("SelectionData.m_TreeNode.GetManagedAudioMedia()");
+                throw new NullReferenceException("m_SelectionData.m_TreeNode.GetManagedAudioMedia()");
             }
             OriginalManagedAudioMedia = manMedia.Copy();
             m_UsedMediaData.Add(OriginalManagedAudioMedia.AudioMediaData);
@@ -101,7 +108,7 @@ namespace urakawa.commands
             DebugFix.Assert(manMedia.Duration.IsEqualTo(OriginalManagedAudioMedia.Duration));
 #endif //DEBUG
 
-            ChannelsProperty chProp = SelectionData.m_TreeNode.GetChannelsProperty();
+            ChannelsProperty chProp = m_SelectionData.m_TreeNode.GetChannelsProperty();
             foreach (Channel ch in chProp.UsedChannels)
             {
                 if (manMedia == chProp.GetMedia(ch))
@@ -126,7 +133,7 @@ namespace urakawa.commands
 
         public override void Execute()
         {
-            ManagedAudioMedia audioMedia = SelectionData.m_TreeNode.GetManagedAudioMedia();
+            ManagedAudioMedia audioMedia = m_SelectionData.m_TreeNode.GetManagedAudioMedia();
             AudioMediaData mediaData = audioMedia.AudioMediaData;
 
             Time timeBegin = SelectionData.m_LocalStreamLeftMark == -1
@@ -139,7 +146,7 @@ namespace urakawa.commands
 
             if (SelectionData.TimeBeginEndEqualClipDuration(timeBegin, timeEnd, mediaData))
             {
-                ChannelsProperty chProp = SelectionData.m_TreeNode.GetChannelsProperty();
+                ChannelsProperty chProp = m_SelectionData.m_TreeNode.GetChannelsProperty();
                 chProp.SetMedia(ChannelOfOriginalMedia, null);
             }
             else if (SelectionData.TimeBeginEndEqualClipDuration(new Time(), timeEnd, mediaData))
@@ -154,9 +161,9 @@ namespace urakawa.commands
 
         public override void UnExecute()
         {
-            ChannelsProperty chProp = SelectionData.m_TreeNode.GetOrCreateChannelsProperty();
+            ChannelsProperty chProp = m_SelectionData.m_TreeNode.GetOrCreateChannelsProperty();
 
-            ManagedAudioMedia manMed = SelectionData.m_TreeNode.GetManagedAudioMedia();
+            ManagedAudioMedia manMed = m_SelectionData.m_TreeNode.GetManagedAudioMedia();
             if (manMed != null)
             {
                 chProp.SetMedia(ChannelOfOriginalMedia, null);
