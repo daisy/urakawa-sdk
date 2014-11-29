@@ -68,7 +68,15 @@ namespace urakawa.daisy.import
 
                 XmlNode bodyNode = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(sourceNode, true, @"body", DiagramContentModelHelper.NS_URL_XHTML);
 
-                parseContentDocument(filepath, project, bodyNode, null, null, DocumentMarkupType.NA);
+                try
+                {
+                    TreeNode.EnableTextCache = false;
+                    parseContentDocument(filepath, project, bodyNode, null, null, DocumentMarkupType.NA);
+                }
+                finally
+                {
+                    TreeNode.EnableTextCache = true;
+                }
 
                 List<TreeNode.Section> outline = presentation.RootNode.GetOrCreateOutline();
 
