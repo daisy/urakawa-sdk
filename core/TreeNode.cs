@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Xml;
 using AudioLib;
 using urakawa.core.visitor;
@@ -31,6 +32,15 @@ namespace urakawa.core
         {
             set { m_Tag = value; }
             get { return m_Tag; }
+        }
+
+        public void FlushTags()
+        {
+            Tag = null;
+            foreach (TreeNode child in Children.ContentsAs_Enumerable)
+            {
+                child.FlushTags();
+            }
         }
 
         public bool HasAlternateContentProperty
