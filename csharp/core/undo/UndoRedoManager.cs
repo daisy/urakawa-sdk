@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using AudioLib;
 using urakawa.command;
 using urakawa.progress;
 using urakawa.media.data;
@@ -13,6 +14,158 @@ namespace urakawa.undo
     [XukNameUglyPrettyAttribute("udoRdoMan", "UndoRedoManager")]
     public sealed class UndoRedoManager : XukAble, IUsingMediaData //IChangeNotifier
     {
+        public sealed class Hooker
+        {
+            public interface Host
+            {
+                void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge);
+            }
+
+            private UndoRedoManager m_UndoRedoManager = null;
+            private Host m_Host = null;
+            
+            public Hooker(UndoRedoManager undoRedoManager, Host host)
+            {
+                m_UndoRedoManager = undoRedoManager;
+                m_Host = host;
+            
+                ReHook();
+            }
+
+            public void ReHook()
+            {
+                if (Hooked)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    return;
+                }
+
+                m_UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
+                m_UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
+                m_UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
+                m_UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
+                m_UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+
+                Hooked = true;
+            }
+
+            public void UnHook()
+            {
+                if (!Hooked)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    return;
+                }
+
+                m_UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
+                m_UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
+                m_UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
+                m_UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
+                m_UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
+
+                Hooked = false;
+            }
+
+            private bool m_hooked = false;
+            public bool Hooked
+            {
+                get
+                {
+                    return m_hooked;
+                }
+                set
+                {
+                    m_hooked = value;
+                }
+            }
+
+            private void OnUndoRedoManagerChanged_CompositeCommandDispatch(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionEndEvent)
+            {
+                if (command is CompositeCommand)
+                {
+                    CompositeCommand compo = (CompositeCommand)command;
+                    IEnumerable<Command> enumerable = done
+                        ? compo.ChildCommands.ContentsAs_Enumerable
+                        : compo.ChildCommands.ContentsAs_YieldEnumerableReversed;
+                    foreach (Command childCommand in enumerable)
+                    {
+                        OnUndoRedoManagerChanged_CompositeCommandDispatch(eventt, done, childCommand, isTransactionEndEvent);
+                    }
+                }
+                else
+                {
+                    if (isTransactionEndEvent)
+                    {
+#if DEBUG
+                        DebugFix.Assert(command.IsInTransaction());
+#endif
+                    }
+
+                    bool isNoTransactionOrTrailingEdge =
+                        !command.IsInTransaction() // DONE, UNDONE, REDONE
+                        ||
+                        !(eventt is DoneEventArgs) // excludes live command executions that occur during active transaction
+                        &&
+                        (
+                        done && command.IsTransactionEnd()
+                        ||
+                        !done && command.IsTransactionBegin()
+                        )
+                    ;
+
+                    m_Host.OnUndoRedoManagerChanged(eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+                }
+            }
+
+            public void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
+            {
+                if (!(eventt is DoneEventArgs
+                    || eventt is UnDoneEventArgs
+                    || eventt is ReDoneEventArgs
+                    || eventt is TransactionEndedEventArgs
+                    || eventt is TransactionCancelledEventArgs
+                    ))
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    return;
+                }
+
+                Command command = eventt.Command;
+
+                if (m_UndoRedoManager.IsTransactionActive)
+                {
+                    DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs); // latter => nested transaction!
+                }
+
+                bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
+                DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
+
+                bool isTransactionEndEvent = eventt is TransactionEndedEventArgs;
+
+                if (isTransactionEndEvent)
+                {
+                    DebugFix.Assert(command is CompositeCommand);
+                    if (command.IsInTransaction())
+                    {
+                        return; // avoid duplicates, only last fully flattened composite command: full transaction
+                    }
+                }
+
+                OnUndoRedoManagerChanged_CompositeCommandDispatch(eventt, done, command, isTransactionEndEvent);
+            }
+        }
+
+        public Hooker Hook(Hooker.Host host)
+        {
+            return new Hooker(this, host);
+        }
+
         public override bool PrettyFormat
         {
             set { throw new NotImplementedException("PrettyFormat"); }
@@ -360,8 +513,10 @@ namespace urakawa.undo
                     throw new exception.IrreversibleCommandDuringActiveUndoRedoTransactionException(
                         "Can not execute an irreversible command when a transaction is active");
                 }
-                ObjectListProvider<Command> list = mActiveTransactions.Peek().ChildCommands;
+                CompositeCommand compo = mActiveTransactions.Peek();
+                ObjectListProvider<Command> list = compo.ChildCommands;
                 list.Insert(list.Count, command);
+                command.ParentComposite = compo;
             }
             else
             {
@@ -408,28 +563,25 @@ namespace urakawa.undo
             }
         }
 
-        /// <summary>
-        /// Starts a transaction: marks the current level in the history as the point where the transaction begins.
-        /// Any following call to <see cref="Execute"/> will push the a <see cref="Command"/> into the history and execute it normally.
-        /// After the call, <see cref="IsTransactionActive"/> must return true. 
-        /// Transactions can be nested, so programmers must make sure to start and end/cancel transactions in pairs 
-        /// (e.g. a call to <see cref="EndTransaction"/> for each <see cref="StartTransaction"/>).
-        /// A transaction can be canceled (rollback), and all <see cref="Command"/>s un-executed 
-        /// by calling <see cref="CancelTransaction"/>.
-        /// </summary>
-        /// <param name="shortDesc">
-        /// A short human-readable decription of the transaction, 
-        /// if <c>null</c> a default short description will be generated based on the short descriptions of the <see cref="Command"/>s in the transaction
-        /// </param>
-        /// <param name="longDesc">
-        /// A long human-readable decription of the transaction, 
-        /// if <c>null</c> a default long description will be generated based on the long descriptions of the <see cref="Command"/>s in the transaction
-        /// </param>
         public void StartTransaction(string shortDesc, string longDesc)
         {
+            StartTransaction(shortDesc, longDesc, null);
+        }
+
+        public void StartTransaction(string shortDesc, string longDesc, string identifier)
+        {
+#if DEBUG
+            // nested transaction?
+            if (IsTransactionActive)
+            {
+                //Debugger.Break();
+                bool breakpoint = true;
+            }
+#endif
             CompositeCommand newTrans = Presentation.CommandFactory.CreateCompositeCommand();
             newTrans.ShortDescription = shortDesc;
             newTrans.LongDescription = longDesc;
+            newTrans.Identifier = identifier;
             mActiveTransactions.Push(newTrans);
             NotifyTransactionStarted(newTrans);
         }
@@ -463,14 +615,13 @@ namespace urakawa.undo
             CompositeCommand command = mActiveTransactions.Pop();
             if (command.ChildCommands.Count > 0)
             {
-                if (command.ChildCommands.Count == 1)
-                {
-                    pushCommand(command.ChildCommands.Get(0));
-                }
-                else
-                {
-                    pushCommand(command);
-                }
+                pushCommand(command);
+            }
+            else
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
             }
             NotifyTransactionEnded(command);
 

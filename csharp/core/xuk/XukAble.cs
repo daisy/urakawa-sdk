@@ -953,7 +953,7 @@ namespace urakawa.xuk
         //            }
         //            else
         //            {
-        //#if NET4 && DEBUG
+        //#if NET40 && DEBUG
         //                Debugger.Break();
         //#endif
 
