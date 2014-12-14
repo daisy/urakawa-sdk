@@ -16,8 +16,13 @@ using urakawa.xuk;
 
 namespace urakawa.commands
 {
+    public abstract class AudioEditCommand : CommandWithTreeNode
+    {
+        public abstract TreeNode CurrentTreeNode { protected set; get; }
+    }
+
     [XukNameUglyPrettyAttribute("manAudMedInsertCmd", "ManagedAudioMediaInsertDataCommand")]
-    public class ManagedAudioMediaInsertDataCommand : Command
+    public class ManagedAudioMediaInsertDataCommand : AudioEditCommand
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -40,15 +45,15 @@ namespace urakawa.commands
         
 
         private TreeNode m_TreeNode;
-        public TreeNode TreeNode
+        public override TreeNode TreeNode
         {
-            private set { m_TreeNode = value; }
+            protected set { m_TreeNode = value; }
             get { return m_TreeNode; }
         }
         private TreeNode m_CurrentTreeNode;
-        public TreeNode CurrentTreeNode
+        public override TreeNode CurrentTreeNode
         {
-            private set { m_CurrentTreeNode = value; }
+            protected set { m_CurrentTreeNode = value; }
             get { return m_CurrentTreeNode; }
         }
 

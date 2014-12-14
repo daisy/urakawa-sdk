@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Xml;
+using AudioLib;
 using urakawa.core.visitor;
 using urakawa.events;
 using urakawa.events.core;
@@ -17,14 +19,28 @@ using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 namespace urakawa.core
 {
+    public interface ObjectTag
+    {
+        object Tag { get; set; }
+    }
+
     [XukNameUglyPrettyAttribute("n", "TreeNode")]
-    public partial class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IChangeNotifier
+    public partial class TreeNode : WithPresentation, ObjectTag, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IChangeNotifier
     {
         private object m_Tag = null;
         public object Tag
         {
             set { m_Tag = value; }
             get { return m_Tag; }
+        }
+
+        public void FlushTags()
+        {
+            Tag = null;
+            foreach (TreeNode child in Children.ContentsAs_Enumerable)
+            {
+                child.FlushTags();
+            }
         }
 
         public bool HasAlternateContentProperty
@@ -317,9 +333,6 @@ namespace urakawa.core
 
         private void this_childAdded(object sender, ObjectAddedEventArgs<TreeNode> ev)
         {
-            this.TextLocal = null;
-            this.TextFlattened = null;
-
             ev.m_AddedObject.Changed += Child_Changed;
             NotifyChanged(ev);
         }
@@ -331,9 +344,6 @@ namespace urakawa.core
 
         private void this_childRemoved(object sender, ObjectRemovedEventArgs<TreeNode> ev)
         {
-            this.TextLocal = null;
-            this.TextFlattened = null;
-
             ev.m_RemovedObject.Changed -= Child_Changed;
             NotifyChanged(ev);
         }
@@ -554,7 +564,7 @@ namespace urakawa.core
             Presentation.m_XukedInTreeNodes++;
             base.XukIn(source, handler);
 
-            XukInAfter_TextMediaCache();
+            //XukInAfter_TextMediaCache();
         }
 
         private void XukInProperties(XmlReader source, IProgressHandler handler)
@@ -977,6 +987,7 @@ namespace urakawa.core
                 TreeNode p = Parent;
                 if (p == null) return null;
                 int i = p.Children.IndexOf(this);
+                if (i < 0) return null;
                 if (i + 1 >= p.mChildren.Count) return null;
                 return p.mChildren.Get(i + 1);
             }
@@ -993,6 +1004,7 @@ namespace urakawa.core
                 TreeNode p = Parent;
                 if (p == null) return null;
                 int i = p.Children.IndexOf(this);
+                if (i < 0) return null;
                 if (i == 0) return null;
                 return p.mChildren.Get(i - 1);
             }
@@ -1273,6 +1285,9 @@ namespace urakawa.core
             }
             node.mParent = this;
             mChildren.Insert(insertIndex, node);
+
+            if (EnableTextCache)
+                node.UpdateTextCache_AfterInsert();
         }
 
         /// <summary>
@@ -1298,8 +1313,16 @@ namespace urakawa.core
         public TreeNode RemoveChild(int index)
         {
             TreeNode removedChild = mChildren.Get(index);
+
+            if (EnableTextCache)
+                removedChild.UpdateTextCache_BeforeRemove();
+
+            // Too early! (may be used on calling side of this API)
+            //removedChild.Tag = null;
+
             removedChild.mParent = null;
             mChildren.Remove(removedChild);
+            
             return removedChild;
         }
 

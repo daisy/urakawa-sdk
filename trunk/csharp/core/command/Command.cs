@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using urakawa.core;
 using urakawa.media.data;
 using urakawa.progress;
 using urakawa.xuk;
@@ -10,13 +11,97 @@ using UnExecutedEventArgs = urakawa.events.command.UnExecutedEventArgs;
 
 namespace urakawa.command
 {
+    public abstract class CommandWithTreeNode : Command
+    {
+        public abstract TreeNode TreeNode { protected set; get; }
+    }
+
     /// <summary>
     /// Classes realizing this interface must store the state of the object(s) affected by the command
     /// execution (including exception/redo). Implementations may choose various techniques suitable in terms
     /// of performance and memory usage (storage of the transition or the full object snapshot.)
     /// </summary>
-    public abstract class Command : WithPresentation, IUndoableAction, IUsingMediaData //IChangeNotifier
+    public abstract class Command : WithPresentation, ObjectTag, IUndoableAction, IUsingMediaData //IChangeNotifier
     {
+        public CompositeCommand ParentComposite = null;
+
+        public bool IsInTransaction()
+        {
+            return ParentComposite != null;
+        }
+
+        public bool IsTransactionFirst()
+        {
+            return ParentComposite != null && ParentComposite.ChildCommands.IndexOf(this) == 0;
+        }
+        public bool IsTransactionLast()
+        {
+            return ParentComposite != null && ParentComposite.ChildCommands.IndexOf(this) == (ParentComposite.ChildCommands.Count-1);
+        }
+
+        public string TransactionId()
+        {
+            if (ParentComposite == null)
+            {
+                return null;
+            }
+            return ParentComposite.Identifier;
+        }
+        public string TopTransactionId()
+        {
+            string id = null;
+            CompositeCommand parent = ParentComposite;
+            while (parent != null)
+            {
+                id = parent.Identifier;
+                parent = parent.ParentComposite;
+            }
+            return id;
+        }
+
+        public bool IsTransactionBegin()
+        {
+            Command parent = this;
+            while (parent != null)
+            {
+                if (!parent.IsInTransaction())
+                {
+                    return true;
+                }
+                if (!parent.IsTransactionFirst())
+                {
+                    return false;
+                }
+                parent = parent.ParentComposite;
+            }
+            return true;
+        }
+
+        public bool IsTransactionEnd()
+        {
+            Command parent = this;
+            while (parent != null)
+            {
+                if (!parent.IsInTransaction())
+                {
+                    return true;
+                }
+                if (!parent.IsTransactionLast())
+                {
+                    return false;
+                }
+                parent = parent.ParentComposite;
+            }
+            return true;
+        }
+
+        private object m_Tag = null;
+        public object Tag
+        {
+            set { m_Tag = value; }
+            get { return m_Tag; }
+        }
+
         public override bool ValueEquals(WithPresentation other)
         {
             if (!base.ValueEquals(other))
@@ -47,6 +132,7 @@ namespace urakawa.command
 
             mLongDescription = source.GetAttribute(XukStrings.LongDescription);
             mShortDescription = source.GetAttribute(XukStrings.ShortDescription);
+            mIdentifier = source.GetAttribute(XukStrings.Identifier);
 
         }
 
@@ -67,6 +153,10 @@ namespace urakawa.command
             if (ShortDescription != null)
             {
                 destination.WriteAttributeString(XukStrings.ShortDescription, ShortDescription);
+            }
+            if (Identifier != null)
+            {
+                destination.WriteAttributeString(XukStrings.Identifier, Identifier);
             }
         }
 
@@ -161,6 +251,7 @@ namespace urakawa.command
 
         protected string mLongDescription;
         protected string mShortDescription;
+        protected string mIdentifier;
 
         /// <summary>
         /// Get a long uman-readable description of the command
@@ -189,6 +280,18 @@ namespace urakawa.command
             set
             {
                 mShortDescription = value;
+            }
+        }
+
+        public virtual string Identifier
+        {
+            get
+            {
+                return mIdentifier;
+            }
+            set
+            {
+                mIdentifier = value;
             }
         }
     }

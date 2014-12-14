@@ -12,8 +12,12 @@ using urakawa.property.alt;
 
 namespace urakawa.commands
 {
+    public abstract class AlternateContentCommand : CommandWithTreeNode
+    {
+    }
+
     [XukNameUglyPrettyAttribute("acAddCmd", "AlternateContentAddCommand")]
-    public class AlternateContentAddCommand: Command
+    public class AlternateContentAddCommand : AlternateContentCommand
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -35,9 +39,9 @@ namespace urakawa.commands
 
 
         private TreeNode m_TreeNode;
-        public TreeNode TreeNode
+        public override TreeNode TreeNode
         {
-            private set { m_TreeNode = value; }
+            protected set { m_TreeNode = value; }
             get { return m_TreeNode; }
         }
 

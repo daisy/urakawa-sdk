@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using urakawa.command;
+using urakawa.core;
 using urakawa.progress;
 using urakawa.xuk;
 using urakawa.metadata;
@@ -10,7 +11,7 @@ using urakawa.property.alt;
 namespace urakawa.commands
 {
     [XukNameUglyPrettyAttribute("acMetaSetContentCmd", "AlternateContentMetadataSetContentCommand")]
-    public class AlternateContentMetadataSetContentCommand : Command
+    public class AlternateContentMetadataSetContentCommand : AlternateContentCommand
     {
         
         public override bool ValueEquals(WithPresentation other)
@@ -44,6 +45,32 @@ namespace urakawa.commands
         {
             private set { m_MetadataAttribute = value; }
             get { return m_MetadataAttribute; }
+        }
+
+        private TreeNode m_TreeNode;
+        public override TreeNode TreeNode
+        {
+            protected set { m_TreeNode = value; }
+            get
+            {
+                if (m_TreeNode == null && m_AlternateContentProperty != null)
+                {
+                    try
+                    {
+                        m_TreeNode = m_AlternateContentProperty.TreeNodeOwner;
+                    }
+                    catch (Exception ex)
+                    {
+#if DEBUG
+                        // occurs during factories warm up, as the dummy command is "detached"
+                        //Debugger.Break();
+                        bool breakpoint = true;
+#endif
+                    }
+                }
+
+                return m_TreeNode;
+            }
         }
 
         private AlternateContentProperty m_AlternateContentProperty;

@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using AudioLib;
 using urakawa.command;
 using urakawa.core;
 using urakawa.media.data;
+using urakawa.media.data.utilities;
 using urakawa.progress;
 using urakawa.xuk;
 
-using urakawa.property.alt;
-
 namespace urakawa.commands
 {
-    [XukNameUglyPrettyAttribute("acRemCmd", "AlternateContentRemoveCommand")]
-    public class AlternateContentRemoveCommand : AlternateContentCommand
+    [XukNameUglyPrettyAttribute("nodInsCmd", "TreeNodeInsertCommand")]
+    public class TreeNodeInsertCommand : TextNodeStructureEditCommand
     {
         public override bool ValueEquals(WithPresentation other)
         {
@@ -22,7 +22,7 @@ namespace urakawa.commands
                 return false;
             }
 
-            AlternateContentRemoveCommand otherz = other as AlternateContentRemoveCommand;
+            TreeNodeInsertCommand otherz = other as TreeNodeInsertCommand;
             if (otherz == null)
             {
                 return false;
@@ -32,7 +32,8 @@ namespace urakawa.commands
 
             return true;
         }
-        
+
+
         private TreeNode m_TreeNode;
         public override TreeNode TreeNode
         {
@@ -40,56 +41,66 @@ namespace urakawa.commands
             get { return m_TreeNode; }
         }
 
-        private int m_Index;
-        private AlternateContent m_AlternateContent ;
-        public AlternateContent AlternateContent
+        private TreeNode m_TreeNodeParent;
+        public TreeNode TreeNodeParent
         {
-            private set { m_AlternateContent= value; }
-            get { return m_AlternateContent; }
+            private set { m_TreeNodeParent = value; }
+            get { return m_TreeNodeParent; }
         }
-        
 
-        public void Init(TreeNode treeNode, AlternateContent altContent)
+        private int m_TreeNodePos;
+        public int TreeNodePos
         {
-            if (altContent == null)
-            {
-                throw new ArgumentNullException("altContent");
-            }
+            private set { m_TreeNodePos = value; }
+            get { return m_TreeNodePos; }
+        }
+
+        public void Init(TreeNode treeNode, TreeNode parent, int position)
+        {
             if (treeNode == null)
             {
                 throw new ArgumentNullException("TreeNode");
             }
-            
+            if (parent == null)
+            {
+                throw new ArgumentNullException("parent");
+            }
+            if (position < 0 || position > parent.Children.Count)
+            {
+                throw new ArgumentOutOfRangeException("position");
+            }
+
             TreeNode = treeNode;
-            AlternateContent = altContent;
 
-            if (AlternateContent.Audio != null)
+            TreeNodeParent = parent;
+
+            TreeNodePos = position;
+
+            CollectManagedMediaTreeNodeVisitor collectorVisitor = new CollectManagedMediaTreeNodeVisitor();
+            treeNode.AcceptDepthFirst(collectorVisitor);
+
+            List<IManaged> list = collectorVisitor.CollectedMedia;
+            foreach (IManaged mm in list)
             {
-                m_UsedMediaData.Add(AlternateContent.Audio.AudioMediaData);
+                if (mm.MediaData != null && !m_UsedMediaData.Contains(mm.MediaData))
+                {
+                    m_UsedMediaData.Add(mm.MediaData);
+                }
             }
-            else if (AlternateContent.Image != null)
-            {
-                m_UsedMediaData.Add(AlternateContent.Image.ImageMediaData);
-            }
 
-            ShortDescription = "Remove AlternateContent";
-            LongDescription = "Remove alternate content to TreeNode";
-        }
-
-
-        public override void UnExecute()
-        {
-            AlternateContentProperty prop = TreeNode.GetOrCreateAlternateContentProperty();
-            prop.AlternateContents.Insert(m_Index,
-                //prop.AlternateContents.Count,
-                m_AlternateContent);
+            ShortDescription = "Insert TreeNode";
+            LongDescription = "Insert the TreeNode";
         }
 
         public override void Execute()
         {
-            AlternateContentProperty prop = TreeNode.GetAlternateContentProperty();
-            m_Index = prop.AlternateContents.IndexOf(m_AlternateContent);
-            prop.AlternateContents.Remove(m_AlternateContent);
+            TreeNodeParent.Insert(TreeNode, TreeNodePos);
+        }
+
+        public override void UnExecute()
+        {
+            //TreeNode.Parent.RemoveChild(TreeNode);
+            TreeNode.Detach();
         }
 
         public override bool CanExecute
@@ -101,6 +112,7 @@ namespace urakawa.commands
         {
             get { return true; }
         }
+
         private List<MediaData> m_UsedMediaData = new List<MediaData>();
         public override IEnumerable<MediaData> UsedMediaData
         {
@@ -134,5 +146,4 @@ namespace urakawa.commands
             base.XukOutChildren(destination, baseUri, handler);
         }
     }
-
-    }
+}
