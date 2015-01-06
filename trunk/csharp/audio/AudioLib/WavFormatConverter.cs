@@ -1956,7 +1956,7 @@ namespace AudioLib
                 {
                     //argumentString = "-i " + "\"" + sourceFile + "\"" + " -b:a " + bitRate_Output + " \"" + destinationFile + "\"";
                     //argumentString = String.Format(@"-i {0} -b:a {1} {2}", "\"" + sourceFile + "\"", bitRate_Output, "\"" + destinationFile + "\"");
-                    argumentString = String.Format(configDictionary["mp4"] , "\"" + sourceFile + "\"", bitRate_Output, "\"" + destinationFile + "\"");
+                    argumentString = String.Format(configDictionary["mp4"] , "\"" + sourceFile + "\"", bitRate_Output.ToString()+"k", "\"" + destinationFile + "\"");
                 }
                 else if (extension == ".3gp")
                 {
