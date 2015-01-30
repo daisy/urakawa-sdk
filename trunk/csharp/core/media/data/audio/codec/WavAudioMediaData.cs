@@ -243,10 +243,14 @@ namespace urakawa.media.data.audio.codec
         {
             WavAudioMediaData expWAMD = destPres.MediaDataFactory.Create<WavAudioMediaData>();
             expWAMD.PCMFormat = PCMFormat.Copy();
-            foreach (WavClip clip in mWavClips)
-            {
-                expWAMD.mWavClips.Add(clip.Export(destPres));
-            }
+
+            // it is better to export at the level of asset stream and leave the clip composition behind
+            // exporting clips also exports the shared DataProvider multiple times, which increases the size exponentially
+            expWAMD.AppendPcmData(this.OpenPcmInputStream(), null);
+            //foreach (WavClip clip in mWavClips)
+            //{
+                //expWAMD.mWavClips.Add(clip.Export(destPres));
+            //}
             return expWAMD;
         }
 
