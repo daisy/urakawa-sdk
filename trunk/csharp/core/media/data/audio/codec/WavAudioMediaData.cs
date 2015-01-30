@@ -246,7 +246,16 @@ namespace urakawa.media.data.audio.codec
 
             // it is better to export at the level of asset stream and leave the clip composition behind
             // exporting clips also exports the shared DataProvider multiple times, which increases the size exponentially
-            expWAMD.AppendPcmData(this.OpenPcmInputStream(), null);
+            Stream stream = this.OpenPcmInputStream();
+            try
+            {
+                expWAMD.AppendPcmData(stream, null);
+            }
+            finally
+            {
+                stream.Close();
+            }
+            
             //foreach (WavClip clip in mWavClips)
             //{
                 //expWAMD.mWavClips.Add(clip.Export(destPres));
