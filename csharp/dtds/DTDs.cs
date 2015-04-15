@@ -9,6 +9,7 @@ namespace DTDs
     public static class DTDs
     {
         public const string DTBOOK_2005_3_MATHML = "DTDs.Resources.dtbook-2005-3_MathML.dtd";
+        public const string HTML5 = "DTDs.Resources.html5.dtd";
 
         public static readonly Dictionary<string, string> ENTITIES_MAPPING;
 
@@ -18,7 +19,7 @@ namespace DTDs
 
             // HTML5 (we use a basic DTD to emulate some validation behaviour, ultimately we should use the XHTML5 schema/relaxng from EPUB3)
 
-            ENTITIES_MAPPING.Add("html5", "DTDs.Resources.html5.dtd");
+            ENTITIES_MAPPING.Add("html5", HTML5);
 
             // NCX
 
