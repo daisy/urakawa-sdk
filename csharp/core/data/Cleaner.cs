@@ -105,7 +105,7 @@ namespace urakawa.data
                     usedMediaData.Add(mm.MediaData);
                 }
 #if DEBUG
-                else
+                else if (mm.MediaData != null)
                 {
                     Debugger.Break();
                 }
