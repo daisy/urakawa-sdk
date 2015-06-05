@@ -15,12 +15,11 @@ namespace urakawa.ExternalFiles
     [XukNameUglyPrettyAttribute("ExFlDtMan", "ExternalFileDataManager")]
     public sealed class ExternalFilesDataManager : XukAbleManager<ExternalFileData>
     {
+        public static readonly string STORAGE_FOLDER_NAME = "DAISY-Storage";
         public static readonly string STORAGE_FOLDER_PATH;
 
         static ExternalFilesDataManager()
         {
-            const string dirName = "DAISY-Storage";
-
 #if USE_ISOLATED_STORAGE
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
@@ -30,10 +29,10 @@ namespace urakawa.ExternalFiles
 
                         STORAGE_FOLDER_PATH = (string)fi.GetValue(store)
                             + Path.DirectorySeparatorChar
-                            + dirName;
+                            + STORAGE_FOLDER_NAME;
                     }
 #else
-            STORAGE_FOLDER_PATH = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + dirName;
+            STORAGE_FOLDER_PATH = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + STORAGE_FOLDER_NAME;
 
             if (!Directory.Exists(STORAGE_FOLDER_PATH))
             {
