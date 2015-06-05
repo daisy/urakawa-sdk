@@ -52,7 +52,7 @@ namespace urakawa.daisy.export.visitor
             get { return mAudioFileBaseNameFormat; }
         }
 
-        protected Uri GetCurrentAudioFileUri()
+        protected Uri GetCurrentAudioFileUri(TreeNode node)
         {
             Uri res = new Uri(DestinationDirectory.LocalPath + Path.DirectorySeparatorChar + String.Format(AudioFileNameFormat, CurrentAudioFileNumber), UriKind.Absolute);
             return res;

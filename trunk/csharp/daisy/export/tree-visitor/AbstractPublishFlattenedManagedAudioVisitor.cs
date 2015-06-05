@@ -52,16 +52,16 @@ namespace urakawa.daisy.export.visitor
                 {
                     if (base.EncodePublishedAudioFiles)
                     {
-                        EncodeTransientFile();
+                        EncodeTransientFile(node);
                     }
                     else
                     {
-                        EncodeTransientFileResample();
+                        EncodeTransientFileResample(node);
                     }
                 }
                 else if (base.EncodePublishedAudioFiles)
                 {
-                    EncodeTransientFile();
+                    EncodeTransientFile(node);
                 }
             }
         }
@@ -130,9 +130,9 @@ namespace urakawa.daisy.export.visitor
         }
 #endif // PUBLISH_ALT_CONTENT
 
-        private void EncodeTransientFileResample()
+        private void EncodeTransientFileResample(TreeNode node)
         {
-            string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
+            string sourceFilePath = base.GetCurrentAudioFileUri(node).LocalPath;
             //string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath, Path.GetFileNameWithoutExtension(sourceFilePath) + "_" + base.EncodePublishedAudioFilesSampleRate + DataProviderFactory.AUDIO_WAV_EXTENSION);
 
             //reportProgress(m_ProgressPercentage, String.Format(UrakawaSDK_daisy_Lang.ConvertingAudio,sourceFilePath));
@@ -191,27 +191,27 @@ namespace urakawa.daisy.export.visitor
             m_ExternalAudioMediaList.Clear();
         }
 
-        private void EncodeTransientFile ()
+        private void EncodeTransientFile(TreeNode node)
         {   
             if (EncodingFileFormat == AudioFileFormats.MP3)
             {
-                EncodeTransientFileToMp3();
+                EncodeTransientFileToMp3(node);
             }
             else if (EncodingFileFormat == AudioFileFormats.MP4 ||
                 EncodingFileFormat == AudioFileFormats.AMR ||
                 EncodingFileFormat == AudioFileFormats.GP3)
             {
-                EncodeTransientFileToMp4OrAMR();
+                EncodeTransientFileToMp4OrAMR(node);
             }
         }
 
 
-        private void EncodeTransientFileToMp3()
+        private void EncodeTransientFileToMp3(TreeNode node)
         {
             ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
 
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, DisableAcmCodecs);
-            string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
+            string sourceFilePath = base.GetCurrentAudioFileUri(node).LocalPath;
             string destinationFilePath = Path.Combine(base.DestinationDirectory.LocalPath,
                 Path.GetFileNameWithoutExtension(sourceFilePath) + DataProviderFactory.AUDIO_MP3_EXTENSION);
 
@@ -266,12 +266,12 @@ namespace urakawa.daisy.export.visitor
             m_ExternalAudioMediaList.Clear();
         }
 
-        private void EncodeTransientFileToMp4OrAMR()
+        private void EncodeTransientFileToMp4OrAMR(TreeNode node)
         {
             ExternalAudioMedia extMedia = m_ExternalAudioMediaList[0];
 
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, DisableAcmCodecs);
-            string sourceFilePath = base.GetCurrentAudioFileUri().LocalPath;
+            string sourceFilePath = base.GetCurrentAudioFileUri(node).LocalPath;
 
             string extension = EncodingFileFormat == AudioFileFormats.MP4 ? DataProviderFactory.AUDIO_MP4_EXTENSION :
                 EncodingFileFormat == AudioFileFormats.AMR ? DataProviderFactory.AUDIO_AMR_EXTENSION :
@@ -403,7 +403,7 @@ namespace urakawa.daisy.export.visitor
             if (m_TransientWavFileStream == null)
             {
                 mCurrentAudioFileNumber++;
-                Uri waveFileUri = GetCurrentAudioFileUri();
+                Uri waveFileUri = GetCurrentAudioFileUri(node);
                 m_TransientWavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
 
                 m_TransientWavFileStreamRiffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(m_TransientWavFileStream, 0);
@@ -470,7 +470,7 @@ namespace urakawa.daisy.export.visitor
 
             long bytesEnd = m_TransientWavFileStream.Position - (long)m_TransientWavFileStreamRiffOffset;
 
-            string src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
+            string src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri(node)).ToString();
 
             if (manAudioMedia != null
 #if ENABLE_SEQ_MEDIA
@@ -614,7 +614,7 @@ namespace urakawa.daisy.export.visitor
             }
 
             mCurrentAudioFileNumber++;
-            Uri waveFileUri = GetCurrentAudioFileUri();
+            Uri waveFileUri = GetCurrentAudioFileUri(node);
             Stream wavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
 
             Stream audioPcmStream = sm.
@@ -676,7 +676,7 @@ m_Stream;
                     m_ExternalAudioMediaList.Add(extAudioMedia);
                 }
                 extAudioMedia.Language = marker.m_TreeNode.Presentation.Language;
-                extAudioMedia.Src = marker.m_TreeNode.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
+                extAudioMedia.Src = marker.m_TreeNode.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri(marker.m_TreeNode)).ToString();
 
                 long timeBegin =
                     marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesBegin);

@@ -37,14 +37,14 @@ namespace urakawa.daisy.export.visitor
             mCurrentAudioFileStreamRiffWaveHeaderLength = 0;
         }
 
-        private void createNextAudioFile()
+        private void createNextAudioFile(TreeNode node)
         {
             writeAndCloseCurrentAudioFile();
 
             mCurrentAudioFileNumber++;
             //mCurrentAudioFileStream = new MemoryStream();
 
-            Uri file = GetCurrentAudioFileUri();
+            Uri file = GetCurrentAudioFileUri(node);
             mCurrentAudioFileStream = new FileStream(file.LocalPath,
                 FileMode.Create, FileAccess.Write, FileShare.Read);
         }
@@ -72,7 +72,7 @@ namespace urakawa.daisy.export.visitor
             }
 
             if (TreeNodeMustBeSkipped(node)) return false;
-            if (TreeNodeTriggersNewAudioFile(node)) createNextAudioFile();
+            if (TreeNodeTriggersNewAudioFile(node)) createNextAudioFile(node);
 
             if (node.HasProperties(typeof(ChannelsProperty)))
             {
@@ -87,7 +87,7 @@ namespace urakawa.daisy.export.visitor
                         (mCurrentAudioFilePCMFormat != null &&
                         !mCurrentAudioFilePCMFormat.Data.IsCompatibleWith(amd.PCMFormat.Data)))
                     {
-                        createNextAudioFile();
+                        createNextAudioFile(node);
                     }
                     if (mCurrentAudioFileStream != null && mCurrentAudioFilePCMFormat == null)
                     {
@@ -123,7 +123,7 @@ namespace urakawa.daisy.export.visitor
                     }
 
                     eam.Language = mam.Language;
-                    eam.Src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
+                    eam.Src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri(node)).ToString();
                     eam.ClipBegin = clipBegin;
                     eam.ClipEnd = clipEnd;
 
