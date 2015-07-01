@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using AudioLib;
 using urakawa.command;
 using urakawa.core;
@@ -157,8 +158,94 @@ namespace urakawa.data
                         }
                         else
                         {
-                            long nextSize = currentBytes + thisAudioByteLength;
+                            DataProvider dp = null;
+                            int count = 0;
+                            foreach (DataProvider dp_ in md.UsedDataProviders)
+                            {
+                                count++;
 
+                                if (dp == null)
+                                {
+                                    dp = dp_;
+                                }
+
+                            }
+                            if (count == 1)
+                            {
+                                if (usedDataProviders.Contains(dp))
+                                {
+                                    // already processed in prior iteration (previous MediaData)
+                                    continue;
+                                }
+
+//                                //long nBytes = 0;
+
+//                                Object DPappData = dp.AppData;
+//                                if (DPappData != null)
+//                                {
+//                                    if (DPappData is WavClip.PcmFormatAndTime)
+//                                    {
+//                                        //nBytes = ((WavClip.PcmFormatAndTime)DPappData).Bytes;
+
+////#if DEBUG
+////                                        long nBytes_ = ((WavClip.PcmFormatAndTime)DPappData).mFormat.ConvertTimeToBytes(((WavClip.PcmFormatAndTime)DPappData).mTime.AsLocalUnits);
+////                                        DebugFix.Assert(((WavClip.PcmFormatAndTime)DPappData).mFormat.BytesAreEqualWithMillisecondsTolerance(nBytes, nBytes_));
+////#endif
+//                                    }
+//#if DEBUG
+//                                    else
+//                                    {
+//                                        Debugger.Break();
+//                                    }
+//#endif
+//                                }
+//                                else
+//                                {
+//                                    Stream ism = null;
+//                                    try
+//                                    {
+//                                        ism = wMd.OpenInputStream();
+
+//                                        uint dataLength;
+//                                        AudioLibPCMFormat PCMformat = AudioLibPCMFormat.RiffHeaderParse(ism, out dataLength);
+
+//                                        DebugFix.Assert(wMd.PCMFormat.Data.Equals(PCMformat));
+
+//                                        DPappData = new WavClip.PcmFormatAndTime(PCMformat, new Time(PCMformat.ConvertBytesToTime(dataLength))
+//                                            //, dataLength
+//                                            );
+//                                        dp.AppData = DPappData;
+
+//                                        //nBytes = dataLength;
+//                                    }
+//                                    catch (Exception ex)
+//                                    {
+//                                        throw ex;
+//                                    }
+//                                    finally
+//                                    {
+//                                        if (ism != null)
+//                                        {
+//                                            ism.Close();
+//                                        }
+//                                    }
+//                                }
+
+                                // TODO: some FDP might be smaller, yet full! (because the next MD did not fit within) => How to detect?
+                                if (nBytes >= nMaxBytes)
+                                {
+                                    bool mediaHasSingleFileDataProviderWithLengthGreaterThanMaxThreshold = false;
+
+
+
+
+                                    usedDataProviders.Add(dp);
+                                    continue;
+                                }
+                            }
+
+
+                            long nextSize = currentBytes + thisAudioByteLength;
                             if (nextSize > nMaxBytes)
                             {
                                 if (currentFileDataProvider != null)
@@ -251,15 +338,29 @@ namespace urakawa.data
                                     if (appData is WavClip.PcmFormatAndTime)
                                     {
                                         ((WavClip.PcmFormatAndTime)appData).mTime.Add(wMd.AudioDuration);
+
+                                        //DebugFix.Assert(currentBytes == ((WavClip.PcmFormatAndTime)appData).Bytes);
+                                        //((WavClip.PcmFormatAndTime)appData).Bytes = currentBytes + thisAudioByteLength;
+
                                         //((WavClip.PcmFormatAndTime)appData).mFormat;
                                     }
+#if DEBUG
+                                    else
+                                    {
+                                        Debugger.Break();
+                                    }
+#endif
                                 }
                                 else
                                 {
                                     DebugFix.Assert(currentBytes == 0);
                                     Time dur = new Time(wMd.AudioDuration);
                                     //DebugFix.Assert(currentBytes + thisAudioByteLength == wMd.PCMFormat.Data.ConvertTimeToBytes(dur.AsLocalUnits));
-                                    appData = new WavClip.PcmFormatAndTime(new AudioLibPCMFormat(wMd.PCMFormat.Data.NumberOfChannels, wMd.PCMFormat.Data.SampleRate, wMd.PCMFormat.Data.BitDepth), dur);
+                                    appData = new WavClip.PcmFormatAndTime(
+                                        new AudioLibPCMFormat(wMd.PCMFormat.Data.NumberOfChannels, wMd.PCMFormat.Data.SampleRate, wMd.PCMFormat.Data.BitDepth),
+                                        dur
+                                        //, currentBytes + thisAudioByteLength
+                                        );
                                     currentFileDataProvider.AppData = appData;
                                 }
 
@@ -322,6 +423,7 @@ namespace urakawa.data
                     md.Delete();
                 }
             }
+
             if (currentFileDataProvider != null)
             {
                 currentFileDataProviderOutputStream.Position = 0;

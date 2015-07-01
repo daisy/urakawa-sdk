@@ -123,10 +123,20 @@ namespace urakawa.media.data.audio.codec
             public AudioLibPCMFormat mFormat;
             public Time mTime;
 
-            public PcmFormatAndTime(AudioLibPCMFormat format, Time time)
+            //private long mBytes;
+            //public long Bytes
+            //{
+            //    get { return mBytes; }
+            //    set { mBytes = value; }
+            //}
+
+            public PcmFormatAndTime(AudioLibPCMFormat format, Time time
+                //, long bytes
+                )
             {
                 mFormat = format;
                 mTime = time;
+                //mBytes = bytes;
             }
         }
         /// <summary>
