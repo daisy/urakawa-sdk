@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using AudioLib;
 using urakawa.core;
@@ -44,7 +45,7 @@ namespace urakawa.daisy.export.visitor
             mCurrentAudioFileNumber++;
             //mCurrentAudioFileStream = new MemoryStream();
 
-            Uri file = GetCurrentAudioFileUri(node);
+            Uri file = GetCurrentAudioFileUri();
             mCurrentAudioFileStream = new FileStream(file.LocalPath,
                 FileMode.Create, FileAccess.Write, FileShare.Read);
         }
@@ -83,12 +84,19 @@ namespace urakawa.daisy.export.visitor
                 {
                     AudioMediaData amd = mam.AudioMediaData;
 
-                    if (mCurrentAudioFileStream == null ||
-                        (mCurrentAudioFilePCMFormat != null &&
-                        !mCurrentAudioFilePCMFormat.Data.IsCompatibleWith(amd.PCMFormat.Data)))
+                    if (mCurrentAudioFileStream == null)
                     {
                         createNextAudioFile(node);
                     }
+                    else if (mCurrentAudioFilePCMFormat != null &&
+                        !mCurrentAudioFilePCMFormat.Data.IsCompatibleWith(amd.PCMFormat.Data))
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        createNextAudioFile(node);
+                    }
+
                     if (mCurrentAudioFileStream != null && mCurrentAudioFilePCMFormat == null)
                     {
                         writeInitialHeader(amd.PCMFormat);
@@ -123,11 +131,17 @@ namespace urakawa.daisy.export.visitor
                     }
 
                     eam.Language = mam.Language;
-                    eam.Src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri(node)).ToString();
+                    eam.Src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
                     eam.ClipBegin = clipBegin;
                     eam.ClipEnd = clipEnd;
 
-                    if (chProp.GetMedia(DestinationChannel) != null) chProp.SetMedia(DestinationChannel, null);
+                    if (chProp.GetMedia(DestinationChannel) != null)
+                    {
+#if DEBUG
+Debugger.Break();
+#endif
+                        chProp.SetMedia(DestinationChannel, null);
+                    }
                     chProp.SetMedia(DestinationChannel, eam);
                 }
             }
