@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using AudioLib;
 using urakawa.command;
 using urakawa.core;
@@ -158,91 +157,91 @@ namespace urakawa.data
                         }
                         else
                         {
-                            DataProvider dp = null;
-                            int count = 0;
-                            foreach (DataProvider dp_ in md.UsedDataProviders)
-                            {
-                                count++;
+//                            DataProvider dp = null;
+//                            int count = 0;
+//                            foreach (DataProvider dp_ in md.UsedDataProviders)
+//                            {
+//                                count++;
 
-                                if (dp == null)
-                                {
-                                    dp = dp_;
-                                }
-
-                            }
-                            if (count == 1)
-                            {
-                                if (usedDataProviders.Contains(dp))
-                                {
-                                    // already processed in prior iteration (previous MediaData)
-                                    continue;
-                                }
-
-//                                //long nBytes = 0;
-
-//                                Object DPappData = dp.AppData;
-//                                if (DPappData != null)
+//                                if (dp == null)
 //                                {
-//                                    if (DPappData is WavClip.PcmFormatAndTime)
-//                                    {
-//                                        //nBytes = ((WavClip.PcmFormatAndTime)DPappData).Bytes;
+//                                    dp = dp_;
+//                                }
 
+//                            }
+//                            if (count == 1)
+//                            {
+//                                if (usedDataProviders.Contains(dp))
+//                                {
+//                                    // already processed in prior iteration (previous MediaData)
+//                                    continue;
+//                                }
+
+////                                //long nBytes = 0;
+
+////                                Object DPappData = dp.AppData;
+////                                if (DPappData != null)
+////                                {
+////                                    if (DPappData is WavClip.PcmFormatAndTime)
+////                                    {
+////                                        //nBytes = ((WavClip.PcmFormatAndTime)DPappData).Bytes;
+
+//////#if DEBUG
+//////                                        long nBytes_ = ((WavClip.PcmFormatAndTime)DPappData).mFormat.ConvertTimeToBytes(((WavClip.PcmFormatAndTime)DPappData).mTime.AsLocalUnits);
+//////                                        DebugFix.Assert(((WavClip.PcmFormatAndTime)DPappData).mFormat.BytesAreEqualWithMillisecondsTolerance(nBytes, nBytes_));
+//////#endif
+////                                    }
 ////#if DEBUG
-////                                        long nBytes_ = ((WavClip.PcmFormatAndTime)DPappData).mFormat.ConvertTimeToBytes(((WavClip.PcmFormatAndTime)DPappData).mTime.AsLocalUnits);
-////                                        DebugFix.Assert(((WavClip.PcmFormatAndTime)DPappData).mFormat.BytesAreEqualWithMillisecondsTolerance(nBytes, nBytes_));
+////                                    else
+////                                    {
+////                                        Debugger.Break();
+////                                    }
 ////#endif
-//                                    }
-//#if DEBUG
-//                                    else
-//                                    {
-//                                        Debugger.Break();
-//                                    }
-//#endif
-//                                }
-//                                else
-//                                {
-//                                    Stream ism = null;
-//                                    try
-//                                    {
-//                                        ism = wMd.OpenInputStream();
+////                                }
+////                                else
+////                                {
+////                                    Stream ism = null;
+////                                    try
+////                                    {
+////                                        ism = wMd.OpenInputStream();
 
-//                                        uint dataLength;
-//                                        AudioLibPCMFormat PCMformat = AudioLibPCMFormat.RiffHeaderParse(ism, out dataLength);
+////                                        uint dataLength;
+////                                        AudioLibPCMFormat PCMformat = AudioLibPCMFormat.RiffHeaderParse(ism, out dataLength);
 
-//                                        DebugFix.Assert(wMd.PCMFormat.Data.Equals(PCMformat));
+////                                        DebugFix.Assert(wMd.PCMFormat.Data.Equals(PCMformat));
 
-//                                        DPappData = new WavClip.PcmFormatAndTime(PCMformat, new Time(PCMformat.ConvertBytesToTime(dataLength))
-//                                            //, dataLength
-//                                            );
-//                                        dp.AppData = DPappData;
+////                                        DPappData = new WavClip.PcmFormatAndTime(PCMformat, new Time(PCMformat.ConvertBytesToTime(dataLength))
+////                                            //, dataLength
+////                                            );
+////                                        dp.AppData = DPappData;
 
-//                                        //nBytes = dataLength;
-//                                    }
-//                                    catch (Exception ex)
-//                                    {
-//                                        throw ex;
-//                                    }
-//                                    finally
-//                                    {
-//                                        if (ism != null)
-//                                        {
-//                                            ism.Close();
-//                                        }
-//                                    }
-//                                }
+////                                        //nBytes = dataLength;
+////                                    }
+////                                    catch (Exception ex)
+////                                    {
+////                                        throw ex;
+////                                    }
+////                                    finally
+////                                    {
+////                                        if (ism != null)
+////                                        {
+////                                            ism.Close();
+////                                        }
+////                                    }
+////                                }
 
-                                // TODO: some FDP might be smaller, yet full! (because the next MD did not fit within) => How to detect?
-                                if (nBytes >= nMaxBytes)
-                                {
-                                    bool mediaHasSingleFileDataProviderWithLengthGreaterThanMaxThreshold = false;
+//                                //// TODO: some FDP might be smaller, yet full! (because the next MD did not fit within) => How to detect?
+//                                //if (nBytes >= nMaxBytes)
+//                                //{
+//                                //    bool mediaHasSingleFileDataProviderWithLengthGreaterThanMaxThreshold = false;
 
 
 
 
-                                    usedDataProviders.Add(dp);
-                                    continue;
-                                }
-                            }
+//                                //    usedDataProviders.Add(dp);
+//                                //    continue;
+//                                //}
+//                            }
 
 
                             long nextSize = currentBytes + thisAudioByteLength;
