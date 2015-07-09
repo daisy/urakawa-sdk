@@ -133,7 +133,7 @@ namespace urakawa.daisy.export
             return str;
         }
 
-        private XmlNode CreateDocTitle(XmlDocument ncxDocument, XmlNode ncxRootNode, TreeNode n)
+        private XmlNode CreateDocTitle(XmlDocument ncxDocument, XmlNode ncxRootNode, TreeNode n, TreeNode levelNode)
         {
             XmlNode docNode = ncxDocument.CreateElement(null,
                 "docTitle",
@@ -158,7 +158,10 @@ namespace urakawa.daisy.export
                 docNode.AppendChild(docAudioNode);
                 XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, docAudioNode, "clipBegin", FormatTimeString(externalAudio.ClipBegin));
                 XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, docAudioNode, "clipEnd", FormatTimeString(externalAudio.ClipEnd));
-                XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, docAudioNode, "src", FileDataProvider.UriEncode(Path.GetFileName(externalAudio.Src)));
+
+                string extAudioSrc = AdjustAudioFileName(externalAudio, levelNode);
+
+                XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, docAudioNode, "src", FileDataProvider.UriEncode(Path.GetFileName(extAudioSrc)));
             }
             return docNode;
         }
@@ -242,8 +245,11 @@ namespace urakawa.daisy.export
                                                            FormatTimeString(externalAudio.ClipBegin));
                 XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNode, "clipEnd",
                                                            FormatTimeString(externalAudio.ClipEnd));
+
+                string extAudioSrc = AdjustAudioFileName(externalAudio, urakawaNode);
+
                 XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNode, "src",
-                                                           FileDataProvider.UriEncode(Path.GetFileName(externalAudio.Src)));
+                                                           FileDataProvider.UriEncode(Path.GetFileName(extAudioSrc)));
             }
             return navPointNode;
         }
@@ -498,7 +504,7 @@ namespace urakawa.daisy.export
             get
             {
                 string strNumericFrag = (++m_SmilFileNameCounter).ToString();
-                return strNumericFrag.PadLeft(4, '0') + ".smil";
+                return strNumericFrag.PadLeft(3, '0') + ".smil";
             }
         }
 

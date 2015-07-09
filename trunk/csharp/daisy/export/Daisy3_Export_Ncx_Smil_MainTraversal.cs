@@ -168,7 +168,7 @@ namespace urakawa.daisy.export
                 if (currentHeadingTreeNodeDuration == null
                     || currentHeadingTreeNodeDuration.AsLocalUnits == 0)
                 {
-                    CreateDocTitle(ncxDocument, ncxRootNode, levelNodeDescendant);
+                    CreateDocTitle(ncxDocument, ncxRootNode, levelNodeDescendant, levelNode);
                     data.isDocTitleAdded = true;
                     isNcxNativeNodeAdded = true;
                 }
@@ -513,8 +513,10 @@ namespace urakawa.daisy.export
                                                                FormatTimeString(externalAudio.ClipBegin));
                     XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
                                                                FormatTimeString(externalAudio.ClipEnd));
-                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src",
-                                                               FileDataProvider.UriEncode(Path.GetFileName(externalAudio.Src)));
+
+                    string extAudioSrc = AdjustAudioFileName(externalAudio, levelNode);
+
+                    XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src", FileDataProvider.UriEncode(Path.GetFileName(extAudioSrc)));
 
                     if (smilAnchorNode != null)
                     {
@@ -527,7 +529,7 @@ namespace urakawa.daisy.export
                     }
 
                     // add audio file name in audio files list for use in opf creation 
-                    string audioFileName = Path.GetFileName(externalAudio.Src);
+                    string audioFileName = Path.GetFileName(extAudioSrc);
                     if (!m_FilesList_SmilAudio.Contains(audioFileName))
                     {
                         m_FilesList_SmilAudio.Add(audioFileName);
@@ -636,7 +638,10 @@ namespace urakawa.daisy.export
                     navLabelNode.AppendChild(audioNodeNcx);
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipBegin", FormatTimeString(externalAudio.ClipBegin));
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipEnd", FormatTimeString(externalAudio.ClipEnd));
-                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "src", FileDataProvider.UriEncode(Path.GetFileName(externalAudio.Src)));
+
+                    string extAudioSrc = AdjustAudioFileName(externalAudio, levelNode);
+
+                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "src", FileDataProvider.UriEncode(Path.GetFileName(extAudioSrc)));
                 }
 
                 XmlNode contentNode = ncxDocument.CreateElement(null, "content", pageListNode.NamespaceURI);
@@ -725,7 +730,10 @@ namespace urakawa.daisy.export
                     navLabelNode.AppendChild(audioNodeNcx);
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipBegin", FormatTimeString(externalAudio.ClipBegin));
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipEnd", FormatTimeString(externalAudio.ClipEnd));
-                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "src", FileDataProvider.UriEncode(Path.GetFileName(externalAudio.Src)));
+
+                    string extAudioSrc = AdjustAudioFileName(externalAudio, levelNode);
+
+                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "src", FileDataProvider.UriEncode(Path.GetFileName(extAudioSrc)));
                 }
 
                 XmlNode contentNode = ncxDocument.CreateElement(null, "content", navListNodeMathML.NamespaceURI);
@@ -793,7 +801,10 @@ namespace urakawa.daisy.export
                     navLabelNode.AppendChild(audioNodeNcx);
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipBegin", FormatTimeString(externalAudio.ClipBegin));
                     XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "clipEnd", FormatTimeString(externalAudio.ClipEnd));
-                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "src", FileDataProvider.UriEncode(Path.GetFileName(externalAudio.Src)));
+
+                    string extAudioSrc = AdjustAudioFileName(externalAudio, levelNode);
+
+                    XmlDocumentHelper.CreateAppendXmlAttribute(ncxDocument, audioNodeNcx, "src", FileDataProvider.UriEncode(Path.GetFileName(extAudioSrc)));
                 }
 
                 XmlNode contentNode = ncxDocument.CreateElement(null, "content", navTargetNode.NamespaceURI);
@@ -808,7 +819,7 @@ namespace urakawa.daisy.export
                     //&& currentHeadingTreeNode.HasXmlProperty IMPLIED
                     && currentHeadingTreeNode.GetXmlElementLocalName() == "doctitle")
                 {
-                    CreateDocTitle(ncxDocument, ncxRootNode, levelNodeDescendant);
+                    CreateDocTitle(ncxDocument, ncxRootNode, levelNodeDescendant, levelNode);
                     data.isDocTitleAdded = true;
                     isNcxNativeNodeAdded = true;
                 }

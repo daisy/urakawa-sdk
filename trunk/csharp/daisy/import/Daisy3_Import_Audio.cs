@@ -270,7 +270,7 @@ namespace urakawa.daisy.import
 
                 if (!File.Exists(fullPath))
                 {
-                    Debug.Fail("File not found: {0}", fullPath);
+                    Debug.Fail("File not found: " + fullPath);
                     media = null;
                 }
                 else

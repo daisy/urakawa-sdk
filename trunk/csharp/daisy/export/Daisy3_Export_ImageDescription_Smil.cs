@@ -130,12 +130,13 @@ namespace urakawa.daisy.export
         //                                                           FormatTimeString(externalAudio.ClipBegin));
         //                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "clipEnd",
         //                                                           FormatTimeString(externalAudio.ClipEnd));
+        // string extAudioSrc = AdjustAudioFileName(externalAudio, levelNodeDescendant);
         //                XmlDocumentHelper.CreateAppendXmlAttribute(smilDocument, audioNode, "src",
-        //                                                           Path.GetFileName(externalAudio.Src));
+        //                                                           Path.GetFileName(extAudioSrc));
         //                parNode.AppendChild(audioNode);
 
         //                // add audio file name in audio files list for use in opf creation 
-        //                string audioFileName = Path.GetFileName(externalAudio.Src);
+        //                string audioFileName = Path.GetFileName(extAudioSrc);
         //                if (!m_FilesList_Audio.Contains(audioFileName)) m_FilesList_Audio.Add(audioFileName);
 
         //                // add to duration 
