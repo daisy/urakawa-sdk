@@ -793,7 +793,10 @@ namespace urakawa.daisy.export
             XmlNode audioNode = smilDocument.CreateElement ( null, "audio", mainSeq.NamespaceURI );
             CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "clipBegin", externalMedia.ClipBegin.Format_Standard () );
             CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "clipEnd", externalMedia.ClipEnd.Format_Standard () );
-            CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "src", Path.GetFileName ( externalMedia.Src ) );
+         
+         string extAudioSrc = AdjustAudioFileName(externalAudio, levelNodeDescendant);
+
+            CommonFunctions.CreateAppendXmlAttribute ( smilDocument, audioNode, "src", Path.GetFileName ( extAudioSrc ) );
             parNode.AppendChild ( audioNode );
 
             }

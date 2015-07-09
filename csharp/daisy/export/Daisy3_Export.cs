@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Xml;
 using AudioLib;
 using urakawa.core;
@@ -34,7 +35,7 @@ namespace urakawa.daisy.export
         protected List<string> m_FilesList_Smil; //xmils files list generated in createNcx function
         protected List<string> m_FilesList_SmilAudio; // list of audio files generated in create ncx function.
         protected List<string> m_FilesList_Image; // list of images, populated in create content document function
-        
+
 #if SUPPORT_AUDIO_VIDEO
         protected List<string> m_FilesList_Video; // list of videos, populated in create content document function
         protected List<string> m_FilesList_Audio; // list of audios, populated in create content document function
@@ -209,6 +210,8 @@ namespace urakawa.daisy.export
         /// <returns></returns>
         public Channel PublishAudioFiles()
         {
+            m_adjustedExternalAudioFileNames.Clear();
+
             // if publish channel exists remove it.
             List<Channel> previousChannelsList = m_Presentation.ChannelsManager.GetChannelsByName(PUBLISH_AUDIO_CHANNEL_NAME);
 
@@ -227,11 +230,11 @@ namespace urakawa.daisy.export
 
             m_PublishVisitor.EncodePublishedAudioFiles = m_encodeAudioFiles;
             m_PublishVisitor.EncodingFileFormat = EncodingFileFormat;
-            
-            if (m_encodeAudioFiles) 
+
+            if (m_encodeAudioFiles)
             {
                 m_PublishVisitor.BitRate_Encoding = m_BitRate_Encoding;
-                if(EncodingFileFormat == AudioFileFormats.MP3)  m_PublishVisitor.SetAdditionalMp3EncodingParameters(m_AdditionalMp3ParamChannels, m_AdditionalMp3ParamReSample, m_AdditionalMp3ParamReplayGain);
+                if (EncodingFileFormat == AudioFileFormats.MP3) m_PublishVisitor.SetAdditionalMp3EncodingParameters(m_AdditionalMp3ParamChannels, m_AdditionalMp3ParamReSample, m_AdditionalMp3ParamReplayGain);
             }
             m_PublishVisitor.EncodePublishedAudioFilesSampleRate = m_sampleRate;
             m_PublishVisitor.EncodePublishedAudioFilesStereo = m_audioStereo;
@@ -291,6 +294,8 @@ namespace urakawa.daisy.export
                 Debugger.Break();
 #endif
             }
+
+            m_adjustedExternalAudioFileNames.Clear();
         }
 
         protected bool RequestCancellation_RemovePublishChannel(Channel publishChannel)
@@ -417,17 +422,17 @@ namespace urakawa.daisy.export
             }
             set
             {
-                m_AudioFileNameCharsLimit =value >= 4? value:-1;
+                m_AudioFileNameCharsLimit = value >= 4 ? value : -1;
             }
         }
 
         protected string AddSectionNameToAudioFileName(string externalAudioSrc, string sectionName)
         {
-            string audioFileName = Path.GetFileNameWithoutExtension(externalAudioSrc) + "_" + FileDataProvider.EliminateForbiddenFileNameCharacters(sectionName.Replace(" ", "_")) ;
+            string audioFileName = Path.GetFileNameWithoutExtension(externalAudioSrc) + "_" + FileDataProvider.EliminateForbiddenFileNameCharacters(sectionName.Replace(" ", "_"));
             if (AudioFileNameCharsLimit > 0)
             {
                 audioFileName = audioFileName.Replace("aud", "");
-                if (audioFileName.Length > AudioFileNameCharsLimit ) audioFileName =  audioFileName.Substring(0, AudioFileNameCharsLimit);
+                if (audioFileName.Length > AudioFileNameCharsLimit) audioFileName = audioFileName.Substring(0, AudioFileNameCharsLimit);
             }
             audioFileName = audioFileName + Path.GetExtension(externalAudioSrc);
             string source = Path.Combine(m_OutputDirectory, Path.GetFileName(externalAudioSrc));
@@ -446,5 +451,207 @@ namespace urakawa.daisy.export
             }
             return audioFileName;
         }
+
+        private Dictionary<TreeNode, string> m_adjustedExternalAudioFileNames = new Dictionary<TreeNode, string>();
+        protected string AdjustAudioFileName(ExternalAudioMedia externalAudio, TreeNode levelNode)
+        {
+#if !TOBI
+            // Obi should not use this, as the above AddSectionNameToAudioFileName() is used instead!!
+            Debugger.Break();
+
+            return externalAudio.Src;
+#endif
+
+            string filename = externalAudio.Src;
+
+            if (!AddSectionNameToAudioFile)
+            {
+                return filename;
+            }
+
+            if (externalAudio.Tag == null || !(externalAudio.Tag is TreeNode))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return filename;
+            }
+            TreeNode node = externalAudio.Tag as TreeNode;
+            DebugFix.Assert(node == levelNode);
+
+            string src = null;
+            m_adjustedExternalAudioFileNames.TryGetValue(node, out src);
+
+            if (!string.IsNullOrEmpty(src))
+            {
+                externalAudio.Src = src;
+                return src;
+            }
+
+            string strTitle = "";
+
+            bool html5_outlining = node.Presentation.RootNode.GetXmlElementLocalName()
+                .Equals("body", StringComparison.OrdinalIgnoreCase);
+            if (html5_outlining)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                //TODO?
+                //List<Section> sections = node.Presentation.RootNode.GetOrCreateOutline()
+                // spine item / HTML title??
+            }
+            else
+            {
+                string localName = node.GetXmlElementLocalName();
+
+#if DEBUG
+                //protected virtual bool doesTreeNodeTriggerNewSmil(TreeNode node)
+
+                DebugFix.Assert(node.HasXmlProperty);
+
+                DebugFix.Assert(localName.StartsWith("level", StringComparison.OrdinalIgnoreCase)
+                                || localName.Equals("section", StringComparison.OrdinalIgnoreCase)
+                                || localName.Equals("book", StringComparison.OrdinalIgnoreCase)
+                                );
+#endif
+
+                TreeNode heading = null;
+
+                if (TreeNode.IsLevel(localName))
+                {
+                    TreeNode level = node;
+
+                    if (level.Children.Count > 0)
+                    {
+                        TreeNode nd = level.Children.Get(0);
+                        if (nd != null)
+                        {
+                            localName = nd.HasXmlProperty ? nd.GetXmlElementLocalName() : null;
+
+                            if (localName != null && (localName == "pagenum" || localName == "img") &&
+                                level.Children.Count > 1)
+                            {
+                                nd = level.Children.Get(1);
+                                if (nd != null)
+                                {
+                                    localName = nd.GetXmlElementLocalName();
+                                }
+                            }
+
+                            if (localName != null &&
+                                (TreeNode.IsHeading(localName)))
+                            {
+                                heading = nd;
+                            }
+                            else
+                            {
+                                if (localName != null && (localName == "pagenum" || localName == "img") &&
+                                    level.Children.Count > 2)
+                                {
+                                    nd = level.Children.Get(2);
+                                    if (nd != null)
+                                    {
+                                        localName = nd.GetXmlElementLocalName();
+                                    }
+                                }
+
+                                if (localName != null &&
+                                    (TreeNode.IsHeading(localName)))
+                                {
+                                    heading = nd;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (TreeNode.IsHeading(localName))
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    heading = node;
+                }
+                else if (!localName.Equals("book", StringComparison.OrdinalIgnoreCase))
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+
+
+                StringBuilder strBuilder = null;
+
+                if (heading != null)
+                {
+                    TreeNode.StringChunkRange range = heading.GetTextFlattened_();
+
+                    if (!(range == null || range.First == null || string.IsNullOrEmpty(range.First.Str)))
+                    {
+                        strBuilder = new StringBuilder(range.GetLength());
+                        TreeNode.ConcatStringChunks(range, -1, strBuilder);
+
+                        //strBuilder.Insert(0, "] ");
+                        //strBuilder.Insert(0, heading.GetXmlElementLocalName());
+                        //strBuilder.Insert(0, "[");
+                    }
+                }
+                //else
+                //{
+                //    strBuilder = new StringBuilder();
+                //    strBuilder.Append("[");
+                //    strBuilder.Append(level.GetXmlElementLocalName());
+                //    strBuilder.Append("] ");
+                //    strBuilder.Append(Tobi_Plugin_NavigationPane_Lang.NoHeading);
+                //}
+
+                if (strBuilder != null)
+                {
+                    strTitle = strBuilder.ToString().Trim();
+                }
+            }
+
+            if (strTitle.Length > 0)
+            {
+                strTitle = FileDataProvider.EliminateForbiddenFileNameCharacters(strTitle.Replace(" ", "_"));
+            }
+
+            int MAX_LENGTH = AudioFileNameCharsLimit > 0 ? AudioFileNameCharsLimit : 10;
+            if (strTitle.Length > MAX_LENGTH)
+            {
+                strTitle = strTitle.Substring(0, MAX_LENGTH);
+            }
+
+
+            string source = Path.Combine(m_OutputDirectory, Path.GetFileName(filename));
+            if (File.Exists(source))
+            {
+                filename = filename.Replace("aud", "");
+
+                if (strTitle.Length > 0)
+                {
+                    string name = Path.GetFileNameWithoutExtension(filename);
+                    string ext = Path.GetExtension(filename);
+                    filename = name + "_" + strTitle + ext;
+                }
+
+                externalAudio.Src = filename;
+                m_adjustedExternalAudioFileNames.Add(node, externalAudio.Src);
+
+                string dest = Path.Combine(m_OutputDirectory, filename);
+
+                File.Move(source, dest);
+                try
+                {
+                    File.SetAttributes(dest, FileAttributes.Normal);
+                }
+                catch
+                {
+                }
+            }
+
+            return filename;
+        }
+
     }
 }

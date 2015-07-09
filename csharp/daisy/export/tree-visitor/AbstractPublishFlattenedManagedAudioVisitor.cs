@@ -337,13 +337,19 @@ namespace urakawa.daisy.export.visitor
 
         #region ITreeNodeVisitor Members
 
+        private TreeNode m_currentAudioLevelNode = null;
+
         int m_ProgressPercentage;
         public override bool PreVisit(TreeNode node)
         {
             if (m_RootNode == null)
             {
                 m_RootNode = node;
+            }
 
+            if (m_currentAudioLevelNode == null)
+            {
+                m_currentAudioLevelNode = m_RootNode;
             }
 
             if (TreeNodeMustBeSkipped(node))
@@ -357,8 +363,11 @@ namespace urakawa.daisy.export.visitor
                 return false;
             }
 
+
             if (TreeNodeTriggersNewAudioFile(node))
             {
+                m_currentAudioLevelNode = node;
+
                 checkTransientWavFileAndClose(node);
                 // REMOVED, because doesn't support nested TreeNode matches ! return false; // skips children, see postVisit
             }
@@ -407,6 +416,7 @@ namespace urakawa.daisy.export.visitor
                 m_TransientWavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
 
                 m_TransientWavFileStreamRiffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(m_TransientWavFileStream, 0);
+
             }
 
             long bytesBegin = m_TransientWavFileStream.Position - (long)m_TransientWavFileStreamRiffOffset;
@@ -509,6 +519,7 @@ namespace urakawa.daisy.export.visitor
             }
 
             ExternalAudioMedia extAudioMedia = node.Presentation.MediaFactory.Create<ExternalAudioMedia>();
+            extAudioMedia.Tag = m_currentAudioLevelNode;
 
             ushort nChannels = (ushort)(EncodePublishedAudioFilesStereo ? 2 : 1);
             if ((EncodePublishedAudioFiles
@@ -597,116 +608,116 @@ namespace urakawa.daisy.export.visitor
             // REMOVED, because doesn't support nested TreeNode matches !
             return;
 
-            if (!node.Presentation.MediaDataManager.EnforceSinglePCMFormat)
-            {
-                Debug.Fail("! EnforceSinglePCMFormat ???");
-                throw new Exception("! EnforceSinglePCMFormat ???");
-            }
-#if USE_NORMAL_LIST
-            StreamWithMarkers?
-#else
-            StreamWithMarkers
-#endif //USE_NORMAL_LIST
- sm = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(null, false);
-            if (sm == null)
-            {
-                return;
-            }
+//            if (!node.Presentation.MediaDataManager.EnforceSinglePCMFormat)
+//            {
+//                Debug.Fail("! EnforceSinglePCMFormat ???");
+//                throw new Exception("! EnforceSinglePCMFormat ???");
+//            }
+//#if USE_NORMAL_LIST
+//            StreamWithMarkers?
+//#else
+//            StreamWithMarkers
+//#endif //USE_NORMAL_LIST
+// sm = node.OpenPcmInputStreamOfManagedAudioMediaFlattened(null, false);
+//            if (sm == null)
+//            {
+//                return;
+//            }
 
-            mCurrentAudioFileNumber++;
-            Uri waveFileUri = GetCurrentAudioFileUri();
-            Stream wavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
+//            mCurrentAudioFileNumber++;
+//            Uri waveFileUri = GetCurrentAudioFileUri();
+//            Stream wavFileStream = new FileStream(waveFileUri.LocalPath, FileMode.Create, FileAccess.Write, FileShare.None);
 
-            Stream audioPcmStream = sm.
-#if USE_NORMAL_LIST
-            GetValueOrDefault().
-#endif //USE_NORMAL_LIST
-m_Stream;
+//            Stream audioPcmStream = sm.
+//#if USE_NORMAL_LIST
+//            GetValueOrDefault().
+//#endif //USE_NORMAL_LIST
+//m_Stream;
 
-            if (RequestCancellation)
-            {
-                checkTransientWavFileAndClose(node);
-                return;
-            }
+//            if (RequestCancellation)
+//            {
+//                checkTransientWavFileAndClose(node);
+//                return;
+//            }
 
-            try
-            {
-                ulong riffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(wavFileStream, (uint)audioPcmStream.Length);
+//            try
+//            {
+//                ulong riffOffset = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.RiffHeaderWrite(wavFileStream, (uint)audioPcmStream.Length);
 
-                const uint BUFFER_SIZE = 1024 * 1024 * 6; // 6 MB MAX BUFFER
-                StreamUtils.Copy(audioPcmStream, 0, wavFileStream, BUFFER_SIZE);
-            }
-            finally
-            {
-                audioPcmStream.Close();
-                wavFileStream.Close();
-            }
+//                const uint BUFFER_SIZE = 1024 * 1024 * 6; // 6 MB MAX BUFFER
+//                StreamUtils.Copy(audioPcmStream, 0, wavFileStream, BUFFER_SIZE);
+//            }
+//            finally
+//            {
+//                audioPcmStream.Close();
+//                wavFileStream.Close();
+//            }
 
-            if (RequestCancellation)
-            {
-                checkTransientWavFileAndClose(node);
-                return;
-            }
+//            if (RequestCancellation)
+//            {
+//                checkTransientWavFileAndClose(node);
+//                return;
+//            }
 
-            long bytesBegin = 0;
+//            long bytesBegin = 0;
 
-#if USE_NORMAL_LIST
-            foreach (TreeNodeAndStreamDataLength marker in sm.GetValueOrDefault().m_SubStreamMarkers)
-            {
-#else
-            LightLinkedList<TreeNodeAndStreamDataLength>.Item current = sm.m_SubStreamMarkers.m_First;
-            while (current != null)
-            {
-                TreeNodeAndStreamDataLength marker = current.m_data;
-#endif //USE_NORMAL_LIST
+//#if USE_NORMAL_LIST
+//            foreach (TreeNodeAndStreamDataLength marker in sm.GetValueOrDefault().m_SubStreamMarkers)
+//            {
+//#else
+//            LightLinkedList<TreeNodeAndStreamDataLength>.Item current = sm.m_SubStreamMarkers.m_First;
+//            while (current != null)
+//            {
+//                TreeNodeAndStreamDataLength marker = current.m_data;
+//#endif //USE_NORMAL_LIST
 
-                //long bytesEnd = bytesBegin + marker.m_LocalStreamDataLength;
+//                //long bytesEnd = bytesBegin + marker.m_LocalStreamDataLength;
 
-                ExternalAudioMedia extAudioMedia = marker.m_TreeNode.Presentation.MediaFactory.Create<ExternalAudioMedia>();
+//                ExternalAudioMedia extAudioMedia = marker.m_TreeNode.Presentation.MediaFactory.Create<ExternalAudioMedia>();
 
-                ushort nChannels = (ushort)(EncodePublishedAudioFilesStereo ? 2 : 1);
+//                ushort nChannels = (ushort)(EncodePublishedAudioFilesStereo ? 2 : 1);
 
-                if ((EncodePublishedAudioFiles
-                ||
-                (ushort)EncodePublishedAudioFilesSampleRate != marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
-                || nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels
-                )
-                    && !m_ExternalAudioMediaList.Contains(extAudioMedia))
-                {
-                    m_ExternalAudioMediaList.Add(extAudioMedia);
-                }
-                extAudioMedia.Language = marker.m_TreeNode.Presentation.Language;
-                extAudioMedia.Src = marker.m_TreeNode.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString(); //marker.m_TreeNode
+//                if ((EncodePublishedAudioFiles
+//                ||
+//                (ushort)EncodePublishedAudioFilesSampleRate != marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
+//                || nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels
+//                )
+//                    && !m_ExternalAudioMediaList.Contains(extAudioMedia))
+//                {
+//                    m_ExternalAudioMediaList.Add(extAudioMedia);
+//                }
+//                extAudioMedia.Language = marker.m_TreeNode.Presentation.Language;
+//                extAudioMedia.Src = marker.m_TreeNode.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
 
-                long timeBegin =
-                    marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesBegin);
-                extAudioMedia.ClipBegin = new Time(timeBegin);
+//                long timeBegin =
+//                    marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesBegin);
+//                extAudioMedia.ClipBegin = new Time(timeBegin);
 
-                //double timeEnd =
-                //    marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesEnd);
-                //extAudioMedia.ClipEnd = new Time(timeEnd);
+//                //double timeEnd =
+//                //    marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(bytesEnd);
+//                //extAudioMedia.ClipEnd = new Time(timeEnd);
 
-                Time durationFromRiffHeader = new Time(marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(marker.m_LocalStreamDataLength));
-                extAudioMedia.ClipEnd = new Time(extAudioMedia.ClipBegin.AsTimeSpanTicks + durationFromRiffHeader.AsTimeSpanTicks, true);
+//                Time durationFromRiffHeader = new Time(marker.m_TreeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertBytesToTime(marker.m_LocalStreamDataLength));
+//                extAudioMedia.ClipEnd = new Time(extAudioMedia.ClipBegin.AsTimeSpanTicks + durationFromRiffHeader.AsTimeSpanTicks, true);
 
 
-                ChannelsProperty chProp = marker.m_TreeNode.GetOrCreateChannelsProperty();
+//                ChannelsProperty chProp = marker.m_TreeNode.GetOrCreateChannelsProperty();
 
-                if (chProp.GetMedia(DestinationChannel) != null)
-                {
-                    chProp.SetMedia(DestinationChannel, null);
-                    Debug.Fail("This should never happen !!");
-                }
-                chProp.SetMedia(DestinationChannel, extAudioMedia);
+//                if (chProp.GetMedia(DestinationChannel) != null)
+//                {
+//                    chProp.SetMedia(DestinationChannel, null);
+//                    Debug.Fail("This should never happen !!");
+//                }
+//                chProp.SetMedia(DestinationChannel, extAudioMedia);
 
-                bytesBegin += marker.m_LocalStreamDataLength;
+//                bytesBegin += marker.m_LocalStreamDataLength;
 
-#if USE_NORMAL_LIST
-                }
-#else
-                current = current.m_nextItem;
-            }
-#endif //USE_NORMAL_LIST
+//#if USE_NORMAL_LIST
+//                }
+//#else
+//                current = current.m_nextItem;
+//            }
+//#endif //USE_NORMAL_LIST
         }
 
         #endregion

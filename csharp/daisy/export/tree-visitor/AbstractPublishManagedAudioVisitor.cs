@@ -125,7 +125,7 @@ namespace urakawa.daisy.export.visitor
                     {
                         throw new exception.FactoryCannotCreateTypeException(String.Format(
                                 "The media facotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
-                                
+
                                 XukAble.GetXukName(typeof(ExternalAudioMedia), true) ?? typeof(ExternalAudioMedia).Name,
                                 node.Presentation.Project.GetXukNamespace()));
                     }
@@ -138,7 +138,7 @@ namespace urakawa.daisy.export.visitor
                     if (chProp.GetMedia(DestinationChannel) != null)
                     {
 #if DEBUG
-Debugger.Break();
+                        Debugger.Break();
 #endif
                         chProp.SetMedia(DestinationChannel, null);
                     }
