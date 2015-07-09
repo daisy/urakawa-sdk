@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Xml;
+using urakawa.core;
 using urakawa.xuk;
 using urakawa.events;
 
@@ -10,8 +11,14 @@ namespace urakawa.media
     /// This is the base interface for all media-related classes and interfaces.  
     /// Media is continuous (time-based) or discrete (static), and is of a specific type.
     /// </summary>
-    public abstract class Media : WithPresentation, IChangeNotifier
+    public abstract class Media : WithPresentation, ObjectTag, IChangeNotifier
     {
+        private object m_Tag = null;
+        public object Tag
+        {
+            set { m_Tag = value; }
+            get { return m_Tag; }
+        }
 
         /// <summary>
         /// Event fired after the language of the <see cref="TextMedia"/> has changed
