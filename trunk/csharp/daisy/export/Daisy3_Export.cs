@@ -397,18 +397,7 @@ namespace urakawa.daisy.export
             return prefix + counter.ToString();
         }
 
-        private bool m_AddSectionNameToAudioFile = false;
-        public bool AddSectionNameToAudioFile
-        {
-            get
-            {
-                return m_AddSectionNameToAudioFile;
-            }
-            set
-            {
-                m_AddSectionNameToAudioFile = value;
-            }
-        }
+        // Common to OBI and TOBI
 
         private int m_AudioFileNameCharsLimit = -1;
         /// <summary>
@@ -423,6 +412,21 @@ namespace urakawa.daisy.export
             set
             {
                 m_AudioFileNameCharsLimit = value >= 4 ? value : -1;
+            }
+        }
+
+        // OBI only
+
+        private bool m_AddSectionNameToAudioFile = false;
+        public bool AddSectionNameToAudioFile
+        {
+            get
+            {
+                return m_AddSectionNameToAudioFile;
+            }
+            set
+            {
+                m_AddSectionNameToAudioFile = value;
             }
         }
 
@@ -452,19 +456,34 @@ namespace urakawa.daisy.export
             return audioFileName;
         }
 
+        // TOBI only
+
+        private bool m_IsAdjustAudioFileNameEnabled = false;
+        public bool IsAdjustAudioFileNameEnabled
+        {
+            get
+            {
+                return m_IsAdjustAudioFileNameEnabled;
+            }
+            set
+            {
+                m_IsAdjustAudioFileNameEnabled = value;
+            }
+        }
+        
         private Dictionary<TreeNode, string> m_adjustedExternalAudioFileNames = new Dictionary<TreeNode, string>();
         protected string AdjustAudioFileName(ExternalAudioMedia externalAudio, TreeNode levelNode)
         {
-#if !TOBI
-            // Obi should not use this, as the above AddSectionNameToAudioFileName() is used instead!!
-            Debugger.Break();
-
-            return externalAudio.Src;
-#endif
-
             string filename = externalAudio.Src;
 
-            if (!AddSectionNameToAudioFile)
+//#if !TOBI
+//            // Obi should not use this, as the above AddSectionNameToAudioFileName() is used instead!!
+//            Debugger.Break();
+//            return filename;
+//#endif
+
+            // Obi should return below!
+            if (!IsAdjustAudioFileNameEnabled)
             {
                 return filename;
             }
