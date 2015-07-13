@@ -157,91 +157,91 @@ namespace urakawa.data
                         }
                         else
                         {
-//                            DataProvider dp = null;
-//                            int count = 0;
-//                            foreach (DataProvider dp_ in md.UsedDataProviders)
-//                            {
-//                                count++;
+                            //                            DataProvider dp = null;
+                            //                            int count = 0;
+                            //                            foreach (DataProvider dp_ in md.UsedDataProviders)
+                            //                            {
+                            //                                count++;
 
-//                                if (dp == null)
-//                                {
-//                                    dp = dp_;
-//                                }
+                            //                                if (dp == null)
+                            //                                {
+                            //                                    dp = dp_;
+                            //                                }
 
-//                            }
-//                            if (count == 1)
-//                            {
-//                                if (usedDataProviders.Contains(dp))
-//                                {
-//                                    // already processed in prior iteration (previous MediaData)
-//                                    continue;
-//                                }
+                            //                            }
+                            //                            if (count == 1)
+                            //                            {
+                            //                                if (usedDataProviders.Contains(dp))
+                            //                                {
+                            //                                    // already processed in prior iteration (previous MediaData)
+                            //                                    continue;
+                            //                                }
 
-////                                //long nBytes = 0;
+                            ////                                //long nBytes = 0;
 
-////                                Object DPappData = dp.AppData;
-////                                if (DPappData != null)
-////                                {
-////                                    if (DPappData is WavClip.PcmFormatAndTime)
-////                                    {
-////                                        //nBytes = ((WavClip.PcmFormatAndTime)DPappData).Bytes;
+                            ////                                Object DPappData = dp.AppData;
+                            ////                                if (DPappData != null)
+                            ////                                {
+                            ////                                    if (DPappData is WavClip.PcmFormatAndTime)
+                            ////                                    {
+                            ////                                        //nBytes = ((WavClip.PcmFormatAndTime)DPappData).Bytes;
 
-//////#if DEBUG
-//////                                        long nBytes_ = ((WavClip.PcmFormatAndTime)DPappData).mFormat.ConvertTimeToBytes(((WavClip.PcmFormatAndTime)DPappData).mTime.AsLocalUnits);
-//////                                        DebugFix.Assert(((WavClip.PcmFormatAndTime)DPappData).mFormat.BytesAreEqualWithMillisecondsTolerance(nBytes, nBytes_));
-//////#endif
-////                                    }
-////#if DEBUG
-////                                    else
-////                                    {
-////                                        Debugger.Break();
-////                                    }
-////#endif
-////                                }
-////                                else
-////                                {
-////                                    Stream ism = null;
-////                                    try
-////                                    {
-////                                        ism = wMd.OpenInputStream();
+                            //////#if DEBUG
+                            //////                                        long nBytes_ = ((WavClip.PcmFormatAndTime)DPappData).mFormat.ConvertTimeToBytes(((WavClip.PcmFormatAndTime)DPappData).mTime.AsLocalUnits);
+                            //////                                        DebugFix.Assert(((WavClip.PcmFormatAndTime)DPappData).mFormat.BytesAreEqualWithMillisecondsTolerance(nBytes, nBytes_));
+                            //////#endif
+                            ////                                    }
+                            ////#if DEBUG
+                            ////                                    else
+                            ////                                    {
+                            ////                                        Debugger.Break();
+                            ////                                    }
+                            ////#endif
+                            ////                                }
+                            ////                                else
+                            ////                                {
+                            ////                                    Stream ism = null;
+                            ////                                    try
+                            ////                                    {
+                            ////                                        ism = wMd.OpenInputStream();
 
-////                                        uint dataLength;
-////                                        AudioLibPCMFormat PCMformat = AudioLibPCMFormat.RiffHeaderParse(ism, out dataLength);
+                            ////                                        uint dataLength;
+                            ////                                        AudioLibPCMFormat PCMformat = AudioLibPCMFormat.RiffHeaderParse(ism, out dataLength);
 
-////                                        DebugFix.Assert(wMd.PCMFormat.Data.Equals(PCMformat));
+                            ////                                        DebugFix.Assert(wMd.PCMFormat.Data.Equals(PCMformat));
 
-////                                        DPappData = new WavClip.PcmFormatAndTime(PCMformat, new Time(PCMformat.ConvertBytesToTime(dataLength))
-////                                            //, dataLength
-////                                            );
-////                                        dp.AppData = DPappData;
+                            ////                                        DPappData = new WavClip.PcmFormatAndTime(PCMformat, new Time(PCMformat.ConvertBytesToTime(dataLength))
+                            ////                                            //, dataLength
+                            ////                                            );
+                            ////                                        dp.AppData = DPappData;
 
-////                                        //nBytes = dataLength;
-////                                    }
-////                                    catch (Exception ex)
-////                                    {
-////                                        throw ex;
-////                                    }
-////                                    finally
-////                                    {
-////                                        if (ism != null)
-////                                        {
-////                                            ism.Close();
-////                                        }
-////                                    }
-////                                }
+                            ////                                        //nBytes = dataLength;
+                            ////                                    }
+                            ////                                    catch (Exception ex)
+                            ////                                    {
+                            ////                                        throw ex;
+                            ////                                    }
+                            ////                                    finally
+                            ////                                    {
+                            ////                                        if (ism != null)
+                            ////                                        {
+                            ////                                            ism.Close();
+                            ////                                        }
+                            ////                                    }
+                            ////                                }
 
-//                                //// TODO: some FDP might be smaller, yet full! (because the next MD did not fit within) => How to detect?
-//                                //if (nBytes >= nMaxBytes)
-//                                //{
-//                                //    bool mediaHasSingleFileDataProviderWithLengthGreaterThanMaxThreshold = false;
-
-
+                            //                                //// TODO: some FDP might be smaller, yet full! (because the next MD did not fit within) => How to detect?
+                            //                                //if (nBytes >= nMaxBytes)
+                            //                                //{
+                            //                                //    bool mediaHasSingleFileDataProviderWithLengthGreaterThanMaxThreshold = false;
 
 
-//                                //    usedDataProviders.Add(dp);
-//                                //    continue;
-//                                //}
-//                            }
+
+
+                            //                                //    usedDataProviders.Add(dp);
+                            //                                //    continue;
+                            //                                //}
+                            //                            }
 
 
                             long nextSize = currentBytes + thisAudioByteLength;
@@ -310,7 +310,9 @@ namespace urakawa.data
                             {
                                 //currentFileDataProvider.AppendData(stream, availableToRead);
 
+#if RIFF_HEADER_INCREMENTAL_MAINTAIN
                                 currentFileDataProviderOutputStream.Seek(0, SeekOrigin.End);
+#endif //RIFF_HEADER_INCREMENTAL_MAINTAIN
 
                                 const uint BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER
                                 StreamUtils.Copy(stream, (ulong)availableToRead, currentFileDataProviderOutputStream, BUFFER_SIZE);
@@ -363,6 +365,7 @@ namespace urakawa.data
                                     currentFileDataProvider.AppData = appData;
                                 }
 
+#if RIFF_HEADER_INCREMENTAL_MAINTAIN
                                 currentFileDataProviderOutputStream.Position = 0;
                                 try
                                 {
@@ -375,6 +378,7 @@ namespace urakawa.data
 
                                     throw ex;
                                 }
+#endif //RIFF_HEADER_INCREMENTAL_MAINTAIN
 
                                 wMd.RemovePcmData(Time.Zero);
 
