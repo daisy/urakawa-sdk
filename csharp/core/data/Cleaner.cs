@@ -56,24 +56,7 @@ namespace urakawa.data
 
             // We collect references of MediaData used in the UndoRedoManager
             List<MediaData> usedMediaData = new List<MediaData>();
-            foreach (MediaData md in m_Presentation.UndoRedoManager.UsedMediaData)
-            {
-                //progress += progressStep;
-                //if (progress > 100) progress = progressStep;
-                //reportProgress(progress, "[2]...");
-
-                if (RequestCancellation) return;
-
-                if (!usedMediaData.Contains(md))
-                {
-#if DEBUG
-                    //DebugFix.Assert();
-                    Debugger.Break();
-#endif
-                    usedMediaData.Add(md);
-                }
-            }
-
+            
             //reportProgress(-1, "[3]...");
 
             if (RequestCancellation) return;
@@ -112,6 +95,25 @@ namespace urakawa.data
 #endif
             }
 
+            // ensure that media datas in undo redo manager are also preserved
+            // it should be iterated after traversing tree because most of the media datas in undo redo manager are already in the tree
+            foreach (MediaData md in m_Presentation.UndoRedoManager.UsedMediaData)
+            {
+                //progress += progressStep;
+                //if (progress > 100) progress = progressStep;
+                //reportProgress(progress, "[2]...");
+
+                if (RequestCancellation) return;
+
+                if (!usedMediaData.Contains(md))
+                {
+#if DEBUG
+                    //DebugFix.Assert();
+                    Debugger.Break();
+#endif
+                    usedMediaData.Add(md);
+                }
+            }
             progress = progressStep;
 
             List<DataProvider> usedDataProviders = new List<DataProvider>();
