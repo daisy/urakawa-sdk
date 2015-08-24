@@ -1105,13 +1105,14 @@ Caps
                         {
                             m_RecordingFileWriter.Close();
                         }
-                        else
+                        else if (stream != null)
                         {
                             stream.Close();
                         }
                     }
 
-                    if (length <= (long)m_RecordedFileRiffHeaderSize) // no PCM data, just RIFF header
+                    if (length <= (long)m_RecordedFileRiffHeaderSize // no PCM data, just RIFF header
+                        && File.Exists(m_RecordedFilePath))
                     {
                         File.Delete(m_RecordedFilePath);
                         m_RecordedFilePath = null;
