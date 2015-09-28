@@ -46,7 +46,7 @@ namespace urakawa.media.data.audio.codec
         /// <summary>
         /// Stores the <see cref="WavClip"/>s of <c>this</c>
         /// </summary>
-        private List<WavClip> mWavClips = new List<WavClip>();
+        public List<WavClip> mWavClips = new List<WavClip>();
 
         /// <summary>
         /// Determines if a PCM Format change is ok
