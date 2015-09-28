@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using AudioLib;
 using urakawa.command;
 using urakawa.core;
@@ -20,11 +21,13 @@ namespace urakawa.data
         private readonly Presentation m_Presentation;
         private readonly string m_FullPathToDeletedDataFolder;
         private readonly double m_cleanAudioMaxFileMegaBytes;
-        public Cleaner(Presentation presentation, string fullPathToDeletedDataFolder, double cleanAudioMaxFileMegaBytes)
+        private readonly bool m_enableFileDataProviderPreservation;
+        public Cleaner(Presentation presentation, string fullPathToDeletedDataFolder, double cleanAudioMaxFileMegaBytes, bool enableFileDataProviderPreservation)
         {
             m_Presentation = presentation;
             m_FullPathToDeletedDataFolder = fullPathToDeletedDataFolder;
             m_cleanAudioMaxFileMegaBytes = cleanAudioMaxFileMegaBytes;
+            m_enableFileDataProviderPreservation = enableFileDataProviderPreservation;
         }
 
         public override void DoWork()
@@ -40,6 +43,122 @@ namespace urakawa.data
 #endif
                 throw new Exception("Cleanup", ex);
             }
+        }
+
+        private List<DataProvider> m_fullyUsedFileDataProviders = null;
+        private Dictionary<DataProvider, List<WavClip>> m_FileDataProvidersWavClipMap = new Dictionary<DataProvider, List<WavClip>>();
+        private bool isFileDataProviderFullyUsed(DataProvider dataProvider, List<MediaData> usedMediaData)
+        {
+            if (m_fullyUsedFileDataProviders == null)
+            {
+                m_fullyUsedFileDataProviders = new List<DataProvider>();
+
+                foreach (MediaData md in usedMediaData)
+                {
+                    if (md is WavAudioMediaData)
+                    {
+                        WavAudioMediaData wMd = (WavAudioMediaData) md;
+
+                        foreach (WavClip clip in wMd.mWavClips)
+                        {
+                            if (m_fullyUsedFileDataProviders.Contains(clip.DataProvider))
+                            {
+//#if DEBUG
+//                                Debugger.Break();
+//#endif
+                                continue;
+                            }
+
+                            Time dur = clip.MediaDuration;
+                                // ensures init the internal FileDataProvider.AppData cache of PCM format and duration
+
+#if DEBUG
+                            DebugFix.Assert(clip.DataProvider.AppData != null);
+                            DebugFix.Assert(clip.DataProvider.AppData is WavClip.PcmFormatAndTime);
+#endif
+                            if (clip.ClipBegin.IsEqualTo(Time.Zero) && clip.ClipEnd.IsEqualTo(dur))
+                            {
+                                if (!m_fullyUsedFileDataProviders.Contains(clip.DataProvider))
+                                {
+                                    m_fullyUsedFileDataProviders.Add(clip.DataProvider);
+                                }
+
+                                continue;
+                            }
+
+                            List<WavClip> list;
+                            m_FileDataProvidersWavClipMap.TryGetValue(clip.DataProvider, out list);
+                            if (list == null)
+                            {
+                                list = new List<WavClip>();
+                                m_FileDataProvidersWavClipMap.Add(clip.DataProvider, list);
+                            }
+                            if (!list.Contains(clip))
+                            {
+                                list.Add(clip);
+                            }
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        bool first = true;
+#endif
+                        foreach (DataProvider dp in md.UsedDataProviders)
+                        {
+#if DEBUG
+                            DebugFix.Assert(first);
+                            first = false;
+#endif
+                            if (!m_fullyUsedFileDataProviders.Contains(dp))
+                            {
+                                m_fullyUsedFileDataProviders.Add(dp);
+                            }
+                        }
+                    }
+                }
+
+                if (m_FileDataProvidersWavClipMap.Count > 0)
+                {
+                    foreach (DataProvider dp in m_FileDataProvidersWavClipMap.Keys)
+                    {
+                        List<WavClip> wavClips = m_FileDataProvidersWavClipMap[dp];
+
+                        bool fullCoverage = false;
+
+                        List<WavClip> holes = new List<WavClip>();
+
+                        foreach (WavClip clip in wavClips)
+                        {
+#if DEBUG
+                            DebugFix.Assert(clip.DataProvider == dp);
+                            DebugFix.Assert(clip.DataProvider.AppData != null);
+                            DebugFix.Assert(clip.DataProvider.AppData is WavClip.PcmFormatAndTime);
+                            
+                            DebugFix.Assert(clip.MediaDuration.IsEqualTo(((WavClip.PcmFormatAndTime)dp.AppData).mTime));
+#endif
+                            // TODO: merge clip begin-end ranges, determine full coverage
+
+                            //clip.PcmFormat.ConvertTimeToBytes
+                            Time begin = clip.ClipBegin;
+                            Time end = clip.ClipEnd;
+
+                        }
+
+                        if (holes.Count == 0)
+                        {
+                            if (!m_fullyUsedFileDataProviders.Contains(dp))
+                            {
+                                m_fullyUsedFileDataProviders.Add(dp);
+                            }
+                        }
+                    }
+                }
+
+                m_FileDataProvidersWavClipMap.Clear();
+            }
+            
+            return m_fullyUsedFileDataProviders.Contains(dataProvider);
         }
 
         /// <summary>
@@ -122,8 +241,6 @@ namespace urakawa.data
             // (not in the list of collected MediaData so far)
             // and we collect references of DataProviders used by the MediaData collected so far
 
-            index = 0;
-
             DataProvider curentAudioDataProvider = null;
             long currentFileDataProviderIndex = 0;
             string prefixFormat = @"{0:D4}_";
@@ -136,7 +253,7 @@ namespace urakawa.data
             ulong riffHeaderLength = 0;
 
             List<MediaData> list = m_Presentation.MediaDataManager.ManagedObjects.ContentsAs_ListCopy;
-
+            index = 0;
             foreach (MediaData md in list)
             {
                 if (RequestCancellation) return;
@@ -152,19 +269,51 @@ namespace urakawa.data
                 }
             }
 
+            index = 0;
             foreach (MediaData md in usedMediaData)
             {
                 index++;
-                progress = 100 * index / list.Count;
+                progress = 100 * index / usedMediaData.Count;
                 //reportProgress(progress, "[5]...");
 
                 if (RequestCancellation) return;
 
                 if (md is WavAudioMediaData)
                 {
-                    reportProgress_Throttle(progress, index + " / " + list.Count);
+                    reportProgress_Throttle(progress, index + " / " + usedMediaData.Count);
 
                     WavAudioMediaData wMd = (WavAudioMediaData)md;
+
+                    if (m_enableFileDataProviderPreservation)
+                    {
+                        bool allFullyUsed = true;
+                        foreach (DataProvider dp in md.UsedDataProviders)
+                        {
+                            if (RequestCancellation) return;
+
+                            if (!isFileDataProviderFullyUsed(dp, usedMediaData))
+                            {
+                                allFullyUsed = false;
+                                break;
+                            }
+                        }
+
+                        if (allFullyUsed)
+                        {
+                            foreach (DataProvider dp in md.UsedDataProviders)
+                            {
+                                if (RequestCancellation) return;
+
+                                if (!usedDataProviders.Contains(dp))
+                                {
+                                    usedDataProviders.Add(dp);
+                                }
+                            }
+
+                            continue;
+                        }
+                    }
+
                     uint thisAudioByteLength = (uint)wMd.PCMFormat.Data.ConvertTimeToBytes(wMd.AudioDuration.AsLocalUnits);
 
                     if (nMaxBytes <= 0 || thisAudioByteLength >= nMaxBytes)
@@ -473,11 +622,10 @@ namespace urakawa.data
             // We eliminate DataProviders that are unused
             // (i.e. not in our list of collected used DataProviders so far)
 
-            index = 0;
-
             //int idx = 0; //to test exception handling and unmove of deleted files
 
             List<DataProvider> list2 = m_Presentation.DataProviderManager.ManagedObjects.ContentsAs_ListCopy;
+            index = 0;
             foreach (DataProvider dp in list2)
             {
                 progress = 100 * index++ / list2.Count;
