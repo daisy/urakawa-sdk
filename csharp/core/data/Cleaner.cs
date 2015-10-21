@@ -46,119 +46,246 @@ namespace urakawa.data
         }
 
         private List<DataProvider> m_fullyUsedFileDataProviders = null;
-        private Dictionary<DataProvider, List<WavClip>> m_FileDataProvidersWavClipMap = new Dictionary<DataProvider, List<WavClip>>();
+        private Dictionary<DataProvider, List<WavClip>> m_FileDataProvidersWavClipMap = null;
+        private Dictionary<DataProvider, List<WavClip>> m_FileDataProvidersHolesMap = null;
+
         private bool isFileDataProviderFullyUsed(DataProvider dataProvider, List<MediaData> usedMediaData)
         {
-            if (m_fullyUsedFileDataProviders == null)
-            {
-                m_fullyUsedFileDataProviders = new List<DataProvider>();
+            ensureDataProviderWavClipHoles(usedMediaData);
 
-                foreach (MediaData md in usedMediaData)
-                {
-                    if (md is WavAudioMediaData)
-                    {
-                        WavAudioMediaData wMd = (WavAudioMediaData) md;
-
-                        foreach (WavClip clip in wMd.mWavClips)
-                        {
-                            if (m_fullyUsedFileDataProviders.Contains(clip.DataProvider))
-                            {
-//#if DEBUG
-//                                Debugger.Break();
-//#endif
-                                continue;
-                            }
-
-                            Time dur = clip.MediaDuration;
-                                // ensures init the internal FileDataProvider.AppData cache of PCM format and duration
-
-#if DEBUG
-                            DebugFix.Assert(clip.DataProvider.AppData != null);
-                            DebugFix.Assert(clip.DataProvider.AppData is WavClip.PcmFormatAndTime);
-#endif
-                            if (clip.ClipBegin.IsEqualTo(Time.Zero) && clip.ClipEnd.IsEqualTo(dur))
-                            {
-                                if (!m_fullyUsedFileDataProviders.Contains(clip.DataProvider))
-                                {
-                                    m_fullyUsedFileDataProviders.Add(clip.DataProvider);
-                                }
-
-                                continue;
-                            }
-
-                            List<WavClip> list;
-                            m_FileDataProvidersWavClipMap.TryGetValue(clip.DataProvider, out list);
-                            if (list == null)
-                            {
-                                list = new List<WavClip>();
-                                m_FileDataProvidersWavClipMap.Add(clip.DataProvider, list);
-                            }
-                            if (!list.Contains(clip))
-                            {
-                                list.Add(clip);
-                            }
-                        }
-                    }
-                    else
-                    {
-#if DEBUG
-                        bool first = true;
-#endif
-                        foreach (DataProvider dp in md.UsedDataProviders)
-                        {
-#if DEBUG
-                            DebugFix.Assert(first);
-                            first = false;
-#endif
-                            if (!m_fullyUsedFileDataProviders.Contains(dp))
-                            {
-                                m_fullyUsedFileDataProviders.Add(dp);
-                            }
-                        }
-                    }
-                }
-
-                if (m_FileDataProvidersWavClipMap.Count > 0)
-                {
-                    foreach (DataProvider dp in m_FileDataProvidersWavClipMap.Keys)
-                    {
-                        List<WavClip> wavClips = m_FileDataProvidersWavClipMap[dp];
-
-                        bool fullCoverage = false;
-
-                        List<WavClip> holes = new List<WavClip>();
-
-                        foreach (WavClip clip in wavClips)
-                        {
-#if DEBUG
-                            DebugFix.Assert(clip.DataProvider == dp);
-                            DebugFix.Assert(clip.DataProvider.AppData != null);
-                            DebugFix.Assert(clip.DataProvider.AppData is WavClip.PcmFormatAndTime);
-                            
-                            DebugFix.Assert(clip.MediaDuration.IsEqualTo(((WavClip.PcmFormatAndTime)dp.AppData).mTime));
-#endif
-                            // TODO: merge clip begin-end ranges, determine full coverage
-
-                            //clip.PcmFormat.ConvertTimeToBytes
-                            Time begin = clip.ClipBegin;
-                            Time end = clip.ClipEnd;
-
-                        }
-
-                        if (holes.Count == 0)
-                        {
-                            if (!m_fullyUsedFileDataProviders.Contains(dp))
-                            {
-                                m_fullyUsedFileDataProviders.Add(dp);
-                            }
-                        }
-                    }
-                }
-
-                m_FileDataProvidersWavClipMap.Clear();
-            }
-            
             return m_fullyUsedFileDataProviders.Contains(dataProvider);
+        }
+
+        private void ensureDataProviderWavClipHoles(List<MediaData> usedMediaData)
+        {
+            if (m_fullyUsedFileDataProviders != null)
+            {
+                return;
+            }
+
+            // List of DataProviders (WAV files) that are entirely used (no unused gaps)
+            m_fullyUsedFileDataProviders = new List<DataProvider>();
+
+            // Associate each DataProvider (WAV file) with a list of potentially-overlapping WavClips (begin-end time range)
+            // that represent actual file usage.
+            // Note that those WavClips may belong to different WavAudioMediaData, as FileDataProviders can be reused / shared.
+            m_FileDataProvidersWavClipMap = new Dictionary<DataProvider, List<WavClip>>();
+
+            // Associate each DataProvider (WAV file) with a list of non-overlapping WavClips (begin-end time range)
+            // that represent holes (unused gaps).
+            // This data is directly generated from m_FileDataProvidersWavClipMap
+            // Typically, this data is used to determine what raw PCM ranges can be discarded, 
+            // by means of rebuilding the WAV file from the parts that are in use.
+            // Note that several files may be merged together to decrease filesystem I/O (network storage prefers larger fewer files)
+            m_FileDataProvidersHolesMap = new Dictionary<DataProvider, List<WavClip>>();
+
+            foreach (MediaData md in usedMediaData)
+            {
+                if (md is WavAudioMediaData)
+                {
+                    WavAudioMediaData wMd = (WavAudioMediaData)md;
+
+                    foreach (WavClip clip in wMd.mWavClips)
+                    {
+                        // see WavClip.Copy() => FileDataProviders can be reused
+                        // (underlying WAV file is unmutable, this avoids redundant multiple identical instances in DataProviderManager,
+                        // and large resulting XUK serialization)
+                        // so, clip.DataProvider may already be present in m_fullyUsedFileDataProviders and m_FileDataProvidersWavClipMap,
+                        // but we go ahead anyway to update the map
+
+                        List<WavClip> list;
+                        m_FileDataProvidersWavClipMap.TryGetValue(clip.DataProvider, out list);
+                        if (list == null)
+                        {
+                            list = new List<WavClip>();
+                            m_FileDataProvidersWavClipMap.Add(clip.DataProvider, list);
+                        }
+                        if (!list.Contains(clip))
+                        {
+                            list.Add(clip);
+                        }
+#if DEBUG
+                        // Unlike FileDataProviders (which can be resused, see comment above),
+                        // WavClip instances are unique.
+                        else
+                        {
+                            Debugger.Break();
+                        }
+#endif
+
+                        // ensures init the internal FileDataProvider.AppData cache of PCM format and duration
+                        Time dur = clip.MediaDuration;
+#if DEBUG
+                        DebugFix.Assert(clip.DataProvider.AppData != null);
+                        DebugFix.Assert(clip.DataProvider.AppData is WavClip.PcmFormatAndTime);
+#endif
+
+                        if (clip.ClipBegin.IsEqualTo(Time.Zero) && clip.ClipEnd.IsEqualTo(dur))
+                        {
+                            if (!m_fullyUsedFileDataProviders.Contains(clip.DataProvider))
+                            {
+                                m_fullyUsedFileDataProviders.Add(clip.DataProvider);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    bool first = true;
+#endif
+                    foreach (DataProvider dp in md.UsedDataProviders)
+                    {
+#if DEBUG
+                        DebugFix.Assert(first);
+                        first = false;
+#endif
+                        //if (!m_fullyUsedFileDataProviders.Contains(dp))
+                        //{
+                        //    m_fullyUsedFileDataProviders.Add(dp);
+                        //}
+                    }
+                }
+            }
+
+            if (m_FileDataProvidersWavClipMap.Count <= 0)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            foreach (DataProvider dp in m_FileDataProvidersWavClipMap.Keys)
+            {
+#if DEBUG
+                DebugFix.Assert(dp.AppData != null);
+                DebugFix.Assert(dp.AppData is WavClip.PcmFormatAndTime);
+#endif
+
+                WavClip whole = new WavClip(dp); // From beginning to end
+#if DEBUG
+                DebugFix.Assert(whole.ClipEnd.IsEqualTo(((WavClip.PcmFormatAndTime)dp.AppData).mTime));
+#endif
+                List<WavClip> holes = new List<WavClip>();
+                holes.Add(whole);
+
+                List<WavClip> wavClips = m_FileDataProvidersWavClipMap[dp];
+                foreach (WavClip clip in wavClips)
+                {
+#if DEBUG
+                    DebugFix.Assert(clip.DataProvider == dp);
+
+                    DebugFix.Assert(clip.DataProvider.AppData != null);
+                    DebugFix.Assert(clip.DataProvider.AppData is WavClip.PcmFormatAndTime);
+
+                    DebugFix.Assert(clip.MediaDuration.IsEqualTo(((WavClip.PcmFormatAndTime)clip.DataProvider.AppData).mTime));
+#endif
+                    wavClipRangeMerge(holes, clip);
+                }
+
+                if (holes.Count == 0)
+                {
+                    if (!m_fullyUsedFileDataProviders.Contains(dp))
+                    {
+                        m_fullyUsedFileDataProviders.Add(dp);
+                    }
+                }
+                else
+                {
+                    m_FileDataProvidersHolesMap.Add(dp, holes);
+                }
+            }
+
+#if DEBUG
+            foreach (DataProvider dp in m_fullyUsedFileDataProviders)
+            {
+                DebugFix.Assert(m_FileDataProvidersWavClipMap.ContainsKey(dp));
+                DebugFix.Assert(!m_FileDataProvidersHolesMap.ContainsKey(dp));
+            }
+
+            foreach (DataProvider dp in m_FileDataProvidersHolesMap.Keys)
+            {
+                DebugFix.Assert(m_FileDataProvidersWavClipMap.ContainsKey(dp));
+                DebugFix.Assert(!m_fullyUsedFileDataProviders.Contains(dp));
+            }
+
+
+            Console.WriteLine(" ");
+            Console.WriteLine(" ");
+            Console.WriteLine("## CLEANUP -- fully-used WAV files:");
+            foreach (DataProvider dp in m_fullyUsedFileDataProviders)
+            {
+                Console.Write("[" + ((FileDataProvider)dp).DataFileRelativePath + "] ");
+            }
+            Console.WriteLine(" ");
+            Console.WriteLine(" ");
+            Console.WriteLine("## CLEANUP -- WAV files with unused gaps:");
+            foreach (DataProvider dp in m_FileDataProvidersHolesMap.Keys)
+            {
+                Console.WriteLine("[" + ((FileDataProvider)dp).DataFileRelativePath + "] ");
+                foreach (WavClip hole in m_FileDataProvidersHolesMap[dp])
+                {
+                    Console.WriteLine(hole.ClipBegin.Format_Standard() + " - " + hole.ClipEnd.Format_Standard());
+                }
+                Console.WriteLine(" ");
+            }
+#endif
+        }
+
+        private Time m_minimumDurationToPreserveHole = new Time(AudioLibPCMFormat.MILLISECONDS_TOLERANCE * AudioLibPCMFormat.TIME_UNIT); // 5ms
+        private void wavClipRangeMerge(List<WavClip> holes, WavClip clip)
+        {
+            if (holes.Count == 0)
+            {
+                return;
+            }
+
+            List<WavClip> holesToRemove = new List<WavClip>();
+            List<WavClip> holesToAdd = new List<WavClip>();
+            foreach (WavClip hole in holes)
+            {
+                // clip covers hole entirely
+                if (clip.ClipBegin.IsLessThanOrEqualTo(hole.ClipBegin) && clip.ClipEnd.IsGreaterThanOrEqualTo(hole.ClipEnd))
+                {
+                    holesToRemove.Add(hole);
+                    continue;
+                }
+
+                bool leftClipEdgeIsInsideHole = clip.ClipBegin.IsGreaterThanOrEqualTo(hole.ClipBegin)
+                                                && clip.ClipBegin.IsLessThan(hole.ClipEnd);
+                bool rightClipEdgeIsInsideHole = clip.ClipEnd.IsGreaterThan(hole.ClipBegin)
+                                                && clip.ClipEnd.IsLessThanOrEqualTo(hole.ClipEnd);
+
+                // clip is inside hole, or possibly overlapping / crossing either the left side, or the right side (but not both)
+                if (leftClipEdgeIsInsideHole || rightClipEdgeIsInsideHole)
+                {
+                    holesToRemove.Add(hole);
+
+                    Time begin1 = new Time(hole.ClipBegin);
+                    Time end1 = new Time(clip.ClipBegin);
+                    Time dur1 = end1.GetDifference(begin1);
+                    if (dur1.IsGreaterThanOrEqualTo(m_minimumDurationToPreserveHole))
+                    {
+                        holesToAdd.Add(new WavClip(clip.DataProvider, begin1, end1));
+                    }
+
+                    Time begin2 = new Time(clip.ClipEnd);
+                    Time end2 = new Time(hole.ClipEnd);
+                    Time dur2 = end2.GetDifference(begin2);
+                    if (dur2.IsGreaterThanOrEqualTo(m_minimumDurationToPreserveHole))
+                    {
+                        holesToAdd.Add(new WavClip(clip.DataProvider, begin2, end2));
+                    }
+                }
+            }
+
+            foreach (WavClip hole in holesToRemove)
+            {
+                holes.Remove(hole);
+            }
+
+            holes.AddRange(holesToAdd);
         }
 
         /// <summary>
@@ -175,7 +302,7 @@ namespace urakawa.data
 
             // We collect references of MediaData used in the UndoRedoManager
             List<MediaData> usedMediaData = new List<MediaData>();
-            
+
             //reportProgress(-1, "[3]...");
 
             if (RequestCancellation) return;
@@ -269,6 +396,11 @@ namespace urakawa.data
                 }
             }
 
+            if (m_enableFileDataProviderPreservation)
+            {
+                ensureDataProviderWavClipHoles(usedMediaData);
+            }
+
             index = 0;
             foreach (MediaData md in usedMediaData)
             {
@@ -284,35 +416,35 @@ namespace urakawa.data
 
                     WavAudioMediaData wMd = (WavAudioMediaData)md;
 
-                    if (m_enableFileDataProviderPreservation)
-                    {
-                        bool allFullyUsed = true;
-                        foreach (DataProvider dp in md.UsedDataProviders)
-                        {
-                            if (RequestCancellation) return;
+                    //if (m_enableFileDataProviderPreservation)
+                    //{
+                    //    bool allFullyUsed = true;
+                    //    foreach (DataProvider dp in md.UsedDataProviders)
+                    //    {
+                    //        if (RequestCancellation) return;
 
-                            if (!isFileDataProviderFullyUsed(dp, usedMediaData))
-                            {
-                                allFullyUsed = false;
-                                break;
-                            }
-                        }
+                    //        if (!isFileDataProviderFullyUsed(dp, usedMediaData))
+                    //        {
+                    //            allFullyUsed = false;
+                    //            break;
+                    //        }
+                    //    }
 
-                        if (allFullyUsed)
-                        {
-                            foreach (DataProvider dp in md.UsedDataProviders)
-                            {
-                                if (RequestCancellation) return;
+                    //    if (allFullyUsed)
+                    //    {
+                    //        foreach (DataProvider dp in md.UsedDataProviders)
+                    //        {
+                    //            if (RequestCancellation) return;
 
-                                if (!usedDataProviders.Contains(dp))
-                                {
-                                    usedDataProviders.Add(dp);
-                                }
-                            }
+                    //            if (!usedDataProviders.Contains(dp))
+                    //            {
+                    //                usedDataProviders.Add(dp);
+                    //            }
+                    //        }
 
-                            continue;
-                        }
-                    }
+                    //        continue;
+                    //    }
+                    //}
 
                     uint thisAudioByteLength = (uint)wMd.PCMFormat.Data.ConvertTimeToBytes(wMd.AudioDuration.AsLocalUnits);
 
