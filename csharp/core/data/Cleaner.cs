@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -23,12 +22,34 @@ namespace urakawa.data
         private readonly string m_FullPathToDeletedDataFolder;
         private readonly double m_cleanAudioMaxFileMegaBytes;
         private readonly bool m_enableFileDataProviderPreservation;
+
+        private readonly bool m_isNET2;
+
         public Cleaner(Presentation presentation, string fullPathToDeletedDataFolder, double cleanAudioMaxFileMegaBytes, bool enableFileDataProviderPreservation)
         {
             m_Presentation = presentation;
             m_FullPathToDeletedDataFolder = fullPathToDeletedDataFolder;
             m_cleanAudioMaxFileMegaBytes = cleanAudioMaxFileMegaBytes;
             m_enableFileDataProviderPreservation = enableFileDataProviderPreservation;
+
+
+            //string coreLibVersion = null;
+            //string name = "";
+            //foreach (Assembly item in AppDomain.CurrentDomain.GetAssemblies())
+            //{
+            //    if (item.GlobalAssemblyCache)
+            //    {
+            //        if (!string.IsNullOrEmpty(item.FullName)
+            //            && item.FullName.Contains("mscorlib"))
+            //        {
+            //            name = item.FullName;
+            //            coreLibVersion = item.ImageRuntimeVersion;
+            //            break;
+            //        }
+            //    }
+            //}
+            //m_isNET2 = !string.IsNullOrEmpty(coreLibVersion) && coreLibVersion.Contains("v2.")
+            //    || name.Contains("Version=2");
         }
 
         public override void DoWork()
@@ -617,8 +638,13 @@ namespace urakawa.data
                 Func<DataProvider, DataProvider> keySelector = delegate (DataProvider dp) { return dp; }; //new Func<DataProvider, DataProvider>();
                 IComparer<DataProvider> comparer = new DataProviderUsedSizeComparer(m_fullyUsedFileDataProviders, m_FileDataProvidersWavClipMap, m_FileDataProvidersHolesMap);
 
-                // TODO: implement this for .NET2 !! (OrderBy() is NET3)
+                // TODO: how to detect .NET2 at compile time for Obi? (OrderBy() is NET3+)
+#if NET40
                 IOrderedEnumerable<DataProvider> orderedDPs = m_FileDataProvidersWavClipMap.Keys.OrderBy(keySelector, comparer);
+#else
+                List<DataProvider> orderedDPs = new List<DataProvider>(m_FileDataProvidersWavClipMap.Keys);
+                orderedDPs.Sort(comparer);
+#endif
                 foreach (DataProvider dp in orderedDPs)
                 {
 #if DEBUG
