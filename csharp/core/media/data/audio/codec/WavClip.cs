@@ -118,6 +118,13 @@ namespace urakawa.media.data.audio.codec
         //    }
         //}
 
+        private Object m_AppData = null;
+        public Object AppData
+        {
+            get { return m_AppData; }
+            set { m_AppData = value; }
+        }
+
         public struct PcmFormatAndTime
         {
             public AudioLibPCMFormat mFormat;
