@@ -42,7 +42,7 @@ namespace urakawa.media.data.audio.codec
         }
 
 
-
+        // TODO: WavAudioMediaData.mWavClips should not be exposed publicly (used in Cleaner.cs)
         /// <summary>
         /// Stores the <see cref="WavClip"/>s of <c>this</c>
         /// </summary>
