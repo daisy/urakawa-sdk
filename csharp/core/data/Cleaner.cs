@@ -72,7 +72,7 @@ namespace urakawa.data
         private Dictionary<DataProvider, List<WavClip>> m_FileDataProvidersWavClipMap = null;
         private Dictionary<DataProvider, List<WavClip>> m_FileDataProvidersHolesMap = null;
 
-        private void ensureDataProviderWavClipHoles(List<MediaData> usedMediaData)
+        private void generateDataProviderWavClipHolesMap(List<MediaData> usedMediaData)
         {
             if (m_fullyUsedFileDataProviders != null)
             {
@@ -402,6 +402,630 @@ namespace urakawa.data
             }
         }
 
+        private void Cleanup_EnableFileDataProviderPreservation(List<MediaData> usedMediaData, List<DataProvider> usedDataProviders)
+        {
+            DataProvider curentAudioDataProvider = null;
+            long currentFileDataProviderIndex = 0;
+            string prefixFormat = @"{0:D4}_";
+
+            long nMaxBytes = (m_cleanAudioMaxFileMegaBytes <= 0 ? 0 : (long)Math.Round(m_cleanAudioMaxFileMegaBytes * 1024 * 1024));
+            long currentBytes = 0;
+            FileDataProvider currentFileDataProvider = null;
+            Stream currentFileDataProviderOutputStream = null;
+            PCMFormatInfo pCMFormat = null;
+            ulong riffHeaderLength = 0;
+
+            int progress = 10;
+            int index = 0;
+
+            generateDataProviderWavClipHolesMap(usedMediaData);
+
+            IComparer<DataProvider> comparer = new DataProviderUsedSizeComparer(m_fullyUsedFileDataProviders,
+                m_FileDataProvidersWavClipMap, m_FileDataProvidersHolesMap);
+
+            // TODO: how to detect .NET2 at compile time for Obi? (OrderBy() is NET3+)
+#if NET40
+            Func<DataProvider, DataProvider> keySelector = delegate (DataProvider dp) { return dp; };
+            IOrderedEnumerable<DataProvider> orderedDPs = m_FileDataProvidersWavClipMap.Keys.OrderBy(keySelector,
+                comparer);
+#else
+                List<DataProvider> orderedDPs = new List<DataProvider>(m_FileDataProvidersWavClipMap.Keys);
+                orderedDPs.Sort(comparer);
+#endif
+            index = 0;
+
+            foreach (DataProvider dp in orderedDPs)
+            {
+                index++;
+                progress = 100 * index / m_FileDataProvidersWavClipMap.Keys.Count;
+
+                reportProgress_Throttle(progress, index + " / " + m_FileDataProvidersWavClipMap.Keys.Count);
+
+
+                if (RequestCancellation) return;
+
+#if DEBUG
+                // REMOVED AS DEBUG OUTPUT KILLS PERFORMANCE
+                //Console.WriteLine("[" + ((FileDataProvider)dp).DataFileRelativePath + "] ");
+                //Console.WriteLine("[" +
+                //                  ((WavClip.PcmFormatAndTime)((FileDataProvider)dp).AppData).mTime.Format_Standard
+                //                      () + "] ");
+#endif
+                // no batching of WAV files, no ForceSingleDataProvider either!
+                // ..... nMaxBytes <= 0
+
+                if (nMaxBytes <= 0)
+                {
+                    if (m_fullyUsedFileDataProviders.Contains(dp))
+                    {
+                        ((FileDataProvider)dp).Rename(String.Format(prefixFormat, ++currentFileDataProviderIndex));
+
+                        if (!usedDataProviders.Contains(dp))
+                        {
+                            usedDataProviders.Add(dp);
+                        }
+                    }
+                    else
+                    {
+                        AudioLibPCMFormat audioPCMFormat = ((WavClip.PcmFormatAndTime)((FileDataProvider)dp).AppData).mFormat;
+                        if (pCMFormat == null)
+                        {
+                            pCMFormat = new PCMFormatInfo(audioPCMFormat);
+                        }
+
+                        if (currentFileDataProvider != null)
+                        {
+                            currentFileDataProviderOutputStream.Position = 0;
+                            try
+                            {
+                                riffHeaderLength =
+                                    audioPCMFormat.RiffHeaderWrite(currentFileDataProviderOutputStream,
+                                        (uint)currentBytes);
+                            }
+                            finally
+                            {
+                                currentFileDataProviderOutputStream.Close();
+                                currentFileDataProviderOutputStream = null;
+                            }
+
+                            currentFileDataProvider = null;
+                        }
+
+                        if (currentFileDataProvider == null)
+                        {
+                            currentBytes = 0;
+                            currentFileDataProvider =
+                                (FileDataProvider)
+                                    m_Presentation.DataProviderFactory.Create(
+                                        DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                            currentFileDataProvider.SetNamePrefix(String.Format(prefixFormat,
+                                ++currentFileDataProviderIndex));
+
+                            currentFileDataProviderOutputStream = currentFileDataProvider.OpenOutputStream();
+                            try
+                            {
+                                riffHeaderLength =
+                                    audioPCMFormat.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)0);
+                            }
+                            catch (Exception ex)
+                            {
+                                currentFileDataProviderOutputStream.Close();
+                                currentFileDataProviderOutputStream = null;
+
+                                throw ex;
+                            }
+
+
+                            Object appData = new WavClip.PcmFormatAndTime(
+                                    new AudioLibPCMFormat(audioPCMFormat.NumberOfChannels, audioPCMFormat.SampleRate, audioPCMFormat.BitDepth),
+                                    new Time(0)
+                                    );
+                            currentFileDataProvider.AppData = appData;
+                        }
+
+
+                        if (!usedDataProviders.Contains(currentFileDataProvider))
+                        {
+                            usedDataProviders.Add(currentFileDataProvider);
+                        }
+
+                        Stream stream = null;
+                        uint dataLength;
+                        try
+                        {
+                            stream = dp.OpenInputStream();
+                            AudioLibPCMFormat.RiffHeaderParse(stream, out dataLength);
+#if DEBUG
+                            DebugFix.Assert(stream.Position == 44 || stream.Position == 46);
+#endif
+                        }
+                        catch (Exception ex)
+                        {
+                            currentFileDataProviderOutputStream.Close();
+                            currentFileDataProviderOutputStream = null;
+
+                            if (stream != null)
+                            {
+                                stream.Close();
+                            }
+                            stream = null;
+
+                            throw ex;
+                        }
+
+                        long startPosition = stream.Position;
+                        long availableToRead = stream.Length - startPosition;
+
+                        long prevByteOffset = 0;
+                        List<WavClip> listOfHoles = m_FileDataProvidersHolesMap[dp];
+                        foreach (WavClip hole in listOfHoles)
+                        {
+                            bool isLast = listOfHoles[listOfHoles.Count - 1] == hole;
+
+                            long nextByteOffset = audioPCMFormat.ConvertTimeToBytes(hole.ClipBegin.AsLocalUnits);
+
+                            if (hole.ClipBegin.AsLocalUnits == 0)
+                            {
+                                prevByteOffset = audioPCMFormat.ConvertTimeToBytes(hole.ClipEnd.AsLocalUnits);
+
+                                if (!isLast)
+                                {
+                                    continue;
+                                }
+
+                                isLast = false;
+                                nextByteOffset = stream.Length - startPosition;
+                            }
+                            oneLast:
+                            stream.Position = startPosition + prevByteOffset;
+                            //stream.Seek(startPosition + prevByteOffset, SeekOrigin.Begin);
+
+                            availableToRead = nextByteOffset - prevByteOffset;
+
+                            try
+                            {
+                                //currentFileDataProvider.AppendData(stream, availableToRead);
+
+#if RIFF_HEADER_INCREMENTAL_MAINTAIN
+                                currentFileDataProviderOutputStream.Seek(0, SeekOrigin.End);
+#endif //RIFF_HEADER_INCREMENTAL_MAINTAIN
+
+                                const uint BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER
+                                StreamUtils.Copy(stream, (ulong)availableToRead, currentFileDataProviderOutputStream,
+                                    BUFFER_SIZE);
+#if DEBUG
+                                long length = (long)riffHeaderLength + currentBytes + availableToRead;
+                                DebugFix.Assert(currentFileDataProviderOutputStream.Length == length);
+#endif
+                            }
+                            catch (Exception ex)
+                            {
+                                currentFileDataProviderOutputStream.Close();
+                                currentFileDataProviderOutputStream = null;
+
+                                stream.Close();
+                                stream = null;
+
+                                throw ex;
+                            }
+
+
+#if RIFF_HEADER_INCREMENTAL_MAINTAIN
+                            currentFileDataProviderOutputStream.Position = 0;
+                            try
+                            {
+                                riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)(currentBytes + availableToRead));
+                            }
+                            catch (Exception ex)
+                            {
+                                currentFileDataProviderOutputStream.Close();
+                                currentFileDataProviderOutputStream = null;
+
+                                throw ex;
+                            }
+#endif //RIFF_HEADER_INCREMENTAL_MAINTAIN
+
+                            Time insertedDuration = new Time(audioPCMFormat.ConvertBytesToTime(availableToRead));
+
+                            Object appData = currentFileDataProvider.AppData;
+                            if (appData != null)
+                            {
+                                if (appData is WavClip.PcmFormatAndTime)
+                                {
+                                    ((WavClip.PcmFormatAndTime)appData).mTime.Add(insertedDuration);
+                                }
+#if DEBUG
+                                else
+                                {
+                                    Debugger.Break();
+                                }
+#endif
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                                DebugFix.Assert(currentBytes == 0);
+
+                                appData = new WavClip.PcmFormatAndTime(
+                                    new AudioLibPCMFormat(audioPCMFormat.NumberOfChannels, audioPCMFormat.SampleRate, audioPCMFormat.BitDepth),
+                                    insertedDuration
+                                    );
+                                currentFileDataProvider.AppData = appData;
+                            }
+
+                            currentBytes += availableToRead;
+
+                            prevByteOffset = audioPCMFormat.ConvertTimeToBytes(hole.ClipEnd.AsLocalUnits);
+
+
+                            if (isLast)
+                            {
+                                isLast = false;
+                                nextByteOffset = stream.Length - startPosition;
+                                //if (!audioPCMFormat.BytesAreEqualWithMillisecondsTolerance(prevByteOffset, nextByteOffset))
+                                if (prevByteOffset < nextByteOffset)
+                                {
+                                    goto oneLast;
+                                }
+                            }
+                        }
+
+                        stream.Close();
+                        stream = null;
+
+
+
+                        foreach (WavClip clip in m_FileDataProvidersWavClipMap[dp])
+                        {
+                            Time timeOffset = new Time(0);
+
+                            foreach (WavClip hole in m_FileDataProvidersHolesMap[dp])
+                            {
+                                if (hole.ClipBegin.IsLessThan(clip.ClipBegin))
+                                {
+                                    timeOffset.Add(hole.Duration);
+                                }
+                            }
+
+                            WavAudioMediaData wamd = (WavAudioMediaData)clip.AppData;
+
+                            // TODO: wamd.mWavClips should not be exposed publicly
+                            int iClip = wamd.mWavClips.IndexOf(clip);
+
+                            wamd.mWavClips.RemoveAt(iClip);
+
+                            WavClip newClip = new WavClip(currentFileDataProvider);
+                            if (clip.ClipBegin != null)
+                            {
+                                Time newBegin = clip.ClipBegin.Copy();
+                                newBegin.Substract(timeOffset);
+                                newClip.ClipBegin = newBegin;
+                            }
+                            if (clip.ClipEnd != null)
+                            {
+                                Time newEnd = clip.ClipEnd.Copy();
+                                newEnd.Substract(timeOffset);
+                                newClip.ClipEnd = newEnd;
+                            }
+
+                            if (iClip >= (wamd.mWavClips.Count - 1))
+                            {
+                                wamd.mWavClips.Add(newClip);
+                            }
+                            else
+                            {
+                                wamd.mWavClips.Insert(iClip, newClip);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // TODO!!
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+            }
+
+            if (currentFileDataProvider != null)
+            {
+                currentFileDataProviderOutputStream.Position = 0;
+                try
+                {
+                    riffHeaderLength = pCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)currentBytes);
+                }
+                finally
+                {
+                    currentFileDataProviderOutputStream.Close();
+                    currentFileDataProviderOutputStream = null;
+                }
+
+                currentFileDataProvider = null;
+            }
+
+
+            foreach (MediaData md in usedMediaData)
+            {
+                if (md is WavAudioMediaData)
+                {
+#if DEBUG
+                    foreach (DataProvider dp in md.UsedDataProviders)
+                    {
+                        DebugFix.Assert(usedDataProviders.Contains(dp));
+                    }
+#endif
+                    continue;
+                }
+
+                foreach (DataProvider dp in md.UsedDataProviders)
+                {
+                    if (!usedDataProviders.Contains(dp))
+                    {
+                        usedDataProviders.Add(dp);
+                    }
+                }
+            }
+        }
+
+        private void Cleanup_DefaultPreservePlaybackOrder(List<MediaData> usedMediaData, List<DataProvider> usedDataProviders)
+        {
+            DataProvider curentAudioDataProvider = null;
+            long currentFileDataProviderIndex = 0;
+            string prefixFormat = @"{0:D4}_";
+
+            long nMaxBytes = (m_cleanAudioMaxFileMegaBytes <= 0 ? 0 : (long)Math.Round(m_cleanAudioMaxFileMegaBytes * 1024 * 1024));
+            long currentBytes = 0;
+            FileDataProvider currentFileDataProvider = null;
+            Stream currentFileDataProviderOutputStream = null;
+            PCMFormatInfo pCMFormat = null;
+            ulong riffHeaderLength = 0;
+
+            int progress = 10;
+            int index = 0;
+
+            // The usedMediaData list is ordered according to document order.
+            // When m_cleanAudioMaxFileMegaBytes (nMaxBytes) is activated in user preferences,
+            // the wav clips are concatenated sequentially (batched together to reduce the number of WAV files),
+            // therefore preserving the playback order (and as the audio files are numbered, this allows checking directly in the filesystem view).
+            // However, when m_enableFileDataProviderPreservation is activated in user preferences,
+            // the audio order may not be maintained as the goal is to minimize filesystem I/O by leaving files untouched as much as possible.
+            foreach (MediaData md in usedMediaData)
+            {
+                index++;
+                progress = 100 * index / usedMediaData.Count;
+                //reportProgress(progress, "[5]...");
+
+                if (RequestCancellation) return;
+
+                if (md is WavAudioMediaData)
+                {
+                    reportProgress_Throttle(progress, index + " / " + usedMediaData.Count);
+
+                    WavAudioMediaData wMd = (WavAudioMediaData)md;
+
+                    uint thisAudioByteLength =
+                        (uint)wMd.PCMFormat.Data.ConvertTimeToBytes(wMd.AudioDuration.AsLocalUnits);
+
+                    if (nMaxBytes <= 0 || thisAudioByteLength >= nMaxBytes)
+                    {
+                        wMd.ForceSingleDataProvider(true,
+                            String.Format(prefixFormat, ++currentFileDataProviderIndex));
+                    }
+                    else
+                    {
+                        long nextSize = currentBytes + thisAudioByteLength;
+                        if (nextSize > nMaxBytes)
+                        {
+                            if (currentFileDataProvider != null)
+                            {
+                                //Stream stream = currentFileDataProvider.OpenOutputStream();
+                                currentFileDataProviderOutputStream.Position = 0;
+                                try
+                                {
+                                    riffHeaderLength =
+                                        wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream,
+                                            (uint)currentBytes);
+                                }
+                                finally
+                                {
+                                    currentFileDataProviderOutputStream.Close();
+                                    currentFileDataProviderOutputStream = null;
+                                }
+
+                                currentFileDataProvider = null;
+                            }
+                        }
+
+                        if (currentFileDataProvider == null)
+                        {
+                            currentBytes = 0;
+                            currentFileDataProvider =
+                                (FileDataProvider)
+                                    m_Presentation.DataProviderFactory.Create(
+                                        DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                            currentFileDataProvider.SetNamePrefix(String.Format(prefixFormat,
+                                ++currentFileDataProviderIndex));
+
+                            currentFileDataProviderOutputStream = currentFileDataProvider.OpenOutputStream();
+                            try
+                            {
+                                riffHeaderLength =
+                                    wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)0);
+                            }
+                            catch (Exception ex)
+                            {
+                                currentFileDataProviderOutputStream.Close();
+                                currentFileDataProviderOutputStream = null;
+
+                                throw ex;
+                            }
+
+                            pCMFormat = wMd.PCMFormat;
+                        }
+
+                        Stream stream = wMd.OpenPcmInputStream();
+
+                        long availableToRead = stream.Length - stream.Position;
+
+                        //DebugFix.Assert(availableToRead == thisAudioByteLength);
+                        if (thisAudioByteLength != availableToRead)
+                        {
+#if DEBUG
+                            long diff = thisAudioByteLength - availableToRead;
+                            if (Math.Abs(diff) > 2)
+                            {
+                                Console.WriteLine(">> audio bytes diff: " + diff);
+                                Debugger.Break();
+                            }
+#endif
+                            thisAudioByteLength = (uint)availableToRead;
+                        }
+
+                        //bool okay = false;
+                        try
+                        {
+                            //currentFileDataProvider.AppendData(stream, availableToRead);
+
+#if RIFF_HEADER_INCREMENTAL_MAINTAIN
+                            currentFileDataProviderOutputStream.Seek(0, SeekOrigin.End);
+#endif //RIFF_HEADER_INCREMENTAL_MAINTAIN
+
+                            const uint BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER
+                            StreamUtils.Copy(stream, (ulong)availableToRead, currentFileDataProviderOutputStream,
+                                BUFFER_SIZE);
+
+#if DEBUG
+                            long length = (long)riffHeaderLength + currentBytes + availableToRead;
+                            DebugFix.Assert(currentFileDataProviderOutputStream.Length == length);
+#endif
+                            //okay = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            currentFileDataProviderOutputStream.Close();
+                            currentFileDataProviderOutputStream = null;
+
+                            throw ex;
+                        }
+                        finally
+                        {
+                            stream.Close();
+                            stream = null;
+                        }
+                        //if (okay)
+                        //{
+                        Object appData = currentFileDataProvider.AppData;
+                        if (appData != null)
+                        {
+                            if (appData is WavClip.PcmFormatAndTime)
+                            {
+                                ((WavClip.PcmFormatAndTime)appData).mTime.Add(wMd.AudioDuration);
+
+                                //DebugFix.Assert(currentBytes == ((WavClip.PcmFormatAndTime)appData).Bytes);
+                                //((WavClip.PcmFormatAndTime)appData).Bytes = currentBytes + thisAudioByteLength;
+
+                                //((WavClip.PcmFormatAndTime)appData).mFormat;
+                            }
+#if DEBUG
+                            else
+                            {
+                                Debugger.Break();
+                            }
+#endif
+                        }
+                        else
+                        {
+                            DebugFix.Assert(currentBytes == 0);
+                            Time dur = new Time(wMd.AudioDuration);
+                            //DebugFix.Assert(currentBytes + thisAudioByteLength == wMd.PCMFormat.Data.ConvertTimeToBytes(dur.AsLocalUnits));
+                            appData = new WavClip.PcmFormatAndTime(
+                                new AudioLibPCMFormat(wMd.PCMFormat.Data.NumberOfChannels,
+                                    wMd.PCMFormat.Data.SampleRate, wMd.PCMFormat.Data.BitDepth),
+                                dur
+                                //, currentBytes + thisAudioByteLength
+                                );
+                            currentFileDataProvider.AppData = appData;
+                        }
+
+#if RIFF_HEADER_INCREMENTAL_MAINTAIN
+                        currentFileDataProviderOutputStream.Position = 0;
+                        try
+                        {
+                            riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)(currentBytes + thisAudioByteLength));
+                        }
+                        catch (Exception ex)
+                        {
+                            currentFileDataProviderOutputStream.Close();
+                            currentFileDataProviderOutputStream = null;
+
+                            throw ex;
+                        }
+#endif //RIFF_HEADER_INCREMENTAL_MAINTAIN
+
+                        wMd.RemovePcmData(Time.Zero);
+
+                        Time clipBegin = new Time(wMd.PCMFormat.Data.ConvertBytesToTime(currentBytes));
+                        Time clipEnd =
+                            new Time(wMd.PCMFormat.Data.ConvertBytesToTime(currentBytes + thisAudioByteLength));
+
+                        wMd.AppendPcmData(currentFileDataProvider, clipBegin, clipEnd);
+
+                        currentBytes += thisAudioByteLength;
+                        //                            }
+                        //                            else
+                        //                            {
+                        //#if DEBUG
+                        //                                Debugger.Break();
+                        //#endif
+                        //                                currentFileDataProviderOutputStream.Position = 0;
+                        //                                try
+                        //                                {
+                        //                                    riffHeaderLength =
+                        //                                        wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream,
+                        //                                            (uint)currentBytes);
+                        //                                }
+                        //                                finally
+                        //                                {
+                        //                                    currentFileDataProviderOutputStream.Close();
+                        //                                    currentFileDataProviderOutputStream = null;
+                        //                                }
+                        //                                currentFileDataProvider = null;
+                        //                            }
+                    }
+                }
+
+                // md may have changed, so we updated the DPs
+                foreach (DataProvider dp in md.UsedDataProviders)
+                {
+                    if (RequestCancellation) return;
+
+                    if (!usedDataProviders.Contains(dp))
+                    {
+                        usedDataProviders.Add(dp);
+                    }
+                }
+            }
+
+
+            if (currentFileDataProvider != null)
+            {
+                currentFileDataProviderOutputStream.Position = 0;
+                try
+                {
+                    riffHeaderLength = pCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)currentBytes);
+                }
+                finally
+                {
+                    currentFileDataProviderOutputStream.Close();
+                    currentFileDataProviderOutputStream = null;
+                }
+
+                currentFileDataProvider = null;
+            }
+        }
 
         /// <summary>
         /// Removes any <see cref="MediaData"/> and <see cref="DataProvider"/>s that are not used by any <see cref="TreeNode"/> in the document tree
@@ -483,16 +1107,6 @@ namespace urakawa.data
             // (not in the list of collected MediaData so far)
             // and we collect references of DataProviders used by the MediaData collected so far
 
-            DataProvider curentAudioDataProvider = null;
-            long currentFileDataProviderIndex = 0;
-            string prefixFormat = @"{0:D4}_";
-
-            long nMaxBytes = (m_cleanAudioMaxFileMegaBytes <= 0 ? 0 : (long)Math.Round(m_cleanAudioMaxFileMegaBytes * 1024 * 1024));
-            long currentBytes = 0;
-            FileDataProvider currentFileDataProvider = null;
-            Stream currentFileDataProviderOutputStream = null;
-            PCMFormatInfo pCMFormat = null;
-            ulong riffHeaderLength = 0;
 
             List<MediaData> list = m_Presentation.MediaDataManager.ManagedObjects.ContentsAs_ListCopy;
             index = 0;
@@ -513,586 +1127,13 @@ namespace urakawa.data
 
             if (m_enableFileDataProviderPreservation)
             {
-                ensureDataProviderWavClipHoles(usedMediaData);
-
-
-                IComparer<DataProvider> comparer = new DataProviderUsedSizeComparer(m_fullyUsedFileDataProviders,
-                    m_FileDataProvidersWavClipMap, m_FileDataProvidersHolesMap);
-
-                // TODO: how to detect .NET2 at compile time for Obi? (OrderBy() is NET3+)
-#if NET40
-                Func<DataProvider, DataProvider> keySelector = delegate (DataProvider dp) { return dp; };
-                IOrderedEnumerable<DataProvider> orderedDPs = m_FileDataProvidersWavClipMap.Keys.OrderBy(keySelector,
-                    comparer);
-#else
-                List<DataProvider> orderedDPs = new List<DataProvider>(m_FileDataProvidersWavClipMap.Keys);
-                orderedDPs.Sort(comparer);
-#endif
-                index = 0;
-
-                foreach (DataProvider dp in orderedDPs)
-                {
-                    index++;
-                    progress = 100 * index / m_FileDataProvidersWavClipMap.Keys.Count;
-
-                    reportProgress_Throttle(progress, index + " / " + m_FileDataProvidersWavClipMap.Keys.Count);
-
-
-                    if (RequestCancellation) return;
-
-#if DEBUG
-                    // REMOVED AS DEBUG OUTPUT KILLS PERFORMANCE
-                    //Console.WriteLine("[" + ((FileDataProvider)dp).DataFileRelativePath + "] ");
-                    //Console.WriteLine("[" +
-                    //                  ((WavClip.PcmFormatAndTime)((FileDataProvider)dp).AppData).mTime.Format_Standard
-                    //                      () + "] ");
-#endif
-                    // no batching of WAV files, no ForceSingleDataProvider either!
-                    if (nMaxBytes <= 0)
-                    {
-                        if (m_fullyUsedFileDataProviders.Contains(dp))
-                        {
-                            ((FileDataProvider)dp).Rename(String.Format(prefixFormat, ++currentFileDataProviderIndex));
-
-                            if (!usedDataProviders.Contains(dp))
-                            {
-                                usedDataProviders.Add(dp);
-                            }
-                        }
-                        else
-                        {
-                            //m_FileDataProvidersHolesMap
-                            //m_FileDataProvidersWavClipMap
-
-                            AudioLibPCMFormat audioPCMFormat = ((WavClip.PcmFormatAndTime)((FileDataProvider)dp).AppData).mFormat;
-                            if (pCMFormat == null)
-                            {
-                                pCMFormat = new PCMFormatInfo(audioPCMFormat);
-                            }
-
-                            if (currentFileDataProvider != null)
-                            {
-                                //Stream stream = currentFileDataProvider.OpenOutputStream();
-                                currentFileDataProviderOutputStream.Position = 0;
-                                try
-                                {
-                                    riffHeaderLength =
-                                        audioPCMFormat.RiffHeaderWrite(currentFileDataProviderOutputStream,
-                                            (uint)currentBytes);
-                                }
-                                finally
-                                {
-                                    currentFileDataProviderOutputStream.Close();
-                                    currentFileDataProviderOutputStream = null;
-                                }
-
-                                currentFileDataProvider = null;
-                            }
-
-                            if (currentFileDataProvider == null)
-                            {
-                                currentBytes = 0;
-                                currentFileDataProvider =
-                                    (FileDataProvider)
-                                        m_Presentation.DataProviderFactory.Create(
-                                            DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-                                currentFileDataProvider.SetNamePrefix(String.Format(prefixFormat,
-                                    ++currentFileDataProviderIndex));
-
-                                currentFileDataProviderOutputStream = currentFileDataProvider.OpenOutputStream();
-                                try
-                                {
-                                    riffHeaderLength =
-                                        audioPCMFormat.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)0);
-                                }
-                                catch (Exception ex)
-                                {
-                                    currentFileDataProviderOutputStream.Close();
-                                    currentFileDataProviderOutputStream = null;
-
-                                    throw ex;
-                                }
-
-
-                                Object appData = new WavClip.PcmFormatAndTime(
-                                        new AudioLibPCMFormat(audioPCMFormat.NumberOfChannels, audioPCMFormat.SampleRate, audioPCMFormat.BitDepth),
-                                        new Time(0)
-                                        );
-                                currentFileDataProvider.AppData = appData;
-                            }
-
-
-                            if (!usedDataProviders.Contains(currentFileDataProvider))
-                            {
-                                usedDataProviders.Add(currentFileDataProvider);
-                            }
-
-                            Stream stream = null;
-                            uint dataLength;
-                            try
-                            {
-                                stream = dp.OpenInputStream();
-                                AudioLibPCMFormat.RiffHeaderParse(stream, out dataLength);
-#if DEBUG
-                                DebugFix.Assert(stream.Position == 44 || stream.Position == 46);
-#endif
-                            }
-                            catch (Exception ex)
-                            {
-                                currentFileDataProviderOutputStream.Close();
-                                currentFileDataProviderOutputStream = null;
-
-                                if (stream != null)
-                                {
-                                    stream.Close();
-                                }
-                                stream = null;
-
-                                throw ex;
-                            }
-
-                            long startPosition = stream.Position;
-                            long availableToRead = stream.Length - startPosition;
-
-                            long prevByteOffset = 0;
-                            List<WavClip> listOfHoles = m_FileDataProvidersHolesMap[dp];
-                            foreach (WavClip hole in listOfHoles)
-                            {
-                                bool isLast = listOfHoles[listOfHoles.Count - 1] == hole;
-
-                                long nextByteOffset = audioPCMFormat.ConvertTimeToBytes(hole.ClipBegin.AsLocalUnits);
-
-                                if (hole.ClipBegin.AsLocalUnits == 0)
-                                {
-                                    prevByteOffset = audioPCMFormat.ConvertTimeToBytes(hole.ClipEnd.AsLocalUnits);
-
-                                    if (!isLast)
-                                    {
-                                        continue;
-                                    }
-
-                                    isLast = false;
-                                    nextByteOffset = stream.Length - startPosition;
-                                }
-                            oneLast:
-                                stream.Position = startPosition + prevByteOffset;
-                                //stream.Seek(startPosition + prevByteOffset, SeekOrigin.Begin);
-
-                                availableToRead = nextByteOffset - prevByteOffset;
-
-                                try
-                                {
-                                    //currentFileDataProvider.AppendData(stream, availableToRead);
-
-#if RIFF_HEADER_INCREMENTAL_MAINTAIN
-                                    currentFileDataProviderOutputStream.Seek(0, SeekOrigin.End);
-#endif //RIFF_HEADER_INCREMENTAL_MAINTAIN
-
-                                    const uint BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER
-                                    StreamUtils.Copy(stream, (ulong)availableToRead, currentFileDataProviderOutputStream,
-                                        BUFFER_SIZE);
-#if DEBUG
-                                    long length = (long)riffHeaderLength + currentBytes + availableToRead;
-                                    DebugFix.Assert(currentFileDataProviderOutputStream.Length == length);
-#endif
-
-                                }
-                                catch (Exception ex)
-                                {
-                                    currentFileDataProviderOutputStream.Close();
-                                    currentFileDataProviderOutputStream = null;
-
-                                    stream.Close();
-                                    stream = null;
-
-                                    throw ex;
-                                }
-
-
-#if RIFF_HEADER_INCREMENTAL_MAINTAIN
-                                currentFileDataProviderOutputStream.Position = 0;
-                                try
-                                {
-                                    riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)(currentBytes + availableToRead));
-                                }
-                                catch (Exception ex)
-                                {
-                                    currentFileDataProviderOutputStream.Close();
-                                    currentFileDataProviderOutputStream = null;
-
-                                    throw ex;
-                                }
-#endif //RIFF_HEADER_INCREMENTAL_MAINTAIN
-
-                                Time insertedDuration = new Time(audioPCMFormat.ConvertBytesToTime(availableToRead));
-
-                                Object appData = currentFileDataProvider.AppData;
-                                if (appData != null)
-                                {
-                                    if (appData is WavClip.PcmFormatAndTime)
-                                    {
-                                        ((WavClip.PcmFormatAndTime)appData).mTime.Add(insertedDuration);
-                                    }
-#if DEBUG
-                                    else
-                                    {
-                                        Debugger.Break();
-                                    }
-#endif
-                                }
-                                else
-                                {
-#if DEBUG
-                                    Debugger.Break();
-#endif
-                                    DebugFix.Assert(currentBytes == 0);
-
-                                    appData = new WavClip.PcmFormatAndTime(
-                                        new AudioLibPCMFormat(audioPCMFormat.NumberOfChannels, audioPCMFormat.SampleRate, audioPCMFormat.BitDepth),
-                                        insertedDuration
-                                        );
-                                    currentFileDataProvider.AppData = appData;
-                                }
-
-                                currentBytes += availableToRead;
-
-                                prevByteOffset = audioPCMFormat.ConvertTimeToBytes(hole.ClipEnd.AsLocalUnits);
-
-
-                                if (isLast)
-                                {
-                                    isLast = false;
-                                    nextByteOffset = stream.Length - startPosition;
-                                    //if (!audioPCMFormat.BytesAreEqualWithMillisecondsTolerance(prevByteOffset, nextByteOffset))
-                                    if (prevByteOffset < nextByteOffset)
-                                    {
-                                        goto oneLast;
-                                    }
-                                }
-                            }
-
-                            stream.Close();
-                            stream = null;
-
-
-
-                            foreach (WavClip clip in m_FileDataProvidersWavClipMap[dp])
-                            {
-                                Time timeOffset = new Time(0);
-
-                                foreach (WavClip hole in m_FileDataProvidersHolesMap[dp])
-                                {
-                                    if (hole.ClipBegin.IsLessThan(clip.ClipBegin))
-                                    {
-                                        timeOffset.Add(hole.Duration);
-                                    }
-                                }
-
-                                WavAudioMediaData wamd = (WavAudioMediaData)clip.AppData;
-
-                                // TODO: wamd.mWavClips should not be exposed publicly
-                                int iClip = wamd.mWavClips.IndexOf(clip);
-
-                                wamd.mWavClips.RemoveAt(iClip);
-
-                                WavClip newClip = new WavClip(currentFileDataProvider);
-                                if (clip.ClipBegin != null)
-                                {
-                                    Time newBegin = clip.ClipBegin.Copy();
-                                    newBegin.Substract(timeOffset);
-                                    newClip.ClipBegin = newBegin;
-                                }
-                                if (clip.ClipEnd != null)
-                                {
-                                    Time newEnd = clip.ClipEnd.Copy();
-                                    newEnd.Substract(timeOffset);
-                                    newClip.ClipEnd = newEnd;
-                                }
-
-                                if (iClip >= (wamd.mWavClips.Count - 1))
-                                {
-                                    wamd.mWavClips.Add(newClip);
-                                }
-                                else
-                                {
-                                    wamd.mWavClips.Insert(iClip, newClip);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // TODO!!
-#if DEBUG
-                        Debugger.Break();
-#endif
-                    }
-                }
-
-                foreach (MediaData md in usedMediaData)
-                {
-                    if (md is WavAudioMediaData)
-                    {
-#if DEBUG
-                        foreach (DataProvider dp in md.UsedDataProviders)
-                        {
-                            DebugFix.Assert(usedDataProviders.Contains(dp));
-                        }
-#endif
-                        continue;
-                    }
-
-                    foreach (DataProvider dp in md.UsedDataProviders)
-                    {
-                        if (!usedDataProviders.Contains(dp))
-                        {
-                            usedDataProviders.Add(dp);
-                        }
-                    }
-                }
+                Cleanup_EnableFileDataProviderPreservation(usedMediaData, usedDataProviders);
             }
             else
             {
-                index = 0;
-
-                // The usedMediaData list is ordered according to document order.
-                // When m_cleanAudioMaxFileMegaBytes (nMaxBytes) is activated in user preferences,
-                // the wav clips are concatenated sequentially (batched together to reduce the number of WAV files),
-                // therefore preserving the playback order (and as the audio files are numbered, this allows checking directly in the filesystem view).
-                // However, when m_enableFileDataProviderPreservation is activated in user preferences,
-                // the audio order may not be maintained as the goal is to minimize filesystem I/O by leaving files untouched as much as possible.
-                foreach (MediaData md in usedMediaData)
-                {
-                    index++;
-                    progress = 100 * index / usedMediaData.Count;
-                    //reportProgress(progress, "[5]...");
-
-                    if (RequestCancellation) return;
-
-                    if (md is WavAudioMediaData)
-                    {
-                        reportProgress_Throttle(progress, index + " / " + usedMediaData.Count);
-
-                        WavAudioMediaData wMd = (WavAudioMediaData)md;
-
-                        uint thisAudioByteLength =
-                            (uint)wMd.PCMFormat.Data.ConvertTimeToBytes(wMd.AudioDuration.AsLocalUnits);
-
-                        if (nMaxBytes <= 0 || thisAudioByteLength >= nMaxBytes)
-                        {
-                            wMd.ForceSingleDataProvider(true,
-                                String.Format(prefixFormat, ++currentFileDataProviderIndex));
-                        }
-                        else
-                        {
-                            long nextSize = currentBytes + thisAudioByteLength;
-                            if (nextSize > nMaxBytes)
-                            {
-                                if (currentFileDataProvider != null)
-                                {
-                                    //Stream stream = currentFileDataProvider.OpenOutputStream();
-                                    currentFileDataProviderOutputStream.Position = 0;
-                                    try
-                                    {
-                                        riffHeaderLength =
-                                            wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream,
-                                                (uint)currentBytes);
-                                    }
-                                    finally
-                                    {
-                                        currentFileDataProviderOutputStream.Close();
-                                        currentFileDataProviderOutputStream = null;
-                                    }
-
-                                    currentFileDataProvider = null;
-                                }
-                            }
-
-                            if (currentFileDataProvider == null)
-                            {
-                                currentBytes = 0;
-                                currentFileDataProvider =
-                                    (FileDataProvider)
-                                        m_Presentation.DataProviderFactory.Create(
-                                            DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-                                currentFileDataProvider.SetNamePrefix(String.Format(prefixFormat,
-                                    ++currentFileDataProviderIndex));
-
-                                currentFileDataProviderOutputStream = currentFileDataProvider.OpenOutputStream();
-                                try
-                                {
-                                    riffHeaderLength =
-                                        wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)0);
-                                }
-                                catch (Exception ex)
-                                {
-                                    currentFileDataProviderOutputStream.Close();
-                                    currentFileDataProviderOutputStream = null;
-
-                                    throw ex;
-                                }
-
-                                pCMFormat = wMd.PCMFormat;
-                            }
-
-                            Stream stream = wMd.OpenPcmInputStream();
-
-                            long availableToRead = stream.Length - stream.Position;
-
-                            //DebugFix.Assert(availableToRead == thisAudioByteLength);
-                            if (thisAudioByteLength != availableToRead)
-                            {
-#if DEBUG
-                                long diff = thisAudioByteLength - availableToRead;
-                                if (Math.Abs(diff) > 2)
-                                {
-                                    Console.WriteLine(">> audio bytes diff: " + diff);
-                                    Debugger.Break();
-                                }
-#endif
-                                thisAudioByteLength = (uint)availableToRead;
-                            }
-
-                            //bool okay = false;
-                            try
-                            {
-                                //currentFileDataProvider.AppendData(stream, availableToRead);
-
-#if RIFF_HEADER_INCREMENTAL_MAINTAIN
-                                currentFileDataProviderOutputStream.Seek(0, SeekOrigin.End);
-#endif //RIFF_HEADER_INCREMENTAL_MAINTAIN
-
-                                const uint BUFFER_SIZE = 1024 * 300; // 300 KB MAX BUFFER
-                                StreamUtils.Copy(stream, (ulong)availableToRead, currentFileDataProviderOutputStream,
-                                    BUFFER_SIZE);
-
-                                //okay = true;
-                            }
-                            catch (Exception ex)
-                            {
-                                currentFileDataProviderOutputStream.Close();
-                                currentFileDataProviderOutputStream = null;
-
-                                throw ex;
-                            }
-                            finally
-                            {
-                                stream.Close();
-                                stream = null;
-                            }
-                            //if (okay)
-                            //{
-                            Object appData = currentFileDataProvider.AppData;
-                            if (appData != null)
-                            {
-                                if (appData is WavClip.PcmFormatAndTime)
-                                {
-                                    ((WavClip.PcmFormatAndTime)appData).mTime.Add(wMd.AudioDuration);
-
-                                    //DebugFix.Assert(currentBytes == ((WavClip.PcmFormatAndTime)appData).Bytes);
-                                    //((WavClip.PcmFormatAndTime)appData).Bytes = currentBytes + thisAudioByteLength;
-
-                                    //((WavClip.PcmFormatAndTime)appData).mFormat;
-                                }
-#if DEBUG
-                                else
-                                {
-                                    Debugger.Break();
-                                }
-#endif
-                            }
-                            else
-                            {
-                                DebugFix.Assert(currentBytes == 0);
-                                Time dur = new Time(wMd.AudioDuration);
-                                //DebugFix.Assert(currentBytes + thisAudioByteLength == wMd.PCMFormat.Data.ConvertTimeToBytes(dur.AsLocalUnits));
-                                appData = new WavClip.PcmFormatAndTime(
-                                    new AudioLibPCMFormat(wMd.PCMFormat.Data.NumberOfChannels,
-                                        wMd.PCMFormat.Data.SampleRate, wMd.PCMFormat.Data.BitDepth),
-                                    dur
-                                    //, currentBytes + thisAudioByteLength
-                                    );
-                                currentFileDataProvider.AppData = appData;
-                            }
-
-#if RIFF_HEADER_INCREMENTAL_MAINTAIN
-                                currentFileDataProviderOutputStream.Position = 0;
-                                try
-                                {
-                                    riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)(currentBytes + thisAudioByteLength));
-                                }
-                                catch (Exception ex)
-                                {
-                                    currentFileDataProviderOutputStream.Close();
-                                    currentFileDataProviderOutputStream = null;
-
-                                    throw ex;
-                                }
-#endif //RIFF_HEADER_INCREMENTAL_MAINTAIN
-
-                            wMd.RemovePcmData(Time.Zero);
-
-                            Time clipBegin = new Time(wMd.PCMFormat.Data.ConvertBytesToTime(currentBytes));
-                            Time clipEnd =
-                                new Time(wMd.PCMFormat.Data.ConvertBytesToTime(currentBytes + thisAudioByteLength));
-
-                            wMd.AppendPcmData(currentFileDataProvider, clipBegin, clipEnd);
-
-                            currentBytes += thisAudioByteLength;
-                            //                            }
-                            //                            else
-                            //                            {
-                            //#if DEBUG
-                            //                                Debugger.Break();
-                            //#endif
-                            //                                currentFileDataProviderOutputStream.Position = 0;
-                            //                                try
-                            //                                {
-                            //                                    riffHeaderLength =
-                            //                                        wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream,
-                            //                                            (uint)currentBytes);
-                            //                                }
-                            //                                finally
-                            //                                {
-                            //                                    currentFileDataProviderOutputStream.Close();
-                            //                                    currentFileDataProviderOutputStream = null;
-                            //                                }
-                            //                                currentFileDataProvider = null;
-                            //                            }
-                        }
-                    }
-
-                    // md may have changed, so we updated the DPs
-                    foreach (DataProvider dp in md.UsedDataProviders)
-                    {
-                        if (RequestCancellation) return;
-
-                        if (!usedDataProviders.Contains(dp))
-                        {
-                            usedDataProviders.Add(dp);
-                        }
-                    }
-                }
+                Cleanup_DefaultPreservePlaybackOrder(usedMediaData, usedDataProviders);
             }
 
-
-
-
-            if (currentFileDataProvider != null)
-            {
-                currentFileDataProviderOutputStream.Position = 0;
-                try
-                {
-                    riffHeaderLength = pCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)currentBytes);
-                }
-                finally
-                {
-                    currentFileDataProviderOutputStream.Close();
-                    currentFileDataProviderOutputStream = null;
-                }
-
-                currentFileDataProvider = null;
-            }
 
             // We collect references of DataProviders used by the registered ExternalFileData
             foreach (ExternalFileData efd in m_Presentation.ExternalFilesDataManager.ManagedObjects.ContentsAs_Enumerable)
