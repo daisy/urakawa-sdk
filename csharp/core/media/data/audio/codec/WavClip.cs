@@ -390,22 +390,24 @@ namespace urakawa.media.data.audio.codec
 
             long ClipBegin_AsLocalUnits = ClipBegin.AsLocalUnits;
 
-            long posRiffHeader = raw.Position;
+            long posRiffHeader = raw.Position; //44
 
             long beginPos = posRiffHeader + format.ConvertTimeToBytes(ClipBegin_AsLocalUnits + subClipBegin.AsLocalUnits);
+            long endPos = posRiffHeader + format.ConvertTimeToBytes(ClipBegin_AsLocalUnits + subClipEnd.AsLocalUnits);
 
-
-            long rawOffset = format.ConvertTimeToBytes(ClipBegin_AsLocalUnits + subClipEnd.AsLocalUnits);
-            if (rawOffset > dataLength)
-            {
+            long rawLen = raw.Length;
 #if DEBUG
-                Debugger.Break();
+            long rawLenCheck = posRiffHeader + dataLength;
+            DebugFix.Assert(rawLen == rawLenCheck);
 #endif
-                rawOffset = dataLength;
+            if (endPos > rawLen)
+            {
+//#if DEBUG
+//                Debugger.Break();
+//#endif
+                endPos = rawLen;
             }
-            long endPos = posRiffHeader + rawOffset;
-
-
+            
             long len = endPos - beginPos;
 
             return new SubStream(
