@@ -429,8 +429,8 @@ namespace urakawa.data
             IOrderedEnumerable<DataProvider> orderedDPs = m_FileDataProvidersWavClipMap.Keys.OrderBy(keySelector,
                 comparer);
 #else
-                List<DataProvider> orderedDPs = new List<DataProvider>(m_FileDataProvidersWavClipMap.Keys);
-                orderedDPs.Sort(comparer);
+            List<DataProvider> orderedDPs = new List<DataProvider>(m_FileDataProvidersWavClipMap.Keys);
+            orderedDPs.Sort(comparer);
 #endif
             index = 0;
 
@@ -480,16 +480,19 @@ namespace urakawa.data
                         long begin = audioPCMFormat.ConvertTimeToBytes(hole.ClipBegin.AsLocalUnits);
                         long end = audioPCMFormat.ConvertTimeToBytes(hole.ClipEnd.AsLocalUnits);
                         //dpLength -= (end - begin);
-                        DebugFix.Assert(dur == (end - begin));
+                        long dur2 = end - begin;
+                        long diff = dur2 - dur;
+                        DebugFix.Assert(Math.Abs(diff) <= audioPCMFormat.BlockAlign);
 #endif
                     }
                 }
 
                 long dpLengthNext = 0;
-                if (index < (orderedDPs.Count - 1))
+                int i = index - 1; // index is one-based, no zero-based!
+                if (i < (orderedDPs.Count - 1))
                 {
-                    DataProvider dpNext = orderedDPs[index + 1];
-                    
+                    DataProvider dpNext = orderedDPs[i + 1];
+
                     WavClip.PcmFormatAndTime dpAppDataNext = ((WavClip.PcmFormatAndTime)((FileDataProvider)dpNext).AppData);
 
                     bool isFullyUsedNext = m_fullyUsedFileDataProviders.Contains(dpNext);
@@ -498,7 +501,7 @@ namespace urakawa.data
                     {
                         listOfHolesNext = m_FileDataProvidersHolesMap[dpNext];
                     }
-                    
+
                     dpLengthNext = dpAppDataNext.mFormat.ConvertTimeToBytes(dpAppDataNext.mTime.AsLocalUnits);
                     if (!isFullyUsedNext)
                     {
@@ -511,7 +514,9 @@ namespace urakawa.data
                             long begin = audioPCMFormat.ConvertTimeToBytes(hole.ClipBegin.AsLocalUnits);
                             long end = audioPCMFormat.ConvertTimeToBytes(hole.ClipEnd.AsLocalUnits);
                             //dpLength -= (end - begin);
-                            DebugFix.Assert(dur == (end - begin));
+                            long dur2 = end - begin;
+                            long diff = dur2 - dur;
+                            DebugFix.Assert(Math.Abs(diff) <= audioPCMFormat.BlockAlign);
 #endif
                         }
                     }
@@ -520,14 +525,46 @@ namespace urakawa.data
                 // no batching of WAV files, no ForceSingleDataProvider either!
                 //bool noWavCombine = nMaxBytes <= 0;
 
-                bool isBatchingDisabledOrIsOverflow = nMaxBytes <= 0 || (dpLength >= nMaxBytes || (currentBytes + dpLength) >= nMaxBytes);
+                bool isBatchingDisabled = nMaxBytes <= 0;
+                bool isFileTooLarge = dpLength >= nMaxBytes;
+                bool isFileNoFit = (currentBytes + dpLength) >= nMaxBytes;
+                bool isFileLast = dpLengthNext == 0; //LAST => index == (orderedDPs.Count - 1)
+                bool isFileNextNoFit = (dpLength + dpLengthNext) >= nMaxBytes;
 
+                if (currentFileDataProvider != null &&
+                    (
+                    isBatchingDisabled
+                    || isFileTooLarge
+                    || isFileNoFit
+                    )
+                )
+                {
+                    currentFileDataProviderOutputStream.Position = 0;
+                    try
+                    {
+                        riffHeaderLength =
+                            audioPCMFormat.RiffHeaderWrite(currentFileDataProviderOutputStream,
+                                (uint)currentBytes);
+                    }
+                    finally
+                    {
+                        currentFileDataProviderOutputStream.Close();
+                        currentFileDataProviderOutputStream = null;
+                    }
+
+                    currentFileDataProvider = null;
+                    currentBytes = 0;
+                    isFileNoFit = isFileTooLarge;
+                }
 
                 // PRESERVE
                 if (isFullyUsed &&
-                    (isBatchingDisabledOrIsOverflow
-                    || dpLengthNext == 0 //LAST => index == (orderedDPs.Count - 1)
-                    || (dpLength + dpLengthNext) >= nMaxBytes)
+                    (isBatchingDisabled
+                    || isFileTooLarge
+                    || isFileNoFit
+                    || (isFileLast && (currentFileDataProvider == null))
+                    || isFileNextNoFit
+                    )
                     )
                 {
                     ((FileDataProvider)dp).Rename(String.Format(prefixFormat, ++currentFileDataProviderIndex));
@@ -539,24 +576,6 @@ namespace urakawa.data
                 }
                 else // partial (holes), or isFullyUsed that fits within nMaxBytes (minus currentBytes already in output stream)
                 {
-                    if (currentFileDataProvider != null && isBatchingDisabledOrIsOverflow)
-                    {
-                        currentFileDataProviderOutputStream.Position = 0;
-                        try
-                        {
-                            riffHeaderLength =
-                                audioPCMFormat.RiffHeaderWrite(currentFileDataProviderOutputStream,
-                                    (uint)currentBytes);
-                        }
-                        finally
-                        {
-                            currentFileDataProviderOutputStream.Close();
-                            currentFileDataProviderOutputStream = null;
-                        }
-
-                        currentFileDataProvider = null;
-                    }
-
                     if (currentFileDataProvider == null)
                     {
                         currentBytes = 0;
@@ -624,6 +643,8 @@ namespace urakawa.data
 
                     long prevByteOffset = 0;
 
+                    long currentBytesBeforeAppend = currentBytes;
+
                     if (isFullyUsed)
                     {
                         try
@@ -655,18 +676,18 @@ namespace urakawa.data
 
 
 #if RIFF_HEADER_INCREMENTAL_MAINTAIN
-                            currentFileDataProviderOutputStream.Position = 0;
-                            try
-                            {
-                                riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)(currentBytes + availableToRead));
-                            }
-                            catch (Exception ex)
-                            {
-                                currentFileDataProviderOutputStream.Close();
-                                currentFileDataProviderOutputStream = null;
+                        currentFileDataProviderOutputStream.Position = 0;
+                        try
+                        {
+                            riffHeaderLength = wMd.PCMFormat.Data.RiffHeaderWrite(currentFileDataProviderOutputStream, (uint)(currentBytes + availableToRead));
+                        }
+                        catch (Exception ex)
+                        {
+                            currentFileDataProviderOutputStream.Close();
+                            currentFileDataProviderOutputStream = null;
 
-                                throw ex;
-                            }
+                            throw ex;
+                        }
 #endif //RIFF_HEADER_INCREMENTAL_MAINTAIN
 
                         Time insertedDuration = new Time(audioPCMFormat.ConvertBytesToTime(availableToRead));
@@ -830,7 +851,7 @@ namespace urakawa.data
 
                     foreach (WavClip clip in m_FileDataProvidersWavClipMap[dp])
                     {
-                        Time timeOffset = new Time(0);
+                        Time timeOffset_RemovedHoles = new Time(0);
 
                         if (!isFullyUsed)
                         {
@@ -838,10 +859,12 @@ namespace urakawa.data
                             {
                                 if (hole.ClipBegin.IsLessThan(clip.ClipBegin))
                                 {
-                                    timeOffset.Add(hole.Duration);
+                                    timeOffset_RemovedHoles.Add(hole.Duration);
                                 }
                             }
                         }
+
+                        Time timeOffset_currentBytesBeforeAppend = new Time(audioPCMFormat.ConvertBytesToTime(currentBytesBeforeAppend));
 
                         WavAudioMediaData wamd = (WavAudioMediaData)clip.AppData;
 
@@ -854,13 +877,17 @@ namespace urakawa.data
                         if (clip.ClipBegin != null)
                         {
                             Time newBegin = clip.ClipBegin.Copy();
-                            newBegin.Substract(timeOffset);
+                            newBegin.Substract(timeOffset_RemovedHoles);
+                            newBegin.Add(timeOffset_currentBytesBeforeAppend);
+
                             newClip.ClipBegin = newBegin;
                         }
                         if (clip.ClipEnd != null)
                         {
                             Time newEnd = clip.ClipEnd.Copy();
-                            newEnd.Substract(timeOffset);
+                            newEnd.Substract(timeOffset_RemovedHoles);
+                            newEnd.Add(timeOffset_currentBytesBeforeAppend);
+
                             newClip.ClipEnd = newEnd;
                         }
 
@@ -982,6 +1009,7 @@ namespace urakawa.data
                                 }
 
                                 currentFileDataProvider = null;
+                                currentBytes = 0;
                             }
                         }
 
@@ -1223,34 +1251,34 @@ namespace urakawa.data
                 {
                     usedMediaData.Add(mm.MediaData);
 
-//                    if (mm.MediaData is WavAudioMediaData)
-//                    {
-//                        WavAudioMediaData wamd = (WavAudioMediaData) mm.MediaData;
+                    //                    if (mm.MediaData is WavAudioMediaData)
+                    //                    {
+                    //                        WavAudioMediaData wamd = (WavAudioMediaData) mm.MediaData;
 
-//                        indexWAMD++;
-//#if DEBUG
-//                        DebugFix.Assert(wamd.mWavClips.Count > 0);
-//#endif
-                        
-//                        if (
-//                            wamd.mWavClips.Count > 1
-//                            ||
-//                            m_cleanAudioMaxFileMegaBytes > 0
-//                            &&
-//                            wamd.PCMFormat.Data.ConvertTimeToBytes(wamd.mWavClips[0].MediaDuration.AsLocalUnits) < m_cleanAudioMaxFileMegaBytes
-//                            )
-//                        {
-//                            if (indexWAMD == 0)
-//                            {
-//                                firstMediaSeemsUnclean = true;
-//                            }
+                    //                        indexWAMD++;
+                    //#if DEBUG
+                    //                        DebugFix.Assert(wamd.mWavClips.Count > 0);
+                    //#endif
 
-//                            if (indexWAMD == (list3.Count - 1))
-//                            {
-//                                lastMediaSeemsUnclean = true;
-//                            }
-//                        }
-//                    }
+                    //                        if (
+                    //                            wamd.mWavClips.Count > 1
+                    //                            ||
+                    //                            m_cleanAudioMaxFileMegaBytes > 0
+                    //                            &&
+                    //                            wamd.PCMFormat.Data.ConvertTimeToBytes(wamd.mWavClips[0].MediaDuration.AsLocalUnits) < m_cleanAudioMaxFileMegaBytes
+                    //                            )
+                    //                        {
+                    //                            if (indexWAMD == 0)
+                    //                            {
+                    //                                firstMediaSeemsUnclean = true;
+                    //                            }
+
+                    //                            if (indexWAMD == (list3.Count - 1))
+                    //                            {
+                    //                                lastMediaSeemsUnclean = true;
+                    //                            }
+                    //                        }
+                    //                    }
                 }
 #if DEBUG
                 else if (mm.MediaData != null)
@@ -1260,14 +1288,14 @@ namespace urakawa.data
 #endif
             }
 
-//            if (m_enableFileDataProviderPreservation && m_cleanAudioMaxFileMegaBytes > 0 && firstMediaSeemsUnclean && lastMediaSeemsUnclean)
-//            {
-//#if DEBUG
-//                Debugger.Break();
-//#endif
-//                m_enableFileDataProviderPreservation = false;
-//                Console.WriteLine("CLEANUP: mode was preserve-file (optimize file usage), but forcing initial batching of WAV files to start from fresh state.");
-//            }
+            //            if (m_enableFileDataProviderPreservation && m_cleanAudioMaxFileMegaBytes > 0 && firstMediaSeemsUnclean && lastMediaSeemsUnclean)
+            //            {
+            //#if DEBUG
+            //                Debugger.Break();
+            //#endif
+            //                m_enableFileDataProviderPreservation = false;
+            //                Console.WriteLine("CLEANUP: mode was preserve-file (optimize file usage), but forcing initial batching of WAV files to start from fresh state.");
+            //            }
 
             // ensure that media datas in undo redo manager are also preserved
             // it should be iterated after traversing tree because most of the media datas in undo redo manager are already in the tree
