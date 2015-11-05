@@ -296,7 +296,7 @@ namespace urakawa.data
                     Time begin1 = new Time(hole.ClipBegin);
                     Time end1 = new Time(clip.ClipBegin);
                     Time dur1 = end1.GetDifference(begin1);
-                    if (dur1.IsGreaterThanOrEqualTo(m_minimumDurationToPreserveHole))
+                    if (end1.IsGreaterThan(begin1) && dur1.IsGreaterThanOrEqualTo(m_minimumDurationToPreserveHole))
                     {
                         holesToAdd.Add(new WavClip(clip.DataProvider, begin1, end1));
                     }
@@ -304,7 +304,7 @@ namespace urakawa.data
                     Time begin2 = new Time(clip.ClipEnd);
                     Time end2 = new Time(hole.ClipEnd);
                     Time dur2 = end2.GetDifference(begin2);
-                    if (dur2.IsGreaterThanOrEqualTo(m_minimumDurationToPreserveHole))
+                    if (end2.IsGreaterThan(begin2) && dur2.IsGreaterThanOrEqualTo(m_minimumDurationToPreserveHole))
                     {
                         holesToAdd.Add(new WavClip(clip.DataProvider, begin2, end2));
                     }
