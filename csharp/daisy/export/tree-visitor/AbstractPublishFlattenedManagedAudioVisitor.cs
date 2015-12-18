@@ -560,8 +560,8 @@ namespace urakawa.daisy.export.visitor
                 return "";
             }
 
-            int elapsedSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TimeElapsedInLocalUnits) / (1024 * 1024);
-            int totalSizeInMB = (int)node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TotalTimeInLocalUnits) / (1024 * 1024);
+            long elapsedSizeInMB = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TimeElapsedInLocalUnits) / (1024 * 1024);
+            long totalSizeInMB = node.Presentation.MediaDataManager.DefaultPCMFormat.Data.ConvertTimeToBytes(m_TotalTimeInLocalUnits) / (1024 * 1024);
             string sizeInfo = "";
             if (EncodePublishedAudioFiles && m_EncodingFileCompressionRatio > 1)
             {
