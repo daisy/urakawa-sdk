@@ -474,18 +474,16 @@ namespace urakawa.daisy.export
         private Dictionary<TreeNode, string> m_adjustedExternalAudioFileNames = new Dictionary<TreeNode, string>();
         protected string AdjustAudioFileName(ExternalAudioMedia externalAudio, TreeNode levelNode)
         {
-            string filename = externalAudio.Src;
-
-//#if !TOBI
-//            // Obi should not use this, as the above AddSectionNameToAudioFileName() is used instead!!
-//            Debugger.Break();
-//            return filename;
-//#endif
+            //#if !TOBI
+            //            // Obi should not use this, as the above AddSectionNameToAudioFileName() is used instead!!
+            //            Debugger.Break();
+            //            return externalAudio.Src;
+            //#endif
 
             // Obi should return below!
             if (!IsAdjustAudioFileNameEnabled)
             {
-                return filename;
+                return externalAudio.Src;
             }
 
             if (externalAudio.Tag == null || !(externalAudio.Tag is TreeNode))
@@ -493,7 +491,7 @@ namespace urakawa.daisy.export
 #if DEBUG
                 Debugger.Break();
 #endif
-                return filename;
+                return externalAudio.Src;
             }
             TreeNode node = externalAudio.Tag as TreeNode;
             DebugFix.Assert(node == levelNode);
@@ -503,6 +501,14 @@ namespace urakawa.daisy.export
 
             if (!string.IsNullOrEmpty(src))
             {
+#if DEBUG
+                //DebugFix.Assert(!src.Equals(externalAudio.Src, StringComparison.Ordinal));
+
+                //if (src.Equals(externalAudio.Src, StringComparison.Ordinal))
+                //{
+                //    Debugger.Break();
+                //}
+#endif
                 externalAudio.Src = src;
                 return src;
             }
@@ -641,31 +647,36 @@ namespace urakawa.daisy.export
                 strTitle = strTitle.Substring(0, MAX_LENGTH);
             }
 
-
-            string source = Path.Combine(m_OutputDirectory, Path.GetFileName(filename));
+            string filename = Path.GetFileName(externalAudio.Src);
+            string source = Path.Combine(m_OutputDirectory, filename);
             if (File.Exists(source))
             {
-                filename = filename.Replace("aud", "");
-
                 if (strTitle.Length > 0)
                 {
-                    string name = Path.GetFileNameWithoutExtension(filename);
-                    string ext = Path.GetExtension(filename);
-                    filename = name + "_" + strTitle + ext;
-                }
+                    string newFileName = filename;
 
-                externalAudio.Src = filename;
-                m_adjustedExternalAudioFileNames.Add(node, externalAudio.Src);
+                    string name = Path.GetFileNameWithoutExtension(externalAudio.Src);
+                    name = name.Replace("aud", "");
 
-                string dest = Path.Combine(m_OutputDirectory, filename);
+                    string ext = Path.GetExtension(externalAudio.Src);
+                    newFileName = name + "_" + strTitle + ext;
+                    
+                    //externalAudio.Src = externalAudio.Src.Replace(filename, newFileName);
+                    externalAudio.Src = newFileName;
+                    m_adjustedExternalAudioFileNames.Add(node, externalAudio.Src);
 
-                File.Move(source, dest);
-                try
-                {
-                    File.SetAttributes(dest, FileAttributes.Normal);
-                }
-                catch
-                {
+                    string dest = Path.Combine(m_OutputDirectory, newFileName);
+
+                    File.Move(source, dest);
+                    try
+                    {
+                        File.SetAttributes(dest, FileAttributes.Normal);
+                    }
+                    catch
+                    {
+                    }
+
+                    return newFileName;
                 }
             }
 
