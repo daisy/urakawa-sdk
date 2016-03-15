@@ -24,7 +24,14 @@ namespace urakawa.data
         private readonly double m_cleanAudioMaxFileMegaBytes;
         private bool m_enableFileDataProviderPreservation;
 
-        private readonly bool m_isNET2;
+        //private readonly bool m_isNET2;
+
+
+        List<Tuple<String, String>> m_listOfRenames = new List<Tuple<String, String>>();
+        public List<Tuple<String, String>> GetListOfRenamedFiles()
+        {
+            return m_listOfRenames;
+        }
 
         public Cleaner(Presentation presentation, string fullPathToDeletedDataFolder, double cleanAudioMaxFileMegaBytes, bool enableFileDataProviderPreservation)
         {
@@ -567,7 +574,13 @@ namespace urakawa.data
                     )
                     )
                 {
+                    String originalFileName = ((FileDataProvider)dp).DataFileRelativePath;
+
                     ((FileDataProvider)dp).Rename(String.Format(prefixFormat, ++currentFileDataProviderIndex));
+                    
+                    String newFileName = ((FileDataProvider)dp).DataFileRelativePath;
+
+                    m_listOfRenames.Add(new Tuple<string, string>(originalFileName, newFileName));
 
                     if (!usedDataProviders.Contains(dp))
                     {
@@ -984,8 +997,22 @@ namespace urakawa.data
 
                     if (nMaxBytes <= 0 || thisAudioByteLength >= nMaxBytes)
                     {
-                        wMd.ForceSingleDataProvider(true,
+                        String originalFileName = null;
+                        DataProvider singleDP = wMd.GetSingleWavClipDataProvider();
+                        if (singleDP != null)
+                        {
+                            originalFileName = ((FileDataProvider) singleDP).DataFileRelativePath;
+                        }
+
+                        DataProvider forcedDP = wMd.ForceSingleDataProvider(true,
                             String.Format(prefixFormat, ++currentFileDataProviderIndex));
+
+                        if (singleDP != null && singleDP == forcedDP)
+                        {
+                            String newFileName = ((FileDataProvider)forcedDP).DataFileRelativePath;
+
+                            m_listOfRenames.Add(new Tuple<string, string>(originalFileName, newFileName));
+                        }
                     }
                     else
                     {
