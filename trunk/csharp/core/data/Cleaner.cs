@@ -26,9 +26,20 @@ namespace urakawa.data
 
         //private readonly bool m_isNET2;
 
+        public struct OriginalRenamedFilenameTuple
+        {
+            public string m_original;
+            public string m_renamed;
 
-        List<Tuple<String, String>> m_listOfRenames = new List<Tuple<String, String>>();
-        public List<Tuple<String, String>> GetListOfRenamedFiles()
+            public OriginalRenamedFilenameTuple(string original, string renamed)
+            {
+                m_original = original;
+                m_renamed = renamed;
+            }
+        }
+
+        List<OriginalRenamedFilenameTuple> m_listOfRenames = new List<OriginalRenamedFilenameTuple>();
+        public List<OriginalRenamedFilenameTuple> GetListOfRenamedFiles()
         {
             return m_listOfRenames;
         }
@@ -580,7 +591,7 @@ namespace urakawa.data
                     
                     String newFileName = ((FileDataProvider)dp).DataFileRelativePath;
 
-                    m_listOfRenames.Add(new Tuple<string, string>(originalFileName, newFileName));
+                    m_listOfRenames.Add(new OriginalRenamedFilenameTuple(originalFileName, newFileName));
 
                     if (!usedDataProviders.Contains(dp))
                     {
@@ -1011,7 +1022,7 @@ namespace urakawa.data
                         {
                             String newFileName = ((FileDataProvider)forcedDP).DataFileRelativePath;
 
-                            m_listOfRenames.Add(new Tuple<string, string>(originalFileName, newFileName));
+                            m_listOfRenames.Add(new OriginalRenamedFilenameTuple(originalFileName, newFileName));
                         }
                     }
                     else
