@@ -1,3 +1,4 @@
+//#define SIMULATE_BUFFER_NOTIFICATION_SKIP
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -199,7 +200,7 @@ IsDisposed
                 if (m_CachedInputDevices != null)
                 {
                     InputDevice foundCached =
-                        m_CachedInputDevices.Find(delegate(InputDevice d) { return d.Name == name; });
+                        m_CachedInputDevices.Find(delegate (InputDevice d) { return d.Name == name; });
                     if (foundCached != null && !foundCached.Capture.
 #if USE_SHARPDX
 IsDisposed
@@ -215,7 +216,7 @@ IsDisposed
             }
 
             List<InputDevice> devices = InputDevices;
-            InputDevice found = devices.Find(delegate(InputDevice d) { return d.Name == name; });
+            InputDevice found = devices.Find(delegate (InputDevice d) { return d.Name == name; });
             if (found != null)
             {
                 InputDevice = found;
@@ -341,12 +342,12 @@ IsDisposed
 
                                         m_CircularBuffer.Stop();
 
-                                        int remainingBytesToRead = 0;
+                                        int numberOfBytesThatHaveBeenRead = 0;
                                         do
                                         {
                                             try
                                             {
-                                                remainingBytesToRead = circularBufferTransferData();
+                                                numberOfBytesThatHaveBeenRead = circularBufferTransferData();
                                             }
                                             catch (Exception ex)
                                             {
@@ -358,12 +359,12 @@ IsDisposed
                                                 break;
                                             }
 #if DEBUG
-                if (remainingBytesToRead>0)
-                {
-                    Console.WriteLine(string.Format("REMAINING buffer bytes (STOP RECORD): {0}", remainingBytesToRead));
-                }
+                                            if (numberOfBytesThatHaveBeenRead > 0)
+                                            {
+                                                Console.WriteLine(string.Format("READ buffer bytes (STOP RECORD): {0}", numberOfBytesThatHaveBeenRead));
+                                            }
 #endif
-                                        } while (remainingBytesToRead > 0);
+                                        } while (numberOfBytesThatHaveBeenRead > 0);
 
                                         m_CircularBuffer.Start(true);
 
@@ -371,11 +372,11 @@ IsDisposed
 
 #if USE_SHARPDX
                     int circularBufferCapturePosition = m_CircularBuffer.CurrentCapturePosition;
-                    int readPosition = m_CircularBuffer.CurrentRealPosition;
+                    //int readPosition = m_CircularBuffer.CurrentRealPosition;
 #else
-            int circularBufferCapturePosition;
-            int readPosition;
-            m_CircularBuffer.GetCurrentPosition(out circularBufferCapturePosition, out readPosition);
+                    int circularBufferCapturePosition;
+                    int readPosition; // UNUSED
+                    m_CircularBuffer.GetCurrentPosition(out circularBufferCapturePosition, out readPosition);
 #endif
                     int circularBufferBytes = m_CircularBuffer.
 #if USE_SHARPDX
@@ -595,7 +596,7 @@ Caps
                 }
             }
 
-            ThreadStart threadDelegate = delegate()
+            ThreadStart threadDelegate = delegate ()
             {
                 try
                 {
@@ -682,7 +683,8 @@ Caps
                     {
                         circularBufferTransferData(
 #if !FORCE_SINGLE_NOTIFICATION_EVENT
-eventIndex
+eventIndex,
+false
 #endif
 );
                     }
@@ -710,20 +712,122 @@ eventIndex
         private byte[] incomingPcmData;
 #endif
 
+#if !FORCE_SINGLE_NOTIFICATION_EVENT
+        private int m_previousEventIndex = -1;
+        //private int m_circularBufferCapturePosition = -1;
+#endif
+
         private int circularBufferTransferData(
 #if !FORCE_SINGLE_NOTIFICATION_EVENT
-int eventIndex
+int eventIndex,
+bool catchingUp
 #endif
 )
         {
+#if !FORCE_SINGLE_NOTIFICATION_EVENT
+
+#if SIMULATE_BUFFER_NOTIFICATION_SKIP
+            Console.WriteLine(eventIndex);
+#endif
+
+            if (!catchingUp)
+            {
+#if SIMULATE_BUFFER_NOTIFICATION_SKIP
+
+                // NOTIFICATIONS = 16, each REFRESH_INTERVAL_MS = 75
+                bool beginning = eventIndex == 0 || eventIndex == 1 || eventIndex == 2;
+                bool end = eventIndex == 13 || eventIndex == 14 || eventIndex == 15;
+                bool middle = eventIndex == 6 || eventIndex == 7 || eventIndex == 8;
+                bool middleTwo = eventIndex == 3 || eventIndex == 4 || eventIndex == 5 || eventIndex == 9 || eventIndex == 10 || eventIndex == 11;
+                //if (beginning)
+                //if (end)
+                //if (beginning || end)
+                //if (beginning || middle)
+                //if (middle || end)
+                if (beginning || middle || end)
+                //if (middle)
+                //if (middleTwo)
+                {
+                    Console.WriteLine("SKIPPED.");
+
+                    return 0;
+                }
+#endif
+                if ((m_previousEventIndex == -1 || m_previousEventIndex >= 0) && eventIndex >= 0)
+                {
+                    int nextEventIndex = m_previousEventIndex + 1;
+                    if (nextEventIndex >= NOTIFICATIONS)
+                    {
+                        nextEventIndex = 0;
+                    }
+
+                    int toCatchUp = 0;
+                    if (eventIndex == nextEventIndex)
+                    {
+                        // OK
+                    }
+                    else if (eventIndex > nextEventIndex)
+                    {
+                        // ahead, but not looped back in circular buffer
+
+                        toCatchUp = eventIndex - nextEventIndex;
+                    }
+                    else if (eventIndex < nextEventIndex)
+                    {
+                        // ahead, but looped back in circular buffer
+
+                        toCatchUp = (NOTIFICATIONS - nextEventIndex) + eventIndex;
+                    }
+
+                    if (toCatchUp > 0)
+                    {
+#if SIMULATE_BUFFER_NOTIFICATION_SKIP
+                        Console.WriteLine("TO CATCHUP: {0}", toCatchUp);
+#endif
+                        for (int i = 0; i < toCatchUp; i++)
+                        {
+#if SIMULATE_BUFFER_NOTIFICATION_SKIP
+                            Console.WriteLine("Audio recording event catch-up {0}, {1} => {2}", eventIndex, m_previousEventIndex,
+                                nextEventIndex);
+#endif
+                            circularBufferTransferData(nextEventIndex, true);
+                            nextEventIndex++;
+                            if (nextEventIndex >= NOTIFICATIONS)
+                            {
+                                nextEventIndex = 0;
+                            }
+                        }
+
+                        //DebugFix.Assert(m_previousEventIndex == (eventIndex-1));
+                    }
+                }
+            }
+
+
+            m_previousEventIndex = eventIndex;
+#endif
+
 #if USE_SHARPDX
             int circularBufferCapturePosition = m_CircularBuffer.CurrentCapturePosition;
-            int readPosition = m_CircularBuffer.CurrentRealPosition;
+            //int readPosition = m_CircularBuffer.CurrentRealPosition;
 #else
             int circularBufferCapturePosition;
-            int readPosition;
+            int readPosition; // UNUSED
             m_CircularBuffer.GetCurrentPosition(out circularBufferCapturePosition, out readPosition);
 #endif
+
+            //#if !FORCE_SINGLE_NOTIFICATION_EVENT
+            //            if (catchingUp)
+            //            {
+            //                circularBufferCapturePosition = m_circularBufferCapturePosition;
+            //            }
+            //            else
+            //            {
+            //                m_circularBufferCapturePosition = circularBufferCapturePosition;
+            //            }
+            //#endif
+
+
             int circularBufferBytes = m_CircularBuffer.
 #if USE_SHARPDX
 Capabilities
@@ -795,7 +899,7 @@ Caps
                 if (m_CircularBufferReadPositon != pos)
                 {
 #if DEBUG
-                    Console.WriteLine("READ POS ADJUST: " + m_CircularBufferReadPositon + " != " + pos);
+                    Console.WriteLine("READ POS ADJUST: " + m_CircularBufferReadPositon + " != " + pos + " // " + notifyChunk + " -- " + (pos - m_CircularBufferReadPositon));
 #endif
                     m_CircularBufferReadPositon = pos;
                 }
@@ -1007,14 +1111,15 @@ Caps
                 }
             }
 
-            int remainingBytesToRead = 0;
+            int numberOfBytesThatHaveBeenRead = 0;
             do
             {
                 try
                 {
-                    remainingBytesToRead = circularBufferTransferData(
+                    numberOfBytesThatHaveBeenRead = circularBufferTransferData(
 #if !FORCE_SINGLE_NOTIFICATION_EVENT
--1
+-1,
+false
 #endif
 );
                 }
@@ -1028,12 +1133,12 @@ Caps
                     break;
                 }
 #if DEBUG
-                if (remainingBytesToRead > 0)
+                if (numberOfBytesThatHaveBeenRead > 0)
                 {
-                    Console.WriteLine(string.Format("REMAINING buffer bytes (STOP RECORD): {0}", remainingBytesToRead));
+                    Console.WriteLine(string.Format("READ buffer bytes (STOP RECORD): {0}", numberOfBytesThatHaveBeenRead));
                 }
 #endif
-            } while (remainingBytesToRead > 0);
+            } while (numberOfBytesThatHaveBeenRead > 0);
 
             if (m_RecordingFileWriter != null)
             {
