@@ -32,6 +32,28 @@ namespace AudioLib
 
         private ulong m_PreviousTotalRecordedBytes;
 
+
+        public event CircularBufferNotificationTimerMessageHandler CircularBufferNotificationTimerMessage;
+        public delegate void CircularBufferNotificationTimerMessageHandler(object sender, CircularBufferNotificationTimerMessageEventArgs e);
+        public class CircularBufferNotificationTimerMessageEventArgs : EventArgs
+        {
+            private String m_msg;
+            public String Msg
+            {
+                get
+                {
+                    return m_msg;
+                }
+            }
+
+            public CircularBufferNotificationTimerMessageEventArgs(String msg)
+            {
+                m_msg = msg;
+            }
+        }
+
+        private bool m_DO_LOG_CircularBufferNotificationTimerMessage = false;
+
         private void onCircularBufferTimerTick(object sender, EventArgs e)
         {
 //#if DEBUG
@@ -41,18 +63,32 @@ namespace AudioLib
             if (m_PreviousTotalRecordedBytes == m_TotalRecordedBytes // Skipped notifications?
                 && CurrentState == State.Recording)
             {
+                m_DO_LOG_CircularBufferNotificationTimerMessage = true;
+
+                String msg = "DO_LOG_CircularBufferNotificationTimerMessage:: onCircularBufferTimerTick EVENT SET (skipped notifications?) " +
+                             m_PreviousTotalRecordedBytes + " / " + m_TotalRecordedBytes;
+#if DEBUG
+                Console.WriteLine(msg);
+                System.Media.SystemSounds.Asterisk.Play();
+#endif
+                CircularBufferNotificationTimerMessageHandler del = CircularBufferNotificationTimerMessage;
+                if (del != null)
+                {
+                    del(this, new CircularBufferNotificationTimerMessageEventArgs(msg));
+                }
+
                 // See relevant legacy old code diffs:
                 //http://daisy-trac.cvsdude.com/urakawa-sdk/changeset?reponame=&new=1411%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs&old=1405%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs
                 //http://daisy-trac.cvsdude.com/urakawa-sdk/changeset?reponame=&new=1490%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs&old=1486%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs
                 //http://daisy-trac.cvsdude.com/urakawa-sdk/changeset?reponame=&new=1494%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs&old=1491%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs
                 //m_CircularBufferNotificationEvent.WaitOne(1);
                 m_CircularBufferNotificationEvent.Set();
-
-#if DEBUG
-                Console.WriteLine("onCircularBufferTimerTick EVENT SET (skipped notifications?) " + m_PreviousTotalRecordedBytes + " / " + m_TotalRecordedBytes);
-                System.Media.SystemSounds.Asterisk.Play();
-#endif
             }
+            else
+            {
+                m_DO_LOG_CircularBufferNotificationTimerMessage = false;
+            }
+
             m_PreviousTotalRecordedBytes = m_TotalRecordedBytes;
         }
 
@@ -83,8 +119,15 @@ namespace AudioLib
         private ulong m_TotalRecordedBytes;
 
 
+        //private void On_CircularBufferNotificationTimerMessage(object sender, CircularBufferNotificationTimerMessageEventArgs e)
+        //{
+        //    Console.WriteLine(e.Msg);
+        //}
+
         public AudioRecorder()
         {
+            //CircularBufferNotificationTimerMessage += On_CircularBufferNotificationTimerMessage;
+
             CurrentState = State.NotReady;
 
 #if FORCE_SINGLE_NOTIFICATION_EVENT
@@ -92,6 +135,11 @@ namespace AudioLib
             m_CircularBufferTimer.Interval = REFRESH_INTERVAL_MS * 2 + 50; //  150 + 50 = 200ms
             m_CircularBufferTimer.Tick += new EventHandler(onCircularBufferTimerTick);
 #endif
+        }
+
+        private void AudioRecorder_CircularBufferNotificationTimerMessage(object sender, CircularBufferNotificationTimerMessageEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -854,7 +902,21 @@ Caps
             }
             else
             {
-#if !FORCE_SINGLE_NOTIFICATION_EVENT
+#if FORCE_SINGLE_NOTIFICATION_EVENT
+                if (m_DO_LOG_CircularBufferNotificationTimerMessage)
+                {
+                    String msg = "DO_LOG_CircularBufferNotificationTimerMessage:: circularBufferBytes @ m_CircularBufferReadPositon # circularBufferCapturePosition - circularBufferBytesAvailableForReading / notifyChunk $ incomingPcmData.Length: " +
+                                 circularBufferBytes + " @ " + m_CircularBufferReadPositon + " # " + circularBufferCapturePosition + " - " + circularBufferBytesAvailableForReading + " / " + notifyChunk + " $ " + (incomingPcmData == null ? "NULL" : ("" + incomingPcmData.Length));
+#if DEBUG
+                    Console.WriteLine(msg);
+#endif
+                    CircularBufferNotificationTimerMessageHandler del_ = CircularBufferNotificationTimerMessage;
+                    if (del_ != null)
+                    {
+                        del_(this, new CircularBufferNotificationTimerMessageEventArgs(msg));
+                    }
+                }
+#else
                 DebugFix.Assert(eventIndex >= 0);
                 
                 circularBufferBytesAvailableForReading = notifyChunk;
