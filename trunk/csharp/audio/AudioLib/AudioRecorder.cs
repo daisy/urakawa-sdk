@@ -845,10 +845,10 @@ Caps
             }
             else
             {
-                circularBufferBytesAvailableForReading = notifyChunk;
-
 #if !FORCE_SINGLE_NOTIFICATION_EVENT
                 DebugFix.Assert(eventIndex >= 0);
+                
+                circularBufferBytesAvailableForReading = notifyChunk;
 #endif
             }
 
