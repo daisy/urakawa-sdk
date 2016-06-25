@@ -1,4 +1,7 @@
 //#define SIMULATE_BUFFER_NOTIFICATION_SKIP
+
+#define FORCE_SINGLE_NOTIFICATION_EVENT
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +15,6 @@ using SharpDX.Multimedia;
 #else
 using Microsoft.DirectX.DirectSound;
 using Buffer = System.Buffer;
-
 #endif
 
 namespace AudioLib
@@ -24,17 +26,44 @@ namespace AudioLib
     {
         private const int NOTIFICATIONS = 16;
 
+#if FORCE_SINGLE_NOTIFICATION_EVENT
+
+        private System.Windows.Forms.Timer m_CircularBufferTimer = new System.Windows.Forms.Timer();
+
+        private ulong m_PreviousTotalRecordedBytes;
+
+        private void onCircularBufferTimerTick(object sender, EventArgs e)
+        {
+            if (m_PreviousTotalRecordedBytes == m_TotalRecordedBytes // Skipped notifications?
+                && CurrentState == State.Recording)
+            {
+                // See relevant legacy old code diffs:
+                //http://daisy-trac.cvsdude.com/urakawa-sdk/changeset?reponame=&new=1411%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs&old=1405%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs
+                //http://daisy-trac.cvsdude.com/urakawa-sdk/changeset?reponame=&new=1490%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs&old=1486%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs
+                //http://daisy-trac.cvsdude.com/urakawa-sdk/changeset?reponame=&new=1494%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs&old=1491%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs
+                //m_CircularBufferNotificationEvent.WaitOne(1);
+                m_CircularBufferNotificationEvent.Set();
+            }
+            m_PreviousTotalRecordedBytes = m_TotalRecordedBytes;
+        }
+
+        private AutoResetEvent m_CircularBufferNotificationEvent;
+#else
+        private AutoResetEvent[] m_CircularBufferNotificationEvents;
+#endif
+
+#if !USE_SHARPDX
+        private Notify m_Notify;
+#endif
+
+
+        private const int REFRESH_INTERVAL_MS = 75; //ms interval for refreshing PCM data
+
         private byte[] m_PcmDataBuffer;
         private int m_PcmDataBufferLength;
 
         private CaptureBuffer m_CircularBuffer;
         private int m_CircularBufferReadPositon;
-
-#if FORCE_SINGLE_NOTIFICATION_EVENT
-        private AutoResetEvent m_CircularBufferNotificationEvent;
-#else
-        private AutoResetEvent[] m_CircularBufferNotificationEvents;
-#endif
 
 
 
@@ -42,9 +71,6 @@ namespace AudioLib
         private readonly Object LOCK_THREAD_INSTANCE = new object();
         private Thread m_CircularBufferRefreshThread;
 
-#if !USE_SHARPDX
-        private Notify m_Notify;
-#endif
         private ulong m_TotalRecordedBytes;
 
 
@@ -52,9 +78,11 @@ namespace AudioLib
         {
             CurrentState = State.NotReady;
 
-            //m_CircularBufferNotificationEventCheckTimer.Enabled = false;
-            //m_CircularBufferNotificationEventCheckTimer.Interval = 200;
-            //m_CircularBufferNotificationEventCheckTimer.Tick += new EventHandler(onCircularBufferNotificationEventCheckTimerTick);
+#if FORCE_SINGLE_NOTIFICATION_EVENT
+            m_CircularBufferTimer.Enabled = false;
+            m_CircularBufferTimer.Interval = REFRESH_INTERVAL_MS * 2 + 50; //  150 + 50 = 200ms
+            m_CircularBufferTimer.Tick += new EventHandler(onCircularBufferTimerTick);
+#endif
         }
 
         /// <summary>
@@ -335,40 +363,9 @@ IsDisposed
 
                 int circularBufferBytesAvailableForReading = 0;
 
-                Monitor.Enter(LOCK);
+                Monitor.Enter(LOCK_CIRCULAR_BUFFER);
                 try
                 {
-#if FORCE_SINGLE_NOTIFICATION_EVENT
-
-                                        m_CircularBuffer.Stop();
-
-                                        int numberOfBytesThatHaveBeenRead = 0;
-                                        do
-                                        {
-                                            try
-                                            {
-                                                numberOfBytesThatHaveBeenRead = circularBufferTransferData();
-                                            }
-                                            catch (Exception ex)
-                                            {
-#if DEBUG
-                                                Debugger.Break();
-#endif
-                                                Console.WriteLine(ex.Message);
-                                                Console.WriteLine(ex.StackTrace);
-                                                break;
-                                            }
-#if DEBUG
-                                            if (numberOfBytesThatHaveBeenRead > 0)
-                                            {
-                                                Console.WriteLine(string.Format("READ buffer bytes (STOP RECORD): {0}", numberOfBytesThatHaveBeenRead));
-                                            }
-#endif
-                                        } while (numberOfBytesThatHaveBeenRead > 0);
-
-                                        m_CircularBuffer.Start(true);
-
-#else
 
 #if USE_SHARPDX
                     int circularBufferCapturePosition = m_CircularBuffer.CurrentCapturePosition;
@@ -398,11 +395,11 @@ Caps
                         Console.WriteLine(string.Format("REMAINING buffer bytes (STOP RECORD AND CONTINUE): {0}", circularBufferBytesAvailableForReading));
                     }
 #endif
-#endif
+
                 }
                 finally
                 {
-                    Monitor.Exit(LOCK);
+                    Monitor.Exit(LOCK_CIRCULAR_BUFFER);
                 }
 
                 return m_TotalRecordedBytes + (ulong)circularBufferBytesAvailableForReading;
@@ -458,7 +455,6 @@ Caps
             startRecordingOrMonitoring(pcmFormat, true);
         }
 
-        private const int REFRESH_INTERVAL_MS = 75; //ms interval for refreshing PCM data
         private void startRecordingOrMonitoring(AudioLibPCMFormat pcmFormat, bool recordingToFile)
         {
             RecordingPCMFormat = pcmFormat;
@@ -518,6 +514,8 @@ Caps
 
 #if FORCE_SINGLE_NOTIFICATION_EVENT
             m_CircularBufferNotificationEvent = new AutoResetEvent(false);
+#else
+            m_CircularBufferNotificationEvents = new AutoResetEvent[NOTIFICATIONS];
 #endif
 
 #if USE_SHARPDX
@@ -525,16 +523,10 @@ Caps
 #else
             BufferPositionNotify[] m_BufferPositionNotify = new BufferPositionNotify[NOTIFICATIONS];
 #endif
-
-#if !FORCE_SINGLE_NOTIFICATION_EVENT
-            m_CircularBufferNotificationEvents = new AutoResetEvent[NOTIFICATIONS];
-#endif
+            
 
             for (int i = 0; i < NOTIFICATIONS; i++)
             {
-#if !FORCE_SINGLE_NOTIFICATION_EVENT
-                m_CircularBufferNotificationEvents[i] = new AutoResetEvent(false);
-#endif
 
 #if USE_SHARPDX
                 m_BufferPositionNotify[i] = new NotificationPosition();
@@ -543,7 +535,7 @@ Caps
                 m_BufferPositionNotify[i].Offset = (m_PcmDataBufferLength * i) + m_PcmDataBufferLength - 1;
 
 #if FORCE_SINGLE_NOTIFICATION_EVENT
-                
+
 #if USE_SHARPDX
                 m_BufferPositionNotify[i].WaitHandle = m_CircularBufferNotificationEvent;
                 //m_BufferPositionNotify[i].EventNotifyHandlePointer = m_CircularBufferNotificationEvent.SafeWaitHandle.DangerousGetHandle();
@@ -552,16 +544,16 @@ Caps
 #endif
 
 #else
+                m_CircularBufferNotificationEvents[i] = new AutoResetEvent(false);
 
 #if USE_SHARPDX
                 m_BufferPositionNotify[i].WaitHandle = m_CircularBufferNotificationEvents[i];
-                //m_BufferPositionNotify[i].EventNotifyHandlePointer = m_CircularBufferNotificationEvent.SafeWaitHandle.DangerousGetHandle();
+                //m_BufferPositionNotify[i].EventNotifyHandlePointer = m_CircularBufferNotificationEvents[i].SafeWaitHandle.DangerousGetHandle();
 #else
                 m_BufferPositionNotify[i].EventNotifyHandle = m_CircularBufferNotificationEvents[i].SafeWaitHandle.DangerousGetHandle();
 #endif
 
 #endif
-
             }
 
 #if USE_SHARPDX
@@ -573,7 +565,11 @@ Caps
 
             m_CircularBufferReadPositon = 0;
             m_RecordingFileWriter = null;
+
             m_TotalRecordedBytes = 0;
+#if FORCE_SINGLE_NOTIFICATION_EVENT
+            m_PreviousTotalRecordedBytes = 0;
+#endif
 
             if (recordingToFile)
             {
@@ -637,41 +633,31 @@ Caps
                 m_CircularBuffer.Start(true);
 
                 m_CircularBufferRefreshThread.Start();
+
+#if FORCE_SINGLE_NOTIFICATION_EVENT
+                m_CircularBufferTimer.Start();
+#endif
             }
 
 
             //Console.WriteLine("Recorder notify thread start.");
-
-            //m_PreviousTotalRecordedBytes = 0;
-            //m_CircularBufferNotificationEventCheckTimer.Start();
         }
-
-        //private System.Windows.Forms.Timer m_CircularBufferNotificationEventCheckTimer = new System.Windows.Forms.Timer();
-        //long m_PreviousTotalRecordedBytes;
-        //private void onCircularBufferNotificationEventCheckTimerTick(object sender, EventArgs e)
-        //{
-        //    if (m_PreviousTotalRecordedBytes == m_TotalRecordedBytes
-        //        && CurrentState == State.Recording)
-        //    {
-        //        m_CircularBufferNotificationEvent.WaitOne(1);
-        //    }
-        //    m_PreviousTotalRecordedBytes = m_TotalRecordedBytes;
-        //}
 
         private BinaryWriter m_RecordingFileWriter;
 
-        private readonly Object LOCK = new object();
+        private readonly Object LOCK_CIRCULAR_BUFFER = new object();
         private void circularBufferRefreshThreadMethod()
         {
             while (true)
             {
+
 #if FORCE_SINGLE_NOTIFICATION_EVENT
                 m_CircularBufferNotificationEvent.WaitOne(Timeout.Infinite, true);
 #else
                 int eventIndex = WaitHandle.WaitAny(m_CircularBufferNotificationEvents);
 #endif
 
-                Monitor.Enter(LOCK);
+                Monitor.Enter(LOCK_CIRCULAR_BUFFER);
                 try
                 {
                     if (m_CircularBuffer == null || !m_CircularBuffer.Capturing || CurrentState == State.Stopped)
@@ -684,8 +670,9 @@ Caps
                         circularBufferTransferData(
 #if !FORCE_SINGLE_NOTIFICATION_EVENT
 eventIndex,
-false
+false,
 #endif
+false
 );
                     }
                 }
@@ -701,7 +688,7 @@ false
                 }
                 finally
                 {
-                    Monitor.Exit(LOCK);
+                    Monitor.Exit(LOCK_CIRCULAR_BUFFER);
                 }
             }
 
@@ -720,8 +707,9 @@ false
         private int circularBufferTransferData(
 #if !FORCE_SINGLE_NOTIFICATION_EVENT
 int eventIndex,
-bool catchingUp
+bool catchingUp,
 #endif
+bool lastFlush
 )
         {
 #if !FORCE_SINGLE_NOTIFICATION_EVENT
@@ -790,7 +778,7 @@ bool catchingUp
                             Console.WriteLine("Audio recording event catch-up {0}, {1} => {2}", eventIndex, m_previousEventIndex,
                                 nextEventIndex);
 #endif
-                            circularBufferTransferData(nextEventIndex, true);
+                            circularBufferTransferData(nextEventIndex, true, lastFlush);
                             nextEventIndex++;
                             if (nextEventIndex >= NOTIFICATIONS)
                             {
@@ -844,26 +832,25 @@ Caps
                               ? circularBufferCapturePosition + (circularBufferBytes - m_CircularBufferReadPositon)
                               : circularBufferCapturePosition - m_CircularBufferReadPositon));
 
-#if FORCE_SINGLE_NOTIFICATION_EVENT
-            circularBufferBytesAvailableForReading -= (circularBufferBytesAvailableForReading % notifyChunk);
-#else
-            if (eventIndex >= 0)
+            if (lastFlush)
             {
+#if !FORCE_SINGLE_NOTIFICATION_EVENT
+                DebugFix.Assert(eventIndex == -1);
+#endif
                 //circularBufferBytesAvailableForReading -= (circularBufferBytesAvailableForReading % notifyChunk);
-                //#if DEBUG
-                //                Console.WriteLine("[2] " + circularBufferBytesAvailableForReading);
-                //#endif
-
-                circularBufferBytesAvailableForReading = notifyChunk;
-            }
-            else
-            {
 #if DEBUG
                 Console.WriteLine("m_CircularBufferReadPositon: " + m_CircularBufferReadPositon);
                 Console.WriteLine("circularBufferBytesAvailableForReading; " + circularBufferBytesAvailableForReading);
 #endif
             }
+            else
+            {
+                circularBufferBytesAvailableForReading = notifyChunk;
+
+#if !FORCE_SINGLE_NOTIFICATION_EVENT
+                DebugFix.Assert(eventIndex >= 0);
 #endif
+            }
 
             if (circularBufferBytesAvailableForReading <= 0)
             {
@@ -960,6 +947,9 @@ Caps
                 if (CurrentState == State.Monitoring)
                 {
                     m_TotalRecordedBytes = 0;
+#if FORCE_SINGLE_NOTIFICATION_EVENT
+                    m_PreviousTotalRecordedBytes = 0;
+#endif
                 }
             }
             else
@@ -1044,14 +1034,18 @@ Caps
 
             bool wasRecording = CurrentState == State.Recording;
 
-            Monitor.Enter(LOCK);
+#if FORCE_SINGLE_NOTIFICATION_EVENT
+            m_CircularBufferTimer.Stop();
+#endif
+
+            Monitor.Enter(LOCK_CIRCULAR_BUFFER);
             try
             {
                 m_CircularBuffer.Stop();
             }
             finally
             {
-                Monitor.Exit(LOCK);
+                Monitor.Exit(LOCK_CIRCULAR_BUFFER);
             }
 
 #if FORCE_SINGLE_NOTIFICATION_EVENT
@@ -1119,8 +1113,9 @@ Caps
                     numberOfBytesThatHaveBeenRead = circularBufferTransferData(
 #if !FORCE_SINGLE_NOTIFICATION_EVENT
 -1,
-false
+false,
 #endif
+true
 );
                 }
                 catch (Exception ex)
