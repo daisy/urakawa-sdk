@@ -34,9 +34,9 @@ namespace AudioLib
 
         private void onCircularBufferTimerTick(object sender, EventArgs e)
         {
-#if DEBUG
-            Console.WriteLine("TICK");
-#endif
+//#if DEBUG
+//            Console.WriteLine("TICK");
+//#endif
 
             if (m_PreviousTotalRecordedBytes == m_TotalRecordedBytes // Skipped notifications?
                 && CurrentState == State.Recording)
