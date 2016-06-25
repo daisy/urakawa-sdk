@@ -34,6 +34,10 @@ namespace AudioLib
 
         private void onCircularBufferTimerTick(object sender, EventArgs e)
         {
+#if DEBUG
+            Console.WriteLine("TICK");
+#endif
+
             if (m_PreviousTotalRecordedBytes == m_TotalRecordedBytes // Skipped notifications?
                 && CurrentState == State.Recording)
             {
@@ -43,6 +47,11 @@ namespace AudioLib
                 //http://daisy-trac.cvsdude.com/urakawa-sdk/changeset?reponame=&new=1494%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs&old=1491%40trunk%2Fcsharp%2Faudio%2FAudioLib%2FAudioRecorder.cs
                 //m_CircularBufferNotificationEvent.WaitOne(1);
                 m_CircularBufferNotificationEvent.Set();
+
+#if DEBUG
+                Console.WriteLine("onCircularBufferTimerTick EVENT SET (skipped notifications?) " + m_PreviousTotalRecordedBytes + " / " + m_TotalRecordedBytes);
+                System.Media.SystemSounds.Asterisk.Play();
+#endif
             }
             m_PreviousTotalRecordedBytes = m_TotalRecordedBytes;
         }
@@ -858,12 +867,14 @@ Caps
                 return circularBufferBytesAvailableForReading;
             }
 
+            DebugFix.Assert(circularBufferBytesAvailableForReading <= circularBufferBytes);
+            if (circularBufferBytesAvailableForReading > circularBufferBytes)
+            {
+                circularBufferBytesAvailableForReading = circularBufferBytes;
+            }
 
             int circularBufferBytesAvailableForCapturing = circularBufferBytes - circularBufferBytesAvailableForReading;
-
-
-            DebugFix.Assert(circularBufferBytesAvailableForReading <= circularBufferBytes);
-
+            
             //int toRead = readPosition - m_CircularBufferReadPositon;
             //if (toRead < 0)
             //    toRead += m_CircularBuffer.Caps.BufferBytes;
