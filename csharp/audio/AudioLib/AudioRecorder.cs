@@ -2,8 +2,6 @@
 
 #define FORCE_SINGLE_NOTIFICATION_EVENT
 
-//#undef USE_SHARPDX
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -912,21 +910,7 @@ Caps
             }
             else
             {
-#if FORCE_SINGLE_NOTIFICATION_EVENT
-                if (m_DO_LOG_CircularBufferNotificationTimerMessage)
-                {
-                    String msg = "DO_LOG_CircularBufferNotificationTimerMessage:: circularBufferBytes @ m_CircularBufferReadPositon # circularBufferCapturePosition - circularBufferBytesAvailableForReading / notifyChunk $ incomingPcmData.Length: " +
-                                 circularBufferBytes + " @ " + m_CircularBufferReadPositon + " # " + circularBufferCapturePosition + " - " + circularBufferBytesAvailableForReading + " / " + notifyChunk + " $ " + (incomingPcmData == null ? "NULL" : ("" + incomingPcmData.Length));
-#if DEBUG
-                    Console.WriteLine(msg);
-#endif
-                    CircularBufferNotificationTimerMessageHandler del_ = CircularBufferNotificationTimerMessage;
-                    if (del_ != null)
-                    {
-                        del_(this, new CircularBufferNotificationTimerMessageEventArgs(msg));
-                    }
-                }
-#else
+#if !FORCE_SINGLE_NOTIFICATION_EVENT
                 DebugFix.Assert(eventIndex >= 0);
                 
                 circularBufferBytesAvailableForReading = notifyChunk;
@@ -1000,6 +984,21 @@ Caps
             DebugFix.Assert(circularBufferBytesAvailableForReading == incomingPcmData.Length);
 #endif
 
+#if FORCE_SINGLE_NOTIFICATION_EVENT
+            if (!lastFlush && m_DO_LOG_CircularBufferNotificationTimerMessage)
+            {
+                String msg = "DO_LOG_CircularBufferNotificationTimerMessage:: circularBufferBytes @ m_CircularBufferReadPositon # circularBufferCapturePosition - circularBufferBytesAvailableForReading / notifyChunk $ incomingPcmData.Length: " +
+                             circularBufferBytes + " @ " + m_CircularBufferReadPositon + " # " + circularBufferCapturePosition + " - " + circularBufferBytesAvailableForReading + " / " + notifyChunk + " $ " + (incomingPcmData == null ? "NULL" : ("" + incomingPcmData.Length));
+#if DEBUG
+                Console.WriteLine(msg);
+#endif
+                CircularBufferNotificationTimerMessageHandler del_ = CircularBufferNotificationTimerMessage;
+                if (del_ != null)
+                {
+                    del_(this, new CircularBufferNotificationTimerMessageEventArgs(msg));
+                }
+            }
+#endif
 
             //if (m_CircularBuffer != null && m_CircularBuffer.Capturing)
             //{
