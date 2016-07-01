@@ -62,16 +62,12 @@
       <HintPath>.\Jacobi.Vst.Interop.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.DirectX.DirectSound">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="SharpDX">
-      <HintPath>..\SharpDX.DirectSound\SharpDX.dll</HintPath>
+      <HintPath>..\SharpDX.DirectSound\NET4\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.DirectSound">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SharpDX.DirectSound\SharpDX.DirectSound.dll</HintPath>
+      <HintPath>..\SharpDX.DirectSound\NET4\SharpDX.DirectSound.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
