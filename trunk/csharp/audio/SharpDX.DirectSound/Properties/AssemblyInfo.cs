@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2010-2012 SharpDX - Alexandre Mutel
+﻿// Copyright (c) 2010-2014 SharpDX - Alexandre Mutel
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,25 +18,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyProduct("SharpDX.DirectSound")]
-[assembly: AssemblyTitle("SharpDX.DirectSound")]
-[assembly: AssemblyDescription("Assembly providing DirectSound managed API")]
-
 [assembly:AssemblyCompany("Alexandre Mutel")]
-[assembly:AssemblyCopyright("Copyright © 2010-2012 Alexandre Mutel")]
+[assembly:AssemblyCopyright("Copyright © 2010-2013 Alexandre Mutel")]
 
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly:AssemblyVersion("2.3.1")]
-[assembly:AssemblyFileVersion("2.3.1")]
+[assembly:AssemblyVersion("3.0.2")]
+[assembly:AssemblyFileVersion("3.0.2")]
 
-[assembly: NeutralResourcesLanguage("en")]
+[assembly: NeutralResourcesLanguage("en-us")]
 
 #if DEBUG
 [assembly:AssemblyConfiguration("Debug")]
@@ -44,7 +39,21 @@ using System.Runtime.InteropServices;
 [assembly:AssemblyConfiguration("Release")]
 #endif
 
+[assembly: AssemblyProduct("SharpDX.DirectSound")]
+[assembly: AssemblyTitle("SharpDX.DirectSound")]
+[assembly: AssemblyDescription("Assembly providing DirectSound managed API")]
+
 [assembly:ComVisible(false)]
+
+#if STORE_APP
+[assembly: Obfuscation(Feature = "Apply to type SharpDX.* when public and interface: renaming", Exclude = false, ApplyToMembers = true)]
+[assembly: Obfuscation(Feature = "Apply to type SharpDX.* when struct: renaming", Exclude = false, ApplyToMembers = true)]
+[assembly: Obfuscation(Feature = "Apply to type SharpDX.*: INotifyPropertyChanged heuristics", Exclude = true)]
+[assembly: Obfuscation(Feature = "Apply to type SharpDX.* when enum: forced rename", Exclude = false)]
+[assembly: Obfuscation(Feature = "Apply to type SharpDX.* when enum: enum values pruning", Exclude = false)]
+[assembly: Obfuscation(Feature = "legacy xml serialization heuristics", Exclude = true)]
+[assembly: Obfuscation(Feature = "ignore InternalsVisibleToAttribute", Exclude = false)]
+#endif
 
 [assembly: CLSCompliant(true)]
 

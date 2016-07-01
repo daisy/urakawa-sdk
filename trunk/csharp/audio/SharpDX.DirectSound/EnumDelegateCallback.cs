@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2010-2012 SharpDX - Alexandre Mutel
+﻿// Copyright (c) 2010-2014 SharpDX - Alexandre Mutel
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -51,9 +51,9 @@ namespace SharpDX.DirectSound
         }
 
         /// <summary>
-        /// Gets or sets the informations.
+        /// Gets or sets the device informations.
         /// </summary>
-        /// <value>The informations.</value>
+        /// <value>The device informations.</value>
         public List<DeviceInformation> Informations { get; private set; }
 
         // typedef BOOL (CALLBACK *LPDSENUMCALLBACKW)(LPGUID, LPCWSTR, LPCWSTR, LPVOID);

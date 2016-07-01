@@ -17,32 +17,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-
 namespace SharpDX.DirectSound
 {
-    internal partial class SoundBufferEffectDescription
+    /// <summary>
+    /// The <see cref="A:SharpDX.DirectSound"/> assembly provides managed DirectSound API.
+    /// </summary>
+    /// <msdn-id>ee416960</msdn-id>
+    /// <unmanaged>DirectSound</unmanaged>	
+    /// <unmanaged-short>DirectSound</unmanaged-short>	
+    [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+    class AssemblyDoc
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SoundBufferEffectDescription"/> class.
-        /// </summary>
-        public SoundBufferEffectDescription()
-        {
-            unsafe
-            {
-                this.Size = sizeof(SoundBufferEffectDescription.__Native);
-            }
-        }
-
-        internal static __Native __NewNative()
-        {
-            unsafe
-            {
-                __Native temp = default(__Native);
-                temp.Size = sizeof(__Native);
-                return temp;
-            }
-        }
-
     }
-}   
+}
