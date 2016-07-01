@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
@@ -28,8 +29,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly:AssemblyVersion("3.0.2")]
-[assembly:AssemblyFileVersion("3.0.2")]
+[assembly:AssemblyVersion("2.6.3")]
+[assembly:AssemblyFileVersion("2.6.3")]
 
 [assembly: NeutralResourcesLanguage("en-us")]
 
@@ -38,10 +39,6 @@ using System.Runtime.InteropServices;
 #else
 [assembly:AssemblyConfiguration("Release")]
 #endif
-
-[assembly: AssemblyProduct("SharpDX.DirectSound")]
-[assembly: AssemblyTitle("SharpDX.DirectSound")]
-[assembly: AssemblyDescription("Assembly providing DirectSound managed API")]
 
 [assembly:ComVisible(false)]
 
@@ -54,6 +51,12 @@ using System.Runtime.InteropServices;
 [assembly: Obfuscation(Feature = "legacy xml serialization heuristics", Exclude = true)]
 [assembly: Obfuscation(Feature = "ignore InternalsVisibleToAttribute", Exclude = false)]
 #endif
+
+
+[assembly: AssemblyProduct("SharpDX.DirectSound")]
+[assembly: AssemblyTitle("SharpDX.DirectSound")]
+[assembly: AssemblyDescription("Assembly providing DirectSound managed API")]
+
 
 [assembly: CLSCompliant(true)]
 

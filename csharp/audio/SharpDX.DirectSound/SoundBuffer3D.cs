@@ -18,7 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using SharpDX.Mathematics.Interop;
 
 namespace SharpDX.DirectSound
 {
@@ -80,10 +79,10 @@ namespace SharpDX.DirectSound
         /// <summary>
         /// The orientation of the sound projection cone.
         /// </summary>
-        public RawVector3 ConeOrientation
+        public Vector3 ConeOrientation
         {
             get {
-                RawVector3 temp;
+                Vector3 temp;
                 GetConeOrientation(out temp);
                 return temp;
             }
@@ -205,11 +204,11 @@ namespace SharpDX.DirectSound
         /// <summary>
         /// The position of the sound source.
         /// </summary>
-        public RawVector3 Position
+        public Vector3 Position
         {
             get
             {
-                RawVector3 temp;
+                Vector3 temp;
                 GetPosition(out temp);
                 return temp;
             }
@@ -222,11 +221,11 @@ namespace SharpDX.DirectSound
         /// <summary>
         /// The velocity of the sound source.
         /// </summary>
-        public RawVector3 Velocity
+        public Vector3 Velocity
         {
             get
             {
-                RawVector3 temp;
+                Vector3 temp;
                 GetVelocity(out temp);
                 return temp;
             }
