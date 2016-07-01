@@ -50,15 +50,13 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.DirectX" />
-    <Reference Include="Microsoft.DirectX.DirectSound">
+    <Reference Include="SharpDX, Version=2.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SharpDX.DirectSound\NET2\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX">
-      <HintPath>..\SharpDX.DirectSound\SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.DirectSound">
-      <HintPath>..\SharpDX.DirectSound\SharpDX.DirectSound.dll</HintPath>
+    <Reference Include="SharpDX.DirectSound, Version=2.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SharpDX.DirectSound\NET2\SharpDX.DirectSound.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
