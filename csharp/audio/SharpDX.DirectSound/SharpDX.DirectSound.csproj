@@ -14,6 +14,9 @@
     <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
+   <PropertyGroup>
+	<SharpDXDesktopOnly>true</SharpDXDesktopOnly>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -36,8 +39,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyDoc.cs" />
     <Compile Include="Buffer3DSettings.cs" />
     <Compile Include="Capabilities.cs" />
     <Compile Include="CaptureBuffer.cs" />
@@ -78,6 +83,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SoundListener3D.cs" />
     <Compile Include="WavesReverb.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Mapping.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

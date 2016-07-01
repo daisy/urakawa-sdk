@@ -1,4 +1,4 @@
-// Copyright (c) 2010-2012 SharpDX - Alexandre Mutel
+// Copyright (c) 2010-2014 SharpDX - Alexandre Mutel
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -72,15 +72,15 @@ namespace SharpDX.DirectSound
         /// </summary>
         public const float RatioMin = 1f;
         /// <summary>
-        /// Default speed at which compression is stopped after input drops below Threshold, in miliseconds. The default value is 200 ms.
+        /// Default speed at which compression is stopped after input drops below Threshold, in milliseconds. The default value is 200 ms.
         /// </summary>
         public const float ReleaseDefault = 200f;
         /// <summary>
-        /// Maximum speed at which compression is stopped after input drops below Threshold, in miliseconds. 
+        /// Maximum speed at which compression is stopped after input drops below Threshold, in milliseconds. 
         /// </summary>
         public const float ReleaseMax = 3000f;
         /// <summary>
-        /// Minimum speed at which compression is stopped after input drops below Threshold, in miliseconds. 
+        /// Minimum speed at which compression is stopped after input drops below Threshold, in milliseconds. 
         /// </summary>
         public const float ReleaseMin = 50f;
         /// <summary>
