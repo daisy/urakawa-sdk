@@ -2,6 +2,8 @@
 
 #define FORCE_SINGLE_NOTIFICATION_EVENT
 
+//#undef USE_SHARPDX
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -103,7 +105,9 @@ namespace AudioLib
 
 
         private const int REFRESH_INTERVAL_MS = 75; //ms interval for refreshing PCM data
-
+        
+        // byte buffer used to pass PCM payload to "data available" event arg
+        // (same length as incomingPcmData byte buffer)
         private byte[] m_PcmDataBuffer;
         private int m_PcmDataBufferLength;
 
@@ -219,41 +223,41 @@ namespace AudioLib
         public delegate void PcmDataBufferAvailableHandler(object sender, PcmDataBufferAvailableEventArgs e);
         public class PcmDataBufferAvailableEventArgs : EventArgs
         {
-            private byte[] m_PcmDataBuffer;
+            private byte[] m_EvPcmDataBuffer;
             public byte[] PcmDataBuffer
             {
                 get
                 {
-                    return m_PcmDataBuffer;
+                    return m_EvPcmDataBuffer;
                 }
                 set
                 {
-                    m_PcmDataBuffer = value;
+                    m_EvPcmDataBuffer = value;
                 }
             }
 
-            private int m_PcmDataBufferLength;
+            private int m_EvPcmDataBufferLength;
             public int PcmDataBufferLength
             {
                 get
                 {
-                    return m_PcmDataBufferLength;
+                    return m_EvPcmDataBufferLength;
                 }
                 set
                 {
-                    m_PcmDataBufferLength = value;
+                    m_EvPcmDataBufferLength = value;
 
-                    if (m_PcmDataBuffer != null)
+                    if (m_EvPcmDataBuffer != null)
                     {
-                        DebugFix.Assert(m_PcmDataBufferLength <= m_PcmDataBuffer.Length);
+                        DebugFix.Assert(m_EvPcmDataBufferLength <= m_EvPcmDataBuffer.Length);
                     }
                 }
             }
 
             public PcmDataBufferAvailableEventArgs(byte[] pcmDataBuffer, int length)
             {
-                m_PcmDataBuffer = pcmDataBuffer;
-                m_PcmDataBufferLength = length;
+                m_EvPcmDataBuffer = pcmDataBuffer;
+                m_EvPcmDataBufferLength = length;
             }
         }
 
@@ -532,8 +536,14 @@ Caps
 
             int pcmDataBufferSize = (int)(byteRate * REFRESH_INTERVAL_MS / 1000.0);
             pcmDataBufferSize -= pcmDataBufferSize % RecordingPCMFormat.BlockAlign;
-
-            m_PcmDataBufferLength = pcmDataBufferSize;
+            
+            // here we are probably wasting some heap memory, 
+            // because the event arg payload buffer (for "data available" event)
+            // contains the delta between capture and read circular buffer positions.
+            // however, this makes the memory re-alloc (i.e. buffer resize) routine simpler,
+            // that is to say here only when start record/monitor, 
+            // instead of inside the DirectAudio capture thread (based on the actual circular buffer delta).
+            m_PcmDataBufferLength = pcmDataBufferSize * NOTIFICATIONS;
             if (m_PcmDataBuffer == null)
             {
                 Console.WriteLine("ALLOCATING m_PcmDataBuffer");
@@ -545,7 +555,7 @@ Caps
                 Array.Resize(ref m_PcmDataBuffer, m_PcmDataBufferLength);
             }
 
-            int circularBufferSize = m_PcmDataBufferLength * NOTIFICATIONS;
+            int circularBufferSize = pcmDataBufferSize * NOTIFICATIONS;
 
             CaptureBufferDescription bufferDescription = new CaptureBufferDescription();
             bufferDescription.BufferBytes = circularBufferSize;
@@ -589,7 +599,7 @@ Caps
                 m_BufferPositionNotify[i] = new NotificationPosition();
 #endif
 
-                m_BufferPositionNotify[i].Offset = (m_PcmDataBufferLength * i) + m_PcmDataBufferLength - 1;
+                m_BufferPositionNotify[i].Offset = (pcmDataBufferSize * i) + pcmDataBufferSize - 1;
 
 #if FORCE_SINGLE_NOTIFICATION_EVENT
 
@@ -1075,6 +1085,7 @@ Caps
 
                 m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
                 m_PcmDataBufferAvailableEventArgs.PcmDataBufferLength = min;
+                
                 del(this, m_PcmDataBufferAvailableEventArgs);
             }
 
@@ -1097,6 +1108,7 @@ Caps
                 }
                 m_PcmDataBufferAvailableEventArgs.PcmDataBuffer = m_PcmDataBuffer;
                 m_PcmDataBufferAvailableEventArgs.PcmDataBufferLength = m_PcmDataBufferLength;
+
                 deleg(this, m_PcmDataBufferAvailableEventArgs);
             }
 
