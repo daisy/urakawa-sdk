@@ -435,7 +435,8 @@ namespace urakawa.daisy.export
             string audioFileName = Path.GetFileNameWithoutExtension(externalAudioSrc) + "_" + FileDataProvider.EliminateForbiddenFileNameCharacters(sectionName.Replace(" ", "_"));
             if (AudioFileNameCharsLimit > 0)
             {
-                audioFileName = audioFileName.Replace("aud", "");
+                //audioFileName = audioFileName.Replace("aud", "");
+                audioFileName = audioFileName.Remove(0, 3);
                 if (audioFileName.Length > AudioFileNameCharsLimit) audioFileName = audioFileName.Substring(0, AudioFileNameCharsLimit);
             }
             audioFileName = audioFileName + Path.GetExtension(externalAudioSrc);
