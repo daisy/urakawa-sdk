@@ -1236,6 +1236,10 @@ namespace urakawa.daisy.export
                                     FileDataProvider.EliminateForbiddenFileNameCharacters(
                                         descriptionFileHTMLRelativeToHTML).Replace('.', '_');
 
+                                string detailsIndirectID = "tobi_" +
+                                                                    FileDataProvider.EliminateForbiddenFileNameCharacters(
+                                                                        descriptionFileHTMLRelativeToHTML).Replace('.', '_');
+
 
                                 DebugFix.Assert(!String.IsNullOrEmpty(longDescFileHTML));
 
@@ -1475,6 +1479,56 @@ namespace urakawa.daisy.export
                                     //XmlNode xmlDocHTML_body = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(xmlDocHTML, false, "body", DiagramContentModelHelper.NS_URL_XHTML);
                                     //xmlDocHTML_body.InsertBefore(iframeNode, bodyNode.FirstChild);
                                     iframes.Add(iframeNode);
+                                }
+
+                                if (m_imageDescriptions_useAriaDetails)
+                                {
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                        xmlDocHTML,
+                                        newXmlNode,
+                                        @"aria-details",
+                                        detailsIndirectID,
+                                        DiagramContentModelHelper.NS_URL_XHTML);
+
+
+                                    XmlNode detailsNode = xmlDocHTML.CreateElement(null, @"details", newXmlNode.NamespaceURI);
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                                                            xmlDocHTML,
+                                                                            detailsNode,
+                                                                            @"id",
+                                                                            detailsIndirectID,
+                                                                            DiagramContentModelHelper.NS_URL_XHTML);
+
+                                    XmlNode summaryNode = xmlDocHTML.CreateElement(null, @"summary", newXmlNode.NamespaceURI);
+                                    XmlNode summaryTextNode = xmlDocHTML.CreateTextNode("ARIA details");
+                                    summaryNode.AppendChild(summaryTextNode);
+                                    detailsNode.AppendChild(summaryNode);
+
+                                    XmlNode linkNode = xmlDocHTML.CreateElement(null, @"a", newXmlNode.NamespaceURI);
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                                                            xmlDocHTML,
+                                                                            linkNode,
+                                                                            @"href",
+                                                                            descriptionFileHTMLRelativeToHTML,
+                                                                            DiagramContentModelHelper.NS_URL_XHTML);
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                                                            xmlDocHTML,
+                                                                            linkNode,
+                                                                            @"title",
+                                                                            "ARIA details extended description document",
+                                                                            DiagramContentModelHelper.NS_URL_XHTML);
+                                    XmlDocumentHelper.CreateAppendXmlAttribute(
+                                                                            xmlDocHTML,
+                                                                            linkNode,
+                                                                            @"target",
+                                                                            "_BLANK",
+                                                                            DiagramContentModelHelper.NS_URL_XHTML);
+                                    XmlNode linkTextNode = xmlDocHTML.CreateTextNode("Link: [" + descriptionFileHTMLRelativeToHTML + "]");
+                                    linkNode.AppendChild(linkTextNode);
+                                    detailsNode.AppendChild(linkNode);
+
+
+                                    newXmlNode.ParentNode.InsertAfter(detailsNode, newXmlNode);
                                 }
                             }
                         }
