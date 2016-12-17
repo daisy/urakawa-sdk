@@ -40,6 +40,7 @@ namespace urakawa.daisy.export
         protected readonly bool m_includeImageDescriptions;
         protected readonly bool m_imageDescriptions_useAriaDescribedBy;
         protected readonly bool m_imageDescriptions_useAriaDescribedAt;
+        protected readonly bool m_imageDescriptions_useAriaDetails;
         protected readonly bool m_imageDescriptions_useHtmlLongDesc;
         protected readonly bool m_imageDescriptions_inlineTextAudio;
 
@@ -103,6 +104,7 @@ namespace urakawa.daisy.export
             string exportSpineItemProjectPath,
             string mediaOverlayActiveCSS,
             bool imageDescriptions_useAriaDescribedAt,
+            bool imageDescriptions_useAriaDetails,
             bool imageDescriptions_useAriaDescribedBy,
             bool imageDescriptions_useHtmlLongDesc,
             bool imageDescriptions_inlineTextAudio)
@@ -128,6 +130,7 @@ namespace urakawa.daisy.export
             m_imageDescriptions_inlineTextAudio = imageDescriptions_inlineTextAudio;
 
             m_imageDescriptions_useAriaDescribedAt = imageDescriptions_useAriaDescribedAt;
+            m_imageDescriptions_useAriaDetails = imageDescriptions_useAriaDetails;
             m_imageDescriptions_useAriaDescribedBy = imageDescriptions_useAriaDescribedBy;
             m_imageDescriptions_useHtmlLongDesc = imageDescriptions_useHtmlLongDesc;
 
