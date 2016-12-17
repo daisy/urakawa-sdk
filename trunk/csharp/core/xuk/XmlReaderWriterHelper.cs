@@ -386,13 +386,13 @@ namespace urakawa.xuk
                 xmldoc.Load(xmlReader);
 
             }
-            catch (Exception ex)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                throw new Exception("ParseXmlFromString", ex);
-            }
+//            catch (Exception ex)
+//            {
+//#if DEBUG
+//                Debugger.Break();
+//#endif
+//                throw new Exception("ParseXmlFromString", ex);
+//            }
             finally
             {
                 if (xmlReader != null)
