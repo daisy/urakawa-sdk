@@ -276,7 +276,7 @@ namespace urakawa.daisy.export
 
                 string fullAudioPath_ = fullAudioPath.Replace(DataProviderFactory.AUDIO_MP3_EXTENSION, DataProviderFactory.AUDIO_WAV_EXTENSION).Replace(DataProviderFactory.AUDIO_WAV_EXTENSION,
                                                                 @"_"
-                    //+ spineItemPresentation.MediaDataManager.DefaultPCMFormat.ToString()
+                                                                //+ spineItemPresentation.MediaDataManager.DefaultPCMFormat.ToString()
                                                                 + spineItemPresentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
                                                                 + "-"
                                                                 + (spineItemPresentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels == 1 ? @"mono" : @"stereo")
@@ -539,7 +539,7 @@ namespace urakawa.daisy.export
 
                             bool needsRelativePathAdjustment = @"href".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
                                                   || @"src".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
-                                //|| @"altimg".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
+                                                  //|| @"altimg".Equals(xmlAttribute.LocalName, StringComparison.OrdinalIgnoreCase)
                                                   ;
 
                             if (m_isDefaultOpfRelativePath && needsRelativePathAdjustment)
@@ -693,7 +693,7 @@ namespace urakawa.daisy.export
                 TreeNode currentTreeNode_SMIL = null;
                 if (time != null)
                 {
-                tryAgain:
+                    tryAgain:
                     currentXmlNode_SMIL = stack_XmlNode_SMIL.Peek();
                     currentTreeNode_SMIL = stack_TreeNode_SMIL.Peek();
 
@@ -901,7 +901,7 @@ namespace urakawa.daisy.export
 
                         XmlAttribute xmlAttrEpubType = null;
                         TreeNode treeNode = currentTreeNode;
-                    tryAgain:
+                        tryAgain:
                         xmlAttrEpubType = treeNode.GetXmlProperty().GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
                         if (xmlAttrEpubType != null)
                         {
@@ -1249,180 +1249,198 @@ namespace urakawa.daisy.export
                                 //    FileDataProvider.EliminateForbiddenFileNameCharacters(
                                 //        longDescFileHTMLRelativeToHTML).Replace('.', '_');
 
+                                string textDescription_SUMMARY = null;
 
-
-                                if (m_imageDescriptions_inlineTextAudio)
+                                if (map_DiagramElementName_TO_TextualDescriptions.Count > 0)
                                 {
-                                    if (map_DiagramElementName_TO_TextualDescriptions.Count > 0)
+                                    foreach (string diagramDescriptionElementName in map_DiagramElementName_TO_TextualDescriptions.Keys)
                                     {
-                                        foreach (string diagramDescriptionElementName in map_DiagramElementName_TO_TextualDescriptions.Keys)
+                                        bool isTextDescription_SUMMARY =
+                                            DiagramContentModelHelper.D_Summary.Equals(diagramDescriptionElementName,
+                                                StringComparison.OrdinalIgnoreCase);
+                                        bool isTextDescription_LONGDESC =
+                                            DiagramContentModelHelper.D_LondDesc.Equals(diagramDescriptionElementName,
+                                                StringComparison.OrdinalIgnoreCase);
+                                        bool isTextDescription_SIMPLIFIED_LANG =
+                                            DiagramContentModelHelper.D_SimplifiedLanguageDescription.Equals(diagramDescriptionElementName,
+                                                StringComparison.OrdinalIgnoreCase);
+
+                                        XmlNode textDescNode = xmlDocHTML.CreateElement(null, @"div", newXmlNode.NamespaceURI);
+
+                                        XmlDocumentHelper.CreateAppendXmlAttribute(
+                                                                                xmlDocHTML,
+                                                                                textDescNode,
+                                                                                @"class",
+                                                                                Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX + diagramDescriptionElementName,
+                                                                                DiagramContentModelHelper.NS_URL_XHTML);
+
+                                        string idInjectedDiv = descIndirectID + "_" + diagramDescriptionElementName.Replace(':', '_');
+                                        XmlDocumentHelper.CreateAppendXmlAttribute(
+                                                                                xmlDocHTML,
+                                                                                textDescNode,
+                                                                                @"id",
+                                                                                idInjectedDiv,
+                                                                                DiagramContentModelHelper.NS_URL_XHTML);
+
+                                        if (m_imageDescriptions_inlineTextAudio)
                                         {
-                                            XmlNode textDescNode = xmlDocHTML.CreateElement(null, @"div", newXmlNode.NamespaceURI);
-
-                                            XmlDocumentHelper.CreateAppendXmlAttribute(
-                                                                                    xmlDocHTML,
-                                                                                    textDescNode,
-                                                                                    @"class",
-                                                                                    Daisy3_Export.DIAGRAM_CSS_CLASS_PREFIX + diagramDescriptionElementName,
-                                                                                    DiagramContentModelHelper.NS_URL_XHTML);
-
-                                            string idInjectedDiv = descIndirectID + "_" + diagramDescriptionElementName.Replace(':', '_');
-                                            XmlDocumentHelper.CreateAppendXmlAttribute(
-                                                                                    xmlDocHTML,
-                                                                                    textDescNode,
-                                                                                    @"id",
-                                                                                    idInjectedDiv,
-                                                                                    DiagramContentModelHelper.NS_URL_XHTML);
-
                                             newXmlNode.ParentNode.AppendChild(textDescNode);
+                                        }
 
-                                            foreach (string txt in map_DiagramElementName_TO_TextualDescriptions[diagramDescriptionElementName])
+
+                                        foreach (string txt in map_DiagramElementName_TO_TextualDescriptions[diagramDescriptionElementName])
+                                        {
+                                            string descText = txt;
+
+                                            bool xmlParseFail = descText.StartsWith(Daisy3_Export.DIAGRAM_XML_PARSE_FAIL);
+
+                                            bool descriptionTextContainsMarkup = !xmlParseFail && descText.IndexOf('<') >= 0; // descText.Contains("<");
+                                            if (descriptionTextContainsMarkup)
                                             {
-                                                string descText = txt;
-
-                                                bool xmlParseFail = descText.StartsWith(Daisy3_Export.DIAGRAM_XML_PARSE_FAIL);
-
-                                                bool descriptionTextContainsMarkup = !xmlParseFail && descText.IndexOf('<') >= 0; // descText.Contains("<");
-                                                if (descriptionTextContainsMarkup)
+                                                try
                                                 {
-                                                    try
-                                                    {
-                                                        textDescNode.InnerXml = descText;
-                                                    }
-                                                    catch (Exception ex)
-                                                    {
-#if DEBUG
-                                                        Debugger.Break();
-#endif
-                                                        Console.WriteLine(@"Cannot set DIAGRAM XML: " + descText);
-
-                                                        XmlNode wrapperNode = xmlDocHTML.CreateElement(null, DiagramContentModelHelper.CODE, newXmlNode.NamespaceURI);
-                                                        textDescNode.AppendChild(wrapperNode);
-                                                        wrapperNode.AppendChild(xmlDocHTML.CreateTextNode(descText));
-                                                    }
+                                                    textDescNode.InnerXml = descText;
                                                 }
-                                                else if (xmlParseFail)
+                                                catch (Exception ex)
                                                 {
-                                                    //descText = descText.Replace(DIAGRAM_XML_PARSE_FAIL, "");
-                                                    descText = descText.Substring(Daisy3_Export.DIAGRAM_XML_PARSE_FAIL.Length);
+#if DEBUG
+                                                    Debugger.Break();
+#endif
+                                                    Console.WriteLine(@"Cannot set DIAGRAM XML: " + descText);
 
                                                     XmlNode wrapperNode = xmlDocHTML.CreateElement(null, DiagramContentModelHelper.CODE, newXmlNode.NamespaceURI);
                                                     textDescNode.AppendChild(wrapperNode);
                                                     wrapperNode.AppendChild(xmlDocHTML.CreateTextNode(descText));
                                                 }
-                                                else
+                                            }
+                                            else if (xmlParseFail)
+                                            {
+                                                //descText = descText.Replace(DIAGRAM_XML_PARSE_FAIL, "");
+                                                descText = descText.Substring(Daisy3_Export.DIAGRAM_XML_PARSE_FAIL.Length);
+
+                                                XmlNode wrapperNode = xmlDocHTML.CreateElement(null, DiagramContentModelHelper.CODE, newXmlNode.NamespaceURI);
+                                                textDescNode.AppendChild(wrapperNode);
+                                                wrapperNode.AppendChild(xmlDocHTML.CreateTextNode(descText));
+                                            }
+                                            else
+                                            {
+                                                string normalizedText = descText.Replace("\r\n", "\n");
+
+                                                string[] parasText = normalizedText.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                                                //string[] parasText = System.Text.RegularExpressions.Regex.Split(normalizedText, "\n");
+
+                                                for (int i = 0; i < parasText.Length; i++)
                                                 {
-                                                    string normalizedText = descText.Replace("\r\n", "\n");
-
-                                                    string[] parasText = normalizedText.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                                                    //string[] parasText = System.Text.RegularExpressions.Regex.Split(normalizedText, "\n");
-
-                                                    for (int i = 0; i < parasText.Length; i++)
+                                                    string paraText = parasText[i].Trim();
+                                                    if (string.IsNullOrEmpty(paraText))
                                                     {
-                                                        string paraText = parasText[i].Trim();
-                                                        if (string.IsNullOrEmpty(paraText))
-                                                        {
-                                                            continue;
-                                                        }
-
-                                                        XmlNode paragraph = xmlDocHTML.CreateElement(null, DiagramContentModelHelper.P, newXmlNode.NamespaceURI);
-
-                                                        paragraph.InnerText = paraText;
-
-                                                        textDescNode.AppendChild(paragraph);
+                                                        continue;
                                                     }
+
+                                                    XmlNode paragraph = xmlDocHTML.CreateElement(null, DiagramContentModelHelper.P, newXmlNode.NamespaceURI);
+
+                                                    paragraph.InnerText = paraText;
+
+                                                    textDescNode.AppendChild(paragraph);
                                                 }
                                             }
                                         }
+
+                                        //textDescNode.InnerXml
+                                        string textual = textDescNode.InnerText;
+                                        if (isTextDescription_SUMMARY)
+                                        {
+                                            textDescription_SUMMARY = textual;
+                                        }
                                     }
-
-                                    //foreach (AlternateContent altContent in altProp.AlternateContents.ContentsAs_Enumerable)
-                                    //{
-                                    //    if (altContent.Text != null)
-                                    //    {
-                                    //        string xmlNodeName = null;
-
-                                    //        if (altContent.Metadatas != null && altContent.Metadatas.Count > 0)
-                                    //        {
-                                    //            foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
-                                    //            {
-                                    //                if (m.NameContentAttribute.Name ==
-                                    //                         DiagramContentModelHelper.DiagramElementName
-                                    //                         ||
-                                    //                         m.NameContentAttribute.Name ==
-                                    //                         DiagramContentModelHelper.DiagramElementName_OBSOLETE)
-                                    //                {
-                                    //                    xmlNodeName = m.NameContentAttribute.Value;
-                                    //                }
-
-                                    //                if (xmlNodeName != null)
-                                    //                {
-                                    //                    break;
-                                    //                }
-                                    //            }
-                                    //        }
-
-                                    //        if (xmlNodeName == null)
-                                    //        {
-                                    //            continue;
-                                    //        }
-
-                                    //        bool isTextDescription = DiagramContentModelHelper.D_Summary.Equals(
-                                    //            xmlNodeName, StringComparison.OrdinalIgnoreCase)
-                                    //                                 ||
-                                    //                                 DiagramContentModelHelper.D_LondDesc.Equals(
-                                    //                                     xmlNodeName, StringComparison.OrdinalIgnoreCase)
-                                    //                                 ||
-                                    //                                 DiagramContentModelHelper
-                                    //                                     .D_SimplifiedLanguageDescription.Equals(
-                                    //                                         xmlNodeName,
-                                    //                                         StringComparison.OrdinalIgnoreCase);
-
-                                    //        if (!isTextDescription)
-                                    //        {
-                                    //            continue;
-                                    //        }
-
-
-
-                                    //        //if (altContent.Audio != null)
-                                    //        //{
-                                    //        //    string audioDescPath =
-                                    //        //        map_AltContentAudio_TO_RelativeExportedFilePath[altContent];
-                                    //        //    DebugFix.Assert(!string.IsNullOrEmpty(audioDescPath));
-
-
-                                    //        //    opfXmlNode_item = opfXmlDoc.CreateElement(null,
-                                    //        //        "item",
-                                    //        //        DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
-                                    //        //    opfXmlNode_manifest.AppendChild(opfXmlNode_item);
-
-                                    //        //    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item,
-                                    //        //        @"id",
-                                    //        //        GetNextID(ID_DiagramXmlPrefix));
-
-                                    //        //    type =
-                                    //        //        DataProviderFactory.GetMimeTypeFromExtension(
-                                    //        //            Path.GetExtension(audioDescPath));
-                                    //        //    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item,
-                                    //        //        @"media-type", type);
-
-                                    //        //    relPath = Path.Combine(originalRelativeParentDir, audioDescPath);
-                                    //        //    //Path.Combine(Path.GetDirectoryName(descriptionFile), ));
-
-                                    //        //    fullPath =
-                                    //        //        FileDataProvider.NormaliseFullFilePath(Path.Combine(imageParentDir,
-                                    //        //            audioDescPath)).Replace('/', '\\');
-                                    //        //    pathRelativeToOPF = makeRelativePathToOPF(fullPath,
-                                    //        //        fullSpineItemDirectory,
-                                    //        //        relPath, opfFilePath);
-
-                                    //        //    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item,
-                                    //        //        @"href", FileDataProvider.UriEncode(pathRelativeToOPF));
-                                    //        //}
-                                    //    }
-                                    //}
                                 }
+
+                                //foreach (AlternateContent altContent in altProp.AlternateContents.ContentsAs_Enumerable)
+                                //{
+                                //    if (altContent.Text != null)
+                                //    {
+                                //        string xmlNodeName = null;
+
+                                //        if (altContent.Metadatas != null && altContent.Metadatas.Count > 0)
+                                //        {
+                                //            foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
+                                //            {
+                                //                if (m.NameContentAttribute.Name ==
+                                //                         DiagramContentModelHelper.DiagramElementName
+                                //                         ||
+                                //                         m.NameContentAttribute.Name ==
+                                //                         DiagramContentModelHelper.DiagramElementName_OBSOLETE)
+                                //                {
+                                //                    xmlNodeName = m.NameContentAttribute.Value;
+                                //                }
+
+                                //                if (xmlNodeName != null)
+                                //                {
+                                //                    break;
+                                //                }
+                                //            }
+                                //        }
+
+                                //        if (xmlNodeName == null)
+                                //        {
+                                //            continue;
+                                //        }
+
+                                //        bool isTextDescription = DiagramContentModelHelper.D_Summary.Equals(
+                                //            xmlNodeName, StringComparison.OrdinalIgnoreCase)
+                                //                                 ||
+                                //                                 DiagramContentModelHelper.D_LondDesc.Equals(
+                                //                                     xmlNodeName, StringComparison.OrdinalIgnoreCase)
+                                //                                 ||
+                                //                                 DiagramContentModelHelper
+                                //                                     .D_SimplifiedLanguageDescription.Equals(
+                                //                                         xmlNodeName,
+                                //                                         StringComparison.OrdinalIgnoreCase);
+
+                                //        if (!isTextDescription)
+                                //        {
+                                //            continue;
+                                //        }
+
+
+
+                                //        //if (altContent.Audio != null)
+                                //        //{
+                                //        //    string audioDescPath =
+                                //        //        map_AltContentAudio_TO_RelativeExportedFilePath[altContent];
+                                //        //    DebugFix.Assert(!string.IsNullOrEmpty(audioDescPath));
+
+
+                                //        //    opfXmlNode_item = opfXmlDoc.CreateElement(null,
+                                //        //        "item",
+                                //        //        DiagramContentModelHelper.NS_URL_EPUB_PACKAGE);
+                                //        //    opfXmlNode_manifest.AppendChild(opfXmlNode_item);
+
+                                //        //    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item,
+                                //        //        @"id",
+                                //        //        GetNextID(ID_DiagramXmlPrefix));
+
+                                //        //    type =
+                                //        //        DataProviderFactory.GetMimeTypeFromExtension(
+                                //        //            Path.GetExtension(audioDescPath));
+                                //        //    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item,
+                                //        //        @"media-type", type);
+
+                                //        //    relPath = Path.Combine(originalRelativeParentDir, audioDescPath);
+                                //        //    //Path.Combine(Path.GetDirectoryName(descriptionFile), ));
+
+                                //        //    fullPath =
+                                //        //        FileDataProvider.NormaliseFullFilePath(Path.Combine(imageParentDir,
+                                //        //            audioDescPath)).Replace('/', '\\');
+                                //        //    pathRelativeToOPF = makeRelativePathToOPF(fullPath,
+                                //        //        fullSpineItemDirectory,
+                                //        //        relPath, opfFilePath);
+
+                                //        //    XmlDocumentHelper.CreateAppendXmlAttribute(opfXmlDoc, opfXmlNode_item,
+                                //        //        @"href", FileDataProvider.UriEncode(pathRelativeToOPF));
+                                //        //}
+                                //    }
+                                //}
 
                                 if (m_imageDescriptions_useAriaDescribedAt)
                                 {
@@ -1500,7 +1518,12 @@ namespace urakawa.daisy.export
                                                                             DiagramContentModelHelper.NS_URL_XHTML);
 
                                     XmlNode summaryNode = xmlDocHTML.CreateElement(null, @"summary", newXmlNode.NamespaceURI);
-                                    XmlNode summaryTextNode = xmlDocHTML.CreateTextNode("ARIA details");
+                                    string textual = "ARIA details";
+                                    if (!string.IsNullOrEmpty(textDescription_SUMMARY))
+                                    {
+                                        textual = textDescription_SUMMARY;
+                                    }
+                                    XmlNode summaryTextNode = xmlDocHTML.CreateTextNode(textual);
                                     summaryNode.AppendChild(summaryTextNode);
                                     detailsNode.AppendChild(summaryNode);
 
