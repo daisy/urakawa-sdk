@@ -1534,19 +1534,20 @@ namespace urakawa.daisy.export
                                                                             @"href",
                                                                             descriptionFileHTMLRelativeToHTML,
                                                                             DiagramContentModelHelper.NS_URL_XHTML);
-                                    XmlDocumentHelper.CreateAppendXmlAttribute(
-                                                                            xmlDocHTML,
-                                                                            linkNode,
-                                                                            @"title",
-                                                                            "ARIA details extended description document",
-                                                                            DiagramContentModelHelper.NS_URL_XHTML);
+                                    string title = "ARIA-details, link to extended image description (DIAGRAMMAR)";
+                                    //XmlDocumentHelper.CreateAppendXmlAttribute(
+                                    //                                        xmlDocHTML,
+                                    //                                        linkNode,
+                                    //                                        @"title",
+                                    //                                        title,
+                                    //                                        DiagramContentModelHelper.NS_URL_XHTML);
                                     XmlDocumentHelper.CreateAppendXmlAttribute(
                                                                             xmlDocHTML,
                                                                             linkNode,
                                                                             @"target",
                                                                             "_BLANK",
                                                                             DiagramContentModelHelper.NS_URL_XHTML);
-                                    XmlNode linkTextNode = xmlDocHTML.CreateTextNode("Link: [" + descriptionFileHTMLRelativeToHTML + "]");
+                                    XmlNode linkTextNode = xmlDocHTML.CreateTextNode(title + ": [" + descriptionFileHTMLRelativeToHTML + "]");
                                     linkNode.AppendChild(linkTextNode);
                                     detailsNode.AppendChild(linkNode);
 
