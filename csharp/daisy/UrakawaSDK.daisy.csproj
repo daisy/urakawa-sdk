@@ -153,6 +153,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="UrakawaSDK.daisy.Lang.fr.resx" />
     <EmbeddedResource Include="UrakawaSDK.daisy.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UrakawaSDK.daisy.Lang.Designer.cs</LastGenOutput>
