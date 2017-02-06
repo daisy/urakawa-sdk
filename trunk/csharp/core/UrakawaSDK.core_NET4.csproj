@@ -435,6 +435,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="UrakawaSDK.core.Lang.fr.resx" />
     <EmbeddedResource Include="UrakawaSDK.core.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UrakawaSDK.core.Lang.Designer.cs</LastGenOutput>
