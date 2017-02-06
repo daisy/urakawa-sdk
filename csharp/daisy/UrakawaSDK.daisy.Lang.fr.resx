@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -112,99 +112,99 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AllFilesCreated" xml:space="preserve">
-    <value>All files created</value>
+    <value>Tous les fichiers créés</value>
   </data>
   <data name="CancelledXUKSaving" xml:space="preserve">
-    <value>Cancelled XUK Saving.</value>
+    <value>Sauvegarde du XUK annulée.</value>
   </data>
   <data name="ConvertingAudio" xml:space="preserve">
-    <value>Converting audio: [{0}]</value>
+    <value>Conversion de l'audio: [{0}]</value>
   </data>
   <data name="CopyingAudio" xml:space="preserve">
-    <value>Copying audio: [{0}]</value>
+    <value>Copie de l'audio: [{0}]</value>
   </data>
   <data name="CreateMP3File" xml:space="preserve">
-    <value>Creating mp3 file [{0}] {1}</value>
+    <value>Création du fichier MP3: [{0}] {1}</value>
   </data>
   <data name="CreateSmilAndNcxFiles" xml:space="preserve">
-    <value>Creating smil and ncx files</value>
-  </data>
-  <data name="CreatingExternalFiles" xml:space="preserve">
-    <value>creating external files like .css, .dtd etc.</value>
-  </data>
-  <data name="CreatingSmilFiles" xml:space="preserve">
-    <value>Creating smil files {0} / {1}</value>
-  </data>
-  <data name="CreatingXMLFile" xml:space="preserve">
-    <value>Creating DTBook.xml file</value>
-  </data>
-  <data name="CreatingEPUB" xml:space="preserve">
-    <value>Creating EPUB files...</value>
-  </data>
-  <data name="CreatingEPUBZip" xml:space="preserve">
-    <value>Creating EPUB zip: </value>
-  </data>
-  <data name="DecodingAudio" xml:space="preserve">
-    <value>Decoding audio: [{0}]</value>
-  </data>
-  <data name="ErrorInEncoding" xml:space="preserve">
-    <value>Error in encoding {0}</value>
-  </data>
-  <data name="ImportInitialized" xml:space="preserve">
-    <value>Import initialized.</value>
-  </data>
-  <data name="InitializeImport" xml:space="preserve">
-    <value>Initializing import...</value>
-  </data>
-  <data name="ParsingContent" xml:space="preserve">
-    <value>Parsing content: [{0}]</value>
-  </data>
-  <data name="ParsingMetadata" xml:space="preserve">
-    <value>Parsing metadata: [{0}]</value>
-  </data>
-  <data name="ParsingOPF" xml:space="preserve">
-    <value>Parsing OPF: [{0}]</value>
-  </data>
-  <data name="ParsingMediaOverlay" xml:space="preserve">
-    <value>Parsing EPUB3 Media Overlay: [{0}]</value>
-  </data>
-  <data name="Unzipping" xml:space="preserve">
-    <value>Decompressing file: [{0}]</value>
-  </data>
-  <data name="ParsingSmilFile" xml:space="preserve">
-    <value>Parsing SMIL file [{2}] {0} / {1}...</value>
-  </data>
-  <data name="ReadXMLDoc" xml:space="preserve">
-    <value>Reading XML document [{0}]...</value>
-  </data>
-  <data name="SaveXUK" xml:space="preserve">
-    <value>Saving XUK...</value>
-  </data>
-  <data name="SavingXUKFile" xml:space="preserve">
-    <value>Saving XUK file...</value>
-  </data>
-  <data name="SerializeDOMIntoXUKFile" xml:space="preserve">
-    <value>Serializing the document object model from the Urakawa SDK as XML content into a XUK file...</value>
-  </data>
-  <data name="TransformComplete" xml:space="preserve">
-    <value>Transform complete</value>
-  </data>
-  <data name="XmlDocLoaded" xml:space="preserve">
-    <value>XML document loaded [{0}].</value>
-  </data>
-  <data name="XUKSaved" xml:space="preserve">
-    <value>XUK Saved.</value>
+    <value>Création des fichiers SMIL et NCX</value>
   </data>
   <data name="CreatingAudioFile" xml:space="preserve">
-    <value>Creating audio file [{0}] {1}</value>
+    <value>Création du fichier audio: [{0}] {1}</value>
+  </data>
+  <data name="CreatingEPUB" xml:space="preserve">
+    <value>Création des fichiers EPUB...</value>
+  </data>
+  <data name="CreatingEPUBZip" xml:space="preserve">
+    <value>Création du zip EPUB:</value>
+  </data>
+  <data name="CreatingExternalFiles" xml:space="preserve">
+    <value>Création des fichiers externes comme .css, .dtd, etc.</value>
+  </data>
+  <data name="CreatingSmilFiles" xml:space="preserve">
+    <value>Création des fichier SMIL {0} / {1}</value>
+  </data>
+  <data name="CreatingXMLFile" xml:space="preserve">
+    <value>Création du fichier DTBook</value>
+  </data>
+  <data name="DecodingAudio" xml:space="preserve">
+    <value>Décodage audio: [{0}]</value>
+  </data>
+  <data name="ErrorInEncoding" xml:space="preserve">
+    <value>Erreur dans l'encodage {0}</value>
+  </data>
+  <data name="ImportInitialized" xml:space="preserve">
+    <value>Import initialisé</value>
+  </data>
+  <data name="InitializeImport" xml:space="preserve">
+    <value>Initialisation de l'import...</value>
+  </data>
+  <data name="ParsingContent" xml:space="preserve">
+    <value>Analyse du contenu: [{0}]</value>
+  </data>
+  <data name="ParsingMediaOverlay" xml:space="preserve">
+    <value>Analyse du EPUB3 Media Overlay: [{0}]</value>
+  </data>
+  <data name="ParsingMetadata" xml:space="preserve">
+    <value>Analyse des metadonnées: [{0}]</value>
+  </data>
+  <data name="ParsingOPF" xml:space="preserve">
+    <value>Analyse du OPF: [{0}]</value>
+  </data>
+  <data name="ParsingSmilFile" xml:space="preserve">
+    <value>Analyse du fichier SMIL [{2}] {0} / {1}...</value>
+  </data>
+  <data name="ReadXMLDoc" xml:space="preserve">
+    <value>Lecture du fichier XML [{0}]...</value>
+  </data>
+  <data name="SaveXUK" xml:space="preserve">
+    <value>Sauvegarde du XUK...</value>
+  </data>
+  <data name="SavingXUKFile" xml:space="preserve">
+    <value>Sauvegarde du fichier XUK...</value>
+  </data>
+  <data name="TransformComplete" xml:space="preserve">
+    <value>Transformation finie</value>
   </data>
   <data name="TreeNode_SizeInfo" xml:space="preserve">
-    <value>{0} MB of {1} MB</value>
+    <value>{0} MB / {1} MB</value>
+  </data>
+  <data name="Unzipping" xml:space="preserve">
+    <value>Décompression du fichier: [{0}]</value>
+  </data>
+  <data name="XmlDocLoaded" xml:space="preserve">
+    <value>Document XML chargé [{0}].</value>
+  </data>
+  <data name="XUKSaved" xml:space="preserve">
+    <value>XUK sauvegardé.</value>
+  </data>
+  <data name="SerializeDOMIntoXUKFile" xml:space="preserve">
+    <value>Sauvegarde de la syntaxe du document depuis le SDK Urakawa dans le format XML du XUK...</value>
   </data>
 </root>
