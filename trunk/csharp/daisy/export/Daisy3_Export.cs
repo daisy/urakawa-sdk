@@ -74,6 +74,7 @@ namespace urakawa.daisy.export
         //}
 
         //private bool m_useTitleInFileName = true;
+        private readonly List<string> m_audioExportDTBOOKElementNameTriggers = null;
 
         /// <summary>
         /// initializes instance with presentation and list of element names for which navList will be created, 
@@ -89,9 +90,31 @@ namespace urakawa.daisy.export
             SampleRate sampleRate, bool stereo,
             bool skipACM,
             bool includeImageDescriptions,
-            bool generateSmilNoteReferences)
+            bool generateSmilNoteReferences,
+            string audioExportDTBOOKElementNameTriggers)
         {
             //m_useTitleInFileName = useTitleInFileName;
+            
+            if (!string.IsNullOrEmpty(audioExportDTBOOKElementNameTriggers))
+            {
+                string[] elementNames = audioExportDTBOOKElementNameTriggers.Split(new char[] { ',', ' ', ';', '/' });
+                
+                m_audioExportDTBOOKElementNameTriggers = new List<string>(elementNames.Length);
+
+                foreach (string n in elementNames)
+                {
+                    string n_ = n.Trim(); //.ToLower();
+                    if (!string.IsNullOrEmpty(n_))
+                    {
+                        m_audioExportDTBOOKElementNameTriggers.Add(n_);
+                    }
+                }
+
+                if (m_audioExportDTBOOKElementNameTriggers.Count == 0)
+                {
+                    m_audioExportDTBOOKElementNameTriggers = null;
+                }
+            }
 
             m_includeImageDescriptions = includeImageDescriptions;
             m_generateSmilNoteReferences = generateSmilNoteReferences;
@@ -327,9 +350,25 @@ namespace urakawa.daisy.export
             {
                 string localName = node.GetXmlElementLocalName();
 
+                // EPUB3
                 if ("body".Equals(node.Presentation.RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase))
                 {
                     return localName.Equals("body", StringComparison.OrdinalIgnoreCase);
+                }
+
+                // DAISY3
+
+                if (m_audioExportDTBOOKElementNameTriggers != null)
+                {
+                    foreach (string elementName in m_audioExportDTBOOKElementNameTriggers)
+                    {
+                        if (localName.Equals(elementName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 return localName.StartsWith("level", StringComparison.OrdinalIgnoreCase)
@@ -500,7 +539,18 @@ namespace urakawa.daisy.export
                 return externalAudio.Src;
             }
             TreeNode node = externalAudio.Tag as TreeNode;
-            DebugFix.Assert(node == levelNode);
+
+            // In some cases this occurs (for example with Great Painters,
+            // or when m_audioExportDTBOOKElementNameTriggers / doesTreeNodeTriggerNewSmil() is set to level2 but not level1
+            // The generated SMIL and audio file structure looks okay, but the heading/section title is missing in the filename
+            // DebugFix.Assert(node == levelNode);
+#if DEBUG
+            if (node != levelNode)
+            {
+                bool breakpointHere = true;
+            }
+            // Debugger.Break();
+#endif
 
             string src = null;
             m_adjustedExternalAudioFileNames.TryGetValue(node, out src);
