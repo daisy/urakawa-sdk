@@ -61,10 +61,10 @@ namespace urakawa.daisy.import
         private bool m_useTitleInFileName = true;
 
         public Daisy3_Import(string bookfile,
-            bool includeImageDescriptions,
+            bool useTitleInFileName,
             string outDir, bool skipACM, SampleRate audioProjectSampleRate, bool stereo, bool autoDetectPcmFormat, bool xukPrettyFormat)
         {
-            m_useTitleInFileName = includeImageDescriptions;
+            m_useTitleInFileName = useTitleInFileName;
 
             m_XukPrettyFormat = xukPrettyFormat;
 
