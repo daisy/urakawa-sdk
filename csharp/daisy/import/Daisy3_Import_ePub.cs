@@ -1005,7 +1005,7 @@ namespace urakawa.daisy.import
 
                 spinePresentation.MediaDataManager.DefaultPCMFormat = spineItemPresentation.MediaDataManager.DefaultPCMFormat; //copied!
 
-                string xuk_FilePath = GetXukFilePath_SpineItem(m_outDirectory, docPath, title, index);
+                string xuk_FilePath = GetXukFilePath_SpineItem(m_outDirectory, docPath, (m_useTitleInFileName ? title : null), index);
 
                 string xukFileName = Path.GetFileName(xuk_FilePath);
                 spineChild.GetOrCreateXmlProperty().SetAttribute("xukFileName", "", xukFileName);

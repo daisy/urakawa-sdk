@@ -73,6 +73,8 @@ namespace urakawa.daisy.export
         //    set { m_BitRate_Mp3 = value; }
         //}
 
+        //private bool m_useTitleInFileName = true;
+
         /// <summary>
         /// initializes instance with presentation and list of element names for which navList will be created, 
         /// if null is passed as list parameter , no navList will be created
@@ -80,6 +82,7 @@ namespace urakawa.daisy.export
         /// <param name="presentation"></param>
         /// <param name="navListElementNamesList"></param>
         public Daisy3_Export(Presentation presentation,
+            //bool useTitleInFileName,
             string exportDirectory,
             List<string> navListElementNamesList,
             bool encodeAudioFiles, double bitRate_Encoding,
@@ -88,6 +91,8 @@ namespace urakawa.daisy.export
             bool includeImageDescriptions,
             bool generateSmilNoteReferences)
         {
+            //m_useTitleInFileName = useTitleInFileName;
+
             m_includeImageDescriptions = includeImageDescriptions;
             m_generateSmilNoteReferences = generateSmilNoteReferences;
             m_encodeAudioFiles = encodeAudioFiles;
