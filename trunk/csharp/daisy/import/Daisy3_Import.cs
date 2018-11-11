@@ -58,8 +58,14 @@ namespace urakawa.daisy.import
             INTERNAL_DTD_NAME = FileDataProvider.EliminateForbiddenFileNameCharacters(INTERNAL_DTD_NAME);
         }
 
-        public Daisy3_Import(string bookfile, string outDir, bool skipACM, SampleRate audioProjectSampleRate, bool stereo, bool autoDetectPcmFormat, bool xukPrettyFormat)
+        private bool m_useTitleInFileName = true;
+
+        public Daisy3_Import(string bookfile,
+            bool includeImageDescriptions,
+            string outDir, bool skipACM, SampleRate audioProjectSampleRate, bool stereo, bool autoDetectPcmFormat, bool xukPrettyFormat)
         {
+            m_useTitleInFileName = includeImageDescriptions;
+
             m_XukPrettyFormat = xukPrettyFormat;
 
             m_SkipACM = skipACM;
@@ -232,8 +238,8 @@ namespace urakawa.daisy.import
             if (RequestCancellation) return;
 
             //m_Project.SaveXuk(new Uri(m_Xuk_FilePath));
-
-            if (IsRenameOfProjectFileAndDirsAllowedAfterImport)
+            
+            if (IsRenameOfProjectFileAndDirsAllowedAfterImport && m_useTitleInFileName)
             {
                 string title = GetTitle(m_Project.Presentations.Get(0));
                 if (!string.IsNullOrEmpty(title))

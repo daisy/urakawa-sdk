@@ -93,9 +93,11 @@ namespace urakawa.daisy.export
         }
 
         private string m_MediaOverlayActiveCSS = null;
+        private bool m_useTitleInFileName = true;
 
         public Epub3_Export(string xukPath,
             Presentation presentation,
+            bool useTitleInFileName,
             string exportDirectory,
             bool encodeToMp3, ushort bitRate_Mp3,
             SampleRate sampleRate, bool stereo,
@@ -111,6 +113,8 @@ namespace urakawa.daisy.export
         {
             //m_Daisy3_Export = new Daisy3_Export(presentation, exportDirectory, null, encodeToMp3, bitRate_Mp3, sampleRate, stereo, skipACM, includeImageDescriptions);
             //AddSubCancellable(m_Daisy3_Export);
+
+            m_useTitleInFileName = useTitleInFileName;
 
             m_MediaOverlayActiveCSS = mediaOverlayActiveCSS;
             if (string.IsNullOrEmpty(m_MediaOverlayActiveCSS))
@@ -2518,7 +2522,7 @@ namespace urakawa.daisy.export
                         else
                         {
                             //old project format
-                            fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title, -1);
+                            fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, (m_useTitleInFileName ? title : null), -1);
                         }
 
                         if (!File.Exists(fullXukPath))
@@ -3168,12 +3172,15 @@ namespace urakawa.daisy.export
             //string zipOutputDirectory = Directory.GetParent(zipOutputDirectory).FullName;
 
             string epubFileName = Path.GetFileName(zipOutputDirectory);
-            string title = Daisy3_Import.GetTitle(m_Presentation);
-            if (!string.IsNullOrEmpty(title))
+            if (m_useTitleInFileName)
             {
-                title = Daisy3_Import.CleanupTitle(title, 30);
+                string title = Daisy3_Import.GetTitle(m_Presentation);
+                if (!string.IsNullOrEmpty(title))
+                {
+                    title = Daisy3_Import.CleanupTitle(title, 30);
 
-                epubFileName = title;
+                    epubFileName = title;
+                }
             }
 
             string epubFilePath = Path.Combine(zipOutputDirectory, epubFileName + DataProviderFactory.EPUB_EXTENSION);
