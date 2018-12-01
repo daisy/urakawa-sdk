@@ -362,7 +362,21 @@ namespace urakawa.daisy.export
                 {
                     foreach (string elementName in m_audioExportDTBOOKElementNameTriggers)
                     {
-                        if (localName.Equals(elementName, StringComparison.OrdinalIgnoreCase))
+                        if (elementName.EndsWith("*", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (localName.StartsWith(elementName.Replace('*', ' ').Trim(), StringComparison.OrdinalIgnoreCase))
+                            {
+                                return true;
+                            }
+                        }
+                        else if (elementName.StartsWith("*", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (localName.EndsWith(elementName.Replace('*', ' ').Trim(), StringComparison.OrdinalIgnoreCase))
+                            {
+                                return true;
+                            }
+                        }
+                        else if (localName.Equals(elementName, StringComparison.OrdinalIgnoreCase))
                         {
                             return true;
                         }
