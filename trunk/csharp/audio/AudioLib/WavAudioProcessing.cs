@@ -76,7 +76,7 @@ namespace AudioLib
             return outPath;
         }
 
-        public string Normalize(string fileName)
+        public string Normalize(string fileName, float processingFactor)
         {
             var inPath = fileName;
             //var outPath = @"H:\Repos\normalized1.wav";
@@ -107,7 +107,7 @@ namespace AudioLib
                 reader.Position = 0;
                 //int SelectedItem = Int32.Parse(comboBox1.SelectedItem.ToString());
                 //reader.Volume = SelectedItem;
-                reader.Volume = 1.0f / max;
+                reader.Volume = (1.0f / max) * processingFactor;
 
                 // write out to a new WAV file
                 WaveFileWriter.CreateWaveFile16(outPath, reader);
@@ -131,6 +131,6 @@ using (var reader = new AudioFileReader(fileName))
             return outPath;
         }
         
-        public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize, NoiseReduction } ;
+        public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize } ;
     }
 }
