@@ -130,7 +130,7 @@ using (var reader = new AudioFileReader(fileName))
 */
             return outPath;
         }
-        
-        public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize } ;
+
+        public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize, SoundTouch} ;
     }
 }
