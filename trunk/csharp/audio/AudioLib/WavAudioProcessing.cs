@@ -6,6 +6,8 @@ using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using NAudio.Wave.WaveFormats;
 using NAudio.Dsp;
+using System.IO;
+using System.Diagnostics;
 
 namespace AudioLib
 {
@@ -115,6 +117,44 @@ namespace AudioLib
             }
         }
 
+        public string NoiseReductionFfmpegAfftdn(string fileName, decimal noiseReductionVal, decimal noiseFloorVal)
+        {
+            string outputFileName = fileName.Substring(0, fileName.Length - 4);
+            var outPath = outputFileName + "ffmpegNoiseReduction.wav";
+            using (var reader = new AudioFileReader(fileName))
+            {
+                string ffmpegWorkingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string ffmpegPath = Path.Combine(ffmpegWorkingDir, "ffmpeg.exe");
+                if (!File.Exists(ffmpegPath))
+                    throw new FileNotFoundException("Invalid compression library path " + ffmpegPath);
+
+                if (!File.Exists(fileName))
+                    throw new FileNotFoundException("Invalid source file path " + fileName);
+
+
+                Process m_process = new Process();
+
+                m_process.StartInfo.FileName = ffmpegPath;
+
+                m_process.StartInfo.RedirectStandardOutput = false;
+                m_process.StartInfo.RedirectStandardError = false;
+                m_process.StartInfo.UseShellExecute = true;
+                m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+                //m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -af afftdn=nr=50:nf=-20 " + "\"" + outPath + "\"");
+                m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -af afftdn=nr=" + noiseReductionVal + ":nf=" + noiseFloorVal + " \"" + outPath + "\"");
+
+
+                m_process.Start();
+                m_process.WaitForExit();
+
+                return outPath;
+
+
+
+            }
+        }
+
         public string  NoiseReduction(string fileName, float  bandPassfilterFrequency)
         {
 
@@ -131,6 +171,6 @@ using (var reader = new AudioFileReader(fileName))
             return outPath;
         }
 
-        public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize, SoundTouch} ;
+        public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize, SoundTouch, NoiseReduction } ;
     }
 }
