@@ -8,6 +8,7 @@ using NAudio.Wave.WaveFormats;
 using NAudio.Dsp;
 using System.IO;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace AudioLib
 {
@@ -28,54 +29,135 @@ namespace AudioLib
             return outPath;
         }
 
-        public string FadeIn(string fileName, double duration)
+       // public string FadeIn(string fileName, double duration)
+        public string FadeIn(string fileName, double duration, double FadeInStartTime)
         {
-            var inPath = fileName;
+            // ffmpeg implementation of fade in
+
             string outputFileName = fileName.Substring(0, fileName.Length - 4);
-            var outPath = outputFileName + "FadeInTemp.wav";
-            using (var reader = new AudioFileReader(inPath))
+            var outPath = outputFileName + "ffmpegNoiseReduction.wav";
+            using (var reader = new AudioFileReader(fileName))
             {
-                //TimeSpan span = reader.TotalTime;
-                var fader = new FadeInOutSampleProvider(reader, false);
-                //double totalTime = span.TotalMilliseconds;
-                fader.BeginFadeIn(duration);
-                var stwp = new SampleToWaveProvider(fader);
-                WaveFileWriter.CreateWaveFile(outPath, stwp);
+                string ffmpegWorkingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string ffmpegPath = Path.Combine(ffmpegWorkingDir, "ffmpeg.exe");
+                if (!File.Exists(ffmpegPath))
+                    throw new FileNotFoundException("Invalid compression library path " + ffmpegPath);
+
+                if (!File.Exists(fileName))
+                    throw new FileNotFoundException("Invalid source file path " + fileName);
+
+
+                Process m_process = new Process();
+
+                m_process.StartInfo.FileName = ffmpegPath;
+
+                m_process.StartInfo.RedirectStandardOutput = false;
+                m_process.StartInfo.RedirectStandardError = false;
+                m_process.StartInfo.UseShellExecute = true;
+                m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+                //ffmpeg -y -i "004_a_word_on_life_skills.wav" -af afade=t=in:st=20:d=20 "004_a_word_on_life_skillsFadeIn.wav"
+                m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -af afade=t=in:st=" + FadeInStartTime + ":d=" + duration + " \"" + outPath + "\"");
+
+
+                m_process.Start();
+                m_process.WaitForExit();
+
+                return outPath;
 
             }
 
-            using (var reader = new AudioFileReader(outPath))
-            {
-                outPath = outputFileName + "FadeIn.wav";
-                //var temp = new Wave32To16Stream(reader);
-                WaveFileWriter.CreateWaveFile16(outPath, reader);
-            }
-            return outPath;
+
+
+
+            // NAudio implementation of Fade In
+
+            //var inPath = fileName;
+            //string outputFileName = fileName.Substring(0, fileName.Length - 4);
+            //var outPath = outputFileName + "FadeInTemp.wav";
+            //using (var reader = new AudioFileReader(inPath))
+            //{
+            //    //TimeSpan span = reader.TotalTime;
+            //    var fader = new FadeInOutSampleProvider(reader, false);
+            //    //double totalTime = span.TotalMilliseconds;
+            //    fader.BeginFadeIn(duration);
+            //    var stwp = new SampleToWaveProvider(fader);
+            //    WaveFileWriter.CreateWaveFile(outPath, stwp);
+
+            //}
+
+            //using (var reader = new AudioFileReader(outPath))
+            //{
+            //    outPath = outputFileName + "FadeIn.wav";
+            //    //var temp = new Wave32To16Stream(reader);
+            //    WaveFileWriter.CreateWaveFile16(outPath, reader);
+            //}
+            //return outPath;
         }
 
-        public string FadeOut(string fileName, double duration)
+        //public string FadeOut(string fileName, double duration)
+        public string FadeOut(string fileName, double duration, double FadeOutStartTime)
         {
-            var inPath = fileName;
+            // ffmpeg implementation of fade out
+
             string outputFileName = fileName.Substring(0, fileName.Length - 4);
-            var outPath = outputFileName + "FadeInTemp.wav";
-            using (var reader = new AudioFileReader(inPath))
+            var outPath = outputFileName + "ffmpegNoiseReduction.wav";
+            using (var reader = new AudioFileReader(fileName))
             {
-                //TimeSpan span = reader.TotalTime;
-                var fader = new FadeInOutSampleProvider(reader, false);
-                //double totalTime = span.TotalMilliseconds;
-                fader.BeginFadeOut(duration);
-                var stwp = new SampleToWaveProvider(fader);
-                WaveFileWriter.CreateWaveFile(outPath, stwp);
+                string ffmpegWorkingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string ffmpegPath = Path.Combine(ffmpegWorkingDir, "ffmpeg.exe");
+                if (!File.Exists(ffmpegPath))
+                    throw new FileNotFoundException("Invalid compression library path " + ffmpegPath);
+
+                if (!File.Exists(fileName))
+                    throw new FileNotFoundException("Invalid source file path " + fileName);
+
+
+                Process m_process = new Process();
+
+                m_process.StartInfo.FileName = ffmpegPath;
+
+                m_process.StartInfo.RedirectStandardOutput = false;
+                m_process.StartInfo.RedirectStandardError = false;
+                m_process.StartInfo.UseShellExecute = true;
+                m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+                //ffmpeg -y -i "004_a_word_on_life_skills.wav" -af afade=t=out:st=20:d=20 "004_a_word_on_life_skillsFadeout.wav"
+                m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -af afade=t=out:st=" + FadeOutStartTime + ":d=" + duration + " \"" + outPath + "\"");
+
+
+                m_process.Start();
+                m_process.WaitForExit();
+
+                return outPath;
 
             }
 
-            using (var reader = new AudioFileReader(outPath))
-            {
-                outPath = outputFileName + "FadeIn.wav";
-                //var temp = new Wave32To16Stream(reader);
-                WaveFileWriter.CreateWaveFile16(outPath, reader);
-            }
-            return outPath;
+
+
+            //  NAudio Implementation of Fade Out
+
+            //var inPath = fileName;
+            //string outputFileName = fileName.Substring(0, fileName.Length - 4);
+            //var outPath = outputFileName + "FadeInTemp.wav";
+            //using (var reader = new AudioFileReader(inPath))
+            //{
+            //    //TimeSpan span = reader.TotalTime;
+            //    var fader = new FadeInOutSampleProvider(reader, false);
+            //    //double totalTime = span.TotalMilliseconds;
+            //    fader.BeginFadeOut(duration);
+            //    var stwp = new SampleToWaveProvider(fader);
+            //    WaveFileWriter.CreateWaveFile(outPath, stwp);
+
+            //}
+
+            //using (var reader = new AudioFileReader(outPath))
+            //{
+            //    outPath = outputFileName + "FadeIn.wav";
+            //    //var temp = new Wave32To16Stream(reader);
+            //    WaveFileWriter.CreateWaveFile16(outPath, reader);
+            //}
+            //return outPath;
         }
 
         public string Normalize(string fileName, float processingFactor)
@@ -153,23 +235,52 @@ namespace AudioLib
 
 
             }
+
+            //OpenFileDialog open = new OpenFileDialog();
+
+            //open.Filter = "Wave File (*.wav)|*.wav;";
+            //if (open.ShowDialog() != DialogResult.OK) return string.Empty;
+
+            //fileName = open.FileName;
+            //var inPath = fileName;
+            //string outputFileName = fileName.Substring(0, fileName.Length - 4);
+            //var outPath = outputFileName + "Cue.wav";
+            ////var reader = new AudioFileReader(inPath);
+            //CueWaveFileReader reader = new CueWaveFileReader(inPath);
+            ////var reader2 = new AudioFileReader(inPath);
+            //Cue cue = new Cue(9895490, "HI");
+            //if (reader.Cues != null)
+            //{
+            //    //reader.Cues.Add(cue);
+
+
+            //   System.Windows.Forms.MessageBox.Show(reader.Cues.Count.ToString());
+
+            //    int[] list = reader.Cues.CuePositions;
+
+            //    Console.WriteLine("List of cues  {0}", list);
+
+            //    //CueWaveFileWriter.CreateWaveFile(outPath, reader);
+            //}
+
+            //return outPath;
         }
 
-        public string  NoiseReduction(string fileName, float  bandPassfilterFrequency)
-        {
+//        public string  NoiseReduction(string fileName, float  bandPassfilterFrequency)
+//        {
 
-            string outputFileName = fileName.Substring(0, fileName.Length - 4);
-            var outPath = outputFileName + "NoiseREduction.wav";
-            /*
-using (var reader = new AudioFileReader(fileName))
-{
-    var filter = new ObiWaveProvider(reader, bandPassfilterFrequency);
-    WaveFileWriter.CreateWaveFile16(outPath, filter);
+//            string outputFileName = fileName.Substring(0, fileName.Length - 4);
+//            var outPath = outputFileName + "NoiseREduction.wav";
+//            /*
+//using (var reader = new AudioFileReader(fileName))
+//{
+//    var filter = new ObiWaveProvider(reader, bandPassfilterFrequency);
+//    WaveFileWriter.CreateWaveFile16(outPath, filter);
              
-}
-*/
-            return outPath;
-        }
+//}
+//*/
+//            return outPath;
+//        }
 
         public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize, SoundTouch, NoiseReduction } ;
     }
