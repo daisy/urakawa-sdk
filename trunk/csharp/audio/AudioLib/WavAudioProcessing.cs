@@ -232,56 +232,62 @@ namespace AudioLib
 
                 return outPath;
 
-
-
             }
 
-            //OpenFileDialog open = new OpenFileDialog();
-
-            //open.Filter = "Wave File (*.wav)|*.wav;";
-            //if (open.ShowDialog() != DialogResult.OK) return string.Empty;
-
-            //fileName = open.FileName;
-            //var inPath = fileName;
-            //string outputFileName = fileName.Substring(0, fileName.Length - 4);
-            //var outPath = outputFileName + "Cue.wav";
-            ////var reader = new AudioFileReader(inPath);
-            //CueWaveFileReader reader = new CueWaveFileReader(inPath);
-            ////var reader2 = new AudioFileReader(inPath);
-            //Cue cue = new Cue(9895490, "HI");
-            //if (reader.Cues != null)
-            //{
-            //    //reader.Cues.Add(cue);
-
-
-            //   System.Windows.Forms.MessageBox.Show(reader.Cues.Count.ToString());
-
-            //    int[] list = reader.Cues.CuePositions;
-
-            //    Console.WriteLine("List of cues  {0}", list);
-
-            //    //CueWaveFileWriter.CreateWaveFile(outPath, reader);
-            //}
-
-            //return outPath;
         }
 
-//        public string  NoiseReduction(string fileName, float  bandPassfilterFrequency)
-//        {
+        public string AudioMixing(string fileName, string audioToMix, decimal weightOfAudio, decimal droupoutTransition, bool IsEndOfStreamDurationChecked)
+        {
+            string outputFileName = fileName.Substring(0, fileName.Length - 4);
+            var outPath = outputFileName + "ffmpegAudioMix.wav";
+            using (var reader = new AudioFileReader(fileName))
+            {
+                try
+                {
+                    string ffmpegWorkingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                    string ffmpegPath = Path.Combine(ffmpegWorkingDir, "ffmpeg.exe");
+                    if (!File.Exists(ffmpegPath))
+                        throw new FileNotFoundException("Invalid compression library path " + ffmpegPath);
 
-//            string outputFileName = fileName.Substring(0, fileName.Length - 4);
-//            var outPath = outputFileName + "NoiseREduction.wav";
-//            /*
-//using (var reader = new AudioFileReader(fileName))
-//{
-//    var filter = new ObiWaveProvider(reader, bandPassfilterFrequency);
-//    WaveFileWriter.CreateWaveFile16(outPath, filter);
-             
-//}
-//*/
-//            return outPath;
-//        }
+                    if (!File.Exists(fileName))
+                        throw new FileNotFoundException("Invalid source file path " + fileName);
 
-        public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize, SoundTouch, NoiseReduction } ;
+
+                    Process m_process = new Process();
+
+                    m_process.StartInfo.FileName = ffmpegPath;
+
+                    m_process.StartInfo.RedirectStandardOutput = false;
+                    m_process.StartInfo.RedirectStandardError = false;
+                    m_process.StartInfo.UseShellExecute = true;
+                    m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+                    //ffmpeg -y -i "004_a_word_on_life_skills.wav" -i "YOU TOOK MY HEART.wav" -filter_complex amix=inputs=2:duration=longest:weights="1 0.05" "AudioMixSample.wav"
+                    if (IsEndOfStreamDurationChecked)
+                    {
+                        m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -filter_complex amix=inputs=2:duration=first:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + "\"" + " \"" + outPath + "\"");
+                    }
+                    else
+                    {
+                        m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -filter_complex amix=inputs=2:duration=longest:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + "\"" + " \"" + outPath + "\"");
+                    }
+
+
+                    m_process.Start();
+                    m_process.WaitForExit();
+
+                }
+                catch
+                {
+                    MessageBox.Show("Something went wrong");
+                }
+
+                return outPath;
+            }
+
+        }
+
+
+        public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize, SoundTouch, NoiseReduction, AudioMixing } ;
     }
 }
