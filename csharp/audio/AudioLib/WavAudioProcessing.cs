@@ -236,7 +236,8 @@ namespace AudioLib
 
         }
 
-        public string AudioMixing(string fileName, string audioToMix, decimal weightOfAudio, decimal droupoutTransition, bool IsEndOfStreamDurationChecked)
+        public string AudioMixing(string fileName, string audioToMix, decimal weightOfAudio, decimal droupoutTransition, bool IsEndOfStreamDurationChecked,
+             bool IsSecondAudioToMixSelected = false, string secondAudioToMix = "", decimal weightOfSecondAudio = 0)
         {
             string outputFileName = fileName.Substring(0, fileName.Length - 4);
             var outPath = outputFileName + "ffmpegAudioMix.wav";
@@ -263,13 +264,27 @@ namespace AudioLib
                     m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                     //ffmpeg -y -i "004_a_word_on_life_skills.wav" -i "YOU TOOK MY HEART.wav" -filter_complex amix=inputs=2:duration=longest:weights="1 0.05" "AudioMixSample.wav"
-                    if (IsEndOfStreamDurationChecked)
+                    if (IsSecondAudioToMixSelected)
                     {
-                        m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -filter_complex amix=inputs=2:duration=first:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + "\"" + " \"" + outPath + "\"");
+                        if (IsEndOfStreamDurationChecked)
+                        {
+                            m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -i \"" + secondAudioToMix + "\"" + " -filter_complex amix=inputs=3:duration=first:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + " " + weightOfSecondAudio + "\"" + " \"" + outPath + "\"");
+                        }
+                        else
+                        {
+                            m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -i \"" + secondAudioToMix + "\"" + " -filter_complex amix=inputs=3:duration=longest:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + " " + weightOfSecondAudio + "\"" + " \"" + outPath + "\"");
+                        }
                     }
                     else
                     {
-                        m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -filter_complex amix=inputs=2:duration=longest:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + "\"" + " \"" + outPath + "\"");
+                        if (IsEndOfStreamDurationChecked)
+                        {
+                            m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -filter_complex amix=inputs=2:duration=first:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + "\"" + " \"" + outPath + "\"");
+                        }
+                        else
+                        {
+                            m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -filter_complex amix=inputs=2:duration=longest:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + "\"" + " \"" + outPath + "\"");
+                        }
                     }
 
 
