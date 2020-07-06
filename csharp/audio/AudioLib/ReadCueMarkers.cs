@@ -20,9 +20,18 @@ namespace AudioLib
 
        public ReadCueMarkers(string pathOfAudioFile)
        {
-
-           m_CueReader = new CueWaveFileReader(pathOfAudioFile);
-           ReadCues();
+           try
+           {
+               if (Path.GetExtension(pathOfAudioFile).ToLower() == ".wav")
+               {
+                   m_CueReader = new CueWaveFileReader(pathOfAudioFile);
+                   ReadCues();
+               }
+           }
+           catch (Exception e)
+           {
+               MessageBox.Show(e.ToString());
+           }
        }
        private void ReadCues()
        {
