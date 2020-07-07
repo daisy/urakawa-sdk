@@ -15,7 +15,7 @@ namespace AudioLib
    public class ReadCueMarkers
     {
        private CueWaveFileReader m_CueReader;
-       private List<decimal> m_CuePointsList;
+       private List<double> m_CuePointsList;
        private string[] m_CueLabelList;
 
        public ReadCueMarkers(string pathOfAudioFile)
@@ -42,11 +42,11 @@ namespace AudioLib
                int[]  list = m_CueReader.Cues.CuePositions;
                m_CueLabelList = m_CueReader.Cues.CueLabels;
                int cueLabelCount = 0;
-               m_CuePointsList = new List<decimal>();
+               m_CuePointsList = new List<double>();
 
                foreach (int cuePoint in list)
                {
-                   decimal tempCuePointInSec = cuePoint / 44100;
+                   double tempCuePointInSec = cuePoint / 44100;
                    m_CuePointsList.Add(tempCuePointInSec);                
                    cueLabelCount++;
                }
@@ -54,11 +54,14 @@ namespace AudioLib
 
        }
 
-       public List<decimal> ListOfCuePoints
+       public double[] ListOfCuePoints
        {
            get
            {
-               return m_CuePointsList;
+               if (m_CuePointsList != null)
+                   return m_CuePointsList.ToArray();
+               else
+                   return null;
            }
        }
 
@@ -66,7 +69,10 @@ namespace AudioLib
        {
            get
            {
-               return m_CueLabelList;
+               if (m_CueLabelList != null)
+                   return m_CueLabelList;
+               else
+                   return null;
            }
        }
     }
