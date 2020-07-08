@@ -54,12 +54,12 @@ namespace AudioLib
 
        }
 
-       public double[] ListOfCuePoints
+       public List<double> ListOfCuePoints
        {
            get
            {
                if (m_CuePointsList != null)
-                   return m_CuePointsList.ToArray();
+                   return m_CuePointsList;
                else
                    return null;
            }
