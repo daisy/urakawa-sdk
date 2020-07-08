@@ -38,7 +38,6 @@ namespace AudioLib
 
            if (m_CueReader.Cues != null)
            {
-               //MessageBox.Show(m_CueReader.Cues.Count.ToString());
                int[]  list = m_CueReader.Cues.CuePositions;
                m_CueLabelList = m_CueReader.Cues.CueLabels;
                int cueLabelCount = 0;
@@ -46,7 +45,7 @@ namespace AudioLib
 
                foreach (int cuePoint in list)
                {
-                   double tempCuePointInSec = cuePoint / 44100;
+                   double tempCuePointInSec = (cuePoint / 44100)*1000;
                    m_CuePointsList.Add(tempCuePointInSec);                
                    cueLabelCount++;
                }
@@ -54,6 +53,7 @@ namespace AudioLib
 
        }
 
+       // cue points will be in milliseconds 
        public List<double> ListOfCuePoints
        {
            get
