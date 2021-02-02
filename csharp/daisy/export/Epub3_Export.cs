@@ -585,7 +585,7 @@ namespace urakawa.daisy.export
                 style.AppendChild(contentNode);
             }
 
-            bool scripted_ = generateMetadata(spineItemPresentation, xmlDocHTML, xmlDocHTML.DocumentElement, xmlDocHTML_head);
+            bool scripted_ = generateMetadata(spineItemPresentation, xmlDocHTML, xmlDocHTML.DocumentElement, xmlDocHTML_head, false);
 
             if (scripted_)
             {
@@ -1862,7 +1862,7 @@ namespace urakawa.daisy.export
             return false;
         }
 
-        protected bool generateMetadata(Presentation presentation, XmlDocument xmlDoc, XmlNode xmlNodeRoot, XmlNode xmlNodeParent)
+        protected bool generateMetadata(Presentation presentation, XmlDocument xmlDoc, XmlNode xmlNodeRoot, XmlNode xmlNodeParent, bool isOPF)
         {
             bool scripted = false;
 
@@ -1872,7 +1872,7 @@ namespace urakawa.daisy.export
                 string value = metadata.NameContentAttribute.Value;
                 string nsUri = metadata.NameContentAttribute.NamespaceUri;
 
-                if (metadata.IsMarkedAsPrimaryIdentifier)
+                if (isOPF && metadata.IsMarkedAsPrimaryIdentifier)
                 {
                     DebugFix.Assert(SupportedMetadata_Z39862005.DC_Identifier.Equals(name, StringComparison.OrdinalIgnoreCase));
 
@@ -1938,7 +1938,7 @@ namespace urakawa.daisy.export
                         );
                     xmlNodeParent.AppendChild(opfXmlNode_meta);
                 }
-                else if (nameHasPrefix || hasMajorAttributes)
+                else if (isOPF && (nameHasPrefix || hasMajorAttributes))
                 {
                     string prefix = null;
                     string localName = null;
@@ -2169,7 +2169,7 @@ namespace urakawa.daisy.export
                     }
                 }
 
-                generateMetadata(m_Presentation, opfXmlDoc, opfXmlNode_package, opfXmlNode_metadata);
+                generateMetadata(m_Presentation, opfXmlDoc, opfXmlNode_package, opfXmlNode_metadata, true);
 
                 bool hasUniqueID = false;
                 bool hasDcTitle = false;
