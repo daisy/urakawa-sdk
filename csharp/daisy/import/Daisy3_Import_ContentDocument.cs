@@ -247,18 +247,27 @@ namespace urakawa.daisy.import
                                 XmlProperty xmlProp = presentation.RootNode.GetXmlProperty();
 
                                 string lang_ = presentation.RootNode.GetXmlElementLang();
+
                                 if (string.IsNullOrEmpty(lang_))
                                 {
                                     if (!string.IsNullOrEmpty(lang)) //presentation.Language
                                     {
-                                        if (true || isHTML)
+                                        xmlProp.SetAttribute(XmlReaderWriterHelper.XmlLang,
+                                                             XmlReaderWriterHelper.NS_URL_XML, lang);
+
+                                        if (isHTML)
                                         {
-                                            xmlProp.SetAttribute(XmlReaderWriterHelper.XmlLang,
-                                                                 XmlReaderWriterHelper.NS_URL_XML, lang);
-                                        }
-                                        else
-                                        {
-                                            xmlProp.SetAttribute("lang", "", lang);
+                                            if (rootElement != null)
+                                            {
+                                                XmlNode xmlAttr = rootElement.Attributes.GetNamedItem("lang", DiagramContentModelHelper.NS_URL_XHTML);
+                                                if (xmlAttr == null) {
+                                                    xmlAttr = rootElement.Attributes.GetNamedItem("lang");
+                                                }
+                                                if (xmlAttr != null && !string.IsNullOrEmpty(xmlAttr.Value))
+                                                {
+                                                    xmlProp.SetAttribute("lang", "", xmlAttr.Value);
+                                                }
+                                            }
                                         }
                                     }
                                 }
