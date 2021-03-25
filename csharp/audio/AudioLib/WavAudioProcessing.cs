@@ -302,6 +302,20 @@ namespace AudioLib
 
         }
 
+        public string ConcatenatingAudio(string firstFilePath, string secondFilePath)
+        {
+            var first = new AudioFileReader(firstFilePath);
+            var second = new AudioFileReader(secondFilePath);
+
+            var playlist = new ConcatenatingSampleProvider(new[] { first, second });
+            string outputFileName = secondFilePath.Substring(0, secondFilePath.Length - 4);
+            var outPath = outputFileName + "Concatenate.wav";
+
+            WaveFileWriter.CreateWaveFile16(outPath, playlist);
+
+            return outPath;
+        }
+
 
         public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize, SoundTouch, NoiseReduction, AudioMixing } ;
     }
