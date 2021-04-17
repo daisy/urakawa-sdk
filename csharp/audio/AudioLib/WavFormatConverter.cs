@@ -1454,12 +1454,19 @@ namespace AudioLib
 
                 m_process = new Process();
 
-                m_process.StartInfo.FileName = Path.Combine(workingDir, "faad.exe");
+                m_process.StartInfo.FileName = Path.Combine(workingDir, "ffmpeg.exe");
                 m_process.StartInfo.RedirectStandardOutput = false;
                 m_process.StartInfo.RedirectStandardError = false;
                 m_process.StartInfo.UseShellExecute = true;
                 m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                m_process.StartInfo.Arguments = "-o \"" + tempFile + "\" \"" + sourceFile + "\"";
+                m_process.StartInfo.Arguments = "-i \"" + sourceFile  + "\" \"" + tempFile + "\"";
+
+                //m_process.StartInfo.FileName = Path.Combine(workingDir, "faad.exe");
+                //m_process.StartInfo.RedirectStandardOutput = false;
+                //m_process.StartInfo.RedirectStandardError = false;
+                //m_process.StartInfo.UseShellExecute = true;
+                //m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                //m_process.StartInfo.Arguments = "-o \"" + tempFile + "\" \"" + sourceFile + "\"";
 
                 m_process.Start();
                 m_process.WaitForExit();
