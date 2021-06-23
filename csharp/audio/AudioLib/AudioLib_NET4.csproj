@@ -63,10 +63,16 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="SharpDX">
+    <Reference Include="NAudio, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SharpDX.DirectSound\NET4\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.DirectSound">
+    <Reference Include="SharpDX.DirectSound, Version=2.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SharpDX.DirectSound\NET4\SharpDX.DirectSound.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -88,6 +94,7 @@
     <Compile Include="AudioPlayer.cs" />
     <Compile Include="AudioPlayer_CircularBuffer.cs" />
     <Compile Include="AudioPlayer_FastForwardRewind.cs" />
+    <Compile Include="ReadWriteCueMarkers.cs" />
     <Compile Include="WavAudioProcessing.cs" />
     <Compile Include="AudioRecorder.cs" />
     <Compile Include="CalculationFunctions.cs" />
@@ -104,20 +111,6 @@
     <Compile Include="VuMeter_BasicComputation.cs" />
     <Compile Include="VuMeter_VolumeLevelAlerts.cs" />
     <Compile Include="WavFormatConverter.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\mp3-sharp\Mp3Sharp_NET4.csproj">
-      <Project>{834cab58-648d-47cc-ac6f-d01c08c809a4}</Project>
-      <Name>Mp3Sharp_NET4</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NAudio\NAudio_NET4.csproj">
-      <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
-      <Name>NAudio_NET4</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoundTouch.NET\SoundTouch.Net_NET4.csproj">
-      <Project>{EA570592-1FAB-412F-AA0C-159C947608CD}</Project>
-      <Name>SoundTouch.Net_NET4</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -181,6 +174,16 @@
     <Folder Include="Events\Player\" />
     <Folder Include="Events\Recorder\" />
     <Folder Include="Events\VuMeter\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\mp3-sharp\Mp3Sharp_NET4.csproj">
+      <Project>{834CAB58-648D-47CC-AC6F-D01C08C809A4}</Project>
+      <Name>Mp3Sharp_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoundTouch.NET\SoundTouch.Net_NET4.csproj">
+      <Project>{EA570592-1FAB-412F-AA0C-159C947608CD}</Project>
+      <Name>SoundTouch.Net_NET4</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
