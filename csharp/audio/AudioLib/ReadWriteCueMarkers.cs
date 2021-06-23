@@ -36,7 +36,7 @@ namespace AudioLib
                MessageBox.Show(e.ToString());
            }
 
-           if (m_CueReader.Cues != null)
+           if (m_CueReader != null && m_CueReader.Cues != null)
            {
                int[]  list = m_CueReader.Cues.CuePositions;
                m_CueLabelList = m_CueReader.Cues.CueLabels;
@@ -45,7 +45,8 @@ namespace AudioLib
 
                foreach (int cuePoint in list)
                {
-                   double tempCuePointInSec = (cuePoint / 44100)*1000;
+                   int sampleRate = m_CueReader.WaveFormat.SampleRate;
+                   double tempCuePointInSec = (cuePoint / sampleRate) * 1000;
                    m_CuePointsList.Add(tempCuePointInSec);                
                    cueLabelCount++;
                }
