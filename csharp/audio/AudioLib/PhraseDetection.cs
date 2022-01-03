@@ -104,14 +104,14 @@ namespace AudioLib
         /// <param name="GapLength"></param>
         /// <param name="before"></param>
         /// <returns></returns>
-        public static List<long> Apply(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold,long GapLength,long before)
+        public static List<long> Apply(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold, long GapLength, long before, bool DeleteSilenceFromEndOfSection = false)
         {
             //long lGapLength = ObiCalculationFunctions.ConvertTimeToByte(GapLength, (int)audio.AudioMediaData.PCMFormat.Data.SampleRate, audio.AudioMediaData.PCMFormat.Data.BlockAlign);
             //long lBefore = ObiCalculationFunctions.ConvertTimeToByte(before, (int)audio.AudioMediaData.PCMFormat.Data.SampleRate, audio.AudioMediaData.PCMFormat.Data.BlockAlign);
             long gapLengthInBytes = audioPCMFormat.ConvertTimeToBytes((long) GapLength );
             long beforeInBytes = audioPCMFormat.ConvertTimeToBytes((long) before );
             //Console.WriteLine ("GapLength " + gapLengthInBytes  + " - " + "Before " + beforeInBytes ) ;
-            return ApplyPhraseDetection(assetStream, audioPCMFormat , threshold, gapLengthInBytes, beforeInBytes);
+            return ApplyPhraseDetection(assetStream, audioPCMFormat , threshold, gapLengthInBytes, beforeInBytes, DeleteSilenceFromEndOfSection);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace AudioLib
         /// <param name="GapLength"></param>
         /// <param name="before"></param>
         /// <returns></returns>
-        private static  List<long> ApplyPhraseDetection(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold, double GapLength, double before)
+        private static List<long> ApplyPhraseDetection(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold, double GapLength, double before, bool DeleteSilenceFromEndOfSection)
         {
             CancelOperation = false;
             //m_AudioAsset = ManagedAsset.AudioMediaData;
@@ -167,6 +167,9 @@ namespace AudioLib
 
             long lCurrentSum = 0;
             long lSumPrev = 0;
+            bool deleteSilence = true;
+            bool IsSilenceDetected = false;
+            long phraseMarkTimeForDeletingSilence = 0;
 
             BinaryReader br = new BinaryReader (assetStream);
 
@@ -188,6 +191,16 @@ namespace AudioLib
                     lCheck++;
 
                     SpeechBlockCount = 0;
+                    if (DeleteSilenceFromEndOfSection && !IsSilenceDetected)
+                    {
+                        phraseMarkTimeForDeletingSilence = audioPCMFormat.ConvertBytesToTime(Convert.ToInt64(errorCompensatingCoefficient * (j - Counter)) * SampleCount * audioPCMFormat.BlockAlign) / AudioLibPCMFormat.TIME_UNIT;
+                        IsSilenceDetected = true;
+                    }
+                }
+                else if (DeleteSilenceFromEndOfSection)
+                {
+                    IsSilenceDetected = false;
+                    phraseMarkTimeForDeletingSilence = 0;
                 }
                 else
                 {
@@ -235,6 +248,12 @@ namespace AudioLib
             }
             br.Close();
 
+            if (DeleteSilenceFromEndOfSection && phraseMarkTimeForDeletingSilence != 0)
+            {
+                //detectedPhraseTimingList.Clear();
+                boolPhraseDetected = true;
+                detectedPhraseTimingList.Add(phraseMarkTimeForDeletingSilence);
+            }
             List<long> detectedPhraseTimingsInTimeUnits = new List<long>();
 
             if (boolPhraseDetected == false)
