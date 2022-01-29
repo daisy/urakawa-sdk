@@ -252,50 +252,28 @@ namespace AudioLib
             return detectedPhraseTimingsInTimeUnits ;
         }
 
-        public static List<long> RemoveSilenceFromEndOfSection(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold, double GapLength, double before, bool DeleteSilenceFromEndOfSection)
+        public static long RemoveSilenceFromEndOfSection(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold, double GapLength, double before)
         {
             GapLength = audioPCMFormat.ConvertTimeToBytes((long)GapLength);
             before = audioPCMFormat.ConvertTimeToBytes((long)before);
 
             CancelOperation = false;
-            //m_AudioAsset = ManagedAsset.AudioMediaData;
             double assetTimeInMS = audioPCMFormat.ConvertBytesToTime(assetStream.Length) / AudioLibPCMFormat.TIME_UNIT;
             GapLength = audioPCMFormat.AdjustByteToBlockAlignFrameSize((long)GapLength);
             before = audioPCMFormat.AdjustByteToBlockAlignFrameSize((long)before);
 
-            int Block = 0;
-
-            // determine the Block  size
-            if (audioPCMFormat.SampleRate > 22500)
-            {
-                Block = 192;
-            }
-            else
-            {
-                Block = 96;
-            }
-
-
-            // count chunck of silence which trigger phrase detection
-            //long lCountSilGap = (long)(2 * GapLength) / Block; // multiplied by two because j counter is incremented by 2
             long lSum = 0;
-            List<double> detectedPhraseTimingList = new List<double>();
-            long lCheck = 0;
+            double detectedSilenceTime = 0;
 
             // flags to indicate phrases and silence
             bool boolPhraseDetected = false;
-            //bool boolBeginPhraseDetected = false;
 
 
             double BlockTime = 25; // milliseconds
-            double BeforePhraseInMS = audioPCMFormat.ConvertBytesToTime((long)before) / AudioLibPCMFormat.TIME_UNIT;
-            //Console.WriteLine ("before , silgap " + BeforePhraseInMS+" , " + GapLength  ) ;
-            //lCountSilGap = Convert.ToInt64((audioPCMFormat.ConvertBytesToTime((long)GapLength) / AudioLibPCMFormat.TIME_UNIT) / BlockTime);
 
             long Iterations = Convert.ToInt64(assetTimeInMS / BlockTime);
             long SampleCount = Convert.ToInt64(audioPCMFormat.SampleRate / (1000 / BlockTime));
             double errorCompensatingCoefficient = GetErrorCompensatingConstant(SampleCount, audioPCMFormat);
-            //long SpeechBlockCount = 0;
 
             long lCurrentSum = 0;
             long lSumPrev = 0;
@@ -304,23 +282,16 @@ namespace AudioLib
 
             BinaryReader br = new BinaryReader(assetStream);
 
-            //bool PhraseNominated = false;
-            //long Counter = 0;
             for (long j = 0; j < Iterations - 1; j++)
             {
-                if (CancelOperation) return null;
+                if (CancelOperation) return 0;
                 // decodes audio chunck inside block
-                //lCurrentSum = GetAverageSampleValue(br, SampleCount);
                 lCurrentSum = GetAvragePeakValue(assetStream, SampleCount, audioPCMFormat);
                 lSum = (lCurrentSum + lSumPrev) / 2;
                 lSumPrev = lCurrentSum;
 
-                // conditional triggering of phrase detection
                 if (lSum < threshold)
                 {
-                    lCheck++;
-
-                    //SpeechBlockCount = 0;
                     if (!IsSilenceDetected)
                     {
                         phraseMarkTimeForDeletingSilence = audioPCMFormat.ConvertBytesToTime(Convert.ToInt64(errorCompensatingCoefficient * (j)) * SampleCount * audioPCMFormat.BlockAlign) / AudioLibPCMFormat.TIME_UNIT;
@@ -332,30 +303,23 @@ namespace AudioLib
                     IsSilenceDetected = false;
                     phraseMarkTimeForDeletingSilence = 0;
                 }
-                //if (PhraseNominated)
-                //    Counter++;
-                // end outer For
             }
             br.Close();
 
-            if (DeleteSilenceFromEndOfSection && phraseMarkTimeForDeletingSilence != 0)
+            if (phraseMarkTimeForDeletingSilence != 0)
             {
-                //detectedPhraseTimingList.Clear();
                 boolPhraseDetected = true;
-                detectedPhraseTimingList.Add(phraseMarkTimeForDeletingSilence);
+                detectedSilenceTime = phraseMarkTimeForDeletingSilence + before;
             }
-            List<long> detectedPhraseTimingsInTimeUnits = new List<long>();
+            long detectedPhraseTimingsInTimeUnits = 0;
 
             if (boolPhraseDetected == false)
             {
-                return null;
+                return 0;
             }
             else
             {
-                for (int i = 0; i < detectedPhraseTimingList.Count; i++)
-                {
-                    detectedPhraseTimingsInTimeUnits.Add(Convert.ToInt64(detectedPhraseTimingList[i] * AudioLibPCMFormat.TIME_UNIT));
-                }
+                detectedPhraseTimingsInTimeUnits = Convert.ToInt64(detectedSilenceTime * AudioLibPCMFormat.TIME_UNIT);
             }
 
             return detectedPhraseTimingsInTimeUnits;
