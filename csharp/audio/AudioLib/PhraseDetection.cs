@@ -252,7 +252,7 @@ namespace AudioLib
             return detectedPhraseTimingsInTimeUnits ;
         }
 
-        public static long RemoveSilenceFromEndOfSection(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold, double GapLength, double before)
+        public static long RemoveSilenceFromEnd(Stream assetStream, AudioLibPCMFormat audioPCMFormat, long threshold, double GapLength, double before)
         {
             GapLength = audioPCMFormat.ConvertTimeToBytes((long)GapLength);
             before = audioPCMFormat.ConvertTimeToBytes((long)before);
