@@ -22,11 +22,13 @@ namespace AudioLib
         kbps_256 = 256,
         kbps_320 = 320 //
     }
-    public enum SampleRate : ushort
+    public enum SampleRate : uint
     {
         Hz11025 = 11025,
         Hz22050 = 22050,
         Hz44100 = 44100,
+        Hz48000 = 48000,
+        Hz96000 = 96000
     }
 
     /// <summary>
@@ -84,7 +86,9 @@ namespace AudioLib
                 if (value != 11025
                   && value != 22050
                   && value != 44100
+                  && value != 48000
                   && value != 88200
+                  && value != 96000
                   && !(value >= 8000
                           && value <= 96000
                           && value % 8000 == 0)
