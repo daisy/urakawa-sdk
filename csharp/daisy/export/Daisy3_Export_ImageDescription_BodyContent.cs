@@ -1213,7 +1213,7 @@ namespace urakawa.daisy.export
                     {
                         dataProvider.ExportDataStreamToFile(destPath, false);
                         if (encodeToMp3 ||
-                            (ushort)pcmFormat.SampleRate != (ushort)managedAudio.AudioMediaData.PCMFormat.Data.SampleRate)
+                          (uint)pcmFormat.SampleRate != (uint)managedAudio.AudioMediaData.PCMFormat.Data.SampleRate)
                         {
                             string convertedFile = EncodeWavFileToMp3(skipACM, destPath, encodeToMp3, pcmFormat,
                                                                       bitRate_Mp3);

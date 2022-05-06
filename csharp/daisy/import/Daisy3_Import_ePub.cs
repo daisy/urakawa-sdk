@@ -731,7 +731,7 @@ namespace urakawa.daisy.import
                     );
 
                 PCMFormatInfo pcmFormat = spineItemPresentation.MediaDataManager.DefaultPCMFormat; //.Copy();
-                pcmFormat.Data.SampleRate = (ushort)m_audioProjectSampleRate;
+                pcmFormat.Data.SampleRate = (uint)m_audioProjectSampleRate;
                 pcmFormat.Data.NumberOfChannels = m_audioStereo ? (ushort)2 : (ushort)1;
                 spineItemPresentation.MediaDataManager.DefaultPCMFormat = pcmFormat;
 

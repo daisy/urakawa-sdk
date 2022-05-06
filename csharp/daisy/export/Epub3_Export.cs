@@ -374,7 +374,7 @@ namespace urakawa.daisy.export
 
                 AudioLibPCMFormat pcmFormat = new AudioLibPCMFormat();
                 pcmFormat.CopyFrom(node.Presentation.MediaDataManager.DefaultPCMFormat.Data);
-                pcmFormat.SampleRate = (ushort)m_sampleRate;
+                pcmFormat.SampleRate = (uint)m_sampleRate;
                 pcmFormat.NumberOfChannels = nChannels;
 
                 if (m_encodeToMp3)
@@ -411,7 +411,7 @@ namespace urakawa.daisy.export
                 }
                 else
                 {
-                    if ((ushort)m_sampleRate != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
+                    if ((uint)m_sampleRate != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
                         ||
                         nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels)
                     {
@@ -1051,7 +1051,7 @@ namespace urakawa.daisy.export
 
                             PCMFormatInfo audioFormat = m_Presentation.MediaDataManager.DefaultPCMFormat;
                             AudioLibPCMFormat pcmFormat = audioFormat.Data;
-                            pcmFormat.SampleRate = (ushort)m_sampleRate;
+                            pcmFormat.SampleRate = (uint)m_sampleRate;
                             pcmFormat.NumberOfChannels = (ushort)(m_audioStereo ? 2 : 1);
 
 

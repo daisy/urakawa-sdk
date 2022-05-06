@@ -46,7 +46,7 @@ namespace urakawa.daisy.export.visitor
             if (m_ExternalAudioMediaList.Count > 0)
             {
                 ushort nChannels = (ushort)(base.EncodePublishedAudioFilesStereo ? 2 : 1);
-                if ((ushort)base.EncodePublishedAudioFilesSampleRate != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
+                if ((uint)base.EncodePublishedAudioFilesSampleRate != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
                     ||
                     nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels)
                 {
@@ -143,7 +143,7 @@ namespace urakawa.daisy.export.visitor
             //AudioLibPCMFormat pcmFormat = audioFormat.Data;
             AudioLibPCMFormat pcmFormat = new AudioLibPCMFormat();
             pcmFormat.CopyFrom(audioFormat.Data);
-            pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
+            pcmFormat.SampleRate = (uint)base.EncodePublishedAudioFilesSampleRate;
             pcmFormat.NumberOfChannels = (ushort)(base.EncodePublishedAudioFilesStereo ? 2 : 1);
 
             AudioLib.WavFormatConverter formatConverter = new WavFormatConverter(true, DisableAcmCodecs);
@@ -222,7 +222,7 @@ namespace urakawa.daisy.export.visitor
             //AudioLibPCMFormat pcmFormat = audioFormat.Data;
             AudioLibPCMFormat pcmFormat = new AudioLibPCMFormat();
             pcmFormat.CopyFrom(audioFormat.Data);
-            pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
+            pcmFormat.SampleRate = (uint)base.EncodePublishedAudioFilesSampleRate;
             pcmFormat.NumberOfChannels = (ushort)(base.EncodePublishedAudioFilesStereo ? 2 : 1);
 
             AddSubCancellable(formatConverter);
@@ -286,7 +286,7 @@ namespace urakawa.daisy.export.visitor
             //AudioLibPCMFormat pcmFormat = audioFormat.Data;
             AudioLibPCMFormat pcmFormat = new AudioLibPCMFormat();
             pcmFormat.CopyFrom(audioFormat.Data);
-            pcmFormat.SampleRate = (ushort)base.EncodePublishedAudioFilesSampleRate;
+            pcmFormat.SampleRate = (uint)base.EncodePublishedAudioFilesSampleRate;
             pcmFormat.NumberOfChannels = (ushort)(base.EncodePublishedAudioFilesStereo ? 2 : 1);
 
             AddSubCancellable(formatConverter);
@@ -524,7 +524,7 @@ namespace urakawa.daisy.export.visitor
             ushort nChannels = (ushort)(EncodePublishedAudioFilesStereo ? 2 : 1);
             if ((EncodePublishedAudioFiles
                 ||
-                (ushort)EncodePublishedAudioFilesSampleRate != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
+                (uint)EncodePublishedAudioFilesSampleRate != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.SampleRate
                 || nChannels != node.Presentation.MediaDataManager.DefaultPCMFormat.Data.NumberOfChannels
                 )
                 && !m_ExternalAudioMediaList.Contains(extAudioMedia))

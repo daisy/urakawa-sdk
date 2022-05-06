@@ -33,7 +33,7 @@ namespace urakawa.daisy.export
 
             PCMFormatInfo audioFormat = m_Presentation.MediaDataManager.DefaultPCMFormat;
             AudioLibPCMFormat pcmFormat = audioFormat.Data;
-            pcmFormat.SampleRate = (ushort)m_sampleRate;
+            pcmFormat.SampleRate = (uint)m_sampleRate;
             pcmFormat.NumberOfChannels = (ushort)(m_audioStereo ? 2 : 1);
 
             Dictionary<string, List<string>> map_DiagramElementName_TO_TextualDescriptions = new Dictionary<string, List<string>>();
