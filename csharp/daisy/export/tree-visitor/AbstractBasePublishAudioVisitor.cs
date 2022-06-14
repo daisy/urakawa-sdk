@@ -48,7 +48,7 @@ namespace urakawa.daisy.export.visitor
             get { return mCurrentAudioFileNumber; }
         }
 
-        private string mAudioFileBaseNameFormat = "aud{0:000}" + DataProviderFactory.AUDIO_WAV_EXTENSION;
+        private string mAudioFileBaseNameFormat = "aud{0:0000}" + DataProviderFactory.AUDIO_WAV_EXTENSION;
         public string AudioFileNameFormat
         {
             get { return mAudioFileBaseNameFormat; }

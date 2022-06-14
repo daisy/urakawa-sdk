@@ -504,7 +504,7 @@ namespace urakawa.daisy.export
             get
             {
                 string strNumericFrag = (++m_SmilFileNameCounter).ToString();
-                return strNumericFrag.PadLeft(3, '0') + ".smil";
+                return strNumericFrag.PadLeft(4, '0') + ".smil";
             }
         }
 
