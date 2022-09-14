@@ -36,7 +36,8 @@ namespace urakawa.data
                 if (c == Path.DirectorySeparatorChar
                     || c == Path.AltDirectorySeparatorChar
                     || c == '/'
-                    || c == '\\')
+                    || c == '\\'
+                    || c == '&')
                 {
                     m_StrBuilder.Append(UNDERSCORE);
                 }
