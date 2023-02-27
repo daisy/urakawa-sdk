@@ -503,7 +503,7 @@ namespace urakawa
 
             if (ReadXukAttribute(rd, AssemblyVersion_NAME) != null)
             {
-                tq.AssemblyName.Version = new Version(ReadXukAttribute(rd, AssemblyVersion_NAME));
+                //tq.AssemblyName.Version = new Version(ReadXukAttribute(rd, AssemblyVersion_NAME));
             }
 
             tq.ClassName = ReadXukAttribute(rd, FullName_NAME);

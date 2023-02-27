@@ -1,18 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</ProjectGuid>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AudioLib</RootNamespace>
     <AssemblyName>AudioLib</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -28,25 +19,19 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>bin\DebugNET4\</OutputPath>
     <DefineConstants>TRACE;DEBUG;USE_SHARPDX;NET40;USE_SOUNDTOUCH;ENABLE_VST_</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <DocumentationFile>bin\DebugNET4\AudioLib.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>bin\ReleaseNET4\</OutputPath>
     <DefineConstants>TRACE;USE_SHARPDX;NET40;USE_SOUNDTOUCH</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
@@ -62,55 +47,18 @@
       <HintPath>.\Jacobi.Vst.Interop.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="NAudio, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\NAudio.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SharpDX.DirectSound\NET4\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.DirectSound, Version=2.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SharpDX.DirectSound, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SharpDX.DirectSound\NET4\SharpDX.DirectSound.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core">
+    <Reference Include="SoundTouch.Net">
+      <HintPath>..\..\..\..\DLLS\SoundTouch.Net.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Speech" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AudioDevice.cs" />
-    <Compile Include="AudioLib.Lang.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AudioLib.Lang.resx</DependentUpon>
-    </Compile>
-    <Compile Include="AudioPlayer.cs" />
-    <Compile Include="AudioPlayer_CircularBuffer.cs" />
-    <Compile Include="AudioPlayer_FastForwardRewind.cs" />
-    <Compile Include="ReadWriteCueMarkers.cs" />
-    <Compile Include="WavAudioProcessing.cs" />
-    <Compile Include="AudioRecorder.cs" />
-    <Compile Include="CalculationFunctions.cs" />
-    <Compile Include="AudioLibPCMFormat.cs" />
-    <Compile Include="DeviceChangeMonitor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="IDualCancellableProgressReporter.cs" />
-    <Compile Include="Mp3Frame.cs" />
-    <Compile Include="PhraseDetection.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TextToSpeech.cs" />
-    <Compile Include="VST.cs" />
-    <Compile Include="VuMeter_BasicComputation.cs" />
-    <Compile Include="VuMeter_VolumeLevelAlerts.cs" />
-    <Compile Include="WavFormatConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -162,35 +110,22 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AudioLib.Lang.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>AudioLib.Lang.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DeviceChangeMonitor.resx">
-      <DependentUpon>DeviceChangeMonitor.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Events\Player\" />
     <Folder Include="Events\Recorder\" />
     <Folder Include="Events\VuMeter\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\mp3-sharp\Mp3Sharp_NET4.csproj">
-      <Project>{834CAB58-648D-47CC-AC6F-D01C08C809A4}</Project>
-      <Name>Mp3Sharp_NET4</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoundTouch.NET\SoundTouch.Net_NET4.csproj">
-      <Project>{EA570592-1FAB-412F-AA0C-159C947608CD}</Project>
-      <Name>SoundTouch.Net_NET4</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\mp3-sharp\Mp3Sharp_NET4.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
+    <PackageReference Include="NAudio" Version="2.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Events\Recorder\PhraseEventArgs.cs" />
+  </ItemGroup>
 </Project>

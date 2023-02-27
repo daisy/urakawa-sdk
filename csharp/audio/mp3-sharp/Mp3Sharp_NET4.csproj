@@ -1,14 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{834CAB58-648D-47CC-AC6F-D01C08C809A4}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>
-    </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>Mp3Sharp</AssemblyName>
@@ -21,9 +14,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>
     </RootNamespace>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
@@ -42,40 +32,32 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\DebugNET4\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <DocumentationFile>bin\DebugNET4\Mp3Sharp.XML</DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
     </NoWarn>
-    <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>1</WarningLevel><NoWarn>1591</NoWarn>
-    <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>1</WarningLevel>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\ReleaseNET4\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>NET40</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
@@ -83,134 +65,22 @@
     <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>1</WarningLevel><NoWarn>1591</NoWarn>
+    <WarningLevel>1</WarningLevel>
+    <NoWarn>1591</NoWarn>
     <DebugType>none</DebugType>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'test|AnyCPU' ">
     <OutputPath>bin\test\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mscorlib">
-      <Name>mscorlib</Name>
-    </Reference>
-    <Reference Include="System">
+    <Reference Update="System">
       <Name>System</Name>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="converter\RiffFile.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="converter\WaveFile.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="converter\WaveFileObuffer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\BackStream.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\BitReserve.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\Bitstream.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\BitstreamErrors.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\BitstreamException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\Control.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\Crc16.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\Decoder.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\DecoderErrors.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\DecoderException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\Equalizer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\FrameDecoder.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\Header.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\huffcodetab.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\InputStreamSource.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\JavaLayerError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\JavaLayerErrors.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\JavaLayerException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\JavaLayerHook.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\JavaLayerUtils.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\LayerIDecoder.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\LayerIIDecoder.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\LayerIIIDecoder.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\Manager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\Obuffer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\OutputChannels.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\SampleBuffer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\Source.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="decoder\SynthesisFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExtendedMp3Stream.cs" />
-    <Compile Include="Mp3Stream.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="NetworkMp3Stream.cs" />
-    <Compile Include="Support\SupportClass.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="WaveFormat.cs" />
     <Content Include="decoder\readme.txt" />
     <Content Include="readme.txt" />
-    <None Include="Support\_ConversionReport.htm">
+    <None Update="Support\_ConversionReport.htm">
       <SubType>Preview</SubType>
     </None>
   </ItemGroup>
@@ -236,11 +106,10 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>
