@@ -501,7 +501,7 @@ namespace urakawa
         {
             tq.AssemblyName = new AssemblyName(ReadXukAttribute(rd, AssemblyName_NAME));
 
-            if (ReadXukAttribute(rd, AssemblyVersion_NAME) != null && tq.AssemblyName.Name != "Obi")
+            if (ReadXukAttribute(rd, AssemblyVersion_NAME) != null) 
             {
                 tq.AssemblyName.Version = new Version(ReadXukAttribute(rd, AssemblyVersion_NAME));
             }
@@ -512,7 +512,8 @@ namespace urakawa
             {
                 try
                 {
-                    Assembly a = Assembly.Load(tq.AssemblyName);
+                    //   Assembly a = Assembly.Load(tq.AssemblyName);
+                    Assembly a = Assembly.Load(tq.AssemblyName.Name);
                     try
                     {
                         tq.Type = a.GetType(tq.ClassName);
