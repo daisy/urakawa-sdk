@@ -512,7 +512,8 @@ namespace urakawa
             {
                 try
                 {
-                    Assembly a = Assembly.Load(tq.AssemblyName);
+                    //Assembly a = Assembly.Load(tq.AssemblyName);
+                    Assembly a = Assembly.Load(tq.AssemblyName.Name);
                     try
                     {
                         tq.Type = a.GetType(tq.ClassName);
