@@ -9,6 +9,7 @@ using NAudio.Dsp;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace AudioLib
 {
@@ -56,8 +57,8 @@ namespace AudioLib
                 m_process.StartInfo.UseShellExecute = true;
                 m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
-                //ffmpeg -y -i "004_a_word_on_life_skills.wav" -af afade=t=in:st=20:d=20 "004_a_word_on_life_skillsFadeIn.wav"
-                m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -af afade=t=in:st=" + FadeInStartTime + ":d=" + duration + " \"" + outPath + "\"");
+                //ffmpeg -y -i "004_a_word_on_life_skills.wav" -af afade=t=in:st=20:d=20 "004_a_word_on_life_skillsFadeIn.wav"                
+                m_process.StartInfo.Arguments = string.Format(NumberFormatInfo.InvariantInfo, "-y -i " + "\"" + fileName + "\"" + " -af afade=t=in:st={0}" + ":d={1}" + " \"" + outPath + "\"", FadeInStartTime, duration);
 
 
                 m_process.Start();
@@ -123,7 +124,7 @@ namespace AudioLib
                 m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                 //ffmpeg -y -i "004_a_word_on_life_skills.wav" -af afade=t=out:st=20:d=20 "004_a_word_on_life_skillsFadeout.wav"
-                m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -af afade=t=out:st=" + FadeOutStartTime + ":d=" + duration + " \"" + outPath + "\"");
+                m_process.StartInfo.Arguments = string.Format(NumberFormatInfo.InvariantInfo, "-y -i " + "\"" + fileName + "\"" + " -af afade=t=out:st={0}" + ":d={1}" + " \"" + outPath + "\"",FadeOutStartTime,duration);
 
 
                 m_process.Start();
@@ -224,7 +225,7 @@ namespace AudioLib
                 m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                 //m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -af afftdn=nr=50:nf=-20 " + "\"" + outPath + "\"");
-                m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -af afftdn=nr=" + noiseReductionVal + ":nf=" + noiseFloorVal + " \"" + outPath + "\"");
+                m_process.StartInfo.Arguments = string.Format(NumberFormatInfo.InvariantInfo, "-y -i " + "\"" + fileName + "\"" + " -af afftdn=nr={0}"  + ":nf={1}"  + " \"" + outPath + "\"", noiseReductionVal, noiseFloorVal);
 
 
                 m_process.Start();
@@ -268,22 +269,22 @@ namespace AudioLib
                     {
                         if (IsEndOfStreamDurationChecked)
                         {
-                            m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -i \"" + secondAudioToMix + "\"" + " -filter_complex amix=inputs=3:duration=first:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + " " + weightOfSecondAudio + "\"" + " \"" + outPath + "\"");
+                            m_process.StartInfo.Arguments = string.Format(NumberFormatInfo.InvariantInfo, "-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -i \"" + secondAudioToMix + "\"" + " -filter_complex amix=inputs=3:duration=first:dropout_transition={0}" + ":weights=" + "\"1 " + "{1} {2}" + "\"" + " \"" + outPath + "\"", droupoutTransition, weightOfAudio, weightOfSecondAudio);
                         }
                         else
                         {
-                            m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -i \"" + secondAudioToMix + "\"" + " -filter_complex amix=inputs=3:duration=longest:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + " " + weightOfSecondAudio + "\"" + " \"" + outPath + "\"");
+                            m_process.StartInfo.Arguments = string.Format(NumberFormatInfo.InvariantInfo, "-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -i \"" + secondAudioToMix + "\"" + " -filter_complex amix=inputs=3:duration=longest:dropout_transition={0}" + ":weights=" + "\"1 " + "{1} {2}" + "\"" + " \"" + outPath + "\"", droupoutTransition, weightOfAudio, weightOfSecondAudio);
                         }
                     }
                     else
                     {
                         if (IsEndOfStreamDurationChecked)
                         {
-                            m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -filter_complex amix=inputs=2:duration=first:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + "\"" + " \"" + outPath + "\"");
+                            m_process.StartInfo.Arguments = string.Format(NumberFormatInfo.InvariantInfo, "-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -filter_complex amix=inputs=2:duration=first:dropout_transition={0}" + ":weights=" + "\"1 " + "{1}" + "\"" + " \"" + outPath + "\"", droupoutTransition, weightOfAudio);
                         }
                         else
                         {
-                            m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -filter_complex amix=inputs=2:duration=longest:dropout_transition=" + droupoutTransition + ":weights=" + "\"1 " + weightOfAudio + "\"" + " \"" + outPath + "\"");
+                            m_process.StartInfo.Arguments = string.Format(NumberFormatInfo.InvariantInfo, "-y -i " + "\"" + fileName + "\"" + " -i \"" + audioToMix + "\"" + " -filter_complex amix=inputs=2:duration=longest:dropout_transition={0}" + ":weights=" + "\"1 " + "{1}" + "\"" + " \"" + outPath + "\"", droupoutTransition, weightOfAudio);
                         }
                     }
 

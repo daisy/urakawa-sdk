@@ -12,6 +12,7 @@ using NAudio.Wave.Asio;
 using SoundTouch;
 using SoundTouch.Utility;
 using Buffer = System.Buffer;
+using System.Globalization;
 #if true || SOUNDTOUCH_INTEGER_SAMPLES
 using TSampleType = System.Int16; // short (System.Int32 == int)
 using TLongSampleType = System.Int64; // long
@@ -1955,6 +1956,11 @@ namespace AudioLib
                 System.Collections.Generic.Dictionary<string, string> configDictionary = new System.Collections.Generic.Dictionary<string, string>();
                 foreach (System.Xml.XmlNode n in configurationDocument.DocumentElement.ChildNodes)
                 {
+                    if (n.InnerText.Contains("{1}"))
+                    {
+                        int index = n.InnerText.IndexOf("{1}");
+                        n.InnerText = n.InnerText.Insert(index + 3, "k");
+                    }
                     configDictionary.Add(n.Name, n.InnerText);
                     Console.WriteLine("inner text : " + n.Name + " : " + configDictionary[n.Name]);
                 }
@@ -1963,17 +1969,17 @@ namespace AudioLib
                 {
                     //argumentString = "-i " + "\"" + sourceFile + "\"" + " -b:a " + bitRate_Output + " \"" + destinationFile + "\"";
                     //argumentString = String.Format(@"-i {0} -b:a {1} {2}", "\"" + sourceFile + "\"", bitRate_Output, "\"" + destinationFile + "\"");
-                    argumentString = String.Format(configDictionary["mp4"] , "\"" + sourceFile + "\"", bitRate_Output.ToString()+"k", "\"" + destinationFile + "\"");
+                    argumentString = String.Format(NumberFormatInfo.InvariantInfo, configDictionary["mp4"] , "\"" + sourceFile + "\"", bitRate_Output, "\"" + destinationFile + "\"");
                 }
                 else if (extension == ".3gp")
                 {
                     //argumentString =  String.Format(@"-i {0} -b 400k -acodec aac -strict experimental  -ac 1 -ar 16000 -ab {1} {2}", "\"" +sourceFile + "\"", "24k" , "\"" +destinationFile + "\"");
-                    argumentString = String.Format(configDictionary ["gpp_3"], "\"" + sourceFile + "\"", bitRate_Output.ToString()+"k" , "\"" + destinationFile + "\"");
+                    argumentString = String.Format(NumberFormatInfo.InvariantInfo, configDictionary ["gpp_3"], "\"" + sourceFile + "\"", bitRate_Output , "\"" + destinationFile + "\"");
                 }
                 else if (extension == ".amr")
                 {
                     //argumentString = String.Format(@"-i {0} -ar 8000 -ab {1} {2}", "\"" + sourceFile + "\"" ,"12.2k", "\"" + destinationFile + "\"" );
-                    argumentString = String.Format(configDictionary["amr"], "\"" + sourceFile + "\"", bitRate_Output.ToString() + "k", "\"" + destinationFile + "\"");
+                    argumentString = String.Format(NumberFormatInfo.InvariantInfo, configDictionary["amr"], "\"" + sourceFile + "\"", bitRate_Output, "\"" + destinationFile + "\"");
                 }
                     
                     
