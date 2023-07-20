@@ -513,7 +513,11 @@ namespace urakawa
                 try
                 {
                     //Assembly a = Assembly.Load(tq.AssemblyName);
+#if NET6_0_OR_GREATER
                     Assembly a = Assembly.Load(tq.AssemblyName.Name);
+#else
+                    Assembly a = Assembly.Load(tq.AssemblyName);
+#endif
                     try
                     {
                         tq.Type = a.GetType(tq.ClassName);
