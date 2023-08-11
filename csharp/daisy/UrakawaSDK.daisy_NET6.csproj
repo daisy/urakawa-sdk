@@ -91,7 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SaxNET">
-      <HintPath>..\..\..\DLL\SaxNET.dll</HintPath>
+      <HintPath>..\..\..\obi\Obi\Setup\DLL\SaxNET.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
