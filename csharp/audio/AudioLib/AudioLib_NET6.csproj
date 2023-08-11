@@ -48,7 +48,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="SoundTouch.Net">
-      <HintPath>..\..\..\..\DLL\SoundTouch.Net.dll</HintPath>
+      <HintPath>..\..\..\..\obi\Obi\Setup\DLL\SoundTouch.Net.dll</HintPath>
     </Reference>
     <Reference Include="System.Speech" />
   </ItemGroup>
