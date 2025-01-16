@@ -236,6 +236,44 @@ namespace AudioLib
             }
 
         }
+        public string NoiseReductionFfmpegRnn(string fileName, string noiseReductionModel)
+        {
+            string outputFileName = fileName.Substring(0, fileName.Length - 4);
+            var outPath = outputFileName + "ffmpegNoiseReduction.wav";
+            using (var reader = new AudioFileReader(fileName))
+            {
+                string ffmpegWorkingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string ffmpegPath = Path.Combine(ffmpegWorkingDir, "ffmpeg.exe");
+                string modelPath = Path.Combine(ffmpegWorkingDir, "ArnndnModels");
+                if (!File.Exists(ffmpegPath))
+                    throw new FileNotFoundException("Invalid compression library path " + ffmpegPath);
+
+                if (!File.Exists(fileName))
+                    throw new FileNotFoundException("Invalid source file path " + fileName);
+
+
+                Process m_process = new Process();
+
+                m_process.StartInfo.FileName = ffmpegPath;
+
+                m_process.StartInfo.RedirectStandardOutput = false;
+                m_process.StartInfo.RedirectStandardError = false;
+                m_process.StartInfo.UseShellExecute = true;
+                m_process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                m_process.StartInfo.WorkingDirectory = modelPath;
+
+                //m_process.StartInfo.Arguments = string.Format("-y -i " + "\"" + fileName + "\"" + " -af afftdn=nr=50:nf=-20 " + "\"" + outPath + "\"");
+                m_process.StartInfo.Arguments = string.Format(NumberFormatInfo.InvariantInfo, "-y -i " + "\"" + fileName + "\"" + " -filter:a arnndn=model={0}" + " \"" + outPath + "\"", noiseReductionModel);
+
+
+                m_process.Start();
+                m_process.WaitForExit();
+
+                return outPath;
+
+            }
+
+        }
 
         public string AudioMixing(string fileName, string audioToMix, decimal weightOfAudio, decimal droupoutTransition, bool IsEndOfStreamDurationChecked,
              bool IsSecondAudioToMixSelected = false, string secondAudioToMix = "", decimal weightOfSecondAudio = 0)
@@ -318,6 +356,6 @@ namespace AudioLib
         }
 
 
-        public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize, SoundTouch, NoiseReduction, AudioMixing } ;
+        public enum AudioProcessingKind { Amplify, FadeIn, FadeOut, Normalize, SoundTouch, NoiseReduction, NoiseReductionRnn, AudioMixing } ;
     }
 }
